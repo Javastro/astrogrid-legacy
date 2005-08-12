@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.11 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/12 16:08:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.12 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTest.java,v $
+ *   Revision 1.12  2005/08/12 16:08:47  clq2
+ *   com-jl-1315
+ *
+ *   Revision 1.11.80.1  2005/07/26 11:30:19  jl99
+ *   Tightening up of unit tests for the server subproject
+ *
  *   Revision 1.11  2004/11/22 13:03:04  jdt
  *   Merges from Comm_KMB_585
  *
@@ -320,6 +326,32 @@ public class AccountManagerTest
         //
         // Check that they refer to the same account.
         assertEquals("Different identifiers", created, found) ;
+        }
+    
+    /**
+     * Try getting a valid Account.
+     *
+     */
+    public void testGetLocalAccounts()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("AccountManagerTest:testGetLocalAccounts()") ;
+        //
+        // Try creating some Accounts.
+        AccountData created01 = accountManager.addAccount(
+            createLocal("test-account-01").toString()
+            ) ;
+        assertNotNull("Null account", created01) ;
+        
+        AccountData created02 = accountManager.addAccount(
+            createLocal("test-account-02").toString()
+            ) ;
+        assertNotNull("Null account", created02) ;        
+        
+        Object[] localAccounts = accountManager.getLocalAccounts() ;
+        assertNotNull( "Null local accounts array", localAccounts ) ;
         }
     
     /**

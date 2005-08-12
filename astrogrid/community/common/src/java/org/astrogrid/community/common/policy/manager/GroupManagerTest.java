@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/12 16:08:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerTest.java,v $
+ *   Revision 1.7  2005/08/12 16:08:47  clq2
+ *   com-jl-1315
+ *
+ *   Revision 1.6.80.1  2005/07/26 11:30:19  jl99
+ *   Tightening up of unit tests for the server subproject
+ *
  *   Revision 1.6  2004/11/22 13:03:04  jdt
  *   Merges from Comm_KMB_585
  *
@@ -67,6 +73,10 @@ public class GroupManagerTest
      *
      */
     private GroupManager groupManager ;
+    
+    private AccountManagerTest accountManager ;
+    
+    private GroupMemberManagerTest memberManager ;
 
     /**
      * Get our target GroupManager.
@@ -304,6 +314,70 @@ public class GroupManagerTest
         return found;
     }
     
+    
+    /**
+     * Try getting a valid Group.
+     *
+     */
+    public void testGetGroups()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testGetGroups()") ;
+        //
+        // Try creating some Groups.
+        GroupData group1 = groupManager.addGroup(
+            createLocal("test-group-1").toString()
+            ) ;
+        assertNotNull("Null group", group1) ;
+        
+        GroupData group2 = groupManager.addGroup(
+                createLocal("test-group-2").toString()
+                ) ;
+        assertNotNull("Null group", group2) ;
+            
+        //
+        // Now try for the list...
+        Object found[] = groupManager.getLocalGroups() ;
+        assertNotNull("Null group array", found) ;
+       
+    }
+    
+    
+    /**
+     * Try getting a list of Groups for an account.
+     *
+     */
+    public void _testGetGroupsForAccount()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testGetGroupsForAccount()") ;
+        //
+        // Try creating some Groups.
+        GroupData group1 = groupManager.addGroup(
+            createLocal("test-group-1").toString()
+            ) ;
+        assertNotNull("Null group", group1) ;
+        
+        GroupData group2 = groupManager.addGroup(
+                createLocal("test-group-2").toString()
+                ) ;
+        assertNotNull("Null group", group2) ;
+        
+        // Try creating an account...
+        String accountId = this.accountManager.testGetValidAccountData().getIdent() ;
+        
+        this.memberManager.getGroupMemberManager().addGroupMember( accountId, group1.getIdent() ) ;
+        this.memberManager.getGroupMemberManager().addGroupMember( accountId, group2.getIdent() ) ;
+        //
+        // Now try for a list for the account...
+        Object found[] = groupManager.getLocalAccountGroups( accountId ) ;
+        assertNotNull("Null group array", found) ;
+       
+    }
 
     /**
      * Try setting a null Group.
@@ -503,4 +577,34 @@ public class GroupManagerTest
             log.debug("Exception : " + ouch) ;
             }
         }
+ 
+    
+    /**
+     * @param accountManager The accountManager to set.
+     */
+    public void setAccountManager(AccountManager manager) {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest.setAccountManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
+        accountManager = new AccountManagerTest();
+        accountManager.setAccountManager(manager);
+    }
+ 
+    
+    /**
+     * @param memberManager The memberManager to set.
+     */
+    public void setMemberManager(GroupMemberManager manager) {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest.setMemberManager()") ;
+        log.debug("  Manager : " + manager.getClass()) ;
+        memberManager = new GroupMemberManagerTest();
+        memberManager.setGroupMemberManager(manager);
+    }
+    
+    
+    
+    
     }

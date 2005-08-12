@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PermissionManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/12 16:08:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerTest.java,v $
+ *   Revision 1.3  2005/08/12 16:08:47  clq2
+ *   com-jl-1315
+ *
+ *   Revision 1.2.80.2  2005/07/25 15:41:41  jl99
+ *   Corrected a unit test failure on PermissionManagerImpl
+ *
+ *   Revision 1.2.80.1  2005/07/25 11:22:39  jl99
+ *   Tightened up unit tests on PermissionManagerImpl
+ *
  *   Revision 1.2  2004/11/22 13:03:04  jdt
  *   Merges from Comm_KMB_585
  *
@@ -159,7 +168,7 @@ public class PermissionManagerTest
         }
 
     /**
-     * Check we can create a valid Group.
+     * Check we can create a valid permission.
      *
      */
     public void testCreateValidPermission()
@@ -167,20 +176,20 @@ public class PermissionManagerTest
         {
         log.debug("") ;
         log.debug("----\"----") ;
-        log.debug("PermissionManagerTest:testGetValidPermission()") ;
+        log.debug("PermissionManagerTest:testCreateValidPermission()") ;
         GroupData gd = groupManager.testGetValidGroupData();
         assertNotNull("Null group",gd);
         ResourceData rd = resourceManager.testGetValidResourceData();
         assertNotNull("Null resource",rd);
         //
-        // Try creating the Group.
+        // Try creating the permission.
         assertNotNull("Null policy permission",
                 permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action")
         ) ;
     }
     
     /**
-     * Check we can create a valid Group.
+     * Check we can get a valid permission.
      *
      */
     public void testGetValidPermission()
@@ -194,10 +203,14 @@ public class PermissionManagerTest
         ResourceData rd = resourceManager.testGetValidResourceData();
         assertNotNull("Null resource",rd);
         //
-        // Try creating the Group.
+        // Try creating a permission.
         assertNotNull("Null policy permission",
                 permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action")
-        ) ;        
+        ) ; 
+        // OK. Now see if we can access it...
+        assertNotNull("Null policy permission",
+                permissionManager.getPermission(rd.getIdent(),gd.getIdent(),"test-action") 
+        ) ;
     }
     
     /**
@@ -209,7 +222,7 @@ public class PermissionManagerTest
         {
         log.debug("") ;
         log.debug("----\"----") ;
-        log.debug("PermissionManagerTest:testGetValidPermission()") ;
+        log.debug("PermissionManagerTest:testSetValidPermission()") ;
         GroupData gd = groupManager.testGetValidGroupData();
         assertNotNull("Null group",gd);
         ResourceData rd = resourceManager.testGetValidResourceData();
@@ -224,8 +237,41 @@ public class PermissionManagerTest
         ) ;
     }
     
+    
     /**
-     * Check we can create a valid Group.
+     * Check we cannot create a duplicate permission.
+     *
+     */
+    public void testSetDuplicatePermission()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PermissionManagerTest:testSetDuplicatePermission()") ;
+        GroupData gd = groupManager.testGetValidGroupData();
+        assertNotNull("Null group",gd);
+        ResourceData rd = resourceManager.testGetValidResourceData();
+        assertNotNull("Null resource",rd);
+        PolicyPermission pp = permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action");
+        assertNotNull("Null policy permission from add", pp);
+     
+        //
+        // Now try a duplicate...
+        try {
+            permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action");
+            fail("Expected CommunityPolicyException") ;
+            }
+        catch (CommunityPolicyException ouch)
+            {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            }
+        
+    }
+    
+    
+    /**
+     * Check we can delete a permission.
      *
      */
     public void testDelValidPermission()
@@ -233,7 +279,7 @@ public class PermissionManagerTest
         {
         log.debug("") ;
         log.debug("----\"----") ;
-        log.debug("PermissionManagerTest:testGetValidPermission()") ;
+        log.debug("PermissionManagerTest:testDelValidPermission()") ;
         GroupData gd = groupManager.testGetValidGroupData();
         assertNotNull("Null group",gd);
         ResourceData rd = resourceManager.testGetValidResourceData();
@@ -243,4 +289,67 @@ public class PermissionManagerTest
         
         assertTrue(permissionManager.delPermission(rd.getIdent(),gd.getIdent(),"test-action"));
     }
+    
+    
+    /**
+     * Check we fall over trying to delete a non-existent permission.
+     * First we ensure we can still add a permission so there is a valid situation to
+     * start with.
+     *
+     */
+    public void testDelNonExistentPermission()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PermissionManagerTest:testDelNonExistentPermission()") ;
+        GroupData gd = groupManager.testGetValidGroupData();
+        assertNotNull("Null group",gd);
+        ResourceData rd = resourceManager.testGetValidResourceData();
+        assertNotNull("Null resource",rd);
+        permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action");
+        //permissionManager.delPermission(rd.getIdent(),gd.getIdent(),"test-action");
+        
+        //
+        // Now try to delete a non existing permission...
+        try {
+            permissionManager.delPermission(rd.getIdent(),gd.getIdent(),"test-action-1") ;
+            fail("Expected CommunityPolicyException") ;
+            }
+        catch (CommunityPolicyException ouch)
+            {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            }
+
+    }
+    
+    
+    /**
+     * Check we can get a list of permissions.
+     *
+     */
+    public void testGetPermissionsList()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("PermissionManagerTest:testGetPermissionsList()") ;
+        GroupData gd = groupManager.testGetValidGroupData();
+        assertNotNull("Null group",gd);
+        ResourceData rd = resourceManager.testGetValidResourceData();
+        assertNotNull("Null resource",rd);
+        permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action-1");
+        permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action-2");
+        permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action-3");
+        permissionManager.addPermission(rd.getIdent(),gd.getIdent(),"test-action-4");
+        
+        // Try accessing the permissions as an array...      
+        Object permissions[] = permissionManager.getPermissions() ;
+        assertNotNull("Null policy permissions", permissions ) ;
+        
+        //Should now check to see they are valid...
+    }
+    
+    
 }

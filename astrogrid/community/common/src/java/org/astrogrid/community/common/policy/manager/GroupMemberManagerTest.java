@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/GroupMemberManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/12 16:08:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupMemberManagerTest.java,v $
+ *   Revision 1.3  2005/08/12 16:08:47  clq2
+ *   com-jl-1315
+ *
+ *   Revision 1.2.80.1  2005/07/26 11:30:19  jl99
+ *   Tightening up of unit tests for the server subproject
+ *
  *   Revision 1.2  2004/11/22 13:03:04  jdt
  *   Merges from Comm_KMB_585
  *
@@ -160,7 +166,7 @@ public class GroupMemberManagerTest
         }
 
     /**
-     * Check we can create a valid Group.
+     * Check we can create a valid Group Member.
      *
      */
     public void testCreateValid()
@@ -180,7 +186,39 @@ public class GroupMemberManagerTest
     }
     
     /**
-     * Check we can create a valid Group.
+     * Check we get duplicates rejected...
+     * 
+     */
+    public void testCreateDuplicate()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testCreateDuplicate()") ;
+        
+        String accountId = this.accountManager.testGetValidAccountData().getIdent();
+        String groupId = this.groupManager.testGetValidGroupData().getIdent() ;
+        //
+        // Try creating an initial group membership.
+        assertNotNull("Null groupmember",
+            groupMemberManager.addGroupMember( accountId, groupId )
+            ) ;
+        
+        // Now try the duplicate...
+        try {
+            groupMemberManager.addGroupMember( accountId, groupId ) ;
+            fail("Expected CommunityPolicyException") ;
+        }
+        catch( CommunityPolicyException ouch ) {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+        }
+            
+    }
+    
+    
+    /**
+     * Check we can get a list of Group Members.
      *
      */
     public void testGetGroupMembers()
@@ -248,7 +286,7 @@ public class GroupMemberManagerTest
         }
 
     /**
-     * Try deleting a valid Group.
+     * Try deleting a valid Group member.
      *
      */
     public void testDeleteValid()
@@ -275,4 +313,38 @@ public class GroupMemberManagerTest
         // Check that the two objects represent the same Group.
         assertEquals("Different identifiers", created, deleted) ;
         }
+    
+    /**
+     * Try deleting a non-existent Group member.
+     *
+     */
+    public void testDeleteNonExistent()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerTest:testDeleteNonExistent()") ;
+        
+        // First of all ensure we can still create...
+        AccountData ad = this.accountManager.testGetValidAccountData();
+        GroupData gd = this.groupManager.testGetValidGroupData();
+        GroupMemberData created = groupMemberManager.addGroupMember(
+                    ad.getIdent(),
+                    gd.getIdent());
+
+        assertNotNull("Null groupmember",created) ;
+        
+        // Now try to delete a non-existent group membership...
+        try {
+            GroupMemberData deleted = groupMemberManager.delGroupMember(ad.getIdent()+ "123456789",gd.getIdent());
+            fail("Expected CommunityPolicyException") ;
+        }
+        catch( CommunityPolicyException ouch ) {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+        }
+        
+        }
+    
+    
     }

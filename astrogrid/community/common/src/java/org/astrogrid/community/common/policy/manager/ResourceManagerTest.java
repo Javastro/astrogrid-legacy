@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/ResourceManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/22 13:03:04 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/12 16:08:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerTest.java,v $
+ *   Revision 1.5  2005/08/12 16:08:47  clq2
+ *   com-jl-1315
+ *
+ *   Revision 1.4.80.1  2005/07/26 11:30:19  jl99
+ *   Tightening up of unit tests for the server subproject
+ *
  *   Revision 1.4  2004/11/22 13:03:04  jdt
  *   Merges from Comm_KMB_585
  *
@@ -157,6 +163,33 @@ public class ResourceManagerTest
             created.getIdent(),
             found.getIdent()
             ) ;
+        }
+    
+    /**
+     * Check we can get a list of resources
+     *
+     */
+    public void testGetResources()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerTest:testGetResources()") ;
+        //
+        // Create some resources.
+        ResourceData created01 = this.resourceManager.addResource() ;
+        assertNotNull( "Null resource", created01 ) ;
+        ResourceData created02 = this.resourceManager.addResource() ;
+        assertNotNull( "Null resource", created02 ) ;
+ 
+        //
+        // Try getting a list
+        Object found[] = this.resourceManager.getResources() ;
+        assertNotNull(
+            "Null resource array",
+            found
+            ) ;
+ 
         }
     
     /**

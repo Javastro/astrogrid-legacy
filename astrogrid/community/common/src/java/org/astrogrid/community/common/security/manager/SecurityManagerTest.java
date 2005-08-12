@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/manager/SecurityManagerTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/12 16:08:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerTest.java,v $
+ *   Revision 1.8  2005/08/12 16:08:47  clq2
+ *   com-jl-1315
+ *
+ *   Revision 1.7.110.1  2005/07/26 11:30:19  jl99
+ *   Tightening up of unit tests for the server subproject
+ *
  *   Revision 1.7  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -159,6 +165,54 @@ public class SecurityManagerTest
                 )
             ) ;
         }
+    
+    
+    /**
+     * Check we cannot set a password for non-existent account.
+     *
+     */
+    public void testSetPasswordForFalseAccount()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityManagerTest.testSetPasswordForFalseAccount()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(
+            createLocal(TEST_ACCOUNT).toString()
+            ) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Check that we can set a password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Everything ok so far.
+        // Can we upset the applecart?...
+        try {
+            securityManager.setPassword( "false-account", TEST_PASSWORD ) ;
+            fail( "Expected some exception here. Not sure what.") ;
+        }
+        catch( Exception ouch ) {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
+        }
+
+        
+        }
+    
+    
+    
 
     /**
      * Check we can change an account password.

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/policy/manager/Attic/GroupManagerTestCase.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/12 16:08:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerTestCase.java,v $
+ *   Revision 1.5  2005/08/12 16:08:47  clq2
+ *   com-jl-1315
+ *
+ *   Revision 1.4.110.1  2005/07/26 11:30:19  jl99
+ *   Tightening up of unit tests for the server subproject
+ *
  *   Revision 1.4  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -67,9 +73,12 @@ public class GroupManagerTestCase
         this.setDatabaseManager(
             new DatabaseManagerImpl(config)
             ) ;
-        this.setGroupManager(
-            new PolicyManagerImpl(config)
-            ) ;
+        
+        PolicyManagerImpl pmi = new PolicyManagerImpl(config) ;
+        this.setGroupManager( pmi ) ;
+        
+        this.setAccountManager( pmi ) ;
+        this.setMemberManager( pmi ) ;
         //
         // Reset our database tables.
         this.resetDatabase() ;

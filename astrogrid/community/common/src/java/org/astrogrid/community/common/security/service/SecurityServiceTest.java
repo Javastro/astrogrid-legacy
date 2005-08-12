@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/08/12 16:08:47 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceTest.java,v $
+ *   Revision 1.9  2005/08/12 16:08:47  clq2
+ *   com-jl-1315
+ *
+ *   Revision 1.8.110.1  2005/07/26 11:30:19  jl99
+ *   Tightening up of unit tests for the server subproject
+ *
  *   Revision 1.8  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -31,6 +37,7 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 import java.rmi.RemoteException ;
+import java.rmi.server.UID;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.manager.AccountManager ;
@@ -40,7 +47,12 @@ import org.astrogrid.community.common.security.manager.SecurityManager ;
 
 import org.astrogrid.community.common.service.CommunityServiceTest ;
 
+import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException ;
+import org.astrogrid.community.common.exception.CommunityServiceException;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
+import org.astrogrid.community.common.ivorn.CommunityIvornParser;
+import org.astrogrid.store.Ivorn;
 
 /**
  * A JUnit test case for our SecurityService interface.
@@ -220,7 +232,53 @@ public class SecurityServiceTest
             token.isValid()
             ) ;
         }
+    
+    
+    /**
+     * Check an Account password.
+     *
+     */
+    public void testCheckBadPassword()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.testCheckBadPassword()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(
+            createLocal(TEST_ACCOUNT).toString()
+            ) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Setup our test password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Check we can validate the password.
+        SecurityToken token = null ;
+        
+        try {
+            token = securityService.checkPassword( account.getIdent(), TEST_PASSWORD + "bad" ) ;
+            fail( "Expected CommunitySecurityException." ) ;
+        }
+        catch( CommunitySecurityException ouch ) {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
+        }
+ 
+        }
 
+    
     /**
      * Check that we can validate a SecurityToken.
      *
@@ -337,6 +395,135 @@ public class SecurityServiceTest
             "Original token still valid",
             original.isValid()
             ) ;
+        }
+    
+    
+    /**
+     * Check that we can validate a SecurityToken.
+     *
+     */
+    public void testCheckFalseToken()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.testCheckFalseToken()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(
+            createLocal(TEST_ACCOUNT).toString()
+            ) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Setup our test password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Check we can validate our password.
+        SecurityToken original = securityService.checkPassword(
+            account.getIdent(),
+            TEST_PASSWORD
+            ) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "NULL original token",
+            original
+            ) ;
+        //
+        // Check that the token has the right account.
+        assertEquals(
+            "Token has wrong account",
+            account.getIdent(),
+            original.getAccount()
+            ) ;
+        //
+        // Check that the token is valid.
+        assertTrue(
+            "Token is not valid",
+            original.isValid()
+            ) ;
+        //
+        // Check that we can validate our token
+        SecurityToken response = securityService.checkToken(original) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "NULL response token",
+            response
+            ) ;
+        //
+        // Check that the token has the right account.
+        assertEquals(
+            "Token has wrong account",
+            account.getIdent(),
+            response.getAccount()
+            ) ;
+        //
+        // Check that the token is valid.
+        assertTrue(
+            "Token is not valid",
+            response.isValid()
+            ) ;
+        //
+        // Check that the two tokens have different values.
+        checkNotEqual(
+            "Token has same value",
+            original.getToken(),
+            response.getToken()
+            ) ;
+        //
+        // Check that the two tokens are not equal.
+        checkNotEqual(
+            "Token are equal",
+            original,
+            response
+            ) ;
+        //
+        // Check that the original is no longer valid.
+        try {
+            securityService.checkToken(original) ;
+            fail("Expected CommunitySecurityException") ;
+            }
+        catch (CommunitySecurityException ouch)
+            {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
+            }
+        catch (RemoteException ouch)
+            {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
+            }
+        
+        //
+        // Everything is normal so far.
+        // Can we upset the applecart?...
+        CommunityIvornParser 
+        	ident = new CommunityIvornParser( account.getIdent() ) ;
+        SecurityToken falseToken = createToken( ident ) ;
+        falseToken.setStatus( SecurityToken.VALID_TOKEN ) ;
+        SecurityToken falseResponse = null ;
+        try {
+            falseResponse = securityService.checkToken(falseToken) ;
+            fail( "Expected CommunitySecurityException" ) ;
+        }
+        catch ( CommunitySecurityException ouch ) {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
+        }
+        
         }
 
     /**
@@ -470,5 +657,104 @@ public class SecurityServiceTest
             original.isValid()
             ) ;
         }
+    
+    
+    
+    /**
+     * Check that we cannot split a false SecurityToken.
+     *
+     */
+    public void testSplitFalseToken()
+        throws Exception
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("SecurityServiceTest.testSplitFalseToken()") ;
+        //
+        // Setup our test account.
+        AccountData account = accountManager.addAccount(
+            createLocal(TEST_ACCOUNT).toString()
+            ) ;
+        assertNotNull(
+            "addAccount returned null",
+            account
+            ) ;
+        //
+        // Setup our test password.
+        assertTrue(
+            "setPassword returned false",
+            securityManager.setPassword(
+                account.getIdent(),
+                TEST_PASSWORD
+                )
+            ) ;
+        //
+        // Check we can validate our password.
+        SecurityToken original = securityService.checkPassword(account.getIdent(), TEST_PASSWORD) ;
+        //
+        // Check that we got a token.
+        assertNotNull(
+            "NULL original token",
+            original
+            ) ;
+        //
+        // Check that the token has the right account.
+        assertEquals(
+            "Token has wrong account",
+            account.getIdent(),
+            original.getAccount()
+            ) ;
+        //
+        // Check that the token is valid.
+        assertTrue(
+            "Token is not valid",
+            original.isValid()
+            ) ;
+        
+        //
+        // Everything OK so far.
+        // Can we upset the applecart?...
+        CommunityIvornParser ident = new CommunityIvornParser( account.getIdent() ) ;
+        SecurityToken falseToken = createToken( ident ) ;
+        falseToken.setStatus( SecurityToken.VALID_TOKEN ) ;
+        Object[] array = null ;
+        try {
+            array = securityService.splitToken( falseToken, SPLIT_COUNT) ;
+            fail( "Expected CommunitySecurityException" ) ;
+        }
+        catch ( CommunitySecurityException ouch ) {
+            log.debug("Caught expected Exception") ;
+            log.debug("Exception : " + ouch) ;
+            log.debug("Class     : " + ouch.getClass()) ;
+        }
+
+        }
+    
+    
+    private SecurityToken createToken(CommunityIvornParser account)
+    throws CommunityServiceException, CommunityIdentifierException
+    {
+   //
+    // Create a new UID.
+    UID uid = new UID() ;
+    //
+    // Create an Ivorn for the token.
+    Ivorn ivorn = CommunityAccountIvornFactory.createLocal(
+        uid.toString()
+        ) ;
+    //
+    // Issue a new Security token to the account.
+    SecurityToken token = new SecurityToken(
+        account.getAccountIdent(),
+        ivorn.toString()
+        ) ;
+    //
+    // Mark the token as valid.
+    token.setStatus(SecurityToken.VALID_TOKEN) ;
+    //
+    // Return the new token.
+    log.debug(" SecurityServiceImpl.createToken() Token : " + token) ;
+    return token ;
+    }
     }
 
