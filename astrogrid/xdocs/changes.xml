@@ -35,13 +35,14 @@
         </release>
         <release version="(Undertest)">
 			   	
-			<action dev="jl" type="fix"><em>Branch: com-jl-1315</em>
-				Extended coverage of community unit tests in server subproject
-			</action> 
+			
     		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
             
         </release>
         <release version="HEAD">
+			<action dev="jl" type="fix"><em>Branch: com-jl-1315</em>
+				Extended coverage of community unit tests in server subproject
+			</action> 
 			<action dev="pjn3" type="fix" issue="1307"><em>Branch: pjn_portalWF_1307</em>
 				Can delete empty multiple cardinality parameter values
 			</action> 
