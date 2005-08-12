@@ -23,7 +23,7 @@
 			      basedir="${basedir}"
 			      goals="astrogrid-deploy-artifact"
 			      ignoreFailures="false"
-			      includes="${maven.multiproject.includes}"
+			      glob="*/project.xml"
 			      />
 
 	</goal>
@@ -33,7 +33,7 @@
 			      basedir="${basedir}"
 			      goals="astrogrid-build-artifact"
 			      ignoreFailures="false"
-			      includes="${maven.multiproject.includes}"
+			      glob="*/project.xml"
 			      />
 	</goal>
 
