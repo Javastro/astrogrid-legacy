@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: NodeInformation.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,15 +17,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Bean that summarizes the properties of a myspace resouce (a file or folder)
+/** Bean that summarizes the properties of a myspace resource (a file or folder)
+ * <p>
+ * <tt>getId()</tt> will return a myspace resouce locator - an ivorn of form 
+ * <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#<i>File-Path</i></tt>
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Aug-2005
+  * @xmlrpc returned as a struct, with keys corresponding to bean names
+  * @see org.astrogrid.acr.astrogrid.Myspace
  *
  */
 public class NodeInformation extends AbstractInformation {
 
-    /** Construct a new NodeMetadata
-     * @todo also got 'contentLocation' and 'contentId' - do I want to expose these? 
-     */
+
     public NodeInformation(URI node,Long size,Calendar createDate,Calendar modifyDate, Map attributes, boolean file, URI contentLocation) {
         super(node);
         this.size = size == null ? 0 : size.longValue();
@@ -43,37 +46,50 @@ public class NodeInformation extends AbstractInformation {
     private final Map attributes;
     private final URI contentLocation;
 
-    /** access other metadata attributes of this node */
+    /** access other metadata attributes of this node 
+     * @return a map containing key-value pairs of other metadata about this resource
+     * @xmlrpc key will be 'attributes', type will be 'struct'*/
     public Map getAttributes() {
         return this.attributes;
     }
-    /** access the creation date for this node */
+    /** access the creation date for this node 
+     * @return object representing creation date
+     * @xmlrpc key will be <tt>createDate</tt>, type will be 'date'*/
     public Calendar getCreateDate() {
         return this.createDate;
     }
-    /** access the modification date for this node */
+    /** access the modification date for this node 
+     * @return object representing modification date
+     * @xmlrpc key will be <tt>modifyDate</tt>, type will be 'date'*/
     public Calendar getModifyDate() {
         return this.modifyDate;
     }
  
-    /** access the size of this resource */
+    /** access the size of this resource 
+     * @return size in bytes of this resource
+     * @xmlrpc key will be <tt>size</tt>, type will be 'int' - beware of exceeding max size.*/
     public long getSize() {
         return this.size;
     }
     
-    /** true if this resource is a file */
+    /**  Check whether this resource is a file
+     * @return true if this resource is a file 
+     * @xmlrpc key will be <tt>file</tt>, type will be 'boolean'*/
     public boolean isFile() {
         return file;
     }
     
-    /** true if this resource is a folder */
+    /** Check whether this resource is a folder
+     * @return true if this resource is a folder 
+     * @xmlrpc key will be <tt>folder</tt>, type will be 'boolean'*/
     public boolean isFolder() {
         return !file;
     }
     
-    /** access the identifier of the filestore that holds the content of this resource.
+    /** access the name of the filestore that holds the data of this resource.
      * 
-     * @return registy identifier - may be null in case of a folder, or a file with no content.
+     * @return a registy identifier - ivorn - may be null in case of a folder, or a file with no content.
+     * @xmlrpc key will be <tt>contentLocation</tt>, type will be 'string'
      */
     public URI getContentLocation() {
         return contentLocation;
@@ -103,6 +119,9 @@ public class NodeInformation extends AbstractInformation {
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.2  2005/08/12 08:45:16  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

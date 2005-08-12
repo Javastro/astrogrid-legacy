@@ -1,4 +1,4 @@
-/*$Id: ResourceChooser.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ResourceChooser.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,13 @@ package org.astrogrid.acr.dialogs;
 
 import java.net.URI;
 
-/** Resource Chooser Dialog - generalisation of the 'open/save file' browser, that also allows a myspace resource, or arbitrary URL to be entered.
+/**Service Interface to the  Resource Chooser Dialoge 
+ * - a generalisation of the 'open/save file' browser, that also allows a myspace resource, or arbitrary URL to be selected
+ * <p>
+ * <img src="doc-files/myspacechooser.png">
+ * <p>
+ * @service  dialogs.resourceChooser
+ * @see org.astrogrid.acr.astrogrid.Myspace
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
  *
  */
@@ -21,23 +27,26 @@ public interface ResourceChooser {
     /** show the resource chooser, and block until user selects.
      * 
      * @param title title for the dialogue - e.g.'choose file to open'
-     * @param enableMySpace - if true, display the myspace tab. if false, don't display this.
-     * @return a URI of the selected resource, or null if the user cancelled.
+     * @param enableMySpace - if true, enable the myspace tab. if false, don't display this.
+     * @return URI of the selected resource, or null if the user cancelled.
      */
     URI chooseResource(String title, boolean enableMySpace);
 
-    /**
-     * @param title
-     * @param enableMySpace
-     * @param enableLocalFile
-     * @param enableURI
-     * @return
+    /** fully-configurable resource chooser - a generalization of {@link #chooseResource}
+     * @param title title for the dialogue
+     * @param enableMySpace if true, enable the myspace tab
+     * @param enableLocalFile if true, enable the local file tab
+     * @param enableURI if true, enable the 'enter a URL' tab
+     * @return the URI of the selected resource, or null if the user cancelled
      */
     URI fullChooseResource(String title, boolean enableMySpace, boolean enableLocalFile, boolean enableURI);
 }
 
 /* 
  $Log: ResourceChooser.java,v $
+ Revision 1.2  2005/08/12 08:45:15  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

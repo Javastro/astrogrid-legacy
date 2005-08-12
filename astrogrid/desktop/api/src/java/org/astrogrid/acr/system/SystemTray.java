@@ -1,4 +1,4 @@
-/*$Id: SystemTray.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: SystemTray.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,46 @@
  **/
 package org.astrogrid.acr.system;
 
-/** Interface to ACR icon in the system tray.
+/**  Service Interface to the ACR icon in the Desktop system tray 
+ * <p>
+ * can display popup alert messages in the notification area, and control the progress indicator.
+ * <p>
+ * Only supported on some operating systems - windows and some flavours of unix. If not supported on the current OS,
+ * {@link org.astrogrid.acr.builtin.ACR#getService(Class)} will throw a {@link org.astrogrid.acr.NotFoundException} when attempting to retreive this service.
+ * @service system.systemtray
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Jun-2005
  *
  */
 public interface SystemTray {
+    
+    /** Display a popup message with the os-local 'error' presentation
+     * @param caption popup title
+     * @param message text of the message
+     */
     void displayErrorMessage(String caption,String message);
+    /** Display a popup message with the os-local 'info' presentation
+     * @param caption popup title
+     * @param message text of the message
+     */
     void displayInfoMessage(String caption, String message);
+    /** Display a popup message with the os-local 'warning' presentation
+     * @param caption popup title
+     * @param message text of the message
+     */    
     void displayWarningMessage(String caption,String message);
     
+    /** change the tray icon to indicate ' communication in progress' */
     public void startThrobbing();
+    /** change the tray icon to indicate 'communication finished' */
     public void stopThrobbing();
 
 }
 
 /* 
  $Log: SystemTray.java,v $
+ Revision 1.2  2005/08/12 08:45:15  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

@@ -1,4 +1,4 @@
-/*$Id: Shutdown.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Shutdown.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,14 @@
 **/
 package org.astrogrid.acr.builtin;
 
-/** Interface to a component that will shut down the system
+/** Interface to a service that will shut down the ACR server
+ * @service builtin.shutdown
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
- *
+ 
  */
 public interface Shutdown {
     
-    /** bring the whole system to a graceful halt */
+    /** bring the whole ACR system to a graceful halt */
     public void halt();
 
 }
@@ -24,6 +25,9 @@ public interface Shutdown {
 
 /* 
 $Log: Shutdown.java,v $
+Revision 1.2  2005/08/12 08:45:16  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

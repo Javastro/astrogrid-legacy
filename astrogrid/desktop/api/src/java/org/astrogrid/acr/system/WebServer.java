@@ -1,4 +1,4 @@
-/*$Id: WebServer.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: WebServer.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,27 +11,40 @@
 package org.astrogrid.acr.system;
 
 
-/** Interface into the ACR web server
+/** Service Inteterface to the web-server component of ACR
+ * <p>
+ * The web-server provides the HTML and XMLRPC interfaces into the ACR.
+ * This interface provides only informational methods, useful for working out how to connect to the webserver. 
+ * It provides no way of administering the server or deploying new servlets.
+ * @service system.webserver
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
 public interface WebServer  {
-    /** key that ACR is accessible from servlet context by 
+    /** key that ACR is accessible from servlet context by
+     *  
      * */
     String ACR_CONTEXT_KEY = "module-registry";
 
-    
+    /** get the root url of the the HTML interface.
+     * <p>
+     * Append <tt>xmlrpc</tt> to this root url to access the XMLRPC interface 
+     * @return a url of form <tt>http://<i>machine</i>:<i>getPort()</i>/<i>getKey</i>/</tt>*/
+    public abstract String getUrlRoot();   
+    /** @see #getUrlRoot */
     public abstract String getKey();
 
-    /** get the port the webserver is running on */
+    /** @see #getUrlRoot() */
     public abstract int getPort();
     
-    /** get the root url of the context the HTML interface is running on */
-    public abstract String getUrlRoot();
+ 
 }
 
 /* 
  $Log: WebServer.java,v $
+ Revision 1.2  2005/08/12 08:45:15  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

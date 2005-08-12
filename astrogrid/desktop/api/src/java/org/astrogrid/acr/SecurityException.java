@@ -1,4 +1,4 @@
-/*$Id: SecurityException.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: SecurityException.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,10 @@
 **/
 package org.astrogrid.acr;
 
-/** exception thrown when user is not authenticated or no authorised to perform an operation
+/** The user is not authorized to perform this operation
+ * 
+ * <p>
+ * e.g. user is attempting a valid operation, but lackes the permissions to do it (e.g. read a myspace file not owned by them)
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2005
  *
  */
@@ -50,6 +53,9 @@ public class SecurityException extends ACRException {
 
 /* 
 $Log: SecurityException.java,v $
+Revision 1.2  2005/08/12 08:45:15  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

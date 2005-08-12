@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Jobs.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,38 +19,63 @@ import org.w3c.dom.Document;
 
 import java.net.URI;
 
-/** Interface to the Job Execution Service
+/** Service Interface to the Distributed Workflow System (JES)
  * <p>
- * In particular an interface to a single JES server  - which is configured in the system properties for this application.
+ * For now, an interface to a single JES server  - which is configured in the system properties for the ACR
  * In future, JES servers should be registered, and a default server associated with a user in a community .
- * It may also be necessary to be able to browse a selection of job servers, and maybe aggregate a user's jobs from a set of servers. 
+ * It may also be necessary to be able to browse a selection of job servers, and maybe aggregate a user's jobs from a set of servers.
+ * <p>
+ * Each workflow submitted is assigned a globally-unique identifier. This takes the form of a URI, but should be treated as opaque - the structure is
+ * liable to change  once JES servers are registered.
+ * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/jes/userguide-architecture.html">Workflow Userguide</a> 
+ * @see <a href="http://wiki.astrogrid.org/bin/view/Astrogrid/JesScriptingFAQ">Workflow Scripting FAQ</a> 
+ * <br>
+ * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/Workflow.html">Workflow Schema-Documentation</a>
+ * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/ExecutionRecord.html">Execution Record Schema-Document</a>
+ * @see <a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">XSD Schemas</a>
+ * <br>
+ * @see <a href="doc-files/example-workflow.xml">Example workflow</a>
+ * @see <a href="doc-files/example-workflow-transcript.xml">Example execution transcript</a>
+ * @see <a href="doc-files/example-workflow-transcript.html">Html-formatted execution transcript</a>
+ * <br>
+ * @see org.astrogrid.acr.astrogrid.Applications Information about executing single applications
+ * @see org.astrogrid.acr.astrogrid.Myspace Information about distributed file storage
+ * <br>
+ * @see org.astrogrid.acr.ui.JobMonitor
+ * @see org.astrogrid.acr.ui.WorkflowBuilder
+ * @see org.astrogrid.acr.astrogrid.ExecutionInformation
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
- *
+ * @service astrogrid.jobs
  */
 public interface Jobs {
     /**
      * list the jobs for the current user 
-     * @return list of identifiers for the user's jobs.
+     * @return list of identifiers for the user's jobs (both current and completed jobs )
      * @throws ServiceException if an error occurs while talking to the server
      */   
     URI[] list() throws ServiceException;
     
     /** list summaries of the jobs for the current user 
-     * @throws ServiceException if an error occurs while talking to the server*/
+     * @return a beanful of information on each job
+     * @throws ServiceException if an error occurs while talking to the server
+     * @xmlrpc returns a struct. see {@link ExecutionInformation} for details of keys available.*/
     ExecutionInformation[] listFully() throws ServiceException;
 
     /** retrieve  the execution transcript for a job.
      * 
      * @param jobURN the identifier of the job to retrieve
-     * @return a workflow transcript  document
+     * @return a workflow transcript  document - A <tt>workflow</tt> document in
+     *  the <tt>http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace, annotated with execution information from the 
+     * <tt>http://www.astrogrid.org/schema/ExecutionRecord/v1</tt> namespace.
      * @throws ServiceException if an error occurs when connecting to the server.
      * @throws SecurityException if the user is not  permitted to access this job
      * @throws NotFoundException if this job could not be found
      * @throws InvalidArgumentException if the job identifier is malformed.
+     * @xmlrpc returns a xml document string
      */
      Document getJobTranscript(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
-  /** retrive information about a job.
+  /** retrive summary for a job
    * 
    * @param jobURN the identifier of the job to summarize
    * @return information about this job.
@@ -58,6 +83,7 @@ public interface Jobs {
      * @throws SecurityException if the user is not  permitted to access this job
      * @throws NotFoundException if this job could not be found
      * @throws InvalidArgumentException if the job identifier is malformed.
+     * @xmlrpc returns a struct. see {@link ExecutionInformation} for details of keys available. 
    */
     ExecutionInformation getJobInformation(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
@@ -73,7 +99,7 @@ public interface Jobs {
     void cancelJob(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
   
-    /** delete all record of a job
+    /** delete all record of a job from the job server
      * 
      * @param jobURN identifier of the job to delete 
      * @throws NotFoundException if the job could not be found
@@ -90,6 +116,7 @@ public interface Jobs {
      * @throws ServiceException if an error occurs while connecting to server
      * @throws SecurityException if the user is not permitted to submit this job
      * @throws InvalidArgumentException if the workflow document is invalid or malformed
+     * @xmlrpc pass the workflow parameter as a string
      */
     URI submitJob(Document workflow) throws ServiceException, SecurityException, InvalidArgumentException;
 
@@ -107,6 +134,9 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.2  2005/08/12 08:45:16  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

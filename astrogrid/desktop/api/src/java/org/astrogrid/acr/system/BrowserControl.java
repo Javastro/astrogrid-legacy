@@ -1,4 +1,4 @@
-/*$Id: BrowserControl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: BrowserControl.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,26 +16,47 @@ import org.astrogrid.acr.InvalidArgumentException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/** Display a resource in the system web browser
+/** Service Interface to the system webbrowser
  * 
- * @todo implement using JDIC, or for platforms that don't support thisimplement a browser control that fires off http://jrex.mozdev.org/ - java implementaiton of mozilla.
- *  - launch this as an optional plugin in jnlp.
+ * <p>
+ * Trivial interface to display a URL in the desktop's webbrowser (relies on this being correclty configured in java web start 
+ * console - mostly fine for windows, sometimes needs to be configured by hand on unixes.)
+ * @service system.browser
+
 
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  *
  */
 public interface BrowserControl {
+    /*
+     *  * @todo implement using JDIC, or for platforms that don't support thisimplement a browser control that fires off http://jrex.mozdev.org/ - java implementaiton of mozilla.
+     *  - launch this as an optional plugin in jnlp.
+     */
+    /**Display a page in the system webbrowser
+ * @param url URL of the resource to display
+ * @throws ACRException if the system webbrowser cannot be launched. Will not throw if the webbrowser then fails to 
+ * display the page
+ */
 
-    /** open an absolute url */
+    
     void openURL(URL url) throws ACRException;
-    /** open a url within the ACR webserver context 
-     * @throws MalformedURLException*/
+
+    /** Display a page from the internal ACR webserver in the system webbrowser
+     * @param relativeURL relative url from root of ACR webserver context
+     * @throws ACRException if the system webbrowser cannot be launched. Will not throw if the webbrowser then fails to 
+ * display the page
+     * @throws InvalidArgumentException if valid URL can't be build from parameter <tt>relativeURL</tt>
+     * @see WebServer#getUrlRoot()
+     */
     void openRelative(String relativeURL) throws ACRException, InvalidArgumentException;
 }
 
 
 /* 
 $Log: BrowserControl.java,v $
+Revision 1.2  2005/08/12 08:45:15  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

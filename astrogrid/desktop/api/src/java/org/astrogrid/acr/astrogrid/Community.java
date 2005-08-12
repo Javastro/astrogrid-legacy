@@ -1,4 +1,4 @@
-/*$Id: Community.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Community.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,17 +13,21 @@ package org.astrogrid.acr.astrogrid;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 
-/**  Interface to community service of astrogird - login and authentication.
+/** Service Interface to Astogrid identity and authentication system
+ * 
+ * <p>
+ * <img src="doc-files/login.png">
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
- *
+ * @service astrogrid.community
+ * @todo add methods to get username, homeIvorn, etc.
  */
 public interface Community {
 
-    /** login to astrogrid
+    /** login to astrogrid - identify yourself
      * 
-     * @param username 
-     * @param password
-     * @param community
+     * @param username user name
+     * @param password password for this user
+     * @param community community the user is registered with
      * @throws SecurityException if login fails due to incorrect credentials
      * @throws ServiceException if error occurs while communicating with server.
      */
@@ -33,16 +37,21 @@ public interface Community {
     /** log out of astrogrid */
     public abstract void logout();
 
-    /** returns true if logged in */
+    /** verify user is currently logged in
+     * 
+     * @return true if the user is logged in
+     */
     public abstract boolean isLoggedIn();
 
-    /** show the login dialogue, prompt the user for input, and then log in */
+    /** show the login dialogue to prompt the user for input, and then log in */
     public abstract void guiLogin();
     
-    /** add a listener, that will be notified when the user logs in or out */
+    /** register a listener, that will be notified when the user logs in or out 
+     * @xmlrpc method unavailable - callbacks not technically possible*/
     public void addUserLoginListener(UserLoginListener l) ;
     
-    /** remove a previously registered listener */
+    /** remove a previously registered listener
+     * @xmlrpc method unavailable - callbacks not technically possible */
     public void removeUserLoginListener(UserLoginListener l);
 
 
@@ -50,6 +59,9 @@ public interface Community {
 
 /* 
  $Log: Community.java,v $
+ Revision 1.2  2005/08/12 08:45:16  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

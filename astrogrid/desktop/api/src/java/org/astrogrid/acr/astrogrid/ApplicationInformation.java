@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,14 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.net.URI;
 
-/** bean that contains information about an application.
+/** Information Bean that contains information about an registered application
+ * <p>
+ * <tt>getId()</tt> will contain a registry identifier - see {@link org.astrogrid.acr.astrogrid.ResourceInformation} for
+ * definition
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
- *
+  * @xmlrpc returned as a struct, with keys corresponding to bean names
+ * @todo should this contain description too?
+ * @see org.astrogrid.acr.astrogrid.Applications
  */
 public class ApplicationInformation extends AbstractInformation{
 
@@ -31,13 +36,21 @@ public class ApplicationInformation extends AbstractInformation{
     private final String name;
     private final String[] interfaces;
 
-
-    public String[] getInterfaces() {
-        return this.interfaces;
-    }
+    /** access the human-friendly name of the application
+     * @return a string
+     * @xmlrpc key will be <tt>name</tt>
+     */
     public String getName() {
         return this.name;
     }
+    /** access the names of the interfaces this application supports
+     * @return an array of interface names
+     * @xmlrpc key will be <tt>interfaces</tt>, type will be array.
+     */
+    public String[] getInterfaces() {
+        return this.interfaces;
+    }
+
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[ApplicationInformation:");
@@ -59,6 +72,9 @@ public class ApplicationInformation extends AbstractInformation{
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.2  2005/08/12 08:45:16  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

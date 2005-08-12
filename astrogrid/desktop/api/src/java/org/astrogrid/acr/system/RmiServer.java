@@ -1,4 +1,4 @@
-/*$Id: RmiServer.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: RmiServer.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,27 @@
 **/
 package org.astrogrid.acr.system;
 
-/** Component that creates a java rmi service that exposes the modules in the acr 
+/** Service Interface to the  JavaRMI interface to the ACR
+ * <p>
+ * No management functions - just query methods.
+ * @service system.rmi
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
  *
  */
 public interface RmiServer {
-    /** information method - describes the port the rmi service is running on */
+    
+    /** Query which port the RMI server is running on
+     * @return the number of the network port
+     */
     int getPort();
 }
 
 
 /* 
 $Log: RmiServer.java,v $
+Revision 1.2  2005/08/12 08:45:15  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

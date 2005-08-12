@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool name="uk.ac.cam.ast/INT-WFS/images/CEA-application" interface="SIAP" 
+	xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1"
+    xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1"	>
+	<input>
+		<parameter name="POS">
+			<ns1:value>180.0,0.0</ns1:value>
+		</parameter>
+		<parameter name="SIZE">
+			<ns1:value>1.0</ns1:value>
+		</parameter>
+		<parameter name="FORMAT">
+			<ns1:value>image/fits</ns1:value>
+		</parameter>
+	</input>
+	<output>
+		<parameter name="IMAGES" indirect="true">
+			<ns1:value>ftp://user:pass@ftp.myserver.somewhere</ns1:value>
+		</parameter>
+	</output>
+</tool>

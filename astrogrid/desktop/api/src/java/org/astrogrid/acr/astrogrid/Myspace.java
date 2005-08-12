@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Myspace.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,14 +19,25 @@ import org.astrogrid.acr.ServiceException;
 import java.net.URI;
 import java.net.URL;
 
-/** Distributed Storage System
+/** Service Interface to Myspace - a distributed storage system, AstroGrid's implementation of VOSpace
+ * <p>
+ * All resources in myspace are uniquely identified by a myspace resource identifier - which is an URI of form
+ *  * <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#<i>File-Path</i></tt>. However, for convenience methods in this interface also accept an
+ * abridged form of reference - <tt>#<i>File-Path</i></tt> - this is resolved relative to the currently logged-in user. The abridged
+ * form is more concise, and means hard-coded file references can be avoided if needed.   
+ * 
+ * @see <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaGridAndWebServices#VO_Store_Proposal">IVOA VOStore</a>
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
- *
+  * @service astrogrid.myspace
+  * @see org.astrogrid.acr.ui.MyspaceBrowser
+  * @see org.astrogrid.acr.dialogs.ResourceChooser
+  * @see org.astrogrid.acr.astrogrid.NodeInformation
  */
 public interface Myspace {
-    /** retreive the uri of your home folder in myspace 
-     * 
-     * @return uri of the home folder
+    /** retreive the uri of the currently logged-in user's home folder in myspace 
+     * <p>
+     * Each user has a single root folder. this method returns the name of it.
+     * @return uri of the home folder - typically has form  <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#</tt>
      * @throws SecurityException if authentication / authorization fails
      * @throws ServiceException if error occurs calling the service
      * @throws NotFoundException if there is no home folder associated with the user
@@ -34,22 +45,24 @@ public interface Myspace {
     URI getHome() throws SecurityException, ServiceException, NotFoundException;
    /** verify whether a myspace resource exists
     * 
-    * @param ivorn uri to check
+    * @param ivorn uri to check (full or abridged form)
     * @return true if the resource exists
     * @throws ServiceException if error occurs calling the service
     * @throws SecurityException if the user is not permitted to inspect this ivorn (e.g. it is private to another user)
  * @throws InvalidArgumentException
+ * 
     */
     boolean exists(URI ivorn) throws ServiceException, SecurityException, InvalidArgumentException;
 
-    /** access metadata about a resource
+    /** access metadata about a myspace resource
      * 
      * @param ivorn resource to investigate
      * @return a beanful of information
      * @throws ServiceException if error occurs calling the service
      * @throws NotFoundException if this resource does not exist
      * @throws SecurityException it the user is not permitted to inspect this resource 
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException if the ivorn is malformed.
+     * @xmlrpc will return a map. see {@link NodeInformation} for available keys.
      */
     NodeInformation getNodeInformation(URI ivorn) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException;
 
@@ -60,6 +73,20 @@ public interface Myspace {
      * @throws ServiceException if error occurs calling the service
      * @throws SecurityException if the user is not permitted to create this resource.
      * @throws InvalidArgumentException if this resource already exists,,  or one of the parent resources already exists and is not a folder
+     * @example
+     *   <pre>
+     * import org.astrogrid.acr.*;
+     * import java.net.URI;
+     * import org.astrogrid.acr.astrogrid.Myspace;
+     * import org.astrogrid.acr.builtin.ACR
+     * Finder f = new Finder();
+     * ACR acr = f.find();
+     * Myspace ms = (Myspace)acr.getService(Myspace.class);
+     * URI file =new URI("#votable/a-new-file.vot");
+     * if (! ms.exists(file)) {
+     *    ms.createFile(file)
+     * }
+     * </pre>
      */
     public void createFile(URI ivorn) throws ServiceException, SecurityException, InvalidArgumentException;
     
@@ -116,7 +143,7 @@ public interface Myspace {
      */
     public URI getParent(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException;
     
-     /** list the names of the contents of a myspace folder   
+     /** list the names of the children (files and folders) of a myspace folder   
       * 
       * @param ivorn uri of the folder to inspect
       * @return an array of the names of the contents.
@@ -127,7 +154,7 @@ public interface Myspace {
       */
     String[] list(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
-    /** list the ivorns of the contents of a myspace folder   
+    /** list the identifiers of the children ( files and folders)  of a myspace folder   
      * 
      * @param ivorn uri of the folder to inspect
      * @return an array of the ivorns of the contents.
@@ -139,6 +166,9 @@ public interface Myspace {
    URI[] listIvorns(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
    
    /** refresh the information held on a myspace resource with the server
+    * <p>
+    * For performance, metadata about myspace resources is used in a LRU cache. This method forces the ACR to re-query the myspace server
+    * about this resource. 
  * @param ivorn resource to refresh
  * @throws SecurityException if the user is not permitted to inspect this resource
  * @throws ServiceException if an error occurs calling the service
@@ -184,6 +214,9 @@ URI rename(URI srcIvorn, String newName) throws NotFoundException, SecurityExcep
    URI move(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException, NotApplicableException;
 
    /** relocate this resource to another store.
+    * <p>
+    * The relocated file remains in the same position in the user's myspace filetree. However, this method moves the data associated with the 
+    * file from one filestore to another.
  * @param srcIvorn uri of the resource to relocate
  * @param storeIvorn uri of the store server to relocat to.
  * @throws NotFoundException if the resource or store server do not exist
@@ -191,6 +224,7 @@ URI rename(URI srcIvorn, String newName) throws NotFoundException, SecurityExcep
  * @throws ServiceException if an error occurs calling the service
  * @throws SecurityException if the user is not permitted to relocate this resource
  * @throws NotApplicableException if this resource is not a file - folders can't be relocated.
+ * @see #listAvailableStores()
  */
 void changeStore(URI srcIvorn, URI storeIvorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
 
@@ -209,7 +243,8 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
    
     
     /** read the content of a myspace resource directly .
-     * NB: not a good idea for large files. 
+     * <p>
+     * NB: not a good idea for large files. in this case use {@link #copyContentToURL(URI, URL) } or {@link #getReadContentURL(URI) }
      * @param ivorn resource to read
      * @return content of this resource (as a string)
      * @throws NotFoundException if this resource does not exist.
@@ -222,6 +257,8 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
     String read(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
     
     /** Write data to a myspace resource
+     * <p>
+     * NB : not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
      * @param ivorn resource to write to
      * @param content the data to write
      * @throws InvalidArgumentException is the resource is malformed
@@ -232,8 +269,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
     void write(URI ivorn, String content) throws InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
     
     
-    /** read the content of a muspace resource directly
-     * NB: not a good idea for large files.
+    /** read the content of a myspace resource directly
+     * <p>
+     * NB: not a good idea for large files. in this case use {@link #copyContentToURL(URI, URL) } or {@link #getReadContentURL(URI) }
      * @param ivorn resource to read
      * @return byte array of the contents of this resource
      * @throws NotFoundException if this resource does not exist.
@@ -246,6 +284,8 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
     
     
     /**Write data to a myspace resource
+     * <p>
+     * NB : not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
      * @param ivorn resource to write to
      * @param content the data to write
      * @throws InvalidArgumentException is the resource is malformed
@@ -263,11 +303,27 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      * @throws InvalidArgumentException if the resource is not a file
      * @throws ServiceException if an error occurs while calling the service
      * @throws SecurityException if the user is not permitted to read the contents of this resource
-     * @throws NotApplicableException if this resource cannot contain data - e.g. it is a folder     * 
+     * @throws NotApplicableException if this resource cannot contain data - e.g. it is a folder     
+     * @example
+     *   <pre>
+     * import org.astrogrid.acr.*;
+     * import java.net.URI;
+     * import org.astrogrid.acr.astrogrid.Myspace;
+     * import org.astrogrid.acr.builtin.ACR
+     * Finder f = new Finder();
+     * ACR acr = f.find();
+     * Myspace ms = (Myspace)acr.getService(Myspace.class);
+     * URI file =new URI("#results/datafile.vot");
+     * URL dataUrl = ms.getReadContentURL(file);
+     * InputStream is = dataUrl.openStream();
+     *   // read in data..
+     * </pre>     
      */
     URL getReadContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
 
     /** access a URL to which can be written the  contents (i.e. data) of a myspace resource
+     * <p>
+     * NB: this method is unreliable at present. use {@link #write(URI, String)}, {@link #writeBinary(URI, byte[])}, or {@link #copyURLToContent(URL, URI)} instead.
      * @param ivorn resource to write to
      * @return a url to  which the contents of the resource can be written
      * @throws NotFoundException if the resource does not exist
@@ -307,6 +363,7 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      * List the available filestores
      * @return an array of resource information
      * @throws ServiceException if an error occurs while retreiveing the list of stores
+     * @see #changeStore
      */
     ResourceInformation[] listAvailableStores() throws ServiceException;
 
@@ -314,6 +371,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.2  2005/08/12 08:45:16  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

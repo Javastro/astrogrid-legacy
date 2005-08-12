@@ -1,4 +1,4 @@
-/*$Id: ResourceInformation.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ResourceInformation.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,10 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
 
-/** Bean that summarizes the most useful bits of a registry entry
+/** Information Bean that summarizes the most useful bits of a registry entry
+ * <p>
+ * <tt>getId()</tt> will return a registry identifier - an ivorn of form <tt>ivo://<i>Authority-Id</i>/<i>Resource-Id</i></tt>
+ * @xmlrpc returned as a struct, with keys corresponding to bean names
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Aug-2005
  *
  */
@@ -33,15 +36,23 @@ public class ResourceInformation extends AbstractInformation {
     private final URL url;
     
     
-    /** access the description of this entry */
+    /** access the description of this entry 
+     * @return contents of the 'description' element from the registry entry
+     * @xmlrpc key is <tt>description</tt>*/
     public String getDescription() {
         return description;
     }
-/** access the title of this entry */
+/** access the title of this entry 
+ * @return contents of 'title' field of this registry entry
+ * @xmlrpc key is <tt>title</tt>
+ * */
     public String getTitle() {
         return title;
     }
-    /** access the endpoint URL for this entyr */
+    /** access the endpoint URL for this entry 
+     * @return the contents of the 'accessURL' element in the registry entry - the URL where this service
+     * may be accessed. Will be empty for registry resouces that aren't services (e.g. catalogues, people)
+     * @xmlrpc key will be <tt>accessURL</tt>. May not be present in cases where registry entry has not endpoint*/
     public URL getAccessURL() {
         return url;
     }
@@ -65,6 +76,9 @@ public class ResourceInformation extends AbstractInformation {
 
 /* 
 $Log: ResourceInformation.java,v $
+Revision 1.2  2005/08/12 08:45:16  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

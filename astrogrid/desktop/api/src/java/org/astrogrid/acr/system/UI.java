@@ -1,4 +1,4 @@
-/*$Id: UI.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: UI.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,11 @@ package org.astrogrid.acr.system;
 
 
 
-/** Main user interface component
+/** Service Interface to main user interface.
+ * <p>
+ * Show or Hide the main user interface, display messages in the status bar<p>
+ * <img src="doc-files/workbench.png">
+ * @service system.ui
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
  *
  */
@@ -24,10 +28,10 @@ public interface UI{
     /** hide the user interface - ACR server will continue to run */
     public void hide();
     
-    /** start the progress indicator throbbing */
+    /** change the activity icon to indicate 'communication in progress' */
     public void startThrobbing() ;
     
-    /** stop the progress indicator */
+    /** change the activity icon to indicate 'communication completed' */
     public void stopThrobbing();
     
     /** set the login indicator
@@ -45,6 +49,9 @@ public interface UI{
 
 /* 
  $Log: UI.java,v $
+ Revision 1.2  2005/08/12 08:45:15  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

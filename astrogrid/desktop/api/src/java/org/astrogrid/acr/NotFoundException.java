@@ -1,4 +1,4 @@
-/*$Id: NotFoundException.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: NotFoundException.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,10 @@
 **/
 package org.astrogrid.acr;
 
-/** thrown to signify something failed to be found.
+/** A required resource or service was not found
+ * 
+ * <p>
+ * e.g. a missing registry resource, or a non-existent muyspace file..
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Jul-2005
  *
  */
@@ -50,6 +53,9 @@ public class NotFoundException extends ACRException {
 
 /* 
 $Log: NotFoundException.java,v $
+Revision 1.2  2005/08/12 08:45:15  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

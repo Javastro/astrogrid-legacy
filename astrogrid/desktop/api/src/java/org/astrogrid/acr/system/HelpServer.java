@@ -1,4 +1,4 @@
-/*$Id: HelpServer.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: HelpServer.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,11 @@ package org.astrogrid.acr.system;
 
 import javax.swing.Action;
 
-/**beta - not to be used yet.
+/**Service Interface to in-program help
+ * <p>
+ * <b>Rough - not prooperly implemented or thought through yet</b>
+ * When completed, can be used to display context-sensitive help using the javahelp system.
+ * @service system.help
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
  * 
  */
@@ -32,6 +36,9 @@ public interface HelpServer {
 
 /* 
  $Log: HelpServer.java,v $
+ Revision 1.2  2005/08/12 08:45:15  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

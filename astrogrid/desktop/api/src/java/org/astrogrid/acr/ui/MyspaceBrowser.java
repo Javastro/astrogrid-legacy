@@ -1,4 +1,4 @@
-/*$Id: MyspaceBrowser.java,v 1.1 2005/08/11 10:15:01 nw Exp $
+/*$Id: MyspaceBrowser.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,21 +11,27 @@
 package org.astrogrid.acr.ui;
 
 
-/** A Basic Myspace Exploerer.
+/** Interface to the Myspace Browser gui
+ * <p>
+ * <img src="doc-files/filemanager.png">
+ * @service userInterface.myspaceBrowser
  * @todo add methods to open a particular location in myspace, force a refreshm and to dispose the exploer
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Apr-2005
- *
+ *@see org.astrogrid.acr.astrogrid.Myspace
  */
 public interface MyspaceBrowser {
-    /** show the exploerer */
+    /** show the explorer gui */
     public void show(); 
-    /** hide the explorer */
+    /** hide the explorer gui */
     public void hide();
 }
 
 
 /* 
 $Log: MyspaceBrowser.java,v $
+Revision 1.2  2005/08/12 08:45:15  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:01  nw
 finished split
 

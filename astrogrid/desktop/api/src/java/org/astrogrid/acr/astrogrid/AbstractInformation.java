@@ -1,4 +1,4 @@
-/*$Id: AbstractInformation.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: AbstractInformation.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,8 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.net.URI;
 
-/** Base class for all information beans returned by ACR.
+/** Abstract Base class for all information beans returned by ACR.
+ * @xmlrpc returned as a struct, with keys corresponding to bean names
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
  *
  */
@@ -28,13 +29,16 @@ public abstract class AbstractInformation implements Serializable {
     }
     
     protected final URI id;
-    /** unique identifier for the resource this bean provides information on */
+    /** access the unique identifier for the resource this bean provides information on 
+     * @return some form of URI - possibly an ivo:// form
+     * @xmlrpc structure key will be <tt>id</tt>
+     */
     public URI getId() {
         return this.id;
     }
 
     /**
-     * tests two information objects for equality - determined by equality of {@link #getId()}
+     * tests two information beans for equality - determined by equality of {@link #getId()}
         */
     public boolean equals(Object o) {
         if (this == o) {
@@ -65,6 +69,9 @@ public abstract class AbstractInformation implements Serializable {
 
 /* 
 $Log: AbstractInformation.java,v $
+Revision 1.2  2005/08/12 08:45:16  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

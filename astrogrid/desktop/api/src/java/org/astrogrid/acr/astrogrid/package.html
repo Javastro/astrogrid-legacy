@@ -1,8 +1,28 @@
 <html>
 <body>
 <h1>Astrogrid Module</h1>
-Contains interfaces to the components in the astrogrid module - that can be used to interact with the standard astrogrid services.
-Effort has been made to hde unnecessary complexity - hopefully the API to htese components is simple enough to be used from scripts / 3rd party
-applications without too much trouble.
+Interfaces to the components in the astrogrid module -which can be used to access AstroGrid services
+<p/>
+<img src="doc-files/astrogrid.png" />
+<p/>
+The available services are 
+<dl>
+	<dt>{@link org.astrogrid.acr.astrogrid.Community}</dt>
+	<dd>Authentication and Identifiy (Not shown above)</dd>
+	<dt>{@link org.astrogrid.acr.astrogrid.Registry}</dt>
+	<dd>Search for and resolve services and data sources</dd>
+	<dt>{@link org.astrogrid.acr.astrogrid.Myspace}</dt>
+	<dd>Read and write resources in distributed storage</dd>
+	<dt>{@link org.astrogrid.acr.astrogrid.Applications}</dt>
+	<dd>Search for and execute queries and applications</dd>
+	<dt>{@link org.astrogrid.acr.astrogrid.Jobs}</dt>
+	<dd>Manage distributed workflow execution</dd>
+</dl>
+
+<p/>
+Some methods of the above services return descriptions of astrogrid resources - jobs, servers, files, etc.
+These descriptions are represented as <b>information beans</b> that form the following inheritance hierarchy:
+<p/>
+<img src="doc-files/informations.png" />
 </body>
 </html>

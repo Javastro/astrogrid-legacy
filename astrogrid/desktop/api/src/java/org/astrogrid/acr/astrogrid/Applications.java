@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Applications.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,19 +21,49 @@ import org.w3c.dom.Document;
 import java.net.URI;
 import java.util.Map;
 
-/** Applications and query services - discover, execute, monitor.
+/** Service Interface to remote Compute and Data Query services - (CEA)
+ * 
+ * <p>
+ * The Common Execution Architecture provides a uniform way to describe and execute astronomical applications and data services on the VO.
+ * This interface provides methods to
+ * <ul>
+ * <li>Discover available applications
+ * <li>Build invocation documents containing the correct parameters
+ * <li>Submit invocation documents for execution on remote servers
+ * <li>Monitor progress and retreive results of execution
+ * </ul>
+ * 
+ * <p>
+ * Each new application invocation is assigned a new globally unique id. As with Job execution identifiers, they should be treated as opaque objects - the internal structure is still liable to change.
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
- *
+ * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/applications/design/CEADesignIVOANote.html">Common Execution Architecture - IVOA Proposal</a>
+ * <br>
+* @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/Workflow.html#element_tool">Tool Document Schema-Documentation</a>
+ * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameter">Value Parameter Element Schema-Documentation</a>
+ * @see <a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">XSD Schemas</a>
+ * <br>
+ * @see <a href="doc-files/run-app-demo.py">Calling CEA services - example python script</a>
+ * @see <a href="doc-files/runAppDemo.groovy">Calling CEA services - example groovy script</a>
+ * @see <a href="../dialogs/doc-files/example-tool.xml"> Example Tool Document</a>
+ * <br> 
+ * @see org.astrogrid.acr.ui.ApplicationLauncher
+ * @see org.astrogrid.acr.astrogrid.ApplicationInformation
+ * @see org.astrogrid.acr.dialogs.ToolEditor
+ * @see org.astrogrid.acr.astrogrid.ExecutionInformation
+ * @service astrogrid.applications
  */
 public interface Applications {
-    /** list names of applications 
-     * @return a list of the identifiers of available applications
+    /** list registered applications 
+     * @return a list of the registry identifiers of available applications
      * @throws ServiceException if error occurs while talking to server */
     URI[] list() throws ServiceException;
     
     /** list information about applications 
-     * @return an array details of the available applications
-     * @throws ServiceException if error occurs while talking to server */
+     * @return an array giving details of the available applications
+     * @throws ServiceException if error occurs while talking to server
+     * @xmlrpc will return an array of structs - see {@link ApplicationInformation} for details of keys
+     *  */
     ApplicationInformation[] listFully() throws ServiceException;
        
     /** get information for a specific application 
@@ -42,6 +72,7 @@ public interface Applications {
      * @throws ServiceException if error occurs when talking to the sever
      * @throws NotFoundException if this application could not be found
      * @throws InvalidArgumentException if the application name is malformed
+     * @xmlrpc returns a structure containing attributes of {@link ApplicationInformation}
      * */
     ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
    
@@ -51,52 +82,74 @@ public interface Applications {
      * @throws ServiceException if error occurs when talking to the sever
      * @throws NotFoundException if this application could not be found
      * @throws InvalidArgumentException if the application name is malformed
+     * @todo make more configurable.
      * */
     String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
     
  
-   /** Create a template tool document, suitable for calling this application 
+   /** Create a template tool document, suitable for invoking this application
+    * <p>
+    * Examines the registry entry for this application, and constructs a template document containing fields for the required input and output parameters. 
  * @param applicationName the application to create the template for
  * @param interfaceName interface of this application to create a template from.
  * @return a tool document. (xml form)
   * @throws ServiceException if error occurs when talking to the sever
      * @throws NotFoundException if this application could not be found
-     * @throws InvalidArgumentException if the application name is malformed*/
+     * @throws InvalidArgumentException if the application name is malformed
+     * @xmlrpc will return xml document as a string
+     * @see #createTemplateStruct(URI, String)
+     * @see #validate(Document)
+     * */
     Document createTemplateDocument(URI applicationName, String interfaceName)
             throws ServiceException, NotFoundException, InvalidArgumentException;
     
     
-    /** Create a template tool object, suitable for calling this application
+    /** Create a template tool object, suitable for invoking this application
      * <p>
-     * this method is provided for convenience of constructing calls in scripting languages with minimal
+     * 
+    * Examines the registry entry for this application, and constructs a template document containing fields for the required input and output parameters. 
+    * <p>
+     * This method is provided for convenience of constructing invocations in scripting languages with minimal
      * xml abilities. 
   * @param applicationName the application to create the template for
   * @param interfaceName interface of this application to create a template from.
   * @return a tool object (structure)
    * @throws ServiceException if error occurs when talking to the sever
       * @throws NotFoundException if this application could not be found
-      * @throws InvalidArgumentException if the application name is malformed*/
+      * @throws InvalidArgumentException if the application name is malformed
+      * @see #convertStructToDocument(Map)
+      * @see #validate(Document)
+      * */
      Map createTemplateStruct(URI applicationName, String interfaceName)
              throws ServiceException, NotFoundException, InvalidArgumentException;
    
      /** convert a tool document to a tool structure 
+      * <p>
+      * Translates an invocation document between two equvalent forms - a datastructure and a document
      * @param document a tool document
      * @return the equvalent tool structure
-     * @throws InvalidArgumentException if  document is malformed*/
+     * @throws InvalidArgumentException if  document is malformed
+     * @see #convertStructToDocument(Map)
+     * */
    Map convertDocumentToStruct(Document document) throws InvalidArgumentException ;
     
     
     /** convert a tool structure to the equivalent document 
+     * 
      * @param struct a tool structure
      * @return the equivalent tool document
-     * @throws InvalidArgumentException if structure cannot be converted to a document*/
+     * @throws InvalidArgumentException if structure cannot be converted to a document
+     * @see #convertDocumentToStruct(Document)
+     * */
    Document convertStructToDocument(Map struct) throws InvalidArgumentException ;
     
-  /**Validate a tool document against an application 
-                description 
+  /**Validate a tool document against the  application's description
+   * <p>
+   * Verifies that all required parameters are present.  
  * @param document tool document to validate
  * @throws ServiceException if fails to communicate with server
- * @throws InvalidArgumentException if document is invalid in some way*/
+ * @throws InvalidArgumentException if document is invalid in some way
+ * @see #createTemplateDocument(URI, String)*/
     void validate(Document document) throws ServiceException, InvalidArgumentException;
 
     /** Validate a tool document (referenced by url) against 
@@ -105,41 +158,50 @@ public interface Applications {
      * @param documentLocation location of a resource containing the tool document to validate
      * @throws ServiceException if fails to communicate with server.
      * @throws InvalidArgumentException if  document is invalid in some way
-     * @throws NotFoundException if document cannot be accessed*/
+     * @throws NotFoundException if document cannot be accessed
+     * @see #validate(Document)*/
     void validateStored(URI documentLocation)
             throws ServiceException, InvalidArgumentException, NotFoundException;
     
-    /** list services that support an application 
-     * @param applicationId application to search servers for.
+    /** list the CEA servers that provides a particular application 
+     * @param applicationId registry identifier of the application to search servers for.
      * @return list of registry summaries of cea servers that support this application
      * @throws ServiceException if fail to communicate with server
      * @throws NotFoundException if this application cannot be found
-     * @throws InvalidArgumentException if the appication id is malformed in some way.
-     * @throws ParserCo, nfigurationExcepti
-     * @throws TransformerExceptiononTransformerException*/
+     * @throws InvalidArgumentException if the appication id is malformed in some way.*/
     ResourceInformation[] listProvidersOf(URI applicationId) throws ServiceException, NotFoundException, InvalidArgumentException;
      
     
-    /** execute application 
+    /** Submit a tool (invocation) document for execution.
+     * <p>
+     * No particular CEA server is specified - the system will choose a suitable CEA server.
      * @param document tool document to execute
      * @return  a new unique execution id 
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
      * @throws NotFoundException if no provider of this application is found
-     * @throws InvalidArgumentException if the tool document is invalid in some way*/
+     * @throws InvalidArgumentException if the tool document is invalid in some way
+     * @see #submitStored(URI)
+     * @see #submitTo(Document, URI)
+     * */
     URI submit(Document document) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
     
-    /** execute application on named cea server 
+    /** Submit a tool document for execution  on a named CEA server 
      * @param document tool document to execute
-     * @param server cea server to execute on
+     * @param server CEA server to execute on
      * @return  a new unique execution id 
+     * @throws NotFoundException if the specified CEA server could not be found
      * @throws InvalidArgumentException if the tool document is malformed, or the server is inacessible.
      * @throws ServiceException  if an error occurs communicating with the server
      * @throws SecurityException if user is prevented from executing this application.
+     * @see #submitStored(URI)
+     * @see #submitStoredTo(URI, URI)
      * */
     URI submitTo(Document document, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException;
 
-    /** variant of {@link #submit} where tool document is referenced by URL 
+    /** variant of {@link #submit} where tool document is stored somewhere and referenced by URI 
+     * @param documentLocation pointer to tool document - may be file:/, http://, ftp:// or ivo:// (myspace) protocols 
+     * @return a new unique execution id
      * @throws InvalidArgumentException if the tool document is inacessible
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
@@ -148,6 +210,10 @@ public interface Applications {
      URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException ;
 
     /** variant of {@link #submitTo} where tool document is referenced by URL 
+     *      * @param documentLocation pointer to tool document - may be file:/, http://, ftp:// or ivo:// (myspace) protocols 
+     * @param server CEA server to execute on
+     * @return a new unique execution id
+     * @throws NotFoundException if the specified CEA server could not be found
      * @throws InvalidArgumentException if the tool document is inacessible or ther service is inacesssible
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
@@ -155,8 +221,8 @@ public interface Applications {
      * */
     URI submitStoredTo(URI documentLocation, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException ;
         
-    /** abort execution of an application 
-     * @param executionId id of execution to abort
+    /** cancel execution of an application 
+     * @param executionId id of execution to cancel
      * @throws NotFoundException if this application cannot be found.
      * @throws InvalidArgumentException if the execution id is malformed
      * @throws ServiceException if an error occurs while communicating with server
@@ -166,16 +232,19 @@ public interface Applications {
     
     /** get  information about an application execution
      * @param executionId id of application to query 
-     * @return summary of this exeuction
+     * @return summary of this execution
      * @throws ServiceException if error occurs communicating with the server
      * @throws NotFoundException if this application invocation cannot be found
      * @throws SecurityException if the user cannot access ths invocation
-     * @throws InvalidArgumentException if the invocation id is malformed in some way.*/
+     * @throws InvalidArgumentException if the invocation id is malformed in some way.
+     * @xmlrpc will return a struct containing keys documented in {@link ExecutionInformation}
+     * */
     ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException;
     
-    /** get results of the applicationi exeuction 
+    /** Retreive results of the application execution 
      * @param executionid id of application to query 
-     * @return results of this execution (name - value pairs)
+     * @return results of this execution (name - value pairs). Note that this will only be the actual results for <b>direct</b> output parameters. For output parameters specified as <b>indirect</b>, the value returned
+     * will be the URI pointing to the location where the results are stored.
      * @throws ServiceException if error occurs communicating with the server
      * @throws NotFoundException if this application invocation cannot be found
      * @throws SecurityException if the user cannot access ths invocation
@@ -187,6 +256,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.2  2005/08/12 08:45:16  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

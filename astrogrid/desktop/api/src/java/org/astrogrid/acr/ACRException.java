@@ -1,4 +1,4 @@
-/*$Id: ACRException.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ACRException.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,11 @@ package org.astrogrid.acr;
 
 import java.lang.reflect.Constructor;
 
-/** base exception type for all acr exceptions.
+/** Base exception type for all exceptions thrown by the ACR interface.
+ * 
+ * <p>
+ * This type is rarely thrown - usualy more specific subtypes are thrown. However, it's convenient to catch all exceptions in one place
+ * by matching against this type in a <tt>catch</tt> clause.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
  *
  */
@@ -34,7 +38,7 @@ public class ACRException extends Exception {
 
     /** Construct a new ACRException
      * @param cause - if cause is a standard exception (i.e. package is java.*), the embed it.
-     * otherwise, it's probably a custom exception that isn't available on the client side - in which case convert to standard exception.
+     * otherwise, it's probably a custom exception that isn't available on the client-rmi side - in which case it'll convert to standard exception, whille still preserving the text
      */
     public ACRException(Throwable cause) {
         
@@ -43,7 +47,9 @@ public class ACRException extends Exception {
 
     /** Construct a new ACRException
      * @param message
-     * @param cause
+ * @param cause - if cause is a standard exception (i.e. package is java.*), the embed it.
+     * otherwise, it's probably a custom exception that isn't available on the client-rmi side - in which case it'll convert to standard exception, whille still preserving the text
+        
      */
     public ACRException(String message, Throwable cause) {
         super(message, convertNonStandard(cause));
@@ -86,6 +92,9 @@ public class ACRException extends Exception {
 
 /* 
 $Log: ACRException.java,v $
+Revision 1.2  2005/08/12 08:45:16  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

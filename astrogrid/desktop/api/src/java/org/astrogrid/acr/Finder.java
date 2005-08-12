@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Finder.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,11 +31,25 @@ import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-/** Find or create a running instance of the ACR
+/** Find or create an ACR server, and return an interface to that service.
+ * 
+ * <p>
+      * first attempts to connect to a running instance using RMI, on a port defined in the file <tt>~/.acr-rmi-port</tt> (which is written by a running ACR instance<p>
+     * failing that, tries to create an external instance (will only work if running under java web start), and then connect to that using RMI<p>
+     * failing that, trys to create an instance internally (will only work if implementation classes are on classpath),<p>     
+     * the interface returned will either be a  rmi stub or direct instance, depending on how the ACR was found.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
- *
+ * @example
+ * <pre>
+ * import org.astrogrid.acr.builtin.ACR;
+ * import org.astrogrid.acr.Finder;
+ * Finder f = new Finder();
+ * ACR acr = f.find(); 
+ * </pre>
+ *@see org.astrogrid.acr.builtin.ACR
  */
 public class Finder {
+    /** Webstart URL for the ACR */
     public static final String ACR_JNLP_URL = "http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp";
     /**
      * Commons Logger for this class
@@ -49,11 +63,14 @@ public class Finder {
         super();
     }
     
-    /** find or create a running instance of the acr 
+    /** find or create a running ACR server
      * 
-     * first attempts to connect to a running instance, on a port defined in a configuration file.
-     * failing that, trys to create an instance internally,
-     * if this fails, will throws a NoAvailableACRException
+     * <p>
+     * first attempts to connect to a running instance, on a port defined in the file <tt>~/.acr-rmi-port</tt> (which is written by a running ACR instance<p>
+     * failing that, tries to create an external instance (will only work if running under java web start) and then connect to that using RMI<p>
+     * failing that, trys to create an instance internally (will only work if implementation classes are on classpath),<p>     
+     * @return an interface to the running ACR - depending on how connected will either be a direct instance or a remote stub - although this makes no difference to the consumer.
+     * @throws ACRException if all options fail
      * 
      * */
     public synchronized ACR find()  throws ACRException{
@@ -247,6 +264,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.2  2005/08/12 08:45:15  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

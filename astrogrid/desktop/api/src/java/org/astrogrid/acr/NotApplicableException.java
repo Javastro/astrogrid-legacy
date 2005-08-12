@@ -1,4 +1,4 @@
-/*$Id: NotApplicableException.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: NotApplicableException.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,10 @@
 **/
 package org.astrogrid.acr;
 
-/** thrown when an operation is attempted with invalid parameters / invalid state.
+/** An operation was attempted with invalid parameters or state.
+ * 
+ * <p>
+ * e.g. attempting to list the children of a file, instead of a directory.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2005
  *
  */
@@ -50,6 +53,9 @@ public class NotApplicableException extends ACRException {
 
 /* 
 $Log: NotApplicableException.java,v $
+Revision 1.2  2005/08/12 08:45:15  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

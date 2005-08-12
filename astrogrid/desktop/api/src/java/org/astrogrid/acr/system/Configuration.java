@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Configuration.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,12 @@ import org.astrogrid.acr.ACRException;
 
 import java.util.Map;
 
-/**Configuration component - allows other components (and the user) to set and retrieve key-value pairs, 
- * which are automatically persisted between executions.
+/**Service Interface to persistent configuration store
+ * <p>
+ * Allows the user / applications to set key-value pairs,  which are automatically persisted between executions.
+ * Useful for storing bits of state that should persist (e.g. window positions and sizes), plus configuration information (e.g. username, service endpoints)
+ * @service system.configuration
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
@@ -47,14 +51,14 @@ public interface Configuration {
    /** list the keys present in the store
     * 
     * @return an array of key names
- * @throws ACRException @todo
+ * @throws ACRException in unlikely case of the backing store being unreadable.
     */
     public abstract String[] listKeys() throws ACRException;
 
     /** list the contents of the store
      * 
      * @return a map of key-value pairs.
-     * @throws ACRException @todo
+     * @throws ACRException in unlikely case of the backing store being unreadable
      */
     public abstract Map list() throws ACRException;
 
@@ -66,6 +70,9 @@ public interface Configuration {
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.2  2005/08/12 08:45:15  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

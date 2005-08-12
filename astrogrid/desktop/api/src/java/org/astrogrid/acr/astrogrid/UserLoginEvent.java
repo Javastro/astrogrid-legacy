@@ -1,4 +1,4 @@
-/*$Id: UserLoginEvent.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: UserLoginEvent.java,v 1.2 2005/08/12 08:45:16 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,9 @@ package org.astrogrid.acr.astrogrid;
 
 import java.util.EventObject;
 
-/** event representing a user logging in or out.
+/** Event Object passed when the user logs in or out.
+ * @see org.astrogrid.acr.astrogrid.UserLoginListener
+ * @see org.astrogrid.acr.astrogrid.Community#addUserLoginListener(UserLoginListener)
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
  *
  */
@@ -38,6 +40,9 @@ public class UserLoginEvent extends EventObject {
 
 /* 
 $Log: UserLoginEvent.java,v $
+Revision 1.2  2005/08/12 08:45:16  nw
+souped up the javadocs
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

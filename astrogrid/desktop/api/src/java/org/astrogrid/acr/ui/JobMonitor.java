@@ -1,4 +1,4 @@
-/*$Id: JobMonitor.java,v 1.1 2005/08/11 10:15:01 nw Exp $
+/*$Id: JobMonitor.java,v 1.2 2005/08/12 08:45:15 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,22 +12,25 @@ package org.astrogrid.acr.ui;
 
 import java.net.URI;
 
-/** Job Monitor component - similar to the conventional print monitor
- * 
+/** Interface to the Job Monitor GUI
+ * <p>
+ * <img src="doc-files/monitor.png">
+ * @service userInterface.jobMonitor
  * @todo add methods to alter automatic refresh rate, and to dispose the job monitor
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Mar-2005
- *
+ *@see org.astrogrid.acr.astrogrid.Jobs
  */
 public interface JobMonitor {
-    /** show the job monitor */
+    /** show the job monitor window */
     public void show();
-    /** hide the job monitor */
+    /** hide the job monitor  window*/
     public void hide();
     // refresh the job list.
     /** manually refresh the job list */
     public void refresh();
-    /** Add an application identifier to be monitored.
-     * @param string
+    /** Add a new application to the monitor
+     * @param name user-friendly name of the app
+     * @param executionId identifier of the application     
      */
     public void addApplication(String name,URI executionId);
     /**
@@ -41,6 +44,9 @@ public interface JobMonitor {
 
 /* 
  $Log: JobMonitor.java,v $
+ Revision 1.2  2005/08/12 08:45:15  nw
+ souped up the javadocs
+
  Revision 1.1  2005/08/11 10:15:01  nw
  finished split
 
