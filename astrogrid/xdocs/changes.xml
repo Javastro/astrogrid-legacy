@@ -5,7 +5,11 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-			
+			<action dev="jdt" type="fix" issue="1336"><em>Branch: por_jdt_1336</em>
+				Added a warning to the installer that it must be run from the cmdline with
+                extra memory (thanks, cocoon!).  Also changed the default reg and jes to point
+                at the ones installed in Leicester.
+			</action>  			
 			<action dev="kmb" type="fix" issue="1323"><em>Branch: Common_KMB_1323</em>
 				1 file is changed on this branch (DomHelper) to look at the "*" namespace. if it does not find results for a element
                 with no namespace as a parameter.  Requires to be merged with Registry.
