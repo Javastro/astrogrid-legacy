@@ -233,7 +233,8 @@
           </td>
 
           <td nowrap="true">
-            <xsl:if test="@param-cardinality-min='0'">
+          <xsl:choose>
+            <xsl:when test="@param-cardinality-min='0'">
               <xsl:attribute name="style">cursor: help</xsl:attribute>                                    
               <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
               <xsl:attribute name="onMouseOver">this.T_TITLE='Delete: '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +                                                            
@@ -243,7 +244,23 @@
               <input type="checkbox">
                 <xsl:attribute name="name">param_delete#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
               </input>
-            </xsl:if>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:if test="@param-cardinality-max='0'">
+                <xsl:if test="@param-value = ''">
+                  <xsl:attribute name="style">cursor: help</xsl:attribute>                                    
+                  <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
+                  <xsl:attribute name="onMouseOver">this.T_TITLE='Delete: '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +                                                            
+                                      'Check this box to delete this parameter.  Leaving it blank passes an empty '+
+                                      'value which may have a different effect from no parameter at all.');
+                  </xsl:attribute>                                             
+                  <input type="checkbox">
+                    <xsl:attribute name="name">param_delete#<xsl:value-of select="$direction"/>#<xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+                  </input>
+                </xsl:if> 
+              </xsl:if>           
+            </xsl:otherwise>
+            </xsl:choose>            
           </td>
 
         </tr>
