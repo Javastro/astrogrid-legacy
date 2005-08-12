@@ -92,6 +92,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.BasicInfoPanel;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.dialogs.ScriptDialog;
 import org.astrogrid.desktop.modules.dialogs.ScriptPanel;
 import org.astrogrid.desktop.modules.dialogs.StepPanel;
 import org.astrogrid.desktop.modules.dialogs.TaskInfoPanel;
@@ -194,8 +195,16 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements org.astr
                             tree.setCellRenderer(new WorkflowTreeCellRenderer());
                             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
                             tree.addTreeSelectionListener(new WorkflowTreeSelectionListener());
-                            
-                            
+                            tree.addMouseListener(new MouseAdapter() {
+                            	public void mouseClicked(MouseEvent evt) {
+                            		if (evt.getClickCount() == 2 ) {
+                            			if (tree.getLastSelectedPathComponent() instanceof String ) {
+                            				ScriptDialog sd = new ScriptDialog(null, tree.getLastSelectedPathComponent());
+                            				sd.show();
+                            			}
+                            		}
+                            	}
+                            });                            
                             // show workflow panel and enable tabs for tree and doc view
                             tabbedPaneWF.setSelectedIndex(0);
                     	    tabbedPaneWF.setEnabledAt(0, true);
@@ -1369,13 +1378,20 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements org.astr
     			//jEditorPane.setCaretPosition(0);
     			//jEditorPane.setEditable(false);
     	        int lineCt = 1;
- 	            for (int i = 0; i < value.toString().length(); i++) {
- 	                if (value.toString().charAt(i) == '\n') {
- 	                    lineCt++; 
+    	        String text = value.toString();
+ 	            for (int i = 0; i < text.length(); i++) {
+ 	                if (text.charAt(i) == '\n') {
+ 	                    lineCt++;
+ 	 	                if (lineCt > 5 ) {
+ 	 	                	text = text.substring(0, i);
+ 	 	                	lineCt = 8;
+ 	 	                	text += "\n\n                                                  ----- Double click to view full script ------";
+ 	 	                	break;
+ 	 	                }
  	                }
  	            }
  	            JTextArea jta = new JTextArea(lineCt, 60);
- 	            jta.setText(value.toString());
+ 	            jta.setText(text);
     			JScrollPane pane = new JScrollPane(jta,
                         JScrollPane.VERTICAL_SCROLLBAR_NEVER,
                         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);    			

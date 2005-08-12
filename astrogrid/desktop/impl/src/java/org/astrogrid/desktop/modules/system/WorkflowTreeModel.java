@@ -10,23 +10,23 @@
  **/
 package org.astrogrid.desktop.modules.system;
 
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.Parfor;
 import org.astrogrid.workflow.beans.v1.Scope;
+import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 
 /**
  * tree model for Workflow.
@@ -94,6 +94,9 @@ public class WorkflowTreeModel implements TreeModel {
 		else if (parent instanceof Scope) {
 			i = 1;
 		}
+		else if (parent instanceof Script) {
+			i = 1;
+		}		
 		return i;
 	}
 
@@ -117,6 +120,9 @@ public class WorkflowTreeModel implements TreeModel {
 		else if (node instanceof Workflow) {
 			b = false;
 		}
+		else if (node instanceof Script) {
+			b = false;
+		}		
 		return b;
 	}
 
@@ -194,7 +200,11 @@ public class WorkflowTreeModel implements TreeModel {
 		else if (parent instanceof Then) {
 			Then t = (Then)parent;			
 			ob = t.getActivity();			
-		}				
+		}
+		else if (parent instanceof Script) {
+			Script s = (Script)parent;
+			ob = s.getBody();
+		}
 		return ob;
 	}
 
