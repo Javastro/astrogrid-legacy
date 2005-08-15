@@ -5,6 +5,9 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+    	<action dev="gtr" type="fix" issue="1337"><em>Branch: security-gtr-1337</em>. A major reworking of 
+    	astrogrid/security to use digital signatures. Dependencies have changed greatly and there are
+    	some new ones to be added to our Maven repository.</action>
 			<action dev="jdt" type="fix" issue="1336"><em>Branch: por_jdt_1336</em>
 				Added a warning to the installer that it must be run from the cmdline with
                 extra memory (thanks, cocoon!).  Also changed the default reg and jes to point
