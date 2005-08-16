@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.3 2005/08/12 12:42:05 nw Exp $
+/*$Id: Finder.java,v 1.4 2005/08/16 13:16:23 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,8 @@ import java.rmi.RemoteException;
      * failing that, tries to create an external instance (will only work if running under java web start), and then connect to that using RMI<p>
      * failing that, trys to create an instance internally (will only work if implementation classes are on classpath),<p>     
      * the interface returned will either be a  rmi stub or direct instance, depending on how the ACR was found.
+     * <p>
+     * No matter how the acr is found, the ACR returned is a singleton - it is stored in this class for simple access the next time
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
  * @example
  * <pre>
@@ -64,12 +66,13 @@ public class Finder {
     }
     
     /** find or create a running ACR server
-     * 
+     *      
      * <p>
      * first attempts to connect to a running instance, on a port defined in the file <tt>~/.acr-rmi-port</tt> (which is written by a running ACR instance<p>
      * failing that, tries to create an external instance (will only work if running under java web start) and then connect to that using RMI<p>
      * failing that, trys to create an instance internally (will only work if implementation classes are on classpath),<p>     
      * @return an interface to the running ACR - depending on how connected will either be a direct instance or a remote stub - although this makes no difference to the consumer.
+     * The instance returned is a singleton - i.e. all subsequent calls to {@link #find} will return the same object.
      * @throws ACRException if all options fail
      * 
      * */
@@ -265,6 +268,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.4  2005/08/16 13:16:23  nw
+doc fix
+
 Revision 1.3  2005/08/12 12:42:05  nw
 finished documentation effort.
 
