@@ -16,7 +16,8 @@
 	<item name="Webstart Application" href="astrogrid-desktop.jnlp"/>	
 	<item name="Sample Python Scripts" href="/python-scripts.zip"/>
 	<item name="Sample Perl Scripts" href="/perl-scripts.zip" />
-	<item name="ACR Interface Classes and Javadoc" href="acr-interface.tar.gz" />
+	<item name="Download ACR Interface" href="acr-interface.tar.gz" />
+	<item name="ACR Javadoc" href="http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html"/>
     </menu>
     <menu>
 	   <item name="Software Site"

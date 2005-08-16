@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: UIImpl.java,v 1.2 2005/08/16 13:19:31 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -316,6 +316,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         if (helpContentsMenuItem == null) {
             helpContentsMenuItem = new JMenuItem();
             helpContentsMenuItem.setText("Help Contents");
+            helpContentsMenuItem.setEnabled(false);
             helpContentsMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     help.showHelp();
@@ -431,6 +432,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
     
     public void show() {
         super.show();
+        super.repaint();
         requestFocus();
     }
 
@@ -1043,6 +1045,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.2  2005/08/16 13:19:31  nw
+fixes for 1.1-beta-2
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

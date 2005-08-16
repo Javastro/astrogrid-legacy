@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcSystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: MyspaceRpcSystemTest.java,v 1.2 2005/08/16 13:19:32 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -84,25 +85,36 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
         v.clear();
         v.add(ivorn.toString());
         try {
-           Map m = (Map)client.execute("astrogrid.myspace.getMetadata",v);
-           Calendar create =Calendar.getInstance();
-           Calendar modify = Calendar.getInstance();
-           create.setTime((Date)m.get("createDate"));
-           modify.setTime((Date)m.get("modifyDate"));           
-           return new NodeInformation(                   
-                   new URI((String)m.get("node"))
-                   ,new Long( ((Number)m.get("size")).longValue())
-                   ,create
-                   ,modify
-                   ,(Map)m.get("attributes")
-                   ,((Boolean)m.get("file")).booleanValue()  
-                   ,new URI((String)m.get("contentLocation"))
-                   );
+           Map m = (Map)client.execute("astrogrid.myspace.getNodeInformation",v);
+           return buildNodeInformation(m);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
   
+    /**
+     * @param m
+     * @return
+     * @throws URISyntaxException
+     */
+    private NodeInformation buildNodeInformation(Map m) throws URISyntaxException {
+        Calendar create =Calendar.getInstance();
+           Calendar modify = Calendar.getInstance();
+           URI contentLocation = m.containsKey("contentLocation") ? new URI((String)m.get("contentLocation")) : null;
+           create.setTime((Date)m.get("createDate"));
+           modify.setTime((Date)m.get("modifyDate"));           
+           return new NodeInformation(
+                   (String)m.get("name")
+                   ,new URI((String)m.get("id"))
+                   ,new Long( ((Number)m.get("size")).longValue())
+                   ,create
+                   ,modify
+                   ,(Map)m.get("attributes")
+                   ,((Boolean)m.get("file")).booleanValue()  
+                   ,contentLocation
+                   );
+    }
+
     public void createFile(URI ivorn) throws ServiceException, SecurityException, InvalidArgumentException {
         v.clear();
         v.add(ivorn.toString());
@@ -186,6 +198,21 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
         } 
     }
 
+    public NodeInformation[] listNodeInformation(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        v.clear();
+        v.add(ivorn.toString());
+        try {
+           List l = (List)client.execute("astrogrid.myspace.listNodeInformation",v);
+           NodeInformation[] result = new NodeInformation[l.size()];
+           for (int i = 0; i < l.size(); i++) {
+               result[i] =buildNodeInformation((Map)l.get(i));
+
+           }
+           return result;
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        } 
+    }
     public void refresh(URI ivorn) throws SecurityException, ServiceException, NotFoundException, InvalidArgumentException {
         v.clear();
         v.add(ivorn.toString());
@@ -368,11 +395,16 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
         }             
     }
 
+
+
 }
 
 
 /* 
 $Log: MyspaceRpcSystemTest.java,v $
+Revision 1.2  2005/08/16 13:19:32  nw
+fixes for 1.1-beta-2
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

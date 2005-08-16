@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.2 2005/08/16 13:19:32 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -152,6 +152,11 @@ public class MyspaceSystemTest extends TestCase {
         } catch (ACRException e) { // slightly loose test here - to allow xmlrpc tests to pass too.
             // expected
         }
+    }
+    
+    public void testListNodeInformation() throws Exception{
+        URI home = myspace.getHome();
+        NodeInformation[] ivorns = myspace.listNodeInformation(testDir);     
     }
 
     public void testReadWrite() throws Exception {
@@ -325,6 +330,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.2  2005/08/16 13:19:32  nw
+fixes for 1.1-beta-2
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

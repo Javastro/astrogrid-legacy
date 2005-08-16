@@ -59,13 +59,9 @@
 				<jxml:element name="related-content">
 					<jxml:attribute name="href">index.html</jxml:attribute>
 					<jxml:element name="title">Release Notes</jxml:element>
-				</jxml:element>
+				</jxml:element>		
 				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://software.astrogrid.org/userdocs/workbench.html</jxml:attribute>
-					<jxml:element name="title">Home Page</jxml:element>
-				</jxml:element>			
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/api/apidocs/index.html</jxml:attribute>
+					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html</jxml:attribute>
 					<jxml:element name="title">ACR API Docs</jxml:element>
 				</jxml:element>					
 				<jxml:element name="related-content">

@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: VospaceImpl.java,v 1.2 2005/08/16 13:19:32 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -537,6 +537,30 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
     }    
     
+    
+
+    public NodeInformation[] listNodeInformation(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        FileManagerNode node =  node(ivorn);
+        NodeInformation[] result = new NodeInformation[node.getChildCount()];
+        try {
+            NodeIterator i = node.iterator();
+            for (int ix = 0; ix < result.length &&  i.hasNext(); ix++) {
+                FileManagerNode child = i.nextNode();
+                result[ix] = getNodeInformation(cvt(child.getIvorn()));
+            }
+            return result;
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);            
+        } catch (NodeNotFoundFault e) {
+            throw new ServiceException(e);
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+
+    }
+
     /**
      * @throws NotFoundException
      * @throws SecurityException
@@ -547,7 +571,7 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     public NodeInformation getNodeInformation(URI ivorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
             FileManagerNode node = node(ivorn);
             org.astrogrid.filemanager.client.NodeMetadata md = node.getMetadata();
-            return new NodeInformation(ivorn,md.getSize(),md.getCreateDate(),md.getModifyDate(),md.getAttributes(),node.isFile(),
+            return new NodeInformation(node.getName(),ivorn,md.getSize(),md.getCreateDate(),md.getModifyDate(),md.getAttributes(),node.isFile(),
                     node.isFile() ? md.getContentLocation(): null);        
     }
 
@@ -751,6 +775,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.2  2005/08/16 13:19:32  nw
+fixes for 1.1-beta-2
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

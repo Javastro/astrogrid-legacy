@@ -12,7 +12,7 @@
 				<link text="Browse ACR Javadoc"
 					icon="info_obj.gif"
 					tooltipText="Online documentation of the ACR interface"
-					url="http://www.astrogrid.org/maven/docs/HEAD/desktop/acr/apidocs/index.html" />								
+					url="http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html" />								
 				<link text="Commandline Utilities and Examples in Python"
 					icon="source_py.png"
 					toolTipText="A collection of commandline scripts - useful in their own right, and examples of python scripting of the workbench"

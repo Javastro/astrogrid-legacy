@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Main.java,v 1.2 2005/08/16 13:19:32 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ public class Main extends BuildInprocessACR implements Startable  {
                     String key = c.getKey(UIImpl.START_HIDDEN_KEY);
                     if (key == null || !  Boolean.valueOf(key).equals(Boolean.TRUE)){
                         UI ui = (UI)acr.getService(UI.class);
-                        ui.show();
+                        ui.show();                        
                     }
                     } catch (ACRException e) {
                         logger.warn("Problems displaying the ui - maybe running in headless mode");
@@ -93,6 +93,9 @@ public class Main extends BuildInprocessACR implements Startable  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.2  2005/08/16 13:19:32  nw
+fixes for 1.1-beta-2
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

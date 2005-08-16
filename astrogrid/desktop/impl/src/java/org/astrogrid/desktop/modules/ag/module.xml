@@ -329,6 +329,20 @@
 				<description>Ivorn of node</description>
 			</parameter>
 		</method>
+		<method name="listNodeInformation">
+			<description>list metainformation for the contents of a myspace folder</description>
+			<return>
+				<description>an array of details of the child 
+					nodes</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</return>
+			<parameter name="ivorn">
+				<description>Ivorn of node</description>
+			</parameter>
+		</method>		
 		<method name="refresh">
 			<description>refresh the definition of a node with the myspace
 				server</description>
