@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.3 2005/08/16 13:14:42 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,21 +28,13 @@ public class ApplicationInformation extends AbstractInformation{
      * 
      */
     public ApplicationInformation(URI id,String name,String[] interfaces) {
-        super(id);
-        this.name = name;
+        super(name,id);
         this.interfaces = interfaces;
     }
     
-    private final String name;
     private final String[] interfaces;
 
-    /** access the human-friendly name of the application
-     * @return a string
-     * @xmlrpc key will be <tt>name</tt>
-     */
-    public String getName() {
-        return this.name;
-    }
+
     /** access the names of the interfaces this application supports
      * @return an array of interface names
      * @xmlrpc key will be <tt>interfaces</tt>, type will be array.
@@ -72,6 +64,9 @@ public class ApplicationInformation extends AbstractInformation{
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.3  2005/08/16 13:14:42  nw
+added 'name' as a common field for all information objects
+
 Revision 1.2  2005/08/12 08:45:16  nw
 souped up the javadocs
 

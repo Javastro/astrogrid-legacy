@@ -1,4 +1,4 @@
-/*$Id: ExecutionInformation.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: ExecutionInformation.java,v 1.3 2005/08/16 13:14:42 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,8 +27,7 @@ public class ExecutionInformation extends AbstractInformation {
      * 
      */
     public ExecutionInformation(URI id, String name, String description, String status, Date startTime,Date finishTime) {
-        super(id);
-        this.name = name;
+        super(name,id);
         this.description = description;
         this.status = status;
         this.startTime = startTime;
@@ -48,7 +47,6 @@ public class ExecutionInformation extends AbstractInformation {
     /** constant value for {@link #getStatus()} */
     public static final String UNKNOWN = "UNKNOWN";
 
-    protected final String name;
     protected final String description;
     protected final String status;
     protected final Date startTime;
@@ -56,13 +54,7 @@ public class ExecutionInformation extends AbstractInformation {
     //@todo later add messages.
 
  
-    /** name of the execution 
-     * @xmlrpc key will be <tt>name</tt>
-     * @return a string
-     */
-    public String getName() {
-        return this.name;
-    }
+
     
     /** description of the execution 
      * @return a string
@@ -111,6 +103,9 @@ public class ExecutionInformation extends AbstractInformation {
 
 /* 
 $Log: ExecutionInformation.java,v $
+Revision 1.3  2005/08/16 13:14:42  nw
+added 'name' as a common field for all information objects
+
 Revision 1.2  2005/08/12 08:45:16  nw
 souped up the javadocs
 

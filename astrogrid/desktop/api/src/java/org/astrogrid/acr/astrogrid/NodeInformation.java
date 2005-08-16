@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: NodeInformation.java,v 1.3 2005/08/16 13:14:42 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,8 +29,8 @@ import java.util.Map;
 public class NodeInformation extends AbstractInformation {
 
 
-    public NodeInformation(URI node,Long size,Calendar createDate,Calendar modifyDate, Map attributes, boolean file, URI contentLocation) {
-        super(node);
+    public NodeInformation(String name,URI node,Long size,Calendar createDate,Calendar modifyDate, Map attributes, boolean file, URI contentLocation) {
+        super(name,node);
         this.size = size == null ? 0 : size.longValue();
         this.createDate = createDate;
         this.modifyDate = modifyDate;
@@ -119,6 +119,9 @@ public class NodeInformation extends AbstractInformation {
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.3  2005/08/16 13:14:42  nw
+added 'name' as a common field for all information objects
+
 Revision 1.2  2005/08/12 08:45:16  nw
 souped up the javadocs
 
