@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: Myspace.java,v 1.3 2005/08/16 13:14:24 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -165,6 +165,17 @@ public interface Myspace {
      */
    URI[] listIvorns(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
    
+
+   /** list the node information objects for the children ( files and folders)  of a myspace folder   
+    * 
+    * @param ivorn uri of the folder to inspect
+    * @return an array of the node information objects.
+    * @throws ServiceException if an error occurs calling the service
+    * @throws SecurityException if the user is not permitted to inspect this resource
+    * @throws NotFoundException if <code>ivorn</code> does not exist
+    * @throws InvalidArgumentException if <code>ivorn</code> is not a folder
+    */
+   NodeInformation[] listNodeInformation(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
    /** refresh the information held on a myspace resource with the server
     * <p>
     * For performance, metadata about myspace resources is used in a LRU cache. This method forces the ACR to re-query the myspace server
@@ -371,6 +382,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.3  2005/08/16 13:14:24  nw
+ added missing method
+
  Revision 1.2  2005/08/12 08:45:16  nw
  souped up the javadocs
 
