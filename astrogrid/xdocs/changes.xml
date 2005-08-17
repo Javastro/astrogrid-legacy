@@ -43,7 +43,11 @@
         <release version="(Undertest)">
 			   	
 			
-    		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.</action>
+    		<action dev="gtr" type="add" issue="1230"> Documentation for astrogrid/applications/commandline.
+    			Branch apps-gtr-1230 is incompatible with the changes from issue 1317 and should be abandoned.
+    			Branch apps-gtr-1230-2 has the same new documentation and configuration changes as the former
+    			branch but is branched after issue 1317 was merged; this one is OK to merge with head.
+    		</action>
             
         </release>
         <release version="HEAD">
