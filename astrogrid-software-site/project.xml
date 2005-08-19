@@ -1,6 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid-software-site/Attic/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2005/08/19 14:39:28 $</cvs:date>
+    | <cvs:version>$Revision: 1.20 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.20  2005/08/19 14:39:28  dave
+    |   Fixed dependency on main project maven-base.
+    |   Added some comments.
+    |
+    | </cvs:log>
+    |
+    +-->
 <project>
-<!--pointless comment-->
+
+    <!--+
+        | This project is not part of the core astrogrid source tree.
+        | Which means we don't have access to the maven=base sub-project.
     <extend>${basedir}/../maven-base/project.xml</extend>
+        +-->
     <artifactId>astrogrid-software-site</artifactId>
     <name>AstroGrid</name>
     <shortDescription>AstroGrid Software Site</shortDescription>

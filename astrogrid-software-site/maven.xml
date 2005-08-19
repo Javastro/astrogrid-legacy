@@ -1,7 +1,35 @@
-<?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.7 2005/06/08 14:36:50 nw Exp $ -->
-<!-- extension maven script -->
-<project  xmlns:deploy="deploy"  xmlns:j="jelly:core">
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid-software-site/Attic/maven.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2005/08/19 14:39:28 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:log>
+    |   $Log: maven.xml,v $
+    |   Revision 1.8  2005/08/19 14:39:28  dave
+    |   Fixed dependency on main project maven-base.
+    |   Added some comments.
+    |
+    | </cvs:log>
+    |
+    | Extension maven script
+    |
+    +-->
+<project
+    xmlns:deploy="deploy"
+    xmlns:j="jelly:core"
+    default="astrogrid-rebuild-site"
+    >
+
+    <!--+
+        | Default goal, clean and build the site.
+        +-->
+    <goal name="astrogrid-rebuild-site">
+        <attainGoal name="clean" />
+        <attainGoal name="astrogrid-build-site"/>
+    </goal>
+
         <!-- astrogrid goals for nightly build -->
         <goal name="astrogrid-clean" prereqs="clean"/>
         <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
