@@ -8,3 +8,4 @@ velocity.log
 .checkstyle
 junit*.properties
 bin
+javadoc*
