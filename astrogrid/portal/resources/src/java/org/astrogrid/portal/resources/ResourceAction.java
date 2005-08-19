@@ -32,14 +32,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
 
 import org.astrogrid.util.DomHelper;
-import org.astrogrid.registry.common.WSDLBasicInformation;
+//import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.store.Ivorn;
 
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.11 $Date:
- * @version $Name:  $Revision: 1.11 $Date:
+ * @version $Name:  $Revision: 1.12 $Date:
+ * @version $Name:  $Revision: 1.12 $Date:
  */
 public class ResourceAction extends AbstractAction {
 

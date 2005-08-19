@@ -40,7 +40,7 @@ import org.astrogrid.registry.RegistryException;
 import org.astrogrid.config.Config;
 
 import org.astrogrid.util.DomHelper;
-import org.astrogrid.registry.common.WSDLBasicInformation;
+//import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.store.Ivorn;
 
 import java.io.InputStream;

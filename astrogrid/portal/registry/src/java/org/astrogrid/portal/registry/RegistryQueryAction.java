@@ -36,7 +36,7 @@ import org.astrogrid.registry.RegistryException;
 import org.astrogrid.config.Config;
 
 import org.astrogrid.util.DomHelper;
-import org.astrogrid.registry.common.WSDLBasicInformation;
+//import org.astrogrid.registry.common.WSDLBasicInformation;
 import org.astrogrid.store.Ivorn;
 
 import org.exolab.castor.xml.*;
@@ -215,9 +215,11 @@ public class RegistryQueryAction extends AbstractAction
             String selItemOperation = null;
             String selItemValue = null;
             String selJoinType = null;
+            //String sqlQuery = "Select * from Registry where "
             String query = "<query><selectionSequence>" +
             "<selection item='searchElements' itemOp='EQ' value='Resource'/>";
             query += "<selectionOp op='$and$'/>";
+            //sqlQuery += 
             selItem = request.getParameter("selectitem0");
             selItemOperation = request.getParameter("selectitemop0");
             selItemValue = request.getParameter("selectitemvalue0");
@@ -245,7 +247,8 @@ public class RegistryQueryAction extends AbstractAction
 //               VODescription vo = rs.submitQueryString(query);
 //               if (DEBUG_FLAG) printDebug( method, "VO Description = " + vo);
                //Document doc = rs.submitQuery( query );
-               Document doc = rs.submitQuery( query );
+               //Document doc = rs.submitQuery( query );
+               Document doc = null;
                if ( DEBUG_FLAG) printDebug( method, "doc = " + doc );
                 //                     XMLUtils.DocumentToString(doc) );
                //if ( doc == null )
@@ -278,13 +281,6 @@ public class RegistryQueryAction extends AbstractAction
                      }//if              
                   }//if
                   */
-            }catch(NoResourcesFoundException nrfe) {
-               //nrfe.printStackTrace();
-               errorMessage = "Your query produced no results";
-            }catch(RegistryException re) {
-               //re.printStackTrace();
-               errorMessage = "A error occurred in processing your query " +
-                              "with the Registry.";
             }catch(Exception e) {
                e.printStackTrace();
             }
