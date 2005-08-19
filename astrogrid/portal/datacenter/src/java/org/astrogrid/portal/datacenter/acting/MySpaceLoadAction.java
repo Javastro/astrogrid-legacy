@@ -218,21 +218,22 @@ public class MySpaceLoadAction extends AbstractAction {
         String authorityID = resourceId.substring(0,resourceId.indexOf(SEPARATOR)) ;
         String resourceKey = resourceId.substring(resourceId.indexOf(SEPARATOR)+1,resourceId.lastIndexOf(SEPARATOR)) ;
         table = resourceId.substring( resourceId.lastIndexOf(SEPARATOR)+1 ).trim() ;
+        String identifier = "ivo://" + authorityID + "/" + resourceKey ;  
  
-        tableQuery = "<query>\n<selectionSequence>"
-                   + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>"
-                   + "\n<selectionOp op='$and$'/>"
-                   + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
-                   + "\n<selectionOp op='AND'/>"
-                   + "\n<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"   
-                   + "\n<selectionOp op='AND'/>"        
-                   + "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>"
-                   + "\n</selectionSequence></query>";
-        String sqlQuery = "Select * from Registry where vr:identifier='" + authorityID + "' and ";
-        sqlQuery += " vr:content/vr:type='Catalog' ";
-        
+//        tableQuery = "<query>\n<selectionSequence>"
+//                   + "\n<selection item='searchElements' itemOp='EQ' value='Resource'/>"
+//                   + "\n<selectionOp op='$and$'/>"
+//                   + "<selection item='vr:Identifier/vr:AuthorityID' itemOp='EQ' value='"+authorityID+"'/>"
+//                   + "\n<selectionOp op='AND'/>"
+//                   + "\n<selection item='vr:Identifier/vr:ResourceKey' itemOp='EQ' value='"+resourceKey+"'/>"   
+//                   + "\n<selectionOp op='AND'/>"        
+//                   + "<selection item='vr:Type' itemOp='EQ' value='Catalog'/>"
+//                   + "\n</selectionSequence></query>";
+        // String sqlQuery = "Select * from Registry where vr:identifier='" + authorityID + "' and vr:content/vr:type='Catalog' ";
+        String sqlQuery = "Select * from Registry where vr:identifier='" + identifier + "' and vr:content/vr:type='Catalog' ";
+       // Select * from Registry where vr:identifier = 'ivo://irsa.ipac/COSMOS' and vr:content/vr:type  = 'Catalog'
                                               
-        logger.debug( "tableQuery = " + tableQuery);                              
+        // logger.debug( "tableQuery = " + tableQuery);                              
         RegistryService rs = RegistryDelegateFactory.createQuery();
             
         //String adqlString = Sql2Adql.translateToAdql074(tableQuery);
@@ -268,3 +269,4 @@ public class MySpaceLoadAction extends AbstractAction {
   }
   
 }
+
