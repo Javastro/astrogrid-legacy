@@ -51,6 +51,9 @@
             
         </release>
         <release version="HEAD">
+			<action  dev="kmb" type="fix"><em>Branch: Portal_KMB_1276_2 </em>
+				Fix portal to fit new registry client-lite.
+			</action>	
 			<action dev="jl" type="fix"><em>Branch: com-jl-1315</em>
 				Extended coverage of community unit tests in server subproject
 			</action> 
