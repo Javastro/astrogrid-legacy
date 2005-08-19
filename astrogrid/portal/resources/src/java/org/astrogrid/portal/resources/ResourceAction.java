@@ -38,8 +38,8 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.12 $Date:
- * @version $Name:  $Revision: 1.12 $Date:
+ * @version $Name:  $Revision: 1.13 $Date:
+ * @version $Name:  $Revision: 1.13 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
@@ -558,6 +558,7 @@ trace("xxxxx sql: " + sqlQuery);
            */
            Document doc = rs.search(adqlString);
 
+          //debug("CCCCCCCCCCCCCCCCCC"+org.astrogrid.util.DomHelper.DocumentToString(doc));
           //create the results and put it in the request.
            resultlist = createList( doc );
            count = "" + resultlist.size();
@@ -566,9 +567,12 @@ trace("xxxxx sql: " + sqlQuery);
 		   session.setAttribute( PARAM_RESULT_COUNT, count );           
 
           // Not sure if this is req'd, but do we really want to retrieve everything from registry?
-          if (resultlist.size() <= 100 ) {
-            session.setAttribute("resultDoc", doc);			
+          if (resultlist.size() == 0) {
+            session.setAttribute("resultDoc", null);
           }
+          else if (resultlist.size() <= 100 ) {
+            session.setAttribute("resultDoc", doc);			
+          }          
           else 
           {
 			session.setAttribute( ERROR_INFO_PARAMETER, "Your search will return more than 100 entries, please narrow it" ) ;
@@ -596,9 +600,13 @@ trace("xxxxx sql: " + sqlQuery);
      */
     private ArrayList createList( Document doc ) {
        //NodeList nodes = doc.getDocumentElement().getChildNodes();
+       if(doc.getElementsByTagNameNS("*","Resource").getLength() == 0)
+         return new ArrayList();
+       
        NodeList nodes = doc.getDocumentElement().getElementsByTagNameNS("*","Resource");
-       return listNodes( nodes );
-    }
+       return listNodes( nodes );    
+
+}
     private ArrayList listNodes( NodeList nl ) {
       ArrayList al = new ArrayList();
       for(int i = 0; i < nl.getLength(); i++) {
