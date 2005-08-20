@@ -8,6 +8,11 @@ The Portal is an html-based web front end offering access to many
 AstroGrid services.  For information see the portal web pages at <a href="http://www.astrogrid.org/maven/docs/HEAD/portal">http://www.astrogrid.org/maven/HEAD/portal</a>.
 <br>
 Download more AstroGrid software from <a href="http://software.astrogrid.org">http://software.astrogrid.org</a>
+<br><br>
+<b>Important: </b>This installer requires more than the default 64Mb of memory provided by the Java Virtual Machine.  Unless
+	you have changed your default heap size you should not run the installer by double-clicking, but from the command line with:
+	<br>
+	<code>java -Xmx256m -jar (installer.jar)</code>
 <h2>Prerequisites</h2>
 <ol>
   <li>A connection to the Internet</li>
@@ -15,15 +20,11 @@ Download more AstroGrid software from <a href="http://software.astrogrid.org">ht
 webapp enabled</li>
   <li>Username and password for the Manager webapp</li>
   <li>The end-point of a live AstroGrid Registry (for
-example: <tt>http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</tt>
+example: <tt> http://galahad.star.le.ac.uk:8080/galahad-registry/</tt>
 )</li>
-  <li>Java jdk 1.4 (probably present if you are reading this!)</li>
+  <li>Java jdk 1.4+ (probably present if you are reading this!)</li>
 </ol>
-<h2>Windows Users</h2>
-Important: if your Tomcat server is running under Windows, the Portal
-will not uninstall completely.  To complete the uninstallation,
-shut down tomcat and delete the astrogrid-portal folder from
-%CATALINA_HOME%/webapps,<br>
+
 <h2>License</h2>
 This software is released under the Academic Free License.
 

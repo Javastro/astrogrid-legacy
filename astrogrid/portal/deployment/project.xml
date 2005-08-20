@@ -19,26 +19,6 @@
         </resources>
     </build>
     <dependencies>
-		<dependency>
-      <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-pal-query</artifactId>
-            <version>${astrogrid.pal.version}</version>
-            <type>jar</type>
-        </dependency>	  
-     <!-- for writing XML -->
-       <dependency>
-          <artifactId>astrogrid-xml</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.xml.stable}</version>
-       </dependency>	  				
-       <dependency>
-          <artifactId>astrogrid-utils</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.utils.stable}</version>
-		   <properties>
-            	<war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
         <dependency>
             <groupId>catalina-ant</groupId>
             <artifactId>catalina-ant</artifactId>

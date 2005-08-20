@@ -24,7 +24,7 @@
     </target>
     
     <target name="checkRegistry">
-        <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/"> Please enter the URL of your registry end-point </input>
+        <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://galahad.star.le.ac.uk:8080/galahad-registry/"> Please enter the URL of your registry end-point </input>
     	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
         <echo>Attempting to contact the registry query endpoint...</echo>
         <tempfile property="page.check"/>
@@ -94,18 +94,27 @@
 		<input addproperty="input.mail.server" defaultvalue="127.0.0.1">Enter the address of your SMTP server</input>
 		<input addproperty="input.mail.user" defaultvalue="astrogrid">Enter a username for your SMTP server</input>
 		<input addproperty="input.mail.pass" defaultvalue="">Enter a password for your SMTP server</input>
-		<input addproperty="input.mail.from" defaultvalue="admin@astrogrid.org">Enter the replyto: address</input>
-		<input addproperty="input.mail.admin" defaultvalue="youraddress@astrogrid.org">Enter the Administrator email address</input>
+		<input addproperty="input.mail.from" defaultvalue="no-reply@${input.mail.server}">Enter the replyto: address</input>
+		<input addproperty="input.mail.admin" defaultvalue="${user.name}@${input.mail.server}">Enter the Administrator email address</input>
 	</target>
 	
 	<target name="input-jes-settings">
 		<echo>In order to run workflows from the portal, you need to enter the location of your Job Entry System</echo>
-		<input addproperty="input.astrogrid.jes.endpoint" defaultvalue="http://127.0.0.1/astrogrid-jes-SNAPSHOT">
+		<input addproperty="input.astrogrid.jes.endpoint" defaultvalue="http://galahad.star.le.ac.uk:8080/astrogrid-jes">
         	Enter the location of your JES
 		</input>
 	</target>
 	
-    <target name="updatePortalWar" depends="downloadPortal, input-jes-settings, input-email-settings">
+    <target name="updatePortalWar" depends="downloadPortal, input-jes-settings, input-email-settings" description="This task extracts the web.xml from the war, runs an xslt on it, and puts it back in the war">
+    	<!--extract existing web.xml-->
+    	<unwar src="${portal.war}"
+    	       dest="portal">
+    	    <patternset>
+    	        <include name="**/web.xml"/>
+    	    </patternset>
+    	</unwar>
+    	
+    	
         <filterset id="myfilter">
             <filter token="CENTRALREGISTRYQUERY" value="${astrogrid.registry.endpoint}${astrogrid.registry.query.offset}"/>
         	<filter token="CENTRALREGISTRYUPDATE" value="${astrogrid.registry.endpoint}${astrogrid.registry.update.offset}"/>
@@ -117,13 +126,18 @@
         	<filter token="ADMINEMAIL" value="${input.mail.admin}"/>
         </filterset>
         <echo>Registry endpoint is ${astrogrid.registry.endpoint}</echo>
+    	<!--Copy the web.xsl file, and hope that the Ant Tokens get filled in-->
         <copy todir="${portal.temporary.dir}/portal">
             <filterset refid="myfilter"/>
             <fileset dir="portal" />
         </copy>
+    	<echo>Tranforming web.xml</echo>
+    	<!--Transform the web.xml using the copied xslt-->
+    	<xslt style="${portal.temporary.dir}/portal/web.xsl" in="${portal.temporary.dir}/portal/WEB-INF/web.xml" out="${portal.temporary.dir}/portal/WEB-INF/web2.xml"/>
+    	<echo>Updating war with user supplied settings</echo>
         <copy file="${portal.war}" tofile="${local.portal.war}"/>
-    	<!--update the context.xml, and login image file, if set-->
-        <war update="yes" destfile="${local.portal.war}">
+    	<!--update the web.xml, and login image file, if set-->
+        <war update="yes" destfile="${local.portal.war}" webxml="${portal.temporary.dir}/portal/WEB-INF/web2.xml">
             <metainf dir="${portal.temporary.dir}/portal" />
         	<!--hardwire this in for now, though a bit fragile-->
         	<zipfileset fullpath="web/images/loginBackground.jpg" file="backGroundImg.jpg"/>
