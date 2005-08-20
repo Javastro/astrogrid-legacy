@@ -1079,7 +1079,8 @@
     <!--horribly crude, but will do for now-->
         <ant dir="${portal.deployment.jar.unpacked}" target="customize-login-page" >
             <property name="input.login.image.file" value="${work.dir}/portal/AGINABloginBackground.jpg"/>
-        </ant>    
+        </ant>   
+	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')} 
         <ant dir="${portal.deployment.jar.unpacked}" target="install-portal" >
             <property name="tasks.already.set" value="yes"/>
             <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
