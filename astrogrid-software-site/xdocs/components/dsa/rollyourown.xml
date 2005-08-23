@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<author email="dave@ast.cam.ac.uk">Dave Morris</author>
+		<author email="mch@roe.ac.uk">Martin Hill</author>
+		<title>Writing your own webapp</title>
+	</properties>
+	<body>
+		<section name="Introduction">
+			<p>
+				Describing how to write your own Astrogrid-compatible webapps is beyond the
+				scope of these documents, but this page is intended to give you an idea of which
+				components of the PAL libraries or webapps can be replaced by your own
+				components.
+			</p>
+			<p>Eventually</p>
+		</section>
+		<section name='Changing table writers'>
+			<p>
+				For when you want to add, transform or remove columns in result sets, or
+				if you want to add new output formats
+			</p>
+		</section>
+		<section name='SQL generators'>
+			<p>
+				For when you have a SQL RDBMS that requires a particular flavour of SQL not
+				already provided in PAL.
+			</p>
+		</section>
+		<section name='Data querier plugins'>
+			<p>
+				For when you have data that is not in an RDBMS, such as some special local
+				data format
+			</p>
+		</section>
+	</body>
+</document>

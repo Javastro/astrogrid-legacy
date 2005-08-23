@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<document>
+<properties>
+  <title>Query Examples</title>
+  <author email="dave@ast.cam.ac.uk">Dave Morris</author>
+  <author email="mch@roe.ac.uk">Martin Hill</author>
+</properties>
+<body>
+<section name="Introduction">
+<p>
+This page contains some examples on how to run some queries on a dataserver
+   directly from the service's pages, rather than through an AstroGrid portal.  For help
+   on the AstroGrid portal, see [todo - link].
+</p>
+   <p>
+      Because each dataservice is different - not just the form of the data but what the data
+      represents can be different - the examples here are based upon the SampleStars dataset
+      that comes with each skycatserver webapp as the initial, default 'test' dataset.
+      See also <a href="samplestars.html">The SampleStars dataset</a>
+   </p>
+</section>
+
+<section name="ADQL/SQL and ADQL/XML">
+   <p>
+      The Astronomy Data Query Language comes in two forms: an SQL-like form for human beings,
+      and an XML form for computers and some of the more enthusiastic developers.  The SQL
+      form is easier to read and write for humans, but can be a bit ambiguous.
+   </p>
+   <p>ADQL/SQL queries look like this:
+   </p>
+   <p><code>SELECT * FROM SOURCES WHERE SOURCES.DEC &gt; 88 AND SOURCES.TYPE = 'STAR'</code></p>
+</section>
+      
+<section name="Cone search">
+    <p>There are also extra astronomical functions added to ADQL.  The CIRCLE has been implemented
+      for the AstroGird datacenters for cone searches, of the form <code>CIRCLE('equinox', ra, dec, radius)</code>
+      for example:
+       </p>
+   <p><code>SELECT * FROM SOURCES WHERE CIRCLE('J2000', 57, 24, 2) </code></p>
+   <p>will select those objects in the area of the pleidies, where ra=57, dec=24 and the radius=2 degrees.</p>
+</section>
+
+</body>
+</document>

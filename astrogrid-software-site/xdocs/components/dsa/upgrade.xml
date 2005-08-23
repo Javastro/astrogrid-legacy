@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<document>
+<properties>
+  <author email="dave@ast.cam.ac.uk">Dave Morris</author>
+  <author email="mch@roe.ac.uk">Martin Hill</author>
+        <title>Upgrading</title>
+</properties>
+
+<body>
+
+<section name="Upgrading"><p>
+To upgrade a data server, uninstall the old webapplication, and install the new version.
+To avoid losing your configuration when doing this, see notes on <a href='deploy.html'>deploying</a> about
+separating the codebase context from the configuration context.
+</p>
+</section>
+
+
+</body>
+</document>

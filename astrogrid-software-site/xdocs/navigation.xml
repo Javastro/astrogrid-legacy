@@ -118,14 +118,26 @@
 <!-- rest of filemanager here -->
           </item><!-- end filemanager install doc -->
 
-          <item name="Dataset Access (DSA)" collapse="true"
-          href="/components/dsa/index.html">
-<!-- rest of dsa here -->
+          <item name="Dataset Access (DSA)" collapse="true" href="/components/dsa/index.html">
+			<item name="Pre-requisites" href="/components/dsa/pre-requisites.html"/>
+            <item name="Download" href="/components/dsa/download.html"/>
+            <item name="Deploy" href="/components/dsa/deploy.html"/>
+            <item name="Configuration" href="/components/dsa/configure.html"/>
+            <item name="Describe" href="/components/dsa/describe.html"/>
+            <item name="Verify" href="/components/dsa/verify.html"/>
+            <item name="Register" href="/components/dsa/register.html"/>
           </item><!-- end dsa install doc -->
 
-          <item name="Applications (CEA)" collapse="true"
-          href="/components/cea/index.html">
-<!-- rest of cea here -->
+          <item name="Applications (CL-CEC)" collapse="true" href="/components/cea/index.html">
+			<item name="Overview" href="/components/cea/index.html"/>
+            <item name="Download" href="/components/cea/DOWNLOAD.html"/>
+            <item name="Installation" href="/components/cea/INSTALL.html"/>
+            <item name="Configuration" href="/components/cea/CONFIGURE.html"/>
+            <item name="Self-testing" href="/components/cea/SELF-TEST.html"/>
+            <item name="Registration" href="/components/cea/REGISTER.html"/>
+            <item name="External testing" href="/components/cea/EXTTEST.html"/>
+            <item name="Upgrading" href="/components/cea/UPGRADE.html"/>
+            <item name="Uninstallation" href="/components/cea/UNINSTALL.html"/>
           </item><!-- end cea install doc -->
 
           <item name="Workflow (JES)" collapse="true"    href="/components/jes/index.html">

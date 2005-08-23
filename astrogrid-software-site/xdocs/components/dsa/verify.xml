@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!-- $Id: verify.xml,v 1.1 2005/08/23 15:56:42 clq2 Exp $ -->
+<document>
+        <properties>
+                <title>Publisher's AstroGrid Library</title>
+                <author email="dave@ast.cam.ac.uk">Dave Morris</author>
+                <author email="mch@roe.ac.uk">Martin Hill</author>
+              </properties>
+        <body>
+   
+   
+<section name='Introduction'>
+<p>
+Pal comes packaged with a series of self-test scripts. To run these, visit the web application root,
+and navigate to the <i>self-test</i> page. Inspect the result from each script - no
+errors should appear on the output.
+</p>
+</section>
+<section name="Initial checks">
+<p>You can carry out some checks immediately after <a href='deploy.xml'>deploying</a> the webapp, as by default
+it comes with a <a href='samplestars.html'>Sample dataset </a>.
+</p>
+<subsection name='Fingerprint'>
+<p>You can check where the webapp is getting the configuration settings from by
+checking the webapp admin fingerprint page (see the navigations on the left of the
+webapp's pages).
+</p>
+<p>
+The fingerprint page shows which configuration properties are being read from the
+JNDI values configured in the context file, and which properties are being read
+from the default.properties file shipped in the WAR file, or from a property file
+defined by yourself.
+</p>
+</subsection>
+
+
+<subsection name='Self Tests'>
+<p>On the left side of the webapp's index page is a navbar; at the top of this
+are some self-test pages which will run some tests to ensure the configuration
+and querying ability of the webapp is correct.
+</p>
+</subsection>
+</section>
+
+   
+<section name="Running test queries">
+<p>
+The dataservice web application contains simple web forms
+(see the navigation links on the main index page)
+to submit <a href='queries.html'>queries</a> to the datacenter service.
+
+</p>
+</section>
+</body>
+</document>

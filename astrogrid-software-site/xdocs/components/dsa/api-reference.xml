@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+
+<document>
+     
+   <properties>
+     <title>Data Server API</title>
+     <author email="dave@ast.cam.ac.uk">Dave Morris</author>
+      <author email="mch@roe.ac.uk">Martin Hill</author>
+   </properties>
+<body>
+   <section name="Overview">
+      <p>
+      AstroGrid PAL data servers implement a number of web interfaces, including [some of]
+      the International Virtual Observatory standard interfaces.
+      </p>
+      <p>These include SOAP and http post accessors, and a number of pages for direct human
+      access.</p>
+      <p>No client code is provided as most programming languages provide direct SOAP and http post libraries
+      anyway. </p>
+   </section>
+   <section name="Stable versions">
+A deliberate effort is made to persist data server interfaces even as the standards are changed. This
+      means that if you write a client to access a data server, that client will work even after
+      the data server has been upgraded to provide new interfaces.
+      <p>This is done by including a version number with the interface name.  So, for example,
+         the first 'native' AstroGrid SOAP interface is at http://.../services/AxisDataService06.  The
+         next AstroGrid SOAP interface might be at http://.../services/AxisDataService07 .
+      </p>
+      <p>However some interfaces may be deprecated and eventually removed if they are unused.</p>
+   </section>
+   <section name="Cone Search">
+      <p>Http-post NVO-style Cone searches are provided via a servlet, at http://.../SubmitCone.
+      Pass in RA, DEC and SIZE, SR or RADIUS parameters, eg.  <code>http://.../SubmitCone?RA=12&amp;DEC=23&amp;SR=2</code>
+      Additionally, as with all the AstroGrid PAL http post interfaces, specify a <code>Format</code> parameter
+      as HTML, VOTABLE, CSV or TSV, and a <code>Target</code> parameter as a URL indicating where
+      the results should be sent (which may include homespace identifiers).  By default the format is VOTABLE and the results are returned
+      to the browser.  Note that case is important for the parameters, ie <code>FORMAT</code> will not
+      be interpreted.</p>
+      <p>The RAs and DECs that will be searched are configured by the data publisher</p>
+   </section>
+   <section name="Common Execution Architecture">
+      AstroGrid PAL dataservers provide a standard Common Execution Component interface to the
+      Common Execution Architecture. Each dataset is
+      registered as a 'query tool' with one service providing access to that tool.
+   </section>
+   <section name="SkyNode">
+      Unfortunately the SkyNode interface is still incomplete; it should provide an IVOA-compatible
+       SOAP access to the database.
+   </section>
+   <section name="Other">
+      <p>For those who prefer "light 'n' easy" access to web services, the web service methods are also available
+         via 'direct' http post.  These include AskCount (returns an integer number), AskQuery (synchrnous/blocking
+      query), SubmitQuery (asynchronous query, returns an ID to the query), GetMetadata (returns the metadoc)
+      AttemptAbort (for attempting to abort asynchronous queries). For arguments these take <code>AdqlUri</code>, <code>AdqlSql</code> or <code>AdqlXml</code>
+      for the query, and <code>Format</code> and <code>Target</code> as above</p>
+      <p>
+      There is a 'native' SOAP interface to the dataset via <code>http://.../services/AxisDataService06</code>. This
+      provides SOAP access to the full range of query methods, some of which are not available
+      through the IVOA interfaces (such as asynchronous querying).
+      </p>
+      <p>There are also IVOA-standard SIAP and SSAP interfaces (where appropriate, ie where images are
+      or spectra are served)  </p>
+   </section>
+</body>
+</document>
