@@ -97,9 +97,15 @@
 			<item name="eXist for Registry"   href="/components/registry/eXist_reference.html" />
           </item><!-- end registry install doc -->
 
-          <item name="Community" collapse="true"
-          href="/components/community/index.html">
-<!-- rest of community doc set to be added here -->
+          <item name="Community" collapse="true" href="/components/community/index.html">
+			<item name="Overview" href="/components/community/overview.html"/>
+            <item name="Installation" href="/components/community/installation.html"/>     
+            <item name="Configuration" href="/components/community/configure.html"/>       
+            <item name="Self-Testing" href="/components/community/self_testing.html"/>     
+            <item name="External Testing" href="/components/community/external_testing.html"/>      
+            <item name="Upgrading" href="/components/community/upgrading.html"/>
+            <item name="Uninstallation" href="/components/community/uninstall.html"/>
+             
           </item><!-- end community install doc -->
 
           <item name="File Store" collapse="true"
