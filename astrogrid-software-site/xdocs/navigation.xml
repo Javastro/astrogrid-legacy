@@ -84,9 +84,17 @@
         </item><!-- end general instructions -->
 
         <item name="Components" href="/installdocs/components.html">
-          <item name="Registry" collapse="true"
-          href="/components/registry/index.html">
-<!-- rest of registry doc set to be added here -->
+			
+          <item name="Registry" collapse="true" href="/components/registry/index.html">
+		    <item name="Overview" href="/components/registry/overview.html" />
+            <item name="Installation" href="/components/registry/installation.html" />
+            <item name="Configuration" href="/components/registry/configure.html" />
+            <item name="Self-testing" href="/components/registry/self_testing.html" />
+            <item name="External Testing" href="/components/registry/external_testing.html" />
+            <item name="Upgrading" href="/components/registry/upgrading.html" />
+            <item name="Uninstallation"   href="/components/registry/uninstall.html" />
+			<item name="Registry Reference"   href="/components/registry/registry_reference.html" />
+			<item name="eXist for Registry"   href="/components/registry/eXist_reference.html" />
           </item><!-- end registry install doc -->
 
           <item name="Community" collapse="true"
