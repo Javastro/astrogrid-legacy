@@ -38,7 +38,24 @@
 
         <item name="Accessing Astrogrid" href="/userdocs/use.html">
           <item name="Portal (web)" href="/userdocs/portal.html" />
-          <item name="Workbench (GUI)" href="/userdocs/workbench.html" />
+          <item name="Workbench (GUI)" href="/userdocs/workbench.html">
+			<item name="User Guide" collapse="true" href="/components/portal/userguide/introduction.html">
+				<item name="Introduction" 
+					href="/components/portal/userguide/introduction.html"/>
+				<item name="Logon" href="/components/portal/userguide/logon.html"/>
+				<item name="Home Page" href="/components/portal/userguide/homepage.html"/>
+				<item name="MySpace Explorer" 
+					href="/components/portal/userguide/myspace-explorer.html"/>
+				<item name="Resource Browser" 
+					href="/components/portal/userguide/resource-browser.html"/>
+				<item name="Query Editor" 
+					href="/components/portal/userguide/query-editor.html"/>
+				<item name="Workflow Editor" 
+					href="/components/portal/userguide/workflow-editor.html"/>
+				<item name="Job Monitor" 
+					href="/components/portal/userguide/job-monitor.html"/>
+			</item>
+          </item>
           <item name="Other GUI Applications" href="/jnlp/other.html" />
           <item name="Java Web Start Guide" href="/jnlp/userguide.html" />
         </item><!-- end accessing astrogrid -->
@@ -73,92 +90,146 @@
 <!--
         Installers Guide
         -->
-    <menu name="Installer&#39;s Guide" img="/images/16x16/package.png">
-      <item name="Information for Installers" href="/installdocs/index.html"
-      collapse="true">
-        <item name="Download" href="/installdocs/download.html" />
-        <item name="General Instructions" href="/installdocs/generic.html">
-          <item name="Install" href="/installdocs/generic-install.html" />
-          <item name="Administer" href="/installdocs/generic-admin.html" />
-          <item name="Tips" href="/installdocs/tips.html" />
-        </item><!-- end general instructions -->
-
-        <item name="Components" href="/installdocs/components.html">
-			
-          <item name="Registry" collapse="true" href="/components/registry/index.html">
-		    <item name="Overview" href="/components/registry/overview.html" />
-            <item name="Installation" href="/components/registry/installation.html" />
-            <item name="Configuration" href="/components/registry/configure.html" />
-            <item name="Self-testing" href="/components/registry/self_testing.html" />
-            <item name="External Testing" href="/components/registry/external_testing.html" />
-            <item name="Upgrading" href="/components/registry/upgrading.html" />
-            <item name="Uninstallation"   href="/components/registry/uninstall.html" />
-			<item name="Registry Reference"   href="/components/registry/registry_reference.html" />
-			<item name="eXist for Registry"   href="/components/registry/eXist_reference.html" />
-          </item><!-- end registry install doc -->
-
-          <item name="Community" collapse="true" href="/components/community/index.html">
-			<item name="Overview" href="/components/community/overview.html"/>
-            <item name="Installation" href="/components/community/installation.html"/>     
-            <item name="Configuration" href="/components/community/configure.html"/>       
-            <item name="Self-Testing" href="/components/community/self_testing.html"/>     
-            <item name="External Testing" href="/components/community/external_testing.html"/>      
-            <item name="Upgrading" href="/components/community/upgrading.html"/>
-            <item name="Uninstallation" href="/components/community/uninstall.html"/>
-             
-          </item><!-- end community install doc -->
-
-          <item name="File Store" collapse="true"
-          href="/components/filestore/index.html">
-<!-- rest of filestore here -->
-          </item><!-- end filestore install doc -->
-
-          <item name="File Manager" collapse="true"
-          href="/components/filemanager/index.html">
-<!-- rest of filemanager here -->
-          </item><!-- end filemanager install doc -->
-
-          <item name="Dataset Access (DSA)" collapse="true" href="/components/dsa/index.html">
-			<item name="Pre-requisites" href="/components/dsa/pre-requisites.html"/>
-            <item name="Download" href="/components/dsa/download.html"/>
-            <item name="Deploy" href="/components/dsa/deploy.html"/>
-            <item name="Configuration" href="/components/dsa/configure.html"/>
-            <item name="Describe" href="/components/dsa/describe.html"/>
-            <item name="Verify" href="/components/dsa/verify.html"/>
-            <item name="Register" href="/components/dsa/register.html"/>
-          </item><!-- end dsa install doc -->
-
-          <item name="Applications (CL-CEC)" collapse="true" href="/components/cea/index.html">
-			<item name="Overview" href="/components/cea/index.html"/>
-            <item name="Download" href="/components/cea/DOWNLOAD.html"/>
-            <item name="Installation" href="/components/cea/INSTALL.html"/>
-            <item name="Configuration" href="/components/cea/CONFIGURE.html"/>
-            <item name="Self-testing" href="/components/cea/SELF-TEST.html"/>
-            <item name="Registration" href="/components/cea/REGISTER.html"/>
-            <item name="External testing" href="/components/cea/EXTTEST.html"/>
-            <item name="Upgrading" href="/components/cea/UPGRADE.html"/>
-            <item name="Uninstallation" href="/components/cea/UNINSTALL.html"/>
-          </item><!-- end cea install doc -->
-
-          <item name="Workflow (JES)" collapse="true"    href="/components/jes/index.html">
-            <item name="Download" href="/components/jes/DOWNLOAD.html" />
-            <item name="Installation" href="/components/jes/INSTALL.html" />
-            <item name="Configuration" href="/components/jes/CONFIGURE.html" />
-            <item name="Self-testing" href="/components/jes/SELF-TEST.html" />
-            <item name="Registration" href="/components/jes/REGISTER.html" />
-            <item name="External testing"   href="/components/jes/EXTTEST.html" />
-            <item name="Upgrading" href="/components/jes/UPGRADE.html" />
-            <item name="Uninstallation"    href="/components/jes/UNINSTALL.html" />
-            <item name="Reference guide"   href="/components/jes/REFERENCE.html" />
-          </item><!-- end jes install doc -->
-
-          <item name="Portal" collapse="true"
-                                  href="/components/portal/index.html">
-<!-- rest of portal here -->
-          </item><!--end portal install doc -->
-        </item><!-- end components -->
-      </item><!-- end information for installers -->
-    </menu>
+	<menu name="Installer&#39;s Guide" img="/images/16x16/package.png">
+		<item name="Information for Installers" href="/installdocs/index.html" 
+			collapse="true">
+			<item name="Download" href="/installdocs/download.html" />
+			<item name="General Instructions" href="/installdocs/generic.html">
+				<item name="Install" href="/installdocs/generic-install.html" />
+				<item name="Administer" href="/installdocs/generic-admin.html" 
+					/>
+				<item name="Tips" href="/installdocs/tips.html" />
+			</item>
+			<!-- end general instructions -->
+			<item name="Components" href="/installdocs/components.html">
+				<item name="Registry" collapse="true" 
+					href="/components/registry/index.html">
+					<item name="Overview" 
+						href="/components/registry/overview.html" />
+					<item name="Installation" 
+						href="/components/registry/installation.html" />
+					<item name="Configuration" 
+						href="/components/registry/configure.html" />
+					<item name="Self-testing" 
+						href="/components/registry/self_testing.html" />
+					<item name="External Testing" 
+						href="/components/registry/external_testing.html" />
+					<item name="Upgrading" 
+						href="/components/registry/upgrading.html" />
+					<item name="Uninstallation" 
+						href="/components/registry/uninstall.html" />
+					<item name="Registry Reference" 
+						href="/components/registry/registry_reference.html" />
+					<item name="eXist for Registry" 
+						href="/components/registry/eXist_reference.html" />
+				</item>
+				<!-- end registry install doc -->
+				<item name="Community" collapse="true" 
+					href="/components/community/index.html">
+					<item name="Overview" 
+						href="/components/community/overview.html"/>
+					<item name="Installation" 
+						href="/components/community/installation.html"/>
+					<item name="Configuration" 
+						href="/components/community/configure.html"/>
+					<item name="Self-Testing" 
+						href="/components/community/self_testing.html"/>
+					<item name="External Testing" 
+						href="/components/community/external_testing.html"/>
+					<item name="Upgrading" 
+						href="/components/community/upgrading.html"/>
+					<item name="Uninstallation" 
+						href="/components/community/uninstall.html"/>
+				</item>
+				<!-- end community install doc -->
+				<item name="File Store" collapse="true" 
+					href="/components/filestore/index.html">
+					<!-- rest of filestore here -->
+				</item>
+				<!-- end filestore install doc -->
+				<item name="File Manager" collapse="true" 
+					href="/components/filemanager/index.html">
+					<!-- rest of filemanager here -->
+				</item>
+				<!-- end filemanager install doc -->
+				<item name="Dataset Access (DSA)" collapse="true" 
+					href="/components/dsa/index.html">
+					<item name="Pre-requisites" 
+						href="/components/dsa/pre-requisites.html"/>
+					<item name="Download" href="/components/dsa/download.html"/>
+					<item name="Deploy" href="/components/dsa/deploy.html"/>
+					<item name="Configuration" 
+						href="/components/dsa/configure.html"/>
+					<item name="Describe" href="/components/dsa/describe.html"/>
+					<item name="Verify" href="/components/dsa/verify.html"/>
+					<item name="Register" href="/components/dsa/register.html"/>
+				</item>
+				<!-- end dsa install doc -->
+				<item name="Applications (CL-CEC)" collapse="true" 
+					href="/components/cea/index.html">
+					<item name="Overview" href="/components/cea/index.html"/>
+					<item name="Download" href="/components/cea/DOWNLOAD.html"/>
+					<item name="Installation" 
+						href="/components/cea/INSTALL.html"/>
+					<item name="Configuration" 
+						href="/components/cea/CONFIGURE.html"/>
+					<item name="Self-testing" 
+						href="/components/cea/SELF-TEST.html"/>
+					<item name="Registration" 
+						href="/components/cea/REGISTER.html"/>
+					<item name="External testing" 
+						href="/components/cea/EXTTEST.html"/>
+					<item name="Upgrading" href="/components/cea/UPGRADE.html"/>
+					<item name="Uninstallation" 
+						href="/components/cea/UNINSTALL.html"/>
+				</item>
+				<!-- end cea install doc -->
+				<item name="Workflow (JES)" collapse="true" 
+					href="/components/jes/index.html">
+					<item name="Download" href="/components/jes/DOWNLOAD.html" 
+						/>
+					<item name="Installation" 
+						href="/components/jes/INSTALL.html" />
+					<item name="Configuration" 
+						href="/components/jes/CONFIGURE.html" />
+					<item name="Self-testing" 
+						href="/components/jes/SELF-TEST.html" />
+					<item name="Registration" 
+						href="/components/jes/REGISTER.html" />
+					<item name="External testing" 
+						href="/components/jes/EXTTEST.html" />
+					<item name="Upgrading" href="/components/jes/UPGRADE.html" 
+						/>
+					<item name="Uninstallation" 
+						href="/components/jes/UNINSTALL.html" />
+					<item name="Reference guide" 
+						href="/components/jes/REFERENCE.html" />
+				</item>
+				<!-- end jes install doc -->
+				<item name="Portal" collapse="true" 
+					href="/components/portal/admin-quickstart/index.html">
+					<item name="Administrator Quickstart" href="/components/portal/admin-quickstart/index.html">
+						<item name="Overview" 
+							href="/components/portal/admin-quickstart/index.html"/>
+						<item name="Download" 
+							href="/components/portal/admin-quickstart/download.html"/>
+						<item name="Installation" 
+							href="/components/portal/admin-quickstart/install.html"/>
+						<item name="Configuration" 
+							href="/components/portal/admin-quickstart/configure.html"/>
+						<item name="Upgrading" 
+							href="/components/portal/admin-quickstart/upgrade.html"/>
+						<item name="Uninstallation" 
+							href="/components/portal/admin-quickstart/uninstall.html"/>
+					</item>
+					
+				</item>
+				<!--end portal install doc -->
+			</item>
+			<!-- end components -->
+		</item>
+		<!-- end information for installers -->
+	</menu>
 
 <!--
         Developers Guide
