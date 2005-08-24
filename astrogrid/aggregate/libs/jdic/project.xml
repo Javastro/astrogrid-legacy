@@ -16,7 +16,7 @@
 	  <dependency>
 		  <artifactId>jdic</artifactId>
 		  <groupId>jdic</groupId>
-		  <version>0.9</version>
+		  <version>0.9.1</version>
 		  <properties>
 			<jnlp.jar>true</jnlp.jar>
 		  </properties>
@@ -24,7 +24,7 @@
 	  <dependency>
 		  <artifactId>jdic_stub_Linux</artifactId>
 		  <groupId>jdic</groupId>
-		  <version>0.9</version>
+		  <version>0.9.1</version>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>		  
@@ -32,7 +32,7 @@
 	  <dependency>
 		  <artifactId>jdic_stub_Solaris</artifactId>
 		  <groupId>jdic</groupId>
-		  <version>0.9</version>
+		  <version>0.9.1</version>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>		  
@@ -40,7 +40,7 @@
 	  <dependency>
 		  <artifactId>jdic_stub_Windows</artifactId>
 		  <groupId>jdic</groupId>
-		  <version>0.9</version>
+		  <version>0.9.1</version>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>		  
@@ -48,7 +48,7 @@
 	  <dependency>
 		  <artifactId>jdic_native_Linux_i386</artifactId>
 		  <groupId>jdic</groupId>
-		  <version>0.9</version>
+		  <version>0.9.1</version>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>		  
@@ -56,7 +56,7 @@
 	  <dependency>
 		  <artifactId>jdic_native_Windows_i386</artifactId>
 		  <groupId>jdic</groupId>
-		  <version>0.9</version>
+		  <version>0.9.1</version>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>		  
@@ -64,7 +64,7 @@
 	  <dependency>
 		  <artifactId>jdic_native_Solaris_i386</artifactId>
 		  <groupId>jdic</groupId>
-		  <version>0.9</version>
+		  <version>0.9.1</version>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>		  
@@ -72,7 +72,7 @@
 	  <dependency>
 		  <artifactId>jdic_native_Solaris_SPARC</artifactId>
 		  <groupId>jdic</groupId>
-		  <version>0.9</version>
+		  <version>0.9.1</version>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>		  

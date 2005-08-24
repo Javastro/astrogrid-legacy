@@ -4,39 +4,43 @@
 
   <currentVersion>${astrogrid.aggregate.version}</currentVersion>
 
-  <id>gui</id>
+  <id>digester</id>
 
-  <name>GUI Widget Libraries</name>
+  <name>Commons XML Digester</name>
 
-  <description>Widget and Look and Feel Libraries bundled as a JNLP Extension</description>
+  <description>Jakarta Digester and it's prerequisites bundled as a JNLP Extension</description>
 
-  <shortDescription>GUI Widget Libraries</shortDescription>
+  <shortDescription>Jakarta Commons Digester</shortDescription>
 
   <dependencies>
-	  <dependency><!-- look and feel -->
-		  <artifactId>looks</artifactId>
-		  <groupId>jgoodies</groupId>
-		  <version>1.3.1</version>
+	  
+	  <dependency>
+		  <artifactId>commons-beanutils</artifactId>
+		  <groupId>commons-beanutils</groupId>
+		  <version>1.6</version>
+		  <type>jar</type>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>
 	  </dependency>
-	  <dependency><!-- swanky new widgets -->
-		  <groupId>l2fprod</groupId>
-		  <artifactId>l2fprod-common-all</artifactId>
-		  <version>0.1</version>
+	  <dependency>
+		  <artifactId>commons-digester</artifactId>
+		  <groupId>commons-digester</groupId>
+		  <version>1.6</version>
+		  <type>jar</type>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
-		  </properties>
-    </dependency>
-    <dependency><!-- contains SwingWorker class, for executing things in background threads -->
-	    <artifactId>concurrent</artifactId>
-	    <groupId>concurrent</groupId>
-	    <version>1.3.4</version>
-	    <properties>
-		    <jnlp.jar>true</jnlp.jar>
-	    </properties>
- </dependency>    
+		  </properties>		  
+ </dependency>	  
+ <dependency>
+	 <artifactId>commons-lang</artifactId>
+	 <groupId>commons-lang</groupId>
+	 <version>2.0</version>
+	 <type>jar</type>
+	 <properties>
+		 <jnlp.jar>true</jnlp.jar>
+	 </properties>
+        </dependency>
 
 <!-- stuff required in maven build -->
     <dependency>
