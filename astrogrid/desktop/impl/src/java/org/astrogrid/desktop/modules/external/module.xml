@@ -1,7 +1,11 @@
 <?xml version="1.0" ?>
 
-<module name="externalApps">
+<module name="Apps">
 	<description>Third-party applications that can connect to AstroGrid</description>
+		<property>
+		<key>priority</key>
+		<value>10</value>
+	</property>
 		<property>
 			<key>system.ui.menu.links</key>
 			<value>		

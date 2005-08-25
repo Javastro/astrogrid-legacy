@@ -1,4 +1,4 @@
-/*$Id: ToolEditor.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: ToolEditor.java,v 1.3 2005/08/25 16:59:44 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.acr.dialogs;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
 
 import org.w3c.dom.Document;
 
@@ -41,11 +42,22 @@ public interface ToolEditor {
      */
     Document   edit(Document t) throws InvalidArgumentException;
 
+    /** Prompt the user to edit a tool document
+     * @param t document conforming to Tool schema
+     * @param desc description of the application this tool document is to be submitted to
+     * @return an edited copy of this document
+     * @throws InvalidArgumentException if the document passed in is not schema-valid
+     * @xmlrpc takes a xml document string as a parameter, and returns another xml document string
+     */    
+    public Document editWithDescription(Document t,ApplicationInformation desc) throws InvalidArgumentException ;
 }
 
 
 /* 
 $Log: ToolEditor.java,v $
+Revision 1.3  2005/08/25 16:59:44  nw
+1.1-beta-3
+
 Revision 1.2  2005/08/12 08:45:15  nw
 souped up the javadocs
 

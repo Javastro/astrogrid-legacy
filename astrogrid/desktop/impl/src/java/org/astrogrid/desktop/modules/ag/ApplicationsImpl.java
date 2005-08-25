@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,44 +17,38 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.ParameterBean;
+import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.applications.beans.v1.Interface;
-import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
+import org.astrogrid.applications.delegate.DelegateFactory;
+import org.astrogrid.common.bean.BaseBean;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
-import org.astrogrid.portal.workflow.intf.ToolValidationException;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
-import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.RegistrySearchException;
-import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.registry.client.query.ResourceData;
-import org.astrogrid.store.Ivorn;
+import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xpath.XPathAPI;
+import org.apache.xpath.CachedXPathAPI;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -63,12 +57,10 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -77,18 +69,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 /** Application service.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
- * @todo later - remove use of applicationRegistry where possible - go direct - use xquery to get just the data needed.
- * @todo later - add stream-returning method (@link #read} to myspaceInternal.. use consisstently throughout.
- * @todo refine exception reporting.
+ * * @todo refine exception reporting.
  */
-public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener {
+public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener {
     /**
      * Commons Logger for this class
      */
@@ -97,9 +86,12 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
 
     
     /** Construct a new 
+     * @throws ParserConfigurationException
+     * @throws FactoryConfigurationError
+     * @throws DOMException
      * 
      */
-    public ApplicationsImpl(CommunityInternal community, MyspaceInternal vos, Registry reg){
+    public ApplicationsImpl(CommunityInternal community, MyspaceInternal vos, Registry reg) throws DOMException, FactoryConfigurationError, ParserConfigurationException{
         this.community = community;
         this.vos = vos;
         this.reg = reg;
@@ -110,12 +102,20 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
     protected final Registry reg;
     protected ApplicationRegistry appReg;
     
+    static {
+        try {
+            nsNode = XPathHelper.createNamespaceNode();
+        } catch (Exception e) {
+           logger.error("Could not create static namespace node",e);       
+        }
+    }
 
     private CommonExecutionConnectorClient createCEADelegate(URL endpoint) {
-        return community.getEnv().getAstrogrid().createCeaClient(endpoint.toString());
+       return  DelegateFactory.createDelegate(endpoint.toString());       
     }
     
-    private ApplicationRegistry getAppReg() throws WorkflowInterfaceException {
+    /** @deprecated really */
+    private synchronized ApplicationRegistry getAppReg() throws WorkflowInterfaceException {
         if (appReg == null) {
          appReg = community.getEnv().getAstrogrid().getWorkflowManager().getToolRegistry();
         }                        
@@ -124,161 +124,111 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
    
     public URI[] list() throws ServiceException {   
         try {
-        String[] arr =  getAppReg().listApplications();
-        URI[] result = new URI[arr.length];
-        for (int i= 0;i < arr.length; i++) {
-            result[i] = new URI(arr[i]);
+            Document doc = reg.adqlSearch(getQueryToListApplications());
+            NodeList l = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"Resource");  
+            List results = new ArrayList();
+            CachedXPathAPI xpath = new CachedXPathAPI();
+            Element namespaceNode = XPathHelper.createNamespaceNode();
+            for (int i= 0;i < l.getLength(); i++) {
+            try {
+                Element el = (Element)l.item(i);                
+                results.add(new URI(xpath.eval(el,"vr:identifier",namespaceNode).str()));
+            } catch (URISyntaxException e) {
+                // oh well, skip it.
+            }
         }
-        return result;
-        } catch (WorkflowInterfaceException e) {
+        return (URI[])results.toArray(new URI[]{});
+        } catch (ParserConfigurationException e) {
             throw new ServiceException(e);
-        } catch (URISyntaxException e) {
+        } catch (TransformerException e) {
             throw new ServiceException(e);
         }              
     }
+    public String getQueryToListApplications() {
+        return "Select * from Registry where " +
+    " (@xsi:type = 'cea:CeaApplicationType' or " +
+    " @xsi:type = 'cea:CeaHttpApplicationType')" +
+    " and @status = 'active'";
+    }
+    private static   Element nsNode;    
+    
 
-    public ApplicationInformation[] listFully() throws ServiceException {
-        try {
-            ApplicationDescriptionSummary[] arr =  getAppReg().listUIApplications();
-            ApplicationInformation[] result = new ApplicationInformation[arr.length];
-            for (int i= 0;i < arr.length; i++) {
-                result[i] = new ApplicationInformation(
-                        new URI(arr[i].getName())
-                        , arr[i].getUIName()
-                        ,arr[i].getInterfaceNames()
-                        );
-            }
-            return result;
-            } catch (WorkflowInterfaceException e) {
-                throw new ServiceException(e);
-            } catch (URISyntaxException e) {
-                throw new ServiceException(e);
-            }           
-    }
-    
+    /** @deprecated */
     public ApplicationDescription getApplicationDescription(URI name) throws WorkflowInterfaceException {
-        return getAppReg().getDescriptionFor(munge(name));
+        return getAppReg().getDescriptionFor(name.toString().substring(6));
     }
     
-    //@todo improve this - very inefficient, but will do for now.
     public ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException{
-        try {
-            ApplicationDescriptionSummary[] arr =  getAppReg().listUIApplications();
-            for (int i= 0;i < arr.length; i++) {
-                if (arr[i].getName().equals(applicationName.toString())) {
-                    return new ApplicationInformation(
-                        new URI(arr[i].getName())
-                        , arr[i].getUIName()
-                        ,arr[i].getInterfaceNames()
-                        );
-                }
-            }            
-            } catch (WorkflowInterfaceException e) {
-                throw new ServiceException(e);
-            } catch (URISyntaxException e) {
-                throw new ServiceException(e);
-            }
-            throw new NotFoundException(applicationName.toString());
+        Document doc = reg.getRecord(applicationName);
+        return buildApplicationInformationFromResourceElement(new CachedXPathAPI(),doc.getDocumentElement());
+       
     }
     
     
     
   public String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
-      try {
-        ApplicationDescription descr = getAppReg().getDescriptionFor(munge(applicationName));
-        logger.debug("Created application description");
+        ApplicationInformation descr = getApplicationInformation(applicationName);
         return getInfoFor(descr);
-      } catch (WorkflowInterfaceException e) {
-          throw new ServiceException(e);
-      }
   }
   
-  //@todo improve later - use xpath?
-  public String getInfoFor(ApplicationDescription descr) {      
+
+  public String getInfoFor(ApplicationInformation descr) {      
         StringBuffer result = new StringBuffer();
-        String vr = "http://www.ivoa.net/xml/VOResource/v0.10";
          result.append("Application: ")
                 .append(descr.getName())
                 .append("\n")
-                .append(
-                        descr.getOriginalVODescription().getElementsByTagNameNS(vr,"description").item(0).getFirstChild().getNodeValue())
+                .append(descr.getDescription())
                 .append("\n");
          logger.debug("Added name and description");
-         BaseParameterDefinition[] params = descr.getParameters().getParameter();
-         for(int i = 0; i < params.length; i++) {
-            BaseParameterDefinition param = params[i];
+         for(Iterator i = descr.getParameters().values().iterator(); i.hasNext(); ) {
+             ParameterBean param = (ParameterBean)i.next();
             result.append("\nParameter ")
                 .append("\n")
-                .append(param.getUI_Name())
+                .append(param.getUiName())
                 .append("\n")
-                .append(param.getUI_Description().getContent());
+                .append(param.getDescription());
 
          
          if (param.getName() != null && param.getName().trim().length() > 0) result.append("\n\t").append("name :").append(param.getName());
          if (param.getType() != null ) result.append("\n\t").append("type :").append(param.getType());
          if (param.getSubType() != null && param.getSubType().trim().length() > 0) result.append("\n\t").append("subtype :").append(param.getSubType());
          if (param.getUnits() != null && param.getUnits().trim().length() > 0) result.append("\n\t").append("units :").append(param.getUnits());
-         if (param.getAcceptEncodings() != null && param.getAcceptEncodings().trim().length() > 0) result.append("\n\t").append("accept encodings :").append(param.getAcceptEncodings());
+         //if (param.getAcceptEncodings() != null && param.getAcceptEncodings().trim().length() > 0) result.append("\n\t").append("accept encodings :").append(param.getAcceptEncodings());
          if (param.getDefaultValue() != null && param.getDefaultValue().trim().length() > 0) result.append("\n\t").append("default value :").append(param.getDefaultValue());
-         if (param.getUCD() != null && param.getUCD().trim().length() > 0) result.append("\n\t").append("UCD :").append(param.getUCD());  
-         if (param.getOptionList() != null ) result.append("\n\t").append("option list :").append(param.getOptionList());         
+         if (param.getUcd() != null && param.getUcd().trim().length() > 0) result.append("\n\t").append("UCD :").append(param.getUcd());  
+         if (param.getOptions() != null ) result.append("\n\t").append("option list :").append(Arrays.asList(param.getOptions()));         
 
          }
          logger.debug("Added parameters");
-           Interface[] ifaces = descr.getInterfaces().get_interface();
+           InterfaceBean[] ifaces = descr.getInterfaces();
            for (int i = 0; i < ifaces.length; i++) {
-               Interface iface = ifaces[i];
+               InterfaceBean iface = ifaces[i];
                result.append("\nInterface ")
                    .append(iface.getName())
                    .append("\nInputs\n");
-               ParameterRef[] prefs = iface.getInput().getPref();
+               ParameterReferenceBean[] prefs = iface.getInputs();
                for (int j = 0; j < prefs.length; j++) {
-                   ParameterRef p = prefs[j];
-                   result.append("\t ").append(p.getRef()).append(" max ").append(p.getMaxoccurs()).append(", min ").append(p.getMinoccurs()).append("\n");
+                   ParameterReferenceBean p = prefs[j];
+                   result.append("\t ").append(p.getRef()).append(" max ").append(p.getMax()).append(", min ").append(p.getMin()).append("\n");
                }
                result.append("\nOutputs\n");
-               prefs = iface.getOutput().getPref();
+               prefs = iface.getOutputs();
                for (int j = 0; j < prefs.length; j++) {
-                   ParameterRef p = prefs[j];
-                   result.append("\t ").append(p.getRef()).append("max ").append(p.getMaxoccurs()).append(", min ").append(p.getMinoccurs()).append("\n");
+                   ParameterReferenceBean p = prefs[j];
+                   result.append("\t ").append(p.getRef()).append("max ").append(p.getMax()).append(", min ").append(p.getMin()).append("\n");
                }               
            }
-           logger.debug("Completed");
          return result.toString();
     }    
    
-  // alter to impedance-match between whether ivo:// is expected or now.
-  // at moment, necessary to do this.
-  private String munge(URI application) {     
-      return application.toString().substring(6);// drops ivo:// prefix
-  }
-  
-  
-  
-    public Document createTemplateDocument(URI applicationName, String interfaceName) throws ServiceException, NotFoundException, InvalidArgumentException {
+  public Document createTemplateDocument(URI applicationName, String interfaceName) throws ServiceException, NotFoundException, InvalidArgumentException {
         try {
-        ApplicationDescription descr = getAppReg().getDescriptionFor(munge(applicationName));
-        Tool t;
-        if (interfaceName != null && (! interfaceName.equals("default"))) {
-            Interface[] ifaces = descr.getInterfaces().get_interface();
-            Interface iface = null;
-            for (int i = 0; i < ifaces.length; i++) {
-                if (ifaces[i].getName().equals(interfaceName)) {
-                    iface =ifaces[i];
-                }
-            }
-            if (iface == null) {
-                throw new IllegalArgumentException("Cannot find interface named " + interfaceName + " in application " + applicationName);
-            }
-             t = descr.createToolFromInterface(iface);
-        } else {
-            t = descr.createToolFromDefaultInterface();
-        }
+            ApplicationInformation descr = getApplicationInformation(applicationName);
+        Tool t = createTemplateTool(interfaceName, descr);
         Document doc = XMLUtils.newDocument();
         Marshaller.marshal(t,doc);
         return doc;
-        } catch (WorkflowInterfaceException e) {
-            throw new ServiceException(e);
+
         } catch (ParserConfigurationException e) {
             throw new ServiceException(e);
         } catch (MarshalException e) {
@@ -287,6 +237,78 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
             throw new ServiceException(e);
         }
     }
+  
+  /**
+ * @param applicationName
+ * @param interfaceName
+ * @param descr
+ * @return
+ * @throws IllegalArgumentException
+ */
+public Tool createTemplateTool(String interfaceName, ApplicationInformation descr) throws IllegalArgumentException {
+    if (interfaceName != null && (! interfaceName.equals("default"))) {
+        InterfaceBean[] ifaces = descr.getInterfaces();
+        InterfaceBean iface = null;
+        for (int i = 0; i < ifaces.length; i++) {
+            if (ifaces[i].getName().equals(interfaceName)) {
+                iface =ifaces[i];
+            }
+        }
+        if (iface == null) {
+            throw new IllegalArgumentException("Cannot find interface named " + interfaceName );
+        }
+         return createTool(descr,iface);
+    } else {
+        return createTool(descr,null);
+    }
+}
+
+private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
+      if (iface == null) {
+          iface = descr.getInterfaces()[0];
+      }
+      Tool t = new Tool();
+      t.setInterface(iface.getName());
+      t.setName(descr.getId().getAuthority() + descr.getId().getPath()); //@todo should I drop the 'ivo' part.? - yes. for now. until cea accept this
+      Input input = new Input();
+      Output output = new Output();
+      t.setInput(input);
+      t.setOutput(output);
+      
+      // populate inputs
+      ParameterReferenceBean[] refs = iface.getInputs();
+      ParameterValue[] arr = new ParameterValue[refs.length];
+      for (int i = 0; i < refs.length; i++) {
+          ParameterBean pb = (ParameterBean)descr.getParameters().get(refs[i].getRef());
+          arr[i] = createParameterValue(pb);         
+      }
+      input.setParameter(arr);
+      
+      // populate outputs.
+      refs = iface.getOutputs();
+      arr = new ParameterValue[refs.length];
+      for (int i = 0; i < refs.length; i++) {
+          ParameterBean pb = (ParameterBean) descr.getParameters().get(refs[i].getRef());
+          arr[i] = createParameterValue(pb);
+          
+      }   
+      output.setParameter(arr);
+      
+      // fill in the blanks.
+      return t;
+  }
+  
+  private ParameterValue createParameterValue(ParameterBean pb) {
+      ParameterValue pv = new ParameterValue();
+      pv.setName(pb.getName());
+      if (pb.getDefaultValue()!= null) {
+          pv.setValue(pb.getDefaultValue());
+      } else {
+          pv.setValue("");
+      }
+      return pv;
+      
+  }
     
     public Map createTemplateStruct(URI applicationName, String interfaceName)
     throws ServiceException, NotFoundException, InvalidArgumentException {
@@ -372,24 +394,66 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
             throw new InvalidArgumentException(e);
         }
     }
-
+    //@todo test.
     public void validate(Document document) throws ServiceException, InvalidArgumentException {
+        Tool t;
         try {
-        Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,document);
-        ApplicationDescription descr = getAppReg().getDescriptionFor(t.getName());
-        descr.validate(t);
-        } catch (ToolValidationException e) {
-            throw new InvalidArgumentException(e);
-        } catch (WorkflowInterfaceException e) {
+            t = (Tool)Unmarshaller.unmarshal(Tool.class,document);
+            t.validate();
+        } catch (ValidationException e) {
             throw new InvalidArgumentException(e);
         } catch (MarshalException e) {
             throw new InvalidArgumentException(e);
-        } catch (ValidationException e) {
+        }
+        ApplicationInformation desc;
+        try {
+        URI uri = new URI("ivo://" + t.getName());
+        desc = getApplicationInformation(uri);
+        } catch(URISyntaxException e) {
+            throw new InvalidArgumentException(e);
+        } catch (NotFoundException e) {
             throw new InvalidArgumentException(e);
         }
+        InterfaceBean iface = null;
+        InterfaceBean[] ifs = desc.getInterfaces();
+        for (int i = 0 ; i < ifs.length; i++) {
+            if (ifs[i].getName().equals(t.getInterface())) {
+                iface = ifs[i];
+                break;
+            }
+        }
+        if (iface == null) {
+            throw new InvalidArgumentException("Interface " + t.getInterface() + " not found");
+        }
+        // checkeac parameter against the interface.
+            ParameterReferenceBean[] refs = iface.getInputs();            
+            BaseBean searchRoot = t.getInput();
+            for (int i = 0; i < refs.length; i++) {
+                validateReference(desc,refs[i],searchRoot);
+            }
+            // now the outputs.
+            refs = iface.getOutputs();
+            searchRoot = t.getOutput();
+            for (int i = 0; i < refs.length; i++) {
+                validateReference(desc,refs[i],searchRoot);
+            }           
     }
-    
-  
+
+    private void validateReference(ApplicationInformation desc, ParameterReferenceBean bean, BaseBean searchRoot) throws InvalidArgumentException {
+        Iterator results = searchRoot.findXPathIterator("/parameter[name = '" + bean.getRef() +"']");        
+        ParameterBean pb = (ParameterBean)desc.getParameters().get(bean.getRef());
+        int count = 0;
+        while (results.hasNext()) {
+            count++;
+            results.next();
+        }
+        if (count < bean.getMin() || count > bean.getMax()) {
+            throw new InvalidArgumentException("Parameter " + bean.getRef() + " occurs " + count +". Should occur between " 
+                    + bean.getMin() + " and " + bean.getMax() + " times");
+        }
+    }
+        
+
     public void validateStored(URI documentLocation) throws ServiceException, InvalidArgumentException, NotFoundException {
         Document doc;
         try {
@@ -425,63 +489,11 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
      * 
      */
     public ResourceInformation[] listProvidersOf(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
-        logger.debug("in listProviders");
-        
            reg.getRecord(applicationName); // verify the application exists.
-
-       logger.debug("Verified applicaion exists");
-       // what about namespaces??
         String query = "Select * from Registry where @status = 'active' and cea:ManagedApplications/cea:ApplicationReference='"
             + applicationName + "'";
-        try {
-        Document results = reg.searchForRecords(query);
-        logger.debug("got  results");       
-        
-        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-        fac.setNamespaceAware(true);
-        DocumentBuilder builder = fac.newDocumentBuilder();
-        DOMImplementation impl = builder.getDOMImplementation();        
-       Document namespaceHolder = impl.createDocument("http://www.ivoa.net/xml/RegistryInterface/v0.1", "f:namespaceMapping",null);
-      
-       // Document namespaceHolder = DomHelper.newDocument();
-        Element namespaceNode = namespaceHolder.getDocumentElement();
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr","http://www.ivoa.net/xml/VOResource/v0.10");
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns","http://www.ivoa.net/xml/VOResource/v0.10");
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vor", "http://www.ivoa.net/xml/RegistryInterface/v0.1");
-        NodeList resources = XPathAPI.selectNodeList(results,"//vor:Resource",namespaceNode);
-        logger.debug("Found " + resources.getLength());
-        ResourceInformation[] resourceDatas= new ResourceInformation[resources.getLength()];
-        for (int i = 0; i < resourceDatas.length; i++) {
-            Element resource = (Element)resources.item(i);
-            URI id = null;
-            URL url = null;
-            try {
-                id = new URI(XPathAPI.eval(resource,"vr:identifier",namespaceNode).str());
-            } catch (URISyntaxException e1) {
-                logger.warn("URISyntaxException",e1);
-            } 
-            String title = XPathAPI.eval(resource,"vr:title",namespaceNode).str();
-            try {
-                String str = XPathAPI.eval(resource,"vr:interface/vr:accessURL",namespaceNode).str().trim();
-                logger.debug("URL:" + str);
-                url = new URL(str);
-            } catch (MalformedURLException e2) {
-                logger.warn("MalformedURLException",e2);
-            } 
-            String description = XPathAPI.eval(resource,"vr:content/vr:description",namespaceNode).str();
-            resourceDatas[i] = new ResourceInformation(
-                    id
-                    ,title
-                    ,description
-                    ,url
-                    );
-        }
-        return resourceDatas;
-        } catch (TransformerException e) {
-            throw new ServiceException(e);
-        } catch (ParserConfigurationException e) {
-            throw new ServiceException(e);
-        }
+        return reg.adqlSearchRI(query);
+  
     }
     
     
@@ -585,7 +597,7 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
         CommonExecutionConnectorClient delegate = createCEADelegate(server.getAccessURL());
         // fudge some kind of job id type. hope this will do.
         try {
-        JobIdentifierType jid = new JobIdentifierType(community.getEnv().getUserIvorn().toString() + application.toString());
+        JobIdentifierType jid = new JobIdentifierType(community.getUserInformation().getId().toString() + application.toString());
         String primId = delegate.init(document,jid);
         if (!delegate.execute(primId)) {
             throw new CEADelegateException("Failed to start application, for unknown reason");
@@ -601,11 +613,6 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
     
     private URI getService(URI executionId) throws InvalidArgumentException  {
         try {
-            /*
-            int pos = executionId.indexOf('#');
-            return new Ivorn(executionId.substring(0,pos));
-            */
-            //@todo check null is ok here.
             return new URI(executionId.getScheme(),executionId.getSchemeSpecificPart(),null);
         } catch (URISyntaxException e) {
             throw new InvalidArgumentException(e);
@@ -615,9 +622,6 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
     
     private String getId(URI executionId) {
         return executionId.getFragment();
-        /*
-        int pos = executionId.indexOf('#');
-        return executionId.substring(pos+1);*/
     }
     
  
@@ -674,16 +678,115 @@ public class ApplicationsImpl implements ApplicationsInternal, UserLoginListener
     public void userLogin(UserLoginEvent e) {
     }
 
-    public void userLogout(UserLoginEvent e) {
+    public synchronized void userLogout(UserLoginEvent e) {
         appReg = null;
     }
        
+
+    public static  ApplicationInformation buildApplicationInformationFromResourceElement(CachedXPathAPI xpath,Element element) throws ServiceException{
+        try {
+            URI uri;
+        try {
+            uri = new URI(xpath.eval(element,"vr:identifier",nsNode).str());
+        } catch (URISyntaxException e) {
+            
+            uri = null;
+        }
+        String name = xpath.eval(element,"vr:title",nsNode).str();
+        String description = xpath.eval(element,"vr:content/vr:description",nsNode).str();
+        NodeList l = xpath.selectNodeList(element,"//ceab:Interface",nsNode);
+        InterfaceBean[] interfaces = new InterfaceBean[l.getLength()];
+        for (int i = 0; i < interfaces.length; i++) {
+            interfaces[i] = buildBeanFromInterfaceElement(xpath,((Element)l.item(i)));
+        }
+        l = xpath.selectNodeList(element,"//cea:ParameterDefinition",nsNode);        
+        Map parameters = new HashMap();
+        for (int i =0; i < l.getLength(); i++) {
+            ParameterBean pb = buildBeanFromParameterElement(xpath,(Element)l.item(i));
+            parameters.put(pb.getName(),pb);
+        }
+        return new ApplicationInformation(
+                uri
+                ,name
+                ,description
+                ,parameters
+                ,interfaces
+                );
+        } catch (TransformerException e) {
+            throw new ServiceException(e);
+        }
+    }
+    
+    public static  ParameterBean buildBeanFromParameterElement(CachedXPathAPI xpath,Element element)  throws TransformerException{
+        String[] options = null;
+        NodeList l = xpath.selectNodeList(element,".//ceapd:OptionVal",nsNode);
+        if (l.getLength() > 0) { //otherwise leave as null
+            options = new String[l.getLength()];
+            for (int i = 0; i < options.length; i++) {
+                options[i] = ((Element)l.item(i)).getFirstChild().getNodeValue();
+            }
+        }
+        return new ParameterBean(
+                xpath.eval(element,"@name",nsNode).str()
+                ,xpath.eval(element,".//ceapd:UI_Name",nsNode).str()
+                ,xpath.eval(element,".//ceapd:UI_Description",nsNode).str()
+                ,xpath.eval(element,".//ceapd:UCD",nsNode).str()
+                ,xpath.eval(element,".//ceapd:DefaultValue",nsNode).str()
+                ,xpath.eval(element,".//ceapd:Units",nsNode).str()
+                ,xpath.eval(element,"@type",nsNode).str()
+                ,xpath.eval(element,"@subtype",nsNode).str()
+                ,options
+                );
+    }
+    
+    public static  InterfaceBean buildBeanFromInterfaceElement(CachedXPathAPI xpath, Element element)  throws TransformerException{
+        NodeList l = xpath.selectNodeList(element,"//ceab:input//ceab:pref",nsNode);
+        ParameterReferenceBean[] inputs = new ParameterReferenceBean[l.getLength()];
+        for (int i = 0; i < inputs.length; i++) {
+            inputs[i] = builtBeanFromParameterReference(xpath,(Element)l.item(i));
+        }
+        l = xpath.selectNodeList(element,"//ceab:output//ceab:pref",nsNode);        
+        ParameterReferenceBean[] outputs = new ParameterReferenceBean[l.getLength()];
+        for (int i = 0; i < outputs.length; i++) {
+            outputs[i] = builtBeanFromParameterReference(xpath,(Element)l.item(i));
+        }         
+        return new InterfaceBean(
+                xpath.eval(element,"@name",nsNode).str()
+                ,inputs
+                ,outputs
+                );
+    }
+    
+    public static  ParameterReferenceBean builtBeanFromParameterReference(CachedXPathAPI xpath,Element element) throws TransformerException{
+        int max;
+        int min;
+        try {
+            max = Integer.parseInt(xpath.eval(element,"@maxoccurs",nsNode).str());
+        } catch (NumberFormatException e) {
+            max = 1; // default
+        }
+        try {
+            min = Integer.parseInt(xpath.eval(element,"@minoccurs",nsNode).str())   ;
+        } catch (NumberFormatException e) {
+            min = 1; // default;
+        }
+            
+        return new ParameterReferenceBean(
+                xpath.eval(element,"@ref",nsNode).str()
+                ,max
+                ,min             
+                );
+    }
+    
     
 }
 
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: WorkflowResultTransformerSet.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: WorkflowResultTransformerSet.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop.modules.system.transformers;
 
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.TransformerUtils;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
@@ -60,6 +59,9 @@ public class WorkflowResultTransformerSet extends DocumentResultTransformerSet {
 
 /* 
 $Log: WorkflowResultTransformerSet.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.4 2005/08/16 13:16:23 nw Exp $
+/*$Id: Finder.java,v 1.5 2005/08/25 16:59:44 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,12 +13,15 @@ package org.astrogrid.acr;
 import net.ladypleaser.rmilite.Client;
 
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.ApiHelp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
+import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,6 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+
+import javax.swing.JOptionPane;
 
 /** Find or create an ACR server, and return an interface to that service.
  * 
@@ -79,6 +84,21 @@ public class Finder {
     public synchronized ACR find()  throws ACRException{
         if (acr == null) {
             acr= createACR();
+            try { // attempt to register a listener, it it'll let me: use it to remove singleton when host vanishes.
+                Shutdown sd = (Shutdown)acr.getService(Shutdown.class);
+                sd.addShutdownListener(new ShutdownListener() {
+                    public void halting() {
+                        logger.info("Host ACR shutting down");
+                        Finder.this.acr = null;
+                    }
+                    public String lastChance() {
+                        return null; // won't ever object.
+                    }
+                });
+            } catch (ACRException e) {
+                logger.warn("Failed to register shutdown listener - no matter",e);
+            }
+                
         } 
         return acr;
 
@@ -107,11 +127,11 @@ public class Finder {
             } catch (Exception e) {
                 logger.warn("Failed to create internal acr",e);
             }
-            // hmm, try something else then.
+            // hmm, try starting external service
             try {
                 createExternal();
                 // need to wait some time to allow external to bootup (and maybe download).
-                // @todo make the delays configurable later.
+                // @todo make this a dialogue for information / cancel, and a retry-loop.
                 long now = System.currentTimeMillis();
                 long tooLong = now + (2 * 60 * 1000) ; // 2 minutes
                 while (! configurationFile().exists() && System.currentTimeMillis() < tooLong) {
@@ -124,6 +144,26 @@ public class Finder {
             } catch (Exception e) {
                   logger.warn("Failed to create external acr",e);
             }            
+            // finally - try prompting the user.
+            int dialogueResult;
+            try {
+            dialogueResult = JOptionPane.showConfirmDialog(null,"<html><b>Please start the ACR by hand</b><br>When started press 'Ok'. To halt press 'Cancel'","Unable to automatically start ACR",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
+            } catch (HeadlessException e) {
+                logger.warn("Not running in a ui environment - can't promt");
+                dialogueResult = JOptionPane.NO_OPTION;
+            }
+            
+            if (dialogueResult == JOptionPane.YES_OPTION) { // try to connect again.
+                try {
+                    result = connectExternal();
+                    if (result != null) {
+                        return result;
+                    }
+                } catch (Exception e) {
+                    logger.warn("Failed to connect to external acr, after user claimed to start one.",e);
+                    // could loop here?
+                }                  
+            }
             // fallen through everything.
             throw new ACRException("Failed to find or create an ACR to connect to");
     }
@@ -204,7 +244,7 @@ public class Finder {
     }
    
     
-    private static ACR acr;
+    private ACR acr;
     
     public static final File configurationFile() {
         File homeDir = new File(System.getProperty("user.home"));
@@ -228,22 +268,33 @@ public class Finder {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws ClassNotFoundException
+     * @throws ClassNotFoundException
      */
     private void createExternal() throws SecurityException, NoSuchMethodException, MalformedURLException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        
+        Method showMethod = null;
+        Object methodTarget = null;        
         try {
              Class managerClass = Class.forName("javax.jnlp.ServiceManager");
              Method lookupMethod= managerClass.getMethod("lookup",new Class[]{String.class});
-             Object basicService = lookupMethod.invoke(null,new Object[]{"javax.jnlp.BasicService"});
-             Method showMethod = basicService.getClass().getMethod("showDocument",new Class[]{URL.class});
-             URL url = new URL(ACR_JNLP_URL);
-             showMethod.invoke(basicService,new Object[]{url});
-             // that should have fired off the jnlp client - starting / downloading the acr.
+             methodTarget = lookupMethod.invoke(null,new Object[]{"javax.jnlp.BasicService"});
+             showMethod = methodTarget.getClass().getMethod("showDocument",new Class[]{URL.class});
         } catch (ClassNotFoundException e) {
-            logger.info("Not running under java web start - unable to start an external acr");
-            throw e;
-        } 
-
+            logger.info("Not running under java web start");
+        }
+        if (showMethod == null) { // try something else.
+            try {
+            Class jdicClass = Class.forName("org.jdesktop.jdic.desktop.Desktop");
+            showMethod= jdicClass.getMethod("browse",new Class[]{URL.class});    
+            } catch (ClassNotFoundException e1) {
+                logger.info("Not running with jdic libs");
+            }
+        }
+        
+        if (showMethod == null) {
+            throw new ClassNotFoundException("Can't find any class that can control the system browser");
+        }
+        URL url = new URL(ACR_JNLP_URL);
+        showMethod.invoke(methodTarget,new Object[]{url});        
     }
     
     private ACR createInternal() throws InstantiationException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
@@ -268,6 +319,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.5  2005/08/25 16:59:44  nw
+1.1-beta-3
+
 Revision 1.4  2005/08/16 13:16:23  nw
 doc fix
 

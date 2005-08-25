@@ -1,4 +1,4 @@
-/*$Id: CommunityInternal.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: CommunityInternal.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,8 +28,9 @@ public interface CommunityInternal  extends Community{
      * If the user is not logged in when this method is called, {@link #guiLogin()} is called to force the user to login before this method returns
      * if the user fails to login, this method returns null. 
      * @return a script environment, which may be null if the user fails to login.
+     * @deprecated. don't use this if it can be helped.
      */ 
-    public abstract ScriptEnvironment getEnv();
+   public abstract ScriptEnvironment getEnv();
     
 
 
@@ -38,6 +39,9 @@ public interface CommunityInternal  extends Community{
 
 /* 
 $Log: CommunityInternal.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

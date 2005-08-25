@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: JobsImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Myspace;
@@ -23,6 +24,7 @@ import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
+import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
@@ -56,23 +58,30 @@ public class JobsImpl implements Jobs, UserLoginListener {
     /** Construct a new Jes
      * 
      */
-    public JobsImpl(CommunityInternal community, Myspace vos) {
+    public JobsImpl(Community community, Myspace vos) {
         this.community = community;
         this.vos = vos;
         community.addUserLoginListener(this);
     }
-    protected final CommunityInternal community;
+    protected final Community community;
     protected final Myspace vos;
-   private JobExecutionService jes; 
-     private JobExecutionService getJes() throws WorkflowInterfaceException {
+   private JobExecutionService jes;
+   private Account acc;
+     private synchronized JobExecutionService getJes() throws WorkflowInterfaceException {
          if (jes == null) {
-        jes = community.getEnv().getAstrogrid().getWorkflowManager().getJobExecutionService();
+             WorkflowManagerFactory fac = new WorkflowManagerFactory();
+             jes = fac.getManager().getJobExecutionService();
          } 
          return jes;
     }
     
-    private Account getAccount() {
-        return community.getEnv().getAccount();
+    private synchronized Account getAccount() {
+        if (acc == null) {
+        acc = new Account();
+        acc.setCommunity(community.getUserInformation().getCommunity());
+        acc.setName(community.getUserInformation().getName());
+        }
+        return acc;
     }
 
     public URI[] list() throws ServiceException {
@@ -233,8 +242,8 @@ public class JobsImpl implements Jobs, UserLoginListener {
     /**
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
-    public void userLogout(UserLoginEvent e) {
-        jes = null;
+    public synchronized void userLogout(UserLoginEvent e) {
+        acc = null;
     }
 
 }
@@ -242,6 +251,9 @@ public class JobsImpl implements Jobs, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

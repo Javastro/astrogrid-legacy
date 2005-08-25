@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInternal.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApplicationsInternal.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,36 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.net.URI;
 
 /** Internal interface to further applications operations.
  * 
  * move stuff here that is too low-level for public interface, or which can't be easily remoted.
- * @todo review if any of this stuff is used whatsoever
- * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
+ *x @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
  *
  */
 public interface ApplicationsInternal extends Applications {
-    /** get the application descrption for a named application */
+    /** get the application descrption for a named application 
+     * @deprecated soon to be removed - phil -stop using ApplicationDescription, and use methods in {@link org.astrogrid.acr.astrogrid.Applications} instead.
+ **/
     public ApplicationDescription getApplicationDescription(URI name) throws WorkflowInterfaceException ;
-    /** get the description for an application description */
-    public String getInfoFor(ApplicationDescription descr) ;
+/** hook specially for the parametweized workflow launcher */
+    public Tool createTemplateTool(String interfaceName, ApplicationInformation descr) throws IllegalArgumentException;
      
 }
 
 
 /* 
 $Log: ApplicationsInternal.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: Community.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: Community.java,v 1.3 2005/08/25 16:59:44 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import org.astrogrid.acr.ServiceException;
  * <img src="doc-files/login.png">
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
  * @service astrogrid.community
- * @todo add methods to get username, homeIvorn, etc.
  */
 public interface Community {
 
@@ -34,6 +33,14 @@ public interface Community {
     public abstract void login(String username, String password, String community)
             throws SecurityException, ServiceException;
 
+    
+    /** Access information about the currently logged in user
+     * <p>
+     * This method forces login if not already logged in.
+     * @return information about the current user.
+     */
+    public UserInformation getUserInformation();
+    
     /** log out of astrogrid */
     public abstract void logout();
 
@@ -59,6 +66,9 @@ public interface Community {
 
 /* 
  $Log: Community.java,v $
+ Revision 1.3  2005/08/25 16:59:44  nw
+ 1.1-beta-3
+
  Revision 1.2  2005/08/12 08:45:16  nw
  souped up the javadocs
 

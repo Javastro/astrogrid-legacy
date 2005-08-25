@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,29 +10,32 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
-import org.astrogrid.desktop.modules.ag.CommunityInternal;
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ParameterEditorDialog;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.filestore.common.FileStoreOutputStream;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
-import org.astrogrid.scripting.Toolbox;
+import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.Marshaller;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -61,50 +64,65 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
      * @throws SAXException
      * 
      */
-    public ParameterizedWorkflowLauncherImpl(CommunityInternal community, JobMonitor monitor, MyspaceInternal vos,UI ui) throws MalformedURLException, IOException, SAXException {
-        this(community,monitor,vos,ui,new URL(DEFAULT_INDEX_URL));       
+    public ParameterizedWorkflowLauncherImpl(Community community, JobMonitor monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor,ResourceChooserInternal chooser) throws MalformedURLException, IOException, SAXException {
+        this(community,monitor,jobs,vos,apps,editor, chooser,new URL(DEFAULT_INDEX_URL));       
     }
     
     public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
 
-    public ParameterizedWorkflowLauncherImpl(CommunityInternal community,JobMonitor monitor,MyspaceInternal vos,UI ui,URL indexURL) throws IOException, SAXException{ 
+    public ParameterizedWorkflowLauncherImpl(Community community,JobMonitor monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,URL indexURL) throws IOException, SAXException{ 
         URL[] list = getWorkflowList(indexURL);
     templates = loadWorkflows(list);        
     this.community = community;
+    this.editor = editor;
     this.monitor = monitor;
-    this.ui = ui;
+    this.jobs =jobs;
+    this.apps = apps;
     this.vos = vos;
+    this.chooser = chooser;
 }
        
+    protected final ApplicationsInternal apps;
     protected final MyspaceInternal vos;
     protected final WorkflowTemplate[] templates;
-    protected final CommunityInternal community;
-    protected final UI ui;
+    protected final Jobs jobs;
+    protected final Community community;
     protected final JobMonitor monitor;
+    protected final ResourceChooserInternal chooser;
+    protected final ToolEditorInternal editor;
     
     public void run() {
-        // forces login to happen first.. - otherwise we get too many logins at once.
-        getAstrogrid();
+        // force login.
+        community.getUserInformation();
         
         WorkflowTemplate wft = chooseTemplate();
         if (wft == null) {
             return;
         }
 
-        Tool t = editParameters(wft);
+        try {
+            Tool t = apps.createTemplateTool("default",wft.getDesc());
+            t = editor.editToolWithDescription(t,wft.getDesc(),null);       
         if (t == null) {
             return;
         }
-        try {
-        Workflow wf = wft.instantiate(community.getEnv().getAccount(),t);
-        URI u = ResourceChooserDialog.chooseResource(vos,"Save a copy of this workflow",true);
-        if (u != null ) {
-            Writer writer = new OutputStreamWriter(vos.getOutputStream(u));
-            wf.marshal(writer);
-            writer.close();
+            Account acc = new Account();
+            acc.setCommunity(community.getUserInformation().getCommunity());
+            acc.setName(community.getUserInformation().getName());
+        Workflow wf = wft.instantiate(acc,t);
+        if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,"Do you want to save a copy of the workflow you just built? (Optional)","Save a copy",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE)) {
+            URI u = chooser.chooseResource("Save a copy of this workflow",true);
+            if (u != null ) {
+                Writer writer = new OutputStreamWriter(vos.getOutputStream(u));
+                wf.marshal(writer);
+                writer.close();
+            }
         }
-        JobURN id = submit(wf);
-        ResultDialog rd = new ResultDialog(null,"Workflow Submitted \nJob ID is \n" + id.getContent());
+       // @todo check this works - otherwise will need to go via a string reader. 
+        Document doc = XMLUtils.newDocument();
+        Marshaller.marshal(wf,doc);
+        URI id = jobs.submitJob(doc);
+        ResultDialog rd = new ResultDialog(null,"Workflow Submitted \nJob ID is \n" + id);
         rd.show();
         monitor.show(); // brings monitor to the front, if not already there.
         monitor.refresh();
@@ -169,31 +187,10 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         return (WorkflowTemplate) JOptionPane.showInputDialog(null,"Choose a template workflow", "Template Chooser",JOptionPane.QUESTION_MESSAGE,null,templates,templates[0]);
     }
     
+
     
-    /** prompt user in some way to fill in fields in the template 
-     * returns null to indicate canceled operation.*/
-    protected Tool editParameters(WorkflowTemplate wft) {
-        ParameterEditorDialog editor = new ParameterEditorDialog(vos,wft.getDesc(),null,false);
-        editor.show();
-        return editor.getTool();
-    }
-    
-  
-    /** submit a job to jes.
-     * @param wf
-     * @return
-     * @throws WorkflowInterfaceException
-     */
-    private JobURN submit(Workflow wf) throws WorkflowInterfaceException {
-       return getAstrogrid().getWorkflowManager().getJobExecutionService().submitWorkflow(wf);
-    }    
-    
-    /**
-     * @return
-     */
-    private Toolbox getAstrogrid() {
-        return community.getEnv().getAstrogrid();
-    }
+
+
 
     
 
@@ -202,6 +199,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

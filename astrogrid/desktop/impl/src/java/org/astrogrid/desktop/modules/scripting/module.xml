@@ -26,5 +26,9 @@
 	<property>
 		<key>icon</key>
 		<value>script_obj.gif</value>
-	</property>			
+	</property>	
+	<property>
+		<key>priority</key>
+		<value>40</value>
+	</property>				
 </module>

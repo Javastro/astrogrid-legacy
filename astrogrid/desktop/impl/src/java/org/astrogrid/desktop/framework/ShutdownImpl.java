@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,17 @@
 package org.astrogrid.desktop.framework;
 
 import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.builtin.ShutdownListener;
 
 import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.CollectionUtils;
 import org.picocontainer.PicoContainer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 /** implementation class for {@link Shutdown}
  * 
@@ -31,18 +36,84 @@ public class ShutdownImpl implements Shutdown {
     }
 
     public void halt() {
+        // tell everyone 
+        List objections = new ArrayList();
+        for (int i = 0; i < listeners.size(); i++) {
+            try {
+                ShutdownListener sl = (ShutdownListener)listeners.get(i);
+                if (sl != null) {
+                  String msg =   sl.lastChance();
+                  if (msg != null) {
+                      objections.add(msg);
+                  }
+                }
+            } catch (Throwable t) {
+                // really don't care - nothing can stop us
+            }
+        }
+        // go ahead if we've no objections, otherwise prompt the user.       
+        if (objections.size() ==0 || JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,fmt(objections),"Shutting down ACR - are you sure?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE)) {
+            reallyHalt();
+        }
+        
+    }
+    
+    private String fmt(List l) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<html><b>There appears to be clients that still require the ACR</b><ul>");
+        for (int i = 0; i < l.size(); i++) {
+            sb.append("<li>");
+            sb.append(l.get(i).toString());            
+        }
+        sb.append("</ul><b>Select 'OK' if you still want to halt the ACR, otherwise 'Cancel'</b></html>");
+        return sb.toString();
+    }
+
+    /**
+     * @see org.astrogrid.acr.builtin.Shutdown#reallyHalt()
+     */
+    public void reallyHalt() {
+        // tell everyone 
+        for (int i = 0; i < listeners.size(); i++) {
+            try {
+                ShutdownListener sl =(ShutdownListener)listeners.get(i);
+                if (sl != null) {
+                    sl.halting();
+                }
+            } catch (Throwable t) {
+                // really don't care - nothing can stop us
+            }
+        }
+        // do the deed
         CollectionUtils.forAllDo(modules.values(),new Closure() {
             public void execute(Object arg0) {
                 ((PicoContainer)arg0).stop();
             }
         });
-        // probably unnecessary, and a pain to test with :)
-        // System.exit(0);
+        System.exit(0);
+    }
+
+    protected List listeners = new ArrayList();
+    /**
+     * @see org.astrogrid.acr.builtin.Shutdown#addShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
+     */
+    public void addShutdownListener(ShutdownListener arg0) {
+        listeners.add(arg0);
+    }
+
+    /**
+     * @see org.astrogrid.acr.builtin.Shutdown#removeShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
+     */
+    public void removeShutdownListener(ShutdownListener arg0) {
+        listeners.remove(arg0);
     }
 }
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

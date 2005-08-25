@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:Jglu" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:Jglu" xmlns:intf="urn:Jglu" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)-->
+
+   <wsdl:message name="getURLfromTagResponse">
+
+      <wsdl:part name="return" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getURLfromTagRequest">
+
+      <wsdl:part name="id" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="Jglu">
+
+      <wsdl:operation name="getURLfromTag" parameterOrder="id">
+
+         <wsdl:input message="impl:getURLfromTagRequest" name="getURLfromTagRequest"/>
+
+         <wsdl:output message="impl:getURLfromTagResponse" name="getURLfromTagResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="JgluSoapBinding" type="impl:Jglu">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getURLfromTag">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getURLfromTagRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Jglu" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getURLfromTagResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Jglu" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="JgluService">
+
+      <wsdl:port binding="impl:JgluSoapBinding" name="Jglu">
+
+         <wsdlsoap:address location="http://cdsws.u-strasbg.fr/axis/services/Jglu"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

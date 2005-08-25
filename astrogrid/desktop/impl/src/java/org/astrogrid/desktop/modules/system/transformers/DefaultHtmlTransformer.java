@@ -1,4 +1,4 @@
-/*$Id: DefaultHtmlTransformer.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: DefaultHtmlTransformer.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import java.util.Vector;
 
 /** Default implementaiton of transformer to html -  works ok-ish - not good for nested object trees.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
- *@todo try using tables instead of definitions lists..
  */
 public class DefaultHtmlTransformer implements Transformer {
 
@@ -89,6 +88,9 @@ public class DefaultHtmlTransformer implements Transformer {
 
 /* 
 $Log: DefaultHtmlTransformer.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: UserLoginListener.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: UserLoginListener.java,v 1.3 2005/08/25 16:59:44 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,15 @@
 **/
 package org.astrogrid.acr.astrogrid;
 
+import java.util.EventListener;
+
 /** Listener interface for classes that need to be notified of login events
  * @see Community#addUserLoginListener(UserLoginListener)
  * @see org.astrogrid.acr.astrogrid.Community#removeUserLoginListener(UserLoginListener)
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
  *
  */
-public interface UserLoginListener {
+public interface UserLoginListener  extends EventListener{
     
     /** notification that the user has logged into the ACR */
     public void userLogin(UserLoginEvent e);
@@ -29,6 +31,9 @@ public interface UserLoginListener {
 
 /* 
 $Log: UserLoginListener.java,v $
+Revision 1.3  2005/08/25 16:59:44  nw
+1.1-beta-3
+
 Revision 1.2  2005/08/12 08:45:16  nw
 souped up the javadocs
 

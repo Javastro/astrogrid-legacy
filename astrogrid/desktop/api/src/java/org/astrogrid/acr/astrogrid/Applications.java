@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: Applications.java,v 1.3 2005/08/25 16:59:44 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,15 +56,22 @@ import java.util.Map;
 public interface Applications {
     /** list registered applications 
      * @return a list of the registry identifiers of available applications
-     * @throws ServiceException if error occurs while talking to server */
+     * @throws ServiceException if error occurs while talking to server 
+     * @see Registry#getRecord(URI)  
+     * @see Registry#getResourceInformation(URI)
+     * @see #getApplicationInformation(URI)
+     * 
+     * */
     URI[] list() throws ServiceException;
     
-    /** list information about applications 
-     * @return an array giving details of the available applications
-     * @throws ServiceException if error occurs while talking to server
-     * @xmlrpc will return an array of structs - see {@link ApplicationInformation} for details of keys
-     *  */
-    ApplicationInformation[] listFully() throws ServiceException;
+
+    /** helper method that returns the ADQL query that should be passed to the registry to
+     * list all available applications.
+     * <p>
+     * can be used as a starting point to build up filters, etc.
+     * @return an adql query string.
+     */
+    String getQueryToListApplications(); 
        
     /** get information for a specific application 
      * @param applicationName name of the application to hunt for
@@ -256,6 +263,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.3  2005/08/25 16:59:44  nw
+ 1.1-beta-3
+
  Revision 1.2  2005/08/12 08:45:16  nw
  souped up the javadocs
 

@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelper.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ReflectionHelper.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ public class ReflectionHelper {
     public static Method getMethodByName(Class clazz, String name) throws NoSuchMethodException {
         Method[] ms = clazz.getMethods();
         for (int i = 0; i < ms.length; i++) {
-            if (ms[i].getName().equalsIgnoreCase(name.trim())) {
+            if (ms[i].getName().equalsIgnoreCase(name.trim()) ) {
                 return ms[i];
             }
         }
@@ -46,6 +46,9 @@ public class ReflectionHelper {
 
 /* 
 $Log: ReflectionHelper.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

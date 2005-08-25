@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,32 +10,34 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.JobMonitor;
-import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ParametersPanel;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -45,11 +47,8 @@ import java.awt.event.ItemListener;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -84,15 +83,15 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 	private JComboBox applicationChooser = null;
 	private JPanel bottomPane = null;
     private JPanel topPane = null;
-    private ApplicationDescription currentApplication;    
-    private Interface currentInterface;
+    private ApplicationInformation currentApplication;    
+    private InterfaceBean currentInterface;
     
-    private ApplicationDescription getCurrentApplication() {   
+    private ApplicationInformation getCurrentApplication() {   
         logger.debug("Applilcation " + currentApplication.getName());
         return currentApplication;
     }
     private final static         String vr = "http://www.ivoa.net/xml/VOResource/v0.10";
-    private void setCurrentApplication(ApplicationDescription descr) {
+    private void setCurrentApplication(ApplicationInformation descr) throws ServiceException, NotFoundException, InvalidArgumentException {
         if (descr == null) {
             logger.warn("Attempted to set to null application description - must have been an error in parsing reg entry");
             return;
@@ -101,17 +100,13 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         this.currentApplication = descr;
         // now need to change display
         JEditorPane infoDisplay2 = getInfoDisplay();
-        //infoDisplay2.setText(apps.getInfoFor(currentApplication));
-        Element e = (Element)currentApplication.getOriginalVODescription().getElementsByTagNameNS(vr,"description").item(0);
-        infoDisplay2.setText("<html>" 
-                + e == null || e.getFirstChild() == null ? "<i>No Description available</i>" : e.getFirstChild().getNodeValue()
-                + "</html>");
+        infoDisplay2.setText(currentApplication.getDescription() == null ? "<html><i>No description available</i></html>" : "<html>" + currentApplication.getDescription() + "</html>");
         infoDisplay2.setCaretPosition(0);
         
         // change interface list.
         JComboBox interfaceChooser2 = getInterfaceChooser();
         interfaceChooser2.removeAllItems();
-        Interface[] interfaces = currentApplication.getInterfaces().get_interface();
+        InterfaceBean[] interfaces = currentApplication.getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
             interfaceChooser2.addItem(interfaces[i]);
         }        
@@ -120,18 +115,18 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         
     }
     
-    private void setCurrentInterface(Interface intf) {
+    private void setCurrentInterface(InterfaceBean intf) throws ServiceException, NotFoundException, InvalidArgumentException {
         this.currentInterface = intf;
         if (currentInterface == null ) {
-            getParametersPane().clear();
             getSaveAction().setEnabled(false);
             executeAction.setEnabled(false);
         } else {
-            Tool t = getCurrentApplication().createToolFromInterface(currentInterface);
+            Tool t = apps.createTemplateTool(currentInterface.getName(),getCurrentApplication());    
             getParametersPane().populate(t,getCurrentApplication());
             getSaveAction().setEnabled(true);
             executeAction.setEnabled(true);
-        }
+            }
+        
     }
     
 	
@@ -148,7 +143,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         }
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResource("Save Tool Document",true);
+            final URI u = chooser.chooseResourceWithParent("Save Tool Document",true,true,true,ApplicationLauncherImpl.this);
             if (u == null) {
                 return;
             }
@@ -174,10 +169,6 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         }
 
         public void actionPerformed(ActionEvent e) {
-            // @todo HACK going to clone this tool document, rather than passing a reference - as it's getting butchered later on,
-            // which means that you can't run the same app twice. easiest to clone the tool document for now - and find out what's going wrong later
-            // it's that cursed Ivorn class really.
-
             
             final Tool tOrig = getParametersPane().getTool();
             (new BackgroundOperation("Executing..") {
@@ -231,19 +222,19 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         }        
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResource("Select tool document to load",true);
+            final URI u = chooser.chooseResourceWithParent("Select tool document to load",true,true,true,ApplicationLauncherImpl.this);
             if (u == null) {
                 return;
             }                   
                 (new BackgroundOperation("Opening tool definition") {
-                    private ApplicationDescription newApp;
-                    private Interface newInterface;
+                    private ApplicationInformation newApp;
+                    private InterfaceBean newInterface;
                     protected Object construct() throws Exception {
                         Reader fr = new InputStreamReader(myspace.getInputStream(u));
                        Tool t = Tool.unmarshalTool(fr);
                        fr.close();
-                       newApp = apps.getApplicationDescription(new URI("ivo://" + t.getName()));                       
-                       Interface[] candidates = getCurrentApplication().getInterfaces().get_interface();
+                       newApp = apps.getApplicationInformation(new URI("ivo://" + t.getName()));                       
+                       InterfaceBean[] candidates = newApp.getInterfaces();
                        for (int i = 0; i < candidates.length; i++) {
                            if (candidates[i].getName().equalsIgnoreCase(t.getInterface().trim())) {
                                newInterface  = candidates[i];
@@ -256,9 +247,13 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                        
                     }
                     protected void doFinished(Object o) {
+                        try {
                         setCurrentApplication(newApp);
-                        setCurrentInterface(newInterface);
+                        setCurrentInterface(newInterface);                        
                         getParametersPane().populate((Tool)o,getCurrentApplication());
+                        }catch (ACRException e) {
+                            showError(ApplicationLauncherImpl.this,"Failed to open tool definition",e);
+                        }
                     }
                 }).start();
             }
@@ -361,7 +356,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                     if (value == null) {
                         l.setText("");
                     } else {
-                    ApplicationInformation data = (ApplicationInformation)value;
+                    ResourceInformation data = (ResourceInformation)value;
                     String ui = data.getName() == null ? "not available" : data.getName();
                     String name = data.getId() == null ? "not available" : data.getId().toString();
                     l.setText("<html><b>" + ui+ "</b><br><font size='-1'>" + name + "</font></html>");     
@@ -373,16 +368,20 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
                 public void itemStateChanged(ItemEvent e) {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
-                        final ApplicationInformation selected = (ApplicationInformation) applicationChooser.getSelectedItem(); 
+                        final ResourceInformation selected = (ResourceInformation) applicationChooser.getSelectedItem(); 
                         (new BackgroundOperation("Fetching info for " + selected.getName()) {
                             protected Object construct() throws Exception {
-                                return apps.getApplicationDescription(selected.getId());                           
+                                return apps.getApplicationInformation(selected.getId());                           
                             }
                             protected void doFinished(Object o) {
                                 if (o != null) {
-                                    setCurrentApplication((ApplicationDescription)o);
+                                    try {
+                                    setCurrentApplication((ApplicationInformation)o);
                                     getExecuteAction().setEnabled(true);                               
                                     getSaveAction().setEnabled(true);
+                                    } catch (ACRException e) {
+                                        showError(ApplicationLauncherImpl.this,"Failed to parse registry entry",null);
+                                    }
                                 } else {
                                     showError(ApplicationLauncherImpl.this,"Failed to parse registry entry",null);
                                 }
@@ -395,11 +394,12 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             (new BackgroundOperation("Populating application list") {
 
                 protected Object construct() throws Exception {
-                    ApplicationInformation[] d = apps.listFully();               
+
+                    ResourceInformation[] d = reg.adqlSearchRI(apps.getQueryToListApplications());
                     Arrays.sort(d,new Comparator() {
                         public int compare(Object o1, Object o2) {
-                            ApplicationInformation a = (ApplicationInformation)o1;
-                            ApplicationInformation b = (ApplicationInformation)o2;
+                            ResourceInformation a = (ResourceInformation)o1;
+                            ResourceInformation b = (ResourceInformation)o2;
                             return a.getName().compareToIgnoreCase(b.getName());
                         }
                     });
@@ -407,7 +407,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                     return d;
                 }
                 protected void doFinished(Object o) {
-                    final ApplicationInformation[] data =(ApplicationInformation[]) o;
+                    final ResourceInformation[] data =(ResourceInformation[]) o;
                     for (int i = 0; i < data.length; i++) {
                         if (data[i] != null) {
                             applicationChooser.addItem(data[i]);
@@ -428,7 +428,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 	 */    
 	private ParametersPanel getParametersPane() {
 		if (parametersPane == null) {
-			parametersPane = new ParametersPanel(new ResourceChooserDialog(myspace,"Choose External Resource",true,false,true));
+			parametersPane = new ParametersPanel(chooser);
 		}
 		return parametersPane;
 	}
@@ -456,7 +456,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
                     if (value == null) {
                         l.setText("");
                     } else {
-                        Interface intf = (Interface)value;
+                        InterfaceBean intf = (InterfaceBean)value;
                         l.setText(intf.getName());
                     }
                     return l ;    
@@ -464,8 +464,12 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
            });  // end cell renderer            
             interfaceChooser.setAction(new AbstractAction() {
 
-                public void actionPerformed(ActionEvent e) {
-                    setCurrentInterface((Interface)interfaceChooser.getSelectedItem());                   
+                public void actionPerformed(ActionEvent ignored) {
+                    try {
+                    setCurrentInterface((InterfaceBean)interfaceChooser.getSelectedItem());
+                    } catch (ACRException e) {
+                        showError(ApplicationLauncherImpl.this,"Failed to change interface",e);
+                    }
                 }
             });
         }
@@ -519,11 +523,13 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         this.monitor =null;
         this.myspace = null;
         this.chooser=null;
+        this.reg = null;
 		initialize();
 	}
     
-    public ApplicationLauncherImpl(ApplicationsInternal apps,JobMonitor monitor, MyspaceInternal myspace, HelpServer hs, Configuration conf, UIInternal ui,ResourceChooser chooser) {
+    public ApplicationLauncherImpl(ApplicationsInternal apps,JobMonitor monitor, MyspaceInternal myspace, HelpServer hs, Configuration conf, UIInternal ui,ResourceChooserInternal chooser, Registry reg) {
         super(conf,hs,ui);
+        this.reg = reg;
         this.apps = apps;
         this.monitor = monitor;
         this.myspace =myspace;
@@ -533,8 +539,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
     
     private final ApplicationsInternal apps;
     private final JobMonitor monitor;
+    private final Registry reg;
     private final MyspaceInternal myspace;
-    private final ResourceChooser chooser;
+    private final ResourceChooserInternal chooser;
 	/**
 	 * This method initializes this
 	 * 
@@ -560,6 +567,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

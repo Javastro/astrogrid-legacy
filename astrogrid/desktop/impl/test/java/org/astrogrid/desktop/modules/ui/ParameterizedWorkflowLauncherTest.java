@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,7 +49,7 @@ public class ParameterizedWorkflowLauncherTest extends TestCase {
         pw.close();
      
         URL indexUrl = tmpIndex.toURL();
-        pwl = new ParameterizedWorkflowLauncherImpl(null,null,null,null,indexUrl);
+        pwl = new ParameterizedWorkflowLauncherImpl(null,null,null,null,null,null,null,indexUrl);
     
     }
     
@@ -66,13 +66,7 @@ public class ParameterizedWorkflowLauncherTest extends TestCase {
         WorkflowTemplate chosen =pwl.chooseTemplate();
         System.out.println(chosen);        
     }
-    
-    public void dontTestEditor() throws Exception {
-        Tool t =  pwl.editParameters(pwl.templates[0]);
-        StringWriter sw = new StringWriter();
-        Marshaller.marshal(t,sw);
-        System.out.println(sw);
-    }
+
     
 
 
@@ -81,6 +75,9 @@ public class ParameterizedWorkflowLauncherTest extends TestCase {
 
 /* 
 $Log: ParameterizedWorkflowLauncherTest.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

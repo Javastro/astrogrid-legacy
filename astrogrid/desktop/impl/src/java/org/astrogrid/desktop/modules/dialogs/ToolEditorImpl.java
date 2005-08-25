@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,12 @@
 package org.astrogrid.desktop.modules.dialogs;
 
 import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.dialogs.ToolEditor;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -25,24 +25,28 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 
+import java.awt.Component;
 import java.net.URI;
+import java.net.URISyntaxException;
 
-/**
+/** wrappe component around the parameter editor daialog to publish the methods.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-May-2005
  *
  */
-public class ToolEditorImpl implements ToolEditor {
+public class ToolEditorImpl implements ToolEditorInternal {
 
     /** Construct a new ToolEditorImpl
      * 
      */
-    public ToolEditorImpl(MyspaceInternal myspace, ApplicationsInternal apps) {
+    public ToolEditorImpl(Applications apps,ResourceChooserInternal chooser) {
         super();
-        this.myspace = myspace;
+        dialog = new ParameterEditorDialog(chooser);
+        dialog.pack();
+        dialog.setSize(600,400);        
         this.apps = apps;
     }
-    private final MyspaceInternal myspace;
-    private final ApplicationsInternal apps;
+    private final ParameterEditorDialog dialog;
+    private final Applications apps;
     
 
     /**
@@ -53,24 +57,72 @@ public class ToolEditorImpl implements ToolEditor {
     public Document edit(Document doc) throws InvalidArgumentException {
         try {
         Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
-        ApplicationDescription desc = apps.getApplicationDescription(new URI(t.getName()));
-        ParameterEditorDialog d = new ParameterEditorDialog(myspace,null,null,true);
-        d.populate(t,desc);
-        d.show();
-        d.requestFocus();
+        Tool t1 = editTool(t,null);
         Document doc1 = XMLUtils.newDocument();
-        Marshaller.marshal(d.getTool(),doc1);
+        Marshaller.marshal(t1,doc1);
         return doc1;
         } catch (Exception e) {
             throw new InvalidArgumentException(e);
         }
     }
 
+    public Document editWithDescription(Document doc,ApplicationInformation desc) throws InvalidArgumentException{
+        try {
+            Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
+            Tool t1 = editToolWithDescription(t,desc,null);
+            Document doc1 = XMLUtils.newDocument();            
+            Marshaller.marshal(t1,doc1);
+            return doc1;
+            } catch (Exception e) {
+                throw new InvalidArgumentException(e);
+            }
+        }        
+    
+    /**
+     * @param t
+     * @return
+     * @throws URISyntaxException
+     * @throws ServiceException
+     * @throws NotFoundException
+     * @throws InvalidArgumentException
+     */
+    public Tool editTool(Tool t,Component comp) throws InvalidArgumentException {
+        try {
+        URI uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
+        ApplicationInformation desc = apps.getApplicationInformation(uri);
+        Tool t1 = editToolWithDescription(t, desc,comp);
+        return t1;
+        } catch (URISyntaxException e) {
+            throw new InvalidArgumentException(e);
+        } catch (ServiceException e) {
+            throw new InvalidArgumentException(e);
+        } catch (NotFoundException e) {
+            throw new InvalidArgumentException(e);
+        } 
+    }
+
+    /**
+     * @param t
+     * @param desc
+     * @return
+     */
+    public Tool editToolWithDescription(Tool t, ApplicationInformation desc,Component comp) {        
+        dialog.populate(t,desc);
+        dialog.setLocationRelativeTo(comp);
+        dialog.setVisible(true);      
+        return dialog.getTool();
+    }
+
+
+
 }
 
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

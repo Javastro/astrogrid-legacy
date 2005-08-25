@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,8 +19,6 @@ import org.apache.commons.logging.LogFactory;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -30,7 +28,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -47,90 +44,10 @@ import javax.swing.event.DocumentListener;
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2005
 
  */
-public class ResourceChooserDialog extends JDialog {
-    
-    public static URI chooseResource(MyspaceInternal vos) {
-        ResourceChooserDialog chooser = new ResourceChooserDialog(vos);        
-        chooser.show();
-        URI u = chooser.getUri();
-        chooser.dispose();
-        return u;
-    }
-    
-    public static URI chooseResource(MyspaceInternal vos,boolean enableMySpaceTab) {
-        ResourceChooserDialog chooser = new ResourceChooserDialog(vos,enableMySpaceTab);
-        chooser.show();
-        URI u = chooser.getUri();
-        chooser.dispose();
-        return u;        
-    }
-    
-    public static URI chooseResource(MyspaceInternal vos,String prompt, boolean enableMySpaceTab) {
-        ResourceChooserDialog chooser = new ResourceChooserDialog(vos,prompt,enableMySpaceTab);
-        chooser.show();
-        URI u = chooser.getUri();
-        chooser.dispose();
-        return u;        
-    }
-    
-    
-    public static URI chooseResource(MyspaceInternal vos,String prompt, boolean enableMySpaceTab,boolean enableLocalFile,boolean enableURI) {
-        ResourceChooserDialog chooser = new ResourceChooserDialog(vos,prompt,enableMySpaceTab,enableLocalFile,enableURI);
-        chooser.show();
-        URI u = chooser.getUri();
-        chooser.dispose();
-        return u;        
-    }
-    
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(ResourceChooserDialog.class);
-
-	private javax.swing.JPanel jContentPane = null;
-	private JTextField resourceUriField = null;
-	private JFileChooser jFileChooser = null;
-	private JPanel buttonPanel = null;  //  @jve:decl-index=0:visual-constraint="556,166"
-	private JButton okButton = null;
-	private JButton cancelButton = null;
-	/**
-	 * This method initializes jTextField	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */    
-	private JTextField getResourceUriField() {
-		if (resourceUriField == null) {
-			resourceUriField = new JTextField();
-            resourceUriField.setEditable(false); // don't make this editable.
-            resourceUriField.setColumns(50);
-
-		}
-		return resourceUriField;
-	}
-	/**
-	 * This method initializes jFileChooser	
-	 * 	
-	 * @return javax.swing.JFileChooser	
-	 */    
-	private JFileChooser getJFileChooser() {
-		if (jFileChooser == null) {
-			jFileChooser = new JFileChooser();
-			jFileChooser.setDialogTitle("Choose file");
-			jFileChooser.setControlButtonsAreShown(false);
-           jFileChooser.addPropertyChangeListener("SelectedFileChangedProperty",new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                File f = jFileChooser.getSelectedFile();
-                if (f != null) {
-                    setUri(f.toURI());
-                }
-            }
-           });
-
-		}
-		return jFileChooser;
-	}
+class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     
     class VospaceChooser extends AbstractVospaceBrowser {
+        private Actions actions;
         public VospaceChooser(MyspaceInternal vos) {
             super(vos);
         }
@@ -158,75 +75,66 @@ public class ResourceChooserDialog extends JDialog {
             }
             return actions;
         }
-        private Actions actions;
-    }
+    } // end class vospace chooser.
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(ResourceChooserDialog.class);
 
-	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
-	private JPanel getButtonPanel() {
-		if (buttonPanel == null) {
-			buttonPanel = new JPanel();
-			buttonPanel.setSize(211, 35);
-			buttonPanel.add(getOkButton(), null);
-			buttonPanel.add(getCancelButton(), null);
-		}
-		return buttonPanel;
-	}
-	/**
-	 * This method initializes jButton1	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
-	private JButton getOkButton() {
-		if (okButton == null) {
-			okButton = new JButton();
-			okButton.setText("Ok");
-            okButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                       //if (getResourceUriField().getText() == null) {
-                     if (getUri() == null) {
-                           JOptionPane.showMessageDialog(ResourceChooserDialog.this,"You must choose a resource, or hit Cancel","Choose a resource",JOptionPane.WARNING_MESSAGE);
-                       } else {
-                           //setUri(new URI(getResourceUriField().getText()));
-                           dispose();
-                       }
-                }
-            });
-		}
-		return okButton;
-	}
+    
     protected URI uri;
 	private JPanel bottomPanel = null;
-	private JLabel jLabel = null;
+
+
+	private javax.swing.JOptionPane  optionPane = null;
+	private JFileChooser localPanel = null;
 	private JTabbedPane jTabbedPane = null;
     
-	private JPanel myspacePanel = null;
+	private JPanel myspacePanel = null;	
+	private JTextField resourceUriField = null;
     private JPanel urlPanel = null;
-
-    private final boolean enableMySpacePanel;
-    private final boolean enableLocalFilePanel;
-    private final boolean enableURIPanel;
-	/**
-	 * This method initializes jButton2	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
-	private JButton getCancelButton() {
-		if (cancelButton == null) {
-			cancelButton = new JButton();
-			cancelButton.setText("Cancel");
-            cancelButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setUri(null);
-                    dispose();
-                }
-            });
-		}
-		return cancelButton;
+    
+    private JTextField urlPanelField = null;
+    private final MyspaceInternal vos;    
+    
+    
+    public ResourceChooserDialog(MyspaceInternal vos) {
+        super();
+        this.vos = vos;
+        initialize();
 	}
+    public URI getUri() {
+        return this.uri;
+    }
+
+    public void setEnableLocalFilePanel(boolean enableLocalFilePanel) {
+        getJTabbedPane().setEnabledAt(0,enableLocalFilePanel); 
+    }
+    public void setEnableMySpacePanel(boolean enableMySpacePanel) {
+        getJTabbedPane().setEnabledAt(1,enableMySpacePanel);
+    }
+    public void setEnableURIPanel(boolean enableURIPanel) {
+        getJTabbedPane().setEnabledAt(2,enableURIPanel);       
+    }
+    
+    /** resets the dialog, then hides it. */
+    public void resetAndHide() {        
+        setVisible(false);
+        setEnableLocalFilePanel(true);
+        setEnableMySpacePanel(true);
+        setEnableURIPanel(true);
+        getResourceUriField().setText(null);
+        
+    }
+    
+    public void setUri(URI uri) {
+        this.uri = uri;
+        if (uri != null) {
+            this.getResourceUriField().setText(uri.toString());
+        } else {
+            this.getResourceUriField().setText(null);
+        }
+    }
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -235,14 +143,40 @@ public class ResourceChooserDialog extends JDialog {
 	private JPanel getBottomPanel() {
 		if (bottomPanel == null) {
 			bottomPanel = new JPanel();
-			jLabel = new JLabel();
+			JLabel jLabel = new JLabel();
 			bottomPanel.setLayout(new BorderLayout());
 			jLabel.setText("Resource URI");
-			bottomPanel.add(getButtonPanel(), java.awt.BorderLayout.SOUTH);
 			bottomPanel.add(jLabel, java.awt.BorderLayout.WEST);
 			bottomPanel.add(getResourceUriField(), java.awt.BorderLayout.CENTER);
 		}
 		return bottomPanel;
+	}
+
+
+	private JOptionPane getOptionPane() {
+		if(optionPane == null) {
+            optionPane = new JOptionPane(new JComponent[]{getJTabbedPane(),getBottomPanel()},JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
+            optionPane.addPropertyChangeListener(this);     
+		}
+		return optionPane;
+	}
+
+	private JFileChooser getLocalPanel() {
+		if (localPanel == null) {
+			localPanel = new JFileChooser();
+			localPanel.setDialogTitle("Choose file");
+			localPanel.setControlButtonsAreShown(false);
+           localPanel.addPropertyChangeListener("SelectedFileChangedProperty",new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                File f = localPanel.getSelectedFile();
+                if (f != null) {
+                    setUri(f.toURI());
+                }
+            }
+           });
+
+		}
+		return localPanel;
 	}
 	/**
 	 * This method initializes jTabbedPane	
@@ -253,15 +187,9 @@ public class ResourceChooserDialog extends JDialog {
 		if (jTabbedPane == null) {
 			jTabbedPane = new JTabbedPane();
 			jTabbedPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
-            if (this.enableLocalFilePanel) {
-                jTabbedPane.addTab("Local Disk", null, getJFileChooser(), "Choose a local file");
-            }
-            if (this.enableMySpacePanel) {
-                jTabbedPane.addTab("Myspace", null, getMyspacePanel(), "Choose a file in myspace");
-            }
-            if (this.enableURIPanel) {
-                jTabbedPane.addTab("URL",null,getURLPanel(),"Enter an arbitrary URL (http://, ftp://, etc)");
-            }
+           jTabbedPane.addTab("Local Disk", null, getLocalPanel(), "Choose a local file");            
+          jTabbedPane.addTab("Myspace", null, getMyspacePanel(), "Choose a file in myspace");           
+          jTabbedPane.addTab("URL",null,getURLPanel(),"Enter an arbitrary URL (http://, ftp://, etc)");            
 		}
 		return jTabbedPane;
 	}
@@ -288,6 +216,21 @@ public class ResourceChooserDialog extends JDialog {
 		}
 		return myspacePanel;
 	}
+
+	/**
+	 * This method initializes jTextField	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */    
+	private JTextField getResourceUriField() {
+		if (resourceUriField == null) {
+			resourceUriField = new JTextField();
+            resourceUriField.setEditable(false); // don't make this editable.
+            resourceUriField.setColumns(50);
+
+		}
+		return resourceUriField;
+	}
     
     private JComponent getURLPanel() {
         if (urlPanel == null) {
@@ -299,8 +242,6 @@ public class ResourceChooserDialog extends JDialog {
         }
         return urlPanel;
     }
-    
-    private JTextField urlPanelField = null;
     private JTextField getUrlPanelField() {
         if (urlPanelField == null) {
             urlPanelField = new JTextField();
@@ -328,82 +269,79 @@ public class ResourceChooserDialog extends JDialog {
         }
         return urlPanelField;
     }
-    
-	/**
-	 * This is the default constructor
-	 */
-	public ResourceChooserDialog(MyspaceInternal vos) {
-		this(vos,true);
-    }
-    
-    public ResourceChooserDialog(MyspaceInternal vos,boolean enableMySpace) {
-        this(vos,"Choose Resource",enableMySpace);
-    }
-    
-    public ResourceChooserDialog(MyspaceInternal vos,String prompt, boolean enableMySpace) {
-        this(vos,prompt,enableMySpace,true,true);
-	}
-    
-    public ResourceChooserDialog(MyspaceInternal vos,String prompt,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
-        super();
-        this.vos = vos;
-        this.enableMySpacePanel = enableMySpace;
-        this.enableLocalFilePanel = enableLocalFile;
-        this.enableURIPanel = enableURI;
-        initialize(prompt);
-        
-    }
-    private final MyspaceInternal vos;
+
+
 	/**
 	 * This method initializes this
 	 * 
 	 * @return void
 	 */
-	private void initialize(String prompt){
+	private void initialize(){
 		this.setModal(true);
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);            
-        this.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e) {
-                setUri(null); // clear selection if user closed window.
+        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);     
+        addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent we) {
+                /*
+                 * Instead of directly closing the window,
+                 * we're going to change the JOptionPane's
+                 * value property.
+                 */
+                    optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
             }
-        });
-		this.setTitle(prompt);
-		this.setSize(601, 402);
-        this.setLocationRelativeTo(null); // centers dialog for now.
-		this.setContentPane(getJContentPane());
+        });        
+		this.setContentPane(getOptionPane());
 	}
-	/**
-	 * This method initializes jContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private javax.swing.JPanel getJContentPane() {
-		if(jContentPane == null) {
-			jContentPane = new javax.swing.JPanel();
-			jContentPane.setLayout(new java.awt.BorderLayout());
-			jContentPane.setPreferredSize(new java.awt.Dimension(575,400));
-			jContentPane.add(getBottomPanel(), java.awt.BorderLayout.SOUTH);
-			jContentPane.add(getJTabbedPane(), java.awt.BorderLayout.CENTER);            
-		}
-		return jContentPane;
-	}
-    public URI getUri() {
-        return this.uri;
+    /**
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent e) {
+        String prop = e.getPropertyName();
+        if (isVisible()
+         && (e.getSource() == optionPane)
+         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
+             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
+            Object value = optionPane.getValue();
+
+            if (value == JOptionPane.UNINITIALIZED_VALUE) {
+                //ignore reset
+                return;
+            }
+
+            //Reset the JOptionPane's value.
+            //If you don't do this, then if the user
+            //presses the same button next time, no
+            //property change event will be fired.
+            optionPane.setValue(
+                    JOptionPane.UNINITIALIZED_VALUE);
+
+            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
+                if (getUri() == null) {
+                    JOptionPane.showMessageDialog(ResourceChooserDialog.this,"You must choose a resource, or hit Cancel","Choose a resource",JOptionPane.ERROR_MESSAGE);
+                } else {
+                    resetAndHide();
+                }
+            } else { //user closed dialog or clicked cancel
+                setUri(null);
+                resetAndHide();
+            }
+        }        
+        
     }
-    
-    public void setUri(URI uri) {
-        this.uri = uri;
-        if (uri != null) {
-            this.getResourceUriField().setText(uri.toString());
-        } else {
-            this.getResourceUriField().setText(null);
+    /** ensure the local panel is rescanned whenever ui is displaued */
+    public void setVisible(boolean b) {
+        if (b) {
+            localPanel.rescanCurrentDirectory();
         }
+        super.setVisible(b);
     }
-}  //  @jve:decl-index=0:visual-constraint="100,127"
+}
 
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

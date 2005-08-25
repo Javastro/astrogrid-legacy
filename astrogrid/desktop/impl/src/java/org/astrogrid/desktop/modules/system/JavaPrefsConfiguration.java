@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.config.SimpleConfig;
 
@@ -30,9 +31,8 @@ import java.util.prefs.Preferences;
 /** Implementation of a configuration service - backed by java.util.prefs.
  * and keeps astrogrid's configuration system in-synch.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
- * @todo rework this class, to make modular.
  */
-public class JavaPrefsConfiguration implements PreferenceChangeListener, Configuration, Startable {
+public class JavaPrefsConfiguration implements PreferenceChangeListener, Configuration, ConfigurationInternal, Startable {
     /**
      * Commons Logger for this class
      */
@@ -43,8 +43,6 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
      */
     public JavaPrefsConfiguration() {
         super();
-        userPrefs = Preferences.userNodeForPackage(UIImpl.class);
-
     }
     
     /**
@@ -66,7 +64,7 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
             logger.error("failed to prepopulate prefs",e);
         }
     }
-    protected final Preferences userPrefs;
+    protected Preferences userPrefs;
     
 
     public boolean setKey(String key,String value) {
@@ -138,6 +136,8 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
      * @see org.picocontainer.Startable#start()
      */
     public void start() {
+
+        userPrefs = Preferences.userNodeForPackage(UIImpl.class);        
         userPrefs.addPreferenceChangeListener(this);  
         maybePrepopulatePrefs();
         synchPrefs();
@@ -147,6 +147,22 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
      * @see org.picocontainer.Startable#stop()
      */
     public void stop() {
+        userPrefs.removePreferenceChangeListener(this);
+    }
+
+    /**
+     * @throws ServiceException
+     * @see org.astrogrid.desktop.modules.system.ConfigurationInternal#reset()
+     */
+    public void reset() throws ServiceException {
+        try {        
+        this.stop();
+        userPrefs.removeNode();
+        userPrefs.flush();        
+        this.start();
+        } catch (BackingStoreException e) {
+            throw new ServiceException(e);
+        }
     }
 
  
@@ -155,6 +171,9 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

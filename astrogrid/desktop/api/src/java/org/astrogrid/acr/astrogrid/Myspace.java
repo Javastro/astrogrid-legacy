@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.3 2005/08/16 13:14:24 nw Exp $
+/*$Id: Myspace.java,v 1.4 2005/08/25 16:59:44 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -334,14 +334,42 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
     /** access a URL to which can be written the  contents (i.e. data) of a myspace resource
      * <p>
-     * NB: this method is unreliable at present. use {@link #write(URI, String)}, {@link #writeBinary(URI, byte[])}, or {@link #copyURLToContent(URL, URI)} instead.
      * @param ivorn resource to write to
      * @return a url to  which the contents of the resource can be written
      * @throws NotFoundException if the resource does not exist
      * @throws InvalidArgumentException if the resource is not a file
      * @throws ServiceException if an error occurs while calling the service
      * @throws SecurityException if the user is not permitted to write the contents of this resource
-     * @throws NotApplicableException if this resource cannot contain data - e.g. it is a folder     * 
+     * @throws NotApplicableException if this resource cannot contain data - e.g. it is a folder     *
+     * @example For the current filestore impleentation the result returned is a <tt>http://</tt> url, to which data should be <b>PUT</b> (not POST). Here's how to do this in java
+     * <pre>
+     * import org.astrogrid.acr.*;
+     * import java.net.*;
+     * import org.astrogrid.acr.astrogrid.Myspace;
+     * import org.astrogrid.acr.builtin.ACR
+     * Finder f = new Finder();
+     * ACR acr = f.find();
+     * Myspace ms = (Myspace)acr.getService(Myspace.class);
+     * URI file =new URI("#results/datafile.vot");
+     *  //get the output url
+     * URL url = ms.getWriteContentURL(file); 
+      * HttpURLConnection conn  = (HttpURLConnection) url.openConnection() ;
+      *   //configure the connection
+      * conn.setChunkedStreamingMode(1024); // this method is only available in java 1.5 - omit for 1.4and beware of transferring large files
+      * conn.setAllowUserInteraction(false);
+      * conn.setDoInput(false);
+      * conn.setDoOutput(true) ;
+      * conn.setUseCaches(false);
+      * conn.setRequestMethod("PUT");
+      *   // connect
+      * conn.connect();
+      * OutputStream os = conn.getOutputStream() 
+      *  //write the data
+      *  ...
+      *   //close
+      * os.flush();
+      * os.close();
+     * </pre> 
      */
     URL getWriteContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
 
@@ -382,6 +410,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.4  2005/08/25 16:59:44  nw
+ 1.1-beta-3
+
  Revision 1.3  2005/08/16 13:14:24  nw
  added missing method
 

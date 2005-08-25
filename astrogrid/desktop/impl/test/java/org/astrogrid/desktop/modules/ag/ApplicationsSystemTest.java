@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,22 +64,17 @@ public class ApplicationsSystemTest extends TestCase {
         }
     }
 
-    public void testListFully()  throws Exception {
-        ApplicationInformation[] a = apps.listFully();
-        URI[] u = apps.list();
-        assertNotNull(a);
-        assertNotNull(u);
-        assertEquals(a.length,u.length);
-        for (int i = 0; i < a.length; i++) {
-            assertEquals(u[i],a[i].getId());
-            System.out.println(a[i]);
-        }
-    }
+   
 
     public void testGetApplicationInformation()  throws Exception {
-        ApplicationInformation[] a = apps.listFully();        
-            ApplicationInformation other = apps.getApplicationInformation(a[0].getId());
-            assertEquals(a[0],other);        
+        URI[] a = apps.list();
+            ApplicationInformation other = apps.getApplicationInformation(a[0]);
+            assertEquals(a[0],other.getId());
+            assertNotNull(other.getName());
+            assertNotNull(other.getDescription());
+            assertNotNull(other.getInterfaces());
+            assertNotNull(other.getParameters());
+            System.out.println(other); 
     }
 
     public void testGetDocumentation()  throws Exception {
@@ -91,6 +86,7 @@ public class ApplicationsSystemTest extends TestCase {
     public void testCreateTemplateDocumentAndStruct()  throws Exception {
         URI[] u = apps.list();
         Document d = apps.createTemplateDocument(u[0],"default");
+        XMLUtils.PrettyDocumentToStream(d,System.out);
             assertNotNull(d);
             Map m = apps.createTemplateStruct(u[0],"default");
             assertNotNull(m);
@@ -197,6 +193,9 @@ public class ApplicationsSystemTest extends TestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

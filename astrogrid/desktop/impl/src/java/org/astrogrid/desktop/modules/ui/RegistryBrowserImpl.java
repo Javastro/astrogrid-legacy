@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,11 +15,8 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
-import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.store.Ivorn;
 
 import org.w3c.dom.Document;
 
@@ -207,6 +204,9 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: WorkflowTemplate.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: WorkflowTemplate.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.applications.beans.v1.ApplicationBase;
-import org.astrogrid.applications.beans.v1.Parameters;
-import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.registry.beans.cea.ApplicationDefinition;
+import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -25,11 +22,11 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.CachedXPathAPI;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
@@ -75,41 +72,8 @@ class WorkflowTemplate  {
         }
         logger.debug(pi.getData());
         Document regEntry = XMLUtils.newDocument(new ByteArrayInputStream(pi.getData().getBytes()));
-        NodeList titles = regEntry.getElementsByTagNameNS(VR_NAMESPACE,"title");
-        if (titles.getLength() == 0) {
-            throw new IllegalArgumentException("Could not find title element");
-        }
-        String applicationName =XMLUtils.getInnerXMLString((Element)titles.item(0));        
-        // cut-n-pasted from registryApplicationRegistry#getDescriptionFor..
-        // navigate down to the bit we're interested in.
-        NodeList nl = regEntry.getElementsByTagNameNS("*","ApplicationDefinition");
-        if (nl.getLength() == 0) {                
-            throw new IllegalArgumentException("Registry entry  has no ApplicationDefinition Element");
-        }
-        Element n = (Element)nl.item(0);     
-        n.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); // bug-fix work around.
-        ApplicationDefinition def = (ApplicationDefinition) Unmarshaller.unmarshal(ApplicationDefinition.class,n);
-        // now mangle across to the required types.
-        ApplicationBase appBase = new ApplicationBase();
-        appBase.setName(applicationName);
-        appBase.setInterfaces(def.getInterfaces());
-        BaseParameterDefinition[] paramdef = def.getParameters().getParameterDefinition();
-        Parameters params = new Parameters();
-       appBase.setParameters(params);
-       params.setParameter(paramdef);
-       // quickly find the vodescription..
-      // nl = regEntry.getElementsByTagNameNS("*","VODescription");
-       nl  =  regEntry.getElementsByTagNameNS(VR_NAMESPACE,"description");
-
-       Element voDesc = null;
-       if (nl.getLength() > 0) {
-           voDesc = (Element)nl.item(0);
-       } else {
-           logger.warn("Odd - can't seem to find a VODescription : setting to null");
-       }        
-        desc = new ApplicationDescription(appBase,voDesc);
-        
-        logger.debug(this.toString());
+        CachedXPathAPI xpath = new CachedXPathAPI();
+        desc = ApplicationsImpl.buildApplicationInformationFromResourceElement(xpath,regEntry.getDocumentElement());
         
     }
     
@@ -117,13 +81,11 @@ class WorkflowTemplate  {
     
 
     
-    private final ApplicationDescription desc;
+    private final ApplicationInformation desc;
     private final Workflow theWorkflow;
    
-    public String toString() {
-        return "<html><b>" + desc.getName() +"</b><br>" + XMLUtils.getInnerXMLString(desc.getOriginalVODescription()) + "</html>";
-    }        
-    public ApplicationDescription getDesc() {
+  
+    public ApplicationInformation getDesc() {
         return this.desc;
     }
     /**
@@ -181,10 +143,16 @@ class WorkflowTemplate  {
         
     }
  
+    public String toString() {
+        return desc.getName() + " : " +desc.getDescription(); 
+    }
 }
 
 /* 
 $Log: WorkflowTemplate.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: MutableACRTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: MutableACRTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -92,7 +92,6 @@ public class MutableACRTest extends TestCase {
         assertTrue(CharSequence.class.isAssignableFrom(o.getClass()));
         //but isn't actually the implementation object - it's wrapped in proxies, etc.
         assertFalse(o.getClass().equals(String.class));
-        //@todo add testing of optional components here too.
         // test listener
         assertEquals(2,l.seen);                
     }
@@ -156,6 +155,9 @@ public class MutableACRTest extends TestCase {
 
 /* 
 $Log: MutableACRTest.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

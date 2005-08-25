@@ -1,4 +1,4 @@
-/*$Id: Bootloader.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Bootloader.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,6 +54,7 @@ public class Bootloader implements Startable{
         registerModule("ui","/org/astrogrid/desktop/modules/ui/module.xml");            
         registerModule("scripting","/org/astrogrid/desktop/modules/scripting/module.xml");
         registerModule("external","/org/astrogrid/desktop/modules/external/module.xml");  
+        registerModule("cds","/org/astrogrid/desktop/modules/cds/module.xml");
         
     }
     
@@ -95,6 +96,9 @@ public class Bootloader implements Startable{
 
 /* 
 $Log: Bootloader.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

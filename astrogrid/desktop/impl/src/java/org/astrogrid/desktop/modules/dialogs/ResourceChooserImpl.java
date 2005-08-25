@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,27 +10,48 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
+import java.awt.Component;
 import java.net.URI;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
  * wrapper component around the dialog to publish the chooser methods 
  */
-public class ResourceChooserImpl implements ResourceChooser {
+public class ResourceChooserImpl implements ResourceChooserInternal {
 
     public ResourceChooserImpl(MyspaceInternal vos) {
         this.vos = vos;
+        dialog = new ResourceChooserDialog(vos);
+        dialog.pack();
     }
     protected final MyspaceInternal vos;
-    public URI chooseResource(String title,boolean enableMySpace) {
-        return ResourceChooserDialog.chooseResource(vos,title,enableMySpace);
+    protected final ResourceChooserDialog dialog;
+    public synchronized URI chooseResource(String title,boolean enableMySpace) {
+        dialog.setTitle(title);
+        dialog.setEnableMySpacePanel(enableMySpace);
+       dialog.setUri(null);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+        return dialog.getUri();        
     }
     
-    public URI fullChooseResource(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
-        return ResourceChooserDialog.chooseResource(vos,title,enableMySpace,enableLocalFile,enableURI);
+    public synchronized URI fullChooseResource(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
+        dialog.setEnableLocalFilePanel(enableLocalFile);
+        dialog.setEnableURIPanel(enableURI);
+        return chooseResource(title,enableMySpace);        
+    }
+    
+    public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI,Component comp) {
+        dialog.setLocationRelativeTo(comp);
+        dialog.setTitle(title);
+        dialog.setEnableLocalFilePanel(enableLocalFile);
+        dialog.setEnableURIPanel(enableURI);
+        dialog.setEnableMySpacePanel(enableMySpace);
+       dialog.setUri(null);
+        dialog.setVisible(true);
+        return dialog.getUri();    
     }
 
 }
@@ -38,6 +59,9 @@ public class ResourceChooserImpl implements ResourceChooser {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

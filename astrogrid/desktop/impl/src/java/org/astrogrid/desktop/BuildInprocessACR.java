@@ -1,4 +1,4 @@
-/*$Id: BuildInprocessACR.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: BuildInprocessACR.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,6 @@
 **/
 package org.astrogrid.desktop;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.ACRImpl;
 import org.astrogrid.desktop.framework.Bootloader;
@@ -23,6 +17,8 @@ import org.astrogrid.desktop.framework.MutableACR;
 import org.astrogrid.desktop.framework.descriptors.DescriptorParser;
 import org.astrogrid.desktop.framework.descriptors.DigesterDescriptorParser;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.picocontainer.defaults.DefaultPicoContainer;
 
 /** class that assembles and creates a new in-process ACR
@@ -50,17 +46,7 @@ public class BuildInprocessACR extends DefaultPicoContainer {
         return (MutableACR)getComponentInstanceOfType(MutableACR.class);
     }
 
-    /*start the boot pico, assembling the acr.
-     * runs later on the event dispatch thread - just to be on the safe side
-     * @see org.picocontainer.Startable#start()
-     
-    public void start() {      
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    pico.start();
-                }
-            });     
-    }*/
+
     public void start() {
         logger.info("----------------------------------------------------------------------------------------------------------------------------------------------");
         super.start();

@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,6 @@
 package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.builtin.Module;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.MutableACR;
@@ -275,6 +273,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

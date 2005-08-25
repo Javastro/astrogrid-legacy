@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,6 @@ package org.astrogrid.desktop.modules.system;
 import net.ladypleaser.rmilite.Server;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
 
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.builtin.Module;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.MutableACR;
@@ -26,12 +24,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.picocontainer.Startable;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.activation.Activatable;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -152,6 +147,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiSe
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

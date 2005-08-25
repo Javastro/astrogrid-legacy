@@ -1,0 +1,82 @@
+/*$Id: XPathHelper.java,v 1.1 2005/08/25 16:59:58 nw Exp $
+ * Created on 17-Aug-2005
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.desktop.modules.ag;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+
+/** Class of Helper methods for working with XPath, namespaces, and registry documents in particular.
+ * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
+ *
+ */
+public class XPathHelper {
+
+    /** namespace for the registry inteface v0.1 */
+    public final static String VOR_NS = "http://www.ivoa.net/xml/RegistryInterface/v0.1";
+    
+    /** namespace for voresource v0.10 */
+    public final static String VR_NS = "http://www.ivoa.net/xml/VOResource/v0.10";
+    /** namespace for common execution arcitecture base */
+    public final static String CEAB_NS = "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1";
+    /** namespace for CEA Service */
+    public final static String CEA_NS = "http://www.ivoa.net/xml/CEAService/v0.2";
+    /** namespace for CEA Parameters */
+    public final static String CEAPD_NS = "http://www.astrogrid.org/schema/AGParameterDefinition/v1"; 
+    /** Construct a new XPathHelper
+     * 
+     */
+    private XPathHelper() {
+        super();
+    }
+
+    /** Create a namespace node for use in xpath. comes pre-initialized with the common registry namespaces - vr, vor, etc.
+     * <p>
+     * default namespace is the vr one.
+     * @return
+     * @throws FactoryConfigurationError
+     * @throws ParserConfigurationException
+     * @throws DOMException
+     */
+    public  static Element createNamespaceNode() throws FactoryConfigurationError, ParserConfigurationException, DOMException {
+        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+        fac.setNamespaceAware(true);
+        DocumentBuilder builder = fac.newDocumentBuilder();
+        DOMImplementation impl = builder.getDOMImplementation();        
+       Document namespaceHolder = impl.createDocument(VOR_NS, "f:namespaceMapping",null);
+    
+       // Document namespaceHolder = DomHelper.newDocument();
+        Element namespaceNode = namespaceHolder.getDocumentElement();
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",VR_NS);
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns",VR_NS);
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vor", VOR_NS);
+
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceab", CEAB_NS);     
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:cea", CEA_NS);  
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceapd", CEAPD_NS);          
+        return namespaceNode;
+    }
+
+}
+
+
+/* 
+$Log: XPathHelper.java,v $
+Revision 1.1  2005/08/25 16:59:58  nw
+1.1-beta-3
+ 
+*/

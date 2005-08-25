@@ -74,7 +74,10 @@ You need the following jars on the classpath (all bundled in this distribution)
 	<li> <tt>acr-interface-*.jar</tt> - the interfaces documented in this javadoc</li>
 	<li> <tt>rmi-lite-1.0.jar</tt>- (<a href="http://rmi-lite.sourceforge.net/">http://rmi-lite.sourceforge.net/</a>) - simplifies Java RMI by generating stub classes via reflection</li>
 	<li> <tt>commons-logging-1.0.3.jar</tt> - (<a href="http://jakarta.apache.org/commons/logging/">http://jakarta.apache.org/commons/logging/</a>) - interface to various logging libraries</li>
+   <li><tt>xerces-2.4.0.jar</tt>  - (<a href="http://xml.apache.org">http://xml.apache.org</a>) - xml parser - to ensure that <tt>Document</tt> objects can be transported via RMI</li>
+   <li><tt>xml-apis-1.0.b2</tt> - (<a href="http://xml.apache.org">http://xml.apache.org</a>)  - supporting interfaces for the xml parser</li>
 </ul>
+
 
 Use the following code to access the ACR:
  <pre>
@@ -176,6 +179,8 @@ $server->call('astrogrid.myspace.write',$file,$data);
 	
 </pre>
 
+<h4>C++ Example</h4>
+See <a href="org/astrogrid/acr/doc-files/talk_to_acr_server.cpp">talk_to_acr_server.cpp</a> (thanks to Richard Holbrey)
 
 <h3>HTTP-GET</h3>
 If your language of choice lacks an XMLRPC library, but has a way to fetch a HTTP url, this interface can be

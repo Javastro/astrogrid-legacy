@@ -1,4 +1,4 @@
-/*$Id: RegistryRpcSystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: RegistryRpcSystemTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
@@ -27,8 +28,12 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -106,26 +111,36 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
         v.add(testURI2.toString());
         try { 
         Map m =  (Map)client.execute("astrogrid.registry.getResourceInformation",v);
-        return new ResourceInformation(new URI((String)m.get("id"))
-                ,(String)m.get("title")
-                ,(String)m.get("description")
-                ,new URL((String)m.get("accessURL"))
-                );
+        return createResourceInformation(m);
         } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
 
     /**
+     * @param m
+     * @return
+     * @throws URISyntaxException
+     * @throws MalformedURLException
+     */
+    private ResourceInformation createResourceInformation(Map m) throws URISyntaxException, MalformedURLException {
+        URL url = m.containsKey("accessURL") ? new URL((String)m.get("accessURL")) : null;
+        return new ResourceInformation(new URI((String)m.get("id"))
+                ,(String)m.get("title")
+                ,(String)m.get("description")
+                ,url
+                );
+    }
+    /**
      * @param query_string
      * @return
      * @throws ServiceException
      */
-    public Document searchForRecords(String query) throws ServiceException {
+    public Document adqlSearch(String query) throws ServiceException {
         v.clear();
         v.add(query);
         try {
-        String s =  (String)client.execute("astrogrid.registry.searchForRecords",v);
+        String s =  (String)client.execute("astrogrid.registry.adqlSearch",v);
         InputStream is = new ByteArrayInputStream(s.getBytes());
         return XMLUtils.newDocument(is);
         } catch (Exception e) {
@@ -133,15 +148,72 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
         }
     }
     /**
+     * @see org.astrogrid.acr.astrogrid.Registry#adqlSearchRI(java.net.URI)
+     */
+    public ResourceInformation[] adqlSearchRI(String arg0) throws NotFoundException, ServiceException {
+        v.clear();
+        v.add(arg0);
+        try {
+        List s =  (List)client.execute("astrogrid.registry.adqlSearchRI",v);
+        ResourceInformation[] result = new ResourceInformation[s.size()];
+        for (int i = 0; i < s.size(); i++) {
+            result[i] = createResourceInformation((Map)s.get(i));
+        }
+        return result;
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }    
+    /**
      * @see org.astrogrid.acr.astrogrid.Registry#xquery(java.lang.String)
      */
-    public Document xquery(String xquery) throws ServiceException {
+    public Document xquerySearch(String xquery) throws ServiceException {
         v.clear();
         v.add(xquery);
         try {
-        String s =  (String)client.execute("astrogrid.registry.xquery",v);
+        String s =  (String)client.execute("astrogrid.registry.xquerySearch",v);
         InputStream is = new ByteArrayInputStream(s.getBytes());
         return XMLUtils.newDocument(is);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+    /**
+     * @see org.astrogrid.acr.astrogrid.Registry#searchForRecords(java.lang.String)
+     */
+    public Document searchForRecords(String arg0) throws ServiceException {
+        return adqlSearch(arg0);
+    }
+    /**
+     * @see org.astrogrid.acr.astrogrid.Registry#keywordSearch(java.lang.String, boolean)
+     */
+    public Document keywordSearch(String arg0, boolean arg1) throws ServiceException {
+        v.clear();
+        v.add(arg0);
+        v.add(new Boolean(arg1));
+        try {
+        String s =  (String)client.execute("astrogrid.registry.keywordSearch",v);
+        InputStream is = new ByteArrayInputStream(s.getBytes());
+        return XMLUtils.newDocument(is);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    /**
+     * @see org.astrogrid.acr.astrogrid.Registry#keywordSearchRI(java.lang.String, boolean)
+     */
+    public ResourceInformation[] keywordSearchRI(String arg0, boolean arg1) throws ServiceException {
+        v.clear();
+        v.add(arg0);
+        v.add(new Boolean(arg1));
+        try {
+            List s =  (List)client.execute("astrogrid.registry.keywordSearchRI",v);
+            ResourceInformation[] result = new ResourceInformation[s.size()];
+            for (int i = 0; i < s.size(); i++) {
+                result[i] = createResourceInformation((Map)s.get(i));
+            }
+            return result;
         } catch (Exception e) {
             throw new ServiceException(e);
         }
@@ -152,6 +224,9 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
 
 /* 
 $Log: RegistryRpcSystemTest.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

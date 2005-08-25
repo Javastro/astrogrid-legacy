@@ -1,0 +1,521 @@
+<?xml version="1.0" ?>
+
+<module name="cds">
+	<description>Access to services provided by Centre de Donnees astronomiques de Strasbourg
+		</description>
+	<property>
+		<key>system.ui.menu.links</key>
+		<value>
+			<link text="CDS Home Page"
+				icon="cds_icon.gif"
+				toolTipText="Home Page for CDS"
+				url="http://cdsweb.u-strasbg.fr/" />
+		</value>
+		</property>
+	<property>
+		<key>icon</key>
+		<value>cds_icon.gif</value>
+	</property>
+	<property>
+		<key>priority</key>
+		<value>60</value>
+	</property>	
+	
+	
+	
+<!-- sesame -->		
+		<component name="sesame"
+			implementationClass="org.astrogrid.desktop.modules.cds.SesameImpl"
+			interfaceClass="org.astrogrid.acr.cds.Sesame">
+			<description>This XML Web Service resolves a name which is present in , Simbad and/or NED and/or VizieR.</description>
+	 <property>
+		<key>icon</key>
+		<value>simbad_icon.gif</value>
+	</property>
+			<method name="sesame">
+				<description>Resolve a name</description>
+			<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>	
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Resolve a Name</value>
+	</property>		
+		<return>
+			<description>format depending on the result type parameter</description>
+		</return>
+		<parameter name="name">
+			<description>name to resolve - e.g. m31</description>
+		</parameter>
+		<parameter name="resultType">
+			<description><![CDATA[
+				<ul>
+					<li>u - usual</li>
+					<li>H - html</li>
+					<li>x - XML - (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd) </li>
+					<li>p - plain</li>
+					<li>i (for all identiiers) can be added to H or x</li>				
+			   </ul>
+			]]></description>
+		</parameter>		
+			</method>
+			<method name="sesameChooseService">
+				<description>Resolve a name</description>
+			<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>	
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Resolve a name in selected services</value>
+	</property>		
+		<return>
+			<description>format depending on the result type parameter</description>
+		</return>
+		<parameter name="name">
+			<description>name to resolve - e.g. m31</description>
+		</parameter>
+		<parameter name="resultType">
+			<description><![CDATA[
+				<ul>
+					<li>u - usual</li>
+					<li>H - html</li>
+					<li>x - XML - (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd) </li>
+					<li>p - plain</li>
+					<li>i (for all identiiers) can be added to H or x</li>				
+			   </ul>
+			]]></description>			
+		</parameter>		
+		<parameter name="all"><description>'true' if all identifiers wanted. otherwise 'false'</description>			
+			<property><key>system.xmlrpc.type</key><value>boolean</value></property>
+		</parameter>
+		<parameter name="service"><description><![CDATA[
+		<ul>
+	<li> S=Simbad</li>
+    <li>N=NED </li>
+	<li>V=VizieR</li>
+     <li>A=all</li>
+      </ul>
+        (examples : S to query in Simbad, NS to query in Ned if not found in Simbad,
+        NSA to query in Ned and Simbad, A to query in Ned, Simbad and VizieR, ...)
+		
+		]]></description>
+		</parameter>
+			</method>									
+	</component>	
+			
+		<component name="vizier"
+			implementationClass="org.astrogrid.desktop.modules.cds.VizieRImpl"
+			interfaceClass="org.astrogrid.acr.cds.VizieR">
+			<description>The VizieR Catalogues XML Web Service.</description>
+	 <property>
+		<key>icon</key>
+		<value>vizier_icon.gif</value>
+	</property>
+	<method name="cataloguesMetaData">
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Catalogue metadata</value>
+	</property>	
+			<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>			
+		<description>get metadata about catalogues</description>
+		<return><description>A VOTable containing metadata about catalogues depending on the given parameters</description>
+		<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>			
+		</return>
+		<parameter name="target"><description>example : M31</description></parameter>
+		<parameter name="radius"><description>example: 1.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>		
+		</parameter>
+		<parameter name="unit"><description>example: arcmin</description></parameter>
+		<parameter name="text"><description>author, ..., example: Ochsenbein</description></parameter>						
+	</method>
+<method name="cataloguesMetaDataWavelength">
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Catalogue metadata by wavelength</value>
+	</property>	
+			<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>			
+		<description>get metadata about catalogues</description>
+		<return><description>A VOTable containing metadata about catalogues depending on the given parameters</description>
+		<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>			
+		</return>
+		<parameter name="target"><description>example : M31</description></parameter>
+		<parameter name="radius"><description>example: 1.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>		
+		</parameter>
+		<parameter name="unit"><description>example: arcmin</description></parameter>
+		<parameter name="text"><description>author, ..., example: Ochsenbein</description></parameter>
+		<parameter name="wavelength"><description>example: optical, Radio</description></parameter>						
+	</method>
+		<method name="cataloguesData">
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Catalogue data</value>
+	</property>	
+			<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>			
+		<description>get catalogues data</description>
+		<return><description>A VOTable containing data about catalogues depending on the given parameters</description>
+		<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>			
+		</return>
+		<parameter name="target"><description>example : M31</description></parameter>
+		<parameter name="radius"><description>example: 1.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>		
+		</parameter>
+		<parameter name="unit"><description>example: arcmin</description></parameter>
+		<parameter name="text"><description>author, ..., example: Ochsenbein</description></parameter>						
+	</method>
+<method name="cataloguesDataWavelength">
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Catalogue data for a wavelength</value>
+	</property>	
+			<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>			
+		<description>get catalogues data </description>
+		<return><description>A VOTable containing metadata about catalogues depending on the given parameters</description>
+		<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>			
+		</return>
+		<parameter name="target"><description>example : M31</description></parameter>
+		<parameter name="radius"><description>example: 1.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>		
+		</parameter>
+		<parameter name="unit"><description>example: arcmin</description></parameter>
+		<parameter name="text"><description>author, ..., example: Ochsenbein</description></parameter>
+		<parameter name="wavelength"><description>example: optical, Radio</description></parameter>						
+	</method>		
+	<method name="metaAll"><description>Get metadata for all catalogues</description>
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Metadata for all catalogues</value>
+	</property>	
+			<property>
+		<key>icon</key>
+		<value>document.gif</value>
+	</property>			
+	<return><description>all metadata about catalogues in VizieR</description>
+		<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>		
+		</return>
+	</method>
+	  </component>
+	
+	
+	<!-- coordinate -->
+	<component name="coordinate"
+		implementationClass="org.astrogrid.desktop.modules.cds.CoordinateImpl"
+			interfaceClass="org.astrogrid.acr.cds.Coordinate">
+			<property>
+		<key>icon</key>
+		<value>event_prop_arrow_obj.gif</value>
+	</property>			
+			<description>The Astronomical Coordinate XML Web Service</description>
+			<method name="convert">
+				<description>convert a coordinate</description>
+			<property>
+		<key>icon</key>
+		<value>event_prop_arrow_obj.gif</value>
+	</property>	
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Convert a coordinate</value>
+	</property>				
+		<return><description>a string like 03 45 14.3838 +47 58 07.990 (J2000.0)</description></return>
+		<parameter name="x"><description>e.g. 10.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="y"><description>e.g. 15.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="z"><description>e.g. 20.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="precision"><description>(0=NONE, 1=DEG, 3=ARCMIN, 5=ARCSEC, 8=MAS)</description>
+			</parameter>		
+			</method>
+			<method name="convertL">
+				<description>convert a long-latt coordinate</description>
+			<property>
+		<key>icon</key>
+		<value>event_prop_arrow_obj.gif</value>
+	</property>	
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Convert a Long.-Latt. coordinate</value>
+	</property>				
+		<return><description>a String like 04 21 34. +53 32.5 (J2000.0)</description></return>
+		<parameter name="lon"><description>e.g. 12.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="lat"><descriiption>e.g. 45.0</descriiption>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="precision"><description>(0=NONE, 1=DEG, 3=ARCMIN, 5=ARCSEC, 8=MAS)</description>
+			</parameter>		
+			</method>
+			
+			<method name="convertE">
+				<description>Convert a coordinate considering equinox.</description>
+			<property>
+		<key>icon</key>
+		<value>event_prop_arrow_obj.gif</value>
+	</property>	
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Convert a coordinate considering Equinox</value>
+	</property>				
+		<return><description>a string like150.4806267 -05.3873952 (Gal)</description></return>
+		<parameter name="frame1"><description>(1=FK4, 2=GAL, 3=SGAL, 4=ECL, 5=FK5, 6=ICRS)</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="frame2"><description>(1=FK4, 2=GAL, 3=SGAL, 4=ECL, 5=FK5, 6=ICRS)</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>			
+		<parameter name="x"><description>e.g. 10.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="y"><description>e.g. 15.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="z"><description>e.g. 20.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="precision"><description>(0=NONE, 1=DEG, 3=ARCMIN, 5=ARCSEC, 8=MAS)</description>
+			</parameter>	
+		<parameter name="equinox1"><description>Julian Years or Besselian, unused for GAL, SGAL, ICRS</description></parameter>
+		<parameter name="equinox2"><description>Julian Years or Besselian, unused for GAL, SGAL, ICRS</description></parameter>			
+			</method>
+			<method name="convertLE">
+				<description>Convert a longittude-lattitude coordinate considering equinox.</description>
+			<property>
+		<key>icon</key>
+		<value>event_prop_arrow_obj.gif</value>
+	</property>	
+	<property>
+		<key>system.ui.menu.entry</key>
+		<value>Convert a long-latt coordinate considering Equinox</value>
+	</property>				
+		<return><description>a string like150.4806267 -05.3873952 (Gal)</description></return>
+		<parameter name="frame1"><description>(1=FK4, 2=GAL, 3=SGAL, 4=ECL, 5=FK5, 6=ICRS)</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="frame2"><description>(1=FK4, 2=GAL, 3=SGAL, 4=ECL, 5=FK5, 6=ICRS)</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>			
+		<parameter name="lon"><description>e.g. 12.0</description>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="lat"><descriiption>e.g. 45.0</descriiption>
+			<property><key>system.xmlrpc.type</key><value>int</value></property>
+			</parameter>
+		<parameter name="precision"><description>(0=NONE, 1=DEG, 3=ARCMIN, 5=ARCSEC, 8=MAS)</description>
+			</parameter>	
+		<parameter name="equinox1"><description>Julian Years or Besselian, unused for GAL, SGAL, ICRS</description></parameter>
+		<parameter name="equinox2"><description>Julian Years or Besselian, unused for GAL, SGAL, ICRS</description></parameter>			
+			</method>										
+		</component>
+		  
+<!-- ucd resolver. -->
+	<component name="ucd"
+		implementationClass="org.astrogrid.desktop.modules.cds.UCDImpl"
+		interfaceClass="org.astrogrid.acr.cds.UCD">
+		<description>This XML Web Service provides a few methods to ease manipulation of the
+Unified Content Descriptors (UCD).</description>
+			<method name="UCDList"><description>List all UCD1</description>
+					<property>
+			<key>system.ui.menu.entry</key>
+			<value>List all UCD1</value>
+		</property>	
+			<property>
+		<key>icon</key>
+		<value>document.gif</value>
+		</property>		
+				<return><description>html document containing all ucd1</description></return>
+			</method>
+			<method name="resolveUCD"><description>Resolve a UCD1 (won't work with UCD1+)</description>
+					<property>
+			<key>system.ui.menu.entry</key>
+			<value>Resolve a UCD1</value>
+		</property>	
+			<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+		</property>		
+				<return><description>sentance corresponding to the UCD1</description></return>
+				<parameter name="ucd"><description>the UCD1 to resolve (e.g. PHOT_JHN_V )</description></parameter>
+			</method>			
+			
+			<method name="UCDofCatalog"><description>List UCD1 contained in a given catalogue</description>
+					<property>
+			<key>system.ui.menu.entry</key>
+			<value>List UCD1 for a catalogue</value>
+		</property>	
+			<property>
+		<key>icon</key>
+		<value>flatLayout.gif</value>
+		</property>		
+				<return><description>list of UCD1 (in raw text) contained in the given catalogue</description></return>
+				<parameter name="catalog_designation"><description>designes the catalogue (example : I/239) </description></parameter>
+			</method>			
+	
+			<method name="translate"><description>makes the translation of old-style UCD1 into the newer UCD1+ easier:</description>
+					<property>
+			<key>system.ui.menu.entry</key>
+			<value>Translate from UCD1 to UCD1+</value>
+		</property>	
+			<property>
+		<key>icon</key>
+		<value>event_prop_arrow_obj.gif</value>
+		</property>		
+				<return><description>
+String ucd. This function returns the default UCD1+ corresponding to an old-style UCD1.				
+					</description></return>
+				<parameter name="ucd"><description>
+The argument is a UCD1 (not UCD1+ !).
+					 </description></parameter>
+			</method>		
+						
+			<method name="upgrade"><description>Upgrade a UCD</description>
+					<property>
+			<key>system.ui.menu.entry</key>
+			<value>Upgrade a UCD1+</value>
+		</property>	
+			<property>
+		<key>icon</key>
+		<value>event_prop_arrow_obj.gif</value>
+		</property>		
+				<return><description>
+String ucd. This function returns a valid UCD1+ corresponding to a deprecated word.
+                      It is useful when some reference words of the UCD1+ vocabulary are changed,
+                      and ensures backward compatibility.					
+					</description></return>
+				<parameter name="ucd"><description>
+a deprecated UCD1+ (word or combination).
+                    Useful when the 'validate' method returns with code 2.
+					 </description></parameter>
+			</method>					
+			
+			<method name="validate"><description>Validate a UCD</description>
+					<property>
+			<key>system.ui.menu.entry</key>
+			<value>Validate a UCD1+</value>
+		</property>	
+			<property>
+		<key>icon</key>
+		<value>complete_status.gif</value>
+		</property>		
+				<return><description><![CDATA[
+This function checks that a UCD is well-formed
+<p/>
+The first word of the string is an error code, possibly followed by an explanation of the error. 
+A return value of 0 indicates no error (valid UCD).
+<p/>
+The error-code results from the combination (logical OR) of the following values:
+<ul>
+    <li>1: warning indicating use of non-standard namespace (not ivoa:)</li>
+    <li> 2: use of deprecated word</li>
+    <li> 4: use of non-existing word</li>
+    <li> 8: syntax error (extra space or unallowed character) </li>
+</ul>			
+					]]></description></return>
+				<parameter name="ucd"><description>
+(e.g. ivoa:phot.mag;em.opt.B)
+					 </description></parameter>
+			</method>		
+			
+	<method name="explain"><description>Return description of a ucd</description>
+					<property>
+			<key>system.ui.menu.entry</key>
+			<value>Explain a UCD1+</value>
+		</property>	
+			<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+		</property>		
+				<return><description>
+ this function gives a human-readable explanation for a UCD composed of one or several words			
+					</description></return>
+				<parameter name="ucd"><description>
+ (e.g. ivoa:phot.mag;em.opt.B)
+					 </description></parameter>
+			</method>			
+			
+	<method name="assign"><description>Find the UCD associatedwith a description</description>
+					<property>
+			<key>system.ui.menu.entry</key>
+			<value>Find UCD1+</value>
+		</property>	
+			<property>
+		<key>icon</key>
+		<value>search.gif</value>
+		</property>		
+				<return><description>
+This function returns the UCD1+ corresponding to the description		
+					</description></return>
+				<parameter name="description"><description>
+Plain text description of a parameter to be described         
+					 </description></parameter>
+			</method>															
+		</component>
+				  
+	  
+	  <component name="glu"
+		implementationClass="org.astrogrid.desktop.modules.cds.GluImpl"
+		interfaceClass="org.astrogrid.acr.cds.Glu">
+			<property>
+		<key>icon</key>
+		<value>java_lib_obj.gif</value>
+	</property>
+		<description>
+			This XML Web Service resolves a tag through GLU (Generateur de Liens Uniformes).
+		</description>
+		<method name="getURLfromTag">
+					<description>
+			This XML Web Service resolves a tag through GLU (Generateur de Liens Uniformes).
+		</description>
+			<property>
+		<key>icon</key>
+		<value>link_obj.gif</value>
+	</property>		
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Resolve Tag</value>
+			</property>			
+			<parameter name="tag">
+				<description>
+					 tag to resolve (example : VizieR.MetaCat)
+			   </description>
+			 </parameter>
+			 <return>
+				<description>
+					 URL corresponding to the tag (example : http://vizier.u-strasbg.fr/cgi-bin/votable?-meta)
+			   </description>
+			</return>
+		</method>
+	</component>
+</module>

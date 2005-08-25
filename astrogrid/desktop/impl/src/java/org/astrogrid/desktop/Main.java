@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.2 2005/08/16 13:19:32 nw Exp $
+/*$Id: Main.java,v 1.3 2005/08/25 16:59:58 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,7 +56,7 @@ public class Main extends BuildInprocessACR implements Startable  {
      * starts the pico container - on the swing event dispatch thread - but waits for it. 
      */
     public void start() {
-        try {
+       try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
                     Main.super.start();
@@ -74,6 +74,7 @@ public class Main extends BuildInprocessACR implements Startable  {
                     }
                 }
             });
+            
         } catch (InterruptedException e) {
             logger.fatal("InterruptedException on startup",e);
         } catch (InvocationTargetException e) {
@@ -93,6 +94,9 @@ public class Main extends BuildInprocessACR implements Startable  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.3  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.2  2005/08/16 13:19:32  nw
 fixes for 1.1-beta-2
 

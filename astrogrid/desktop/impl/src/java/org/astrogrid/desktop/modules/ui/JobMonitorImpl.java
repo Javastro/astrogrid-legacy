@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,22 +14,19 @@ import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
-import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
-import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -46,12 +43,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -78,6 +71,8 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -88,12 +83,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Mar-2005
- *@todo add actions to save and view results of application execution.
  */
 public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLoginListener {
     
@@ -108,7 +101,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         }
 
         public void actionPerformed(ActionEvent e) {
-                final URI u = chooser.chooseResource("Select workflow to submit",true);
+                final URI u = chooser.chooseResourceWithParent("Select workflow to submit",true,true,true,JobMonitorImpl.this);
                 if (u == null) {
                     return;
                 }                
@@ -171,7 +164,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
         public DeleteAction() {
             super("Delete", IconHelper.loadIcon("delete_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Delete this workflow transcript");
+            this.putValue(SHORT_DESCRIPTION,"Delete this process");
             this.setEnabled(false);            
         }
 
@@ -394,7 +387,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
         public RefreshAction() {
             super("Refresh",IconHelper.loadIcon("update.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Refresh the list now");
+            this.putValue(SHORT_DESCRIPTION,"Refresh the process list now");
         }
       // no need to synchronize or anything - as only ever the event dispatch thread that calls this method.
         public void actionPerformed(ActionEvent e) {
@@ -478,14 +471,14 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
         public SaveAction() {
             super("Save", IconHelper.loadIcon("fileexport.png"));
-            this.putValue(SHORT_DESCRIPTION,"Save execution results to local disk");
+            this.putValue(SHORT_DESCRIPTION,"Save a copy of execution results");
             this.setEnabled(false);            
         }
 
         public void actionPerformed(ActionEvent e) {
 
                 if (getPanes().getSelectedIndex() == JES_TAB) {
-                    final URI u = chooser.chooseResource("Save workflow transcript",true);
+                    final URI u = chooser.chooseResourceWithParent("Save workflow transcript",true,true,true,JobMonitorImpl.this);
                     if (u == null) {
                         return;
                     }                    
@@ -528,7 +521,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         protected Transformer workflowTransformer;
         private ViewAction() throws TransformerConfigurationException, TransformerFactoryConfigurationError {            
             super("View", IconHelper.loadIcon("Resource.gif"));
-            this.putValue(SHORT_DESCRIPTION,"View execution transcript");
+            this.putValue(SHORT_DESCRIPTION,"View execution results");
             this.setEnabled(false);
             Source styleSource = WorkflowResultTransformerSet.Workflow2XhtmlTransformer.getStyleSource();
             workflowTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
@@ -558,7 +551,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 final URI id = applicationsTableModel.getRow(applicationsTable.getSelectedRow()).getId();
                 (new BackgroundOperation("Displaying  Execution Summary") {
                     protected Object construct() throws Exception {
-                        File f = File.createTempFile("application",".html");
+                        File f = File.createTempFile("application",".txt");
                         Writer out = new FileWriter(f);
                         Map results = applications.getResults(id);
                         if (results.size() == 1) {
@@ -583,7 +576,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     protected final Jobs jobs;
     protected final Applications applications;
     protected final MyspaceInternal vos;
-    protected final ResourceChooser chooser;
+    protected final ResourceChooserInternal chooser;
     // actions.
     protected Action deleteAction;
     
@@ -610,13 +603,13 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     
     /** production constructor - for platforms without system tray
      * @throws Exception*/
-    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooser chooser) throws Exception {
+    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser) throws Exception {
         this(community,vos,browser,ui,hs,conf,jobs,applications,chooser,null);
  
     }
     
     /** constructor for platforms with system tray */ 
-    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooser chooser,SystemTray tray) throws Exception {
+    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser,SystemTray tray) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.vos = vos;
@@ -859,13 +852,19 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             panes = new JTabbedPane();
             panes.addTab("Workflows",IconHelper.loadIcon("debugt_obj.gif"), new JScrollPane(getJobsTable()));
             panes.addTab("Applications",IconHelper.loadIcon("thread_view.gif"), new JScrollPane(getApplicationsTable()));
-            panes.addPropertyChangeListener("selectedIndex",new PropertyChangeListener() {// when tabs are flipped
+            panes.addChangeListener(new ChangeListener() {// when tabs are flipped
 
-                public void propertyChange(PropertyChangeEvent evt) {
+                public void stateChanged(ChangeEvent e) {
                     // remove any selected items.- which should mean that all buttons are cleared, etc.
                     jobsTable.clearSelection();
                     applicationsTable.clearSelection();
-                } 
+                    if (panes.getSelectedIndex() == 1) { // applications
+                        submitAction.setEnabled(false);
+                    } else {
+                        submitAction.setEnabled(true);
+                    }
+                }
+
             });
         }
         return panes;
@@ -978,6 +977,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

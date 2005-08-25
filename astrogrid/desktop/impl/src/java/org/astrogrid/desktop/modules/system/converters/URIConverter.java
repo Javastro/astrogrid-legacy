@@ -1,4 +1,4 @@
-/*$Id: URIConverter.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: URIConverter.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,9 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.system.converters;
-
-import org.astrogrid.filemanager.common.ivorn.IvornParser;
-import org.astrogrid.store.Ivorn;
 
 import org.apache.commons.beanutils.Converter;
 
@@ -57,6 +54,9 @@ public class URIConverter implements Converter {
 
 /* 
 $Log: URIConverter.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

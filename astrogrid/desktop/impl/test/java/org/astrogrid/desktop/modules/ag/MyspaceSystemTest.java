@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.2 2005/08/16 13:19:32 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.3 2005/08/25 16:59:58 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -172,8 +172,6 @@ public class MyspaceSystemTest extends TestCase {
     }
     
     
-    
-    //@todo fix - problem within filemanager  - won't return url for empty file.
     public void testGetWriteContentURL() throws Exception{
         URL url = myspace.getWriteContentURL(testFile);
         assertNotNull(url);
@@ -185,6 +183,23 @@ public class MyspaceSystemTest extends TestCase {
         os.close();
         
     }
+    
+    public void testGetWriteContentURLForFileWithNoContent() throws Exception{
+        URI testFile1 = new URI(testFile.toString() + "1");
+        assertFalse(myspace.exists(testFile1));
+        myspace.createFile(testFile1);
+        assertTrue(myspace.exists(testFile1));
+        URL url = myspace.getWriteContentURL(testFile1);
+        assertNotNull(url);
+        FileStoreOutputStream os = new FileStoreOutputStream(url);
+        os.open(); // @todo - why is this necesary - breaks the contract.
+        InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes());
+        Piper.pipe(is,os);
+        is.close();
+        os.close();
+        String content = myspace.read(testFile1);
+        assertEquals(TEST_DATA,content);
+    }    
    
     public void testGetReadContentURL() throws Exception{
         myspace.write(testFile, TEST_DATA);
@@ -330,6 +345,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.3  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.2  2005/08/16 13:19:32  nw
 fixes for 1.1-beta-2
 

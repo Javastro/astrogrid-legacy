@@ -1,16 +1,15 @@
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.applications.beans.v1.Interface;
-import org.astrogrid.applications.beans.v1.ParameterRef;
-import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.io.Piper;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.Marshaller;
 
 import java.awt.Component;
 import java.awt.event.ItemEvent;
@@ -19,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URI;
@@ -43,228 +43,14 @@ import javax.swing.table.TableCellEditor;
  *
  */
 public  class ParametersPanel extends JPanel {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(ParametersPanel.class);
-
-    public ParametersPanel(ResourceChooserDialog resourceChooser) {
-        this.resourceChooser = resourceChooser;
-        setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-        add(new JLabel("Inputs"));
-        add(new JScrollPane(getInputTable()));
-        add(new JSeparator());
-        add(new JLabel("Outputs"));
-        add(new JScrollPane(getOutputTable()));
-        enableIndirect = true;
-    }
     
-    
-    public ParametersPanel(ResourceChooserDialog resourceChooser, boolean enableIndirect) {
-        this(resourceChooser);
-        this.enableIndirect = enableIndirect;
-    }
-    
-    private final ResourceChooserDialog resourceChooser;
-    private Tool tool;   
-    private ApplicationDescription desc;
-    private JTable inputTable;
-    private JTable outputTable;
-    private ParameterTableModel inputs;
-    private ParameterTableModel outputs;
-    private boolean enableIndirect;
-    
-    private final class ParameterTable extends JTable {
-        private ParameterTable(ParameterTableModel dm) {
-            super(dm);
-        }
-
-        {                
-                getColumnModel().getColumn(0).setPreferredWidth(30);                      
-                getColumnModel().getColumn(1).setPreferredWidth(70);                        
-            getColumnModel().getColumn(2).setPreferredWidth(5);        
-           getColumnModel().getColumn(2).setCellEditor(new IndirectCellEditor());
-        }
-
-        //Implement table cell tool tips.
-           public String getToolTipText(MouseEvent e) {
-               String tip = null;
-               java.awt.Point p = e.getPoint();
-               int rowIndex = rowAtPoint(p);
-               int colIndex = columnAtPoint(p);
-               int realColumnIndex = convertColumnIndexToModel(colIndex);               
-               if (realColumnIndex == 0) { //Namecolumn..
-                   final String parameterName = ((ParameterTableModel)getModel()).getRows()[rowIndex].getName();
-            
-                   BaseParameterDefinition d = desc.getDefinitionForReference(new ParameterRef() {{setRef(parameterName);}});
-                                      
-                   tip= mkToolTip(d); // base parameter definition
-               } else { 
-                   tip = super.getToolTipText(e);
-               }
-               return tip;
-           }
-    }
-
-    private  class ParameterTableModel extends AbstractTableModel {
-
-            
-        public Class getColumnClass(int columnIndex) {
-            if (columnIndex == 2) {
-                return Boolean.class;
-            } else {
-            return super.getColumnClass(columnIndex);
-            }
-        }
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return columnIndex == 1 || (columnIndex== 2 && enableIndirect);
-        }
-
-        public String getColumnName(int column) {
-            switch(column) {
-                case 0: return "Name";
-                case 1: return "Value";
-                case 2: return "Indirect";
-                default:
-                    return "";
-                      
-            }
-        }
-        private ParameterValue[] rows = new ParameterValue[]{};
-        
-        public ParameterValue[] getRows() {
-            return rows;
-        }
-        
-        public void setRows(ParameterValue[] rows) {
-            this.rows = rows;
-            fireTableDataChanged();
-        }
-        private  int COLUMN_COUNT = 3;
-        public int getColumnCount() {
-            return COLUMN_COUNT;
-        }
-
-        public int getRowCount() {                
-            return rows.length;               
-        }
-
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            final ParameterValue  row =  rows[rowIndex];
-            switch (columnIndex) {
-                case 0:     
-                    try {
-                        BaseParameterDefinition d = desc.getDefinitionForReference(new ParameterRef() {{setRef(row.getName());}});
-                        return d.getUI_Name();
-                    } catch (IllegalArgumentException e) {
-                        return "not available";
-                    }
-
-                 case 1:
-                     return row.getValue();
-                 case 2:
-                     return new Boolean(row.getIndirect());
-                 default:
-                     return null;
-            }
-        }
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-         final ParameterValue row= rows[rowIndex];
-         switch(columnIndex) {
-             case 1:
-                 row.setValue(aValue.toString());
-                 break;
-             case 2:
-                 row.setIndirect(((Boolean)aValue).booleanValue());
-                 break;
-             default: // do nothing in all oher caes.
-                 break;
-         }
-        }            
-    }
-    
-
-    public  ParameterTableModel getInputs() {
-        if (inputs == null) {
-            inputs = new ParameterTableModel();         
-        }
-        return inputs;
-    }
-    public ParameterTableModel getOutputs() {
-        if (outputs == null) {
-            outputs = new ParameterTableModel();
-        }
-        return outputs;
-    }
-                    
-    private JTable getInputTable() {
-        if (inputTable == null) {
-            inputTable = new ParameterTable(getInputs());     
-        }
-        return inputTable;
-    }
-    
-    private JTable getOutputTable() {
-        if (outputTable == null) {
-            outputTable = new ParameterTable(getOutputs());
-        }
-        return outputTable;              
-    }
-    public void clear() {
-        //getInputs().clear()
-        
-    }
-    
-
-    public void populate(Tool t, ApplicationDescription desc) {
-        this.tool = t;
-        this.desc=desc;
-        String interfaceName= t.getInterface();
-        Interface iface = null;
-        Interface[] ifaces = desc.getInterfaces().get_interface();
-        for (int i = 0; i < ifaces.length; i++) {
-            if (ifaces[i].getName().equals(interfaceName)){
-                iface= ifaces[i];
-            }
-        }
-        // possible that iface is null here - but unlikely.
-        getInputs().setRows(t.getInput().getParameter());
-        getOutputs().setRows(t.getOutput().getParameter());
-
-    }
-    
-    public Tool getTool() {
-        return tool;
-    }
-    private String mkToolTip(BaseParameterDefinition def) {
-        StringBuffer result = new StringBuffer();
-        result.append("<html>");
-        result.append(def.getUI_Description()!= null ?   def.getUI_Description().getContent(): "");
-        result.append("<dl>");
-        if (def.getUCD() != null && def.getUCD().trim().length() > 0) 
-                result.append("<dt><b>").append("UCD").append("</b></dt><dd>").append(def.getUCD()).append("</dd>");
-        if (def.getUnits() != null && def.getUnits().trim().length() > 0) 
-                result.append("<dt><b>").append("Units").append("</b></dt><dd>").append(def.getUnits()).append("</dd>");
-        if (def.getType() != null) 
-            result.append("<dt><b>").append("Type").append("</b></dt><dd>").append(def.getType()).append("</dd>");
-        if (def.getSubType() != null && def.getSubType().trim().length() > 0) 
-                result.append("<dt><b>").append("Subtype").append("</b></dt><dd>").append(def.getSubType()).append("</dd>");
-        if (def.getAcceptEncodings() != null && def.getAcceptEncodings().trim().length() > 0) 
-                 result.append("<dt><b>").append("Encodings").append("</b></dt><dd>").append(def.getAcceptEncodings()).append("</dd>");        
-        if (def.getOptionList() != null) 
-                result.append("<dt><b>").append("One of").append("</b></dt><dd>").append(Arrays.asList(def.getOptionList().getOptionVal())).append("</dd>");        
-                
-        result.append("</dl></html>");
-        logger.debug(result.toString());
-        return result.toString();
-    }
-    
-    /** cribbed from 
+    /**Editor for a cell that pops up resource chooser as needed. 
+     * cribbed from 
      * http://java.sun.com/docs/books/tutorial/uiswing/components/table.html#editrender
      * @author Noel Winstanley nw@jb.man.ac.uk 16-May-2005
      *
      */
-    public class IndirectCellEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
+    class IndirectCellEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
         
         JCheckBox button;
         Boolean indirect;
@@ -277,6 +63,10 @@ public  class ParametersPanel extends JPanel {
             button.setBorderPainted(false);
             
         }
+
+        public Object getCellEditorValue() {
+            return indirect;
+        }
         
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             this.indirect = (Boolean)value;
@@ -285,10 +75,6 @@ public  class ParametersPanel extends JPanel {
                 pm = (ParameterTableModel)table.getModel();                
             }
             return button;
-        }
-
-        public Object getCellEditorValue() {
-            return indirect;
         }
         
         /** Listens to the check boxes. */
@@ -302,10 +88,9 @@ public  class ParametersPanel extends JPanel {
                 parameter.setIndirect(false);
                 pm.fireTableCellUpdated(row,2);
         
-            } else {
-                resourceChooser.show();
+            } else {                
                 fireEditingStopped();
-                URI uri = resourceChooser.getUri();
+                URI uri = resourceChooser.chooseResourceWithParent("Select resource",true,true,true,ParametersPanel.this);
                 parameter.setIndirect(true);
                 this.indirect = Boolean.TRUE;                  
                 pm.fireTableCellUpdated(row,2);                       
@@ -337,6 +122,226 @@ public  class ParametersPanel extends JPanel {
             }
         }        
     }
+    /** custom table for this pane */
+    private final class ParameterTable extends JTable {
+
+        {                
+                getColumnModel().getColumn(0).setPreferredWidth(30);                      
+                getColumnModel().getColumn(1).setPreferredWidth(70);                        
+            getColumnModel().getColumn(2).setPreferredWidth(5);        
+           getColumnModel().getColumn(2).setCellEditor(new IndirectCellEditor());
+        }
+        private ParameterTable(ParameterTableModel dm) {
+            super(dm);
+        }
+
+        //Implement table cell tool tips.
+           public String getToolTipText(MouseEvent e) {
+               String tip = null;
+               java.awt.Point p = e.getPoint();
+               int rowIndex = rowAtPoint(p);
+               int colIndex = columnAtPoint(p);
+               int realColumnIndex = convertColumnIndexToModel(colIndex);               
+               if (realColumnIndex == 0) { //Namecolumn..
+                   final String parameterName = ((ParameterTableModel)getModel()).getRows()[rowIndex].getName();            
+                   ParameterBean d = (ParameterBean)desc.getParameters().get(parameterName);                                       
+                   tip= mkToolTip(d); 
+               } else { 
+                   tip = super.getToolTipText(e);
+               }
+               return tip;
+           }
+    }
+    /** table model for our custom table */
+    private  class ParameterTableModel extends AbstractTableModel {
+        private  int COLUMN_COUNT = 3;
+        private ParameterValue[] rows = new ParameterValue[]{};
+            
+        public Class getColumnClass(int columnIndex) {
+            if (columnIndex == 2) {
+                return Boolean.class;
+            } else {
+            return super.getColumnClass(columnIndex);
+            }
+        }
+        public int getColumnCount() {
+            return COLUMN_COUNT;
+        }
+
+        public String getColumnName(int column) {
+            switch(column) {
+                case 0: return "Name";
+                case 1: return "Value";
+                case 2: return "Is Reference";
+                default:
+                    return "";                      
+            }
+        }
+
+        public int getRowCount() {                
+            return rows.length;               
+        }
+        
+        public ParameterValue[] getRows() {
+            return rows;
+        }
+
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            final ParameterValue  row =  rows[rowIndex];
+            switch (columnIndex) {
+                case 0:     
+                    try {
+                        ParameterBean d = (ParameterBean)desc.getParameters().get(row.getName());
+                        return d.getUiName();
+                    } catch (IllegalArgumentException e) {
+                        return "not available";
+                    }
+
+                 case 1:
+                     return row.getValue();
+                 case 2:
+                     return new Boolean(row.getIndirect());
+                 default:
+                     return null;
+            }
+        }
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex == 1 || (columnIndex== 2 && allowIndirect);
+        }
+        
+        public void setRows(ParameterValue[] rows) {
+            this.rows = rows;
+            fireTableDataChanged();
+        }
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+         final ParameterValue row= rows[rowIndex];
+         switch(columnIndex) {
+             case 1:
+                 row.setValue(aValue.toString());
+                 break;
+             case 2:
+                 row.setIndirect(((Boolean)aValue).booleanValue());
+                 break;
+             default: // do nothing in all oher caes.
+                 break;
+         }
+        }            
+    }
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(ParametersPanel.class);
+    
+    private ApplicationInformation desc;
+    private ParameterTableModel inputs;
+    private JTable inputTable;
+    private ParameterTableModel outputs;
+    private JTable outputTable;
+    
+    private final ResourceChooserInternal resourceChooser;
+    private Tool tool;   
+   private boolean allowIndirect = true;
+   
+   /** set to true to allow indirect parameters */
+   public void setAllowIndirect(boolean allowIndirect) {
+       this.allowIndirect = allowIndirect;
+   }
+
+    /** ctreate a parameters panel, 
+     *  Construct a new ParametersPanel
+     * @param resourceChooser choose to use to support indirect parameters editor. 
+     */
+    public ParametersPanel(ResourceChooserInternal resourceChooser) {
+        this.resourceChooser = resourceChooser;
+        initialize();
+    }
+    
+    
+        
+    /** populate the panel
+     * 
+     * @param t a tool document - can contain predefined values
+     * @param desc a description of the application the tool is being built for.
+     */
+    public void populate(Tool t, ApplicationInformation desc) {
+        this.tool = t;
+        this.desc=desc;
+        getInputs().setRows(t.getInput().getParameter());
+        getOutputs().setRows(t.getOutput().getParameter());   
+
+    }
+  
+    void clearTool() {
+        tool = null;              
+    }
+    public Tool getTool() {
+        return tool;
+    }
+    /** clear the panel of data */
+    public void clear() {
+        desc = null;
+        getInputs().setRows(new ParameterValue[]{});
+        getOutputs().setRows(new ParameterValue[]{});
+    }
+
+    private  ParameterTableModel getInputs() {
+        if (inputs == null) {
+            inputs = new ParameterTableModel();         
+        }
+        return inputs;
+    }
+                    
+    private JTable getInputTable() {
+        if (inputTable == null) {
+            inputTable = new ParameterTable(getInputs());     
+        }
+        return inputTable;
+    }
+    private ParameterTableModel getOutputs() {
+        if (outputs == null) {
+            outputs = new ParameterTableModel();
+        }
+        return outputs;
+    }
+    
+    private JTable getOutputTable() {
+        if (outputTable == null) {
+            outputTable = new ParameterTable(getOutputs());
+        }
+        return outputTable;              
+    }
+    
+    /**
+     * 
+     */
+    private void initialize() {
+        setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+        add(new JLabel("Inputs"));
+        add(new JScrollPane(getInputTable()));
+        add(new JSeparator());
+        add(new JLabel("Outputs"));
+        add(new JScrollPane(getOutputTable()));
+    }
+    private String mkToolTip(ParameterBean def) {
+        StringBuffer result = new StringBuffer();
+        result.append("<html>");
+        result.append(def.getDescription()!= null ?   def.getDescription(): "");
+        result.append("<dl>");
+        if (def.getUcd() != null && def.getUcd().trim().length() > 0) 
+                result.append("<dt><b>").append("UCD").append("</b></dt><dd>").append(def.getUcd()).append("</dd>");
+        if (def.getUnits() != null && def.getUnits().trim().length() > 0) 
+                result.append("<dt><b>").append("Units").append("</b></dt><dd>").append(def.getUnits()).append("</dd>");
+        if (def.getType() != null) 
+            result.append("<dt><b>").append("Type").append("</b></dt><dd>").append(def.getType()).append("</dd>");
+        if (def.getSubType() != null && def.getSubType().trim().length() > 0) 
+                result.append("<dt><b>").append("Subtype").append("</b></dt><dd>").append(def.getSubType()).append("</dd>");     
+        if (def.getOptions() != null) 
+                result.append("<dt><b>").append("One of").append("</b></dt><dd>").append(Arrays.asList(def.getOptions())).append("</dd>");        
+                
+        result.append("</dl></html>");
+        logger.debug(result.toString());
+        return result.toString();
+    }
 }
 
 
@@ -346,6 +351,9 @@ public  class ParametersPanel extends JPanel {
 
 /* 
 $Log: ParametersPanel.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

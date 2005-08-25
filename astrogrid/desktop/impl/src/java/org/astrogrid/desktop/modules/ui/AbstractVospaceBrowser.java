@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -49,7 +52,7 @@ import javax.swing.tree.TreeNode;
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
  *  @todo make tree expansion behave same as clicking on name - both show child folders, and contents.
  */
-public abstract class AbstractVospaceBrowser extends UIComponent {
+public abstract class AbstractVospaceBrowser extends UIComponent implements UserLoginListener {
 
     /** class that manages the currently selected node */
     protected class CurrentNodeManager implements TreeSelectionListener, ListSelectionListener {
@@ -76,6 +79,13 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
                 this.current = n;
                 updateDisplay();
             }
+        }
+        
+        public void clear() {
+            current = null;
+            getActions().disableAllActions();
+            getFolderTree().clearSelection();
+            getFileList().clearSelection();
         }
 
         protected void updateDisplay() {
@@ -399,9 +409,12 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
         }
 
         public boolean isLeaf(Object node) {
-            logger.debug("isLeaf");
+            // we want no leaves - want all folders to look the same.
+            return false;
+            /*
             FileManagerNode n = (FileManagerNode) node;
             return n.getChildCount() == 0 || workingNodes.contains(n);
+            */
         }
     }
 
@@ -460,9 +473,10 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos) throws HeadlessException {
+    public AbstractVospaceBrowser(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm) throws HeadlessException {
         super(conf, hs,ui);
         this.vos = vos;
+        comm.addUserLoginListener(this);
     }
 
     protected abstract CurrentNodeManager createCurrentNodeManager();
@@ -516,6 +530,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
                         return super.convertValueToText(value, a, b, c, i, d);
                     }
                 }
+                
             };
             folderTree.setModel(getFolderTreeModel());
             folderTree.setCellEditor(null);
@@ -547,7 +562,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
     
             protected void doFinished(Object result) {
                 getFolderTreeModel().setRoot((FileManagerNode) result);
-                getFolderTree().setSelectionRow(0);
+                getFolderTree().setSelectionRow(0);                
             }
         }).start();
     
@@ -570,10 +585,32 @@ public abstract class AbstractVospaceBrowser extends UIComponent {
         }
         return jToolBar;
     }
+
+    /**
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     */
+    public void userLogin(UserLoginEvent e) {
+        readRoot();
+        
+    }
+
+    /**
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
+     */
+    public void userLogout(UserLoginEvent e) {
+        getCurrentNodeManager().clear();
+        getFolderTreeModel().setRoot(null);
+        getFileListModel().clear();
+
+        
+    }
 }
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.2  2005/08/25 16:59:58  nw
+ * 1.1-beta-3
+ *
  * Revision 1.1  2005/08/11 10:15:00  nw
  * finished split
  *

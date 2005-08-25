@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.2 2005/08/16 13:19:32 nw Exp $
+/*$Id: VospaceImpl.java,v 1.3 2005/08/25 16:59:58 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,10 @@
 package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.NodeInformation;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
@@ -27,29 +27,24 @@ import org.astrogrid.filemanager.client.NodeIterator;
 import org.astrogrid.filemanager.common.BundlePreferences;
 import org.astrogrid.filemanager.common.DuplicateNodeFault;
 import org.astrogrid.filemanager.common.FileManagerFault;
-import org.astrogrid.filemanager.common.NodeIvorn;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
-import org.astrogrid.filestore.common.FileStoreOutputStream;
+import org.astrogrid.filemanager.common.TransferInfo;
 import org.astrogrid.io.Piper;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.ui.script.ScriptEnvironment;
 
 import org.apache.axis.types.URI.MalformedURIException;
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -80,25 +75,25 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     /** Construct a new Vospace
      * 
      */
-    public VospaceImpl(CommunityInternal community) {
+    public VospaceImpl(Community community) {
         super();
         this.community = community;
+        community.addUserLoginListener(this);
     }
-    protected final CommunityInternal community;
+   protected final Community community;
     protected URI home;
     protected FileManagerClient client;
     
-    protected FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
+    protected synchronized FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
         if (client == null) {
-            ScriptEnvironment env = community.getEnv();
-          //  client = community.getEnv().getAstrogrid().createFileManagerClient(env.getUserIvorn(),env.getPassword());
+           
             // want to create my own file manager client, so can set up customprefs.
             BundlePreferences prefs = new BundlePreferences();
             prefs.setFetchParents(true);
             prefs.setMaxExtraNodes(new Integer(200));
             prefs.setPrefetchDepth(new Integer(3));
-            FileManagerClientFactory fac = new FileManagerClientFactory(prefs);
-            client = fac.login(env.getUserIvorn(),env.getPassword());
+            FileManagerClientFactory fac = new FileManagerClientFactory(prefs); 
+            client = fac.login(new Ivorn(community.getUserInformation().getId().toString()),community.getUserInformation().getPassword());
         } 
         return client;
     }
@@ -359,10 +354,16 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
         } 
     }
     
-    /** @todo unsure whether this is correct */
+
     public URL getWriteContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         try {
-        return node(ivorn).contentURL();
+            FileManagerNode node = node(ivorn);            
+            if (node.getMetadata().getContentId() == null) { // no data - need to set up a url
+                TransferInfo props= node.getNodeDelegate().writeContent(node.getMetadata().getNodeIvorn());               
+                 return new URL(props.getUri().toString());
+            } else {
+                return node.contentURL();
+            }
         } catch (NodeNotFoundFault e) {
             throw new NotFoundException(e);
         } catch (FileManagerFault e) {
@@ -679,7 +680,7 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
       //@todo edit to only select active stores - get kevin to screw his brain on.
       ResourceData[] arr;
     try {
-        arr = community.getEnv().getAstrogrid().createRegistryClient().getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
+        arr =RegistryDelegateFactory.createQuery().getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
         ResourceInformation[] result = new ResourceInformation[arr.length];
         for (int i = 0; i < arr.length; i++) {
             result[i] = new ResourceInformation(new URI(arr[i].getIvorn().toString()),arr[i].getTitle(),arr[i].getDescription(),arr[i].getAccessURL());
@@ -710,7 +711,7 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     /**
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
-    public void userLogout(UserLoginEvent e) {
+    public synchronized void userLogout(UserLoginEvent e) {
         this.client = null;
         this.home = null;
     }
@@ -775,6 +776,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.3  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.2  2005/08/16 13:19:32  nw
 fixes for 1.1-beta-2
 

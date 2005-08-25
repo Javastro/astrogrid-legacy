@@ -82,6 +82,16 @@
 				</property>
 			</return>
 		</method>
+		<method name="getUserInformation">
+			<description>Get information on the logged in user</description>
+			<return>
+				<description>bean of user information</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>struct</value>
+				</property>
+			</return>
+			</method>
 	</component>
 	
 		<component name="registry" 
@@ -110,6 +120,7 @@
 				<description>identifier of the service to resolve</description>
 			</parameter>
 		</method>
+		
 		<method name="getRecord">
 			<description>Retrieve the registry entry for an ivorn</description>
 	<property>
@@ -132,6 +143,7 @@
 					return</description>
 			</parameter>
 		</method>
+		
 		<method name="getResourceInformation">
 			<description>Retreive information about a registry entry</description>
 			<property>
@@ -144,12 +156,17 @@
 			</property>
 			<return>
 				<description>Resource Summary Object</description>
+			<property>
+				<key>system.xmlrpc.type</key>
+				<value>boolean</value>
+			</property>					
 			</return>
 			<parameter name="ivon">
 				<description>identifier of the registry entry to retreive</description>
 			</parameter>
 			</method>
-		<method name="searchForRecords">
+			
+		<method name="adqlSearch">
 			<description>Execute an adql  query the registry. </description>
 	<property>
 		<key>icon</key>
@@ -157,7 +174,7 @@
 	</property>					
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Search for Records</value>								
+				<value>ADQL Search</value>								
 			</property>
 			<return>
 				<description>XML Query results</description>
@@ -171,7 +188,87 @@
 					ADQL).  For example: select * from Registry where vr:content/vr:type='Archive'</description>
 			</parameter>
 		</method>
-		<method name="xquery">
+<method name="adqlSearchRI">
+			<description>Execute an adql  query the registry. </description>
+	<property>
+		<key>icon</key>
+		<value>search.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>ADQL Search - return summaries</value>								
+			</property>			
+				<return>
+				<description>Resource Summary Objects</description>
+			<property>
+				<key>system.xmlrpc.type</key>
+				<value>array</value>
+			</property>					
+			</return>
+			<parameter name="sadql">
+				<description>Query to execute (String form of 
+					ADQL).  For example: select * from Registry where vr:content/vr:type='Archive'</description>
+			</parameter>
+		</method>		
+		
+		<method name="keywordSearch">
+			<description>Execute a keyword search against the registry. </description>
+	<property>
+		<key>icon</key>
+		<value>search.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Keyword Search Search</value>								
+			</property>
+			<return>
+				<description>XML Query results</description>
+				<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>
+			</return>
+			<parameter name="keywords">
+				<description>keywords to search for</description>
+			</parameter>
+			<parameter name="orValues">
+				<description>if true, join keywords with 'OR'. if false, use 'AND'</description>
+			<property>
+				<key>system.xmlrpc.type</key>
+				<value>boolean</value>
+			</property>					
+			</parameter>			
+		</method>
+<method name="keywordSearchRI">
+			<description>Execute a keyword search against the registry. </description>
+	<property>
+		<key>icon</key>
+		<value>search.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Keyword Search - return summaries</value>								
+			</property>			
+				<return>
+				<description>Resource Summary Objects</description>
+			<property>
+				<key>system.xmlrpc.type</key>
+				<value>array</value>
+			</property>					
+			</return>
+			<parameter name="keywords">
+				<description>keywords to search for</description>
+			</parameter>
+			<parameter name="orValues">
+				<description>if true, join keywords with 'OR'. if false, use 'AND'</description>
+			<property>
+				<key>system.xmlrpc.type</key>
+				<value>boolean</value>
+			</property>					
+			</parameter>	
+		</method>		
+				
+		<method name="xquerySearch">
 			<description>Execute an xquery against the registry. </description>
 	<property>
 		<key>icon</key>
@@ -179,7 +276,7 @@
 	</property>					
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>XQuery</value>								
+				<value>XQuery Search</value>								
 			</property>
 			<return>
 				<description>Result document</description>
@@ -191,7 +288,35 @@
 			<parameter name="xquery">
 				<description>XQuery to execute </description>
 			</parameter>
-		</method>		
+		</method>
+		<method name="keywordSearch">
+			<description>Execute a keywordquery the registry. </description>
+	<property>
+		<key>icon</key>
+		<value>search.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Keyword Search</value>								
+			</property>
+			<return>
+				<description>XML Query results</description>
+				<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>
+			</return>
+			<parameter name="keywords">
+				<description>keywords to match against</description>
+			</parameter>
+			<parameter name="orValues">
+				<description>if true, connect keywords with 'OR'. if false, use 'AND'</description>
+		<property>
+			<key>system.xmlrpc.type</key>
+			<value>boolean</value>
+		</property>				
+			</parameter>			
+		</method>				
 	</component>
 	
 	
@@ -578,22 +703,10 @@
 				</property>
 			</return>
 		</method>
-		<method name="listFully">
-			<description>list details of registered applications</description>
-	<property>
-		<key>icon</key>
-		<value>properties.gif</value>
-	</property>				
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>List Application Details</value>
-			</property>
+		<method name="getQueryToListApplications">
+			<description>return an adql query that will list details of registered applications</description>
 			<return>
-				<description>list of application information</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>array</value>
-				</property>
+				<description>a query string</description>			
 			</return>
 		</method>
 

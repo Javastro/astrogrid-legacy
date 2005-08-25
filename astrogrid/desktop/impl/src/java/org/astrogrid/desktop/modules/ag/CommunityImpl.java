@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: CommunityImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.BrowserControl;
@@ -27,9 +28,10 @@ import org.astrogrid.ui.script.ScriptEnvironment;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Community Service implementation
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
@@ -52,6 +54,7 @@ public class CommunityImpl implements CommunityInternal  {
     protected final UI ui;
     protected final BrowserControl browser;
     protected final LoginDialogue loginDialogue;
+    protected UserInformation userInformation;
 
     public void login(String username,String password, String community) throws SecurityException, ServiceException {
         loginDialogue.setUser(username);
@@ -62,11 +65,9 @@ public class CommunityImpl implements CommunityInternal  {
 
     public void logout() {
         env = null;
+        userInformation = null;
         loginDialogue.setPassword("");
-        UserLoginEvent e= new UserLoginEvent(false,this);
-        for (Iterator i = listeners.iterator(); i.hasNext(); ) {
-            ((UserLoginListener)i.next()).userLogout(e);
-        }        
+        notifyListeners(false);
         ui.setStatusMessage("Not Logged In");
         ui.setLoggedIn(false);
     }
@@ -77,9 +78,17 @@ public class CommunityImpl implements CommunityInternal  {
         guiLogin();
         if (! isLoggedIn()) {
             throw new RuntimeException("Cannot proceed - failed to login");
-        }
+        }       
         return this.env;
     }
+
+    public UserInformation getUserInformation()  {
+       guiLogin();
+       if (! isLoggedIn()) {
+           throw new RuntimeException("Cannot proceed - failed to login");
+       }
+       return userInformation;
+    }    
     
     public boolean isLoggedIn() {
         return env != null;
@@ -120,12 +129,15 @@ public class CommunityImpl implements CommunityInternal  {
         try {
             ui.setStatusMessage("Logging in..");   
         env = LoginFactory.login(loginDialogue.getUser(),loginDialogue.getCommunity(),loginDialogue.getPassword());
+        userInformation = new UserInformation(
+                new URI(env.getUserIvorn().toString())
+                ,loginDialogue.getUser()
+                ,loginDialogue.getPassword()
+                ,loginDialogue.getCommunity()
+               );
         ui.setStatusMessage("Logged in as " + env.getUserIvorn());
         ui.setLoggedIn(true);
-        UserLoginEvent e= new UserLoginEvent(true,this);
-        for (Iterator i = listeners.iterator(); i.hasNext(); ) {
-            ((UserLoginListener)i.next()).userLogin(e);
-        }
+        notifyListeners(true);
         } catch (CommunityResolverException e) {
             throw new ServiceException(e);
         } catch (CommunityServiceException e) {
@@ -136,6 +148,8 @@ public class CommunityImpl implements CommunityInternal  {
             throw new SecurityException(e);
         } catch (RegistryException e) {
             throw new ServiceException(e);
+        } catch (URISyntaxException e) {
+            throw new ServiceException(e);
         } finally {
             if (!isLoggedIn()) {
                 ui.setStatusMessage("");
@@ -145,7 +159,30 @@ public class CommunityImpl implements CommunityInternal  {
         return true;
     }
 
-    protected Set listeners = new HashSet();
+    /**
+     * 
+     */
+    private void notifyListeners(boolean loggedIn) {
+        UserLoginEvent e= new UserLoginEvent(loggedIn,this);
+        //for (Iterator i = listeners.iterator(); i.hasNext(); ) {
+        for (int i = 0; i < listeners.size(); i++) {    
+            try {
+                UserLoginListener l = (UserLoginListener)listeners.get(i);
+                if (l != null) {
+                    if (loggedIn == true) {
+                        l.userLogin(e);
+                    } else {
+                        l.userLogout(e);
+                    }
+                }
+            } catch (Throwable t) { 
+                // oh well, something has gone wrong with this listener - probably disconnected.
+                // lets remove if from the listener list
+                listeners.remove(i);
+            }
+        }
+    }
+    protected List listeners = new ArrayList();
     
     /**
      * @see org.astrogrid.acr.astrogrid.Community#addUserLoginListener(org.astrogrid.desktop.modules.ag.UserLoginListener)
@@ -167,6 +204,9 @@ public class CommunityImpl implements CommunityInternal  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

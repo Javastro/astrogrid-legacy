@@ -1,4 +1,4 @@
-/*$Id: ACRImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ACRImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -278,12 +278,14 @@ public class ACRImpl implements MutableACR {
      */
     public Object getService(Class interfaceClass) throws ACRException {
         DefaultModule latest = (DefaultModule)modules.get(modules.lastKey());
-        try { //@todo - adjust this catch Throwable so acr execptions pass through.
+        try { 
         Object result = latest.getComponentInstanceOfType(interfaceClass);
         if (result == null) {
             throw new NotFoundException(interfaceClass.getName());
         }
         return result;
+        } catch (ACRException e) {
+            throw e;
         } catch (Throwable t) {
             throw new ACRException(t);
         }
@@ -333,6 +335,9 @@ public class ACRImpl implements MutableACR {
 
 /* 
 $Log: ACRImpl.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

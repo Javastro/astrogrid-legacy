@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.InterfacesType;
 import org.astrogrid.applications.beans.v1.ParameterRef;
@@ -18,7 +17,6 @@ import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;

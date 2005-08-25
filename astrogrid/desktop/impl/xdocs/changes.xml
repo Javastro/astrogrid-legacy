@@ -13,19 +13,50 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	<!--
-	<release version="1.1-beta-3" date="unreleased">
+	<release version="1.1-beta-3" date="2005-08-25">
+		<action dev="nw" type="fix" issue="1328">
+			myspace tree is cleared on logout
+		</action>
+		<action dev="nw" type="fix" issue="1327">
+			improved display of folders in myspace.
+		</action>
+		<action dev="nw" type="fix" due-to="Mark Taylor">
+			fixed bug in 'Myspace.getWriteContentURL()' and improved documentation
+		</action>
+		<action dev="nw" type="add" due-to="Richard Holbrey">
+			Added 'reset configuration' option to help menu
+		</action>
+		<action dev="nw" type="add">
+			Added user information object to community
+		</action>
+		<action dev="nw" type="add">
+			Added listener interface to acr shutdown - so clients 
+			have chance to veto, and are at least notified of this happening
+		</action>		
+		<action dev="nw" type="fix">
+			Fixed parsing of application registry entries to
+			make more quirk-tolerant
+		</action>			
+		<action dev="nw" type="add" due-to="Thomas Boch">
+			Added summary-returning search methods to registry interface.
+			Removed wrapping elements from results.
+		</action>
+		<action dev="nw" type="fix">
+			Changed listener implementation to handle disappearance of client
+		</action>
+		<action dev="nw" type="add" >
+			Added final 'prompt-user' fall-through to finder.
+		</action>
 		<action dev="nw" type="add" due-to="ael">
-			Added IVOA-compliant Registry Interface
-		</action>	
+			Added keyword Search to registry interface
+		</action>
 		<action dev="nw" type="add" due-to="Thomas Boch">
 			Added CDS interfaces
 		</action>
 		<action dev="nw" type="update">
-			Updated JDIC lib
+			Updated JDIC lib to 0.9.1
 		</action>
 	</release>
-	-->
 	<release version="1.1-beta-2" date="2005-08-12">
 		<action dev="nw" type="fix" due-to="jdt">
 			Fixed broken links in webstart associations

@@ -1,4 +1,4 @@
-/*$Id: RegistrySystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: RegistrySystemTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,6 +66,7 @@ public class RegistrySystemTest extends TestCase {
     public void testGetRecord() throws Exception {
         Document doc = registry.getRecord(testURI);
         assertNotNull(doc);
+        assertEquals("Resource",doc.getDocumentElement().getLocalName());
     }
 
     public void testGetResourceData() throws Exception{
@@ -78,14 +79,77 @@ public class RegistrySystemTest extends TestCase {
     }
 
     public static final String QUERY_STRING = "select * from Registry where vr:identifier='ivo://uk.ac.le.star/filemanager'";
-    public void testSearch()  throws Exception {
-        Document result = registry.searchForRecords(QUERY_STRING);
+    public void testAdqlSearch()  throws Exception {
+        Document result = registry.adqlSearch(QUERY_STRING);
+        assertNotNull(result);
+        assertNotNull(result.getDocumentElement());
+        assertEquals("VOResources",result.getDocumentElement().getLocalName());
+        assertEquals(1,result.getElementsByTagNameNS("*","Resource").getLength());
+    }
+    
+    public void testAdqlSearchRI() throws Exception {
+        ResourceInformation[] ris = registry.adqlSearchRI(QUERY_STRING);
+        assertNotNull(ris);
+        assertEquals(1,ris.length);
+        ResourceInformation a = ris[0];
+        assertNotNull(a);
+        assertEquals(testURI,a.getId());
+        assertNotNull(a.getTitle());
+        assertNotNull(a.getDescription());
+        assertNotNull(a.getAccessURL());
+    }
+
+    public void testAdqlSearchMiss() throws Exception {
+        Document result = registry.adqlSearch("select * from Registry where vr:identifier='not present'");
+        assertNotNull(result);
+        assertNotNull(result.getDocumentElement());
+        assertEquals("VOResources",result.getDocumentElement().getLocalName());
+        assertEquals(0,result.getElementsByTagNameNS("*","Resource").getLength());        
+    }
+    
+    public void testAdqlSearchRIMiss() throws Exception {
+      ResourceInformation[] ris = registry.adqlSearchRI("select * from Registry where vr:identifier='not present'");
+      assertNotNull(ris);
+      assertEquals(0,ris.length);
+    }
+    
+    public void testAdqlSearchMultiple() throws Exception {
+        Document result = registry.adqlSearch("select * from Registry where vr:content/vr:type='Archive'");
+        assertNotNull(result);
+        assertNotNull(result.getDocumentElement());
+        assertEquals("VOResources",result.getDocumentElement().getLocalName());
+        assertTrue(result.getElementsByTagNameNS("*","Resource").getLength() > 1);        
+    }
+    
+    public void testAdqlSearchRIMultiple() throws Exception {
+        ResourceInformation[] ris = registry.adqlSearchRI("select * from Registry where vr:content/vr:type='Archive'");
+        assertNotNull(ris);
+        assertTrue(ris.length > 1);
+        for (int i = 0 ; i < ris.length; i++) {            
+        ResourceInformation a = ris[i];
+        assertNotNull(a);
+        assertNotNull(a.getId());
+        assertNotNull(a.getTitle());
+        assertNotNull(a.getDescription());
+        }
+    }    
+    
+    public void testKeywordSearch() throws Exception {
+        Document result = registry.keywordSearch("filestore",false);
         assertNotNull(result);
         XMLUtils.PrettyDocumentToStream(result,System.out);
     }
     
+
+    public void testKeywordSearchRI() throws Exception {
+        ResourceInformation[] result = registry.keywordSearchRI("filestore",false);
+        assertNotNull(result);
+        assertTrue(result.length > 0);
+        //@todo add more checking here.
+    }
+    
     public void testXQuery() throws Exception {
-        Document result = registry.xquery(
+        Document result = registry.xquerySearch(
                 "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.10\"; declare namespace vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\"; for $x in //vor:Resource where $x/vr:identifier = 'ivo://uk.ac.le.star/filemanager' return $x"        
         );
         assertNotNull(result);
@@ -98,6 +162,9 @@ public class RegistrySystemTest extends TestCase {
 
 /* 
 $Log: RegistrySystemTest.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

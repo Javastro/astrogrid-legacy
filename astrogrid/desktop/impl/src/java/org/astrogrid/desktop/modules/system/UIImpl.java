@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.2 2005/08/16 13:19:31 nw Exp $
+/*$Id: UIImpl.java,v 1.3 2005/08/25 16:59:58 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.Module;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.MutableACR;
@@ -118,21 +118,20 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         this.browser=null;
         this.shutdown = null;
         this.reg = null;
+        this.confInternal = null;
     }
     
     /** this is the production constructor */
-    public UIImpl(BrowserControl browser,MutableACR reg, Shutdown sh, Configuration conf, HelpServer help) {     
+    public UIImpl(BrowserControl browser,MutableACR reg, Shutdown sh, ConfigurationInternal conf, HelpServer help) {     
         super(conf,help,null);
+        this.confInternal = conf;
         this.browser = browser;
         this.shutdown = sh;
         this.reg = reg;
         this.maybeRegisterSingleInstanceListener();
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                initialize();
-            }
-        });
+
     }
+    protected final ConfigurationInternal confInternal;
     protected final BrowserControl browser;
     protected final Shutdown shutdown;
     protected final MutableACR reg;
@@ -154,17 +153,13 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
             public void windowClosing(WindowEvent e) {
                 int code = JOptionPane.showConfirmDialog(UIImpl.this,"Closing the UI. Do you want  the ACR service to continue to run in the background?", 
                         "Closing UI",JOptionPane.INFORMATION_MESSAGE);
-                switch(code) {
-                    case JOptionPane.YES_OPTION:
-                        hide(); break;
-                    case JOptionPane.NO_OPTION:
-                        hide();
-                        shutdown.halt();
-                        System.exit(0); break;                  
+                hide(); // always fo this..
+                if (code == JOptionPane.NO_OPTION) {                    
+                        shutdown.halt(); 
                 }
             }
         });
-	}
+    }
 	/**
 	 * This method initializes jContentPane
 	 * 
@@ -268,10 +263,41 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
             helpMenu.add(getHelpContentsMenuItem());
             helpMenu.add(getReportBugMenuItem());
             helpMenu.add(new JSeparator());
+            helpMenu.add(getResetMenuItem());
+            helpMenu.add(new JSeparator());            
 			helpMenu.add(getAboutMenuItem());
 		}
 		return helpMenu;
 	}
+    
+    private JMenuItem resetMenuItem;
+    
+    private JMenuItem getResetMenuItem() {
+        if (resetMenuItem == null) {
+            resetMenuItem = new JMenuItem();
+            resetMenuItem.setText("Reset configuration");
+            resetMenuItem.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    int code = JOptionPane.showConfirmDialog(
+                            UIImpl.this
+                            ,"<html>This will reset the application's configuration<br>All user settings will be lost<br>Proceed?</html>"
+                            ,"Confirm"
+                           ,JOptionPane.OK_CANCEL_OPTION
+                           ,JOptionPane.WARNING_MESSAGE
+                           );
+                    if (code == JOptionPane.OK_OPTION) {
+                        try {
+                        confInternal.reset();
+                        } catch (ServiceException ex) {
+                            showError("Failed to reset configuration",ex);
+                        }
+                    }
+                }
+            });
+        }
+        return resetMenuItem;
+    }
 
 	/**
 	 * This method initializes jMenuItem2	
@@ -379,10 +405,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 			exitMenuItem.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
                     int result = JOptionPane.showConfirmDialog(UIImpl.this,"Exit Workbench - are you sure?","Exit?",JOptionPane.YES_NO_OPTION);
-                    if (result == JOptionPane.YES_OPTION) {
+                    if (result == JOptionPane.YES_OPTION) {       
                         hide();
                         shutdown.halt();
-                        System.exit(0);
                     }
 				}
 			});
@@ -408,11 +433,17 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         return closeMenuItem;
     }
 
-    /** show the gui, unless key is set.
-     * @see org.picocontainer.Startable#start()
-     */
+    // initializes the gui 
     public void start() {
-
+        if (SwingUtilities.isEventDispatchThread()) {
+            initialize();
+        } else {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    initialize();
+                }
+            });
+        }
     }
     /** if this key is set to true, doen't display the gui on startup */
     public static final String START_HIDDEN_KEY = "system.ui.hide";
@@ -431,8 +462,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
     }
     
     public void show() {
-        super.show();
-        super.repaint();
+        super.show();        
         requestFocus();
     }
 
@@ -711,7 +741,6 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
     }
     
 
-    /**@todo change appearance on click - 'selected' */
     private class ModuleButton extends JButton {
         public ModuleButton(final ModuleDescriptor md) {
             this.setToolTipText(md.getDescription());
@@ -720,10 +749,17 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
             if (icon != null) {
                 this.setIcon(IconHelper.loadIcon(icon));
             }
-            // @todo not the nicest way - could probalby override a method directly, but don't know which one.
+     
             this.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    ModuleButton.this.setSelected(true);
                     cardManager.show(actionCards,md.getName());
+                    Component[] comps = getButtonBar().getComponents(); // could make this mor efficient by holding a reference to the stored component somewhere.
+                    for (int i = 0; i < comps.length; i++) {
+                        if (comps[i] != ModuleButton.this) {
+                         ((ModuleButton)comps[i]).setSelected(false);
+                        }
+                    }
                 }
             });
         }
@@ -1006,6 +1042,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
                 }
                 this.add(mb);                
             }       
+            this.invalidate();            
         }
     }
     
@@ -1045,6 +1082,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.3  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.2  2005/08/16 13:19:31  nw
 fixes for 1.1-beta-2
 

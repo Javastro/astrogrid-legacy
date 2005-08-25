@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
-import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.transform.Result;
@@ -96,6 +95,9 @@ public class Xml2XhtmlTransformer implements Transformer{
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

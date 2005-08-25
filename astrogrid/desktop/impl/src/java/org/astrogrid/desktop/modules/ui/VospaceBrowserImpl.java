@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,8 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
-import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
@@ -23,7 +21,7 @@ import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeMetadata;
@@ -65,8 +63,7 @@ import javax.swing.JToolBar;
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *  
  */
-public class VospaceBrowserImpl extends AbstractVospaceBrowser implements MyspaceBrowser,
-        UserLoginListener {
+public class VospaceBrowserImpl extends AbstractVospaceBrowser implements MyspaceBrowser {
 
     protected final class CopyAction extends AbstractAction implements FileAction /*, FolderAction @todo not supported on folders at the moment*/ {
         public CopyAction() {
@@ -223,8 +220,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             if (n == null) {
                 return;
             }
-            final URI u = ResourceChooserDialog.chooseResource(getVospace(),"Select resource to write data to",
-                    false);
+            final URI u = chooser.chooseResourceWithParent("Select resource to write data to", false,true,true,VospaceBrowserImpl.this);
             if (u == null) {
                 return;
             }
@@ -314,9 +310,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                 return;
             }
 
-            final URI u = ResourceChooserDialog.chooseResource(
-                    getVospace(),
-                    "Select resource to read data from ", false);
+            final URI u = chooser.chooseResourceWithParent("Select resource to read data from ", false,true,true,VospaceBrowserImpl.this);
             if (u == null) {
                 return;
             }
@@ -505,9 +499,15 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             // - neatly handles any concurrency issues too.
             displayInformation(watched);
         }
+        
+        public void clear() {
+            information.setText("");
+            furtherInformation.setText("");
+        }
     }
 
     protected final BrowserControl browser;
+    protected final ResourceChooserInternal chooser;
 
     private Actions actions = null;
 
@@ -529,32 +529,13 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @throws NodeNotFoundFault
      * @throws FileManagerFault
      */
-    public VospaceBrowserImpl() {
-        super(null);
-        this.browser = null;
-        initialize();
-    }
 
-    public VospaceBrowserImpl(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser, Registry reg) {
-        super(conf, hs,ui,vos);
+
+    public VospaceBrowserImpl(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser,ResourceChooserInternal chooser) {
+        super(conf, hs,ui,vos,comm);
         this.browser = browser;
-        comm.addUserLoginListener(this);
+        this.chooser =chooser;
         initialize();
-    }
-
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
-    public void userLogin(UserLoginEvent e) {
-        readRoot();
-    }
-
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
-    public void userLogout(UserLoginEvent e) {
-        getFolderTree().setModel(new FolderTreeModel(null));
-        getFileList().setModel(new FileManagerNodeListModel());
     }
 
     /**
@@ -585,7 +566,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         return actions;
     }
 
-    protected JTaskPane getInformationPane() {
+    protected InformationPane getInformationPane() {
         if (informationPane == null) {
             informationPane = new InformationPane();
         }
@@ -657,14 +638,24 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         JToolBar toolBar = getToolBar();
         pane.add(toolBar, java.awt.BorderLayout.NORTH);
         this.setContentPane(pane);
-        this.setTitle("VoSpace Browser");
+        this.setTitle("MySpace Browser");
         readRoot();
+    }
+    
+    public void userLogout(UserLoginEvent e) {
+        getInformationPane().clear();
+        super.userLogout(e);
+
+        
     }
 
 }
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.2  2005/08/25 16:59:58  nw
+ * 1.1-beta-3
+ *
  * Revision 1.1  2005/08/11 10:15:00  nw
  * finished split
  *

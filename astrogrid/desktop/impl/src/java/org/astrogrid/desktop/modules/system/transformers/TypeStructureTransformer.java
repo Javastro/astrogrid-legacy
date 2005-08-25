@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
-import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.filemanager.client.NodeMetadata;
 import org.astrogrid.filemanager.common.NodeIvorn;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -32,7 +30,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
-import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -139,7 +136,6 @@ public class TypeStructureTransformer implements Transformer {
         DynaProperty[] props = dc.getDynaProperties();
         for (int i =0; i < props.length; i++) {            
             String name = props[i].getName();
-            // @todo find way to break the cycles here for filemanagerNode.
             if (name == null || "class".equals(name)) { // don't want to persist this one - causes an infinite loop.
                 continue;
             } // don't want the following either.
@@ -179,6 +175,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

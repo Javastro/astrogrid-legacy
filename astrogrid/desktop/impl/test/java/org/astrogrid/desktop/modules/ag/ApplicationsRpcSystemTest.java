@@ -1,4 +1,4 @@
-/*$Id: ApplicationsRpcSystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApplicationsRpcSystemTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,9 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.ParameterBean;
+import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ACRTestSetup;
@@ -31,6 +34,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -75,36 +80,84 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
         }
     }
 
-    /**
-     * @see org.astrogrid.acr.astrogrid.Applications#listFully()
-     */
-    public ApplicationInformation[] listFully() throws ServiceException {
-        v.clear();
-        try {
-            List l = (List)client.execute("astrogrid.applications.listFully",v);
-            ApplicationInformation[] result = new ApplicationInformation[l.size()];
-            for (int i = 0; i < l.size(); i++) {
-                result[i] = create((Map)l.get(i));
-            }
-            return result;
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }   
-    }
+
     
     private ApplicationInformation create(Map m) throws ServiceException {
         try {
+            Map parameters = createParameters((Map)m.get("parameters"));
+            InterfaceBean[] interfaces = createInterfaces((List)m.get("interfaces"));
             return new ApplicationInformation (
                     new URI((String)m.get("id"))
                     ,(String)m.get("name")
-                    ,(String[]) ((List)m.get("interfaces")).toArray(new String[]{})
+                    ,(String)m.get("description")
+                    ,parameters
+                    ,interfaces
                     );
         } catch (URISyntaxException e) {
             throw new ServiceException(e);
 
         }        
+        }
+    private Map createParameters(Map m)  {
+        Map result = new HashMap();
+        for (Iterator i = result.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry e = (Map.Entry)i.next();
+            result.put(e.getKey(),createParameter((Map)e.getValue()));
+        }
+        return result;
+    }
+    
+    private InterfaceBean[] createInterfaces(List l) {
+        InterfaceBean[] result = new InterfaceBean[l.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = createInterface((Map)l.get(i));
+        }
+        return result;
+    }
+    
+    private ParameterBean createParameter(Map m) {
+        String[] options = (String[])((List)m.get("options")).toArray(new String[]{});
+        return new ParameterBean(
+                (String)m.get("name")
+                ,(String)m.get("uiName")
+                ,(String)m.get("description")
+                ,(String)m.get("ucd")
+                ,(String)m.get("defaultValue")
+                ,(String)m.get("units")
+                ,(String)m.get("type")
+                ,(String)m.get("subType")
+                ,options                
+                );
+    }
+    
+    private InterfaceBean createInterface(Map m) {
+        ParameterReferenceBean[] inputs = createParameterReferences((List)m.get("inputs"));
+        ParameterReferenceBean[] outputs = createParameterReferences((List)m.get("outputs"));
+        return new InterfaceBean(
+                (String)m.get("name")
+                ,inputs
+                ,outputs
+                );
+    }
+    
+    private ParameterReferenceBean[] createParameterReferences(List l) {
+        ParameterReferenceBean[] result = new ParameterReferenceBean[l.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = createParameterReference((Map)l.get(i));
+        }
+        return result;
+    }
+    
+    private ParameterReferenceBean createParameterReference(Map m) {
+        return new ParameterReferenceBean(
+                m.get("ref").toString()
+                ,Integer.parseInt(m.get("max").toString())
+                ,Integer.parseInt(m.get("min").toString())
+                );
     }
 
+    
+    
     /**
      * @see org.astrogrid.acr.astrogrid.Applications#getApplicationInformation(java.net.URI)
      */
@@ -364,12 +417,26 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
             throw new InvalidArgumentException(e);
         }  
     }
+    /**
+     * @see org.astrogrid.acr.astrogrid.Applications#getQueryToListApplications()
+     */
+    public String getQueryToListApplications() {
+        v.clear();
+        try {
+            return (String)client.execute("astrogrid.applications.getQueryToListApplications",v);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
 
 
 /* 
 $Log: ApplicationsRpcSystemTest.java,v $
+Revision 1.2  2005/08/25 16:59:58  nw
+1.1-beta-3
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

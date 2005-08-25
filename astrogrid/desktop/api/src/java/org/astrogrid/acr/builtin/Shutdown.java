@@ -1,4 +1,4 @@
-/*$Id: Shutdown.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: Shutdown.java,v 1.3 2005/08/25 16:59:44 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,14 +17,41 @@ package org.astrogrid.acr.builtin;
  */
 public interface Shutdown {
     
-    /** bring the whole ACR system to a graceful halt */
+    /** bring the whole ACR system to a graceful halt 
+     * <p>
+     * notifies all listeners, and if there's any objections displays a prompt for the user to acknowledge
+     * then calls {@link #reallyHalt}
+     * @see ShutdownListener#lastChance()
+     * */
     public void halt();
+    
+    
+    /** bring the ACR to a graceful halt, not giving clients chance to object.
+     * Use this method with care - prefer {@link #halt} when theres a chance that the ACR has other clients (i.e. always).
+     * <p>
+     * still notifies all listeners that the system is shutting down
+     * @see ShutdownListener#halting()
+     */
+    public void reallyHalt();
+    
+    /** register a listerner for shutdown events
+     * @param l
+     */
+    public void addShutdownListener(ShutdownListener l) ;
+    
+    /** remove a previously registered listener.
+     * @param l
+     */
+    public void removeShutdownListener(ShutdownListener l);
 
 }
 
 
 /* 
 $Log: Shutdown.java,v $
+Revision 1.3  2005/08/25 16:59:44  nw
+1.1-beta-3
+
 Revision 1.2  2005/08/12 08:45:16  nw
 souped up the javadocs
 

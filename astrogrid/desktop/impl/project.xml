@@ -291,7 +291,7 @@
  <dependency>
 	 <artifactId>jdic</artifactId>
 	 <groupId>jdic</groupId>
-	 <version>0.9</version>
+	 <version>0.9.1</version>
 	 <properties>
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		 <jnlp.extension.dir>/jnlp/desktop-integration</jnlp.extension.dir>
@@ -302,7 +302,7 @@
  <dependency>
 	 <artifactId>jdic_stub_${os.name}</artifactId>
 	 <groupId>jdic</groupId>
-	 <version>0.9</version>
+	 <version>0.9.1</version>
  </dependency>
  <!-- NB - this is the jar of native libs, that needs to be locally installed. 
       not a real dependency as such - and not needed for development
@@ -310,7 +310,7 @@
  <dependency>
 	 <artifactId>jdic_native_${os.name}_${os.arch}</artifactId>
 	 <groupId>jdic</groupId>
-	 <version>0.9</version>
+	 <version>0.9.1</version>
  </dependency>
 <!-- used within development only -->
 <!-- testing html interface -->

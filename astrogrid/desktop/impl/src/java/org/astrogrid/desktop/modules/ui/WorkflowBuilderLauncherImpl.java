@@ -10,73 +10,9 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
-import javax.swing.ToolTipManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeSelectionModel;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
@@ -90,7 +26,6 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.BasicInfoPanel;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserDialog;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.dialogs.ScriptDialog;
 import org.astrogrid.desktop.modules.dialogs.ScriptPanel;
@@ -100,7 +35,6 @@ import org.astrogrid.desktop.modules.dialogs.WorkflowDetailsDialog;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.WorkflowTreeModel;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser.CurrentNodeManager;
-import org.astrogrid.filestore.common.FileStoreOutputStream;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
@@ -128,11 +62,46 @@ import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URI;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeSelectionModel;
 
 
 /**
@@ -152,7 +121,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements org.astr
         	try{
                 (new BackgroundOperation("Saving Workflow") {
                     protected Object construct() throws Exception {        		
-                    URI u = ResourceChooserDialog.chooseResource(vos,"Save a copy of this workflow",true);
+                    URI u = chooser.chooseResource("Save a copy of this workflow",true);
 	                if (u != null ) {
 	                    Writer writer = new OutputStreamWriter(vos.getOutputStream(u));	                
 	                     workflow.marshal(writer);	                
@@ -180,7 +149,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements org.astr
 	        	try{
 	                (new BackgroundOperation("Loading Workflow") {
 	                    protected Object construct() throws Exception {	        		
-		        	    u = ResourceChooserDialog.chooseResource(vos,"Load workflow",true);
+		        	    u = chooser.chooseResource("Load workflow",true);
 		                if (u != null ) {
 		                    Reader reader = new InputStreamReader(vos.getInputStream(u));		                
 		         
@@ -295,6 +264,7 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements org.astr
     protected final BrowserControl browser;
     protected final CommunityInternal community;
     protected final MyspaceInternal vos;
+    protected final ResourceChooser chooser;
     protected final JobMonitor monitor;
     protected ApplicationRegistry reg;
     private final ApplicationsInternal apps;
@@ -340,11 +310,12 @@ public class WorkflowBuilderLauncherImpl extends UIComponent implements org.astr
      * @throws Exception
      * 
      * */
-    public WorkflowBuilderLauncherImpl(ApplicationsInternal apps, CommunityInternal community, JobMonitor monitor,  MyspaceInternal vos, BrowserControl browser, UIInternal ui, HelpServer hs, Configuration conf) throws Exception {
+    public WorkflowBuilderLauncherImpl(ApplicationsInternal apps, CommunityInternal community, JobMonitor monitor,  MyspaceInternal vos, BrowserControl browser, UIInternal ui, HelpServer hs, Configuration conf,ResourceChooser chooser) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.community = community;
         this.vos = vos;
+        this.chooser = chooser;
         this.monitor = monitor;
         this.apps = apps;
         community.addUserLoginListener(this);

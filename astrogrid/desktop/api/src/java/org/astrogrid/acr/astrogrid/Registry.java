@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: Registry.java,v 1.3 2005/08/25 16:59:44 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -111,9 +111,17 @@ public interface Registry {
      * ACR acr = f.find();
      * Registry reg = (Registry)acr.getService(Registry.class);
      * String query ="select * from Registry where vr:identifier='ivo://uk.ac.le.star/filemanager'"; 
-     * Document d = reg.searchForRecords(query);
+     * Document d = reg.adqlSearch(query);
      * </pre>
      */ 
+    Document adqlSearch(String adql) throws ServiceException;
+    
+    /** 
+     * Equivalent of {@link #adqlSearch(String)} but returning a structure 
+     * @see #adqlSearch(String) */
+    ResourceInformation[] adqlSearchRI(String adql) throws NotFoundException, ServiceException;
+    
+    /** @deprecated - renamed to {@link #adqlSearch(String)} */
     Document searchForRecords(String adql) throws ServiceException;
     
     
@@ -132,14 +140,30 @@ public interface Registry {
      * Registry reg = (Registry)acr.getService(Registry.class);
      * String query =   "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.10\"; declare namespace vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\"; "
      *    + " for $x in //vor:Resource where $x/vr:identifier = 'ivo://uk.ac.le.star/filemanager' return $x/vr:curation"  ;      
-     * Document d = reg.xquery(query)
+     * Document d = reg.xquerySearch(query)
      *</pre>
      */
-    Document xquery(String xquery) throws ServiceException;
+    Document xquerySearch(String xquery) throws ServiceException;
+    
+    /** perform a keyword search over the registry
+     * 
+     * @param keywords list of keywords to search for
+     * @param orValues - true to 'OR' together matches. false to 'AND' together matches
+     * @return xml document of search results, same format as result of {@link #adqlSearch(String)}
+     * @throws ServiceException
+     */
+    Document keywordSearch(String keywords,boolean orValues) throws ServiceException;
+    
+    /** Equivalent of {@link #keywordSearch(String, boolean)} but returning an array of structs */
+    ResourceInformation[] keywordSearchRI(String keywords, boolean orValues) throws ServiceException;
+    
    }
 
 /* 
  $Log: Registry.java,v $
+ Revision 1.3  2005/08/25 16:59:44  nw
+ 1.1-beta-3
+
  Revision 1.2  2005/08/12 08:45:16  nw
  souped up the javadocs
 

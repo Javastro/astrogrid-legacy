@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.3 2005/08/16 13:14:42 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.4 2005/08/25 16:59:44 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Map;
 
 /** Information Bean that contains information about an registered application
  * <p>
@@ -27,35 +28,55 @@ public class ApplicationInformation extends AbstractInformation{
     /** Construct a new ApplicationInfomation
      * 
      */
-    public ApplicationInformation(URI id,String name,String[] interfaces) {
+    public ApplicationInformation(URI id,String name,String description,Map parameters,InterfaceBean[] interfaces) {
         super(name,id);
         this.interfaces = interfaces;
+        this.description = description;
+        this.parameters = parameters;
     }
     
-    private final String[] interfaces;
-
+    private final InterfaceBean[] interfaces;
+    private final String description;
+    private final Map parameters;
 
     /** access the names of the interfaces this application supports
      * @return an array of interface names
      * @xmlrpc key will be <tt>interfaces</tt>, type will be array.
      */
-    public String[] getInterfaces() {
+    public InterfaceBean[] getInterfaces() {
         return this.interfaces;
     }
+    /** access the description of this application */
+    public String getDescription() {
+        return this.description;
+    }
+    
+    /** returns descriptions of parameters used in this application
+     * 
+     * @return a map of <tt>parameter name</tt> - {@link ParameterBean} pairs
+     */
+    public Map getParameters() {
+        return this.parameters;
+    }
+
 
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[ApplicationInformation:");
-        buffer.append(" id: ");
-        buffer.append(id);        
         buffer.append(" name: ");
         buffer.append(name);
-        buffer.append(" { ");
+        buffer.append(" id: ");
+        buffer.append(id);
+        buffer.append(" { ");      
         for (int i0 = 0; interfaces != null && i0 < interfaces.length; i0++) {
             buffer.append(" interfaces[" + i0 + "]: ");
             buffer.append(interfaces[i0]);
         }
         buffer.append(" } ");
+        buffer.append(" description: ");
+        buffer.append(description);
+        buffer.append(" parameters: ");
+        buffer.append(parameters);
         buffer.append("]");
         return buffer.toString();
     }
@@ -64,6 +85,9 @@ public class ApplicationInformation extends AbstractInformation{
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.4  2005/08/25 16:59:44  nw
+1.1-beta-3
+
 Revision 1.3  2005/08/16 13:14:42  nw
 added 'name' as a common field for all information objects
 
