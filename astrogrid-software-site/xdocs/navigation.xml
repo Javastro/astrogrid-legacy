@@ -96,7 +96,13 @@
 	<menu name="Installer&#39;s Guide" img="/images/16x16/package.png">
 		<item name="Information for Installers" href="/installdocs/index.html" 
 			collapse="true">
-			<item name="Download" href="/installdocs/download.html" />
+			<item name="Download" href="/installdocs/download.html" >
+				<item name="Installers" href="/installers.html" collapse="true">
+				</item>
+				<item name="AstroGrid Components" href="/server.html" collapse="true">
+				</item>
+				<item name="Client Developer Kit" href="http://www.astrogrid.org/maven/org.astrogrid/distributions/??C=M&O=D&P=*1.1*.*"/>
+			</item>
 			<item name="General Instructions" href="/installdocs/generic.html">
 				<item name="Install" href="/installdocs/generic-install.html" />
 				<item name="Administer" href="/installdocs/generic-admin.html" 
