@@ -7,7 +7,12 @@
     <body>
 		<section name="What is AstroGrid?">
 			<p>
-	text
+      AstroGrid is a £7.7M project aimed at building a data-grid
+      for UK astronomy, which will form the UK contribution to a
+      global Virtual Observatory. AstroGrid is one of the first of
+      the UK's e-Science projects and is a collaboration of researchers 
+	  and technologists working in all areas of astronomy and the emerging 
+	  Grid technologies.
 			</p>
 		</section>
          

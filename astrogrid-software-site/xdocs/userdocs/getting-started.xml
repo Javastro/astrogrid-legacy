@@ -7,7 +7,10 @@
     <body>
 		<section name="AstroGrid for Users">
 			<p>
-	link into the articles in the rest of this section
+	         <li><a href="signup.html">Logging On</a></li>
+			</p>
+			<p>
+             <li><a href="prerequisites.html">Prerequisites</a></li>
 			</p>
 		</section>
          

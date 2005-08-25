@@ -5,16 +5,12 @@
         <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
     </properties>
     <body>
-		<section name="Reporting Bugs">
+		<section name="Reporting Bugs or Requesting Enhancements">
 			<p>
-		short description of how to report a bug in bugzilla.
+		Please send email to astrogrid_help@star.le.ac.uk
 			</p>
 		</section>
-		<section name="Requesting Enhancements">
-			<p>
-				email address? or into bugzilla too?
-			</p>
-		</section>
+		
          
     </body>
 </document>

@@ -17,11 +17,13 @@
     <menu name="About Astrogrid">
       <item name="Announcing Astrogrid 1.1" href="/index.html" />
       <item name="What is Astrogrid?" href="/what-is-ag.html" />
-      <item name="Feature Summary" href="/feature-summary.html" />
+      <!--item name="Feature Summary" href="/feature-summary.html" /-->
       <item name="FAQ" href="/faq.html" />
-      <item name="Having Problems?" href="/where-to-find-help.html" />
+      <!--item name="Having Problems?" href="/where-to-find-help.html" /-->
+      <!--item name="Having Problems?" href="/where-to-find-help.html" /-->
       <item name="Report Bugs &amp; Enhancements" href="/enhancements.html" />
-      <item name="Acknowledgements" href="/acks.html" />
+      <!--item name="Acknowledgements" href="/acks.html" /-->
+      <!--item name="Acknowledgements" href="/acks.html" /-->
       <item name="License" href="/license.html" />
     </menu><!-- end about astrogrid -->
 
@@ -37,9 +39,8 @@
         </item><!-- end getting started -->
 
         <item name="Accessing Astrogrid" href="/userdocs/use.html">
-          <item name="Portal (web)" href="/userdocs/portal.html" />
-          <item name="Workbench (GUI)" href="/userdocs/workbench.html">
-			<item name="User Guide" collapse="true" href="/components/portal/userguide/introduction.html">
+          <item name="Portal (web)" href="/userdocs/portal.html">
+		    <item name="User Guide" href="/components/portal/userguide/introduction.html">
 				<item name="Introduction" 
 					href="/components/portal/userguide/introduction.html"/>
 				<item name="Logon" href="/components/portal/userguide/logon.html"/>
@@ -55,14 +56,16 @@
 				<item name="Job Monitor" 
 					href="/components/portal/userguide/job-monitor.html"/>
 			</item>
+		  </item>
+          <item name="Workbench (GUI)" href="/userdocs/workbench.html">
           </item>
           <item name="Other GUI Applications" href="/jnlp/other.html" />
           <item name="Java Web Start Guide" href="/jnlp/userguide.html" />
         </item><!-- end accessing astrogrid -->
 
         <item name="User Manual" href="/usermanual/index.html">
-          <item name="What first?" href="/usermanual/whatfirst.html" />
-          <item name="Where next?" href="/usermanual/wherenext.html" />
+          <!--item name="What first?" href="/usermanual/whatfirst.html" /-->
+          <!--item name="Where next?" href="/usermanual/wherenext.html" /-->
                         <!-- add rest in here - from wiki -->
           <item name="Tutorials" href="/usermanual/tutorials/index.html">
                         <!-- add tutorials from wiki in here -->
@@ -144,7 +147,9 @@
 				<!-- end community install doc -->
 				<item name="File Store" collapse="true" 
 					href="/components/filestore/index.html">
-					<!-- rest of filestore here -->
+					<item name="Tomcat deployment" href="/components/filestore/service-install.html"/>
+                    <item name="Service properties" href="/components/filestore/service-properties.html"/>
+                    <item name="Service configuration" href="/components/filestore/service-configuration.html"/>
 				</item>
 				<!-- end filestore install doc -->
 				<item name="File Manager" collapse="true" 
@@ -250,9 +255,9 @@
         End Matter
         -->
     <menu name="Reference">
-      <item name="Glossary" href="glossary.html" />
-      <item name="XML schemata" href="/schema/index.html" /><!-- do we want these?? or should we publish contracts too?? -->
-      <item name="Science Cases" target="_blank"      href="http://wiki.astrogrid.org/bin/view/Astrogrid/ScienceProblems" />
+      <!--item name="Glossary" href="glossary.html" /-->
+      <item name="XML schemata" href="/schemata/index.html" /><!-- do we want these?? or should we publish contracts too?? -->
+      <!--item name="Science Cases" target="_blank"      href="http://wiki.astrogrid.org/bin/view/Astrogrid/ScienceProblems" /-->
       <item name="Related Projects" href="/related.html" />
     </menu><!-- end reference -->
 
@@ -262,7 +267,7 @@
       <item name="Latest news" target="_blank"      href="http://news.astrogrid.org/" />
       <item name="Wiki" target="_blank" href="http://wiki.astrogrid.org" />
       <item name="Forum" target="_blank" href="http://forum.astrogrid.org" />
-      <item name="Publications" href="/publications.html" />
+      <!--item name="Publications" href="/publications.html" /-->
       <item name="Contacts" href="/team-list.html" />
     </menu><!-- end further information -->
 
@@ -282,13 +287,13 @@
       <item name="Editing" href="/about.html" />
       <item name="Linkcheck Report" href="/linkcheck.html" />
       <item name="Corrections &amp; Broken Links"
-      href="mailto:clq@star.le.ac.uk" />
+      href="mailto:astrogrid_help@star.le.ac.uk" />
     </menu>
 
     <menu name="Grid Status">
       <item name="Deployed sites" target="_blank"
       href="http://wiki.astrogrid.org/bin/view/Deploy/DeployedComponents" />
-      <item name="Site status" href="/monitor/status.xml" target="_blank" />
+      <item name="Site status" href="http://software.astrogrid.org/monitor/status.xml" target="_blank" />
     </menu>
   </body>
 </project>

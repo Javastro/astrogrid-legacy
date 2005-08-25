@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.1 2005/06/07 23:43:41 nw Exp $ -->
+<!-- $Id: index.xml,v 1.2 2005/08/25 15:49:54 clq2 Exp $ -->
 <document>
         <properties>
                 <title>Information for Installers</title>
@@ -7,7 +7,7 @@
         </properties>
         <body>
                 <section name="Information for Installers"><p>
-                fill me in.
+                This section provides information on how to install astrogrid components.
                 </p>
                 </section>
         </body>
