@@ -307,7 +307,7 @@
 
     <menu name="About this documentation">
       <item name="Editing" href="/about.html" />
-      <item name="Linkcheck Report" href="/linkcheck.html" />
+      <!--item name="Linkcheck Report" href="/linkcheck.html" /-->
       <item name="Corrections &amp; Broken Links"
       href="mailto:astrogrid_help@star.le.ac.uk" />
     </menu>
