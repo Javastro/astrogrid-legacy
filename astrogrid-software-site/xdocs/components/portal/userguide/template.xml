@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="xxxw@yyy.zzz">Your Name Here</author>
+        <title>Portal User Guide - Template</title>
+</properties>
+
+<body>
+
+<section name="Contents">
+<p>
+<ul>
+  <li><a href="#Topic_One">Topic One</a></li>
+  <li><a href="#Topic_Two">Topic Two</a></li>
+  <li><a href="#Topic_Three">Topic Three</a>
+     <ul><li><a href="#Something">Something</a></li></ul>
+  </li>
+</ul>
+</p>
+</section>
+
+<section name="Topic One">
+<p>
+ Topic One details here
+</p>
+<br/><a href="#Contents">Go to Contents</a>
+</section>
+
+<section name="Topic Two">
+<p>
+ Topic Two details here
+</p>
+<br/><a href="#Contents">Go to Contents</a>
+</section>
+
+<section name="Topic Three">
+   <subsection name="Something">
+   <p>
+       Something about something here.
+   </p>
+   </subsection>
+<br/><a href="#Contents">Go to Contents</a>
+</section>
+
+</body>
+</document>
