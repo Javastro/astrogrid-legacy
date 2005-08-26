@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<author email="astro.maven.docs@codon.demon.co.uk">Dave Morris</author>
+		<title>Download</title>
+	</properties>
+	<body>
+		<section name="Download">
+			<subsection name="WebApplication">
+				<p>
+					The bare bones WebApplication Archive (WAR) file can be downloaded from our Maven repository <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-filemanager-1.1*">here</a>
+				</p>
+			</subsection>
+			<subsection name="Installer">
+				<p>
+					At the moment, there is not installer toolkit for the FileManager.
+				</p>
+			</subsection>
+		</section>
+	</body>
+</document>
