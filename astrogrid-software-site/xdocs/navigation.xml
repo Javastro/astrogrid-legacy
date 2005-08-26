@@ -189,7 +189,7 @@
 				<!--item name="File Manager" collapse="true" 
 					href="/components/filemanager/index.html"-->
 					<!-- rest of filemanager here -->
-				</item>
+				<!--/item-->
 				<!-- end filemanager install doc -->
 				<item name="Dataset Access (DSA)" collapse="true" 
 					href="/components/dsa/index.html">
