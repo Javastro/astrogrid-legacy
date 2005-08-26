@@ -14,7 +14,7 @@
 <p> Some AstroGrid components are now available as self-contained installer applications. These are executable jar
     files that manage the downloading, configuration and installation of the component. For further information see the <a
     href="http://www.astrogrid.org/maven/docs/HEAD/installers.html">Installers</a> page. </p>
-    <p><b>TODO - inline this documentation</b></p>
+    <!--p><b>TODO - inline this documentation</b></p-->
     </subsection>
                 </section>
 

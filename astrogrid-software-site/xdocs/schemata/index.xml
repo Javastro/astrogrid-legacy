@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
         <title>Index to schemata</title>
@@ -42,12 +42,4 @@ contracts Maven-project, the location URIs change with every new version of that
          
     </body>
 </document>
-
-
-1.1
-log
-@updated docs
-@
-text
-@@
 
