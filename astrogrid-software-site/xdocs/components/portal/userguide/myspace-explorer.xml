@@ -99,21 +99,19 @@ in doing so you copy the path of the item into the Selected field contained with
 </subsection>
 <subsection name="Control Area"><p>
 The <a href="../example-pages/myspace-explorer-control-area.html" target="_top">control area</a> is the focus for manipulating
-MySpace files and folders. There are currently three parts to the control area:
+MySpace files and folders. The control area is formatted into 4 tabs:
 <ol type="1">
-<li>Current Location at the bottom of the Control Area. This shows the path (within the user's home space) to the folder which is 
-the current target of the Folder View. A typical value might be the path home/queries where queries is a folder that might contain
-adql queries. Whichever way you navigate about MySpace, the current location should always show you where you are. Next to the Current
-Location field are three buttons:
+<li>The <a href="../example-pages/myspace-explorer-control-area.html" target="_top">Navigation</a> tab shows you your current location. This is the path (within the user's home space) to the folder displayed in the Folder View. A typical value might be the path home/queries where queries is a folder that might contain adql queries. Whichever way you navigate about MySpace, the current location should always show you where you are. Below the Current Location field are four buttons:
    <ul type="square">
-     <li>Up. This will navigate up to the current location's parent folder.</li>
+     <li>Up. This will navigate up a folder to the current location's parent folder.</li>
+     <li>Home. This will navigate back to your home space folder.</li>
      <li>New Folder. This will produce a dialogue enabling you to create a new folder within the current folder.</li>
      <li>Refresh. This will force the Explorer to go back to MySpace and refresh the contents of the current folder.
          Sometimes this is necessary as things can be happening to MySpace at the same time a user is browsing his/her 
-         home space. At present only the file contents is refreshed.</li>
+         home space. At present only the file contents are refreshed.</li>
    </ul>
 </li>
-<li>Edit Controls placed to the left:
+<li>The <a href="../example-pages/myspace-explorer-edit-tab.html" target="_top">Edit</a> tab enables manipulation of files within the Folder View.
    <ul type="square">
      <li>The Selected Field. The name of any selected folder or file is displayed here. If nothing has been selected by the user
      then the string "*** none ***" is displayed. You must have an item selected (by clicking on its name within the folder area), 
@@ -146,22 +144,14 @@ Location field are three buttons:
           <li>Owner</li>
           <li>Size</li>
           <li>Mime-type</li>
+          <li>File store location. You can change the physical location of the file by using the associated Relocation dialogue displayed in the bottom part of the properties page.</li>
        </ul>
      </li>
    </ul>
 </li>
-<li>Upload Controls placed to the right. Initially this will display two buttons.
-   <ul type="square">
-     <li><a href="../example-pages/myspace-explorer-upload-desktop.html" target="_top">From the desktop</a>. 
-     Clicking will display a dialogue suitable for uploading from the desktop. The browse button displayed in
-     this dialogue enables a user to browse their own local file sytem to choose a file for uploading.</li>
-     <li><a href="../example-pages/myspace-explorer-upload-web.html" target="_top">From the web</a>. 
-     Clicking will display a dialogue suitable for uploading from the web. Note you must paste or type the URL
-     of the object to be uploaded.</li>
-   </ul>
-   In both dialogues, there is a Go button, which will trigger the upload to the current location. Note that an opportunity is 
-   presented to change the name of the file. The upload is undertaken synchronously, so you will wait for the action to complete.
-   The uploaded file will appear in the current folder.
+<li>The <a href="../example-pages/myspace-explorer-desktop-upload-tab.html" target="_top">Desktop Upload</a> tab enables files local to the user's desktop system to be uploaded into MySpace. The browse button displayed enables a user to browse their own local file sytem to choose a suitable file. Once a file has been chosen, the Go button will trigger an upload to the current location. The upload is undertaken synchronously, so you will wait for the action to complete. The uploaded file will appear in the current folder.
+</li>
+<li>The <a href="../example-pages/myspace-explorer-web-upload-tab.html" target="_top">Web Upload</a> tab enables uploading of files from the web. Note you must paste or type the URL of the object to be uploaded.
 </li>
 </ol>
 </p>
