@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: agcomponents.xml,v 1.1 2005/08/26 13:07:10 clq2 Exp $ -->
+<!-- $Id: agcomponents.xml,v 1.2 2005/08/26 13:15:05 clq2 Exp $ -->
 <document>
         <properties>
                 <title>Information for Installers</title>
@@ -10,7 +10,6 @@
                  <p>AstroGrid components are packaged as .war files designed to be deployed into J2EE-compliant containers.</p>
 				 <p>
 					 Follow the links to the left to download the latest build for each component. 
-				 </>
                 </p>
                 </section>
         </body>
