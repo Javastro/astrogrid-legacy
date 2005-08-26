@@ -5,11 +5,11 @@
         <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
     </properties>
     <body>
-        <section name="Java Webstart Userguide - work in progress">
+        <section name="Java Webstart Userguide">
 
 	<subsection name="What is Java Web Start?">
 		<p>
-	<a href="">Java Web Start</a> is a mechanism for program delivery through a standard Web server. 
+	<a href="http://java.sun.com/products/javawebstart/">Java Web Start</a> is a mechanism for delivering and installing applications through a standard Web server. 
 	Initiated through the browser, these programs are deployed to the client and executed outside the scope of the browser. 
 	Once deployed, the programs do not need to be downloaded again, and they can automatically download updates on startup 
 	without requiring the user to go through the whole installation process again. 
@@ -17,31 +17,39 @@
 	<p>
 Since these programs run outside the browser, you might think they can freely perform operations - but that is not the case. 
 They continue to run within a restricted container, or sandbox. 
- Since Java Web Start runs on top of the Java 2 platform, you also have access to the underlying security architecture. 
+ Since Java Web Start runs on top of the Java 2 platform, programs are constrained by Java's underlying security architecture. 
 </p>
 <p>
-To use Java Web Start, you only need to install the client piece.
-You may not already 
-users probably don't. In that case, when someone without Java Web Start tries to initiate a JNLP-packaged application, t
-he user is prompted to install Java Web Start. Once installed, with a possible reboot, the user can then go on and run the desired program. 		
+To use Java Web Start, you only need to install the client program	 <a href="http://java.sun.com/products/javawebstart/download.jsp">(download web start)</a>. 	
 </p>
 	</subsection>
    <subsection name="Install Java Web Start">
 	<p>
-To see Java Web Start in action, 
-you can visit a set of five demonstration applications that Sun has available: Draw, The SwingSet Demo, Military Game, 
-A Simple Notepad, and Application Manager. 
-If you don't have Java Web Start previously installed, click on any of the Launch buttons to be redirected to a download page 
+To see Java Web Start in action, see <a href="http://java.sun.com/products/javawebstart/demos.html">Sun's Demonstration programs</a>
+If you don't have Java Web Start already installed, clicking on the launch buttons of the of these programs will redirect you  download page 
 where you can download Web Start for your platform. 
 Java Web Start itself is only about 1 MB. However, it requires the Java Runtime Environment (JRE), so if a 
 you (or a user) don't have a JRE, the download size increases accordingly, to just under 6 MB on Microsoft Windows platforms. 
-</p>		
+</p>		  
 	</subsection>
-<p>
-	TODO:
-  requires that <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>
-	is installed on your machine <a href="http://java.sun.com/products/javawebstart/download.jsp">(download web start)</a>. 
-</p>		
+	<subsection name="Troubleshooting">
+		<p>
+			If you experience problems launching the AstroGrid Workbench, first verify that you have Java Webstart correctly installed by running one
+			of the <a href="http://java.sun.com/products/javawebstart/demos.html">demonstration programs</a>.
+		</p>
+		<p>
+			On some platforms (especially Linux), it is necessary to configure Java Webstart to use your preferred web browser. Run <tt>javaws</tt> from a commandline
+			to display the Webstart Console - from here you can alter configuration settings.
+		</p>
+		<p>
+			Occasionally a webstartable application may fail to start because it has become corrupted in some way. In this case, uninstall the application by opening the Java Webstart program (from 
+			the Start Menu, or by running <tt>javaws</tt>), and then selecting the application from the list.
+		</p>
+		<p>
+			To launch webstart applications from your web browser, the helper applications / file associations for the browser must be configured so that <tt>.jnlp</tt> files are handled by Java Webstart.
+			The Webstart installer appears to do this for most modern browsers - Internet Explorer, Firefox, etc. For other browsers it may be necessary to do it by hand - google for examples.
+		</p>
+	</subsection>
         </section>
     </body>
 </document>

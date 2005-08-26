@@ -4,7 +4,7 @@
 
   <body>
     <links>
-      <item name="Top" href="/index.html" />
+      <item name="Front" href="/index.html" />
       <item name="Users" href="/userdocs/index.html" />
       <item name="Installers" href="/installdocs/index.html" />
       <item name="Developers" href="/developerdocs/index.html" />
@@ -31,15 +31,12 @@
         Users guide
         -->
     <menu img='/images/16x16/personal.png' name="User&#39;s Guide">
-      <item name="Information for Users" href="/userdocs/index.html"
-      collapse="true">
-        <item name="Getting Started" href="/userdocs/getting-started.html">
+        <item name="Using Astrogrid" href="/userdocs/index.html" collapse="true">
           <item name="Getting an account" href="/userdocs/signup.html" />
-          <item name="Prerequisites" href="/userdocs/prerequisites.html" />
-        </item><!-- end getting started -->
-
-        <item name="Accessing Astrogrid" href="/userdocs/use.html">
-          <item name="Portal (web)" href="/userdocs/portal.html">
+		  <!-- NWW - not needed. requirements for portal and workbench documented separately.
+			          <item name="Prerequisites" href="/userdocs/prerequisites.html" />
+		  -->			
+          <item name="Portal (web)" href="/userdocs/portal.html" collapse="true">
 		    <item name="User Guide" href="/components/portal/userguide/introduction.html">
 				<item name="Introduction" 
 					href="/components/portal/userguide/introduction.html"/>
@@ -57,13 +54,13 @@
 					href="/components/portal/userguide/job-monitor.html"/>
 			</item>
 		  </item>
-          <item name="Workbench (GUI)" href="/userdocs/workbench.html">
+          <item name="Workbench (GUI)" href="/userdocs/workbench.html" collapse="true">
+	         <item name="Java Web Start Guide" href="/jnlp/userguide.html" />		  			
           </item>
           <item name="Other GUI Applications" href="/jnlp/other.html" />
-          <item name="Java Web Start Guide" href="/jnlp/userguide.html" />
-        </item><!-- end accessing astrogrid -->
+         
 
-        <item name="User Manual" href="/usermanual/index.html">
+        <item name="User Manual" href="/usermanual/index.html" collapse="true">
           <!--item name="What first?" href="/usermanual/whatfirst.html" /-->
           <!--item name="Where next?" href="/usermanual/wherenext.html" /-->
                         <!-- add rest in here - from wiki -->
@@ -72,7 +69,7 @@
           </item><!-- end tutorials -->
         </item><!-- end usermanual -->
 
-        <item name="Reference" href="/usermanual/reference/index.html">
+        <item name="Reference" href="/usermanual/reference/index.html" collapse="true">
 <!-- add other reference type things in here - e.g. docs from the component projects. -->
             <item name="Workflow Manual"   href="/components/jes/userguide-architecture.html" collapse="true">
               <item name="Workflow Documents" href="/components/jes/userguide-activities.html"/>
@@ -101,7 +98,9 @@
 				</item>
 				<item name="AstroGrid Components" href="/server.html" collapse="true">
 				</item>
-				<item name="Client Developer Kit" href="http://www.astrogrid.org/maven/org.astrogrid/distributions/??C=M&O=D&P=*1.1*.*"/>
+				<!-- NWW - removed this - don't want to be publishing or supporting these any more
+				<item name="Client Developer Kit" href="http://www.astrogrid.org/maven/org.astrogrid/distributions/??C=M&amp;O=D&amp;P=*1.1*.*"/>
+				-->
 			</item>
 			<item name="General Instructions" href="/installdocs/generic.html">
 				<item name="Install" href="/installdocs/generic-install.html" />
@@ -248,12 +247,12 @@
     <menu name="Developer&#39;s Guide" img="/images/16x16/package_editors.png">
       <item name="Information for Developers" href="/developerdocs/index.html"
       collapse="true">
-        <item name="Astrogrid Client Runtime" href="/developerdocs/acr.html" />
         <item name="Client Development Kits" href="/developerdocs/cdk.html" />
-        <item name="Work with AstroGrid Source"       href="/developerdocs/source.html">
+        <item name="Work with AstroGrid Source"       href="/developerdocs/source.html"/>
           <item name="Obtaining source code" href="/cvs-usage.html" />
+		  <!-- NWW: we've not policy on this, and there's not much to say here that hasn't been said on previous pages
           <item name="Contributing" href="/developerdocs/contributing.html" />
-        </item><!-- end working with source -->
+		  -->
       </item><!-- end information for developers -->
     </menu>
 
@@ -262,7 +261,7 @@
         -->
     <menu name="Reference">
       <!--item name="Glossary" href="glossary.html" /-->
-      <item name="XML schemata" href="/schemata/index.html" /><!-- do we want these?? or should we publish contracts too?? -->
+      <item name="XML schemata" href="/schema/index.html" /><!-- do we want these?? or should we publish contracts too?? -->
       <!--item name="Science Cases" target="_blank"      href="http://wiki.astrogrid.org/bin/view/Astrogrid/ScienceProblems" /-->
       <item name="Related Projects" href="/related.html" />
     </menu><!-- end reference -->

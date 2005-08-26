@@ -5,23 +5,17 @@
         <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
     </properties>
     <body>
-                <section name="Working with AstroGrid Source">
-                        <p>
-        instructions to checkout, development environment, standard maven instructions, etc.
-                        </p>
-                </section>
 
                 <section name="Practices"><p>
 AstroGrid components must be buildable and executable on Windows and GNU/Linux platforms.   Eclipse is the recommended
-IDE, but the choice is left to individual preference provided it does not impair our development processes.
-All code in CVS <em>must</em> be buildable by <a href="http://maven.apache.org">Maven</a> at all times, both as snapshots and branched artifacts, and it
+IDE.
+All code in CVS <em>must</em> be buildable by <a href="http://maven.apache.org">Maven</a>. It
 is strongly recommended that developers install a copy of Maven and build using it regularly.
                 </p></section>
 
         <section name="Building AstroGrid with Maven">
-<p><b>This section is currently out of date and awaiting an update.</b></p>
-<p> From Itn05 onwards AstroGrid
-components are to be built using Maven via a number of custom goals.
+<p>  AstroGrid
+components can to be built using Maven via a number of custom goals.
 These may be executed from the command line by typing <br/>
 <span style="font-family: monospace;">
 maven {goal} </span><br/>
@@ -46,29 +40,32 @@ appropriate jars and wars and place them in your local repository
 All AstroGrid components should implement the following goals. A simple
 example of how to do this may be found <a
  href="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/maven.xml?rev=1.2&amp;content-type=text/vnd.viewcvs-markup">here.</a></p>
-<subsection name="Cleanup">
-<p> astrogrid-clean === delete all
-local build products </p>
-</subsection>
-
-<subsection name="Documentation">
-<p> astrogrid-build-site ===
-generate this documentation<br/>
-astrogrid-deploy-site === generate this documentation and copy it
-across to our webserver<br/>
-</p>
-</subsection>
 
 <subsection name="Build artifacts">
-<p>astrogrid-install-artifact === as above but install the
+
+<p>
+	<tt>astrogrid-build-artifact</tt>: compile code and assemble jar files<br/>
+	<tt>astrogrid-install-artifact</tt>: as above but install the
 artifacts in
 your local repository (useful if you're working offline using Maven's
 -o switch) <br/>
-astrogrid-deploy-artifact === as above but install the artifacts in the
+<tt>astrogrid-deploy-artifact</tt> as above but install the artifacts in the
 astrogrid repository on Uluru for other components to use </p>
-<p>astrogrid-install-snapshot ===] == as above but create
-snapshots <br/>
-astrogrid-deploy-snapshot ===] </p>
+<p><tt>astrogrid-install-snapshot</tt>: as <tt>astrogrid-install-artifact</tt> but create
+snapshots version <br/>
+<tt>astrogrid-deploy-snapshot</tt>: as <tt>astrogrid-deploy-artifact</tt> but create snapshot version </p>
+</subsection>
+
+<subsection name="Documentation">
+<p> <tt>astrogrid-build-site</tt>:
+generate documentation site<br/>
+<tt>astrogrid-deploy-site</tt>: generate documentation site and publish it on our webserver<br/>
+</p>
+</subsection>
+
+<subsection name="Cleanup">
+<p> <tt>astrogrid-clean</tt>: delete all
+local build products </p>
 </subsection>
         </section>
 
