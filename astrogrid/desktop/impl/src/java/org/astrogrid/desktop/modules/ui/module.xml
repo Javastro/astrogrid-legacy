@@ -5,10 +5,16 @@
 	<property>
 		<key>system.ui.menu.links</key>
 		<value>
+						<link text="AstroGrid v1.1 Release"
+				icon="logo1.gif"
+				toolTipText="AstroGrid Release Documentation"
+				url="http://software.astrogrid.org" />
+				<!--			
 			<link text="AstroGrid v1 Release Pages"
 				icon="logo1.gif"
 				toolTipText="Wiki Pages of for AstroGrid"
 				url="http://wiki.astrogrid.org/bin/view/Astrogrid/ReleaseV1Pages" />
+				-->
 		</value>
 		</property>		
 	<property>

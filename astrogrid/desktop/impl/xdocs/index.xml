@@ -31,6 +31,142 @@
          	
 </section>
 
+<section name="Development Guidelines">
+	<p>
+		Advice and hints to simplify writing code <i>in</i> the workbench.
+	</p>
+
+	<subsection name="Eclipse"><p>
+		Run <tt>maven eclipse</tt> to set up your classpath from the impl sub project. You'll need to have the maven-base and aggregate projects also checked out at the correct relative locations.
+		Don't try and assemble the classpath by yourself - it's huge, and doing this will lead to hidden mismatches between library versions.
+	</p></subsection>
+	<subsection name="Modules"><p>
+		The workbench is organized internally into modules - these contain components with related functionality.
+		Each module is defined by an xml file - the <i>module descriptor</i> called, by convention <tt>module.xml</tt>. There's an (incomplete) DTD in the source tree for this format - 
+		a schema needs to be written, as some of the module.xml structure (embedded XHTML) can't be easily described in a DTD.
+		</p>
+		<p>
+		The module descriptor defines which components to instantiate, and provides human-readable information on the module and the components within it.
+		This information is used to generate the workbench GUI interface, and also the HTML and XMLRPC interfaces to the components.
+		</p>
+		<p>For each component in the module, it defines the component name, interface class, implementation class, and then documents the methods available on each component.			
+		</p>
+		<p>
+			Within a module descriptor, there's a set of 'property' keys that can be set - for a module, component, etc. This provided me with a quick-and-dirty way of adding
+			arbitrary metadata to the descriptor while I was prototyping the system. However, property keys defeat the point of a strongly-typed schema - so later I plan to 
+			rework the schema so that the commonest property keys are translated to elements.
+			However, for now be aware that there's some magic keys, concerned mostly with how things are presented in the GUI and XMLRPC interfaces.
+		</p>
+	</subsection>
+
+	<subsection name="Components"><p>
+		A component has two parts - a public interface (in the api project) and a private implementation class (in the impl project).
+		</p>
+		<p>
+	The public interface should just define the methods that clients are able to call.  Because of the technology used (javaRMI, xmlrpc) 
+	there's limits on the types that can be used as return values and parameters - in particlar,
+		things needs to be serializable, and available on the clients classpath. 
+		This means using java-standard class (e.g. <tt>java.net.URI</tt>) rather than our own classes (<tt>org.astrogrid.Ivorn</tt> - which is buggy anyhow).
+		Furthermore, only exceptions that extend from <tt>org.astrogrid.acr.ACRException</tt> should be thrown - and certainly no runtime exceptions thrown.							
+		</p>
+		<p>
+			Some components also provide hidden <i>internal interfaces</i> - these contain extra methods that are really handy to have, but which have parameter types that can't 
+			be passed over RMI, and so can't be part of the public interface. Internal interfaces have the same name as the corresponding public interface, suffixed with <tt>Internal</tt>. These
+			interfaces are found in the same package as the implementation class. Try to minimize the use of internal interfaces where possible.
+			</p>		
+		<p>
+			The implementation class is instantiated by the workbench when that component is needed. Only a single instance of each component is produced.
+		</p><p>
+			An implementation will typically depend on other, lower level components - for example configuration, help system, and maybe some of the components in the
+			<tt>astrogrid</tt> module such as <tt>Registry</tt>. An implementation can gain instances of the components it depends on by declaring the interfaces in it's constructor.
+			This is the typical pattern:
+			<pre>
+public class MyComponent {
+	public MyComponent(Registry reg,Configuration conf,MySpaceInternal msi) {
+				     this.reg = reg;
+					 this.conf = conf;
+					 this.msi = msi;
+   }
+    private final Registry reg;
+    private final Configuration conf;
+	private final MySpaceInternal msi;
+			</pre>
+			The workbench container takes care of providing the required components when it instantiates the class. Note that this means all dependencies the class may need have to 
+			be declared in the constructor - there's no way to get at more later. Public or Internal interface can be used as dependencies - other classes or interfaces won't work. Finally, it's not
+			possible to cast from an interface to the implementation class.			
+		</p>
+	</subsection>
+	
+	<subsection name="Delegates and other AG libs"><p>
+		Try to avoid using the astrogrid delegate classes - use the equivalent components of the ACR instead. They're better integrated into the system than the delegates.
+		Any code using delegates is liable to be refactored
+	  </p>
+	  <p>
+		However, there are some AG libs that are useful to have - e.g. the xml marshalling in <tt>workflow-objects</tt>, and some of the utilities in the <tt>common</tt> project. All these are already 
+		available on the classpath.
+	</p></subsection>
+	
+	<subsection name="Package layout"><p>
+		For new classes, follow the rule that components and supporting classes for a single module stay in a single package wherever possible. At the moment there's some workflow-editor classes in <tt>modules.system</tt> and 
+		<tt>modules.dialogs</tt> that need to be refactored into <tt>modules.ui</tt>. For very large modules, use sub-packages.
+	</p>
+	<p>
+		The public interfaces to components shold be placed in the 'api' subproject - this forms the published interface to the ACR.
+		Please don't add or change interfaces in the api subproject without consultation - as this interface needs to be stable and self-contained to be usable 
+		by external clients.	</p>
+	
+	</subsection>		
+	
+	<subsection name="GUI Development"><p>
+		UI Components are just the same as other components of the workbench - they have a public interface, and need to be defined in a 
+		module descriptor.
+		</p><p>
+		Most of the UI component implementations extend the class <tt>org.astrogrid.desktop.modules.ui.UIComponent</tt>.
+		This provides a standard frame with an indeterminate progress bar at the bottom, helper metods to show progress and dialogues, 
+		plus a worker class that can be extended to do background processing.
+		As is typical in swing programming, <b>any</b> long running activity (e.g. calling any webservice) should be executed on a background thread so that the responsiveness of the 
+		UI is maintained. This is particularly important when there is more than one window displayed by the application.
+		</p>
+		<p>
+			When using dialogues, prefer the component version instead of instantiating and creating the dialogue widget yourself - this means that the 
+			same dialogue is cached and reused. Furthermore, the component version is synchronized, which ensures that two separate parts of the UI can't throw up a
+			modal dialogue at the same time (as this can lead to lockups).
+			</p>
+			<p>
+				There's a bunch of icons in the package <tt>org.astrogrid.desktop.icons</tt> - mostly cribbed from eclipse (which is a great source of reusable icons).
+				Please try to use icons consistently (i.e. the same icon for save, etc), and if you need to add more to this package, take them from eclipse - so a consistent look and feel is maintained.
+				The class <tt>org.astrogrid.desktop.icons.IconHelper</tt> makes it trivial to load an icon.
+			</p>			
+	</subsection>
+	
+	</section>
+	<section name="Execution">
+	<subsection name="Unit tests"><p>
+		There's some unit tests for the classes that can be easily split out. Most non-ui things are exercised by the system tests.
+	</p></subsection>
+	
+	<subsection name="System Testing"><p>
+		At the moment there's system tests that exercise all the methods in the <tt>astrogrid</tt> and <tt>system</tt> modules. The methods require astrogrid services to connect to. I run them
+		against the production environment (which is what the workbench is configured for by default). Provide a username and password in the <tt>astrogrid.properties</tt> file in the 
+		test source tree.
+		</p>
+		<p>
+			The system tests use org.astrogrid.desktop.framework.ACRTestSetup to create an in-processes Workbench (ACR). The classes of the public interface - <tt>Finder</tt> and <tt>ACR</tt>
+			can then be used to retrive an instance of a component for testing.
+		</p>
+	</subsection>
+	
+	<subsection name="GUI Testing"><p>
+		None as yet. Need to spend time looking at Abbot, and integrate this with the system test framework.
+	</p></subsection>
+	
+	<subsection name="Running"><p>
+		To run a local instance of the workbench, run the class <tt>org.astrogrid.desktop.Main</tt> from within eclipse.
+		When running locally, some features (e.g. JavaWebstart and JDIC integration) won't be available. However, the system should degrade gracefully
+		and use fallbalks (although a few exceptions will be thrown in the logs).
+		</p></subsection>
+</section>
+
 
 </body>
 </document>

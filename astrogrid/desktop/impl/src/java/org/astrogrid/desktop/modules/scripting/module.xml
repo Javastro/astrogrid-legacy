@@ -5,21 +5,22 @@
 		<property>
 			<key>system.ui.menu.links</key>			
 			<value>		
-				<link text="Download ACR Interface Classes and Javadoc"
+				<link text="Astronomy Client Runtime - Documentation"
+					icon="info_obj.gif"
+					tooltipText="Description of the Astronomy Client Runtime (ACR), how to connect to it, and the operations it provides"
+					url="http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html" />				
+				<link text="Download ACR Library and Documentation"
 					icon="source_java.png"
 					tooltipText="Call ACR from java using JavaRMI"
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/acr-interface.tar.gz" />		
-				<link text="Browse ACR Javadoc"
-					icon="info_obj.gif"
-					tooltipText="Online documentation of the ACR interface"
-					url="http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html" />								
-				<link text="Commandline Utilities and Examples in Python"
+				
+				<link text="ACR Commandline Utilities in Python"
 					icon="source_py.png"
-					toolTipText="A collection of commandline scripts - useful in their own right, and examples of python scripting of the workbench"
+					toolTipText="A collection of scripts that call VO Services through the ACR - useful in their own right and as examples"
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip"/>
-				<link text="Examples in Perl"
+				<link text="ACR Examples in Perl"
 					icon="source_pl.png"
-					toolTipText="Perl scripts that show how to connect to workbench. For details of functionality, see python examples."
+					toolTipText="Perl scripts that show how to connect to ACR"
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/perl-scripts.zip"/>				
 			</value>
 		</property>		

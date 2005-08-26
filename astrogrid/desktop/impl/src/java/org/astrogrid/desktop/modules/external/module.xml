@@ -9,8 +9,9 @@
 		<property>
 			<key>system.ui.menu.links</key>
 			<value>		
-				<link text="Index of Webstartable Applications"
-					url="http://software.astrogrid.org/jnlp" />
+				<link text="AstroGrid-compatible Applications Index"
+					icon="link_obj.gif"
+					url="http://software.astrogrid.org/jnlp/other.html" />
 				<link text="Launch Topcat (1.3)"
 					icon="tc3.gif"
 					toolTipText="Webstart Starlink Topcat"
