@@ -17,7 +17,7 @@ Upgrade your test system and ensure it works before you migrate the changes from
 <subsection name="Backing Up"><p>
 In order to upgrade in a controlled fashion, you must 
 ensure you have a record of the configuration details for the system about to be replaced. Refer to the 
-<a href="/configure.html">quick-start configuration page</a> for all the normal places where configuration settings 
+<a href="../admin-quickstart/configure.html">quick-start configuration page</a> for all the normal places where configuration settings 
 for your existing portal are held. Please note, however, that you need to record all changes that you think relevant, so if you
 have found a need previously to change other settings not mentioned within the documentation, note them down aswell.
 </p>
@@ -25,7 +25,7 @@ have found a need previously to change other settings not mentioned within the d
 
 <subsection name="Portal Installer"><p>
 The portal installer will guide you through the basic install / upgrade process. If you have previously used it to install the portal,
-you can use it to restore the basic settings when you upgrade. However, see <a href="/configure.html">quick-start configuration page</a> 
+you can use it to restore the basic settings when you upgrade. However, see <a href="../admin-quickstart/configure.html">quick-start configuration page</a> 
 for other places that may need manual adjustment. For these you will need to refer to your own records and edit some files.
 If the files involved are xml based, the recommended way is to use an xml editor. However, a normal text editor is suffice with care
 and the use of a suitable browser to check the validity of the xml. The recommendation is still to upgrade a test system before 
@@ -34,8 +34,8 @@ migrating the changes to the live system.
 </subsection>
 
 <subsection name="Manual Installation"><p>
-First <a href="/download.html">download</a> the latest portal war file. Then refer to the 
-<a href="/configure.html">quick-start configuration page</a> where the relevant files that require alteration are given.
+First <a href="../admin-quickstart/download.html">download</a> the latest portal war file. Then refer to the 
+<a href="../admin-quickstart/configure.html">quick-start configuration page</a> where the relevant files that require alteration are given.
 If you have altered other settings, refer to your own records, or examine the current system for the relevant alterations.
 Copy the war file into the test system tomcat webapps directory. Tomcat should deploy automatically, but if not use the tomcat
 Application Manager to force a reload. You will then need to edit 

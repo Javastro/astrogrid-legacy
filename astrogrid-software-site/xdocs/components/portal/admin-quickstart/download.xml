@@ -8,8 +8,8 @@
 <body>
 
 <section name="Download"><p>
-Please read the <a href="/install.html">Install</a> guide before doing any downloads.<br/>
-The <a href="/install.html#Installation">Installation</a>section of the Install guide explains that there are
+Please read the <a href="../admin-quickstart/install.html">Install</a> guide before doing any downloads.<br/>
+The <a href="../admin-quickstart/install.html#Installation">Installation</a>section of the Install guide explains that there are
 two methods you can follow:
 <ol type="1">
 <li>Use the Portal Installer, which is a self extracting jar file that runs an application to guide you through
