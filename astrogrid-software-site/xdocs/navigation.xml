@@ -119,11 +119,11 @@
                 	<item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-*1.1-000*.jar" target="_blank"/>
 					<item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-cea-client-*1.1-000*.jar" target="_blank"/>
 					<item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-community-client-*1.1-000*.jar" target="_blank"/>
-					<item name="DSA" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-datacenter-client-*1.1-000*.jar" target="_blank"/>
+					<item name="DSA" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-pal-*1.1-000*.jar" target="_blank"/>
 					<item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-filemanager-client-*1.1-000*.jar" target="_blank"/>
 					<item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-filestore-client-*1.1-000*.jar" target="_blank"/>
 					<item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-jes-delegate-*1.1-000*.jar" target="_blank"/>
-					<item name="StoreClient" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-store-client-*1.1-000*.jar" target="_blank"/>
+					<item name="StoreClient" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-storeclient-*1.1-000*.jar" target="_blank"/>
 					<item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-registry-client-lite-*1.1-000*.jar" target="_blank"/>
                 </item>
 				<!-- NWW - removed this - don't want to be publishing or supporting these any more

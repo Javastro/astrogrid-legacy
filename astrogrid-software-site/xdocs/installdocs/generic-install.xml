@@ -8,12 +8,12 @@
                 <section name="General Installation Instructions">
                         <subsection name="Installing Java">
                         <p>
-        text
+<item name="installing java" href="../userdocs/prerequisites.html" />
                         </p>
                         </subsection>
                         <subsection name="Configuring Tomcat">
                         <p>
-stroGrid components are installed by deploying them to a J2EE-compliant container such as <a href="http://jakarta.apache.org/tomcat/">Tomcat</a>.
+AstroGrid components are installed by deploying them to a J2EE-compliant container such as <a href="http://jakarta.apache.org/tomcat/">Tomcat</a>.
 Users unfamiliar with this procedure should consult the Tomcat documentation.
                         </p>
                         </subsection>
