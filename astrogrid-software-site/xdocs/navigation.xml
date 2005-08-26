@@ -185,8 +185,9 @@
                     <item name="Service configuration" href="/components/filestore/service-configuration.html"/>
 				</item>
 				<!-- end filestore install doc -->
-				<item name="File Manager" collapse="true" 
-					href="/components/filemanager/index.html">
+				<!--commented out for now until got contents for filemanager -->
+				<!--item name="File Manager" collapse="true" 
+					href="/components/filemanager/index.html"-->
 					<!-- rest of filemanager here -->
 				</item>
 				<!-- end filemanager install doc -->
