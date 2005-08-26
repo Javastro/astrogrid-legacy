@@ -5,11 +5,11 @@
     <!--<extend>${basedir}/../aggregate/cdk/script/project.xml</extend>-->
         <artifactId>acr-interface</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astrogrid Client Runtime Interfaces</name>
+        <name>Astronomy Client Runtime Interfaces</name>
         <description>
 	 See xdocs.
 		  </description>
-        <shortDescription>AstroGrid Client Runtime Interfaces</shortDescription>
+        <shortDescription>Astronomy Client Runtime Interfaces</shortDescription>
 	
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
