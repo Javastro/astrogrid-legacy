@@ -278,7 +278,7 @@
         -->
     <menu name="Reference">
       <!--item name="Glossary" href="glossary.html" /-->
-      <item name="XML schemata" href="/schema/index.html" /><!-- do we want these?? or should we publish contracts too?? -->
+      <item name="XML schemata" href="/schemata/index.html" /><!-- do we want these?? or should we publish contracts too?? -->
       <!--item name="Science Cases" target="_blank"      href="http://wiki.astrogrid.org/bin/view/Astrogrid/ScienceProblems" /-->
       <item name="Related Projects" href="/related.html" />
     </menu><!-- end reference -->
