@@ -94,7 +94,7 @@
 		<item name="Information for Installers" href="/installdocs/index.html" 
 			collapse="true">
 			<item name="Download" href="/installdocs/download.html" >
-				<item name="Installers" href="/installers.html" collapse="true">
+				<item name="Installers" collapse="true">
 					<item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=*1.1-000*.jar"/>
                     <item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-cea-installer*1.1-000*.jar"/>
                     <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filestore-installer*1.1-000*.jar"/>
@@ -103,7 +103,7 @@
                     <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-portal-installer*1.1-000*.jar"/>
                     <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-registry-installer*1.1-000*.jar"/>
 				</item>
-				<item name="AstroGrid Components" href="/server.html" collapse="true">
+				<item name="AstroGrid Components" collapse="true">
 					<item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*1.1-000.war"/>
                     <item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-cea-*1.1-000.war"/>
                     <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-community-*1.1-000.war"/>
