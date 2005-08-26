@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- $Id: delegates.xml,v 1.1 2005/08/26 13:07:10 clq2 Exp $ -->
+<document>
+        <properties>
+                <title>Other downloadables</title>
+                <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        </properties>
+        <body>
+                <section name="Other downloadables"><p>
+                Client jars and delegates.
+                </p>
+                </section>
+        </body>
+</document>
