@@ -8,7 +8,7 @@
                 <section name="General Installation Instructions">
                         <subsection name="Installing Java">
                         <p>
-<item name="installing java" href="../../xdocs/userdocs/prerequisites.html" />
+<a href="../userdocs/prerequisites.html"> installing java  </a>
                         </p>
                         </subsection>
                         <subsection name="Configuring Tomcat">
