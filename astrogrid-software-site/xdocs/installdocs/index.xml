@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.4 2005/08/26 12:41:24 clq2 Exp $ -->
+<!-- $Id: index.xml,v 1.5 2005/08/29 21:04:24 clq2 Exp $ -->
 <document>
         <properties>
                 <title>Information for Installers</title>
@@ -7,7 +7,7 @@
         </properties>
         <body>
                 <section name="Information for Installers"><p>
-                This section explains how to install astrogrid components.
+                Download Astrogrid installers/Components and delegates from here.
                 </p>
                 </section>
         </body>
