@@ -8,11 +8,11 @@
 <body>
 
 <section name="Download"><p>
-The JES WebApplication Archive (WAR) file can be downloaded from our repository <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-jes-0.10-*">here</a>
+The JES WebApplication Archive (WAR) file can be downloaded from our repository <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=astrogrid-jes-1.1-000*">here</a>
 </p>
 
 <p>
-The commandline / gui installer for JES can be downloaded <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-jes-installer-0.10-*">here</a>
+The commandline / gui installer for JES can be downloaded <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?P=astrogrid-jes-installer-1.1-000*">here</a>
 </p></section>
 
 </body>
