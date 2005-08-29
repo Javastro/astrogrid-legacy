@@ -134,7 +134,7 @@
 				<item name="Install" href="/installdocs/generic-install.html" />
 				<item name="Administer" href="/installdocs/generic-admin.html" 
 					/>
-				<item name="Tips" href="/installdocs/tips.html" />
+				<!--item name="Tips" href="/installdocs/tips.html" /-->
 			</item>
 			<!-- end general instructions -->
 			<item name="Components" href="/installdocs/components.html">
