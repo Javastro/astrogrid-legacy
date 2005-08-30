@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.6 2005/08/30 13:20:44 clq2 Exp $ -->
+<!-- $Id: index.xml,v 1.7 2005/08/30 13:34:30 clq2 Exp $ -->
 <document>
         <properties>
                 <title>Information for Installers</title>
@@ -9,9 +9,9 @@
                 <section name="Information for Installers"><p>
                 Download Astrogrid installers/Components and delegates from here.
 				<blockquote>
-				<a href="userdocs/index.html"><img src="../images/48x48/500_setup.png" align="middle"/>Download Installers</a><br />
-				<a href="installdocs/index.html"><img src="../images/48x48/package.png" align="middle"/>Download and Install AstroGrid Services</a><br />
-				<a href="developerdocs/index.html"><img src="../images/48x48/package_editors.png" align="middle"/>Develop against AstroGrid</a><br />
+				<a href="../installdocs/installer.html"><img src="../images/48x48/500_setup.png" align="middle"/>Download Installers</a><br />
+				<a href="../installdocs/agcomponents.html"><img src="../images/48x48/redhat-config-packages.png" align="middle"/># AstroGrid Components</a><br />
+				<a href="../installdocs/delegates.html"><img src="../images/48x48/gnome-tigert.png" align="middle"/>Webservice Delegates</a><br />
 			</blockquote>
                 </p>
                 </section>
