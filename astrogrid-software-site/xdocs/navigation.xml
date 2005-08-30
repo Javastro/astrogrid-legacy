@@ -310,7 +310,7 @@
       <item name="Wiki" target="_blank" href="http://wiki.astrogrid.org" />
       <item name="Forum" target="_blank" href="http://forum.astrogrid.org" />
       <!--item name="Publications" href="/publications.html" /-->
-      <item name="Contacts" href="/team-list.html" />
+      <!--item name="Contacts" href="/team-list.html" /-->
     </menu><!-- end further information -->
 
 <!--
