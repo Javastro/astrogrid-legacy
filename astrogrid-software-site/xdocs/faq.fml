@@ -104,8 +104,8 @@
                     generated using maven's <a href="http://maven.apache.org/reference/plugins/faq/">faq</a> goal. </p>
             </answer>
         </faq>
-        <faq>
-            <question id="faq-where2"> I am not a developer and I wish to add a FAQ. What do I do? </question>
+        <faq id="faq-where2">
+            <question > I am not a developer and I wish to add a FAQ. What do I do? </question>
             <answer>
                 <p> Send it to <a href="mailto:astrogrid_help@star.le.ac.uk">AG Help</a> and he'll add it for you. </p>
             </answer>
