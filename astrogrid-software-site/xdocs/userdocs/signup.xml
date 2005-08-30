@@ -7,8 +7,10 @@
     <body>
 		<section name="Getting an Account">
 			<p>
-	        <a href="../components/portal/userguide/logon.html#Getting_a_Userid">Getting an Account</a>
+	        <a href="">Getting an Account</a>
 			</p>
+			
+			<a href="../components/portal/userguide/logon.html#Getting_a_Userid"><img src="images/48x48/gaim.png" align="middle"/>Getting an Account</a><br />
 		</section>
          
     </body>
