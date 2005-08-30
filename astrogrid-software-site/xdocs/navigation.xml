@@ -255,8 +255,9 @@
 				<item name="Portal" collapse="true" 
 					href="/components/portal/admin-quickstart/index.html">
 					<item name="Administrator Quickstart" href="/components/portal/admin-quickstart/index.html">
-						<item name="Overview" 
-							href="/components/portal/admin-quickstart/index.html"/>
+                        <!-- CLQ repeated with the main portal page-->
+						<!--item name="Overview" 
+							href="/components/portal/admin-quickstart/index.html"/-->
 						<item name="Download" 
 							href="/components/portal/admin-quickstart/download.html"/>
 						<item name="Installation" 
