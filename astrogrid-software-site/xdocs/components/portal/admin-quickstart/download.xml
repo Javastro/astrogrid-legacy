@@ -16,7 +16,7 @@ two methods you can follow:
 the installation process.
 See <a href="">link</a></li>
 <li>Download the portal war file for yourself and do a manual installation. 
-See <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*portal-*.war">link</a></li>
+See <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*portal-1.1-000*.war">link</a></li>
 </ol>
 </p>
 </section>
