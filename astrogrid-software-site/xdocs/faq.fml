@@ -44,7 +44,7 @@
         <faq id="access-where">
             <question> Where can I obtain AstroGrid software? </question>
             <answer>
-                <p>All AstroGrid software is freely downloadable as source code, and as pre-compiled binaries. See <a href="#software-where">Where can I 
+                <p>All AstroGrid software is freely downloadable as source code, and as pre-compiled binaries. See <a href="installdocs/index.html">Where can I 
                     download AstroGrid software</a> for more information.</p>
             </answer>
         </faq>
