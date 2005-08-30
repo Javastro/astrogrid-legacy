@@ -62,9 +62,9 @@ required regarding applications, data collections and MySpace are gained from ha
                     </p>
             </subsection>
             <subsection name="Deploying the whole portal the hard way">
-                <p> This <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*portal-*.war">link</a> gives access to the latest war files. Take 
-                    the astrogrid-portal-*.war and deploy it to Tomcat by your favourite method.</p>
-                <p> *NOTE* As of today (16/9/04) the portal <em>must</em> be deployed to a webapp named "astrogrid-portal". It is anticipated that this 
+                <p> This <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*portal-*1.1-000*.war">link</a> gives access to the latest war files. Take 
+                    the astrogrid-portal-1.1-000*.war and deploy it to Tomcat by your favourite method.</p>
+                <p> *NOTE* As of release 1.1 the portal <em>must</em> be deployed to a webapp named "astrogrid-portal". It is anticipated that this 
                     restriction will be removed soon. You may need to rename the war to "astrogrid-portal.war" to achieve this, depending on the deployment
                     method you use.</p>
             </subsection>
