@@ -80,7 +80,7 @@
                 <p>See the <a href="http://www.astrogrid.org/maven/docs/HEAD/pal/index.html">PAL Maven documentation</a>.</p>
             </answer>
         </faq>
-        <faq>
+        <faq id="ag-cea">
             <question> How do I make my data processing application available on AstroGrid? </question>
             <answer>
                 <p>See the <a href="http://www.astrogrid.org/maven/docs/HEAD/applications/index.html">CEA Maven documentation</a>.</p>
@@ -89,7 +89,7 @@
     </part>
     <part id="faq">
         <title>This faq</title>
-        <faq>
+        <faq id="contact">
             <question id="faq-whom"> My question isn't answered by the FAQ. Whom should I contact? </question>
             <answer>
                 <p> First try our <a href="http://wiki.astrogrid.org">wiki</a> or post a question on the <a href="http://forum.astrogrid.org">forum</a>. If 
@@ -97,14 +97,14 @@
                     questions concerning individual software components may be addressed to any <a href="team-list.html">AstroGrid software developer</a>. </p>
             </answer>
         </faq>
-        <faq>
+        <faq id="dev-Q">
             <question id="faq-where"> I am a developer and I wish to add a FAQ. What do I do? </question>
             <answer>
                 <p> The source code for this document is held in <a href="cvs-usage.html">CVS</a> under /astrogrid-software-site/xdoc/faq.xml. The faq is 
                     generated using maven's <a href="http://maven.apache.org/reference/plugins/faq/">faq</a> goal. </p>
             </answer>
         </faq>
-        <faq>
+        <faq i="none-dev-Q">
             <question id="faq-where2"> I am not a developer and I wish to add a FAQ. What do I do? </question>
             <answer>
                 <p> Send it to <a href="mailto:astrogrid_help@star.le.ac.uk">AG Help</a> and he'll add it for you. </p>
