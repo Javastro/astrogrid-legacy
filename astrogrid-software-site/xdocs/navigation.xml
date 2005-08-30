@@ -139,7 +139,7 @@
 			<!-- end general instructions -->
 			<item name="Components" href="/installdocs/components.html">
 				<item name="Registry" collapse="true" 
-					href="/components/registry/index.html">
+					href="/components/registry/overview.html">
 					<item name="Overview" 
 						href="/components/registry/overview.html" />
 					<item name="Installation" 
