@@ -72,8 +72,8 @@
         <!--item name="Reference" href="/usermanual/reference/index.html" collapse="true"--> <!-- CLQ put this back when we have more references in this section-->
 <!-- add other reference type things in here - e.g. docs from the component projects. -->
             <item name="Workflow Manual"   href="/components/jes/userguide-architecture.html" collapse="true">
-              <!--item name="Workflow Documents" href="/components/jes/userguide-activities.html"/-->
-                          <item name="Activities" href="/components/jes/userguide-activities.html" />
+              <item name="Workflow Documents" href="/components/jes/userguide-activities.html"/>
+                          <!--item name="Activities" href="/components/jes/userguide-activities.html" /-->
                   <item name="Control Logic, Variables &amp; Scripts"     href="/components/jes/userguide-jescript.html" />
                   <item name="JEScript Objects"   href="/components/jes/api-reference.html" />
                   <item name="Execution Results"    href="/components/jes/userguide-running.html" />
