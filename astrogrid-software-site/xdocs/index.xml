@@ -8,7 +8,10 @@
     <body>
 		<section name="AstroGrid Release 1.1">
 			<p>
-				Astrogrid is pleased to announce software release 1.1, from this site you will find useful information as follows:
+				Astrogrid is pleased to announce software release 1.1, CVS code is tagged as v1_1. 
+			</p>	
+			<p>
+				From this site you will find useful information as follows:
 			<blockquote>
 				<a href="userdocs/index.html"><img src="images/48x48/personal.png" align="middle"/>Use AstroGrid</a><br />
 				<a href="installdocs/index.html"><img src="images/48x48/package.png" align="middle"/>Download and Install AstroGrid Services</a><br />
