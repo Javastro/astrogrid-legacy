@@ -64,7 +64,7 @@
                 <p> AstroGrid is not a single piece of software, but a collection of interoperating components designed to be installed on a distributed 
                     network of computers. Detailed instructions for the installation and configuration of individual components can be found on the <a 
                     href="http://www.astrogrid.org/maven/build">AstroGrid Maven pages</a>. Components likely to be of most interest are the <a 
-                    href="http://www.astrogrid.org/maven/docs/HEAD/datacenter">Publishers AstroGrid Library</a> for publishing data to AstroGrid, and the 
+                    href="http://www.astrogrid.org/maven/docs/HEAD/pal/index.html">Publishers AstroGrid Library</a> for publishing data to AstroGrid, and the 
                     <a href="http://www.astrogrid.org/maven/docs/HEAD/applications">Common Execution Architecture</a> for publishing dataprocessing 
                     applications.</p>
                 <p> It is also possible to install a set of typical AstroGrid components on a single machine for testing purposes. Step-by-step instructions 
