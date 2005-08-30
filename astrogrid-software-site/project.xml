@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid-software-site/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/08/26 12:47:54 $</cvs:date>
-    | <cvs:version>$Revision: 1.21 $</cvs:version>
+    | <cvs:date>$Date: 2005/08/30 16:50:24 $</cvs:date>
+    | <cvs:version>$Revision: 1.22 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.22  2005/08/30 16:50:24  clq2
+    |   *** empty log message ***
+    |
     |   Revision 1.21  2005/08/26 12:47:54  clq2
     |   *** empty log message ***
     |
@@ -31,10 +34,9 @@
     /images/glossy-release-1.1.png
     </logo>
     <siteAddress>www.astrogrid.org</siteAddress>
-    <!-- NB - change this to /var/www/software to do final release. 
-     at moment set to in-progress - gives us a preview
+    <!-- CLQ old software release is at: http://software.astrogrid.org/old/
     -->
-    <siteDirectory>/var/www/software/in-progress</siteDirectory>
+    <siteDirectory>/var/www/software/</siteDirectory>
     <url>http://software.astrogrid.org/</url>
     <repository>
         <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid
