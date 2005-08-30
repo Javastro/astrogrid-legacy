@@ -77,7 +77,7 @@
         <faq id="Astros-data">
             <question> How do I make my data available on AstroGrid? </question>
             <answer>
-                <p>See the <a href="http://www.astrogrid.org/maven/docs/HEAD/datacenter/multiproject/pal/index.html">PAL Maven documentation</a>.</p>
+                <p>See the <a href="http://www.astrogrid.org/maven/docs/HEAD/pal/index.html">PAL Maven documentation</a>.</p>
             </answer>
         </faq>
         <faq>
