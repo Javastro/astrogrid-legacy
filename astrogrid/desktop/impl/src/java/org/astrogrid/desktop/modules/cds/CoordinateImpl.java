@@ -1,4 +1,4 @@
-/*$Id: CoordinateImpl.java,v 1.1 2005/08/25 16:59:58 nw Exp $
+/*$Id: CoordinateImpl.java,v 1.2 2005/08/31 15:30:46 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,7 +51,7 @@ public class CoordinateImpl implements Coordinate {
 
     }
     protected final AstroCoo coo;
-    public final static String COORDINATE_WS_GLU_TAG = "fill-me-in"; //@todo
+    public final static String COORDINATE_WS_GLU_TAG = "CDS/ws/AstroCoo.WS";
 
     /**
      * @see org.astrogrid.acr.cds.Coordinate#convert(double, double, double, int)
@@ -95,6 +95,9 @@ public class CoordinateImpl implements Coordinate {
 
 /* 
 $Log: CoordinateImpl.java,v $
+Revision 1.2  2005/08/31 15:30:46  nw
+added glu tags.
+
 Revision 1.1  2005/08/25 16:59:58  nw
 1.1-beta-3
  

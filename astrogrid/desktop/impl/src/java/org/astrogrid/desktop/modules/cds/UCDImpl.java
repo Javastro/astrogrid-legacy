@@ -1,4 +1,4 @@
-/*$Id: UCDImpl.java,v 1.1 2005/08/25 16:59:58 nw Exp $
+/*$Id: UCDImpl.java,v 1.2 2005/08/31 15:30:46 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,7 +50,7 @@ public class UCDImpl implements UCD {
     
     } 
     protected final org.astrogrid.desktop.modules.cds.ucd.UCD ucd;
-    public static final String UCD_WS_GLU_TAG = "fill me in" ; //@todo
+    public static final String UCD_WS_GLU_TAG = "CDS/ws/UCD.WS";
     /**
      * @see org.astrogrid.acr.cds.UCD#UCDList()
      */
@@ -145,6 +145,9 @@ public class UCDImpl implements UCD {
 
 /* 
 $Log: UCDImpl.java,v $
+Revision 1.2  2005/08/31 15:30:46  nw
+added glu tags.
+
 Revision 1.1  2005/08/25 16:59:58  nw
 1.1-beta-3
  

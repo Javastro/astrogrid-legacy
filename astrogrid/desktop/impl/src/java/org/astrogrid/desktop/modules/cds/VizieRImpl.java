@@ -1,4 +1,4 @@
-/*$Id: VizieRImpl.java,v 1.1 2005/08/25 16:59:58 nw Exp $
+/*$Id: VizieRImpl.java,v 1.2 2005/08/31 15:30:46 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,7 +51,7 @@ public class VizieRImpl implements VizieR {
         viz = viz1;
     }
     protected final org.astrogrid.desktop.modules.cds.vizier.VizieR viz;
-    public static final String VIZIER_WS_GLU_TAG= "fill me in";
+    public static final String VIZIER_WS_GLU_TAG= "CDS/ws/VizieR.WS";
     /**
      * @see org.astrogrid.acr.cds.VizieR#cataloguesMetaData(java.lang.String, double, java.lang.String, java.lang.String)
      */
@@ -120,6 +120,9 @@ public class VizieRImpl implements VizieR {
 
 /* 
 $Log: VizieRImpl.java,v $
+Revision 1.2  2005/08/31 15:30:46  nw
+added glu tags.
+
 Revision 1.1  2005/08/25 16:59:58  nw
 1.1-beta-3
  
