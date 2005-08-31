@@ -91,7 +91,7 @@
         Installers Guide
         -->
 	<menu name="Installer&#39;s Guide" img="/images/16x16/package.png">
-		<item name="Information for Installers" href="/installdocs/index.html" 
+		<item name="Information for Installers" href="/installdocs/download.html" 
 			collapse="true">
 			<item name="Download" href="/installdocs/index.html" >
 				<item name="Installers" href="/installdocs/installer.html" collapse="true">

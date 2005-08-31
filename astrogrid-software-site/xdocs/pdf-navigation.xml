@@ -88,7 +88,7 @@ try to keep in synch with navigation.xml
         Installers Guide
         -->
 	<menu name="Installer&#39;s Guide" img="/images/16x16/package.png">
-		<item name="Information for Installers" href="/installdocs/index.html" 
+		<item name="Information for Installers" href="/installdocs/download.html" 
 			collapse="true">
 			<item name="Download" href="/installdocs/index.html" >
 				<item name="Installers" href="/installdocs/installer.html" collapse="true">
@@ -112,7 +112,7 @@ try to keep in synch with navigation.xml
                     <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-portal-*1.1-000*.war" target="_blank"/>
                     <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-registry-*1.1-000*.war" target="_blank"/>
 				</item>
-				<item name="Webservice Delegates" href="/installdocs/delegates.html" collapse="true">
+				<!--item name="Webservice Delegates" href="/installdocs/delegates.html" collapse="true">
                 	<item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-*1.1-000*.jar" target="_blank"/>
 					<item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-cea-client-*1.1-000*.jar" target="_blank"/>
 					<item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-community-client-*1.1-000*.jar" target="_blank"/>
@@ -122,7 +122,7 @@ try to keep in synch with navigation.xml
 					<item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-jes-delegate-*1.1-000*.jar" target="_blank"/>
 					<item name="StoreClient" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-storeclient-*1.1-000*.jar" target="_blank"/>
 					<item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-registry-client-lite-*1.1-000*.jar" target="_blank"/>
-                </item>
+                </item-->
 				<!-- NWW - removed this - don't want to be publishing or supporting these any more
 				<item name="Client Developer Kit" href="http://www.astrogrid.org/maven/org.astrogrid/distributions/??C=M&amp;O=D&amp;P=*1.1*.*"/>
 				-->
@@ -334,6 +334,7 @@ try to keep in synch with navigation.xml
       href="http://wiki.astrogrid.org/bin/view/Deploy/DeployedComponents" />
       <item name="Site status" href="http://software.astrogrid.org/monitor/status.xml" target="_blank" />
     </menu>
+
   </body>
 </project>
 
