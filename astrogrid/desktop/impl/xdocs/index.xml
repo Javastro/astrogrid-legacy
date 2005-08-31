@@ -33,12 +33,13 @@
 
 <section name="Development Guidelines">
 	<p>
-		Advice and hints to simplify writing code <i>in</i> the workbench.
+		Advice and hints to simplify writing code <i>in</i> the Workbench.
 	</p>
 
 	<subsection name="Eclipse"><p>
-		Run <tt>maven eclipse</tt> to set up your classpath from the impl sub project. You'll need to have the maven-base and aggregate projects also checked out at the correct relative locations.
-		Don't try and assemble the classpath by yourself - it's huge, and doing this will lead to hidden mismatches between library versions.
+		Run <tt>maven eclipse</tt> to set up your classpath from the <tt>impl</tt> sub project. You need to also have the maven-base and aggregate projects checked out at the 
+		correct relative locations.
+		Don't try and assemble the classpath by yourself - it's huge, and doing this most likely will lead to hidden mismatches between library versions.
 	</p></subsection>
 	<subsection name="Modules"><p>
 		The workbench is organized internally into modules - these contain components with related functionality.
@@ -46,17 +47,23 @@
 		a schema needs to be written, as some of the module.xml structure (embedded XHTML) can't be easily described in a DTD.
 		</p>
 		<p>
-		The module descriptor defines which components to instantiate, and provides human-readable information on the module and the components within it.
+		The module descriptor defines which components to instantiate, and provides human-readable information about the module and the components within it.
 		This information is used to generate the workbench GUI interface, and also the HTML and XMLRPC interfaces to the components.
 		</p>
-		<p>For each component in the module, it defines the component name, interface class, implementation class, and then documents the methods available on each component.			
+		<p>For each component in the module, it defines the component name, public interface class, implementation class, and then documents the methods available on each component.			
 		</p>
 		<p>
-			Within a module descriptor, there's a set of 'property' keys that can be set - for a module, component, etc. This provided me with a quick-and-dirty way of adding
+			In the module descriptor, it's possible to set 'property' keys - for a module, component, method, or parameter. This provided me with a quick-and-dirty way of adding
 			arbitrary metadata to the descriptor while I was prototyping the system. However, property keys defeat the point of a strongly-typed schema - so later I plan to 
 			rework the schema so that the commonest property keys are translated to elements.
-			However, for now be aware that there's some magic keys, concerned mostly with how things are presented in the GUI and XMLRPC interfaces.
+			However, for now be aware that there's some magic keys, concerned mostly with how things are presented in the GUI and XMLRPC interfaces -e.g. icons and titles
+			to use, technique to use to present the results, etc.
 		</p>
+		<p>
+			It's possible to define 'conditional' components in the module descriptor - these only become available when a condition is true (e.g. certain classes are available).
+			Extending on this, it's also possible to define a component that provides more than one implementation class - the correct implementation to use is selected
+			via a condition. See the module descriptor for the <tt>system</tt> module for an example of this.
+			</p>
 	</subsection>
 
 	<subsection name="Components"><p>
@@ -75,7 +82,8 @@
 			interfaces are found in the same package as the implementation class. Try to minimize the use of internal interfaces where possible.
 			</p>		
 		<p>
-			The implementation class is instantiated by the workbench when that component is needed. Only a single instance of each component is produced.
+			A component is described in a module descriptor, which specifies the class names of the public interface and implementation class to use.
+			The implementation class is instantiated lazily by the workbench when that component is needed. Only a single instance of each component is produced.
 		</p><p>
 			An implementation will typically depend on other, lower level components - for example configuration, help system, and maybe some of the components in the
 			<tt>astrogrid</tt> module such as <tt>Registry</tt>. An implementation can gain instances of the components it depends on by declaring the interfaces in it's constructor.
@@ -95,11 +103,14 @@ public class MyComponent {
 			be declared in the constructor - there's no way to get at more later. Public or Internal interface can be used as dependencies - other classes or interfaces won't work. Finally, it's not
 			possible to cast from an interface to the implementation class.			
 		</p>
+		<p>
+			The public interfaces to components and the methods they provide are documented in the <a href="http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html">acr api javadoc</a>.
+		</p>
 	</subsection>
 	
 	<subsection name="Delegates and other AG libs"><p>
 		Try to avoid using the astrogrid delegate classes - use the equivalent components of the ACR instead. They're better integrated into the system than the delegates.
-		Any code using delegates is liable to be refactored
+		Any code using delegates is liable to be refactored. 
 	  </p>
 	  <p>
 		However, there are some AG libs that are useful to have - e.g. the xml marshalling in <tt>workflow-objects</tt>, and some of the utilities in the <tt>common</tt> project. All these are already 
@@ -108,7 +119,7 @@ public class MyComponent {
 	
 	<subsection name="Package layout"><p>
 		For new classes, follow the rule that components and supporting classes for a single module stay in a single package wherever possible. At the moment there's some workflow-editor classes in <tt>modules.system</tt> and 
-		<tt>modules.dialogs</tt> that need to be refactored into <tt>modules.ui</tt>. For very large modules, use sub-packages.
+		<tt>modules.dialogs</tt> that need to be refactored into <tt>modules.ui</tt>. For very large modules, use sub-packages as needed.
 	</p>
 	<p>
 		The public interfaces to components shold be placed in the 'api' subproject - this forms the published interface to the ACR.
@@ -123,7 +134,8 @@ public class MyComponent {
 		</p><p>
 		Most of the UI component implementations extend the class <tt>org.astrogrid.desktop.modules.ui.UIComponent</tt>.
 		This provides a standard frame with an indeterminate progress bar at the bottom, helper metods to show progress and dialogues, 
-		plus a worker class that can be extended to do background processing.
+		plus a worker class that can be extended to do background processing. See the implementation javadoc for more details.
+		</p><p>
 		As is typical in swing programming, <b>any</b> long running activity (e.g. calling any webservice) should be executed on a background thread so that the responsiveness of the 
 		UI is maintained. This is particularly important when there is more than one window displayed by the application.
 		</p>
@@ -134,7 +146,7 @@ public class MyComponent {
 			</p>
 			<p>
 				There's a bunch of icons in the package <tt>org.astrogrid.desktop.icons</tt> - mostly cribbed from eclipse (which is a great source of reusable icons).
-				Please try to use icons consistently (i.e. the same icon for save, etc), and if you need to add more to this package, take them from eclipse - so a consistent look and feel is maintained.
+				Please try to use icons consistently (e.g. reuse the same icon for save, etc), and if you need to add more icons to this package, take them from eclipse - so a consistent look and feel is maintained.
 				The class <tt>org.astrogrid.desktop.icons.IconHelper</tt> makes it trivial to load an icon.
 			</p>			
 	</subsection>
@@ -142,7 +154,7 @@ public class MyComponent {
 	</section>
 	<section name="Execution">
 	<subsection name="Unit tests"><p>
-		There's some unit tests for the classes that can be easily split out. Most non-ui things are exercised by the system tests.
+		There's some unit tests for those classes that can be easily split out. Most non-ui things are exercised by the system tests.
 	</p></subsection>
 	
 	<subsection name="System Testing"><p>
@@ -151,7 +163,7 @@ public class MyComponent {
 		test source tree.
 		</p>
 		<p>
-			The system tests use org.astrogrid.desktop.framework.ACRTestSetup to create an in-processes Workbench (ACR). The classes of the public interface - <tt>Finder</tt> and <tt>ACR</tt>
+			The system tests use <tt>org.astrogrid.desktop.framework.ACRTestSetup</tt> to create an in-processes Workbench (ACR). The classes of the public interface - <tt>Finder</tt> and <tt>ACR</tt>
 			can then be used to retrive an instance of a component for testing.
 		</p>
 	</subsection>
