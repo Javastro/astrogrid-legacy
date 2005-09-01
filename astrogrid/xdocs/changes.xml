@@ -5,6 +5,11 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+        <action dev="jl" type="fix" issue="1347"><em>Branch: por-jl-1374</em>
+                This moves as much as I can at present from login to first use of MySpace.
+                Still some room for improvement. Please note the branch name as compared with
+                the bugzilla number. It is a typo when I was creating the branch.
+    	</action>    	
 		<action dev="gtr" type="add" issue="1230" note="priority"> Documentation for astrogrid/applications/commandline.
     			Branch apps-gtr-1230 is incompatible with the changes from issue 1317 and should be abandoned.
     			Branch apps-gtr-1230-2 has the same new documentation and configuration changes as the former
