@@ -112,7 +112,7 @@
                     <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-jes-*1.1-000*.war" target="_blank"/>
                     <!--item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-mySpace-1.0*-b*.war"/-->
                     <item name="DSA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*pal-*1.1-000*.war" target="_blank"/>
-                    <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-portal-*1.1-000*.war" target="_blank"/>
+                    <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-portal-1.1-000*.war" target="_blank"/>
                     <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-registry-*1.1-000*.war" target="_blank"/>
 				</item>
 				<!--item name="Webservice Delegates" href="/installdocs/delegates.html" collapse="true">
