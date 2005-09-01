@@ -45,7 +45,7 @@
 			</subsection>
 			<subsection name="GUI install">
 				<p>
-					At the moment, I don't know how to drive the installer toolkit for the FileManager.
+					Please refer to <a href="../../installdocs/generic-admin.html">General info for AG installer</a>
 				</p>
 			</subsection>
 		</section>
