@@ -1,0 +1,889 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<baseline-summary>
+		<baseline-name>after gtr_1230_2</baseline-name>
+		<baseline-description>changes for applications</baseline-description>
+		<when>Thu Sep 01 16:21:26 BST 2005</when>
+		<where>twmbarlwm.star.le.ac.uk/127.0.0.1</where>
+		<who>clq</who>
+		<project-name>auto-integration</project-name>
+		<project-version>HEAD</project-version>
+		<total-tests>631</total-tests>
+		<total-errors>30</total-errors>
+	</baseline-summary>
+	<testsuite name="CommandLineDirectExecutionTest" 
+		package="org.astrogrid.applications.integration.commandline" tests="4" 
+		failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommandLineFileIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.commandline" tests="6" 
+		failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommandLineServerInstallationTest" 
+		package="org.astrogrid.applications.integration.commandline" tests="5" 
+		failures="0">
+		<testcase name="testServicePresent" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered1" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered2" failure="0"></testcase>
+		<testcase name="testReturnRegistryEntry" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommandLineVOSpaceIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.commandline" tests="6" 
+		failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="DirectExecutionTest" 
+		package="org.astrogrid.applications.integration" tests="4" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="FailureTest" 
+		package="org.astrogrid.applications.integration" tests="3" failures="0">
+		<testcase name="testUnknownToolFailure" failure="0"></testcase>
+		<testcase name="testbadParameter" failure="0"></testcase>
+		<testcase name="testMissingParameter" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="FileIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration" tests="6" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="ServerInstallationTest" 
+		package="org.astrogrid.applications.integration" tests="6" failures="0">
+		<testcase name="testServicePresent" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered1" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered2" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered3" failure="0"></testcase>
+		<testcase name="testReturnRegistryEntry" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="VOSpaceIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration" tests="6" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommandLineDirectExecutionTest" 
+		package="org.astrogrid.applications.integration.commandlinewindows" 
+		tests="3" failures="1">
+		<testcase name="testExecute" failure="1"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommandLineFileIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.commandlinewindows" 
+		tests="5" failures="1">
+		<testcase name="testExecute" failure="1"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommandLineServerInstallationTest" 
+		package="org.astrogrid.applications.integration.commandlinewindows" 
+		tests="4" failures="0">
+		<testcase name="testServicePresent" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered1" failure="0"></testcase>
+		<testcase name="testReturnRegistryEntry" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommandLineVOSpaceIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.commandlinewindows" 
+		tests="5" failures="1">
+		<testcase name="testExecute" failure="1"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="DataCenterDirectExecutionTest" 
+		package="org.astrogrid.applications.integration.datacenter" tests="1" 
+		failures="1">
+		<testcase name="testExecute" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="DataCenterFileIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.datacenter" tests="1" 
+		failures="1">
+		<testcase name="testExecute" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="DataCenterServerInstallationTest" 
+		package="org.astrogrid.applications.integration.datacenter" tests="4" 
+		failures="3">
+		<testcase name="testServicePresent" failure="1"></testcase>
+		<testcase name="testApplicationsRegistered" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered1" failure="1"></testcase>
+		<testcase name="testReturnRegistryEntry" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="DataCenterVOSpaceIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.datacenter" tests="1" 
+		failures="1">
+		<testcase name="testExecute" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="HttpDirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.adder" tests="4" 
+		failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpFileIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.adder" tests="6" 
+		failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpVOSpaceIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.adder" tests="6" 
+		failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpServerInstallationTest" 
+		package="org.astrogrid.applications.integration.http" tests="7" 
+		failures="0">
+		<testcase name="testServicePresent" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered1" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered2" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered3" failure="0"></testcase>
+		<testcase name="testApplicationsRegistered4" failure="0"></testcase>
+		<testcase name="testReturnRegistryEntry" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpDirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.adderpost" 
+		tests="4" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpFileIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.adderpost" 
+		tests="6" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpVOSpaceIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.adderpost" 
+		tests="6" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpDirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.helloYou" 
+		tests="4" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpFileIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.helloYou" 
+		tests="6" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpVOSpaceIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.helloYou" 
+		tests="6" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpDirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.helloworld" 
+		tests="4" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpFileIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.helloworld" 
+		tests="6" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpVOSpaceIndirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.helloworld" 
+		tests="6" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+		<testcase name="testExecute1" failure="0"></testcase>
+		<testcase name="testExecute2" failure="0"></testcase>
+		<testcase name="testExecute3" failure="0"></testcase>
+		<testcase name="testExecute4" failure="0"></testcase>
+		<testcase name="testExecute5" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HttpDirectExecutionTest" 
+		package="org.astrogrid.applications.integration.http.invalidapp" 
+		tests="1" failures="0">
+		<testcase name="testExecute" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="RegistryQuerierImplTest" 
+		package="org.astrogrid.applications.integration.http.registry" 
+		tests="1" failures="0">
+		<testcase name="testListApplications" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CECClientTest" 
+		package="org.astrogrid.applications.integration.http.webservice" 
+		tests="1" failures="0">
+		<testcase name="testCanCallDelegate" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommunityAccountResolverTest" 
+		package="org.astrogrid.community.integration" tests="2" failures="0">
+		<testcase name="testResolveMock" failure="0"></testcase>
+		<testcase name="testResolveFrog" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommunityAccountSpaceTest" 
+		package="org.astrogrid.community.integration" tests="1" failures="0">
+		<testcase name="testResolveFrog" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommunityGroupTest" 
+		package="org.astrogrid.community.integration" tests="1" failures="0">
+		<testcase name="testGroupTransactionsFromCommunities" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="CommunityPermissionTest" 
+		package="org.astrogrid.community.integration" tests="1" failures="0">
+		<testcase name="testPermissionTransactionsFromCommunities" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="FileManagerClientTest" 
+		package="org.astrogrid.filemanager.integration" tests="38" failures="1">
+		<testcase name="testNotExists" failure="0"></testcase>
+		<testcase name="testExistsFolder" failure="0"></testcase>
+		<testcase name="testExistsFile" failure="0"></testcase>
+		<testcase name="testDelete" failure="0"></testcase>
+		<testcase name="testCreateCommunityAccount" failure="0"></testcase>
+		<testcase name="testCreateFileManagerAccount" failure="0"></testcase>
+		<testcase name="testRegister" failure="1"></testcase>
+		<testcase name="testLoginAnon" failure="0"></testcase>
+		<testcase name="testLoginAnonHome" failure="0"></testcase>
+		<testcase name="testLoginPass" failure="0"></testcase>
+		<testcase name="testLoginPassHome" failure="0"></testcase>
+		<testcase name="testLoginAddFile" failure="0"></testcase>
+		<testcase name="testLoginAddFileGetFile" failure="0"></testcase>
+		<testcase name="testLoginAddFileLoginGetFile" failure="0"></testcase>
+		<testcase name="testRoundTripHome" failure="0"></testcase>
+		<testcase name="testLoginAddFileAnonGetFileNodeIvorn" failure="0"></testcase>
+		<testcase name="testLoginAddFileAnonGetFileNodeIvornToIvorn" 
+			failure="0"></testcase>
+		<testcase name="testLoginAddFileAnonGetFileIvorn" failure="0"></testcase>
+		<testcase name="testCreateExistingFile" failure="0"></testcase>
+		<testcase name="testCreateExistingFileNodeIvorn" failure="0"></testcase>
+		<testcase name="testCreateExistingFolder" failure="0"></testcase>
+		<testcase name="testCreateExistingFolderNodeIvorn" failure="0"></testcase>
+		<testcase name="testCreateFileWhenIntermediateIsAFile" failure="0"></testcase>
+		<testcase name="testCreateFileWhenIntermediateIsAFileNodeIvorn" 
+			failure="0"></testcase>
+		<testcase name="testCreateShallowFile" failure="0"></testcase>
+		<testcase name="testCreateShallowFileNodeIvorn" failure="0"></testcase>
+		<testcase name="testCreateShallowFolder" failure="0"></testcase>
+		<testcase name="testCreateShallowFolderNodeIvorn" failure="0"></testcase>
+		<testcase name="testCreateDeepFile" failure="0"></testcase>
+		<testcase name="testCreateDeepFileNodeIvorn" failure="0"></testcase>
+		<testcase name="testCreateDeepFolder" failure="0"></testcase>
+		<testcase name="testCreateDeepFolderNodeIvorn" failure="0"></testcase>
+		<testcase name="testLoginPassAddFileAddData" failure="0"></testcase>
+		<testcase name="testExistsHome" failure="0"></testcase>
+		<testcase name="testNotExistsResource" failure="0"></testcase>
+		<testcase name="testLoginPassAddFileAddDataGetData" failure="0"></testcase>
+		<testcase name="testLoginToken" failure="0"></testcase>
+		<testcase name="testLoginTokenHome" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="NodeDelegateTest" 
+		package="org.astrogrid.filemanager.integration" tests="62" failures="1">
+		<testcase name="testCreateDelegate" failure="0"></testcase>
+		<testcase name="testAddAccountNull" failure="0"></testcase>
+		<testcase name="testAddAccount" failure="0"></testcase>
+		<testcase name="testAddAccountDuplicate" failure="0"></testcase>
+		<testcase name="testAddAccountIvorn" failure="0"></testcase>
+		<testcase name="testAddAccountAttribute" failure="0"></testcase>
+		<testcase name="testAddAccountIdent" failure="0"></testcase>
+		<testcase name="testAddAccountName" failure="0"></testcase>
+		<testcase name="testAddAccountType" failure="0"></testcase>
+		<testcase name="testGetAccountNull" failure="0"></testcase>
+		<testcase name="testGetAccountUnknown" failure="0"></testcase>
+		<testcase name="testAddContainerNullParent" failure="0"></testcase>
+		<testcase name="testAddContainerNullName" failure="0"></testcase>
+		<testcase name="testAddContainer" failure="0"></testcase>
+		<testcase name="testAddDuplicateContainer" failure="0"></testcase>
+		<testcase name="testAddContainerNodeIvorn" failure="0"></testcase>
+		<testcase name="testAddContainerIvorn" failure="0"></testcase>
+		<testcase name="testAddContainerName" failure="0"></testcase>
+		<testcase name="testAddContainerType" failure="0"></testcase>
+		<testcase name="testAddFileNullParent" failure="0"></testcase>
+		<testcase name="testAddFileNullName" failure="0"></testcase>
+		<testcase name="testAddFile" failure="0"></testcase>
+		<testcase name="testAddDuplicateFile" failure="0"></testcase>
+		<testcase name="testAddFileIvorn" failure="0"></testcase>
+		<testcase name="testAddFileNodeIvorn" failure="0"></testcase>
+		<testcase name="testAddFileName" failure="0"></testcase>
+		<testcase name="testAddFileType" failure="0"></testcase>
+		<testcase name="testAddFileLocation" failure="0"></testcase>
+		<testcase name="testGetNodeNull" failure="0"></testcase>
+		<testcase name="testGetNodeUnknown" failure="1"></testcase>
+		<testcase name="testGetContainerNode" failure="0"></testcase>
+		<testcase name="testGetContainerNodeIvorn" failure="0"></testcase>
+		<testcase name="testGetContainerIvorn" failure="0"></testcase>
+		<testcase name="testGetContainerNodeName" failure="0"></testcase>
+		<testcase name="testGetContainerNodeType" failure="0"></testcase>
+		<testcase name="testGetFileNode" failure="0"></testcase>
+		<testcase name="testGetFileNodeIvorn" failure="0"></testcase>
+		<testcase name="testGetFileIvorn" failure="0"></testcase>
+		<testcase name="testGetFileNodeName" failure="0"></testcase>
+		<testcase name="testGetFileNodeType" failure="0"></testcase>
+		<testcase name="testImportInitNullIvorn" failure="0"></testcase>
+		<testcase name="testImportInitUnknownIvorn" failure="0"></testcase>
+		<testcase name="testImportInitTransferURL" failure="0"></testcase>
+		<testcase name="testImportInitWrite" failure="0"></testcase>
+		<testcase name="testExportInitNullProperties" failure="0"></testcase>
+		<testcase name="testExportInitUnknownIvorn" failure="0"></testcase>
+		<testcase name="testExportInitUnknownRead" failure="0"></testcase>
+		<testcase name="testImportRefreshSize" failure="0"></testcase>
+		<testcase name="testMoveName" failure="0"></testcase>
+		<testcase name="testMoveNameDuplicate" failure="0"></testcase>
+		<testcase name="testMoveParent" failure="0"></testcase>
+		<testcase name="testMoveNameParent" failure="0"></testcase>
+		<testcase name="testMoveParentDuplicate" failure="0"></testcase>
+		<testcase name="testMoveLocationEmpty" failure="0"></testcase>
+		<testcase name="testMoveLocationData" failure="0"></testcase>
+		<testcase name="testCopyUnknownResource" failure="0"></testcase>
+		<testcase name="testCopyDuplicateSame" failure="0"></testcase>
+		<testcase name="testCopyDuplicateNode" failure="0"></testcase>
+		<testcase name="testCopyEmptyNode" failure="0"></testcase>
+		<testcase name="testCopyNodeData" failure="0"></testcase>
+		<testcase name="testCopyNodeLocation" failure="0"></testcase>
+		<testcase name="testImportDates" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="NodeTest" package="org.astrogrid.filemanager.integration" 
+		tests="59" failures="1">
+		<testcase name="testCreateDelegate" failure="0"></testcase>
+		<testcase name="testCreateAccount" failure="0"></testcase>
+		<testcase name="testAddContainerNullName" failure="0"></testcase>
+		<testcase name="testAddContainer" failure="0"></testcase>
+		<testcase name="testAddContainerDuplicate" failure="0"></testcase>
+		<testcase name="testAddContainerName" failure="0"></testcase>
+		<testcase name="testAddContainerType" failure="0"></testcase>
+		<testcase name="testAddContainerIvorn" failure="0"></testcase>
+		<testcase name="testAddContainerParent" failure="0"></testcase>
+		<testcase name="testAddChildContainerNullName" failure="0"></testcase>
+		<testcase name="testAddChildContainer" failure="0"></testcase>
+		<testcase name="testAddChildContainerDuplicate" failure="0"></testcase>
+		<testcase name="testAddChildContainerName" failure="0"></testcase>
+		<testcase name="testAddChildContainerType" failure="0"></testcase>
+		<testcase name="testAddChildContainerIvorn" failure="0"></testcase>
+		<testcase name="testAddFileNullName" failure="0"></testcase>
+		<testcase name="testAddFile" failure="0"></testcase>
+		<testcase name="testAddFileDuplicate" failure="0"></testcase>
+		<testcase name="testAddFileName" failure="0"></testcase>
+		<testcase name="testAddFileType" failure="0"></testcase>
+		<testcase name="testAddFileIvorn" failure="0"></testcase>
+		<testcase name="testAddFileNodeIvorn" failure="0"></testcase>
+		<testcase name="testAddFileParent" failure="0"></testcase>
+		<testcase name="testAddFileAttributes" failure="0"></testcase>
+		<testcase name="testGetChildNull" failure="0"></testcase>
+		<testcase name="testGetChildUnknown" failure="0"></testcase>
+		<testcase name="testGetChildValid" failure="0"></testcase>
+		<testcase name="testGetNode" failure="0"></testcase>
+		<testcase name="testGetNestedNode" failure="0"></testcase>
+		<testcase name="testFileAddFile" failure="0"></testcase>
+		<testcase name="testFileAddContainer" failure="0"></testcase>
+		<testcase name="testFileGetChild" failure="0"></testcase>
+		<testcase name="testFileGetChildCount" failure="0"></testcase>
+		<testcase name="testOutputStreamContainer" failure="0"></testcase>
+		<testcase name="testOutputStream" failure="0"></testcase>
+		<testcase name="testOutputStreamWrite" failure="0"></testcase>
+		<testcase name="testInputStreamContainer" failure="0"></testcase>
+		<testcase name="testInputStreamEmpty" failure="0"></testcase>
+		<testcase name="testInputStream" failure="0"></testcase>
+		<testcase name="testInputStreamRead" failure="0"></testcase>
+		<testcase name="testEmptyFileLocation" failure="0"></testcase>
+		<testcase name="testFileLocationNotNull" failure="0"></testcase>
+		<testcase name="testMoveFileName" failure="0"></testcase>
+		<testcase name="testMoveFileNameDuplicate" failure="0"></testcase>
+		<testcase name="testMoveContainerName" failure="0"></testcase>
+		<testcase name="testMoveContainerNameChild" failure="0"></testcase>
+		<testcase name="testMoveContainerNameDuplicate" failure="0"></testcase>
+		<testcase name="testMoveEmptyFileLocation" failure="0"></testcase>
+		<testcase name="testMoveDataFileLocation" failure="0"></testcase>
+		<testcase name="testImportRefreshSize" failure="0"></testcase>
+		<testcase name="testImportRefreshMimeType" failure="1"></testcase>
+		<testcase name="testChildrenEmpty" failure="0"></testcase>
+		<testcase name="testChildrenValid" failure="0"></testcase>
+		<testcase name="testCopyName" failure="0"></testcase>
+		<testcase name="testCopyParent" failure="0"></testcase>
+		<testcase name="testCopyData" failure="0"></testcase>
+		<testcase name="testCopyDataLocation" failure="0"></testcase>
+		<testcase name="testDates" failure="0"></testcase>
+		<testcase name="testExportUrlValid" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="FileStoreIntegrationTest" 
+		package="org.astrogrid.filestore.integration" tests="69" failures="0">
+		<testcase name="testGetServiceIdentifier" failure="0"></testcase>
+		<testcase name="testImportNullString" failure="0"></testcase>
+		<testcase name="testImportString" failure="0"></testcase>
+		<testcase name="testImportStringInfo" failure="0"></testcase>
+		<testcase name="testExportNullString" failure="0"></testcase>
+		<testcase name="testExportUnknownString" failure="0"></testcase>
+		<testcase name="testImportStringExportString" failure="0"></testcase>
+		<testcase name="testImportStringExportBytes" failure="0"></testcase>
+		<testcase name="testImportNullBytes" failure="0"></testcase>
+		<testcase name="testImportBytes" failure="0"></testcase>
+		<testcase name="testImportBytesInfo" failure="0"></testcase>
+		<testcase name="testExportNullBytes" failure="0"></testcase>
+		<testcase name="testExportUnknownBytes" failure="0"></testcase>
+		<testcase name="testImportBytesExportBytes" failure="0"></testcase>
+		<testcase name="testImportBytesExportString" failure="0"></testcase>
+		<testcase name="testRequestNullInfo" failure="0"></testcase>
+		<testcase name="testRequestUnknownInfo" failure="0"></testcase>
+		<testcase name="testRequestStringInfo" failure="0"></testcase>
+		<testcase name="testRequestBytesInfo" failure="0"></testcase>
+		<testcase name="testDeleteNull" failure="0"></testcase>
+		<testcase name="testDeleteUnknown" failure="0"></testcase>
+		<testcase name="testDeleteString" failure="0"></testcase>
+		<testcase name="testDeleteBytes" failure="0"></testcase>
+		<testcase name="testInfoDeleted" failure="0"></testcase>
+		<testcase name="testExportDeleted" failure="0"></testcase>
+		<testcase name="testAppendNullString" failure="0"></testcase>
+		<testcase name="testAppendStringNullIdent" failure="0"></testcase>
+		<testcase name="testAppendStringUnknownIdent" failure="0"></testcase>
+		<testcase name="testImportStringAppendString" failure="0"></testcase>
+		<testcase name="testImportStringAppendBytes" failure="0"></testcase>
+		<testcase name="testDuplicateNullIdent" failure="0"></testcase>
+		<testcase name="testDuplicateUnknownIdent" failure="0"></testcase>
+		<testcase name="testDuplicateIdent" failure="0"></testcase>
+		<testcase name="testDuplicateString" failure="0"></testcase>
+		<testcase name="testDuplicateInfo" failure="0"></testcase>
+		<testcase name="testDuplicateAppend" failure="0"></testcase>
+		<testcase name="testCreateNullUrlGetTransfer" failure="0"></testcase>
+		<testcase name="testCreateUrlGetTransfer" failure="0"></testcase>
+		<testcase name="testImportNullTransfer" failure="0"></testcase>
+		<testcase name="testImportMissing" failure="0"></testcase>
+		<testcase name="testImportFile" failure="0"></testcase>
+		<testcase name="testImportHttp" failure="0"></testcase>
+		<testcase name="testImportProperties" failure="0"></testcase>
+		<testcase name="testImportContent" failure="0"></testcase>
+		<testcase name="testImportTypeHtml" failure="0"></testcase>
+		<testcase name="testImportTypeJar" failure="0"></testcase>
+		<testcase name="testImportSource" failure="0"></testcase>
+		<testcase name="testImportBytesSize" failure="0"></testcase>
+		<testcase name="testImportStringSize" failure="0"></testcase>
+		<testcase name="testAppendBytesSize" failure="0"></testcase>
+		<testcase name="testImportFileUrlSize" failure="0"></testcase>
+		<testcase name="testImportHttpUrlSize" failure="0"></testcase>
+		<testcase name="testImportStringAsXmlVotable" failure="0"></testcase>
+		<testcase name="testAppendStringAsXmlVotable" failure="0"></testcase>
+		<testcase name="testImportUrlAsVotable" failure="0"></testcase>
+		<testcase name="testImportInitNullTransfer" failure="0"></testcase>
+		<testcase name="testImportInit" failure="0"></testcase>
+		<testcase name="testImportInitURL" failure="0"></testcase>
+		<testcase name="testImportInitURLConnection" failure="0"></testcase>
+		<testcase name="testImportInitProperties" failure="0"></testcase>
+		<testcase name="testImportInitWrite" failure="0"></testcase>
+		<testcase name="testExportInitNullTransfer" failure="0"></testcase>
+		<testcase name="testExportInitNullProperties" failure="0"></testcase>
+		<testcase name="testExportInitTransfer" failure="0"></testcase>
+		<testcase name="testExportInitEmptyProperties" failure="0"></testcase>
+		<testcase name="testExportInitTransferLocation" failure="0"></testcase>
+		<testcase name="testExportInitRead" failure="0"></testcase>
+		<testcase name="testInitialDates" failure="0"></testcase>
+		<testcase name="testModifiedDates" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="InstallationTest" 
+		package="org.astrogrid.installation.integration" tests="27" 
+		failures="4">
+		<testcase name="org.astrogrid.registry.admin.endpoint" failure="0"></testcase>
+		<testcase name="org.astrogrid.myspace.endpoint" failure="1"></testcase>
+		<testcase name="org.astrogrid.portal.site" failure="0"></testcase>
+		<testcase name="org.astrogrid.portal.site.registry" failure="1"></testcase>
+		<testcase name="org.astrogrid.filestore.test.data.http.jar" failure="0"></testcase>
+		<testcase name="org.astrogrid.cea.http.service.url" failure="0"></testcase>
+		<testcase name="org.astrogrid.registry.query.endpoint" failure="0"></testcase>
+		<testcase name="org.astrogrid.cea.commandline.service.url" failure="0"></testcase>
+		<testcase name="org.astrogrid.portal.site.commmunity.admin" failure="1"></testcase>
+		<testcase name="org.astrogrid.jes.monitor.service.url" failure="0"></testcase>
+		<testcase name="org.astrogrid.portal.site.myspace" failure="0"></testcase>
+		<testcase name="org.astrogrid.testwebapp.url" failure="0"></testcase>
+		<testcase name="org.astrogrid.jes.baseurl" failure="0"></testcase>
+		<testcase name="org.astrogrid.jes.controller.service.url" failure="0"></testcase>
+		<testcase name="org.astrogrid.jes.results.service.url" failure="0"></testcase>
+		<testcase name="tomcat.root" failure="0"></testcase>
+		<testcase name="org.astrogrid.filestore.test.data.http.html" 
+			failure="0"></testcase>
+		<testcase name="workflow.jes.endpoint" failure="0"></testcase>
+		<testcase name="scripting.service.list.url" failure="0"></testcase>
+		<testcase name="org.astrogrid.memory.endpoint" failure="0"></testcase>
+		<testcase name="org.astrogrid.portal.site.datacenter" failure="0"></testcase>
+		<testcase name="org.astrogrid.portal.site.workflow" failure="0"></testcase>
+		<testcase name="oai.servlet.url.0.9" failure="0"></testcase>
+		<testcase name="org.astrogrid.cea.datacenter.service.url" failure="1"></testcase>
+		<testcase name="org.astrogrid.cea.server.service.url" failure="0"></testcase>
+		<testcase name="org.astrogrid.registry.oai.query.endpoint" failure="0"></testcase>
+		<testcase name="org.astrogrid.gc.endpoint" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HarvestDaemonTest" 
+		package="org.astrogrid.registry.integration" tests="1" failures="0">
+		<testcase name="testDaemon" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="HarvestRegistryTest" 
+		package="org.astrogrid.registry.integration" tests="7" failures="1">
+		<testcase name="testIdentify" failure="0"></testcase>
+		<testcase name="testListRecords" failure="0"></testcase>
+		<testcase name="testListRecordsWithDate" failure="0"></testcase>
+		<testcase name="testGetRecord" failure="0"></testcase>
+		<testcase name="testListMetadataFormats" failure="0"></testcase>
+		<testcase name="testListIdentifiers" failure="1"></testcase>
+		<testcase name="testGetRegistries" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="QueryOAIRegistryTest" 
+		package="org.astrogrid.registry.integration" tests="7" failures="1">
+		<testcase name="testIdentify" failure="0"></testcase>
+		<testcase name="testListRecords" failure="0"></testcase>
+		<testcase name="testListRecordsWithDate" failure="0"></testcase>
+		<testcase name="testGetRecord" failure="0"></testcase>
+		<testcase name="testListMetadataFormats" failure="0"></testcase>
+		<testcase name="testListIdentifiers" failure="1"></testcase>
+		<testcase name="testGetRegistries" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="QueryRegistryClientADQLTest" 
+		package="org.astrogrid.registry.integration" tests="2" failures="2">
+		<testcase name="testSearch" failure="1"></testcase>
+		<testcase name="testSearch2" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="QueryRegistryClientTest" 
+		package="org.astrogrid.registry.integration" tests="2" failures="0">
+		<testcase name="testLoadRegistry" failure="0"></testcase>
+		<testcase name="testGetResourceByIdentifier" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="RegistryFunctionTest" 
+		package="org.astrogrid.registry.integration" tests="2" failures="0">
+		<testcase name="testAddnew" failure="0"></testcase>
+		<testcase name="testRetrieve" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="RegistryInstallationTest" 
+		package="org.astrogrid.registry.integration" tests="2" failures="0">
+		<testcase name="testConfiguration" failure="0"></testcase>
+		<testcase name="testRoot" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="RegistryServiceClientTest" 
+		package="org.astrogrid.registry.integration" tests="1" failures="1">
+		<testcase name="testLoadRegistry" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="UpdateRegistryTest" 
+		package="org.astrogrid.registry.integration" tests="2" failures="0">
+		<testcase name="testUpdate" failure="0"></testcase>
+		<testcase name="testUpdate2" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="XQueryRegistryTest" 
+		package="org.astrogrid.registry.integration" tests="1" failures="1">
+		<testcase name="testSearch" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="SiapImageFetchUsingScriptTest" 
+		package="org.astrogrid.workflow.integration.intwfssiap" tests="7" 
+		failures="1">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="SiapImageFetchUsingToolTest" 
+		package="org.astrogrid.workflow.integration.intwfssiap" tests="7" 
+		failures="1">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="CompositeWorkflowEndToEndTest" 
+		package="org.astrogrid.workflow.integration" tests="1" failures="1">
+		<testcase name="testWorkflow" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="DynamicWorkflowTest" 
+		package="org.astrogrid.workflow.integration" tests="14" failures="0">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="0"></testcase>
+		<testcase name="testWorkflow7" failure="0"></testcase>
+		<testcase name="testWorkflow8" failure="0"></testcase>
+		<testcase name="testWorkflow9" failure="0"></testcase>
+		<testcase name="testWorkflow10" failure="0"></testcase>
+		<testcase name="testWorkflow11" failure="0"></testcase>
+		<testcase name="testWorkflow12" failure="0"></testcase>
+		<testcase name="testWorkflow13" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="FairlyGroovyWorkflowTest" 
+		package="org.astrogrid.workflow.integration" tests="17" failures="0">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="0"></testcase>
+		<testcase name="testWorkflow7" failure="0"></testcase>
+		<testcase name="testWorkflow8" failure="0"></testcase>
+		<testcase name="testWorkflow9" failure="0"></testcase>
+		<testcase name="testWorkflow10" failure="0"></testcase>
+		<testcase name="testWorkflow11" failure="0"></testcase>
+		<testcase name="testWorkflow12" failure="0"></testcase>
+		<testcase name="testWorkflow13" failure="0"></testcase>
+		<testcase name="testWorkflow14" failure="0"></testcase>
+		<testcase name="testWorkflow15" failure="0"></testcase>
+		<testcase name="testWorkflow16" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="FlowWorkflowTest" 
+		package="org.astrogrid.workflow.integration" tests="13" failures="0">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="0"></testcase>
+		<testcase name="testWorkflow7" failure="0"></testcase>
+		<testcase name="testWorkflow8" failure="0"></testcase>
+		<testcase name="testWorkflow9" failure="0"></testcase>
+		<testcase name="testWorkflow10" failure="0"></testcase>
+		<testcase name="testWorkflow11" failure="0"></testcase>
+		<testcase name="testWorkflow12" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="JesInstallationTest" 
+		package="org.astrogrid.workflow.integration" tests="7" failures="0">
+		<testcase name="testSubmitListReadDeleteJob" failure="0"></testcase>
+		<testcase name="testSubmitListReadDeleteJob1" failure="0"></testcase>
+		<testcase name="testSubmitListReadDeleteJob2" failure="0"></testcase>
+		<testcase name="testSubmitListReadDeleteJob3" failure="0"></testcase>
+		<testcase name="testSubmitListReadDeleteJob4" failure="0"></testcase>
+		<testcase name="testSubmitListReadDeleteJob5" failure="0"></testcase>
+		<testcase name="testSubmitListReadDeleteJob6" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="JesSelfTest" package="org.astrogrid.workflow.integration" 
+		tests="2" failures="0">
+		<testcase name="testJesWar" failure="0"></testcase>
+		<testcase name="testJesSelfTests" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="MySpaceCommandlineWorkflowEndToEndTest" 
+		package="org.astrogrid.workflow.integration" tests="9" failures="0">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="0"></testcase>
+		<testcase name="testWorkflow7" failure="0"></testcase>
+		<testcase name="testWorkflow8" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="MySpaceIntegrationTest" 
+		package="org.astrogrid.workflow.integration" tests="1" failures="0">
+		<testcase name="testStore" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="RegistryIntegrationTest" 
+		package="org.astrogrid.workflow.integration" tests="81" failures="2">
+		<testcase name="testListApplications" failure="0"></testcase>
+		<testcase name="testListApplications1" failure="0"></testcase>
+		<testcase name="testListApplications2" failure="0"></testcase>
+		<testcase name="testListApplications3" failure="0"></testcase>
+		<testcase name="testListApplications4" failure="0"></testcase>
+		<testcase name="testListApplications5" failure="0"></testcase>
+		<testcase name="testListApplications6" failure="0"></testcase>
+		<testcase name="testListApplications7" failure="0"></testcase>
+		<testcase name="testListApplications8" failure="0"></testcase>
+		<testcase name="testListApplications9" failure="0"></testcase>
+		<testcase name="testListApplications10" failure="0"></testcase>
+		<testcase name="testListApplications11" failure="0"></testcase>
+		<testcase name="testListApplications12" failure="0"></testcase>
+		<testcase name="testListApplications13" failure="0"></testcase>
+		<testcase name="testListApplications14" failure="0"></testcase>
+		<testcase name="testListApplications15" failure="0"></testcase>
+		<testcase name="testListApplications16" failure="0"></testcase>
+		<testcase name="testListApplications17" failure="0"></testcase>
+		<testcase name="testListApplications18" failure="0"></testcase>
+		<testcase name="testListApplications19" failure="0"></testcase>
+		<testcase name="testListApplications20" failure="0"></testcase>
+		<testcase name="testListApplications21" failure="0"></testcase>
+		<testcase name="testListApplications22" failure="0"></testcase>
+		<testcase name="testListApplications23" failure="0"></testcase>
+		<testcase name="testListApplications24" failure="0"></testcase>
+		<testcase name="testListApplications25" failure="0"></testcase>
+		<testcase name="testListApplications26" failure="0"></testcase>
+		<testcase name="testListApplications27" failure="0"></testcase>
+		<testcase name="testListApplications28" failure="0"></testcase>
+		<testcase name="testListApplications29" failure="0"></testcase>
+		<testcase name="testListApplications30" failure="0"></testcase>
+		<testcase name="testListApplications31" failure="0"></testcase>
+		<testcase name="testListApplications32" failure="0"></testcase>
+		<testcase name="testListApplications33" failure="0"></testcase>
+		<testcase name="testListApplications34" failure="0"></testcase>
+		<testcase name="testListApplications35" failure="0"></testcase>
+		<testcase name="testListApplications36" failure="0"></testcase>
+		<testcase name="testListApplications37" failure="0"></testcase>
+		<testcase name="testListApplications38" failure="0"></testcase>
+		<testcase name="testListApplications39" failure="0"></testcase>
+		<testcase name="testListApplications40" failure="0"></testcase>
+		<testcase name="testListApplications41" failure="0"></testcase>
+		<testcase name="testListApplications42" failure="0"></testcase>
+		<testcase name="testListApplications43" failure="0"></testcase>
+		<testcase name="testListApplications44" failure="0"></testcase>
+		<testcase name="testListApplications45" failure="0"></testcase>
+		<testcase name="testListApplications46" failure="0"></testcase>
+		<testcase name="testListApplications47" failure="0"></testcase>
+		<testcase name="testListApplications48" failure="0"></testcase>
+		<testcase name="testListApplications49" failure="0"></testcase>
+		<testcase name="testListApplications50" failure="0"></testcase>
+		<testcase name="testListApplications51" failure="0"></testcase>
+		<testcase name="testListApplications52" failure="0"></testcase>
+		<testcase name="testListApplications53" failure="0"></testcase>
+		<testcase name="testListApplications54" failure="0"></testcase>
+		<testcase name="testListApplications55" failure="0"></testcase>
+		<testcase name="testListApplications56" failure="0"></testcase>
+		<testcase name="testListApplications57" failure="0"></testcase>
+		<testcase name="testListApplications58" failure="0"></testcase>
+		<testcase name="testListApplications59" failure="0"></testcase>
+		<testcase name="testListApplications60" failure="0"></testcase>
+		<testcase name="testListApplications61" failure="0"></testcase>
+		<testcase name="testListApplications62" failure="0"></testcase>
+		<testcase name="testListApplications63" failure="0"></testcase>
+		<testcase name="testListApplications64" failure="0"></testcase>
+		<testcase name="testListApplications65" failure="0"></testcase>
+		<testcase name="testListApplications66" failure="0"></testcase>
+		<testcase name="testListApplications67" failure="0"></testcase>
+		<testcase name="testListApplications68" failure="0"></testcase>
+		<testcase name="testListApplications69" failure="0"></testcase>
+		<testcase name="testListApplications70" failure="0"></testcase>
+		<testcase name="testListApplications71" failure="0"></testcase>
+		<testcase name="testListApplications72" failure="0"></testcase>
+		<testcase name="testListApplications73" failure="0"></testcase>
+		<testcase name="testListApplications74" failure="0"></testcase>
+		<testcase name="testListApplications75" failure="0"></testcase>
+		<testcase name="testListApplications76" failure="0"></testcase>
+		<testcase name="testListUIApplications" failure="0"></testcase>
+		<testcase name="testResolveApplications" failure="0"></testcase>
+		<testcase name="testResolveApplications1" failure="1"></testcase>
+		<testcase name="testResolveApplications2" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="SimpleCommandlineWorkflowEndToEndTest" 
+		package="org.astrogrid.workflow.integration" tests="12" failures="0">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="0"></testcase>
+		<testcase name="testWorkflow7" failure="0"></testcase>
+		<testcase name="testWorkflow8" failure="0"></testcase>
+		<testcase name="testWorkflow9" failure="0"></testcase>
+		<testcase name="testWorkflow10" failure="0"></testcase>
+		<testcase name="testWorkflow11" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="SimpleDSAWorkflowEndToEndTest" 
+		package="org.astrogrid.workflow.integration" tests="1" failures="1">
+		<testcase name="testWorkflow" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="SimpleJavaWorkflowEndToEndTest" 
+		package="org.astrogrid.workflow.integration" tests="14" failures="0">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="0"></testcase>
+		<testcase name="testWorkflow7" failure="0"></testcase>
+		<testcase name="testWorkflow8" failure="0"></testcase>
+		<testcase name="testWorkflow9" failure="0"></testcase>
+		<testcase name="testWorkflow10" failure="0"></testcase>
+		<testcase name="testWorkflow11" failure="0"></testcase>
+		<testcase name="testWorkflow12" failure="0"></testcase>
+		<testcase name="testWorkflow13" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="ExampleVOTableParsingWorkflowTest" 
+		package="org.astrogrid.workflow.integration.itn6.solarevent" tests="1" 
+		failures="1">
+		<testcase name="testWorkflow" failure="1"></testcase>
+	</testsuite>
+	<testsuite name="SimpleConcatToolWorkflowTest" 
+		package="org.astrogrid.workflow.integration.itn6.solarevent" tests="12" 
+		failures="0">
+		<testcase name="testWorkflow" failure="0"></testcase>
+		<testcase name="testWorkflow1" failure="0"></testcase>
+		<testcase name="testWorkflow2" failure="0"></testcase>
+		<testcase name="testWorkflow3" failure="0"></testcase>
+		<testcase name="testWorkflow4" failure="0"></testcase>
+		<testcase name="testWorkflow5" failure="0"></testcase>
+		<testcase name="testWorkflow6" failure="0"></testcase>
+		<testcase name="testWorkflow7" failure="0"></testcase>
+		<testcase name="testWorkflow8" failure="0"></testcase>
+		<testcase name="testWorkflow9" failure="0"></testcase>
+		<testcase name="testWorkflow10" failure="0"></testcase>
+		<testcase name="testWorkflow11" failure="0"></testcase>
+	</testsuite>
+	<testsuite name="SimpleFitsWorkflowTest" 
+		package="org.astrogrid.workflow.integration.itn6.solarevent" tests="1" 
+		failures="1">
+		<testcase name="testWorkflow" failure="1"></testcase>
+	</testsuite>
+</testsuites>
