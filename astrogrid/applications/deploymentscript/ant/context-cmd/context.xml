@@ -3,9 +3,9 @@
     <!--optional - picks up a default template from the classpath - can override to set up personalised values in template -->
     <Environment name="cea.registry.template.url" decription="The template registry entry" type="java.lang.String" 
         value="file:///@CEARegistryTemplate@" />
-    <Environment name="cea.commandline.workingdir.file" description="The working directory where execution environments are created" type="java.lang.String" 
+ 	  <Environment name="cea.job.temp.files" description="The working directory where execution environments are created" type="java.lang.String" 
         value="@CEA_WORKING@/run" />
-    <Environment name="cea.commandline.description.list.url" description="The configuration file for applications" type="java.lang.String" 
+	  <Environment name="cea.local.apps.config" description="The configuration file for applications" type="java.lang.String" 
         value="file:///@CEACMDCONFIG@" override="true"/>
     <!-- registry endpoints - these are essential for the proper working of CEA - 
 	it needs to be able to query the registry to do myspace operations and can update the registry with its own configuration 

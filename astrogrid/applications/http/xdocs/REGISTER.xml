@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+        <title>Registration</title>
+</properties>
+
+<body>
+
+<section name="Required registrations"><p>
+	To make your HTTP-CEC useful in the IVO, you must register, in an
+	IVOA-compliant resource registry:
+</p>
+	<ol>
+		<li>each application that the HTTP-CEC can run (but see the notes on mirrors, below);</li>
+		<li>the HTTP-CEC as a service.</li>
+	</ol>
+	<p>
+		The application registrations state the interfaces of the applications.
+		The service registration states the service endpoint (the URL for access)
+		and lists the applications that the HTTP-CEC can run. For each registration,
+		you prepare a resource document (an XML file) stating the necessary metadata
+		in a machine-readable format.
+	</p>
+</section>
+
+<section name="Mirroring applications">	
+	<p>
+		If you are setting up your HTTP-CEC to run applications already defined and published
+		in the IVO, then you do not need to write or publish resource documents for these;
+		you still must write and publish the resource document for the service itself.
+		Instead, you could look up the application resources already in the registry and quote the
+		identifiers for these when writing the resource document for your service.
+	</p>
+	<p>
+		If you do this, you are declaring your service as a mirror of the existing services
+		running the applications in question; you are promising that your service will
+		produce the same results as those services for given inputs. The AstroGrid UIs and 
+		workflow agents will then distribute jobs indiscriminately between
+		the services mirroring the application. You do not need to run a copy of the 
+		HTTP application that is the subject of the mirror.
+	</p>
+</section>
+	
+<section name="The resource documents">
+	<p>
+		At present, you have to write the resource documents yourself. There are
+		facilities in the HTTP-CEC that try to register on your behalf but they don't
+		work properly. <em>Do not use the "register" command from the menu!</em> It
+		makes an improper registration using an obsolete format. <em>Do not
+		derive the resource documents from the "view VO description" command
+			on the menu!</em> This shows you resource documents in an obsolete format.
+	</p>
+	<p>
+		The easiest way is to copy existing resource-documents and alter the details
+		to suit your site. You can start with these:
+	</p>
+	<ul>
+		<li>an <a href="exampleCeaApplication.xml">example of an application registration</a>;</li>
+		<li>an <a href="exampleCeaService.xml">example of a service registration</a>.</li>
+	</ul>
+	<p>These are the elements that you should check and possibly change in the application registration.</p>
+	<table>
+		<thead>
+			<tr>
+				<th>XML Element</th>
+				<th>Usage</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>title</td>
+				<td>Name your resource. The title is for human readers and is shown by the resource registry in lists of resources.</td>
+			</tr>
+			<tr>
+				<td>shortName</td>
+				<td>As for title, but limited to 16 characters. For use in compact lists/tables of resources.</td>
+			</tr>
+			<tr>
+				<td>identifier</td>
+				<td>Put the unique IVO identifier (IVOID) for your application. See below for a discussion of IVOIDs.</td>
+			</tr>
+			<tr>
+				<td>publisher</td>
+				<td>Name your organization. If your organization is registered as an IVOA resource, add an attribute named ivo-id whose value is the organization's IVOID.</td>
+			</tr>
+			<tr>
+				<td>date</td>
+				<td>Set this to the release date of the underlying application programme.</td>
+			</tr>
+			<tr>
+				<td>contact</td>
+				<td>Change this to the details of the contact person for the application.</td>
+			</tr>
+			<tr>
+				<td>subject</td>
+				<td>Change this to a list of keywords relevant to your application. The IAU thesaurus is the preferred source.</td>
+			</tr>
+			<tr>
+				<td>cea:ParameterDefinition</td>
+				<td>Make one of these for each parameter, input or output, of your application. Delete the ones from the example.</td>
+			</tr>
+			<tr>
+				<td>ceab:input</td>
+				<td>Add one <i>ceab:pref</i> for each input parameter of your application. Delete the ones from the example.</td>
+			</tr>
+			<tr>
+				<td>ceab:output</td>
+				<td>Add one <i>ceab:pref</i> for each output parameter of your application. Delete the ones from the example.</td>
+			</tr>
+			<tr>
+				
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		These are the elements you should check and possibly change in the service registration.
+	</p>
+	<table>
+		<thead>
+			<tr>
+				<th>XML Element</th>
+				<th>Usage</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>title</td>
+				<td>Name your resource. The title is for human readers and is shown by the resource registry in lists of resources.</td>
+			</tr>
+			<tr>
+				<td>shortName</td>
+				<td>As for title, but limited to 16 characters. For use in compact lists/tables of resources.</td>
+			</tr>
+			<tr>
+				<td>identifier</td>
+				<td>Put the unique IVO identifier (IVOID) for your service. See below for a discussion of IVOIDs.</td>
+			</tr>
+			<tr>
+				<td>publisher</td>
+				<td>Name your organization. If your organization is registered as an IVOA resource, add an attribute named ivo-id whose value is the organization's IVOID.</td>
+			</tr>
+			<tr>
+				<td>date</td>
+				<td>Set this to the release date of the service.</td>
+			</tr>
+			<tr>
+				<td>contact</td>
+				<td>Change this to the details of the contact person for the service.</td>
+			</tr>
+			<tr>
+				<td>subject</td>
+				<td>Change this to a list of keywords relevant to your service. The IAU thesaurus is the preferred source.</td>
+			</tr>
+			<tr>
+				<td>accessURL</td>
+				<td>Edit this to reflect the address and context path of your service. The value should end in /services/CommonExecutionConnectorService. If your service uses a proxy, then see the notes below.</td>
+			</tr>
+			<tr>
+				<td>cea:ApplicationReference</td>
+				<td>Add one of these for each registered application offered on your CL-CEC. The value must be the IVOID of the application's registration. Delete the one from the example.</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+
+<section name="IVOIDs">		
+	<p>
+		IVOID stands for International Virtual Observatory Identifier. An IVOID is a unique identifier for a resource document in
+		the registry; all resource documents must have one. You have to generate suitable IVOIDs for your applications and service.
+		It is important to get the IVOIDs right; your HTTP-CEC will not be usable otherwise.
+	</p>
+	<p>
+		An IVOID is usually written as a URI with the scheme "ivo". The part between the slashes is the authority identifer for the 
+		registry where you publish your resources. Therefore, you will have to choose a publishing registry and find out its authority
+		before you can complete the resource documents. The part after the slash following the authority identifier is called the resource
+		key. You choose this part.
+	</p>
+</section>
+	
+<section name="Proxy servers">
+	<p>
+		If your service is on a port other than 80 or 8080, then you will need to run a proxy service to make your HTTP-CEC visible to
+		all parts of the IVO. The convention in AstroGrid is to configure an Apache web-server on port 8080 to pass the service requests
+		through to Tomcat. If you use this method, then the apparent public address of your HTTP-CEC is the address of the proxy server.
+		You should put this address and port-number in the <i>accessURL</i> element of the service registration.
+	</p>
+</section>
+	
+<section name="Registering">
+	<p>
+		The following instructions apply only if you are registering in a registry built from AstroGrid components. The controls for other
+		registry implementations will be different. 
+	</p>
+	<ol>
+		<li>Save your resource documents as files on disc where they can be seen from your web browser.</li>
+		<li>Go, with your web browswer, to the web pages of the chosen publishing registry. The main registry for AstroGrid has its
+			front page at <a href="http://galahad.star.le.ac.uk:80801/astrogrid-registry">http://galahad.star.le.ac.uk:80801/astrogrid-registry</a>.</li>
+		<li>Follow the "enter resource" link on the side-bar.</li>
+		<li>You will see a form with sections for uploading (a resource document) from a local file; uploading from a URL; and uploading
+			from text entered directly in the form. Use the upload-from-file section and ignore the others.</li>
+		<li>For each of your applications, use the browse control to find the copy on disc, check the box for validating the document and upload.</li>
+		<li>When all the applications have been accepted into the registry, repeat the upload process for the service registration.</li>
+	</ol>
+	<p>
+		Checking the "validate" box tells the registry service to reject any resource documents that are not valid against their XML schema.
+		Clearing the box tells the registry to accept any XML, valid or not. Invalid registrations, even if only small details are wrong, 
+		stop the system from working correctly, so you should always validate.
+	</p>
+	<p>
+		If the registry rejects your registration, you probably need to correct some small details in the document and to try again.
+		If the registry complains about an authority "not managed in this registry", then you have probably mis-typed the <i>identifer</i>
+		element in the document. Other points to check are the use of literal &gt;, &amp; and &lt; characters in the text; XML requires you to
+		write these as &amp;gt;, &amp;amp; and &amp;lt; respectively. You should also check that you have closed the quotes on any XML
+		attributes you have edited.
+	</p>
+</section>
+	
+<section name="Deregistering obsolete resources">
+	<a name="deregister"/>
+	<p>
+		If you want to cease service of an application, then you should update the list of managed applications in the service registration
+		of your HTTP-CEC. You can do this be editing the resource document on local disc and re-registering it, as described above, under the same identifier.
+	</p>
+	<p>
+		If you want to withdraw your HTTP-CEC from service permanently or for a lengthy period (but not just for short down-time), then you
+		should deregister it. You do this by editing the service resource-document, changing the value of the <i>status</i> attribute on 
+		the <i>Resource</i> element to "deleted" and re-registering it, as described above, under the same identifier.
+	</p>
+	<p>
+		If you want to cease service of an application, and if that application will never again be served by any CEC, then you may
+		deregister it. The deregistration process is the same as for a HTTP-CEC service, described above.
+	</p>
+</section>
+
+</body>
+</document>

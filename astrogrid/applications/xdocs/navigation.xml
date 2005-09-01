@@ -4,15 +4,11 @@
 
   <title>AstroGrid CEA</title>
     <menu name="Component Projects">
-		<item name="Client" href="multiproject/astrogrid-cea-client/"/>
-		<item name="Server Framework" href="multiproject/astrogrid-cea-server/" />
-		<item name="Commandline CEC" href="multiproject/astrogrid-cea-commandline/" />
-		<item name="HTTP GET/POST CEC" href="multiproject/astrogrid-cea-http/" />
+		<item name="Client" href="multiproject/astrogrid-cea-client/index.html"/>
+		<item name="Server Framework" href="multiproject/astrogrid-cea-server/index.html" />
+		<item name="Commandline CEC" href="multiproject/astrogrid-cea-commandline/index.html" />
+		<item name="HTTP GET/POST CEC" href="multiproject/astrogrid-cea-http/index.html" />
     </menu>
-	<menu name="installation">
-		<item name="install" href="INSTALL.html"/>
-		<item name="release information" href="RELEASE.html" />
-	</menu>
     <menu name="CEA" >
         <item name="Design Document" href="design/"/>
     	<item name="Schema"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/"/>

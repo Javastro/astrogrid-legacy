@@ -59,5 +59,27 @@
   <!-- redefine goal 'force.compile.tests' - as we don't want it to happen in this project -->
   <goal name="force.compile.tests" />
 
+	<!-- After building the web-site with the documentation, the download document needs to be
+	     updated with the version and build numbers. This is done in the XHTML output, instead
+	     of in the xdoc input, so as to keep the build idempotent. Note that the links built
+	     in the download document will be broken until this build is loaded onto the AstroGrid
+	     software site. -->
+	<postGoal name="xdoc">
+		<!-- Use an ant filter to replace the version-number token with its value. Use the 
+  	     ant move task, "moving" the file to its current location, to activate the filter. -->
+		<move file="${maven.docs.dest}/DOWNLOAD.html" 
+			tofile="${maven.docs.dest}/DOWNLOAD-versioned.html" 
+			filtering="true"
+			failonerror="false">
+			<filterset>
+				<filter token="astrogrid.applications.version" value="${astrogrid.applications.version}"/>
+			</filterset>
+		</move>
+		<move file="${maven.docs.dest}/DOWNLOAD-versioned.html" 
+			tofile="${maven.docs.dest}/DOWNLOAD.html" 
+			filtering="false"
+			failonerror="false"/>
+	</postGoal>
+	
 
 </project>

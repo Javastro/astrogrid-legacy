@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+        <title>Configuration</title>
+</properties>
+
+<body>
+
+<section name="Configuration">
+	<p>
+		You must configure the HTTP-CEC by writing environment entries into its web container.
+		These entries tell the HTTP-CEC how to connect to the IVO resource-registry and where to 
+		store temporary files for running jobs. You can set the environment entries using
+		Tomcat's "admin" tool.
+	</p>
+	<p>
+		The environment entries do not define the applications for which the HTTP-CEC is a
+		proxy. The application configuration is read by the HTTP-CEC from the IVO
+		resource-registry and you set it in the registration process for the HTTP-CEC.
+	</p>
+
+		<p>
+			You <em>must</em> set the following environment entries as the defaults will not
+			be right for your site.
+		</p>
+		<dl>
+			<dt>cea.job.records</dt>
+			<dd>The absolute path (not a URL) to the directory where the HTTP-CEC can store 
+				records of its jobs.</dd>
+			<dt>cea.job.temp.files</dt>
+			<dd>The absolute path (not a URL) to a directory where the HTTP-CEC can store
+			temporary files associated with the jobs it runs.</dd>
+		</dl>
+		
+		<p>
+			You may need to adjust the following environment entries.
+		</p>
+		<dl>
+			<dt>org.astrogrid.registry.query.endpoint</dt>
+			<dd>The endpoint URL of the registry web-service from which your HTTP-CEC can read
+			back the application registrations. The default is the central registry in
+			AstroGrid.</dd>
+		</dl>
+		
+		<p>
+			There are some other environment entries defined for the HTTP-CEC but you should not need
+			to change these.
+		</p>
+		
+	</section>
+	
+	<section name="Preserving the configuration">
+		<a name="preserve"/>
+		<p>
+			Upgrades, operator errors and bugs in Tomcat are all likely to destroy your configuration.
+			<em>Restoring</em> a configuration from a back-up is easy; <em>reinventing</em> the configuration
+			metadata is hard. <em>Take a back-up of your configuration now, and keep it safe, in
+			storage that is not connected with Tomcat.</em>
+		</p>
+		<p>
+			Save the environment-entry values by going to the "fingerprint" page
+			of the web-application and saving that page. This gives you a 
+			human-readable copy of the environment.
+		</p>
+		<p>
+			Save a machine-readable copy of the environment entries by
+			copying a file out of Tomcat. The location of the file varies with the
+			version and configuration of Tomcat, so you may need to read the Tomcat
+			documentation. In Tomcat v5.0.x, in the default configuration of Tomcat, the
+			file will be at (Windows)
+			<pre>
+%CATALINA_HOME%\conf\Catalina\localhost\(context).xml
+			</pre>
+			or (Unix and Linux)
+			<pre>
+$CATALINA_HOME/conf/Catalina/localhost/(context).xml
+			</pre>
+			where the token <i>(context)</i> stands for the 
+			name of the web-application context, e.g. HTTP-CEC-1.
+		</p>
+	</section>
+	
+	<section name="Restoring a configuration">
+		<a name="restore"/>
+		<p>Given the configuration back-ups above, you can restore the configuration of the CL-CEC.</p>
+		<p>
+			Restore the environment entries by one of these methods:
+		</p>
+		<ul>
+			<li>type them in using Tomcat's "admin" tool and the human-readable back-up;</li>
+			<li>copy the machine-readable back-up of the environment back into the place in
+			Tomcat from which you copied it (see the preservation section, above).</li>
+		</ul>
+		<p>
+			Re-entering the environment through the admin tool makes it available to a running
+			HTTP-CEC at the next restart of the HTTP-CEC web-application. (Remember to press the
+			"commit-changes" button in the admin tool before restarting the web-application.) 
+			An environment reloaded by copying the
+			file is only available to the HTTP-CEC after <em>Tomcat</em> itself is restarted.
+		</p>
+		
+	</section>
+</body>
+</document>

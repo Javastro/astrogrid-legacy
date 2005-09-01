@@ -4,7 +4,9 @@
 	<id>astrogrid-cea-server</id>
 	<currentVersion>${astrogrid.applications.version}</currentVersion>
 	<name>AstroGrid CEA Framework</name>
-	<description><![CDATA[ This project provides a jar of common components that can be used to construct different cea servers <p /> It also provides a pre-packaged war file, configured to expose simple java methds as cea applications. This war file can be used for testing, and also as a starting point for packaging other types of cea server.  Follow the CEA Application Provider link on the left for documentation specific to this particular flavour of CEA server. <p /> <i> describe workaround for how to depend on both types of artifact with the same name. </i>]]></description>
+	<description><![CDATA[ This project provides a jar of common components that can be used to construct different cea servers.
+It is used to build the CL-CEC and HTTP-CEC (sibling projects to this one). This project does not offer a deployable web-application.]]>
+	</description>
 	<shortDescription>AstroGrid CEA Server common components</shortDescription>
 	<packageGroups>
 		<packageGroup>

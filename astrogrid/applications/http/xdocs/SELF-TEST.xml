@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+		<title>Self-testing</title>
+	</properties>
+	<body>
+		<section name="Self-testing">
+			<p> The HTTP-CEC web-application includes web-pages and those pages include test functions. To
+				get at the web pages, go with your web browser to a URL made up of the address of your
+				server computer and the context path of the web-application. E.g. 
+				<pre>
+http://your.server.address:8080/HTTP-CEC-1/
+				</pre>
+			</p>
+			<subsection name="Testing Axis">
+				<p> The HTTP-CEC contains the Apache Axis technology for web services. If Axis is not working,
+					then the CEC does not work. You should test Axis as soon as you have the HTTP-CEC installed. </p>
+				<p>Run the Axis tests using the "axis check" command from the left-hand side-bar. </p>
+				<p> The test checks for the presence of JARs of code. You need all the core libraries to be
+					present; the optional libraries are not required. </p>
+				<img src="axis-happy.gif" alt="Screen-shot of successful Axis test."/>
+				<p> If Axis is not happy, there are three possibilities.
+				</p>
+				<ul>
+					<li>The WAR for the web-application may be faulty. Please report a bug to AstroGrid.</li>
+					<li>You may have Axis-related parts installed in your copy of Tomcat. Check the
+					common directories of Tomcat for any JARs with similar names to those in the HTTP-CEC
+						web-application.</li>
+					<li>Your copy of Java may be broken or may be inapproriate for the HTTP-CEC. Please make sure 
+						that you are using Java 1.4.x and not Java 1.5.x. Check for any JAR files added to the 
+					  Java installation that may be subverting the web-application.</li>
+				</ul>I
+			</subsection>
+			<subsection name="Testing the installations">
+				<p> When you have the HTTP-CEC configured you can test the configuration using the <i>installation test</i>
+					command from the left-hand side-bar. This does not test the registration of applications for
+					which your HTTP-CEC acts as proxy.
+				</p>
+			</subsection>
+		</section>
+	</body>
+</document>
