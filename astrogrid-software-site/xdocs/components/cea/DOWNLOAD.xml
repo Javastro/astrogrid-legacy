@@ -9,7 +9,7 @@
 			<p>
 				The links on this page lead to version @astrogrid.applications.version@ of the CL-CEC.
 			</p>
-			<p> The CL-CEC component is supplied as a J2EE web-application in a <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&O=D&P=astrogrid-cea-commandline*1.1-000*.war">WAR file</a> 
+			<p> The CL-CEC component is supplied as a J2EE web-application in a <a href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-cea-commandline*1.1-000*.war">WAR file</a> 
 					(http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&O=D&P=astrogrid-cea-commandline*1.1-000*.war). 
 					Download the WAR file to the computer where you want to run the web-application.
 			</p>
