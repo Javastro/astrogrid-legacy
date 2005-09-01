@@ -10,14 +10,7 @@
                 Still some room for improvement. Please note the branch name as compared with
                 the bugzilla number. It is a typo when I was creating the branch.
     	</action>    	
-		<action dev="gtr" type="add" issue="1230" note="priority"> Documentation for astrogrid/applications/commandline.
-    			Branch apps-gtr-1230 is incompatible with the changes from issue 1317 and should be abandoned.
-    			Branch apps-gtr-1230-2 has the same new documentation and configuration changes as the former
-    			branch but is branched after issue 1317 was merged; this one is OK to merge with head.
-    		</action>
-    	<action dev="gtr" type="fix" issue="1337"><em>Branch: security-gtr-1337</em>. A major reworking of 
-    	astrogrid/security to use digital signatures. Dependencies have changed greatly and there are
-    	some new ones to be added to our Maven repository.</action>
+		
 			<action dev="kmb" type="fix" issue="1323"><em>Branch: Common_KMB_1323</em>
 				1 file is changed on this branch (DomHelper) to look at the "*" namespace. if it does not find results for a element
                 with no namespace as a parameter.  Requires to be merged with Registry.
@@ -46,12 +39,22 @@
 			   	
         </release>
         <release version="(Undertest)">
-			   	
-			
-    		
-            
+			<action dev="gtr" type="add" issue="1230" note="priority"> Documentation for astrogrid/applications/commandline.
+    			Branch apps-gtr-1230 is incompatible with the changes from issue 1317 and should be abandoned.
+    			Branch apps-gtr-1230-2 has the same new documentation and configuration changes as the former
+    			branch but is branched after issue 1317 was merged; this one is OK to merge with head.
+    		</action>
+    	    <action dev="gtr" type="fix" issue="1337"><em>Branch: security-gtr-1337</em>. A major reworking of 
+    	astrogrid/security to use digital signatures. Dependencies have changed greatly and there are
+    	some new ones to be added to our Maven repository.
+		    </action>
+			   	    
         </release>
-        <release version="HEAD">
+		
+		<release version="HEAD">
+        </release>
+		
+		<release version="1.1" date="31/08/05" description="AG 1.1 Release">
 			<action dev="jdt" type="add" issue="1198"><em>Branch: aginab_jdt_1198</em>
 				Minor fix to the installer.
 				The installer now modifies web.xml, rather than using context.xml, and thus works with Tomcat 4.
