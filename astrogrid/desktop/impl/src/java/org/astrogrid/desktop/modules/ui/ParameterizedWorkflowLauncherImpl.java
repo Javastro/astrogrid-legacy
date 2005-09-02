@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-/**
+/** Implementaton of the parameterized workflow launcher component.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
@@ -58,7 +58,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
      */
     private static final Log logger = LogFactory.getLog(ParameterizedWorkflowLauncherImpl.class);
 
-    /** Construct a new ParameterizedWorkflowLauncher
+    /** Construct a new ParameterizedWorkflowLauncher, using default index 
      * @throws MalformedURLException
      * @throws IOException
      * @throws SAXException
@@ -68,8 +68,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         this(community,monitor,jobs,vos,apps,editor, chooser,new URL(DEFAULT_INDEX_URL));       
     }
     
+    /** url of pw workflow index */
     public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
-
+/** construct a new launcher, specifying the index url to use */
     public ParameterizedWorkflowLauncherImpl(Community community,JobMonitor monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,URL indexURL) throws IOException, SAXException{ 
         URL[] list = getWorkflowList(indexURL);
     templates = loadWorkflows(list);        
@@ -139,7 +140,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
      * @throws IOException
      * @throws SAXException
      * @throws MalformedURLException*/
-    public URL[] getWorkflowList(URL indexURL) throws IOException, SAXException {
+    protected URL[] getWorkflowList(URL indexURL) throws IOException, SAXException {
         InputStream is = indexURL.openStream();
         indexDigester.clear();
         List l = new ArrayList() {
@@ -183,7 +184,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     
     /** prompt user in some way to choose a template 
      * retruns null to indicate a cancelled operaiton.*/
-    public  WorkflowTemplate chooseTemplate() {
+    protected  WorkflowTemplate chooseTemplate() {
         return (WorkflowTemplate) JOptionPane.showInputDialog(null,"Choose a template workflow", "Template Chooser",JOptionPane.QUESTION_MESSAGE,null,templates,templates[0]);
     }
     
@@ -199,6 +200,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

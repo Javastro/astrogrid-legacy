@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
-/**
+/** Abstract class for displays of myspace - in file chooser dialogues and myspace browser.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
  *  @todo make tree expansion behave same as clicking on name - both show child folders, and contents.
  */
@@ -145,9 +145,11 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
     }
 
     // marker interfaces.
+    /** marker interface for an action that applies to myspace files */
     protected interface FileAction {
     }
 
+    /** marker interface for an action that applies to myspace folders */
     protected interface FolderAction {
     }
 
@@ -192,8 +194,8 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
     
     protected abstract Actions getActions() ;
 
-    /** class to manage all this app's actions */
-    public static class Actions {
+    /** class to manage all this application's actions */
+    protected class Actions {
         private final Action[] acts;
 
         public Actions(Action[] acts) {
@@ -457,18 +459,11 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
 
     private GlassPane glassPane = null;
 
-    /**
-     * Construct a new AbstractVospaceBrowser
-     *  
-     */
-    public AbstractVospaceBrowser(MyspaceInternal vos) {
-        super();
-        this.vos = vos;
-    }
+
 
     /**
      * Construct a new AbstractVospaceBrowser
-     * 
+     *  - sutable for long-lived windows.
      * @param conf
      * @param ui
      * @throws HeadlessException
@@ -608,6 +603,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.3  2005/09/02 14:03:34  nw
+ * javadocs for impl
+ *
  * Revision 1.2  2005/08/25 16:59:58  nw
  * 1.1-beta-3
  *

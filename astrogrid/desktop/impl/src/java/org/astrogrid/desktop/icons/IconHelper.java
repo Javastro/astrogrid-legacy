@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: IconHelper.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,17 +34,17 @@ public class IconHelper {
         super();
     }
     
-    /** load an icon, from classpath
+    /** load an icon,
      * @todo extend to find icons from elsewhere as needed.
-     * @param img
-     * @return
+     * @param imgName filename of the icon, which must be located in this package (<tt>org.astrogrid.desktop.icons</tt>)
+     * @return the icon object, or null if not found
      */
-    public static ImageIcon loadIcon(String img) {
-        URL u = IconHelper.class.getResource(img);
+    public static ImageIcon loadIcon(String imgName) {
+        URL u = IconHelper.class.getResource(imgName);
         if (u != null) {
             return new ImageIcon(u);
         } else {
-            logger.warn("Failed to find " + img);
+            logger.warn("Failed to find " + imgName);
             return null;
         }
     }
@@ -54,6 +54,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

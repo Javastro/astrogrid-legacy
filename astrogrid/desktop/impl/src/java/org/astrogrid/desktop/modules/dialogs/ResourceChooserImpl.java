@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,24 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
 
 import java.awt.Component;
 import java.net.URI;
 
-/**
+/** Implementation of the ResourceChooser component
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
  * wrapper component around the dialog to publish the chooser methods 
  */
 public class ResourceChooserImpl implements ResourceChooserInternal {
 
-    public ResourceChooserImpl(MyspaceInternal vos) {
+    public ResourceChooserImpl(MyspaceInternal vos,Configuration conf,HelpServer help,UIInternal ui, Community comm) {
         this.vos = vos;
-        dialog = new ResourceChooserDialog(vos);
+        dialog = new ResourceChooserDialog(vos,conf,help,ui, comm) ;
         dialog.pack();
     }
     protected final MyspaceInternal vos;
@@ -59,6 +63,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

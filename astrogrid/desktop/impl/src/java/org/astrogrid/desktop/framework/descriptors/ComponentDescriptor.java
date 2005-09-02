@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,10 @@ public class ComponentDescriptor extends Descriptor{
         methods.put(m.getName(),m);
     }
     
-    /** iterate over the method descriptors in this component */
+    /** iterate over the method descriptors in this component 
+     * 
+     * @return iterator over {@link MethodDescriptor} objects
+     */
     public Iterator methodIterator() {
         return methods.values().iterator();
     }
@@ -91,6 +94,9 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

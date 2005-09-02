@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: HtmlServlet.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** servlet that exposes servlets over plain http/html
+/** servlet that exposes ACR functions over plain old http.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *
  */
@@ -242,6 +242,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

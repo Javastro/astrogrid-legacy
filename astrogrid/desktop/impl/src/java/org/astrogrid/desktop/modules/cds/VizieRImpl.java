@@ -1,4 +1,4 @@
-/*$Id: VizieRImpl.java,v 1.2 2005/08/31 15:30:46 nw Exp $
+/*$Id: VizieRImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 
-/**
+/** Implementation of the vizier service
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
  *
  */
@@ -120,6 +120,9 @@ public class VizieRImpl implements VizieR {
 
 /* 
 $Log: VizieRImpl.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/31 15:30:46  nw
 added glu tags.
 

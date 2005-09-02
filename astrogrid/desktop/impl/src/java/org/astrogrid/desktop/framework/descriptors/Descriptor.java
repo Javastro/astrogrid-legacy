@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Descriptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,8 @@ public class Descriptor implements Serializable {
     public String getName() {
         return this.name;
     }
-    /** helper method - returns {@link #getName} capitalized. later will break with spaces too */
+    /** helper method - returns {@link #getName} capitalized.
+     * @todo  later will break with spaces too */
     public String getUIName() {
         return StringUtils.capitalize(name);
     }
@@ -112,6 +113,9 @@ public class Descriptor implements Serializable {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

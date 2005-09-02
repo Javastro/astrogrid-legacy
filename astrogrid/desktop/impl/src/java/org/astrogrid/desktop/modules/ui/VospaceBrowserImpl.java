@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ import javax.swing.JToolBar;
 
 /**
  * 
- * 
+ * Implementation of the myspaceBrowser component
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *  
@@ -653,6 +653,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.3  2005/09/02 14:03:34  nw
+ * javadocs for impl
+ *
  * Revision 1.2  2005/08/25 16:59:58  nw
  * 1.1-beta-3
  *

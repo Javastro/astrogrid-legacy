@@ -1,4 +1,4 @@
-/*$Id: CheckNotHeadless.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: CheckNotHeadless.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,8 @@ package org.astrogrid.desktop.modules.system;
 
 import java.awt.GraphicsEnvironment;
 
-/**
+/** check that the environment is not headless (i.e. a display is attached)
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
- * return true if not running in a headless environment.
  */
 public class CheckNotHeadless implements Check {
 
@@ -25,7 +24,7 @@ public class CheckNotHeadless implements Check {
         super();
     }
 
-    /**
+    /** returns true if a GUI display is available.
      * @see org.astrogrid.desktop.modules.system.Check#check()
      */
     public boolean check() {
@@ -37,6 +36,9 @@ public class CheckNotHeadless implements Check {
 
 /* 
 $Log: CheckNotHeadless.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

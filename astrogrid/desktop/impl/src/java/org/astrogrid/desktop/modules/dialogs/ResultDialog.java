@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ResultDialog.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,8 @@ import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 /**
  * Simple dialog that displays a result in a text box - which allows for cutting / copying
- * the result into something else.
+ * the result into something else. 
+ * @todo alter so that is uses a joptionPane, like everything else.
  * @author Noel Winstanley nw@jb.man.ac.uk 10-May-2005
  *
  */
@@ -61,9 +62,7 @@ public class ResultDialog extends JDialog {
 		}
 		return okButton;
 	}
-      public static void main(String[] args) {
-          (new ResultDialog()).show();
-    }
+
 	/**
 	 * This is the default constructor
 	 */
@@ -110,6 +109,9 @@ public class ResultDialog extends JDialog {
 
 /* 
 $Log: ResultDialog.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

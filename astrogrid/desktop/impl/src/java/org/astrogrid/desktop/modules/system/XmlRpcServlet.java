@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Implementation of full-features xmlrpc server over the Service objects.
+/** Implementation of full-featured XMLRPC server that exposes the ACR functions
  * @todo future - look at other xmlrpc implementations..
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *
@@ -271,6 +271,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

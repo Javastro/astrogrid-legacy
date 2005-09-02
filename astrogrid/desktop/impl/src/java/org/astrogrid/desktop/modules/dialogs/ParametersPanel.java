@@ -36,7 +36,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 
-/** panel for editing parameters 
+/** A panel for editing tool documents (i.e. sets of input and output parameters)
  * 
  * @todo add support for repeated and optional parameters.
  * @author Noel Winstanley nw@jb.man.ac.uk 13-May-2005
@@ -274,6 +274,11 @@ public  class ParametersPanel extends JPanel {
     void clearTool() {
         tool = null;              
     }
+    /** access the edited tool object
+     * 
+     * @return the edited tool object
+     * @todo should we reutrn a copy, rather than a reference - may lead to aliasing problems..
+     */
     public Tool getTool() {
         return tool;
     }
@@ -351,6 +356,9 @@ public  class ParametersPanel extends JPanel {
 
 /* 
 $Log: ParametersPanel.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

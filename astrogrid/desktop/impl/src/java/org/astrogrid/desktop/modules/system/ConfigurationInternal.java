@@ -1,4 +1,4 @@
-/*$Id: ConfigurationInternal.java,v 1.1 2005/08/25 16:59:58 nw Exp $
+/*$Id: ConfigurationInternal.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 23-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,9 @@ package org.astrogrid.desktop.modules.system;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.Configuration;
 
-/** internal interface to the configuration component - adds a 'reset' method 
+/** internal interface to the configuration component -
+ * 
+ *  adds a 'reset' method 
  * - too dangerous to expose on the public interface.
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Aug-2005
  *
@@ -27,6 +29,9 @@ public interface ConfigurationInternal extends Configuration {
 
 /* 
 $Log: ConfigurationInternal.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/25 16:59:58  nw
 1.1-beta-3
  

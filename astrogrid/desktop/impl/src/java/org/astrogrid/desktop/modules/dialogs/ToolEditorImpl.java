@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,8 +29,9 @@ import java.awt.Component;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/** wrappe component around the parameter editor daialog to publish the methods.
- * @author Noel Winstanley nw@jb.man.ac.uk 16-May-2005
+/** Implementation of the ToolEditor component.
+ * Displays a {@link org.astrogrid.desktop.modules.dialogs.ParametersPanel} in a dialogue 
+ *  @author Noel Winstanley nw@jb.man.ac.uk 16-May-2005
  *
  */
 public class ToolEditorImpl implements ToolEditorInternal {
@@ -120,6 +121,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-/**
+/** Implementation of the job monitor component
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Mar-2005
  */
 public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLoginListener {
@@ -276,7 +276,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 case 0:
                     return e.getName();
                 case 1:
-                    return JobsTableModel.fmt(e.getStatus());
+                    return fmt(e.getStatus());
                 case 2:
                     return e.getId();
                 default:
@@ -295,7 +295,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 
     }
-    protected static class JobsTableModel extends AbstractTableModel {
+    protected class JobsTableModel extends AbstractTableModel {
 
         protected ExecutionInformation[]  jobs = new ExecutionInformation[]{};
         public ExecutionInformation getRow(int rowIndex) {
@@ -343,29 +343,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         
 
 
-        public static String fmt(String status) {
-            StringBuffer sb = new StringBuffer("<html>");
-            if (status == null) {
-                sb.append("<font style='color:blue'>Unknown</font>");
-            }else {
-            if (ExecutionInformation.COMPLETED.equals(status)) {
-                    sb.append("<font style='font-weight:bold'>"); 
-            } else  if (ExecutionInformation.ERROR.equals(status)) {
-                    sb.append("<font style='color:red'>");
-            } else if(ExecutionInformation.INITIALIZING.equals(status)) {              
-                    sb.append("<font style='color:blue'>"); 
-            } else if (ExecutionInformation.PENDING.equals(status)) {              
-                    sb.append("<font>"); 
-            } else if (ExecutionInformation.RUNNING.equals(status)) {               
-                    sb.append("<font style='color:green'>"); 
-            } else {
-                    sb.append("<font>"); // nothing
-            }
-            sb.append(status);
-            }
-            sb.append("</font></html>");
-            return sb.toString();
-        }
+
 
         public void setList(ExecutionInformation[] latest) {
             this.jobs = latest;
@@ -972,11 +950,39 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     public void displayJobTab() {
         getPanes().setSelectedIndex(JES_TAB);
     }
+    
+    
+    private String fmt(String status) {
+        StringBuffer sb = new StringBuffer("<html>");
+        if (status == null) {
+            sb.append("<font style='color:blue'>Unknown</font>");
+        }else {
+        if (ExecutionInformation.COMPLETED.equals(status)) {
+                sb.append("<font style='font-weight:bold'>"); 
+        } else  if (ExecutionInformation.ERROR.equals(status)) {
+                sb.append("<font style='color:red'>");
+        } else if(ExecutionInformation.INITIALIZING.equals(status)) {              
+                sb.append("<font style='color:blue'>"); 
+        } else if (ExecutionInformation.PENDING.equals(status)) {              
+                sb.append("<font>"); 
+        } else if (ExecutionInformation.RUNNING.equals(status)) {               
+                sb.append("<font style='color:green'>"); 
+        } else {
+                sb.append("<font>"); // nothing
+        }
+        sb.append(status);
+        }
+        sb.append("</font></html>");
+        return sb.toString();
+    }
 }  //  @jve:decl-index=0:visual-constraint="10,10"
 
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

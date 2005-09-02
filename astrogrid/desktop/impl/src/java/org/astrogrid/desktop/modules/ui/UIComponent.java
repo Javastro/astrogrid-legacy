@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: UIComponent.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,94 +35,36 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
-/** abstract baseclass for ui components.
+/** baseclass for ui components.
+ *<p>
+ *extends position-remembering frame, adds a progress bar / status message at the bottom, and
+ *provides a worker class that indicates progress using these.
+ *@see org.astrogrid.desktop.modules.ui.BackgroundWorker
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Apr-2005
  *
  */
 public class UIComponent extends PositionRememberingJFrame {
+            
 
-    /** Construct a new UIComponent
-     * @throws HeadlessException
+    /** Convenience class - a local subclass of {@link BackgroundWorker} that ties
+     * into the enclosing UIComponent instance.
+     * Prefer {@link BackgroundWorker} if there's any chance that operations may be resuable.
+     * */
+     protected abstract class BackgroundOperation extends BackgroundWorker {
+         public BackgroundOperation(String msg) {
+             super(UIComponent.this,msg);
+         }
+     }
+
+     /**
+     * Commons Logger for this class - can be used by subclasses too.
      */
-    public UIComponent() throws HeadlessException {
-        super();
-    }
+    protected static final Log logger = LogFactory.getLog(UIComponent.class);
 
-    /** Construct a new UIComponent
-     * @param conf
-     * @param ui
-     * @throws HeadlessException
+    /** static helper method - qucick way to show a well-formatted error in a popup dialogue
+     * <p/>
+     * classes that extend this class should call {@link #showError(String, Throwable)} instead
      */
-    public UIComponent(Configuration conf,HelpServer hs, UIInternal ui) throws HeadlessException {
-        super(conf,hs, ui);
-    }
-
-    
-    
-    private JPanel bottomPanel = null;
-    private JLabel bottomLabel = null;
-    private JProgressBar progressBar = null;
-
-    /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    public JPanel getBottomPanel() {
-    	if (bottomPanel == null) {
-    		bottomPanel = new JPanel();
-    		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
-    		bottomPanel.add(getBottomLabel(), null);
-    		bottomPanel.add(getProgressBar(), null);
-    	}
-    	return bottomPanel;
-    }
-
-    /**
-     * This method initializes jProgressBar	
-     * 	
-     * @return javax.swing.JProgressBar	
-     */
-    protected JProgressBar getProgressBar() {
-    	if (progressBar == null) {
-    		progressBar = new JProgressBar();
-    		progressBar.setToolTipText("Activity Indicator");
-    	}
-    	return progressBar;
-    }
-    
-    protected JLabel getBottomLabel() {
-        if (bottomLabel == null) {
-            bottomLabel = new JLabel();
-            bottomLabel.setText(" ");
-        }
-        return bottomLabel;
-    }
-    
-    protected void setStatusMessage(String s) {
-        getBottomLabel().setText(s);
-    }
-    
-    protected void setBusy(boolean b) {
-        getProgressBar().setIndeterminate(b);
-    }
-    
-    private JPanel jContentPane;
-    
-    protected JPanel getJContentPane() {
-        if (jContentPane == null) {
-            jContentPane = new javax.swing.JPanel();
-            jContentPane.setLayout(new java.awt.BorderLayout());
-            jContentPane.add(getBottomPanel(), java.awt.BorderLayout.SOUTH);            
-        }
-        return jContentPane;
-    }
-
-    protected void showError(String msg, Throwable e) {
-        showError(this,msg,e);
-    }
-    
-    // static variant - handy to have.
     public static final void showError(Component parent,String msg, Throwable e) {
         logger.info(msg,e); 
         JLabel l = new JLabel();
@@ -143,64 +85,114 @@ public class UIComponent extends PositionRememberingJFrame {
  
         JOptionPane.showMessageDialog(parent,p,"Error",JOptionPane.ERROR_MESSAGE);        
     }
+    private JLabel bottomLabel = null;
+
+    
+    
+    private JPanel bottomPanel = null;
+    
+    private JPanel jContentPane;
+    private JProgressBar progressBar = null;
+
+
+    /** Construct a new UIComponent
+     * @param conf
+     * @param ui
+     * @throws HeadlessException
+     */
+    public UIComponent(Configuration conf,HelpServer hs, UIInternal ui) throws HeadlessException {
+        super(conf,hs, ui);
+    }
+    
+    /** access the main panel, where other components can be added..
+     * 
+     * @return a JPane with {@link BorderLayout}. The southern segment is already taken by the activity indicator & status message.
+     */ 
+    public JPanel getMainPanel() {       
+        if (jContentPane == null) {
+            jContentPane = new javax.swing.JPanel();
+            jContentPane.setLayout(new java.awt.BorderLayout());
+            jContentPane.add(getBottomPanel(), java.awt.BorderLayout.SOUTH);            
+        }
+        return jContentPane;
+    }
+    
+    /** @deprecated - use {@link #getMainPanel()} instead */
+    protected JPanel getJContentPane() {
+        return getMainPanel();
+    }
+    
+    /** indicate execution of a background process.
+     * 
+     * @param b if if true, activity indicator will start throbbing. If false, activity indicator will stop.
+     */
+    public void setBusy(boolean b) {
+        getProgressBar().setIndeterminate(b);
+    }
+    
+    /** set the status message at the bottom of this pane
+     * 
+     * @param s a message ("" to clear a previous message");
+     */
+    public void setStatusMessage(String s) {
+        getBottomLabel().setText(s);
+    }
+
+    /** display a well-formatted error message in a popup dialogue.
+     * 
+     * @param msg message
+     * @param e the exception that is the cause.
+     */
+      
+     
+    public void showError(String msg, Throwable e) {
+        showError(this,msg,e);
+    }
+    
+    private JLabel getBottomLabel() {
+        if (bottomLabel == null) {
+            bottomLabel = new JLabel();
+            bottomLabel.setText(" ");
+        }
+        return bottomLabel;
+    }
 
     /**
-     * Commons Logger for this class
+     * This method initializes jPanel	
+     * 	
+     * @return javax.swing.JPanel	
      */
-    protected static final Log logger = LogFactory.getLog(UIComponent.class);
-            
+    private JPanel getBottomPanel() {
+    	if (bottomPanel == null) {
+    		bottomPanel = new JPanel();
+    		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+    		bottomPanel.add(getBottomLabel(), null);
+    		bottomPanel.add(getProgressBar(), null);
+    	}
+    	return bottomPanel;
+    }
 
-    /** abstract class for all background threads - takes care of starting and  stopping
-     * notification, etc
-     * @author Noel Winstanley nw@jb.man.ac.uk 02-Apr-2005
-     *
+    /**
+     * This method initializes jProgressBar	
+     * 	
+     * @return javax.swing.JProgressBar	
      */
-    protected abstract class BackgroundOperation extends SwingWorker {
-        /**
-         *  Construct a new BackgroundOperation
-         * @param msg message to display in status bar.
-         */
-        public BackgroundOperation(String msg) {
-            super();
-            this.msg = msg;
-        }
-        protected final String msg;
-        
-        public synchronized void start() {
-            setBusy(true);
-            setStatusMessage(msg);            
-            super.start();
-        }        
-            protected final void finished() {
-                try {
-                    Object result = this.get();
-                    doFinished(result);
-                } catch (InterruptedException e) {
-                    // not bothered.
-                } catch (InvocationTargetException e) {
-                    Throwable ex= e.getCause() != null ? e.getCause() : e;
-                    showError(msg + ": Failed",ex);
-                } finally {
-                    setBusy(false);
-                    setStatusMessage("");
-                    doAlways();
-                }
-        }
-        /** when finished, back in event-dispatching thread */
-        protected void doFinished(Object result) {
-        }
-        /** always executed. */
-        protected void doAlways() {
-        }
-        
-
-}
+    private JProgressBar getProgressBar() {
+    	if (progressBar == null) {
+    		progressBar = new JProgressBar();
+    		progressBar.setToolTipText("Activity Indicator");
+    	}
+    	return progressBar;
+    }
     
 }
 
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

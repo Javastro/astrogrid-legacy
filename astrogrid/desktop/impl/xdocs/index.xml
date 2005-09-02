@@ -90,14 +90,16 @@
 			This is the typical pattern:
 			<pre>
 public class MyComponent {
-	public MyComponent(Registry reg,Configuration conf,MySpaceInternal msi) {
-				     this.reg = reg;
-					 this.conf = conf;
-					 this.msi = msi;
+   public MyComponent(Registry reg,Configuration conf,MySpaceInternal msi) {
+     this.reg = reg;
+     this.conf = conf;
+     this.msi = msi;
    }
-    private final Registry reg;
-    private final Configuration conf;
-	private final MySpaceInternal msi;
+   private final Registry reg;
+   private final Configuration conf;
+   private final MySpaceInternal msi;
+   // ...
+}
 			</pre>
 			The workbench container takes care of providing the required components when it instantiates the class. Note that this means all dependencies the class may need have to 
 			be declared in the constructor - there's no way to get at more later. Public or Internal interface can be used as dependencies - other classes or interfaces won't work. Finally, it's not

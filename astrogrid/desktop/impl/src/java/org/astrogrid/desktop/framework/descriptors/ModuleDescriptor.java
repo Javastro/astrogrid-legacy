@@ -1,4 +1,4 @@
-/*$Id: ModuleDescriptor.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ModuleDescriptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,10 @@ public class ModuleDescriptor  extends Descriptor {
    public void addComponent(ComponentDescriptor desc) {
        components.put(desc.getName(),desc);
    }
-   
+   /**
+    * 
+    * @return an iterator over {@link ComponentDescriptor} objects
+    */
    public Iterator componentIterator() {
        return components.values().iterator();
    }   
@@ -59,6 +62,9 @@ public class ModuleDescriptor  extends Descriptor {
 
 /* 
 $Log: ModuleDescriptor.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.rmi.registry.Registry;
 
-/**
+/** Abstract class for implementations of the RmiServer
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2005
  *
  */
@@ -94,6 +94,9 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

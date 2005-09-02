@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-/**
+/** Implementation of the registry browser component.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Mar-2005
  *
  */
@@ -123,14 +123,7 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 		return jScrollPane;
 	}
 
-	/*
-	 * This is the default constructor
-	 */
-	public RegistryBrowserImpl() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-		super();
-		initialize();
-	}
-    
+
     public RegistryBrowserImpl(Registry reg, HelpServer hs,UIInternal ui,Configuration conf) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
         super(conf,hs,ui);
         this.reg=reg;
@@ -162,7 +155,7 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 	}
 
     /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     * listens to it's own actions.
      */
     public void actionPerformed(ActionEvent e) {
         // either search, or cancel..
@@ -204,6 +197,9 @@ public class RegistryBrowserImpl extends UIComponent implements ActionListener, 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

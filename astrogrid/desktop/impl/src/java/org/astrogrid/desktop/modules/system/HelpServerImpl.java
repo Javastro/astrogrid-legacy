@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,8 @@ import com.jstatcom.component.JHelpAction;
 import javax.help.SwingHelpUtilities;
 import javax.swing.Action;
 
-/** Implementation of the help server.
+/** Stub Implementation of the help server.
+ * @todo refine, and write help docs.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
  *
  */
@@ -82,6 +83,9 @@ public class HelpServerImpl implements Startable, HelpServer{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

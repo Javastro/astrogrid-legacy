@@ -1,4 +1,4 @@
-/*$Id: ThrobbingInterceptor.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ThrobbingInterceptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.acr.system.UI;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
-/** interceptor that starts the ui throbber before processing a method.
+/** an AOP interceptor that starts the ui throbber before processing a method.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
  *@todo maybe change way this is registered? 
  */
@@ -75,6 +75,9 @@ public class ThrobbingInterceptor implements MethodInterceptor {
 
 /* 
 $Log: ThrobbingInterceptor.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: GlassPane.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: GlassPane.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 14-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,9 +26,10 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 
 /**
- * This is the glass pane class that intercepts screen interactions during system busy states.
+ * This is a glass pane class that intercepts screen interactions during system busy states.
  *
  * @author Yexin Chen
+ * @todo verify that this is being used correctly from uicomponent.
  */
 public class GlassPane extends JComponent implements AWTEventListener
 {
@@ -184,6 +185,9 @@ public void setVisible(boolean value)
 
 /* 
 $Log: GlassPane.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

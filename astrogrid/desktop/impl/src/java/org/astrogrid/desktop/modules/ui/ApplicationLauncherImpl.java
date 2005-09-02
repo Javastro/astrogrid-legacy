@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.ListCellRenderer;
-/**
+/** Implementation of the Application Launcher component
  * @author Noel Winstanley nw@jb.man.ac.uk 12-May-2005
  *
  */
@@ -511,21 +511,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
         return infoDisplay;
     }
 
-          public static void main(String[] args) {
-             (new ApplicationLauncherImpl()).show();
-    }
-	/**
-	 * This is the default constructor
-	 */
-	public ApplicationLauncherImpl() {
-        super();
-        this.apps = null;
-        this.monitor =null;
-        this.myspace = null;
-        this.chooser=null;
-        this.reg = null;
-		initialize();
-	}
+
     
     public ApplicationLauncherImpl(ApplicationsInternal apps,JobMonitor monitor, MyspaceInternal myspace, HelpServer hs, Configuration conf, UIInternal ui,ResourceChooserInternal chooser, Registry reg) {
         super(conf,hs,ui);
@@ -567,6 +553,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

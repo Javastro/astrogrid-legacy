@@ -1,4 +1,4 @@
-/*$Id: MutableACR.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: MutableACR.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-/** Extension to the {@link ACR} interface, that allows new modules to be added to the registry.
+/** (internal interface) Extension to the {@link ACR} interface, that allows new modules to be added to the registry.
+ * @todo rename so it fits naming convention of other internal interfaces.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
@@ -36,14 +37,18 @@ public interface MutableACR extends ACR {
     
     /** remove a module listener */
     public void removeNewModuleListener(NewModuleListener l);
-
+    /** get a map of  descriptors for all modules 
+     * 
+     * @return a map of <tt>module-name</tt> -- <tt>module descriptor</tt>
+     * @see ModuleDescriptor
+     */
     public Map getDescriptors();
-    /**
+    /** get the named module
      * @param name
      * @return
      */
     public Module getModule(String name);
-    /**
+    /** iterate through all available modules. 
      * @return
      */
     public Iterator moduleIterator();
@@ -52,6 +57,9 @@ public interface MutableACR extends ACR {
 
 /* 
 $Log: MutableACR.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,12 +22,20 @@ import java.awt.Point;
 import javax.swing.JFrame;
 
 /** Extended jFrame baseclass that remembers positioning of the window.
+ * <p>
+ * on hide / setVisible(false) stores current window size and position in the
+ * {@link org.astrogrid.acr.system.Configuration} component
+ * <p>
+ * on show / setVisible(true) reloads this position information to initialize the component.
+ *iif can't get previously-stored position information, will set position relative to the ui component.
+ * <p>
+ * key used in configuration for this info is the classname
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Apr-2005
  *
  */
 public class PositionRememberingJFrame extends JFrame {
 
-    /** Construct a new PositionRememberingJFrame
+    /** Construct a new PositionRememberingJFrame, that won't persist or restore position
      * @throws java.awt.HeadlessException
      */
     public PositionRememberingJFrame() throws HeadlessException {
@@ -36,7 +44,7 @@ public class PositionRememberingJFrame extends JFrame {
         this.ui = null;
         this.help = null;
     }
-
+    /** Conostruct a new PositionRememberingJFrame that will persist window position */
     public PositionRememberingJFrame(Configuration conf,HelpServer help,UIInternal ui) throws HeadlessException {
         this.configuration = conf;
         this.ui = ui;
@@ -48,7 +56,8 @@ public class PositionRememberingJFrame extends JFrame {
     protected final UIInternal ui;
     protected final HelpServer help;
 
-    protected void loadConfiguration() {
+    /** load position from configuration */
+    private void loadConfiguration() {
         if (configuration != null) {
             String xString = configuration.getKey(this.getClass().getName()+".x");
             String yString = configuration.getKey(this.getClass().getName()+".y");
@@ -72,8 +81,8 @@ public class PositionRememberingJFrame extends JFrame {
         }
     }
         
-        
-   protected void saveConfiguration() {
+   /** save position to configuration */
+   private void saveConfiguration() {
         if (configuration == null) {
             return;
         }
@@ -91,11 +100,15 @@ public class PositionRememberingJFrame extends JFrame {
     }
     
     
-    /*
-    public void dispose() {
-        saveConfiguration();
-        super.dispose();
-    }*/
+    
+    public void setVisible(boolean b) {
+        if (b) {
+            loadConfiguration();
+        } else {
+            saveConfiguration();
+        }
+        super.setVisible(b);
+    }
     public void hide() {
         saveConfiguration();
         super.hide();
@@ -109,6 +122,9 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

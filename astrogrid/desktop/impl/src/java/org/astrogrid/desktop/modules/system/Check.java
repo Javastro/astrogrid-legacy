@@ -1,4 +1,4 @@
-/*$Id: Check.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Check.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,11 +16,15 @@ package org.astrogrid.desktop.modules.system;
  *
  */
 public interface Check {
+    /** a test. returns true if the test passes */
     boolean check();
 }
 
 /* 
  $Log: Check.java,v $
+ Revision 1.2  2005/09/02 14:03:34  nw
+ javadocs for impl
+
  Revision 1.1  2005/08/11 10:15:00  nw
  finished split
 

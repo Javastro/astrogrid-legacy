@@ -1,4 +1,4 @@
-/*$Id: MethodDescriptor.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: MethodDescriptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,10 @@ public class MethodDescriptor extends Descriptor {
         parameterValues.add(desc);
     }
     
-    /** iterate over parameter descriptors  */
+    /** iterate over parameter descriptors  
+     * 
+     * @return an iterator over {@link ValueDescriptor} objects
+     */
     public Iterator parameterIterator() {
         return parameterValues.iterator();
     }
@@ -67,6 +70,9 @@ public class MethodDescriptor extends Descriptor {
 
 /* 
 $Log: MethodDescriptor.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

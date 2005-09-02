@@ -1,4 +1,4 @@
-/*$Id: CheckJDICSystemTrayPresent.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: CheckJDICSystemTrayPresent.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.system;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
+/** check that the jdic system tray is present.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Jun-2005
  *
  */
@@ -52,6 +52,9 @@ public class CheckJDICSystemTrayPresent implements Check {
 
 /* 
 $Log: CheckJDICSystemTrayPresent.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

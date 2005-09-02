@@ -1,4 +1,4 @@
-/*$Id: DigesterDescriptorParser.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: DigesterDescriptorParser.java,v 1.2 2005/09/02 14:03:34 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,8 @@ import java.io.InputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-/** parses an xml document into a set of descriptor objects.
+/** parses an xml document into a set of descriptor objects using commons digester.
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  * 
  */
@@ -115,6 +116,9 @@ public class DigesterDescriptorParser implements DescriptorParser {
 
 /* 
 $Log: DigesterDescriptorParser.java,v $
+Revision 1.2  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

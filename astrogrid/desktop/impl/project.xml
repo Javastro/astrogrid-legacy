@@ -10,7 +10,24 @@
 	  Implementation of the ACR	
 	</description>
         <shortDescription>AstroGrid Workbench and Client Runtime - UI and service implementation</shortDescription>
-	
+  <packageGroups>
+    <packageGroup>
+      <title>ACR Framework</title>
+      <packages>org.astrogrid.desktop.framework*:org.astrogrid.desktop:org.astrogrid.acr.builtin</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>System Module</title>
+      <packages>org.astrogrid.desktop.modules.system*</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>VO Modules</title>
+      <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>UI Modules</title>
+      <packages>org.astrogrid.desktop.modules.dialogs:org.astrogrid.desktop.modules.ui:org.astrogrid.desktop.icons</packages>
+    </packageGroup>
+  </packageGroups>	
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>

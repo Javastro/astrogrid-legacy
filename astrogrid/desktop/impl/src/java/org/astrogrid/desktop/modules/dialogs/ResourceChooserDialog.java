@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.3 2005/09/02 14:03:34 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
 import org.astrogrid.filemanager.client.FileManagerNode;
 
@@ -19,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -47,10 +52,13 @@ import javax.swing.event.DocumentListener;
 class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     
     class VospaceChooser extends AbstractVospaceBrowser {
-        private Actions actions;
-        public VospaceChooser(MyspaceInternal vos) {
-            super(vos);
+
+        public VospaceChooser() throws HeadlessException {
+            super(conf, ResourceChooserDialog.this.help, ResourceChooserDialog.this.ui, vos, comm); 
+            // need to disambiguate help and ui, as vospace chooser's parent class has fields of this name too - and it won't compile otherwise
         }
+        private Actions actions;
+
         protected CurrentNodeManager createCurrentNodeManager() {
             return new CurrentNodeManager() {
                 public void updateDisplay() {
@@ -95,12 +103,20 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     private JPanel urlPanel = null;
     
     private JTextField urlPanelField = null;
-    private final MyspaceInternal vos;    
+    private final MyspaceInternal vos;  
+    private final Configuration conf;
+    private final HelpServer help;
+    private final UIInternal ui;
+    private final Community comm;
     
     
-    public ResourceChooserDialog(MyspaceInternal vos) {
+    public ResourceChooserDialog(MyspaceInternal vos,Configuration conf,HelpServer help,UIInternal ui, Community comm) {
         super();
         this.vos = vos;
+        this.conf=conf;
+        this.help = help;
+        this.ui = ui;
+        this.comm = comm;
         initialize();
 	}
     public URI getUri() {
@@ -200,16 +216,15 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 	 */    
 	private JComponent getMyspacePanel() {
 		if (myspacePanel == null) {
-            VospaceChooser chooser = new VospaceChooser(vos);
+            VospaceChooser chooser = new VospaceChooser();
 			JSplitPane split = new JSplitPane();
             split.setDividerSize(5);
             split.setDividerLocation(300);
             split.setLeftComponent(new JScrollPane(chooser.getFolderTree()));
             split.setRightComponent(new JScrollPane(chooser.getFileList()));
-            JPanel panel = new JPanel();
-            panel.setLayout(new BorderLayout());
-            panel.add(split,BorderLayout.CENTER);
-            panel.add(chooser.getBottomPanel(),BorderLayout.SOUTH);           
+            JPanel panel =chooser.getMainPanel();
+            chooser.remove(panel); // as don't want to use it in this frame, but instead splice it into another dialog.
+            panel.add(split,BorderLayout.CENTER); 
             panel.add(chooser.getToolBar(),BorderLayout.NORTH);
             chooser.readRoot();
             myspacePanel = panel;
@@ -339,6 +354,9 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.3  2005/09/02 14:03:34  nw
+javadocs for impl
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 
