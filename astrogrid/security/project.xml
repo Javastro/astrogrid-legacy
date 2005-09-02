@@ -20,87 +20,32 @@
     received by services using this package are authenticated using the credentials
     in the message.
     </p>
+  	<p>
+  	The current implementation is based on Axis and WSS4J. It enforces digital
+  	signatures on requests from clients to services in line with the emerging
+  	IVOA standard for SSO.
+  	</p>
     <p>
     The facade hides details of the authentication from the client and service code.
-    Clients use a helper class, ClientSecurityGuard, to set up SSO credentials and
-    to configure service proxies to use the credentials. Services use a matching
-    helper class, ServiceSecurityGuard, to determine the results of authentication
-    and to extract credentials after successful authentication. Encoding of 
-    credentials to SOAP, parsing of credentials from SOAP and validation of
-    credentials at authentication are all done automatically on exchange of messages
-    by JAX-RPC handlers.
-    </p>
-    <p>
-    The implementation behind the facade may use an external service to issue and
-    validate SSO credentials. The current implementation uses the AstroGrid
-    Community service, and the SSO credentials are NonceTokens.
-    </p>
-    <p>
-    This package ties together several Java standards:
-    </p>
-    <ul>
-      <li>SOAP with Attachments API for Java (SAAJ) for handling the messages;</li>
-      <li>JAX-RPC for the handlers that encode and parse the credentials;</li>
-      <li>Java Authentication and Authorization System (JAAS) for authentication.</li>
-    </ul>
-    <p>
-    Therefore, implementations of these standards must be provided to use the package.
-    SUN's JDK provides JAAS. Apache-Axis provides SAAJ and JAX-RPC. In fact, the
-    current implemenation <em>requires</em> Axism rather than another implementation,
-    on the server side.
-    </p>
+  	Services alter their WSDD configuration to use the facade. Clients call the
+  	facade's APIs, with the Axis-specific security calls encapsulated in the axis-specific
+  	delegates.
+  	</p>
+  	<p>
+  	At present, this implementation reads in credentials from files local to the
+  	clients. It does not use the AstroGrid community-services and does not
+  	depend on other AstroGrid components.
+  	</p>
     ]]>
   </description>
   
   <dependencies>
-    
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <type>jar</type>
-      <artifactId>astrogrid-common</artifactId>
-      <version>${astrogrid.common.version}</version>
-    </dependency>
-  
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <type>jar</type>
-      <artifactId>astrogrid-community-client</artifactId>
-      <version>${astrogrid.community.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <type>jar</type>
-      <artifactId>astrogrid-community-common</artifactId>
-      <version>${astrogrid.community.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <type>jar</type>
-      <artifactId>astrogrid-community-resolver</artifactId>
-      <version>${astrogrid.community.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <type>jar</type>
-      <artifactId>astrogrid-registry-client-lite</artifactId>
-      <version>${astrogrid.registry.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.astrogrid</groupId>
-      <type>jar</type>
-      <artifactId>astrogrid-registry-common</artifactId>
-      <version>${astrogrid.registry.version}</version>
-    </dependency>
-  
+     
     <dependency>
       <groupId>axis</groupId>
       <type>jar</type>
       <artifactId>axis</artifactId>
-      <version>1.1</version>
+      <version>1.2.1</version>
     </dependency>
 
     <dependency>
@@ -168,8 +113,58 @@
       <artifactId>dom4j</artifactId>
       <version>1.4</version>
     </dependency>
+  	
+  	<dependency>
+  		<groupId>wss4j</groupId>
+  		<type>jar</type>
+  		<artifactId>wss4j</artifactId>
+  		<version>1.0a</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>xmlsec</groupId>
+  		<type>jar</type>
+  		<artifactId>xmlsec</artifactId>
+  		<version>1.2.1</version>
+  	</dependency>
     
+  	<dependency>
+  		<groupId>opensaml</groupId>
+  		<type>jar</type>
+  		<artifactId>opensaml</artifactId>
+  		<version>1.1b</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>bouncycastle</groupId>
+  		<type>jar</type>
+  		<artifactId>bcprov-jdk14</artifactId>
+  		<version>129</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>xalan</groupId>
+  		<type>jar</type>
+  		<artifactId>xalan</artifactId>
+  		<version>2.6.0</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>sun</groupId>
+  		<type>jar</type>
+  		<artifactId>mail</artifactId>
+  		<version>1.3.1</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>activation</groupId>
+  		<type>jar</type>
+  		<artifactId>activation</artifactId>
+  		<version>1.0.2</version>
+  	</dependency>
+  	
   </dependencies>
+	
 
   <build>
     <sourceDirectory>src/java</sourceDirectory>
@@ -182,10 +177,9 @@
 
       <resources>
         <resource>
-          <directory>${basedir}/test/java</directory>
+          <directory>${basedir}/test/properties</directory>
           <includes>
-            <include>**/*.xml</include>
-	    <include>**/*.properties</include>
+ 	    			<include>*.properties</include>
           </includes>
         </resource>
       </resources>

@@ -5,9 +5,6 @@
   <body>
     <menu name="Security facade">
         <item name="Security facade home page" href="index.html"/>
-	<item name="Installation guide" href="INSTALL.html" />
-	<item name="Release notes" href="RELEASE.html" />
-	<item name="Architecture" href="architecture.html" />
 	<item name="Use in a client" href="client-use.html" />
 	<item name="Use in a service" href="service-use.html"/>
     </menu>

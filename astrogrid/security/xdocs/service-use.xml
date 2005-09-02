@@ -1,138 +1,153 @@
 <?xml version="1.0"?>
 
+
+
 <document>
 
-  <title>Use of security facade from a web service</title>
-  
-  <body>
-  
-    <section name="Interoperability">
-    
-      <p>
-      Unfortunately, it has not been possible to build the server side of
-      the security facade to be portable between web-service environments.
-      The service facade only works when built into a web-service made with
-      Apache Axis. Some details of the implementation use Axis-specific
-      classes and the facade depends on Axis' method for
-      setting up a handler chain.
-      </p>
-      <p>
-      In contrast, the client-side facade and the protocol used to transmit
-      the credentials are independent of Axis. Clients built with another
-      web-service toolkit should interoperate with this server-side facade
-      without problems.
-      </p>
-    
-    </section>
-    
-    <section name="Service APIs">
-    
-      <p>
-      A service implementation should use two classes to operate the security
-      facade. The handler class ServiceCredentialHandler must be declared in
-      the deployment descriptor, as described below; the service implementation
-      should not call this class directly. The facade proper is the class
-      ServiceSecurityGuard and this should be called by methods implementing
-      web-service operations to check the results of authentication.
-      </p>
-      <p>
-      A service implementation may also use the classes representing
-      credentials: NonceToken, AccountName and Password.
-      </p>
-      <p>
-      Other classes in org.astrogrid.security and sub-packages are for
-      internal use only.
-      </p>
-    
-    </section>
 
-    <section name="Handler chain">
-    
-      <p>
-      Messages are sent to the service with credentials encoded in the
-      SOAP headers.
-      A JAX-RPC message-handler is used to extract the credentials from
-      the header. The handler authenticates the request by using the
-      credentials in a JAAS framework. In the current implementation,
-      the handler sends NonceTokens out to the Community service for
-      validation.
-      </p>
-      <p>
-      The service must use a WSDD deployment-descriptor that configures
-      the security handler. The handler class must be declared using this
-      WSDD fragment:
-      </p>
-      <pre>
-      <![CDATA[
-      <deployment xmlns="http://xml.apache.org/axis/wsdd/"
-         xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
-        <!-- define the logging handler configuration -->
-        <handler name="security" type="java:org.astrogrid.security.ServiceCredentialHandler"/>
-        <!-- define the service, using the security handler we just defined -->
-        <service name="..." provider="java:RPC">
-          <requestFlow>
-            <handler type="security"/>
-          </requestFlow>
-          <parameter name="className" value="..."/>
-          <parameter name="allowedMethods" value="..."/>
-        </service>
-      </deployment>
-      ]]>
-      </pre>
-      <p>
-      In this WSDD, the name, implementing class and allowed methods of the
-      service must be filled in to suit the service in question. Note that the
-      handler is set into the flow of "request" messages inbound to the service.
-      </p>
-    
-    </section>
-    
-    <section name="Checking authentication">
-    
-      <p>
-      When a request messages is received there are three 
-      possible results for authentication.
-      </p>
-      <ol>
-        <li>Authentication fails</li>
-        <li>There are no credentials, so authentication is not attempted.</li>
-        <li>Authentication succeeds.</li>
-      </ol>
-      <p>
-      Case 1 is dealt with in the handler chain. The security handler aborts the
-      handler chain when authentication fails. Therefore, the request is rejected
-      and the method implementing the operation is never called. The service must
-      distinguish the other cases by calling the security facade explicitly.
-      </p>
-      <p>
-      A service implementation that wishes to test authentication must acquire a
-      ServiceSecurityGuard configured for the message context. The guard contains
-      the credentials. The service does this by calling the static method 
-      ServiceSecurityGuard.getInstanceFromContext(). Calling the constructor for
-      ServiceSecurityGuard doesn't work here. The constructor would build an
-      empty object that has no connection with the request message.  Since the
-      ServiceSecurityGuard is specific to one request message it makes no sense to
-      store and reuse it.
-      </p>
-      <p>
-      Having acquired a ServiceSecurityGuard, the service may call the convenience
-      method isAnonymous() to find out whether authentication was attempted or not.
-      If this method returns false, then the service knows that authentication 
-      succeeded.
-      </p>
-      <p>
-      The service may get the caller's identity from the ServiceSecurityGuard. The
-      convenience function getUsername() returns the text form of the name. In the
-      current implementation, this will be an IVORN.
-      </p>
-      <p>
-      The service may also use JAAS methods to examine the caller's credentials and
-      identity. The accessor getSubject() on the SecurityGuard returns a reference
-      to the JAAS Subject. Please see the JAAS documentation for details of the Subject.
-      </p>
-      
-    </section>
-    
-  </body>
+
+  <title>Use of security facade from an Axis service</title>
+
   
+
+  <body>
+  	
+  	<section name="Use of the security facade from an Axis service">
+  	
+  		<subsection name="Background">
+  			<p>
+  				The implementation of the facade for Axis uses WSS4J to check signatures on
+  				incoming messages. Each signatures is made with X.509 identity-certificate
+  			  that is present in the message. The identities in the certificates need
+  			not be known to the service <i>a priori</i> but the trust anchors (CA
+  			certificates) for these identities must be configured into the service.</p>
+  			
+  				<p>The signatures are checked by an Axis
+  				handler, and a special sub-class of <i>SecurityGuard</i>,
+  				<i>AxisClientSecurityGuard</i> is provided by which the authenticated identity
+  				can be extracted from that handler.
+  				Axis requires that the security handler be created when its 'Axis engine' in
+  				the service is first created.
+  			</p>
+  		</subsection>
+  		
+  		<subsection name="Setting the trust anchors">
+  			<p>
+  				The service must be provided with a Java key-store in a local file.
+  				This key-store must contain the trust anchors (trusted, CA certificates)
+  				by which the service can establish trust in the certificates used to sign messages.
+  			</p>
+  			<p>
+  				The file must contain a key-store in JKS format; PKCS#12 format is not 
+  				currently usuable due to apparent bugs in the JRE. The file must on the service's
+  				class-path at run time. (In principle, you can put the key-store outside the
+  				class-path and state its fully-qualified file-name in the properties file; in practice
+  				this is unreliable, so the key-store should be kept on the class-path.)
+  			</p>
+  			<p>
+  				Key-stores may have passwords. It is not strictly necessary to set a password on
+  				this key-store as all the trust anchors are public credentials. If a password is
+  				set, then that password must be made available to the service at run-time via
+  				a properties file.
+  			</p>
+  			<p>
+  				The key-store must be described to the service via a properties file that is available
+  				on the service's class-path at run-time. This file must contain properties as follows.
+  			</p>
+  			<pre>
+org.apache.ws.security.crypto.provider=org.apache.ws.security.components.crypto.Merlin
+org.apache.ws.security.crypto.merlin.file=service-keystore.jks
+org.apache.ws.security.crypto.merlin.keystore.type=jks
+org.apache.ws.security.crypto.merlin.keystore.password=testing
+  			</pre>
+  			<p>
+  				In these properties, the keys must be exactly as shown; the value 'jks' for the 
+  				key-store type must not change; the value of the provider must not change;
+  				the key-store file-name and the password should be set to suit the store in
+  				question. If the store has no password, include the password property but leave its 
+  				value blank.
+  			</p>
+  		</subsection>
+  		
+  		<subsection name="Configuring the Axis handler">
+  			<p>
+  			The handler should be declared in the WSDD deployment-descriptor for the service. This is an
+  			example of a service configured with the handler.
+  			</p>
+  			<pre>  			
+<![CDATA[<service name="SamplePort" provider="java:RPC">
+  <parameter name="className" value="org.astrogrid.security.sample.SampleImpl"/>
+  	<requestFlow>
+  		<handler type="java:org.astrogrid.security.AxisServiceCredentialHandler">
+  			<parameter name="action" value="Signature"/>
+  			<parameter name="signaturePropFile" value="server-crypto.properties" />
+  		</handler>
+  	</requestFlow>
+  </service>]]>
+  			</pre>
+  			<p>
+  				The type (class) of the handler and the value of the action parameter must
+  				be exactly as shown above. The value of the <i>signaturePropFile</i>
+  				parameter should match the name of the properties file created to describe
+  				the server's key-store.
+  			</p>
+  		</subsection>
+  		
+  		<subsection name="Supporting jars">
+  			<p>
+   			  Your service will need a number of additional jars in order to operate the security handlers.
+  			</p>
+  			<dl>
+  				<dt>astrogrid-security.jar</dt>
+  				<dd>Contains the security facade including the handler 
+  					<i>org.astrogrid.security.AxisServiceCredentialHandler</i> which you declared in the WSDD file.</dd>
+  				<dt>wss4j.jar (v1.0.1 or later; v1.0 is too buggy)</dt>
+  				<dd>Contains the super-class of <i>org.astrogrid.security.AxisServiceCredentialHandler</i>
+  					plus the supporting framework of WSS4J.</dd>
+  				<dt>xmlsec.jar (version 1.2.1 or later)</dt>
+  				<dd>Contains the code for digital signature on XML.</dd>
+  				<dt>bcprov.jar ("the bouncy-castle jar"; version jdk13-128)</dt>
+  				<dd>Contains the cryptographic algorithms used in digital signature.</dd>
+  				<dt>opensaml.jar (version 1.0.1 or later)</dt>
+  				<dd>Contains SAML classes refered to by WSS4J. Digital signature does
+  				not actually use SAML but WSS4J requires it to be present.</dd>
+  			</dl>
+  		</subsection>
+  			
+  		<subsection name="Authentication semantics">
+  			<p>Once configured as above, the service attempts to authenticate the sender of
+  			each incoming message. It is not possible to apply authentication to a sub-set
+  				of operations on the service.</p>
+  			<p>
+  				If a request is authenticated, then the implementation code for the requested method
+  				is called. When this code runs, there is always an authenticated identity that can
+  				be retrieved.
+  			</p>
+  			<p>
+  				If authentication fails for any reason on any message, then the handler returns
+  				a fault for that request. In this case, the implementation code for the 
+  				requested operation is never called.
+  			</p>
+  		</subsection>
+  		
+  		<subsection name="Retrieving the authenticated identity">
+  			<p>
+  				The authenticated identity can be fetched by obtaining a new security-guard object from
+  				the facade. The implementation of the service operation should include this code.
+  			</p>
+  			<pre>
+import javax.security.Principal;
+import org.astrogrid.security.AxisServiceSecurityGuard;
+
+AxisServiceSecurityGuard sg = AxisServiceSecurityGuard.getInstanceFromContext();
+Principal p = sg.getGridPrincipal();
+  			</pre>
+  		</subsection>
+  	</section>
+
+  </body>
+
+  
+
  </document>
+

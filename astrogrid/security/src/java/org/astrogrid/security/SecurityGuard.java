@@ -1,8 +1,12 @@
 package org.astrogrid.security;
 
+import java.io.File;
+import java.util.Properties;
 import java.util.Set;
 import java.security.Principal;
 import javax.security.auth.Subject;
+import org.apache.ws.security.components.crypto.Crypto;
+import org.apache.ws.security.components.crypto.CryptoFactory;
 
 
 /**
@@ -13,10 +17,7 @@ import javax.security.auth.Subject;
  * package, of passing credentials within the same JVM.
  *
  * Applications may use this class directly, but are more likely to
- * use one of the two subclasses {@link ClientSecurityGuard} and
- * {@link ServiceSecurityGuard}. The latter two classes add methods
- * to interact with JAX-RPC handler-chains and thus to use the
- * credentials in SOAP messages.
+ * use one of the sub-classes that deal with messaging systems.
  *
  * The SecurityGuard maintains two sets of credentials: "single-sign-on"
  * (SSO) and "grid".  The SSO credentials are used to sign on to the
@@ -30,9 +31,6 @@ import javax.security.auth.Subject;
  * caller is not allowed to impose a complete new subject or to make
  * a subject null.  However, a caller may get a reference to one of the
  * subjects and change that subject's contents.
- *
- * @see {@link ClientSecurityGuard}
- * @see {@link ServiceSecurityGuard}
  *
  * @author Guy Rixon
  */
@@ -50,6 +48,22 @@ public class SecurityGuard {
 
 
   /**
+   * A file from which the user's credentials can be read.
+   * The file must yield a java.security.KeyStore, and the
+   * key-store is expected to contain the user's certificate
+   * chain and private key.
+   */
+  protected File keyStoreFile;
+
+  /**
+   * The type of key-store contained in the keyStoreFile property.
+   * Types known to Java are "jks" and "pkcs12", but the latter
+   * should not be used as the JRE fails to read certificate
+   * chains from this type of store.
+   */
+  protected String keyStoreType = "jks";
+
+  /**
    * Constructs a SecurityGuard with empty
    * JAAS subjects.
    */
@@ -57,7 +71,6 @@ public class SecurityGuard {
     this.gridSubject = new Subject();
     this.ssoSubject  = new Subject();
   }
-
 
   /**
    * Constructs a SecurityGuard with a
@@ -68,7 +81,6 @@ public class SecurityGuard {
     this.gridSubject = s;
     this.ssoSubject  = new Subject();
   }
-
 
   /**
    * Returns the JAAS Subject for grid credentials.
@@ -94,97 +106,11 @@ public class SecurityGuard {
    * the returned subject alters the information
    * inside the SecurityGuard.
    *
-   * @return the subject (never null)
+   * @return The subject (never null).
    */
   public Subject getSsoSubject () {
     return this.ssoSubject;
   }
-
-
-  /**
-   * Sets the username property.
-   *
-   * @param name the user-name
-   */
-  public void setUsername (String name) {
-    AccountName account = new AccountName(name);
-    this.gridSubject.getPrincipals().add(account);
-  }
-
-  /**
-   * Returns the username property.
-   *
-   * @return the user-name (may be null if the property is not set)
-   */
-  public String getUsername () {
-    Set names = this.gridSubject.getPrincipals();
-    if (names.size() == 0) {
-      return null;
-    }
-    else {
-      return ((Principal) names.iterator().next()).getName();
-    }
-  }
-
-
-  /**
-   * Sets the password property.
-   */
-  public void setPassword (String word) {
-    try {
-      Password p = new Password(word, false);
-      this.gridSubject.getPrivateCredentials().add(p);
-    }
-    catch (Exception e) {
-      // Ignore the exception for now.
-      // This is a horrible kludge; needs refactoring out.
-    }
-  }
-
-  /**
-   * Returns the password property.
-   *
-   * @return the password (may be null if the property is not set)
-   */
-   public String getPassword () {
-     Set passwords = this.gridSubject.getPrivateCredentials(Password.class);
-     if (passwords.size() == 0) {
-       return null;
-     }
-     else {
-       return ((Password) passwords.iterator().next()).getPlainPassword();
-     }
-   }
-
-
-  /**
-   * Sets an AstroGrid security token.  The token as a
-   * whole is set as a private credential and the
-   * account name derivd from the token is set as
-   * a Principal.
-   */
-  public void setNonceToken(NonceToken t) {
-    this.gridSubject.getPrivateCredentials().add(t);
-    AccountName n = new AccountName(t.getAccount());
-    this.gridSubject.getPrincipals().add(n);
-  }
-
-
-  /**
-   * Returns an AstroGrid scurity token.
-   *
-   * @return the token (null if no token is set)
-   */
-  public NonceToken getNonceToken () {
-    Set tokens = this.gridSubject.getPrivateCredentials(NonceToken.class);
-    if (tokens.size() > 0) {
-      return (NonceToken) tokens.iterator().next();
-    }
-    else {
-      return null;
-    }
-  }
-
 
   /**
    * Sets the account name for single sign on.
@@ -193,12 +119,11 @@ public class SecurityGuard {
    * account name used in authenticating to services
    * within the grid.
    *
-   * @Todo store this name in a separate SSO Subject.
-   *
-   * @param name the account name
+   * @param name The account name.
    */
   public void setSsoUsername (String name) {
-    this.setUsername(name);
+    AccountName account = new AccountName(name);
+    this.ssoSubject.getPrincipals().add(account);
   }
 
   /**
@@ -208,14 +133,17 @@ public class SecurityGuard {
    * account name used in authenticating to services
    * within the grid.
    *
-   * @Todo store this name in a separate SSO Subject.
-   *
    * @return the account name
    */
   public String getSsoUsername () {
-    return this.getUsername();
+    Set names = this.ssoSubject.getPrincipals();
+    if (names.size() == 0) {
+      return null;
+    }
+    else {
+      return ((Principal) names.iterator().next()).getName();
+    }
   }
-
 
   /**
    * Sets the password for single sign on.
@@ -224,12 +152,10 @@ public class SecurityGuard {
    * account name used in authenticating to services
    * within the grid.
    *
-   * @Todo store this password in a separate SSO Subject.
-   *
    * @param word the password
    */
   public void setSsoPassword (String word) {
-    this.setPassword(word);
+    this.ssoSubject.getPrivateCredentials().add(word);
   }
 
   /**
@@ -239,12 +165,56 @@ public class SecurityGuard {
    * account name used in authenticating to services
    * within the grid.
    *
-   * @Todo store this name in a separate SSO Subject.
-   *
    * @return the password
    */
   public String getSsoPassword () {
-    return this.getPassword();
+    Set passwords = this.ssoSubject.getPrivateCredentials(String.class);
+    if (passwords.size() == 0) {
+      return null;
+    }
+    else {
+      return (String)(passwords.iterator().next());
+    }
+  }
+
+  /**
+   * Nominates the key-store file from which credentials can be got locally.
+   *
+   * @param keyStoreFile The file from which the java.security.KeyStore can be loaded.
+   */
+  public void setSsoKeyStore(File keyStoreFile) {
+    this.keyStoreFile = keyStoreFile;
+  }
+
+  /**
+   * Retrieves the user identity from the grid Subject.
+   *
+   * @return The first Principal in the grid subject; null if no Principals are present.
+   */
+  public Principal getGridPrincipal() {
+    Set principals = this.gridSubject.getPrincipals();
+    return (Principal)((principals.toArray())[0]);
+  }
+
+  /**
+   * Uses the SSO credentials to obtain grid credentials.
+   */
+  public void signOn() throws Exception {
+
+    // Set the properties controlling use of the key-store. Several properties
+    // of the store are packaged as one java.util.Properties and that object is
+    // set as a single property of the security handler. Note that the name of
+    // the handler property is defined by AstroGrid and only works with AstroGrid's
+    // sub-class of the handler.
+    Properties p = new Properties();
+    p.setProperty("org.apache.ws.security.crypto.merlin.file", this.keyStoreFile.getCanonicalPath());
+    p.setProperty("org.apache.ws.security.crypto.merlin.keystore.type", this.keyStoreType);
+    p.setProperty("org.apache.ws.security.crypto.merlin.keystore.password", this.getSsoPassword());
+    p.setProperty("org.apache.ws.security.crypto.merlin.keystore.alias", this.getSsoUsername());
+
+    // Create and cache a new Crypto using given properties.
+    Crypto  c = CryptoFactory.getInstance("org.apache.ws.security.components.crypto.Merlin", p);
+    this.gridSubject.getPrivateCredentials().add(c);
   }
 
 }

@@ -23,18 +23,9 @@ against recorded policy.
 </p>
 
 <p>
-This package provides a common interface by which applications,
-both clients and services, can call security-related classes.
-The package follows the Gang-of-Four patterns 'Facade', in that
-a uniform interface is provided to disparate components and
-'Mediator' in that several components are made to work together
-without mutual knowledge.
-</p>
-
-<p>
-The classes are in three groups: <code>SecurityGuard</code>
-and its sub-classes; JAX-RPC message handlers; Java-bean
-equivalents of SOAP-header blocks. Applications only make
+The classes are in two groups: <code>SecurityGuard</code>
+and its sub-classes; Axis message-handlers.
+Applications only make
 direct calls to the <code>SecurityGuard</code> variants; the
 other classes are called from within the framework.
 </p>
@@ -47,53 +38,36 @@ it has no methods for manipulating or using the credentials.
 </p>
 
 <p>
-The <code>ClientSecurityGuard</code> extends <code>SecurityGuard</code>
-with methods for setting credentials into messages sent out from
-a client application. The client may associate the
-<code>ClientSecurityGuard</code> with a JAX-RPC service endpoint
-by calling <code>mountGuard</code>. If the service endpoint is being
-managed by a delegate interface, then the delegate should provide
-a way for the application to pass in a reference to the
-<code>ClientSecurityGuard</code>.
+The <code>AxisClientSecurityGuard</code> extends <code>SecurityGuard</code>
+with code for passing credentials to an Axis handler. It depends
+internally on APIs from Axis and WSS4J. A client should use the static method
+<code>getEngineConfiguration</code> to configure an instance of
+<code>org.apache.axis.client.Service</code> with the apropriate handlers.
+The client should then call <code>configureStub</code> on the security
+guard to pass the credentials into the handler.
 </p>
 
 <p>
-The <code>ServiceSecurityGuard</code> extends <code>SecurityGuard</code>
-with methods for reading and using credentials in messages received at a
-service endpoint. Using a static method of the class, a service
-implementation may retrieve a <code>ServiceSecurityGuard</code> from
-the message context. The application may then read and use the credentials.
+<code>AxisClientCredentialHandler</code> is the handler that signs
+outgoing messages. It is the user of the grid credentials.
 </p>
 
 <p>
-If a client A calls service B and then B delegates the work to service C,
-then A uses a <code>ClientSecurityGuard</code> to talk to B; B uses a
-<code>ServiceSecurityGuard</code> to check A's request and a
-<code>ClientSecurityGuard</code> to talk to C; C uses a
-<code>ServiceSecurityGuard</code> to check B's request.
-B can generate its <code>ClientSecurityGuard</code> based on its
-<code>ServiceSecurityGuard</code> using a factory method. This method
-ensures that the credentials are copied over correctly. Please note that
-some credentials, such as one-shot passwords and X.509 certificates are not
-useful if copied verbatim and new credentials have to be derived for the
-<code>ClientSecurityGuard</code>.
-
-<p>
-<code>ClientCredentialHandler</code> and <code>ServiceCredentialHandler</code>
-are JAX-RPC message handlers. The former handles requests sent from
-clients to services and replies from the services to the clients. The latter
-handles requests received by services and replies sent by services to clients.
-Both handlers work with SOAP-header structures, converting credentials between
-XML form and the object form in <code>SecurityGuard</code> instances. The
-handlers are minimal wrappers around a set of classes, such as
-<code>WsseHeaderElement</code>. Each of the latter classes is a serializer
-and deserializer for a specific header structure.
+The <code>AxisServiceSecurityGuard</code> extends <code>SecurityGuard</code>
+with a factory method <code>getInstanceFromContext</code> that constructs
+a guard with credentials retrieved from the authentication handler. A service
+may use this to retrieve the authenticated identity of the caller.
 </p>
 
+<p>
+<code>AxisServiceCredentialHandler</code> is the handler for the services.
+It checks signatures on incoming messages. Services should declare handlers
+of this class in their request-processing chains.
+</p>
 
-@see javax.xml.soap.SOAPEnvelope
-@see org.astrogrid.security.ClientSecurityGuard
-@see org.astrogrid.security.ClientCredentialHandler
+<p>
+The other classes in the package should not be called directly by client code.
+</p>
 
 @author Guy Rixon
 

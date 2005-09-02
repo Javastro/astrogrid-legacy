@@ -2,56 +2,67 @@
  * SampleServiceLocator.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis WSDL2Java emitter.
+ * by the Apache Axis 1.2.1 Jun 14, 2005 (09:15:57 EDT) WSDL2Java emitter.
  */
 
 package org.astrogrid.security.sample;
 
-public class SampleServiceLocator
-    extends org.apache.axis.client.Service
-    implements org.astrogrid.security.sample.SampleService {
+public class SampleServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.security.sample.SampleService {
 
-    // Use to get a proxy class for SecuritySample
-    private final java.lang.String SecuritySample_address
-        = "http://localhost:8080/axis/services/security-sample";
+    public SampleServiceLocator() {
+    }
 
-    public java.lang.String getSecuritySampleAddress() {
-        return SecuritySample_address;
+
+    public SampleServiceLocator(org.apache.axis.EngineConfiguration config) {
+        super(config);
+    }
+
+    public SampleServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName) throws javax.xml.rpc.ServiceException {
+        super(wsdlLoc, sName);
+    }
+
+    // Use to get a proxy class for SamplePort
+    private java.lang.String SamplePort_address = "http://localhost:8080/security/services/Sample";
+
+    public java.lang.String getSamplePortAddress() {
+        return SamplePort_address;
     }
 
     // The WSDD service name defaults to the port name.
-    private java.lang.String SecuritySampleWSDDServiceName = "SecuritySample";
+    private java.lang.String SamplePortWSDDServiceName = "SamplePort";
 
-    public java.lang.String getSecuritySampleWSDDServiceName() {
-        return SecuritySampleWSDDServiceName;
+    public java.lang.String getSamplePortWSDDServiceName() {
+        return SamplePortWSDDServiceName;
     }
 
-    public void setSecuritySampleWSDDServiceName(java.lang.String name) {
-        SecuritySampleWSDDServiceName = name;
+    public void setSamplePortWSDDServiceName(java.lang.String name) {
+        SamplePortWSDDServiceName = name;
     }
 
-    public org.astrogrid.security.sample.SamplePortType getSecuritySamplePort()
-        throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.security.sample.SamplePortType getSamplePort() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
-            endpoint = new java.net.URL(SecuritySample_address);
+            endpoint = new java.net.URL(SamplePort_address);
         }
         catch (java.net.MalformedURLException e) {
             throw new javax.xml.rpc.ServiceException(e);
         }
-        return getSecuritySamplePort(endpoint);
+        return getSamplePort(endpoint);
     }
 
-    public org.astrogrid.security.sample.SamplePortType getSecuritySamplePort(java.net.URL portAddress)
-        throws javax.xml.rpc.ServiceException {
+    public org.astrogrid.security.sample.SamplePortType getSamplePort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            org.astrogrid.security.sample.SecuritySampleSoapBindingStub _stub = new org.astrogrid.security.sample.SecuritySampleSoapBindingStub(portAddress, this);
-            _stub.setPortName(getSecuritySampleWSDDServiceName());
+            org.astrogrid.security.sample.SamplePortSoapBindingStub _stub = new org.astrogrid.security.sample.SamplePortSoapBindingStub(portAddress, this);
+            _stub.setPortName(getSamplePortWSDDServiceName());
             return _stub;
         }
         catch (org.apache.axis.AxisFault e) {
             return null;
         }
+    }
+
+    public void setSamplePortEndpointAddress(java.lang.String address) {
+        SamplePort_address = address;
     }
 
     /**
@@ -61,9 +72,9 @@ public class SampleServiceLocator
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.astrogrid.security.sample.SampleImpl.class.isAssignableFrom(serviceEndpointInterface)) {
-                org.astrogrid.security.sample.SecuritySampleSoapBindingStub _stub = new org.astrogrid.security.sample.SecuritySampleSoapBindingStub(new java.net.URL(SecuritySample_address), this);
-                _stub.setPortName(getSecuritySampleWSDDServiceName());
+            if (org.astrogrid.security.sample.SamplePortType.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.astrogrid.security.sample.SamplePortSoapBindingStub _stub = new org.astrogrid.security.sample.SamplePortSoapBindingStub(new java.net.URL(SamplePort_address), this);
+                _stub.setPortName(getSamplePortWSDDServiceName());
                 return _stub;
             }
         }
@@ -82,9 +93,9 @@ public class SampleServiceLocator
         if (portName == null) {
             return getPort(serviceEndpointInterface);
         }
-        String inputPortName = portName.getLocalPart();
-        if ("SecuritySample".equals(inputPortName)) {
-            return getSecuritySamplePort();
+        java.lang.String inputPortName = portName.getLocalPart();
+        if ("SamplePort".equals(inputPortName)) {
+            return getSamplePort();
         }
         else  {
             java.rmi.Remote _stub = getPort(serviceEndpointInterface);
@@ -94,7 +105,7 @@ public class SampleServiceLocator
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://localhost:8080/astrogrid-security-sample-service-/services/security-sample", "SampleImplService");
+        return new javax.xml.namespace.QName("urn:this", "SampleService");
     }
 
     private java.util.HashSet ports = null;
@@ -102,9 +113,30 @@ public class SampleServiceLocator
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("SecuritySample"));
+            ports.add(new javax.xml.namespace.QName("urn:this", "SamplePort"));
         }
         return ports.iterator();
+    }
+
+    /**
+    * Set the endpoint address for the specified port name.
+    */
+    public void setEndpointAddress(java.lang.String portName, java.lang.String address) throws javax.xml.rpc.ServiceException {
+        
+if ("SamplePort".equals(portName)) {
+            setSamplePortEndpointAddress(address);
+        }
+        else 
+{ // Unknown Port Name
+            throw new javax.xml.rpc.ServiceException(" Cannot set Endpoint Address for Unknown Port" + portName);
+        }
+    }
+
+    /**
+    * Set the endpoint address for the specified port name.
+    */
+    public void setEndpointAddress(javax.xml.namespace.QName portName, java.lang.String address) throws javax.xml.rpc.ServiceException {
+        setEndpointAddress(portName.getLocalPart(), address);
     }
 
 }

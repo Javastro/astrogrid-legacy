@@ -22,9 +22,12 @@
 	<!-- Special preconditions for unit tests. The tests use Axis in its
 	     'loop-back' mode, with service endpoints expressed using the 'local'
 	     URL-scheme. This mode requires that server-config.wsdd be in the
-	     CWD when the tests are run. -->
+	     CWD when the tests are run. Similarly, the key-store files for
+	     the tests need to be in the CWD. -->
 	<preGoal name="test:test">
-    <copy file="${basedir}/test/wsdd/server-config.wsdd" todir="${maven.build.dir}"/>		
+		<copy file="${basedir}/test/wsdd/server-config.wsdd"            todir="${maven.build.dir}" overwrite="true"/>
+		<copy file="${basedir}/test/keystore/test-user-1-keystore.jks"  todir="${maven.build.dir}" overwrite="true"/>
+		<copy file="${basedir}/test/keystore/service-keystore.jks"      todir="${maven.build.dir}" overwrite="true"/>
 	</preGoal>
 	
 </project>
