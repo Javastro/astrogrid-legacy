@@ -39,11 +39,7 @@
 			   	
         </release>
         <release version="(Undertest)">
-			<action dev="gtr" type="add" issue="1230" note="priority"> Documentation for astrogrid/applications/commandline.
-    			Branch apps-gtr-1230 is incompatible with the changes from issue 1317 and should be abandoned.
-    			Branch apps-gtr-1230-2 has the same new documentation and configuration changes as the former
-    			branch but is branched after issue 1317 was merged; this one is OK to merge with head.
-    		</action>
+			
     	    <action dev="gtr" type="fix" issue="1337"><em>Branch: security-gtr-1337</em>. A major reworking of 
     	astrogrid/security to use digital signatures. Dependencies have changed greatly and there are
     	some new ones to be added to our Maven repository.
@@ -52,6 +48,11 @@
         </release>
 		
 		<release version="HEAD">
+			<action dev="gtr" type="add" issue="1230" note="priority"> Documentation for astrogrid/applications/commandline.
+    			Branch apps-gtr-1230 is incompatible with the changes from issue 1317 and should be abandoned.
+    			Branch apps-gtr-1230-2 has the same new documentation and configuration changes as the former
+    			branch but is branched after issue 1317 was merged; this one is OK to merge with head.
+    		</action>
         </release>
 		
 		<release version="1.1" date="31/08/05" description="AG 1.1 Release">
