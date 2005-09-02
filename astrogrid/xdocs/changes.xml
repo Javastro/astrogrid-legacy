@@ -31,23 +31,22 @@
                 Also small fix to Permission and GroupMember jsp pages so they would work correctly.
                 Finally small doc change if they wanted to run community with a different db like mysql.
 			</action>    	
+			
+			   	
+        </release>
+        <release version="(Undertest)">
 			<action dev="dave" type="fix"><em>Branch: dave-dev-200507251101</em>
 				Added stress test to trigger OutOfMemoryError in FileStore transfers.
 				Added JDK 1.5 fix for FileStoreOutputStream (client side).
 				Removed deploy sub-project from the automatic build (tests need to be run manually).
-			</action>
-			   	
-        </release>
-        <release version="(Undertest)">
-			
-    	    <action dev="gtr" type="fix" issue="1337"><em>Branch: security-gtr-1337</em>. A major reworking of 
-    	astrogrid/security to use digital signatures. Dependencies have changed greatly and there are
-    	some new ones to be added to our Maven repository.
-		    </action>
-			   	    
+			</action>			   	    
         </release>
 		
 		<release version="HEAD">
+			<action dev="gtr" type="fix" issue="1337"><em>Branch: security-gtr-1337</em>. A major reworking of 
+    	astrogrid/security to use digital signatures. Dependencies have changed greatly and there are
+    	some new ones to be added to our Maven repository.
+		    </action>
 			<action dev="gtr" type="add" issue="1230" note="priority"> Documentation for astrogrid/applications/commandline.
     			Branch apps-gtr-1230 is incompatible with the changes from issue 1317 and should be abandoned.
     			Branch apps-gtr-1230-2 has the same new documentation and configuration changes as the former
@@ -56,6 +55,7 @@
         </release>
 		
 		<release version="1.1" date="31/08/05" description="AG 1.1 Release">
+			
 			<action dev="jdt" type="add" issue="1198"><em>Branch: aginab_jdt_1198</em>
 				Minor fix to the installer.
 				The installer now modifies web.xml, rather than using context.xml, and thus works with Tomcat 4.
