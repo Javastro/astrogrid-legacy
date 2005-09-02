@@ -51,7 +51,8 @@ import org.apache.commons.logging.LogFactory;
 import junit.framework.AssertionFailedError;
 import java.text.SimpleDateFormat;
 import javax.security.auth.Subject;
-import org.astrogrid.security.ServiceSecurityGuard;
+//commented out CLQ failed compile with security-gtr-1337, this import statement is redundent.
+//import org.astrogrid.security.ServiceSecurityGuard;
 
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.modules.XMLResource;
