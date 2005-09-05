@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.3 2005/09/05 11:08:39 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -457,14 +457,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
     public void validateStored(URI documentLocation) throws ServiceException, InvalidArgumentException, NotFoundException {
         Document doc;
         try {
-        if (documentLocation.getScheme().equals("uri")) {
-            String s = vos.read(documentLocation);
-            InputStream r = new ByteArrayInputStream(s.getBytes());
+            InputStream r = vos.getInputStream(documentLocation);
             doc = XMLUtils.newDocument(r);
-        } else {
-            InputStream is = documentLocation.toURL().openStream();
-            doc = XMLUtils.newDocument(is);
-        }
+  
         } catch (ParserConfigurationException e) {
             throw new ServiceException(e);
         } catch (SAXException e) {
@@ -476,8 +471,6 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
         } catch (ServiceException e) {
             throw new NotFoundException(e);
         } catch (SecurityException e) {
-            throw new NotFoundException(e);
-        } catch (NotApplicableException e) {
             throw new NotFoundException(e);
         }
         validate(doc);
@@ -784,6 +777,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.3  2005/09/05 11:08:39  nw
+added skeletons for registry and query dialogs
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

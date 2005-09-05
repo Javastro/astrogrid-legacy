@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.3 2005/09/05 11:08:39 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,6 +56,19 @@ public class PositionRememberingJFrame extends JFrame {
     protected final UIInternal ui;
     protected final HelpServer help;
 
+    /** convenience method - access the configuraiton componoent */
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+    /** convenience mehtod - access the help server component */
+    public HelpServer getHelpServer() {
+        return help;
+    }
+    /** convenience method - access the main ui component */
+    public UIInternal getUI() {
+        return ui;
+    }
+    
     /** load position from configuration */
     private void loadConfiguration() {
         if (configuration != null) {
@@ -122,6 +135,9 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.3  2005/09/05 11:08:39  nw
+added skeletons for registry and query dialogs
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 
