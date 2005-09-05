@@ -68,7 +68,10 @@
                 <div style="color: blue; background-color: lightblue; text-align: center;">( input parameters for this task: )</div>
               </td></tr> 
               <xsl:for-each select="./tool/inputParam">
+<!--	PFO changed this to let parameters be displayed following the order
+	suggested in the CEA definition
                 <xsl:sort select="@param-name"/> 
+-->
                 <xsl:call-template name="parameter">                                     
                   <xsl:with-param name="direction">input</xsl:with-param>
                   <xsl:with-param name="key"><xsl:value-of select="./../../@key"/></xsl:with-param>
