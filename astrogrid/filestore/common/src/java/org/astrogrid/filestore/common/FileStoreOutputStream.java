@@ -1,10 +1,28 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreOutputStream.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2005/09/06 12:45:22 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreOutputStream.java,v $
+ *   Revision 1.4  2005/09/06 12:45:22  clq2
+ *   dave-dev-200507251101
+ *
+ *   Revision 1.3.60.4  2005/08/08 11:01:45  dave
+ *   Added OutOfMemory catches to OutputStream.
+ *   Not idseal, as they may not catch the error in time.
+ *   Needs more work on this ...
+ *
+ *   Revision 1.3.60.3  2005/08/08 09:19:10  dave
+ *   Added catches for OutOfMemoryException ... log and re-throw.
+ *
+ *   Revision 1.3.60.2  2005/08/05 13:41:04  dave
+ *   Changed tabs to spaces ..
+ *
+ *   Revision 1.3.60.1  2005/08/04 12:29:52  dave
+ *   Added large data (1Gbyte) stress test.
+ *   Added JDK 1.5 fix to FileStoreOutputStream.
+ *
  *   Revision 1.3  2005/01/28 10:43:58  clq2
  *   dave_dev_200501141257 (filemanager)
  *
@@ -12,27 +30,12 @@
  *   Fixed bug in FileManagerImpl test (missing '/' in repository path on Unix) ...
  *   Changed tabs to spaces ..
  *
- *   Revision 1.2  2004/11/25 00:19:19  jdt
- *   Merge from dave-dev-200410061224-200411221626
- *
- *   Revision 1.1.2.4  2004/11/09 17:41:36  dave
- *   Added file:// URL handling to allow server URLs to be tested.
- *   Added importInit and exportInit to server implementation.
- *   Moved remaining tests out of extended test abd removed it.
- *
- *   Revision 1.1.2.3  2004/10/29 13:21:58  dave
- *   Added InputStream wrapper ...
- *
- *   Revision 1.1.2.2  2004/10/29 12:36:41  dave
- *   Fixed http connection bug ...
- *
- *   Revision 1.1.2.1  2004/10/29 12:22:07  dave
- *   Added OutputStream wrapper ...
- *
  * </cvs:log>
  *
  */
 package org.astrogrid.filestore.common ;
+
+import java.lang.reflect.Method ;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -149,15 +152,37 @@ public class FileStoreOutputStream
             this.http.setUseCaches(false);
             this.http.setRequestMethod("PUT");
             this.http.setRequestProperty("User-Agent", this.getClass().getName());
-//            connection.setRequestProperty("Content-Type",   "application/octet-stream");
-//            connection.setRequestProperty("Content-Length", "" + contentLength);
+            //
+            // New method added to JDK 1.5.
+            // http.setChunkedStreamingMode(BUFFER_SIZE);
+            //
+            // JDK 1.4 patch (uses reflection to invoke the JDK 1.5 method).
+            // This allows us to compile on JDK 1.4 but use the JDK 1.5 method if available.
+            try {
+                log.debug("Checking HttpURLConnection for JDK 1.5 method.");
+                Class clazz   = this.http.getClass() ;
+                Method method = clazz.getMethod(
+                    "setChunkedStreamingMode",
+                    new Class[] { int.class }
+                    );
+                method.invoke(
+                    this.http,
+                    new Object[] { new Integer(BUFFER_SIZE) }
+                    );
+                log.debug("Using HttpURLConnection.setChunkedStreamingMode for JDK 1.5.");
+                }
+            catch (Exception ouch)
+                {
+                //
+                // ... Ok, we tried ...
+                log.debug("HttpURLConnection does not supposrt setChunkedStreamingMode");
+                }
+            //
+            // Open the connection.
             this.http.connect();
             //
-            // Create our stream buffer.
-            this.stream = new BufferedOutputStream(
-                this.http.getOutputStream(),
-                BUFFER_SIZE
-                );
+            // Use the connection stream.
+            this.stream = this.http.getOutputStream() ;
             }
         //
         // If the URL is a file:// URL.
@@ -172,7 +197,7 @@ public class FileStoreOutputStream
                 );
             }
         //
-        // If the URL points to a live server.
+        // If the URL points to something else.
         else {
             log.debug("  Handling generic URL");
             this.conn = url.openConnection() ;
@@ -240,7 +265,16 @@ public class FileStoreOutputStream
         {
         if (null != this.stream)
             {
-            this.stream.flush();
+			try {
+            	this.stream.flush();
+				}
+			catch (OutOfMemoryError ouch)
+				{
+		        log.warn("Output stream overflow");
+	            throw new IOException(
+	                "Output stream buffer overflow"
+	                );
+				}
             }
         else {
             throw new IOException(
@@ -258,7 +292,16 @@ public class FileStoreOutputStream
         {
         if (null != this.stream)
             {
-            this.stream.write(b);
+			try {
+            	this.stream.write(b);
+				}
+			catch (OutOfMemoryError ouch)
+				{
+		        log.warn("Output stream overflow");
+	            throw new IOException(
+	                "Output stream buffer overflow"
+	                );
+				}
             }
         else {
             throw new IOException(
@@ -276,7 +319,16 @@ public class FileStoreOutputStream
         {
         if (null != this.stream)
             {
-            this.stream.write(b, off, len);
+			try {
+            	this.stream.write(b, off, len);
+				}
+			catch (OutOfMemoryError ouch)
+				{
+		        log.warn("Output stream overflow");
+	            throw new IOException(
+	                "Output stream buffer overflow"
+	                );
+				}
             }
         else {
             throw new IOException(
@@ -294,7 +346,16 @@ public class FileStoreOutputStream
         {
         if (null != this.stream)
             {
-            this.stream.write(b);
+			try {
+            	this.stream.write(b);
+				}
+			catch (OutOfMemoryError ouch)
+				{
+		        log.warn("Output stream overflow");
+	            throw new IOException(
+	                "Output stream buffer overflow"
+	                );
+				}
             }
         else {
             throw new IOException(
@@ -302,5 +363,4 @@ public class FileStoreOutputStream
                 );
             }
         }
-
     }

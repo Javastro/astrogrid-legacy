@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/stress/maven.xml,v $</cvs:source>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/09/06 12:45:22 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: maven.xml,v $
+    |   Revision 1.2  2005/09/06 12:45:22  clq2
+    |   dave-dev-200507251101
+    |
+    |   Revision 1.1.2.1  2005/08/04 12:29:52  dave
+    |   Added large data (1Gbyte) stress test.
+    |   Added JDK 1.5 fix to FileStoreOutputStream.
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:artifact="artifact"
+    xmlns:filestore="org.astrogrid.filestore"
+    default="test:test"
+    >
+
+    <!--+
+        | Import the common from our parent project.
+        | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        +-->
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!-- ================ Reactor goals ================ -->
+
+    <!--+
+        | Clean our build target.
+        +-->
+    <goal name="clean">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean:clean"/>
+    </goal>
+
+    <!-- ================ Component goals ================ -->
+
+    <!--+
+        | Prepare for the test goal.
+        +-->
+    <preGoal name="test:test">
+        <ant:echo message=""/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Preparing for tests"/>
+        <!--+
+            | Initialise our classpaths.
+            +-->
+        <attainGoal name="init.classpath"/>
+        <!--+
+            | Check the JUnit test settings.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
+        <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
+        <!--+
+            | Copy our config properties.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="Copying config properties ..."/>
+        <ant:mkdir dir="${maven.build.dir}/config"/>
+        <ant:copy verbose="false" todir="${maven.build.dir}/config">
+            <ant:fileset dir="${basedir}/src/config">
+                <include name="astrogrid.properties"/>
+            </ant:fileset>
+        </ant:copy>
+    </preGoal>
+
+    <!--+
+        | Clean up after our tests.
+        +-->
+    <postGoal name="test:test">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Cleaning up after JUnit tests"/>
+    </postGoal>
+
+</project>
