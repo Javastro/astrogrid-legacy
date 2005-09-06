@@ -14,7 +14,9 @@
 			<action dev="kmb" type="fix" issue="1323"><em>Branch: Common_KMB_1323</em>
 				1 file is changed on this branch (DomHelper) to look at the "*" namespace. if it does not find results for a element
                 with no namespace as a parameter.  Requires to be merged with Registry.
-			</action>    	
+			</action>    	   	
+        </release>
+        <release version="(Undertest)">
 			<action dev="kmb" type="fix" issue="1097"><em>Branch: IntTests_KMB_1097</em>
 				Actually just small fix tests for the registry, this branch was for fixing Permission page with community, but come
                 to find out that was all in the community area nothing in auto-integration.
@@ -30,19 +32,15 @@
 				Added xerces (2.7.1) as a dependency and bundled in the webapp.  This fixes the problem with jdk1.5.
                 Also small fix to Permission and GroupMember jsp pages so they would work correctly.
                 Finally small doc change if they wanted to run community with a different db like mysql.
-			</action>    	
-			
-			   	
+			</action>		   	    
         </release>
-        <release version="(Undertest)">
+		
+		<release version="HEAD">
 			<action dev="dave" type="fix"><em>Branch: dave-dev-200507251101</em>
 				Added stress test to trigger OutOfMemoryError in FileStore transfers.
 				Added JDK 1.5 fix for FileStoreOutputStream (client side).
 				Removed deploy sub-project from the automatic build (tests need to be run manually).
-			</action>			   	    
-        </release>
-		
-		<release version="HEAD">
+			</action>
 			<action dev="gtr" type="fix" issue="1337"><em>Branch: security-gtr-1337</em>. A major reworking of 
     	astrogrid/security to use digital signatures. Dependencies have changed greatly and there are
     	some new ones to be added to our Maven repository.
