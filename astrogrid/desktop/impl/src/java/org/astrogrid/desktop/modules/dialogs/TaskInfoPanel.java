@@ -255,10 +255,12 @@ public class TaskInfoPanel extends JPanel {
         else if(tool != null) { // desc must be null so we are looking at a populated task
             ApplicationDescription appDesc = null;
             try {
-            	appDesc = apps.getApplicationDescription(new URI(tool.getName()));
-            }
+            	String temp = "ivo://"+tool.getName();
+            	URI uri = new URI(temp);           	
+            	appDesc = apps.getApplicationDescription(uri);            	            
+           }
             catch (Exception wi) {
-            	logger.error(wi.getMessage());
+            	logger.error("Error getting application description: " + wi.getMessage());
             }
             this.desc = appDesc;
         	params = new Object[tool.getInput().getParameterCount() + tool.getOutput().getParameterCount()][paramTableModel.COLUMN_COUNT];
@@ -336,14 +338,14 @@ public class TaskInfoPanel extends JPanel {
         JLabel intLabel = new JLabel(tool.getInterface());
         JTextArea descTextArea = new JTextArea(3,6);
         descTextArea.setLineWrap(true);
-        descTextArea.setEditable(false);
+        descTextArea.setEditable(false);        
         //descTextArea.setText(DomHelper.getNodeTextValue(desc.getOriginalVODescription(),"Description","vr"));
         try {
-        descTextArea.setText((desc.getOriginalVODescription().getElementsByTagNameNS(vr,"description").item(0).getFirstChild().getNodeValue()));
+            descTextArea.setText((desc.getOriginalVODescription().getElementsByTagNameNS(vr,"description").item(0).getFirstChild().getNodeValue()));
         }
-        catch(Exception ex) {
-        	logger.error("Error loading task description for task: " + desc.getName() + ", " + ex.getMessage() );
-        	descTextArea.setText("--");
+        catch(NullPointerException ex) {
+        	logger.error("Error loading task description for task, " + ex.getMessage() );
+        	descTextArea.setText("");
         }
         descTextArea.setCaretPosition(0);
         descTextArea.setWrapStyleWord(true);

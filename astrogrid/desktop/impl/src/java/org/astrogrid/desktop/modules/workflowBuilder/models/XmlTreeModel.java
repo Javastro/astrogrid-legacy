@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
  **/
-package org.astrogrid.desktop.modules.system;
+package org.astrogrid.desktop.modules.workflowBuilder.models;
 
 
 import org.apache.commons.logging.Log;
@@ -25,7 +25,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 /**
- * @todo move this out of the system module.
+ * @author Phil Nicolson pjn3@star.le.ac.uk
  *
  */
 public class XmlTreeModel implements TreeModel

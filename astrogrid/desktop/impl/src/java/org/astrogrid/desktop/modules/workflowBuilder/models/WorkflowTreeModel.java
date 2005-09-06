@@ -8,8 +8,14 @@
  * with this distribution in the LICENSE.txt file.  
  *
  **/
-package org.astrogrid.desktop.modules.system;
+package org.astrogrid.desktop.modules.workflowBuilder.models;
 
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
@@ -22,20 +28,12 @@ import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-
 /**
  * tree model for Workflow.
- * @todo move this out of the system module.
  * @author Phil Nicolson pjn3@star.le.ac.uk 2/7/05
  *  
  */
-public class WorkflowTreeModel implements TreeModel {
+public class WorkflowTreeModel extends AbstractWorkflowTreeModel {
 	
     /**
      * Commons Logger for this class
@@ -106,8 +104,13 @@ public class WorkflowTreeModel implements TreeModel {
 	 */
 	public boolean isLeaf(Object node) {
 		boolean b = true;
-		if (node instanceof Sequence || node instanceof Flow) {
-			b = false;
+		if (node instanceof Sequence) {
+			if (((Sequence)node).getActivityCount() > 0)
+				b = false;
+		}
+		if (node instanceof Flow) {
+			if (((Flow)node).getActivityCount() > 0)
+			    b = false;
 		}
 		else if (node instanceof If || node instanceof Else || node instanceof Then) {
 			b = false;

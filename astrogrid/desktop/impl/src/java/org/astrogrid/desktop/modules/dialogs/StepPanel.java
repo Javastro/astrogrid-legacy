@@ -44,8 +44,8 @@ public class StepPanel extends JPanel {
 	private String description;
 	private String name;
 	private String var;
-	private String task;
-	private String inter;
+	private String task = "--";
+	private String inter = "--";
 	/**
 	 * production constructor
 	 */
@@ -54,8 +54,10 @@ public class StepPanel extends JPanel {
 		this.description = step.getDescription();
 		this.name = step.getName();
 		this.var = step.getResultVar();
-		this.task = step.getTool().getName();
-		this.inter = step.getTool().getInterface();
+		if (step.getTool() != null) {
+			this.task = step.getTool().getName();
+			this.inter = step.getTool().getInterface();			
+		}
 		initialize();
 	}
 	/**

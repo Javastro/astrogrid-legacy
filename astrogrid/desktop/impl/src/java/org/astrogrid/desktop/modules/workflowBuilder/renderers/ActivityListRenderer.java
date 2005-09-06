@@ -1,0 +1,157 @@
+/* ActivityListRenderer.java
+ * Created on 18-Aug-2005
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ **/
+package org.astrogrid.desktop.modules.workflowBuilder.renderers;
+
+import java.awt.Component;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.workflow.beans.v1.Else;
+import org.astrogrid.workflow.beans.v1.Flow;
+import org.astrogrid.workflow.beans.v1.For;
+import org.astrogrid.workflow.beans.v1.If;
+import org.astrogrid.workflow.beans.v1.Parfor;
+import org.astrogrid.workflow.beans.v1.Scope;
+import org.astrogrid.workflow.beans.v1.Script;
+import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Set;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Then;
+import org.astrogrid.workflow.beans.v1.Unset;
+import org.astrogrid.workflow.beans.v1.While;
+
+/**
+ * @author pjn3
+ *
+ * * Custom renderer for activity JList - adds icons and text depending on object
+ */
+public class ActivityListRenderer extends DefaultListCellRenderer {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(ActivityListRenderer.class);
+	
+	private String helpLocation = "/org/astrogrid/desktop/modules/workflowBuilder/helpText/";
+	
+	public Component getListCellRendererComponent(JList list,
+												  Object value,
+												  int index,
+												  boolean isSelected,
+												  boolean hasFocus) {
+		JLabel label = (JLabel)super.getListCellRendererComponent(list,
+                            									  value,
+																  index,
+																  isSelected,
+																  hasFocus);
+		if (value.equals("Sequence")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Sequence.gif"));
+			label.setText("Sequence");
+			label.setToolTipText(getToolTipText("Sequence"));    			
+		}
+		else if (value.equals("Flow")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Flow.gif"));
+			label.setText("Flow");   		
+			label.setToolTipText(getToolTipText("Flow"));
+		}    		
+		else if (value.equals("Step") ){
+			label.setIcon(IconHelper.loadIcon("icon_Step.gif"));
+			label.setText("Step");
+			label.setToolTipText(getToolTipText("Step"));
+		}
+		else if (value.equals("Set")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Set.gif"));
+			label.setText("Set");
+			label.setToolTipText(getToolTipText("Set"));
+		}
+		else if (value.equals("Unset")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Unset.gif"));
+			label.setText("Unset");
+			label.setToolTipText(getToolTipText("Unset"));
+		}    		
+		else if (value.equals("Script")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Script.gif"));
+			label.setText("Script");
+			label.setToolTipText(getToolTipText("Script"));
+		} 
+		else if (value.equals("For")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
+			label.setText("For loop");
+			label.setToolTipText(getToolTipText("For"));
+		}   		
+		else if (value.equals("While")){
+			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
+			label.setText("While loop");
+			label.setToolTipText(getToolTipText("While"));
+		}
+		else if (value.equals("ParFor")){
+			label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
+			label.setText("Parallel loop");
+			label.setToolTipText(getToolTipText("ParFor"));
+		}    		
+		else if (value.equals("Scope")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Scope.gif"));
+			label.setText("Scope");
+			label.setToolTipText(getToolTipText("Scope"));
+		}  
+		else if (value.equals("If")){
+			label.setIcon(IconHelper.loadIcon("icon_If.gif"));
+			label.setText("If");
+			label.setToolTipText(getToolTipText("If"));
+		}
+		else if (value.equals("Then")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Then.gif"));
+			label.setText("Then");
+			label.setToolTipText(getToolTipText("Then"));
+		}
+		else if (value.equals("Else")){ 
+			label.setIcon(IconHelper.loadIcon("icon_Else.gif"));
+			label.setText("Else");
+			label.setToolTipText(getToolTipText("Else"));
+		}
+		else {
+			label.setText("To do");
+			label.setToolTipText(null);
+			logger.error("Unrecogonised activity: " + value);
+		}
+		return(label);																	 
+	}
+	
+    /**
+     * Returns tool tip for activity, read from file
+     * 
+     * @param String activity, type of activity 
+     * @return String tool tip text
+     */
+	private String getToolTipText(String activity) {
+	    String text = "";
+	    String str ;
+		try {
+		    InputStream is = this.getClass().getResourceAsStream(helpLocation + "help_"+activity+"_tip.html");
+	        InputStreamReader inputStreamReader = new InputStreamReader(is); 
+	        BufferedReader br = new BufferedReader(inputStreamReader);	    
+	        while ((str = br.readLine()) != null) 
+	    	    text = text + str;
+	        br.close();
+	    } 
+	    catch(Exception ex) {
+	    	text = activity;
+	    }
+	    return text;
+	}	
+}
