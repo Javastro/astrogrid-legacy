@@ -1,4 +1,4 @@
-/*$Id: QueryEditorDialog.java,v 1.1 2005/09/05 11:08:39 nw Exp $
+/*$Id: QueryEditorDialog.java,v 1.2 2005/09/06 13:12:52 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -132,7 +132,7 @@ public class QueryEditorDialog extends JDialog implements PropertyChangeListener
        if (jOptionPane == null) {
            JPanel main = parent.getMainPanel();
            parent.remove(main); // remove from this ui;
-           parent.add(editorPanel,BorderLayout.CENTER);
+           main.add(editorPanel,BorderLayout.CENTER);
            jOptionPane = new JOptionPane(new JComponent[]{main},JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
            jOptionPane.addPropertyChangeListener(this);
        }
@@ -148,6 +148,9 @@ public class QueryEditorDialog extends JDialog implements PropertyChangeListener
 
 /* 
 $Log: QueryEditorDialog.java,v $
+Revision 1.2  2005/09/06 13:12:52  nw
+fixed two little gotchas.
+
 Revision 1.1  2005/09/05 11:08:39  nw
 added skeletons for registry and query dialogs
  

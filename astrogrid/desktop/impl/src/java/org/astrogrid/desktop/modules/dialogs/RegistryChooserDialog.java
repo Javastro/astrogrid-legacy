@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserDialog.java,v 1.1 2005/09/05 11:08:39 nw Exp $
+/*$Id: RegistryChooserDialog.java,v 1.2 2005/09/06 13:12:52 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -142,8 +142,8 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
            JPanel main = parent.getMainPanel();
            parent.remove(main); // remove from this ui;
            
-           parent.add(chooserPanel,BorderLayout.CENTER);
-           parent.add(getTopLabel(),BorderLayout.NORTH);
+           main.add(chooserPanel,BorderLayout.CENTER);
+           main.add(getTopLabel(),BorderLayout.NORTH);
            jOptionPane = new JOptionPane(new JComponent[]{main},JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
            jOptionPane.addPropertyChangeListener(this);
        }
@@ -157,6 +157,9 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
 /* 
 $Log: RegistryChooserDialog.java,v $
+Revision 1.2  2005/09/06 13:12:52  nw
+fixed two little gotchas.
+
 Revision 1.1  2005/09/05 11:08:39  nw
 added skeletons for registry and query dialogs
  
