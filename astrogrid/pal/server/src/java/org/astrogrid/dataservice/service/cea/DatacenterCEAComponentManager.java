@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.2 2005/09/07 08:54:42 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,9 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         super();
         final Config config = SimpleConfig.getSingleton();
         // controller & queriers
-        EmptyCEAComponentManager.registerDefaultServices(pico);
+        //CLQ bug 1359 relace the following line with registerDefaultServices(pico); to accomodate changed cea class.
+        //EmptyCEAComponentManager.registerDefaultServices(pico);
+        registerDefaultServices(pico);
         // store - force in-memory
         pico.registerComponentImplementation(ExecutionHistory.class,InMemoryExecutionHistory.class);
         pico.registerComponentImplementation(IdGen.class,GloballyUniqueIdGen.class);
@@ -85,8 +87,11 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/09/07 08:54:42  clq2
+changes for cea static method changing
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin
