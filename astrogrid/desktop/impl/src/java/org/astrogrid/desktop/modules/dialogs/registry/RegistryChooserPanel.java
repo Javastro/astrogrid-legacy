@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.3 2005/09/07 11:34:10 KevinBenson Exp $
+/*$Id: RegistryChooserPanel.java,v 1.4 2005/09/07 14:27:24 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,68 +12,146 @@ package org.astrogrid.desktop.modules.dialogs.registry;
 
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-import java.awt.LayoutManager;
-import java.awt.Dimension;
-
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.JCheckBox;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JEditorPane;
-import javax.swing.BoxLayout;
-import javax.swing.ListSelectionModel;
-
-
-import javax.swing.event.TableModelListener;
-import javax.swing.event.TableModelEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-
-import java.net.URI;
-import java.net.URL;
-import java.util.Hashtable;
-
+import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
-import org.apache.axis.utils.XMLUtils;
-import javax.xml.transform.Transformer;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import java.io.StringWriter;
 
 
 
 /**
  * Implementation of the registry-google chooser.
  *@todo later add bookmark component. - won't affect public inteface, just implementation
+ *@todo problems : nww - can't work out how to get split pane, etc to fill whole screen.
+ *                                 - need to find out how to make tooltips split across lines - do I need to paginate the text by hand?
  */
 public class RegistryChooserPanel extends JPanel implements ActionListener {
+    /** model that maintains resource information objects - rather than deconstructing them and then rebuilding them afterwards
+     * 
+     * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
+     *
+     */
+    private class ResourceInformationTableModel extends AbstractTableModel {
+        public ResourceInformationTableModel() {
+            selected = new DefaultListSelectionModel();
+            selected.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            selected.addListSelectionListener(new ListSelectionListener() { // notify the table model when selection changes.
+                public void valueChanged(ListSelectionEvent e) {
+                    for (int i = e.getFirstIndex(); i < e.getLastIndex() + 1; i++) {
+                        fireTableCellUpdated(i,0);
+                    }
+                }
+            });
+        }
+        private final ListSelectionModel selected;
+        private int COLUMN_COUNT = 2;
+        private ResourceInformation[] ri = new ResourceInformation[]{};
+        /** get a model of the currently selected rowss */
+        public ListSelectionModel getSelectionModel() {
+            return selected;
+        }
+        /** set the resouce infroatmion to display */
+        public void setRows(ResourceInformation[] ri) {
+            this.ri = ri;
+            fireTableDataChanged();
+        }
+        // makes a checkbox appear in col 1
+        public Class getColumnClass(int columnIndex) {
+            if (columnIndex == 0) {
+                return Boolean.class;
+            } else {
+            return super.getColumnClass(columnIndex);
+            }            
+        }
+        /** get the resource information */
+        public ResourceInformation[] getRows() {
+            return ri;
+        }
+        /** clear the resource information */
+        public void clear() {
+            ri = new ResourceInformation[]{};
+            selected.clearSelection();
+            fireTableDataChanged();
+        }
 
+        public int getRowCount() {
+            return ri.length;
+        }
+
+        public int getColumnCount() {
+            return COLUMN_COUNT;
+        }
+        // make the first cell editable
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return columnIndex == 0;
+        }
+
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            switch(columnIndex) {
+                case 0:
+                    return  Boolean.valueOf(selected.isSelectedIndex(rowIndex));
+                case 1:
+                    return  ri[rowIndex].getName();
+                default:
+                       return "";
+            }
+        }
+        
+        public void setValueAt(Object aValue,int rowIndex,int columnIndex) {
+            switch(columnIndex) {
+                case 0:
+                    if ( ! selected.isSelectedIndex(rowIndex)) {
+                        selected.addSelectionInterval(rowIndex,rowIndex);
+                    } else {
+                        selected.removeSelectionInterval(rowIndex,rowIndex);
+                    }
+                default:
+                    return;
+            }
+        }
+        
+        public String getColumnName(int column) {
+            switch(column) {
+                case 0: return "Selected";
+                case 1: return "Title";
+                default: return "";
+            }
+        }
+    } // end resource information table model.
 
 
     /** Construct a new RegistryChooserPanel
@@ -93,9 +171,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     protected final UIComponent parent;
     /** registry component - use for queries */
     protected final Registry reg;
-    /** boolean flag to indicate multiple resources can be selected */
-    protected boolean multiple;
-    
+   
     private JTextField keywordField = null;
     private JButton goButton = null;
     JButton lookEveryWhere = new JButton("Search");
@@ -103,13 +179,17 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     private JCheckBox anyKeywords = new JCheckBox("Any");
     
     
-    /** assemble the ui 
-     * @todo implement */
+    /** assemble the ui */
     private void initialize() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(getTopPanel());
-        add(getCenterPanel());
-        add(getBottomPanel());
+        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        split.setPreferredSize(new Dimension(300,200));
+        split.setDividerSize(5);
+        split.setDividerLocation(70);
+        split.add(new JScrollPane(getCenterPanel()));
+        split.add(getBottomPanel());
+        add(split);
     }
     
     private JPanel getTopPanel() {
@@ -120,55 +200,10 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         topPanel.add(getGoButton(), null);
         return topPanel;
     }
-    
-    private DefaultTableModel selectTableModel = null;
-    private Object []selectColumns = {"Select", "Identifier", "Title",  "URL", "Description"};
-    
-    JCheckBox selectedColumn = new JCheckBox();
+
+
+    ResourceInformationTableModel selectTableModel= new ResourceInformationTableModel();
     JTable selectTable = null;
-    Hashtable resInfoHash = new Hashtable();
-    
-    protected ResourceInformation makeResourceInformationFromTableRow(int row) {
-        URL url = null;
-        try {
-            if(selectTableModel.getValueAt(row,3) != null && selectTableModel.getValueAt(row,3).toString().trim().length() > 0) {
-                url = new URL(selectTableModel.getValueAt(row,3).toString());
-            }
-            return new ResourceInformation(new URI(selectTableModel.getValueAt(row,1).toString()),
-                                           selectTableModel.getValueAt(row,2).toString(),
-                                           selectTableModel.getValueAt(row,4).toString(), 
-                                           url);
-        }catch(Exception e) {
-            //need to do something this is for URISyntaxException and MalformedURLException
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    private void printResInfo(ResourceInformation []ri) {
-        for(int i = 0;i < resInfo.length;i++) {
-            System.out.println(ri[i].toString());
-        }
-    }
-    
-    private void printHash(Hashtable ht) {
-        Object []test = resInfoHash.values().toArray();
-        for(int i = 0;i < test.length;i++) {
-            System.out.println("hash print i = " + i + " val = " + test[i]);
-        }
-        
-    }
-    
-    private void makeResourceInformationFromHash() {        
-        Object []vals = resInfoHash.values().toArray();
-        resInfo = null;
-        resInfo = new ResourceInformation[vals.length];
-        for(int i = 0;i < vals.length;i++) {
-            resInfo[i] = (ResourceInformation)vals[i];            
-        }
-    }
-    
-    
 
     
     private JPanel getCenterPanel() {         
@@ -177,70 +212,63 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
          
          //set all the tables to 0 rows we want them to be added later after grabbing things from the 
          //registry and selecting things from the "From" table.
-         selectTableModel = new DefaultTableModel(selectColumns,0);
-         selectTable = new JTable(selectTableModel);
-         selectTable.setPreferredScrollableViewportSize(new Dimension(300, 70));
-         JScrollPane selectScrollPane = new JScrollPane(selectTable);
-         setupCheckColumn(selectTable, selectTable.getColumnModel().getColumn(0),selectedColumn);
-         selectTableModel.addTableModelListener(new TableModelListener() {
-             public void tableChanged(TableModelEvent e) {             
-                 int editRow = selectTable.getEditingRow();
-                 ResourceInformation temp = null;
-                 if(e.getColumn() == 0) {
-                     System.out.println("Col 0 editrow = " + editRow + " val = " + selectTableModel.getValueAt(editRow,0).toString());
-                     if(selectTableModel.getValueAt(editRow,0).toString().equals("true")) {
-                         temp = makeResourceInformationFromTableRow(editRow);
-                         System.out.println("Made RI for row = " + editRow + " the toString = " + temp.toString());
-                         resInfoHash.put(String.valueOf(editRow),temp);
-                         printHash(resInfoHash);
-                         //resInfo = (ResourceInformation [])resInfoHash.values().toArray();
-                         //The above did not work need to work out something else.
-                         makeResourceInformationFromHash();
-                         //printResInfo(resInfo);
-                     }else if(selectTableModel.getValueAt(editRow,0).toString().equals("false")) {
-                         if(resInfoHash.containsKey(String.valueOf(editRow))) {
-                             resInfoHash.remove(String.valueOf(editRow));
-                             if(resInfoHash.size() > 0) {                                 
-                                 //resInfo = (ResourceInformation [])resInfoHash.values().toArray();
-                                 //The above did not work need to work out something else.
-                                 makeResourceInformationFromHash();
-                             } else {
-                                 resInfo = null;
-                             }
-                             //printResInfo(resInfo);
-                         }//if
-                     }//else if
-                 }//if
-             }
-           }
-         );
+         selectTable = new JTable(selectTableModel) { //Implement table cell tool tips.
+             public String getToolTipText(MouseEvent e) {
+                 String tip = null;
+                 java.awt.Point p = e.getPoint();
+                 int rowIndex = rowAtPoint(p);
+                 int colIndex = columnAtPoint(p);
+                 int realColumnIndex = convertColumnIndexToModel(colIndex);               
+                 if (realColumnIndex == 1) { //Namecolumn..
+                     ResourceInformation ri = selectTableModel.getRows()[rowIndex];
+                    StringBuffer result = new StringBuffer();
+                     result.append("<html>");
+                     result.append("<i>");
+                     result.append(ri.getId());
+                     result.append("</i><p>");
+                     result.append(ri.getDescription()!= null ?   ri.getDescription(): "");
+                     result.append("</p></html>");                                             
+                     tip= result.toString(); 
+                 } else { 
+                     tip = super.getToolTipText(e);
+                 }
+                 return tip;
+             }             
+         };
          
-         ListSelectionModel rowSM = selectTable.getSelectionModel();
-         rowSM.addListSelectionListener(new ListSelectionListener() {
+         selectTable.getColumnModel().getColumn(0).setPreferredWidth(8);
+         selectTable.getColumnModel().getColumn(0).setMaxWidth(8);
+         selectTable.setPreferredScrollableViewportSize(new Dimension(300, 70));
+     //   JScrollPane selectScrollPane = new JScrollPane(selectTable);
+         
+         
+         selectTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
              public void valueChanged(ListSelectionEvent e) {
                  ListSelectionModel lsm = (ListSelectionModel)e.getSource();
                  if (lsm.isSelectionEmpty()) {
                      //System.out.println("No rows are selected.");
                      //System.out.println("the value at col 0 and row 0 = " + fromTableModel.getValueAt(0,0));
                      if(selectTableModel.getRowCount() > 0) {
-                         editorPane.setText("<html><body>No Rows Selected</body></html>");
+                         editorPane.setText("<html><body></body></html>");
                      }
-                 } else {
-                     int selectedRow = lsm.getMinSelectionIndex();
-                     try {
-                         Document doc = reg.getRecord(new URI(selectTableModel.getValueAt(selectedRow,1).toString()));
-                         String htmlString = (String)transform(doc);
-                         editorPane.setText(htmlString);
-                     }catch(Exception ex) {
-                         //need to do something.
-                         ex.printStackTrace();
-                         editorPane.setText("<html />");
-                     }
+                 } else if (selectTable.getSelectedColumn() ==1) {                                            
+                     final int selectedRow = lsm.getMinSelectionIndex();
+                     (new BackgroundWorker(parent,"Rendering Record") {
+
+                        protected Object construct() throws Exception {
+                            Document doc = reg.getRecord(selectTableModel.getRows()[selectedRow].getId());
+                            return (String)transform(doc);
+                        }
+                        protected void doFinished(Object o) {
+                            editorPane.setText(o.toString());
+                        }
+                     }).start();                     
+
                  }
              }
-         });         
+         });        
          centerPanel.add(new JLabel("Results: "));
-         centerPanel.add(selectScrollPane);         
+         centerPanel.add(selectTable);         
          return centerPanel;
     }
     
@@ -265,40 +293,17 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
     
     JEditorPane editorPane = new JEditorPane("text/html","<html><body></body></html>");
-    private JPanel getBottomPanel() {
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+    private JComponent getBottomPanel() {
         editorPane.setEditable(false);
         
         //Put the editor pane in a scroll pane.
         JScrollPane editorScrollPane = new JScrollPane(editorPane);
         editorScrollPane.setVerticalScrollBarPolicy(
                         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        editorScrollPane.setPreferredSize(new Dimension(250, 145));
-        editorScrollPane.setMinimumSize(new Dimension(10, 10));
-        bottomPanel.add(editorScrollPane);
-        return bottomPanel;
+        editorScrollPane.setPreferredSize(new Dimension(300, 145));
+        editorScrollPane.setMinimumSize(new Dimension(100, 100));
+        return editorScrollPane;
     }
-    
-    /**
-     * Method: setupCheckColumn
-     * Description: Sets up a check box renderer inside a JTable.  This really might not be needed
-     * anymore because I think you can just do Boolean objects and it will put it as checkboxes anyway.
-     * @param table The jtable to be used with a check box.
-     * @param tableColumn  The actual column inside the jtable.
-     * @param checkBox the check box itself.
-     */   
-    public void setupCheckColumn(JTable table,
-            TableColumn tableColumn, JCheckBox checkBox ) {
-            //Set up the editor for the sport cells.
-        
-        tableColumn.setCellEditor(new DefaultCellEditor(checkBox));
-        //Set up tool tips for the sport cells.
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        //renderer.setToolTipText("Click for combo box");
-        tableColumn.setCellRenderer(renderer);
-    }
-    
     
     /*
      * Xml2XhtmlTransformer htmlXSL = new Xml2XhtmlTransformer(Xml2XhtmlTransformer.getStyleSource());
@@ -341,52 +346,35 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
-        // either search, or cancel..
-            final String keywords = keywordField.getText();
-            Object source = e.getSource();
-            String sql = "Select * from Registry where ";
-            //String joinSQL = " and ";
-            //if(anyKeywords.isSelected()) 
-            String joinSQL = " or ";
-            if(source == goButton) {
-                clear();
-                sql += "vr:title like '" + keywords + "'" + joinSQL + 
+        final String keywords = keywordField.getText();
+        final Object source = e.getSource();
+        (new BackgroundWorker(parent,"Searching") {
+            protected Object construct() throws Exception {
+                String sql = "Select * from Registry where ";
+                //String joinSQL = " and ";
+                //if(anyKeywords.isSelected()) 
+                String joinSQL = " or ";
+                if(source == goButton) {
+                    sql += "vr:title like '" + keywords + "'" + joinSQL + 
                        "vr:description like '" + keywords + "'" + joinSQL +
                        "vr:identifier like '" + keywords + "'" + joinSQL +
                        "vr:shortName like '" + keywords + "'" + joinSQL +                            
                        "vr:subject like '" + keywords + "'";
-            }else if(source == lookEveryWhere) {
-                clear();
-                sql += "* like '" + keywords + "'";
-            }
-            try {
-                ResourceInformation []ri = reg.adqlSearchRI(sql);
-                if(ri.length > 0) {
-                    fillTableData(ri);
+                }else if(source == lookEveryWhere) {
+                    sql += "* like '" + keywords + "'";
                 }
-            }catch(org.astrogrid.acr.NotFoundException nfe) {
-                //need to do something for now everything should be clear in the table
-                //possibly report to them that nothing was found on some kind of quick message box.
-                nfe.printStackTrace();
-            }catch(org.astrogrid.acr.ServiceException se) {
-                //need to do something for now everything should be clear in the table
-                //possibly report to them that nothing was found on some kind of quick message box.
-                se.printStackTrace();                
+                return reg.adqlSearchRI(sql);
             }
+            protected void doFinished(Object result) {
+                clear();
+                ResourceInformation[] ri = (ResourceInformation[])result;
+                selectTableModel.setRows(ri);
+            }
+        
+       }).start();
     }
     
-    private void fillTableData(ResourceInformation []ri) {
-        Object []rowData = new Object[selectColumns.length];
-        for(int i = 0;i < ri.length;i++) {
-            rowData[0] = new Boolean(false);
-            rowData[1] = ri[i].getId();
-            rowData[2] = ri[i].getName();
-            rowData[3] = ri[i].getAccessURL();
-            rowData[4] = ri[i].getDescription();
-            selectTableModel.addRow(rowData);
-        }
-    }
-    
+
     
     /** set an additional result filter
      * @todo implemnt
@@ -395,44 +383,60 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
    public void setFilter(String filter) {
        
    }
+
+   
+   /** expose this as a public method - so then interested clients can register listeners on the selection model */
+   public ListSelectionModel getSelectionModel() {
+       return selectTableModel.getSelectionModel();
+   }
    
    /** set whether user is permitted to select multiple resources 
     * @param multiple if true, multiple selection is permitted.*/
    public void setMultipleResources(boolean multiple) {
-       //@todo add event handlers, gui logic to alter display to enable / disable multiple selection.
-       this.multiple = multiple;
+       getSelectionModel().setSelectionMode(multiple ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);     
    }
+
    
    public boolean isMultipleResources() {
-       return multiple;
+       return getSelectionModel().getSelectionMode() == ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
    }
    
    /** clear display, set selectedResources == null 
     * @todo implement
     *
     */
-   public void clear() {
-       resInfoHash.clear();
-       resInfo = null;       
-       while(selectTableModel.getRowCount() > 0) {
-           selectTableModel.removeRow(0);
-       }
+   public void clear() { 
+       selectTableModel.clear();      
    }
    
-   private ResourceInformation[] resInfo;
 
    /** access the resources selected by the user
-    * @todo implement
     * @return
     */
    public ResourceInformation[] getSelectedResources() {
-       return resInfo;
+       ListSelectionModel m = getSelectionModel();
+       List results = new ArrayList();
+       ResourceInformation[] rows = selectTableModel.getRows();
+       if  (m.getMinSelectionIndex() > -1) {
+           for (int i = m.getMinSelectionIndex(); i < m.getMaxSelectionIndex() + 1; i++) {
+               if (m.isSelectedIndex(i)) {
+                   results.add(rows[i]);
+               }
+           }
+       }
+       return (ResourceInformation[])results.toArray(new ResourceInformation[]{});
+               
+
    }
 }
 
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.4  2005/09/07 14:27:24  nw
+added background workers.
+implemented a custom table model to maintain state.
+
 Revision 1.3  2005/09/07 11:34:10  KevinBenson
 changes to reg chooser to use jtable and jeditorpane.
 
