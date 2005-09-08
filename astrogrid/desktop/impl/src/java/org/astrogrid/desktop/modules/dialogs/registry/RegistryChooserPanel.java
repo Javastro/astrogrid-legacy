@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.6 2005/09/08 11:14:08 nw Exp $
+/*$Id: RegistryChooserPanel.java,v 1.7 2005/09/08 13:53:30 KevinBenson Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,8 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import org.apache.axis.utils.XMLUtils;
+
+import org.apache.commons.lang.WordUtils;
 import org.w3c.dom.Document;
 
 import java.awt.Dimension;
@@ -64,6 +66,9 @@ import javax.xml.transform.stream.StreamResult;
  *                                 - need to find out how to make tooltips split across lines - do I need to paginate the text by hand?
  */
 public class RegistryChooserPanel extends JPanel implements ActionListener {
+    
+    private static final int TOOLTIP_WRAP_LENGTH = 50;
+    
     /** model that maintains resource information objects - rather than deconstructing them and then rebuilding them afterwards
      * 
      * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
@@ -191,7 +196,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
    
     private JTextField keywordField = null;
     private JButton goButton = null;
-    JButton lookEveryWhere = new JButton("Search");
+    //JButton lookEveryWhere = new JButton("Search");
     
     private JCheckBox anyKeywords = new JCheckBox("Any");
     
@@ -231,11 +236,12 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         //split.setPreferredSize(new Dimension(parentDim.width,200));
         add(split,BorderLayout.CENTER);
         //split.setVisible(false);
-        add(noResultsLabel,BorderLayout.SOUTH);
-        noResultsLabel.setVisible(false);
+        //add(noResultsLabel,BorderLayout.SOUTH);
+        //noResultsLabel.setVisible(false);
     }
     JSplitPane split = null;
     JLabel noResultsLabel = new JLabel("No Results Found");
+    JCheckBox exhaustiveCheck = new JCheckBox("Exhaustive Search");
     
     private JPanel getTopPanel() {
         JPanel topPanel = new JPanel();
@@ -243,6 +249,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         topPanel.add(new JLabel("Keywords: "), null);
         topPanel.add(getKeywordField(), null);
         //topPanel.add(anyKeywords,null);
+        //add this exhaustiveCheck somewhere.
         topPanel.add(getGoButton(), null);
         return topPanel;
     }
@@ -272,7 +279,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                      result.append("<i>");
                      result.append(ri.getId());
                      result.append("</i><p>");
-                     result.append(ri.getDescription()!= null ?   ri.getDescription(): "");
+                     result.append(ri.getDescription()!= null ?   WordUtils.wrap(ri.getDescription(),TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
                      result.append("</p></html>");                                             
                      tip= result.toString(); 
                  } else { 
@@ -314,9 +321,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
          });        
          centerPanel.add(new JLabel("Results: "));
          centerPanel.add(selectTable);         
-         centerPanel.add(lookEveryWhere);
-         lookEveryWhere.setToolTipText("Search all text in a Resource");
-         lookEveryWhere.addActionListener(this);
+         //centerPanel.add(lookEveryWhere);
+         //lookEveryWhere.setToolTipText("Search all text in a Resource");
+         //lookEveryWhere.addActionListener(this);
          //centerPanel.setPreferredSize(new Dimension(parentDim.width,200));
          return centerPanel;
     }
@@ -408,51 +415,51 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                     joinSQL = " or ";
                 }
                 String []keyword = keywords.split(" ");
-                
+                ResourceInformation []ri = null;
                 if(source == goButton) {
-
-                for(int j = 0;j < keyword.length;j++) {
-                    sql += "(vr:title like '" + keyword[j] + "'" + " or " +
-                    "vr:description like '" + keyword[j] + "'" + " or " +
-                    "vr:identifier like '" + keyword[j] + "'" + " or " +
-                    "vr:shortName like '" + keyword[j] + "'" + " or " +
-                    "vr:subject like '" + keyword[j] + "')";
-                    if(j != (keyword.length - 1)) {
-                        sql += " " + joinSQL + " ";
-                    }//if
-                  }//for
-                }else if(source == lookEveryWhere) {
-                for(int j = 0;j < keyword.length;j++) {
-                    sql += "(* like '" + keyword[j] + "')";
-                    if(j != (keyword.length - 1)) {
-                        sql += " " + joinSQL + " ";
-                    }//if
-                  }//for
-                }
-                ResourceInformation []ri = reg.adqlSearchRI(sql);
-                if(ri.length > 0) {
-                    split.setVisible(true);
-                    //split.setPreferredSize(new Dimension(300,200));
-                    //split.setSize(new Dimension(300,200));
-                    //noResultsLabel.setVisible(false);
+                    for(int j = 0;j < keyword.length;j++) {
+                        sql += "(vr:title like '" + keyword[j] + "'" + " or " +
+                        "vr:description like '" + keyword[j] + "'" + " or " +
+                        "vr:identifier like '" + keyword[j] + "'" + " or " +
+                        "vr:shortName like '" + keyword[j] + "'" + " or " +
+                        "vr:subject like '" + keyword[j] + "')";
+                        if(j != (keyword.length - 1)) {
+                            sql += " " + joinSQL + " ";
+                        }//if
+                    }//for
+                    ri = reg.adqlSearchRI(sql);
+                    if(ri.length > 0) {
+                        System.out.println("Number of Results Found: " + ri.length);
+                        //parent.setStatusMessage("Number of Results Found: " + ri.length);
+                    }else {
+                        //parent.setStatusMessage("No Results Found.  Now attempting Full/Exhaustive Search");
+                        sql = "Select * from Registry where ";
+                        for(int j = 0;j < keyword.length;j++) {
+                            sql += "(* like '" + keyword[j] + "')";
+                            if(j != (keyword.length - 1)) {
+                                sql += " " + joinSQL + " ";
+                            }//if
+                        }//for
+                        ri = reg.adqlSearchRI(sql);
+                    }//else
                     
-                }else {
-                    //split.setVisible(false);
-                    //noResultsLabel.setVisible(true);
-                    
-            }
+                }//if
                 return ri;
             }
             protected void doFinished(Object result) {
-                clear();
+                clear();                
                 ResourceInformation[] ri = (ResourceInformation[])result;
+                if(ri.length > 0) {
+                    //System.out.println("Number of Results Found: " + ri.length);
+                    parent.setStatusMessage("Number of Results Found: " + ri.length);
+                }else {
+                    parent.setStatusMessage("No Results Found.");
+                }//else
                 selectTableModel.setRows(ri);
             }
         
        }).start();
     }
-    
-
     
     /** set an additional result filter
      * @todo implemnt
@@ -504,6 +511,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.7  2005/09/08 13:53:30  KevinBenson
+small change to wordwrap text
+
 Revision 1.6  2005/09/08 11:14:08  nw
 adjusted visible model object.
 
