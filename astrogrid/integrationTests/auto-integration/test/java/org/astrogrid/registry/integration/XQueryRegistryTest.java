@@ -1,4 +1,4 @@
-/*$Id: XQueryRegistryTest.java,v 1.2 2005/08/04 09:40:10 clq2 Exp $
+/*$Id: XQueryRegistryTest.java,v 1.3 2005/09/08 07:30:54 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,11 +45,10 @@ public class XQueryRegistryTest extends AbstractTestForRegistry {
     }
             
     public void testSearch() throws Exception {
-       Document  result = rs.xquerySearch("declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.10\"; declare namespace vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\"; for $x in //vor:Resource where $x/vr:identifier = 'ivo://registry.test/org.astrogrid.registry.RegistryService' return $x");
+       Document  result = rs.xquerySearch("declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.10\"; declare namespace vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\"; for $x in //vor:Resource where $x/vr:identifier = 'ivo://org.astrogrid.localhost/org.astrogrid.registry.RegistryService' return $x");
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);
        assertVODescription(result);
-       AstrogridAssert.assertXpathExists("/XQuerySearch",result);
     }
     
 

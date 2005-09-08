@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.18 2005/08/04 09:40:10 clq2 Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.19 2005/09/08 07:30:54 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,6 +62,43 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
        DomHelper.DocumentToStream(result,System.out);
        assertVODescription(result);
     }    
+    
+    public void testKeywordSearch() throws RegistryException
+    {
+       //HashMap auth = delegate.managedAuthorities();
+       Document result = rs.keywordSearch("astrogrid");
+       assertNotNull(result);
+       DomHelper.DocumentToStream(result,System.out);
+       assertVODescription(result);
+    } 
+    
+    public void testKeywordSearchOr() throws RegistryException
+    {
+       //HashMap auth = delegate.managedAuthorities();
+       Document result = rs.keywordSearch("astrogrid",true);
+       assertNotNull(result);
+       DomHelper.DocumentToStream(result,System.out);
+       assertVODescription(result);
+    }     
+    
+    public void testKeywordSearchMult() throws RegistryException
+    {
+       //HashMap auth = delegate.managedAuthorities();
+       Document result = rs.keywordSearch("astrogrid authority");
+       assertNotNull(result);
+       DomHelper.DocumentToStream(result,System.out);
+       assertVODescription(result);
+    }        
+
+    public void testKeywordSearchMultOr() throws RegistryException
+    {
+       //HashMap auth = delegate.managedAuthorities();
+       Document result = rs.keywordSearch("astrogrid notreallythere",true);
+       assertNotNull(result);
+       DomHelper.DocumentToStream(result,System.out);
+       assertVODescription(result);
+    }        
+    
 
 /*
  *  Some Typical Queries

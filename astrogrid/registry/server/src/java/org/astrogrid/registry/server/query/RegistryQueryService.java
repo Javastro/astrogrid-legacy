@@ -194,6 +194,7 @@ public class RegistryQueryService {
          String collectionName = "astrogridv" + versionNumber.replace('.','_');
          try {
              String xql = DomHelper.getNodeTextValue(query,"XQuery");
+             log.info("Found XQuery in XQuerySearch = " + xql);
              coll = xdb.openCollection(collectionName);
              log.debug("Got Collection = " + collectionName);
              //System.out.println("the xql = " + xql + " the collection = " + collectionName);
@@ -492,6 +493,32 @@ public class RegistryQueryService {
        return processQueryResults(resultDoc,
                versionNumber,"GetAllResponse");
    }
+   
+   /**
+    * Method: GetResourcesByIdentifier
+    * Description: This is the currently used web service method from client (Iteration 0.9).  But is expected to be
+    * deprecated.  And to use GetResourceByIdentifier, because an identifier can only return one Resource only.  Currently
+    * this method will query for part of the Identifier. From the client perspective it is passing an entire identifier
+    * each time and only receiving one resource, but it could pass in ivo://{authorityid} and get all Resources that
+    * have that AuthorityID.  Reason it is currently used is eXist seems to have a problem in embedded mode where
+    * plainly I have seen it lose some elements.  After getting the identifier call GetResourcesByIdentifier(String,versionNumber).
+    * 
+    * @param query - A Soap body request containing an identifier element holding the identifier to be queries on.
+    * @return XML docuemnt object representing the result of the query.
+    */
+   public Document GetResource(Document query) {
+       log.debug("start GetResource");                   
+       String ident = null;
+       try {
+           //log.info("The soapbody in regserver = " + DomHelper.DocumentToString(query));
+           ident = DomHelper.getNodeTextValue(query,"identifier");
+           log.info("found identifier in web service request = " + ident);
+       }catch(IOException ioe) {
+           return SOAPFaultException.createQuerySOAPFaultException("IO problem trying to get identifier",ioe);
+       }
+       String attrVersion = getRegistryVersion(query);
+       return getResourcesByIdentifier(ident,attrVersion);
+   }   
    
    /**
     * Method: GetResourcesByIdentifier

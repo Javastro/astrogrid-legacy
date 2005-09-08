@@ -71,6 +71,7 @@ public interface RegistryService  {
     * Description: client inteface method to call web service method for obtaining all the registr types.
     * @return XML Document of all the Registry type Resources known.
     * @throws RegistryException
+    * @deprecated Should be factored out.
     */
    public Document getRegistries() throws RegistryException;
  
@@ -100,6 +101,28 @@ public interface RegistryService  {
     * @throws RegistryException
     */      
    public Document searchFromSADQL(String sadql) throws RegistryException;
+   
+   /**
+    * Method: keywordSearch
+    * Description: client inteface method to call web service method key word search a keyword type
+    * search that lets you put in word(s) seperated by spaces and then by default is and or you can set to true
+    * to look for all the workds.
+    * @param keywords a space seperated string
+    * @param ovValue do you want to look for all the words, by default false. 
+    * @return XML Document of all the Resources in the registry constrained by the keyword query.
+    * @throws RegistryException
+    */      
+   public Document keywordSearch(String keywords,boolean orValues) throws RegistryException;   
+
+   /**
+    * Method: keywordSearch
+    * Description: client inteface method to call web service method key word search a keyword type
+    * search (with default setting of querying for all words).
+    * @param keywords a space seperated string 
+    * @return XML Document of all the Resources in the registry constrained by the keyword query.
+    * @throws RegistryException
+    */   
+   public Document keywordSearch(String keywords) throws RegistryException;
    
    /**
     * Method: search

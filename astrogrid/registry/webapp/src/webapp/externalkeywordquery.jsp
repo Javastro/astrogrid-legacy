@@ -53,44 +53,8 @@
    Results will be shown below.<br />
 </p>
 
-<form enctype="multipart/form-data" method="post">
-<p>
-Upload adql xml file:<br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
-<br />Endpoint: <input type="text"   size="100" name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
-<input type="file"   size="100"  name="docfile" />
-<input type="hidden" name="addFromFile" value="true" />
-<input type="hidden" name="performquery" value="true" /><br />
-<input type="submit" name="uploadFromFile" value="upload" />
-</p>
-</form>
 
 <br />
-<form method="post">
-<p>
-URL to an adql xml file: <br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
-<br />Endpoint: <input type="text"  size="100" name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
-<input type="text"  size="100" name="docurl" />
-<input type="hidden" name="performquery" value="true" />
-<input type="hidden" name="queryFromURL" value="true" /><br />
-<input type="submit" name="uploadFromURL" value="upload" />
-</p>
-</form>
 
 <form method="post">
 <p>
@@ -105,37 +69,14 @@ Version:
 </select>
 <br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
 <input type="hidden" name="performquery" value="true" />
-<input type="hidden" name="xadql" value="true" />
-<textarea name="Resource" rows="30" cols="90"></textarea>
+Keywords: <input type="text" name="keywords" /><br />
+Search for "any" of the words: <input type="checkbox" name="orValues" value="true">Any/Or the words</input>
 <br />
 <input type="submit" name="button" value="Submit"/><br />
 </p>
 
 </form>
 
-
-<form method="post">
-<p>
-Enter SQL (actually adqls).  This will only send adql 0.7.4 at the moment use above approaches to send other versions:<br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
-<br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
-<input type="hidden" name="performquery" value="true" />
-<i>Only for ADQL 0.7.4</i><br />
-<textarea name="Resource" rows="30" cols="90"></textarea>
-</p>
-<p>
-<input type="submit" name="button" value="Submit"/><br />
-Example SQL:<br />
-Select * from Registry where vr:title = 'hello' and vr:content/vr:description like '%world%'
-</p>
-</form>
 
 <%
 
@@ -144,46 +85,22 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
    System.out.println("performQuery true and endpoint = " + request.getParameter("endpoint"));
    if(request.getParameter("endpoint") != null && request.getParameter("endpoint").trim().length() > 0) {
    
-   String endpoint = request.getParameter("endpoint").trim();
-  Document adql = null;
-  boolean isMultipart = FileUpload.isMultipartContent(request);
-  System.out.println("The-get2 Resource = " + request.getParameter("Resource") + " and size of it = " + request.getParameter("Resource").trim().length());
-  if(isMultipart) {
-   DiskFileUpload upload = new DiskFileUpload();
-   List /* FileItem */ items = upload.parseRequest(request);
-   Iterator iter = items.iterator();
-   while (iter.hasNext()) {
-      FileItem item = (FileItem) iter.next();
-       if (!item.isFormField()) {
-         adql = DomHelper.newDocument(item.getInputStream());
-       }//if
-   }//while
-  }else if(request.getParameter("queryFromURL") != null &&
-     request.getParameter("addFromURL").trim().length() > 0) {
-     adql = DomHelper.newDocument(new URL(request.getParameter("docurl")));
-  }else if(request.getParameter("xadql") != null && 
-           request.getParameter("Resource").trim().length() > 0) {
-     adql = DomHelper.newDocument(request.getParameter("Resource").trim());                      
-  } else if(request.getParameter("Resource").trim().length() > 0) {  
-  System.out.println("okay lets do the translation");
-   String resource = Sql2Adql.translateToAdql074(request.getParameter("Resource").trim());
-   System.out.println("okay about to do vrNS");
-   String vrNS = "xmlns:vr=\"http://www.ivoa.net/xml/VOResource/v" + version + "\"";
-   System.out.println("finished with vrns = " + vrNS);
-   resource = resource.replaceFirst("Select",("Select " + vrNS));   
-   System.out.println("finished with Select replace the xml = " + resource);
-   adql = DomHelper.newDocument(resource);
-  }//elseif
+      String endpoint = request.getParameter("endpoint").trim();
+   if(request.getParameter("keywords") == null || request.getParameter("keywords").trim().length() == 0) {
+     out.write("<font color='red'>You have no keywords, please place keywords in the text box to do a query</font>");
+     return;
+   }
   
 %>
 <br />
 
 <pre>
 <%
+      String keywords = request.getParameter("keywords");
+      boolean orValue = new Boolean(request.getParameter("orValues")).booleanValue();
 
       RegistryService rs = RegistryDelegateFactory.createQuery(new URL(endpoint));
-      //Document entry = server.Search(adql);
-      Document entry = rs.search(adql);
+      Document entry = rs.keywordSearch(keywords,orValue);
       out.write("<p>If entries are returned, then the xml will be validated, shown tabular, then full xml at the bottom.");
       if (entry == null) {
         out.write("<p>No entry returned</p>");
@@ -230,19 +147,17 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
                out.write("<td>"+resource+"</td>\n");
                ivoStr += "/" + resource;
          }//if
-
          ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");
          endpoint = java.net.URLEncoder.encode(endpoint,"UTF-8");
 
          out.write("<td><a href=externalResourceEntry.jsp?performquery=true&version="+version+"&IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");
-
          
          out.write("</tr>\n");
          
       }                  
          out.write("</table> <hr />");
          out.write("The xml<br />");
-        String testxml = DomHelper.DocumentToString(entry);
+         String testxml = DomHelper.DocumentToString(entry);
          testxml = testxml.replaceAll("<","&lt;");
         testxml = testxml.replaceAll(">","&gt;");
          out.write(testxml);

@@ -499,9 +499,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
             String recordDate = ((XMLExistRecordFactory)getRecordFactory()).getDatestamp(nativeRecord);
             String schemaLocation = (String)nativeRecord.get("schemaLocation");
             //List setSpecs = (List)nativeRecord.get("setSpecs");
-            if (recordDate.compareTo(from) >= 0
-                && recordDate.compareTo(until) <= 0
-                && (!schemaLocationIndexed || schemaLocation.equals(getCrosswalks().getSchemaLocation(metadataPrefix)))) {
+            if ((!schemaLocationIndexed || schemaLocation.equals(getCrosswalks().getSchemaLocation(metadataPrefix)))) {
                 /*
                 && (set==null || setSpecs.contains(set))) {
                 */

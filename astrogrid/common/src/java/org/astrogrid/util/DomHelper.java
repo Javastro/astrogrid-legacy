@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.15 2005/05/09 15:08:03 clq2 Exp $
+   $Id: DomHelper.java,v 1.16 2005/09/08 07:30:54 clq2 Exp $
 
    (c) Copyright...
 */
@@ -267,7 +267,10 @@ public class DomHelper
    
    private static NodeList getNodeListTags(Document doc, String tagName, String namespacePref) {
       NodeList nl = doc.getElementsByTagName(tagName);
-      
+      if(nl.getLength() == 0 && namespacePref == null) {
+          //look for it with some kind of namespace.
+          nl = doc.getElementsByTagNameNS("*",tagName );
+      }      
       if(nl.getLength() == 0 && namespacePref != null) {
          nl = doc.getElementsByTagNameNS(namespacePref,tagName );
       }
@@ -279,7 +282,10 @@ public class DomHelper
    
    private static NodeList getNodeListTags(Element elem, String tagName, String namespacePref) {
       NodeList nl = elem.getElementsByTagName(tagName);
-      
+      if(nl.getLength() == 0 && namespacePref == null) {
+          //look for it with some kind of namespace.
+          nl = elem.getElementsByTagNameNS("*",tagName );
+      }      
       if(nl.getLength() == 0 && namespacePref != null) {
          nl = elem.getElementsByTagNameNS(namespacePref,tagName );
       }
@@ -288,8 +294,6 @@ public class DomHelper
       }
       return nl;
    }
-
-   
    
    
 }

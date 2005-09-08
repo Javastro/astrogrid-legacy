@@ -74,6 +74,8 @@ public class QueryRegistry implements RegistryService {
     
     private static String reg_transform_version = "0.10";
     
+    private static boolean return_soap_body = false;
+    
     protected final Map cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
 
 
@@ -101,6 +103,7 @@ public class QueryRegistry implements RegistryService {
          reg_default_version = conf.getString("org.astrogrid.registry.version",reg_default_version); 
          reg_transform_version = conf.getString("org.astrogrid.registry.result.version",reg_transform_version);
          cacheDir = conf.getString("registry.cache.dir",null);
+         return_soap_body = conf.getBoolean("return.soapbody",false);
       }
    }
 
@@ -221,6 +224,7 @@ public class QueryRegistry implements RegistryService {
       Element currentRoot = null;
       if(nl.getLength() > 0) {
           currentRoot = (Element)nl.item(0);
+          //logger.debug("ADQL WHERE NAMESPACE = " + currentRoot.getNamespaceURI());
           //newRoot.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ad",currentRoot.getNamespaceURI());
       }      
       newRoot.appendChild(currentRoot);
@@ -246,20 +250,25 @@ public class QueryRegistry implements RegistryService {
                  throw new RegistryException(e2);
              }
          }//if
+         re.printStackTrace();
          logger.error(re);         
          throw new RegistryException(re);
       } catch(ServiceException se) {
-          logger.error(se);          
+          logger.error(se);   
+          se.printStackTrace();
           throw new RegistryException(se);
       } catch(Exception e) {
-          logger.error(e);          
+          logger.error(e); 
+          e.printStackTrace();
           throw new RegistryException(e);
       }
    }
    
    protected Document callService(Document soapBody, String name, String soapActionURI) throws RemoteException, ServiceException, Exception {
        Vector result = null;
-       Document resultDoc = null;
+       Document resultDoc = DomHelper.newDocument();
+       Document wsDoc = null;
+       NodeList vResources = null;
            //get a call object
            Call call = getCall();
            call.setSOAPActionURI(soapActionURI);
@@ -267,6 +276,7 @@ public class QueryRegistry implements RegistryService {
            //outgoing soap message.
            SOAPBodyElement sbeRequest =
               new SOAPBodyElement(soapBody.getDocumentElement());
+           logger.debug("SOAP Body element = " + DomHelper.ElementToString(soapBody.getDocumentElement()));
            //go ahead and set the name and namespace on the soap body
            //not sure if this is that important.
            sbeRequest.setName(name);
@@ -277,10 +287,38 @@ public class QueryRegistry implements RegistryService {
            SOAPBodyElement sbe = null;
            if (result.size() > 0) {
               sbe = (SOAPBodyElement)result.get(0);
-              resultDoc = sbe.getAsDocument();
-              //logger.debug("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
-              if(resultDoc.getElementsByTagNameNS("*","Resource").getLength() == 0)
-                  return DomHelper.newDocument();
+              //resultDoc = sbe.getAsDocument();
+              wsDoc = sbe.getAsDocument();
+              logger.debug("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(wsDoc));
+//              if(resultDoc.getElementsByTagNameNS("*","Resource").getLength() == 0)
+//                  return DomHelper.newDocument();
+              if(wsDoc.getDocumentElement() == null) {
+                  logger.error("NO DOCUMENT ELEMENT SHOULD NOT HAPPEN");
+                  throw new Exception("Error Nothing returned in the Message from the Server, should always be something.");
+              }
+              if(return_soap_body) {
+                  resultDoc = wsDoc;
+              }else {
+                  NodeList soapChildNodes = wsDoc.getDocumentElement().getChildNodes();
+                  boolean importedNodes = false;
+                  if( soapChildNodes.getLength() == 0) {
+                      logger.error("NO VOResources found, SHOULD NOT HAPPEN THERE SHOULD ALWAYS BE AN ELEMENT");
+                      throw new Exception("Error No VOResources found, should always be one.");
+                  }else {
+                      for(int i = 0;i < soapChildNodes.getLength();i++) {
+                          if(soapChildNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                              Node importNode = resultDoc.importNode(soapChildNodes.item(i),true);
+                              resultDoc.appendChild(importNode);
+                              importedNodes = true;
+                              i = soapChildNodes.getLength();
+                          }
+                      }//for
+                      if(!importedNodes) {
+                          logger.error("NO VOResources found, SHOULD NOT HAPPEN THERE SHOULD ALWAYS BE AN ELEMENT (Child Nodes were found though)");
+                          throw new Exception("Error No VOResources found, should always be one. (Child Nodes were found in the soap body)");                      
+                      }//if
+                  }//else
+              }//else
 
               if(!reg_default_version.equals(reg_transform_version)) {
                   //hmmm more of a hack for auto-integration than anything else.
@@ -303,8 +341,9 @@ public class QueryRegistry implements RegistryService {
               }//if
               return resultDoc;
            }
-           logger.error("RETURNING NULL FROM CALLSERVICE SHOULD NOT HAPPEN");
-           return null;
+           logger.error("ERROR RESULT FROM WEB SERVICE WAS LITERALLY NOTHING IN THE MESSAGE SHOULD NOT HAPPEN.");
+           throw new Exception("ERROR RESULT FROM WEB SERVICE WAS LITERALLY NOTHING IN THE MESSAGE SHOULD NOT HAPPEN.");
+           //return null;
    }
    
    /**
@@ -395,7 +434,7 @@ public class QueryRegistry implements RegistryService {
       HashMap hm = null;
       Document doc = loadRegistry();
       if (doc != null) {
-            NodeList nl = doc.getElementsByTagNameNS("*","ManagedAuthority");            
+            NodeList nl = doc.getElementsByTagNameNS("*","managedAuthority");            
             hm = new HashMap();
             for (int i = 0; i < nl.getLength(); i++) {
                hm.put(nl.item(i).getFirstChild().getNodeValue(), null);
@@ -427,7 +466,7 @@ public class QueryRegistry implements RegistryService {
            Element root = doc.createElementNS(NAMESPACE_URI, "XQuerySearch");
              String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
              root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);       
-             Element xqueryElem = doc.createElement("xquery");
+             Element xqueryElem = doc.createElementNS(NAMESPACE_URI,"XQuery");
              xqueryElem.appendChild(doc.createTextNode(xquery));
              root.appendChild(xqueryElem);
              doc.appendChild(root);
@@ -466,12 +505,13 @@ public class QueryRegistry implements RegistryService {
              logger.error(e);              
              throw new RegistryException(e);
           }
-   }   
+   } 
+   
+   
    
 
    /**
     * Query for a specific resource in the Registry based on its identifier element(s).
-    * Essentially creates a search query "old style astrogrid" for now.  Based on the identifier.
     * 
     * @param identifier IVORN object.
     * @return XML DOM of Resource queried from the registry. 
@@ -488,7 +528,6 @@ public class QueryRegistry implements RegistryService {
    
    /**
     * Query for a specific resource in the Registry based on its identifier element(s).
-    * Essentially creates a search query "old style astrogrid" for now.  Based on the identifier.
     * 
     * @param identifier string.
     * 
@@ -519,10 +558,10 @@ public class QueryRegistry implements RegistryService {
              registryBuilder =
                 DocumentBuilderFactory.newInstance().newDocumentBuilder();
              doc = registryBuilder.newDocument();
-             Element root = doc.createElementNS(NAMESPACE_URI, "GetResourcesByIdentifier");
+             Element root = doc.createElementNS(NAMESPACE_URI, "GetResource");
              String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
              root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);       
-             Element identElem = doc.createElement("identifier");
+             Element identElem = doc.createElementNS(NAMESPACE_URI, "identifier");
              identElem.appendChild(doc.createTextNode(ident));
              root.appendChild(identElem);
              doc.appendChild(root);
@@ -533,7 +572,7 @@ public class QueryRegistry implements RegistryService {
           }
           try {
               //System.out.println("calling with GetResources now");
-              resultDoc =  callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
+              resultDoc =  callService(doc,"GetResource","GetResource");
               cache.put(ident,resultDoc);
               //System.out.println("resultDoc = " + DomHelper.DocumentToString(resultDoc));
           } catch (RemoteException re) {
@@ -541,7 +580,7 @@ public class QueryRegistry implements RegistryService {
               if(backupEndpoint != null) {
                   QueryRegistry qr = new QueryRegistry(backupEndpoint);              
                   try {
-                      resultDoc = qr.callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
+                      resultDoc = qr.callService(doc,"GetResource","GetResource");
                       cache.put(ident,resultDoc);
                   }catch(RemoteException re2) {
                       logger.error(re2);                      
@@ -596,6 +635,95 @@ public class QueryRegistry implements RegistryService {
             }
        }
    }
+   
+   /**
+    * Method: keywordSearch
+    * Description: client inteface method to call web service method key word search a keyword type
+    * search (with default setting of querying for all words).
+    * @param keywords a space seperated string 
+    * @return XML Document of all the Resources in the registry constrained by the keyword query.
+    * @throws RegistryException
+    */   
+   public Document keywordSearch(String keywords) throws RegistryException { 
+       return keywordSearch(keywords,false);
+   }
+   
+   /**
+    * Method: keywordSearch
+    * Description: client inteface method to call web service method key word search a keyword type
+    * search that lets you put in word(s) seperated by spaces and then by default is and or you can set to true
+    * to look for all the workds.
+    * @param keywords a space seperated string
+    * @param ovValue do you want to look for all the words, by default false. 
+    * @return XML Document of all the Resources in the registry constrained by the keyword query.
+    * @throws RegistryException
+    */  
+   public Document keywordSearch(String keywords,boolean orValue) throws RegistryException {    
+       Document doc = null;
+       Document resultDoc = null;
+       logger.debug("entered keywordSearch");
+      
+       if (!useCache) {
+           resultDoc = (Document)cache.get(keywords);
+           if(resultDoc != null) return resultDoc;
+           logger.debug("KeywordSearch() not using cache");
+           try {
+
+             DocumentBuilder registryBuilder = null;
+             registryBuilder =
+                DocumentBuilderFactory.newInstance().newDocumentBuilder();
+             doc = registryBuilder.newDocument();
+             Element root = doc.createElementNS(NAMESPACE_URI, "KeywordSearch");
+             String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
+             root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);       
+             Element keywordElem = doc.createElementNS(NAMESPACE_URI,"keywords");
+             keywordElem.appendChild(doc.createTextNode(keywords));
+             root.appendChild(keywordElem);
+             Element orValueElem = doc.createElementNS(NAMESPACE_URI, "orValue");
+             orValueElem.appendChild(doc.createTextNode(java.lang.String.valueOf(orValue)));
+             root.appendChild(orValueElem);             
+             doc.appendChild(root);
+             //System.out.println("the DOC IN GETRESOURCEBYIDNET1 = " + DomHelper.ElementToString(doc.getDocumentElement()));
+          } catch (ParserConfigurationException pce) {
+              logger.error(pce);                   
+              throw new RegistryException(pce);
+          }
+          try {
+              //System.out.println("calling with GetResources now");
+              resultDoc =  callService(doc,"KeywordSearch","KeywordSearch");
+              cache.put(keywords,resultDoc);
+              //System.out.println("resultDoc = " + DomHelper.DocumentToString(resultDoc));
+          } catch (RemoteException re) {
+              URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+              if(backupEndpoint != null) {
+                  QueryRegistry qr = new QueryRegistry(backupEndpoint);              
+                  try {
+                      resultDoc = qr.callService(doc,"KeywordSearch","KeywordSearch");
+                      cache.put(keywords,resultDoc);
+                  }catch(RemoteException re2) {
+                      logger.error(re2);                      
+                      throw new RegistryException(re2);    
+                  }catch(ServiceException se2) {
+                      logger.error(se2);                       
+                      throw new RegistryException(se2);
+                  }catch(Exception e2) {
+                      logger.error(e2);                         
+                      throw new RegistryException(e2);
+                  }
+              }
+              logger.error(re);                 
+              throw new RegistryException(re);
+          } catch (ServiceException se) {
+              logger.error(se);                 
+              throw new RegistryException(se);
+          } catch (Exception e) {
+              logger.error(e);                 
+              throw new RegistryException(e);
+          }
+       }
+       return resultDoc;
+   }
+   
    
    /**
     * Method: getQueryForInterfacetype

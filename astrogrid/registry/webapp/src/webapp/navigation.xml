@@ -31,6 +31,14 @@
          <li><a href="resourceHelp.jsp">Resource Help</a>
       </ul>
    </div>
+   <div id='menuExternal'>
+      <h5>External Tests</h5>
+      <ul>
+         <li><a href="externaladqlquery.jsp">Query (ADQL)</a>
+         <li><a href="externalkeywordquery.jsp">Keyword Search</a>
+         <li><a href="externalResourceEntry.jsp">Ivorn Lookup</a>
+      </ul>
+   </div>
 </div>
 </div>
 

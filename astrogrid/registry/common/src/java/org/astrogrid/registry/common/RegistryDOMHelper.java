@@ -167,7 +167,7 @@ public class RegistryDOMHelper {
     */
    public static String getRegistryVersionFromNode(Node nd) {
        if(nd == null || Node.ELEMENT_NODE != nd.getNodeType()) {
-           log.info("not a ELEMENT NODE TIME TO JUST DEFAULT IT");
+           log.debug("not a ELEMENT NODE TIME TO JUST DEFAULT IT");
            if(nd != null) {
                Node parentNodeTry = nd.getParentNode();
                if(parentNodeTry != null) {
@@ -178,14 +178,14 @@ public class RegistryDOMHelper {
        }
        
        String version = nd.getNamespaceURI();
-       log.info("Node Name = " + nd.getNodeName() + " Version = " + version);
+       log.debug("Node Name = " + nd.getNodeName() + " Version = " + version);
        if(version != null && version.trim().length() > 0 &&
           version.startsWith("http://www.ivoa.net/xml/VOResource")) {
            return version.substring(version.lastIndexOf("v")+1);
        }
        //darn did not find a namespace uri that was VOResource.
        version = DomHelper.getNodeAttrValue((Element)nd,"vr","xmlns");
-       log.info("Node Name = " + nd.getNodeName() + " Version = " + version);
+       log.debug("Node Name = " + nd.getNodeName() + " Version = " + version);
        if(version != null && version.trim().length() > 0) {
            
            return version.substring(version.lastIndexOf("v")+1);
