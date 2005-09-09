@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.8 2005/09/09 08:09:51 KevinBenson Exp $
+/*$Id: RegistryChooserPanel.java,v 1.9 2005/09/09 08:45:40 KevinBenson Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,9 +113,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
             fireTableDataChanged();
             if(ri.length > 0) {
                 //System.out.println("Number of Results Found: " + ri.length);
-                parent.setStatusMessage("Number of Results Found: " + ri.length);
+                //parent.setStatusMessage("Number of Results Found: " + ri.length);
             }else {
-                parent.setStatusMessage("No Results Found.");
+                //parent.setStatusMessage("No Results Found.");
             }//else            
         }
         // makes a checkbox appear in col 1
@@ -325,7 +325,8 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
              }
          });        
          centerPanel.add(new JLabel("Results: "));
-         centerPanel.add(selectTable);         
+         centerPanel.add(selectTable);
+         
          //centerPanel.add(lookEveryWhere);
          //lookEveryWhere.setToolTipText("Search all text in a Resource");
          //lookEveryWhere.addActionListener(this);
@@ -401,6 +402,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
             //goButton.setIcon(IconHelper.loadIcon("update.gif"));
             goButton.setToolTipText("Retrieve this resource");
             goButton.addActionListener(this);
+            //parent.setDefaultButton(goButton);
         }
         return goButton;
     }
@@ -444,17 +446,26 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     
    private ResourceInformation[] query(String keywords)  throws NotFoundException, ServiceException {
        String sql = "Select * from Registry where ";
-       String joinSQL = " or ";
+       String joinSQL = null;;
        String []keyword = keywords.split(" ");
        for(int j = 0;j < keyword.length;j++) {
-           sql += "(vr:title like '" + keyword[j] + "'" + " or " +
-           "vr:description like '" + keyword[j] + "'" + " or " +
-           "vr:identifier like '" + keyword[j] + "'" + " or " +
-           "vr:shortName like '" + keyword[j] + "'" + " or " +
-           "vr:subject like '" + keyword[j] + "')";
-           if(j != (keyword.length - 1)) {
-               sql += " " + joinSQL + " ";
-           }//if
+           joinSQL = null;
+           if(keyword[j].trim().toLowerCase().equals("and")) {
+              joinSQL = " and "; 
+           }else if(keyword[j].trim().toLowerCase().equals("or")) {
+               joinSQL = " or ";
+           }else {
+               if(joinSQL == null) joinSQL = " or ";
+               
+               sql += "(vr:title like '" + keyword[j] + "'" + " or " +
+               "vr:description like '" + keyword[j] + "'" + " or " +
+               "vr:identifier like '" + keyword[j] + "'" + " or " +
+               "vr:shortName like '" + keyword[j] + "'" + " or " +
+               "vr:subject like '" + keyword[j] + "')";
+               if(j != (keyword.length - 1)) {
+                   sql += joinSQL;
+               }//if
+           }
        }//for
        return reg.adqlSearchRI(sql);
    }
@@ -463,11 +474,19 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
        String sql = "Select * from Registry where ";
        String joinSQL = " or ";
        String []keyword = keywords.split(" ");
-       for(int j = 0;j < keyword.length;j++) {
-           sql += "(* like '" + keyword[j] + "')";
-           if(j != (keyword.length - 1)) {
-               sql += " " + joinSQL + " ";
-           }//if
+       for(int j = 0;j < keyword.length;j++) {           
+           joinSQL = null;
+           if(keyword[j].trim().toLowerCase().equals("and")) {
+              joinSQL = " and "; 
+           }else if(keyword[j].trim().toLowerCase().equals("or")) {
+               joinSQL = " or ";
+           }else {
+               if(joinSQL == null) joinSQL = " or ";
+               sql += "(* like '" + keyword[j] + "')";
+               if(j != (keyword.length - 1)) {
+                   sql += " " + joinSQL + " ";
+               }//if
+           }
        }//for
        return reg.adqlSearchRI(sql);
    }
@@ -524,6 +543,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.9  2005/09/09 08:45:40  KevinBenson
+added "and"/"or" ability to be placed in the text field so it will be ignored and be used for the join operations between keywords
+
 Revision 1.8  2005/09/09 08:09:51  KevinBenson
 small changes on the query side to put them in methods to better do exhuastivequeries
 
