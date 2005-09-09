@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.10 2005/09/09 09:59:14 nw Exp $
+/*$Id: RegistryChooserPanel.java,v 1.11 2005/09/09 10:19:39 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import org.apache.axis.utils.XMLUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.w3c.dom.Document;
 
@@ -404,10 +405,14 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     }
     
    private ResourceInformation[] query(String keywords)  throws NotFoundException, ServiceException {
-       String sql = "Select * from Registry where ";
-       String joinSQL = null;;
-       String []keyword = keywords.split(" ");
-                for(int j = 0;j < keyword.length;j++) {
+       String sql = "Select * from Registry where "; 
+       boolean shallFilter = filter != null && filter.trim().length() > 0;
+       String joinSQL = null;
+       String []keyword = StringUtils.split(keywords); // NWW - more robust than String.split() - which takes a regexp 
+       if (keyword.length > 0 && shallFilter) {
+           sql += "("; //NWW  - added paren here - makes it easier to glue on filter if needed. or can just query on filter if keywords == ""
+       }
+       for(int j = 0;j < keyword.length;j++) { // NWW - this doesn't handle ( ), and operator precedence at the moment. needs a little syntax tree here eventually.
            joinSQL = null;
            if(keyword[j].trim().toLowerCase().equals("and")) {
               joinSQL = " and "; 
@@ -425,10 +430,17 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                    sql += joinSQL;
                     }//if
            }
-                  }//for
+       }//for
+       if (keyword.length > 0 && shallFilter) {
+           sql +=") and ";
+       }
+    if (shallFilter) {
+           sql += " (" + filter + ")";
+       } 
        return reg.adqlSearchRI(sql);
    }
    
+   // NWW - decided not to add filter to exhaustive query - so that is always brings back everything.
    private ResourceInformation[] exhaustiveQuery(String keywords)  throws NotFoundException, ServiceException {
        String sql = "Select * from Registry where ";
        String joinSQL = " or ";
@@ -501,6 +513,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.11  2005/09/09 10:19:39  nw
+implemented filtering
+
 Revision 1.10  2005/09/09 09:59:14  nw
 fixed status bar messages.
 
