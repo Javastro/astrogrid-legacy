@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.9 2005/09/09 08:45:40 KevinBenson Exp $
+/*$Id: RegistryChooserPanel.java,v 1.10 2005/09/09 09:59:14 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,6 +48,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -64,8 +65,6 @@ import javax.xml.transform.stream.StreamResult;
 /**
  * Implementation of the registry-google chooser.
  *@todo later add bookmark component. - won't affect public inteface, just implementation
- *@todo problems : nww - can't work out how to get split pane, etc to fill whole screen.
- *                                 - need to find out how to make tooltips split across lines - do I need to paginate the text by hand?
  */
 public class RegistryChooserPanel extends JPanel implements ActionListener {
     
@@ -134,6 +133,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         public void clear() {
             ri = new ResourceInformation[]{};
             selectionModel.clearSelection();
+            listModel.clear();
             fireTableDataChanged();
         }
 
@@ -204,57 +204,38 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
    
     private JTextField keywordField = null;
     private JButton goButton = null;
-    //JButton lookEveryWhere = new JButton("Search");
     
     /** assemble the ui */
     private void initialize() {
         this.setSize(new Dimension(300,500));
         
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setLayout(new BorderLayout());
         add(getTopPanel(),BorderLayout.NORTH);
-        
-        //JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        //split.setPreferredSize(new Dimension(300,200));
-        //split.setDividerSize(5);
-        //split.setDividerLocation(70);
-        //split.add(new JScrollPane(getCenterPanel()));
-        //split.add(getBottomPanel());
 
-        //JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,new JScrollPane(getCenterPanel()),getBottomPanel());
         JScrollPane jp = new JScrollPane(getCenterPanel());
         
         JComponent bottomComp = getBottomPanel();
         jp.setPreferredSize(new Dimension(300,200));
-        //jp.setSize(new Dimension(300,200));
         bottomComp.setPreferredSize(new Dimension(300,200));
-        //bottomComp.setSize(new Dimension(300,200));
         
         split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jp,bottomComp);
         split.setPreferredSize(new Dimension(300,200));
         split.setSize(new Dimension(300,200));
-        //split.setPreferredSize(new Dimension(300,200));
         split.setDividerSize(5);
-        split.setDividerLocation(70);
-        
-        //Dimension parentDim = parent.getSize();
-        //split.setPreferredSize(new Dimension(parentDim.width,200));
+        split.setDividerLocation(70);       
         add(split,BorderLayout.CENTER);
-        //split.setVisible(false);
-        //add(noResultsLabel,BorderLayout.SOUTH);
-        //noResultsLabel.setVisible(false);
     }
     JSplitPane split = null;
     JLabel noResultsLabel = new JLabel("No Results Found");
-    JCheckBox exhaustiveCheck = new JCheckBox("Exhaustive Search");
+    JCheckBox exhaustiveCheck = new JCheckBox("Full-text Search");
     
     private JPanel getTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-        topPanel.add(new JLabel("Keywords: "), null);
-        topPanel.add(getKeywordField(), null);        
-        //add this exhaustiveCheck somewhere.
+        topPanel.add(new JLabel("Find: "), null);
+        topPanel.add(getKeywordField(), null);
         topPanel.add(getGoButton(), null);
+        exhaustiveCheck.setToolTipText("Search all text in the registry resources");
         topPanel.add(exhaustiveCheck,null);
         return topPanel;
     }
@@ -295,16 +276,13 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
          };
          
          selectTable.getColumnModel().getColumn(0).setPreferredWidth(8);
-         selectTable.getColumnModel().getColumn(0).setMaxWidth(8);
-         //selectTable.setPreferredScrollableViewportSize(new Dimension(300, 70));
-         
+         selectTable.getColumnModel().getColumn(0).setMaxWidth(10);
+         selectTable.setToolTipText("Results");
          
          selectTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
              public void valueChanged(ListSelectionEvent e) {
                  ListSelectionModel lsm = (ListSelectionModel)e.getSource();
                  if (lsm.isSelectionEmpty()) {
-                     //System.out.println("No rows are selected.");
-                     //System.out.println("the value at col 0 and row 0 = " + fromTableModel.getValueAt(0,0));
                      if(selectTableModel.getRowCount() > 0) {
                          editorPane.setText("<html><body></body></html>");
                      }
@@ -324,13 +302,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                  }
              }
          });        
-         centerPanel.add(new JLabel("Results: "));
-         centerPanel.add(selectTable);
-         
-         //centerPanel.add(lookEveryWhere);
-         //lookEveryWhere.setToolTipText("Search all text in a Resource");
-         //lookEveryWhere.addActionListener(this);
-         //centerPanel.setPreferredSize(new Dimension(parentDim.width,200));
+         centerPanel.add(selectTable);         
          return centerPanel;
     }
     
@@ -362,21 +334,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         JScrollPane editorScrollPane = new JScrollPane(editorPane);
         editorScrollPane.setVerticalScrollBarPolicy(
                         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        //editorScrollPane.setPreferredSize(new Dimension(300, 145));
-        Dimension parentDim = parent.getSize();
-        //editorScrollPane.setPreferredSize(new Dimension(parentDim.width,200));
-        //editorScrollPane.setMinimumSize(new Dimension(100, 100));
         return editorScrollPane;
     }
-    
-    /*
-     * Xml2XhtmlTransformer htmlXSL = new Xml2XhtmlTransformer(Xml2XhtmlTransformer.getStyleSource());
-     * String htmlString = (String)htmlXSL.transform(reg.getRecord(selectTableModel.getValueAt(editRow,1)));
-     * editorPane.setText(htmlString);
-     * 
-     */
-    
-    
+               
     
     /**
      * This method initializes jTextField   
@@ -386,7 +346,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     private JTextField getKeywordField() {
         if (keywordField == null) {
             keywordField = new JTextField();
-            keywordField.setToolTipText("<html>Enter the key of a resource to view it <br>- e.g <tt>ivo://uk.ac.le.star/filemanager</tt></html>");
+            keywordField.setToolTipText("<html>Enter keywords to search for,<br> logical connectors (AND, OR),<br> or the key of a resource - e.g <tt>ivo://org.astrogrid/Galaxev</tt></html>");
             //keywordField.addActionListener(this);
         }
         return keywordField;
@@ -398,9 +358,8 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
      */    
     private JButton getGoButton() {
         if (goButton == null) {
-            goButton = new JButton("Go");
-            //goButton.setIcon(IconHelper.loadIcon("update.gif"));
-            goButton.setToolTipText("Retrieve this resource");
+            goButton = new JButton("Search");
+            goButton.setToolTipText("Retrieve matching resources from the registry");
             goButton.addActionListener(this);
             //parent.setDefaultButton(goButton);
         }
@@ -414,33 +373,33 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         final String keywords = keywordField.getText();
         final Object source = e.getSource();
         (new BackgroundWorker(parent,"Searching") {
-            protected Object construct() throws Exception {
-                String sql = "Select * from Registry where ";
-                String joinSQL = " or ";
-                String []keyword = keywords.split(" ");
-                ResourceInformation []ri = null;
-                if(source == goButton) {
-                    //if(anyKeywords.)
+            protected Object construct() throws Exception {        
                     if(exhaustiveCheck.isSelected()) {
-                        ri = exhaustiveQuery(keywords);
+                        return exhaustiveQuery(keywords); // don't want to try again..
                     }else {
-                        ri = query(keywords);
+                        ResourceInformation[] ri = query(keywords);                    
+                        if(ri.length == 0) { // try harder...   
+                            SwingUtilities.invokeLater(new Runnable() { // put ui-updating code back on the ui thread..
+                                public void run() {
+                                    exhaustiveCheck.setSelected(true);
+                                    parent.setStatusMessage("Quick search gave no results - trying exhaustive search");
+                                }
+                            });
+                            ri = exhaustiveQuery(keywords);
+                        }
+                        return ri;
                     }
-                    if(ri.length > 0) {
-                        System.out.println("Number of Results Found: " + ri.length);
-                        //parent.setStatusMessage("Number of Results Found: " + ri.length);
-                    }else {
-                        ri = exhaustiveQuery(keywords);
-                    }//else                    
-                }//if
-                return ri;
             }
             protected void doFinished(Object result) {
                 clear();                
                 ResourceInformation[] ri = (ResourceInformation[])result;
                 selectTableModel.setRows(ri);
             }
-        
+            
+            protected void doAlways() {
+                parent.setStatusMessage("Found " + selectTableModel.getRowCount() + " matching resources");
+            }
+
        }).start();
     }
     
@@ -448,7 +407,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
        String sql = "Select * from Registry where ";
        String joinSQL = null;;
        String []keyword = keywords.split(" ");
-       for(int j = 0;j < keyword.length;j++) {
+                for(int j = 0;j < keyword.length;j++) {
            joinSQL = null;
            if(keyword[j].trim().toLowerCase().equals("and")) {
               joinSQL = " and "; 
@@ -457,16 +416,16 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
            }else {
                if(joinSQL == null) joinSQL = " or ";
                
-               sql += "(vr:title like '" + keyword[j] + "'" + " or " +
-               "vr:description like '" + keyword[j] + "'" + " or " +
-               "vr:identifier like '" + keyword[j] + "'" + " or " +
-               "vr:shortName like '" + keyword[j] + "'" + " or " +
-               "vr:subject like '" + keyword[j] + "')";
-               if(j != (keyword.length - 1)) {
+                    sql += "(vr:title like '" + keyword[j] + "'" + " or " +
+                    "vr:description like '" + keyword[j] + "'" + " or " +
+                    "vr:identifier like '" + keyword[j] + "'" + " or " +
+                    "vr:shortName like '" + keyword[j] + "'" + " or " +
+                    "vr:subject like '" + keyword[j] + "')";
+                    if(j != (keyword.length - 1)) {
                    sql += joinSQL;
-               }//if
+                    }//if
            }
-       }//for
+                  }//for
        return reg.adqlSearchRI(sql);
    }
    
@@ -474,7 +433,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
        String sql = "Select * from Registry where ";
        String joinSQL = " or ";
        String []keyword = keywords.split(" ");
-       for(int j = 0;j < keyword.length;j++) {           
+                for(int j = 0;j < keyword.length;j++) {
            joinSQL = null;
            if(keyword[j].trim().toLowerCase().equals("and")) {
               joinSQL = " and "; 
@@ -482,17 +441,17 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                joinSQL = " or ";
            }else {
                if(joinSQL == null) joinSQL = " or ";
-               sql += "(* like '" + keyword[j] + "')";
-               if(j != (keyword.length - 1)) {
-                   sql += " " + joinSQL + " ";
-               }//if
+                    sql += "(* like '" + keyword[j] + "')";
+                    if(j != (keyword.length - 1)) {
+                        sql += " " + joinSQL + " ";
+                    }//if
            }
-       }//for
+                  }//for
        return reg.adqlSearchRI(sql);
-   }
-   
+                }
+                    
    private String filter = null;
-    
+                    
     /** set an additional result filter
      * @todo implemnt
      * @param filter an adql-like where clause, null indicates 'no filter'
@@ -519,11 +478,10 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
    }
    
    /** clear display, set selectedResources == null 
-    * @todo implement
     *
     */
    public void clear() { 
-       selectTableModel.clear();      
+       selectTableModel.clear();         
    }
    
 
@@ -543,6 +501,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.10  2005/09/09 09:59:14  nw
+fixed status bar messages.
+
 Revision 1.9  2005/09/09 08:45:40  KevinBenson
 added "and"/"or" ability to be placed in the text field so it will be ignored and be used for the join operations between keywords
 
