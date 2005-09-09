@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.7 2005/09/08 13:53:30 KevinBenson Exp $
+/*$Id: RegistryChooserPanel.java,v 1.8 2005/09/09 08:09:51 KevinBenson Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.desktop.modules.dialogs.registry;
 
 import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -109,6 +111,12 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         public void setRows(ResourceInformation[] ri) {
             this.ri = ri;
             fireTableDataChanged();
+            if(ri.length > 0) {
+                //System.out.println("Number of Results Found: " + ri.length);
+                parent.setStatusMessage("Number of Results Found: " + ri.length);
+            }else {
+                parent.setStatusMessage("No Results Found.");
+            }//else            
         }
         // makes a checkbox appear in col 1
         public Class getColumnClass(int columnIndex) {
@@ -198,9 +206,6 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     private JButton goButton = null;
     //JButton lookEveryWhere = new JButton("Search");
     
-    private JCheckBox anyKeywords = new JCheckBox("Any");
-    
-    
     /** assemble the ui */
     private void initialize() {
         this.setSize(new Dimension(300,500));
@@ -247,10 +252,10 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         topPanel.add(new JLabel("Keywords: "), null);
-        topPanel.add(getKeywordField(), null);
-        //topPanel.add(anyKeywords,null);
+        topPanel.add(getKeywordField(), null);        
         //add this exhaustiveCheck somewhere.
         topPanel.add(getGoButton(), null);
+        topPanel.add(exhaustiveCheck,null);
         return topPanel;
     }
 
@@ -409,64 +414,72 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         (new BackgroundWorker(parent,"Searching") {
             protected Object construct() throws Exception {
                 String sql = "Select * from Registry where ";
-                //String joinSQL = " and ";
                 String joinSQL = " or ";
-                if(anyKeywords.isSelected()) {
-                    joinSQL = " or ";
-                }
                 String []keyword = keywords.split(" ");
                 ResourceInformation []ri = null;
                 if(source == goButton) {
-                    for(int j = 0;j < keyword.length;j++) {
-                        sql += "(vr:title like '" + keyword[j] + "'" + " or " +
-                        "vr:description like '" + keyword[j] + "'" + " or " +
-                        "vr:identifier like '" + keyword[j] + "'" + " or " +
-                        "vr:shortName like '" + keyword[j] + "'" + " or " +
-                        "vr:subject like '" + keyword[j] + "')";
-                        if(j != (keyword.length - 1)) {
-                            sql += " " + joinSQL + " ";
-                        }//if
-                    }//for
-                    ri = reg.adqlSearchRI(sql);
+                    //if(anyKeywords.)
+                    if(exhaustiveCheck.isSelected()) {
+                        ri = exhaustiveQuery(keywords);
+                    }else {
+                        ri = query(keywords);
+                    }
                     if(ri.length > 0) {
                         System.out.println("Number of Results Found: " + ri.length);
                         //parent.setStatusMessage("Number of Results Found: " + ri.length);
                     }else {
-                        //parent.setStatusMessage("No Results Found.  Now attempting Full/Exhaustive Search");
-                        sql = "Select * from Registry where ";
-                        for(int j = 0;j < keyword.length;j++) {
-                            sql += "(* like '" + keyword[j] + "')";
-                            if(j != (keyword.length - 1)) {
-                                sql += " " + joinSQL + " ";
-                            }//if
-                        }//for
-                        ri = reg.adqlSearchRI(sql);
-                    }//else
-                    
+                        ri = exhaustiveQuery(keywords);
+                    }//else                    
                 }//if
                 return ri;
             }
             protected void doFinished(Object result) {
                 clear();                
                 ResourceInformation[] ri = (ResourceInformation[])result;
-                if(ri.length > 0) {
-                    //System.out.println("Number of Results Found: " + ri.length);
-                    parent.setStatusMessage("Number of Results Found: " + ri.length);
-                }else {
-                    parent.setStatusMessage("No Results Found.");
-                }//else
                 selectTableModel.setRows(ri);
             }
         
        }).start();
     }
     
+   private ResourceInformation[] query(String keywords)  throws NotFoundException, ServiceException {
+       String sql = "Select * from Registry where ";
+       String joinSQL = " or ";
+       String []keyword = keywords.split(" ");
+       for(int j = 0;j < keyword.length;j++) {
+           sql += "(vr:title like '" + keyword[j] + "'" + " or " +
+           "vr:description like '" + keyword[j] + "'" + " or " +
+           "vr:identifier like '" + keyword[j] + "'" + " or " +
+           "vr:shortName like '" + keyword[j] + "'" + " or " +
+           "vr:subject like '" + keyword[j] + "')";
+           if(j != (keyword.length - 1)) {
+               sql += " " + joinSQL + " ";
+           }//if
+       }//for
+       return reg.adqlSearchRI(sql);
+   }
+   
+   private ResourceInformation[] exhaustiveQuery(String keywords)  throws NotFoundException, ServiceException {
+       String sql = "Select * from Registry where ";
+       String joinSQL = " or ";
+       String []keyword = keywords.split(" ");
+       for(int j = 0;j < keyword.length;j++) {
+           sql += "(* like '" + keyword[j] + "')";
+           if(j != (keyword.length - 1)) {
+               sql += " " + joinSQL + " ";
+           }//if
+       }//for
+       return reg.adqlSearchRI(sql);
+   }
+   
+   private String filter = null;
+    
     /** set an additional result filter
      * @todo implemnt
      * @param filter an adql-like where clause, null indicates 'no filter'
      */
    public void setFilter(String filter) {
-       
+       this.filter = filter;       
    }
 
    
@@ -511,6 +524,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.8  2005/09/09 08:09:51  KevinBenson
+small changes on the query side to put them in methods to better do exhuastivequeries
+
 Revision 1.7  2005/09/08 13:53:30  KevinBenson
 small change to wordwrap text
 
