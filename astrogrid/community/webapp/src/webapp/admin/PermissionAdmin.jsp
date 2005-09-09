@@ -6,7 +6,6 @@
                  org.astrogrid.community.server.policy.manager.ResourceManagerImpl,                 
                  org.astrogrid.community.server.policy.manager.PermissionManagerImpl,
                  org.astrogrid.community.resolver.policy.manager.PolicyManagerResolver,
-                 org.astrogrid.registry.client.query.ResourceData,
                  org.astrogrid.store.Ivorn,
                  java.net.URI,
                  org.astrogrid.community.client.policy.manager.PolicyManagerDelegate,
@@ -45,6 +44,10 @@ if(removePermission != null && removePermission.trim().length() > 0) {
      } else {
          pmi.addPermission(request.getParameter("resource"),request.getParameter("group"),request.getParameter("action"));
          info = "Permission was added for group = " + request.getParameter("group") + " with resource = " + request.getParameter("resource");
+         //PolicyPermission pptest2 = pmi.getPermission(request.getParameter("resource"),request.getParameter("group"),request.getParameter("action"));
+         //if(pptest2 != null) {
+           //System.out.println("the pptest2 is not null");
+         //}
       }
 }else if(getCommunity != null && getCommunity.trim().length() > 0) {
    Ivorn ivorn = new Ivorn(request.getParameter("community"));
@@ -64,7 +67,9 @@ Object[] groupMembers = pmi.getGroupMembers();
 Object[] resources = pmi.getResources();
 Object[] permissions = pmi.getPermissions();
 
-ResourceData[] communityServices = pmr.resolve();
+//System.out.println("the size of permissions = " + permissions.length);
+
+org.astrogrid.registry.client.query.ResourceData[] communityServices = pmr.resolve();
 
 %>
 <html>
@@ -84,15 +89,30 @@ ResourceData[] communityServices = pmr.resolve();
       <p>
          <strong><font color="blue"><%=info%></font></strong><br />
          Permission Member administration page, here you can add, edit, or delete accounts to groups.
-         <form method="get" />      
+         <%
+         	if(groups == null || groups.length == 0 || resources == null || resources.length == 0) {
+	         	if(groups == null || groups.length == 0) {
+	         		out.write("<br /><font color='red'>No groups found for adding permissions</font><br />");
+	         	}
+	         	if(resources == null || resources.length == 0) {
+	         		out.write("<br /><font color='red'>No resources found for adding permissions</font><br />");
+	         	}         
+         	}
+         else { %>
+         <form method="get" />
             <input type="hidden" name="AddPermission" value="true" />
             <strong>Groups from <%= currentCommunity %> Community:</strong>
             <select name="group">
-               <% for(int i = 0;i < groups.length;i++) { %>
+               <% 
+               boolean foundMulti = false;                              
+               for(int i = 0;i < groups.length;i++) { 
+	        				if(GroupData.MULTI_TYPE.equals(((GroupData)groups[i]).getType())) {	        				
+	        				   foundMulti = true;            
+					%>	        				      
                   <option value="<%= ((GroupData)groups[i]).getIdent() %>">
                      <%= ((GroupData)groups[i]).getDisplayName() %>
                   </option>
-               <% } %>
+               <% } } %>
             </select>
             <br />
             <strong>Resources:</strong>
@@ -105,8 +125,16 @@ ResourceData[] communityServices = pmr.resolve();
             </select>
             <br />
             <input type="text" name="action" value="read" /><br />
-            <input type="submit" name="AddPermissionSubmit" value="Add Permission" />
+				<%
+              if(!foundMulti) {
+                out.write("<font color='red'>No MULTI groups found, meaning you cannot add permissions to MULTI groups." +
+                            " Which is all that is allowed at this moment, later it can be single/individual groups." +
+                            " No submit will be seen.</font><br />");
+              } else {  %>
+            	<input type="submit" name="AddPermissionSubmit" value="Add Permission" />
+              <% } %>
          </form>
+         <% } %>
       <br />
       Get Groups from another community
          <form method="get" />      
@@ -114,8 +142,8 @@ ResourceData[] communityServices = pmr.resolve();
             <strong>Communities:</strong>
             <select name="community">
                <% for(int i = 0;i < communityServices.length;i++) { %>
-                  <option value="<%= ((ResourceData)communityServices[i]).getIvorn() %>">
-                     <%= ((ResourceData)communityServices[i]).getTitle() %> -- <%= ((ResourceData)communityServices[i]).getIvorn().toUri().getAuthority() %>
+                  <option value="<%= ((org.astrogrid.registry.client.query.ResourceData)communityServices[i]).getIvorn() %>">
+                     <%= ((org.astrogrid.registry.client.query.ResourceData)communityServices[i]).getTitle() %> -- <%= ((org.astrogrid.registry.client.query.ResourceData)communityServices[i]).getIvorn().toUri().getAuthority() %>
                   </option>
                <% } %>
             </select>            

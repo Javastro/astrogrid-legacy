@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:date>$Date: 2005/09/09 11:39:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.17  2005/09/09 11:39:00  clq2
+    |   Comm_KMB_1097
+    |
+    |   Revision 1.16.2.1  2005/08/09 17:03:09  KevinBenson
+    |   copy all the xml files from the config directory.
+    |
     |   Revision 1.16  2005/08/04 09:40:11  clq2
     |   kevin's second batch
     |
@@ -286,11 +292,7 @@
             | Copy our database configuration files.
             +-->
         <ant:copy verbose="false" todir="${maven.build.dest}">
-            <ant:fileset dir="src/config/database">
-                <include name="astrogrid-community-mapping.xml"/>
-                <include name="astrogrid-community-database.xml"/>
-                <include name="astrogrid-community-database.sql"/>
-            </ant:fileset>
+            <ant:fileset dir="src/config/database" />
         </ant:copy>
     </preGoal>
 

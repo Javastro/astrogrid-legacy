@@ -1,11 +1,18 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/xsl/database-config.xsl,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/09/09 11:39:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: database-config.xsl,v $
+    |   Revision 1.4  2005/09/09 11:39:00  clq2
+    |   Comm_KMB_1097
+    |
+    |   Revision 1.3.196.1  2005/08/09 14:23:46  KevinBenson
+    |   cleared up docs when it comes to other databases.  and made a small fix to use the jndi
+    |   instead of driver element in server/src/config/astrogrid-database-config.xml by changing the database-config.xsl
+    |
     |   Revision 1.3  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -43,7 +50,7 @@
         </xsl:copy>
     </xsl:template>
 
-    <!-- Match the database driver element -->
+    <!-- Match the database driver element 
     <xsl:template match="/database/driver">
         <xsl:copy>
             <xsl:attribute name="class-name">
@@ -55,8 +62,39 @@
             <xsl:apply-templates/>
         </xsl:copy>
     </xsl:template>
+	-->
 
-    <!-- Match the database user name param -->
+    <xsl:template match="/database/jndi">
+		<xsl:element name="driver">
+            <xsl:attribute name="class-name">
+                <xsl:value-of select="$driver"/>
+            </xsl:attribute>
+            <xsl:attribute name="url">
+                <xsl:value-of select="$url"/>
+            </xsl:attribute>
+
+			<xsl:element name="param">
+            <xsl:attribute name="name">
+                <xsl:text>user</xsl:text>
+            </xsl:attribute>
+            <xsl:attribute name="value">
+                <xsl:value-of select="$user"/>
+            </xsl:attribute>
+			</xsl:element>
+
+			<xsl:element name="param">
+            <xsl:attribute name="name">
+                <xsl:text>password</xsl:text>
+            </xsl:attribute>
+            <xsl:attribute name="value">
+                <xsl:value-of select="$pass"/>
+            </xsl:attribute>
+			</xsl:element>
+		</xsl:element>
+            <xsl:apply-templates/>
+    </xsl:template>
+
+    <!-- Match the database user name param 
     <xsl:template match="/database/driver/param[@name = 'user']">
         <xsl:copy>
             <xsl:attribute name="name">
@@ -67,8 +105,9 @@
             </xsl:attribute>
         </xsl:copy>
     </xsl:template>
+	-->
 
-    <!-- Match the database password param -->
+    <!-- Match the database password param 
     <xsl:template match="/database/driver/param[@name = 'password']">
         <xsl:copy>
             <xsl:attribute name="name">
@@ -79,6 +118,7 @@
             </xsl:attribute>
         </xsl:copy>
     </xsl:template>
+	-->
 
     <!-- Match the database mapping element -->
     <xsl:template match="/database/mapping">

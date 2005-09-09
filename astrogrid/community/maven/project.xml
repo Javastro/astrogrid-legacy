@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/12/23 12:47:56 $</cvs:date>
-    | <cvs:version>$Revision: 1.22 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/09/09 11:39:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.23 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.23  2005/09/09 11:39:00  clq2
+    |   Comm_KMB_1097
+    |
+    |   Revision 1.22.74.1  2005/08/09 09:31:45  KevinBenson
+    |   now uses xerces bundled in the webapp.
+    |
     |   Revision 1.22  2004/12/23 12:47:56  jdt
     |   A few simplifications to the pom
     |
@@ -153,6 +159,28 @@
             <artifactId>log4j</artifactId>
             <version>1.2.8</version>
         </dependency>
+    	
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.7.1</version>
+            <properties>
+	        	<war.bundle>true</war.bundle>            	
+            	<jar.fileset>true</jar.fileset>
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          	<version>2.7.1</version>
+            <properties>
+	        	<war.bundle>true</war.bundle>            	
+	            <jar.fileset>true</jar.fileset>
+            </properties>        	
+        </dependency>
+    	
+    	
     </dependencies>
 
 </project>

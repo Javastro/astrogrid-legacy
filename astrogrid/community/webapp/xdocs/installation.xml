@@ -35,14 +35,17 @@
  file and drop it into the webapps directory.
       </p>
       </subsection>
-      <subsection name="Database installatin">
-         The community webapp is intended to be able to work with any database and hence is expected for you to setup and connect it to a known database in your environment.
-         If you do not have a database to connect to, then below are instructions on how to install a hsqldb database.  This is the installation part of the database, the configuration is in the configure page.
+      <subsection name="Database installation">
+        <p>
+         The community webapp is intended to be able to work with any database and hence is expected for you to setup and connect to a known database in your environment.
+         By default the instructions below are for hsqldb, but see the "Configure" page under "Customization" for information on other databases.
+         Below is the sample steps for setting up with hsqldb which is the default installation setup for the community, follow the same steps with your own JDBC (jar/driver) if you use a different database and be sure to see the "Customize" section in the "Configure" page for other databases.
                <li> Find the hsqldb database driver. You can download from here: 
                   <a href="http://www.astrogrid.org/maven/hsqldb/jars/hsqldb-1.7.1.jar">HSQLDB 1.7.1</a> </li>
                <li> Place the hsqldb jar into a place that can be located by the servlet container, ex: for tomcat is the common/lib directory is the recommendation, You may elect to put it in your community/WEB-INF/lib but remember you will need to place it back on any upgrading.</li>
                <li> Restart tomcat this is so that tomcat will pickup this new jar</li>
                <li>That is all.</li>         
+		</p>
       </subsection>
     </section>
    </body>

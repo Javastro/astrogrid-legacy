@@ -2,11 +2,18 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/astrogrid-community-database.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/09/09 11:39:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: astrogrid-community-database.xml,v $
+    |   Revision 1.6  2005/09/09 11:39:00  clq2
+    |   Comm_KMB_1097
+    |
+    |   Revision 1.5.92.1  2005/08/09 14:23:46  KevinBenson
+    |   cleared up docs when it comes to other databases.  and made a small fix to use the jndi
+    |   instead of driver element in server/src/config/astrogrid-database-config.xml by changing the database-config.xsl
+    |
     |   Revision 1.5  2004/10/29 15:50:05  jdt
     |   merges from Community_AdminInterface (bug 579)
     |
@@ -38,12 +45,13 @@
     | For the WebApp, this should be replaced by a JNDI property.
     +-->
 <database name="org.astrogrid.community.database" engine="hsql">
-    <driver
-        class-name="org.hsqldb.jdbcDriver"
-        url="jdbc:hsqldb:/var/astrogrid/community">
-        <param name="user"     value="sa"/>
-        <param name="password" value=""/>
-    </driver>
+
+    <!--+
+        | This refers to a javax.sql.DataSource defined in the jndi config.
+          Use this jndi in the actual webapp, but need driver one for build test.
+	-->
+    <jndi name="java:comp/env/jdbc/org.astrogrid.community.database"/>
+
     <!--+
         | This refers to a local mapping file, in the same directory.
         +-->

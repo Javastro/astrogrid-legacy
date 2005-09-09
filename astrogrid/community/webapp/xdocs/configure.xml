@@ -10,6 +10,7 @@
             <ul>
                <li> 1.) Go to the Administration gui for the servlet container.</li>
                <li> 2.) Go to the Environment Entries for your context.  In Tomcat this is Service->Host(LocalHost)->{context name}->Resources->Environment entries. </li>
+               <li> ** Newer tomcat 5.5 does not install Administratin GUI so you much change the context.xml file yourself.  See "JDBC Resources" for <a href="http://jakarta.apache.org/tomcat/tomcat-5.5-doc/jndi-resources-howto.html">Tomcat 5.5</a> or manually for tomcat 5.0 is <a href="http://jakarta.apache.org/tomcat/tomcat-5.0-doc/jndi-resources-howto.html">Tomcat 5.0</a></li>
                <li> 3.) Change all the environment entries, to have the community id, and the endpoints to the registry, also define the registry identifier for a vospace/myspace used for accounts. (Hit Save after each of your changes, see "Note" at the end of this section.)</li>
                <li> 4.) After Environment Entries are changed go to the "DataSources" (same area as Environment Entries) <strong>(see the sample DataSource config below.)</strong> <i>Because of a resource-ref element inside the web.xml a DataSource with only a name filled out may be present</i>. </li>
                <li> 5.) Change the URL to not have "@WORKDIR@" but to a appropriate directory that will keep your database data and information. (Hit Save)</li>
@@ -46,12 +47,13 @@
          <p>
             See the "{context app location}/WEB-INF/classes" directory
               for configuration files if you need to change the sql used to create tables, or possibly even the JDO mapping.  The sql file below is for hsqldb sql syntax which is 
-              slightly different than other databases hence it is expected you will need to change the sql file.
+              slightly different than other databases hence it is expected you will need to change the sql file.  You should find a "mysql" example file in this directory
+              where by you could copy it over the original "astrogrid-community-database.sql" if you have mysql.
             There are 3 files.
             <ul>
                <li> astrogrid-community-database.sql -- SQL used to create table data. </li>
-               <li> astrogrid-community-database.xml -- no real need to change it points to the mapping file in the same directory. </li>
-               <li> astrogrid-community-mapping.xml -- most likely no need to change -- JDO mapping for Castor.  See <a href="http://castor.exolab.org/">Castor</a> for more information on the mapping.</li>
+               <li> astrogrid-community-database.xml -- By default this is setup for hsqldb, but for other databases change the engine type attribute, a list of the engine types are given below.</li>
+               <li> astrogrid-community-mapping.xml -- most likely no need to change -- JDO mapping for Castor.  See <a href="http://www.castor.org/">Castor</a> for more information on the mapping. </li>
             </ul>
          </p>  
          </subsection>
@@ -82,6 +84,64 @@
             <tr>
                <td>Password:</td>
                <td> </td>
+            </tr>
+           </table>         
+         </p>      
+         </subsection>
+         <subsection name="Castor Engine Types">
+         <p>
+           <table>
+            <tr>
+               <td>Engine Type Name</td>
+               <td>Database Full Name</td>
+            </tr>
+            <tr>
+               <td>mysql</td>
+               <td>MySQL</td>
+            </tr>
+            <tr>
+               <td>db2</td>
+               <td>DB/2</td>
+            </tr>
+            <tr>
+               <td>generic</td>
+               <td>Generic JDBC support</td>
+            </tr>
+            <tr>
+               <td>hsql</td>
+               <td>Hypersonic SQL (default)</td>
+            </tr>
+            <tr>
+               <td>informix</td>
+               <td>Informix</td>
+            </tr>
+            <tr>
+               <td>instantdb</td>
+               <td>InstantDB</td>
+            </tr>
+            <tr>
+               <td>interbase</td>
+               <td>Interbase</td>
+            </tr>
+            <tr>
+               <td>oracle</td>
+               <td>Oracle 7 - Oracle 9i</td>
+            </tr>
+            <tr>
+               <td>postgresql</td>
+               <td>PostgreSQL 7.1</td>
+            </tr>
+            <tr>
+               <td>sapdb</td>
+               <td>SAP DB</td>
+            </tr>
+            <tr>
+               <td>sql-server</td>
+               <td>Microsoft SQL Server</td>
+            </tr>
+            <tr>
+               <td>sybase</td>
+               <td>Sybase 11</td>
             </tr>
            </table>         
          </p>      

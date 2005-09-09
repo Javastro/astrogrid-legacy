@@ -75,16 +75,26 @@ ResourceData[] communityServices = pmr.resolve();
 <div id='bodyColumn'>
       <p>
          <strong><font color="blue"><%=info%></font></strong><br />
-         Group Member administration page, here you can add, edit, or delete accounts to groups.
+         Group Member administration page, here you can add, edit, or delete accounts to groups.<br />
+         
+         <% boolean foundMulti = false;
+         if(groups == null || groups.length == 0) {
+           out.write("<font color='red'>No Groups available cannot add groups</font><br />");
+         } else { %>
          <form method="get" />      
             <input type="hidden" name="AddGroupMember" value="true" />
             <strong>Group:</strong>
             <select name="group">
-               <% for(int i = 0;i < groups.length;i++) { %>
-                  <option value="<%= ((GroupData)groups[i]).getIdent() %>">
-                     <%= ((GroupData)groups[i]).getDisplayName() %>
-                  </option>
-               <% } %>
+               <% 
+               	for(int i = 0;i < groups.length;i++) { 
+	        				if(GroupData.MULTI_TYPE.equals(((GroupData)groups[i]).getType())) {	        				
+	        				   foundMulti = true;
+						%>	        				   
+		                  <option value="<%= ((GroupData)groups[i]).getIdent() %>">
+	   	                  <%= ((GroupData)groups[i]).getDisplayName() %>
+	      	            </option>
+	      	         
+               <% }  } %>
             </select>
             &nbsp;<br />
             <strong>Account from <%= currentCommunity %> Community:</strong>
@@ -95,8 +105,14 @@ ResourceData[] communityServices = pmr.resolve();
                   </option>
                <% } %>
             </select><br />
-            <input type="submit" name="AddGroupMemberSubmit" value="Add Group Member" />
+            <%
+              if(!foundMulti) {
+                out.write("<font color='red'>No MULTI groups found, meaning you cannot add users to MULTI groups.  No submit will be seen.</font><br />");
+              } else {  %>
+	            <input type="submit" name="AddGroupMemberSubmit" value="Add Group Member" />
+	          <% } %>
          </form>
+         <% } %>
       <br />
       Get Accounts from another community
          <form method="get" />      
@@ -158,7 +174,6 @@ ResourceData[] communityServices = pmr.resolve();
       </table>
       <br />
       <a href="index.html">Administration Index</a>
-      
       </p>  
    </body>  
 </html>
