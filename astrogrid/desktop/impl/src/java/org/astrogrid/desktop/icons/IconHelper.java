@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: IconHelper.java,v 1.3 2005/09/12 15:21:16 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,12 @@
 **/
 package org.astrogrid.desktop.icons;
 
+import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.net.URL;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 
@@ -40,20 +42,33 @@ public class IconHelper {
      * @return the icon object, or null if not found
      */
     public static ImageIcon loadIcon(String imgName) {
+        if (cache.containsKey(imgName)) {
+            return (ImageIcon)cache.get(imgName);
+        }
         URL u = IconHelper.class.getResource(imgName);
         if (u != null) {
-            return new ImageIcon(u);
+            ImageIcon i = new ImageIcon(u);
+            cache.put(imgName,i);
+            return i;
         } else {
             logger.warn("Failed to find " + imgName);
             return null;
         }
     }
+    
+    /** cache for icons - hard references for keys, weak references for values. 
+     * @modified nww - corrected from WEAK to SOFT - otherwise it doesn't cache.*/
+    protected static final Map cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+  
 
 }
 
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.3  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

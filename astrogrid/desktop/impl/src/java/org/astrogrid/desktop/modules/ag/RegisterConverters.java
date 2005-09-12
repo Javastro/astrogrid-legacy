@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: RegisterConverters.java,v 1.3 2005/09/12 15:21:16 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *  
  */
-public class RegisterConverters implements Startable {
+public class RegisterConverters implements IRegisterConverters, Startable {
 
     /**
      * Construct a new RegisterConverters
@@ -110,6 +110,9 @@ public class RegisterConverters implements Startable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.3  2005/09/12 15:21:16  nw
+ * reworked application launcher. starting on workflow builder
+ *
  * Revision 1.2  2005/08/25 16:59:58  nw
  * 1.1-beta-3
  *

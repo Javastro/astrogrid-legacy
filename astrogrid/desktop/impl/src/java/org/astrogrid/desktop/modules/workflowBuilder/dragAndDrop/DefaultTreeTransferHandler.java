@@ -10,6 +10,14 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
+import org.astrogrid.workflow.beans.v1.Else;
+import org.astrogrid.workflow.beans.v1.If;
+import org.astrogrid.workflow.beans.v1.Script;
+import org.astrogrid.workflow.beans.v1.Then;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import java.util.Enumeration;
@@ -17,15 +25,7 @@ import java.util.Vector;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.workflow.beans.v1.Else;
-import org.astrogrid.workflow.beans.v1.If;
-import org.astrogrid.workflow.beans.v1.Script;
-import org.astrogrid.workflow.beans.v1.Then;
 
 /**
  * @author pjn3

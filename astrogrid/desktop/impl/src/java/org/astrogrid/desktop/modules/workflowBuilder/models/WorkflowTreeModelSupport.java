@@ -10,8 +10,9 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.models;
 
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -20,50 +21,51 @@ import javax.swing.event.TreeModelListener;
  * @author pjn3
  *
  * Handles the registration of tree model listeners and event notifications
+ * @modified nww - replaced vector with a set - then guaranteed to have no duplicates.
  */
 public class WorkflowTreeModelSupport {
-	   private Vector vector = new Vector();
+	   private Collection vector = new HashSet();
 
 	   public void addTreeModelListener( TreeModelListener listener ) {
-	      if ( listener != null && !vector.contains( listener ) ) {
-	         vector.addElement( listener );
+	      if ( listener != null ) {
+	         vector.add( listener );
 	      }
 	   }
 
 	   public void removeTreeModelListener( TreeModelListener listener ) {
 	      if ( listener != null ) {
-	         vector.removeElement( listener );
+	         vector.remove( listener );
 	      }
 	   }
 
 	   public void fireTreeNodesChanged( TreeModelEvent e ) {
-	      Enumeration listeners = vector.elements();
-	      while ( listeners.hasMoreElements() ) {
-	         TreeModelListener listener = (TreeModelListener)listeners.nextElement();
+	      Iterator listeners = vector.iterator();
+	      while ( listeners.hasNext() ) {
+	         TreeModelListener listener = (TreeModelListener)listeners.next();
 	         listener.treeNodesChanged( e );
 	      }
 	   }
 
 	   public void fireTreeNodesInserted( TreeModelEvent e ) {
-	      Enumeration listeners = vector.elements();
-	      while ( listeners.hasMoreElements() ) {
-	         TreeModelListener listener = (TreeModelListener)listeners.nextElement();
+              Iterator listeners = vector.iterator();
+              while ( listeners.hasNext() ) {
+	         TreeModelListener listener = (TreeModelListener)listeners.next();
 	         listener.treeNodesInserted( e );
 	      }
 	   }
 
 	   public void fireTreeNodesRemoved( TreeModelEvent e ) {
-	      Enumeration listeners = vector.elements();
-	      while ( listeners.hasMoreElements() ) {
-	         TreeModelListener listener = (TreeModelListener)listeners.nextElement();
+              Iterator listeners = vector.iterator();
+              while ( listeners.hasNext() ) {
+	         TreeModelListener listener = (TreeModelListener)listeners.next();
 	         listener.treeNodesRemoved( e );
 	      }
 	   }
 
 	   public void fireTreeStructureChanged( TreeModelEvent e ) {
-	      Enumeration listeners = vector.elements();
-	      while ( listeners.hasMoreElements() ) {
-	         TreeModelListener listener = (TreeModelListener)listeners.nextElement();
+              Iterator listeners = vector.iterator();
+              while ( listeners.hasNext() ) {
+	         TreeModelListener listener = (TreeModelListener)listeners.next();
 	         listener.treeStructureChanged( e );
 	      }
 	   }

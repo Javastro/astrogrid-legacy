@@ -10,16 +10,12 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
-
-import org.astrogrid.desktop.modules.workflowBuilder.TaskDetails;
 
 /**
  * @author pjn3
@@ -28,7 +24,7 @@ import org.astrogrid.desktop.modules.workflowBuilder.TaskDetails;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public abstract class AbstractListTransferHandler extends TransferHandler {
-    protected abstract TaskDetails exportTask(JComponent c);
+    protected abstract ApplicationInformation exportTask(JComponent c);
     
     protected Transferable createTransferable(JComponent c) {
         return new TransferableNode(null, null, exportTask(c), null);

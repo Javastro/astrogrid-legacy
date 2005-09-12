@@ -124,7 +124,7 @@
 			<description>Hide the Browser GUI </description>
 
 		</method>		
-		</component>		
+		</component>	
 
 	<component name="applicationLauncher" 
 		implementationClass="org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl" 
@@ -160,7 +160,7 @@
 
 		</method>		
 	
-		</component>		
+		</component>	
 		
 			<component name="jobMonitor" 
 		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
@@ -211,7 +211,7 @@
 		</component>
 		
 	<component name="workflowViewer" 
-	  implementationClass="org.astrogrid.desktop.modules.ui.WorkflowBuilderLauncherImpl" 
+	  implementationClass="org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl" 
 	  interfaceClass="org.astrogrid.acr.ui.WorkflowBuilder" >
 	  <description>View workflows (BETA)</description>
 	    <property>

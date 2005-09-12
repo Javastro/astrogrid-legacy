@@ -10,6 +10,11 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -18,10 +23,6 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.modules.workflowBuilder.TaskDetails;
 
 /**
  * @author pjn3
@@ -38,16 +39,16 @@ public class TransferableNode implements Transferable {
 	
 	public static final DataFlavor NODE_FLAVOR = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType, "Node");
 	public static final DataFlavor EXPANDED_STATE_FLAVOR = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType, "Vector");
-	public static final DataFlavor TASK_DETAILS_FLAVOR = new DataFlavor(TaskDetails.class, "Task Details");
+	public static final DataFlavor TASK_DETAILS_FLAVOR = new DataFlavor(ApplicationInformation.class, "Task Details");
 	public static final DataFlavor STRING_FLAVOR = new DataFlavor(java.lang.String.class, "Activity String");
 
 	private DefaultMutableTreeNode node;
 	private Vector expandedStates;
-	private TaskDetails taskDetails;
+	private ApplicationInformation taskDetails;
 	private String activityString;
 	private DataFlavor[] flavors = { NODE_FLAVOR, EXPANDED_STATE_FLAVOR, TASK_DETAILS_FLAVOR, STRING_FLAVOR };
 	
-	public TransferableNode(DefaultMutableTreeNode nd, Vector es, TaskDetails td, String activity) {
+	public TransferableNode(DefaultMutableTreeNode nd, Vector es, ApplicationInformation td, String activity) {
 		node = nd;
 		expandedStates = es;
 		taskDetails = td;

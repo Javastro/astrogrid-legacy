@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.1 2005/08/25 16:59:58 nw Exp $
+/*$Id: XPathHelper.java,v 1.2 2005/09/12 15:21:16 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,8 @@ import javax.xml.parsers.ParserConfigurationException;
  *
  */
 public class XPathHelper {
-
+    /** namespace for xml schema instance */
+    public static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
     /** namespace for the registry inteface v0.1 */
     public final static String VOR_NS = "http://www.ivoa.net/xml/RegistryInterface/v0.1";
     
@@ -37,6 +38,10 @@ public class XPathHelper {
     public final static String CEA_NS = "http://www.ivoa.net/xml/CEAService/v0.2";
     /** namespace for CEA Parameters */
     public final static String CEAPD_NS = "http://www.astrogrid.org/schema/AGParameterDefinition/v1"; 
+    /** namespace for tabular database  v0.3*/
+    public final static String TDB_NS = "urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3";
+    /** namespace for VODataService v0.5*/
+    public final static String VODS_NS = "http://www.ivoa.net/xml/VODataService/v0.5";
     /** Construct a new XPathHelper
      * 
      */
@@ -61,13 +66,17 @@ public class XPathHelper {
     
        // Document namespaceHolder = DomHelper.newDocument();
         Element namespaceNode = namespaceHolder.getDocumentElement();
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xsi",XSI_NS);
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",VR_NS);
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns",VR_NS);
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vor", VOR_NS);
 
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceab", CEAB_NS);     
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:cea", CEA_NS);  
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceapd", CEAPD_NS);          
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceapd", CEAPD_NS);
+
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:tdb", TDB_NS);     
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vods", VODS_NS);     
         return namespaceNode;
     }
 
@@ -76,6 +85,9 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.2  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.1  2005/08/25 16:59:58  nw
 1.1-beta-3
  

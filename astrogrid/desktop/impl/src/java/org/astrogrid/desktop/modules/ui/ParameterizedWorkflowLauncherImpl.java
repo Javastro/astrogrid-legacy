@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.4 2005/09/12 15:21:16 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
        
     protected final ApplicationsInternal apps;
     protected final MyspaceInternal vos;
-    protected final WorkflowTemplate[] templates;
+    protected final ParameterizedWorkflowTemplate[] templates;
     protected final Jobs jobs;
     protected final Community community;
     protected final JobMonitor monitor;
@@ -96,7 +96,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         // force login.
         community.getUserInformation();
         
-        WorkflowTemplate wft = chooseTemplate();
+        ParameterizedWorkflowTemplate wft = chooseTemplate();
         if (wft == null) {
             return;
         }
@@ -168,24 +168,24 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     
     
     /** construct a list of workflow documents from an array of urls , silently handle any errors.*/
-    protected WorkflowTemplate[] loadWorkflows(URL[] arr) {
+    protected ParameterizedWorkflowTemplate[] loadWorkflows(URL[] arr) {
         List wfts= new ArrayList(arr.length); // using a list, rather than array, incase we end up with less than we expected..
         for (int i = 0; i < arr.length; i++) {
             try {
-                wfts.add(new WorkflowTemplate(arr[i].openStream()));
+                wfts.add(new ParameterizedWorkflowTemplate(arr[i].openStream()));
             } catch (Exception e) {
                 logger.warn(arr[i] + " couldn't be parsed",e);
             }
         }
-        return (WorkflowTemplate[])wfts.toArray(new WorkflowTemplate[]{});
+        return (ParameterizedWorkflowTemplate[])wfts.toArray(new ParameterizedWorkflowTemplate[]{});
     }
     
 
     
     /** prompt user in some way to choose a template 
      * retruns null to indicate a cancelled operaiton.*/
-    protected  WorkflowTemplate chooseTemplate() {
-        return (WorkflowTemplate) JOptionPane.showInputDialog(null,"Choose a template workflow", "Template Chooser",JOptionPane.QUESTION_MESSAGE,null,templates,templates[0]);
+    protected  ParameterizedWorkflowTemplate chooseTemplate() {
+        return (ParameterizedWorkflowTemplate) JOptionPane.showInputDialog(null,"Choose a template workflow", "Template Chooser",JOptionPane.QUESTION_MESSAGE,null,templates,templates[0]);
     }
     
 
@@ -200,6 +200,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.4  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.3  2005/09/02 14:03:34  nw
 javadocs for impl
 

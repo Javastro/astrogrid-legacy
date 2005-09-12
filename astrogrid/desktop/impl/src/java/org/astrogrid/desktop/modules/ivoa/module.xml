@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+
+<module name="ivoa">
+	<description>Ivoa Services and Standards</description>
+		<property>
+		<key>icon</key>
+		<value>ivoa.gif</value>
+	</property>
+	
+		<property>
+		<key>system.ui.menu.links</key>
+		<value>
+			<link text="IVOA Home Page"
+				icon="ivoa.gif"
+				toolTipText="Home Page for the Internaltion Virtual Observatory Alliance"
+				url="http://www.ivoa.net/" />
+		</value>
+		</property>
+
+	<property>
+		<key>priority</key>
+		<value>70</value>
+	</property>	
+	
+	<component name="adql074"
+		implementationClass="org.astrogrid.desktop.modules.ivoa.Adql074Impl"
+		interfaceClass="org.astrogrid.acr.ivoa.Adql074">
+		<description>Translation services for ADQL 074</description>
+		<method name="s2x">
+						<property>
+				<key>system.ui.menu.entry</key>
+				<value>translate ADQL/s to ADQL/x</value>								
+			</property>				
+			<description>translate from ADQL/x to ADQL/s</description>
+			<parameter name="adqls">
+				<description>query string</description>
+			</parameter>	
+			<return>
+				<description>equivalent ADQL/x document</description>
+				<property>
+					<key>system.result.transformer</key>
+					<value>
+						org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+				</property>					
+			</return>
+		</method>
+		
+		<method name="x2s">
+						<property>
+				<key>system.ui.menu.entry</key>
+				<value>translate ADQL/x to ADQL/s</value>								
+			</property>	
+			<description>translate from ADQL/s to ADQL/x</description>
+			<parameter name="adqlx">
+				<description>ADQL/x document</description>
+			</parameter>
+			<return>
+				<description>equivalent query string</description>
+			</return>
+		</method>		
+		
+		</component>
+		
+		
+</module>

@@ -10,6 +10,25 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.workflowBuilder.models.WorkflowTreeModelSupport;
+import org.astrogrid.workflow.beans.v1.Flow;
+import org.astrogrid.workflow.beans.v1.For;
+import org.astrogrid.workflow.beans.v1.If;
+import org.astrogrid.workflow.beans.v1.Parfor;
+import org.astrogrid.workflow.beans.v1.Scope;
+import org.astrogrid.workflow.beans.v1.Script;
+import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Set;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Unset;
+import org.astrogrid.workflow.beans.v1.While;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Container;
@@ -31,7 +50,6 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.image.BufferedImage;
-import java.net.URI;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -45,27 +63,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.beans.v1.Interface;
-import org.astrogrid.applications.beans.v1.InterfacesType;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.workflowBuilder.TaskDetails;
-import org.astrogrid.desktop.modules.workflowBuilder.models.WorkflowTreeModelSupport;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.workflow.beans.v1.Flow;
-import org.astrogrid.workflow.beans.v1.For;
-import org.astrogrid.workflow.beans.v1.If;
-import org.astrogrid.workflow.beans.v1.Parfor;
-import org.astrogrid.workflow.beans.v1.Scope;
-import org.astrogrid.workflow.beans.v1.Script;
-import org.astrogrid.workflow.beans.v1.Sequence;
-import org.astrogrid.workflow.beans.v1.Set;
-import org.astrogrid.workflow.beans.v1.Step;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Unset;
-import org.astrogrid.workflow.beans.v1.While;
 
 /**
  * @author pjn3
@@ -305,7 +302,7 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 			// What is transferable?
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode)transferable.getTransferData(TransferableNode.NODE_FLAVOR);
 			String activityString = (String)transferable.getTransferData(TransferableNode.STRING_FLAVOR);
-			TaskDetails td = (TaskDetails)transferable.getTransferData(TransferableNode.TASK_DETAILS_FLAVOR);
+			ApplicationInformation td = (ApplicationInformation)transferable.getTransferData(TransferableNode.TASK_DETAILS_FLAVOR);
 			
 			if (node != null && canPerformAction(tree, draggedNode, action, pt)) {
 				TreePath pathTarget = tree.getPathForLocation(pt.x, pt.y);
@@ -412,7 +409,12 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 				DefaultMutableTreeNode taskNode = new DefaultMutableTreeNode();
 
 				ApplicationsInternal apps = tree.getApplicationsInternal();
-				ApplicationDescription applicationDescription = apps.getApplicationDescription(new URI(td.getTaskName()));
+                int selectedInterface = 0;
+                if (td.getInterfaces().length > 1) {
+                    // @todo prompt user  in a little dialog to select which interface to use..                   
+                } 
+                /*
+				ApplicationDescription applicationDescription = apps.getApplicationDescription(td.getId());
 				InterfacesType interfaces = applicationDescription.getInterfaces();
 				Interface iface = null;
 				for (int i = 0; i <= interfaces.get_interfaceCount(); i++) {
@@ -420,8 +422,10 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 						iface = interfaces.get_interface(i);
 						break;
 					}
-				}				
+				}			
 				Tool tool = applicationDescription.createToolFromInterface(iface);
+                */
+                Tool tool = apps.createTemplateTool(td.getInterfaces()[selectedInterface].getName(),td);
 				Step step = new Step();
 				step.setTool(tool);
 				step.setName("Dragged step");

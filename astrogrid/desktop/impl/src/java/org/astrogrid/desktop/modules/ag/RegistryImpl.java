@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: RegistryImpl.java,v 1.3 2005/09/12 15:21:16 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,9 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.desktop.modules.ag.builders.InformationBuilder;
+import org.astrogrid.desktop.modules.ag.builders.MostSuitableBuilder;
+import org.astrogrid.desktop.modules.ag.builders.ResourceInformationBuilder;
 import org.astrogrid.registry.NoResourcesFoundException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -21,9 +24,11 @@ import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Ivorn;
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.CachedXPathAPI;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -32,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -51,10 +57,17 @@ public class RegistryImpl implements Registry {
      */
     public RegistryImpl() {
         super();
-        reg = RegistryDelegateFactory.createQuery();        
+        reg = RegistryDelegateFactory.createQuery();
+        rib =new MostSuitableBuilder();
     }
     private final RegistryService reg;
 
+    private final InformationBuilder rib ;
+
+    /** cache for registry entries - hard references for keys, weak references for values. 
+     * @modified nww - corrected from WEAK to SOFT - otherwise it doesn't cache.*/
+    protected final Map cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+    
     public URL resolveIdentifier(URI ivorn) throws NotFoundException, ServiceException{
             try {
                 return new URL(reg.getEndPointByIdentifier(new Ivorn(ivorn.toString())));
@@ -97,11 +110,17 @@ public class RegistryImpl implements Registry {
      * @see org.astrogrid.acr.astrogrid.Registry#getResourceData(java.lang.String)
      */
     public ResourceInformation getResourceInformation(URI ivorn) throws  NotFoundException, ServiceException {
-            
-                Document d = getRecord(ivorn);
-                CachedXPathAPI xpath = new CachedXPathAPI();
-                return buildResourceInformationFromResourceElement(xpath,d.getDocumentElement());
-
+        if (cache.containsKey(ivorn)) {
+            Object o = cache.get(ivorn);
+            if (o != null) {
+                return (ResourceInformation)o;
+            }
+        } 
+        Document d = getRecord(ivorn);
+        CachedXPathAPI xpath = new CachedXPathAPI();
+        ResourceInformation r =  rib.build(xpath, d.getDocumentElement());
+        cache.put(ivorn,r);
+        return r;
     }
 
     public Document  searchForRecords(String arg0) throws ServiceException {
@@ -154,7 +173,13 @@ public class RegistryImpl implements Registry {
             ResourceInformation[] results = new ResourceInformation[l.getLength()];
             CachedXPathAPI xpath = new CachedXPathAPI(); // create one once for the entire document
             for (int i =0 ; i < l.getLength(); i++) {
-                results[i] = buildResourceInformationFromResourceElement(xpath,(Element)l.item(i));
+                Element el = (Element)l.item(i);
+                ResourceInformation x = fromCacheOrBuild(el);
+                if (x == null) {
+                    x = rib.build(xpath, el);
+                    cache.put(x.getId(),x);
+                }
+               results[i] = x;
             }
             return results;
         } catch (NoResourcesFoundException e) {
@@ -167,39 +192,28 @@ public class RegistryImpl implements Registry {
     
     
 
-    
-    private ResourceInformation buildResourceInformationFromResourceElement(CachedXPathAPI xpath,Element element) throws ServiceException{
+    /**
+     * @param el
+     * @throws DOMException
+     */
+    private ResourceInformation fromCacheOrBuild(Element el) throws DOMException {
+        NodeList nl = el.getElementsByTagNameNS(XPathHelper.VR_NS,"identifier");
+        if (nl.getLength() != 1) {
+            return null;
+        }
+        Element id = (Element)nl.item(0);
+        String uriString = id.getFirstChild().getNodeValue();
         try {
-            Element nsNode = XPathHelper.createNamespaceNode();
-            
-        URI uri;
-        try {
-            uri = new URI(xpath.eval(element,"vr:identifier",nsNode).str());
+            URI u = new URI(uriString);
+            if (cache.containsKey(u)) {
+                return (ResourceInformation)cache.get(u);
+            } else {
+                return null;
+            }
         } catch (URISyntaxException e) {
-            
-            uri = null;
-        }
-        String name = xpath.eval(element,"vr:title",nsNode).str();
-        String description = xpath.eval(element,"vr:content/vr:description",nsNode).str();       
-        URL accessURL ;
-        try {
-            accessURL =  new URL(xpath.eval(element,"vr:interface/vr:accessURL",nsNode).str());
-        } catch (MalformedURLException e) {
-            accessURL = null;
-        }
-        return new ResourceInformation(
-                uri
-                ,name
-                ,description
-                ,accessURL
-                );
-        } catch (ParserConfigurationException e) {
-            throw new ServiceException(e);
-        } catch (TransformerException e) {
-            throw new ServiceException(e);
+            return null;
         }
     }
-
     /**@todo add declaration of common prefixes to front of query?
      * @see org.astrogrid.acr.astrogrid.Registry#xquery(java.lang.String)
      */
@@ -218,6 +232,9 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.3  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

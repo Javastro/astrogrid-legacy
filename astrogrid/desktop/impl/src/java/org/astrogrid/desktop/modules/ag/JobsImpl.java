@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: JobsImpl.java,v 1.3 2005/09/12 15:21:16 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,16 +15,23 @@ import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.community.beans.v1.Group;
+import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
@@ -44,11 +51,12 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
 
 /** Job management service.implementation
  * @todo refine to call job delegate directly - more efficient, and better exception reporting.
  */
-public class JobsImpl implements Jobs, UserLoginListener {
+public class JobsImpl implements JobsInternal, UserLoginListener {
     /**
      * Commons Logger for this class
      */
@@ -58,23 +66,33 @@ public class JobsImpl implements Jobs, UserLoginListener {
     /** Construct a new Jes
      * 
      */
-    public JobsImpl(Community community, Myspace vos) {
+    public JobsImpl(Community community, Myspace vos, ApplicationsInternal apps) {
         this.community = community;
         this.vos = vos;
+        this.apps = apps;
         community.addUserLoginListener(this);
     }
     protected final Community community;
     protected final Myspace vos;
    private JobExecutionService jes;
-   private Account acc;
+   private  ApplicationsInternal apps;
+   private WorkflowManagerFactory fac;
+   private Account acc;  
      private synchronized JobExecutionService getJes() throws WorkflowInterfaceException {
          if (jes == null) {
-             WorkflowManagerFactory fac = new WorkflowManagerFactory();
-             jes = fac.getManager().getJobExecutionService();
+             jes = getFactory().getManager().getJobExecutionService();
          } 
          return jes;
     }
     
+
+    private synchronized WorkflowManagerFactory getFactory() {
+        if (fac == null) {
+            fac = new WorkflowManagerFactory();
+        } 
+        return fac;
+    }
+
     private synchronized Account getAccount() {
         if (acc == null) {
         acc = new Account();
@@ -84,6 +102,32 @@ public class JobsImpl implements Jobs, UserLoginListener {
         return acc;
     }
 
+    public Document createJob() throws ServiceException {
+        Workflow wf = createWorkflow();
+        try {
+        Document doc = XMLUtils.newDocument();
+        Marshaller.marshal(wf, doc);
+        return doc;
+        } catch(Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    public Workflow createWorkflow() throws ServiceException {
+        Credentials creds = new Credentials();
+        creds.setAccount(getAccount());
+        creds.setSecurityToken("ignored");
+        Group group = new Group();
+        group.setCommunity(community.getUserInformation().getCommunity());
+        group.setName(community.getUserInformation().getName());
+        creds.setGroup(group);
+        try {
+            return getFactory().getManager().getWorkflowBuilder().createWorkflow(creds,"New Workflow","Enter Description");
+        } catch (WorkflowInterfaceException e) {
+            throw new ServiceException(e);
+        }
+    }
+    
     public URI[] list() throws ServiceException {
         try {
         WorkflowSummaryType[] summs = getJes().listJobs(getAccount());
@@ -168,15 +212,35 @@ public class JobsImpl implements Jobs, UserLoginListener {
         }
     }
     
-
+    /**
+     * @see org.astrogrid.desktop.modules.ag.JobsInternal#submitWorkflow(org.astrogrid.workflow.beans.v1.Workflow)
+     */
+    public URI submitWorkflow(Workflow workflow) throws InvalidArgumentException, ServiceException {
+        // check workflow belongs to us - if not, alter it.
+        try {
+        workflow.getCredentials().setAccount(getAccount());
+        // fiddle any string-adql..
+        //@todo improve this query, to cut down on amout of work..
+        Iterator i = workflow.findXPathIterator("//tool[input/parameter/indirect='false']" ); // find all tools with at least one inline parameter.
+        while(i.hasNext()) {
+            Tool t = (Tool)i.next();
+            try {
+            ApplicationInformation info =apps.getInfoForTool(t);
+            apps.translateQueries(info,t);
+            } catch (NotFoundException e) {
+                throw new InvalidArgumentException(e);
+            }
+        }
+        return cvt(getJes().submitWorkflow(workflow));
+        } catch (WorkflowInterfaceException e) {
+            throw new ServiceException(e);
+        }
+    }
     public URI submitJob(Document doc) throws ServiceException, InvalidArgumentException {
         // check workflow belongs to us - if not, alter it.
         try {
         Workflow workflow = (Workflow)Unmarshaller.unmarshal(Workflow.class, doc);
-        workflow.getCredentials().setAccount(getAccount());
-        return cvt(getJes().submitWorkflow(workflow));
-        } catch (WorkflowInterfaceException e) {
-            throw new ServiceException(e);
+        return submitWorkflow(workflow);       
         } catch (MarshalException e) {
             throw new InvalidArgumentException(e);
         } catch (ValidationException e) {
@@ -246,11 +310,20 @@ public class JobsImpl implements Jobs, UserLoginListener {
         acc = null;
     }
 
+
+
+
+
+
+
 }
 
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.3  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

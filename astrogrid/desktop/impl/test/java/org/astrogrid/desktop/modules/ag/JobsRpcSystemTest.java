@@ -1,4 +1,4 @@
-/*$Id: JobsRpcSystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: JobsRpcSystemTest.java,v 1.2 2005/09/12 15:21:16 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,20 @@ public class JobsRpcSystemTest extends JobsSystemTest implements Jobs {
         }       
     }
 
-
+    /**
+     * @see org.astrogrid.acr.astrogrid.Jobs#createJob()
+     */
+    public Document createJob() throws ServiceException {
+        v.clear();
+        try { 
+            String doc = (String)client.execute("astrogrid.jobs.createJob",v);
+            InputStream is= new ByteArrayInputStream(doc.getBytes());
+            return XMLUtils.newDocument(is);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
     
     /**
      * @see org.astrogrid.acr.astrogrid.Jobs#getJobTranscript(java.net.URI)
@@ -199,11 +212,15 @@ public class JobsRpcSystemTest extends JobsSystemTest implements Jobs {
         }
     }
 
+
 }
 
 
 /* 
 $Log: JobsRpcSystemTest.java,v $
+Revision 1.2  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

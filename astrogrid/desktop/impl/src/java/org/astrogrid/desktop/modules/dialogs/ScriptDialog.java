@@ -19,25 +19,33 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
+
+import jedit.JEditTextArea;
+import jedit.JavaTokenMarker;
+import jedit.SyntaxDocument;
 /**
  * Simple dialog that displays script body
  * the result into something else.
  * @author Phil Nicolson pjn3@star.le.ac.uk 12/8/05
- *
+ * 
+ *@modified nww - display results in a jedit box - gives syntax coloring.
+ *@todo maybe rewrite to just embed a scriptPanel in a dialog?
  */
 public class ScriptDialog extends JDialog {
 
 	private javax.swing.JPanel jContentPane = null;
-	private JEditorPane resultDisplay = null;
+	private JEditTextArea resultDisplay = null;
 	private JButton okButton = null;
 	/**
 	 * This method initializes jTextArea	
 	 * 	
 	 * @return javax.swing.JTextArea	
 	 */    
-	private JEditorPane getResultDisplay() {
+	private JEditTextArea getResultDisplay() {
 		if (resultDisplay == null) {
-			resultDisplay = new JEditorPane();
+			resultDisplay = new JEditTextArea();
+            resultDisplay.setDocument(new SyntaxDocument()); // prevents aliasing between jeditors.
+            resultDisplay.setTokenMarker(new JavaTokenMarker());
             resultDisplay.setEditable(false);
 		}
 		return resultDisplay;
@@ -98,9 +106,7 @@ public class ScriptDialog extends JDialog {
 		if(jContentPane == null) {
 			jContentPane = new javax.swing.JPanel();
 			jContentPane.setLayout(new java.awt.BorderLayout());
-            jContentPane.add(new JScrollPane(getResultDisplay(),
-                                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),BorderLayout.CENTER);
+            jContentPane.add(getResultDisplay(),BorderLayout.CENTER);
 			jContentPane.add(getOkButton(), java.awt.BorderLayout.SOUTH);
 		}
 		return jContentPane;

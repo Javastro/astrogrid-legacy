@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserDialog.java,v 1.2 2005/09/06 13:12:52 nw Exp $
+/*$Id: RegistryChooserDialog.java,v 1.3 2005/09/12 15:21:16 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,9 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -142,9 +139,9 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
            JPanel main = parent.getMainPanel();
            parent.remove(main); // remove from this ui;
            
-           main.add(chooserPanel,BorderLayout.CENTER);
            main.add(getTopLabel(),BorderLayout.NORTH);
-           jOptionPane = new JOptionPane(new JComponent[]{main},JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
+           main.add(chooserPanel,BorderLayout.CENTER);
+           jOptionPane = new JOptionPane(main,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
            jOptionPane.addPropertyChangeListener(this);
        }
        return jOptionPane;
@@ -157,6 +154,9 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
 /* 
 $Log: RegistryChooserDialog.java,v $
+Revision 1.3  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.2  2005/09/06 13:12:52  nw
 fixed two little gotchas.
 

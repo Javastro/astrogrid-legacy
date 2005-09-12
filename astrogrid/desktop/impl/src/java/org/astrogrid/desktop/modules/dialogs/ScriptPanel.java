@@ -24,21 +24,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import jedit.JEditTextArea;
+import jedit.JavaTokenMarker;
 /**
  * @author Phil Nicolson pjn3@star.le.ac.uk
- *
+ * @modified nww - removed superfluous panels,  display script in a JEDit text area.
  */
 public class ScriptPanel extends JPanel {
 	
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(ScriptPanel.class);	
 
-	private JLabel jLabel = null;
 	private JTextField jTextField = null;
-	private JPanel jContentPane, descriptionPanel, bodyPanel = null;
-	private JEditorPane jEditorPane = null;
+	private JPanel descriptionPanel = null;
+	private JEditTextArea jEditorPane = null;
 	private String description;
 	private String body;
 	/**
@@ -56,22 +54,11 @@ public class ScriptPanel extends JPanel {
 	 * @return void
 	 */
 	private  void initialize() {	
-		this.add(getJContentPane());
+        this.setLayout(new BorderLayout());
+        this.add(getDescriptionPanel(), BorderLayout.NORTH);
+        this.add(getBodyPanel(), BorderLayout.CENTER);
 	}
-    /**
-	 * This method initializes jContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJContentPane() {
-		if(jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
-            jContentPane.add(getDescriptionPanel(), BorderLayout.NORTH);
-		    jContentPane.add(getBodyPanel(), BorderLayout.CENTER);
-		}
-		return jContentPane;
-	}	
+  
 	/**
 	 * This method initializes DescriptionPanel	
 	 * 	
@@ -104,23 +91,16 @@ public class ScriptPanel extends JPanel {
 	 * 	
 	 * @return javax.swing.JPanel
 	 */    
-	private JPanel getBodyPanel() {
-		if (bodyPanel == null) {
-			bodyPanel = new JPanel();
+	private JEditTextArea getBodyPanel() {
 			
-			jEditorPane = new JEditorPane();
+			jEditorPane = new JEditTextArea();
+            jEditorPane.setTokenMarker(new JavaTokenMarker());
 			//jEditorPane.setMinimumSize(new java.awt.Dimension(780,180));
 			jEditorPane.setText(body);
 			jEditorPane.setCaretPosition(0);
 			jEditorPane.setEditable(false);
-			
-			JScrollPane pane = new JScrollPane(jEditorPane,
-                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			pane.setPreferredSize(new Dimension(765,175));			
 
-			bodyPanel.add(pane);
-		}
-		return bodyPanel;
+			jEditorPane.setPreferredSize(new Dimension(765,175));			
+			return jEditorPane;
 	}
   }

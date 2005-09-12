@@ -1,4 +1,4 @@
-/*$Id: DefaultModule.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: DefaultModule.java,v 1.2 2005/09/12 15:21:16 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import org.picocontainer.PicoException;
 import org.picocontainer.PicoRegistrationException;
 import org.picocontainer.PicoVerificationException;
 import org.picocontainer.PicoVisitor;
+import org.picocontainer.alternatives.ImmutablePicoContainer;
 import org.picocontainer.defaults.DefaultPicoContainer;
 
 import java.io.Serializable;
@@ -46,6 +47,10 @@ public class DefaultModule  implements PicoContainer, Module, Serializable{
      */
     public DefaultModule(PicoContainer arg0) {
        pico =createContainer(arg0);
+       // important - registers another container, that provides access to the components in the parent container
+       // have to specifically enable this, otherwise access to the enclosing container is prevented.
+       // see http://jira.codehaus.org/browse/PICO-193
+       pico.registerComponentInstance(new DefaultPicoContainer(pico));
     }
    
     protected MutablePicoContainer createContainer() {
@@ -63,7 +68,11 @@ public class DefaultModule  implements PicoContainer, Module, Serializable{
      * 
      */
     public DefaultModule() {
-        pico = createContainer();
+        pico = createContainer();  
+        // important - registers another container, that provides access to the components in the parent container
+        // have to specifically enable this, otherwise access to the enclosing container is prevented.
+        // see http://jira.codehaus.org/browse/PICO-193
+        pico.registerComponentInstance(new DefaultPicoContainer(pico));
     }
 
     /**
@@ -219,6 +228,9 @@ public class DefaultModule  implements PicoContainer, Module, Serializable{
 
 /* 
 $Log: DefaultModule.java,v $
+Revision 1.2  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

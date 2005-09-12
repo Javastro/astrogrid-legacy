@@ -10,11 +10,11 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
-import javax.swing.DefaultListModel;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+
 import javax.swing.JComponent;
 import javax.swing.JList;
 
-import org.astrogrid.desktop.modules.workflowBuilder.TaskDetails;
 
 /**
  * @author pjn3
@@ -24,12 +24,12 @@ import org.astrogrid.desktop.modules.workflowBuilder.TaskDetails;
  */
 public class DefaultListTransferHandler extends AbstractListTransferHandler {
 
-	    private TaskDetails taskDetails = null;
+	    private ApplicationInformation taskDetails = null;
 	            
 
-	    protected TaskDetails exportTask(JComponent c) {
+	    protected ApplicationInformation exportTask(JComponent c) {
 	        JList list = (JList)c;
-	        taskDetails = (TaskDetails)list.getSelectedValue();
+	        taskDetails = (ApplicationInformation)list.getSelectedValue();
 	        
 	        return taskDetails;
 	    }

@@ -10,21 +10,14 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.renderers;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTree;
-import javax.swing.ToolTipManager;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
+import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
+import org.astrogrid.desktop.modules.dialogs.editors.RawXMLToolEditorPanel;
 import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
@@ -40,13 +33,60 @@ import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.ToolTipManager;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+
 /**
  * @author pjn3
  *
  * Custom renderer for Workflow tree - adds icons and text
+ * @modified nww - optimized a little using string buffers. embedded tool panels.
+ * @todo add indication when a required field is missing (e.g. iwhen 'test' of If is null, put in a red 'missing')
+ * @todo move rendering of tools into a separate leaf of step.
  */
 public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 
+    public WorkflowTreeCellRenderer(ApplicationsInternal apps) {
+        this.apps = apps;
+        rendererPanel = new JPanel(new GridLayout(0,1));
+        final Border myBorder = BorderFactory.createEtchedBorder();
+        rendererPanel.setBorder(myBorder);
+        rendererPanel.setBackground(Color.WHITE);
+        toolPanel = new BasicToolEditorPanel(null,false);
+        toolPanel.setBorder(myBorder);        
+        toolPanel.setBackground(Color.WHITE);
+        stepPanel = new JPanel();
+        stepPanel.setLayout(new BoxLayout(stepPanel,BoxLayout.Y_AXIS));
+        jta = new JTextArea();     
+        jta.setColumns(60);
+        jta.setBorder(myBorder);
+        jta.setToolTipText("Double click to edit");
+    }
+    private final ApplicationsInternal apps;
+    private final JPanel rendererPanel;
+    private final AbstractToolEditorPanel toolPanel;
+    private final JPanel stepPanel;
+    private final JTextArea jta; 
+    
 	public Component getTreeCellRendererComponent(JTree tree, 
             Object value,
 			  boolean isSelected,
@@ -67,18 +107,18 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 																		  row, 
 																		  hasFocus);
 				ToolTipManager.sharedInstance().registerComponent(tree);
+                StringBuffer sb = new StringBuffer();
 				// Added as tree is mutable in workflow builder
 				if (value instanceof DefaultMutableTreeNode)
 					value = ((DefaultMutableTreeNode)value).getUserObject();
 				if (value instanceof Workflow) {
-					Workflow w = (Workflow)value;
-					JPanel rendererPanel = new JPanel(new GridLayout(0,1));
-					String name = w.getName() == null? "--" : w.getName();
+					Workflow w = (Workflow)value;					
+                    String name = w.getName() == null? "--" : w.getName();
 					String desc = w.getDescription() == null? "--" : w.getDescription();
+                    rendererPanel.removeAll();
 					rendererPanel.add(new JLabel(name));
 					rendererPanel.add(new JLabel(desc));
-					rendererPanel.setToolTipText("<html>Name: " + name + "<br>Description: " + desc + "</html>");
-					rendererPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+					rendererPanel.setToolTipText("<html>Name: " + name + "<br>Description: " + desc + "</html>");				
 					return rendererPanel;
 				}
 				else if (value instanceof Sequence){  
@@ -92,7 +132,10 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					label.setToolTipText(null);
 				}    		
 				else if (value instanceof Step){ 
-					Step s = (Step)value;
+					Step s = (Step)value;      
+                    label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+                    stepPanel.removeAll();
+                    stepPanel.add(label);           
 					label.setIcon(IconHelper.loadIcon("icon_Step.gif"));
 					String name = s.getName() == null? "" : s.getName();
 					String task = "--";
@@ -100,103 +143,110 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					if (s.getTool() != null) {
 						task = s.getTool().getName() == null? "" : s.getTool().getName();
 						iface = s.getTool().getInterface() == null? "" : s.getTool().getInterface();
+                         try {
+                            ApplicationInformation info = apps.getInfoForTool(s.getTool());
+                            toolPanel.getToolModel().populate(s.getTool(),info);
+                            stepPanel.add(toolPanel,BorderLayout.CENTER);
+                            } catch (ACRException e) {
+                                //@todo improve error reporting here - and at least display tool content.
+                                stepPanel.add(new JLabel("Problem reading tool"));
+                            }                        
 					}
 					String desc = s.getDescription() == null? "" : s.getDescription();					 
 					String var = s.getResultVar() == null? "" : s.getResultVar();					
 					
-					String temp = "<html><b>Step</b>";					
+					sb.append("<html><b>Step</b> ");
 					if (name.length() > 0) 
-						temp += ", Name: " + name;
-					if (task.length() > 0)
-						temp += ", Task: " + task;					
+						sb.append(name);
+                    if (var.length() > 0) 
+                        sb.append("<b>Result Variable </b>").append(var);   
+                    if (var.length() > 0)
+                        sb.append("<br><i>").append(desc).append("</i>");
+                    if (task.length() > 0)
+						sb.append("<br><b>Task</b> ").append(task);					
 					if (iface.length() > 0)
-						temp += ", Interface: " + iface;
-					if (var.length() > 0) 
-						temp += ", Variable: " + var;					
-					temp += "</html>";
+						sb.append(" <b>Interface</b> ").append(iface);
+				
+					sb.append("</html>");
 					
-					label.setText(temp);
-					label.setToolTipText("<html>Name: " + s.getName() 
-							+ "<br>Task: " + task
-							+ "<br>Interface: " + iface 
-							+ "<br>Desc: " + desc
-							+ "<br>Var: " + var
-							+ "</html>");
+					label.setText(sb.toString());
+					return stepPanel;
 				}
 				else if (value instanceof Set){ 
 					Set set = (Set)value;
 					String var = set.getVar() == null? "" : set.getVar();
 					String val = set.getValue() == null? "" : set.getValue();
-					String temp = "<html><b>Set</b>";
+                    sb.append("<html><b>Set</b>");
 					if (var.length() > 0)
-						temp += ", Variable: " + var;
-					if (val.length() > 0)
-						temp += ", Value: " + val;
-					temp += "</html>";
+                        sb.append(" <i>").append(var).append("</i>");
+					if (val.length() > 0) {
+                        sb.append(" <b>:=</b> ").append(val);
+                    } else {
+                        sb.append(" uninitialized ");
+                    }					
+					sb.append("</html>");
 					label.setIcon(IconHelper.loadIcon("icon_Set.gif"));
-					label.setText(temp);
-					label.setToolTipText("<html>Variable: " + var + "<br>Value: " + val +"</html>");
+					label.setText(sb.toString());
+                    label.setToolTipText(null);                    
 				}
 				else if (value instanceof Unset){ 
 					Unset s = (Unset)value;
 					String var = s.getVar() == null? "" : s.getVar();
 					label.setIcon(IconHelper.loadIcon("icon_Unset.gif"));
-					String temp = "<html><b>Unset</b>";
+					sb.append("<html><b>Unset</b>");
 					if (var.length() > 0)
-						temp += ", Variable: " + var;
-					temp += "</html>";
-					label.setText(temp);
-					label.setToolTipText("Variable: " + var);
+						sb.append(" <i>" ).append(var).append("</i>");
+					sb.append("</html>");
+					label.setText(sb.toString());
 				}    		
 				else if (value instanceof Script){ 
 					Script s = (Script)value;
 					String desc = s.getDescription() == null? "" : s.getDescription();
 					label.setIcon(IconHelper.loadIcon("icon_Script.gif"));
-					String temp = "<html><b>Script</b>";
+					sb.append("<html><b>Script</b> ");
 					if (desc.length() >0)
-						 temp += ", Description: " + desc;
-					temp += "</html>";
-					label.setText(temp);
-					label.setToolTipText("Description: " + desc);
+                        sb.append(desc);
+					sb.append("</html>");
+					label.setText(sb.toString());
+					label.setToolTipText(null);
 				} 
 				else if (value instanceof For){ 
 					For f = (For)value;
 					String var = f.getVar() == null? "" : f.getVar();
 					String items = f.getItems() == null? "" : f.getItems();
-					String temp = "<html><b>For</b>";
+					sb.append("<html><b>For</b>");
 					if (var.length() > 0)
-						temp += ", Variable: " + var;
+					    sb.append(" <i>").append(var).append("</i>");
 					if (items.length() > 0)
-						temp += ", Items: " + items;
-					temp += "</html>";
+                        sb.append(" <b>in</b> ").append(items);
+					sb.append("</html>");
 					label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
-					label.setText(temp);
-					label.setToolTipText("<html>Variable: " + var + " <br>Items: " + items + "</html>");
+					label.setText(sb.toString());
+					label.setToolTipText(null);
 				}   		
 				else if (value instanceof While){
 					While w = (While)value;
 					String test = w.getTest() == null ? "" : w.getTest();
 					label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
-					String temp = "<html><b>While</b>";
+					sb.append( "<html><b>While</b>");
 					if (test.length() > 0)
-						temp += ", Test: " + test;
-					temp += "</html>";
-					label.setText(temp);
-					label.setToolTipText("Test: " + test);
+						sb.append( test);
+					sb.append("</html>");
+					label.setText(sb.toString());
+					label.setToolTipText(null);
 				}
 				else if (value instanceof Parfor){
 					Parfor p = (Parfor)value;
 					String var = p.getVar() == null? "" : p.getVar();
 					String items = p.getItems() == null? "" : p.getItems();
-					String temp = "<html><b>Parallel for loop</b>";
-					if (var.length() > 0)
-						temp += ", Variable: " + var;
-					if (items.length() > 0)
-						temp += ", Items: " + items;
-					temp += "</html>";
+                    sb.append("<html><b>Parallel For</b>");
+                    if (var.length() > 0)
+                        sb.append(" <i>").append(var).append("</i>");
+                    if (items.length() > 0)
+                        sb.append(" <b>in</b> ").append(items);
+                    sb.append("</html>");
 					label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
-					label.setText(temp);
-					label.setToolTipText("<html>Variable: " + var + "<br>Items: " + items + "</html>");
+					label.setText(sb.toString());
 				}    		
 				else if (value instanceof Scope){ 
 					label.setIcon(IconHelper.loadIcon("icon_Scope.gif"));
@@ -207,12 +257,11 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					If i = (If)value;
 					label.setIcon(IconHelper.loadIcon("icon_If.gif"));
 					String test = i.getTest() == null? "" : i.getTest();
-					String temp = "<html><b>If</b>";
+					sb.append("<html><b>If</b>");
 					if (test.length() > 0) 
-						temp +=  ", Test: " + test;
-					temp += "</html>";
-					label.setText(temp);
-					label.setToolTipText("Test: " + test);
+						sb.append(test);
+					sb.append("</html>");
+					label.setText(sb.toString());
 				}
 				else if (value instanceof Then){ 
 					label.setIcon(IconHelper.loadIcon("icon_Then.gif"));
@@ -225,7 +274,6 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					label.setToolTipText(null);
 				} 
 				else if (value instanceof String) {
-					JPanel rendererPanel = new JPanel();
 					//Origional idea was to use scrollpane holding editorpane, however the custom
 					//renderer just renders and does not allow user interaction - the scrollbars 
 					//do not register inputs i.e. cannot scroll, hence use of textarea sized to fit 
@@ -234,26 +282,11 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					//jEditorPane.setText(value.toString());
 					//jEditorPane.setCaretPosition(0);
 					//jEditorPane.setEditable(false);
-					int lineCt = 1;
 					String text = value.toString();
-					for (int i = 0; i < text.length(); i++) {
-						if (text.charAt(i) == '\n') {
-							lineCt++;
-							if (lineCt > 5 ) {
-								text = text.substring(0, i);
-								lineCt = 8;
-								text += "\n\n                                                  ----- Double click to view full script ------";
-								break;
-							}
-						}
-					}
-					JTextArea jta = new JTextArea(lineCt, 60);
+                    int lineCt = StringUtils.split(text,'\n').length ;
+                    jta.setRows(lineCt);
 					jta.setText(text);
-					JScrollPane pane = new JScrollPane(jta,
-							JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-							JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);    			
-					rendererPanel.add(pane);    
-					return rendererPanel;
+					return jta;
 				}
 				else {    			
 					label.setText("to do");

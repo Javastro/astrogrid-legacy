@@ -10,12 +10,6 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.models;
 
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
@@ -27,6 +21,12 @@ import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreePath;
 
 /**
  * tree model for Workflow.

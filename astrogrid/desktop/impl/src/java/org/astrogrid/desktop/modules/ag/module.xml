@@ -1186,7 +1186,7 @@
 	<!-- startable component that registers required convertors. -->
 	<component name="register-converters" 
 		implementationClass="org.astrogrid.desktop.modules.ag.RegisterConverters" 
-		interfaceClass="org.picocontainer.Startable" >
+		interfaceClass="org.astrogrid.desktop.modules.ag.IRegisterConverters" >
 			<property>
 				<key>hidden.component</key>
 				<value>true</value>								

@@ -1,4 +1,4 @@
-/*$Id: JobsSystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: JobsSystemTest.java,v 1.2 2005/09/12 15:21:16 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,6 +60,11 @@ public class JobsSystemTest extends TestCase {
     }    
 
 
+    public void testCreateJob() throws Exception {
+        Document doc = jobs.createJob();
+        assertNotNull(doc);
+        //@todo - aadd more verification here.
+    }
     public void testList() throws Exception{
         URI[] a = jobs.list();
         assertNotNull(a);
@@ -184,6 +189,9 @@ public class JobsSystemTest extends TestCase {
 
 /* 
 $Log: JobsSystemTest.java,v $
+Revision 1.2  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

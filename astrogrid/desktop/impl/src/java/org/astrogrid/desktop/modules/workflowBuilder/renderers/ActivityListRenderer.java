@@ -10,6 +10,11 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.renderers;
 
+import org.astrogrid.desktop.icons.IconHelper;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -18,23 +23,6 @@ import java.io.InputStreamReader;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.workflow.beans.v1.Else;
-import org.astrogrid.workflow.beans.v1.Flow;
-import org.astrogrid.workflow.beans.v1.For;
-import org.astrogrid.workflow.beans.v1.If;
-import org.astrogrid.workflow.beans.v1.Parfor;
-import org.astrogrid.workflow.beans.v1.Scope;
-import org.astrogrid.workflow.beans.v1.Script;
-import org.astrogrid.workflow.beans.v1.Sequence;
-import org.astrogrid.workflow.beans.v1.Set;
-import org.astrogrid.workflow.beans.v1.Step;
-import org.astrogrid.workflow.beans.v1.Then;
-import org.astrogrid.workflow.beans.v1.Unset;
-import org.astrogrid.workflow.beans.v1.While;
 
 /**
  * @author pjn3

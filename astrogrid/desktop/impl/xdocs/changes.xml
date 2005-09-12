@@ -18,6 +18,9 @@
 			Added interfaces and development skeletons for registry google and
 			query editor dialogs.
 		</action>
+		<action dev="nw" type="add">
+			Added methods to Job service to create new workflow document
+		</action>
 	</release>
 	<release version="1.1" date="2005-09-01">
 		<action dev="nw" type="update">

@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserImpl.java,v 1.1 2005/09/05 11:08:39 nw Exp $
+/*$Id: RegistryChooserImpl.java,v 1.2 2005/09/12 15:21:16 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,6 @@ import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.modules.system.UIInternal;
-
-import java.awt.HeadlessException;
-import java.net.URI;
 
 /** Impleentaito of the registry chooser component.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
@@ -80,6 +77,9 @@ public class RegistryChooserImpl implements RegistryChooser {
 
 /* 
 $Log: RegistryChooserImpl.java,v $
+Revision 1.2  2005/09/12 15:21:16  nw
+reworked application launcher. starting on workflow builder
+
 Revision 1.1  2005/09/05 11:08:39  nw
 added skeletons for registry and query dialogs
  
