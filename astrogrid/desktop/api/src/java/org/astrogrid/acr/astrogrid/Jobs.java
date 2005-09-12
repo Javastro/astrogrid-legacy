@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: Jobs.java,v 1.3 2005/09/12 15:21:43 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,6 +61,14 @@ public interface Jobs {
      * @xmlrpc returns a struct. see {@link ExecutionInformation} for details of keys available.*/
     ExecutionInformation[] listFully() throws ServiceException;
 
+    /** create a new initialized workflow document, suitable as a starting point for building workflows
+     * 
+     * @return a workflow document - a <tt>workflow</tt> document in the the <tt>http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
+     * @throws ServiceException if an inavoidable error ocurs.
+     * @since 1.2
+     */
+    Document createJob() throws ServiceException;
+    
     /** retrieve  the execution transcript for a job.
      * 
      * @param jobURN the identifier of the job to retrieve
@@ -134,6 +142,9 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.3  2005/09/12 15:21:43  nw
+ added stuff for adql.
+
  Revision 1.2  2005/08/12 08:45:16  nw
  souped up the javadocs
 

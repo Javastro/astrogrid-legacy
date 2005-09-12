@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.4 2005/08/25 16:59:44 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.5 2005/09/12 15:21:43 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URL;
 import java.util.Map;
 
 /** Information Bean that contains information about an registered application
@@ -22,21 +23,23 @@ import java.util.Map;
   * @xmlrpc returned as a struct, with keys corresponding to bean names
  * @todo should this contain description too?
  * @see org.astrogrid.acr.astrogrid.Applications
+ * @since 1.2 extends ResourceInformation
  */
-public class ApplicationInformation extends AbstractInformation{
-
-    /** Construct a new ApplicationInfomation
-     * 
+public class ApplicationInformation extends ResourceInformation{
+    /** @deprecated - use full contructor 
+     * @since 1.2
      */
     public ApplicationInformation(URI id,String name,String description,Map parameters,InterfaceBean[] interfaces) {
-        super(name,id);
+        this(id,name,description,parameters,interfaces,null);
+    }
+    /** construct a new application information, specifying an endpoint for it (i.e. a non-cea application) */
+    public ApplicationInformation(URI id,String name,String description,Map parameters,InterfaceBean[] interfaces,URL endpoint) {
+        super(id,name,description,endpoint);
         this.interfaces = interfaces;
-        this.description = description;
         this.parameters = parameters;
     }
     
     private final InterfaceBean[] interfaces;
-    private final String description;
     private final Map parameters;
 
     /** access the names of the interfaces this application supports
@@ -46,11 +49,7 @@ public class ApplicationInformation extends AbstractInformation{
     public InterfaceBean[] getInterfaces() {
         return this.interfaces;
     }
-    /** access the description of this application */
-    public String getDescription() {
-        return this.description;
-    }
-    
+
     /** returns descriptions of parameters used in this application
      * 
      * @return a map of <tt>parameter name</tt> - {@link ParameterBean} pairs
@@ -77,6 +76,8 @@ public class ApplicationInformation extends AbstractInformation{
         buffer.append(description);
         buffer.append(" parameters: ");
         buffer.append(parameters);
+        buffer.append(" url :");
+        buffer.append(url);
         buffer.append("]");
         return buffer.toString();
     }
@@ -85,6 +86,9 @@ public class ApplicationInformation extends AbstractInformation{
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.5  2005/09/12 15:21:43  nw
+added stuff for adql.
+
 Revision 1.4  2005/08/25 16:59:44  nw
 1.1-beta-3
 

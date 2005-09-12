@@ -1,4 +1,4 @@
-/*$Id: ToolEditor.java,v 1.3 2005/08/25 16:59:44 nw Exp $
+/*$Id: ToolEditor.java,v 1.4 2005/09/12 15:21:43 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,12 @@ import org.astrogrid.acr.astrogrid.ApplicationInformation;
 
 import org.w3c.dom.Document;
 
-/** Service Interface to the CEA Application Editor Dialogue
+import java.net.URI;
+
+/** Service Interface to the CEA Tool Editor Dialogue
+ * <p>
+ * Can be used to construct calls to CEA Applications, Databases and collections.
+ * Later will extend to construct calls to other VO services.
  * <p>
  * Displays the content of a Tool document, augmented with data about this application loaded from
  * the registry. Enables user to edit input ad output parameters (including using the {@link org.astrogrid.acr.dialogs.ResourceChooser}
@@ -38,23 +43,45 @@ public interface ToolEditor {
      * @param t document conforming to Tool schema
      * @return an edited copy of this document
      * @throws InvalidArgumentException if the document passed in is not schema-valid
+     * @throws ServiceException if any other failure occurs during editing.
      * @xmlrpc takes a xml document string as a parameter, and returns another xml document string
      */
-    Document   edit(Document t) throws InvalidArgumentException;
+    Document   edit(Document t) throws InvalidArgumentException, ServiceException;
 
     /** Prompt the user to edit a tool document
      * @param t document conforming to Tool schema
-     * @param desc description of the application this tool document is to be submitted to
+     * @param desc description of the application this tool document is to be built for (rather than querying registry)
      * @return an edited copy of this document
      * @throws InvalidArgumentException if the document passed in is not schema-valid
+     * @throws ServiceException if any other failure occurs during editing.
      * @xmlrpc takes a xml document string as a parameter, and returns another xml document string
      */    
-    public Document editWithDescription(Document t,ApplicationInformation desc) throws InvalidArgumentException ;
+    public Document editWithDescription(Document t,ApplicationInformation desc) throws InvalidArgumentException, ServiceException ;
+
+    /** prompt the user to edit a tool document stored elsewhere
+     * @param documentLocation location the tool document is stored at (http://, ftp://, ivo://)
+     * 
+     * @return edited copy of this document
+     * @throws InvalidArgumentException if the document location cannot be accessed, or does not contain a document
+     * @throws ServiceException if any other exception occurs during editing (e.g. failure to communicate with registry)
+     */
+    Document editStored(URI documentLocation) throws InvalidArgumentException, ServiceException;
+    
+    /** prompt the user to select a VO service (application, datacenter, or something else) and construct a query against it.
+     * @return a new tool document
+     * @throws ServiceException if any exception occurs during editng.
+     */
+    Document selectAndBuild() throws ServiceException;
+    
+    
 }
 
 
 /* 
 $Log: ToolEditor.java,v $
+Revision 1.4  2005/09/12 15:21:43  nw
+added stuff for adql.
+
 Revision 1.3  2005/08/25 16:59:44  nw
 1.1-beta-3
 

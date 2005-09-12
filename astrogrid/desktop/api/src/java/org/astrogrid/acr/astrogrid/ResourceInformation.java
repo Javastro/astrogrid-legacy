@@ -1,4 +1,4 @@
-/*$Id: ResourceInformation.java,v 1.3 2005/08/16 13:14:42 nw Exp $
+/*$Id: ResourceInformation.java,v 1.4 2005/09/12 15:21:43 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,9 +29,9 @@ public class ResourceInformation extends AbstractInformation {
         this.url = url;
     }
     
-    private final String description;
+    protected final String description;
 
-    private final URL url;
+    protected final URL url;
     
     
     /** access the description of this entry 
@@ -72,6 +72,9 @@ public class ResourceInformation extends AbstractInformation {
 
 /* 
 $Log: ResourceInformation.java,v $
+Revision 1.4  2005/09/12 15:21:43  nw
+added stuff for adql.
+
 Revision 1.3  2005/08/16 13:14:42  nw
 added 'name' as a common field for all information objects
 

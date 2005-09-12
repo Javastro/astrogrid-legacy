@@ -1,4 +1,4 @@
-/*$Id: RegistryChooser.java,v 1.1 2005/09/05 11:09:19 nw Exp $
+/*$Id: RegistryChooser.java,v 1.2 2005/09/12 15:21:43 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 
 /** interface to a registry chooser dialogue.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
- *
+ * * @service  dialogs.registryChooser
  */
 public interface RegistryChooser {
     /** display the registry chooser dialogue, 
@@ -37,6 +37,9 @@ public interface RegistryChooser {
 
 /* 
 $Log: RegistryChooser.java,v $
+Revision 1.2  2005/09/12 15:21:43  nw
+added stuff for adql.
+
 Revision 1.1  2005/09/05 11:09:19  nw
 added interfaces for registry and query dialogs
  

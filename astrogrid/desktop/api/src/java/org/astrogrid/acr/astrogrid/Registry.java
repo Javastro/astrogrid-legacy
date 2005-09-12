@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.3 2005/08/25 16:59:44 nw Exp $
+/*$Id: Registry.java,v 1.4 2005/09/12 15:21:43 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,9 @@ public interface Registry {
      * Retreive information about a registry entry
      * 
      * @param ivorn identifier of the registry entry to retrieve
-     * @return a  summary of the most significant parts of the registry entry
+     * @return a  summary of the most significant parts of the registry entry - will be a {@link ResourceInformation}
+     * or a subclass - e.g. {@link ApplicationInformation} or {@link TabularDatabaseInformation} depending
+     * on resource type
      * @throws NotFoundException if this resource does not exist
      * @throws ServiceException if an error occurs talking to the service
      * @xmlrpc will return a map. See {@link ResourceInformation} for details of keys
@@ -161,6 +163,9 @@ public interface Registry {
 
 /* 
  $Log: Registry.java,v $
+ Revision 1.4  2005/09/12 15:21:43  nw
+ added stuff for adql.
+
  Revision 1.3  2005/08/25 16:59:44  nw
  1.1-beta-3
 
