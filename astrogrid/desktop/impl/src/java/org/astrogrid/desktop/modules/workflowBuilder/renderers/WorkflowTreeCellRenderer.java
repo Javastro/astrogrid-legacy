@@ -29,6 +29,7 @@ import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Then;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -61,7 +62,8 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  * Custom renderer for Workflow tree - adds icons and text
  * @modified nww - optimized a little using string buffers. embedded tool panels.
  * @todo add indication when a required field is missing (e.g. iwhen 'test' of If is null, put in a red 'missing')
- * @todo move rendering of tools into a separate leaf of step.
+ * @todo get labels left aligned, make all panels a standard size.
+ * @todo solve how to fecth tool informaton in a background step.
  */
 public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 
@@ -71,11 +73,10 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
         final Border myBorder = BorderFactory.createEtchedBorder();
         rendererPanel.setBorder(myBorder);
         rendererPanel.setBackground(Color.WHITE);
+        rendererPanel.setLayout(new BoxLayout(rendererPanel,BoxLayout.Y_AXIS));
         toolPanel = new BasicToolEditorPanel(null,false);
         toolPanel.setBorder(myBorder);        
         toolPanel.setBackground(Color.WHITE);
-        stepPanel = new JPanel();
-        stepPanel.setLayout(new BoxLayout(stepPanel,BoxLayout.Y_AXIS));
         jta = new JTextArea();     
         jta.setColumns(60);
         jta.setBorder(myBorder);
@@ -84,7 +85,6 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
     private final ApplicationsInternal apps;
     private final JPanel rendererPanel;
     private final AbstractToolEditorPanel toolPanel;
-    private final JPanel stepPanel;
     private final JTextArea jta; 
     
 	public Component getTreeCellRendererComponent(JTree tree, 
@@ -132,45 +132,46 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					label.setToolTipText(null);
 				}    		
 				else if (value instanceof Step){ 
-					Step s = (Step)value;      
-                    label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-                    stepPanel.removeAll();
-                    stepPanel.add(label);           
-					label.setIcon(IconHelper.loadIcon("icon_Step.gif"));
-					String name = s.getName() == null? "" : s.getName();
-					String task = "--";
-					String iface = "--";
-					if (s.getTool() != null) {
-						task = s.getTool().getName() == null? "" : s.getTool().getName();
-						iface = s.getTool().getInterface() == null? "" : s.getTool().getInterface();
-                         try {
-                            ApplicationInformation info = apps.getInfoForTool(s.getTool());
-                            toolPanel.getToolModel().populate(s.getTool(),info);
-                            stepPanel.add(toolPanel,BorderLayout.CENTER);
-                            } catch (ACRException e) {
-                                //@todo improve error reporting here - and at least display tool content.
-                                stepPanel.add(new JLabel("Problem reading tool"));
-                            }                        
-					}
-					String desc = s.getDescription() == null? "" : s.getDescription();					 
-					String var = s.getResultVar() == null? "" : s.getResultVar();					
-					
-					sb.append("<html><b>Step</b> ");
-					if (name.length() > 0) 
-						sb.append(name);
+					Step s = (Step)value;                 
+                    label.setIcon(IconHelper.loadIcon("icon_Step.gif"));
+                    String desc = s.getDescription() == null? "" : s.getDescription();                   
+                    String var = s.getResultVar() == null? "" : s.getResultVar();                               
+					String name = s.getName() == null? "" : s.getName();                    
+                    sb.append("<html><b>Step</b> ");                    
+                    if (name.length() > 0) 
+                        sb.append(name);
                     if (var.length() > 0) 
                         sb.append("<b>Result Variable </b>").append(var);   
                     if (var.length() > 0)
                         sb.append("<br><i>").append(desc).append("</i>");
-                    if (task.length() > 0)
-						sb.append("<br><b>Task</b> ").append(task);					
-					if (iface.length() > 0)
-						sb.append(" <b>Interface</b> ").append(iface);
-				
+					sb.append("</html>");
+                    label.setText(sb.toString());
+                } else if (value instanceof Tool) {
+                    rendererPanel.removeAll();
+                    rendererPanel.add(label);
+                    Tool t = (Tool)value;
+						String task = t.getName() == null? "" :t.getName();
+						String iface = t.getInterface() == null? "" : t.getInterface();
+                        sb.append("<html><b>Task</b>");        
+                        if (task.length() > 0)
+                            sb.append(task);                 
+                        if (iface.length() > 0)
+                            sb.append(" <b>Interface</b> ").append(iface);
+                        try {
+                            //@todo later get this info object in a background thread - or prefetch them on workflow load.
+                            ApplicationInformation info = apps.getInfoForTool(t);
+                            toolPanel.getToolModel().populate(t,info);
+                            rendererPanel.add(toolPanel);
+                            } catch (ACRException e) {
+                                sb.append("<br><font color='red'>Problem Reading tool</font>");
+                                return label;
+                       }       
+
 					sb.append("</html>");
 					
 					label.setText(sb.toString());
-					return stepPanel;
+                    return rendererPanel;
+                    
 				}
 				else if (value instanceof Set){ 
 					Set set = (Set)value;

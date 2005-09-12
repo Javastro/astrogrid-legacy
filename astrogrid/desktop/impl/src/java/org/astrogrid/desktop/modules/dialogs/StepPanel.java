@@ -31,6 +31,7 @@ import javax.swing.SpringLayout;
 /**
  * @author Phil Nicolson pjn3@star.le.ac.uk
  *@modified nww - removed superfluous panes, calls to springLayoutHelper.
+ *@todo change into a dialog - see script dialog.
  */
 public class StepPanel extends JPanel {
 

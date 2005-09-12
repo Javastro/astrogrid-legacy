@@ -27,6 +27,7 @@ import javax.swing.SpringLayout;
 /**
  * @author Phil Nicolson pjn3@star.le.ac.uk
  *@modified nww - moved spring layout stuff into a separate class, and shared it with workflow builder.
+ *@todo change it into a dialog. see script dialog.
  */
 public class BasicInfoPanel extends JPanel {
 	

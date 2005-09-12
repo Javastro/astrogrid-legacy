@@ -22,6 +22,7 @@ import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -39,6 +40,8 @@ import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
@@ -55,15 +58,13 @@ public class WorkflowDnDTree extends JTree {
     private static final Log logger = LogFactory.getLog(WorkflowDnDTree.class);
 	
 	private Insets autoscrollInsets = new Insets(20,20,20,20); // insets
-	private ApplicationsInternal apps;
 
 	/**
 	 * 
 	 */
 	public WorkflowDnDTree(ApplicationsInternal apps) {
 		super();
-		setAutoscrolls(true);
-		setModel(treeModel);
+		setAutoscrolls(true);        
 		setRootVisible(true);
 		setShowsRootHandles(false); 
 		getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -73,21 +74,28 @@ public class WorkflowDnDTree extends JTree {
 		new DefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE, true);
 	}
 
-	/**
-	 * @param value
-	 */
-	public WorkflowDnDTree(DefaultMutableTreeNode root, ApplicationsInternal apps) {
-		setAutoscrolls(true);
-		DefaultTreeModel treemodel = new DefaultTreeModel(root);
-		setModel(treeModel);
-		setRootVisible(true);
-		setShowsRootHandles(false); 
-		getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		setEditable(false);
-		setBorder(new EmptyBorder(10,10,10,10));
-		setCellRenderer(new WorkflowTreeCellRenderer(apps));
-		new DefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE, true);
-	}
+    /** if expand is true, expand all nodes in the tree. otherwise collapse all nodes */
+    public void expandAll(boolean expand) {
+        TreeNode root = (TreeNode)getModel().getRoot();
+        expandAll(new TreePath(root),expand);
+    }
+    
+    private void expandAll(TreePath parent,boolean expand) {
+        TreeNode node = (TreeNode)parent.getLastPathComponent();
+        if (node.getChildCount() >=0) {
+            for (Enumeration e= node.children(); e.hasMoreElements(); ) {
+                TreeNode n = (TreeNode)e.nextElement();
+                TreePath path = parent.pathByAddingChild(n);
+                expandAll(path,expand);
+            }
+        }
+        if (expand) {
+            expandPath(parent);
+        } else {
+            collapsePath(parent);
+        }
+    }
+	
 	
 	public void autoscroll(Point cursorLocation) {
 		Insets insets = getAutoscrollInsets();
@@ -116,96 +124,7 @@ public class WorkflowDnDTree extends JTree {
 		}
 		return copy;
 	}
-	
-	public DefaultMutableTreeNode createTree(Workflow workflow) {
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-		root.setUserObject(workflow);
-		root.add(activityTree(workflow.getSequence()));
-		root.setAllowsChildren(true);
-        return(root);
-	}
-	
-    public DefaultMutableTreeNode activityTree( AbstractActivity activity ) { 
-    	DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-          if( activity instanceof Sequence ) {
-          	AbstractActivity[] activityArray = ((Sequence)activity).getActivity() ;
-          	node.setUserObject((Sequence)activity);
-          	node.setAllowsChildren(true);
-            for( int i=0; i < activityArray.length; i++ ){
-                node.add(activityTree( activityArray[i] ));
-            }
-          }
-       	  else if( activity instanceof Flow ) {
-       	   	node.setUserObject((Flow)activity);
-       	   	node.setAllowsChildren(true);
-        	AbstractActivity[] activityArray = ((Flow)activity).getActivity() ;
-            for( int i=0; i < activityArray.length; i++ ){
-                node.add(activityTree( activityArray[i] ));
-            }
-          }
-          else if( activity instanceof Step ) {
-            node.setUserObject((Step)activity);
-            node.setAllowsChildren(false);
-          }
-          else if( activity instanceof Script ) {
-            node.setUserObject((Script)activity);            
-            DefaultMutableTreeNode body = new DefaultMutableTreeNode();
-            body.setUserObject(((Script)activity).getBody());
-            body.setAllowsChildren(false);
-            node.add(body);
-          }               
-          else if( activity instanceof For ) {
-             node.setUserObject((For)activity);
-             node.setAllowsChildren(true);
-             node.add(activityTree(((For)activity).getActivity()));
-          }
-          else if( activity instanceof If ) {
-          	If ifObj = (If)activity;
-          	node.setUserObject(ifObj);
-          	node.setAllowsChildren(true);
-        	if (ifObj.getThen() != null)
-        	{
-        		DefaultMutableTreeNode n = new DefaultMutableTreeNode();
-        		n.setUserObject(ifObj.getThen());
-        		n.add(activityTree(ifObj.getThen().getActivity()));
-        		n.setAllowsChildren(true);
-        		node.add(n);        		
-        	}
-        	if (ifObj.getElse() != null) {
-        		DefaultMutableTreeNode n = new DefaultMutableTreeNode();
-        		n.setUserObject(ifObj.getElse());
-        		n.add(activityTree(ifObj.getElse().getActivity()));
-        		n.setAllowsChildren(true);
-        		node.add(n);        		
-        	}
-          } 
-          else if( activity instanceof Parfor ) {
-             node.setUserObject((Parfor)activity);
-             node.setAllowsChildren(true);
-             node.add(activityTree(((Parfor)activity).getActivity()));
-          }
-          else if( activity instanceof Scope ) {
-             node.setUserObject((Scope)activity);
-             node.setAllowsChildren(true);
-          }
-          else if( activity instanceof Set ) {
-          	  node.setAllowsChildren(false);
-              node.setUserObject((Set)activity);
-          }                    
-          else if( activity instanceof Unset ) {
-          	  node.setAllowsChildren(false);
-              node.setUserObject((Unset)activity);
-          }                        
-          else if( activity instanceof While ) {
-              node.setUserObject((While)activity);
-              node.setAllowsChildren(true);
-              node.add(activityTree(((While)activity).getActivity()));
-          }                                                            
-          else {
-              logger.error( "unsupported Activity" ) ;
-          } 
-          return node;
-      }
+    
     
 
 

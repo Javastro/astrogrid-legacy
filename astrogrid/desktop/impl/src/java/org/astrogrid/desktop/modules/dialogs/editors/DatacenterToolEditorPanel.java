@@ -1,4 +1,4 @@
-/*$Id: DatacenterToolEditorPanel.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: DatacenterToolEditorPanel.java,v 1.2 2005/09/12 18:53:45 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,9 +65,11 @@ import jedit.TextAreaDefaults;
  * 
  * @todo get insert menus to appear like eclipse 'auto-complete' - incremental search and popup-documentation 
  * @todo add a display of table metadata somewhere - but make it optional (i.e. can disable it in constructor)
+ *  - maybe make it a tear off menu?
  * @todo detect that this editor is not applicable for indirect query parameters.
  * @todo later it'd be nice to add more structure to the editor - i.e. make it harder to enter an syntactically incorret sql statement. 
  * @todo mouseover documentation for table and column names.
+ * @todo scrollinig menus.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
  *
  */
@@ -382,12 +384,12 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
         insertMenu.removeAll();
         DatabaseBean[] dbs = catalog.getDatabases();
         for (int i = 0; i < dbs.length; i++) {
-            JMenu dbMenu= new JMenu(dbs[i].getName());
+            JMenu dbMenu= new JMenu(dbs[i].getName(),true);
             dbMenu.setToolTipText(dbs[i].getDescription());
             insertMenu.add(dbMenu);
             final TableBean[] tables = dbs[i].getTables();
             for (int j = 0; j < tables.length; j++) {
-                JMenu tableMenu = new JMenu(tables[j].getName());
+                JMenu tableMenu = new JMenu(tables[j].getName(),true);
                 dbMenu.add(tableMenu);
                 tableMenu.setToolTipText(tables[j].getDescription());
                 final String alias = names.substring(j,j+1);
@@ -428,6 +430,9 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
 
 /* 
 $Log: DatacenterToolEditorPanel.java,v $
+Revision 1.2  2005/09/12 18:53:45  nw
+finished shaping workflow builder.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

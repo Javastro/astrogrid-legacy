@@ -405,53 +405,54 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 				}
 			}
 			else if (td != null && canPerformAction(tree, draggedNode, action, pt)) {
-				TreePath pathTarget = tree.getPathForLocation(pt.x, pt.y);
-				DefaultMutableTreeNode taskNode = new DefaultMutableTreeNode();
-
-				ApplicationsInternal apps = tree.getApplicationsInternal();
-                int selectedInterface = 0;
-                if (td.getInterfaces().length > 1) {
-                    // @todo prompt user  in a little dialog to select which interface to use..                   
-                } 
-                /*
-				ApplicationDescription applicationDescription = apps.getApplicationDescription(td.getId());
-				InterfacesType interfaces = applicationDescription.getInterfaces();
-				Interface iface = null;
-				for (int i = 0; i <= interfaces.get_interfaceCount(); i++) {
-					if (interfaces.get_interface(i).getName().equalsIgnoreCase(td.getInterfaceName())) {
-						iface = interfaces.get_interface(i);
-						break;
-					}
-				}			
-				Tool tool = applicationDescription.createToolFromInterface(iface);
-                */
-                Tool tool = apps.createTemplateTool(td.getInterfaces()[selectedInterface].getName(),td);
-				Step step = new Step();
-				step.setTool(tool);
-				step.setName("Dragged step");
-				taskNode.setUserObject(step);
-				
-				DefaultMutableTreeNode newParentNode = (DefaultMutableTreeNode)pathTarget.getLastPathComponent();				
-				int index = -1;
-				// Will drop be OK?
-				if (true) { //(newParentNode.isLeaf() && !newParentNode.getAllowsChildren()) {
-					DefaultMutableTreeNode tempNode = newParentNode;
-					newParentNode = (DefaultMutableTreeNode)tempNode.getParent();
-					index = newParentNode.getIndex(tempNode);
-					if (index == -1) {
-						dtde.rejectDrop();
-						return;
-					}
-					else {
-						// index = newParentNode.getChildCount();
-					}
-					if (executeDrop(tree, taskNode, newParentNode, index, null, action)) {
-						dtde.acceptDrop(action);
-						dtde.dropComplete(true);
-						return;
-					}
-				}
-				
+//        NWW: took this out - seems to be about constructing tools. but we've not a d-n-d pallette of tools anymore.        
+//				TreePath pathTarget = tree.getPathForLocation(pt.x, pt.y);
+//				DefaultMutableTreeNode taskNode = new DefaultMutableTreeNode();
+//
+//				ApplicationsInternal apps = tree.getApplicationsInternal();
+//                int selectedInterface = 0;
+//                if (td.getInterfaces().length > 1) {
+//                    // @todo prompt user  in a little dialog to select which interface to use..                   
+//                } 
+//                /*
+//				ApplicationDescription applicationDescription = apps.getApplicationDescription(td.getId());
+//				InterfacesType interfaces = applicationDescription.getInterfaces();
+//				Interface iface = null;
+//				for (int i = 0; i <= interfaces.get_interfaceCount(); i++) {
+//					if (interfaces.get_interface(i).getName().equalsIgnoreCase(td.getInterfaceName())) {
+//						iface = interfaces.get_interface(i);
+//						break;
+//					}
+//				}			
+//				Tool tool = applicationDescription.createToolFromInterface(iface);
+//                */
+//                Tool tool = apps.createTemplateTool(td.getInterfaces()[selectedInterface].getName(),td);
+//				Step step = new Step();
+//				step.setTool(tool);
+//				step.setName("Dragged step");
+//				taskNode.setUserObject(step);
+//				
+//				DefaultMutableTreeNode newParentNode = (DefaultMutableTreeNode)pathTarget.getLastPathComponent();				
+//				int index = -1;
+//				// Will drop be OK?
+//				if (true) { //(newParentNode.isLeaf() && !newParentNode.getAllowsChildren()) {
+//					DefaultMutableTreeNode tempNode = newParentNode;
+//					newParentNode = (DefaultMutableTreeNode)tempNode.getParent();
+//					index = newParentNode.getIndex(tempNode);
+//					if (index == -1) {
+//						dtde.rejectDrop();
+//						return;
+//					}
+//					else {
+//						// index = newParentNode.getChildCount();
+//					}
+//					if (executeDrop(tree, taskNode, newParentNode, index, null, action)) {
+//						dtde.acceptDrop(action);
+//						dtde.dropComplete(true);
+//						return;
+//					}
+//				}
+//				
 			}
 		}
 		catch (Exception ex) {
