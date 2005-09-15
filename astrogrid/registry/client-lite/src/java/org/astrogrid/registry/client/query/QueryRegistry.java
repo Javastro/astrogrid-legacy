@@ -558,10 +558,14 @@ public class QueryRegistry implements RegistryService {
              registryBuilder =
                 DocumentBuilderFactory.newInstance().newDocumentBuilder();
              doc = registryBuilder.newDocument();
-             Element root = doc.createElementNS(NAMESPACE_URI, "GetResource");
+             //roll back to version 1.35 so it's compatible with all the old delegates -clq
+             //Element root = doc.createElementNS(NAMESPACE_URI, "GetResource");
+             Element root = doc.createElementNS(NAMESPACE_URI, "GetResourcesByIdentifier");
              String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
-             root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);       
-             Element identElem = doc.createElementNS(NAMESPACE_URI, "identifier");
+             root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);  
+//           roll back to version 1.35 so it's compatible with all the old delegates -clq
+             //Element identElem = doc.createElementNS(NAMESPACE_URI, "identifier");
+             Element identElem = doc.createElement( "identifier");
              identElem.appendChild(doc.createTextNode(ident));
              root.appendChild(identElem);
              doc.appendChild(root);
@@ -572,7 +576,9 @@ public class QueryRegistry implements RegistryService {
           }
           try {
               //System.out.println("calling with GetResources now");
-              resultDoc =  callService(doc,"GetResource","GetResource");
+//          roll back to version 1.35 so it's compatible with all the old delegates -clq
+              //resultDoc =  callService(doc,"GetResource","GetResource");
+          	  resultDoc =  callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
               cache.put(ident,resultDoc);
               //System.out.println("resultDoc = " + DomHelper.DocumentToString(resultDoc));
           } catch (RemoteException re) {
