@@ -17,6 +17,9 @@
         </release>
 		
 		<release version="HEAD">
+			<action dev="clq" type="fix" issue="1367"><em>Branch: clq_reg_1367</em>
+				Rolled back QueryRegistry.java to suits the backward compability issue. recompiled relevent components with projec.properties version 1.206
+			</action>
 			<action dev="kmb" type="fix" issue="1097"><em>Branch: Comm_KMB_1097</em>
 				Added xerces (2.7.1) as a dependency and bundled in the webapp.  This fixes the problem with jdk1.5.
                 Also small fix to Permission and GroupMember jsp pages so they would work correctly.
