@@ -5,8 +5,10 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-            	
-				  	   	
+			<action dev="jdt" type="fix">
+				<em>Branch: Reg_JDT_anti1350</em>
+				Removed the edits mistakenly applied to the registry installer during the merge of 1350.
+			</action>
         </release>
         <release version="(Undertest)">
 			<action dev="jl" type="fix" issue="1347"><em>Branch: por-jl-1374</em>
