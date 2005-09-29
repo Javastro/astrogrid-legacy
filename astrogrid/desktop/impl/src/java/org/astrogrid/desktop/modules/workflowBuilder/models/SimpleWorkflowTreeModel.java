@@ -1,4 +1,4 @@
-/*$Id: SimpleWorkflowTreeModel.java,v 1.1 2005/09/12 18:53:45 nw Exp $
+/*$Id: SimpleWorkflowTreeModel.java,v 1.2 2005/09/29 17:16:40 pjn3 Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,8 @@ import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -139,6 +141,7 @@ private DefaultMutableTreeNode activityTree( AbstractActivity activity ) {
       else if( activity instanceof Scope ) {
          node.setUserObject((Scope)activity);
          node.setAllowsChildren(true);
+         node.add(activityTree(((Scope)activity).getActivity()));
       }
       else if( activity instanceof Set ) {
       	  node.setAllowsChildren(false);
@@ -158,10 +161,17 @@ private DefaultMutableTreeNode activityTree( AbstractActivity activity ) {
       } 
       return node;
   }
+
 }
 
 /* 
 $Log: SimpleWorkflowTreeModel.java,v $
+Revision 1.2  2005/09/29 17:16:40  pjn3
+Drag and drop work complete 1322
+
+Revision 1.1.2.1  2005/09/23 09:41:21  pjn3
+First commit after CVS return - initial work
+
 Revision 1.1  2005/09/12 18:53:45  nw
 finished shaping workflow builder.
  

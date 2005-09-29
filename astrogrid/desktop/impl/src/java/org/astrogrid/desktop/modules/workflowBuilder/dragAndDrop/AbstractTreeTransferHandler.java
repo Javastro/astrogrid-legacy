@@ -10,25 +10,6 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.workflowBuilder.models.WorkflowTreeModelSupport;
-import org.astrogrid.workflow.beans.v1.Flow;
-import org.astrogrid.workflow.beans.v1.For;
-import org.astrogrid.workflow.beans.v1.If;
-import org.astrogrid.workflow.beans.v1.Parfor;
-import org.astrogrid.workflow.beans.v1.Scope;
-import org.astrogrid.workflow.beans.v1.Script;
-import org.astrogrid.workflow.beans.v1.Sequence;
-import org.astrogrid.workflow.beans.v1.Set;
-import org.astrogrid.workflow.beans.v1.Step;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Unset;
-import org.astrogrid.workflow.beans.v1.While;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Container;
@@ -36,6 +17,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
@@ -63,6 +45,24 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.workflowBuilder.models.WorkflowTreeModelSupport;
+import org.astrogrid.workflow.beans.v1.Else;
+import org.astrogrid.workflow.beans.v1.Flow;
+import org.astrogrid.workflow.beans.v1.For;
+import org.astrogrid.workflow.beans.v1.If;
+import org.astrogrid.workflow.beans.v1.Parfor;
+import org.astrogrid.workflow.beans.v1.Scope;
+import org.astrogrid.workflow.beans.v1.Script;
+import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Set;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Then;
+import org.astrogrid.workflow.beans.v1.Unset;
+import org.astrogrid.workflow.beans.v1.While;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 /**
  * @author pjn3
@@ -99,7 +99,6 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DragGestureListener#dragGestureRecognized(java.awt.dnd.DragGestureEvent)
 	 */
 	public void dragGestureRecognized(DragGestureEvent dge) {
-		logger.error("dragGestureRecognized: dge");
 		TreePath path = tree.getSelectionPath();
 		if (path != null) {
 			draggedNode = (DefaultMutableTreeNode)path.getLastPathComponent();
@@ -142,7 +141,7 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 					}
 				}
 			}
-			dragSource.startDrag(dge, DragSource.DefaultMoveNoDrop, image, new Point(0,0), new TransferableNode(draggedNode, expandedStates, null, null), this);
+			dragSource.startDrag(dge, DragSource.DefaultMoveNoDrop, image, new Point(0,0), new TransferableNode(draggedNode, expandedStates, null), this);
 		}
 	}
 
@@ -150,7 +149,6 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DragSourceListener#dragEnter(java.awt.dnd.DragSourceDragEvent)
 	 */
 	public void dragEnter(DragSourceDragEvent dsde) {
-		logger.error("dragEnter: dsde");
 		int action = dsde.getDropAction();
 		if (action == DnDConstants.ACTION_COPY) {
 			dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
@@ -169,7 +167,6 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DragSourceListener#dragOver(java.awt.dnd.DragSourceDragEvent)
 	 */
 	public void dragOver(DragSourceDragEvent dsde) {
-		logger.error("dragOver: dsde");		
 		int action = dsde.getDropAction();
 		if (action == DnDConstants.ACTION_COPY) {
 			dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
@@ -189,7 +186,6 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DragSourceListener#dropActionChanged(java.awt.dnd.DragSourceDragEvent)
 	 */
 	public void dropActionChanged(DragSourceDragEvent dsde) {
-		logger.error("dropActionChanged: dsde");
 		int action = dsde.getDropAction();
 		if (action == DnDConstants.ACTION_COPY) {
 			dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
@@ -208,7 +204,6 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DragSourceListener#dragDropEnd(java.awt.dnd.DragSourceDropEvent)
 	 */
 	public void dragDropEnd(DragSourceDropEvent dsde) {
-		logger.error("dragDropEnd: dsde");
 		if (drawImage) {
 			dragPane.remove(draggedLabel);
 			dragPane.repaint(draggedLabel.getBounds());
@@ -216,7 +211,9 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 		if (dsde.getDropSuccess() && dsde.getDropAction() == DnDConstants.ACTION_MOVE && draggedNodeParent != null) {
 			((DefaultTreeModel)tree.getModel()).nodeStructureChanged(draggedNodeParent);
 			tree.expandPath(new TreePath(draggedNodeParent.getPath()));
-			tree.expandPath(new TreePath(draggedNode.getPath()));
+			if (draggedNode != null) {
+				tree.expandPath(new TreePath(draggedNode.getPath()));
+			}
 		}
 
 	}
@@ -225,7 +222,6 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DragSourceListener#dragExit(java.awt.dnd.DragSourceEvent)
 	 */
 	public void dragExit(DragSourceEvent dse) {
-		logger.error("dragExit: dse");
 		dse.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
 
 	}
@@ -234,16 +230,21 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
 	 */
 	public void dragEnter(DropTargetDragEvent dtde) {
-		logger.error("dragEnter: dtde");
 		Point pt = dtde.getLocation();
 		int action = dtde.getDropAction();
 		if (drawImage) {
 			paintImage(pt, ((DropTarget)dtde.getSource()).getComponent());
 		}
+		if (draggedNode == null) {
+			draggedNode = getActivityNode(dtde.getTransferable());
+			action = DnDConstants.ACTION_COPY;			
+		}
 		if (canPerformAction(tree, draggedNode, action, pt)) {
 			dtde.acceptDrag(action);
 		}
 		else {
+			if (action == DnDConstants.ACTION_COPY)
+				draggedNode = null;
 			dtde.rejectDrag();
 		}
 	}
@@ -252,45 +253,54 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
 	 */
 	public void dragOver(DropTargetDragEvent dtde) {
-		logger.error("dragOver: dtde");
 		Point pt = dtde.getLocation();
 		int action = dtde.getDropAction();
 		tree.autoscroll(pt);
 		if (drawImage && draggedLabel != null) {
 			paintImage(pt, ((DropTarget)dtde.getSource()).getComponent());
-		}		
+		}
+		if (draggedNode == null) {
+			draggedNode = getActivityNode(dtde.getTransferable());
+			action = DnDConstants.ACTION_COPY;
+		}
 		if (canPerformAction(tree, draggedNode, action, pt)) {
 			dtde.acceptDrag(action);
 		}
 		else {
+			if (action == DnDConstants.ACTION_COPY)
+				draggedNode = null;
 			dtde.rejectDrag();
-		}
+		}		
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
 	 */
 	public void dropActionChanged(DropTargetDragEvent dtde) {
-		logger.error("dropActionCHanged: dtde");
 		Point pt = dtde.getLocation();
 		int action = dtde.getDropAction();
 		if (drawImage) {
 			paintImage(pt, ((DropTarget)dtde.getSource()).getComponent());
 		}
+		if (draggedNode == null) {
+			draggedNode = getActivityNode(dtde.getTransferable());
+			action = DnDConstants.ACTION_COPY;
+		}
 		if (canPerformAction(tree, draggedNode, action, pt)) {
 			dtde.acceptDrag(action);
 		}
 		else {
+			if (action == DnDConstants.ACTION_COPY)
+				draggedNode = null;
 			dtde.rejectDrag();
 		}
-	}
+	} 
 
 	/* (non-Javadoc)
 	 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
 	 */
 	public void drop(DropTargetDropEvent dtde) {
-		try {
-			logger.error("drop: dtde");
+		try {	
 			int action = dtde.getDropAction();
 			// transferable = Transferable object associated with drop
 			Transferable transferable = dtde.getTransferable();
@@ -300,165 +310,198 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 			// canPerformAction - checks if drop allowed at chosen location
 			
 			// What is transferable?
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode)transferable.getTransferData(TransferableNode.NODE_FLAVOR);
-			String activityString = (String)transferable.getTransferData(TransferableNode.STRING_FLAVOR);
-			ApplicationInformation td = (ApplicationInformation)transferable.getTransferData(TransferableNode.TASK_DETAILS_FLAVOR);
-			
-			if (node != null && canPerformAction(tree, draggedNode, action, pt)) {
-				TreePath pathTarget = tree.getPathForLocation(pt.x, pt.y);
-				// newParentNode = drop target
-				DefaultMutableTreeNode newParentNode = (DefaultMutableTreeNode)pathTarget.getLastPathComponent();
-				// expandedStates = nodes containing nodes
-				Vector expandedStates = (Vector)transferable.getTransferData(TransferableNode.EXPANDED_STATE_FLAVOR);
-				int index = -1;
-				// Will drop be OK?
-				if ((newParentNode.isLeaf() && !newParentNode.getAllowsChildren()) ||
-						(node.getAllowsChildren() && newParentNode.getAllowsChildren() && !newParentNode.isRoot())) {
-					DefaultMutableTreeNode tempNode = newParentNode;
-					newParentNode = (DefaultMutableTreeNode)tempNode.getParent();
-					index = newParentNode.getIndex(tempNode);
-					if (index == -1) {
-						dtde.rejectDrop();
-						return;
+			DefaultMutableTreeNode node = null;
+			try {
+				 node = (DefaultMutableTreeNode)transferable.getTransferData(TransferableNode.NODE_FLAVOR);
+			}
+			catch (UnsupportedFlavorException ex) {
+				node = null;
+			}
+						
+			// if node is not null we are dragging from within tree itself
+			if (node!= null) {
+				DefaultMutableTreeNode n = new DefaultMutableTreeNode();
+				n = node;
+				node = null;
+				if (canPerformAction(tree, n, action, pt)) {			
+					TreePath pathTarget = tree.getPathForLocation(pt.x, pt.y);
+					// newParentNode = drop target
+					DefaultMutableTreeNode newParentNode = (DefaultMutableTreeNode)pathTarget.getLastPathComponent();
+					// expandedStates = nodes containing nodes
+					Vector expandedStates = (Vector)transferable.getTransferData(TransferableNode.EXPANDED_STATE_FLAVOR);
+					int index = -1;
+					// Will drop be OK?
+					if (newParentNode.getAllowsChildren() && 
+						!(newParentNode.getUserObject() instanceof Workflow ||
+						  newParentNode.getUserObject() instanceof Step ||
+						  newParentNode.getUserObject() instanceof While ||
+						  newParentNode.getUserObject() instanceof Parfor ||
+						  newParentNode.getUserObject() instanceof For ||
+						  newParentNode.getUserObject() instanceof If ||
+						  newParentNode.getUserObject() instanceof Then ||
+						  newParentNode.getUserObject() instanceof Else ||
+						  newParentNode.getUserObject() instanceof Script ||
+						  newParentNode.getUserObject() instanceof Scope)) {
+						if (executeDrop(tree, n, newParentNode, 0, null, action)) {
+							dtde.acceptDrop(action);
+							dtde.dropComplete(true);
+							return;
+						}
 					}
-					else {
-						// index = newParentNode.getChildCount();
-					}
-					if (executeDrop(tree, node, newParentNode, index, expandedStates, action)) {
-						dtde.acceptDrop(action);
-						dtde.dropComplete(true);
-						return;
-					}
+					else if ((!newParentNode.getAllowsChildren() && 
+							 !newParentNode.isRoot()) || 
+							 (newParentNode.getUserObject() instanceof Step ||
+							  newParentNode.getUserObject() instanceof Script  ||
+							  newParentNode.getUserObject() instanceof For || 
+							  newParentNode.getUserObject() instanceof If || 
+							  newParentNode.getUserObject() instanceof While ||
+							  newParentNode.getUserObject() instanceof Parfor || 
+							  newParentNode.getUserObject() instanceof Scope ))  {
+						DefaultMutableTreeNode tempNode = newParentNode;
+						newParentNode = (DefaultMutableTreeNode)tempNode.getParent();
+						index = newParentNode.getIndex(tempNode);
+						if (index == -1) {
+							dtde.rejectDrop();						
+							return;
+						}
+						if (executeDrop(tree, n, newParentNode, index, expandedStates, action)) {
+							dtde.acceptDrop(action);
+							dtde.dropComplete(true);
+							return;
+						}
+					}					
 				}
 				dtde.rejectDrop();
 				dtde.dropComplete(false);
+				//draggedNode = null;
 			}
-			else if (activityString != null && canPerformAction(tree, draggedNode, action, pt)) {
+			else { // we are looking at a dragged in activity
 				TreePath pathTarget = tree.getPathForLocation(pt.x, pt.y);
-				DefaultMutableTreeNode activityNode = new DefaultMutableTreeNode();
-				
-				if (activityString.equalsIgnoreCase("SEQUENCE")) {
-					activityNode.setUserObject(new Sequence());
-					activityNode.setAllowsChildren(true);		          	
-				}
-				else if (activityString.equalsIgnoreCase("FLOW")) {
-					activityNode.setUserObject(new Flow());
-					activityNode.setAllowsChildren(true);
-				}
-				else if (activityString.equalsIgnoreCase("STEP")) {
-					activityNode.setUserObject(new Step());
-					activityNode.setAllowsChildren(false);
-				}
-		        else if(activityString.equalsIgnoreCase("SCRIPT")) {
-		        	activityNode.setUserObject(new Script());
-		        	activityNode.setAllowsChildren(false);
-		          }
-				else if (activityString.equalsIgnoreCase("SET")) {					
-					activityNode.setUserObject(new Set());
-					activityNode.setAllowsChildren(false);
-				}
-				else if (activityString.equalsIgnoreCase("UNSET")) {					
-					activityNode.setUserObject(new Unset());
-					activityNode.setAllowsChildren(false);
-				}
-				else if (activityString.equalsIgnoreCase("FOR")) {
-					activityNode.setUserObject(new For());
-					activityNode.setAllowsChildren(true);
-				}
-				else if (activityString.equalsIgnoreCase("IF")) {					
-					activityNode.setUserObject(new If());
-					activityNode.setAllowsChildren(true);
-				}
-				else if (activityString.equalsIgnoreCase("PARFOR")) {
-					activityNode.setUserObject(new Parfor());
-					activityNode.setAllowsChildren(true);
-				}
-				else if (activityString.equalsIgnoreCase("SCOPE")) {
-					activityNode.setUserObject(new Scope());
-					activityNode.setAllowsChildren(true);
-				}
-				else if (activityString.equalsIgnoreCase("WHILE")) {
-					activityNode.setUserObject(new While());
-					activityNode.setAllowsChildren(true);
-				}
-				
-				
-				DefaultMutableTreeNode newParentNode = (DefaultMutableTreeNode)pathTarget.getLastPathComponent();				
+				DefaultMutableTreeNode activityNode = getActivityNode(transferable);								
+				DefaultMutableTreeNode newParentNode = (DefaultMutableTreeNode)pathTarget.getLastPathComponent();
 				int index = -1;
 				// Will drop be OK?
-				if (true) { //(newParentNode.isLeaf() && !newParentNode.getAllowsChildren()) {
+
+				// If parent allows children drop dragged node as 1st child, 
+				// unless parent node allows children as it needs a sequence 
+				// as it's 1 and only child i.e. loops, if, then/else
+				if  (newParentNode.getAllowsChildren() &&
+					 !(newParentNode.getUserObject() instanceof Workflow ||
+					 newParentNode.getUserObject() instanceof Step ||
+					 newParentNode.getUserObject() instanceof While ||
+					 newParentNode.getUserObject() instanceof Parfor ||
+					 newParentNode.getUserObject() instanceof For ||
+					 newParentNode.getUserObject() instanceof If ||
+					 newParentNode.getUserObject() instanceof Then ||
+					 newParentNode.getUserObject() instanceof Else ||
+					 newParentNode.getUserObject() instanceof Script ||
+					 newParentNode.getUserObject() instanceof Scope ||					 
+					 activityNode.getUserObject() instanceof Else )) {
+					if (executeDrop(tree, activityNode, newParentNode, 0, null, action)) {
+						dtde.acceptDrop(action);
+						dtde.dropComplete(true);
+						draggedNode = null;
+						return;
+					}
+				}
+				
+				// If parent is IF and activityNode is Else drop as child at index 1 - Then 
+				// activity will be at index 0. Only allow 1 else per If
+				else if (newParentNode.getUserObject() instanceof If && 
+						 activityNode.getUserObject() instanceof Else && 
+						 newParentNode.getChildCount() <= 1 ) {
+					if (executeDrop(tree, activityNode, newParentNode, 1, null, action)) {
+						dtde.acceptDrop(action);
+						dtde.dropComplete(true);
+						draggedNode = null;
+						return;
+					}
+				}
+				
+				// If parent is Then and activityNode is Else drop as child at index 1 of If node
+				// only allow 1 else per If
+				else if (newParentNode.getUserObject() instanceof Then && 
+						 activityNode.getUserObject() instanceof Else &&
+						 ((DefaultMutableTreeNode)newParentNode.getParent()).getChildCount() <= 1) {
+					DefaultMutableTreeNode ifNode = (DefaultMutableTreeNode)newParentNode.getParent();
+
+					if (executeDrop(tree, activityNode, ifNode, 1, null, action)) {
+						dtde.acceptDrop(action);
+						dtde.dropComplete(true);
+						draggedNode = null;
+						return;
+					}
+				}				
+				
+				// If parentNode is body of script insert above script itself
+				else if (newParentNode.getUserObject() instanceof String) {
+					DefaultMutableTreeNode scriptNode = (DefaultMutableTreeNode)newParentNode.getParent();
+					DefaultMutableTreeNode scriptParentNode = (DefaultMutableTreeNode)scriptNode.getParent();
+					index = scriptParentNode.getIndex(scriptNode);
+					if (executeDrop(tree, activityNode, scriptParentNode, index, null, action)) {
+						dtde.acceptDrop(action);
+						dtde.dropComplete(true);
+						draggedNode = null;
+						return;
+					}
+				}
+				
+				// If parent does not allow children insert dragged node above target node, 
+				// or allows children so it can have a Sequence as it's only activity
+				else if ((!newParentNode.getAllowsChildren() ||
+						  newParentNode.getUserObject() instanceof Step ||
+						  newParentNode.getUserObject() instanceof While ||
+						  newParentNode.getUserObject() instanceof Parfor ||
+						  newParentNode.getUserObject() instanceof For ||
+						  newParentNode.getUserObject() instanceof Script ||
+						  newParentNode.getUserObject() instanceof Scope ||
+						  !(activityNode.getUserObject() instanceof Else)) 
+						  && (!(newParentNode.getUserObject() instanceof Then ||
+						      newParentNode.getUserObject() instanceof Else))) {
 					DefaultMutableTreeNode tempNode = newParentNode;
 					newParentNode = (DefaultMutableTreeNode)tempNode.getParent();
 					index = newParentNode.getIndex(tempNode);
 					if (index == -1) {
 						dtde.rejectDrop();
+						draggedNode = null;
 						return;
-					}
-					else {
-						// index = newParentNode.getChildCount();
 					}
 					if (executeDrop(tree, activityNode, newParentNode, index, null, action)) {
 						dtde.acceptDrop(action);
 						dtde.dropComplete(true);
+						draggedNode = null;
 						return;
 					}
 				}
-			}
-			else if (td != null && canPerformAction(tree, draggedNode, action, pt)) {
-//        NWW: took this out - seems to be about constructing tools. but we've not a d-n-d pallette of tools anymore.        
-//				TreePath pathTarget = tree.getPathForLocation(pt.x, pt.y);
-//				DefaultMutableTreeNode taskNode = new DefaultMutableTreeNode();
-//
-//				ApplicationsInternal apps = tree.getApplicationsInternal();
-//                int selectedInterface = 0;
-//                if (td.getInterfaces().length > 1) {
-//                    // @todo prompt user  in a little dialog to select which interface to use..                   
-//                } 
-//                /*
-//				ApplicationDescription applicationDescription = apps.getApplicationDescription(td.getId());
-//				InterfacesType interfaces = applicationDescription.getInterfaces();
-//				Interface iface = null;
-//				for (int i = 0; i <= interfaces.get_interfaceCount(); i++) {
-//					if (interfaces.get_interface(i).getName().equalsIgnoreCase(td.getInterfaceName())) {
-//						iface = interfaces.get_interface(i);
-//						break;
-//					}
-//				}			
-//				Tool tool = applicationDescription.createToolFromInterface(iface);
-//                */
-//                Tool tool = apps.createTemplateTool(td.getInterfaces()[selectedInterface].getName(),td);
-//				Step step = new Step();
-//				step.setTool(tool);
-//				step.setName("Dragged step");
-//				taskNode.setUserObject(step);
-//				
-//				DefaultMutableTreeNode newParentNode = (DefaultMutableTreeNode)pathTarget.getLastPathComponent();				
-//				int index = -1;
-//				// Will drop be OK?
-//				if (true) { //(newParentNode.isLeaf() && !newParentNode.getAllowsChildren()) {
-//					DefaultMutableTreeNode tempNode = newParentNode;
-//					newParentNode = (DefaultMutableTreeNode)tempNode.getParent();
-//					index = newParentNode.getIndex(tempNode);
-//					if (index == -1) {
-//						dtde.rejectDrop();
-//						return;
-//					}
-//					else {
-//						// index = newParentNode.getChildCount();
-//					}
-//					if (executeDrop(tree, taskNode, newParentNode, index, null, action)) {
-//						dtde.acceptDrop(action);
-//						dtde.dropComplete(true);
-//						return;
-//					}
-//				}
-//				
+				
+				// If parent is Then or Else drop activityNode prior to If node
+				else if (!(draggedNode.getUserObject() instanceof Else) &&
+						 (newParentNode.getUserObject() instanceof Then || 
+						 newParentNode.getUserObject() instanceof Else)) {
+					DefaultMutableTreeNode scriptNode = (DefaultMutableTreeNode)newParentNode.getParent();
+					DefaultMutableTreeNode scriptParentNode = (DefaultMutableTreeNode)scriptNode.getParent();
+					index = scriptParentNode.getIndex(scriptNode);
+					if (executeDrop(tree, activityNode, scriptParentNode, index, null, action)) {
+						dtde.acceptDrop(action);
+						dtde.dropComplete(true);
+						draggedNode = null;
+						return;
+					}
+				}
+				
+				else {
+					logger.error("Not able to drop " + activityNode + " into " + newParentNode);
+				}
+				dtde.rejectDrop();
+				dtde.dropComplete(false);
+				draggedNode = null;
 			}
 		}
 		catch (Exception ex) {
 			logger.error("Drop failed: " + ex.getMessage());
 			dtde.rejectDrop();
 			dtde.dropComplete(false);
+			draggedNode = null;
 		}		
 	}
 
@@ -466,14 +509,122 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	 * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
 	 */
 	public void dragExit(DropTargetEvent dte) {
-		logger.error("dragExit: dte");
-		// TODO Auto-generated method stub
-
 	}
 	
     private final synchronized void paintImage(Point pt, Component source) {
         pt = SwingUtilities.convertPoint(source, pt, dragPane);
-        draggedLabel.setLocation(pt);
+        if (draggedLabel != null)
+        	draggedLabel.setLocation(pt);
+    }
+    
+    /*
+     * Return DefaultMutableTreeNode with user object set to relevant activity taken from transferable
+     * @param transferable
+     * @return DefaultMutableTreeNode
+     */
+    private DefaultMutableTreeNode getActivityNode(Transferable transferable) {
+    	DefaultMutableTreeNode activityNode = new DefaultMutableTreeNode();
+    	try {
+    		String activityString = (String)transferable.getTransferData(TransferableNode.STRING_FLAVOR);
+    		if (activityString == null) {
+    			activityNode = null;
+    		} else {
+				if (activityString.equalsIgnoreCase("SEQUENCE")) {
+					activityNode.setUserObject(new Sequence());
+					activityNode.setAllowsChildren(true);
+				}
+				else if (activityString.equalsIgnoreCase("FLOW")) {
+					activityNode.setUserObject(new Flow());
+					activityNode.setAllowsChildren(true);
+				}
+				else if (activityString.equalsIgnoreCase("STEP")) {
+					activityNode.setUserObject(new Step());
+					activityNode.setAllowsChildren(true);
+				}
+		        else if(activityString.equalsIgnoreCase("SCRIPT")) {
+		        	Script script = new Script();
+		        	script.setBody("");
+		        	activityNode.setUserObject(script);
+		            DefaultMutableTreeNode body = new DefaultMutableTreeNode();
+		            body.setUserObject(script.getBody());
+		            body.setAllowsChildren(false);		            
+		            activityNode.add(body);
+		          }
+				else if (activityString.equalsIgnoreCase("SET")) {
+					activityNode.setUserObject(new Set());
+					activityNode.setAllowsChildren(false);
+				}
+				else if (activityString.equalsIgnoreCase("UNSET")) {					
+					activityNode.setUserObject(new Unset());
+					activityNode.setAllowsChildren(false);
+				}
+				else if (activityString.equalsIgnoreCase("IF")) {
+					If newIf = new If();
+					Then newThen = new Then();					
+					newThen.setActivity(new Sequence());
+					newIf.setThen(newThen);
+					activityNode.setUserObject(newIf);
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();					
+					node.setUserObject(newIf.getThen());
+					node.setAllowsChildren(true);	
+					DefaultMutableTreeNode seq = new DefaultMutableTreeNode();
+					seq.setUserObject(newIf.getThen().getActivity());
+					seq.setAllowsChildren(true);
+					node.add(seq);
+					activityNode.add(node);					
+				}
+				else if (activityString.equalsIgnoreCase("ELSE")) {
+					Else newElse = new Else();
+					newElse.setActivity(new Sequence());
+					activityNode.setUserObject(newElse);
+					activityNode.setAllowsChildren(true);
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(newElse.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);					
+				}
+				else if (activityString.equalsIgnoreCase("FOR")) {
+					For f = new For();
+					f.setActivity(new Sequence());
+					activityNode.setUserObject(f);
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(f.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);
+				}				
+				else if (activityString.equalsIgnoreCase("PARFOR")) {
+					Parfor newParfor = new Parfor();
+					activityNode.setUserObject(newParfor);
+					newParfor.setActivity(new Sequence());
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(newParfor.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);
+				}
+				else if (activityString.equalsIgnoreCase("SCOPE")) {
+					Scope newScope = new Scope();
+					newScope.setActivity(new Sequence());
+					activityNode.setUserObject(newScope);
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(newScope.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);
+				}
+				else if (activityString.equalsIgnoreCase("WHILE")) {
+					While newWhile = new While();
+					activityNode.setUserObject(newWhile);
+					newWhile.setActivity(new Sequence());
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(newWhile.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);
+				}
+    		}
+    	}
+    	catch (Exception ex) {
+    		logger.error("Exception creating ActivityNode: " + ex.getMessage());
+    	}
+    	return activityNode;
     }
 	
     /**

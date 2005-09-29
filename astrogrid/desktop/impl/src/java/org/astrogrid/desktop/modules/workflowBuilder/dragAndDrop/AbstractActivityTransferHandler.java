@@ -26,7 +26,7 @@ public abstract class AbstractActivityTransferHandler extends TransferHandler {
     protected abstract String exportActivity(JComponent c);
     
     protected Transferable createTransferable(JComponent c) {
-        return new TransferableNode(null, null, null, exportActivity(c));
+        return new TransferableNode(null, null, exportActivity(c));
     }
     
     public int getSourceActions(JComponent c) {

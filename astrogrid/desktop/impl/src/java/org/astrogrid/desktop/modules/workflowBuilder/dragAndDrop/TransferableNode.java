@@ -39,19 +39,16 @@ public class TransferableNode implements Transferable {
 	
 	public static final DataFlavor NODE_FLAVOR = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType, "Node");
 	public static final DataFlavor EXPANDED_STATE_FLAVOR = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType, "Vector");
-	public static final DataFlavor TASK_DETAILS_FLAVOR = new DataFlavor(ApplicationInformation.class, "Task Details");
 	public static final DataFlavor STRING_FLAVOR = new DataFlavor(java.lang.String.class, "Activity String");
 
 	private DefaultMutableTreeNode node;
 	private Vector expandedStates;
-	private ApplicationInformation taskDetails;
 	private String activityString;
-	private DataFlavor[] flavors = { NODE_FLAVOR, EXPANDED_STATE_FLAVOR, TASK_DETAILS_FLAVOR, STRING_FLAVOR };
+	private DataFlavor[] flavors = { NODE_FLAVOR, EXPANDED_STATE_FLAVOR, STRING_FLAVOR };
 	
-	public TransferableNode(DefaultMutableTreeNode nd, Vector es, ApplicationInformation td, String activity) {
+	public TransferableNode(DefaultMutableTreeNode nd, Vector es, String activity) {
 		node = nd;
 		expandedStates = es;
-		taskDetails = td;
 		activityString = activity;
 	}
 
@@ -79,9 +76,6 @@ public class TransferableNode implements Transferable {
 		}
 		else if (flavor == EXPANDED_STATE_FLAVOR) {
 			return expandedStates;
-		}
-		else if (flavor == TASK_DETAILS_FLAVOR) {
-			return taskDetails;
 		}
 		else if (flavor == STRING_FLAVOR) {
 			return activityString;

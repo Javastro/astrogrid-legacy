@@ -10,14 +10,21 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import jedit.JEditTextArea;
 import jedit.JavaTokenMarker;
@@ -32,6 +39,8 @@ import jedit.SyntaxDocument;
 public class ScriptDialog extends JDialog implements PropertyChangeListener {
     private JOptionPane jOptionPane;
 	private JEditTextArea resultDisplay = null;
+	private JPanel displayPanel = null;
+	private JTextField descField;
 	/**
 	 * This method initializes jTextArea	
 	 * 	
@@ -46,6 +55,25 @@ public class ScriptDialog extends JDialog implements PropertyChangeListener {
 		}
 		return resultDisplay;
 	}
+	
+	public JPanel getDisplayPanel() {
+		if (displayPanel == null) {
+			displayPanel = new JPanel();
+			displayPanel.add(getResultDisplay(), BorderLayout.CENTER);
+			displayPanel.add(getDescriptionPanel(), BorderLayout.SOUTH);
+		}
+		return displayPanel;
+	}
+	
+	private JPanel getDescriptionPanel() {
+		JPanel p = new JPanel(new FlowLayout());
+		JLabel label = new JLabel("Description:  ");
+		descField = new JTextField(30);
+		p.add(label);
+		p.add(descField);
+		p.setBorder(BorderFactory.createEtchedBorder());
+		return p;
+	}	
 
 
     
@@ -98,6 +126,14 @@ public class ScriptDialog extends JDialog implements PropertyChangeListener {
     public String getEditedScript() {
         return editedScript;
     }
+    
+    public void setDescription(String desc) {
+    	descField.setText(desc);
+    }
+    
+    public String getDescription() {
+    	return descField.getText();
+    }
 	/**
 	 * This method initializes this
 	 * 
@@ -117,13 +153,13 @@ public class ScriptDialog extends JDialog implements PropertyChangeListener {
         }
     });                
         this.setModal(true);
-		this.setSize(600,400);
+		this.setSize(685,570);
 		this.setContentPane(getJOptionPane());
 	}
     
     private JOptionPane getJOptionPane() {
         if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getResultDisplay(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
+            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
             jOptionPane.addPropertyChangeListener(this);
         }
         return jOptionPane;

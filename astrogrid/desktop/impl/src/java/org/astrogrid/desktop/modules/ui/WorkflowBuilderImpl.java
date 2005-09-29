@@ -10,43 +10,11 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.ui.JobMonitor;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.JobsInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.desktop.modules.dialogs.ScriptDialog;
-import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
-import org.astrogrid.desktop.modules.dialogs.WorkflowDetailsDialog; 
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.DefaultActivityTransferHandler;
-import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.WorkflowDnDTree;
-import org.astrogrid.desktop.modules.workflowBuilder.models.SimpleWorkflowTreeModel;
-import org.astrogrid.desktop.modules.workflowBuilder.renderers.ActivityListRenderer;
-import org.astrogrid.util.DomHelper;
-import org.astrogrid.workflow.beans.v1.Script;
-import org.astrogrid.workflow.beans.v1.Step;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.w3c.dom.Document;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -65,6 +33,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -75,14 +44,70 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.HelpServer;
+import org.astrogrid.acr.ui.JobMonitor;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.ag.JobsInternal;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ForDialog;
+import org.astrogrid.desktop.modules.dialogs.IfDialog;
+import org.astrogrid.desktop.modules.dialogs.ParforDialog;
+import org.astrogrid.desktop.modules.dialogs.RegistryChooserDialog;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.dialogs.ScriptDialog;
+import org.astrogrid.desktop.modules.dialogs.SetDialog;
+import org.astrogrid.desktop.modules.dialogs.StepDialog;
+import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
+import org.astrogrid.desktop.modules.dialogs.UnsetDialog;
+import org.astrogrid.desktop.modules.dialogs.WhileDialog;
+import org.astrogrid.desktop.modules.dialogs.WorkflowDetailsDialog;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.WorkflowDnDTree;
+import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.listeners.WastebinDropListener;
+import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.listeners.WorkflowTreeModelListener;
+import org.astrogrid.desktop.modules.workflowBuilder.models.SimpleWorkflowTreeModel;
+import org.astrogrid.desktop.modules.workflowBuilder.renderers.ActivityListRenderer;
+import org.astrogrid.util.DomHelper;
+import org.astrogrid.workflow.beans.v1.Else;
+import org.astrogrid.workflow.beans.v1.Flow;
+import org.astrogrid.workflow.beans.v1.For;
+import org.astrogrid.workflow.beans.v1.If;
+import org.astrogrid.workflow.beans.v1.Parfor;
+import org.astrogrid.workflow.beans.v1.Scope;
+import org.astrogrid.workflow.beans.v1.Script;
+import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Set;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Then;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Unset;
+import org.astrogrid.workflow.beans.v1.While;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Document;
+
+import com.l2fprod.common.swing.StatusBar;
 
 
 /**
  * @author Phil Nicolson pjn3@star.le.ac.uk
  *@modified nww smoothed up backgrounnd operaitons, added new tool editor, removed top tabs.
- *@todo add  editor dialogues for other kinds of activity.
- *@todo finish drag-n-drop - ensure changes are made within the workflow document objects.
  *
  */
 public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.acr.ui.WorkflowBuilder {
@@ -124,27 +149,26 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                             return;
                         }
 	                (new BackgroundOperation("Loading Workflow") {
-	                    protected Object construct() throws Exception {	       // do all long-runing tasks in this method, as runs in background thread 		
+	                    protected Object construct() throws Exception {	       // do all long-runing tasks in this method, as runs in background thread
+	                    	
 		                    Reader reader = new InputStreamReader(vos.getInputStream(u));		                		         
 		                    Workflow wf = (Workflow)Unmarshaller.unmarshal(Workflow.class, reader);	                
 		                    reader.close();
                             return wf;
                         }
                         protected void doFinished(Object o) { // do all updating of ui in this method, as runs on swing thread
-
                             getModel().setWorkflow((Workflow)o);   
                             getTree().expandAll(true);
                             tabbedPaneWF.setSelectedIndex(0);
                     	    tabbedPaneWF.setEnabledAt(0, true);
                     	    tabbedPaneWF.setEnabledAt(1, true);
                     	    //@todo tidy this up.
-                    		submitAction.setEnabled(true);
                     		saveAction.setEnabled(true);
                     		caretPos = 0;
-                    		wfDocFindField.setText("");	        	            	                   
+                    		wfDocFindField.setText("");
+                    		validateWorkflow();
 	                    }
-	                }).start();	                	                            	
-		        
+	                }).start();	                	    
 	        }
 	    }	
     /** submit a workflow for execution */
@@ -234,6 +258,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     private JButton  findButton = null;
     private JEditorPane docTextArea;
     private JList list;
+    private JLabel statusLabel, workflowStatusLabel, wastebinLabel = null;
     private JMenuBar jJMenuBar = null;
     private JMenu fileMenu = null;
     private JToolBar toolbar = null;    
@@ -244,11 +269,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     private JScrollPane listView = null;
     private URL helpUrl;
     private int caretPos = 0;
-    
-    private String helpLocation = "/org/astrogrid/desktop/modules/workflowBuilder/helpText/";
-    
- 
-    	
+    private Configuration conf;
+    private Registry reg; 
+    private StatusBar statusBar = null;
 	
     /** 
      * production constructor 
@@ -256,7 +279,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
      * 
      * */
     public WorkflowBuilderImpl(ApplicationsInternal apps, JobsInternal jobs,JobMonitor monitor,  MyspaceInternal vos, BrowserControl browser,
-            ToolEditorInternal toolEditor,UIInternal ui, HelpServer hs, Configuration conf,ResourceChooserInternal chooser) throws Exception {
+            ToolEditorInternal toolEditor,UIInternal ui, HelpServer hs, Configuration conf,ResourceChooserInternal chooser, Registry reg) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.vos = vos;
@@ -265,6 +288,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         this.apps = apps;
         this.jobs = jobs;
         this.toolEditor = toolEditor;
+        this.conf = conf;
+        this.reg = reg;
         initialize();
         
     }   
@@ -327,11 +352,14 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         fileMenu.add(submitAction);
         fileMenu.add(new JSeparator());
         fileMenu.add(closeAction);
+        
         pane.add(getActivityList(),BorderLayout.WEST);
+        pane.add(getStatusBar(), java.awt.BorderLayout.SOUTH);
 		this.setContentPane(pane);
 		pack();
 		createAction.actionPerformed(null); // fire the create action to initialize everything.
 	}
+
 
 
 	/**
@@ -377,7 +405,64 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			toolbar.setFloatable(false);
 		}
 		return toolbar;
-	}	
+	}
+	/**
+	 * This method initializes statusBar	
+	 * 	
+	 * @return com.l2fprod.common.swing.StatusBar	
+	 */    
+	private StatusBar getStatusBar() {
+		if (statusBar == null) {
+			statusBar = new StatusBar();
+            statusBar.addZone("status",getStatusLabel(),"*");
+            statusBar.addZone("wastebin",getWasteBin(),"29");
+            statusBar.addZone("workflowStatus",getWorkflowStatus(),"27");
+            statusBar.addZone("spacer",new JLabel(""),"0");
+		}
+		return statusBar;
+	}
+    private JLabel getStatusLabel() {
+        if (statusLabel == null) {
+            statusLabel = new JLabel();
+            statusLabel.setText("");
+            statusLabel.setForeground(java.awt.SystemColor.activeCaption);
+            statusLabel.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 10));
+        }
+        return statusLabel;
+    }
+	/**
+	 * This method initializes jLabel	
+	 * 	
+	 * @return javax.swing.JLabel	
+	 */    
+	private JLabel getWorkflowStatus() {
+		if (workflowStatusLabel == null) {
+			workflowStatusLabel = new JLabel();
+			workflowStatusLabel.setText("");
+			workflowStatusLabel.setDisabledIcon(IconHelper.loadIcon("redcross.gif"));
+			workflowStatusLabel.setIcon(IconHelper.loadIcon("greentick.gif"));
+			workflowStatusLabel.setEnabled(false);
+			workflowStatusLabel.setToolTipText("Indicates whether workflow is valid");
+		}
+		return workflowStatusLabel;
+	} 
+ 	
+	/**
+	 * This method initializes jLabel	
+	 * 	
+	 * @return javax.swing.JLabel	
+	 */    
+	private JLabel getWasteBin() {
+		if (wastebinLabel == null) {
+			wastebinLabel = new JLabel();
+			wastebinLabel.setText("");
+			wastebinLabel.setIcon(IconHelper.loadIcon("wastebin.gif"));
+			wastebinLabel.setToolTipText("Wastebin");
+			DropTarget dt = new DropTarget(wastebinLabel, new WastebinDropListener(tree));
+		}
+		return wastebinLabel;
+	}
+  
 	/**
 	 * This method returns the activity list
 	 * to do: cahnge layout to grid of buttons or an improved layout...	
@@ -391,6 +476,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			activityListModel.addElement("Flow");
 			activityListModel.addElement("Sequence");
 			activityListModel.addElement("If");
+			activityListModel.addElement("Else");
 			activityListModel.addElement("Scope");
 			activityListModel.addElement("Script");
 			activityListModel.addElement("Set");
@@ -402,7 +488,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			list.setDragEnabled(true);
 			list.setCellRenderer(new ActivityListRenderer());
-			list.setTransferHandler(new DefaultActivityTransferHandler());
+			//list.setTransferHandler(new DefaultActivityTransferHandler());
 			listView = new JScrollPane(list);
 		}
 		return listView;
@@ -417,6 +503,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     private SimpleWorkflowTreeModel getModel() {
         if (model == null) {
             model = new SimpleWorkflowTreeModel();
+            model.addTreeModelListener(new WorkflowTreeModelListener(this));
         }
         return model;
     }
@@ -426,24 +513,51 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         if (tree == null) {
            tree =  new WorkflowDnDTree(apps);
            tree.setModel(getModel());
-           tree.addMouseListener(new MouseAdapter() { //@todo add other cases to this - each kind of activiity should pop up some kind of dialogue
+           tree.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 if (evt.getClickCount() == 2 ) {
+                	setStatusMessage("");
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
                     Object o = node.getUserObject();
-                    if (o instanceof String ) {
+                    if (o instanceof String) {
                         getScriptDialog().setText(tree.getLastSelectedPathComponent().toString());
+                        DefaultMutableTreeNode scriptNode = (DefaultMutableTreeNode)node.getParent();
+                        if (scriptNode.getUserObject() instanceof Script) { // should be as String is script body
+                        	getScriptDialog().setDescription(((Script)scriptNode.getUserObject()).getDescription());
+                        }                        
                         getScriptDialog().setVisible(true);
                         String edit = getScriptDialog().getEditedScript();
-                        if (edit != null) {
+                        String desc = getScriptDialog().getDescription();
+                        if (edit != null && desc != null) {
                             node.setUserObject(edit);
+                            getModel().nodeChanged(node); // script body may have changed
                             DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
                             Script sc = (Script)parentNode.getUserObject();
                             sc.setBody(edit);
-                            getModel().nodeChanged(node);                            
+                            sc.setDescription(desc);
+                            parentNode.setUserObject(sc);
+                            getModel().nodeChanged(parentNode); // script desc may also have changed, attribute of parent node
                         }
-                    } else if (o instanceof Tool ) {
-                        try {
+                    } 
+                    if (o instanceof Script) {
+                        getScriptDialog().setText(((Script)o).getBody());
+                        getScriptDialog().setDescription(((Script)o).getDescription());
+                        getScriptDialog().setVisible(true);
+                        String edit = getScriptDialog().getEditedScript();
+                        String desc = getScriptDialog().getDescription();
+                        if (edit != null && desc != null) {
+                            Script sc = (Script)node.getUserObject();
+                            sc.setBody(edit);
+                            sc.setDescription(desc);
+                            node.setUserObject(sc);
+                            getModel().nodeChanged(node); // Script desc may have changed
+                            DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)node.getFirstChild();
+                            childNode.setUserObject(edit);
+                            getModel().nodeChanged(childNode); // May also have changed body
+                        }
+                    }                    
+                    else if (o instanceof Tool ) {
+                      try {
                        Tool newTool = toolEditor.editTool((Tool)o,WorkflowBuilderImpl.this);
                        if (newTool != null) { // i.e. changes have been made.
                            node.setUserObject(newTool); // store node back in ui model
@@ -455,32 +569,200 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                         } catch (ACRException e) {
                             showError("Failed to edit tool",e);
                         }
-                    } // @add dialogues for other kinds of activity.
+                    } 
+                    else if (o instanceof Step) {
+                    	Step newStep = getStepDialog((Step)o).getEditedStep();
+                    	stepDialog = null;
+                    try {
+                    	if (newStep != null) {
+                    		RegistryChooserDialog registryChooser = getRegistryChooserDialog();
+                    		registryChooser.setVisible(true);
+                    		ResourceInformation[] resourceInformation = registryChooser.getSelectedResources();
+                    		if (resourceInformation != null && resourceInformation.length >0) {
+                    			ResourceInformation res = resourceInformation[0]; // only returning single entries
+                    			ApplicationInformation applicationInfo = apps.getApplicationInformation(res.getId());
+                    			Tool t = apps.createTemplateTool("default",applicationInfo);
+                    			if (t != null) {
+                    				Tool newTool = toolEditor.editTool(t,WorkflowBuilderImpl.this); 
+                    				newStep.setTool(newTool);
+                    				DefaultMutableTreeNode childNode = new DefaultMutableTreeNode();
+                    				childNode.setUserObject(newTool);
+                    				node.add(childNode);
+                    				getModel().nodeChanged(childNode);
+                    			}
+                    		}
+                    	node.setUserObject(newStep);
+                    	getModel().nodeChanged(node);
+                    	registryChooser = null;                    	
+                    	}                    	
+                    
+                    } catch (Exception e) { //(ACRException e) {
+                        showError("Failed to edit tool",e);
+                    }
+                    }
+                    else if (o instanceof If) {
+                    	If newIf = getIfDialog((If)o).getEditedIf();
+                    	if (newIf != null) {
+                    		node.setUserObject(newIf);
+                    		getModel().nodeChanged(node);
+                    	}
+                    	ifDialog = null;
+                    }
+                    else if (o instanceof Set) {
+                    	Set newSet = getSetDialog((Set)o).getEditedSet();
+                    	if (newSet != null) {
+                        	node.setUserObject(newSet);
+                        	getModel().nodeChanged(node);
+                    	} 
+                    	setDialog = null;
+                    }
+                    else if (o instanceof Unset) {
+                    	Unset newUnset = getUnsetDialog((Unset)o).getEditedUnset();
+                    	if (newUnset != null) {
+                    		node.setUserObject(newUnset);
+                    		getModel().nodeChanged(node);
+                    	}                    	
+                    	unsetDialog = null;
+                    }
+                    else if (o instanceof For) {
+                    	For newFor = getForDialog((For)o).getEditedFor();
+                    	if (newFor != null) {
+                    		node.setUserObject(newFor);
+                    		getModel().nodeChanged(node);
+                    	}                    	
+                    	forDialog = null;
+                    }
+                    else if (o instanceof Parfor) {
+                    	Parfor newParfor = getParforDialog((Parfor)o).getEditedParfor();
+                    	if (newParfor != null) {
+                        	node.setUserObject(newParfor);
+                        	getModel().nodeChanged(node);
+                    	}
+                    	parforDialog = null;
+                    }                    
+                    else if (o instanceof While) {
+                    	While newWhile = getWhileDialog((While)o).getEditableWhile();
+                    	if (newWhile != null) {
+                        	node.setUserObject(newWhile);
+                        	getModel().nodeChanged(node);
+                    	}
+                    	whileDialog = null;
+                    }                    
+                    else if (o instanceof Workflow) {
+                    	Workflow newWorkflow = getWorkflowDetailsDialog((Workflow)o).getEditableWorkflow();
+                    	if (newWorkflow != null) {
+                    		node.setUserObject(newWorkflow);
+                    		getModel().nodeChanged(node);
+                    		tree.expandAll(true); // nodeChanged will focus to root, so expand again
+                    	}
+                    	workflowDialog = null;
+                    }
+                    else if (o instanceof Sequence || 
+                    		 o instanceof Flow || 
+							 o instanceof Scope ||
+							 o instanceof Else ||
+							 o instanceof Then ) {
+                    	setStatusMessage("No inputs required for this activity");
+                    }                    
                 }
             }
            });                   
         }
         return tree;
     }
-   
+ 
+    private ForDialog forDialog;
+    private ForDialog getForDialog(For f) {
+        if (forDialog == null) {
+            forDialog = new ForDialog(this, f);
+        }
+        return forDialog;
+    }
+    
+    private IfDialog ifDialog;
+    private IfDialog getIfDialog(If i) {
+        if (ifDialog == null) {
+            ifDialog = new IfDialog(this, i);
+        }
+        return ifDialog;
+    }    
+    
+    private ParforDialog parforDialog;
+    private ParforDialog getParforDialog(Parfor p) {
+        if (parforDialog == null) {
+            parforDialog = new ParforDialog(this, p);
+        }
+        return parforDialog;
+    }    
+
+    private RegistryChooserDialog registryDialog;
+    private RegistryChooserDialog getRegistryChooserDialog() {
+        if (registryDialog == null) {
+        	registryDialog = new RegistryChooserDialog(WorkflowBuilderImpl.this, conf, help, ui, reg);
+        	registryDialog.setMultipleResources(false);
+        }
+        return registryDialog;
+    }
+    
     private ScriptDialog scriptDialog;
     private ScriptDialog getScriptDialog() {
         if (scriptDialog == null) {
             scriptDialog = new ScriptDialog(this);
         }
         return scriptDialog;
+    }    
+    
+    private SetDialog setDialog;
+    private SetDialog getSetDialog(Set s) {
+        if (setDialog == null) {
+            setDialog = new SetDialog(this, s);
+        }
+        return setDialog;
     }
     
+    private StepDialog stepDialog;
+    private StepDialog getStepDialog(Step s) {
+        if (stepDialog == null) {
+            stepDialog = new StepDialog(this, s);
+        }
+        return stepDialog;
+    }    
+    
+    private UnsetDialog unsetDialog;
+    private UnsetDialog getUnsetDialog(Unset u) {
+        if (unsetDialog == null) {
+            unsetDialog = new UnsetDialog(this, u);
+        }
+        return unsetDialog;
+    }  
+    
+    private WhileDialog whileDialog;
+    private WhileDialog getWhileDialog(While w) {
+        if (whileDialog == null) {
+            whileDialog = new WhileDialog(this, w);
+        }
+        return whileDialog;
+    }    
+    
+    private WorkflowDetailsDialog workflowDialog;
+    private WorkflowDetailsDialog getWorkflowDetailsDialog(Workflow w) {
+        if (workflowDialog == null) {
+        	workflowDialog = new WorkflowDetailsDialog(this, w);
+        }
+        return workflowDialog;
+    }    
+    
 	    
+
 	private JPanel getTabbedTreePanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 		JScrollPane scrollPane = new JScrollPane(getTree());
-		panel.add(scrollPane);			
+		panel.add(scrollPane);
 		panel.setBorder(BorderFactory.createTitledBorder("Tree view"));
-		panel.setPreferredSize(new Dimension(800,200));		
+		panel.setPreferredSize(new Dimension(800,300));		
 		return panel;
-	}		
-	
+	}
+
 	
 	
 	private JPanel getTabbedDocPanel() {
@@ -503,25 +785,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		p.add(wfDocFindField);
 		return p;
 	}
-  
-
-    /** 
-     * prompt user in some way to fill in fields in the template 
-     * returns null to indicate canceled operation.
-     * */
-    protected Workflow editWF(Workflow wf) {
-    	WorkflowDetailsDialog dialog = new WorkflowDetailsDialog(wf);
-    	dialog.setVisible(true);
-        return dialog.getWorkflow();
-    }
-    
-
- 	     
-
 
       
-
-
 	/**
 	 * This method initializes search button
 	 * actionPerformed will find specified text in docTextArea	
@@ -560,8 +825,28 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		}
 		return findButton;
 	}	
-
-     
- 
-
+	/**
+	 * Sets submit button and workflow valid icon depending if workflow is valid 
+	 *
+	 */
+	public void validateWorkflow() {
+		if (getModel().getWorkflow().isValid()) {
+			submitAction.setEnabled(true);
+			workflowStatusLabel.setEnabled(true);
+		} else {
+			submitAction.setEnabled(false);	
+			workflowStatusLabel.setEnabled(false);
+		}
+	}
+	   
+    /**
+     * @see org.astrogrid.acr.system.UI#setStatusMessage(java.lang.String)
+     */
+    public void setStatusMessage(final String msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                getStatusLabel().setText(msg);
+            }
+        });
+    }  
 } 

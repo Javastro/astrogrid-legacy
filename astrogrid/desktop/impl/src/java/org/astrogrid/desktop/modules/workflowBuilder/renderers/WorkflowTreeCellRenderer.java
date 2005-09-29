@@ -141,8 +141,8 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
                     if (name.length() > 0) 
                         sb.append(name);
                     if (var.length() > 0) 
-                        sb.append("<b>Result Variable </b>").append(var);   
-                    if (var.length() > 0)
+                        sb.append(" <b>Result Variable </b>").append(var);   
+                    if (desc.length() > 0)
                         sb.append("<br><i>").append(desc).append("</i>");
 					sb.append("</html>");
                     label.setText(sb.toString());
@@ -152,7 +152,7 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
                     Tool t = (Tool)value;
 						String task = t.getName() == null? "" :t.getName();
 						String iface = t.getInterface() == null? "" : t.getInterface();
-                        sb.append("<html><b>Task</b>");        
+                        sb.append("<html><b>Task</b> ");        
                         if (task.length() > 0)
                             sb.append(task);                 
                         if (iface.length() > 0)
@@ -229,7 +229,7 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					While w = (While)value;
 					String test = w.getTest() == null ? "" : w.getTest();
 					label.setIcon(IconHelper.loadIcon("icon_Loop.gif"));
-					sb.append( "<html><b>While</b>");
+					sb.append( "<html><b>While</b> ");
 					if (test.length() > 0)
 						sb.append( test);
 					sb.append("</html>");
@@ -258,7 +258,7 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					If i = (If)value;
 					label.setIcon(IconHelper.loadIcon("icon_If.gif"));
 					String test = i.getTest() == null? "" : i.getTest();
-					sb.append("<html><b>If</b>");
+					sb.append("<html><b>If</b> ");
 					if (test.length() > 0) 
 						sb.append(test);
 					sb.append("</html>");
