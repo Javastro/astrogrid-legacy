@@ -13,6 +13,16 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	<release version="1.2-beta-3" date="2005-09-30">
+		<action dev="pjn" type="add">
+			Workflow viewer is now a Workflow builder!
+		</action>
+		<action dev="jdt" type="fix">
+			This build should include a rebuilt CDK, which in turn should
+			contain a fixed registry delegate.  Those strange ivorn://null
+			errors should go away.
+		</action>
+	</release>	
 	<release version="1.2-beta-1" date="unreleased">
 		<action dev="nw" type="add">
 			Added interfaces and development skeletons for registry google and
