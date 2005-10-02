@@ -1,0 +1,250 @@
+<document>
+	<properties>
+		<title>Maven Plug-in for Axis 1.2.1: properties</title>
+		<author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+	</properties>
+	<body>
+		<section name="Maven Plug-in for Axis 1.2.1: properties">
+			<subsection name="General properties">
+				<table>
+					<tr>
+						<th>Property</th>
+						<th>Default</th>
+						<th>Optional?</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>maven.axis.dir</td>
+						<td>${maven.build.dir}/axis</td>
+						<td>Yes</td>
+						<td> Specifies the root directory for axis output files. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.generated.dir</td>
+						<td>${maven.axis.dir}/src</td>
+						<td>Yes</td>
+						<td> Specifies the source directory for the generated .java files. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.build.dir</td>
+						<td>${maven.axis.dir}/build</td>
+						<td>Yes</td>
+						<td> Specifies the build directory for the generated .java files. The reason why it
+							differs from maven.axis.generated.dir is the fact that implementation classes can be
+							excluded. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.excludes</td>
+						<td>empty</td>
+						<td>Yes</td>
+						<td> Specifies a ";" separated exclude list of generated files which should not appear
+							in the build process. (e.g. */**/*SoapBindingImpl.java). </td>
+					</tr>
+					<tr>
+						<td>maven.axis.test.dir</td>
+						<td>${maven.axis.dir}/test</td>
+						<td>Yes</td>
+						<td> Specifies the test directory for the generated test classes. </td>
+					</tr>
+				</table>
+			</subsection>
+			<subsection name="Java2WSDL properties">
+				<table>
+					<tr>
+						<th>Property</th>
+						<th>Default</th>
+						<th>Optional?</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>maven.axis.classnames</td>
+						<td/>
+						<td>Yes</td>
+						<td> Specifies a comma-separated list of classes names to import, eg. org.example.Foo.
+							Required. It's required too to define the namespace and location for these classes
+							like this :<br/> classname=location,namespace<br/> example:<br/>
+							maven.axis.classnames=foo.bar.class1,foo.bar.class2<br/>
+							foo.bar.class1=http://localhost/services/service1,Namespace1<br/>
+							foo.bar.class2=http://localhost/services/service2,Namespace2 </td>
+					</tr>
+					<tr>
+						<td>maven.axis.java2wsdl.exclude</td>
+						<td/>
+						<td>Yes</td>
+						<td> Specifies comma separated list of methods to exclude from the wsdl file. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.output</td>
+						<td>${maven.src.dir}/wsdl</td>
+						<td>Yes</td>
+						<td> Specifies the directory which contains all .wsdl files. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.typemappingversion</td>
+						<td>1.1</td>
+						<td>Yes</td>
+						<td> </td>
+					</tr>
+					<tr>
+						<td>maven.axis.useinheritedmethods</td>
+						<td>false</td>
+						<td>Yes</td>
+						<td> Specified if wsdl should inherited methods be exported too. </td>
+					</tr>
+				</table>
+			</subsection>
+			<subsection name="WSDL2Java properties">
+				<table>
+					<tr>
+						<th>Property</th>
+						<th>Default</th>
+						<th>Optional?</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>maven.axis.url</td>
+						<td>${maven.src.dir}/wsdl</td>
+						<td>Yes</td>
+						<td> Specifies the URL to a single .wsdl definition. The default value points to a local
+							directory which contains all .wsdl files. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.all</td>
+						<td>true</td>
+						<td>Yes</td>
+						<td> Specifies flag to generate code for all elements, even unreferenced ones. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.deployscope</td>
+						<td>session</td>
+						<td>Yes</td>
+						<td> The session for deployment. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.serverside</td>
+						<td>true</td>
+						<td>Yes</td>
+						<td> </td>
+					</tr>
+					<tr>
+						<td>maven.axis.skeletondeploy</td>
+						<td>true</td>
+						<td>Yes</td>
+						<td> </td>
+					</tr>
+					<tr>
+						<td>maven.axis.noimports</td>
+						<td>no</td>
+						<td>Yes</td>
+						<td> </td>
+					</tr>
+					<tr>
+						<td>maven.axis.verbose</td>
+						<td>yes</td>
+						<td>Yes</td>
+						<td> </td>
+					</tr>
+					<tr>
+						<td>maven.axis.typemappingversion</td>
+						<td>1.1</td>
+						<td>Yes</td>
+						<td> </td>
+					</tr>
+					<tr>
+						<td>maven.axis.testcase</td>
+						<td>no</td>
+						<td>Yes</td>
+						<td> Specifies whether testcases should be generated or not. </td>
+					</tr>
+					<tr>
+						<td>maven.wsdl2java.namespaceMappings</td>
+						<td>empty</td>
+						<td>Yes</td>
+						<td> Specifies a comma-separated list of namespace to package name mappings. The format
+							is maven.wsdl2java.namespaceMappings=X=com.X,Y=com.Y, where X and Y map to com.X and
+							com.Y respectively. Default is empty. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.namespacemappingfile</td>
+						<td/>
+						<td>Yes</td>
+						<td>Specifies the name of a properties file containing namespace-to-package mappings. 
+							Each property in the file must be named for an XML namespace in the WSDL and its
+							value must be the name of the corresponding Java package. This conveys the same
+							information that could be set via the maven.wsdl2java.namespaceMappings property,
+							but allows a neater presentation for long lists of mappings.</td>
+					</tr>
+					<tr>
+						<td>maven.axis.debug</td>
+						<td>false</td>
+						<td>Yes</td>
+						<td> Specifies if output is in debug mode. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.factory</td>
+						<td>org.apache.axis.wsdl.toJava.JavaGeneratorFactory</td>
+						<td>Yes</td>
+						<td> Specifies the name of the Java2WSDLFactory class for extending WSDL generation
+							functions. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.helpergen</td>
+						<td>false</td>
+						<td>Yes</td>
+						<td> Turn on/off Helper class generation. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.timeout</td>
+						<td>false</td>
+						<td>Yes</td>
+						<td> Specifies the timeout in milliseconds for URL retrieval; default is 45 seconds. Set
+							this to -1 to disable timeouts altogether: other negative values are not allowed.
+						</td>
+					</tr>
+				</table>
+			</subsection>
+			<subsection name="Deployment properties">
+				<table>
+					<tr>
+						<th>Property</th>
+						<th>Default</th>
+						<th>Optional?</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>maven.axis.home</td>
+						<td/>
+						<td>No (if maven.axis.copy.deploy is set to true)</td>
+						<td> The axis webapps directory. This property is used to copy all classes and
+							dependencies into ${maven.axis.home}/WEB-INF/lib directory. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.copy.deploy</td>
+						<td>false</td>
+						<td>Yes</td>
+						<td> If this property is set to true, copy all classes and dependencies into the
+							${maven.axis.home}/WEB-INF/lib directory. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.wsdd.deploy</td>
+						<td/>
+						<td>yes</td>
+						<td> Path to the deploy.wsdd file. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.wsdd.undeploy</td>
+						<td/>
+						<td>yes</td>
+						<td> Path to the undeploy.wsdd file. </td>
+					</tr>
+					<tr>
+						<td>maven.axis.admin.url</td>
+						<td>http://localhost:8080/axis/services/AdminService?wsdl</td>
+						<td>yes</td>
+						<td> URL to the admin service of axis. </td>
+					</tr>
+				</table>
+			</subsection>
+		</section>
+	</body>
+</document>

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+  xmlns:j="jelly:core"
+  xmlns:ant="jelly:ant"
+  xmlns:maven="jelly:maven"
+  xmlns:log="jelly:log"
+  xmlns:u="jelly:util">
+
+  <!-- global definitions -->
+  <ant:taskdef resource="axis-tasks.properties">
+    <ant:classpath>
+      <ant:pathelement path="${plugin.getDependencyPath('axis:axis')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('axis:axis-ant')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('xerces:xerces')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('xerces:xercesImpl')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('xml-apis')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('jaxrpc:jaxrpc-api')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('saaj:saaj-api')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('wsdl4j')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('commons-discovery')}"/>
+      <ant:pathelement path="${plugin.getDependencyPath('commons-logging')}"/>
+      <ant:path refid="maven.dependency.classpath"/>
+      <ant:pathelement path="${maven.build.dest}"/>
+    </ant:classpath>
+  </ant:taskdef>
+
+  <j:set var="axis.build.dir"
+    value="${maven.axis.build.dir}" />
+
+  <j:set var="axis.generated.dir"
+    value="${maven.axis.generated.dir}" />
+
+  <j:set var="axis.url"
+    value="${maven.axis.url}" />
+
+  <!-- ================================================================== -->
+  <!-- P R E P A R E  F I L E  S Y S T E M                                -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:prepare-filesystem"
+    description="Create the directory structure needed.">
+    <ant:available property="wsdlPresent" file="${axis.url}" />
+
+    <j:choose>
+      <!-- if dir exists -->
+      <j:when test="${wsdlPresent == 'true'}">
+        <log:info>Invoking Axis plugin</log:info>
+        <j:set var="wsdlPresent" value="true"/>
+      </j:when>
+      <!-- if dir does not exist -->
+      <j:otherwise>
+        <log:info>Not invoking Axis plugin</log:info>
+        <j:set var="wsdlPresent" value="false"/>
+      </j:otherwise>
+    </j:choose>
+
+    <j:if test="${wsdlPresent == 'true'}">
+      <ant:mkdir dir="${axis.generated.dir}"/>
+      <ant:mkdir dir="${axis.build.dir}"/>
+
+      <!-- move generated test cases to the maven.axis.test.dir -->
+      <j:if test="${maven.axis.testcase}">
+        <ant:mkdir dir="${maven.axis.test.dir}"/>
+      </j:if>
+    </j:if>
+
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- A X I S                                                            -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:axis" description="generate java files from wsdl definitions."
+    prereqs="axis1_2_1:prepare-filesystem,test:test-resources,java:jar-resources">
+
+    <j:if test="${wsdlPresent == 'true'}">
+      <j:catch var="ex">
+        <j:set var="wsdlSource" value="${axis.url}" />
+        <j:set var="wsdlPostfix" value=".wsdl" />
+        <j:if test="${!wsdlSource.endsWith(wsdlPostfix)}">
+          <log:info>find all .wsdl files in directory ${axis.url}</log:info>
+          <!-- find all wsdl files -->
+          <ant:fileScanner var="wsdlFiles">
+            <ant:fileset dir="${axis.url}">
+              <ant:include name="**/*.wsdl" />
+            </ant:fileset>
+          </ant:fileScanner>
+
+          <!-- generate the java files for each wsdl file -->
+          <j:forEach var="wsdlFile" items="${wsdlFiles.iterator()}">
+            <log:info>generate .java files from ${wsdlFile}</log:info>
+            <!-- wsdl2java -->
+            <axis-wsdl2java
+              all="${maven.axis.all}"
+              debug="${maven.axis.debug}"
+              output="${axis.generated.dir}"
+              testcase="${maven.axis.testcase}"
+              verbose="${maven.axis.verbose}"
+              deployscope="${maven.axis.deployscope}"
+              factory="${maven.axis.factory}"
+              helpergen="${maven.axis.helpergen}"
+              skeletondeploy="${maven.axis.skeletondeploy}"
+              noimports="${maven.axis.noimports}"
+              typemappingVersion="${maven.axis.typemappingversion}"
+              serverside="${maven.axis.serverside}"
+              timeout="${maven.axis.timeout}"
+            	namespacemappingfile="${maven.axis.namespacemappingfile}"
+              url="${wsdlFile}">
+
+              <!-- mapping of namespaces to package names -->
+              <u:tokenize var="urnMappings" delim=",">${maven.wsdl2java.namespaceMappings}</u:tokenize>
+              <j:forEach var="urnMapping" items="${urnMappings}">
+                <u:tokenize var="keyValue" delim="=">${urnMapping}</u:tokenize>
+                <mapping namespace="${keyValue[0]}" package="${keyValue[1]}"/>
+              </j:forEach>
+            </axis-wsdl2java>
+
+          </j:forEach>
+        </j:if>
+        <j:if test="${wsdlSource.endsWith(wsdlPostfix)}">
+          <log:info>generate .java files from ${axis.url}</log:info>
+          <!-- wsdl2java -->
+          <axis-wsdl2java
+            all="${maven.axis.all}"
+            debug="${maven.axis.debug}"
+            output="${axis.generated.dir}"
+            testcase="${maven.axis.testcase}"
+            verbose="${maven.axis.verbose}"
+            deployscope="${maven.axis.deployscope}"
+            factory="${maven.axis.factory}"
+            helpergen="${maven.axis.helpergen}"
+            skeletondeploy="${maven.axis.skeletondeploy}"
+            noimports="${maven.axis.noimports}"
+            typemappingVersion="${maven.axis.typemappingversion}"
+            serverside="${maven.axis.serverside}"
+            timeout="${maven.axis.timeout}"
+            url="${axis.url}">
+
+            <!-- mapping of namespaces to package names -->
+            <u:tokenize var="urnMappings" delim=",">${maven.wsdl2java.namespaceMappings}</u:tokenize>
+            <j:forEach var="urnMapping" items="${urnMappings}">
+              <u:tokenize var="keyValue" delim="=">${urnMapping}</u:tokenize>
+              <mapping namespace="${keyValue[0]}" package="${keyValue[1]}"/>
+            </j:forEach>
+
+          </axis-wsdl2java>
+        </j:if>
+
+        <!-- move generated test cases to the maven.axis.test.dir -->
+        <j:if test="${maven.axis.testcase}">
+          <log:info>move the generated testcases to folder ${maven.axis.test.dir}</log:info>
+
+          <ant:move todir="${maven.axis.test.dir}">
+            <ant:fileset dir="${maven.axis.generated.dir}">
+              <ant:include name="**/*TestCase*"/>
+            </ant:fileset>
+          </ant:move>
+        </j:if>
+
+      </j:catch>
+      <j:if test="${ex != null}">
+        <log:error>${ex}</log:error>
+        <ant:fail message="${ex}" />
+      </j:if>
+    </j:if>
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- C O P Y                                                            -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:copy"
+    description="Copies the generated java files into a separate build directory."
+    prereqs="axis1_2_1:axis">
+
+    <j:if test="${wsdlPresent == 'true'}">
+      <ant:copy todir="${axis.build.dir}">
+        <ant:fileset dir="${axis.generated.dir}">
+
+          <!-- ignore implementation classes -->
+          <u:tokenize var="impls" delim=";">${maven.axis.excludes}</u:tokenize>
+          <j:forEach var="impl" items="${impls.iterator()}">
+            <log:info>exclude class ${impl}</log:info>
+            <ant:exclude name="${impl}"/>
+          </j:forEach>
+
+        </ant:fileset>
+      </ant:copy>
+    </j:if>
+
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- C O M P I L E                                                      -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:compile"
+    description="Compile the generated .java files."
+    prereqs="axis1_2_1:copy">
+
+    <j:if test="${wsdlPresent == 'true'}">
+      <ant:path id="axis.src.set">
+        <ant:pathelement location="${maven.axis.build.dir}" />
+      </ant:path>
+
+      <log:info>adding ${maven.axis.generated.dir} to the maven.compile.src.set</log:info>
+      <maven:addPath id="maven.compile.src.set" refid="axis.src.set"/>
+    	
+    	<log:info>Compiling...</log:info>
+    	<attainGoal name="java:compile"/>
+    </j:if>
+
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- W S D L 2 J A V A                                                  -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:wsdl2java"
+    description="Generate java files from wsdl definitions and compile them."
+    prereqs="axis1_2_1:compile"
+    />
+
+  <!-- ================================================================== -->
+  <!-- J A V A 2 W S D L                                                  -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:java2wsdl"
+    description="Generates a WSDL description from a Java class or interface.">
+
+    <j:if test="${context.getVariable('maven.axis.classnames') == null}">
+      <j:set var="message" value="You must specify maven.axis.classnames property." />
+      <log:error>${message}</log:error>
+      <ant:fail message="${message}" />
+    </j:if>
+
+    <u:tokenize var="classes" delim=",">${maven.axis.classnames}</u:tokenize>
+    <j:forEach var="classname" items="${classes}">
+      <log:info>generate .wsdl file from ${classname}</log:info>
+      <u:tokenize var="classDetail" delim=",">${context.getVariable(classname)}</u:tokenize>
+      <j:set var="location" value="${classDetail[0]}" />
+      <j:set var="namespace" value="${classDetail[1]}" />
+      <axis-java2wsdl
+        classname="${classname}"
+        exclude="${maven.axis.java2wsdl.exclude}"
+        location="${location}"
+        namespace="${namespace}"
+        output="${maven.axis.output}/${classname}.wsdl"
+        typemappingversion="${maven.axis.typemappingversion}"
+        useinheritedmethods="${maven.axis.useinheritedmethods}">
+
+          <!-- mapping of namespaces to package names -->
+          <u:tokenize var="urnMappings" delim=",">${maven.java2wsdl.namespaceMappings}</u:tokenize>
+          <j:forEach var="urnMapping" items="${urnMappings}">
+            <u:tokenize var="keyValue" delim="=">${urnMapping}</u:tokenize>
+            <mapping namespace="${keyValue[0]}" package="${keyValue[1]}"/>
+          </j:forEach>
+
+      </axis-java2wsdl>
+    </j:forEach>
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- C O P Y  D E P L O Y                                               -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:copy-deploy"
+    description="Deploys the jar into the axis/WEB-INF/lib folder.">
+
+    <j:if test="${maven.axis.copy.deploy}">
+      <fail unless="maven.axis.home">
+        Axis Home is not set: maven.axis.home=${maven.axis.home}.
+      </fail>
+      <copy
+        file="${maven.build.dir}/${maven.final.name}.jar"
+        todir="${maven.axis.home}/WEB-INF/lib"/>
+
+      <!-- Copy each dependency -->
+      <j:forEach var="lib" items="${pom.artifacts}">
+        <j:set var="dep" value="${lib.dependency}"/>
+        <j:if test="${dep.getProperty('dependencyType').equalsIgnoreCase('lib')}">
+          <j:if test="${dep.type =='jar'}">
+            <ant:copy todir="${maven.axis.home}/WEB-INF/lib" file="${lib.path}"/>
+          </j:if>
+        </j:if>
+      </j:forEach>
+    </j:if>
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- D E P L O Y                                                        -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:deploy" prereqs="axis1_2_1:copy-deploy"
+    description="Deploys a web service with the admin service of axis.">
+
+    <axis-admin
+      url="${maven.axis.admin.url}"
+      xmlfile="${maven.axis.wsdd.deploy}"/>
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- U N D E P L O Y                                                    -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1:undeploy"
+    description="Undeploys a web service with the admin service of axis.">
+
+    <axis-admin
+      url="${maven.axis.admin.url}"
+      xmlfile="${maven.axis.wsdd.undeploy}"/>
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- D E F A U L T  G O A L                                             -->
+  <!-- ================================================================== -->
+  <goal name="axis1_2_1"
+    description="Generate java files from wsdl definitions and compile them."
+    prereqs="axis1_2_1:wsdl2java"
+    />
+
+</project>

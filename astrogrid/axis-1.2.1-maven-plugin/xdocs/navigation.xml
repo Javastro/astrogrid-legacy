@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<project name="AstroGrid Axis 1.2.1 Maven-plu-in">
+	
+	<!-- Page Title -->
+	<title>AstroGrid  Maven-plug-in for Axis 1.2.1</title>
+	
+	<body>
+		
+		<!-- Links defined across the top right of the site -->
+		<links>
+			<item name="Maven"  href="http://maven.apache.org/"/>
+		</links>
+		
+		<!-- Menu in the Left Navigation -->
+		<menu name="Pages">
+			<!-- Standalone item -->
+			<item name="Goals" href="/goals.html" />
+			<item name="Properties" href="/properties.html" />
+		</menu>
+	</body>
+</project>

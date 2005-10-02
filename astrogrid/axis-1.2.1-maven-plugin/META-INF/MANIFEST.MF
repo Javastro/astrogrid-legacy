@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: Apache Maven
+Built-By: dahlemd
+Package: org.apache.maven
+Build-Jdk: 1.4.2_04
+Extension-Name: maven-axis-plugin
+Specification-Title: Generate Java code from WSDL using Axis
+Specification-Vendor: SourceForge
+Implementation-Title: org.apache.maven
+Implementation-Vendor: SourceForge
+Implementation-Version: 0.7
+

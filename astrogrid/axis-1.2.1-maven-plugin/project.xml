@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+  xsi:noNamespaceSchemaLocation="http://maven.apache.org/xsd/maven-project-3.0.0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <extend>${basedir}/../maven-base/project.xml</extend>
+
+  <id>astrogrid-axis-1.2.1-plugin</id>
+  <name>AstroGrid Plugin for Axis v1.2.1</name>
+
+  <currentVersion>TEST</currentVersion>
+
+  <description>
+  	<![CDATA[
+    The Maven Axis Plugin currently transforms WSDL definitions (either from a URL or
+    from a set of local files) into Java source code using the Apache Axis wsdl2java Ant task.
+  	</p><p>
+  	This variation on the plug-in was derived from AstroGrid from v0.7 of the 
+  	<a href="http://maven-plugins.sourceforge.net/maven-axis-plugin/index.html">Maven Axis plug-in,
+  	obtained from Sourceforge</a>. The AstroGrid version differs from the original in the following
+  	respects.
+  	</p>
+  	<ul>
+  	<li>The Axis versions is 1.2.1. This will not change in later versions of this plug-in.
+  	If AstroGrid moves to a different version of Axis then a separate plug-in will be issued for
+  	that version.</li>
+  	<li>The namespace prefix for the goals is changed from axis to axis1_2_1.</li>
+  	<li>XML namespaces may be mapped to Java packages using a separate file of properties; the
+  	original plug-in compresses the mappings into a single Maven property.</li>
+  	<li>The compile goal now actually compiles the Java code; the compilation was missed out
+  	of the original plug-in.</li>
+  	</ul>
+  	<p>The first difference prompted the creation of a separate plug-in.
+  	]]>
+  </description>
+  <shortDescription>
+    Generate Java code from WSDL using Axis 1.2.1
+  </shortDescription>
+
+  <versions>
+    <version>
+      <id>test</id>
+      <name>test</name>
+      <tag>ASTROGRID_PLUGINS_AXIS_1_2_1_TEST</tag>
+    </version>
+  </versions>
+
+  <dependencies>
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <version>1.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-ant</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xerces</artifactId>
+      <version>2.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>2.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-jaxrpc</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-saaj</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-discovery</groupId>
+      <artifactId>commons-discovery</artifactId>
+      <version>0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-log</artifactId>
+      <version>20030211.142821</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+	<resources> 
+		<resource> 
+			<directory>${basedir}/src/plugin-resources</directory> 
+			<targetPath>plugin-resources</targetPath> 
+		</resource> 
+		<resource> 
+			<directory>${basedir}</directory> 
+			<includes> 
+				<include>plugin.jelly</include> 
+				<include>plugin.properties</include> 
+				<include>project.properties</include> 
+				<include>project.xml</include> 
+			</includes> 
+		</resource> 
+	</resources> 
+	</build> 
+</project>

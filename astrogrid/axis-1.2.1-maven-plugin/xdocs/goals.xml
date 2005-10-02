@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<document>
+	<properties>
+		<title>Maven Plug-in for Axis 1.2.1: goals</title>
+		<author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+	</properties>
+	<body>
+		<section name="Maven Plug-in for Axis 1.2.1: Goals">
+			<p>These are the goals. They are unchanged from the SourceForge version.</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Goal</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<p>These are the goals. They are unchanged from the SourceForge version.</p>
+					<tr>
+						<td style="width:20%"><a name="axis"/>axis</td>
+						<td>Generate java classes from wsdl definitions and compile them.</td>
+					</tr>
+					<tr>
+						<td style="width:20%"><a name="axis:axis"/>axis:axis</td>
+						<td>generate the java classes from wsdl definitions</td>
+					</tr>
+					<tr>
+						<td style="width:20%"><a name="axis:compile"/>axis:compile</td>
+						<td>Compile the generated java files</td>
+					</tr>
+					<tr>
+						<td style="width:20%"><a name="axis:prepare-filesystem"/>axis:prepare-filesystem</td>
+						<td>prepare the filesystem</td>
+					</tr>
+					<tr>
+						<td style="width:20%"><a name="axis:copy"/>axis:copy</td>
+						<td> Copies the generated java files into a separate build directory.
+							<strong>Note:</strong> Those files in the ${maven.axis.excludes} list are not copied.
+						</td>
+					</tr>
+					<tr>
+						<td style="width:20%"><a name="axis:java2wsdl"/>axis:java2wsdl</td>
+						<td>Generates a WSDL description from a Java class or interface.</td>
+					</tr>
+					<tr class="a">
+						<td style="width:20%"><a name="axis:wsdl2java"/>axis:wsdl2java</td>
+						<td>Generate java classes from wsdl definitions and compile them.</td>
+					</tr>
+					<tr class="b">
+						<td style="width:20%"><a name="axis:copy-deploy"/>axis:copy-deploy</td>
+						<td> Copies the classes and the dependencies into the ${maven.axis.home}/WEB-INF/lib
+							folder. This, however, is not the recommended practice. It is better to specify a
+							self-contained .war-file with all the axis libraries and deploy this one into the
+							server using the maven-war-plugin. </td>
+					</tr>
+					<tr class="a">
+						<td style="width:20%"><a name="axis:deploy"/>axis:deploy</td>
+						<td> Use the admin service to deploy the web service. </td>
+					</tr>
+					<tr class="b">
+						<td style="width:20%"><a name="axis:undeploy"/>axis:undeploy</td>
+						<td> Use the admin service to undeploy the web service. </td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</body>
+</document>
