@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.4 2005/10/04 20:46:48 KevinBenson Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,7 +101,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         }
 
         public void actionPerformed(ActionEvent e) {
-                final URI u = chooser.chooseResourceWithParent("Select workflow to submit",true,true,true,JobMonitorImpl.this);
+                final URI u = chooser.chooseResourceWithParent("Select workflow to submit",true, true, false, true,JobMonitorImpl.this);
                 if (u == null) {
                     return;
                 }                
@@ -456,7 +456,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         public void actionPerformed(ActionEvent e) {
 
                 if (getPanes().getSelectedIndex() == JES_TAB) {
-                    final URI u = chooser.chooseResourceWithParent("Save workflow transcript",true,true,true,JobMonitorImpl.this);
+                    final URI u = chooser.chooseResourceWithParent("Save workflow transcript",true,true, false, true,JobMonitorImpl.this);
                     if (u == null) {
                         return;
                     }                    
@@ -980,6 +980,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.4  2005/10/04 20:46:48  KevinBenson
+new datascope launcher and change to module.xml for it.  Vospacebrowserimpl changes to handle file copies to directories on import and export
+
 Revision 1.3  2005/09/02 14:03:34  nw
 javadocs for impl
 

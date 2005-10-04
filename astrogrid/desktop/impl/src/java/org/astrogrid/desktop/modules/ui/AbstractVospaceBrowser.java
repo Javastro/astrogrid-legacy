@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.3 2005/09/02 14:03:34 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.4 2005/10/04 20:46:48 KevinBenson Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.apache.commons.collections.iterators.FilterIterator;
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Observable;
@@ -224,8 +225,6 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
             return acts;
         }
     }
-
-
 
     
     protected final class CreateFileAction extends AbstractAction implements FolderAction {
@@ -603,6 +602,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.4  2005/10/04 20:46:48  KevinBenson
+ * new datascope launcher and change to module.xml for it.  Vospacebrowserimpl changes to handle file copies to directories on import and export
+ *
  * Revision 1.3  2005/09/02 14:03:34  nw
  * javadocs for impl
  *
