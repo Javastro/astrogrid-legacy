@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.3 2005/08/25 16:59:58 nw Exp $
+/*$Id: VospaceImpl.java,v 1.4 2005/10/04 20:39:10 KevinBenson Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -384,9 +384,17 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
             InputStream is = null;
             OutputStream os = null;
             try {
+            
             File file = new File(new URI(destination.toString()));
+            if(file.isDirectory()) {
+                System.out.println("the node name in copyContenttourl = " + node.getName());
+                file = new File(new URI(destination.toString() + node.getName()));
+                boolean fileCreated = file.createNewFile();
+                //do we care if the above method was false just means your going to overwrite
+                //the file which is a typical "cp" like thing to do.                
+            }
             os = new FileOutputStream(file);
-            is =node.readContent();
+            is = node.readContent();
             Piper.pipe(is,os);
             } catch (FileNotFoundException e) {
                 throw new InvalidArgumentException(e);
@@ -776,6 +784,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.4  2005/10/04 20:39:10  KevinBenson
+added the ability to save a file to a local directory not just overwrite a file
+
 Revision 1.3  2005/08/25 16:59:58  nw
 1.1-beta-3
 
