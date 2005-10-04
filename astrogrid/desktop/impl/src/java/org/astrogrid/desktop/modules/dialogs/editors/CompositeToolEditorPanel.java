@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.2 2005/10/04 20:43:38 KevinBenson Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ import org.picocontainer.PicoContainer;
 import org.picocontainer.defaults.DefaultPicoContainer;
 import org.w3c.dom.Document;
 
-import sun.security.krb5.internal.p;
+//import sun.security.krb5.internal.p;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -145,7 +145,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }        
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResourceWithParent("Select tool document to load",true,true,true,CompositeToolEditorPanel.this);
+            final URI u = chooser.chooseResourceWithParent("Select tool document to load",true,true, false, true,CompositeToolEditorPanel.this);
             if (u == null) {
                 return;
             }                   
@@ -196,7 +196,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResourceWithParent("Save Tool Document",true,true,true,CompositeToolEditorPanel.this);
+            final URI u = chooser.chooseResourceWithParent("Save Tool Document",true,true, false, true,CompositeToolEditorPanel.this);
             if (u == null) {
                 return;
             }
@@ -322,6 +322,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.2  2005/10/04 20:43:38  KevinBenson
+set it to "false" for selecting directories on the local file system.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  
