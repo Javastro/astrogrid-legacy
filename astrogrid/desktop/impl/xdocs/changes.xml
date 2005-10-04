@@ -22,7 +22,27 @@
 			contain a fixed registry delegate.  Those strange ivorn://null
 			errors should go away.
 		</action>
-	</release>	
+	</release>		
+<release version="1.2-beta-2" date="2005-09-16">
+		<action dev="nw" type="fix">
+			Registry Beans now cached
+		</action>
+		<action dev="kmb" type="add">
+			Registry Chooser / Google
+		</action>
+		<action dev="nw" type="add">
+			Tool editor infrastructure
+		</action>
+		<action dev="nw" type="add">
+			Basic ADQL query builder
+		</action>
+		<action dev="nw" type="update">
+			Improved Workflow editor
+		</action>
+		<action dev="nw" type="add">
+			Added ADQL translation service
+		</action>
+	</release>
 	<release version="1.2-beta-1" date="unreleased">
 		<action dev="nw" type="add">
 			Added interfaces and development skeletons for registry google and
