@@ -58,10 +58,12 @@
 		<description>Display a graphical editor for a CEA tool call document</description>
 
 		<method name="edit">
+			<!--
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>test edit()</value>								
 			</property>					
+			-->
 				<description>edit an existing tool document</description>
 				<parameter name="tool">
 					<description>Document to display in editor</description>
@@ -77,10 +79,12 @@
 				</method>
 				
 		<method name="editStored">
+			<!--
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>test editStored()</value>								
 			</property>					
+			-->
 				<description>edit an existing query tool document (stored elsewhere)</description>
 				<parameter name="toolLocation">
 					<description>URI location of the tool document to edit (http://, ftp://, file://, ivo://)</description>
@@ -95,10 +99,12 @@
 				</return>
 				</method>				
 			<method name="selectAndBuild">
+				<!--
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>test selectAndBuild()</value>								
-			</property>					
+			</property>
+			-->
 				<description>prompt the user to create a new query tool documen</description>
 				<return>
 				<property>
@@ -118,10 +124,12 @@
 			>
 			<description>prompt the user to select resources from the registry</description>
 		<method name="chooseResource">
+			<!--
 						<property>
 				<key>system.ui.menu.entry</key>
 				<value>test chooseResource()</value>
 			</property>
+			-->
 			<description>prompt the user to select a resource</description>
 		<parameter name="prompt"><description>message to prompt user with</description></parameter>
 		<return>
@@ -134,10 +142,12 @@
 		</method>
 		
 		<method name="chooseResources">
+			<!--
 						<property>
 				<key>system.ui.menu.entry</key>
 				<value>test chooseResources()</value>
 			</property>
+			-->
 			<description>prompt the user to select resources</description>			
 			<parameter name="prompt"><description>message to prompt user with</description></parameter>
 		<return>
@@ -150,10 +160,12 @@
 		</method>
 		
 		<method name="chooseResourceWithFilter">
+			<!--
 						<property>
 				<key>system.ui.menu.entry</key>
 				<value>test chooseResourceWithFilter()</value>
 			</property>
+			-->
 			<description>prompt the user to select a resource</description>			
 		<parameter name="prompt"><description>message to prompt user with</description></parameter>
 	<parameter name="filter"><description>clause to filter results on </description></parameter>
@@ -168,10 +180,12 @@
 			</method>
 		
 		<method name="chooseResourcesWithFilter">
+			<!--
 						<property>
 				<key>system.ui.menu.entry</key>
 				<value>test chooseResourcesWithFilter()</value>
 			</property>			
+			-->
 			<description>prompt the user to select resources</description>			
 		<parameter name="prompt"><description>message to prompt user with</description></parameter>
 		<parameter name="filter"><description>clause to filter results on </description></parameter>
