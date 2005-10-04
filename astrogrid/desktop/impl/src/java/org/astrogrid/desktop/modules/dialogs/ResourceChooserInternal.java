@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserInternal.java,v 1.1 2005/08/25 16:59:58 nw Exp $
+/*$Id: ResourceChooserInternal.java,v 1.2 2005/10/04 20:41:52 KevinBenson Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,13 +21,17 @@ import java.net.URI;
  */
 public interface ResourceChooserInternal extends ResourceChooser {
 
-    public URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI,Component comp);
+    public URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableDirectorySelection, boolean enableURI,Component comp);
 
 }
 
 
 /* 
 $Log: ResourceChooserInternal.java,v $
+Revision 1.2  2005/10/04 20:41:52  KevinBenson
+added the ability to select directories on a local file system.  That way myspace can save to a directory.
+Only myspacebrowser has this turned on at the moment.
+
 Revision 1.1  2005/08/25 16:59:58  nw
 1.1-beta-3
  

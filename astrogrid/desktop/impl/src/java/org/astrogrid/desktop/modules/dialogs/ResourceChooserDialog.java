@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.3 2005/09/02 14:03:34 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.4 2005/10/04 20:41:52 KevinBenson Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -126,11 +126,17 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     public void setEnableLocalFilePanel(boolean enableLocalFilePanel) {
         getJTabbedPane().setEnabledAt(0,enableLocalFilePanel); 
     }
+        
     public void setEnableMySpacePanel(boolean enableMySpacePanel) {
         getJTabbedPane().setEnabledAt(1,enableMySpacePanel);
     }
     public void setEnableURIPanel(boolean enableURIPanel) {
         getJTabbedPane().setEnabledAt(2,enableURIPanel);       
+    }
+    
+    public void setEnabledDirectorySelection(boolean enableDirectorySelection) {
+        if(enableDirectorySelection)
+            localPanel.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     }
     
     /** resets the dialog, then hides it. */
@@ -354,6 +360,10 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.4  2005/10/04 20:41:52  KevinBenson
+added the ability to select directories on a local file system.  That way myspace can save to a directory.
+Only myspacebrowser has this turned on at the moment.
+
 Revision 1.3  2005/09/02 14:03:34  nw
 javadocs for impl
 
