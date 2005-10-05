@@ -241,10 +241,10 @@
 		</method>			
 		</component>
 		
-	<component name="workflowViewer" 
+	<component name="workflowBuilder" 
 	  implementationClass="org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl" 
 	  interfaceClass="org.astrogrid.acr.ui.WorkflowBuilder" >
-	  <description>View workflows (BETA)</description>
+	  <description>Build workflows (BETA)</description>
 	    <property>
 		  <key>icon</key>
 		  <value>wf_small.gif</value>
@@ -253,7 +253,7 @@
 		  <description>Run the Workflow builder GUI </description>
 		  <property>
 			<key>system.ui.menu.entry</key>
-			<value>Run Viewer..</value>
+			<value>Run Builder..</value>
 		    <property>
 			  <key>icon</key>
 			  <value>run_tool.gif</value>
