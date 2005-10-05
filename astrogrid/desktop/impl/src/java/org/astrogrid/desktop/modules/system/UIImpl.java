@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.3 2005/08/25 16:59:58 nw Exp $
+/*$Id: UIImpl.java,v 1.4 2005/10/05 11:52:32 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -1055,8 +1055,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 		if (jSplitPane == null) {
 			jSplitPane = new JSplitPane();
 			jSplitPane.setLeftComponent(new JScrollPane(getButtonBar()));
-			jSplitPane.setDividerLocation(130);
-			jSplitPane.setDividerSize(5);
+            jSplitPane.setDividerLocation(0);
+			//jSplitPane.setDividerLocation(130);
+			//jSplitPane.setDividerSize(5);
 			jSplitPane.setOneTouchExpandable(true);
 			jSplitPane.setRightComponent(new JScrollPane(getActionCards()));
 		}
@@ -1082,6 +1083,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.4  2005/10/05 11:52:32  nw
+hide module buttons on startup
+
 Revision 1.3  2005/08/25 16:59:58  nw
 1.1-beta-3
 
