@@ -52,7 +52,6 @@ public class WastebinDropListener implements DropTargetListener {
 	 */
 	public WastebinDropListener() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * 
@@ -60,7 +59,6 @@ public class WastebinDropListener implements DropTargetListener {
 	public WastebinDropListener(WorkflowDnDTree tree) {
 		super();
 		this.tree = tree;
-		// TODO Auto-generated constructor stub
 	}	
 
 	/* (non-Javadoc)
@@ -68,7 +66,12 @@ public class WastebinDropListener implements DropTargetListener {
 	 */
 	public void dragEnter(DropTargetDragEvent dtde) {
 		int action = dtde.getDropAction();
-		Transferable transferable = dtde.getTransferable();
+//		Transferable transferable = dtde.getTransferable();
+//		 following is a 1.4 fix
+		DropTargetDropEvent tempDTDropEvent = new  
+		DropTargetDropEvent(dtde.getDropTargetContext(),
+				dtde.getLocation(), 0, 0);
+		Transferable transferable = tempDTDropEvent.getTransferable();
 		DefaultMutableTreeNode draggedNode = null;
 		try {
 			draggedNode = (DefaultMutableTreeNode)transferable.getTransferData(TransferableNode.NODE_FLAVOR);
@@ -92,7 +95,12 @@ public class WastebinDropListener implements DropTargetListener {
 	 */
 	public void dragOver(DropTargetDragEvent dtde) {
 		int action = dtde.getDropAction();
-		Transferable transferable = dtde.getTransferable();
+		// Transferable transferable = dtde.getTransferable(); java 1.5 method
+		// following is a 1.4 fix
+		DropTargetDropEvent tempDTDropEvent = new  
+		DropTargetDropEvent(dtde.getDropTargetContext(),
+				dtde.getLocation(), 0, 0);
+		Transferable transferable = tempDTDropEvent.getTransferable();
 		DefaultMutableTreeNode draggedNode = null;
 		try {
 			draggedNode = (DefaultMutableTreeNode)transferable.getTransferData(TransferableNode.NODE_FLAVOR);
@@ -115,15 +123,12 @@ public class WastebinDropListener implements DropTargetListener {
 	 * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
 	 */
 	public void dropActionChanged(DropTargetDragEvent dtde) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
 	 */
 	public void dragExit(DropTargetEvent dte) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -133,7 +138,6 @@ public class WastebinDropListener implements DropTargetListener {
 	public void drop(DropTargetDropEvent dtde) {
 		int action = dtde.getDropAction();
 		if (action == DnDConstants.ACTION_MOVE) {
-			// transferable = Transferable object associated with drop
 			Transferable transferable = dtde.getTransferable();
 			DefaultMutableTreeNode draggedNode = null;
 			try {

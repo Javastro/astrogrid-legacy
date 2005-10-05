@@ -236,7 +236,11 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 			paintImage(pt, ((DropTarget)dtde.getSource()).getComponent());
 		}
 		if (draggedNode == null) {
-			draggedNode = getActivityNode(dtde.getTransferable());
+			DropTargetDropEvent tempDTDropEvent = new  
+			DropTargetDropEvent(dtde.getDropTargetContext(),
+					dtde.getLocation(), 0, 0);
+			Transferable transferable = tempDTDropEvent.getTransferable();
+			draggedNode = getActivityNode(transferable);
 			action = DnDConstants.ACTION_COPY;			
 		}
 		if (canPerformAction(tree, draggedNode, action, pt)) {
@@ -260,7 +264,11 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 			paintImage(pt, ((DropTarget)dtde.getSource()).getComponent());
 		}
 		if (draggedNode == null) {
-			draggedNode = getActivityNode(dtde.getTransferable());
+			DropTargetDropEvent tempDTDropEvent = new  
+			DropTargetDropEvent(dtde.getDropTargetContext(),
+					dtde.getLocation(), 0, 0);
+			Transferable transferable = tempDTDropEvent.getTransferable();
+			draggedNode = getActivityNode(transferable);
 			action = DnDConstants.ACTION_COPY;
 		}
 		if (canPerformAction(tree, draggedNode, action, pt)) {
@@ -283,7 +291,11 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 			paintImage(pt, ((DropTarget)dtde.getSource()).getComponent());
 		}
 		if (draggedNode == null) {
-			draggedNode = getActivityNode(dtde.getTransferable());
+			DropTargetDropEvent tempDTDropEvent = new  
+			DropTargetDropEvent(dtde.getDropTargetContext(),
+					dtde.getLocation(), 0, 0);
+			Transferable transferable = tempDTDropEvent.getTransferable();
+			draggedNode = getActivityNode(transferable);
 			action = DnDConstants.ACTION_COPY;
 		}
 		if (canPerformAction(tree, draggedNode, action, pt)) {
@@ -626,7 +638,7 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
     	}
     	return activityNode;
     }
-	
+
     /**
      * Test to see if drop can be performed:
      * If no node present at drop location within WorkflowDnDTree return false
