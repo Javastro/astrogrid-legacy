@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformationBuilder.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: TabularDatabaseInformationBuilder.java,v 1.2 2005/10/05 08:48:20 pjn3 Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ag.builders;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ColumnBean;
@@ -58,7 +59,7 @@ public class TabularDatabaseInformationBuilder implements InformationBuilder {
 public boolean isApplicable(CachedXPathAPI xpath, Element el) {
     try {
         String type = xpath.eval(el, "@xsi:type",nsNode ).str();
-        return type.contains("TabularDB");
+        return StringUtils.contains(type,"TabularDB");
     } catch (TransformerException e) {        
         logger.debug("TransformerException",e);
         return false;
@@ -156,6 +157,9 @@ private    Element nsNode;
 
 /* 
 $Log: TabularDatabaseInformationBuilder.java,v $
+Revision 1.2  2005/10/05 08:48:20  pjn3
+String contains (1.5) changed to StringUtils.contains (1.4)
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

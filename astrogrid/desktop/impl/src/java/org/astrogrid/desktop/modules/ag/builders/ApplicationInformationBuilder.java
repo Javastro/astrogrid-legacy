@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformationBuilder.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: ApplicationInformationBuilder.java,v 1.2 2005/10/05 08:47:59 pjn3 Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ag.builders;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
@@ -62,7 +63,7 @@ public class ApplicationInformationBuilder implements InformationBuilder {
     public boolean isApplicable(CachedXPathAPI xpath, Element el) {
         try {
             String type = xpath.eval(el, "@xsi:type",nsNode ).str();
-            return type.contains("CeaApplicationType") || type.contains("CeaHttpApplicationType");
+            return StringUtils.contains(type, "CeaApplicationType") || StringUtils.contains(type,"CeaHttpApplicationType");
         } catch (TransformerException e) {  
             logger.debug("TransformerException",e);
             return false;
@@ -178,6 +179,9 @@ public class ApplicationInformationBuilder implements InformationBuilder {
 
 /* 
 $Log: ApplicationInformationBuilder.java,v $
+Revision 1.2  2005/10/05 08:47:59  pjn3
+String contains (1.5) changed to StringUtils.contains (1.4)
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  
