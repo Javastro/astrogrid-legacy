@@ -1,4 +1,4 @@
-/*$Id: ToolInformationPanel.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: ToolInformationPanel.java,v 1.2 2005/10/05 11:53:00 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,8 +58,12 @@ public class ToolInformationPanel extends AbstractToolEditorPanel {
             public void toolSet(ToolEditEvent te) {
                 (new BackgroundWorker(parent,"Building Documentation"){
 
-                    protected Object construct() throws Exception {
+                    protected Object construct()  {
+                        try {
                         return apps.getDocumentation(getToolModel().getInfo().getId());
+                        } catch (Exception e) {
+                            return e.getMessage();
+                        }
                     }
                     
                     protected void doFinished(Object result) {
@@ -86,6 +90,9 @@ public class ToolInformationPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ToolInformationPanel.java,v $
+Revision 1.2  2005/10/05 11:53:00  nw
+handles missing registry entries more gracefully
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  
