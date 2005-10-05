@@ -13,7 +13,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	<release version="1.2-beta-3" date="2005-09-30">
+	<release version="1.2-beta-3" date="2005-10-05">
+		<action dev="nw" type="fix">
+			hide left-hand button bar on startup - less daunting for novices.
+		</action>
+		<action dev="pjn" type="fix">
+			made code work with 1.4 again.
+		</action>			
 		<action dev="pjn" type="add">
 			Workflow viewer is now a Workflow builder!
 		</action>
