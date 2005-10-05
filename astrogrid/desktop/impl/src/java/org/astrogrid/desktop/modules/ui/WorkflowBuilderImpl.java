@@ -652,9 +652,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                     	Workflow newWorkflow = getWorkflowDetailsDialog((Workflow)o).getEditableWorkflow();
                     	if (newWorkflow != null) {
                     		node.setUserObject(newWorkflow);
-                    		getModel().nodeChanged(node);
-                    		tree.expandAll(true); // nodeChanged will focus to root, so expand again
+                    		getModel().nodeChanged(node);                    		
                     	}
+                    	tree.expandAll(true); // nodeChanged will focus to root, so expand again
                     	workflowDialog = null;
                     }
                     else if (o instanceof Sequence || 
