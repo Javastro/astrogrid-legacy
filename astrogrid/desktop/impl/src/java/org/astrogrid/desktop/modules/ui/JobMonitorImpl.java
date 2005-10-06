@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.4 2005/10/04 20:46:48 KevinBenson Exp $
+/*$Id: JobMonitorImpl.java,v 1.5 2005/10/06 10:52:50 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
@@ -389,21 +390,32 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             for (int i = 0; i < applicationsTableModel.getRowCount(); i++) {
                 ExecutionInformation e = applicationsTableModel.getRow(i);
                 // updating status inplace in the model - but not firing notification.
+                try {
                 ExecutionInformation eNew = applications.getExecutionInformation(e.getId());
                 String newPhase = eNew.getStatus();
                 if (e.getStatus() == null || ! newPhase.equals(e.getStatus())) {
                     applicationsTableModel.setRow(i,eNew);                                        
-                    if (tray != null  && !(e.getStatus().equals(ExecutionInformation.COMPLETED) || e.getStatus().equals(ExecutionInformation.ERROR))) {
-                            if (newPhase.equals(ExecutionInformation.COMPLETED)) {
-                                tray.displayInfoMessage("Application Complete",e.getName());
-                            } else if (newPhase.equals(ExecutionInformation.ERROR)) {
-                                    tray.displayWarningMessage("Application Error",e.getName());                               
-                        }
-                    }
+                    displayTrayMessage(e, newPhase);
                 }
+                } catch (ACRException ex) { // status of this applicaton unavailable - move on to the next one.
+                    // @todo display some kind of 'unknown' message
+                }                
             }
             return results;
            
+        }
+        /**
+         * @param e
+         * @param newPhase
+         */
+        private void displayTrayMessage(ExecutionInformation e, String newPhase) {
+            if (tray != null  && !(e.getStatus().equals(ExecutionInformation.COMPLETED) || e.getStatus().equals(ExecutionInformation.ERROR))) {
+                    if (newPhase.equals(ExecutionInformation.COMPLETED)) {
+                        tray.displayInfoMessage("Application Complete",e.getName());
+                    } else if (newPhase.equals(ExecutionInformation.ERROR)) {
+                            tray.displayWarningMessage("Application Error",e.getName());                               
+                }
+            }
         }
         protected void doFinished(Object o) {   
                ExecutionInformation[] latest = (ExecutionInformation[])o;
@@ -980,6 +992,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.5  2005/10/06 10:52:50  nw
+impoved error handling when applications are missing.
+
 Revision 1.4  2005/10/04 20:46:48  KevinBenson
 new datascope launcher and change to module.xml for it.  Vospacebrowserimpl changes to handle file copies to directories on import and export
 
