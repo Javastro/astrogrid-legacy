@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcSystemTest.java,v 1.2 2005/08/16 13:19:32 nw Exp $
+/*$Id: MyspaceRpcSystemTest.java,v 1.3 2005/10/06 10:52:13 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
@@ -25,6 +26,7 @@ import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -395,6 +397,12 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
         }             
     }
 
+    /**@TODO temporary clidge to make things compile. remove soon.
+     * @see org.astrogrid.acr.astrogrid.Myspace#writeStream(java.net.URI, java.io.InputStream)
+     */
+    public void writeStream(URI arg0, InputStream arg1) throws InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
+    }
+
 
 
 }
@@ -402,6 +410,9 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
 
 /* 
 $Log: MyspaceRpcSystemTest.java,v $
+Revision 1.3  2005/10/06 10:52:13  nw
+quick fix necessary to make the system compile.
+
 Revision 1.2  2005/08/16 13:19:32  nw
 fixes for 1.1-beta-2
 
