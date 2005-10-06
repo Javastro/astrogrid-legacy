@@ -5,7 +5,7 @@
     <extend>${basedir}/../../aggregate/cdk/script/project.xml</extend>
         <artifactId>astrogrid-desktop</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astrogrid Workbench and Client Runtime</name>
+        <name>Workbench and ACR</name>
         <description>
 	  Implementation of the ACR	
 	</description>
@@ -130,6 +130,16 @@
 	<properties>
 		<jnlp.jar>true</jnlp.jar>
 		<dist.bundle>true</dist.bundle>		
+	</properties>
+</dependency>
+
+<dependency>
+	<artifactId>tar</artifactId>
+	<groupId>ice-tar</groupId>
+	<version>2.5</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+		<dist.bundle>true</dist.bundle>			
 	</properties>
 </dependency>
  
