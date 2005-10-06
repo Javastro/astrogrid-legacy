@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.4 2005/10/04 20:39:10 KevinBenson Exp $
+/*$Id: VospaceImpl.java,v 1.5 2005/10/06 09:19:26 KevinBenson Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -338,6 +338,32 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
         }        
     }
     
+    public void writeStream(URI ivorn, InputStream content) throws InvalidArgumentException, ServiceException, SecurityException {
+        //InputStream r = new ByteArrayInputStream(content);
+        InputStream r = content;
+        OutputStream w = null;
+        if (! exists(ivorn)) {
+            createFile(ivorn);
+        }
+        try {
+            w = node(ivorn).writeContent();
+            Piper.pipe(r, w);
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (NotFoundException e) {
+            throw new ServiceException(e);
+        } finally {
+            if (w != null) {
+                try {
+                    w.close();
+                } catch (IOException e) {
+                }
+            }
+        }        
+    }    
+    
     public URL getReadContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         try {
             return node(ivorn).contentURL();
@@ -387,7 +413,6 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
             
             File file = new File(new URI(destination.toString()));
             if(file.isDirectory()) {
-                System.out.println("the node name in copyContenttourl = " + node.getName());
                 file = new File(new URI(destination.toString() + node.getName()));
                 boolean fileCreated = file.createNewFile();
                 //do we care if the above method was false just means your going to overwrite
@@ -441,7 +466,11 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
         InputStream is = null;
         OutputStream os = null;
         
+        if (! exists(ivorn)) {
+            createFile(ivorn);
+        }        
         FileManagerNode node = node(ivorn);
+        
         if (src.getProtocol().equals("file")) {
             try {
             is = src.openStream();
@@ -471,7 +500,7 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
             }
         } else {
             try {
-        node.copyURLToContent(src);
+                node.copyURLToContent(src);
             } catch (NodeNotFoundFault e) {
                 throw new NotFoundException(e);
             } catch (FileManagerFault e) {
@@ -784,6 +813,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.5  2005/10/06 09:19:26  KevinBenson
+Added a writeStream method to pass in a inputstream for storing into myspace.
+
 Revision 1.4  2005/10/04 20:39:10  KevinBenson
 added the ability to save a file to a local directory not just overwrite a file
 
