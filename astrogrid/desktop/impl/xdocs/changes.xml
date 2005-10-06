@@ -13,6 +13,14 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	<release version="1.2.4-alpha-1" date="2005-10-06">
+		<action dev="kmb" type="add">
+			Preview of datascope
+		</action>
+		<action dev="kmb" type="fix">
+			Usability improvements to resource chooser
+		</action>
+	</release>
 	<release version="1.2-beta-3" date="2005-10-05">
 		<action dev="nw" type="fix">
 			hide left-hand button bar on startup - less daunting for novices.
