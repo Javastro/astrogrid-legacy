@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.4 2005/10/04 20:46:48 KevinBenson Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.5 2005/10/06 09:20:24 KevinBenson Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -370,7 +370,12 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             }).start();
         }
     }
-    
+
+    private String conformToMyspaceName(String name) {
+        name = name.replaceAll(" ", "_");
+        name = name.replaceAll("/", "_");
+        return name;
+    }
 
     private void transferFiles(URI uri, FileManagerNode node) throws Exception { 
     //throws IOException, URISyntaxException, NotFoundException {
@@ -379,74 +384,46 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         
         String name = file.getName();
         InputStream is = null;
-        FileManagerNode fileNode = null;
-        String voName = name.replaceAll(" ", "_");
-            if(node.isFile()) {            
-                System.out.println("it is a file, now attempt to copy content");
-                //fileNode = node.addFile(voName);
+        String voName = conformToMyspaceName(name);
+            if(node.isFile()) {
                 getVospace().copyURLToContent(url, new URI(node.getIvorn().toString()));
-                System.out.println("success");
             } else {
-                System.out.println("yes it is not a file (higlighted in myspace) user highlighting a folder");
                 if(isPackedFile(name) && askDecompressQuestion() == JOptionPane.YES_OPTION) {
-                    System.out.println("answered yes");
                     is = decompress(name, url.openStream());
                     if(name.toLowerCase().endsWith(ZIP)) {
-                        System.out.println("processing zip file");
                         ZipEntry ze = null;
                         ZipInputStream zis = new ZipInputStream(is);
                         while( (ze = zis.getNextEntry()) != null) {
-                            name = ze.getName();
-                            System.out.println("name of zip file = " + name);
+                            name = conformToMyspaceName(ze.getName());
                             if(!ze.isDirectory()) {  
-                                name = name.replaceAll(" ", "_");
-                                fileNode = node.addFile(name);
-                                //no change this it should be doing some kind of 
-                                //piper to writeContent not copyURL
-                                getVospace().copyURLToContent(url, new URI(fileNode.getIvorn().toString()));
+                                getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + name), zis);
                             }
                         }
                     } else if(name.toLowerCase().endsWith(JAR) || name.toLowerCase().endsWith(WAR)) {
                         JarEntry je = null;
                         JarInputStream jis = new JarInputStream(is);
                         while( (je = jis.getNextJarEntry()) != null) {
-                            name = je.getName();
-                            System.out.println("name of jar file = " + name);
-                            if(!je.isDirectory()) {                    
-                                name = name.replaceAll(" ", "_");
-                                fileNode = node.addFile(name);
-                                //no change this it should be doing some kind of 
-                                //piper to writeContent not copyURL                                
-                                getVospace().copyURLToContent(url, new URI(fileNode.getIvorn().toString()));
+                            name = conformToMyspaceName(je.getName());
+                            if(!je.isDirectory()) {
+                                getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + name), jis);
                             }
                         }
                     } else if(name.toLowerCase().endsWith(TAR)  || name.toLowerCase().endsWith(TAR + "." + GZIP)) {
                         TarEntry te = null;
                         TarInputStream tis = new TarInputStream(new BufferedInputStream(is));
                         while( (te = tis.getNextEntry()) != null) {
-                            name = te.getName();
-                            System.out.println("the name of the tar file = " + name);
+                            name = conformToMyspaceName(te.getName());
                             if(!te.isDirectory()) {
-                                name = name.replaceAll(" ", "_");
-                                fileNode = node.addFile(name);
-                                System.out.println("added file name; fileNode ivorn = " + fileNode.getIvorn().toString());
-                                //no change this it should be doing some kind of 
-                                //piper to writeContent not copyURL                                
-                                getVospace().copyURLToContent(url, new URI(fileNode.getIvorn().toString()));
+                                getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + name), tis);
                             }
                         }
                     } else {
-                        //must be a gzip stream.                    
-                        fileNode = node.addFile(voName);
-                        //no change this it should be doing some kind of 
-                        //piper to writeContent not copyURL                                                        
-                        getVospace().copyURLToContent(url, new URI(fileNode.getIvorn().toString()));
-                    }
-                    
+                        //must be a gzipstream
+                        getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + voName), is);
+                    }                    
                 } else {
-                    //now send the "is" inputstream to myspace.                    
-                    fileNode = node.addFile(voName);
-                    getVospace().copyURLToContent(url, new URI(fileNode.getIvorn().toString()));
+                    //user justs wants the raw compressed file into myspace, no decompress/unarchive
+                    getVospace().copyURLToContent(url, new URI(node.getIvorn().toString() + "/" + voName));
                 }
             }//else
     }
@@ -541,8 +518,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                 }
                 return new CBZip2InputStream(istream);
            */
-        } 
-        System.out.println("the istream is just being returned");
+        }
         return istream;
     }
     
@@ -877,6 +853,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.5  2005/10/06 09:20:24  KevinBenson
+ * took out some println's still need to comment a little more later.
+ *
  * Revision 1.4  2005/10/04 20:46:48  KevinBenson
  * new datascope launcher and change to module.xml for it.  Vospacebrowserimpl changes to handle file copies to directories on import and export
  *
