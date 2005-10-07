@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.5 2005/10/06 09:19:26 KevinBenson Exp $
+/*$Id: Myspace.java,v 1.6 2005/10/07 12:11:13 KevinBenson Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -308,20 +308,6 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      */
     void writeBinary(URI ivorn,byte[] content) throws InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
     
-    /**Write data to a myspace resource
-     * <p>
-     * NB : not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
-     * @param ivorn resource to write to
-     * @param content the data to write in InputStream format
-     * @throws InvalidArgumentException is the resource is malformed
-     * @throws ServiceException if an error occurs while calling the service
-     * @throws SecurityException if the user is not permitted to access this resource
-     *      * @throws NotApplicableException if this resource cannot contain data - e.g. it is a folder
-     */
-    void writeStream(URI ivorn,InputStream content) throws InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
-    
-    
-
     /** access a URL from which can be read contents (i.e. data) of a myspace resource
      * @param ivorn resource to read
      * @return a url from which the contents of the resource can be read
@@ -425,6 +411,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.6  2005/10/07 12:11:13  KevinBenson
+ moved a method that is not possible for xmlrpc (serialization) down to MyspaceInternal.java interface and took it out of Myspace.java interface
+
  Revision 1.5  2005/10/06 09:19:26  KevinBenson
  Added a writeStream method to pass in a inputstream for storing into myspace.
 

@@ -1,4 +1,4 @@
-/*$Id: MyspaceInternal.java,v 1.2 2005/09/05 11:08:39 nw Exp $
+/*$Id: MyspaceInternal.java,v 1.3 2005/10/07 12:11:13 KevinBenson Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.filemanager.client.FileManagerNode;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Aug-2005
@@ -53,11 +54,27 @@ public interface MyspaceInternal extends Myspace {
      */
     public OutputStream getOutputStream(URI ui) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
     
+    /**Write data to a myspace resource
+     * <p>
+     * NB : not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
+     * @param ivorn resource to write to
+     * @param content the data to write in InputStream format
+     * @throws InvalidArgumentException is the resource is malformed
+     * @throws ServiceException if an error occurs while calling the service
+     * @throws SecurityException if the user is not permitted to access this resource
+     *
+     */
+    void writeStream(URI ivorn,InputStream content) throws InvalidArgumentException, ServiceException, SecurityException;
+    
+    
 }
 
 
 /* 
 $Log: MyspaceInternal.java,v $
+Revision 1.3  2005/10/07 12:11:13  KevinBenson
+moved a method that is not possible for xmlrpc (serialization) down to MyspaceInternal.java interface and took it out of Myspace.java interface
+
 Revision 1.2  2005/09/05 11:08:39  nw
 added skeletons for registry and query dialogs
 
