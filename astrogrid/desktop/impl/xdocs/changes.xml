@@ -20,6 +20,12 @@
 		<action dev="kmb" type="fix">
 			Usability improvements to resource chooser
 		</action>
+		<action dev="nw" type="fix" issue="1379">
+			job monitor handles failure to communicate with cea servers gracefully
+		</action>
+		<action dev="nw" type="fix" issue="1380">
+			exception handling in pw launcher more graceful
+		</action>
 	</release>
 	<release version="1.2-beta-3" date="2005-10-05">
 		<action dev="nw" type="fix">
