@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.5 2005/10/06 09:20:24 KevinBenson Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.6 2005/10/07 12:12:21 KevinBenson Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -329,7 +329,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                 return;
             }
 
-            final URI u = chooser.chooseResourceWithParent("Select resource to read data from ", false,true, false, true,VospaceBrowserImpl.this);
+            final URI u = chooser.chooseResourceWithParent("Select resource to read data from ", false,true, true,VospaceBrowserImpl.this);
             if (u == null) {
                 return;
             }
@@ -358,7 +358,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             if (n == null) {
                 return;
             }            
-            final URI u = chooser.chooseResourceWithParent("Select resource to read data from ", false,true, false, true,VospaceBrowserImpl.this);
+            final URI u = chooser.chooseResourceWithParent("Select resource to read data from ", false, true, true,VospaceBrowserImpl.this);
             if (u == null) {
                 return;
             }
@@ -377,6 +377,15 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         return name;
     }
 
+    /**
+     * Name: transferFiles
+     * Description: method to copy a resource (local file or url) to Myspace.  Acts like a basic cp or copy command.
+     * Also detects based on file extension
+     * name if a file can be uncompressed or unarchived into myspace.  Currently supports tar, tar.gz, gz,  zip, jar, and war extensions.
+     * @param uri uri to a internal or external resource such as a local file ex: (file://) or url ex: (http://)
+     * @param node the current selected file or directory node in myspace. 
+     * @throws Exception
+     */
     private void transferFiles(URI uri, FileManagerNode node) throws Exception { 
     //throws IOException, URISyntaxException, NotFoundException {
         URL url = uri.toURL();
@@ -385,12 +394,20 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         String name = file.getName();
         InputStream is = null;
         String voName = conformToMyspaceName(name);
+            //check if the myspace selected node is a file, if so then normal overwrite occurrs.
             if(node.isFile()) {
                 getVospace().copyURLToContent(url, new URI(node.getIvorn().toString()));
             } else {
+                //must be a directory elected, check if it is compressed and see if they want to
+                //uncompress it
                 if(isPackedFile(name) && askDecompressQuestion() == JOptionPane.YES_OPTION) {
+                    //they want to uncompress it in myspace.
+                    
+                    //this is the regular inputstream or a GZipInputStream method call.
                     is = decompress(name, url.openStream());
+
                     if(name.toLowerCase().endsWith(ZIP)) {
+                        //its a Zip file open a ZipInputStream to it and save each named entry into myspace.                        
                         ZipEntry ze = null;
                         ZipInputStream zis = new ZipInputStream(is);
                         while( (ze = zis.getNextEntry()) != null) {
@@ -400,6 +417,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                             }
                         }
                     } else if(name.toLowerCase().endsWith(JAR) || name.toLowerCase().endsWith(WAR)) {
+                        //its a Jar file open a JarInputStream to it and save each named entry into myspace.
                         JarEntry je = null;
                         JarInputStream jis = new JarInputStream(is);
                         while( (je = jis.getNextJarEntry()) != null) {
@@ -409,6 +427,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                             }
                         }
                     } else if(name.toLowerCase().endsWith(TAR)  || name.toLowerCase().endsWith(TAR + "." + GZIP)) {
+                        //Tar or Tar.gz file unarchive the already GzipInputstream(from decompress)
                         TarEntry te = null;
                         TarInputStream tis = new TarInputStream(new BufferedInputStream(is));
                         while( (te = tis.getNextEntry()) != null) {
@@ -422,12 +441,19 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                         getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + voName), is);
                     }                    
                 } else {
-                    //user justs wants the raw compressed file into myspace, no decompress/unarchive
+                    //user justs wants the raw file into myspace.
                     getVospace().copyURLToContent(url, new URI(node.getIvorn().toString() + "/" + voName));
                 }
             }//else
     }
-    
+
+    /**
+     * Name: isPackedFile
+     * Description: determines by a file name extension if the file is a compressed/archived file that is supported
+     * for decompression.
+     * @param name file name to be checked for the ending extension.
+     * @return true or false if supported file extension.
+     */
     private boolean isPackedFile(String name) {
         name = name.toLowerCase();   
         if(name.endsWith(TAR)  || name.endsWith(GZIP) ||
@@ -438,6 +464,12 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         return false;        
     }
     
+    /**
+     * Name: askDecompressQuestion
+     * Description: A simple question dialog box for decompressing or unarchiving files.
+     * @return Yes/NO int value from JOptionPane is returned.
+     * @see javax.swing.JOptionPane
+     */
     private int askDecompressQuestion() {
 //      Custom button text
         Object[] options = {"Yes",
@@ -492,14 +524,13 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     
     /**
      *  This method wraps the input stream with the
-     *     corresponding decompression method
+     *     corresponding decompression method.  Primarly used for tar.gz type 
+     * files.
      *
-     *  @param file provides location information for BuildException
+     *  @param fileName to detect if it is a compressed file.
      *  @param istream input stream
      *  @return input stream with on-the-fly decompression
      *  @exception IOException thrown by GZIPInputStream constructor
-     *  @exception BuildException thrown if bzip stream does not
-     *     start with expected magic values
      */
     private InputStream decompress(final String fileName,
                                    final InputStream istream)
@@ -729,8 +760,6 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @throws NodeNotFoundFault
      * @throws FileManagerFault
      */
-
-
     public VospaceBrowserImpl(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser,ResourceChooserInternal chooser) {
         super(conf, hs,ui,vos,comm);
         this.browser = browser;
@@ -853,6 +882,10 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.6  2005/10/07 12:12:21  KevinBenson
+ * resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
+ * And then put back the older one.
+ *
  * Revision 1.5  2005/10/06 09:20:24  KevinBenson
  * took out some println's still need to comment a little more later.
  *

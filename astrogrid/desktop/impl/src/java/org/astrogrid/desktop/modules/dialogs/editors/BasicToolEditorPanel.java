@@ -98,7 +98,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         
             } else {                
                 fireEditingStopped();
-                URI uri = resourceChooser.chooseResourceWithParent("Select resource",true,true, false, true,BasicToolEditorPanel.this);
+                URI uri = resourceChooser.chooseResourceWithParent("Select resource", true,true, true,BasicToolEditorPanel.this);
                 parameter.setIndirect(true);
                 this.indirect = Boolean.TRUE;                  
                 pm.fireTableCellUpdated(row,2);                       
@@ -426,6 +426,10 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.3  2005/10/07 12:12:21  KevinBenson
+resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
+And then put back the older one.
+
 Revision 1.2  2005/10/04 20:43:38  KevinBenson
 set it to "false" for selecting directories on the local file system.
 

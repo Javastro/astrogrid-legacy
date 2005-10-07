@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.4 2005/10/04 20:41:52 KevinBenson Exp $
+/*$Id: ResourceChooserImpl.java,v 1.5 2005/10/07 12:12:21 KevinBenson Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,6 +47,17 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
         return chooseResource(title,enableMySpace);        
     }
     
+    public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
+        dialog.setLocationRelativeTo(comp);
+        dialog.setTitle(title);
+        dialog.setEnableLocalFilePanel(enableLocalFile);
+        dialog.setEnableURIPanel(enableURI);
+        dialog.setEnableMySpacePanel(enableMySpace);
+        dialog.setUri(null);
+        dialog.setVisible(true);
+        return dialog.getUri();    
+    }    
+    
     public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableDirectorySelection, boolean enableURI,Component comp) {
         dialog.setLocationRelativeTo(comp);
         dialog.setTitle(title);
@@ -64,6 +75,10 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.5  2005/10/07 12:12:21  KevinBenson
+resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
+And then put back the older one.
+
 Revision 1.4  2005/10/04 20:41:52  KevinBenson
 added the ability to select directories on a local file system.  That way myspace can save to a directory.
 Only myspacebrowser has this turned on at the moment.

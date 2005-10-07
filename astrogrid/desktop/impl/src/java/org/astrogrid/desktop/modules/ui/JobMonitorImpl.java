@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.5 2005/10/06 10:52:50 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.6 2005/10/07 12:12:21 KevinBenson Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,7 +102,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         }
 
         public void actionPerformed(ActionEvent e) {
-                final URI u = chooser.chooseResourceWithParent("Select workflow to submit",true, true, false, true,JobMonitorImpl.this);
+                final URI u = chooser.chooseResourceWithParent("Select workflow to submit",true, true, true,JobMonitorImpl.this);
                 if (u == null) {
                     return;
                 }                
@@ -468,7 +468,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         public void actionPerformed(ActionEvent e) {
 
                 if (getPanes().getSelectedIndex() == JES_TAB) {
-                    final URI u = chooser.chooseResourceWithParent("Save workflow transcript",true,true, false, true,JobMonitorImpl.this);
+                    final URI u = chooser.chooseResourceWithParent("Save workflow transcript",true,true, true,JobMonitorImpl.this);
                     if (u == null) {
                         return;
                     }                    
@@ -992,6 +992,10 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.6  2005/10/07 12:12:21  KevinBenson
+resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
+And then put back the older one.
+
 Revision 1.5  2005/10/06 10:52:50  nw
 impoved error handling when applications are missing.
 

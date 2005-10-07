@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.2 2005/10/04 20:43:38 KevinBenson Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.3 2005/10/07 12:12:21 KevinBenson Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -145,7 +145,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }        
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResourceWithParent("Select tool document to load",true,true, false, true,CompositeToolEditorPanel.this);
+            final URI u = chooser.chooseResourceWithParent("Select tool document to load",true,true, true,CompositeToolEditorPanel.this);
             if (u == null) {
                 return;
             }                   
@@ -196,7 +196,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResourceWithParent("Save Tool Document",true,true, false, true,CompositeToolEditorPanel.this);
+            final URI u = chooser.chooseResourceWithParent("Save Tool Document",true,true, true,CompositeToolEditorPanel.this);
             if (u == null) {
                 return;
             }
@@ -322,6 +322,10 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.3  2005/10/07 12:12:21  KevinBenson
+resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
+And then put back the older one.
+
 Revision 1.2  2005/10/04 20:43:38  KevinBenson
 set it to "false" for selecting directories on the local file system.
 
