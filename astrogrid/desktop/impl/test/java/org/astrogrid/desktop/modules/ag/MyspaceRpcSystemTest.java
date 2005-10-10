@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcSystemTest.java,v 1.3 2005/10/06 10:52:13 nw Exp $
+/*$Id: MyspaceRpcSystemTest.java,v 1.4 2005/10/10 12:10:15 KevinBenson Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -397,19 +397,15 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
         }             
     }
 
-    /**@TODO temporary clidge to make things compile. remove soon.
-     * @see org.astrogrid.acr.astrogrid.Myspace#writeStream(java.net.URI, java.io.InputStream)
-     */
-    public void writeStream(URI arg0, InputStream arg1) throws InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
-    }
-
-
 
 }
 
 
 /* 
 $Log: MyspaceRpcSystemTest.java,v $
+Revision 1.4  2005/10/10 12:10:15  KevinBenson
+should not need the writeStream anymore here that method is now in an internal interface
+
 Revision 1.3  2005/10/06 10:52:13  nw
 quick fix necessary to make the system compile.
 
