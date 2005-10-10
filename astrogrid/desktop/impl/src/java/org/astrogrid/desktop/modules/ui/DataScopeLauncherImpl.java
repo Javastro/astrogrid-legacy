@@ -1,4 +1,4 @@
-/*$Id: DataScopeLauncherImpl.java,v 1.1 2005/10/04 20:46:48 KevinBenson Exp $
+/*$Id: DataScopeLauncherImpl.java,v 1.2 2005/10/10 12:09:45 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,10 +60,6 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
-import com.ice.tar.TarInputStream;
-import com.ice.tar.TarEntry;
-import com.ice.tar.TarHeader;
-
  
 import java.net.URI;
 import java.util.Arrays;
@@ -106,10 +102,12 @@ import java.io.IOException;
  */
 //public class DataScopeLauncherImpl extends UIComponent  implements DataScopeLauncher, ActionListener {
 //public class DataScopeLauncherImpl extends VospaceBrowserImpl implements DataScopeLauncher {
-public class DataScopeLauncherImpl extends UIComponent implements DataScopeLauncher {
+public class DataScopeLauncherImpl extends UIComponent implements DataScopeLauncher, ActionListener {
 
     private VospaceBrowserImpl vbi = null;
     private BrowserControl browser = null;
+    
+    private JButton okButton = null;
     
     //public DataScopeLauncherImpl(Configuration conf, HelpServer help, UIInternal ui, BrowserControl bc) throws java.io.IOException {
     public DataScopeLauncherImpl(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser,ResourceChooserInternal chooser) {
@@ -120,13 +118,19 @@ public class DataScopeLauncherImpl extends UIComponent implements DataScopeLaunc
 
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(ui.getComponent());
+        
         this.setSize(400,500);
         JPanel pane = getJContentPane();
-        pane.add(getTopPanel(),java.awt.BorderLayout.NORTH);
+        pane.add(getTopPanel(),java.awt.BorderLayout.CENTER);
+        okButton = new JButton("OK");
+        okButton.addActionListener(this);
+        pane.add(okButton,java.awt.BorderLayout.SOUTH);
         this.setContentPane(pane);
-        this.setTitle("Datascope Launcher");        
+        this.setTitle("Datascope Launcher");
+                
     }
     
+    /*
     public void show() {
         super.show();
         vbi.show();        
@@ -136,22 +140,36 @@ public class DataScopeLauncherImpl extends UIComponent implements DataScopeLaunc
             e.printStackTrace();
         }
     }
+    */
+    
+    /**
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent e) {
+        final Object source = e.getSource();
+        if(source == okButton) {
+            vbi.show();        
+            try {
+                browser.openURL(new URL("http://heasarc.gsfc.nasa.gov/cgi-bin/vo/datascope/init.pl"));
+            }catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
     
     
-    
-
     
     private JPanel getTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));        
         String editorText = "<html><body><p>";
         editorText += "Datascope is an important application in the astronomy community.";
-        editorText += "Below you will find Datascope, once saving results on your computer you may";
-        editorText += "upload the data into myspace.";
-        editorText += "By default any file is uncompressed and individual files are saved into myspace. Click the checkbox if you do not want this to happen";
+        editorText += "By clicking on OKAY the NVO Datascope will pop open in your browser. As well as";
+        editorText += "a myspace dialog.  Myspace has been designed to handle compressed files if you wish to upload";
+        editorText += "your results to myspace and have the data decompressed automatically.";
         editorText += "</p></body></html>";
         editor = new JEditorPane("text/html",editorText);
-        topPanel.add(editor);        
+        topPanel.add(editor);
         return topPanel;
     }
     
@@ -161,6 +179,9 @@ public class DataScopeLauncherImpl extends UIComponent implements DataScopeLaunc
 
 /* 
 $Log: DataScopeLauncherImpl.java,v $
+Revision 1.2  2005/10/10 12:09:45  KevinBenson
+small change to the astroscope to show browser and vospace when the user hits okay
+
 Revision 1.1  2005/10/04 20:46:48  KevinBenson
 new datascope launcher and change to module.xml for it.  Vospacebrowserimpl changes to handle file copies to directories on import and export
 
