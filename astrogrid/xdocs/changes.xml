@@ -5,6 +5,12 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+    		<action dev="gtr" type="fix">
+    			<em>Branch contracts-gtr-1373:</em> I have fixed the <i>schemaLocation</i> attributes in the schemata to be
+    			systematically relative to each other. There are now many extra schemata copied from IVOA and imported
+    			schemata are taken from our tree not from the IVOA site. There is also a new stylesheet in astrogrid-software-site
+    			to make the schemaLocation absolute again in the published schemata on the web-site.
+    		</action>
 			<action dev="jdt" type="fix">
 				<em>Branch: Reg_JDT_anti1350</em>
 				Removed the edits mistakenly applied to the registry installer during the merge of 1350.
