@@ -21,11 +21,11 @@
     </packageGroup>
     <packageGroup>
       <title>VO Modules</title>
-      <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*</packages>
+      <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*</packages>
     </packageGroup>
     <packageGroup>
       <title>UI Modules</title>
-      <packages>org.astrogrid.desktop.modules.dialogs:org.astrogrid.desktop.modules.ui:org.astrogrid.desktop.icons</packages>
+      <packages>org.astrogrid.desktop.modules.dialogs*:org.astrogrid.desktop.modules.ui:org.astrogrid.desktop.icons:org.astrogrid.desktop.modules.workflowBuilder*</packages>
     </packageGroup>
   </packageGroups>	
         <build>
@@ -46,7 +46,7 @@
                                                 <include>**/*.properties</include>
                                                 <include>**/*.xml</include>
                                         </includes>
-                                </resource>
+                                </resource>								
                         </resources>
                 </unitTest>
                 <resources>
@@ -54,13 +54,21 @@
                                 <directory>${basedir}/src/java</directory>
                                 <includes>
                                         <include>*.properties</include>
+										<include>*.hs</include>
                                         <include>**/*.xml</include>
                                         <include>**/*.png</include>
+										<include>javahelp/**</include>
 					<include>**/*.html</include>
                                         <include>**/*.xsl</include>
           				<include>**/*.gif</include>
                                 </includes>
                         </resource>
+						<resource>
+								<directory>${basedir}/target/index</directory>
+								<includes>
+									<include>**/*</include>
+								</includes>
+						</resource>
                 </resources>
         </build>
 
@@ -76,6 +84,16 @@
 			<dist.bundle>true</dist.bundle>			
 		</properties>
 	</dependency>
+	
+	<dependency>
+		<groupId>org.astrogrid</groupId>
+		<artifactId>acr-interface-javahelp</artifactId>
+		<version>${astrogrid.desktop.version}</version>
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+			<dist.bundle>true</dist.bundle>			
+		</properties>
+	</dependency>	
 <!-- container and aspects system -->
  
         <dependency>
@@ -111,17 +129,7 @@
                 </properties>
     </dependency>
 
- 
- <dependency>
-	 <artifactId>jhelpaction</artifactId>
-	 <groupId>jhelpaction</groupId>
-	 <version>unknown</version>
-	 <jar>jhelpaction.jar</jar>
-	 <properties>
-		 <jnlp.jar>true</jnlp.jar>
-		 <dist.bundle>true</dist.bundle>		 
-                </properties>	 
- </dependency>
+
  
  <dependency>
 	<artifactId>rmi-lite</artifactId>
@@ -272,7 +280,7 @@
 <!-- online help system -->
 
  <dependency>
-	 <artifactId>jh</artifactId>
+	 <artifactId>jhall</artifactId>
 	 <groupId>javahelp</groupId>
 	 <version>2.0.02</version>
 	 <properties>
@@ -281,7 +289,7 @@
 	<jnlp.extension.jnlp>javahelp.jnlp</jnlp.extension.jnlp>
 	<dist.bundle>true</dist.bundle>	
 	 </properties>
-	 <jar>jh.jar</jar>
+	 <jar>jhall.jar</jar>
  </dependency>
  <!-- commons digester (and collectins and beanutils) -->
  <dependency>

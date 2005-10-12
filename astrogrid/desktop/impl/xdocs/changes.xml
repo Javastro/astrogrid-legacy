@@ -13,12 +13,15 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	<release version="1.2.4-alpha-1" date="2005-10-06">
-		<action dev="kmb" type="add">
-			Preview of datascope
+	<release version="1.2.4-beta-1" date="2005-10-12">
+		<action dev="nw" type="add">
+			Help system
 		</action>
-		<action dev="kmb" type="fix">
-			Usability improvements to resource chooser
+		<action dev="kmb" type="add">
+			datascope lite
+		</action>
+		<action dev="kmb" type="add">
+			Upload and unzip archives to myspace
 		</action>
 		<action dev="nw" type="fix" issue="1379">
 			job monitor handles failure to communicate with cea servers gracefully

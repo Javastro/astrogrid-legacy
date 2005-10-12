@@ -40,6 +40,19 @@
 	       
 	</goal>
 	
+	<!-- generate the javahelp index -->
+	<preGoal name="java:jar-resources">
+		<attainGoal name="index-javahelp" />
+	</preGoal>
+	<goal name="index-javahelp">
+		<mkdir dir="${basedir}/target/index" />
+		<java classpathref="maven.dependency.classpath"
+			fork="true"  failonerror="true"
+			classname="com.sun.java.help.search.Indexer"
+			args="-db ${basedir}/target/index/javahelp/SearchData ${basedir}/src/java/javahelp"
+			/>
+	</goal>
+	
 	<goal name="include-acr-interface">
 		<copy tofile="${maven.docs.dest}/acr-interface.tar.gz">
 			<fileset dir="${basedir}/../api/target/distributions">
@@ -90,6 +103,16 @@
         </goal>
 
 
+
+<!-- utility - run the applcation from maven -->
+        <goal name="run-workbench" >
+                <java fork="yes" classname="org.astrogrid.desktop.Splasher">
+                        <classpath>
+                        <pathelement location="${basedir}/target/classes" />						
+                        <path refid="maven.dependency.classpath" />
+                </classpath>            
+                </java>
+        </goal>
 
 
 

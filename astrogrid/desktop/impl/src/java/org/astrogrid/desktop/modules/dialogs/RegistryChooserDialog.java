@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserDialog.java,v 1.4 2005/09/29 17:16:40 pjn3 Exp $
+/*$Id: RegistryChooserDialog.java,v 1.5 2005/10/12 13:30:10 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -51,7 +52,7 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
     /** Construct a new RegistryChooserDialog
      * @throws java.awt.HeadlessException
      */
-    public RegistryChooserDialog(  Configuration conf, HelpServer help, UIInternal ui,Registry reg) throws HeadlessException {
+    public RegistryChooserDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,Registry reg) throws HeadlessException {
         super();
         this.parent = new UIComponent(conf,help,ui);
         this.chooserPanel = new RegistryChooserPanel(parent,reg);
@@ -72,7 +73,7 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
         this.setContentPane(getJOptionPane());           
     }
     
-    public RegistryChooserDialog(Component parentComponent, Configuration conf, HelpServer help, UIInternal ui,Registry reg) throws HeadlessException {
+    public RegistryChooserDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,Registry reg) throws HeadlessException {
         super();
         this.parent = new UIComponent(conf,help,ui);
         this.chooserPanel = new RegistryChooserPanel(parent,reg);
@@ -178,6 +179,16 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
 /* 
 $Log: RegistryChooserDialog.java,v $
+Revision 1.5  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.3.6.2  2005/10/12 09:21:38  nw
+added java help system
+
+Revision 1.3.6.1  2005/10/10 16:24:29  nw
+reviewed phils workflow builder
+skeletal javahelp
+
 Revision 1.4  2005/09/29 17:16:40  pjn3
 Drag and drop work complete 1322
 

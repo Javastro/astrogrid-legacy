@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.4 2005/09/12 15:21:16 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.5 2005/10/12 13:30:10 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,6 +34,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -83,7 +84,7 @@ import javax.swing.ListCellRenderer;
 public class ApplicationLauncherImpl extends UIComponent  implements ApplicationLauncher {
 
 
-    public ApplicationLauncherImpl(  PicoContainer pico,Configuration conf, HelpServer help, UIInternal ui) {
+    public ApplicationLauncherImpl(  PicoContainer pico,Configuration conf, HelpServerInternal help, UIInternal ui) {
             super(conf, help, ui);
             editor =  new CompositeToolEditorPanel(this,pico);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -92,7 +93,8 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             JPanel pane = getJContentPane();
              pane.add(editor, java.awt.BorderLayout.CENTER);
             this.setContentPane(pane);
-            this.setTitle("Application Launcher");    
+            this.setTitle("Application Launcher");
+            getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.applicationLauncher");        
             editor.getToolModel().addToolEditListener(new ToolEditAdapter() {
 
                 public void toolSet(ToolEditEvent te) {
@@ -110,6 +112,12 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.5  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.4.6.1  2005/10/12 09:21:38  nw
+added java help system
+
 Revision 1.4  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

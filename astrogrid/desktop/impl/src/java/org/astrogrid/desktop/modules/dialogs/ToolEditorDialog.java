@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.2 2005/10/12 13:30:10 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -62,7 +63,7 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
     
    	private JLabel topLabel = null;
     
-    public ToolEditorDialog(PicoContainer pico,      Configuration conf, HelpServer help, UIInternal ui) throws HeadlessException {
+    public ToolEditorDialog(PicoContainer pico,      Configuration conf, HelpServerInternal help, UIInternal ui) throws HeadlessException {
         super();          
         this.parent = new UIComponent(conf,help,ui);
    
@@ -164,6 +165,12 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.2  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.1.6.1  2005/10/12 09:21:38  nw
+added java help system
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

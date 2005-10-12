@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<!DOCTYPE toc
+PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
+"toc_1_0.dtd">
+<!-- defines the table of contents view of the data -->
+<toc version="1.0" topicimage="topicIcon" categoryopenimage="openFolderIcon" categoryclosedimage="closedFolderIcon" >
+	<tocitem text="Workbench" target="top" image="toplevelfolder">
+		<tocitem text="Getting Started" target="gettingstarted" />
+		<!-- add children to each of these headings, once they're written -->
+		<tocitem text="Main Window" target="system.ui" />
+		<tocitem text="Parameterized Workflows" target="userInterface.parameterizedWorkflows">
+			<tocitem text="Solar Movie Maker" target="pw.movieMaker" />
+			<tocitem text="Redshift Maker" target="pw.redshiftMaker" />
+		</tocitem>
+		<tocitem text="Application Launcher" target="userInterface.applicationLauncher">
+			<tocitem text="Available Applications" target="al.list" />
+		</tocitem>
+		<tocitem text="Workflow Builder" target="userInterface.workflowBuilder" />
+		<tocitem text="Job Monitor" target="userInterface.jobMonitor" >
+			<tocitem text="Functions" target="jm.functions" />
+		</tocitem>
+		<tocitem text="Myspace Browser" target="userInterface.myspaceBrowser" />
+		<tocitem text="AstroScope Lite" target="userInterface.datascopeLauncher" />
+		<tocitem text="Registry Browser" target="userInterface.registryBrowser" />
+	</tocitem>
+
+	<tocitem text="Virtual Observatory Tutorial" target="votutorial" image="toplevelfolder">
+		<!-- add contents in here once astros write it -->
+	</tocitem>
+	
+	<tocitem text="About AstroGrid" target="astrogrid.about" image="toplevelfolder">
+		<tocitem text="AstroGrid Release 1.1" target="astrogrid.release" />
+	</tocitem>	
+	
+	<tocitem text="Astro Client Runtime" target="acr" image="toplevelfolder">
+		<tocitem text="Modules">
+			<tocitem text="System" target="system" />
+			<tocitem text="Astrogrid" target="astrogrid" />
+			<tocitem text="CDS" target="cds" />
+			<tocitem text="ivoa" target="ivoa" />
+			<tocitem text="External Apps" target="Apps" />
+		
+		</tocitem>
+		<tocitem text="Examples" target="acr.examples" />
+	</tocitem>
+<!-- ACR reference automatically added in here -->
+	
+</toc>
+	

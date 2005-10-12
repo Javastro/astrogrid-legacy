@@ -1,0 +1,91 @@
+<?xml version='1.0' ?>
+<!DOCTYPE map
+PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
+"map_2_0.dtd">
+<!-- defines mappings between keys and locations in the helpset -->
+<map version="2.0">
+
+
+<!-- 
+	overview	stuff
+-->
+	<mapID target="top" url="index.html"/>
+	<mapID target="getttingstarted" url="gettingstarted.html" />
+
+<!-- 
+	tutorial
+-->
+
+	<mapID target="votutorial" url="votutorial/index.html"/>
+<!-- 
+	reference
+-->
+
+<!-- 
+	help for core UI 
+	-->
+	
+	<!-- main workbench window -->
+	<mapID target="system.ui" url="workbench/index.html" />	
+	
+<!-- 
+	help for acr
+-->
+	<mapID target="acr" url="acr/index.html" />	
+	<mapID target="acr.modules" url="acr/modules.html" />
+    <mapID target="acr.examples" url="acr/examples.html" />
+	
+<!--
+	Help for each UI component
+-->
+	
+	<!-- job monitor -->
+	<mapID target="userInterface.jobMonitor" url="jobmonitor/index.html" />
+	<mapID target="jm.workflowTab" url="jobmonitor/index.html#workflowTab" />
+	<mapID target="jm.appTab" url="jobMonitor/index.html#appTab" />
+	<mapID target="jm.functions" url="jobMonitor/functions.html" />
+	<!-- pw workflows -->
+	<mapID target="userInterface.parameterizedWorkflows" url="parameterizedworkflows/index.html" />
+	<mapID target="pw.movieMaker" 	url="http://wiki.astrogrid.org/bin/view/Astrogrid/MovieMaker" />
+	<mapID target="pw.redshiftMaker" 	url="http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker"/>
+	<!-- application launcher -->
+	<mapID target="userInterface.applicationLauncher" url="applauncher/index.html" />
+	<mapID target="al.list" url="http://wiki.astrogrid.org/bin/view/Astrogrid/ToolDocumentation" />
+	
+	<!-- datascope -->
+	<mapID target="userInterface.datascopeLauncher" url="datascope/index.html" />
+	
+	<!-- workflow builder -->
+	<mapID target="userInterface.workflowBuilder" url="workflowbuilder/index.html" />
+	
+	<!-- myspace browser -->
+	<mapID target="userInterface.myspaceBrowser" url="myspacebrowser/index.html" />	
+	
+	<!-- registry browser -->
+	<mapID target="userInterface.registryBrowser" url="registrybrowser/index.html" />
+
+<!-- 
+	information about astrogird	
+	-->
+	<mapID target="astrogrid.about" url="about-astrogrid.html" />
+	<mapID target="astrogrid.release" url="http://software.astrogrid.org" />
+	<!-- add links to user forums, etc once they're defined -->
+	
+
+<!-- system stuff -->
+<!-- resources -->
+<mapID target="toplevelfolder" url="icons/tree.jpg"/>
+<mapID target="contentIcon" url="icons/book.gif"/>
+<mapID target="searchIcon" url="icons/search.gif"/>
+<mapID target="bookmarkIcon" url="icons/bookmarks.gif"/>
+<mapID target="homeIcon" url="icons/home.gif"/>
+<mapID target="backIcon" url="icons/back.gif"/>
+<mapID target="addBookmarkIcon" url="icons/add_bookmarks.gif"/>
+<mapID target="reloadIcon" url="icons/refresh.gif"/>
+<mapID target="forwardIcon" url="icons/front.gif"/>
+<mapID target="printIcon" url="icons/print.gif"/>
+<mapID target="printSetupIcon" url="icons/page_setup.gif"/>
+<mapID target="openFolderIcon" url="icons/folder_open.gif"/>
+<mapID target="closedFolderIcon" url="icons/folder_closed.gif"/>
+<mapID target="topicIcon" url="icons/topic.gif"/>
+</map>

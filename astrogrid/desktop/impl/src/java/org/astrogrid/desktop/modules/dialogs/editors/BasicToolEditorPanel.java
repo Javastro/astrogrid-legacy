@@ -426,6 +426,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.4  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.1.6.1  2005/10/10 18:12:37  nw
+merged kev's datascope lite.
+
 Revision 1.3  2005/10/07 12:12:21  KevinBenson
 resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
 And then put back the older one.

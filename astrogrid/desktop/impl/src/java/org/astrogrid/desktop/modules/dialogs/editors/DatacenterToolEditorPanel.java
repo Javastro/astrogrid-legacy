@@ -1,4 +1,4 @@
-/*$Id: DatacenterToolEditorPanel.java,v 1.2 2005/09/12 18:53:45 nw Exp $
+/*$Id: DatacenterToolEditorPanel.java,v 1.3 2005/10/12 13:30:10 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,6 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-import sun.security.krb5.internal.crypto.c;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -430,6 +429,12 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
 
 /* 
 $Log: DatacenterToolEditorPanel.java,v $
+Revision 1.3  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.2.6.1  2005/10/12 09:21:38  nw
+added java help system
+
 Revision 1.2  2005/09/12 18:53:45  nw
 finished shaping workflow builder.
 

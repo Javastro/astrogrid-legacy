@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.4 2005/10/12 13:30:10 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,8 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 
@@ -22,6 +24,7 @@ import org.w3c.dom.Document;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.StringWriter;
@@ -46,157 +49,46 @@ import javax.xml.transform.stream.StreamResult;
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Mar-2005
  *
  */
-public class RegistryBrowserImpl extends UIComponent implements ActionListener, RegistryBrowser
+public class RegistryBrowserImpl extends UIComponent implements  RegistryBrowser
 {
-    private JPanel topPanel = null;
-	private JLabel jLabel = null;
-	private JTextField ivornField = null;
-	private JButton goButton = null;
-	private JEditorPane recordDisplay = null;
-	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
-	private JPanel getTopPanel() {
-		if (topPanel == null) {
-			jLabel = new JLabel();
-			topPanel = new JPanel();
-			topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-			jLabel.setText("Resource Key:");
-			topPanel.add(jLabel, null);
-			topPanel.add(getIvornField(), null);
-			topPanel.add(getGoButton(), null);
-		}
-		return topPanel;
-	}
-	/**
-	 * This method initializes jTextField	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */    
-	private JTextField getIvornField() {
-		if (ivornField == null) {
-			ivornField = new JTextField();
-            ivornField.setToolTipText("<html>Enter the key of a resource to view it <br>- e.g <tt>ivo://uk.ac.le.star/filemanager</tt></html>");
-			ivornField.addActionListener(this);
-		}
-		return ivornField;
-	}
-	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
-	private JButton getGoButton() {
-		if (goButton == null) {
-			goButton = new JButton();
-			goButton.setIcon(IconHelper.loadIcon("update.gif"));
-   		goButton.setToolTipText("Retrieve this resource");
-			goButton.addActionListener(this);
-		}
-		return goButton;
-	}
-	/**
-	 * This method initializes jEditorPane	
-	 * 	
-	 * @return javax.swing.JEditorPane	
-	 */    
-	private JEditorPane getRecordDisplay() {
-		if (recordDisplay == null) {
-			recordDisplay = new JEditorPane();
-			recordDisplay.setEditable(false);
-			recordDisplay.setContentType("text/html");
-		}
-		return recordDisplay;
-	}
-	/**
-	 * This method initializes jScrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */    
-	private JScrollPane getJScrollPane() {
-		if (jScrollPane == null) {
-			jScrollPane = new JScrollPane();
-			jScrollPane.setViewportView(getRecordDisplay());
-		}
-		return jScrollPane;
-	}
+   
 
-
-    public RegistryBrowserImpl(Registry reg, HelpServer hs,UIInternal ui,Configuration conf) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+    public RegistryBrowserImpl(Registry reg, HelpServerInternal hs,UIInternal ui,Configuration conf) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
         super(conf,hs,ui);
         this.reg=reg;
         
-        initialize();
-
-        
+        initialize();        
     }
-    protected Registry reg;
-	private JScrollPane jScrollPane = null;
-    protected Transformer transformer;
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 * @throws TransformerFactoryConfigurationError
-	 * @throws TransformerConfigurationException
-	 */
-	private void initialize() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        Source styleSource = Xml2XhtmlTransformer.getStyleSource();
-        transformer = TransformerFactory.newInstance().newTransformer(styleSource);
-         
+    protected final Registry reg;
+
+	private void initialize() {
 		this.setSize(500, 600);   
+        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
         JPanel pane = getJContentPane();
-        pane.add(getTopPanel(), java.awt.BorderLayout.NORTH);
-        pane.add(getJScrollPane(), java.awt.BorderLayout.CENTER);        
+        pane.add(getRegistryChooser(),BorderLayout.CENTER); 
 		this.setContentPane(pane);
 		this.setTitle("Registry Browser");
 	}
-
-    /**
-     * listens to it's own actions.
-     */
-    public void actionPerformed(ActionEvent e) {
-        // either search, or cancel..
-        if (worker == null) { // start a search
-            if (! ivornField.getText().startsWith("ivo://")) {
-                ivornField.setText("ivo://" + ivornField.getText());
-            }
-            // do query in worker thread
-            worker= new BackgroundOperation("Searching for " + ivornField.getText()) {
-                protected Object construct() throws Exception {   
-                 URI ivorn = new URI(ivornField.getText());
-                Document dom = reg.getRecord(ivorn);
- 
-                 Source source = new DOMSource(dom);
-                 StringWriter sw = new StringWriter();
-                 Result result = new StreamResult(sw);
-                 transformer.transform(source,result);
-                 return sw.toString();
-                }
-                protected void doFinished(Object result) {
-                        recordDisplay.setText(result.toString());
-                }
-                protected void doAlways() {
-                        goButton.setText("Go");
-                        worker = null; // remove reference to self;                    
-                }
-            };
-            worker.start();
-            goButton.setText("Cancel");
-        } else { // stop a search    
-            worker.interrupt();
-            recordDisplay.setText("");
-        }        
-        
+    
+    private RegistryChooserPanel regChooser;
+    private RegistryChooserPanel getRegistryChooser() {
+        if (regChooser == null) {
+            regChooser = new RegistryChooserPanel(this,reg);
+        }
+        return regChooser;
     }
-    private SwingWorker worker;
+
 }  //  @jve:decl-index=0:visual-constraint="10,10"
 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.4  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.3.10.1  2005/10/12 09:21:38  nw
+added java help system
+
 Revision 1.3  2005/09/02 14:03:34  nw
 javadocs for impl
 

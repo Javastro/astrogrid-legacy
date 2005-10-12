@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.1 2005/09/02 14:03:34 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.2 2005/10/12 13:30:10 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.desktop.icons.IconHelper;
+
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.JMenuItem;
 
 
 /** abstract class for all long-running operations - all requests to VO services should be done in instances of this class.
@@ -24,11 +30,14 @@ import java.lang.reflect.InvocationTargetException;
       * @author Noel Winstanley nw@jb.man.ac.uk 02-Apr-2005
       *
       */
-    public abstract class BackgroundWorker extends SwingWorker {
+    public abstract class BackgroundWorker extends SwingWorker implements ActionListener {
         /** string displayed in status bar while operation is in progress */
         protected final String msg;
         /** ui component that this operation is displaying progress in */
         protected final UIComponent parent;
+        
+        /** menu item corresponding to this background task */
+        private final JMenuItem menuItem;
         /**
          *  Construct a new BackgroundOperation
          * @param parent - UICOmponent to report progress in.
@@ -38,14 +47,24 @@ import java.lang.reflect.InvocationTargetException;
             super();
             this.parent = parent;
             this.msg = msg;
+            this.menuItem = new JMenuItem(msg,IconHelper.loadIcon("stop.gif"));
+            this.menuItem.addActionListener(this);
         }
+        
+        public final JMenuItem getMenuItem() {
+            return menuItem;
+        }
+        
+        public final String getMessage() {
+            return msg;
+        }
+        
         /** start the background operation running in a separate thread.
          * safe to call this mehod from the event-dispatch thread.
          * @see EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker#start()
          */
         public final  synchronized void start() {
-            parent.setBusy(true);
-            parent.setStatusMessage(msg);            
+            parent.addBackgroundWorker(this);
             super.start();
         }        
         /** implement this method to define the computation to execute on the background thread. 
@@ -76,22 +95,38 @@ import java.lang.reflect.InvocationTargetException;
                     Object result = this.get();
                     doFinished(result);
                 } catch (InterruptedException e) {
-                    // not bothered.
-                } catch (InvocationTargetException e) {
+                    parent.setStatusMessage(msg + " - Interrupted");
+                } catch (InvocationTargetException e) {                    
                     Throwable ex= e.getCause() != null ? e.getCause() : e;
-                    parent.showError(msg + ": Failed",ex);
+                    if (InterruptedException.class.isAssignableFrom(ex.getClass())) {
+                        // it's a wrapped interruption, caused by the user pressing cancel.
+                        parent.setStatusMessage(msg + " - Interrupted");
+                    } else { // it's some kind of failure                    
+                        parent.showError(msg + ": Failed",ex);
+                    }
                 } finally {
-                    parent.setBusy(false);//@todo - should this be before we get the result?
-                    parent.setStatusMessage("");
+                    parent.removeBackgroundWorker(this);
                     doAlways();
                 }
         }
         
-
+            /** used from the menuItem - when the menu item is called, this method interrupts the
+             * running background task.
+             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+             */
+    public void actionPerformed(ActionEvent e) {
+        this.interrupt();
+    }
 }
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.2  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.1.10.1  2005/10/12 09:21:38  nw
+added java help system
+
 Revision 1.1  2005/09/02 14:03:34  nw
 javadocs for impl
  

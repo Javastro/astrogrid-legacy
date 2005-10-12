@@ -34,50 +34,24 @@ import org.astrogrid.workflow.beans.v1.Set;
  * Simple dialog that displays and 
  * allows entry of Set attributes 
  */
-public class SetDialog extends JDialog implements PropertyChangeListener {
-	private JOptionPane jOptionPane = null;
+public class SetDialog extends BaseBeanEditorDialog {
 	private JPanel displayPanel = null;
 	private JTextField varField, valField;
-	private Set set, editedSet;
 	private JLabel label1, label2, label3;
+    private final Set testingSet;
 
-    public SetDialog(Component parentComponent, Set s) {
-    	set = s;
-    	editedSet = s;        
-        setLocationRelativeTo(parentComponent);
-        initialize();
-    }
-	
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setTitle("Edit Set");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
+    public SetDialog(Component parentComponent) {
+        super(parentComponent);
+        testingSet = new Set();
+		this.setTitle("Edit Set");   
 		this.setSize(375,150);
-		this.setContentPane(getJOptionPane());
-		this.setVisible(true);
+		this.pack();
 	}
 	
-    private JOptionPane getJOptionPane() {
-        if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-            jOptionPane.addPropertyChangeListener(this);
-        }
-        return jOptionPane;
+    public void setSet(Set s) {
+        setTheBean(s);
+        varField.setText(s == null ? "" :s.getVar());        
+        valField.setText(s == null ? "" : s.getValue());
     }
     
 	public JPanel getDisplayPanel() {
@@ -88,10 +62,9 @@ public class SetDialog extends JDialog implements PropertyChangeListener {
 			label3 = new JLabel("");
 			varField = new JTextField(20);
 			varField.setEditable(true);
-			varField.setText(set.getVar());
 			valField = new JTextField(20);
 			valField.setEditable(true);
-			valField.setText(set.getValue());
+
 			
 	    	JPanel p = new JPanel(new SpringLayout());
 	    	p.add(label1);
@@ -107,60 +80,37 @@ public class SetDialog extends JDialog implements PropertyChangeListener {
 		return displayPanel;
 	}    
 	
-	
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
-
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
-            }            
-
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-            	editedSet.setVar(varField.getText());
-            	editedSet.setValue(valField.getText());
+	   protected void validateInput() {
+            	testingSet.setVar(varField.getText());
+            	testingSet.setValue(valField.getText());
             	String regex = "[0-9]";
             	Pattern pattern = Pattern.compile(regex);
             	String target = "";
-            	if (editedSet.getVar().length() >= 1)
-            		target += editedSet.getVar().charAt(0);
+            	if (testingSet.getVar().length() >= 1)
+            		target += testingSet.getVar().charAt(0);
             	Matcher matcher = pattern.matcher(target);
-                if (!editedSet.isValid()) { //need valid set - var required field, and is NCNAME
-                	if (editedSet.getVar().length() <= 0) {
+                if (!testingSet.isValid()) { //need valid set - var required field, and is NCNAME
+                	if (testingSet.getVar().length() <= 0) {
                     	label3.setForeground(Color.red);
                     	label3.setText("* required");                		
                 	}
                 	else if (matcher.matches()) {
                     	label3.setForeground(Color.red);
                     	label3.setText("* invalid");
-                	}
-                	return;
+                	}              
+                } else {
+                    Set r = getSet();
+                    r.setVar(varField.getText());
+                    r.setValue(valField.getText());                    
+                    accept();
                 }
-                resetAndHide();
-            } else { //user closed dialog or clicked cancel 
-            	editedSet = null;
-                resetAndHide();
-            }
-        }
-    }
+       }
     
-    public void resetAndHide() {
-        setVisible(false);        
+    protected void resetWarnings() {
+        label3.setText("");       
     } 
     
-    public Set getEditedSet() {
-        return editedSet;
+    public Set getSet() {
+        return (Set)getTheBean();
     }
 }

@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: UIComponent.java,v 1.3 2005/10/12 13:30:10 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,14 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.l2fprod.common.swing.StatusBar;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
@@ -23,15 +27,23 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.help.CSH;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
@@ -89,7 +101,7 @@ public class UIComponent extends PositionRememberingJFrame {
 
     
     
-    private JPanel bottomPanel = null;
+    private StatusBar bottomPanel = null;
     
     private JPanel jContentPane;
     private JProgressBar progressBar = null;
@@ -100,7 +112,7 @@ public class UIComponent extends PositionRememberingJFrame {
      * @param ui
      * @throws HeadlessException
      */
-    public UIComponent(Configuration conf,HelpServer hs, UIInternal ui) throws HeadlessException {
+    public UIComponent(Configuration conf,HelpServerInternal hs, UIInternal ui) throws HeadlessException {
         super(conf,hs, ui);
     }
     
@@ -128,6 +140,7 @@ public class UIComponent extends PositionRememberingJFrame {
      */
     public void setBusy(boolean b) {
         getProgressBar().setIndeterminate(b);
+        getTasksButton().setEnabled(b);
     }
     
     /** set the status message at the bottom of this pane
@@ -158,16 +171,16 @@ public class UIComponent extends PositionRememberingJFrame {
     }
 
     /**
-     * This method initializes jPanel	
-     * 	
+     * Access the bottom panel - status bar, messages, progress ticker, that sort of thing.
      * @return javax.swing.JPanel	
      */
-    private JPanel getBottomPanel() {
+    protected StatusBar getBottomPanel() {
     	if (bottomPanel == null) {
-    		bottomPanel = new JPanel();
-    		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
-    		bottomPanel.add(getBottomLabel(), null);
-    		bottomPanel.add(getProgressBar(), null);
+    		bottomPanel = new StatusBar();
+            bottomPanel.addZone("status",getBottomLabel(),"*");
+            bottomPanel.addZone("background tasks",getTasksButton(),"20");
+            bottomPanel.addZone("progress",getProgressBar(),"60");
+            bottomPanel.addZone("help",getHelpButton(),"20");
     	}
     	return bottomPanel;
     }
@@ -185,11 +198,87 @@ public class UIComponent extends PositionRememberingJFrame {
     	return progressBar;
     }
     
+    private JButton getTasksButton() {
+        if (tasksButton == null) {
+            tasksButton = new JButton(IconHelper.loadIcon("stop.gif"));
+            tasksButton.setEnabled(false);
+            tasksButton.setToolTipText("Halt running background processes");
+            tasksButton.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    getTasksMenu().show(tasksButton,e.getX(),e.getY());
+                }
+            });
+
+        }
+        return tasksButton;
+    }
+    private JButton tasksButton;
+    
+    private JButton getHelpButton() {
+        if (helpButton == null) {
+            helpButton = new JButton(IconHelper.loadIcon("help.gif"));
+            helpButton.setToolTipText("<html><b>Click</b> for context-sensitive help,<br> or press <b>'F1'</b> for overview help</html>");
+            helpButton.addActionListener(getHelpServer().createContextSensitiveHelpListener());
+        }
+        return helpButton;
+    }
+    private JButton helpButton;
+    
+    private JPopupMenu tasksMenu;
+    
+    private JPopupMenu getTasksMenu() {
+        if (tasksMenu == null) {
+            tasksMenu = new JPopupMenu();
+            tasksMenu.setLabel("Running processes:");
+        }
+        return tasksMenu;
+    }
+    
+    /** called by a {@link BackgroundWorker} to notify the UI that it's started executing */ 
+    public void addBackgroundWorker(final BackgroundWorker w) {
+        getTasksMenu().add(w.getMenuItem());
+        setStatusMessage(w.getMessage());   
+        setBusy(true);
+  
+    }
+    
+    /** called by {@link BackgroundWorker} to notify the UI it's finished running */
+    public void removeBackgroundWorker(BackgroundWorker w) {
+        int ix = getTasksMenu().getComponentIndex(w.getMenuItem());
+        if (ix >= 0) {
+            getTasksMenu().remove(ix);
+        }
+        if (getTasksMenu().getSubElements().length == 0) {
+            setBusy(false);
+        }
+    }
+
+    /**
+     * @param s
+     * @throws HeadlessException
+     */
+    protected void showError(String s) throws HeadlessException {
+        JOptionPane.showMessageDialog(this,s,"Error",JOptionPane.ERROR_MESSAGE);
+    }
+    
+    
+    
+    
 }
 
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.3  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.2.10.2  2005/10/12 09:21:38  nw
+added java help system
+
+Revision 1.2.10.1  2005/10/10 16:24:29  nw
+reviewed phils workflow builder
+skeletal javahelp
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

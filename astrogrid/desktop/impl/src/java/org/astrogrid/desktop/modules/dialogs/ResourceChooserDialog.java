@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.4 2005/10/04 20:41:52 KevinBenson Exp $
+/*$Id: ResourceChooserDialog.java,v 1.5 2005/10/12 13:30:10 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
 import org.astrogrid.filemanager.client.FileManagerNode;
@@ -105,12 +106,12 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     private JTextField urlPanelField = null;
     private final MyspaceInternal vos;  
     private final Configuration conf;
-    private final HelpServer help;
+    private final HelpServerInternal help;
     private final UIInternal ui;
     private final Community comm;
     
     
-    public ResourceChooserDialog(MyspaceInternal vos,Configuration conf,HelpServer help,UIInternal ui, Community comm) {
+    public ResourceChooserDialog(MyspaceInternal vos,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
         super();
         this.vos = vos;
         this.conf=conf;
@@ -135,8 +136,11 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     }
     
     public void setEnabledDirectorySelection(boolean enableDirectorySelection) {
-        if(enableDirectorySelection)
+        if(enableDirectorySelection) {
             localPanel.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        } else {
+            localPanel.setFileSelectionMode(JFileChooser.FILES_ONLY);            
+        }
     }
     
     /** resets the dialog, then hides it. */
@@ -360,6 +364,15 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.5  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.3.10.2  2005/10/12 09:21:38  nw
+added java help system
+
+Revision 1.3.10.1  2005/10/10 18:12:37  nw
+merged kev's datascope lite.
+
 Revision 1.4  2005/10/04 20:41:52  KevinBenson
 added the ability to select directories on a local file system.  That way myspace can save to a directory.
 Only myspacebrowser has this turned on at the moment.

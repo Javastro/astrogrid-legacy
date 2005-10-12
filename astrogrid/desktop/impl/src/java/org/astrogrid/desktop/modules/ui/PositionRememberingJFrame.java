@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.3 2005/09/05 11:08:39 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.4 2005/10/12 13:30:10 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
 import java.awt.Dimension;
@@ -45,7 +46,7 @@ public class PositionRememberingJFrame extends JFrame {
         this.help = null;
     }
     /** Conostruct a new PositionRememberingJFrame that will persist window position */
-    public PositionRememberingJFrame(Configuration conf,HelpServer help,UIInternal ui) throws HeadlessException {
+    public PositionRememberingJFrame(Configuration conf,HelpServerInternal help,UIInternal ui) throws HeadlessException {
         this.configuration = conf;
         this.ui = ui;
         this.help = help;
@@ -54,14 +55,14 @@ public class PositionRememberingJFrame extends JFrame {
     
     protected final Configuration configuration;
     protected final UIInternal ui;
-    protected final HelpServer help;
+    protected final HelpServerInternal help;
 
     /** convenience method - access the configuraiton componoent */
     public Configuration getConfiguration() {
         return configuration;
     }
     /** convenience mehtod - access the help server component */
-    public HelpServer getHelpServer() {
+    public HelpServerInternal getHelpServer() {
         return help;
     }
     /** convenience method - access the main ui component */
@@ -135,6 +136,12 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.4  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.3.10.1  2005/10/12 09:21:38  nw
+added java help system
+
 Revision 1.3  2005/09/05 11:08:39  nw
 added skeletons for registry and query dialogs
 

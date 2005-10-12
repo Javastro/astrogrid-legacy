@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.4 2005/10/04 20:46:48 KevinBenson Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.5 2005/10/12 13:30:10 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.filemanager.client.FileManagerNode;
 
@@ -467,7 +468,7 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm) throws HeadlessException {
+    public AbstractVospaceBrowser(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, Community comm) throws HeadlessException {
         super(conf, hs,ui);
         this.vos = vos;
         comm.addUserLoginListener(this);
@@ -602,6 +603,15 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.5  2005/10/12 13:30:10  nw
+ * merged in fixes for 1_2_4_beta_1
+ *
+ * Revision 1.3.10.2  2005/10/12 09:21:38  nw
+ * added java help system
+ *
+ * Revision 1.3.10.1  2005/10/10 18:12:36  nw
+ * merged kev's datascope lite.
+ *
  * Revision 1.4  2005/10/04 20:46:48  KevinBenson
  * new datascope launcher and change to module.xml for it.  Vospacebrowserimpl changes to handle file copies to directories on import and export
  *

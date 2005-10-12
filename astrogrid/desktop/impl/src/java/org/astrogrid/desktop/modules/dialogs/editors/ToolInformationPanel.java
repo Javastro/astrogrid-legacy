@@ -1,4 +1,4 @@
-/*$Id: ToolInformationPanel.java,v 1.2 2005/10/05 11:53:00 nw Exp $
+/*$Id: ToolInformationPanel.java,v 1.3 2005/10/12 13:30:10 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,6 +90,13 @@ public class ToolInformationPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ToolInformationPanel.java,v $
+Revision 1.3  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.1.6.1  2005/10/10 16:24:29  nw
+reviewed phils workflow builder
+skeletal javahelp
+
 Revision 1.2  2005/10/05 11:53:00  nw
 handles missing registry entries more gracefully
 

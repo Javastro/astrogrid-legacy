@@ -32,51 +32,23 @@ import org.astrogrid.workflow.beans.v1.If;
  * Simple dialog that displays and 
  * allows entry of If attributes 
  */
-public class IfDialog extends JDialog implements PropertyChangeListener {
-	private JOptionPane jOptionPane = null;
-	private JPanel displayPanel = null;
+public class IfDialog extends BaseBeanEditorDialog implements PropertyChangeListener {
+    private JPanel displayPanel;
 	private JTextField testField;
 	private JLabel label1, label2;
-	private If ifObj, editedIf;
 
-    public IfDialog(Component parentComponent, If i) {
-    	ifObj = i;
-    	editedIf = i;
-        setLocationRelativeTo(parentComponent);
-        initialize();
+    public void setIf(If i) {
+        setTheBean(i);
+        testField.setText(i == null ? "" : i.getTest());
     }
-	
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setTitle("Edit If");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
-		this.setSize(375,120);
-		this.setContentPane(getJOptionPane());
-		this.setVisible(true);
-	}
-	
-    private JOptionPane getJOptionPane() {
-        if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-            jOptionPane.addPropertyChangeListener(this);
-        }
-        return jOptionPane;
+    
+    public IfDialog(Component parentComponent) {
+        super(parentComponent);
+        this.setTitle("Edit If");
+        this.setSize(375,120);
+        this.pack();
     }
+
     
 	public JPanel getDisplayPanel() {
 		if (displayPanel == null) {
@@ -84,9 +56,7 @@ public class IfDialog extends JDialog implements PropertyChangeListener {
 			label1 = new JLabel("Test: ", JLabel.TRAILING);
 			testField = new JTextField(20);
 			testField.setEditable(true);
-			testField.setText(ifObj.getTest());
-			label2 = new JLabel("");
-			
+			label2 = new JLabel("");			
 	    	JPanel p = new JPanel(new SpringLayout());
 	    	p.add(label1);
 	    	p.add(testField);
@@ -98,50 +68,27 @@ public class IfDialog extends JDialog implements PropertyChangeListener {
 		return displayPanel;
 	}    
 	
-	
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
+	protected void validateInput() {
 
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
-            }
-
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-            	editedIf.setTest(testField.getText());
-                if (editedIf.getTest().length() <= 0) {
+                if (testField.getText().length() <= 0) {
                 	//need valid if - test required field
                 	label2.setForeground(Color.red);
                 	label2.setText("* required");
-                	return;
+                } else {
+                    If i = getIf();
+                    i.setTest(testField.getText());                    
+                    accept();
                 }
-                    resetAndHide();
-                    editedIf = null;
-            } else { //user closed dialog or clicked cancel 
-            	editedIf = null;
-                resetAndHide();
-            }
-        }
+    }    
+    
+
+
+    protected void resetWarnings() {
+        label2.setText("");       
     }
     
-    public void resetAndHide() {
-        setVisible(false);        
-    }
-    
-    public If getEditedIf() {
-    	return editedIf;
+    public If getIf() {
+    	return (If)getTheBean();
     }
 
 }

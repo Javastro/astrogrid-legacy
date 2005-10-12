@@ -1,4 +1,4 @@
-/*$Id: WorkflowDetailsDialog.java,v 1.3 2005/09/29 17:16:40 pjn3 Exp $
+/*$Id: WorkflowDetailsDialog.java,v 1.4 2005/10/12 13:30:10 nw Exp $
  * Created on 29-5-05
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,80 +38,45 @@ import org.astrogrid.workflow.beans.v1.Workflow;
  * @author   Phil Nicolson pjn3@star.le.ac.uk
  * @modified nww - uses SpringLayoutHelper
  */
-public class WorkflowDetailsDialog extends JDialog implements PropertyChangeListener{
-	
-    private JPanel displayPanel, buttonBox, detailsBox = null;
-    private JTextField nameField = null;
-    private JTextArea descTextArea = null;
-    private JOptionPane jOptionPane = null;
-    private Workflow workflow, editedWorkflow;
-    private JLabel label1, label2, label3;
-
-
-    /**
-     * Constructs a new WorkflowDetailsDialog
-     * @param parentComponent
-     */
-    public WorkflowDetailsDialog(Component parentComponent, Workflow w) {
-    	workflow = w;
-    	editedWorkflow = w;
-    	setLocationRelativeTo(parentComponent);
-		initialize();		
-	}    
-
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
+public class WorkflowDetailsDialog extends BaseBeanEditorDialog {
+    private JPanel displayPanel;
+    private JLabel label3;
+    private JTextField nameField;
+    private JTextArea descTextArea;
+    public WorkflowDetailsDialog(Component parentComponent) {
+        super(parentComponent);
         this.setSize(325, 150);
-        this.setModal(true);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });
+    
         this.setTitle("Workflow Details");
-        this.setContentPane(getJOptionPane());
-        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        this.setVisible(true); 			
+        this.pack();
 	}
-	
-    private JOptionPane getJOptionPane() {
-        if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-            jOptionPane.addPropertyChangeListener(this);
-        }
-        return jOptionPane;
-    }	
+    
+    public void setWorkflow(Workflow w) {
+        this.setTheBean(w);
+	    	nameField.setText(w == null ? "" : w.getName());
+	        descTextArea.setText(w == null ? "" : w.getDescription());
+    }
 	
     /**
 	 * This method initializes jContentPane
+     * @param descTextArea
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getDisplayPanel() {
+	public JPanel getDisplayPanel() {
 		if(displayPanel == null) {
 			displayPanel = new JPanel();
 			displayPanel.setLayout(new BorderLayout());			
 						
 	        /* Create query components. */
-	    	label1 = new JLabel("Name: ");	    	
-	    	label2 = new JLabel("Description: ");
+	    	JLabel label1 = new JLabel("Name: ");	    	
+	    	JLabel label2 = new JLabel("Description: ");
 	    	label3 = new JLabel("");
 	    	
 	    	nameField = new JTextField();
 	    	nameField.setEditable(true);
-	    	nameField.setText(workflow.getName());
 	        descTextArea = new JTextArea(3,7);
 	        descTextArea.setEditable(true);
-	        descTextArea.setText(workflow.getDescription());
 			JScrollPane scrollPane = new JScrollPane(descTextArea);
 	        JPanel b = getDetailsBox();
 	        b.add(label1);	
@@ -127,11 +92,8 @@ public class WorkflowDetailsDialog extends JDialog implements PropertyChangeList
 		return displayPanel;
 	}
 
-	/**
-	 * This method initializes detailsBox jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+   
+    private JPanel detailsBox;
 	private JPanel getDetailsBox() {
 		if (detailsBox == null){
 			detailsBox = new JPanel(new SpringLayout());
@@ -139,48 +101,26 @@ public class WorkflowDetailsDialog extends JDialog implements PropertyChangeList
 		}
 		return detailsBox;
 	}	
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
 
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
-            }
+    protected void validateInput() {
 
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-            	editedWorkflow.setName(nameField.getText());
-            	editedWorkflow.setDescription(descTextArea.getText());
-                if (editedWorkflow.getName().length() <= 0) {
+                if (nameField.getText().length() <= 0) {
                 	//need valid workflow - name is required field, but test length rather than validating whole document
                 	label3.setForeground(Color.red);
                 	label3.setText("* required");
-                	return;
+                } else {
+                    Workflow w = getWorkflow();
+                    w.setName(nameField.getText());
+                    w.setDescription(descTextArea.getText());                    
+                    accept();
                 }
-            	resetAndHide();
-            	editedWorkflow = null;
-            } else { //user closed dialog or clicked cancel           
-                editedWorkflow = null;
-                resetAndHide();
-            }
-        }
     }
-    public void resetAndHide() {
-        setVisible(false);        
-    }   
-    public Workflow getEditableWorkflow() {
-    	return editedWorkflow;
+
+    protected void resetWarnings() {
+        label3.setText("");
+    }
+    public Workflow getWorkflow() {
+    	return (Workflow)getTheBean();
     }
     
 }  

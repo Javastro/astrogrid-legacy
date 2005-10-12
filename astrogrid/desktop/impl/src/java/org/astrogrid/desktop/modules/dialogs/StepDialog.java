@@ -28,6 +28,7 @@ import javax.swing.SpringLayout;
 
 import org.astrogrid.desktop.modules.ui.SpringLayoutHelper;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
  * @author pjn3
@@ -35,81 +36,59 @@ import org.astrogrid.workflow.beans.v1.Step;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class StepDialog extends JDialog implements PropertyChangeListener {
-	private JOptionPane jOptionPane = null;
+public class StepDialog extends BaseBeanEditorDialog {
 	private JPanel displayPanel = null;
 	private JTextField nameField, descField, varField, taskField, ifaceField;
-	private Step step, editedStep;
-	private JLabel label1, label2, label3, label4, label5, label6, label7;
+	private JLabel  label6, label7;
 	
-    public StepDialog(Component parentComponent, Step s) {
-    	step = s;
-    	editedStep = s;
-    	setLocationRelativeTo(parentComponent);
-        initialize();        
-    }
-    
-	
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
+    public StepDialog(Component parentComponent) {
+        super(parentComponent);
+        
 		this.setTitle("Edit Step");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
+       
 		this.setSize(375,225);
-		this.setContentPane(getJOptionPane());
-		this.setVisible(true);		
+		this.pack();
 	}
-	
-    private JOptionPane getJOptionPane() {
-        if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-            jOptionPane.addPropertyChangeListener(this);
+
+    public void setStep(Step s) {
+        setTheBean(s);
+        
+        nameField.setText(s == null ? "" : s.getName());
+        descField.setText(s == null ? "" : s.getDescription());
+        varField.setText(s == null ? "" : s.getResultVar());
+        if (s != null && s.getTool() != null) {
+            Tool t = s.getTool();
+            taskField.setText(t.getName());
+            ifaceField.setText(t.getInterface());
+        } else {
+            taskField.setText("");
+            ifaceField.setText("");
         }
-        return jOptionPane;
+            
     }
     
 	public JPanel getDisplayPanel() {
 		if (displayPanel == null) {
 			displayPanel = new JPanel();
-			label1 = new JLabel("Step name: ", JLabel.TRAILING);
-			label2 = new JLabel("Step description: ", JLabel.TRAILING);
-			label3 = new JLabel("Variable name: ", JLabel.TRAILING);
-			label4 = new JLabel("Task name: ", JLabel.TRAILING);
-			label5 = new JLabel("Interface name: ", JLabel.TRAILING);
+			JLabel label1 = new JLabel("Step name: ", JLabel.TRAILING);
+			JLabel label2 = new JLabel("Step description: ", JLabel.TRAILING);
+			JLabel label3 = new JLabel("Variable name: ", JLabel.TRAILING);
+			JLabel label4 = new JLabel("Task name: ", JLabel.TRAILING);
+			JLabel label5 = new JLabel("Interface name: ", JLabel.TRAILING);
 			label6 = new JLabel("");
 			label7 = new JLabel("");
 				   
 			nameField = new JTextField(20);
-			nameField.setText(step.getName());
 			nameField.setEditable(true);
 			descField = new JTextField(20);
-			descField.setText(step.getDescription());
 			descField.setEditable(true);
 			varField = new JTextField(20);
-			varField.setText(step.getResultVar());
 			varField.setEditable(true);
 			taskField = new JTextField(20);
 			taskField.setEditable(false);
 			ifaceField = new JTextField(20);
 			ifaceField.setEditable(false);
-			if (step.getTool() != null) {
-				taskField.setText(step.getTool().getName());
-				ifaceField.setText(step.getTool().getInterface());
-			}
+
 
 	    	JPanel p = new JPanel(new SpringLayout());
 	    	p.add(label1);
@@ -136,35 +115,13 @@ public class StepDialog extends JDialog implements PropertyChangeListener {
 	}    
 	
 	
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
+       protected void validateInput() {
 
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
-            }
-
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-            	editedStep.setName(nameField.getText());
-            	editedStep.setDescription(descField.getText());
-            	editedStep.setResultVar(varField.getText());
             	String regex = "[0-9]";
             	Pattern pattern = Pattern.compile(regex);
             	String target = "";
-            	if (editedStep.getResultVar().length() >= 1)
-            		target += editedStep.getResultVar().charAt(0);
+            	if (varField.getText().length() >= 1)
+            		target += varField.getText().charAt(0);
             	Matcher matcher = pattern.matcher(target);
                 if (nameField.getText().length() <= 0 ||
                 	(varField.getText().length() >= 1 && matcher.matches())) {
@@ -179,23 +136,22 @@ public class StepDialog extends JDialog implements PropertyChangeListener {
                 		label7.setText("* invalid");
                 	} else {
                 		label7.setText("");
-                	}
-                return;
+                	}                
+                } else {
+                    Step s = getStep();
+                    s.setName(nameField.getText());
+                    s.setDescription(descField.getText());
+                    s.setResultVar(varField.getText());                    
+                    accept();
                 }
-                resetAndHide();
-            } else { //user closed dialog or clicked cancel           
-                editedStep = null;
-                resetAndHide();
-            }
-        }
-	}
-    
+            } 
 
-    public Step getEditedStep() {
-        return editedStep;
+    public Step getStep() {
+        return (Step)getTheBean();
     }
     
-    public void resetAndHide() {
-        setVisible(false);
-    }   
+    protected void resetWarnings() {
+        label6.setText("");    
+        label7.setText("");          
+    } 
 }

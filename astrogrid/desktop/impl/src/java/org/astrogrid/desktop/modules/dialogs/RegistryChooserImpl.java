@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserImpl.java,v 1.2 2005/09/12 15:21:16 nw Exp $
+/*$Id: RegistryChooserImpl.java,v 1.3 2005/10/12 13:30:10 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
 /** Impleentaito of the registry chooser component.
@@ -26,7 +27,7 @@ public class RegistryChooserImpl implements RegistryChooser {
     /** Construct a new RegistryChooserImpl
      * 
      */
-    public RegistryChooserImpl( Configuration conf, HelpServer help, UIInternal ui,Registry reg) {
+    public RegistryChooserImpl( Configuration conf, HelpServerInternal help, UIInternal ui,Registry reg) {
         super();
         dialog = new RegistryChooserDialog(conf,help,ui,reg);
         dialog.pack();
@@ -77,6 +78,12 @@ public class RegistryChooserImpl implements RegistryChooser {
 
 /* 
 $Log: RegistryChooserImpl.java,v $
+Revision 1.3  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.2.6.1  2005/10/12 09:21:38  nw
+added java help system
+
 Revision 1.2  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

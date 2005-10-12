@@ -34,11 +34,7 @@
 					<description>target in helpset to display</description>
 				</parameter>				
 		</method>
-		<method name="showHelpFromFocus">
-							<return>
-					<description>nothing</description>
-				</return>
-		</method>
+
 	</component>
 	<component name="browser" 
 		implementationClass="org.astrogrid.desktop.modules.system.WebstartBrowserControl"

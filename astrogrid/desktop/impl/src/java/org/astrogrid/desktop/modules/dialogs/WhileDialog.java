@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import org.astrogrid.desktop.modules.ui.SpringLayoutHelper;
+import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.While;
 
 /**
@@ -32,59 +33,30 @@ import org.astrogrid.workflow.beans.v1.While;
  * Simple dialog that displays and 
  * allows entry of While attributes 
  */
-public class WhileDialog extends JDialog implements PropertyChangeListener {
-	private JOptionPane jOptionPane = null;
-	private JPanel displayPanel = null;
+public class WhileDialog extends BaseBeanEditorDialog {
+
+	private JPanel displayPanel;
 	private JTextField testField;
 	private JLabel label1, label2;
-	private While whileObj, editedWhile;
 
-    public WhileDialog(Component parentComponent, While w) {
-        whileObj = w;
-        editedWhile = w;
-        setLocationRelativeTo(parentComponent);
-        initialize();
-    }
-	
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setTitle("Edit While");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
-		this.setSize(375,120);
-		this.setContentPane(getJOptionPane());
-		this.setVisible(true);
-	}
-	
-    private JOptionPane getJOptionPane() {
-        if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-            jOptionPane.addPropertyChangeListener(this);
-        }
-        return jOptionPane;
+    public void setWhile(While w) {
+        setTheBean(w);
+        testField.setText(w == null ? "" : w.getTest());
     }
     
+    public WhileDialog(Component parentComponent) {
+        super(parentComponent);
+		this.setTitle("Edit While");
+		this.setSize(375,120);
+        this.pack();
+	}
+	
 	public JPanel getDisplayPanel() {
 		if (displayPanel == null) {
 			displayPanel = new JPanel();
 			label1 = new JLabel("Test: ", JLabel.TRAILING);
 			testField = new JTextField(20);
 			testField.setEditable(true);
-			testField.setText(whileObj.getTest());
 			label2 = new JLabel("");
 			
 	    	JPanel p = new JPanel(new SpringLayout());
@@ -98,48 +70,25 @@ public class WhileDialog extends JDialog implements PropertyChangeListener {
 		return displayPanel;
 	}    
 	
-	
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
+    protected void validateInput() {
 
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
+            if (testField.getText().length() <= 0) {
+                //need valid if - test required field
+                label2.setForeground(Color.red);
+                label2.setText("* required");
+            } else {
+                While w = getWhile();
+                w.setTest(testField.getText());                
+                accept();
             }
+}    
 
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-            	editedWhile.setTest(testField.getText());
-                if (editedWhile.getTest().length() <= 0) {
-                	//need valid while - test required field, check length as Sequence is required as well
-                	label2.setForeground(Color.red);
-                	label2.setText("* required");
-                	return;
-                }
-            	resetAndHide();
-            	editedWhile = null;
-            } else { //user closed dialog or clicked cancel           
-                editedWhile = null;
-                resetAndHide();
-            }
-        }
+    
+    protected void resetWarnings() {
+        label2.setText("");       
     }
     
-    public void resetAndHide() {
-        setVisible(false);        
-    }   
-    public While getEditableWhile() {
-    	return editedWhile;
+    public While getWhile() {
+    	return (While)getTheBean();
     }
 }

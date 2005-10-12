@@ -35,51 +35,25 @@ import org.astrogrid.workflow.beans.v1.Unset;
  * Simple dialog that displays and 
  * allows entry of Unset attributes 
  */
-public class UnsetDialog extends JDialog implements PropertyChangeListener {
-	private JOptionPane jOptionPane = null;
+public class UnsetDialog extends BaseBeanEditorDialog {
 	private JPanel displayPanel = null;
 	private JTextField varField;
-	private Unset unset, editedUnset;
 	private JLabel label1, label2;
+    private final Unset testingUnset;
 
-    public UnsetDialog(Component parentComponent, Unset u) {
-    	unset = u;
-    	editedUnset = u;
-    	setLocationRelativeTo(parentComponent);
-        initialize();        
-    }
-	
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setTitle("Edit Unset");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
+    public UnsetDialog(Component parentComponent) {
+        super(parentComponent);
+        testingUnset = new Unset();
+		this.setTitle("Edit Unset");            
 		this.setSize(375,120);
-		this.setContentPane(getJOptionPane());
-		this.setVisible(true);
+        this.pack();
 	}
 	
-    private JOptionPane getJOptionPane() {
-        if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-            jOptionPane.addPropertyChangeListener(this);
+        public void setUnset(Unset u) {
+            setTheBean(u);
+            varField.setText(u == null ? "" : u.getVar());            
         }
-        return jOptionPane;
-    }
+            
     
 	public JPanel getDisplayPanel() {
 		if (displayPanel == null) {
@@ -87,9 +61,7 @@ public class UnsetDialog extends JDialog implements PropertyChangeListener {
 			label1 = new JLabel("Variable: ", JLabel.TRAILING);
 			varField = new JTextField(20);
 			varField.setEditable(true);
-			varField.setText(unset.getVar());
-			label2 = new JLabel("");
-			
+			label2 = new JLabel("");			
 	    	JPanel p = new JPanel(new SpringLayout());
 	    	p.add(label1);
 	    	p.add(varField);
@@ -102,36 +74,17 @@ public class UnsetDialog extends JDialog implements PropertyChangeListener {
 	}    
 	
 	
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
-
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
-            }
-
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-            	editedUnset.setVar(varField.getText());
+    
+       protected void validateInput() {
+               testingUnset.setVar(varField.getText());
             	String regex = "[0-9]";
             	Pattern pattern = Pattern.compile(regex);
             	String target = "";
-            	if (editedUnset.getVar().length() >= 1)
-            		target += editedUnset.getVar().charAt(0);
+            	if (testingUnset.getVar().length() >= 1)
+            		target += testingUnset.getVar().charAt(0);
             	Matcher matcher = pattern.matcher(target);
-                if (!editedUnset.isValid()) { //need valid unset - var required field and NCName
-                	if (editedUnset.getVar().length() <= 0) {
+                if (!testingUnset.isValid()) { //need valid unset - var required field and NCName
+                	if (testingUnset.getVar().length() <= 0) {
                     	label2.setForeground(Color.red);
                     	label2.setText("* required");
                 	}
@@ -139,22 +92,19 @@ public class UnsetDialog extends JDialog implements PropertyChangeListener {
                     	label2.setForeground(Color.red);
                     	label2.setText("* invalid");
                 	}
-                	return;
+                } else {
+                    Unset u = getUnset();
+                    u.setVar(varField.getText());
+                    accept();
                 }
-                resetAndHide();
-            } else { //user closed dialog or clicked cancel
-                resetAndHide();
-                editedUnset = null;
-            }
-        }
-    }
+       }
     
-    public void resetAndHide() {
-        setVisible(false);        
+    protected void resetWarnings() {
+        label2.setText("");       
     } 
     
-    public Unset getEditedUnset() {
-        return editedUnset;
+    public Unset getUnset() {
+        return (Unset)getTheBean();
     }    
     
 }

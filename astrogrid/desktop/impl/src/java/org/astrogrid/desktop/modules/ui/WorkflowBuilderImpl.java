@@ -76,6 +76,7 @@ import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
 import org.astrogrid.desktop.modules.dialogs.UnsetDialog;
 import org.astrogrid.desktop.modules.dialogs.WhileDialog;
 import org.astrogrid.desktop.modules.dialogs.WorkflowDetailsDialog;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.WorkflowDnDTree;
 import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.listeners.WastebinDropListener;
@@ -269,8 +270,6 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     private JScrollPane listView = null;
     private URL helpUrl;
     private int caretPos = 0;
-    private Configuration conf;
-    private Registry reg; 
     private StatusBar statusBar = null;
 	
     /** 
@@ -279,17 +278,16 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
      * 
      * */
     public WorkflowBuilderImpl(ApplicationsInternal apps, JobsInternal jobs,JobMonitor monitor,  MyspaceInternal vos, BrowserControl browser,
-            ToolEditorInternal toolEditor,UIInternal ui, HelpServer hs, Configuration conf,ResourceChooserInternal chooser, Registry reg) throws Exception {
+            ToolEditorInternal toolEditor,ResourceChooserInternal chooser
+             ,UIInternal ui, HelpServerInternal hs, Configuration conf) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.vos = vos;
-        this.chooser = chooser;
         this.monitor = monitor;
         this.apps = apps;
         this.jobs = jobs;
+        this.chooser = chooser;
         this.toolEditor = toolEditor;
-        this.conf = conf;
-        this.reg = reg;
         initialize();
         
     }   
@@ -303,7 +301,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 
 		this.setTitle("Workflow Builder");
 		this.setJMenuBar(getJJMenuBar());	
-			
+        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.workflowBuilder");  			
 		tabbedPaneWF = new JTabbedPane();		
 		tabbedPaneWF.addTab ("Tree View", IconHelper.loadIcon("wf_small.gif"), getTabbedTreePanel(), "Display workflow graphically");
 		tabbedPaneWF.setMnemonicAt(0,KeyEvent.VK_T);
@@ -328,7 +326,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        }
 	    });
 			
-		JPanel pane = getMainPanel();
+		JPanel pane = getJContentPane();
 		pane.add(tabbedPaneWF, BorderLayout.CENTER);
 		pane.add(getToolbar(), BorderLayout.NORTH);
 		
@@ -354,7 +352,6 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         fileMenu.add(closeAction);
         
         pane.add(getActivityList(),BorderLayout.WEST);
-        pane.add(getStatusBar(), java.awt.BorderLayout.SOUTH);
 		this.setContentPane(pane);
 		pack();
 		createAction.actionPerformed(null); // fire the create action to initialize everything.
@@ -406,30 +403,17 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		}
 		return toolbar;
 	}
-	/**
-	 * This method initializes statusBar	
-	 * 	
-	 * @return com.l2fprod.common.swing.StatusBar	
-	 */    
-	private StatusBar getStatusBar() {
-		if (statusBar == null) {
-			statusBar = new StatusBar();
-            statusBar.addZone("status",getStatusLabel(),"*");
+    /** extend the existing status bar */
+	protected StatusBar getBottomPanel() {
+        if (statusBar == null) { // hasn't been accessed yet
+            statusBar = super.getBottomPanel();
             statusBar.addZone("wastebin",getWasteBin(),"29");
             statusBar.addZone("workflowStatus",getWorkflowStatus(),"27");
-            statusBar.addZone("spacer",new JLabel(""),"0");
-		}
-		return statusBar;
-	}
-    private JLabel getStatusLabel() {
-        if (statusLabel == null) {
-            statusLabel = new JLabel();
-            statusLabel.setText("");
-            statusLabel.setForeground(java.awt.SystemColor.activeCaption);
-            statusLabel.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 10));
         }
-        return statusLabel;
-    }
+        return statusBar;
+	}
+    
+   
 	/**
 	 * This method initializes jLabel	
 	 * 	
@@ -519,42 +503,27 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                 	setStatusMessage("");
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
                     Object o = node.getUserObject();
-                    if (o instanceof String) {
-                        getScriptDialog().setText(tree.getLastSelectedPathComponent().toString());
+                    
+                    if (o instanceof String) {                        
                         DefaultMutableTreeNode scriptNode = (DefaultMutableTreeNode)node.getParent();
-                        if (scriptNode.getUserObject() instanceof Script) { // should be as String is script body
-                        	getScriptDialog().setDescription(((Script)scriptNode.getUserObject()).getDescription());
+                        if (scriptNode.getUserObject() instanceof Script) { // expected to be true always - should be as String is script body
+                            Script newScript = showScriptDialog((Script)scriptNode.getUserObject()).getScript();
+                            if (newScript != null) {
+                                getModel().nodeChanged(scriptNode);
+                                node.setUserObject(newScript.getBody());
+                                getModel().nodeChanged(node);
+                            }
                         }                        
-                        getScriptDialog().setVisible(true);
-                        String edit = getScriptDialog().getEditedScript();
-                        String desc = getScriptDialog().getDescription();
-                        if (edit != null && desc != null) {
-                            node.setUserObject(edit);
-                            getModel().nodeChanged(node); // script body may have changed
-                            DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
-                            Script sc = (Script)parentNode.getUserObject();
-                            sc.setBody(edit);
-                            sc.setDescription(desc);
-                            parentNode.setUserObject(sc);
-                            getModel().nodeChanged(parentNode); // script desc may also have changed, attribute of parent node
-                        }
                     } 
-                    if (o instanceof Script) {
-                        getScriptDialog().setText(((Script)o).getBody());
-                        getScriptDialog().setDescription(((Script)o).getDescription());
-                        getScriptDialog().setVisible(true);
-                        String edit = getScriptDialog().getEditedScript();
-                        String desc = getScriptDialog().getDescription();
-                        if (edit != null && desc != null) {
-                            Script sc = (Script)node.getUserObject();
-                            sc.setBody(edit);
-                            sc.setDescription(desc);
-                            node.setUserObject(sc);
-                            getModel().nodeChanged(node); // Script desc may have changed
+                    else if (o instanceof Script) {
+                        Script newScript = showScriptDialog((Script)o).getScript();
+                        if (newScript != null) {
+                            System.err.println(newScript.getBody());
+                            getModel().nodeChanged(node);
                             DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)node.getFirstChild();
-                            childNode.setUserObject(edit);
-                            getModel().nodeChanged(childNode); // May also have changed body
-                        }
+                            childNode.setUserObject(newScript.getBody());
+                            getModel().nodeChanged(childNode);
+                        }                                   
                     }                    
                     else if (o instanceof Tool ) {
                       try {
@@ -571,91 +540,74 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                         }
                     } 
                     else if (o instanceof Step) {
-                    	Step newStep = getStepDialog((Step)o).getEditedStep();
-                    	stepDialog = null;
-                    try {
-                    	if (newStep != null) {
-                    		RegistryChooserDialog registryChooser = getRegistryChooserDialog();
-                    		registryChooser.setVisible(true);
-                    		ResourceInformation[] resourceInformation = registryChooser.getSelectedResources();
-                    		if (resourceInformation != null && resourceInformation.length >0) {
-                    			ResourceInformation res = resourceInformation[0]; // only returning single entries
-                    			ApplicationInformation applicationInfo = apps.getApplicationInformation(res.getId());
-                    			Tool t = apps.createTemplateTool("default",applicationInfo);
-                    			if (t != null) {
-                    				Tool newTool = toolEditor.editTool(t,WorkflowBuilderImpl.this); 
-                    				newStep.setTool(newTool);
-                    				DefaultMutableTreeNode childNode = new DefaultMutableTreeNode();
-                    				childNode.setUserObject(newTool);
-                    				node.add(childNode);
-                    				getModel().nodeChanged(childNode);
-                    			}
-                    		}
+                        
+                    	Step newStep = showStepDialog((Step)o).getStep();
+                    	if (newStep != null && newStep.getTool() == null) { // no tool selected yet.
+                            try {
+                            Tool newTool = toolEditor.selectAndBuildTool(WorkflowBuilderImpl.this);
+                    		newStep.setTool(newTool);
+                    		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode();
+                    		childNode.setUserObject(newTool);
+                    		node.add(childNode);
+                    		getModel().nodeChanged(childNode);
+                            } catch (ACRException e) {
+                                showError("Failed to edit tool",e);
+                            }
+                    	}
                     	node.setUserObject(newStep);
-                    	getModel().nodeChanged(node);
-                    	registryChooser = null;                    	
-                    	}                    	
-                    
-                    } catch (Exception e) { //(ACRException e) {
-                        showError("Failed to edit tool",e);
-                    }
+                    	getModel().nodeChanged(node);      	                    	                    
                     }
                     else if (o instanceof If) {
-                    	If newIf = getIfDialog((If)o).getEditedIf();
+                    	If newIf = showIfDialog((If)o).getIf();
                     	if (newIf != null) {
-                    		node.setUserObject(newIf);
+                            // aleady here - it's an alias
+                    		//node.setUserObject(newIf);
                     		getModel().nodeChanged(node);
                     	}
-                    	ifDialog = null;
                     }
                     else if (o instanceof Set) {
-                    	Set newSet = getSetDialog((Set)o).getEditedSet();
+                    	Set newSet = showSetDialog((Set)o).getSet();
                     	if (newSet != null) {
-                        	node.setUserObject(newSet);
+                        	//node.setUserObject(newSet);
                         	getModel().nodeChanged(node);
                     	} 
-                    	setDialog = null;
                     }
                     else if (o instanceof Unset) {
-                    	Unset newUnset = getUnsetDialog((Unset)o).getEditedUnset();
+                    	Unset newUnset = showUnsetDialog((Unset)o).getUnset();
                     	if (newUnset != null) {
-                    		node.setUserObject(newUnset);
+                    		//node.setUserObject(newUnset);
                     		getModel().nodeChanged(node);
                     	}                    	
-                    	unsetDialog = null;
                     }
                     else if (o instanceof For) {
-                    	For newFor = getForDialog((For)o).getEditedFor();
+                    	For newFor = showForDialog((For)o).getFor();
                     	if (newFor != null) {
-                    		node.setUserObject(newFor);
+                    		//node.setUserObject(newFor);
                     		getModel().nodeChanged(node);
                     	}                    	
-                    	forDialog = null;
                     }
                     else if (o instanceof Parfor) {
-                    	Parfor newParfor = getParforDialog((Parfor)o).getEditedParfor();
+                    	Parfor newParfor = showParforDialog((Parfor)o).getParfor();
                     	if (newParfor != null) {
-                        	node.setUserObject(newParfor);
+                        	//node.setUserObject(newParfor);
                         	getModel().nodeChanged(node);
                     	}
-                    	parforDialog = null;
                     }                    
                     else if (o instanceof While) {
-                    	While newWhile = getWhileDialog((While)o).getEditableWhile();
+                    	While newWhile = showWhileDialog((While)o).getWhile();
                     	if (newWhile != null) {
-                        	node.setUserObject(newWhile);
+                        	//node.setUserObject(newWhile);
                         	getModel().nodeChanged(node);
                     	}
-                    	whileDialog = null;
                     }                    
                     else if (o instanceof Workflow) {
-                    	Workflow newWorkflow = getWorkflowDetailsDialog((Workflow)o).getEditableWorkflow();
+                    	Workflow newWorkflow = showWorkflowDetailsDialog((Workflow)o).getWorkflow();
                     	if (newWorkflow != null) {
-                    		node.setUserObject(newWorkflow);
+                    		//node.setUserObject(newWorkflow);
                     		getModel().nodeChanged(node);                    		
                     	}
                     	tree.expandAll(true); // nodeChanged will focus to root, so expand again
-                    	workflowDialog = null;
+
                     }
                     else if (o instanceof Sequence || 
                     		 o instanceof Flow || 
@@ -672,83 +624,92 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     }
  
     private ForDialog forDialog;
-    private ForDialog getForDialog(For f) {
+    private ForDialog showForDialog(For f) {
         if (forDialog == null) {
-            forDialog = new ForDialog(this, f);
+            forDialog = new ForDialog(this);
         }
+        forDialog.setFor(f);
+        forDialog.setVisible(true);
         return forDialog;
     }
     
     private IfDialog ifDialog;
-    private IfDialog getIfDialog(If i) {
+    private IfDialog showIfDialog(If i) {
         if (ifDialog == null) {
-            ifDialog = new IfDialog(this, i);
+            ifDialog = new IfDialog(this);
         }
+        ifDialog.setIf(i);
+        ifDialog.setVisible(true);
         return ifDialog;
     }    
     
     private ParforDialog parforDialog;
-    private ParforDialog getParforDialog(Parfor p) {
+    private ParforDialog showParforDialog(Parfor p) {
         if (parforDialog == null) {
-            parforDialog = new ParforDialog(this, p);
+            parforDialog = new ParforDialog(this);
         }
+        parforDialog.setParfor(p);
+        parforDialog.setVisible(true);
         return parforDialog;
     }    
 
-    private RegistryChooserDialog registryDialog;
-    private RegistryChooserDialog getRegistryChooserDialog() {
-        if (registryDialog == null) {
-        	registryDialog = new RegistryChooserDialog(WorkflowBuilderImpl.this, conf, help, ui, reg);
-        	registryDialog.setMultipleResources(false);
-        }
-        return registryDialog;
-    }
-    
     private ScriptDialog scriptDialog;
-    private ScriptDialog getScriptDialog() {
+    private ScriptDialog showScriptDialog(Script s) {
         if (scriptDialog == null) {
             scriptDialog = new ScriptDialog(this);
         }
+        scriptDialog.setScript(s);
+        scriptDialog.setVisible(true);
         return scriptDialog;
     }    
     
     private SetDialog setDialog;
-    private SetDialog getSetDialog(Set s) {
+    private SetDialog showSetDialog(Set s) {
         if (setDialog == null) {
-            setDialog = new SetDialog(this, s);
+            setDialog = new SetDialog(this);
         }
+        setDialog.setSet(s);
+        setDialog.setVisible(true);
         return setDialog;
     }
     
     private StepDialog stepDialog;
-    private StepDialog getStepDialog(Step s) {
+    private StepDialog showStepDialog(Step s) {
         if (stepDialog == null) {
-            stepDialog = new StepDialog(this, s);
+            stepDialog = new StepDialog(this);
         }
+        stepDialog.setStep(s);
+        stepDialog.setVisible(true);
         return stepDialog;
     }    
     
     private UnsetDialog unsetDialog;
-    private UnsetDialog getUnsetDialog(Unset u) {
+    private UnsetDialog showUnsetDialog(Unset u) {
         if (unsetDialog == null) {
-            unsetDialog = new UnsetDialog(this, u);
+            unsetDialog = new UnsetDialog(this);
         }
+        unsetDialog.setUnset(u);
+        unsetDialog.setVisible(true);
         return unsetDialog;
     }  
     
     private WhileDialog whileDialog;
-    private WhileDialog getWhileDialog(While w) {
+    private WhileDialog showWhileDialog(While w) {
         if (whileDialog == null) {
-            whileDialog = new WhileDialog(this, w);
+            whileDialog = new WhileDialog(this);
         }
+        whileDialog.setWhile(w);
+        whileDialog.setVisible(true);
         return whileDialog;
     }    
     
     private WorkflowDetailsDialog workflowDialog;
-    private WorkflowDetailsDialog getWorkflowDetailsDialog(Workflow w) {
+    private WorkflowDetailsDialog showWorkflowDetailsDialog(Workflow w) {
         if (workflowDialog == null) {
-        	workflowDialog = new WorkflowDetailsDialog(this, w);
+        	workflowDialog = new WorkflowDetailsDialog(this);
         }
+        workflowDialog.setWorkflow(w);
+        workflowDialog.setVisible(true);
         return workflowDialog;
     }    
     
@@ -839,14 +800,5 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		}
 	}
 	   
-    /**
-     * @see org.astrogrid.acr.system.UI#setStatusMessage(java.lang.String)
-     */
-    public void setStatusMessage(final String msg) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                getStatusLabel().setText(msg);
-            }
-        });
-    }  
+
 } 

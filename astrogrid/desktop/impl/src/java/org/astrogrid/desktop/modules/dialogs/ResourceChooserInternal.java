@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserInternal.java,v 1.3 2005/10/07 12:12:21 KevinBenson Exp $
+/*$Id: ResourceChooserInternal.java,v 1.4 2005/10/12 13:30:10 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,12 @@ public interface ResourceChooserInternal extends ResourceChooser {
 
 /* 
 $Log: ResourceChooserInternal.java,v $
+Revision 1.4  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.1.16.1  2005/10/10 18:12:37  nw
+merged kev's datascope lite.
+
 Revision 1.3  2005/10/07 12:12:21  KevinBenson
 resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
 And then put back the older one.

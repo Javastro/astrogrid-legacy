@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.3 2005/10/12 13:30:10 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,39 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.acr.system.HelpServer;
 
 import org.picocontainer.Startable;
 
-import com.jstatcom.component.JHelpAction;
+import acrjavahelp.ACRJavaHelpResourceAnchor;
 
+import java.awt.Component;
+import java.awt.MenuItem;
+import java.awt.event.ActionListener;
+import java.net.URL;
+
+
+import javax.help.CSH;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import javax.help.InvalidHelpSetContextException;
+import javax.help.Map;
 import javax.help.SwingHelpUtilities;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 
-/** Stub Implementation of the help server.
- * @todo refine, and write help docs.
+/** Implementation of the help server.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
  *
  */
-public class HelpServerImpl implements Startable, HelpServer{
+public class HelpServerImpl implements Startable, HelpServerInternal{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(HelpServerImpl.class);
 
     /** Construct a new HelpServerImpl
      * 
@@ -32,7 +50,6 @@ public class HelpServerImpl implements Startable, HelpServer{
     public HelpServerImpl() {
         super();
     }
-    private static String HELPSET_PATH = "/helpset/desktop-helpset.xml";
     /** loads the helpset in a background thread.
      * @see org.picocontainer.Startable#start()
      */
@@ -43,8 +60,28 @@ public class HelpServerImpl implements Startable, HelpServer{
             SwingHelpUtilities.setContentViewerUI
                 ("javax.help.plaf.basic.BasicNativeContentViewerUI");
         }
-        JHelpAction.startHelpWorker(HELPSET_PATH);
+ 
+        ClassLoader cl = this.getClass().getClassLoader();
+        try {
+            URL u = HelpSet.findHelpSet(cl,"javahelp/workbench-helpset.hs");
+            hs = new HelpSet(null, u);
+            broker = hs.createHelpBroker();
+        } catch (Exception e) {
+            logger.error("Failed to load helpset",e);
+        }
+        
+        cl = ACRJavaHelpResourceAnchor.class.getClassLoader();
+        try {
+            URL u = HelpSet.findHelpSet(cl,"acrjavahelp/jhelp.hs");
+            HelpSet subsid = new HelpSet(cl,u);
+            hs.add(subsid);
+        } catch (Exception e) {
+            logger.error("Failed to load subsidiary helpset",e);
+        }
     }
+    
+    protected HelpBroker broker;
+    protected HelpSet hs;
 
     /**
      * @see org.picocontainer.Startable#stop()
@@ -54,35 +91,61 @@ public class HelpServerImpl implements Startable, HelpServer{
     
     
     public void showHelp() {
-        JHelpAction.showHelp();
+        Map.ID home = hs.getHomeID();
+        try {
+            broker.setCurrentID(home);
+        } catch (InvalidHelpSetContextException e) {
+            logger.warn("InvalidHelpSetContextException",e);
+        }
+        broker.setDisplayed(true);
     }
     
     public void showHelpForTarget(String target) {
-        JHelpAction.showHelp(target);
-    }
-    
-    public void showHelpFromFocus() {
-        JHelpAction.showHelpFromFocus();
-    }
-    
-    public void trackFieldHelp() {
-        JHelpAction.trackFieldHelp();
+        broker.setCurrentID(target);
+        broker.setDisplayed(true);
     }
 
+    public void enableHelpKey(Component comp, String defaultHelpId) {
+        broker.enableHelpKey(comp,defaultHelpId,null);
+    }
  
-    public Action getShowHelpForTargetInstance(String target) {
-        return JHelpAction.getShowHelpInstance(target);
+    public void enableHelp(Component comp, String helpId) {
+        broker.enableHelp(comp,helpId,null);
+    }
+
+    public void enableHelp(MenuItem comp, String helpId) {
+        broker.enableHelp(comp,helpId,null);        
+    }
+  
+    public void enableHelpOnButton(AbstractButton b, String helpId) {
+        broker.enableHelp(b,helpId,null);
+    }
+   
+    public void enableHelpOnButton(MenuItem b, String helpId) {
+        broker.enableHelp(b,helpId,null);        
+    }
+
+    public ActionListener createContextSensitiveHelpListener() {
+        return new CSH.DisplayHelpAfterTracking(broker); // wonder whether we can reuse a single instance of this??
     }
     
-    public Action getShowIDInstance(String actionName, String helpId) {
-        return JHelpAction.getShowIDInstance(actionName,helpId);
-    }
+    
     
 }
 
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.3  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.2.10.2  2005/10/12 09:21:38  nw
+added java help system
+
+Revision 1.2.10.1  2005/10/10 16:24:29  nw
+reviewed phils workflow builder
+skeletal javahelp
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

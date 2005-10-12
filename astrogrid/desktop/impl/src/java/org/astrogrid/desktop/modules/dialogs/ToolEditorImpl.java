@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.4 2005/09/12 15:21:16 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.5 2005/10/12 13:30:10 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -51,7 +52,7 @@ public class ToolEditorImpl implements ToolEditorInternal {
     /** Construct a new ToolEditorImpl
      * 
      */
-    public ToolEditorImpl( PicoContainer pico, Configuration conf, HelpServer help, UIInternal ui, Applications apps, MyspaceInternal myspace) {
+    public ToolEditorImpl( PicoContainer pico, Configuration conf, HelpServerInternal help, UIInternal ui, Applications apps, MyspaceInternal myspace) {
         super();
         dialog = new ToolEditorDialog(pico, conf,help,ui);
         dialog.setSize(500,600);
@@ -194,6 +195,12 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.5  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.4.6.1  2005/10/12 09:21:38  nw
+added java help system
+
 Revision 1.4  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

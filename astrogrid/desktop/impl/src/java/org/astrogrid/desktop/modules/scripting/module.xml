@@ -5,10 +5,12 @@
 		<property>
 			<key>system.ui.menu.links</key>			
 			<value>		
-				<link text="Astronomy Client Runtime - Documentation"
-					icon="info_obj.gif"
-					tooltipText="Description of the Astronomy Client Runtime (ACR), how to connect to it, and the operations it provides"
-					url="http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html" />				
+				<helpLink text="ACR Introduction" id="acr"
+					tooltipText="Defintion of the  Astronomy Client Runtime (ACR), how to connect to it, and the operations it provides"
+					/>
+				<helpLink text="ACR Reference" id="overview"
+					tooltipText="API documentation - lists available methods, gives examples of their use"/>
+					
 				<link text="Download ACR Library and Documentation"
 					icon="source_java.png"
 					tooltipText="Call ACR from java using JavaRMI"

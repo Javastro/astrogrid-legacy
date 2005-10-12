@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.4 2005/10/05 11:52:32 nw Exp $
+/*$Id: UIImpl.java,v 1.5 2005/10/12 13:30:10 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,6 +36,7 @@ import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.apache.commons.digester.Digester;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.picocontainer.Startable;
@@ -92,7 +93,7 @@ import javax.swing.WindowConstants;
 /**Implementation of the UI component
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
-public class UIImpl extends PositionRememberingJFrame implements Startable,UIInternal,InvocationHandler {
+public class UIImpl extends UIComponent implements Startable,UIInternal,InvocationHandler {
 
     /**
      * Commons Logger for this class
@@ -113,16 +114,10 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 	private JLabel throbberLabel = null;  //  @jve:decl-index=0:visual-constraint="567,77"
     private JMenuItem helpContentsMenuItem = null;
 
-    /** development - only constrcutor */
-    public UIImpl() {
-        this.browser=null;
-        this.shutdown = null;
-        this.reg = null;
-        this.confInternal = null;
-    }
+
     
     /** this is the production constructor */
-    public UIImpl(BrowserControl browser,MutableACR reg, Shutdown sh, ConfigurationInternal conf, HelpServer help) {     
+    public UIImpl(BrowserControl browser,MutableACR reg, Shutdown sh, ConfigurationInternal conf, HelpServerInternal help) {     
         super(conf,help,null);
         this.confInternal = conf;
         this.browser = browser;
@@ -146,7 +141,10 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 	private void initialize() {
 		this.setJMenuBar(getAppMenuBar());
 		this.setSize(500, 600);
-		this.setContentPane(getJContentPane());
+        JPanel main = getJContentPane();
+        main.add(getJSplitPane(), java.awt.BorderLayout.CENTER);    
+		this.setContentPane(main);
+        getHelpServer().enableHelpKey(this.getRootPane(),"system.ui");          
 		this.setTitle("Astrogrid Workbench");
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
@@ -160,32 +158,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
             }
         });
     }
-	/**
-	 * This method initializes jContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private javax.swing.JPanel getJContentPane() {
-		if(jContentPane == null) {
-			jContentPane = new javax.swing.JPanel();
-			jContentPane.setLayout(new java.awt.BorderLayout());
-			jContentPane.add(getStatusBar(), java.awt.BorderLayout.SOUTH);
-			jContentPane.add(new JScrollPane(getButtonBar()), java.awt.BorderLayout.WEST);
-			jContentPane.add(getJSplitPane(), java.awt.BorderLayout.CENTER);
-		}
-		return jContentPane;
-	}
-    
-    private JLabel getStatusLabel() {
-        if (statusLabel == null) {
-            statusLabel = new JLabel();
-            statusLabel.setText("");
-            statusLabel.setForeground(java.awt.SystemColor.activeCaption);
-            statusLabel.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 10));
-        }
-        return statusLabel;
-    }
-    
+
     private JLabel getThrobberLabel() {
         if (throbberLabel == null) {
             throbberLabel = new JLabel();
@@ -193,7 +166,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
             throbberLabel.setIcon(IconHelper.loadIcon("flashpoint.gif"));
             throbberLabel.setDisabledIcon(IconHelper.loadIcon("sleeping.gif"));            
             throbberLabel.setEnabled(false);            
-            throbberLabel.setToolTipText("When active, communicating with astrogrid servers");
+            throbberLabel.setToolTipText("When active, something is communicating with VO services");
         }
         return throbberLabel;
     }
@@ -259,7 +232,6 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 			helpMenu = new JMenu();
 			helpMenu.setName("");
 			helpMenu.setText("Help");
-			helpMenu.add(getAgOverviewMenuItem());
             helpMenu.add(getHelpContentsMenuItem());
             helpMenu.add(getReportBugMenuItem());
             helpMenu.add(new JSeparator());
@@ -298,28 +270,6 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         }
         return resetMenuItem;
     }
-
-	/**
-	 * This method initializes jMenuItem2	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */    
-	private JMenuItem getAgOverviewMenuItem() {
-		if (agOverviewMenuItem == null) {
-			agOverviewMenuItem = new JMenuItem();
-			agOverviewMenuItem.setText("Astrogrid Overview");
-			agOverviewMenuItem.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-                    try {                        
-                        browser.openURL(new URL("http://www.astrogrid.org"));
-                    } catch (Exception ex) {
-                        logger.error(e);
-                    }
-				}
-			});
-		}
-		return agOverviewMenuItem;
-	}
     
     private JMenuItem getReportBugMenuItem() {
         if (reportBugMenuItem == null) {
@@ -342,7 +292,6 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         if (helpContentsMenuItem == null) {
             helpContentsMenuItem = new JMenuItem();
             helpContentsMenuItem.setText("Help Contents");
-            helpContentsMenuItem.setEnabled(false);
             helpContentsMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     help.showHelp();
@@ -474,7 +423,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
      * @author Noel Winstanley nw@jb.man.ac.uk 09-May-2005
      *
      */
-    public static class ModulesUIModel  extends Observable implements NewModuleListener {
+    public class ModulesUIModel  extends Observable implements NewModuleListener {
 
         private class MUMItem {
             public final int priority;
@@ -539,12 +488,17 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
             JTaskPaneGroup g = new JTaskPaneGroup();
             g.setText(cd.getUIName());
             g.setToolTipText(cd.getDescription());
+            getHelpServer().enableHelp(g,mungeInterfaceToHelpKey(cd.getInterfaceClass()));
             String icon = cd.getProperty("icon");
             g.setExpanded(false);        
             if (icon != null) {
                 g.setIcon(IconHelper.loadIcon(icon));
             }
             return g;
+        }
+        
+        private String mungeInterfaceToHelpKey(Class iface) {
+            return iface.getName().replace('.','_') + ".html";
         }
                 
         
@@ -592,6 +546,15 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
             });
             addSetProperties("*/localLink");
             addSetNext("*/localLink","add");
+            
+            addFactoryCreate("*/helpLink",new AbstractObjectCreationFactory() {
+                public Object createObject(Attributes arg0) throws Exception {
+                    return new HelpLinkAction();
+                }
+            });
+            addSetProperties("*/helpLink");
+            addSetNext("*/helpLink","add");
+               
         }};
         
         /** class used to model a menu item that links to a local url */
@@ -617,6 +580,29 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
                         } catch (Exception ex) {
                             logger.error(ex);
                         }         
+            }
+        }
+        
+        /** class used to model a menu item that links to a help entry */
+        public class HelpLinkAction extends AbstractAction {
+            { setIcon("help.gif");
+              setText("Help..");
+            }
+            public void setText(String text) {
+                putValue(Action.NAME,text);
+            }
+            public void setIcon(String icon) {
+                putValue(Action.SMALL_ICON,IconHelper.loadIcon(icon));
+            }
+            public void setToolTipText(String tt) {
+                putValue(Action.SHORT_DESCRIPTION,tt);                   
+            }
+            private String id;
+            public void setId(String id) {
+                this.id = id.trim();
+            }
+            public void actionPerformed(ActionEvent e) {
+                getHelpServer().showHelpForTarget(id);
             }
         }
         /** class used to model a menu item that links to aremote url */
@@ -745,6 +731,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         public ModuleButton(final ModuleDescriptor md) {
             this.setToolTipText(md.getDescription());
             this.setText(md.getUIName());
+            maybeRegisterHelpId(md);
             String icon = md.getProperty("icon");
             if (icon != null) {
                 this.setIcon(IconHelper.loadIcon(icon));
@@ -762,6 +749,17 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
                     }
                 }
             });
+        }
+        private void maybeRegisterHelpId(ModuleDescriptor md) {
+            Iterator i = md.componentIterator();
+            if (!i.hasNext()) { // no components, so no javadoc.                
+                return;
+            }
+            ComponentDescriptor cd = (ComponentDescriptor) i.next();
+            String ifaceName = cd.getInterfaceClass().getName();
+            String packageName = StringUtils.substringBeforeLast(ifaceName,".");
+            String id =  packageName.replace('.','_') + "_package-summary.html";
+            getHelpServer().enableHelp(this,id);
         }
     }
     
@@ -803,7 +801,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
     public void setStatusMessage(final String msg) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                getStatusLabel().setText(msg);
+                UIImpl.super.setStatusMessage(msg);
             }
         });
     }
@@ -843,20 +841,9 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         worker.start();                                  
     }
     
-    /**
-     * @param s
-     * @throws HeadlessException
-     */
-    private void showError(String s) throws HeadlessException {
-        JOptionPane.showMessageDialog(this,s,"Error",JOptionPane.ERROR_MESSAGE);
-    }
-    
-    private void showError(String s,Throwable t) {
-        UIComponent.showError(this,s,t);
-    }
-
-    class InvokerWorker extends SwingWorker {
+    class InvokerWorker extends BackgroundOperation {
         public InvokerWorker(Object component,MethodDescriptor md, String[] args) {
+            super("Running " + md.getUIName());
             this.component = component;
             this.strArgs = args;
             this.md= md;
@@ -888,9 +875,7 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         
         /** configuration key that indicates that the result of a call to a method should be displayed in the browser */
         public static final String DISPLAY_RESULT_BROWSER_KEY  = "system.ui.result.browser";
-        protected void finished() {
-                try {
-                Object r = get();
+        protected void doFinished(Object r) {
                 if (r != null) {
                     String s = md.getProperty(DISPLAY_RESULT_BROWSER_KEY) ;
                     if (s != null && s.trim().equals("true")) {
@@ -905,23 +890,11 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
                             showError("Could not display result in browser",e1);                                    
                         }
                         
-                    } else {
-                  //  JOptionPane.showMessageDialog(UIImpl.this,r,"Result",JOptionPane.INFORMATION_MESSAGE);
+                    } else {                  
                         ResultDialog rd = new ResultDialog(UIImpl.this,r);
                         rd.show();
                     }
-                }
-                } catch (InterruptedException ex) {
-                    logger.info("Method interrupted",ex);
-                    showError("Method was interrupted, or timed out\n");
-                } catch (InvocationTargetException e) {
-                    Throwable ex = e;
-                    do {
-                        ex = ex.getCause() == null ? ex : ex.getCause();
-                    } while (ex instanceof InvocationTargetException && ex.getCause() != null);
-                    logger.warn("Exception executing method",ex);
-                    showError("Exception when executing method\n",ex);                          
-                }
+                }    
          }
         
     }
@@ -972,14 +945,11 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
         return this;
     }    
 	/**
-	 * This method initializes statusBar	
-	 * 	
-	 * @return com.l2fprod.common.swing.StatusBar	
+	 * overridden method - add extra display components.
 	 */    
-	private StatusBar getStatusBar() {
+	protected StatusBar getBottomPanel() {
 		if (statusBar == null) {
-			statusBar = new StatusBar();
-            statusBar.addZone("status",getStatusLabel(),"*");
+			statusBar = super.getBottomPanel();
             statusBar.addZone("login",getLoginLabel(),"18");
             statusBar.addZone("throbber",getThrobberLabel(),"26");
 		}
@@ -1083,6 +1053,16 @@ public class UIImpl extends PositionRememberingJFrame implements Startable,UIInt
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.5  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.3.16.2  2005/10/12 09:21:38  nw
+added java help system
+
+Revision 1.3.16.1  2005/10/10 16:24:29  nw
+reviewed phils workflow builder
+skeletal javahelp
+
 Revision 1.4  2005/10/05 11:52:32  nw
 hide module buttons on startup
 

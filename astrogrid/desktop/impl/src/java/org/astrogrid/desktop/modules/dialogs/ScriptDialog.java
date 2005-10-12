@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import org.astrogrid.workflow.beans.v1.Script;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,31 +38,31 @@ import jedit.SyntaxDocument;
  * 
  *@modified nww - display results in a jedit box - gives syntax coloring. rewrittn to use joptionpane.
  */
-public class ScriptDialog extends JDialog implements PropertyChangeListener {
-    private JOptionPane jOptionPane;
-	private JEditTextArea resultDisplay = null;
-	private JPanel displayPanel = null;
+public class ScriptDialog extends BaseBeanEditorDialog {
+	private JEditTextArea scriptField;
+	private JPanel displayPanel;
 	private JTextField descField;
 	/**
 	 * This method initializes jTextArea	
 	 * 	
 	 * @return javax.swing.JTextArea	
 	 */    
-	private JEditTextArea getResultDisplay() {
-		if (resultDisplay == null) {
-			resultDisplay = new JEditTextArea();
-            resultDisplay.setDocument(new SyntaxDocument()); // prevents aliasing between jeditors.
-            resultDisplay.setTokenMarker(new JavaTokenMarker());
-            resultDisplay.setEditable(true);
+	private JEditTextArea getScriptField() {
+		if (scriptField == null) {
+			scriptField = new JEditTextArea();
+            scriptField.setDocument(new SyntaxDocument()); // prevents aliasing between jeditors.
+            scriptField.setTokenMarker(new JavaTokenMarker());
+            scriptField.setEditable(true);
 		}
-		return resultDisplay;
+		return scriptField;
 	}
 	
 	public JPanel getDisplayPanel() {
 		if (displayPanel == null) {
 			displayPanel = new JPanel();
-			displayPanel.add(getResultDisplay(), BorderLayout.CENTER);
-			displayPanel.add(getDescriptionPanel(), BorderLayout.SOUTH);
+            displayPanel.setLayout(new BorderLayout());
+			displayPanel.add(getScriptField(), BorderLayout.CENTER);
+			displayPanel.add(getDescriptionPanel(), BorderLayout.NORTH);
 		}
 		return displayPanel;
 	}
@@ -78,91 +80,34 @@ public class ScriptDialog extends JDialog implements PropertyChangeListener {
 
     
     public ScriptDialog(Component parentComponent) {
-        initialize();
-        setLocationRelativeTo(parentComponent);
+        super(parentComponent);
+        this.setTitle("Edit Script");
+        this.setSize(685,570);
+        this.pack();
+        
     }
-    
-    public void setText(String message) {
-        getResultDisplay().setText(message);
-        getResultDisplay().setCaretPosition(0);
-    }
-    
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
 
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
-            }
+    
+    protected void validateInput() {
+        // no validation here at present.
+        Script s = getScript();
+        s.setBody(getScriptField().getText());
+        s.setDescription(descField.getText());
+        accept();
+    }
+    
+    public void setScript(Script s) {
+        setTheBean(s);
+        getScriptField().setText(s.getBody());
+        getScriptField().setCaretPosition(0);
+        descField.setText(s.getDescription());        
+    }
+    
+    public Script getScript() {
+        return (Script)getTheBean();
+    }
 
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
+    
 
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-                editedScript = getResultDisplay().getText();
-                    resetAndHide();                
-            } else { //user closed dialog or clicked cancel           
-                editedScript = null;
-                resetAndHide();
-            }
-        }
-    }
-    
-    public void resetAndHide() {
-        setVisible(false);
-        getResultDisplay().setText("");        
-    }
-    
-    private String editedScript = null;
-    public String getEditedScript() {
-        return editedScript;
-    }
-    
-    public void setDescription(String desc) {
-    	descField.setText(desc);
-    }
-    
-    public String getDescription() {
-    	return descField.getText();
-    }
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setTitle("Edit Script");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
-		this.setSize(685,570);
-		this.setContentPane(getJOptionPane());
-	}
-    
-    private JOptionPane getJOptionPane() {
-        if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-            jOptionPane.addPropertyChangeListener(this);
-        }
-        return jOptionPane;
-    }
 	
 }

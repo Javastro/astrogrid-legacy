@@ -9,12 +9,7 @@
 				icon="logo1.gif"
 				toolTipText="AstroGrid Release Documentation"
 				url="http://software.astrogrid.org" />
-				<!--			
-			<link text="AstroGrid v1 Release Pages"
-				icon="logo1.gif"
-				toolTipText="Wiki Pages of for AstroGrid"
-				url="http://wiki.astrogrid.org/bin/view/Astrogrid/ReleaseV1Pages" />
-				-->
+				<helpLink id="top" />
 		</value>
 		</property>		
 	<property>
@@ -35,14 +30,7 @@
 		<property>
 			<key>system.ui.menu.links</key>
 			<value>		
-				<link text="Solar Movie Maker"
-					icon="info_obj.gif"
-					toolTipText="Description of the parameterized workflow 'solar movie maker'"
-					url="http://wiki.astrogrid.org/bin/view/Astrogrid/MovieMaker"/>
-				<link text="Redshift Maker"
-					icon="info_obj.gif"
-					toolTipText="Description of the parameterized workflow 'redshift maker'"
-					url="http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker"/>
+				<helpLink id="userInterface.parameterizedWorkflows" />							
 			</value>
 		</property>
 		<property>
@@ -61,10 +49,17 @@
 			</property>					
 		</method>
 	</component>
+	
 	<component name="registryBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 
 		interfaceClass="org.astrogrid.acr.ui.RegistryBrowser" >
 		<description>View registry entries using a basic browser</description>
+	<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.registryBrowser"	/>				
+			</value>
+		</property>		
 	<property>
 		<key>icon</key>
 		<value>java_lib_obj.gif</value>
@@ -86,10 +81,17 @@
 
 		</method>		
 		</component>
+		
 	<component name="myspaceBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" 
 		interfaceClass="org.astrogrid.acr.ui.MyspaceBrowser" >
 		<description>Work with your files in MySpace</description>
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.myspaceBrowser" />							
+			</value>
+		</property>		
 	<property>
 		<key>icon</key>
 		<value>filenav_nav.gif</value>
@@ -131,11 +133,8 @@
 		<description>Launch CEA Applications</description>
 		<property>
 			<key>system.ui.menu.links</key>
-			<value>					
-				<link text="Application Documentation	"				
-					icon="info_obj.gif"
-					toolTipText="Description of available tools"
-					url="http://wiki.astrogrid.org/bin/view/Astrogrid/ToolDocumentation"/>					
+			<value>		
+				<helpLink id="userInterface.applicationLauncher" />									
 			</value>
 		</property>			
 		<property>
@@ -162,22 +161,19 @@
 	<component name="datascopeLauncher" 
 		implementationClass="org.astrogrid.desktop.modules.ui.DataScopeLauncherImpl" 
 		interfaceClass="org.astrogrid.acr.ui.DataScopeLauncher" >
-		<description>Launch DataScope</description>
+		<description>Launch DataScope</description>	
 		<property>
 			<key>system.ui.menu.links</key>
-			<value>					
-				<link text="Application Documentation	"				
-					icon="info_obj.gif"
-					toolTipText="DataScope"
-					url="http://wiki.astrogrid.org/bin/view/Astrogrid/ToolDocumentation"/>					
+			<value>		
+				<helpLink id="userInterface.datascopeLauncher" />									
 			</value>
 		</property>			
 		<property>
 			<key>icon</key>
-			<value>thread_view.gif</value>
+			<value>thread_view.gif</value><!-- use nvo icon here -->
 		</property>				
 		<method name="show">
-			<description>Run the Launcher GUI </description>
+			<description>Run the Launcher</description>
 			<property>
 				<key>system.ui.menu.entry</key>
 				<value>Run..</value>
@@ -187,6 +183,7 @@
 				</property>					
 			</property>
 		</method>
+		<!-- needed?? -->
 		<method name="hide">
 			<description>Hide the Monitor GUI </description>
 		</method>
@@ -197,6 +194,12 @@
 		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
 		interfaceClass="org.astrogrid.acr.ui.JobMonitor" >
 		<description>View progress of jobs and applications</description>
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.jobMonitor" />									
+			</value>
+		</property>		
 	<property>
 		<key>icon</key>
 		<value>thread_and_monitor_view.gif</value>
@@ -245,6 +248,12 @@
 	  implementationClass="org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl" 
 	  interfaceClass="org.astrogrid.acr.ui.WorkflowBuilder" >
 	  <description>Build workflows (BETA)</description>
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.workflowBuilder" />									
+			</value>
+		</property>	  
 	    <property>
 		  <key>icon</key>
 		  <value>wf_small.gif</value>

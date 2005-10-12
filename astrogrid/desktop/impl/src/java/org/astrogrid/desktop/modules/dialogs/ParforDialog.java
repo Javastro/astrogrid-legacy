@@ -27,58 +27,36 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import org.astrogrid.desktop.modules.ui.SpringLayoutHelper;
+import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.Parfor;
+import org.astrogrid.workflow.beans.v1.Sequence;
 
 /**
  * @author Phil Nicolson pjn3@star.le.ac.uk
  * Simple dialog that displays and 
  * allows entry of Parfor attributes 
  */
-public class ParforDialog extends JDialog implements PropertyChangeListener {
-	private JOptionPane jOptionPane = null;
-	private JPanel displayPanel = null;
+public class ParforDialog extends BaseBeanEditorDialog  {
+    private JPanel displayPanel;
 	private JTextField varField, itemField;
-	private JLabel label1, label2, label3, label4;
-	private Parfor parfor, editedParfor;
+	private JLabel  label3, label4;
+    private final Parfor testingFor;
 
-    public ParforDialog(Component parentComponent, Parfor p) {
-    	parfor = p;
-    	editedParfor = p;
-    	setLocationRelativeTo(parentComponent);
-    	initialize();        
-    }
-	
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
+    public ParforDialog(Component parentComponent) {
+        super(parentComponent);
+        testingFor = new Parfor();
+        testingFor.setActivity(new Sequence());        
 		this.setTitle("Edit Parallel For loop");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
 		this.setSize(375,150);
-		this.setContentPane(getJOptionPane());
-		this.setVisible(true);
+        this.pack();
 	}
-	
-    private JOptionPane getJOptionPane() {
-        if (jOptionPane == null) {
-            jOptionPane = new JOptionPane(getDisplayPanel(),JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-            jOptionPane.addPropertyChangeListener(this);
-        }
-        return jOptionPane;
-    }
+
+    public void setParfor(Parfor f) {
+        setTheBean(f);
+        varField.setText(f == null ? "" : f.getVar());
+        itemField.setText(f == null ? "" : f.getItems());        
+    }       
+        
     
 	public JPanel getDisplayPanel() {
 		if (displayPanel == null) {
@@ -88,10 +66,8 @@ public class ParforDialog extends JDialog implements PropertyChangeListener {
 			JLabel label2 = new JLabel("Items: ", JLabel.TRAILING);
 			varField = new JTextField(20);
 			varField.setEditable(true);
-			varField.setText(parfor.getVar());
 			itemField = new JTextField(20);
 			itemField.setEditable(true);
-			itemField.setText(parfor.getItems());
 			label3 = new JLabel("");
 			label4 = new JLabel("");
 			
@@ -109,68 +85,45 @@ public class ParforDialog extends JDialog implements PropertyChangeListener {
 		return displayPanel;
 	}    
 	
-	
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
-
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
+    protected void validateInput() {
+        testingFor.setVar(varField.getText());
+        testingFor.setItems(itemField.getText());
+        String regex = "[0-9]";
+        Pattern pattern = Pattern.compile(regex);
+        String target = "";
+        if (testingFor.getVar().length() >= 1)
+            target += testingFor.getVar().charAt(0);
+        Matcher matcher = pattern.matcher(target);
+        if ((testingFor.getVar().length() <= 0 || matcher.matches()) ||
+             testingFor.getItems().length() <= 0) {
+            if (testingFor.getVar().length() <= 0) {
+                label3.setForeground(Color.red);
+                label3.setText("* required");
+            } else if (matcher.matches()) {
+                label3.setForeground(Color.red);
+                label3.setText("* invalid");
+            }else {
+                label3.setText("");
             }
-
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-                	editedParfor.setVar(varField.getText());
-                	editedParfor.setItems(itemField.getText());
-                	String regex = "[0-9]";
-                	Pattern pattern = Pattern.compile(regex);
-                	String target = "";
-                	if (editedParfor.getVar().length() >= 1)
-                		target += editedParfor.getVar().charAt(0);
-                	Matcher matcher = pattern.matcher(target);
-                	//need valid parfor - var and items required fields, var field is NCName
-                	if ((editedParfor.getVar().length() <= 0 || matcher.matches()) ||
-                		 editedParfor.getItems().length() <= 0) {
-                		if (editedParfor.getVar().length() <= 0) {
-                			label3.setForeground(Color.red);
-                			label3.setText("* required");
-                		} else if (matcher.matches()) {
-                        	label3.setForeground(Color.red);
-                        	label3.setText("* invalid");
-                    	}else {
-                			label3.setText("");
-                		}
-                		if (editedParfor.getItems().length() <= 0) {
-                			label4.setForeground(Color.red);
-                			label4.setText("* required");
-                		} else {
-                			label4.setText("");
-                		}
-                		return;
-                	}
-                	resetAndHide();                                 
-            	} else { //user closed dialog or clicked cancel 
-            		editedParfor = null;
-            		resetAndHide();
-            	}
-        	}  
+            if (testingFor.getItems().length() <= 0) {
+                label4.setForeground(Color.red);
+                label4.setText("* required");
+            } else {
+                label4.setText("");
+            }                          
+        } else {
+            Parfor f = getParfor();
+            f.setVar(varField.getText());
+            f.setItems(itemField.getText());            
+            accept();
+        }
     }
     
-    public void resetAndHide() {
-        setVisible(false);        
-    } 
-    public Parfor getEditedParfor() {
-    	return editedParfor;
+    protected void resetWarnings() {
+        label3.setText("");
+        label4.setText("");
+    }
+    public Parfor getParfor() {
+    	return (Parfor)getTheBean();
     }
 }

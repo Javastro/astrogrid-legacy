@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.5 2005/10/07 12:12:21 KevinBenson Exp $
+/*$Id: ResourceChooserImpl.java,v 1.6 2005/10/12 13:30:10 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
 import java.awt.Component;
@@ -25,7 +26,7 @@ import java.net.URI;
  */
 public class ResourceChooserImpl implements ResourceChooserInternal {
 
-    public ResourceChooserImpl(MyspaceInternal vos,Configuration conf,HelpServer help,UIInternal ui, Community comm) {
+    public ResourceChooserImpl(MyspaceInternal vos,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
         this.vos = vos;
         dialog = new ResourceChooserDialog(vos,conf,help,ui, comm) ;
         dialog.pack();
@@ -48,14 +49,7 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
     }
     
     public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
-        dialog.setLocationRelativeTo(comp);
-        dialog.setTitle(title);
-        dialog.setEnableLocalFilePanel(enableLocalFile);
-        dialog.setEnableURIPanel(enableURI);
-        dialog.setEnableMySpacePanel(enableMySpace);
-        dialog.setUri(null);
-        dialog.setVisible(true);
-        return dialog.getUri();    
+        return chooseResourceWithParent(title,enableMySpace,enableLocalFile,false,enableURI,comp);
     }    
     
     public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableDirectorySelection, boolean enableURI,Component comp) {
@@ -75,6 +69,15 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.6  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.3.10.2  2005/10/12 09:21:38  nw
+added java help system
+
+Revision 1.3.10.1  2005/10/10 18:12:37  nw
+merged kev's datascope lite.
+
 Revision 1.5  2005/10/07 12:12:21  KevinBenson
 resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
 And then put back the older one.

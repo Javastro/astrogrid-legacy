@@ -1,4 +1,4 @@
-/*$Id: DataScopeLauncherImpl.java,v 1.2 2005/10/10 12:09:45 KevinBenson Exp $
+/*$Id: DataScopeLauncherImpl.java,v 1.3 2005/10/12 13:30:10 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.ui.DataScopeLauncher;
 import org.astrogrid.acr.ui.JobMonitor;
+import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -94,91 +95,72 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 
-/** Implementation of the Application Launcher component
- * <p>
- * not just a thin wrapper around the composite tool editor;
- * @author Noel Winstanley nw@jb.man.ac.uk 12-May-2005
+/** Implementation of the Datascipe launcher
  *
  */
-//public class DataScopeLauncherImpl extends UIComponent  implements DataScopeLauncher, ActionListener {
-//public class DataScopeLauncherImpl extends VospaceBrowserImpl implements DataScopeLauncher {
-public class DataScopeLauncherImpl extends UIComponent implements DataScopeLauncher, ActionListener {
 
-    private VospaceBrowserImpl vbi = null;
-    private BrowserControl browser = null;
+public class DataScopeLauncherImpl implements DataScopeLauncher {
+
+    public static final String DATASCOPE_URL = "http://heasarc.gsfc.nasa.gov/cgi-bin/vo/datascope/init.pl";
+    private final MyspaceBrowser vbi;
+    private final BrowserControl browser;
+    private final Component parentComponent;
     
     private JButton okButton = null;
     
-    //public DataScopeLauncherImpl(Configuration conf, HelpServer help, UIInternal ui, BrowserControl bc) throws java.io.IOException {
-    public DataScopeLauncherImpl(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser,ResourceChooserInternal chooser) {
-        //super(conf, hs , ui, vos, comm, browser, chooser);
-        super(conf, hs,ui);
+    public DataScopeLauncherImpl(UIInternal ui,MyspaceBrowser vbi, BrowserControl browser) {
         this.browser = browser;
-        vbi = new VospaceBrowserImpl(conf, hs , ui, vos, comm, browser, chooser);
-
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        this.setLocationRelativeTo(ui.getComponent());
-        
-        this.setSize(400,500);
-        JPanel pane = getJContentPane();
-        pane.add(getTopPanel(),java.awt.BorderLayout.CENTER);
-        okButton = new JButton("OK");
-        okButton.addActionListener(this);
-        pane.add(okButton,java.awt.BorderLayout.SOUTH);
-        this.setContentPane(pane);
-        this.setTitle("Datascope Launcher");
-                
+        this.vbi = vbi;
+        this.parentComponent = ui.getComponent();
     }
     
-    /*
+    
+
+    /**
+     * @see org.astrogrid.acr.ui.DataScopeLauncher#show()
+     */
     public void show() {
-        super.show();
+        JOptionPane.showMessageDialog(parentComponent,getMessage());
         vbi.show();        
         try {
-            browser.openURL(new URL("http://heasarc.gsfc.nasa.gov/cgi-bin/vo/datascope/init.pl"));
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
+            browser.openURL(new URL(DATASCOPE_URL));
+        }catch(Exception ex) {
+            UIComponent.showError(parentComponent,"Failed to open browser",ex);
+        }        
     }
-    */
-    
+
     /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     * @see org.astrogrid.acr.ui.DataScopeLauncher#hide()
      */
-    public void actionPerformed(ActionEvent e) {
-        final Object source = e.getSource();
-        if(source == okButton) {
-            vbi.show();        
-            try {
-                browser.openURL(new URL("http://heasarc.gsfc.nasa.gov/cgi-bin/vo/datascope/init.pl"));
-            }catch(Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+    public void hide() {
+        // does nothing in this implementation.
     }
     
-    
-    
-    private JPanel getTopPanel() {
-        JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));        
-        String editorText = "<html><body><p>";
-        editorText += "Datascope is an important application in the astronomy community.";
-        editorText += "By clicking on OKAY the NVO Datascope will pop open in your browser. As well as";
-        editorText += "a myspace dialog.  Myspace has been designed to handle compressed files if you wish to upload";
-        editorText += "your results to myspace and have the data decompressed automatically.";
-        editorText += "</p></body></html>";
-        editor = new JEditorPane("text/html",editorText);
-        topPanel.add(editor);
-        return topPanel;
+
+    private JLabel getMessage() {     
+        String editorText = "<html>";
+        editorText += "NVO Datascope is an important application in the astronomy community.<br>";
+        editorText += "Your webbrowser will now open the Datascope site.<br>";
+        editorText += "Save the results of a datascope query as a zip archive, and then upload it using the myspace browser<br>" +
+                "The Myspace browser will unpackage zip files and other archives automatically";
+        editorText += "</html>";
+        JLabel l = new JLabel();
+        l.setText(editorText);
+        return l;
     }
+
     
-    private JEditorPane editor;
   
 }
 
 /* 
 $Log: DataScopeLauncherImpl.java,v $
+Revision 1.3  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.2.2.2  2005/10/10 18:12:36  nw
+merged kev's datascope lite.
+
 Revision 1.2  2005/10/10 12:09:45  KevinBenson
 small change to the astroscope to show browser and vospace when the user hits okay
 

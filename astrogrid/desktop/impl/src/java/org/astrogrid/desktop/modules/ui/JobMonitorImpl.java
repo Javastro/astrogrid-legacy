@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.6 2005/10/07 12:12:21 KevinBenson Exp $
+/*$Id: JobMonitorImpl.java,v 1.7 2005/10/12 13:30:10 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
 
@@ -56,6 +57,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.help.CSH;
+import javax.help.HelpBroker;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -593,13 +596,13 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     
     /** production constructor - for platforms without system tray
      * @throws Exception*/
-    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser) throws Exception {
+    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServerInternal hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser) throws Exception {
         this(community,vos,browser,ui,hs,conf,jobs,applications,chooser,null);
  
     }
     
     /** constructor for platforms with system tray */ 
-    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServer hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser,SystemTray tray) throws Exception {
+    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServerInternal hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser,SystemTray tray) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.vos = vos;
@@ -682,6 +685,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 			jobsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 			jobsTable.setShowHorizontalLines(false);
             jobsTable.getTableHeader().setReorderingAllowed(false);
+            getHelpServer().enableHelp(jobsTable,"jm.wokflowTab");
 		}
 		return jobsTable;
 	}
@@ -726,6 +730,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             applicationsTable.setShowHorizontalLines(false);
             applicationsTable.getTableHeader().setReorderingAllowed(false);
             applicationsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            getHelpServer().enableHelp(applicationsTable,"jm.appTab");
         }
         return applicationsTable;
     }
@@ -754,6 +759,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 		if (jobMenu == null) {
 			jobMenu = new JMenu();
 			jobMenu.setText("Job");
+            getHelpServer().enableHelp(jobMenu,"jm.functions");
 		}
 		return jobMenu;
 	}
@@ -787,6 +793,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 			flowLayout1.setAlignment(java.awt.FlowLayout.LEFT);
 			jPanel2.add(getToolbar(), null);
 			jPanel2.add(getJPanel1(), null);
+            getHelpServer().enableHelp(jPanel2,"jm.functions");
 		}
 		return jPanel2;
 	}
@@ -867,6 +874,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 	 * @return void
 	 */
 	private void initialize() throws Exception {
+        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.jobMonitor");
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(ui.getComponent());
 		this.setJMenuBar(getJJMenuBar());
@@ -992,6 +1000,16 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.7  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.3.10.2  2005/10/12 09:21:38  nw
+added java help system
+
+Revision 1.3.10.1  2005/10/10 16:24:29  nw
+reviewed phils workflow builder
+skeletal javahelp
+
 Revision 1.6  2005/10/07 12:12:21  KevinBenson
 resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
 And then put back the older one.

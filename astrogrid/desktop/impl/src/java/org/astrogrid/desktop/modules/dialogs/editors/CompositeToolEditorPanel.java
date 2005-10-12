@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.3 2005/10/07 12:12:21 KevinBenson Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.4 2005/10/12 13:30:10 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -322,6 +322,13 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.4  2005/10/12 13:30:10  nw
+merged in fixes for 1_2_4_beta_1
+
+Revision 1.1.6.1  2005/10/10 16:24:29  nw
+reviewed phils workflow builder
+skeletal javahelp
+
 Revision 1.3  2005/10/07 12:12:21  KevinBenson
 resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
 And then put back the older one.

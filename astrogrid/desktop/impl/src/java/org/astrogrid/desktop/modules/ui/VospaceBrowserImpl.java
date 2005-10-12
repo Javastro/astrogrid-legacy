@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.6 2005/10/07 12:12:21 KevinBenson Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.7 2005/10/12 13:30:10 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser.FileAction;
 import org.astrogrid.filemanager.client.FileManagerNode;
@@ -313,36 +314,6 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         }
     }
 
-
-    protected final class PutContentAction extends AbstractAction implements FileAction {
-
-        public PutContentAction() {
-            super("Import data", IconHelper.loadIcon("import_log.gif"));
-            this.putValue(SHORT_DESCRIPTION,
-                    "Store data (from URL or local file) into a vospace file");
-            this.setEnabled(false);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            final FileManagerNode n = getCurrentNodeManager().getCurrent();
-            if (n == null) {
-                return;
-            }
-
-            final URI u = chooser.chooseResourceWithParent("Select resource to read data from ", false,true, true,VospaceBrowserImpl.this);
-            if (u == null) {
-                return;
-            }
-            (new BackgroundOperation("Copying data from " + u + " to vospace file " + n.getName()) {
-
-                protected Object construct() throws Exception {
-                    getVospace().copyURLToContent(u.toURL(), new URI(n.getIvorn().toString()));                            
-                    return null;
-                }
-            }).start();
-
-        }
-    }
     
     protected final class CreateContentAction extends AbstractAction implements FileAction, FolderAction {
 
@@ -364,12 +335,12 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             }
             (new BackgroundOperation("Copying data from " + u + " to vospace file " + n.getName()) {
                 protected Object construct() throws Exception {
+                    // simple original was             getVospace().copyURLToContent(u.toURL(), new URI(n.getIvorn().toString()));                         
                     transferFiles(u,n);
                     return null;
                 }
             }).start();
-        }
-    }
+        }    
 
     private String conformToMyspaceName(String name) {
         name = name.replaceAll(" ", "_");
@@ -387,7 +358,6 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @throws Exception
      */
     private void transferFiles(URI uri, FileManagerNode node) throws Exception { 
-    //throws IOException, URISyntaxException, NotFoundException {
         URL url = uri.toURL();
         File file = new File(uri.getPath());
         
@@ -416,7 +386,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                                 getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + name), zis);
                             }
                         }
-                    } else if(name.toLowerCase().endsWith(JAR) || name.toLowerCase().endsWith(WAR)) {
+                    } else if(name.toLowerCase().endsWith(JAR) || name.toLowerCase().endsWith(WAR)) { 
                         //its a Jar file open a JarInputStream to it and save each named entry into myspace.
                         JarEntry je = null;
                         JarInputStream jis = new JarInputStream(is);
@@ -471,19 +441,14 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @see javax.swing.JOptionPane
      */
     private int askDecompressQuestion() {
-//      Custom button text
-        Object[] options = {"Yes",
-                            "No"};
-        int n = JOptionPane.showOptionDialog(this,
-            "This file has been detected with a archive/zip extension, would you like to have it  "
-            + "unarchived/decompressed into your myspace?",
-            "Deompress/Unarchive",
+        return JOptionPane.showOptionDialog(VospaceBrowserImpl.this,
+            "<html>This file seems to be an archive. <br>Would you like it to be   "
+            + " extracted into your myspace?<br>Answer 'No' to upload the archive as-is</html>",
+            "Extract Archive?",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE,
-            null,
-            options,
-            options[0]);
-        return n;
+            null,null,null); // null - rely on defaults.
+ 
     }
     
     /**
@@ -509,13 +474,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      *  JAR compression
      */
     private static final String WAR = "war";  
-    
-    
+       
     /**
      *  TAR compression
      */
-    private static final String TAR = "tar";      
-    
+    private static final String TAR = "tar";          
     /**
      *  BZIP2 compression
      */
@@ -539,7 +502,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         if (fileName.toLowerCase().endsWith(GZIP)) {
             return new GZIPInputStream(istream);
         } else if (fileName.endsWith(BZIP2)) {
-            /*
+            /*@todo return something here.
                 final char[] magic = new char[] {'B', 'Z'};
                 for (int i = 0; i < magic.length; i++) {
                     if (istream.read() != magic[i]) {
@@ -553,7 +516,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         return istream;
     }
     
-
+    } // end of create content action
     
 
     protected final class RefreshAction extends AbstractAction implements FileAction, FolderAction {
@@ -760,8 +723,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @throws NodeNotFoundFault
      * @throws FileManagerFault
      */
-    public VospaceBrowserImpl(Configuration conf, HelpServer hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser,ResourceChooserInternal chooser) {
-        super(conf, hs,ui,vos,comm);
+    public VospaceBrowserImpl(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser,ResourceChooserInternal chooser) {
+        super(conf, hs,ui,vos,comm);       
         this.browser = browser;
         this.chooser =chooser;
         initialize();
@@ -859,7 +822,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      */
     private void initialize() {
         this.setJMenuBar(getJJMenuBar());
-        this.setName("vospaceBrowser");
+        this.setName("MyspaceBrowser");
+        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.myspaceBrowser");          
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setSize(600, 800);
         JPanel pane = getJContentPane();
@@ -882,6 +846,15 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.7  2005/10/12 13:30:10  nw
+ * merged in fixes for 1_2_4_beta_1
+ *
+ * Revision 1.3.10.2  2005/10/12 09:21:38  nw
+ * added java help system
+ *
+ * Revision 1.3.10.1  2005/10/10 18:12:36  nw
+ * merged kev's datascope lite.
+ *
  * Revision 1.6  2005/10/07 12:12:21  KevinBenson
  * resorted back to adding to the ResoruceChooserInterface a new method for selecting directories.
  * And then put back the older one.
