@@ -2,7 +2,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 
     <extend>../../maven-base/project.xml</extend>
-    <!--<extend>${basedir}/../aggregate/cdk/script/project.xml</extend>-->
         <artifactId>acr-interface</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Astronomy Client Runtime Interfaces</name>
@@ -36,6 +35,9 @@
 	<artifactId>rmi-lite</artifactId>
 	<groupId>rmilite</groupId>
 	<version>1.0</version>
+	<properties>
+		<dist.bundle>true</dist.bundle>
+	</properties>
 </dependency>
 
 <dependency>
@@ -43,6 +45,9 @@
 	<groupId>commons-logging</groupId>	
 	<version>1.0.3</version>	
 	<url>http://jakarta.apache.org/commons/</url>	
+	<properties>
+		<dist.bundle>true</dist.bundle>
+	</properties>	
     </dependency>
 
     <dependency>
@@ -51,6 +56,9 @@
       <version>2.4.0</version>
       <type>jar</type>
       <url>http://xml.apache.org/</url>
+      <properties>
+	      <dist.bundle>true</dist.bundle>
+	</properties>      
     </dependency>
 
     <dependency>
@@ -59,6 +67,9 @@
       <version>1.0.b2</version>
       <type>jar</type>
       <url>http://xml.apache.org/</url>
+      <properties>
+	      <dist.bundle>true</dist.bundle>
+	</properties>      
 	</dependency>
 
 <!-- only needed for 'opt' package -->
@@ -67,6 +78,10 @@
 	<artifactId>picocontainer</artifactId>
 	<version>1.1</version>
 	<type>jar</type>
+	<properties>
+		<dist.bundle>true</dist.bundle>
+	</properties>	
  </dependency>
+ 
     </dependencies>
 </project>

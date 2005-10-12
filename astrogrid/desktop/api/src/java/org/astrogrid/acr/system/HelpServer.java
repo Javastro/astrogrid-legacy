@@ -1,4 +1,4 @@
-/*$Id: HelpServer.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: HelpServer.java,v 1.3 2005/10/12 09:22:16 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,28 +14,26 @@ import javax.swing.Action;
 
 /**Service Interface to in-program help
  * <p>
- * <b>Rough - not prooperly implemented or thought through yet</b>
- * When completed, can be used to display context-sensitive help using the javahelp system.
  * @service system.help
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
  * 
  */
 public interface HelpServer {
+    /** display the help viewer, with the 'top' help page */ 
     void showHelp();
-
+   /** display a specific help topic in the viewer 
+    * 
+    * @param target name of the topic to display 
+    */
     void showHelpForTarget(String target);
 
-    void showHelpFromFocus();
-
-    void trackFieldHelp();
-
-    Action getShowHelpForTargetInstance(String target);
-
-    Action getShowIDInstance(String actionName, String helpId);
 }
 
 /* 
  $Log: HelpServer.java,v $
+ Revision 1.3  2005/10/12 09:22:16  nw
+ added java help system
+
  Revision 1.2  2005/08/12 08:45:15  nw
  souped up the javadocs
 

@@ -2,16 +2,18 @@
 <!-- extension maven script -->
 <project   xmlns:j="jelly:core" xmlns:maven="jelly:maven" >
 
-	<goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin">
+	<goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin,javahelp-install">
 		<echo>No goal exists to install a distro - so have built and just left it in target dir</echo>
 	</goal>
 
 
-	<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin">
+	<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin,javahelp-deploy">
 	</goal>
 
-	<goal name="astrogrid-build-artifact" prereqs="jar:jar,dist:build-bin">
+	<goal name="astrogrid-build-artifact" prereqs="jar:jar,dist:build-bin,javahelp-jar">
 	</goal>
+	
+	<goal name="astrogrid-clean" prereqs="clean,javahelp-clean" />
 
 	<!-- add in dependent jars -->
 	<postGoal name="dist:prepare-bin-filesystem">
@@ -20,5 +22,19 @@
 			<copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}"/>			
                 </j:forEach>		
 	</postGoal>
+	
+	<goal name="javahelp-install">
+		<maven:maven goals="jar:install" descriptor="javahelp/project.xml" />
+	</goal>
+	<goal name="javahelp-deploy">
+		<maven:maven goals="jar:deploy" descriptor="javahelp/project.xml" />
+	</goal>
+	<goal name="javahelp-jar">
+		<maven:maven goals="jar:jar" descriptor="javahelp/project.xml" />
+	</goal>	
+	<goal name="javahelp-clean">
+		<maven:maven goals="clean:clean" descriptor="javahelp/project.xml" />
+	</goal>
+	
 </project>
 
