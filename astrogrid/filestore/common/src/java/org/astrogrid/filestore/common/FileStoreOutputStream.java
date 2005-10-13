@@ -1,10 +1,13 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreOutputStream.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/09/06 12:45:22 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: nw $</cvs:author>
+ * <cvs:date>$Date: 2005/10/13 17:56:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreOutputStream.java,v $
+ *   Revision 1.5  2005/10/13 17:56:08  nw
+ *   documented a quirk. no change to code.
+ *
  *   Revision 1.4  2005/09/06 12:45:22  clq2
  *   dave-dev-200507251101
  *
@@ -241,6 +244,11 @@ public class FileStoreOutputStream
                 // Get the server response.
                 if (null != this.http)
                     {
+                    /* NWW: this is important - although this just looks like
+                     * debug code, it's the next line that actually causes the 
+                     * transfer to happen. If the code doesn't query the response in some way,
+                     * the transfer doesn't happen - stupid, and no hint of this in the javadoc
+                     */
                     int code   = this.http.getResponseCode() ;
                     String msg = this.http.getResponseMessage() ;
                     log.debug("  Response code : " + code) ;
