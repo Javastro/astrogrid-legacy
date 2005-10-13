@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.6 2005/10/07 12:11:13 KevinBenson Exp $
+/*$Id: Myspace.java,v 1.7 2005/10/13 18:22:32 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -341,8 +341,12 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      * @throws InvalidArgumentException if the resource is not a file
      * @throws ServiceException if an error occurs while calling the service
      * @throws SecurityException if the user is not permitted to write the contents of this resource
-     * @throws NotApplicableException if this resource cannot contain data - e.g. it is a folder     *
-     * @example For the current filestore impleentation the result returned is a <tt>http://</tt> url, to which data should be <b>PUT</b> (not POST). Here's how to do this in java
+     * @throws NotApplicableException if this resource cannot contain data - e.g. it is a folder     
+     * @see #transferCompleted
+     * @example For the current filestore impleentation the result returned is a <tt>http://</tt> url, to which data should be <b>PUT</b> (not POST). 
+     * <b>NB</b>After the data has been written to the filestore, the filemanager needs to be notified that the data for this node has changed - by calling 
+     * {@link #transferCompleted}
+     * Here's how to do this in java
      * <pre>
      * import org.astrogrid.acr.*;
      * import java.net.*;
@@ -355,25 +359,41 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      *  //get the output url
      * URL url = ms.getWriteContentURL(file); 
       * HttpURLConnection conn  = (HttpURLConnection) url.openConnection() ;
-      *   //configure the connection
-      * conn.setChunkedStreamingMode(1024); // this method is only available in java 1.5 - omit for 1.4and beware of transferring large files
-      * conn.setAllowUserInteraction(false);
-      * conn.setDoInput(false);
       * conn.setDoOutput(true) ;
-      * conn.setUseCaches(false);
       * conn.setRequestMethod("PUT");
       *   // connect
       * conn.connect();
-      * OutputStream os = conn.getOutputStream() 
+      * OutputStream os = conn.getOutputStream(); 
       *  //write the data
       *  ...
       *   //close
-      * os.flush();
       * os.close();
+      *  // important - the URL connection class won't tranfer data unless you ask for a response - this is a nasty gotcha, not clear from the javadocs.
+      * conn.getResponseCode() // necessary to force the whole thing to happen
+      * ms.transferCompleted(file); // tell the filemanager that the content for this resource has changed.
      * </pre> 
      */
     URL getWriteContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
-
+//      *   //configure the connection
+    //* conn.setChunkedStreamingMode(1024); // this method is only available in java 1.5 - omit for 1.4and beware of transferring large files
+//    
+    /**
+     * Notify the filemanager  server that the data for a filestore node has been changed. 
+     * <p>
+     * This method must be called after storing data in a myspace file via the URL returned by {@link #getWriteContentURL}.
+     * There's no need to call this method when storing data using any other method
+     * @param ivorn the myspace resource just written to
+     * @throws NotFoundException if the resource does not exist
+     * @throws InvalidArgumentException if the resource is not writable
+     * @throws ServiceException if an error occurs while calling the service
+     * @throws SecurityException if the user is not permitted to access this resource
+     * @throws NotApplicableException if this resouce cannot contain data - e.g. it is a folder
+     * @see #getWriteContentURL
+     * @since 1.2.4
+     */
+    void transferCompleted(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
+    
+    
     /** write the contents (data) of a myspace resource out to a URL location
      * @param ivorn the myspace resource to write out
      * @param destination a writable URL - file:/, http:/ or ftp:/ protocol
@@ -411,6 +431,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.7  2005/10/13 18:22:32  nw
+ fixed getWriteContentURL documentation
+
  Revision 1.6  2005/10/07 12:11:13  KevinBenson
  moved a method that is not possible for xmlrpc (serialization) down to MyspaceInternal.java interface and took it out of Myspace.java interface
 
