@@ -1,0 +1,25 @@
+import org.astrogrid.acr.*
+
+f = new Finder()
+acr = f.find()
+browser =  acr.getService(org.astrogrid.acr.dialogs.ResourceChooser.class)
+uri = browser.fullChooseResource("Select destination",true,false,false)
+System.out.println(uri)
+myspace =  acr.getService(org.astrogrid.acr.astrogrid.Myspace.class)
+url = myspace.getWriteContentURL(uri)
+System.out.println(url)
+conn = url.openConnection()
+conn.setAllowUserInteraction(false)
+conn.setDoInput(true)
+conn.setDoOutput(true)
+conn.setUseCaches(false)
+conn.setRequestMethod("PUT")
+conn.setChunkedStreamingMode(1024)
+conn.setRequestProperty("User-Agent","org.astrogrid.filestore.common.FileStoreOutputStream")
+conn.connect()
+os = conn.getOutputStream()
+os.write("hi there".getBytes());
+os.flush()
+os.close()
+System.out.println("Done")
+
