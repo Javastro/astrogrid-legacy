@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcSystemTest.java,v 1.5 2005/10/12 13:30:10 nw Exp $
+/*$Id: MyspaceRpcSystemTest.java,v 1.6 2005/10/13 18:33:47 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -397,12 +397,28 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
         }             
     }
 
+    /**
+     * @see org.astrogrid.acr.astrogrid.Myspace#transferCompleted(java.net.URI)
+     */
+    public void transferCompleted(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
+        v.clear();
+        v.add(ivorn.toString());
+        try {
+            client.execute("astrogrid.myspace.transferCompleted", v);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }      
+    }
+
 
 }
 
 
 /* 
 $Log: MyspaceRpcSystemTest.java,v $
+Revision 1.6  2005/10/13 18:33:47  nw
+fixes supporting getWriteContentURL
+
 Revision 1.5  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

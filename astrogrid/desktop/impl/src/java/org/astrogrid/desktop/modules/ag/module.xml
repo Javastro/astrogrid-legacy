@@ -618,7 +618,12 @@
 				<description>Ivorn of node</description>
 			</parameter>
 		</method>
-				
+		<method name="transferCompleted">
+			<description>notify service that data has been written to a node (use in conjunction with getWriteContentURL())</description>
+			<parameter name="ivorn">
+				<description>Ivorn of node</description>
+			</parameter>
+		</method>
 		<method name="copyContentToURL">			
 			<description>copy contents of a myspace node to a 
 				url</description>
@@ -1119,7 +1124,17 @@
 				<description>identifier of job to retreive</description>
 			</parameter>
 		</method>
-	
+	    <method name="createJob">
+			<description> create a new initialized workflow document, suitable as a starting point for building workflows</description>
+			<return>
+				<description>a new workflow document</description>
+				<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet</value>						
+				</property>				
+			</return>
+		</method>
+		
 		<method name="submitJob">
 			<description>Submit a workflow for execution</description>
 			<return>

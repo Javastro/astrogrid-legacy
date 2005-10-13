@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.5 2005/10/06 09:19:26 KevinBenson Exp $
+/*$Id: VospaceImpl.java,v 1.6 2005/10/13 18:33:47 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
@@ -366,7 +367,11 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     
     public URL getReadContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         try {
-            return node(ivorn).contentURL();
+            // should follow example in AxisNodeWrapper and always go back to server for this - to be safe.
+           // return node(ivorn).contentURL();
+            FileManagerNode node = node(ivorn);
+            TransferInfo info =  node.getNodeDelegate().readContent(node.getMetadata().getNodeIvorn());
+            return new URL(info.getUri().toString());
         } catch (NodeNotFoundFault e) {
             throw new NotFoundException(e);
         } catch (FileManagerFault e) {
@@ -383,13 +388,19 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
     public URL getWriteContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         try {
-            FileManagerNode node = node(ivorn);            
-            if (node.getMetadata().getContentId() == null) { // no data - need to set up a url
+            FileManagerNode node = node(ivorn);     
+            //From more careful reading of AxisNodeWrapper, seems
+            // like we should always go back to the server to get a storage location.
+            // then up to server whether it allocates a new storage location or not
+            // another advantage: handles the case of this node changing under our feet.
+            // a bit less efficient, but more robust.
+            
+         //   if (node.getMetadata().getContentId() == null) { // no data - need to set up a url
                 TransferInfo props= node.getNodeDelegate().writeContent(node.getMetadata().getNodeIvorn());               
                  return new URL(props.getUri().toString());
-            } else {
+          /*  } else {
                 return node.contentURL();
-            }
+            }*/
         } catch (NodeNotFoundFault e) {
             throw new NotFoundException(e);
         } catch (FileManagerFault e) {
@@ -404,6 +415,18 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     }
     
 
+    public void transferCompleted(URI arg0) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
+        FileManagerNode node = node(arg0);
+        try {
+            node.transferCompleted();
+        } catch (FileManagerFault e) {
+            throw new ServiceException(e);
+        } catch (NodeNotFoundFault e) {
+            throw new NotFoundException(e);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
     public void copyContentToURL(URI ivorn,URL destination) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         FileManagerNode node = node(ivorn);
         if (destination.getProtocol().equals("file")) {
@@ -808,11 +831,16 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     }
 
 
+
+
 }
 
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.6  2005/10/13 18:33:47  nw
+fixes supporting getWriteContentURL
+
 Revision 1.5  2005/10/06 09:19:26  KevinBenson
 Added a writeStream method to pass in a inputstream for storing into myspace.
 

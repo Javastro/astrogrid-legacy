@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.3 2005/08/25 16:59:58 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.4 2005/10/13 18:33:47 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
@@ -43,7 +46,12 @@ import junit.framework.TestSuite;
  * @todo fix failing tests.
  *
  */
-public class MyspaceSystemTest extends TestCase {    
+public class MyspaceSystemTest extends TestCase {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(MyspaceSystemTest.class);
+    
     /*
      * @see TestCase#setUp()
      */
@@ -345,6 +353,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.4  2005/10/13 18:33:47  nw
+fixes supporting getWriteContentURL
+
 Revision 1.3  2005/08/25 16:59:58  nw
 1.1-beta-3
 
