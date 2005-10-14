@@ -1,10 +1,13 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreOutputStream.java,v $</cvs:source>
  * <cvs:author>$Author: nw $</cvs:author>
- * <cvs:date>$Date: 2005/10/13 17:56:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2005/10/14 12:31:02 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreOutputStream.java,v $
+ *   Revision 1.6  2005/10/14 12:31:02  nw
+ *   removed setChunkedStreamigMode() - not supported by present server.
+ *
  *   Revision 1.5  2005/10/13 17:56:08  nw
  *   documented a quirk. no change to code.
  *
@@ -161,6 +164,9 @@ public class FileStoreOutputStream
             //
             // JDK 1.4 patch (uses reflection to invoke the JDK 1.5 method).
             // This allows us to compile on JDK 1.4 but use the JDK 1.5 method if available.
+            //NWW - 14-10-2005 commented out for now - not all servers support chunked streaming. Seems like our
+            // filestore server doesn't. - means uploads fail on 1.5.
+            /* temporarily removed, until supported by the server
             try {
                 log.debug("Checking HttpURLConnection for JDK 1.5 method.");
                 Class clazz   = this.http.getClass() ;
@@ -180,6 +186,7 @@ public class FileStoreOutputStream
                 // ... Ok, we tried ...
                 log.debug("HttpURLConnection does not supposrt setChunkedStreamingMode");
                 }
+                */
             //
             // Open the connection.
             this.http.connect();
