@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.7 2005/10/12 13:30:10 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.8 2005/10/14 14:20:41 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
@@ -29,6 +32,7 @@ import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeMetadata;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
+import org.astrogrid.io.Piper;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 
@@ -52,6 +56,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.BufferedInputStream;
+import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -383,7 +388,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                         while( (ze = zis.getNextEntry()) != null) {
                             name = conformToMyspaceName(ze.getName());
                             if(!ze.isDirectory()) {  
-                                getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + name), zis);
+                                writeStream(new URI(node.getIvorn().toString() + "/" + name), zis);
                             }
                         }
                     } else if(name.toLowerCase().endsWith(JAR) || name.toLowerCase().endsWith(WAR)) { 
@@ -393,7 +398,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                         while( (je = jis.getNextJarEntry()) != null) {
                             name = conformToMyspaceName(je.getName());
                             if(!je.isDirectory()) {
-                                getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + name), jis);
+                                writeStream(new URI(node.getIvorn().toString() + "/" + name), jis);
                             }
                         }
                     } else if(name.toLowerCase().endsWith(TAR)  || name.toLowerCase().endsWith(TAR + "." + GZIP)) {
@@ -403,12 +408,12 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                         while( (te = tis.getNextEntry()) != null) {
                             name = conformToMyspaceName(te.getName());
                             if(!te.isDirectory()) {
-                                getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + name), tis);
+                                writeStream(new URI(node.getIvorn().toString() + "/" + name), tis);
                             }
                         }
                     } else {
                         //must be a gzipstream
-                        getVospace().writeStream(new URI(node.getIvorn().toString() + "/" + voName), is);
+                        writeStream(new URI(node.getIvorn().toString() + "/" + voName), is);
                     }                    
                 } else {
                     //user justs wants the raw file into myspace.
@@ -416,7 +421,30 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                 }
             }//else
     }
-
+    // moved from MySpaceInternal - redundant there 
+    private void writeStream(URI ivorn,InputStream content) throws ServiceException, SecurityException, InvalidArgumentException {
+        if (! getVospace().exists(ivorn)) {
+            getVospace().createFile(ivorn);
+        }
+        OutputStream w = null;
+        try {
+            w = getVospace().getOutputStream(ivorn);        
+            Piper.pipe(content, w);
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        } catch (UnsupportedOperationException e) {
+            throw new InvalidArgumentException(e);
+        } catch (NotFoundException e) {
+            throw new ServiceException(e);
+        } finally {
+            if (w != null) {
+                try {
+                    w.close();
+                } catch (IOException e) {
+                }
+            }
+        }        
+    }        
     /**
      * Name: isPackedFile
      * Description: determines by a file name extension if the file is a compressed/archived file that is supported
@@ -846,6 +874,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.8  2005/10/14 14:20:41  nw
+ * work around for problems with FileStoreOutputStream
+ *
  * Revision 1.7  2005/10/12 13:30:10  nw
  * merged in fixes for 1_2_4_beta_1
  *

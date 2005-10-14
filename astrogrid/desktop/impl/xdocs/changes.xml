@@ -13,6 +13,12 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	<release version="1.2.4-beta-2" date="2005-10-14">
+		<action dev="nw" type="fix" due-to="Mark Taylor">
+			Fixed myspace upload to work under java 1.5.
+			Fixed documentation for getWriteContentURL()
+		</action>
+	</release>
 	<release version="1.2.4-beta-1" date="2005-10-12">
 		<action dev="nw" type="add">
 			Help system

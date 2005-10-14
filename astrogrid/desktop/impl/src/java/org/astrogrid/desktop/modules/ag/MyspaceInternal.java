@@ -1,4 +1,4 @@
-/*$Id: MyspaceInternal.java,v 1.3 2005/10/07 12:11:13 KevinBenson Exp $
+/*$Id: MyspaceInternal.java,v 1.4 2005/10/14 14:20:41 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import java.net.URL;
 public interface MyspaceInternal extends Myspace {
 
     /** get the internal filemanager node for a myspace ivorn (i.e. get an internal delegate)
+     * <b>NB</b> use the node returned just for display / metadata - for data transfer, prefer the methods in the Myspace & MyspaceInternal interfaces
      * @param ivorn a uri of form ivo://
      * @return the node object for this ivorn
      */
@@ -45,6 +46,7 @@ public interface MyspaceInternal extends Myspace {
      */
     public InputStream getInputStream(URI uri) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
     /** Helper method to open an abitrary uri for writing
+     * NB: not a good idea for large files. - use the variant where output file size is specified.
      * @param ui http://, file://, ftp://, ivo://
      * @return a suitable output stream
      * @throws InvalidArgumentException
@@ -53,25 +55,27 @@ public interface MyspaceInternal extends Myspace {
      * @throws ServiceException
      */
     public OutputStream getOutputStream(URI ui) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
-    
-    /**Write data to a myspace resource
-     * <p>
-     * NB : not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
-     * @param ivorn resource to write to
-     * @param content the data to write in InputStream format
-     * @throws InvalidArgumentException is the resource is malformed
-     * @throws ServiceException if an error occurs while calling the service
-     * @throws SecurityException if the user is not permitted to access this resource
-     *
+
+    /** Helper method to open an abitrary uri for writing
+     * @param ui http://, file://, ftp://, ivo://
+     * @return a suitable output stream
+     * @throws InvalidArgumentException
+     * @throws NotFoundException
+     * @throws SecurityException
+     * @throws ServiceException
      */
-    void writeStream(URI ivorn,InputStream content) throws InvalidArgumentException, ServiceException, SecurityException;
-    
+    public OutputStream getOutputStream(URI ui, long size) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
+   
+
     
 }
 
 
 /* 
 $Log: MyspaceInternal.java,v $
+Revision 1.4  2005/10/14 14:20:41  nw
+work around for problems with FileStoreOutputStream
+
 Revision 1.3  2005/10/07 12:11:13  KevinBenson
 moved a method that is not possible for xmlrpc (serialization) down to MyspaceInternal.java interface and took it out of Myspace.java interface
 

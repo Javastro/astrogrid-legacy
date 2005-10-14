@@ -15,12 +15,12 @@ msfile = new java.net.URI("#writeURLToContent.test")
 if (myspace.exists(msfile)) {
 	myspace.delete(msfile)
 }		
-	/*	
+		
 # test first using straight write and read
 myspace.write(msfile,"potatoes")
 result = myspace.read(msfile)
 println("Straight read and write - expected 'potatoes', got " + result)
-	
+	/*
 # test using using straight write and readContentURL
 myspace.write(msfile,"carrots")
 readURL = myspace.getReadContentURL(msfile)
@@ -52,7 +52,7 @@ resultURL = myspace.getReadContentURL(msfile)
 result = resultURL.getText()
 println("coopyURLToContent, then readContentURL - expected 'oranges', got " + result)
 
-	*/
+	
 ## finally, writeContentURL, followed by readContentURL
 myspace.createFile(msfile)
 writeURL = myspace.getWriteContentURL(msfile)	
@@ -81,6 +81,6 @@ resultURL = myspace.getReadContentURL(msfile)
 result = resultURL.getText()
 #result = myspace.read(msfile)
 println("writeContentURL followed by readContentURL - expected 'lemons', got " + result)
-	
+	*/
 # close the program down - necessary as we have listeners
 System.exit(0)	

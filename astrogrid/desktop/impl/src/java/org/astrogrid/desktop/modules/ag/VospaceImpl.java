@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.6 2005/10/13 18:33:47 nw Exp $
+/*$Id: VospaceImpl.java,v 1.7 2005/10/14 14:20:41 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
@@ -46,6 +47,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -55,10 +57,13 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.rmi.RemoteException;
 
 /** implementation of the vospace componet.
@@ -267,7 +272,8 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
             createFile(ivorn);
         }
         try {
-            w = new OutputStreamWriter(node(ivorn).writeContent());
+            w = new OutputStreamWriter (mkOutputStream(ivorn,content.getBytes().length));
+            //w = new OutputStreamWriter(node(ivorn).writeContent());
             Piper.pipe(r, w);
         } catch (IOException e) {
             throw new ServiceException(e);
@@ -285,6 +291,78 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
         }
     }
 
+    /** wrapper method that takes care of creating an output stream. means that we can control what is created
+     *  - working around problems with FileStoreoutputStream at the moment.
+     * later, can replace with a pass-thru implementaiton
+     * @todo review and remove when possible
+     * @param ivorn
+     * @return
+     * @throws NotFoundException
+     * @throws InvalidArgumentException
+     * @throws SecurityException
+     * @throws ServiceException
+     */
+    private OutputStream mkOutputStream(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException{
+        return mkOutputStream(ivorn,0);
+    }
+    
+    /**
+     * variant where we know the size in advance - allows for optimizations.
+     * @param ivorn
+     * @param dataSize
+     * @return
+     * @throws NotFoundException
+     * @throws InvalidArgumentException
+     * @throws SecurityException
+     * @throws ServiceException
+     */
+    private OutputStream mkOutputStream(final URI ivorn, long dataSize)  throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException{
+        // rewrite of FileStoreOutputStream really
+        URL url = getWriteContentURL(ivorn);
+        try {
+        URLConnection c = url.openConnection();
+        if (c instanceof HttpURLConnection) {
+            final HttpURLConnection conn = (HttpURLConnection)c;
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            if (dataSize > 0) { // set the 1.5 method, if available.
+                try {
+                Method m= conn.getClass().getMethod("setFixedLengthStreamingMode",new Class[]{int.class});
+                m.invoke(conn,new Object[]{new Integer((int)dataSize)}); // mad that this method only takes an int.
+                } catch (Exception e) {
+                    logger.debug("HttpURLConnection does not support FixesLengthStreamingMode",e);
+                }                
+            }
+            conn.connect();
+            return new FilterOutputStream(conn.getOutputStream()) {
+                public void close() throws IOException {
+                    super.flush();
+                    super.close();
+                    conn.getResponseCode();
+                    try {
+                        transferCompleted(ivorn);
+                    } catch (ACRException e) {
+                        logger.warn("Failed to notify transfer completed",e);
+                    }
+                }
+            };
+        } else {
+            logger.warn("Some other kind of filestore url - handling it and hoping for the best");
+            return new FilterOutputStream( url.openConnection().getOutputStream()) {
+                public void close() throws IOException {
+                    super.close();
+                    try {
+                        transferCompleted(ivorn);
+                    } catch (ACRException e) {
+                        logger.warn("Failed to notify transfer completed",e);
+                    }                    
+                }
+            };
+        }
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        }
+    }
 
     public byte[] readBinary(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         InputStream reader = null;
@@ -321,7 +399,8 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
             createFile(ivorn);
         }
         try {
-            w = node(ivorn).writeContent();
+            w = mkOutputStream(ivorn,content.length);
+            //w = node(ivorn).writeContent();
             Piper.pipe(r, w);
         } catch (IOException e) {
             throw new ServiceException(e);
@@ -339,31 +418,7 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
         }        
     }
     
-    public void writeStream(URI ivorn, InputStream content) throws InvalidArgumentException, ServiceException, SecurityException {
-        //InputStream r = new ByteArrayInputStream(content);
-        InputStream r = content;
-        OutputStream w = null;
-        if (! exists(ivorn)) {
-            createFile(ivorn);
-        }
-        try {
-            w = node(ivorn).writeContent();
-            Piper.pipe(r, w);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (UnsupportedOperationException e) {
-            throw new InvalidArgumentException(e);
-        } catch (NotFoundException e) {
-            throw new ServiceException(e);
-        } finally {
-            if (w != null) {
-                try {
-                    w.close();
-                } catch (IOException e) {
-                }
-            }
-        }        
-    }    
+ 
     
     public URL getReadContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         try {
@@ -497,7 +552,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
         if (src.getProtocol().equals("file")) {
             try {
             is = src.openStream();
-            os = node.writeContent();
+            File f = new File(new URI(src.toString()));            
+            os = mkOutputStream(ivorn,f.length());
+            //os = node.writeContent();
             Piper.pipe(is,os);
             } catch (FileNotFoundException e) {
                 throw new InvalidArgumentException(e);
@@ -505,6 +562,8 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
                 throw new InvalidArgumentException(e);
             } catch (IOException e) {
                 throw new ServiceException(e);
+            } catch (URISyntaxException e) {
+                throw new InvalidArgumentException(e);
             } finally {
                 if (os != null) {                    
                         try {
@@ -815,7 +874,8 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     public OutputStream getOutputStream(URI u) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
        try {
         if (u.getScheme() == null || u.getScheme().equals("ivo")) {
-            return node(u).writeContent();          
+            //return node(u).writeContent();
+            return mkOutputStream(u);
         } else if (u.getScheme().equals("file")) {
             return new FileOutputStream(new File(u));
         } else {
@@ -830,6 +890,26 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
        }
     }
 
+    public OutputStream getOutputStream(URI u, long size) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
+        try {
+            if (u.getScheme() == null || u.getScheme().equals("ivo")) {
+                //return node(u).writeContent();
+                return mkOutputStream(u,size);
+            } else if (u.getScheme().equals("file")) {
+                return new FileOutputStream(new File(u));
+            } else {
+                return u.toURL().openConnection().getOutputStream();                      
+            }      
+           } catch (FileNotFoundException e) {
+               throw new NotFoundException(e);
+           } catch (FileManagerFault e) {
+               throw new ServiceException(e);
+           } catch (IOException e) {
+               throw new ServiceException(e);
+           }
+    }    
+
+
 
 
 
@@ -838,6 +918,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.7  2005/10/14 14:20:41  nw
+work around for problems with FileStoreOutputStream
+
 Revision 1.6  2005/10/13 18:33:47  nw
 fixes supporting getWriteContentURL
 
