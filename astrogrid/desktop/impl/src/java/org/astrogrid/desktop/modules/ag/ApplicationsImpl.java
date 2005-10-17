@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.4 2005/09/12 15:21:16 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.5 2005/10/17 16:02:10 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -144,8 +144,8 @@ public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener 
     }
     public String getQueryToListApplications() {
         return "Select * from Registry where " +
-    " (@xsi:type = 'cea:CeaApplicationType' or " +
-    " @xsi:type = 'cea:CeaHttpApplicationType')" +
+    " (@xsi:type like '%CeaApplicationType' or " +
+    " @xsi:type like '%CeaHttpApplicationType')" +
     " and @status = 'active'";
     }
     
@@ -728,6 +728,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.5  2005/10/17 16:02:10  nw
+improved query to find apps in reg
+
 Revision 1.4  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 
