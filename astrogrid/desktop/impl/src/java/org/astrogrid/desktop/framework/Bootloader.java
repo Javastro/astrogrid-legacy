@@ -1,4 +1,4 @@
-/*$Id: Bootloader.java,v 1.3 2005/09/12 15:21:16 nw Exp $
+/*$Id: Bootloader.java,v 1.4 2005/10/17 16:02:45 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,9 +49,10 @@ public class Bootloader implements Startable{
      */
     public void start() {
         registerModule("system","/org/astrogrid/desktop/modules/system/module.xml");
+        registerModule("astrogrid","/org/astrogrid/desktop/modules/ag/module.xml");
         registerModule("ivoa","/org/astrogrid/desktop/modules/ivoa/module.xml");        
         registerModule("cds","/org/astrogrid/desktop/modules/cds/module.xml");
-        registerModule("astrogrid","/org/astrogrid/desktop/modules/ag/module.xml");
+        registerModule("nvo","/org/astrogrid/desktop/modules/nvo/module.xml");
         registerModule("dialogs","/org/astrogrid/desktop/modules/dialogs/module.xml");
         registerModule("ui","/org/astrogrid/desktop/modules/ui/module.xml");            
         registerModule("scripting","/org/astrogrid/desktop/modules/scripting/module.xml");
@@ -97,6 +98,9 @@ public class Bootloader implements Startable{
 
 /* 
 $Log: Bootloader.java,v $
+Revision 1.4  2005/10/17 16:02:45  nw
+added siap and cone interfaces
+
 Revision 1.3  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 
