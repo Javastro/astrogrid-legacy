@@ -1,4 +1,4 @@
-/*$Id: ResourceInformationBuilder.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: ResourceInformationBuilder.java,v 1.2 2005/10/18 16:53:34 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag.builders;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
@@ -31,22 +34,86 @@ import javax.xml.transform.TransformerException;
  *
  */
 public class ResourceInformationBuilder implements InformationBuilder {
+    /**
+     * Commons Logger for this class
+     */
+    protected static final Log logger = LogFactory.getLog(ResourceInformationBuilder.class);
 
     /** Construct a new ResourceInformationBuilder
      * 
      */
     public ResourceInformationBuilder() {
         super();
+        Element n = null;
+        try {
+            n = XPathHelper.createNamespaceNode();
+        } catch (Exception e) {
+           logger.fatal("Could not create static namespace node",e);          
+        }           
+        nsNode = n;
     }
 
+    protected   final  Element nsNode; 
     public boolean isApplicable(CachedXPathAPI xpath, Element el) {
         return true;
     }
     
     public  ResourceInformation build(CachedXPathAPI xpath,Element element) throws ServiceException{
         try {
-            Element nsNode = XPathHelper.createNamespaceNode();
-            
+        return new ResourceInformation(
+                findId(xpath, element)
+                ,findName(xpath, element)
+                ,findDescription(xpath, element)
+                ,findAccessURL(xpath, element)
+                );
+        } catch (TransformerException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    /**
+     * @param xpath
+     * @param element
+     * @return
+     * @throws TransformerException
+     */
+    protected final URL findAccessURL(CachedXPathAPI xpath, Element element) throws TransformerException {
+        URL accessURL;
+        try {
+            accessURL =  new URL(xpath.eval(element,"vr:interface/vr:accessURL",nsNode).str());
+        } catch (MalformedURLException e) {
+            accessURL = null;
+        }
+        return accessURL;
+    }
+
+    /**
+     * @param xpath
+     * @param element
+     * @return
+     * @throws TransformerException
+     */
+    protected final String findDescription(CachedXPathAPI xpath, Element element) throws TransformerException {
+        return xpath.eval(element,"vr:content/vr:description",nsNode).str();
+    }
+
+    /**
+     * @param xpath
+     * @param element
+     * @return
+     * @throws TransformerException
+     */
+    protected final String findName(CachedXPathAPI xpath, Element element) throws TransformerException {
+        return xpath.eval(element,"vr:title",nsNode).str();
+    }
+
+    /**
+     * @param xpath
+     * @param element
+     * @return
+     * @throws TransformerException
+     */
+    protected final URI findId(CachedXPathAPI xpath, Element element) throws TransformerException {
         URI uri;
         try {
             uri = new URI(xpath.eval(element,"vr:identifier",nsNode).str());
@@ -54,30 +121,16 @@ public class ResourceInformationBuilder implements InformationBuilder {
             
             uri = null;
         }
-        String name = xpath.eval(element,"vr:title",nsNode).str();
-        String description = xpath.eval(element,"vr:content/vr:description",nsNode).str();       
-        URL accessURL ;
-        try {
-            accessURL =  new URL(xpath.eval(element,"vr:interface/vr:accessURL",nsNode).str());
-        } catch (MalformedURLException e) {
-            accessURL = null;
-        }
-        return new ResourceInformation(
-                uri
-                ,name
-                ,description
-                ,accessURL
-                );
-        } catch (ParserConfigurationException e) {
-            throw new ServiceException(e);
-        } catch (TransformerException e) {
-            throw new ServiceException(e);
-        }
+        return uri;
     }
 }
 
 /* 
 $Log: ResourceInformationBuilder.java,v $
+Revision 1.2  2005/10/18 16:53:34  nw
+refactored common functionality.
+added builders for siap and cone.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

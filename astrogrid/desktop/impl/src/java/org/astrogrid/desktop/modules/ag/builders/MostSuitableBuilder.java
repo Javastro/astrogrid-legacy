@@ -1,4 +1,4 @@
-/*$Id: MostSuitableBuilder.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: MostSuitableBuilder.java,v 1.2 2005/10/18 16:53:34 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,8 @@ public class MostSuitableBuilder implements InformationBuilder {
     public MostSuitableBuilder() {
         super();
         builders.add(new TabularDatabaseInformationBuilder());
+        builders.add(new ConeInformationBuilder());
+        builders.add(new SiapInformationBuilder());
         builders.add(new ApplicationInformationBuilder());
         builders.add(new ResourceInformationBuilder()); // fallback builder.
     }
@@ -74,6 +76,10 @@ public class MostSuitableBuilder implements InformationBuilder {
 
 /* 
 $Log: MostSuitableBuilder.java,v $
+Revision 1.2  2005/10/18 16:53:34  nw
+refactored common functionality.
+added builders for siap and cone.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

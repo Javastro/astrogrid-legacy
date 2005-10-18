@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformationBuilder.java,v 1.3 2005/10/12 13:30:10 nw Exp $
+/*$Id: TabularDatabaseInformationBuilder.java,v 1.4 2005/10/18 16:53:34 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,23 +38,9 @@ import javax.xml.transform.TransformerException;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
  *
  */
-public class TabularDatabaseInformationBuilder implements InformationBuilder {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(TabularDatabaseInformationBuilder.class);
-
-    /** Construct a new TabularDatabaseInformationBuilder
-     * 
-     */
-    public TabularDatabaseInformationBuilder() {
-        super();
-        try {
-            nsNode = XPathHelper.createNamespaceNode();
-        } catch (Exception e) {
-           logger.error("Could not create static namespace node",e);       
-        }                 
-    }
+public class TabularDatabaseInformationBuilder extends ResourceInformationBuilder {
+  
+ 
 
 public boolean isApplicable(CachedXPathAPI xpath, Element el) {
     try {
@@ -65,35 +51,24 @@ public boolean isApplicable(CachedXPathAPI xpath, Element el) {
         return false;
     }
 }
-
-private    Element nsNode;    
+  
 
     /**
      * @see org.astrogrid.desktop.modules.ag.builders.InformationBuilder#build(org.apache.xpath.CachedXPathAPI, org.w3c.dom.Element)
      */
     public ResourceInformation build(CachedXPathAPI xpath, Element element) throws ServiceException {
         try {
-            URI uri;
-        try {
-            uri = new URI(xpath.eval(element,"vr:identifier",nsNode).str());
-        } catch (URISyntaxException e) {
-            
-            uri = null;
-        }
-        String name = xpath.eval(element,"vr:title",nsNode).str();
-        String description = xpath.eval(element,"vr:content/vr:description",nsNode).str();
-        URL accessURL ;
-        try {
-            accessURL =  new URL(xpath.eval(element,"vr:interface/vr:accessURL",nsNode).str());
-        } catch (MalformedURLException e) {
-            accessURL = null;
-        }        
         NodeList l = xpath.selectNodeList(element,".//tdb:db",nsNode);
         DatabaseBean[] databases = new DatabaseBean[l.getLength()];
         for (int i = 0; i < databases.length; i++) {
             databases[i] = buildBeanFromDatabaseElement(xpath,((Element)l.item(i)));
         }
-        return new TabularDatabaseInformation(uri,name,description,accessURL,databases);
+        return new TabularDatabaseInformation(
+                findId(xpath,element)
+                ,findName(xpath,element)
+                ,findDescription(xpath,element),
+                findAccessURL(xpath,element)
+                ,databases);
         } catch (TransformerException e) {
             throw new ServiceException(e);
         }
@@ -157,6 +132,10 @@ private    Element nsNode;
 
 /* 
 $Log: TabularDatabaseInformationBuilder.java,v $
+Revision 1.4  2005/10/18 16:53:34  nw
+refactored common functionality.
+added builders for siap and cone.
+
 Revision 1.3  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 
