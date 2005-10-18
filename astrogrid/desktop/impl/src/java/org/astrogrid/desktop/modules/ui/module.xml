@@ -158,10 +158,10 @@
 	</component>	
 
 
-	<component name="datascopeLauncher" 
+	<component name="astroscopeLauncher" 
 		implementationClass="org.astrogrid.desktop.modules.ui.DataScopeLauncherImpl" 
 		interfaceClass="org.astrogrid.acr.ui.DataScopeLauncher" >
-		<description>Launch DataScope</description>	
+		<description>Launch AstroScope</description>	
 		<property>
 			<key>system.ui.menu.links</key>
 			<value>		

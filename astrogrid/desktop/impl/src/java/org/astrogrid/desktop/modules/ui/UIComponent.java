@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.4 2005/10/17 10:49:03 KevinBenson Exp $
+/*$Id: UIComponent.java,v 1.5 2005/10/18 08:37:44 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
@@ -21,36 +22,24 @@ import org.apache.commons.logging.LogFactory;
 
 import com.l2fprod.common.swing.StatusBar;
 
-import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 
-import javax.help.CSH;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.event.HyperlinkEvent;
 
 
 /** baseclass for ui components.
@@ -79,87 +68,79 @@ public class UIComponent extends PositionRememberingJFrame {
      */
     protected static final Log logger = LogFactory.getLog(UIComponent.class);
 
-    /** static helper method - qucick way to show a well-formatted error in a popup dialogue
+    /** static helper method - show a well-formatted error in a popup dialogue
      * <p/>
      * classes that extend this class should call {@link #showError(String, Throwable)} instead
      */
-    public static final void showError(Component parent,String msg, Throwable e) {
+    public static final void showError(final Component parent,String msg, Throwable e) {
         logger.info(msg,e); 
         JLabel l = new JLabel();
-        String errorMessage = "<b><font color=\"blue\">" + msg + "</font>" +
-        "<br></br><font color=\"red\">" + e.getMessage() + "</font>";
-        Throwable otherCauses = null;
-        while( (otherCauses = e.getCause()) != null) {
-            errorMessage += "<br><br /><font color=\"red\">" + otherCauses.getMessage() + "</font>";
+        Throwable innermost = e;
+        while (innermost.getCause() != null) {
+            innermost = innermost.getCause();            
         }
-        l.setText("<html><body" + errorMessage + "</body></html>");
+        String eMsg = null;
+        if (innermost.getMessage() != null) { 
+            int endOfPrefix = innermost.getMessage().lastIndexOf("Exception:") + 10; // try to get all nested exception messages
+            eMsg = innermost.getMessage().substring(endOfPrefix);
+        } else { // an exception with no message.
+            eMsg = innermost.getClass().getName(); 
+        }
+        String errorMessage = "<html><body><b>" + msg + 
+        "</b><br><b>Cause:</b> " + eMsg + "<br><font size='smaller'>Many problems are caused services being temporarily unavailable - try again.</font></body></html>";
+        l.setText(errorMessage);
         
-        JLabel t = new JLabel("Please e-mail the detailed text below to astrogrid_help@star.le.ac.uk");
-        JButton errorReport = new JButton("Toggle Detailed Error Report");        
+        int result = JOptionPane.showOptionDialog(parent,l,"An Error Occurred", 
+                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null,
+                new Object[]{"Ok","Details.."}, "Ok"
+                );
+        if (result == 1) { // user wants to see the gory details      
+            StringWriter sw = new StringWriter();        
+            PrintWriter pw = new PrintWriter(sw);
+            pw.println("<html><body><pre>");
+            pw.println("Date of Error: " + (new Date()).toString());
+            pw.println("Within component: " + parent.getClass().getName());
+            // maybe add more header info here - user, etc. - hard to get to.
         
-        JEditorPane resultDisplay = new JEditorPane();
-        resultDisplay.setEditable(false);
-        resultDisplay.setContentType("text/html");
-        StringWriter sw = new StringWriter();
-        sw.write("Config settings:<br></br>");
-        
-        Properties sysProps = System.getProperties();
-        sysProps.list(new PrintWriter(sw));
-        sw.write("Date of Error: " + Calendar.getInstance().toString());
-        sw.write("<br></br><b>The Causing component details:</b> " + parent.toString());
-        sw.write("<br></br>" + errorMessage);
-        e.printStackTrace(new PrintWriter(sw));
-        resultDisplay.setText("<html><b>Please press use your standard Select All and copy and paste this " + 
-                "into an e-mail, typical way is click anywhere in the text box do a CTRL-A then CTRL-C for " +
-                "copy CTRL-V for paste.  E-mail link is "+ 
-                "<a href=\"mailto:astrogrid_help@star.le.ac.uk\">astrogrid_help@star.le.ac.uk</a></b><br></br><pre>" + sw+ "</pre></html>");
-        resultDisplay.setCaretPosition(0);
-        resultDisplay.setEditable(false);
-        JPanel p = new JPanel();
-        p.setLayout(new BoxLayout(p,BoxLayout.Y_AXIS));
-        p.add(l);
-        p.add(t);
-        p.add(errorReport);
-        final JScrollPane errorScrollPane = new JScrollPane(resultDisplay);
-        //errorScrollPane.show(false);
-        
-        errorScrollPane.setPreferredSize(new Dimension(400,150));                          
-        //p.add(js,BorderLayout.SOUTH);
-        errorScrollPane.setVisible(true);
-        p.add(errorScrollPane);
-        
-        errorReport.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(errorScrollPane != null && errorScrollPane.isVisible()) {
-                    errorScrollPane.setVisible(false);
-                }else if(errorScrollPane != null) {
-                    errorScrollPane.setVisible(true);
-                }
-            }            
-         });
-        
-        /*
-        resultDisplay.addHyperlinkListener(new HyperlinkListener() {
-            public void hyperlinkUpdate(HyperlinkEvent e) {
-                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                JEditorPane pane = (JEditorPane) e.getSource();
-                if (e instanceof javax.swing.text.html.HTMLFrameHyperlinkEvent) {
-                    javax.swing.text.html.HTMLFrameHyperlinkEvent  evt = (javax.swing.text.html.HTMLFrameHyperlinkEvent)e;
-                    javax.swing.text.html.HTMLDocument doc = (javax.swing.text.html.HTMLDocument)pane.getDocument();
-                    doc.processHTMLFrameHyperlinkEvent(evt);
-                } else {
-                    try {
-                    pane.setPage(e.getURL());
-                    } catch (Throwable t) {
-                    t.printStackTrace();
-                    }
-                }
+            pw.println();
+            e.printStackTrace(pw);
+
+            if (parent instanceof UIComponent) {            
+                pw.println();
+                UIComponent ui = (UIComponent)parent;
+                try {
+                    Map m = ui.configuration.list();
+                    Properties props = new Properties();
+                    props.putAll(m);
+                    // nggg. clunky.
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    props.save(bos,"Application Configuration");
+                    pw.println(bos.toString());
+                } catch (ACRException ex) {
+                    pw.println("Failed to list configuration");
+                    ex.printStackTrace(pw);
                 }
             }
-        });
-        */
+
+            pw.println();   
+            Properties sysProps = System.getProperties();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            sysProps.save(bos,"System Properties");
+            pw.println(bos.toString());
         
-        JOptionPane.showMessageDialog(parent,p,"Error",JOptionPane.ERROR_MESSAGE);
+            pw.println();
+            pw.println("If you think this is a bug in the Workbench, please email this transcript to");
+            pw.println("astrogrid_help@star.le.ac.uk, along with details of your username and a description");
+            pw.println("of what was happening at the time of the error");
+            
+            // finish off the report
+            pw.println("</pre></body></html>");
+
+            // display report in a dialogue
+            ResultDialog rd = new ResultDialog(parent,sw.toString());
+            rd.setSize(500,300);
+            rd.setVisible(true);
+        }
     }
     private JLabel bottomLabel = null;
     
@@ -333,6 +314,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.5  2005/10/18 08:37:44  nw
+finished error reporting.
+
 Revision 1.4  2005/10/17 10:49:03  KevinBenson
 First draft of the change to the error dialog box.
 
