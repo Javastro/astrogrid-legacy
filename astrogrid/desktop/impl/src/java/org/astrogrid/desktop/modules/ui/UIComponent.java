@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.5 2005/10/18 08:37:44 nw Exp $
+/*$Id: UIComponent.java,v 1.6 2005/10/18 16:52:49 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,8 +81,12 @@ public class UIComponent extends PositionRememberingJFrame {
         }
         String eMsg = null;
         if (innermost.getMessage() != null) { 
-            int endOfPrefix = innermost.getMessage().lastIndexOf("Exception:") + 10; // try to get all nested exception messages
-            eMsg = innermost.getMessage().substring(endOfPrefix);
+            int endOfPrefix = innermost.getMessage().lastIndexOf("Exception:") ; // try to get all nested exception messages
+            if (endOfPrefix > -1) {
+                eMsg = innermost.getMessage().substring(endOfPrefix+ 10);
+            } else {
+                eMsg = innermost.getMessage();
+            }
         } else { // an exception with no message.
             eMsg = innermost.getClass().getName(); 
         }
@@ -314,6 +318,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.6  2005/10/18 16:52:49  nw
+fixes to error-reporting
+
 Revision 1.5  2005/10/18 08:37:44  nw
 finished error reporting.
 
