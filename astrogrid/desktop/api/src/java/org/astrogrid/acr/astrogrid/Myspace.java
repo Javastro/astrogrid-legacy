@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.7 2005/10/13 18:22:32 nw Exp $
+/*$Id: Myspace.java,v 1.8 2005/10/18 07:57:07 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -408,7 +408,7 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
     /** write the contents (data) of a URL location into a myspace resource
      * @param src url to read data from - file:/, http:/ or ftp:/ protocol.
      * @param ivorn the myspace resource to store the data in.
-     * @throws NotFoundException if the myspace resource does not exist
+     * @throws NotFoundException if the folder containing the new myspace resource does not exist
      * @throws InvalidArgumentException if the src is not readable
      * @throws ServiceException if an error occurs while calling the service
      * @throws SecurityException if the user is not permitted to write the contents of this resource
@@ -431,6 +431,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.8  2005/10/18 07:57:07  nw
+ fixed documentation
+
  Revision 1.7  2005/10/13 18:22:32  nw
  fixed getWriteContentURL documentation
 
