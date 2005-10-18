@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.2 2005/09/12 15:21:16 nw Exp $
+/*$Id: XPathHelper.java,v 1.3 2005/10/18 16:53:13 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,10 @@ public class XPathHelper {
     public final static String TDB_NS = "urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3";
     /** namespace for VODataService v0.5*/
     public final static String VODS_NS = "http://www.ivoa.net/xml/VODataService/v0.5";
+    /** namespace for cone search v0.3 */
+    public final static String CS_NS = "http://www.ivoa.net/xml/ConeSearch/v0.3"; 
+    /** namespace for siap v0.7 */
+    public final static String SIA_NS = "http://www.ivoa.net/xml/SIA/v0.7";
     /** Construct a new XPathHelper
      * 
      */
@@ -76,7 +80,10 @@ public class XPathHelper {
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceapd", CEAPD_NS);
 
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:tdb", TDB_NS);     
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vods", VODS_NS);     
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vods", VODS_NS);   
+
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:cs", CS_NS);           
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:sia", SIA_NS); 
         return namespaceNode;
     }
 
@@ -85,6 +92,9 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.3  2005/10/18 16:53:13  nw
+added siap and cone namespaces
+
 Revision 1.2  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 
