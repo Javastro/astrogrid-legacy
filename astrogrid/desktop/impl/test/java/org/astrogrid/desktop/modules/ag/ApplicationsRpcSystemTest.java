@@ -1,4 +1,4 @@
-/*$Id: ApplicationsRpcSystemTest.java,v 1.3 2005/10/13 18:33:05 nw Exp $
+/*$Id: ApplicationsRpcSystemTest.java,v 1.4 2005/10/18 16:52:31 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -429,12 +429,26 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
             throw new RuntimeException(e);
         }
     }
+    /**
+     * @see org.astrogrid.acr.astrogrid.Applications#getRegistryQuery()
+     */
+    public String getRegistryQuery() {
+        v.clear();
+        try {
+            return (String)client.execute("astrogrid.applications.getRegistryQuery",v);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
 
 
 /* 
 $Log: ApplicationsRpcSystemTest.java,v $
+Revision 1.4  2005/10/18 16:52:31  nw
+deprecated a badly-named method
+
 Revision 1.3  2005/10/13 18:33:05  nw
 bugfix to tetst
 

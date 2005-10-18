@@ -715,11 +715,17 @@
 			</return>
 		</method>
 		<method name="getQueryToListApplications">
-			<description>return an adql query that will list details of registered applications</description>
+			<description>deprecated: use getRegistryQuery() instead</description>
 			<return>
 				<description>a query string</description>			
 			</return>
 		</method>
+		<method name="getRegistryQuery">
+			<description>return an adql query that will list details of registered applications</description>
+			<return>
+				<description>a query string</description>			
+			</return>
+		</method>		
 
 		<method name="getApplicationInformation">
 			<description>Return information about an application</description>

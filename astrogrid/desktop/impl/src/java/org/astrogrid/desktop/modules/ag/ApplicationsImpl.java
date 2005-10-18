@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.5 2005/10/17 16:02:10 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.6 2005/10/18 16:53:03 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ag;
 
 
+import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
@@ -25,6 +26,7 @@ import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
@@ -50,7 +52,6 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -59,7 +60,6 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -72,7 +72,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -86,17 +85,16 @@ public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener 
      */
     private static final Log logger = LogFactory.getLog(ApplicationsImpl.class);
     
-    /** Construct a new 
-     * @throws ParserConfigurationException
-     * @throws FactoryConfigurationError
-     * @throws DOMException
+    /** 
      * 
      */
-    public ApplicationsImpl(CommunityInternal community, MyspaceInternal vos, Registry reg, Adql074 adql) throws DOMException, FactoryConfigurationError, ParserConfigurationException{
+    public ApplicationsImpl(CommunityInternal community, MyspaceInternal vos, Registry reg, ACR acr) throws  ACRException{
         this.community = community;
         this.vos = vos;
         this.reg = reg;
-        this.adql = adql;
+        this.adql = (Adql074) acr.getService(Adql074.class); // necessary work-around - can't get at the adql component by constructor-injection
+        // as it belongs in a later module, and so isn't visible from this component. - so fetch manually from the acr
+        // likewise, can't reorder modules - as other components in the later module depend on components in this one.
         community.addUserLoginListener(this);
     }
     protected final MyspaceInternal vos;
@@ -142,7 +140,14 @@ public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener 
             throw new ServiceException(e);
         }              
     }
+    
+    
+    
     public String getQueryToListApplications() {
+        return getRegistryQuery();
+    }
+    
+    public String getRegistryQuery() {
         return "Select * from Registry where " +
     " (@xsi:type like '%CeaApplicationType' or " +
     " @xsi:type like '%CeaHttpApplicationType')" +
@@ -728,6 +733,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.6  2005/10/18 16:53:03  nw
+deprecated a badly-named method
+
 Revision 1.5  2005/10/17 16:02:10  nw
 improved query to find apps in reg
 

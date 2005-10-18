@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.3 2005/08/25 16:59:44 nw Exp $
+/*$Id: Applications.java,v 1.4 2005/10/18 16:51:49 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,13 +65,18 @@ public interface Applications {
     URI[] list() throws ServiceException;
     
 
+
+    /** @deprecated - use {@link #getRegistryQuery} */
+    String getQueryToListApplications(); 
+    
     /** helper method that returns the ADQL query that should be passed to the registry to
      * list all available applications.
      * <p>
      * can be used as a starting point to build up filters, etc.
      * @return an adql query string.
-     */
-    String getQueryToListApplications(); 
+     * @since 1.3
+     */ 
+    String getRegistryQuery();
        
     /** get information for a specific application 
      * @param applicationName name of the application to hunt for
@@ -263,6 +268,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.4  2005/10/18 16:51:49  nw
+ deprecated a badly-named method
+
  Revision 1.3  2005/08/25 16:59:44  nw
  1.1-beta-3
 
