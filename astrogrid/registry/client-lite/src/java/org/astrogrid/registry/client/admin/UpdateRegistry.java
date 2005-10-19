@@ -117,8 +117,9 @@ public class UpdateRegistry implements RegistryAdminService {
          _call = (Call) service.createCall();
          _call.setTargetEndpointAddress(this.endPoint);
          _call.setSOAPActionURI("");
-         _call.setOperationStyle(Style.MESSAGE);
-         _call.setOperationUse(Use.LITERAL);
+         //commented out for upgrading to newer axis
+         //_call.setOperationStyle(Style.MESSAGE);
+         //_call.setOperationUse(Use.LITERAL);
          _call.setEncodingStyle(null);
          return _call;
     }
