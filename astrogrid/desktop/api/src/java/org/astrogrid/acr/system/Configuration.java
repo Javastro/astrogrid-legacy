@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: Configuration.java,v 1.3 2005/10/19 18:20:05 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ public interface Configuration {
      */
     public static final String[] REQUIRED_KEYS = { "org.astrogrid.registry.query.endpoint",
             "org.astrogrid.registry.admin.endpoint",
+            "org.astrogrid.registry.query.altendpoint",
             "jes.job.controller.endpoint"
             };
 
@@ -70,6 +71,9 @@ public interface Configuration {
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.3  2005/10/19 18:20:05  nw
+ added fallback registry endpoint
+
  Revision 1.2  2005/08/12 08:45:15  nw
  souped up the javadocs
 
