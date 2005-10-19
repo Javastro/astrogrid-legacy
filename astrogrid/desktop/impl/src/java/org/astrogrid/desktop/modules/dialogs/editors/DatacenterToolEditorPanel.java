@@ -1,4 +1,4 @@
-/*$Id: DatacenterToolEditorPanel.java,v 1.3 2005/10/12 13:30:10 nw Exp $
+/*$Id: DatacenterToolEditorPanel.java,v 1.4 2005/10/19 18:16:47 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -207,7 +207,7 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
             if (pb ==null) {
                 return new String[]{};
             }
-            if (pb.getType().equalsIgnoreCase("adql")) {
+            if (pb.getType() != null && pb.getType().equalsIgnoreCase("adql")) {
                 results.add(pb.getName());
             }
         }
@@ -429,6 +429,9 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
 
 /* 
 $Log: DatacenterToolEditorPanel.java,v $
+Revision 1.4  2005/10/19 18:16:47  nw
+made more error tolerant
+
 Revision 1.3  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 
