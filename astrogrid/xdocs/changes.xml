@@ -6,6 +6,12 @@
     <body>
     	<release version="(Pending Integration)">
     		<action dev="gtr" type="fix">
+    			<em>Branch axis-gtr-1406:</em> I have upgraded everything to Axis 1.3 and fixed the major problems resulting plus some
+    			small errors in AGINAB. On my test-system, 88.80% of integration tests are passed, compared with 85.19% on head. I think
+    			a number of the remaining failures are bad tests. There are a few FileStore problems and some NPEs in JES that may be real
+    			bugs.
+    		</action>
+    		<action dev="gtr" type="fix">
     			<em>Branch contracts-gtr-1373:</em> I have fixed the <i>schemaLocation</i> attributes in the schemata to be
     			systematically relative to each other. There are now many extra schemata copied from IVOA and imported
     			schemata are taken from our tree not from the IVOA site. There is also a new stylesheet in astrogrid-software-site
@@ -54,7 +60,7 @@
                 Common_KMB_1323, and IntTests_KMB_1097
                 Added keywordSearch in the delegate (search elements though are on the server side.).  External tests added more for
                 IVOA and finally fixed small bug with ListIdentifiers and XquerySearch.                
-			</action>    	
+			</action>    	 
 			<action dev="dave" type="fix"><em>Branch: dave-dev-200507251101</em>
 				Added stress test to trigger OutOfMemoryError in FileStore transfers.
 				Added JDK 1.5 fix for FileStoreOutputStream (client side).
