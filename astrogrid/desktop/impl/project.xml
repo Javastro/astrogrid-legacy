@@ -102,10 +102,22 @@
                 <version>1.2-b1</version>
                 <type>jar</type>
                 <properties>
-                        <jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
+                	<jnlp.jar>true</jnlp.jar>
+					 	<dist.bundle>true</dist.bundle>			
                 </properties>
         </dependency>
+        <dependency>
+                <groupId>prefuse</groupId>
+                <artifactId>prefuse</artifactId>
+                <version>1.0-alpha</version>
+                <type>jar</type>
+                <properties>
+                	<jnlp.jar>true</jnlp.jar>
+					 	<dist.bundle>true</dist.bundle>			
+                </properties>
+        </dependency>
+        
+        
 	<!-- wonder if i can remove this yet? -->
         <dependency>
                 <artifactId>xstream</artifactId>
@@ -334,16 +346,24 @@
 		 <dist.bundle>true</dist.bundle>		 
 	 </properties>
  </dependency>
+ <!--
  <dependency>
 	 <artifactId>jdic_stub_${os.name}</artifactId>
 	 <groupId>jdic</groupId>
 	 <version>0.9.1</version>
  </dependency>
+ -->
+ <dependency>
+	 <artifactId>jdic_stub_Windows</artifactId>
+	 <groupId>jdic</groupId>
+	 <version>0.9.1</version>
+ </dependency>
+ 
  <!-- NB - this is the jar of native libs, that needs to be locally installed. 
       not a real dependency as such - and not needed for development
       -->
  <dependency>
-	 <artifactId>jdic_native_${os.name}_${os.arch}</artifactId>
+	 <artifactId>jdic_native_Windows_i386</artifactId>
 	 <groupId>jdic</groupId>
 	 <version>0.9.1</version>
  </dependency>
