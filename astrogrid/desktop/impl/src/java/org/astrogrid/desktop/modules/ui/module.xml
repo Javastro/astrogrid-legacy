@@ -158,6 +158,37 @@
 	</component>	
 
 
+	<component name="astroscope" 
+		implementationClass="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" 
+		interfaceClass="org.astrogrid.acr.ui.AstroScopeLauncher" >
+		<description>Launch AstroScope</description>	
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.datascopeLauncher" />									
+			</value>
+		</property>			
+		<property>
+			<key>icon</key>
+			<value>thread_view.gif</value><!-- use nvo icon here -->
+		</property>				
+		<method name="show">
+			<description>Run the Launcher</description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run..</value>
+				<property>
+					<key>icon</key>
+					<value>run_tool.gif</value>
+				</property>					
+			</property>
+		</method>
+		<!-- needed?? -->
+		<method name="hide">
+			<description>Hide the Monitor GUI </description>
+		</method>
+	</component>	
+
 	<component name="astroscopeLauncher" 
 		implementationClass="org.astrogrid.desktop.modules.ui.DataScopeLauncherImpl" 
 		interfaceClass="org.astrogrid.acr.ui.DataScopeLauncher" >
@@ -187,8 +218,7 @@
 		<method name="hide">
 			<description>Hide the Monitor GUI </description>
 		</method>
-	</component>	
-
+	</component>
 		
 	<component name="jobMonitor" 
 		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
