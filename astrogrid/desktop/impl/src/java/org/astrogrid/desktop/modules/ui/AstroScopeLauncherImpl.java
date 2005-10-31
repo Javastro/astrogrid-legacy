@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.1 2005/10/26 15:53:15 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.2 2005/10/31 12:49:38 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,36 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.dialogs.RegistryChooser;
+import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.nvo.Cone;
+import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.AstroScopeLauncher;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.RowSequence;
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.votable.TableElement;
+import uk.ac.starlink.votable.VOElement;
+import uk.ac.starlink.votable.VOElementFactory;
+import uk.ac.starlink.votable.VOStarTable;
+import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
+import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.EdgeItem;
@@ -18,177 +48,119 @@ import edu.berkeley.guir.prefuse.ItemRegistry;
 import edu.berkeley.guir.prefuse.NodeItem;
 import edu.berkeley.guir.prefuse.VisualItem;
 import edu.berkeley.guir.prefuse.action.ActionMap;
+import edu.berkeley.guir.prefuse.action.ActionSwitch;
 import edu.berkeley.guir.prefuse.action.RepaintAction;
 import edu.berkeley.guir.prefuse.action.animate.ColorAnimator;
+import edu.berkeley.guir.prefuse.action.animate.LocationAnimator;
 import edu.berkeley.guir.prefuse.action.animate.PolarLocationAnimator;
 import edu.berkeley.guir.prefuse.action.assignment.ColorFunction;
 import edu.berkeley.guir.prefuse.action.assignment.Layout;
+import edu.berkeley.guir.prefuse.action.filter.Filter;
 import edu.berkeley.guir.prefuse.action.filter.GraphFilter;
 import edu.berkeley.guir.prefuse.action.filter.TreeFilter;
+import edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter;
 import edu.berkeley.guir.prefuse.activity.ActionList;
 import edu.berkeley.guir.prefuse.activity.SlowInSlowOutPacer;
+import edu.berkeley.guir.prefuse.collections.DOIItemComparator;
+import edu.berkeley.guir.prefuse.event.FocusEvent;
+import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.DefaultFocusSet;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.DefaultEdge;
+import edu.berkeley.guir.prefuse.graph.DefaultTree;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
+import edu.berkeley.guir.prefuse.graph.Edge;
+import edu.berkeley.guir.prefuse.graph.Entity;
 import edu.berkeley.guir.prefuse.graph.Graph;
-import edu.berkeley.guir.prefuse.graph.io.XMLGraphReader;
+import edu.berkeley.guir.prefuse.graph.Node;
+import edu.berkeley.guir.prefuse.graph.Tree;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
+import edu.berkeley.guir.prefuse.graph.event.GraphEventAdapter;
 import edu.berkeley.guir.prefuse.render.DefaultEdgeRenderer;
+import edu.berkeley.guir.prefuse.render.DefaultNodeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultRendererFactory;
 import edu.berkeley.guir.prefuse.render.Renderer;
+import edu.berkeley.guir.prefuse.render.RendererFactory;
 import edu.berkeley.guir.prefuse.render.ShapeRenderer;
 import edu.berkeley.guir.prefuse.render.TextItemRenderer;
 import edu.berkeley.guir.prefuse.util.ColorMap;
 import edu.berkeley.guir.prefuse.util.StringAbbreviator;
+import edu.berkeley.guir.prefusex.controls.AnchorUpdateControl;
 import edu.berkeley.guir.prefusex.controls.DragControl;
 import edu.berkeley.guir.prefusex.controls.FocusControl;
+import edu.berkeley.guir.prefusex.controls.MultiSelectFocusControl;
 import edu.berkeley.guir.prefusex.controls.NeighborHighlightControl;
 import edu.berkeley.guir.prefusex.controls.PanControl;
+import edu.berkeley.guir.prefusex.controls.SubtreeDragControl;
 import edu.berkeley.guir.prefusex.controls.ToolTipControl;
 import edu.berkeley.guir.prefusex.controls.ZoomControl;
 import edu.berkeley.guir.prefusex.controls.ZoomingPanControl;
+import edu.berkeley.guir.prefusex.distortion.Distortion;
+import edu.berkeley.guir.prefusex.distortion.FisheyeDistortion;
+import edu.berkeley.guir.prefusex.force.DragForce;
+import edu.berkeley.guir.prefusex.force.ForceSimulator;
+import edu.berkeley.guir.prefusex.force.NBodyForce;
+import edu.berkeley.guir.prefusex.force.SpringForce;
+import edu.berkeley.guir.prefusex.layout.BalloonTreeLayout;
+import edu.berkeley.guir.prefusex.layout.ForceDirectedLayout;
+import edu.berkeley.guir.prefusex.layout.IndentedTreeLayout;
 import edu.berkeley.guir.prefusex.layout.RadialTreeLayout;
-import edu.berkeley.guir.prefuse.graph.Tree;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
-import edu.berkeley.guir.prefuse.graph.DefaultGraph;
-import edu.berkeley.guir.prefuse.render.DefaultNodeRenderer;
-import edu.berkeley.guir.prefusex.controls.MultiSelectFocusControl;
+import edu.berkeley.guir.prefusex.layout.ScatterplotLayout;
 import edu.berkeley.guir.prefusex.layout.SquarifiedTreeMapLayout;
-import edu.berkeley.guir.prefuse.graph.DefaultTree;
-import edu.berkeley.guir.prefuse.graph.Entity;
-import edu.berkeley.guir.prefuse.graph.DefaultEdge;
-import edu.berkeley.guir.prefuse.graph.Edge; 
-import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
-import edu.berkeley.guir.prefuse.graph.DefaultNode;
-import edu.berkeley.guir.prefuse.graph.GraphLib;
-import edu.berkeley.guir.prefuse.graph.Node;
-
-import uk.ac.starlink.table.StarTable;
-import uk.ac.starlink.votable.VOElementFactory;
-import uk.ac.starlink.votable.VOElement;
-import uk.ac.starlink.table.ColumnInfo;
-import uk.ac.starlink.table.RowSequence;
-import uk.ac.starlink.votable.VOStarTable;
-import uk.ac.starlink.votable.TableElement;
-
-import javax.swing.text.EditorKit;
-import javax.swing.text.html.HTMLEditorKit;
-
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.dialogs.RegistryChooser;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.ui.AstroScopeLauncher;
-import org.astrogrid.acr.ui.JobMonitor;
-import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.nvo.Cone;
-
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
-import org.astrogrid.desktop.modules.system.UIInternal;
-
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.filemanager.client.FileManagerNode;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.picocontainer.PicoContainer;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.HeadlessException;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipInputStream;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Iterator;
- 
+import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Vector;
-import java.util.Comparator;
-
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.JFileChooser;
-import javax.swing.JCheckBox;
-import javax.swing.JTable;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-
-import java.io.IOException;
-
-import org.apache.axis.utils.XMLUtils;
+import javax.swing.tree.TreePath;
 
 
 /** Implementation of the Datascipe launcher
- *
+ * 
+ * @todo replace JTree with prefuse Display of selection site? - and vizual clue to selected items in viz(color, or something). 
+ * @todo debug and refine vizualizaitons.
+ * @todo display thumbnails - there's a TextImageNodeRenderer thingie that sounds the job for this. most responses from siap services have the 
+ * same coords anyhow - so a thumbnail would be better.
+ * @todo saving of results.
+  # @todo fix selecton - as the moment the selection model doesn't seem to be doing anything - maye go back to AstroScopeMultiSelectionControl
  */
 public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLauncher, ActionListener {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
 
     //components used in astrosope
     
@@ -204,29 +176,22 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     //cone object for querying cone services.
     private final Cone cone;
     
-    private final Component parentComponent;
     private final Registry reg;
-    private UIComponent uc;
-    private Tree defaultTree;
     
     //The visual graph that holds all the nodes in the display.
-    private Graph graph;
+    private Tree tree;
+
     
-    //the default sia and cone nodes children of root "Astroscope"
-    private DefaultNode siaNode;
-    private DefaultNode coneNode;
+ //the default sia and cone nodes children of root "Astroscope"
+ private TreeNode siaNode;
+ private TreeNode coneNode; 
     
     //checkboxes to determine if you want to query on sia and/or cone.
     private JCheckBox siaCheckBox;
     private JCheckBox coneCheckBox;    
     
-    /*
-     * RETHINK:
-     * variable used as a counter to determine number of threads to start. 
-     * A Query Background will add to this counter and the display will decrement.
-     * Which is not quite nice.
-     */
-    int backgroundCounter = 0;
+    // array of vizualizations we're using.
+    private final Vizualization[] vizualizations;
 
     //hashtable that holds all the id's with values of urls to votable results.
     private Hashtable storageTable;
@@ -236,8 +201,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     private JTextField posText = null;
     private JTextField regionText = null;
     private JButton advancedButton = null;
-    private JButton submitButton = null;            
-    private ActionList graphLayout = null;
+    private JButton submitButton = null;           
     private DefaultListModel selectedListModel = null;
     protected final ResourceChooserInternal chooser;
     private JTree selectTree;
@@ -248,6 +212,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     JButton saveButton;
     JButton selectAllButton;
     
+    /** configurable thread-pool - used to perform the queries and background updates. */
+    private PooledExecutor executor;
    
     /**
      * 
@@ -270,10 +236,28 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         this.siap = siap;
         this.cone = cone;
         this.reg = reg;
-        this.uc = this;
         this.chooser = chooser;
-        this.parentComponent = ui.getComponent();
         this.storageTable = new Hashtable();
+        
+        // configure vizualizations.
+        vizualizations = new Vizualization[]{
+                new WindowedRadial()
+                , new FisheyeWindowedRadial()
+                , new Balloon()
+            //    ,new TreeMap() -- seems to throw exceptions.
+              // ,new ZoomPan()// - dodgy and ugly
+             , new ConventionalTree()  // not working yet.
+          //  , new Plot() // doesn't seem to layout quite right. - evertything in same place. (as coords are always the same)
+             //,  new Force() //- takes too long to settle.               
+        };
+        // register each vizualization as a listener
+        for (int i = 0; i < vizualizations.length; i++) {
+            getTree().addGraphEventListener(vizualizations[i]);
+        }
+        
+        // configure execution system
+        this.executor = new PooledExecutor(new LinkedQueue()); // infinite task buffer
+        this.executor.setMinimumPoolSize(5); // always have 5 threads ready to go.
         this.setSize(700, 700);  
         JPanel pane = getJContentPane();
         pane.add(makeSearchPanel(),BorderLayout.WEST);
@@ -321,7 +305,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                              }                             
                          }//else
                          */
-                         System.out.println("Save Data");
+                        logger.debug("construct() - Save Data");
                          Enumeration depthEnum;
                          Enumeration storageLookUp;
                          Iterator nodeIterator;
@@ -343,13 +327,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                              //be sure to add an actual filename to that directory.
                                              //should be the name of treeData.toString() with special characters and spaces
                                              //set to "_" or something valid.
-                                             System.out.println("the url found = " + url);
+                                            logger.debug("construct() - the url found = " + url);
                                          }
                                      }//if
                                  }
                              }else {
                                  //they selected everything or sia or cone.
-                                 nodeIterator = graph.getNodes();
+                                 nodeIterator = tree.getNodes();
                                  Node nd = null;
                                  if(tn.toString().equals("All")) {
                                      while(nodeIterator.hasNext()) {
@@ -357,7 +341,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                          key = nd.getAttribute("id");
                                          if(key != null && key.trim().length() > 0) {
                                              url = (URL)storageTable.get(key);
-                                             System.out.println("the url = " + url);
+                                            logger.debug("construct() - the url = " + url);
                                              //TODO
                                              //now copy into the selected directory
                                              //be sure to add an actual filename to that directory.
@@ -375,7 +359,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                         if(key != null && key.trim().length() > 0 &&
                                            key.startsWith(lookup)) {
                                             url = (URL)storageTable.get(key);
-                                            System.out.println("the url = " + url);
+                                            logger.debug("construct() - the url = " + url);
                                             //TODO
                                             //now copy into the selected directory
                                             //be sure to add an actual filename to that directory.
@@ -427,7 +411,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         }                             
                     }//else
                     */
-                    System.out.println("Save Images");
+                    logger.debug("construct() - Save Images");
                     Enumeration depthEnum;
                     Enumeration storageLookUp;
                     Iterator nodeIterator;
@@ -443,7 +427,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                 if(!dmTreeNode.isRoot()) {
                                     TreeNodeData treeData = (TreeNodeData)dmTreeNode.getUserObject();
                                     if(treeData.getURL() != null  && treeData.getURL().trim().length() > 0) {                                    
-                                        System.out.println("the url found = " + treeData.getURL());
+                                        logger.debug("construct() - the url found = "
+                                                + treeData.getURL());
                                     }//if
                                     if(treeData.getID() != null && dmTreeNode.getChildCount() == 0) {
                                         //Darn they chosen just a service.
@@ -455,13 +440,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             //they selected everything or sia or cone.
                             //At the moment only SIA is available so it is the same as All.
                             //Just grab all the url attributes and start saving.
-                            nodeIterator = graph.getNodes();                            
+                            nodeIterator = tree.getNodes();                            
                             while(nodeIterator.hasNext()) {
                                 Node nd = (Node)nodeIterator.next();
                                 key = nd.getAttribute("url");
                                 if(key != null && key.trim().length() > 0) {
                                     url = new URL(key);
-                                    System.out.println("the url = " + url);
+                                    logger.debug("construct() - the url = " + url);
                                     //TODO
                                     //now copy into the selected directory
                                     //be sure to add an actual filename to that directory.
@@ -481,6 +466,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     /**
      * Verify the entry in the position text box is a position.  If not it should try to look it up. 
      * @return
+     * @todo refactor so that error is reported to user.
      */
     private String getPosition() {
         String pos = posText.getText().trim();
@@ -488,7 +474,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         if(pos.matches(expression)) {            
             return pos;            
         }
-        System.out.println("does not match expression see if it is an object to be looked up");
+        logger
+                .debug("getPosition() - does not match expression see if it is an object to be looked up");
         //TODO: Go and look up object.
         throw new IllegalArgumentException("No position found at the moment, expression did not match");
         
@@ -498,6 +485,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * Extracts out the ra of a particular position in the form of a ra,dec
      * @param position
      * @return
+     * @todo refactor -report error to user - or prevent invalid input in the first place.
      */
     private double getRA(String position) {
         String []val = position.split(",");
@@ -523,6 +511,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     /**
      * Checks to see if the regiion is in the form of ra,dec which will need to be parsed.
      * @return
+     * @todo refactor
      */
     private boolean needsParsedRegion() {
         String region = regionText.getText().trim();
@@ -550,9 +539,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         JPanel scopeMain = new JPanel();
         scopeMain.setLayout(new GridLayout(4,2));
 
-        siaCheckBox = new JCheckBox("SIA Services");
+        siaCheckBox = new JCheckBox("Images");
         siaCheckBox.setSelected(true);
-        coneCheckBox = new JCheckBox("Cone Services");
+        coneCheckBox = new JCheckBox("Catalogues");
         coneCheckBox.setSelected(true);
         
         
@@ -584,6 +573,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         selectTextArea.setBackground(bottomPanel.getBackground());
         selectTextArea.setEditable(false);
         //JScrollPane listScrollPane = new JScrollPane(selectTextArea);
+        //@todo replace this tree with a prefuse tree display.
         selectRootNode = new DefaultMutableTreeNode("Selected Data");
         treeModel = new DefaultTreeModel(selectRootNode);
         selectTree = new JTree(treeModel); 
@@ -603,14 +593,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      */
     private JPanel makeCenterPanel() {
         
-        //Also available for the display.
-        //createInitialDisplayForRadial()
-        //createInitialDisplayForTreeMap()
-        Display display = createInitialDisplayForZoomPan();
         
+        JTabbedPane alternatives = new JTabbedPane();
+        for (int i = 0; i < vizualizations.length; i++) {
+            alternatives.addTab(vizualizations[i].getName(),vizualizations[i].getDisplay());
+        }
+ 
         JPanel wrapPanel = new JPanel();
         wrapPanel.setLayout(new BoxLayout(wrapPanel,BoxLayout.Y_AXIS));
-        wrapPanel.add(display);
+        wrapPanel.add(alternatives);
         
         
         JPanel southCenterPanel = new JPanel();
@@ -637,46 +628,302 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         return wrapPanel;        
     }
     
+    
+    /** builds basic structure of the graph */
+    private Tree getTree() {
+        if (tree == null) {
+            rootNode = new DefaultTreeNode();
+            rootNode.setAttribute("label","Search Results");
+            rootNode.setAttribute("ra","0");
+            rootNode.setAttribute("dec","0");
+                      
+            siaNode = new DefaultTreeNode();
+            siaNode.setAttribute("label","Images");
+            siaNode.setAttribute("ra","0");
+            siaNode.setAttribute("dec","0");
+       
+            coneNode  = new DefaultTreeNode();
+            coneNode.setAttribute("label","Catalogs");
+            coneNode.setAttribute("ra","0");
+            coneNode.setAttribute("dec","0");
+            
+            rootNode.addChild(new DefaultEdge(rootNode,siaNode));
+            rootNode.addChild(new DefaultEdge(rootNode,coneNode));
+               
+            tree = new DefaultTree(rootNode);
+            
+        }
+        return tree;
+    }
+    
+    /** removes previous results, just leaving the skeleton */
+    private void clearTree() {
+        // reset selection too.
+        getSelectionFocusSet().clear();
+        for (Iterator i = getTree().getNodes(); i.hasNext(); ) {
+            Node n = (Node)i.next();
+            if (n != siaNode && n != coneNode && n != rootNode) {
+                getTree().removeNode(n);
+            }
+        }
+    }
+    
+    /** strategy class - subclasses encapsulate one vizualization - private item registry
+     * (as this contains the dispplay-specific info), but a shared tree of data objects - so 
+     * each viz provides a different 'view' of the same data.
+     * 
+
+     *
+     */
+    
+    private abstract class Vizualization extends GraphEventAdapter {
+        public Vizualization(String name) {
+            this.name = name;
+        }
+        public final String getName() {
+            return name;
+        }
+        final private String name;
+    private ItemRegistry itemRegistry;
+    /** creates the default registry 
+     * 
+     * pre-initializes a selection called 'selection'
+     * */
+    protected final ItemRegistry getItemRegistry() {
+        if (itemRegistry == null) {
+            itemRegistry = new ItemRegistry(getTree());
+            itemRegistry.getFocusManager().putFocusSet(FocusManager.SELECTION_KEY,getSelectionFocusSet());
+            
+            TextItemRenderer nodeRenderer = new TextItemRenderer();
+            nodeRenderer.setMaxTextWidth(75);
+            nodeRenderer.setRoundedCorner(8,8);
+            nodeRenderer.setTextAttributeName("label");
+            
+            Renderer edgeRenderer = new DefaultEdgeRenderer();
+            itemRegistry.setRendererFactory(new DefaultRendererFactory(nodeRenderer, edgeRenderer));            
+        }
+        return itemRegistry;
+    }
+    /** access the display for this vizualization */
+    public abstract Display getDisplay();
+    
+    }
+    
+    /** focus set used to maintain list of nodes selected for download.
+     * focus set is shared between vizualizaitons- so changes in one will be seen in others.
+     */
+    private FocusSet selectionFocusSet;
+
+    private TreeNode rootNode;
+    private FocusSet getSelectionFocusSet() {
+        if (selectionFocusSet == null) {
+            selectionFocusSet = new DefaultFocusSet();
+            //@todo add a listener to this, to oupdate tree.
+            selectionFocusSet.addFocusListener(new FocusListener() {                
+                public void focusChanged(FocusEvent arg0) {
+                    System.err.println(selectionFocusSet.size());
+                }
+            });
+        }
+        return selectionFocusSet;
+    }
+    
+  
+    
+    /*
+    private AstroScopeMultiSelectionControl asms;
+    private ControlAdapter getSelectionControl() {
+        if (asms == null) {
+            asms = new AstroScopeMultiSelectionControl(getItemRegistry());
+        }
+        return asms;
+    }*/
+        
+    
+/** vizualization that hides some of the data some of the time 
+ * based on edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter
+ * 
+ * needs to have it's nodes spaced out more.
+ * 
+ * */
+    public class Balloon extends Vizualization {
+        public Balloon() {
+            super("Balloon");            
+    }
+        private Display display;
+        private ActionList filter;
+        public Display getDisplay() {
+            if (display == null) {
+                // create display and filter
+                ItemRegistry registry =getItemRegistry();
+                registry.setItemComparator(new DOIItemComparator());
+                display = new Display();
+
+                // initialize renderers
+                TextItemRenderer nodeRenderer = new TextItemRenderer();
+                nodeRenderer.setMaxTextWidth(75);
+                nodeRenderer.setAbbrevType(StringAbbreviator.NAME);
+                nodeRenderer.setRoundedCorner(8,8);
+                nodeRenderer.setTextAttributeName("label");
+                
+                Renderer nodeRenderer2 = new DefaultNodeRenderer();
+                Renderer edgeRenderer = new DefaultEdgeRenderer();
+                
+                registry.setRendererFactory(new SizeVaryingRenderFactory(
+                    nodeRenderer, nodeRenderer2, edgeRenderer));
+                
+                // initialize action lists
+                filter = new ActionList(registry);
+                filter.add(new WindowedTreeFilter(-4,true));
+                filter.add(new BalloonTreeLayout());
+                filter.add(new DemoColorFunction(4));
+                
+                ActionList update = new ActionList(registry);
+                update.add(new DemoColorFunction(4));
+                update.add(new RepaintAction());
+                
+                ActionList animate = new ActionList(registry, 1500, 20);
+                animate.setPacingFunction(new SlowInSlowOutPacer());
+                animate.add(new LocationAnimator());
+                animate.add(new ColorAnimator());
+                animate.add(new RepaintAction());
+                animate.alwaysRunAfter(filter);
+                
+                // initialize display
+                display.setItemRegistry(registry);
+                display.setSize(400,400);
+                //display.setBackground(Color.WHITE);
+                display.addControlListener(new FocusControl(filter));
+                display.addControlListener(new SubtreeDragControl());
+                display.addControlListener(new PanControl());
+                display.addControlListener(new ZoomControl());
+                display.addControlListener(new NeighborHighlightControl(update));
+                display.addControlListener(new ToolTipControl("tooltip"));
+                display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
+            }
+           return display;
+        }
+        // refresh display when new item added to results.
+        public void nodeAdded(Graph arg0, Node arg1) {
+            filter.runNow();
+        }
+        /**
+         * A RendererFactory instance that assigns node renderers of varying size
+         * in response to a node's depth in the tree.
+         */        
+        public class SizeVaryingRenderFactory implements RendererFactory {
+            private Renderer nodeRenderer1;
+            private Renderer nodeRenderer2;
+            private Renderer edgeRenderer;
+            public SizeVaryingRenderFactory(Renderer nr1, Renderer nr2, Renderer er) {
+                nodeRenderer1 = nr1;
+                nodeRenderer2 = nr2;
+                edgeRenderer = er;
+            } //
+            public Renderer getRenderer(VisualItem item) {
+                if ( item instanceof NodeItem ) {
+                    int d = ((NodeItem)item).getDepth();
+                    if ( d > 1 ) {
+                        int r = (d == 2 ? 5 : 1);
+                        ((DefaultNodeRenderer)nodeRenderer2).setRadius(r);
+                        return nodeRenderer2;
+                    } else {
+                        return nodeRenderer1;
+                    }
+                } else if ( item instanceof EdgeItem ) {
+                    return edgeRenderer;
+                } else {
+                    return null;
+                }
+            } //
+        } // end of inner class DemoRendererFactory
+                
+    }// end bubble;
+   
+    
+
+    /** variation of the windowed radial, using fisheye distortion. also shows an overview in the corner 
+     * 
+     * bit jerky. fisheye is proabbly overkill.
+     * 
+     * */
+    public class FisheyeWindowedRadial extends WindowedRadial {
+        public FisheyeWindowedRadial() {
+            super("Fisheye radial");
+        }
+    public Display getDisplay() {
+        if (display == null) {
+            display = super.getDisplay();
+            Display overview = new Display(getItemRegistry());
+            overview.setBorder(
+                    BorderFactory.createLineBorder(Color.BLACK, 1));
+            overview.setSize(50,50);
+            overview.zoom(new Point2D.Float(0,0),0.1);
+            display.add(overview);
+            
+            Distortion feye = new FisheyeDistortion();
+            ActionList distort = new ActionList(getItemRegistry());
+            distort.add(feye);
+            distort.add(new RepaintAction());
+            AnchorUpdateControl auc = new AnchorUpdateControl(feye,distort);
+            display.addMouseListener(auc);
+            display.addMouseMotionListener(auc);       
+        }
+        return display;
+    }  
+    }
+    
     /**
      * Uses the Prefuse Radial Layout for display along with a little bit of Animation to it. Uses
-     * the text item renderer to see text boxes.  Very nice, but for a small display screen we just have
-     * to much data.
+     *windowing filter - displays nearer neighbours, not entire graph.
+     *based on node type, adjusts the 'window' size - so we don't get an explosion of nodes on the display
+     * based on edu.berkeley.guir.prefuse.demos.RadialGraphDemo
      * @return
      */
-    private Display createInitialDisplayForRadial() {
+
+    public class WindowedRadial extends Vizualization {
+    /** Construct a new Radial
+         * @param name
+         */
+        public WindowedRadial() {
+            super("Windowed Radial");
+        }
+        public WindowedRadial(String name) {
+            super(name);
+        }
+        protected Display display;
+        protected ActionList graphLayout;
         
-        graph = new DefaultGraph();
-        ItemRegistry registry = new ItemRegistry(graph);
-        
-        //root = new DefaultTreeNode();
-        DefaultNode root = new DefaultNode();
-        root.setAttribute("label","AstroSope");
-        
-        siaNode = new DefaultNode();
-        siaNode.setAttribute("label","SIA");
-        siaNode.setAttribute("tooltip","<html><p>This ia very long tool tip attribute for sia<br> to see how it displays on the screen.<br> Hopefully it displays good</p></html>");
-        
-        //Edge defaultEdge = new DefaultEdge(root,db);
-        //root.addEdge(defaultEdge);
-        //defaultTree = new DefaultTree();
-        graph.addNode(root);
-        graph.addNode(siaNode);
-        //graph.addEdge(root,siaNode);
-        graph.addEdge(new DefaultEdge(root,siaNode));
-        
-        Display display = new Display(registry);
-        registry.addDisplay(display);
-                
-        TextItemRenderer nodeRenderer = new TextItemRenderer();
-        nodeRenderer.setMaxTextWidth(75);
-        nodeRenderer.setRoundedCorner(8,8);
-        nodeRenderer.setTextAttributeName("label");
-        
-        Renderer edgeRenderer = new DefaultEdgeRenderer();
-        registry.setRendererFactory(new DefaultRendererFactory(nodeRenderer, edgeRenderer));
+    public Display getDisplay() {
+            if (display == null) {
+        ItemRegistry registry = getItemRegistry();
+         display = new Display(registry);
         
             graphLayout = new ActionList(registry);
-            graphLayout.add(new TreeFilter(true));
+            
+            // two different types of filter - only vary in window size.
+            Filter[] filters = new Filter[] {
+                    new WindowedTreeFilter(-2,true)
+                    ,new WindowedTreeFilter(-1,true)
+            };            
+                    
+            // switch between the two filters
+            final ActionSwitch filterSwitch = new ActionSwitch(filters,0);
+            
+            // add a listener, that selects the correct filter based on the current node.
+            registry.getDefaultFocusSet().addFocusListener(new FocusListener() {
+                public void focusChanged(FocusEvent event) {
+                    if (event.getEventType() == FocusEvent.FOCUS_SET || event.getEventType() == FocusEvent.FOCUS_ADDED) {
+                        if (event.getFirstAdded() == siaNode || event.getFirstAdded() == coneNode) {
+                            filterSwitch.setSwitchValue(1);
+                        } else {
+                            filterSwitch.setSwitchValue(0);
+                        }
+                    }
+                }
+            });
+            
+            graphLayout.add(filterSwitch);
             graphLayout.add(new RadialTreeLayout());
             graphLayout.add(new DemoColorFunction(3));
         
@@ -690,81 +937,211 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
            animate.add(new ColorAnimator());
            animate.add(new RepaintAction());
            animate.alwaysRunAfter(graphLayout);
-
            
-           // initialize display 
+           // add jitter to layout nodes better. could maybe make the jitter larger - makes the nodes less
+           // likely to overlap.
+           ForceSimulator fsim = new ForceSimulator();
+           fsim.addForce(new NBodyForce(-0.1f,15f,0.5f));
+           fsim.addForce(new DragForce());
+           
+           ActionList forces = new ActionList(registry,1000);
+           forces.add(new ForceDirectedLayout(fsim,true));
+           forces.add(new RepaintAction());
+           forces.alwaysRunAfter(animate);
+
            display.setItemRegistry(registry);
            display.setSize(400,400);
-           //display.setBackground(Color.WHITE);
            
            //for radial tree
            display.addControlListener(new FocusControl(graphLayout));
            display.addControlListener(new FocusControl(0,FocusManager.HOVER_KEY));
-           display.addControlListener(new DragControl());
-           display.addControlListener(new PanControl());
-           display.addControlListener(new ZoomControl());
-           //display.addControlListener(new ToolTipControl("tooltip"));
-           //display.addControlListener(new AstroScopeMultiSelectionControl(registry));           
+           display.addControlListener(new DragControl(false,true));
+           display.addControlListener(new PanControl(false));
+           display.addControlListener(new ZoomControl(false));
+           display.addControlListener(new ToolTipControl("tooltip"));   
            display.addControlListener(new NeighborHighlightControl(update));
+           display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));           
            
            registry.getFocusManager().putFocusSet(
                    FocusManager.HOVER_KEY, new DefaultFocusSet());
-           
-           coneNode  = new DefaultNode();
-           coneNode.setAttribute("label","Cone");
-           
-           graph.addNode(coneNode);
-           //graph.addEdge(root,coneNode);
-           graph.addEdge(new DefaultEdge(root,coneNode));
-           graphLayout.runNow();
+            }
            return display;
     }
+
+    // refresh display when new item added
+    public void nodeAdded(Graph arg0, Node arg1) {
+        graphLayout.runNow();
+    }
+    } /// end windowed radial vizualization
     
-    private ActionMap actionMap = new ActionMap();
+    
+    /** force-based layout
+     * based on edu.berkeley.guir.prefuse.demos.ForceDemo
+     * 
+     * interersting to zoom out and watch, but takes forever to settle and eats the CPU.
+     * maybe useable if I could understand what params to set in the force sim to make it settle faster.
+     * @author Noel Winstanley nw@jb.man.ac.uk 31-Oct-2005
+     *
+     */
+    public class Force extends Vizualization {
+        public Force() {
+            super("Force");
+        }
+        private Display display;
+        private ActionList graphLayout;        
+
+        // refresh display when new item added
+        public void nodeAdded(Graph arg0, Node arg1) {
+            graphLayout.runNow();
+        }
+
+        public Display getDisplay() {
+            if (display == null) {
+                ItemRegistry registry = getItemRegistry();
+                display = new Display(registry);
+        
+                
+                graphLayout = new ActionList(registry,-1,20);
+                graphLayout.add(new TreeFilter());
+                ForceSimulator fsim = new ForceSimulator();
+                fsim.addForce(new NBodyForce(-0.4f,-1f,0.9f));
+                fsim.addForce(new SpringForce(4E-5f,75f));
+                fsim.addForce(new DragForce(-0.0005f)); // shrunk by a factor of 10 - hopefully things will settle faster.
+                
+                graphLayout.add(new ForceDirectedLayout(fsim,false,false));
+                graphLayout.add(new DemoColorFunction(3));
+                graphLayout.add(new RepaintAction());
+                display.addControlListener(new NeighborHighlightControl());
+                display.addControlListener(new DragControl(false,true));
+                display.addControlListener(new FocusControl(0));
+                display.addControlListener(new PanControl(false));
+                display.addControlListener(new ZoomControl(false));
+                display.addControlListener(new ToolTipControl("tooltip"));   
+                display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));                
+            }
+            return display;
+        }        
+    }// end force vizualization.
+    
+    /** normal tree layout.
+     * 
+     * having a bit of trouble getting this to show anything.
+     * pity - would like to use this on the left-hand-side instead of the current JTree - would be
+     * nice to have nodes looking the same, and then no need for a separate datamodel for the JTree
+     * 
+     * 
+     *  */
+    public class ConventionalTree extends Vizualization {
+
+        public ConventionalTree() {
+            super("Tree");
+        }
+        protected Display display;
+        protected ActionList graphLayout;
+        public void nodeAdded(Graph arg0, Node arg1) {
+            graphLayout.runNow();
+        }
+        
+        public Display getDisplay() {
+            if (display == null) {
+                ItemRegistry registry = getItemRegistry();
+                display = new Display(registry);
+                
+                graphLayout = new ActionList(registry);
+                graphLayout.add(new TreeFilter());
+                graphLayout.add(new IndentedTreeLayout());
+                graphLayout.add(new DemoColorFunction(4));
+                display.setItemRegistry(registry);
+                display.setSize(400,400);
+                
+                display.addControlListener(new FocusControl(graphLayout));
+                display.addControlListener(new PanControl());
+                display.addControlListener(new ZoomControl());
+                display.addControlListener(new ToolTipControl("tooltip"));
+                display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
+            }
+            return display;
+        }
+    } // end conventional tree layout.
+    
+    /** x-y plot layout, using ra and dec. 
+     * 
+     * doesn't seem to spread thngs out correctly.
+     * uses attributes called ra and dec of the nodes - think I need to provide dummy values for 
+     * nodes with no ra and dec.
+     * */
+    public class Plot extends Vizualization {
+
+        public Plot() {
+            super("Plot");
+        }
+        protected Display display;
+        protected ActionList graphLayout;
+        public void nodeAdded(Graph arg0, Node arg1) {
+            try {
+            graphLayout.runNow();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
+        
+        public Display getDisplay() {
+            if (display == null) {
+                ItemRegistry registry = getItemRegistry();
+                display = new Display(registry);
+                
+                graphLayout = new ActionList(registry);
+                graphLayout.add(new TreeFilter());
+                graphLayout.add(new ScatterplotLayout("ra","dec"));
+                graphLayout.add(new DemoColorFunction(4));
+                display.setItemRegistry(registry);
+                display.setSize(400,400);
+                
+                display.addControlListener(new FocusControl(graphLayout));
+                display.addControlListener(new PanControl());
+                display.addControlListener(new ZoomControl());
+                display.addControlListener(new ToolTipControl("tooltip"));
+                display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));         
+            }
+            return display;
+        }
+    }
+       
+        
+    
     /**
      * Tends to show the data a little better, also sort of a Grid Radial kind of style.  You need to hold down the
      * mouse button for zooming and panning at the same time.  Problem is it is a little hard to get used to and again
      * so much data.
+     * 
+     * NWW - found the data was badly laid out. - not much used
+     * 
+     * based on edu.berkeley.guir.prefuse.demos.ZoomingPanDemo
      * @return
      */
-    private Display createInitialDisplayForZoomPan() {
-                
-        graph = new DefaultGraph();
-        ItemRegistry registry = new ItemRegistry(graph);
+    public class ZoomPan extends Vizualization {
+    /** Construct a new ZoomPan
+         * @param name
+         */
+        public ZoomPan() {
+            super("Zoom Pan");
+        }
+
+        private Display display;
+        private ActionList graphLayout;
+        private ActionList update;
+    public Display getDisplay() {
+       if (display == null) {           
+        ItemRegistry registry = getItemRegistry();  
         
-        //root = new DefaultTreeNode();
-        DefaultNode root = new DefaultNode();
-        root.setAttribute("label","AstroSope");
-        
-        siaNode = new DefaultNode();
-        siaNode.setAttribute("label","SIA");
-        siaNode.setAttribute("tooltip","<html><p>This ia very long tool tip attribute for sia<br> to see how it displays on the screen.<br> Hopefully it displays good</p></html>");
-        
-        coneNode  = new DefaultNode();
-        coneNode.setAttribute("label","Cone");
-        
-        graph.addNode(root);
-        graph.addNode(siaNode);
-        graph.addNode(coneNode);        
-        
-        graph.addEdge(new DefaultEdge(root,siaNode));
-        graph.addEdge(new DefaultEdge(root,coneNode));        
-        
-        Display display = new Display(registry);
-        registry.addDisplay(display);
-                
-        TextItemRenderer nodeRenderer = new TextItemRenderer();
-        //nodeRenderer.setMaxTextWidth(75);
-        nodeRenderer.setRoundedCorner(8,8);
-        
-        Renderer edgeRenderer = new DefaultEdgeRenderer();
-        registry.setRendererFactory(new DefaultRendererFactory(nodeRenderer, edgeRenderer));
+        display = new Display(registry);
         
         graphLayout = new ActionList(registry);
         graphLayout.add(new GraphFilter());
+        ActionMap actionMap = new ActionMap();
         graphLayout.add(actionMap.put("grid", new PrefuseGridLayout()));
         
-        final ActionList update = new ActionList(registry);
+        update = new ActionList(registry);
         update.add(new ColorFunction());
         update.add(new RepaintAction());
         
@@ -772,66 +1149,87 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 new Rectangle2D.Double(-1200,-1200,2400,2400));        
         
            // initialize display 
-           display.setItemRegistry(registry);
            display.setSize(400,400);
-           //display.setBackground(Color.WHITE);
            display.setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
            display.addControlListener(new DragControl());
            display.addControlListener(new NeighborHighlightControl());
            display.addControlListener(new FocusControl(0, update));
            display.addControlListener(new ZoomingPanControl());
            display.addControlListener(new ToolTipControl("tooltip"));
-           display.addControlListener(new AstroScopeMultiSelectionControl(registry));           
-           
-           graphLayout.runNow();  update.runNow();
+           display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
+    }
            return display;
     }
+    // refresh display when new item added
+    public void nodeAdded(Graph arg0, Node arg1) {
+        graphLayout.runNow();
+        update.runNow();
+    }
+    
+    public class PrefuseGridLayout extends edu.berkeley.guir.prefuse.action.assignment.Layout {
+        public void run(ItemRegistry registry, double frac) {
+            Rectangle2D b = getLayoutBounds(registry);
+            double bx = b.getMinX(), by = b.getMinY();
+            double w = b.getWidth(), h = b.getHeight();
+            int m, n;
+            Graph g = (Graph)registry.getGraph();
+            Iterator iter = g.getNodes(); iter.next();
+            for ( n=2; iter.hasNext(); n++ ) {
+                Node nd = (Node)iter.next();
+                if ( nd.getEdgeCount() == 2 )
+                    break;
+            }
+            m = g.getNodeCount() / n;
+            iter = g.getNodes();
+            for ( int i=0; iter.hasNext(); i++ ) {
+                Node nd = (Node)iter.next();
+                NodeItem ni = registry.getNodeItem(nd);
+                double x = bx + w*((i%n)/(double)(n-1));
+                double y = by + h*((i/n)/(double)(m-1));
+                
+                // add some jitter, just for fun
+                x += (Math.random()-0.5)*(w/n);
+                y += (Math.random()-0.5)*(h/m);
+                
+                setLocation(ni,null,x,y);
+            }
+        } //
+    } // end of inner class GridLayout        
+    }// end zoom pan vizualizaiton.
     
     /**
      * For the demos this is the best one for showing large amounts of data.  And if we can our data to form similar
      * to what the demo has, then this will be the graph and display to use and should fit fairly nicely with our data.
      * Vision Example: SIA(large box)->Siap Service(medium box)->Various RA,DEC(small box).
      * UNKNOWN: does it allow selection so we can populate the JTree hope so.
-     * 
+     *@todo NWW: can't get this one working. 
+     * based on edu.berkeley.guir.prefuse.demos.TreeMapDemo
      * @return
      */
-    private Display createInitialDisplayForTreeMap() {
+    public class TreeMap extends Vizualization {
         
-        graph = new DefaultGraph();
-        ItemRegistry registry = new ItemRegistry(graph);
+    /** Construct a new TreeMap
+         * @param name
+         */
+        public TreeMap() {
+            super("TreeMap");
+        }
+        public void nodeAdded(Graph arg0, Node arg1) {
+            graphLayout.runNow();
+        }
+        private Display display;
+        private ActionList graphLayout;
         
-        DefaultNode root = new DefaultNode();        
-        root.setAttribute("label","AstroSope");
+    public Display getDisplay() {
+        if (display == null) {
+        ItemRegistry registry = getItemRegistry();
         
-        siaNode = new DefaultNode();
-        siaNode.setAttribute("label","SIA");
-        siaNode.setAttribute("tooltip","<html><p>This ia very long tool tip attribute for sia<br> to see how it displays on the screen.<br> Hopefully it displays good</p></html>");
-
-        coneNode  = new DefaultNode();
-        coneNode.setAttribute("label","Cone");
-        
-        
-        //Edge defaultEdge = new DefaultEdge(root,db);
-        //root.addEdge(defaultEdge);
-        //defaultTree = new DefaultTree();
-        graph.addNode(root);
-        graph.addNode(siaNode);
-        graph.addNode(coneNode);
-        
-        //graph.addEdge(root,siaNode);
-        graph.addEdge(new DefaultEdge(root,siaNode));
-        graph.addEdge(new DefaultEdge(root,coneNode));
-        
-        Display display = new Display(registry);
-        //display.setUseCustomTooltips(true);
-
-        registry.addDisplay(display);
-                
+        display = new Display(registry);
+        // causes probs.        
         registry.setRendererFactory(new DefaultRendererFactory(new RectangleRenderer()));
 
         // make sure we draw from larger->smaller to prevent
-        // occlusion from parent node boxes
-        
+        // occlusion from parent node boxes        
         registry.setItemComparator(new Comparator() {
             public int compare(Object o1, Object o2) {
                 double s1 = ((VisualItem)o1).getSize();
@@ -845,40 +1243,87 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
            graphLayout = new ActionList(registry);
            graphLayout.add(new TreeFilter(false, false));
            graphLayout.add(new TreeMapSizeFunction());
-           //graphLayout.add(new SquarifiedTreeMapLayout(4));
-           graphLayout.add(new SquarifiedTreeMapLayout(5));
+           graphLayout.add(new SquarifiedTreeMapLayout(4));
            graphLayout.add(new TreeMapColorFunction());
            graphLayout.add(new RepaintAction());
-        
-           // initialize display 
-           display.setItemRegistry(registry);
-        //   display.setSize(400,400);
-           display.setBackground(Color.WHITE);
+ 
+          display.setSize(700,700);
            
            PanControl  pH = new PanControl();
            ZoomControl zH = new ZoomControl();
            display.addMouseListener(pH);
            display.addMouseMotionListener(pH);
            display.addMouseListener(zH);
-           display.addMouseMotionListener(zH);
-           //TODO probably want to use the "tooltip" text instead of default "label"
-           //TODO UNKNOWN can I turn on the selection control for placing data in the selected JTree.
-           //display.addControlListener(new AstroScopeMultiSelectionControl(registry));
-           display.addControlListener(new ToolTipControl());
-           
-           //display.addControlListener(new ToolTipControl("tooltip"));           
-           graphLayout.runNow();
+           display.addMouseMotionListener(zH);        
+           display.addControlListener(new ToolTipControl("tooltip"));
+           display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
+        }
            return display;
     }
+
+    public class TreeMapColorFunction extends ColorFunction {
+        Color c1 = new Color(0.5f,0.5f,0.f);
+        Color c2 = new Color(0.5f,0.5f,1.f);
+        ColorMap cmap = new ColorMap(ColorMap.getInterpolatedMap(10,c1,c2),0,9);
+        public Paint getColor(VisualItem item) {
+            return Color.WHITE;
+        } //
+        public Paint getFillColor(VisualItem item) {
+            double v = (item instanceof NodeItem ? ((NodeItem)item).getDepth():0);
+            return cmap.getColor(v);
+        } //
+    } // end of inner class TreeMapColorFunction
+    
+    public  class TreeMapSizeFunction extends edu.berkeley.guir.prefuse.action.AbstractAction {
+        public void run(ItemRegistry registry, double frac) {
+            int leafCount = 0;
+            Iterator iter = registry.getNodeItems();
+            while ( iter.hasNext() ) {
+                NodeItem n = (NodeItem)iter.next();
+                if ( n.getChildCount() == 0 ) {
+                    n.setSize(1.0);
+                    NodeItem p = (NodeItem)n.getParent();
+                    for (; p!=null; p=(NodeItem)p.getParent())
+                        p.setSize(1.0+p.getSize());
+                    leafCount++;
+                }
+            }
+            
+            Dimension d = registry.getDisplay(0).getSize();
+            double area = d.width*d.height;
+            double divisor = ((double)leafCount)/area;
+            iter = registry.getNodeItems();
+            while ( iter.hasNext() ) {
+                NodeItem n = (NodeItem)iter.next();
+                n.setSize(n.getSize()/divisor);
+            }
+            
+            System.out.println("leafCount = " + leafCount);
+        } //
+    } // end of inner class TreeMapSizeFunction
+    
+    public class RectangleRenderer extends ShapeRenderer {
+        private Rectangle2D bounds = new Rectangle2D.Double();
+        protected Shape getRawShape(VisualItem item) {
+            Point2D d = (Point2D)item.getVizAttribute("dimension");
+            if (d == null)
+                System.out.println("uh-oh");
+            bounds.setRect(item.getX(),item.getY(),d.getX(),d.getY());
+            return bounds;
+        } //
+    } // end of inner class NodeRenderer
+     
+    
+    } // end of tree map layout viz class.
 
     /**
      * Various action statements for when buttons are clicked.
      */
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        System.out.println("entered actionPerformed");
+        logger.debug("actionPerformed(ActionEvent) - entered actionPerformed");
         if(source == submitButton) {
-            System.out.println("submit button clicked");
+            logger.debug("actionPerformed(ActionEvent) - submit button clicked");
             query();
         }else if(source == saveButton) {
             saveData();
@@ -900,300 +1345,190 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 }//if
             }//if
         }
-        System.out.println("exit actionPerformed");
+        logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
     }
     
-    
-    
-    /**
-     * Does the work for Querying all SIA services.  Based on Information/URLs from the registry.
-     * RETHINK: don't like how I handled bundle's with this backgroundcounter very hacky.  Also suspect
-     * I could merge this with BackgroundConeQueryWorker.
-     * @author Kevin Benson
-     *
-     * TODO To change the template for this generated type comment go to
-     * Window - Preferences - Java - Code Style - Code Templates
-     */
-    class BackgroundSIAQueryWorker extends BackgroundWorker {
-        private ResourceInformation []ri = null;
-        int bundle; 
-        public BackgroundSIAQueryWorker(UIComponent parent, String prompt, ResourceInformation []ri, int bundle) {
-            super(parent,prompt);
-            this.ri = ri;
-            this.bundle = bundle;
+
+    /** task that retrives, parses and adds to the display results of one siap service 
+     * 
+     * @todo refactor more of the commonality of Siap and Cone into the base class.*/
+    private class SiapRetrieval extends AbstractRetreiver {
+
+        public SiapRetrieval(ResourceInformation information, double ra, double dec, double raSize,double decSize) throws InvalidArgumentException, NotFoundException, URISyntaxException {
+            this.information = (SiapInformation)information;
+            siapURL = siap.constructQueryS(new URI(information.getAccessURL().toString()),ra, dec,raSize,decSize);
         }
-        
-        protected Object construct() throws Exception {
-            int j = 0;
-            System.out.println("construct of BackgroundSIAQueryWorker");
-            String position = getPosition();
-            double ra = getRA(position);
-            double dec = getDEC(position);
-            String region = regionText.getText().trim();
-            System.out.println("ra = " + ra + " dec = " + dec + " region = " + region + " regra = " + getRA(region) + " regdec = " + getDEC(region));
-            //COMMENTOUT: section to reduce number of queries.
-            while(j < ri.length && j < 2) {
-                //no point in doing it if they have a registry entry with no accessurl
-                //so check and keep moving if it is null.
-                if(ri[j].getAccessURL() == null) {
-                    j++;
-                }else {
-                    if(backgroundCounter < bundle) {
-                        URI id = ri[j].getId();
-                        System.out.println("construct query for id = " + id + " accessurl = " + ri[j].getAccessURL());                        
-                        URL siapURL;
-                        //check if the region needs to be parsed and call the correct siap url.
-                        if(needsParsedRegion()) {
-                            siapURL = siap.constructQueryS(new URI(ri[j].getAccessURL().toString()),ra, dec,getRA(region),getDEC(region));
-                        } else {
-                            siapURL = siap.constructQuery(new URI(ri[j].getAccessURL().toString()),ra, dec,getConeRegion());
-                        }
-                        //the url to be constructed.
-                        System.out.println("the siapURL that was constructed = " + siapURL);
-                        
-                        //Grap the results.
-                        //RETHINK
-                        //Wonder this doc is only used for StarTable and display
-                        //Startable seems to have a TableSink Sax stuff might be better to use that.
-                        Document doc = siap.getResults(siapURL);
-                        //place in a hashtable the id and siapurl to the votable.
-                        //the SIA prefix is used in case they select all SIA id's.
-                        storageTable.put("SIA-" + ri[j].getId().toString(),siapURL);
-                        
-                        //Add this Service as a node in the graph.
-                        DefaultNode riNode = new DefaultNode();
-                        riNode.setAttribute("label",ri[j].getTitle());
-                        riNode.setAttribute("id", "SIA-" + ri[j].getId());
-                        riNode.setAttribute("tooltip","<html><p>Title: " + ri[j].getTitle() + "<br>" + "ID: " + ri[j].getId() + "</p></html>");                        
-                        graph.addNode(riNode);
-                        graph.addEdge(new DefaultEdge(siaNode,riNode));
-                        
-                        //Now call the BackgroundDisplayWorker to go through the 
-                        //votable and add various nodes to the display/graph.
-                        (new BackgroundDisplayWorker(uc,"Query",doc,riNode)).start();
-                        backgroundCounter++;
-                        j++;
-                    }else {
-                        System.out.println("in the else for waiting probably need to wait");
-                        //backgroundCounter--;
-                    }
-                }
-            }//while
-             return null;
-        }//construct
-        
-        protected void doFinished(Object result) {
-            System.out.println("doFinished of BackgroundSIAQueryWorker");
-            
-        }
-    }
-    
-    /**
-     * Does the work for Querying all Cone services.  Based on Information/URLs from the registry.
-     * RETHINK: don't like how I handled bundle's with this backgroundcounter very hacky.  Also suspect
-     * I could merge this with BackgroundSIAQueryWorker.
-     */    
-    class BackgroundConeQueryWorker extends BackgroundWorker {
-        private ResourceInformation []ri = null;
-        int bundle; 
-        public BackgroundConeQueryWorker(UIComponent parent, String prompt, ResourceInformation []ri, int bundle) {
-            super(parent,prompt);
-            this.ri = ri;
-            this.bundle = bundle;
-        }
-        
-        protected Object construct() throws Exception {
-            int j = 0;
-            System.out.println("construct of BackgroundQueryWorker");
-            String position = getPosition();
-            double ra = getRA(position);
-            double dec = getDEC(position);
-            String region = regionText.getText().trim();
-            double reg = 0;
-            System.out.println("ra = " + ra + " dec = " + dec + " region = " + region + " regra = " + getRA(region) + " regdec = " + getDEC(region));
-            while(j < ri.length) {
-                //chek to make sure there is a url if not then keep going.
-                if(ri[j].getAccessURL() == null || ri[j].getAccessURL().toString().trim().length() == 0) {
-                    j++;
-                }else {
-                    if(backgroundCounter < bundle) {
-                        URI id = ri[j].getId();
-                        System.out.println("construct query for id = " + id + " accessurl = " + ri[j].getAccessURL());                        
-                        URL coneURL;
-                        if(needsParsedRegion()) {
-                            if(getRA(region) == getDEC(region)) {
-                                reg = getRA(region);
-                            }else {
-                                System.out.println("will not be able to do cone queries");
-                            }
-                        } else {
-                            reg = getConeRegion();
-                        }
-                            coneURL = cone.constructQuery(new URI(ri[j].getAccessURL().toString()),ra, dec,reg);
-                            System.out.println("the coneURL that was constructed = " + coneURL);
-                            //Grap the results.
-                            //RETHINK
-                            //Wonder this doc is only used for StarTable and display
-                            //Startable seems to have a TableSink Sax stuff might be better to use that.                            
-                            Document doc = cone.getResults(coneURL);
-                            storageTable.put("Cone-" + ri[j].getId().toString(),XMLUtils.DocumentToString(doc));
-                            
-                            DefaultNode riNode = new DefaultNode();
-                            riNode.setAttribute("label",ri[j].getTitle());
-                            riNode.setAttribute("id", "Cone-" + ri[j].getId());
-                            riNode.setAttribute("tooltip","<html><p>Title: " + ri[j].getTitle() + "<br>" + "ID: " + ri[j].getId() + "</p></html>");
-                            graph.addNode(riNode);
-                            graph.addEdge(new DefaultEdge(coneNode,riNode));
-                            (new BackgroundDisplayWorker(uc,"Query",doc,riNode)).start();
-                            backgroundCounter++;
-                        j++;
-                    }else {
-                        System.out.println("in the else for waiting");
-                        //backgroundCounter--;
-                    }
-                }
-            }//while
-             return null;
-        }//construct
-        
-        protected void doFinished(Object result) {
-            System.out.println("doFinished of BackgroundQueryWorker");
-            
-        }
-    }
-    
-    
-    /**
-     * Background class that parses a votable and and adds the data as nodes on the graph.  Also sets up
-     * various attributes on the nodes that help to determine selections in the tree. 
-     */
-    class BackgroundDisplayWorker extends BackgroundWorker {
-        private Document doc;
-        private DefaultNode serviceNode;
-        public BackgroundDisplayWorker(UIComponent parent, String prompt, Document doc, DefaultNode serviceNode) {
-            super(parent,prompt);
-            this.doc = doc;
-            this.serviceNode = serviceNode;            
-        }
-        
-        protected Object construct() throws Exception {
-            System.out.println("construct of BackgroundDisplayWorker");
-            return null;
-        }
-        
-        protected void doFinished(Object result) {
-                try {
-    //              Create a tree of VOElements from the given XML file.
-                    VOElement top = new VOElementFactory().makeVOElement( doc, null );
-                    
-                    // Find the first RESOURCE element using standard DOM methods.
-                    NodeList resources = top.getElementsByTagName( "RESOURCE" );
-                    Element resource = (Element) resources.item( 0 );
-    //              Locate the third TABLE child of this resource using one of the
-                    // VOElement convenience methods.
-                    VOElement vResource = (VOElement) resource;
-                    VOElement[] tables = vResource.getChildrenByName( "TABLE" );
-                    Hashtable starResult = new Hashtable();
-                    String temp;
-                    Enumeration keyEnum;
-                    
-                    //COMMENTOUT:  This only goes through 5 tables in the votable, shoudl comment out
-                    //the next 4 lines and in the for loop it shoudl go to tables.length
-                    int testmodeint = 5;
-                    if(tables.length < 5) {
-                        testmodeint = tables.length;
-                    }
-                    for(int j = 0;j < /*tables.length*/ testmodeint;j++) {
-                        TableElement tableEl = (TableElement) tables[j];
-                        //Turn it into a StarTable so we can access its data.
-                        StarTable starTable = new VOStarTable( tableEl );
-                        // Write out the column name for each of its columns.
-                        int nCol = starTable.getColumnCount();
+        private final URL siapURL;
+        private final SiapInformation information;
+ 
+        public void run() {
+            try {
+                //              Create a tree of VOElements from the given request url.
+                VOElement top = new VOElementFactory().makeVOElement( siapURL);
+                // managed to fetch the resource ok, so le's create the service node.
                 
-                        //Iterate through its data rows, printing out each element.
-                        RowSequence rSeq = starTable.getRowSequence();
-                        try {
-                            while ( rSeq.hasNext() ) {
-                                rSeq.next();
-                                Object[] row = rSeq.getRow();
-                                //place the columns and the value for that row in a hashtable.
-                                //it will be cleared out in a moment after the nodes for the row is added
-                                //to the graph.
-                                for ( int iCol = 0; iCol < nCol; iCol++ ) {
-                                    temp = null;
-                                    temp = starTable.getColumnInfo( iCol ).getName();
-                                    if(starTable.getColumnInfo( iCol ).getUCD() != null) {
-                                        temp += "-" + starTable.getColumnInfo( iCol ).getUCD(); 
-                                    }
-                                    if(row[iCol] != null) {
-                                        starResult.put(temp, row[iCol].toString());
-                                    }
-                                    //System.out.print("Column name: " + starTable.getColumnInfo( iCol ).getName() + 
-                                    //                 " row val: " +  row[ iCol ] + "\t" );                                
-                                }
-                                //get all the keys and make the attributes for the node in the graph.
-                                //such as lable, tooltip, and url(only for sia images.
-                                keyEnum = starResult.keys();
-                                String key;
-                                String toolTip = "";
-                                String urlStr = null;
-                                temp = null;
-                                while(keyEnum.hasMoreElements()) {                                
-                                    key = (String)keyEnum.nextElement();
-                                    if(key.indexOf("POS_EQ_RA_MAIN") != -1) {
-                                        if(temp == null)
-                                            temp = (String)starResult.get(key);
-                                        else
-                                            temp = (String)starResult.get(key) + temp;  //dec must have came first so concat
-                                    }else if(key.indexOf("POS_EQ_DEC_MAIN") != -1) {
-                                        if(temp == null) {
-                                            temp = (String)starResult.get(key);
-                                        }else {
-                                            temp += ", " + (String)starResult.get(key);
-                                        }
-                                    }else if(key.indexOf("VOX:Image_AccessReference") != -1) {
-                                        urlStr = (String)starResult.get(key);
-                                    }else {
-                                        toolTip += key + "-" + (String)starResult.get(key) + "<br>";
-                                    }
-                                }
-                                DefaultNode valNode = new DefaultNode();
-                                valNode.setAttribute("label",temp);
-                                if(urlStr != null) {
-                                    valNode.setAttribute("url",urlStr);
-                                }
-                                valNode.setAttribute("tooltip","<html><p>" + temp + "<br>" + toolTip + "</p></html>");
-                                //Add the node and edge to the graph.
-                                graph.addNode(valNode);
-                                graph.addEdge(new DefaultEdge(serviceNode,valNode));
-                                //clear the hashtable for the next row.
-                                starResult.clear();
-                            }//while
-                        }finally{
-                            rSeq.close();
-                        }
-                        //were done lets clear some things.
-                        starTable = null;
-                    }//for
-                    doc = null;
-                    //Repaint the graph.
-                    //repaintAction.runNow();
-                    //RETHINK: I think there is another way to have the graph displayed.
-                    //right now this will relayout all the nodes in the graph.  Just think there must be another way.
-                    //to save time of it redrawing the layout.
-                    graphLayout.runNow();
-                    
-                }catch(IOException ioe) {
-                    //throw this up in a moment.
-                    //TODO need to do something else.
-                    ioe.printStackTrace();
+                //place in a hashtable the id and siapurl to the votable.
+                //the SIA prefix is used in case they select all SIA id's.
+                storageTable.put("SIA-" + information.getId().toString(),siapURL);                            
+                final TreeNode riNode = new DefaultTreeNode();
+                riNode.setAttribute("label",information.getTitle());
+                riNode.setAttribute("id", "SIA-" + information.getId());
+                riNode.setAttribute("ra","0");
+                riNode.setAttribute("dec","0");
+                StringBuffer sb = new StringBuffer();
+                sb.append("<html><p>Title: ").append(information.getTitle())
+                    .append("<br>ID: ").append(information.getId())
+                    .append("<br>Description: ").append(information.getDescription())                
+                    .append("<br>Service Type: ").append(information.getImageServiceType())
+                    .append("</p></html>");                        
+                riNode.setAttribute("tooltip",sb.toString());
+                // build subtree for this service
+                buildNodes(top, riNode);
+                // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
+                // concurrent modification exceptions
+                if (riNode.getChildCount() > 0) { // found some results..
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        AstroScopeLauncherImpl.this.setStatusMessage("Adding results from " + information.getName());
+                        getTree().addChild(new DefaultEdge(siaNode,riNode));
+                    }
+                });  
                 }
-                finally {
-                    //RETHINK again that hacky spot I don't like decprement the background counter.
-                    backgroundCounter--;
+            } catch (Exception e) {
+                logger.warn("Failed to process " + information.getId(),e);
+            }
+        }
+    } // end siap retriever
+    
+    /** taks that retreives, parses and adds to the display the results of one cone service */
+    private class ConeRetrieval extends AbstractRetreiver {
+
+        public ConeRetrieval(ResourceInformation information, double ra, double dec, double sz) throws InvalidArgumentException, NotFoundException, URISyntaxException {
+            this.information = (ConeInformation)information;
+            coneURL = cone.constructQuery(new URI(information.getAccessURL().toString()),ra,dec,sz);
+        } 
+        private final ConeInformation information;
+        private final URL coneURL;
+
+        public void run() {
+            try {
+                //                 Create a tree of VOElements from the given request url.
+                VOElement top = new VOElementFactory().makeVOElement( coneURL);            
+                storageTable.put("Cone-" + information.getId().toString(),coneURL);
+                final TreeNode riNode = new DefaultTreeNode();
+                riNode.setAttribute("label",information.getTitle());
+                riNode.setAttribute("id", "Cone-" + information.getId());
+                riNode.setAttribute("ra","0"); // dummies for the plot viualization.
+                riNode.setAttribute("dec","0");                
+                StringBuffer sb = new StringBuffer();
+                sb.append("<html><p>Title: ").append(information.getTitle())
+                    .append("<br>ID: ").append(information.getId())
+                    .append("<br>Description: ").append(information.getDescription())
+                    .append("</p></html>");                        
+                riNode.setAttribute("tooltip",sb.toString());
+                
+                
+                buildNodes(top, riNode);
+                // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
+                // concurrent modification exceptions
+                if (riNode.getChildCount() > 0) { // i.e. found some results.
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        AstroScopeLauncherImpl.this.setStatusMessage("Adding results from " + information.getName());
+                        getTree().addChild(new DefaultEdge(coneNode,riNode));
+                     }
+                });
                 }
+            } catch (Exception e) {
+                logger.warn("Failed to process " + information.getId(),e);
+            }
         }
     }
+    
+
+    
+    /** base class for something that fetches a resource
+     *  - extensible for siap, cone, and later ssap, etc.
+     * @author Noel Winstanley nw@jb.man.ac.uk 28-Oct-2005
+     *
+     */
+    private abstract class AbstractRetreiver implements Runnable {
+
+        /** build a node for each result in the votable.
+         * set them up as children of the <tt>riNode</tt> element - which is the node ofor the service.
+         */
+        protected void buildNodes(VOElement top, TreeNode riNode) throws IOException {
+            // Find the first RESOURCE element using standard DOM methods.
+            NodeList resources = top.getElementsByTagName( "RESOURCE" );
+            Element resource = (Element) resources.item( 0 );
+            //              Locate the TABLE children of this resource using one of the
+            // VOElement convenience methods.
+            VOElement vResource = (VOElement) resource;
+            VOElement[] tables = vResource.getChildrenByName( "TABLE" );
+            
+            for(int j = 0;j < tables.length;j++) {
+                TableElement tableEl = (TableElement) tables[j];
+                //Turn it into a StarTable so we can access its data.
+                StarTable starTable = new VOStarTable( tableEl );   
+                // first locate the column indexes for the columns we're interested in.
+                int raCol = -1;
+                int decCol = -1;
+                int imgCol = -1;
+                String[] titles = new String[starTable.getColumnCount()];
+                for (int col = 0; col < starTable.getColumnCount(); col++) {
+                    ColumnInfo columnInfo = starTable.getColumnInfo(col);
+                    String ucd = columnInfo.getUCD();
+                    if (ucd != null) {
+                        if (ucd.equals("POS_EQ_RA_MAIN")) {
+                            raCol = col;
+                        } else if (ucd.equals("POS_EQ_DEC_MAIN")) {
+                            decCol = col;
+                        } else if (ucd.equals("VOX:Image_AccessReference")) {
+                            imgCol = col;
+                        }                                        
+                    }
+                    titles[col] = columnInfo.getName() + "(" + columnInfo.getUCD() + ")";
+                }
+                // check we've got enough to proceed.
+                if (raCol < 0 || decCol < 0) {
+                    continue; // on to the next table
+                }                                
+                //make a node for each row of the table.
+                RowSequence rSeq = starTable.getRowSequence();
+                try {
+                    while (rSeq.hasNext()) {
+                        rSeq.next();
+                        Object[] row = rSeq.getRow();
+                        String rowRa =row[raCol].toString();
+                        String rowDec = row[decCol].toString();                                 
+                        DefaultTreeNode valNode = new DefaultTreeNode();
+                        valNode.setAttribute("label",rowRa + "," + rowDec);
+                        valNode.setAttribute("ra",rowRa); // these might come in handy for searching later.
+                        valNode.setAttribute("dec",rowDec); 
+                        if (imgCol >= 0) {
+                            valNode.setAttribute("url",row[imgCol].toString());
+                        } 
+                        StringBuffer tooltip = new StringBuffer();
+                        tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
+                        for (int v = 0; v < row.length; v++) {
+                            tooltip.append("<br>")
+                            .append(titles[v])
+                            .append( ": ")
+                            .append(row[v] == null ? "" : row[v].toString());
+                        }
+                        tooltip.append("</p></html>");
+                        valNode.setAttribute("tooltip",tooltip.toString());                                     
+                        riNode.addChild(new DefaultEdge(riNode,valNode));
+
+                    }//while rows in table.
+                }finally{
+                    rSeq.close();
+                }
+            }
+        }
+    }
+
+                       
     
     /**
      * method: query
@@ -1202,46 +1537,75 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      *
      */
     private void query() {
-        System.out.println("inside query method)");
-        graphLayout.runNow();
+        logger.debug("query() - inside query method)");
         storageTable.clear();
-        if(siaCheckBox.isSelected()) {
-        (new BackgroundWorker(uc,"Searching SIA") {            
+        clearTree();
+        
+        // @todo refactor this string-munging methods.
+        final String position = getPosition();
+        final double ra = getRA(position);
+        final double dec = getDEC(position);
+        final String region = regionText.getText().trim();
+        final double size = needsParsedRegion() ? getRA(region) : getConeRegion();
+        final double raSize = needsParsedRegion() ?  getRA(region) : Double.parseDouble(region);
+        final double decSize= needsParsedRegion() ? getDEC(region) : raSize;
+                    
+        (new BackgroundWorker(AstroScopeLauncherImpl.this,"Searching For Services") {
+            private ResourceInformation[] siaps = new ResourceInformation[]{};
+            private ResourceInformation[] cones = new ResourceInformation[]{};
             protected Object construct() throws Exception {
-                System.out.println("construct of BackgroundWorker");                
-                ResourceInformation []ri = reg.adqlSearchRI(siap.getRegistryQuery());
-                System.out.println("just did a full sia query number of results = " + ri.length);
-                (new BackgroundSIAQueryWorker(uc,"Searching",ri,5)).start();
+                // query registry for resources.
+                // for each resource found, create a new task to retrieve, parse and add it to the display.
+                // each task is sent to the executor - which queues them and then executes them on 5 threads.
+                // this is better than writing a single thread that loops over all tasks, as a network-block on one service
+                // only holds up it's own thread - the others continue regardless.
+                if (siaCheckBox.isSelected()) {
+                    siaps = reg.adqlSearchRI(siap.getRegistryQuery());                    
+                    for (int i = 0; i < siaps.length; i++) {
+                        if (siaps[i].getAccessURL() != null) {
+                            try {
+                            executor.execute(new SiapRetrieval(siaps[i],ra,dec,raSize,decSize));
+                            } catch (Exception e) {
+                                // carry on
+                                logger.info("Failed to start task",e);
+                            }
+                        }
+                    }
+                } 
+                if (coneCheckBox.isSelected()) {
+                    cones = reg.adqlSearchRI(cone.getRegistryQuery());
+                    for (int i = 0; i < cones.length; i++) {
+                        if (cones[i].getAccessURL() != null) {
+                            try {
+                            executor.execute(new ConeRetrieval(cones[i],ra,dec,size));
+                            } catch (Exception e) {
+                                logger.info("Failed to start task",e);
+                            }
+                        }
+                    }                        
+                }
+                // finally add another task to the executor queue - all it does iis put a status message 'completed'
+                // as there's 5 background threads, it might be run while there's still 4 other queries running,
+                // but it's better than nothing..
+                executor.execute(new Runnable() {
+                    public void run() {
+                        // meh. got to put it on the event thread.
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                AstroScopeLauncherImpl.this.setStatusMessage("Completed querying servers");
+                            }
+                        });
+                    }
+                });
                 return null;
             }
             protected void doFinished(Object result) {
-                System.out.println("doFinished of BackgroundWorker");                
-                
+                // just report what we found - querying will have already started.
+               AstroScopeLauncherImpl.this.setStatusMessage("Found " + siaps.length + " image servers, "+ cones.length + " catalogue servers");                                     
             }
-        }).start();
-        }
-        //do the cone searching here as well.
-
-        if(coneCheckBox.isSelected()) {
-        (new BackgroundWorker(uc,"Searching Cone") {            
-            protected Object construct() throws Exception {
-                System.out.println("construct of BackgroundWorker");                
-                ResourceInformation []ri = reg.adqlSearchRI(cone.getRegistryQuery());
-                System.out.println("just did a full cone query number of results = " + ri.length);
-                (new BackgroundConeQueryWorker(uc,"Searching",ri,5)).start();
-                return null;
-            }
-            protected void doFinished(Object result) {
-                System.out.println("doFinished of BackgroundWorker");                
-                
-            }
-        }).start();
-        }
-        
-        
-        System.out.println("exiting query method");
-
+        }).start();        
     }
+
     
     /**
      * Small class used as TreeNodes in the JTREE not the graph.
@@ -1452,37 +1816,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     /**
      * Rest of classes below come from prefuse.
      */    
-    class PrefuseGridLayout extends edu.berkeley.guir.prefuse.action.assignment.Layout {
-        public void run(ItemRegistry registry, double frac) {
-            Rectangle2D b = getLayoutBounds(registry);
-            double bx = b.getMinX(), by = b.getMinY();
-            double w = b.getWidth(), h = b.getHeight();
-            int m, n;
-            Graph g = (Graph)registry.getGraph();
-            Iterator iter = g.getNodes(); iter.next();
-            for ( n=2; iter.hasNext(); n++ ) {
-                Node nd = (Node)iter.next();
-                if ( nd.getEdgeCount() == 2 )
-                    break;
-            }
-            m = g.getNodeCount() / n;
-            iter = g.getNodes();
-            for ( int i=0; iter.hasNext(); i++ ) {
-                Node nd = (Node)iter.next();
-                NodeItem ni = registry.getNodeItem(nd);
-                double x = bx + w*((i%n)/(double)(n-1));
-                double y = by + h*((i/n)/(double)(m-1));
-                
-                // add some jitter, just for fun
-                x += (Math.random()-0.5)*(w/n);
-                y += (Math.random()-0.5)*(h/m);
-                
-                setLocation(ni,null,x,y);
-            }
-        } //
-    } // end of inner class GridLayout    
+
        
-    public class DemoColorFunction extends ColorFunction {
+    
+    /** @todo maybe later we could color notdes based on some quality of the node - e.g.
+     * maybe waveband of the result? or something like this that could be set as an attribute of the node 
+     * when it's created, and then is used by this function to determine the colour.
+     *
+     */
+    public static class DemoColorFunction extends ColorFunction {
         private Color graphEdgeColor = Color.LIGHT_GRAY;
          private Color highlightColor = new Color(50,50,255);
          private Color focusColor = new Color(255,50,50);
@@ -1531,63 +1873,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         } //
     } // end of inner class DemoColorFunction
     
-    public class TreeMapColorFunction extends ColorFunction {
-        Color c1 = new Color(0.5f,0.5f,0.f);
-        Color c2 = new Color(0.5f,0.5f,1.f);
-        ColorMap cmap = new ColorMap(ColorMap.getInterpolatedMap(10,c1,c2),0,9);
-        public Paint getColor(VisualItem item) {
-            return Color.WHITE;
-        } //
-        public Paint getFillColor(VisualItem item) {
-            double v = (item instanceof NodeItem ? ((NodeItem)item).getDepth():0);
-            return cmap.getColor(v);
-        } //
-    } // end of inner class TreeMapColorFunction
-    
-    public class TreeMapSizeFunction extends edu.berkeley.guir.prefuse.action.AbstractAction {
-        public void run(ItemRegistry registry, double frac) {
-            int leafCount = 0;
-            Iterator iter = registry.getNodeItems();
-            while ( iter.hasNext() ) {
-                NodeItem n = (NodeItem)iter.next();
-                if ( n.getChildCount() == 0 ) {
-                    n.setSize(1.0);
-                    NodeItem p = (NodeItem)n.getParent();
-                    for (; p!=null; p=(NodeItem)p.getParent())
-                        p.setSize(1.0+p.getSize());
-                    leafCount++;
-                }
-            }
-            
-            Dimension d = registry.getDisplay(0).getSize();
-            double area = d.width*d.height;
-            double divisor = ((double)leafCount)/area;
-            iter = registry.getNodeItems();
-            while ( iter.hasNext() ) {
-                NodeItem n = (NodeItem)iter.next();
-                n.setSize(n.getSize()/divisor);
-            }
-            
-            System.out.println("leafCount = " + leafCount);
-        } //
-    } // end of inner class TreeMapSizeFunction
-    
-    public class RectangleRenderer extends ShapeRenderer {
-        private Rectangle2D bounds = new Rectangle2D.Double();
-        protected Shape getRawShape(VisualItem item) {
-            Point2D d = (Point2D)item.getVizAttribute("dimension");
-            if (d == null)
-                System.out.println("uh-oh");
-            bounds.setRect(item.getX(),item.getY(),d.getX(),d.getY());
-            return bounds;
-        } //
-    } // end of inner class NodeRenderer
-     
+
   
 }
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.2  2005/10/31 12:49:38  nw
+rehashed downloading mechanism,
+put in a bunch of sample vizualizations.
+
 Revision 1.1  2005/10/26 15:53:15  KevinBenson
 new astroscope being added into the workbench.
 
