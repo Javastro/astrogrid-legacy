@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.2 2005/10/31 12:49:38 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.3 2005/10/31 16:13:51 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,8 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.filemanager.client.FileManagerNode;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,6 +49,7 @@ import edu.berkeley.guir.prefuse.FocusManager;
 import edu.berkeley.guir.prefuse.ItemRegistry;
 import edu.berkeley.guir.prefuse.NodeItem;
 import edu.berkeley.guir.prefuse.VisualItem;
+import edu.berkeley.guir.prefuse.activity.ActivityMap;
 import edu.berkeley.guir.prefuse.action.ActionMap;
 import edu.berkeley.guir.prefuse.action.ActionSwitch;
 import edu.berkeley.guir.prefuse.action.RepaintAction;
@@ -83,6 +86,8 @@ import edu.berkeley.guir.prefuse.render.Renderer;
 import edu.berkeley.guir.prefuse.render.RendererFactory;
 import edu.berkeley.guir.prefuse.render.ShapeRenderer;
 import edu.berkeley.guir.prefuse.render.TextItemRenderer;
+import edu.berkeley.guir.prefuse.render.NullRenderer;
+import edu.berkeley.guir.prefuse.util.ColorLib;
 import edu.berkeley.guir.prefuse.util.ColorMap;
 import edu.berkeley.guir.prefuse.util.StringAbbreviator;
 import edu.berkeley.guir.prefusex.controls.AnchorUpdateControl;
@@ -107,7 +112,17 @@ import edu.berkeley.guir.prefusex.layout.IndentedTreeLayout;
 import edu.berkeley.guir.prefusex.layout.RadialTreeLayout;
 import edu.berkeley.guir.prefusex.layout.ScatterplotLayout;
 import edu.berkeley.guir.prefusex.layout.SquarifiedTreeMapLayout;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTranslation;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTreeMapper;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTreeLayout;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicVisibilityFilter;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTranslationEnd;
+import edu.berkeley.guir.prefuse.event.ControlAdapter;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+import java.awt.Cursor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -127,6 +142,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -172,6 +188,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     
     //siap object for querying siap services.
     private final Siap siap;
+    
+    private final Sesame ses;
     
     //cone object for querying cone services.
     private final Cone cone;
@@ -229,13 +247,14 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      */
     public AstroScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, RegistryChooser rci, 
-                                  Siap siap, Cone cone) {
+                                  Siap siap, Cone cone, Sesame ses) {
         super(conf,hs,ui);
         this.myspace = myspace;
         this.rci = rci;
         this.siap = siap;
         this.cone = cone;
         this.reg = reg;
+        this.ses = ses;
         this.chooser = chooser;
         this.storageTable = new Hashtable();
         
@@ -243,6 +262,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         vizualizations = new Vizualization[]{
                 new WindowedRadial()
                 , new FisheyeWindowedRadial()
+                , new Hyperbolic()
                 , new Balloon()
             //    ,new TreeMap() -- seems to throw exceptions.
               // ,new ZoomPan()// - dodgy and ugly
@@ -266,6 +286,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         this.setTitle("AstroScope");
     }
        
+    private String conformToMyspaceName(String name) {
+        name = name.replaceAll(" ", "_");
+        name = name.replaceAll("/", "_");
+        return name;
+    }
+       
     /**
      * method: saveData
      * Description: Runs through the selected objects in the JTree and begins saving data
@@ -275,19 +301,17 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      *
      */
     private void saveData() {
-            /*
-             *
              //choose a uri to save the data to.             
              final URI u = chooser.chooseResourceWithParent("Save Data",true,true,true,false,this);
              if (u == null) {
                  return;
              }
-             */
+
              (new BackgroundOperation("Saving Data") {
                      protected Object construct() throws Exception {
-                         /*
+
                          //make sure they chose a directory if not then return.
-                         if(u.toString().equals("file:")) {
+                         if(u.toString().startsWith("file:")) {
                              File file = new File(u);
                              if(!file.isDirectory()) {
                                  JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
@@ -304,14 +328,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                  return null;
                              }                             
                          }//else
-                         */
-                        logger.debug("construct() - Save Data");
+                         System.out.println("Save Data");
                          Enumeration depthEnum;
                          Enumeration storageLookUp;
                          Iterator nodeIterator;
                          String lookup;
                          String key;
+                         String name;
                          URL url;
+                         URI finalURI;
                          DefaultMutableTreeNode dmTreeNode;
                          for (Enumeration e = selectRootNode.children() ; e.hasMoreElements() ;) {
                              DefaultMutableTreeNode tn = (DefaultMutableTreeNode)e.nextElement();
@@ -327,7 +352,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                              //be sure to add an actual filename to that directory.
                                              //should be the name of treeData.toString() with special characters and spaces
                                              //set to "_" or something valid.
-                                            logger.debug("construct() - the url found = " + url);
+                                             name = conformToMyspaceName(treeData.toString());
+                                             finalURI = new URI(u.toString() + "/" + name);
+                                             myspace.copyURLToContent(url,finalURI);
+                                             System.out.println("the url found = " + url);
                                          }
                                      }//if
                                  }
@@ -341,7 +369,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                          key = nd.getAttribute("id");
                                          if(key != null && key.trim().length() > 0) {
                                              url = (URL)storageTable.get(key);
-                                            logger.debug("construct() - the url = " + url);
+                                             System.out.println("the url = " + url);
+                                             name = conformToMyspaceName(nd.getAttribute("label"));
+                                             finalURI = new URI(u.toString() + "/" + name);
+                                             myspace.copyURLToContent(url,finalURI);                                             
                                              //TODO
                                              //now copy into the selected directory
                                              //be sure to add an actual filename to that directory.
@@ -359,7 +390,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                         if(key != null && key.trim().length() > 0 &&
                                            key.startsWith(lookup)) {
                                             url = (URL)storageTable.get(key);
-                                            logger.debug("construct() - the url = " + url);
+                                            System.out.println("the url = " + url);
+                                            System.out.println("the url = " + url);
+                                            name = conformToMyspaceName(nd.getAttribute("label"));
+                                            finalURI = new URI(u.toString() + "/" + name);
+                                            myspace.copyURLToContent(url,finalURI);                                              
                                             //TODO
                                             //now copy into the selected directory
                                             //be sure to add an actual filename to that directory.
@@ -386,16 +421,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      *
      */    
     private void saveImageData() {
-        /*
+
         final URI u = chooser.chooseResourceWithParent("Save Data",true,true,true,false,this);
         if (u == null) {
             return;
         }
-        */
+
         (new BackgroundOperation("Saving Images") {
                 protected Object construct() throws Exception {
-                    /*
-                    if(u.toString().equals("file:")) {
+
+                    if(u.toString().startsWith("file:")) {
                         File file = new File(u);
                         if(!file.isDirectory()) {
                             JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
@@ -410,15 +445,18 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                     "No Directory Selected", JOptionPane.OK_OPTION );
                         }                             
                     }//else
-                    */
-                    logger.debug("construct() - Save Images");
+
+                    System.out.println("Save Images");
                     Enumeration depthEnum;
                     Enumeration storageLookUp;
                     Iterator nodeIterator;
                     String lookup;
                     String key;
                     URL url;
+                    String name;
+                    URI finalURI;
                     DefaultMutableTreeNode dmTreeNode;
+                    Node nd;
                     for (Enumeration e = selectRootNode.children() ; e.hasMoreElements() ;) {
                         DefaultMutableTreeNode tn = (DefaultMutableTreeNode)e.nextElement();
                         if(tn.getChildCount() > 0) {
@@ -426,14 +464,38 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                 dmTreeNode = (DefaultMutableTreeNode)depthEnum.nextElement();
                                 if(!dmTreeNode.isRoot()) {
                                     TreeNodeData treeData = (TreeNodeData)dmTreeNode.getUserObject();
-                                    if(treeData.getURL() != null  && treeData.getURL().trim().length() > 0) {                                    
-                                        logger.debug("construct() - the url found = "
-                                                + treeData.getURL());
+                                    if(treeData.getURL() != null  && treeData.getURL().trim().length() > 0) {
+                                        url = new URL(treeData.getURL());
+                                        name = conformToMyspaceName(((DefaultMutableTreeNode)dmTreeNode.getParent()).getUserObject().toString());
+                                        name += "_" + conformToMyspaceName(treeData.toString());
+                                        finalURI = new URI(u.toString() + "/" + name);
+                                        myspace.copyURLToContent(url,finalURI);                                        
+                                        System.out.println("the url found = " + treeData.getURL());
                                     }//if
                                     if(treeData.getID() != null && dmTreeNode.getChildCount() == 0) {
                                         //Darn they chosen just a service.
-                                        //need to look through the nodes now.                                       
-                                    }
+                                        //need to look through the nodes now.
+                                        nodeIterator = tree.getNodes(); 
+                                        while(nodeIterator.hasNext()) {
+                                            nd = (Node)nodeIterator.next();
+                                            key = nd.getAttribute("id");
+                                            if(key.equals(treeData.getID())) {
+                                                //okay we found it id's matched go through the 
+                                                //neighbor nodes and see if there is a url attribute in which we 
+                                                //will start saving.                                                
+                                                nodeIterator = nd.getNeighbors();
+                                                while(nodeIterator.hasNext()) {
+                                                    nd = (Node)nodeIterator.next();
+                                                    if(nd.getAttribute("url") != null) {
+                                                        url = new URL(nd.getAttribute("url"));
+                                                        name = conformToMyspaceName(treeData.toString() + "/" + nd.getAttribute("label"));
+                                                        finalURI = new URI(u.toString() + "/" + name);
+                                                        myspace.copyURLToContent(url,finalURI);
+                                                    }//if
+                                                }//while
+                                            }//if
+                                        }//while
+                                    }//if
                                 }//if
                             }//for
                         }else {
@@ -442,18 +504,17 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             //Just grab all the url attributes and start saving.
                             nodeIterator = tree.getNodes();                            
                             while(nodeIterator.hasNext()) {
-                                Node nd = (Node)nodeIterator.next();
+                                nd = (Node)nodeIterator.next();
                                 key = nd.getAttribute("url");
                                 if(key != null && key.trim().length() > 0) {
                                     url = new URL(key);
-                                    logger.debug("construct() - the url = " + url);
-                                    //TODO
-                                    //now copy into the selected directory
-                                    //be sure to add an actual filename to that directory.
-                                    //Use nd.getAttribute("label") for the filename.
-                                    //should be the name of treeData.toString() with special characters and spaces
-                                    //set to "_" or something valid.                                    
-                                    //copyContentToURL
+                                    System.out.println("the url = " + url);
+                                    //all nodes with urls only have 1 neighbor which is the
+                                    //actual service so gets label as part of the name.
+                                    name = conformToMyspaceName(nd.getNeighbor(0).getAttribute("label"));
+                                    name += "_" + conformToMyspaceName(nd.getAttribute("label"));
+                                    finalURI = new URI(u.toString() + "/" + name);
+                                    myspace.copyURLToContent(url,finalURI);    
                                 }//if
                             }//while                            
                         }//else
@@ -466,20 +527,42 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     /**
      * Verify the entry in the position text box is a position.  If not it should try to look it up. 
      * @return
-     * @todo refactor so that error is reported to user.
      */
     private String getPosition() {
         String pos = posText.getText().trim();
-        String expression = "\\d+\\.?\\d*,\\d+\\.?\\d*";
+        try {
+            return getPosition(pos);
+        }catch(IllegalArgumentException iae) {
+            return getPosition(getPositionFromObject());  
+        }
+    }
+    
+    private String getPosition(String pos) throws IllegalArgumentException {
+        if(pos == null || pos.trim().length() == 0) {
+            throw new IllegalArgumentException("No position given");
+        }
+        String expression = "-?\\d+\\.?\\d*,-?\\d+\\.?\\d*";
         if(pos.matches(expression)) {            
             return pos;            
         }
-        logger
-                .debug("getPosition() - does not match expression see if it is an object to be looked up");
-        //TODO: Go and look up object.
         throw new IllegalArgumentException("No position found at the moment, expression did not match");
-        
     }
+    
+    private String getPositionFromObject() {
+        String pos = null;    
+        try {
+            String temp = ses.sesame(posText.getText().trim(),"x");
+            System.out.println("here is the xml response from sesame = " + temp);
+            pos = temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>"));
+            pos += "," + temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>"));
+            System.out.println("here is the position extracted from sesame = " + pos);
+        }catch(Exception e) {
+            //hmmm I think glueservice is throwing an exception but things seem to be okay.
+            e.printStackTrace();
+        }
+        return pos;
+    }
+
     
     /**
      * Extracts out the ra of a particular position in the form of a ra,dec
@@ -515,7 +598,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      */
     private boolean needsParsedRegion() {
         String region = regionText.getText().trim();
-        String expression = "\\d+\\.?\\d*,\\d+\\.?\\d*";
+        String expression = "-?\\d+\\.?\\d*,-?\\d+\\.?\\d*";
         return region.matches(expression);
     }
     
@@ -650,8 +733,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             rootNode.addChild(new DefaultEdge(rootNode,siaNode));
             rootNode.addChild(new DefaultEdge(rootNode,coneNode));
                
-            tree = new DefaultTree(rootNode);
-            
+            tree = new DefaultTree(rootNode);            
         }
         return tree;
     }
@@ -738,6 +820,259 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         }
         return asms;
     }*/
+    
+    
+    /** vizualization that hides some of the data some of the time 
+     * based on edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter
+     * 
+     * needs to have it's nodes spaced out more.
+     * 
+     * */
+    public class Hyperbolic extends Vizualization {
+            
+        public Hyperbolic() {
+                super("Hyperbolic");    
+                
+        }
+        private Display display;
+        
+        public ActivityMap actmap; 
+        public HyperbolicTranslation translation;   
+        
+        // refresh display when new item added to results.
+        public void nodeAdded(Graph arg0, Node arg1) {
+            actmap.runNow("filter");
+        }        
+        
+        public Display getDisplay() {
+        
+            if(display == null) {
+                actmap = new ActivityMap();
+                ItemRegistry registry = getItemRegistry();
+                display = new Display();
+
+            //initialize renderers
+                // create a text renderer with rounded corners and labels
+               // with a maximum length of 75 pixels, abbreviated as names.
+               TextItemRenderer nodeRenderer = new TextItemRenderer();
+                nodeRenderer.setRoundedCorner(8,8);
+               nodeRenderer.setMaxTextWidth(75);
+               //nodeRenderer.setAbbrevType(StringAbbreviator.NAME);
+               // create a null renderer for use when no label should be shown
+                NullRenderer nodeRenderer2 = new NullRenderer();
+               // create an edge renderer with custom curved edges
+                DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer() {
+                   protected void getCurveControlPoints(EdgeItem eitem, 
+                       Point2D[] cp, double x1, double y1, double x2, double y2) 
+                   {
+                       Point2D c = eitem.getLocation();      
+                       cp[0].setLocation(c);
+                       cp[1].setLocation(c);
+                   } //
+                };
+               edgeRenderer.setEdgeType(DefaultEdgeRenderer.EDGE_TYPE_CURVE);
+               edgeRenderer.setRenderType(ShapeRenderer.RENDER_TYPE_DRAW);
+                
+                // set the renderer factory
+               registry.setRendererFactory(new DemoRendererFactory(
+                    nodeRenderer, nodeRenderer2, edgeRenderer));
+                
+                // initialize the display
+                //display.setSize(500,460);
+               display.setSize(500,350);
+               display.setItemRegistry(registry);
+               display.setBackground(Color.WHITE);
+               display.addControlListener(new DemoControl());          
+               TranslateControl dragger = new TranslateControl();
+               display.addMouseListener(dragger);
+               display.addMouseMotionListener(dragger);
+               display.addControlListener(new ZoomControl());
+               //display.addControlListener(new AstroScopeMultiSelectionControl(registry));
+               display.addControlListener(new ToolTipControl("tooltip"));
+                
+               // initialize repaint list
+               ActionList repaint = new ActionList(registry);
+               repaint.add(new HyperbolicTreeMapper());
+               repaint.add(new HyperbolicVisibilityFilter());
+               repaint.add(new RepaintAction());
+               actmap.put("repaint", repaint);
+               
+                // initialize filter
+               ActionList filter  = new ActionList(registry);
+               filter.add(new TreeFilter());
+               filter.add(new HyperbolicTreeLayout());
+               filter.add(new HyperbolicDemoColorFunction());
+               filter.add(repaint);
+               actmap.put("filter", filter);
+               //graphLayout = filter;
+      
+               // intialize hyperbolic translation
+               ActionList translate = new ActionList(registry);
+               translation = new HyperbolicTranslation();
+               translate.add(translation);
+               translate.add(repaint);
+               actmap.put("translate", translate);
+               
+               // intialize animated hyperbolic translation
+               ActionList animate = new ActionList(registry, 1000, 20);
+               animate.setPacingFunction(new SlowInSlowOutPacer());
+               animate.add(translate);
+               actmap.put("animate", animate);
+               
+               // intialize the end translation list
+               ActionList endTranslate = new ActionList(registry);
+               endTranslate.add(new HyperbolicTranslationEnd());
+               actmap.put("endTranslate", endTranslate);                              
+            }               
+               return display;
+        }
+        
+        
+        public class TranslateControl extends MouseAdapter implements MouseMotionListener {
+            boolean drag = false;
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                translation.setStartPoint(e.getX(), e.getY());
+            } //
+            public void mouseDragged(java.awt.event.MouseEvent e) {
+                drag = true;
+                translation.setEndPoint(e.getX(), e.getY());
+                actmap.runNow("translate");
+            } //
+            public void mouseReleased(java.awt.event.MouseEvent e) {
+                if ( drag ) {
+                    actmap.runNow("endTranslate");
+                    drag = false;
+                }
+            } //
+            public void mouseMoved(java.awt.event.MouseEvent e) {
+            } //
+        } // end of inner class TranslateControl
+            
+        public class DemoControl extends ControlAdapter {
+            public void itemEntered(VisualItem item, java.awt.event.MouseEvent e) {
+                e.getComponent().setCursor(
+                        Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            } //
+            public void itemExited(VisualItem item, java.awt.event.MouseEvent e) {
+                e.getComponent().setCursor(Cursor.getDefaultCursor());
+            } //        
+            public void itemClicked(VisualItem item, java.awt.event.MouseEvent e) {
+                ItemRegistry registry = getItemRegistry();
+                // animate a translation when a node is clicked
+                int cc = e.getClickCount();
+                if ( item instanceof NodeItem ) {
+                    if ( cc == 1 ) {
+                        TreeNode node = (TreeNode)registry.getEntity(item);
+                        if ( node != null ) {                           
+                            translation.setStartPoint(e.getX(), e.getY());
+                            translation.setEndPoint(e.getX(), e.getY());
+                            actmap.runNow("animate");
+                            actmap.runAfter("animate", "endTranslate");
+                        }
+                    }
+                }
+            } //
+        } // end of inner class DemoController
+        
+        public class DemoRendererFactory implements RendererFactory {
+            private Renderer nodeRenderer1;
+            private Renderer nodeRenderer2;
+            private Renderer edgeRenderer;
+            public DemoRendererFactory(Renderer nr1, Renderer nr2, Renderer er) {
+                nodeRenderer1 = nr1;
+                nodeRenderer2 = nr2;
+                edgeRenderer = er;
+            } //
+            public Renderer getRenderer(VisualItem item) {
+                if ( item instanceof NodeItem ) {
+                    NodeItem n = (NodeItem)item;
+                    NodeItem p = (NodeItem)n.getParent();
+                    
+                    double d = Double.MAX_VALUE;
+                    
+                    Point2D nl = n.getLocation();
+                    if ( p != null) {
+                        d = Math.min(d,nl.distance(p.getLocation()));
+                        int idx = p.getChildIndex(n);
+                        NodeItem b;
+                        if ( idx > 0 ) {
+                            b = (NodeItem)p.getChild(idx-1);
+                            d = Math.min(d,nl.distance(b.getLocation()));
+                        }
+                        if ( idx < p.getChildCount()-1 ) {
+                            b = (NodeItem)p.getChild(idx+1);
+                            d = Math.min(d,nl.distance(b.getLocation()));
+                        }
+                    }
+                    if ( n.getChildCount() > 0 ) {
+                        NodeItem c = (NodeItem)n.getChild(0);
+                        d = Math.min(d,nl.distance(c.getLocation()));
+                    }
+                    
+                    if ( d > 15 ) {
+                        return nodeRenderer1;
+                    } else {
+                        return nodeRenderer2;
+                    }
+                } else if ( item instanceof EdgeItem ) {
+                    return edgeRenderer;
+                } else {
+                    return null;
+                }
+            } //
+        } // end of inner class DemoRendererFactory
+        
+        public class HyperbolicDemoColorFunction extends ColorFunction {
+            private int  thresh = 5;
+            private Color graphEdgeColor = Color.LIGHT_GRAY;
+            private Color nodeColors[];
+            private Color edgeColors[];
+           
+            public HyperbolicDemoColorFunction() {
+                nodeColors = new Color[thresh];
+                edgeColors = new Color[thresh];
+                for ( int i = 0; i < thresh; i++ ) {
+                    double frac = i / ((double)thresh);
+                    nodeColors[i] = ColorLib.getIntermediateColor(Color.RED, Color.BLACK, frac);
+                    edgeColors[i] = ColorLib.getIntermediateColor(Color.RED, Color.BLACK, frac);
+                }
+            } //
+           
+            public Paint getFillColor(VisualItem item) {
+                if ( item instanceof NodeItem ) {
+                    return Color.WHITE;
+                } else if ( item instanceof AggregateItem ) {
+                    return Color.LIGHT_GRAY;
+                } else if ( item instanceof EdgeItem ) {
+                    return getColor(item);
+                } else {
+                    return Color.BLACK;
+                }
+            } //
+           
+            public Paint getColor(VisualItem item) {
+                if (item instanceof NodeItem) {
+                     int d = ((NodeItem)item).getDepth();
+                    return nodeColors[Math.min(d,thresh-1)];
+                } else if (item instanceof EdgeItem) {
+                    EdgeItem e = (EdgeItem) item;
+                    if ( e.isTreeEdge() ) {
+                        int d, d1, d2;
+                         d1 = ((NodeItem)e.getFirstNode()).getDepth();
+                         d2 = ((NodeItem)e.getSecondNode()).getDepth();
+                         d = Math.max(d1, d2);
+                        return edgeColors[Math.min(d,thresh-1)];
+                    } else {
+                        return graphEdgeColor;
+                    }
+                } else {
+                    return Color.BLACK;
+                }
+            } //
+        } // end of inner class DemoColorFunction
+        
+    }
+
         
     
 /** vizualization that hides some of the data some of the time 
@@ -1390,7 +1725,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         AstroScopeLauncherImpl.this.setStatusMessage("Adding results from " + information.getName());
-                        getTree().addChild(new DefaultEdge(siaNode,riNode));
+                        getTree().addChild(new DefaultEdge(siaNode,riNode));                        
                     }
                 });  
                 }
@@ -1706,22 +2041,25 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             ItemRegistry registry = item.getItemRegistry();
             Entity entity = registry.getEntity(item);
             //Okay it is not All, they are selecting something unique.
-            if(entity instanceof edu.berkeley.guir.prefuse.graph.Node) {
-                edu.berkeley.guir.prefuse.graph.Node edgeNode = (edu.berkeley.guir.prefuse.graph.Node)entity;
+            if(entity instanceof edu.berkeley.guir.prefuse.graph.DefaultTreeNode) {
+                //System.out.println("yes it was a defaulttreenode");
+                edu.berkeley.guir.prefuse.graph.TreeNode edgeNode = (edu.berkeley.guir.prefuse.graph.TreeNode)entity;
                 Vector treePath = new Vector();
                 //Okay put in a vector the nodes starting with selected node then its parents all the way up
                 //to AstroScope.  This is talking about nodes in the graph.
-                while(!label.equals("AstroSope")) {
+                while(!label.equals("AstroScope")) {
                     System.out.println("label not astroscope it was: " + label);
                     treePath.add(new TreeNodeData(edgeNode.getAttribute("label"),
                             edgeNode.getAttribute("id"),
                             edgeNode.getAttribute("url")));                    
                     //treePath.add(label);
-                    edgeNode = edgeNode.getEdge(0).getFirstNode();
+                    //edgeNode = edgeNode.getEdge(0).getFirstNode();
+                    //edgeNode = (Node)edgeNode.getNeighbors().next();
+                    edgeNode = edgeNode.getParent();
                     label = edgeNode.getAttribute("label");
                 }
                 
-                System.out.println("done with filling treepath its size = " + treePath.size());
+                //System.out.println("done with filling treepath its size = " + treePath.size());
                 
 
                 //TODO  (maybe rethink) seems to work but looks confusing.
@@ -1763,6 +2101,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 if(hasNode){                    
                     //if you went through the whole tree and it is still there,
                     //then they must be deselecting it.  So remove it.
+                    //temp = parent.getParent();
                     if(parent.getChildCount() > 0) {
                         int result = JOptionPane.showConfirmDialog(AstroScopeLauncherImpl.this, 
                                 "You have chosen to remove an item that has children, all those children will be removed from the selection tree. Is this ok?  Item: " + parent.toString(),
@@ -1772,6 +2111,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         }
                     }
                     parent.removeFromParent();
+                    /*
+                    while(temp != null && temp.getChildCount == 0) {
+                        child = temp;
+                        temp = temp.getParent();
+                        child.removeFromParent();
+                    }
+                    */
                     treeModel.reload();
                 }//if
             }//if
@@ -1879,6 +2225,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.3  2005/10/31 16:13:51  KevinBenson
+added hyperbolic in there, plus the saving to myspace area.
+
 Revision 1.2  2005/10/31 12:49:38  nw
 rehashed downloading mechanism,
 put in a bunch of sample vizualizations.
