@@ -16,9 +16,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -26,17 +30,20 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
+import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -44,20 +51,18 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
@@ -66,7 +71,6 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ForDialog;
 import org.astrogrid.desktop.modules.dialogs.IfDialog;
 import org.astrogrid.desktop.modules.dialogs.ParforDialog;
-import org.astrogrid.desktop.modules.dialogs.RegistryChooserDialog;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.dialogs.ScriptDialog;
@@ -108,7 +112,7 @@ import com.l2fprod.common.swing.StatusBar;
 
 /**
  * @author Phil Nicolson pjn3@star.le.ac.uk
- *@modified nww smoothed up backgrounnd operaitons, added new tool editor, removed top tabs.
+ * @modified nww smoothed up backgrounnd operaitons, added new tool editor, removed top tabs.
  *
  */
 public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.acr.ui.WorkflowBuilder {
@@ -207,18 +211,56 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 
         public void actionPerformed(ActionEvent e) {
             //@todo factor out commonality with 'loadWorkflow' - or even better, replace with action listeners.
-            try {
-                getModel().setWorkflow(jobs.createWorkflow());
-                getTree().expandAll(true);
-            } catch (ServiceException ex) { // quite unlikely.
-                showError("Failed to create workflow",ex);
-            }
-            tabbedPaneWF.setSelectedIndex(0);
-    	    tabbedPaneWF.setEnabledAt(0, true);
-    	    tabbedPaneWF.setEnabledAt(1, true);
+        	int i = -1;
+        	if (e == null) { // createAction called as builder initialized
+        		try {
+        			getModel().setWorkflow(jobs.createWorkflow());
+        			getTree().expandAll(true);
+        		} 
+        		catch (ServiceException ex) { // quite unlikely.
+        			showError("Failed to create workflow",ex);
+        		}
+        		tabbedPaneWF.setSelectedIndex(0);
+        		tabbedPaneWF.setEnabledAt(0, true);
+        		tabbedPaneWF.setEnabledAt(1, true);
 
-            submitAction.setEnabled(true);
-            saveAction.setEnabled(true);
+        		submitAction.setEnabled(true);
+        		saveAction.setEnabled(true);
+        	} else {
+        	    i = JOptionPane.showConfirmDialog(null, "Creating a new workflow will mean current workflow is deleted. \n" 
+        	    		                               +"Do you wish to save your workflow prior to creating new one?", "Create new workflow", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE); 
+        	}
+        	if (i == JOptionPane.YES_OPTION) {
+        		saveAction.actionPerformed(null);
+        		try {
+        			getModel().setWorkflow(jobs.createWorkflow());
+        			getTree().expandAll(true);
+        		} 
+        		catch (ServiceException ex) { // quite unlikely.
+        			showError("Failed to create workflow",ex);
+        		}
+        		tabbedPaneWF.setSelectedIndex(0);
+        		tabbedPaneWF.setEnabledAt(0, true);
+        		tabbedPaneWF.setEnabledAt(1, true);
+
+        		submitAction.setEnabled(true);
+        		saveAction.setEnabled(true);
+        	}
+        	if (i == JOptionPane.NO_OPTION) {
+        		try {
+        			getModel().setWorkflow(jobs.createWorkflow());
+        			getTree().expandAll(true);
+        		} 
+        		catch (ServiceException ex) { // quite unlikely.
+        			showError("Failed to create workflow",ex);
+        		}
+        		tabbedPaneWF.setSelectedIndex(0);
+        		tabbedPaneWF.setEnabledAt(0, true);
+        		tabbedPaneWF.setEnabledAt(1, true);
+
+        		submitAction.setEnabled(true);
+        		saveAction.setEnabled(true);
+        	}
         }
     }    
 
@@ -238,8 +280,74 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
             dispose();
         }
     }    
-
-    // components this ui uses.
+    /** collapse workflow */
+	protected final class CollapseAction extends AbstractAction {
+	    public CollapseAction() {
+	        super("Collapse", IconHelper.loadIcon("collapse.gif"));
+	        this.putValue(SHORT_DESCRIPTION,"Collapse tree");
+	        this.setEnabled(true);            
+	    }
+        public void actionPerformed(ActionEvent e) {
+       //     TreeNode node = (TreeNode)tree.getLastSelectedPathComponent();
+       //     if (node != null) {
+       //     	tree.expandAll(node,false);
+       //     } else {
+       //         tree.expandAll(false);
+       //     }
+        	tree.collapse();
+	    }
+	}
+    /** expand workflow */
+	protected final class ExpandAction extends AbstractAction {
+	    public ExpandAction() {
+	        super("Expand", IconHelper.loadIcon("expand.gif"));
+	        this.putValue(SHORT_DESCRIPTION,"Expand tree");
+	        this.setEnabled(true);            
+	    }
+        public void actionPerformed(ActionEvent e) {
+       //     TreeNode node = (TreeNode)tree.getLastSelectedPathComponent();
+       //     if (node != null) {
+       //     	tree.expandAll(node,true);
+       //     } else {
+       //     	tree.expandAll(true);
+       //     }
+        	tree.expand();            
+	    }
+	}
+    /** promote node */
+	protected final class promoteAction extends AbstractAction {
+	    public promoteAction() {
+	        super("Move up", IconHelper.loadIcon("promote.gif"));
+	        this.putValue(SHORT_DESCRIPTION,"Move activity up");
+	        this.setEnabled(true);            
+	    }
+        public void actionPerformed(ActionEvent e) {
+        	moveNode(true);
+	    }
+	}
+    /** demote node */
+	protected final class demoteAction extends AbstractAction {
+	    public demoteAction() {
+	        super("Move down", IconHelper.loadIcon("demote.gif"));
+	        this.putValue(SHORT_DESCRIPTION,"Move activity down");
+	        this.setEnabled(true);            
+	    }
+        public void actionPerformed(ActionEvent e) {
+        	moveNode(false);
+	    }
+	}
+    /** delete node (non DnD)*/
+	protected final class deleteAction extends AbstractAction {
+	    public deleteAction() {
+	        super("Delete selected node", IconHelper.loadIcon("wastebin.gif"));
+	        this.putValue(SHORT_DESCRIPTION,"Delete selected node");
+	        this.setEnabled(true);            
+	    }
+        public void actionPerformed(ActionEvent e) {
+        	deleteNode();
+	    }
+	}
+	// components this ui uses.
     protected final ToolEditorInternal toolEditor;
     protected final BrowserControl browser;
     protected final MyspaceInternal vos;
@@ -254,8 +362,11 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     protected Action submitAction;
     protected Action createAction;
     protected Action closeAction;
-    
-
+    protected Action collapseAction;
+    protected Action expandAction;
+    protected Action promoteAction;
+    protected Action demoteAction;
+    protected Action deleteAction;
     
     private JButton  findButton = null;
     private JEditorPane docTextArea;
@@ -272,6 +383,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     private URL helpUrl;
     private int caretPos = 0;
     private StatusBar statusBar = null;
+    public boolean autoPopUp = true;    
+    
+    ActivityListRenderer activityListRenderer = new ActivityListRenderer();
 	
     /** 
      * production constructor 
@@ -338,17 +452,61 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         saveAction = new SaveAction();
         saveAction.setEnabled(false); // Initially false until a workflow is loaded/created
         closeAction = new CloseAction();
+        collapseAction = new CollapseAction();
+        expandAction = new ExpandAction();
+        promoteAction = new promoteAction();
+        demoteAction = new demoteAction();
+        deleteAction = new deleteAction();
         
         toolbar.add(createAction);
         toolbar.add(loadAction);
         toolbar.add(saveAction);
         toolbar.add(submitAction);
+        toolbar.add(collapseAction);
+        toolbar.add(expandAction);
+        toolbar.add(promoteAction);
+        toolbar.add(demoteAction);
+        toolbar.add(deleteAction);
         
         fileMenu.add(createAction);
         fileMenu.add(loadAction);
         fileMenu.add(saveAction);      
         fileMenu.add(new JSeparator());
         fileMenu.add(submitAction);
+        fileMenu.add(new JSeparator());
+        JMenu preferencesMenu = new JMenu("Preferences");
+        preferencesMenu.setMnemonic(KeyEvent.VK_P);
+        JCheckBoxMenuItem cbMenuItem1 = new JCheckBoxMenuItem("Pop-up editor on insert");
+        cbMenuItem1.setToolTipText("If checked a pop-up for entering parameter values will automatically appear \n as activites are enterred into the workflow.");
+        cbMenuItem1.setSelected(true);
+        cbMenuItem1.setMnemonic(KeyEvent.VK_P);
+        cbMenuItem1.addItemListener(new ItemListener() {
+        	public void itemStateChanged(ItemEvent e) {
+        		if (e.getStateChange() == ItemEvent.SELECTED) {
+        			autoPopUp = true;
+        		} else {
+        			autoPopUp = false;
+        		}
+        		;
+        	}
+        });
+        JCheckBoxMenuItem cbMenuItem2 = new JCheckBoxMenuItem("Show activity tooltips");
+        cbMenuItem2.setToolTipText("If checked detailed tool tips for activities will be displayed.");
+        cbMenuItem2.setSelected(true);
+        cbMenuItem2.setMnemonic(KeyEvent.VK_T);
+        cbMenuItem2.addItemListener(new ItemListener() {
+        	public void itemStateChanged(ItemEvent e) {
+        		if (e.getStateChange() == ItemEvent.SELECTED) {
+        			activityListRenderer.setToolTipVisible(true);
+        		} else {
+        			activityListRenderer.setToolTipVisible(false);
+        		}
+        		;
+        	}
+        });
+        preferencesMenu.add(cbMenuItem1);
+        preferencesMenu.add(cbMenuItem2);
+        fileMenu.add(preferencesMenu);
         fileMenu.add(new JSeparator());
         fileMenu.add(closeAction);
         
@@ -451,7 +609,6 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
   
 	/**
 	 * This method returns the activity list
-	 * to do: cahnge layout to grid of buttons or an improved layout...	
 	 * 	
 	 * @return javax.swing.JScrollpane	
 	 */    
@@ -470,18 +627,17 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			activityListModel.addElement("For");
 			activityListModel.addElement("ParFor");
 			activityListModel.addElement("While");
-			list = new JList(activityListModel);
-			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			list = new JList(activityListModel);			
 			list.setDragEnabled(true);
-			list.setCellRenderer(new ActivityListRenderer());
+			singleClickDnD(list);
+			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			list.setCellRenderer(activityListRenderer);
 			//list.setTransferHandler(new DefaultActivityTransferHandler());
 			listView = new JScrollPane(list);
 		}
 		return listView;
     }
 	
-
-
 
     private SimpleWorkflowTreeModel model;
     
@@ -497,132 +653,134 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     /** build / access the tree */
     private WorkflowDnDTree getTree() {
         if (tree == null) {
-           tree =  new WorkflowDnDTree(apps);
+           tree =  new WorkflowDnDTree(apps, this);
            tree.setModel(getModel());
            tree.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-                if (evt.getClickCount() == 2 ) {
-                	setStatusMessage("");
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-                    Object o = node.getUserObject();
-                    
-                    if (o instanceof String) {                        
-                        DefaultMutableTreeNode scriptNode = (DefaultMutableTreeNode)node.getParent();
-                        if (scriptNode.getUserObject() instanceof Script) { // expected to be true always - should be as String is script body
-                            Script newScript = showScriptDialog((Script)scriptNode.getUserObject()).getScript();
-                            if (newScript != null) {
-                                getModel().nodeChanged(scriptNode);
-                                node.setUserObject(newScript.getBody());
-                                getModel().nodeChanged(node);
-                            }
-                        }                        
-                    } 
-                    else if (o instanceof Script) {
-                        Script newScript = showScriptDialog((Script)o).getScript();
-                        if (newScript != null) {
-                            System.err.println(newScript.getBody());
-                            getModel().nodeChanged(node);
-                            DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)node.getFirstChild();
-                            childNode.setUserObject(newScript.getBody());
-                            getModel().nodeChanged(childNode);
-                        }                                   
-                    }                    
-                    else if (o instanceof Tool ) {
-                      try {
-                       Tool newTool = toolEditor.editTool((Tool)o,WorkflowBuilderImpl.this);
-                       if (newTool != null) { // i.e. changes have been made.
-                           node.setUserObject(newTool); // store node back in ui model
-                           DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
-                           Step s = (Step) parentNode.getUserObject(); // splice back into workflow.
-                           s.setTool(newTool); 
-                           getModel().nodeChanged(node);
-                       }
-                        } catch (ACRException e) {
-                            showError("Failed to edit tool",e);
-                        }
-                    } 
-                    else if (o instanceof Step) {
-                        
-                    	Step newStep = showStepDialog((Step)o).getStep();
-                    	if (newStep != null && newStep.getTool() == null) { // no tool selected yet.
-                            try {
-                            Tool newTool = toolEditor.selectAndBuildTool(WorkflowBuilderImpl.this);
-                    		newStep.setTool(newTool);
-                    		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode();
-                    		childNode.setUserObject(newTool);
-                    		node.add(childNode);
-                    		getModel().nodeChanged(childNode);
-                            } catch (ACRException e) {
-                                showError("Failed to edit tool",e);
-                            }
-                    	}
-                    	node.setUserObject(newStep);
-                    	getModel().nodeChanged(node);      	                    	                    
-                    }
-                    else if (o instanceof If) {
-                    	If newIf = showIfDialog((If)o).getIf();
-                    	if (newIf != null) {
-                            // aleady here - it's an alias
-                    		//node.setUserObject(newIf);
-                    		getModel().nodeChanged(node);
-                    	}
-                    }
-                    else if (o instanceof Set) {
-                    	Set newSet = showSetDialog((Set)o).getSet();
-                    	if (newSet != null) {
-                        	//node.setUserObject(newSet);
-                        	getModel().nodeChanged(node);
-                    	} 
-                    }
-                    else if (o instanceof Unset) {
-                    	Unset newUnset = showUnsetDialog((Unset)o).getUnset();
-                    	if (newUnset != null) {
-                    		//node.setUserObject(newUnset);
-                    		getModel().nodeChanged(node);
-                    	}                    	
-                    }
-                    else if (o instanceof For) {
-                    	For newFor = showForDialog((For)o).getFor();
-                    	if (newFor != null) {
-                    		//node.setUserObject(newFor);
-                    		getModel().nodeChanged(node);
-                    	}                    	
-                    }
-                    else if (o instanceof Parfor) {
-                    	Parfor newParfor = showParforDialog((Parfor)o).getParfor();
-                    	if (newParfor != null) {
-                        	//node.setUserObject(newParfor);
-                        	getModel().nodeChanged(node);
-                    	}
-                    }                    
-                    else if (o instanceof While) {
-                    	While newWhile = showWhileDialog((While)o).getWhile();
-                    	if (newWhile != null) {
-                        	//node.setUserObject(newWhile);
-                        	getModel().nodeChanged(node);
-                    	}
-                    }                    
-                    else if (o instanceof Workflow) {
-                    	Workflow newWorkflow = showWorkflowDetailsDialog((Workflow)o).getWorkflow();
-                    	if (newWorkflow != null) {
-                    		//node.setUserObject(newWorkflow);
-                    		getModel().nodeChanged(node);                    		
-                    	}
-                    	tree.expandAll(true); // nodeChanged will focus to root, so expand again
-
-                    }
-                    else if (o instanceof Sequence || 
-                    		 o instanceof Flow || 
-							 o instanceof Scope ||
-							 o instanceof Else ||
-							 o instanceof Then ) {
-                    	setStatusMessage("No inputs required for this activity");
-                    }                    
+                if (evt.getClickCount() == 2 ) {                	
+                	editNode((DefaultMutableTreeNode)tree.getLastSelectedPathComponent());
                 }
             }
            });                   
         }
         return tree;
+    }
+    
+    /**
+     * Displays required pop-up to allow users to edit node.
+     * 
+     * @param node DefaultMutableTreeNode that user wishes to edit
+     */
+    public void editNode(DefaultMutableTreeNode node) {
+    	setStatusMessage("");        
+        Object o = node.getUserObject();
+        
+        if (o instanceof String) {                        
+            DefaultMutableTreeNode scriptNode = (DefaultMutableTreeNode)node.getParent();
+            if (scriptNode.getUserObject() instanceof Script) { // expected to be true always - should be as String is script body
+                Script newScript = showScriptDialog((Script)scriptNode.getUserObject()).getScript();
+                if (newScript != null) {
+                    getModel().nodeChanged(scriptNode);
+                    node.setUserObject(newScript.getBody());
+                    getModel().nodeChanged(node);
+                }
+            }                        
+        } 
+        else if (o instanceof Script) {
+            Script newScript = showScriptDialog((Script)o).getScript();
+            if (newScript != null) {
+                System.err.println(newScript.getBody());
+                getModel().nodeChanged(node);
+                DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)node.getFirstChild();
+                childNode.setUserObject(newScript.getBody());
+                getModel().nodeChanged(childNode);
+            }                                   
+        }                    
+        else if (o instanceof Tool ) {
+          try {
+           Tool newTool = toolEditor.editTool((Tool)o,WorkflowBuilderImpl.this);
+           if (newTool != null) { // i.e. changes have been made.
+               node.setUserObject(newTool); // store node back in ui model
+               DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
+               Step s = (Step) parentNode.getUserObject(); // splice back into workflow.
+               s.setTool(newTool); 
+               getModel().nodeChanged(node);
+           }
+            } catch (ACRException e) {
+                showError("Failed to edit tool",e);
+            }
+        } 
+        else if (o instanceof Step) {
+            
+        	Step newStep = showStepDialog((Step)o).getStep();
+        	if (newStep != null && newStep.getTool() == null) { // no tool selected yet.
+                try {
+                Tool newTool = toolEditor.selectAndBuildTool(WorkflowBuilderImpl.this);
+        		newStep.setTool(newTool);
+        		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode();
+        		childNode.setUserObject(newTool);
+        		node.add(childNode);
+        		getModel().nodeChanged(childNode);
+                } catch (ACRException e) {
+                    showError("Failed to edit tool",e);
+                }
+        	}
+        	node.setUserObject(newStep);
+        	getModel().nodeChanged(node);      	                    	                    
+        }
+        else if (o instanceof If) {
+        	If newIf = showIfDialog((If)o).getIf();
+        	if (newIf != null) {
+                // aleady here - it's an alias
+        		getModel().nodeChanged(node);
+        	}
+        }
+        else if (o instanceof Set) {
+        	Set newSet = showSetDialog((Set)o).getSet();
+        	if (newSet != null) {
+            	getModel().nodeChanged(node);
+        	} 
+        }
+        else if (o instanceof Unset) {
+        	Unset newUnset = showUnsetDialog((Unset)o).getUnset();
+        	if (newUnset != null) {
+        		getModel().nodeChanged(node);
+        	}                    	
+        }
+        else if (o instanceof For) {
+        	For newFor = showForDialog((For)o).getFor();
+        	if (newFor != null) {
+        		getModel().nodeChanged(node);
+        	}                    	
+        }
+        else if (o instanceof Parfor) {
+        	Parfor newParfor = showParforDialog((Parfor)o).getParfor();
+        	if (newParfor != null) {
+            	getModel().nodeChanged(node);
+        	}
+        }                    
+        else if (o instanceof While) {
+        	While newWhile = showWhileDialog((While)o).getWhile();
+        	if (newWhile != null) {
+            	getModel().nodeChanged(node);
+        	}
+        }                    
+        else if (o instanceof Workflow) {
+        	Workflow newWorkflow = showWorkflowDetailsDialog((Workflow)o).getWorkflow();
+        	if (newWorkflow != null) {
+        		getModel().nodeChanged(node);                    		
+        	}
+        	tree.expandAll(true); // nodeChanged will focus to root, so expand again
+
+        }
+        else if (o instanceof Sequence || 
+        		 o instanceof Flow || 
+				 o instanceof Scope ||
+				 o instanceof Else ||
+				 o instanceof Then ) {
+        	setStatusMessage("No inputs required for this activity");
+        }                    
+    
     }
  
     private ForDialog forDialog;
@@ -801,6 +959,98 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			workflowStatusLabel.setEnabled(false);
 		}
 	}
-	   
-
+	
+	/**
+	 * Change default drag operation so that list item can be dragged without first clicking to selecting it
+	 * @param list
+	 */
+	public static void singleClickDnD(JList list) {
+		MouseListener dragListener = null;
+		try {
+			
+			Class clazz = Class.forName("javax.swing.plaf.basic.BasicDragGestureRecognizer");
+			MouseListener[] mouseListeners = list.getMouseListeners();
+			for (int i = 0; i<mouseListeners.length; i++){
+				if (clazz.isAssignableFrom(mouseListeners[i].getClass())) {
+					dragListener = mouseListeners[i];
+					break;
+				}
+			}
+			if (dragListener != null) {
+				list.removeMouseListener(dragListener);
+				list.removeMouseMotionListener((MouseMotionListener)dragListener);
+				list.addMouseListener(dragListener);
+				list.addMouseMotionListener((MouseMotionListener)dragListener);
+			}
+		} catch(ClassNotFoundException e) {
+			logger.error("Error adding single click DnD to activity list: " + e);
+		}
+	}
+	 
+	/**
+	 * Moves selected node up or down depending on value of param.
+	 * Prevents incorrect moves e.g. moving first child node up, or last child node down,
+	 * moving the workflow node or trying to move without selecting a node first.
+	 * @param b boolean - true moves node up, false down
+	 * @return boolean indicating whether move successful
+	 */
+	private boolean moveNode(boolean b) {		
+		DefaultMutableTreeNode moveNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+		if (moveNode == null) {
+			return false;
+		}
+		if (moveNode.getUserObject() instanceof Workflow ||
+			moveNode.getUserObject() instanceof Else) {
+			return false;
+		}
+		
+		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)moveNode.getParent();
+		int index = parentNode.getIndex(moveNode);
+		int count = parentNode.getChildCount();
+		if (count <= 1) { 
+			moveNode = null;
+			return false;
+		}
+		
+		if (b && index >= 1) { //moving up
+			getModel().removeNodeFromParent(moveNode);
+			getModel().insertNodeInto(moveNode, parentNode, index - 1);			
+		} else if (!b && index <= count -2) { // moving down
+			getModel().removeNodeFromParent(moveNode);
+			getModel().insertNodeInto(moveNode, parentNode, index + 1);			
+		} else {
+			return false;
+		}
+		
+		TreePath treePath = new TreePath(moveNode.getPath());
+		int i = 0;		
+		for (Enumeration enumeration = moveNode.depthFirstEnumeration(); enumeration.hasMoreElements(); i++ ) {
+			DefaultMutableTreeNode element = (DefaultMutableTreeNode)enumeration.nextElement();
+		    TreePath path = new TreePath(element.getPath());
+		    tree.expandPath(path);
+		}
+		tree.scrollPathToVisible(treePath);
+		tree.setSelectionPath(new TreePath(moveNode.getPath()));
+		moveNode = null;
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean deleteNode() {
+		DefaultMutableTreeNode deleteNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+		if (deleteNode == null || deleteNode.getUserObject() instanceof Workflow) {
+			return false;
+		}
+		WastebinDropListener w = new WastebinDropListener();
+		if (w.canPerformDrop(deleteNode)) {
+			((DefaultTreeModel)tree.getModel()).removeNodeFromParent(deleteNode);
+			deleteNode.removeFromParent();
+			return true;
+		} else {
+			return false;
+		}
+	}
 } 

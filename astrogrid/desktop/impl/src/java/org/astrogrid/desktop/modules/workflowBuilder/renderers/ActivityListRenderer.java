@@ -36,6 +36,7 @@ public class ActivityListRenderer extends DefaultListCellRenderer {
     private static final Log logger = LogFactory.getLog(ActivityListRenderer.class);
 	
 	private String helpLocation = "/org/astrogrid/desktop/modules/workflowBuilder/helpText/";
+	private boolean showToolTip = true;
 	
 	public Component getListCellRendererComponent(JList list,
 												  Object value,
@@ -117,6 +118,8 @@ public class ActivityListRenderer extends DefaultListCellRenderer {
 			label.setToolTipText(null);
 			logger.error("Unrecogonised activity: " + value);
 		}
+		if (!showToolTip)
+			label.setToolTipText(null);
 		return(label);																	 
 	}
 	
@@ -141,5 +144,13 @@ public class ActivityListRenderer extends DefaultListCellRenderer {
 	    	text = activity;
 	    }
 	    return text;
-	}	
+	}
+	
+    /** 
+     * Turn activity list tooltips on or off
+     * @param b boolean tooltips on/off
+     */
+    public void setToolTipVisible(boolean b) {
+    	showToolTip = b;
+    }
 }

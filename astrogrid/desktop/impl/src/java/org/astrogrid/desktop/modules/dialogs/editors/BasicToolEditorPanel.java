@@ -1,27 +1,12 @@
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.ParameterBean;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.io.Piper;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.omg.CORBA.portable.BoxedValueHelper;
-
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -33,20 +18,37 @@ import java.util.Arrays;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.ParameterBean;
+import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.io.Piper;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /** A panel for editing tool documents (i.e. sets of input and output parameters)
  * 
- * @todo add support for repeated and optional parameters.
  * @todo add support for viewing / editing remote resources? maybe not.
  * @author Noel Winstanley nw@jb.man.ac.uk 13-May-2005
  */
@@ -58,7 +60,94 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
      * @author Noel Winstanley nw@jb.man.ac.uk 16-May-2005
      *
      */
-    class IndirectCellEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
+
+	
+    class DeleteCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+        
+        JButton button;
+        ParameterTableModel pm;
+        String delete;
+        int row;
+        
+        public DeleteCellEditor() {
+        	if (button == null) {        		
+                button = new JButton();
+                button.setText("del");
+                button.setToolTipText("Delete this optional parameter");
+                button.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                    	fireEditingStopped();
+                    	pm.fireTableRowsDeleted(row, row);                      
+                    }
+                });
+        	}
+        }
+
+        public Object getCellEditorValue() {
+            return delete;
+        }
+        
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        	this.row = row;
+            if (pm == null) {
+                pm = (ParameterTableModel)table.getModel();                
+            }
+            return button;
+        }
+        
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        	this.row = row;
+            if (pm == null) {
+                pm = (ParameterTableModel)table.getModel();                
+            }
+            return button;
+        }       
+    }
+    
+    class RepeatCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+        
+        JButton button;
+        ParameterTableModel pm;
+        String delete;
+        int row;
+        
+        public RepeatCellEditor() {
+        	if (button == null) {        		
+                button = new JButton();
+                button.setText("add");
+                button.setToolTipText("Insert another repeating parameter");
+                button.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                    	fireEditingStopped();
+                    	pm.fireTableRowsInserted(row, row);                      
+                    }
+                });
+        	}
+        }
+
+        public Object getCellEditorValue() {
+            return delete;
+        }
+        
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        	this.row = row;
+            if (pm == null) {
+                pm = (ParameterTableModel)table.getModel();                
+            }
+            return button;
+        }
+        
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        	this.row = row;
+            if (pm == null) {
+                pm = (ParameterTableModel)table.getModel();                
+            }
+            return button;
+        }       
+    }    
+	
+	
+	class IndirectCellEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
         
         JCheckBox button;
         Boolean indirect;
@@ -68,8 +157,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         public IndirectCellEditor() {
             button = new JCheckBox();            
             button.addItemListener(this);
-            button.setBorderPainted(false);
-            
+            button.setBorderPainted(false);           
         }
 
         public Object getCellEditorValue() {
@@ -89,9 +177,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         public void itemStateChanged(ItemEvent e) {
             //Now that we know which button was pushed, find out
             //whether it was selected or deselected.
-         ParameterValue parameter = pm.getRows()[row];
-        if (e.getStateChange() == ItemEvent.DESELECTED) {               
-            fireEditingStopped();
+        	ParameterValue parameter = pm.getRows()[row];
+        	if (e.getStateChange() == ItemEvent.DESELECTED) {               
+        		fireEditingStopped();
                 this.indirect = Boolean.FALSE;        
                 parameter.setIndirect(false);
                 pm.fireTableCellUpdated(row,2);
@@ -124,24 +212,28 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                     } else {
                         parameter.setValue(uri.toString());                    
                         pm.fireTableCellUpdated(row,1);
-                    }
-                        
-            }
+                    }                       
+                }
             }
         }        
     }
+
+    
+    
     /** custom table - no functionality, just hacks and tweaks to make it look / work nicer */
     protected final class ParameterTable extends JTable {
-
+    	
         {                
-                getColumnModel().getColumn(0).setPreferredWidth(30);                      
-                getColumnModel().getColumn(1).setPreferredWidth(100);                        
-            getColumnModel().getColumn(2).setPreferredWidth(20);
-            getColumnModel().getColumn(2).setMaxWidth(20);
+           getColumnModel().getColumn(0).setPreferredWidth(30);    //Name                  
+           getColumnModel().getColumn(1).setPreferredWidth(100);   //Value                   
+           getColumnModel().getColumn(2).setPreferredWidth(5);     //Indirect
            getColumnModel().getColumn(2).setCellEditor(new IndirectCellEditor());
+           getColumnModel().getColumn(3).setPreferredWidth(20);    //Repeating
+           getColumnModel().getColumn(4).setPreferredWidth(10);    //Delete
            setPreferredScrollableViewportSize(new Dimension(200,100));
            putClientProperty("terminateEditOnFocusLost", Boolean.TRUE); // improves editing behaviour.           
-        }
+        }        
+        
         public ParameterTable(ParameterTableModel dm) {
             super(dm);
         }
@@ -152,32 +244,80 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         } 
 
         //Implement table cell tool tips.
-           public String getToolTipText(MouseEvent e) {
-               String tip = null;
-               java.awt.Point p = e.getPoint();
-               int rowIndex = rowAtPoint(p);
-               if (rowIndex < 0) {
-                   return super.getToolTipText(e);
-               }
-               int colIndex = columnAtPoint(p);
-               int realColumnIndex = convertColumnIndexToModel(colIndex);               
-               if (realColumnIndex == 0) { //Namecolumn..
-                   final String parameterName = ((ParameterTableModel)getModel()).getRows()[rowIndex].getName();            
-                   ParameterBean d = (ParameterBean)toolModel.getInfo().getParameters().get(parameterName);                                       
-                   tip= mkToolTip(d); 
-               } else if (realColumnIndex == 1) { // value column - show a popup if it's tool long to fit.
-                   Object value = getValueAt(rowIndex,colIndex);
-                   if (value != null) {
-                       String str = value.toString();
-                       if (str != null && str.trim().length() > getColumnModel().getColumn(1).getWidth()) {
-                           tip = value.toString();
-                       }
-                   } 
-               } else {
-                   tip = super.getToolTipText(e);
-               }
-               return tip;
-           }
+        public String getToolTipText(MouseEvent e) {
+            String tip = null;
+            java.awt.Point p = e.getPoint();
+            int rowIndex = rowAtPoint(p);
+            if (rowIndex < 0) {
+                return super.getToolTipText(e);
+            }
+            int colIndex = columnAtPoint(p);
+            int realColumnIndex = convertColumnIndexToModel(colIndex);               
+            if (realColumnIndex == 0) { //Namecolumn..
+                final String parameterName = ((ParameterTableModel)getModel()).getRows()[rowIndex].getName();            
+                ParameterBean d = (ParameterBean)toolModel.getInfo().getParameters().get(parameterName);                                       
+                tip= mkToolTip(d); 
+            } else if (realColumnIndex == 1) { // value column - show a popup if it's tool long to fit.
+                Object value = getValueAt(rowIndex,colIndex);
+                if (value != null) {
+                    String str = value.toString();
+                    if (str != null && str.trim().length() > getColumnModel().getColumn(1).getWidth()) {
+                        tip = value.toString();
+                    }
+                } 
+            } else {
+               tip = super.getToolTipText(e);
+            }
+            return tip;
+        }
+           
+        protected String[] columnToolTips = {
+        		"Parameter name",
+				"Parameter value",
+				"Reference to remote file",
+				"Is this a repeating parameter?",
+				"Delete this optional parameter?"
+        };
+        
+        // Implement column header tool tips
+        protected JTableHeader createDefaultTableHeader() {
+        	return new JTableHeader(columnModel) {
+        		public String getToolTipText(MouseEvent e) {
+        			String tip = null;
+        			java.awt.Point p = e.getPoint();
+        			int index = columnModel.getColumnIndexAtX(p.x);
+        			int realIndex = columnModel.getColumn(index).getModelIndex();
+        			return columnToolTips[realIndex];
+        		}
+        	};
+        }
+        
+        // getCellRenderer for delete button
+        public TableCellRenderer getCellRenderer(int row, int column) {
+            if (column == 4 && (getValueAt(row, 4).toString().equalsIgnoreCase("delete"))) {
+            	DeleteCellEditor ed = new DeleteCellEditor();
+                return ed;
+             } else if (column == 3 && (getValueAt(row, 3).toString().equalsIgnoreCase("repeat"))) {
+            	RepeatCellEditor re = new RepeatCellEditor();
+                return re;
+             }
+             // else...
+            return super.getCellRenderer(row, column);
+        }
+        
+        // getCellEditor for delete button
+        public TableCellEditor getCellEditor(int row, int column) {
+            if (column == 4 && (getValueAt(row, 4).toString().equalsIgnoreCase("delete"))) {
+            	DeleteCellEditor ed = new DeleteCellEditor();
+                return ed;
+             } else if (column == 3 && (getValueAt(row, 3).toString().equalsIgnoreCase("repeat"))) {
+            	RepeatCellEditor re = new RepeatCellEditor();
+                return re;
+             }
+             // else...
+            return super.getCellEditor(row, column);
+        }
+        
     }
     /** table model for our custom table */
     protected  class ParameterTableModel extends AbstractTableModel implements ToolEditListener {
@@ -185,9 +325,11 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             this.isInput = isInput;
         }
         protected final boolean isInput;
-        private  int COLUMN_COUNT = 3;
+        private  int COLUMN_COUNT = 5;
         private ParameterValue[] rows = new ParameterValue[]{};
-            
+           
+        
+        
         public Class getColumnClass(int columnIndex) {
             if (columnIndex == 2) {
                 return Boolean.class;
@@ -204,8 +346,10 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                 case 0: return "Name";
                 case 1: return "Value";
                 case 2: return "Ref?";
+                case 3: return "Repeating?";
+                case 4: return "Delete?";
                 default:
-                    return "";                      
+                return "";                      
             }
         }
 
@@ -219,10 +363,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
         public Object getValueAt(int rowIndex, int columnIndex) {
             final ParameterValue  row =  rows[rowIndex];
+            ParameterBean d = (ParameterBean)toolModel.getInfo().getParameters().get(row.getName());
+            ParameterReferenceBean[] paramRef;
+            InterfaceBean intBean[] = toolModel.getInfo().getInterfaces();
             switch (columnIndex) {
                 case 0:     
-                    try {
-                        ParameterBean d = (ParameterBean)toolModel.getInfo().getParameters().get(row.getName());
+                    try {                        
                         return d.getUiName();
                     } catch (IllegalArgumentException e) {
                         return "not available";
@@ -232,18 +378,60 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                      return row.getValue();
                  case 2:
                      return new Boolean(row.getIndirect());
+                 case 3:                 	
+                 	int max = 1;
+                    for (int i = 0; i < intBean.length; i++) { 
+                        if (intBean[i].getName().equalsIgnoreCase(toolModel.getTool().getInterface())) {
+                        	if (isInput) {
+                        		paramRef = intBean[i].getInputs();
+                        	} else {
+                        		paramRef = intBean[i].getOutputs();
+                        	}
+                        	for (int j = 0; j < paramRef.length ; j++) {
+                        		if (paramRef[j].getRef().equalsIgnoreCase(row.getName())) {
+                        			max = paramRef[j].getMax();                        				
+                        			break;
+                        		}
+                        	}
+                        }
+                        break;
+                    }
+                    return new String(max <= 0? "repeat":"");                	
+                 case 4:
+                 	int min = 1;
+                    for (int i = 0; i < intBean.length; i++) { 
+                        if (intBean[i].getName().equalsIgnoreCase(toolModel.getTool().getInterface())) {
+                        	if (isInput) {
+                        		paramRef = intBean[i].getInputs();
+                        	} else {
+                        		paramRef = intBean[i].getOutputs();
+                        	}
+                        	for (int j = 0; j < paramRef.length ; j++) {
+                        		if (paramRef[j].getRef().equalsIgnoreCase(row.getName())) {
+                        			min = paramRef[j].getMin();                        				
+                        			break;
+                        		}
+                        	}
+                        }
+                        break;
+                    }
+                    return new String(min <= 0? "delete":"");                    
                  default:
-                     return null;
+                    return null;
             }
         }
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return editable && (columnIndex == 1 || (columnIndex== 2 && allowIndirect));
+            return editable && (columnIndex == 1 ||
+            				   (columnIndex == 2 && allowIndirect) ||
+							   (columnIndex == 3 && (getValueAt(rowIndex, 3).toString().equalsIgnoreCase("repeat"))) ||
+							   (columnIndex == 4 && (getValueAt(rowIndex, 4).toString().equalsIgnoreCase("delete"))));
         }
         
         public void setRows(ParameterValue[] rows) {
             this.rows = rows;
             fireTableDataChanged();
         }
+        
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
          final ParameterValue row= rows[rowIndex];
          switch(columnIndex) {
@@ -255,9 +443,15 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                  row.setIndirect(((Boolean)aValue).booleanValue());
                  toolModel.fireParameterChanged(BasicToolEditorPanel.this,row);
                  break;
+             case 3:
+             	 toolModel.fireParameterAdded(BasicToolEditorPanel.this,row);
+             	 break;
+             case 4:
+             	toolModel.fireParameterRemoved(BasicToolEditorPanel.this, row);
+             	 break;
              default: // do nothing in all oher caes.
                  break;
-         }
+            }
         }
 
         public void toolSet(ToolEditEvent te) {
@@ -286,11 +480,27 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         }
 
         public void parameterAdded(ToolEditEvent te) {
-                toolSet(te);            
+        	ParameterValue pv = te.getChangedParameter();
+            for (int i = 0; i < getRows().length; i++) {
+                if (pv == getRows()[i] && ((getValueAt(i, 3).toString().equalsIgnoreCase("repeat")))) {
+                	ParameterValue newPv = new ParameterValue();
+                	newPv.setName(pv.getName());
+                	newPv.setValue("");
+                	toolModel.getTool().getInput().addParameter(i+1, newPv);                	
+                	fireTableRowsInserted(i+1, i+1);
+                }
+            }
+            toolSet(te);            
         }
 
         public void parameterRemoved(ToolEditEvent te) {
-                toolSet(te);            
+        	ParameterValue pv = te.getChangedParameter();
+            if (isInput) {
+                toolModel.getTool().getInput().removeParameter(pv);
+            } else {
+                toolModel.getTool().getOutput().removeParameter(pv);
+            }
+        	toolSet(te);            
         }            
     }
     /**
@@ -302,7 +512,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     protected JTable outputTable;
     
     protected final ResourceChooserInternal resourceChooser;
-   private boolean allowIndirect = true;
+    private boolean allowIndirect = true;
 
    
    /** set to true to allow indirect parameters */
@@ -310,7 +520,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
        this.allowIndirect = allowIndirect;
    }
 
-    /** ctreate a parameters panel, 
+    /** create a parameters panel, 
      *  Construct a new ParametersPanel
      * @param resourceChooser choose to use to support indirect parameters editor. 
      */
@@ -426,6 +636,18 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.5  2005/11/01 15:17:50  pjn3
+branch pjn_workbench_1306_again
+
+Revision 1.4.4.3  2005/11/01 11:07:49  pjn3
+Initial add parameter added
+
+Revision 1.4.4.2  2005/10/31 15:50:11  pjn3
+Ability to delete parameters added
+
+Revision 1.4.4.1  2005/10/27 11:21:37  pjn3
+Initial changes for repeating and optional params
+
 Revision 1.4  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

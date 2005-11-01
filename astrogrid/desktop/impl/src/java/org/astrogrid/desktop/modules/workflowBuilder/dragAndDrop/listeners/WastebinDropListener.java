@@ -159,7 +159,7 @@ public class WastebinDropListener implements DropTargetListener {
 		}
 	}
 	
-	private boolean canPerformDrop(DefaultMutableTreeNode draggedNode) {
+	public boolean canPerformDrop(DefaultMutableTreeNode draggedNode) {
 		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)draggedNode.getParent();
 		if (draggedNode.isRoot() ||
 		    parentNode.getUserObject() instanceof Workflow ||

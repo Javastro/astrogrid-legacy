@@ -39,8 +39,6 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 /**
  * @author pjn3
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 	
@@ -48,6 +46,7 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(DefaultTreeTransferHandler.class);
+    private WorkflowDnDTree tree;
 	/**
 	 * @param tree
 	 * @param action
@@ -55,6 +54,7 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 	 */
 	public DefaultTreeTransferHandler(WorkflowDnDTree tree, int action) {
 		super(tree, action, true);
+		this.tree = tree;
 	}	
 	
 	/**
@@ -64,6 +64,7 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 	 */
 	public DefaultTreeTransferHandler(WorkflowDnDTree tree, int action, boolean drawIcon) {
 		super(tree, action, drawIcon);
+		this.tree = tree;
 	}
 
 	/* (non-Javadoc)
@@ -173,6 +174,8 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 			TreePath treePath = new TreePath(draggedNode.getFirstLeaf().getPath());
 			target.scrollPathToVisible(treePath);
 			target.setSelectionPath(treePath);
+			 if (tree.getWorkflowBuilderImpl().autoPopUp && (action == DnDConstants.ACTION_COPY))
+			 	tree.getWorkflowBuilderImpl().editNode(draggedNode);
 			return true;
 		}
 		if (action == DnDConstants.ACTION_MOVE) {

@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl;
 import org.astrogrid.desktop.modules.workflowBuilder.renderers.WorkflowTreeCellRenderer;
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.Flow;
@@ -58,11 +59,12 @@ public class WorkflowDnDTree extends JTree {
     private static final Log logger = LogFactory.getLog(WorkflowDnDTree.class);
 	
 	private Insets autoscrollInsets = new Insets(20,20,20,20); // insets
+	private WorkflowBuilderImpl workflowBuilder;
 
 	/**
 	 * 
 	 */
-	public WorkflowDnDTree(ApplicationsInternal apps) {
+	public WorkflowDnDTree(ApplicationsInternal apps, WorkflowBuilderImpl w) {
 		super();
 		setAutoscrolls(true);        
 		setRootVisible(true);
@@ -71,13 +73,19 @@ public class WorkflowDnDTree extends JTree {
 		setEditable(false);
 		setBorder(new EmptyBorder(10,10,10,10));
 		setCellRenderer(new WorkflowTreeCellRenderer(apps));
+		workflowBuilder = w;
 		new DefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE, true);
 	}
 
     /** if expand is true, expand all nodes in the tree. otherwise collapse all nodes */
     public void expandAll(boolean expand) {
         TreeNode root = (TreeNode)getModel().getRoot();
+        TreeNode seq = root.getChildAt(0);
         expandAll(new TreePath(root),expand);
+    }
+    
+    public void expandAll(TreeNode node, boolean expand) {
+        expandAll(new TreePath(node),expand);
     }
     
     private void expandAll(TreePath parent,boolean expand) {
@@ -89,14 +97,35 @@ public class WorkflowDnDTree extends JTree {
                 expandAll(path,expand);
             }
         }
+        // only works from bottom up - therefore failing to expand/collapse individual branches
         if (expand) {
             expandPath(parent);
         } else {
             collapsePath(parent);
         }
     }
+    
+    /*
+     * collapse tree using collapseRow approach
+     */
+    public void collapse() {
+    	int row = getRowCount() -1;
+    	while(row >= 2 ) {
+    		collapseRow(row);
+    		row --;
+    	}
+    }
 	
-	
+    /*
+     * expand tree using expandRow approach
+     */
+	public void expand () {
+		int row = 0 ;
+		while (row < getRowCount()) {
+			expandRow(row);
+			row ++;
+		}
+	}
 	public void autoscroll(Point cursorLocation) {
 		Insets insets = getAutoscrollInsets();
 		Rectangle outer = getVisibleRect();
@@ -125,7 +154,9 @@ public class WorkflowDnDTree extends JTree {
 		return copy;
 	}
     
-    
+    public WorkflowBuilderImpl getWorkflowBuilderImpl() {
+    	return workflowBuilder;
+    }
 
 
 }       	

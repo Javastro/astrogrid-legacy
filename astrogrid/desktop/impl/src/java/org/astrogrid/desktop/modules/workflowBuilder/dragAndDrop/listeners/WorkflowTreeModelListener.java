@@ -27,8 +27,7 @@ import org.astrogrid.workflow.beans.v1.Then;
 /**
  * @author pjn3
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Detetects when data displayed by workflow tree changes
  */
 public class WorkflowTreeModelListener implements TreeModelListener {
     /**
@@ -43,22 +42,19 @@ public class WorkflowTreeModelListener implements TreeModelListener {
 	public WorkflowTreeModelListener(WorkflowBuilderImpl w) {
 		super();
 		workflowBuilder = w;		
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.event.TreeModelListener#treeNodesChanged(javax.swing.event.TreeModelEvent)
 	 */
 	public void treeNodesChanged(TreeModelEvent e) {
-		logger.error("treeNodesChanged");
 		workflowBuilder.validateWorkflow();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.event.TreeModelListener#treeNodesInserted(javax.swing.event.TreeModelEvent)
 	 */
-	public void treeNodesInserted(TreeModelEvent e) {
-		logger.error("treeNodesInserted");			
+	public void treeNodesInserted(TreeModelEvent e) {		
 				
 		 DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)(e.getTreePath().getLastPathComponent());
 		 int index = e.getChildIndices()[0];
@@ -81,7 +77,8 @@ public class WorkflowTreeModelListener implements TreeModelListener {
 		 	 If i = (If)ifNode.getUserObject();
 		 	 i.setElse((Else)childNode.getUserObject());
 		 }
-		 workflowBuilder.validateWorkflow();
+		
+		 workflowBuilder.validateWorkflow();		 
 	}
 
 
@@ -89,7 +86,6 @@ public class WorkflowTreeModelListener implements TreeModelListener {
 	 * @see javax.swing.event.TreeModelListener#treeNodesRemoved(javax.swing.event.TreeModelEvent)
 	 */
 	public void treeNodesRemoved(TreeModelEvent e) {
-		logger.error("treeNodesRemoved");
 
 		 DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)(e.getTreePath().getLastPathComponent());
 		 int index = e.getChildIndices()[0];
@@ -123,7 +119,6 @@ public class WorkflowTreeModelListener implements TreeModelListener {
 	 * @see javax.swing.event.TreeModelListener#treeStructureChanged(javax.swing.event.TreeModelEvent)
 	 */
 	public void treeStructureChanged(TreeModelEvent e) {
-		logger.error("treeStructureChanged");
 		workflowBuilder.validateWorkflow();
 	}	
 }

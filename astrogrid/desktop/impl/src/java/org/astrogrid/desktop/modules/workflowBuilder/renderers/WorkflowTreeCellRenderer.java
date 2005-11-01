@@ -290,7 +290,7 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					return jta;
 				}
 				else {    			
-					label.setText("to do");
+					label.setText("");
 				}   		
 				return(label);																	 
 	}
