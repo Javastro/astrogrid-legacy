@@ -23,6 +23,88 @@
 	<!-- todo - make each module a new namespace, so can have identically named components
 		at moment, fails in nasty ways
 		-->		
+
+	
+		<component name="astroscope" 
+		implementationClass="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" 
+		interfaceClass="org.astrogrid.acr.ui.AstroScopeLauncher" >
+		<description>Launch AstroScope</description>	
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.astroscope" />									
+			</value>
+		</property>			
+		<property>
+			<key>icon</key>
+			<value>thread_view.gif</value>
+		</property>				
+		<method name="show">
+			<description>Run AstroScope</description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run..</value>
+				<property>
+					<key>icon</key>
+					<value>run_tool.gif</value>
+				</property>					
+			</property>
+		</method>
+	</component>	
+
+	<component name="datascopeLauncher" 
+		implementationClass="org.astrogrid.desktop.modules.ui.DataScopeLauncherImpl" 
+		interfaceClass="org.astrogrid.acr.ui.DataScopeLauncher" >
+		<description>Launch DataScope</description>	
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.datascopeLauncher" />									
+			</value>
+		</property>			
+		<property>
+			<key>icon</key>
+			<value>thread_view.gif</value><!-- use nvo icon here -->
+		</property>				
+		<method name="show">
+			<description>Run the Launcher</description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run..</value>
+				<property>
+					<key>icon</key>
+					<value>run_tool.gif</value>
+				</property>					
+			</property>
+		</method>
+	
+	</component>
+	
+	
+
+	<component name="lookout"
+		implementationClass="org.astrogrid.desktop.modules.ui.LookoutImpl"
+		interfaceClass="org.astrogrid.desktop.modules.ui.Lookout">
+		<description>Launch and monitor queries, tasks and workflows</description>
+	<property>
+		<key>icon</key>
+		<value>thread_and_monitor_view.gif</value>
+	</property>	
+		<method name="show">
+			<description>Run the Monitor GUI </description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run..</value>			
+			</property>			
+			<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>		
+		</method>
+		</component>		
+		
+		
+		
 	<component name="parameterizedWorkflows" 
 		implementationClass="org.astrogrid.desktop.modules.ui.ParameterizedWorkflowLauncherImpl" 
 		interfaceClass="org.astrogrid.acr.ui.ParameterizedWorkflowLauncher" >
@@ -50,38 +132,63 @@
 		</method>
 	</component>
 	
-	<component name="registryBrowser" 
-		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 
-		interfaceClass="org.astrogrid.acr.ui.RegistryBrowser" >
-		<description>View registry entries using a basic browser</description>
-	<property>
+<component name="applicationLauncher" 
+		implementationClass="org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl" 
+		interfaceClass="org.astrogrid.acr.ui.ApplicationLauncher" >
+		<description>Launch Queries and Applications</description>
+		<property>
 			<key>system.ui.menu.links</key>
 			<value>		
-				<helpLink id="userInterface.registryBrowser"	/>				
+				<helpLink id="userInterface.applicationLauncher" />									
 			</value>
-		</property>		
-	<property>
-		<key>icon</key>
-		<value>java_lib_obj.gif</value>
-	</property>			
+		</property>			
+		<property>
+			<key>icon</key>
+			<value>thread_view.gif</value>
+		</property>				
 		<method name="show">
-			<description>Run the Browser GUI </description>
-	<property>
-		<key>icon</key>
-		<value>run_tool.gif</value>
-	</property>				
+			<description>Run the Launcher GUI </description>
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Run...</value>
-			</property>			
-		
+				<value>Run..</value>
+				<property>
+					<key>icon</key>
+					<value>run_tool.gif</value>
+				</property>					
+			</property>
 		</method>
 		<method name="hide">
-			<description>Hide the Browser GUI </description>
+			<description>Hide the Monitor GUI </description>
+		</method>
+	</component>	
 
-		</method>		
-		</component>
-		
+	<component name="workflowBuilder" 
+	  implementationClass="org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl" 
+	  interfaceClass="org.astrogrid.acr.ui.WorkflowBuilder" >
+	  <description>Build workflows</description>
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.workflowBuilder" />									
+			</value>
+		</property>	  
+	    <property>
+		  <key>icon</key>
+		  <value>wf_small.gif</value>
+		</property>				
+		<method name="show">
+		  <description>Run the Workflow builder GUI </description>
+		  <property>
+			<key>system.ui.menu.entry</key>
+			<value>Run Builder..</value>
+		    <property>
+			  <key>icon</key>
+			  <value>run_tool.gif</value>
+		    </property>					
+		  </property>					
+	    </method>			
+      </component>		
+	  
 	<component name="myspaceBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" 
 		interfaceClass="org.astrogrid.acr.ui.MyspaceBrowser" >
@@ -127,101 +234,10 @@
 		</method>		
 		</component>	
 
-	<component name="applicationLauncher" 
-		implementationClass="org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl" 
-		interfaceClass="org.astrogrid.acr.ui.ApplicationLauncher" >
-		<description>Launch CEA Applications</description>
-		<property>
-			<key>system.ui.menu.links</key>
-			<value>		
-				<helpLink id="userInterface.applicationLauncher" />									
-			</value>
-		</property>			
-		<property>
-			<key>icon</key>
-			<value>thread_view.gif</value>
-		</property>				
-		<method name="show">
-			<description>Run the Launcher GUI </description>
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Run..</value>
-				<property>
-					<key>icon</key>
-					<value>run_tool.gif</value>
-				</property>					
-			</property>
-		</method>
-		<method name="hide">
-			<description>Hide the Monitor GUI </description>
-		</method>
-	</component>	
-
-
-	<component name="astroscope" 
-		implementationClass="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" 
-		interfaceClass="org.astrogrid.acr.ui.AstroScopeLauncher" >
-		<description>Launch AstroScope</description>	
-		<property>
-			<key>system.ui.menu.links</key>
-			<value>		
-				<helpLink id="userInterface.datascopeLauncher" />									
-			</value>
-		</property>			
-		<property>
-			<key>icon</key>
-			<value>thread_view.gif</value><!-- use nvo icon here -->
-		</property>				
-		<method name="show">
-			<description>Run the Launcher</description>
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Run..</value>
-				<property>
-					<key>icon</key>
-					<value>run_tool.gif</value>
-				</property>					
-			</property>
-		</method>
-		<!-- needed?? -->
-		<method name="hide">
-			<description>Hide the Monitor GUI </description>
-		</method>
-	</component>	
-
-	<component name="astroscopeLauncher" 
-		implementationClass="org.astrogrid.desktop.modules.ui.DataScopeLauncherImpl" 
-		interfaceClass="org.astrogrid.acr.ui.DataScopeLauncher" >
-		<description>Launch AstroScope</description>	
-		<property>
-			<key>system.ui.menu.links</key>
-			<value>		
-				<helpLink id="userInterface.datascopeLauncher" />									
-			</value>
-		</property>			
-		<property>
-			<key>icon</key>
-			<value>thread_view.gif</value><!-- use nvo icon here -->
-		</property>				
-		<method name="show">
-			<description>Run the Launcher</description>
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Run..</value>
-				<property>
-					<key>icon</key>
-					<value>run_tool.gif</value>
-				</property>					
-			</property>
-		</method>
-		<!-- needed?? -->
-		<method name="hide">
-			<description>Hide the Monitor GUI </description>
-		</method>
-	</component>
-		
+	
+		<!-- todo - add back in for backwards compatability
 	<component name="jobMonitor" 
-		implementationClass="org.astrogrid.desktop.modules.ui.JobMonitorImpl" 
+		implementationClass="org.astrogrid.desktop.modules.ui.Lookout" 
 		interfaceClass="org.astrogrid.acr.ui.JobMonitor" >
 		<description>View progress of jobs and applications</description>
 		<property>
@@ -273,31 +289,39 @@
 
 		</method>			
 		</component>
-		
-	<component name="workflowBuilder" 
-	  implementationClass="org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl" 
-	  interfaceClass="org.astrogrid.acr.ui.WorkflowBuilder" >
-	  <description>Build workflows (BETA)</description>
-		<property>
+		-->
+
+	
+	<component name="registryBrowser" 
+		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 
+		interfaceClass="org.astrogrid.acr.ui.RegistryBrowser" >
+		<description>View registry entries using a basic browser</description>
+	<property>
 			<key>system.ui.menu.links</key>
 			<value>		
-				<helpLink id="userInterface.workflowBuilder" />									
+				<helpLink id="userInterface.registryBrowser"	/>				
 			</value>
-		</property>	  
-	    <property>
-		  <key>icon</key>
-		  <value>wf_small.gif</value>
-		</property>				
+		</property>		
+	<property>
+		<key>icon</key>
+		<value>java_lib_obj.gif</value>
+	</property>			
 		<method name="show">
-		  <description>Run the Workflow builder GUI </description>
-		  <property>
-			<key>system.ui.menu.entry</key>
-			<value>Run Builder..</value>
-		    <property>
-			  <key>icon</key>
-			  <value>run_tool.gif</value>
-		    </property>					
-		  </property>					
-	    </method>			
-      </component>		
+			<description>Run the Browser GUI </description>
+	<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>				
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run...</value>
+			</property>			
+		
+		</method>
+		<method name="hide">
+			<description>Hide the Browser GUI </description>
+
+		</method>		
+		</component>
+			  
 </module>
