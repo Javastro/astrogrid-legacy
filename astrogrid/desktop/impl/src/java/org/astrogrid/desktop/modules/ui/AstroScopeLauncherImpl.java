@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.5 2005/11/01 14:40:20 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.6 2005/11/01 16:28:32 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -307,7 +307,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * to myspace or filesystem.  User MUST CHOOSE a directory node.  Does the work in a background
      * thread.  Allows for selection of All or pieces such as only sia and/or cone (which looks at graph nodes).
      * Called by the saveButton action.
-     *
+     *@todo kevin - need to wrap the stream-writing bits in a try .. finally that closes the streams.
+     *  also factor out commonality between saveData and saveImages.
      */
     private void saveData() {
              comm.getUserInformation();
@@ -600,7 +601,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             logger.debug("here is the position extracted from sesame = " + pos);
         }catch(Exception e) {
             //hmmm I think glueservice is throwing an exception but things seem to be okay.
-            e.printStackTrace();
+            logger.debug("error from sesame - ho hum",e);
         }
         return pos;
     }
@@ -1143,7 +1144,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 display = new Display();
 
                 // initialize renderers
-                TextItemRenderer nodeRenderer = new TextItemRenderer();
+                TextItemRenderer nodeRenderer = new TextItemRenderer();                
                 nodeRenderer.setMaxTextWidth(75);
                 nodeRenderer.setAbbrevType(StringAbbreviator.NAME);
                 nodeRenderer.setRoundedCorner(8,8);
@@ -1461,11 +1462,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         protected Display display;
         protected ActionList graphLayout;
         public void nodeAdded(Graph arg0, Node arg1) {
-            try {
             graphLayout.runNow();
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
         }
         
         public Display getDisplay() {
@@ -2289,6 +2286,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.6  2005/11/01 16:28:32  nw
+2 minor fixes
+
 Revision 1.5  2005/11/01 14:40:20  KevinBenson
 Some small changes to have hyperbolic working with selections and saving to myspace
 
