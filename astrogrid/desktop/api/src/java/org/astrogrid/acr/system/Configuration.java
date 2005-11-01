@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.3 2005/10/19 18:20:05 nw Exp $
+/*$Id: Configuration.java,v 1.4 2005/11/01 09:26:29 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,14 +25,6 @@ import java.util.Map;
  */
 public interface Configuration {
     
-    /** list of keys that must be present in the configuration system
-     * @todo move this elsewhere
-     */
-    public static final String[] REQUIRED_KEYS = { "org.astrogrid.registry.query.endpoint",
-            "org.astrogrid.registry.admin.endpoint",
-            "org.astrogrid.registry.query.altendpoint",
-            "jes.job.controller.endpoint"
-            };
 
     /** Set the value of a new or existing key
      * 
@@ -71,6 +63,9 @@ public interface Configuration {
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.4  2005/11/01 09:26:29  nw
+ moved required keys elsewhere
+
  Revision 1.3  2005/10/19 18:20:05  nw
  added fallback registry endpoint
 
