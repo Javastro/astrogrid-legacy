@@ -315,8 +315,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	    }
 	}
     /** promote node */
-	protected final class promoteAction extends AbstractAction {
-	    public promoteAction() {
+	protected final class PromoteAction extends AbstractAction {
+	    public PromoteAction() {
 	        super("Move up", IconHelper.loadIcon("promote.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Move activity up");
 	        this.setEnabled(true);            
@@ -454,7 +454,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         closeAction = new CloseAction();
         collapseAction = new CollapseAction();
         expandAction = new ExpandAction();
-        promoteAction = new promoteAction();
+        promoteAction = new PromoteAction();
         demoteAction = new demoteAction();
         deleteAction = new deleteAction();
         
@@ -484,6 +484,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         	public void itemStateChanged(ItemEvent e) {
         		if (e.getStateChange() == ItemEvent.SELECTED) {
         			autoPopUp = true;
+                    //@todo phil - you could store the user's preferences in the Configuraiton class, under a key like this.getClass().getName() + ".autoPopUp"
+                    // e.g. - configuration.setKey(key,val)
         		} else {
         			autoPopUp = false;
         		}
