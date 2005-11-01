@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.6 2005/10/18 16:52:49 nw Exp $
+/*$Id: UIComponent.java,v 1.7 2005/11/01 09:19:46 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,7 @@ public class UIComponent extends PositionRememberingJFrame {
             eMsg = innermost.getClass().getName(); 
         }
         String errorMessage = "<html><body><b>" + msg + 
-        "</b><br><b>Cause:</b> " + eMsg + "<br><font size='smaller'>Many problems are caused services being temporarily unavailable - try again.</font></body></html>";
+        "</b><br><b>Cause:</b> " + eMsg + "</body></html>";
         l.setText(errorMessage);
         
         int result = JOptionPane.showOptionDialog(parent,l,"An Error Occurred", 
@@ -318,6 +318,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.7  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.6  2005/10/18 16:52:49  nw
 fixes to error-reporting
 

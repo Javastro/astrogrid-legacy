@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.3 2005/11/01 09:19:46 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.picocontainer.Startable;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -52,11 +53,20 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
         //check whether any required keys are missing - if so, fill them in.
         try {
         List keys = Arrays.asList(userPrefs.keys());
-        for (int i = 0; i < REQUIRED_KEYS.length; i++) {
-            String key = REQUIRED_KEYS[i];
+        for (int i = 0; i < ConfigurationKeys.REQUIRED_KEYS.length; i++) {
+            String key = ConfigurationKeys.REQUIRED_KEYS[i];
             if (! keys.contains(key)){
                 logger.info("Missing key " + key + " must be configured");
-                String value = System.getProperty("configuration." + key);
+                String value;
+                if (key.equals(ConfigurationKeys.WORK_DIR_KEY)) { // this one needs to be initialied programatically.
+                    File f = new File(new File(System.getProperty("user.home")),".workbench");
+                    if (!f.exists()) {
+                        f.mkdirs();
+                    }
+                    value = f.getAbsolutePath();
+                } else {
+                    value = System.getProperty("configuration." + key);
+                }
                 userPrefs.put(key,value == null ? "fill this in" : value);
             }
         }
@@ -171,6 +181,9 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.3  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

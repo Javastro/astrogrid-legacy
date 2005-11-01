@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.5 2005/10/12 13:30:10 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.6 2005/11/01 09:19:46 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -573,6 +573,8 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
     public JToolBar getToolBar() {
         if (jToolBar == null) {
             jToolBar = new JToolBar();
+            jToolBar.setRollover(true);
+            jToolBar.setFocusable(false);
             Action[] acts = getActions().list();
             for (int i = 0; i < acts.length; i++) {
                 jToolBar.add(acts[i]);
@@ -603,6 +605,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.6  2005/11/01 09:19:46  nw
+ * messsaging for applicaitons.
+ *
  * Revision 1.5  2005/10/12 13:30:10  nw
  * merged in fixes for 1_2_4_beta_1
  *

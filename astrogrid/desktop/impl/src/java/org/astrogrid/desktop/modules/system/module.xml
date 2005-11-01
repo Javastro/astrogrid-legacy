@@ -363,6 +363,16 @@
 				<value>true</value>								
 			</property>						
 	</component>
+	
+	<!-- store -->
+	<component name="store"
+		implementationClass="org.astrogrid.desktop.modules.system.StoreImpl"
+		interfaceClass="org.astrogrid.desktop.modules.system.StoreInternal">
+		<property>
+			<key>hidden.component</key>
+			<value>true</value>
+		</property>
+	</component>
 		
 
 </module>

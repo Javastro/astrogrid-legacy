@@ -1,4 +1,4 @@
-/*$Id: Bootloader.java,v 1.4 2005/10/17 16:02:45 nw Exp $
+/*$Id: Bootloader.java,v 1.5 2005/11/01 09:19:46 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,6 +53,7 @@ public class Bootloader implements Startable{
         registerModule("ivoa","/org/astrogrid/desktop/modules/ivoa/module.xml");        
         registerModule("cds","/org/astrogrid/desktop/modules/cds/module.xml");
         registerModule("nvo","/org/astrogrid/desktop/modules/nvo/module.xml");
+        registerModule("background","/org/astrogrid/desktop/modules/background/module.xml");        
         registerModule("dialogs","/org/astrogrid/desktop/modules/dialogs/module.xml");
         registerModule("ui","/org/astrogrid/desktop/modules/ui/module.xml");            
         registerModule("scripting","/org/astrogrid/desktop/modules/scripting/module.xml");
@@ -98,6 +99,9 @@ public class Bootloader implements Startable{
 
 /* 
 $Log: Bootloader.java,v $
+Revision 1.5  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.4  2005/10/17 16:02:45  nw
 added siap and cone interfaces
 

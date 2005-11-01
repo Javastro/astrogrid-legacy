@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.4 2005/10/12 13:30:10 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.5 2005/11/01 09:19:46 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -116,26 +116,35 @@ public class PositionRememberingJFrame extends JFrame {
     
     
     public void setVisible(boolean b) {
+        if(this.isVisible() != b) {
         if (b) {
             loadConfiguration();
         } else {
             saveConfiguration();
         }
         super.setVisible(b);
+        }
     }
     public void hide() {
-        saveConfiguration();
-        super.hide();
+        if (this.isVisible()) {
+            saveConfiguration();
+            super.hide();
+        }
     }
     public void show() {
-        loadConfiguration();
-        super.show();
+        if (!this.isVisible()) {
+            loadConfiguration();
+            super.show();
+        }
     }
 }
 
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.5  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.4  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

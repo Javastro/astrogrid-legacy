@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.4 2005/10/12 13:30:10 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.5 2005/11/01 09:19:46 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.Lookout;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -113,10 +114,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                 
                 protected void doFinished(Object o) {
                     ResultDialog rd = new ResultDialog(CompositeToolEditorPanel.this,"ExecutionId : " + o);
-                    rd.show();                   
-                    monitor.addApplication(tOrig.getName(),(URI)o);
-                    monitor.displayApplicationTab();
-                    monitor.show();
+                    //rd.show();                   
+                    lookout.show();
                 }
                 
             }).start();
@@ -259,20 +258,24 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     private static final Log logger = LogFactory.getLog(CompositeToolEditorPanel.class);
     protected final ApplicationsInternal apps;
     protected final ResourceChooserInternal chooser;
-    protected final JobMonitor monitor;
     protected final MyspaceInternal myspace;
+    protected final Lookout lookout;
    protected final UIComponent parent;
     protected final  JTabbedPane tabPane;
     protected final AbstractToolEditorPanel[] views;
    
 
+    public CompositeToolEditorPanel(UIComponent parent, PicoContainer pico) {
+        this(parent,false,pico);
+    }
+    
     /** constructor when being used as an app. */
-    public CompositeToolEditorPanel(UIComponent parent,  PicoContainer pico) {        
+    public CompositeToolEditorPanel(UIComponent parent, boolean allApps, PicoContainer pico) {        
         this.parent = parent;      
         this.chooser = (ResourceChooserInternal)pico.getComponentInstanceOfType(ResourceChooserInternal.class);
         this.apps = (ApplicationsInternal)pico.getComponentInstanceOfType(ApplicationsInternal.class);
         this.myspace = (MyspaceInternal)pico.getComponentInstanceOfType(MyspaceInternal.class);
-        this.monitor =(JobMonitor) pico.getComponentInstanceOfType(JobMonitor.class);     
+        this.lookout =(Lookout) pico.getComponentInstanceOfType(Lookout.class);     
         tabPane = new JTabbedPane();
         tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabPane.setTabPlacement(SwingConstants.LEFT);
@@ -282,9 +285,10 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         builder.registerComponentInstance(parent);
         builder.registerComponentImplementation(DatacenterToolEditorPanel.class);
         builder.registerComponentImplementation(BasicToolEditorPanel.class);
-        builder.registerComponentImplementation(RawXMLToolEditorPanel.class);
+        builder.registerComponentImplementation(RawXMLToolEditorPanel.class);       
         builder.registerComponentImplementation(ToolInformationPanel.class);
         builder.registerComponentImplementation(ChooseAToolEditorPanel.class);
+        builder.registerComponentInstance(new Boolean(allApps));
         builder.start();
         AbstractToolEditorPanel information =(AbstractToolEditorPanel)builder.getComponentInstance(ToolInformationPanel.class);
         AbstractToolEditorPanel chooser = (AbstractToolEditorPanel)builder.getComponentInstance(ChooseAToolEditorPanel.class);
@@ -299,10 +303,12 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         tabPane.addTab("Chooser",chooser);
                 
         JToolBar tb = new JToolBar();
+        tb.setRollover(true);
+        tb.setFloatable(false);
         tb.add(new NewAction());
         tb.add(new OpenAction());
         tb.add(new SaveAction());
-        if (monitor != null) {
+        if (lookout != null) {
             tb.add(new ExecuteAction());
         }
         this.setLayout(new BorderLayout());
@@ -322,6 +328,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.5  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.4  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

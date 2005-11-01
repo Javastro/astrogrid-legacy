@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.3 2005/10/31 16:13:51 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.4 2005/11/01 09:19:46 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -118,11 +118,11 @@ import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTreeLayout;
 import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicVisibilityFilter;
 import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTranslationEnd;
 import edu.berkeley.guir.prefuse.event.ControlAdapter;
-
+ 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.awt.Cursor;
+import java.awt.Cursor; 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -2225,6 +2225,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.4  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.3  2005/10/31 16:13:51  KevinBenson
 added hyperbolic in there, plus the saving to myspace area.
 

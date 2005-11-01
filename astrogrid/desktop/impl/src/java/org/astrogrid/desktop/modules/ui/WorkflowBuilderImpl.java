@@ -187,11 +187,12 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                     return jobs.submitWorkflow(getModel().getWorkflow());
                 }
                 protected void doFinished(Object o) {
+                    /* just hop straight to monitor
                     URI id = (URI)o;
                     ResultDialog rd = new ResultDialog(WorkflowBuilderImpl.this,"Workflow Submitted \nJob ID is \n" + id);
                     rd.show();
-                    monitor.show(); // brings monitor to the front, if not already there.
-                    monitor.refresh();                    
+                    */
+                    lookout.show(); // brings monitor to the front, if not already there.
                 }
             }).start();
         }
@@ -243,7 +244,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     protected final BrowserControl browser;
     protected final MyspaceInternal vos;
     protected final ResourceChooserInternal chooser;
-    protected final JobMonitor monitor;
+    protected final Lookout lookout;
     private final ApplicationsInternal apps;
     private final JobsInternal jobs;
     
@@ -277,13 +278,13 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
      * @throws Exception
      * 
      * */
-    public WorkflowBuilderImpl(ApplicationsInternal apps, JobsInternal jobs,JobMonitor monitor,  MyspaceInternal vos, BrowserControl browser,
+    public WorkflowBuilderImpl(ApplicationsInternal apps, JobsInternal jobs,Lookout monitor,  MyspaceInternal vos, BrowserControl browser,
             ToolEditorInternal toolEditor,ResourceChooserInternal chooser
              ,UIInternal ui, HelpServerInternal hs, Configuration conf) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.vos = vos;
-        this.monitor = monitor;
+        this.lookout = monitor;
         this.apps = apps;
         this.jobs = jobs;
         this.chooser = chooser;
@@ -400,6 +401,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		if (toolbar == null) {
 			toolbar = new JToolBar();
 			toolbar.setFloatable(false);
+            toolbar.setRollover(true);
 		}
 		return toolbar;
 	}

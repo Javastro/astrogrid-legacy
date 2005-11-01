@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<module name="background">
+	<description>Background Workbench components</description>
+	
+	<property>
+		<key>priority</key>
+		<value>80</value>
+	</property>	
+	
+	<component name="tasks" 
+		implementationClass="org.astrogrid.desktop.modules.background.WorkbenchCeaComponentManager"
+		interfaceClass="org.astrogrid.desktop.modules.background.TasksInternal">
+	</component>	
+	
+	<component name="scheduler"
+		implementationClass="org.astrogrid.desktop.modules.background.ClockDaemonScheduler"
+		interfaceClass="org.astrogrid.desktop.modules.background.SchedulerInternal" >
+	</component>
+	
+	<component name="messaging"
+		implementationClass="org.astrogrid.desktop.modules.background.ActiveMQMessaging"
+		interfaceClass="org.astrogrid.desktop.modules.background.MessagingInternal" >
+	</component>
+	
+	<component name="recorder"
+		implementationClass="org.astrogrid.desktop.modules.background.MessageRecorderImpl"
+		interfaceClass="org.astrogrid.desktop.modules.background.MessageRecorder" >
+	</component>	
+</module>

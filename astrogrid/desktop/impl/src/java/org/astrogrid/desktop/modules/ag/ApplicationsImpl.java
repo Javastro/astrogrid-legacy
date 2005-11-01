@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.6 2005/10/18 16:53:03 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.7 2005/11/01 09:19:46 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,33 +13,31 @@ package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.astrogrid.UserLoginEvent;
-import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Adql074;
+import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
-import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.common.bean.BaseBean;
+import org.astrogrid.desktop.modules.background.TasksInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -79,7 +77,7 @@ import javax.xml.transform.TransformerException;
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  * * @todo refine exception reporting.
  */
-public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener {
+public class ApplicationsImpl implements ApplicationsInternal {
     /**
      * Commons Logger for this class
      */
@@ -88,35 +86,22 @@ public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener 
     /** 
      * 
      */
-    public ApplicationsImpl(CommunityInternal community, MyspaceInternal vos, Registry reg, ACR acr) throws  ACRException{
-        this.community = community;
+    public ApplicationsImpl(Community community,MyspaceInternal vos, Registry reg, ACR acr) throws  ACRException{
         this.vos = vos;
         this.reg = reg;
+        this.community = community;
         this.adql = (Adql074) acr.getService(Adql074.class); // necessary work-around - can't get at the adql component by constructor-injection
         // as it belongs in a later module, and so isn't visible from this component. - so fetch manually from the acr
         // likewise, can't reorder modules - as other components in the later module depend on components in this one.
-        community.addUserLoginListener(this);
+        this.cea = (TasksInternal) acr.getService(TasksInternal.class);
+        this.ceaHelper = new CeaHelper(reg);
     }
     protected final MyspaceInternal vos;
-    protected final CommunityInternal community;
     protected final Registry reg;
     protected final Adql074 adql;
-    /** @deprecated */
-    protected ApplicationRegistry appReg;
-    
-
-
-    private CommonExecutionConnectorClient createCEADelegate(URL endpoint) {
-       return  DelegateFactory.createDelegate(endpoint.toString());       
-    }
-    
-    /** @deprecated really */
-    private synchronized ApplicationRegistry getAppReg() throws WorkflowInterfaceException {
-        if (appReg == null) {
-         appReg = community.getEnv().getAstrogrid().getWorkflowManager().getToolRegistry();
-        }                        
-        return appReg;
-    }
+    protected final TasksInternal cea;
+    protected final Community community;
+    protected final CeaHelper ceaHelper;
    
     public URI[] list() throws ServiceException {   
         try {
@@ -141,7 +126,7 @@ public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener 
         }              
     }
     
-    
+
     
     public String getQueryToListApplications() {
         return getRegistryQuery();
@@ -154,10 +139,7 @@ public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener 
     " and @status = 'active'";
     }
     
-    /** @deprecated */
-    public ApplicationDescription getApplicationDescription(URI name) throws WorkflowInterfaceException {
-        return getAppReg().getDescriptionFor(name.toString().substring(6));
-    }
+
     
     /**
      * @throws InvalidArgumentException
@@ -178,13 +160,14 @@ public class ApplicationsImpl implements ApplicationsInternal,UserLoginListener 
     public ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException{
         ResourceInformation ri = reg.getResourceInformation(applicationName);
         if (ri instanceof ApplicationInformation) {
-            return (ApplicationInformation)ri;
+            return (ApplicationInformation)ri;  
         } else {
             throw new InvalidArgumentException("Not a recognized kind of application: " + applicationName);
         }
        
     }
     
+ 
     
     
   public String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
@@ -498,15 +481,16 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
         
 
     }
-    /*
-     * XPath parsing cribbed from http://www.cafeconleche.org/books/xmljava/chapters/ch16s05.html
-     * 
-     */
+   
     public ResourceInformation[] listProvidersOf(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
-           reg.getRecord(applicationName); // verify the application exists.
+           ResourceInformation ri = reg.getResourceInformation(applicationName); // verify the application exists.
+           if (ri instanceof SiapInformation || ri instanceof ConeInformation) {
+               return new ResourceInformation[]{ri}; // in these protocols, the application and provider are the same
+           } else {
         String query = "Select * from Registry where @status = 'active' and cea:ManagedApplications/cea:ApplicationReference='"
             + applicationName + "'";
         return reg.adqlSearchRI(query);
+           }
   
     }
     
@@ -564,13 +548,19 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
         
         ResourceInformation[] arr = listProvidersOf(info.getId());
-        if (arr.length == 0) {
-            throw new IllegalArgumentException(info.getName() +" has no registered providers");
+        ResourceInformation target = null;
+        switch(arr.length) {            
+            case 0:
+                throw new IllegalArgumentException(info.getName() +" has no registered providers");
+            case 1:
+                target = arr[0];
+                break;
+            default:
+                List l =  Arrays.asList(arr);
+                Collections.shuffle(l);
+                target = (ResourceInformation)l.get(0);
         }
-        List l =  Arrays.asList(arr);
-        Collections.shuffle(l);
-        ResourceInformation target = (ResourceInformation)l.get(0);
-        return doExecute(info, document, target);
+        return invoke(info,document,target);    
     }
     
     public URI submitTo(Document doc, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException {
@@ -601,28 +591,42 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
         }
         if (target == null) {
             throw new InvalidArgumentException(server + " does not provide application " + info.getName());            
-        }
-        return doExecute(info, document, target);
-        
+        }        
+       return invoke(info,document,target);        
     }   
-    // primitive implementation method.
-    private URI doExecute(ApplicationInformation application, Tool document, ResourceInformation server) throws ServiceException  {
+    
+    /** actually executes an applicaiton.
+     * first checks whether it can be serviced by the local cea lib.
+     * if not, delegates to a remote cea server 
+     * @param application
+     * @param document
+     * @param server
+     * @return
+     * @throws ServiceException
+     */
+    private URI invoke(ApplicationInformation application, Tool document, ResourceInformation server)
+    throws ServiceException {
         translateQueries(application, document);
-        CommonExecutionConnectorClient delegate = createCEADelegate(server.getAccessURL());
-        // fudge some kind of job id type. hope this will do.
         try {
-        JobIdentifierType jid = new JobIdentifierType(community.getUserInformation().getId().toString() + application.getId().toString());
-        String primId = delegate.init(document,jid);
-        if (!delegate.execute(primId)) {
-            throw new CEADelegateException("Failed to start application, for unknown reason");
-        }
-        return new URI(server.getId().getScheme(),server.getId().getSchemeSpecificPart(),primId);
+        //fudge some kind of job id type. hope this will do.
+            JobIdentifierType jid = new JobIdentifierType(server.getId().toString());
+            if (cea.getAppLibrary().hasMatch(application)) {           
+                String primId = cea.getExecutionController().init(document,jid.toString());
+                if (!cea.getExecutionController().execute(primId)) {
+                    throw new ServiceException("Failed to start application, for unknown reason");
+                }
+                return ceaHelper.mkLocalTaskURI(primId);
+            } else {
+                CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(server);
+                String primId = del.init(document,jid);
+                del.execute(primId);
+                return ceaHelper.mkRemoteTaskURI(primId,server);
+            }
+        } catch (CeaException e) {
+            throw new ServiceException(e);
         } catch (CEADelegateException e) {
             throw new ServiceException(e);
-        } catch (URISyntaxException e) {
-            throw new ServiceException(e);
-        }  
-        
+        } 
     }
     
     /**
@@ -645,44 +649,39 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
                         Document adqlx = adql.s2x(val.getValue());
                         val.setValue( XMLUtils.DocumentToString(adqlx) );
                     }
-                }
-                
+                }               
             }
         }
     }
 
-    private URI getService(URI executionId) throws InvalidArgumentException  {
-        try {
-            return new URI(executionId.getScheme(),executionId.getSchemeSpecificPart(),null);
-        } catch (URISyntaxException e) {
-            throw new InvalidArgumentException(e);
-        }
-       
-    }
-    
-    private String getId(URI executionId) {
-        return executionId.getFragment();
-    }
-    
+ 
  
     public void cancel(URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
         try { 
-        URL endpoint = reg.resolveIdentifier(getService(executionId));
-        CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);        
-            delegate.abort(getId(executionId));
+            String ceaid = ceaHelper.getAppId(executionId);
+            if (ceaHelper.isLocal(executionId)) {
+                cea.getExecutionController().abort(ceaid);
+            } else {
+                CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(executionId);
+                del.abort(ceaid);
+            }
+        } catch (CeaException e) { //@todo improve this - match subtypes to different kinds of excpeiton.
+            throw new ServiceException(e);
         } catch (CEADelegateException e) {
             throw new ServiceException(e);
-        } catch (NotApplicableException e) {
-            throw new InvalidArgumentException(e);
         }
     }  
-    
+
     public ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException {
         try {
-        URL endpoint = reg.resolveIdentifier(getService(executionId));
-        CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);        
-        ExecutionSummaryType ex =  delegate.getExecutionSumary(getId(executionId));
-        //@todo see if we can improve information retirned.
+            String ceaId = ceaHelper.getAppId(executionId);
+            final ExecutionSummaryType ex;
+            if (ceaHelper.isLocal(executionId)) {
+                ex = cea.getQueryService().getSummary(ceaId);
+            } else {
+                ex = ceaHelper.createCEADelegate(executionId).getExecutionSumary(ceaId);
+            }
+        //@todo see if we can improve information returned.
         return new ExecutionInformation(
                 executionId
                 ,ex.getApplicationName()
@@ -691,48 +690,43 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
                 ,null
                 ,null
                 );
+        } catch (CeaException e) {
+            throw new ServiceException(e);
         } catch (CEADelegateException e) {
             throw new ServiceException(e);
-        } catch (NotApplicableException e) {
-            throw new InvalidArgumentException(e);
-        }
+        }        
     }
     public Map getResults(URI executionId) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
         try {
-        URL endpoint = reg.resolveIdentifier(getService(executionId));
-        CommonExecutionConnectorClient delegate = createCEADelegate(endpoint);        
-        ResultListType results =  delegate.getResults(getId(executionId));
-        Map map = new HashMap();
-        ParameterValue[] vals = results.getResult();        
-        for (int i = 0; i < vals.length; i++) {
-            map.put(vals[i].getName(),vals[i].getValue());
-        }
-        return map;
+            final ResultListType results;
+            String ceaId = ceaHelper.getAppId(executionId);
+            if (ceaHelper.isLocal(executionId)) {                
+                results = cea.getQueryService().getResults(ceaId);
+            } else {
+                results = ceaHelper.createCEADelegate(executionId).getResults(ceaId);
+            }     
+            Map map = new HashMap();
+            ParameterValue[] vals = results.getResult();        
+            for (int i = 0; i < vals.length; i++) {
+                map.put(vals[i].getName(),vals[i].getValue());
+            }
+            return map;
+        } catch (CeaException e) {
+            throw new ServiceException(e);
         } catch (CEADelegateException e) {
             throw new ServiceException(e);
-        } catch (NotApplicableException e) {
-            throw new InvalidArgumentException(e);
-        }
+        }  
     }
-   
-    public void userLogin(UserLoginEvent e) {
-    }
-
-    public synchronized void userLogout(UserLoginEvent e) {
-        appReg = null;
-    }
-
-
-       
-
-
-    
+           
     
 }
 
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.7  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.6  2005/10/18 16:53:03  nw
 deprecated a badly-named method
 

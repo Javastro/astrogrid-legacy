@@ -1,4 +1,4 @@
-/*$Id: ThrobbingInterceptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: ThrobbingInterceptor.java,v 1.3 2005/11/01 09:19:46 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.UI;
+import org.astrogrid.desktop.modules.background.MessagingInternal;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -22,33 +30,45 @@ import org.aopalliance.intercept.MethodInvocation;
  *@todo maybe change way this is registered? 
  */
 public class ThrobbingInterceptor implements MethodInterceptor {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(ThrobbingInterceptor.class);
 
     /** Construct a new ThrobbingInterceptor
+     * @throws ACRException
+     * @throws InvalidArgumentException
      * 
      */
-    public ThrobbingInterceptor() { // constrctor called when no ui availiable
-        this.ui = null;
-        this.tray = null;
+    public ThrobbingInterceptor(ACR acr) throws InvalidArgumentException, ACRException {
+        this.acr = acr;
+        try {
+            this.ui = (UI)acr.getService(UI.class);
+        } catch (NotFoundException e) {
+            this.ui = null;
+            logger.warn("No UI to report to");
+        }
+        try {
+            this.tray = (SystemTray)acr.getService(SystemTray.class);
+        } catch (NotFoundException e) {
+            this.tray = null;
+            logger.warn("No Sys tray to report to");
+        }
+      
+        
     }
-    public ThrobbingInterceptor(UI ui) {// constructor called when no tray available
-        super();
-        this.ui = ui;
-        this.tray = null;
-    }
-    
-    public ThrobbingInterceptor(UI ui,SystemTray tray) {// constructor called when tray is available
-        super();
-        this.ui = ui;
-        this.tray = tray;
-    }
-    
-    protected final UI ui;
-    protected final SystemTray tray;
+
+    protected ACR acr;
+    protected UI ui;
+    protected SystemTray tray;
+    protected MessagingInternal reporter;
 
     /**
      * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
      */
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+    public final Object invoke(MethodInvocation invocation) throws Throwable {
+
+           
         try {
             if (ui != null) {
                 ui.startThrobbing();
@@ -57,8 +77,25 @@ public class ThrobbingInterceptor implements MethodInterceptor {
             //ui.setStatusMessage("calling " + invocation.getMethod().getName());
             if (tray != null) {
                 tray.startThrobbing();
-            }               
+            }
+            if (reporter == null) { // got to be here somewhere..
+                try {
+                    // have to do this, as can't get at it at creation time - irritating.
+                    this.reporter = (MessagingInternal)acr.getService(MessagingInternal.class);
+                    logger.info("Found messager");
+                } catch (NotFoundException e) {
+                    // ho hum. maybe it's not here.
+                }
+            }
+            if (reporter != null) {
+                reporter.sendTrackingMessage(invocation);
+            }
             return invocation.proceed();
+        } catch (Exception t) { // throwables are probably too low-level.
+            if (reporter != null) {
+                reporter.sendErrorMessage(invocation,t);                
+            }
+            throw t;
         } finally {
             if (ui != null) {
                 ui.stopThrobbing();
@@ -75,6 +112,9 @@ public class ThrobbingInterceptor implements MethodInterceptor {
 
 /* 
 $Log: ThrobbingInterceptor.java,v $
+Revision 1.3  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

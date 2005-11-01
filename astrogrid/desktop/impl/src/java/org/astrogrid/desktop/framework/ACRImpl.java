@@ -1,4 +1,4 @@
-/*$Id: ACRImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ACRImpl.java,v 1.3 2005/11/01 09:19:46 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,6 +34,8 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -152,7 +154,7 @@ public class ACRImpl implements MutableACR {
     ///   m1.registerInterceptor(cuts.allClasses(),publicMethods(cuts),new LoggingInterceptor());
         // @todo move registration of interceptors out of reg code into module.xml with all else.
         // @todo the throbber is currently registered as a method interceptor. will need to change this if start using other interceptors as well.
-       m1.registerInterceptor(notBuiltinOrSystem(cuts),publicMethods(cuts),ThrobbingInterceptor.class);
+       m1.registerInterceptor(notBuiltinOrSystemOrInternal(cuts),publicMethods(cuts),ThrobbingInterceptor.class);
         
         m1.start(); // order of these is important - as there may be reg listeners in m1  - so need to start it before notifying listners.      
         modules.put(m1.getDescriptor().getName(),m1);
@@ -223,17 +225,25 @@ public class ACRImpl implements MutableACR {
     }
     
     
-    /** @todo refine to public methods */
     private MethodPointcut publicMethods(PointcutsFactory cuts) {
-        return cuts.allMethods();
+        return new MethodPointcut() {
+            public boolean picks(Method arg0) {
+                return Modifier.isPublic(arg0.getModifiers());
+            }
+        };
     }
     
-    private ClassPointcut notBuiltinOrSystem(PointcutsFactory cuts) {
-        return cuts.not(
-          cuts.union(
-                  cuts.packageName("org.astrogrid.desktop.framework")
-                  , cuts.packageName("org.astrogrid.desktop.modules.system")
-                  )      
+    private ClassPointcut notBuiltinOrSystemOrInternal(PointcutsFactory cuts) {
+        return     cuts.not(
+                cuts.union(
+                        cuts.union(
+                                cuts.packageName("org.astrogrid.desktop.framework")
+                                , cuts.packageName("org.astrogrid.desktop.modules.system")
+                        )
+                        ,
+                        //cuts.className("\\.*Internal")// don't work
+                        cuts.packageName("org.astrogrid.desktop.modules.background")
+                        )
         );
     }
 
@@ -335,6 +345,9 @@ public class ACRImpl implements MutableACR {
 
 /* 
 $Log: ACRImpl.java,v $
+Revision 1.3  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

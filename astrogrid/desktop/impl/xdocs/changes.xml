@@ -13,6 +13,30 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	
+	<release version="1.3-alpha-1" date="2005-10-27">
+		<action dev="nw" type="add" issue="1389">
+			Local CEA server (for siap and cone) messages workbench of execution progress.
+			Remote CEA servers to follow.
+		</action>
+		<action dev="nw" type="add" issue="1393">
+			Integrated Cone into application execution system - siap to follow
+		</action>
+		<action dev="nw" type="add">
+			Lookout - first draft
+		</action>
+		<action dev="kmb" type="add">
+			AstroScope - first draft
+		</action>
+	</release>
+	<release version="1.2.4-beta-3" date="unreleased">
+		<action dev="nw" type="add" issue="1392">
+			Added ACR support for Siap and Cone services
+		</action>
+		<action dev="nw" type="fix">
+			added fallback registry endpoint to configuraiton
+		</action>
+	</release>
 	<release version="1.2.4-beta-2" date="2005-10-14">
 		<action dev="nw" type="fix" due-to="Mark Taylor">
 			Fixed myspace upload to work under java 1.5.

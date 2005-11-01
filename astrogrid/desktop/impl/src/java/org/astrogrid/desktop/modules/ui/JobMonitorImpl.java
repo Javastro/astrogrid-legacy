@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.7 2005/10/12 13:30:10 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.8 2005/11/01 09:19:46 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.background.MessagingInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
@@ -31,7 +32,10 @@ import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.w3c.dom.Document;
+
+import com.ibm.wsdl.util.StringUtils;
 
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
@@ -59,6 +63,10 @@ import java.util.StringTokenizer;
 
 import javax.help.CSH;
 import javax.help.HelpBroker;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.MessageListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -196,12 +204,10 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         }
     }
     
-    protected class ApplicationsTableModel extends AbstractTableModel {
+    protected class ApplicationsTableModel extends AbstractTableModel implements MessageListener {
         private static final String MONITORED_APPLICATION_KEY = "monitored.applications.list";
         public ApplicationsTableModel()  {
             String value = configuration.getKey(MONITORED_APPLICATION_KEY);
-            logger.info(value);
-            props = new HashMap();
             if (value != null) {
                 StringTokenizer tok = new StringTokenizer(value);                
                 logger.info("Reading " + tok.countTokens() +" persisted application records");
@@ -217,7 +223,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                             ,null
                             ,null                            
                     );
-                    appList.add(e);
+                    appList.put(e.getId(),e);
                     } catch (URISyntaxException e) {
                         logger.warn("Could not unpickle record " + next,e);
                     }
@@ -225,40 +231,43 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 }
             }
         }
-        private final List appList = new ArrayList();
-        private final Map props;
+        private final ListOrderedMap appList = new ListOrderedMap();
         
         public void addApplication(ExecutionInformation e) throws IOException {
-            int pos = appList.size();
-            appList.add(e);
-           this.fireTableRowsInserted(pos,pos);
-           props.put(e.getId() ,e.getName());
+            if (appList.containsKey(e.getId())) {
+                appList.put(e.getId(),e);
+                int pos = appList.indexOf(e.getId());
+                this.fireTableRowsUpdated(pos,pos);
+            } else {
+                int pos = appList.size();                
+                appList.put(e.getId(),e);
+                this.fireTableRowsInserted(pos,pos);
+            }
            writeBackProperties();
         }
         
         private void writeBackProperties() throws IOException {
             StringBuffer buff = new StringBuffer();
-            for (Iterator i = props.keySet().iterator(); i.hasNext(); ) {
+            for (Iterator i = appList.keySet().iterator(); i.hasNext(); ) {
                 buff.append(i.next());
                 buff.append(" ");
             }                    
             configuration.setKey(MONITORED_APPLICATION_KEY,buff.toString());
         }
         
-        public void removeApplication(ExecutionInformation e) throws IOException {  
-            appList.remove(e);            
-            this.fireTableDataChanged();
-            props.remove(e.getId());
-            writeBackProperties();
+        public void removeApplication(ExecutionInformation e) throws IOException {
+            if (appList.containsKey(e.getId())) {
+                int pos = appList.indexOf(e.getId());
+                appList.remove(e.getId());            
+                this.fireTableRowsDeleted(pos,pos);
+                writeBackProperties();
+            }
         }
 
         public ExecutionInformation getRow(int i) {
-            return (ExecutionInformation)appList.get(i);
+            return (ExecutionInformation)appList.getValue(i);
         }
-        
-        public void setRow(int i, ExecutionInformation new1) {
-            appList.set(i,new1);
-        }
+
         public int getColumnCount() {            
             return COLUMN_COUNT;
         }
@@ -275,7 +284,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                 return null;
             }
 
-            ExecutionInformation e = (ExecutionInformation)appList.get(rowIndex);
+            ExecutionInformation e = (ExecutionInformation)appList.getValue(rowIndex);
             switch (columnIndex) {
                 case 0:
                     return e.getName();
@@ -297,8 +306,43 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
             }
         }
 
-
-    }
+        /**
+         * received a cea status change message.
+         */
+        public void onMessage(Message arg0) {
+            // todo still some sort of bug here - some mixup between name and ID I think.
+            
+            final MapMessage m = (MapMessage)arg0;                      
+            SwingUtilities.invokeLater(new Runnable(){
+                public void run() {
+                    try {
+                    URI id = new URI(m.getStringProperty("cea_application_jid") + "#" + m.getStringProperty("cea_application_id"));
+                    ExecutionInformation newInfo = null;
+                    if (appList.containsKey(id)) {
+                        ExecutionInformation info = (ExecutionInformation)appList.get(id);
+                        newInfo = new ExecutionInformation(info.getId(),info.getName(),info.getDescription()
+                                ,m.getString("phase"),info.getStartTime(),info.getFinishTime());                               
+                    } else {
+                        newInfo = new ExecutionInformation(id,m.getStringProperty("cea_application_id")
+                                ,"an application",m.getString("phase"),null,null);                
+                    }
+                    addApplication(newInfo);
+                    if (tray != null) {
+                        if (newInfo.getStatus().equals(ExecutionInformation.COMPLETED)) {
+                            tray.displayInfoMessage("Application Complete",newInfo.getName());
+                        } else if (newInfo.getStatus().equals(ExecutionInformation.ERROR)) {
+                            tray.displayWarningMessage("Application Error",newInfo.getName());                               
+                        }
+                    }
+                    } catch (Exception e) {
+                        logger.error("Failed to update app status",e);
+                    }
+                }
+            });            
+           
+        }
+ 
+    } // end applications table model.
     protected class JobsTableModel extends AbstractTableModel {
 
         protected ExecutionInformation[]  jobs = new ExecutionInformation[]{};
@@ -390,6 +434,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         }
         protected Object construct() throws Exception {
             ExecutionInformation[] results = jobs.listFully();
+            /* using messaging for cea now ..
             for (int i = 0; i < applicationsTableModel.getRowCount(); i++) {
                 ExecutionInformation e = applicationsTableModel.getRow(i);
                 // updating status inplace in the model - but not firing notification.
@@ -401,16 +446,18 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                     displayTrayMessage(e, newPhase);
                 }
                 } catch (ACRException ex) { // status of this applicaton unavailable - move on to the next one.
-                    // @todo display some kind of 'unknown' message
+
                 }                
-            }
+            }*/
             return results;
+            
            
         }
         /**
          * @param e
          * @param newPhase
          */
+        /*
         private void displayTrayMessage(ExecutionInformation e, String newPhase) {
             if (tray != null  && !(e.getStatus().equals(ExecutionInformation.COMPLETED) || e.getStatus().equals(ExecutionInformation.ERROR))) {
                     if (newPhase.equals(ExecutionInformation.COMPLETED)) {
@@ -419,14 +466,14 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
                             tray.displayWarningMessage("Application Error",e.getName());                               
                 }
             }
-        }
+        }*/
         protected void doFinished(Object o) {   
                ExecutionInformation[] latest = (ExecutionInformation[])o;
                if (tray != null) { // no point if the tray isn't available.
                    alertCompleted(latest);
                }
                 jobsTableModel.setList(latest);
-                applicationsTableModel.fireTableDataChanged();
+             //   applicationsTableModel.fireTableDataChanged();
         } 
         /** if the system tray is present, popup alertrts when jobs complete */
        protected void alertCompleted(ExecutionInformation[] latest) {
@@ -563,6 +610,7 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     }
 
     protected final BrowserControl browser;
+    protected final MessagingInternal messaging;
     protected final SystemTray tray;
     protected Action submitAction;
     protected Action cancelAction;
@@ -596,13 +644,13 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
     
     /** production constructor - for platforms without system tray
      * @throws Exception*/
-    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServerInternal hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser) throws Exception {
-        this(community,vos,browser,ui,hs,conf,jobs,applications,chooser,null);
+    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServerInternal hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser, MessagingInternal messaging) throws Exception {
+        this(community,vos,browser,ui,hs,conf,jobs,applications,chooser,messaging,null);
  
     }
     
     /** constructor for platforms with system tray */ 
-    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServerInternal hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser,SystemTray tray) throws Exception {
+    public JobMonitorImpl(Community community,MyspaceInternal vos,BrowserControl browser, UIInternal ui, HelpServerInternal hs,Configuration conf, Jobs jobs, Applications applications, ResourceChooserInternal chooser,MessagingInternal messaging,SystemTray tray) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.vos = vos;
@@ -610,7 +658,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         this.applications = applications;
         this.tray = tray;
         this.chooser = chooser;
+        this.messaging = messaging;
         community.addUserLoginListener(this);
+        messaging.addEventProcessor("cea_application_id IS NOT NULL AND type = 'status-change'",getApplicationsTableModel());        
         initialize();
     }
     
@@ -995,11 +1045,17 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
         sb.append("</font></html>");
         return sb.toString();
     }
+
+  
+    
 }  //  @jve:decl-index=0:visual-constraint="10,10"
 
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.8  2005/11/01 09:19:46  nw
+messsaging for applicaitons.
+
 Revision 1.7  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 
