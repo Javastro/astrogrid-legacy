@@ -145,12 +145,23 @@
 	<dependency>
 		<artifactId>activemq-core</artifactId>
 		<groupId>activemq</groupId>
-		<version>3.1</version>
+		<version>3.2</version>
 		<properties>
 			<jnlp.jar>true</jnlp.jar>
 			<dist.bundle>true</dist.bundle>			
                 </properties>		
 	</dependency>
+	<!--- for http -->
+	<dependency>
+		<artifactId>activemq-optional</artifactId>
+		<groupId>activemq</groupId>
+		<version>3.2</version>
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+			<dist.bundle>true</dist.bundle>			
+                </properties>		
+	</dependency>	
+	
 	<dependency>
 		<artifactId>geronimo-spec-jms</artifactId>
 		<groupId>geronimo-spec</groupId>
@@ -178,7 +189,37 @@
 			<dist.bundle>true</dist.bundle>			
 		</properties>		
 	</dependency>	
+	<!-- for xstream only -->
+	<dependency>
+		<artifactId>xpp3</artifactId>
+		<groupId>xpp3</groupId>
+		<version>1.1.3.4d_b4_min</version>
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+			<dist.bundle>true</dist.bundle>			
+		</properties>		
+	</dependency>
 	
+	<!-- for jabber wire format -->
+	
+	<!--
+    <dependency>
+      <id>stax+api</id>
+      <version>1.0</version>
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+			<dist.bundle>true</dist.bundle>			
+		</properties>		  
+    </dependency>
+    <dependency>
+      <id>stax</id>
+      <version>1.1.1-dev</version>
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+			<dist.bundle>true</dist.bundle>			
+		</properties>		  
+    </dependency>	
+	-->
 <!-- end of messaging system deps -->
 
 <!-- more stuff to factor out -->
