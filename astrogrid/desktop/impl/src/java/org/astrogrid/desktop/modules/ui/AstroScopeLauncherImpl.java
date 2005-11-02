@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.6 2005/11/01 16:28:32 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.7 2005/11/02 09:50:11 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -231,9 +231,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     private DefaultMutableTreeNode selectRootNode;
     protected DefaultTreeModel treeModel;
     
-    JButton saveImageButton;
+    //JButton saveImageButton;
     JButton saveButton;
-    JButton selectAllButton;
+    //JButton selectAllButton;
     JButton clearTreeButton;
     
     /** configurable thread-pool - used to perform the queries and background updates. */
@@ -271,7 +271,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 , new FisheyeWindowedRadial()
                 , new Hyperbolic()
                 , new Balloon()
-                //,new TreeMap() //-- seems to throw exceptions.
+       //         ,new TreeMap() //-- seems to throw exceptions.
               // ,new ZoomPan()// - dodgy and ugly
              , new ConventionalTree()  // not working yet.
           //  , new Plot() // doesn't seem to layout quite right. - evertything in same place. (as coords are always the same)
@@ -307,8 +307,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * to myspace or filesystem.  User MUST CHOOSE a directory node.  Does the work in a background
      * thread.  Allows for selection of All or pieces such as only sia and/or cone (which looks at graph nodes).
      * Called by the saveButton action.
-     *@todo kevin - need to wrap the stream-writing bits in a try .. finally that closes the streams.
-     *  also factor out commonality between saveData and saveImages.
+     *
      */
     private void saveData() {
              comm.getUserInformation();
@@ -436,6 +435,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                          return null;
                       }
                  }).start();
+             saveImageData(u);
     }
 
     /**
@@ -446,12 +446,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * Called by the saveImageButton action.  
      *
      */    
-    private void saveImageData() {
+    private void saveImageData(URI saveURI) {
         comm.getUserInformation();
+        /*
         final URI u = chooser.chooseResourceWithParent("Save Data",true,true,true,false,this);
         if (u == null) {
             return;
         }
+        */
+        final URI u = saveURI;
+        
 
         (new BackgroundOperation("Saving Images") {
                 protected Object construct() throws Exception {
@@ -601,7 +605,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             logger.debug("here is the position extracted from sesame = " + pos);
         }catch(Exception e) {
             //hmmm I think glueservice is throwing an exception but things seem to be okay.
-            logger.debug("error from sesame - ho hum",e);
+				logger.debug("error from sesame - ho hum",e);
         }
         return pos;
     }
@@ -705,8 +709,40 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         selectTree = new JTree(treeModel); 
         selectTree.setBackground(bottomPanel.getBackground());
         JScrollPane listScrollPane = new JScrollPane(selectTree);
-
-        wrapPanel.add(listScrollPane);       
+        wrapPanel.add(listScrollPane);
+        
+        JPanel southCenterPanel = new JPanel();
+        dim2 = new Dimension(200,70);
+        southCenterPanel.setMaximumSize(dim2);
+        southCenterPanel.setPreferredSize(dim2); 
+        
+        /*
+        selectAllButton = new JButton("Select All");
+        selectAllButton.setEnabled(false);
+        selectAllButton.addActionListener(this);
+        */      
+        saveButton = new JButton("Save");
+        saveButton.setEnabled(false);
+        saveButton.addActionListener(this);
+        
+        /*
+        saveImageButton = new JButton("Save Selected Images");
+        saveImageButton.setEnabled(false);
+        saveImageButton.addActionListener(this);
+        */
+        
+        clearTreeButton = new JButton("Clear");
+        clearTreeButton.setEnabled(false);
+        clearTreeButton.addActionListener(this);
+        
+        
+        //southCenterPanel.add(selectAllButton);
+        southCenterPanel.add(saveButton);
+        //southCenterPanel.add(saveImageButton);
+        southCenterPanel.add(clearTreeButton);
+        wrapPanel.add(southCenterPanel);
+        
+        
         return wrapPanel;
     }
 
@@ -727,36 +763,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
  
         JPanel wrapPanel = new JPanel();
         wrapPanel.setLayout(new BoxLayout(wrapPanel,BoxLayout.Y_AXIS));
-        wrapPanel.add(alternatives);
-        
-        
-        JPanel southCenterPanel = new JPanel();
-        Dimension dim2 = new Dimension((int)wrapPanel.getMaximumSize().getWidth(),30);
-        southCenterPanel.setMaximumSize(dim2);
-        southCenterPanel.setPreferredSize(dim2); 
-        
-        selectAllButton = new JButton("Select All");
-        selectAllButton.setEnabled(false);
-        selectAllButton.addActionListener(this);
-                
-        saveButton = new JButton("Save Selected Data");
-        saveButton.setEnabled(false);
-        saveButton.addActionListener(this);
-        
-        saveImageButton = new JButton("Save Selected Images");
-        saveImageButton.setEnabled(false);
-        saveImageButton.addActionListener(this);
-        
-        clearTreeButton = new JButton("Clear Selections");
-        clearTreeButton.setEnabled(false);
-        clearTreeButton.addActionListener(this);
-        
-        
-        southCenterPanel.add(selectAllButton);
-        southCenterPanel.add(saveButton);
-        southCenterPanel.add(saveImageButton);
-        southCenterPanel.add(clearTreeButton);
-        wrapPanel.add(southCenterPanel);
+        wrapPanel.add(alternatives);                
+        //wrapPanel.add(southCenterPanel);
         return wrapPanel;        
     }
     
@@ -1144,7 +1152,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 display = new Display();
 
                 // initialize renderers
-                TextItemRenderer nodeRenderer = new TextItemRenderer();                
+                TextItemRenderer nodeRenderer = new TextItemRenderer();
                 nodeRenderer.setMaxTextWidth(75);
                 nodeRenderer.setAbbrevType(StringAbbreviator.NAME);
                 nodeRenderer.setRoundedCorner(8,8);
@@ -1344,7 +1352,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
            display.addControlListener(new ZoomControl(false));
            display.addControlListener(new ToolTipControl("tooltip"));   
            display.addControlListener(new NeighborHighlightControl(update));
-           display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));           
+           //display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
+           display.addControlListener(new AstroScopeMultiSelectionControl(registry));
            
            registry.getFocusManager().putFocusSet(
                    FocusManager.HOVER_KEY, new DefaultFocusSet());
@@ -1605,6 +1614,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         ItemRegistry registry = getItemRegistry();
         
         display = new Display(registry);
+        display.setSize(500,350);
         // causes probs.        
         registry.setRendererFactory(new DefaultRendererFactory(new RectangleRenderer()));
 
@@ -1655,6 +1665,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     
     public  class TreeMapSizeFunction extends edu.berkeley.guir.prefuse.action.AbstractAction {
         public void run(ItemRegistry registry, double frac) {
+            System.out.println("in run of treemapsize frac = " + frac);
             int leafCount = 0;
             Iterator iter = registry.getNodeItems();
             while ( iter.hasNext() ) {
@@ -1670,13 +1681,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             
             Dimension d = registry.getDisplay(0).getSize();
             logger.debug("leafCount = " + leafCount + " display size, width = " + d.width + " height = " + d.height);
+            System.out.println("leafCount = " + leafCount + " display size, width = " + d.width + " height = " + d.height);
             double area = d.width*d.height;
             double divisor = ((double)leafCount)/area;
             logger.debug("the area = " + area + " divisor = " + divisor);
+            System.out.println("the area = " + area + " divisor = " + divisor);
             iter = registry.getNodeItems();
             while ( iter.hasNext() ) {
                 NodeItem n = (NodeItem)iter.next();
-                //System.out.println("the setsize for node = " + n.getAttribute("label") + " is " + n.getSize()/divisor);
+                System.out.println("the setsize for node = " + n.getAttribute("label") + " is " + n.getSize()/divisor + " the getsize = " + n.getSize());
                 n.setSize(n.getSize()/divisor);
             }
         } //
@@ -1688,6 +1701,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             Point2D d = (Point2D)item.getVizAttribute("dimension");
             if (d == null)
                 System.out.println("uh-oh");
+            //System.out.println("in rectrender rect1x = " + item.getX() + " recty = " + item.getY() + " and dx = " + d.getX() + " and dy = " + d.getY());
             bounds.setRect(item.getX(),item.getY(),d.getX(),d.getY());
             return bounds;
         } //
@@ -1707,12 +1721,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             query();
         }else if(source == saveButton) {
             saveData();
-        }else if(source == saveImageButton) {
-            saveImageData();
         }else if(source == clearTreeButton) {
             selectRootNode.removeAllChildren();
             treeModel.reload();
-        }else if(source == selectAllButton) {
+        }
+        /*
+        else if(source == selectAllButton) {
             if(storageTable.size() > 0) {
                 if(selectRootNode.getChildCount() >= 1) {
                     if(!selectRootNode.getFirstChild().toString().equals("All")) {
@@ -1727,7 +1741,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                     }//if
                 }//if
             }//if
-        }
+        }*/
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
     }
     
@@ -2049,6 +2063,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             logger.debug("the itemClicked happened tostring of item = " + item.toString());
             //okay do the stuff to the graph first.
             super.itemClicked(item,e);
+            
+            if(e.getClickCount() < 2) {
+                return;                
+            }
+            
             //ge the label.
             String label = item.getAttribute("label");
             TreePath tp;
@@ -2186,14 +2205,14 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         
         private void enableSaveButtons() {
             if(storageTable.size() > 0 && selectRootNode.getChildCount() > 0) {
-                selectAllButton.setEnabled(true);
+                //selectAllButton.setEnabled(true);
                 saveButton.setEnabled(true);
-                saveImageButton.setEnabled(true);                
+                //saveImageButton.setEnabled(true);                
                 clearTreeButton.setEnabled(true);
             }else {
-                selectAllButton.setEnabled(false);
+                //selectAllButton.setEnabled(false);
                 saveButton.setEnabled(false);
-                saveImageButton.setEnabled(false);
+                //saveImageButton.setEnabled(false);
                 clearTreeButton.setEnabled(false);
             }
         }
@@ -2286,8 +2305,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
-Revision 1.6  2005/11/01 16:28:32  nw
-2 minor fixes
+Revision 1.7  2005/11/02 09:50:11  KevinBenson
+should have Noel's 2 minor fixes.  Plus a couple of additions for buttons and node selections
 
 Revision 1.5  2005/11/01 14:40:20  KevinBenson
 Some small changes to have hyperbolic working with selections and saving to myspace
