@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.3 2005/10/12 13:30:10 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.4 2005/11/02 09:29:15 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,11 +55,13 @@ public class HelpServerImpl implements Startable, HelpServerInternal{
      */
     public void start() {
         // if jdic browser is available, set help browser to use that.
+        /* @todo get this working and test cross-platform
         Check jdic  = new CheckJDICBrowserPresent();
         if (jdic.check()) {
             SwingHelpUtilities.setContentViewerUI
                 ("javax.help.plaf.basic.BasicNativeContentViewerUI");
         }
+        */
  
         ClassLoader cl = this.getClass().getClassLoader();
         try {
@@ -136,6 +138,9 @@ public class HelpServerImpl implements Startable, HelpServerInternal{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.4  2005/11/02 09:29:15  nw
+fixed bug on windows
+
 Revision 1.3  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 
