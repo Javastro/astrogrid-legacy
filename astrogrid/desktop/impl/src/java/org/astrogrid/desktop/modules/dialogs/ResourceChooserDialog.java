@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.5 2005/10/12 13:30:10 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.6 2005/11/02 09:49:25 KevinBenson Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,12 +66,19 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
                     super.updateDisplay();
                     FileManagerNode n = getCurrent();
                     if (n.isFile()) {
-                    try {
-                        setUri(new URI(n.getIvorn().toString()));
-                    } catch (Exception e) {
-                        showError("Could not ascertain ivorn",e);
-                    }           
+                        try {
+                            setUri(new URI(n.getIvorn().toString()));
+                        } catch (Exception e) {
+                            showError("Could not ascertain ivorn",e);
+                        }
+                    }else if(enableDirectorySelection && n.isFolder()) {
+                        try {
+                            setUri(new URI(n.getIvorn().toString()));
+                        } catch (Exception e) {
+                            showError("Could not ascertain ivorn",e);
+                        }                        
                     }
+                    
                 }
             };
         }
@@ -135,12 +142,14 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
         getJTabbedPane().setEnabledAt(2,enableURIPanel);       
     }
     
+    boolean enableDirectorySelection = false;
     public void setEnabledDirectorySelection(boolean enableDirectorySelection) {
         if(enableDirectorySelection) {
             localPanel.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         } else {
             localPanel.setFileSelectionMode(JFileChooser.FILES_ONLY);            
         }
+        this.enableDirectorySelection = enableDirectorySelection;
     }
     
     /** resets the dialog, then hides it. */
@@ -364,6 +373,9 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.6  2005/11/02 09:49:25  KevinBenson
+when directories are enabled allowed myspace folders to be selected.
+
 Revision 1.5  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 
