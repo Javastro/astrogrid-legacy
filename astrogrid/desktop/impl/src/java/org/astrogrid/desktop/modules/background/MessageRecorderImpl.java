@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderImpl.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: MessageRecorderImpl.java,v 1.2 2005/11/02 09:29:51 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -631,6 +631,7 @@ public class MessageRecorderImpl implements Startable, MessageRecorder{
                         t.getStringProperty("summary")
                         ,t.getText(), new Date(t.getJMSTimestamp()));
                 String id = t.getStringProperty("level");
+                id = id == null ? "info" : id;
                 // check the folder exists, creating if necessary..
                 Folder f = folders.getFolder(id);
                 if (f == null) {
@@ -763,6 +764,9 @@ public class MessageRecorderImpl implements Startable, MessageRecorder{
 
 /* 
 $Log: MessageRecorderImpl.java,v $
+Revision 1.2  2005/11/02 09:29:51  nw
+minor bug fix
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  
