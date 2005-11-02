@@ -43,6 +43,10 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
 		</tocitem>
 		<tocitem text="Examples" target="acr.examples" />
 	</tocitem>
+	<tocitem text="Kona" image="toplevelfolder">
+		<tocitem text="Template Page" target="template" />
+		<tocitem text="Sample Page" target="sample" />
+	</tocitem>
 <!-- ACR reference automatically added in here -->
 	
 </toc>

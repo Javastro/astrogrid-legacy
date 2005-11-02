@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<link rel="stylesheet" href="../astrodoc.css"/>
+
+<title>Solar Movie Maker Help</title>
+
+</head>
+<body>
+
+<h1>Solar Movie Maker Help</h1>
+<h3><em>Silvia Dalla, 03 Feb 2005</em></h3>
+
+<h2>Summary</h2>
+<p>
+This Astrogrid science service allows a user to make a movie of solar 
+images by means of a simple interface. It is available via the Workbench 
+on the Portal home page.
+</p>
+
+<p>
+Datasets are: 
+<ul>
+  <li>SOHO/EIT</li>
+  <li>TRACE</li>
+</ul>
+</p>
+
+<p>
+Currently the movie maker takes as input an instrument name and a time 
+interval for the movie.
+</p>
+
+<p>
+We plan to develop also an Event-based movie maker (See MovieMakerNext 
+for details).
+</p>
+
+<h2>How to run the Solar Movie Maker</h2> 
+
+<p>
+From the portal Home, launch the AstroGrid Dashboard and click on 
+<tt>User Interface</tt>. Click on <tt>Parameterised Workflow</tt> and 
+<tt>Run</tt>.
+</p>
+
+<center>
+<p>
+  <img src="Dashboard.gif" width="500" height="600" alt="AstroGrid Dashboard"/>
+</p>
+</center>
+
+<p>
+Type in login details (same as the ones used to log into the portal), 
+then choose the Solar Movie Maker (Time) template workflow. Now specify 
+your input parameters:
+</p>
+
+<h3>Input parameters</h3>
+
+<p>
+<ul>
+  <li>Instrument name: either 'trace' or 'eit'</li>
+  <li>Start date/time and end date/time (yyyy/mm/ddThh:mm:ss.000)</li>
+</ul>
+</p>
+
+<center>
+  <img src="MovieInput.gif" width="300" height="333" alt="Input dialog box"/>
+</center>
+
+<p>
+Click on <tt>Execute</tt>. This launches the workflow. You will be asked 
+if you want to save the workflow document - saving the document into 
+myspace allows to load the workflow inside the portal, to view it / modify it.
+</p>
+
+<p>
+The Job Monitor window opens: 
+</p>
+
+<center>
+<p>
+  <img src="Jobsmonitor.gif" width="730" height="350" alt="Jobs Monitor Window"/>
+</p>
+</center>
+
+<p>
+When the status of the job changes to 'COMPLETED' you can donwload 
+the output movie from myspace, from the votable directory. The name of 
+the output movie will depend on your input parameters, e.g. for the ones 
+in the picture above it will be: eit2002-07-28T01:00:00.000.mpg .
+</p>
+
+<h2>
+Usage Notes:
+</h2>
+
+<p>
+<ul>
+  <li>
+  Currently the source of TRACE data is the MSSL/SURF archive, which holds 
+  a subset of the complete TRACE archive. Therefore, depending on the input 
+  start/end times, in some cases no movie is produced and the workflow will 
+  terminate in 'ERROR'. We are in the process of linking with the RAL TRACE 
+  archive.
+  </li>
+  <li>     
+  TRACE data are archived in hourly files (also called 'tri' files). At 
+  present the movie maker produces TRACE movies of minimum duration 1 hour.
+  </li>
+</ul>
+</p>
+
+<h3>Main workflow steps</h3>
+
+<p>
+<ul>
+  <li>
+  Start and end time are written into a template query and the query is 
+  sent to the data centre.
+  </li>
+  <li>
+  Output of the query is sent to the AstroGrid SolarMovieMaker tool which 
+  downloads the files to MySpace and runs a set of SolarSoft mapping software 
+  routines that take the images and combine them into an mpeg movie.
+  </li>
+  <li>
+  Output mpeg is sent to user's myspace.
+  </li>
+</ul>
+</p>
+
+<h3>Workflow returns no movie if:</h3>
+<p>
+<ul>
+  <li>End time is before start time</li>
+  <li>Input start and end time would result in a huge movie</li>
+  <li>Query to instrument dataset returns no files</li>
+</ul>
+</p>
+</body>
+</html>
