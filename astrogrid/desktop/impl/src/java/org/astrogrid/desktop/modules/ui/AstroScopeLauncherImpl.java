@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.7 2005/11/02 09:50:11 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.8 2005/11/02 17:29:56 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -287,7 +287,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         this.executor.setMinimumPoolSize(5); // always have 5 threads ready to go.
         this.setSize(700, 700);  
         JPanel pane = getJContentPane();
-        pane.add(makeSearchPanel(),BorderLayout.WEST);
+        JPanel searchPanel = makeSearchPanel();
+        searchPanel.setMaximumSize(searchPanel.getSize());
+        pane.add(searchPanel,BorderLayout.WEST);
         pane.add(makeCenterPanel(),BorderLayout.CENTER);
         this.setContentPane(pane);
         this.setTitle("AstroScope");
@@ -705,17 +707,25 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         //JScrollPane listScrollPane = new JScrollPane(selectTextArea);
         //@todo replace this tree with a prefuse tree display.
         selectRootNode = new DefaultMutableTreeNode("Selected Data");
+        /*
+        DefaultMutableTreeNode testNode = new DefaultMutableTreeNode("This is a very long node name to see the scrollbar work");
+        DefaultMutableTreeNode testNode2 = new DefaultMutableTreeNode("Another long node; This is a very long node name to see the scrollbar work");
+        testNode.add(testNode2);
+        selectRootNode.add(testNode);
+        */
         treeModel = new DefaultTreeModel(selectRootNode);
         selectTree = new JTree(treeModel); 
         selectTree.setBackground(bottomPanel.getBackground());
-        JScrollPane listScrollPane = new JScrollPane(selectTree);
+        JScrollPane listScrollPane = new JScrollPane(selectTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);        
         wrapPanel.add(listScrollPane);
+        selectTree.setMaximumSize(selectTree.getSize());
         
+        //getPathForRow        
         JPanel southCenterPanel = new JPanel();
         dim2 = new Dimension(200,70);
         southCenterPanel.setMaximumSize(dim2);
-        southCenterPanel.setPreferredSize(dim2); 
-        
+        southCenterPanel.setPreferredSize(dim2);
+                
         /*
         selectAllButton = new JButton("Select All");
         selectAllButton.setEnabled(false);
@@ -734,15 +744,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         clearTreeButton = new JButton("Clear");
         clearTreeButton.setEnabled(false);
         clearTreeButton.addActionListener(this);
-        
-        
+                
         //southCenterPanel.add(selectAllButton);
         southCenterPanel.add(saveButton);
         //southCenterPanel.add(saveImageButton);
         southCenterPanel.add(clearTreeButton);
         wrapPanel.add(southCenterPanel);
         
-        
+        treeModel.reload();
+        wrapPanel.setPreferredSize(new Dimension(200,selectTree.getSize().height));
         return wrapPanel;
     }
 
@@ -2305,6 +2315,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.8  2005/11/02 17:29:56  KevinBenson
+fixed scrollpane
+
 Revision 1.7  2005/11/02 09:50:11  KevinBenson
 should have Noel's 2 minor fixes.  Plus a couple of additions for buttons and node selections
 
