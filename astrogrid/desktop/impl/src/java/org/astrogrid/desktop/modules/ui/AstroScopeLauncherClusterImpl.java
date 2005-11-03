@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherClusterImpl.java,v 1.1 2005/11/03 11:56:49 KevinBenson Exp $
+/*$Id: AstroScopeLauncherClusterImpl.java,v 1.2 2005/11/03 15:59:19 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -351,23 +351,26 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
                          URI finalURI;
                          DefaultMutableTreeNode dmTreeNode;
                          String []vals;
+                         TreeNodeData treeData;
                          for (Enumeration e = selectRootNode.children() ; e.hasMoreElements() ;) {
                              DefaultMutableTreeNode tn = (DefaultMutableTreeNode)e.nextElement();
                              if(tn.getChildCount() > 0) {
                                  for (depthEnum = selectRootNode.depthFirstEnumeration() ; depthEnum.hasMoreElements() ;) {
                                      dmTreeNode = (DefaultMutableTreeNode)depthEnum.nextElement();
                                      if(!dmTreeNode.isRoot()) {
-                                         TreeNodeData treeData = (TreeNodeData)dmTreeNode.getUserObject();
+                                         treeData = (TreeNodeData)dmTreeNode.getUserObject();
                                          if(treeData.getID() != null  && treeData.getID().trim().length() > 0) {
-                                             vals = treeData.getID().split("|");
+                                             vals = treeData.getID().split("\\|");
+                                             //System.out.println("vals length = " + vals.length + " and id = " + treeData.getID());
                                              for(int i = 0;i < vals.length;i++) {
+                                                 //System.out.println("id" + vals[i] + "for i = " + i + " and votable url = " + storageTable.get(vals[i]));
                                                  url = (URL)storageTable.get(vals[i]);
                                                  //TODO
                                                  //now copy into the selected directory
                                                  //be sure to add an actual filename to that directory.
                                                  //should be the name of treeData.toString() with special characters and spaces
                                                  //set to "_" or something valid.
-                                                 name = conformToMyspaceName(treeData.toString() + vals[i]);
+                                                 name = conformToMyspaceName("Votable_" + treeData.toString() + vals[i]);
                                                  finalURI = new URI(u.toString() + "/" + name);
                                                  
                                                  logger.debug("the url found = " + url);
@@ -390,11 +393,13 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
                                          nd = (Node)nodeIterator.next();
                                          key = nd.getAttribute("id");
                                          if(key != null && key.trim().length() > 0) {
-                                             vals = key.split("|");
-                                             for(int i = 0;i < vals.length;i++) {                                             
+                                             vals = key.split("\\|");
+                                             //System.out.println("vals length = " + vals.length + " and key = " + key);
+                                             for(int i = 0;i < vals.length;i++) {  
+                                                 //System.out.println("id" + vals[i] + "for i = " + i + " and votable url = " + storageTable.get(vals[i]));
                                                  url = (URL)storageTable.get(vals[i]);
                                                  //System.out.println("the url = " + url);
-                                                 name = conformToMyspaceName(nd.getAttribute("label"));
+                                                 name = conformToMyspaceName("Votable_" + nd.getAttribute("label"));
                                                  finalURI = new URI(u.toString() + "/" + name);
                                                  //myspace.copyURLToContent(url,finalURI);
                                                  if(finalURI.getScheme().startsWith("ivo")) {
@@ -412,7 +417,27 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
                                              //copyContentToURL
                                          }//if
                                      }//while
-                                 }                                 
+                                 }else {                                     
+                                     treeData = (TreeNodeData)tn.getUserObject();
+                                     if(treeData.getID() != null  && treeData.getID().trim().length() > 0) {
+                                         vals = treeData.getID().split("\\|");
+                                         //System.out.println("vals length = " + vals.length + " and id = " + treeData.getID());
+                                         for(int i = 0;i < vals.length;i++) {
+                                             //System.out.println("id" + vals[i] + "for i = " + i + " and votable url = " + storageTable.get(vals[i]));
+                                             url = (URL)storageTable.get(vals[i]);
+                                             name = conformToMyspaceName("Votable_" + treeData.toString() + vals[i]);
+                                             finalURI = new URI(u.toString() + "/" + name);
+                                             
+                                             logger.debug("the url found = " + url);
+                                             logger.debug("the finaluri = " + finalURI);
+                                             if(finalURI.getScheme().startsWith("ivo")) {
+                                                 myspace.copyURLToContent(url,finalURI);
+                                             }else {
+                                                 Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
+                                             }
+                                         }//for
+                                     }//if
+                                 }//else
                              }//else
                          }//for
                          return null;
@@ -471,16 +496,19 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
                     DefaultMutableTreeNode dmTreeNode;
                     Node nd;
                     String []vals;
+                    TreeNodeData treeData;
                     for (Enumeration e = selectRootNode.children() ; e.hasMoreElements() ;) {
                         DefaultMutableTreeNode tn = (DefaultMutableTreeNode)e.nextElement();
                         if(tn.getChildCount() > 0) {
                             for (depthEnum = selectRootNode.depthFirstEnumeration() ; depthEnum.hasMoreElements() ;) {
                                 dmTreeNode = (DefaultMutableTreeNode)depthEnum.nextElement();
                                 if(!dmTreeNode.isRoot()) {
-                                    TreeNodeData treeData = (TreeNodeData)dmTreeNode.getUserObject();
+                                    treeData = (TreeNodeData)dmTreeNode.getUserObject();
                                     if(treeData.getURL() != null  && treeData.getURL().trim().length() > 0) {
-                                        vals = treeData.getURL().split("|");
+                                        vals = treeData.getURL().split("\\|");
+                                        //System.out.println("vals length" + vals.length + "treedata urls = " + treeData.getURL());
                                         for(int i = 0;i < vals.length;i++) {
+                                            //System.out.println("url for images" + vals[i] + "for i = " + i);
                                             url = new URL(vals[i]);
                                             name = conformToMyspaceName(((DefaultMutableTreeNode)dmTreeNode.getParent()).getUserObject().toString());
                                             name += "_" + conformToMyspaceName(treeData.toString());
@@ -495,65 +523,74 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
                                             logger.debug("the url found = " + treeData.getURL());
                                         }
                                     }//if
-                                    if(treeData.getID() != null && dmTreeNode.getChildCount() == 0) {
-                                        //Darn they chosen just a offset "only".
-                                        //need to look through the nodes now.
-                                        nodeIterator = tree.getNodes(); 
-                                        while(nodeIterator.hasNext()) {                                            
-                                            nd = (Node)nodeIterator.next();
-                                            key = nd.getAttribute("id");
-                                            if(key != null && key.equals(treeData.getID())) {
-                                                //okay we found it id's matched go through the 
-                                                //neighbor nodes and see if there is a url attribute in which we 
-                                                //will start saving.                                                
-                                                nodeIterator = nd.getNeighbors();
-                                                while(nodeIterator.hasNext()) {
-                                                    nd = (Node)nodeIterator.next();
-                                                    if(nd.getAttribute("url") != null) {
-                                                        vals = nd.getAttribute("url").split("|");
-                                                        for(int i = 0;i < vals.length;i++) {                                                        
-                                                            url = new URL(vals[i]);
-                                                            name = conformToMyspaceName(treeData.toString() + "/" + nd.getAttribute("label"));
-                                                            randInc++;                                                        
-                                                            finalURI = new URI(u.toString() + "/" + name  + "-uniquenum_" + randInc);
-                                                            //myspace.copyURLToContent(url,finalURI);
-                                                            if(finalURI.getScheme().startsWith("ivo")) {
-                                                                myspace.copyURLToContent(url,finalURI);
-                                                            }else {
-                                                                  Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                                                            }
-                                                        }
-                                                    }//if
-                                                }//while
-                                            }//if
-                                        }//while
-                                    }//if
                                 }//if
                             }//for
                         }else {
-                            //they selected everything or sia or cone.
-                            //At the moment only SIA is available so it is the same as All.
-                            //Just grab all the url attributes and start saving.
-                            nodeIterator = tree.getNodes();                            
-                            while(nodeIterator.hasNext()) {
-                                nd = (Node)nodeIterator.next();
-                                key = nd.getAttribute("url");
-                                if(key != null && key.trim().length() > 0) {
-                                    url = new URL(key);
-                                    //all nodes with urls only have 1 neighbor which is the
-                                    //actual service so gets label as part of the name.
-                                    name = conformToMyspaceName(nd.getNeighbor(0).getAttribute("label"));
-                                    name += "_" + conformToMyspaceName(nd.getAttribute("label"));
-                                    randInc++;
-                                    finalURI = new URI(u.toString() + "/" + name  + "-uniquenum_" + randInc);
-                                    //myspace.copyURLToContent(url,finalURI);
-                                    if(finalURI.getScheme().startsWith("ivo")) {
-                                        myspace.copyURLToContent(url,finalURI);
-                                    }else {
-                                        Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                                    }                                    
+                            
+                            if(!tn.getUserObject().toString().equals("All")) {
+                                treeData = (TreeNodeData)tn.getUserObject();
+                                if(treeData.getID() != null) {
+                                    //Darn they chosen just a offset "only".
+                                    //need to look through the nodes now.
+                                    nodeIterator = tree.getNodes(); 
+                                    while(nodeIterator.hasNext()) {                                            
+                                        nd = (Node)nodeIterator.next();
+                                        key = nd.getAttribute("id");
+                                        if(key != null && key.equals(treeData.getID())) {
+                                            //okay we found it id's matched go through the 
+                                            //neighbor nodes and see if there is a url attribute in which we 
+                                            //will start saving.                                                
+                                            nodeIterator = nd.getNeighbors();
+                                            while(nodeIterator.hasNext()) {
+                                                nd = (Node)nodeIterator.next();
+                                                if(nd.getAttribute("url") != null) {
+                                                    vals = nd.getAttribute("url").split("\\|");
+                                                    //System.out.println("vals length" + vals.length + "treedata urls = " + nd.getAttribute("url"));
+                                                    for(int i = 0;i < vals.length;i++) { 
+                                                        //System.out.println("url for images" + vals[i] + "for i = " + i);
+                                                        url = new URL(vals[i]);
+                                                        name = conformToMyspaceName(treeData.toString() + "/" + nd.getAttribute("label"));
+                                                        randInc++;                                                        
+                                                        finalURI = new URI(u.toString() + "/" + name  + "-uniquenum_" + randInc);
+                                                        //myspace.copyURLToContent(url,finalURI);
+                                                        if(finalURI.getScheme().startsWith("ivo")) {
+                                                            myspace.copyURLToContent(url,finalURI);
+                                                        }else {
+                                                              Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
+                                                        }
+                                                    }
+                                                }//if
+                                            }//while
+                                        }//if
+                                    }//while
                                 }//if
-                            }//while                            
+                            }else {                           
+                                nodeIterator = tree.getNodes();                            
+                                while(nodeIterator.hasNext()) {
+                                    nd = (Node)nodeIterator.next();
+                                    key = nd.getAttribute("url");
+                                    if(key != null && key.trim().length() > 0) {
+                                        vals = key.split("\\|");
+                                        //System.out.println("vals length" + vals.length + "treedata urls = " + nd.getAttribute("url"));
+                                        for(int i = 0;i < vals.length;i++) { 
+                                            //System.out.println("url for images" + vals[i] + "for i = " + i);                                            
+                                            url = new URL(vals[i]);                                        
+                                            //all nodes with urls only have 1 neighbor which is the
+                                            //actual service so gets label as part of the name.
+                                            name = conformToMyspaceName(nd.getNeighbor(0).getAttribute("label"));
+                                            name += "_" + conformToMyspaceName(nd.getAttribute("label"));
+                                            randInc++;
+                                            finalURI = new URI(u.toString() + "/" + name  + "-uniquenum_" + randInc);
+                                            //myspace.copyURLToContent(url,finalURI);
+                                            if(finalURI.getScheme().startsWith("ivo")) {
+                                                myspace.copyURLToContent(url,finalURI);
+                                            }else {
+                                                Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
+                                            }
+                                        }//for
+                                    }//if
+                                }//while
+                            }//else
                         }//else
                     }//for
                     return null;
@@ -1365,23 +1402,26 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
            return display;
     }
 
-    // refresh display when new item added
-    public void nodeAdded(Graph arg0, Node arg1) {
-        /*
-        String offset = arg1.getAttribute("offset");
-        System.out.println("in nodeadded offset = " + offset + " and label = " + arg1.getAttribute("label"));
-        if(offset != null) {
-            NodeItem ni = getItemRegistry().getNodeItem(arg1);
-            if(ni == null) {
-                System.out.println("darn it is null the ni");
-            }else {
-                System.out.println("setting sizes orig = " + ni.getSize() + " adding = " + (360/Double.parseDouble(offset)));
-                ni.setSize(ni.getSize() + (360/Double.parseDouble(offset)));
-            }
+        // refresh display when new item added
+        public void nodeAdded(Graph arg0, Node arg1) {
+         
+            /*
+            String offset = arg1.getAttribute("offset");
+            System.out.println("in nodeadded offset = " + offset + " and label = " + arg1.getAttribute("label"));
+            if(offset != null) {
+                NodeItem ni = getItemRegistry().getNodeItem(arg1);
+                if(ni == null) {
+                    System.out.println("darn it is null the ni");
+                }else {
+                    System.out.println("setting sizes orig = " + ni.getSize() + " adding = " + (360/Double.parseDouble(offset)));
+                    ni.setSize(ni.getSize() + (360/Double.parseDouble(offset)));
+                }
+            } 
+            */
+        
+            
+            graphLayout.runNow();
         }
-        */
-        graphLayout.runNow();
-    }
     } /// end windowed radial vizualization
     
     
@@ -1971,7 +2011,10 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
                             DefaultTreeNode offsetNode = new DefaultTreeNode();
                             offsetNode.setAttribute("label",offsetVal);
                             offsetNode.setAttribute("offset",offsetVal);
-                            //offsetNode.setSize(offsetNode.getSize() + (360/offset));
+                            if(riNode.getAttribute("id") != null) {
+                                offsetNode.setAttribute("id",riNode.getAttribute("id"));
+                            }
+                            //((NodeItem)offsetNode).setSize(offsetNode.getSize() + (360/offset));
                             
                             getTree().addChild(new DefaultEdge(rootNode,offsetNode));
                             
@@ -1985,8 +2028,10 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
                                 tempAttr = discoverNode.getAttribute("id");
                                 if(tempAttr == null)
                                     tempAttr = riNode.getAttribute("id");
-                                else
-                                    tempAttr += "|" + riNode.getAttribute("id");
+                                else {
+                                    if(!tempAttr.endsWith(riNode.getAttribute("id")))
+                                        tempAttr += "|" + riNode.getAttribute("id");
+                                }
                                 discoverNode.setAttribute("id",tempAttr);
                             }
                             TreeNode checkNode = findNode(rowRa + "," + rowDec, discoverNode);
@@ -2391,6 +2436,9 @@ public class AstroScopeLauncherClusterImpl extends UIComponent implements AstroS
 
 /* 
 $Log: AstroScopeLauncherClusterImpl.java,v $
+Revision 1.2  2005/11/03 15:59:19  KevinBenson
+small changes for tying this cluster stuff with myspace
+
 Revision 1.1  2005/11/03 11:56:49  KevinBenson
 added a new astroscope cluster
 
