@@ -1,4 +1,4 @@
-/*$Id: ResourceInformationBuilder.java,v 1.2 2005/10/18 16:53:34 nw Exp $
+/*$Id: ResourceInformationBuilder.java,v 1.3 2005/11/04 10:14:26 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,6 +65,7 @@ public class ResourceInformationBuilder implements InformationBuilder {
                 ,findName(xpath, element)
                 ,findDescription(xpath, element)
                 ,findAccessURL(xpath, element)
+                ,findLogo(xpath,element)
                 );
         } catch (TransformerException e) {
             throw new ServiceException(e);
@@ -85,6 +86,16 @@ public class ResourceInformationBuilder implements InformationBuilder {
             accessURL = null;
         }
         return accessURL;
+    }
+    
+    protected final URL findLogo(CachedXPathAPI xpath, Element element) throws TransformerException {
+        URL logo;
+        try {
+            logo = new URL(xpath.eval(element,"vr:curation/vr:creator/vr:logo",nsNode).str());
+        } catch (MalformedURLException e) {
+            logo = null;
+        }
+        return logo;            
     }
 
     /**
@@ -127,6 +138,10 @@ public class ResourceInformationBuilder implements InformationBuilder {
 
 /* 
 $Log: ResourceInformationBuilder.java,v $
+Revision 1.3  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.2  2005/10/18 16:53:34  nw
 refactored common functionality.
 added builders for siap and cone.

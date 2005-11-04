@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.9 2005/11/03 11:56:49 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.10 2005/11/04 10:14:26 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,9 +84,11 @@ import edu.berkeley.guir.prefuse.graph.event.GraphEventAdapter;
 import edu.berkeley.guir.prefuse.render.DefaultEdgeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultNodeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultRendererFactory;
+import edu.berkeley.guir.prefuse.render.ImageFactory;
 import edu.berkeley.guir.prefuse.render.Renderer;
 import edu.berkeley.guir.prefuse.render.RendererFactory;
 import edu.berkeley.guir.prefuse.render.ShapeRenderer;
+import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 import edu.berkeley.guir.prefuse.render.TextItemRenderer;
 import edu.berkeley.guir.prefuse.render.NullRenderer;
 import edu.berkeley.guir.prefuse.util.ColorLib;
@@ -268,9 +270,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         // configure vizualizations.
         vizualizations = new Vizualization[]{
                 new WindowedRadial()
-                , new FisheyeWindowedRadial()
+               // , new FisheyeWindowedRadial()
                 , new Hyperbolic()
-                , new Balloon()
+              //  , new Balloon()
        //         ,new TreeMap() //-- seems to throw exceptions.
               // ,new ZoomPan()// - dodgy and ugly
              , new ConventionalTree()  // not working yet.
@@ -797,8 +799,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             coneNode.setAttribute("ra","0");
             coneNode.setAttribute("dec","0");
             
-            rootNode.addChild(new DefaultEdge(rootNode,siaNode));
-            rootNode.addChild(new DefaultEdge(rootNode,coneNode));
+            DefaultEdge siaEdge = new DefaultEdge(rootNode,siaNode);
+            siaEdge.setAttribute("weight","3");
+            rootNode.addChild(siaEdge);
+            DefaultEdge coneEdge = new DefaultEdge(rootNode,coneNode);
+            coneEdge.setAttribute("weight","3");
+            rootNode.addChild(coneEdge);
+            
                
             tree = new DefaultTree(rootNode);            
         }
@@ -843,12 +850,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             itemRegistry = new ItemRegistry(getTree());
             itemRegistry.getFocusManager().putFocusSet(FocusManager.SELECTION_KEY,getSelectionFocusSet());
             
-            TextItemRenderer nodeRenderer = new TextItemRenderer();
+            TextImageItemRenderer nodeRenderer = new TextImageItemRenderer();
             nodeRenderer.setMaxTextWidth(75);
             nodeRenderer.setRoundedCorner(8,8);
             nodeRenderer.setTextAttributeName("label");
-            
-            Renderer edgeRenderer = new DefaultEdgeRenderer();
+            nodeRenderer.setImageAttributeName("logo");
+            nodeRenderer.setMaxImageDimensions(50,50);
+            nodeRenderer.setAbbrevType(StringAbbreviator.FILE);                   
+            DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer();
+            edgeRenderer.setWeightAttributeName("weight");
+            edgeRenderer.setWeightType(DefaultEdgeRenderer.WEIGHT_TYPE_LINEAR);
             itemRegistry.setRendererFactory(new DefaultRendererFactory(nodeRenderer, edgeRenderer));            
         }
         return itemRegistry;
@@ -1782,15 +1793,20 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 storageTable.put("Images-" + information.getId().toString(),siapURL);                            
                 final TreeNode riNode = new DefaultTreeNode();
                 riNode.setAttribute("label",information.getTitle());
+                riNode.setAttribute("weight","2");
                 riNode.setAttribute("id", "Images-" + information.getId());
                 riNode.setAttribute("ra","0");
                 riNode.setAttribute("dec","0");
+                if (information.getLogoURL() != null) {
+                    System.err.println("Found an image !!");
+                    riNode.setAttribute("logo",information.getLogoURL().toString());
+                }
                 StringBuffer sb = new StringBuffer();
-                sb.append("<html><p>Title: ").append(information.getTitle())
+                sb.append("<html>Title: ").append(information.getTitle())
                     .append("<br>ID: ").append(information.getId())
-                    .append("<br>Description: ").append(information.getDescription())                
-                    .append("<br>Service Type: ").append(information.getImageServiceType())
-                    .append("</p></html>");                        
+                    .append("<br>Description: <p>").append(information.getDescription())                
+                    .append("</p><br>Service Type: ").append(information.getImageServiceType())
+                    .append("</html>");                        
                 riNode.setAttribute("tooltip",sb.toString());
                 // build subtree for this service
                 buildNodes(top, riNode);
@@ -1800,7 +1816,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         AstroScopeLauncherImpl.this.setStatusMessage("Adding results from " + information.getName());
-                        getTree().addChild(new DefaultEdge(siaNode,riNode));                        
+                        DefaultEdge siaEdge = new DefaultEdge(siaNode,riNode);
+                        siaEdge.setAttribute("weight","2");
+                        getTree().addChild(siaEdge);                                               
                     }
                 });  
                 }
@@ -1826,18 +1844,21 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 VOElement top = new VOElementFactory().makeVOElement( coneURL);            
                 storageTable.put("Catalogs-" + information.getId().toString(),coneURL);
                 final TreeNode riNode = new DefaultTreeNode();
-                riNode.setAttribute("label",information.getTitle());
+                riNode.setAttribute("label",information.getTitle());              
                 riNode.setAttribute("id", "Catalogs-" + information.getId());
                 riNode.setAttribute("ra","0"); // dummies for the plot viualization.
-                riNode.setAttribute("dec","0");                
+                riNode.setAttribute("dec","0");     
+                if (information.getLogoURL() != null) {
+                    System.out.println("found an image!!");
+                    riNode.setAttribute("logo",information.getLogoURL().toString());
+                }
                 StringBuffer sb = new StringBuffer();
-                sb.append("<html><p>Title: ").append(information.getTitle())
+                sb.append("<html>Title: ").append(information.getTitle())
                     .append("<br>ID: ").append(information.getId())
-                    .append("<br>Description: ").append(information.getDescription())
+                    .append("<br>Description: <p>").append(information.getDescription())
                     .append("</p></html>");                        
                 riNode.setAttribute("tooltip",sb.toString());
-                
-                
+                                
                 buildNodes(top, riNode);
                 // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
                 // concurrent modification exceptions
@@ -1845,7 +1866,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         AstroScopeLauncherImpl.this.setStatusMessage("Adding results from " + information.getName());
-                        getTree().addChild(new DefaultEdge(coneNode,riNode));
+                        DefaultEdge coneEdge = new DefaultEdge(coneNode,riNode);
+                        coneEdge.setAttribute("weight","2");
+                        getTree().addChild(coneEdge);
                      }
                 });
                 }
@@ -2318,6 +2341,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.10  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.9  2005/11/03 11:56:49  KevinBenson
 added a new astroscope cluster
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryRpcSystemTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: RegistryRpcSystemTest.java,v 1.3 2005/11/04 10:14:26 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -125,10 +125,12 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
      */
     private ResourceInformation createResourceInformation(Map m) throws URISyntaxException, MalformedURLException {
         URL url = m.containsKey("accessURL") ? new URL((String)m.get("accessURL")) : null;
+        URL logo = m.containsKey("logoURL") ? new URL((String)m.get("logoURL")): null;
         return new ResourceInformation(new URI((String)m.get("id"))
                 ,(String)m.get("title")
                 ,(String)m.get("description")
                 ,url
+                ,logo
                 );
     }
     /**
@@ -224,6 +226,10 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
 
 /* 
 $Log: RegistryRpcSystemTest.java,v $
+Revision 1.3  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

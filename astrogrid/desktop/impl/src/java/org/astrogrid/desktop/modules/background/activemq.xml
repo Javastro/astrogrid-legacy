@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC  "-//ACTIVEMQ//DTD//EN" "http://activemq.org/dtd/activemq.dtd">
+<beans>
+  <!-- ==================================================================== -->
+  <!-- ActiveMQ Broker Configuration -->
+  <!-- ==================================================================== -->
+  <broker>
+    <connector>
+		<serverTransport uri="tcp://localhost:1667">
+			<wireFormat class=""  >
+			</wireFormat>
+			</serverTransport>
+    </connector>
+
+    <!-- to enable Stomp support uncomment this
+    <connector>
+      <serverTransport uri="stomp://localhost:61626"/>
+    </connector>
+    -->
+	<!--
+   <networkConnector >
+	<networkChannel uri="tcp://localhost:1666" />
+   </networkConnector>
+-->
+    <persistence>
+		<vmPersistence />
+    </persistence>
+  </broker>
+
+</beans>

@@ -13,7 +13,20 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	
+	<release version="1.3-alpha-2" date="2005-11-3">
+		<action dev="nw" type="add">
+			Application launcher supports cone and siap
+		</action>
+		<action dev="pjn" type="fix">
+			improvements to worklow builder and application launcher ui
+		</action>
+		<action dev="kmb" type="fix">
+			improvements to astroscope
+		</action>
+		<action dev="kmb" type="add">
+			alternative, clustering astroscope implementation
+		</action>
+	</release>
 	<release version="1.3-alpha-1" date="2005-10-27">
 		<action dev="nw" type="add" issue="1389">
 			Local CEA server (for siap and cone) messages workbench of execution progress.

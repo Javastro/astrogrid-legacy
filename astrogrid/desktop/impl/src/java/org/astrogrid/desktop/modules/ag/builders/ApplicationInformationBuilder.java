@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformationBuilder.java,v 1.4 2005/10/18 16:53:34 nw Exp $
+/*$Id: ApplicationInformationBuilder.java,v 1.5 2005/11/04 10:14:26 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,6 +77,7 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
                 ,parameters
                 ,interfaces
                 ,findAccessURL(xpath,element)
+                ,findLogo(xpath,element)
                 );
         } catch (TransformerException e) {
             throw new ServiceException(e);
@@ -149,6 +150,10 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ApplicationInformationBuilder.java,v $
+Revision 1.5  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.4  2005/10/18 16:53:34  nw
 refactored common functionality.
 added builders for siap and cone.

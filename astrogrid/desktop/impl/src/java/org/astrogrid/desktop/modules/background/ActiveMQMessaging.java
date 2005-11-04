@@ -1,4 +1,4 @@
-/*$Id: ActiveMQMessaging.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: ActiveMQMessaging.java,v 1.2 2005/11/04 10:14:26 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,11 +23,29 @@ import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.Configuration;
 
 import org.activemq.ActiveMQConnectionFactory;
+import org.activemq.broker.BrokerContainer;
+import org.activemq.broker.impl.BrokerConnectorImpl;
 import org.activemq.broker.impl.BrokerContainerFactoryImpl;
+import org.activemq.broker.impl.BrokerContainerImpl;
+import org.activemq.io.TextWireFormat;
+import org.activemq.io.WireFormat;
+import org.activemq.message.AbstractPacket;
 import org.activemq.message.ActiveMQQueue;
 import org.activemq.message.ActiveMQTopic;
 import org.activemq.store.vm.VMPersistenceAdapter;
+import org.activemq.transport.NetworkChannel;
+import org.activemq.transport.NetworkConnector;
+import org.activemq.transport.TransportChannel;
+import org.activemq.transport.TransportServerChannel;
+import org.activemq.transport.TransportServerChannelProvider;
+import org.activemq.transport.http.HttpClientTransportChannel;
+import org.activemq.transport.jabber.JabberWireFormat;
+import org.activemq.transport.xstream.XStreamWireFormat;
 import org.picocontainer.Startable;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
+import com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider;
 
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
@@ -39,8 +57,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -73,18 +95,48 @@ public class ActiveMQMessaging implements MessagingInternal, Startable , UserLog
 
     /** Construct a new ActiveMQMessaging
      * @throws JMSException
+     * @throws URISyntaxException
      * 
      */
-    public ActiveMQMessaging(Community comm, Configuration conf) throws JMSException {
+    public ActiveMQMessaging(Community comm, Configuration conf) throws JMSException, URISyntaxException {
         super();
         this.comm=comm;
         comm.addUserLoginListener(this);
         this.conf = conf;
-        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory();
-        factory.setUseEmbeddedBroker(true);
-        factory.setBrokerContainerFactory(new BrokerContainerFactoryImpl(new VMPersistenceAdapter())); 
-        factory.setBrokerURL("vm://localhost"); 
+        // ncessary to configure programmatically, as don't have spring on classpath to use xml
+        // anyhow, want to be able to adjust the remote endpoint based on config - so an xml file is no good
+        BrokerContainerImpl broker = new BrokerContainerImpl("workbench-broker",new VMPersistenceAdapter());
+        
+        // happy just with the default in-vm one.
+        List transportConnectorList = new ArrayList();
+        /*
+        WireFormat wf = new JabberWireFormat();
+        TransportServerChannel transportServerChannel = TransportServerChannelProvider.newInstance(wf,
+                "reliable://http://localhost:8080");
+        BrokerConnectorImpl brokerConnector = new BrokerConnectorImpl(broker,transportServerChannel );
+        transportConnectorList.add(brokerConnector);
+        */       
+        broker.setTransportConnectors(transportConnectorList);
+        
+        List networkConnectorList = new ArrayList();
+        NetworkConnector networkConnector= new NetworkConnector(broker);
+        /*
+        NetworkChannel channel = networkConnector.addNetworkChannel("http://localhost:8080");
+        channel.setReconnectSleepTime(60000); // minute
+        channel.setDemandBasedForwarding(true);
+        */
+        // get different behaviour if we say
+       // NetworkChannel channel = new NetworkChannel(networkConnector,broker,"http://localhost:8080");
+       // networkConnector.addNetworkChannel(channel);
+       // channel.getLocalPrefetchPolicy().
+       // networkConnectorList.add(networkConnector);
+        
+        
+        broker.setNetworkConnectors(networkConnectorList);
+        broker.start();
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(broker,"vm://workbench-broker");
         factory.start();
+
         connection = factory.createConnection();
         connection.setExceptionListener(this);
         listenerSession = createSession();
@@ -96,6 +148,7 @@ public class ActiveMQMessaging implements MessagingInternal, Startable , UserLog
         reportingQueue = q;
         reporter = new Thread(new ReportingTask(q),"Reporter");
     }
+
     private final Connection connection;
     private final Community comm;
     private final Session listenerSession;
@@ -115,15 +168,13 @@ public class ActiveMQMessaging implements MessagingInternal, Startable , UserLog
     private  class ReportingTask implements Runnable {
         public ReportingTask(Takable q) throws JMSException {
             this.q = q;
-            Destination trackingTopic = new ActiveMQQueue(TRACKING_TOPIC_NAME);        
-            Destination errorQueue = new ActiveMQQueue(ERROR_TOPIC_NAME);                
-            Session reportingSession =  connection.createSession(false,Session.DUPS_OK_ACKNOWLEDGE);
-            reportingProducer = reportingSession.createProducer(trackingTopic);
-            reportingProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT); // assume something is there to catch the messages
-            reportingProducer.setDisableMessageID(true);
-            reportingProducer.setPriority(0);
+            reportingSession =  connection.createSession(false,Session.AUTO_ACKNOWLEDGE); //DUPS_OK_ACKNOWLEDGE);
+            reportingProducer = reportingSession.createProducer(new ActiveMQQueue(TRACKING_TOPIC_NAME));
+       //     reportingProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT); // assume something is there to catch the messages
+        //    reportingProducer.setDisableMessageID(true);
+        //    reportingProducer.setPriority(0);
             
-            errorProducer = reportingSession.createProducer(errorQueue);
+            errorProducer = reportingSession.createProducer(new ActiveMQQueue(ERROR_TOPIC_NAME));
             errorProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT); // assume something is there to catch the messages
             errorProducer.setDisableMessageID(true);
             errorProducer.setPriority(0);
@@ -131,6 +182,7 @@ public class ActiveMQMessaging implements MessagingInternal, Startable , UserLog
             errorMessage = reportingSession.createMapMessage();
             reportingMessage = reportingSession.createMapMessage();
         }
+        private final             Session reportingSession;
         private final MapMessage errorMessage;
         private final MapMessage reportingMessage;
         private final MessageProducer reportingProducer;   
@@ -158,7 +210,7 @@ public class ActiveMQMessaging implements MessagingInternal, Startable , UserLog
                      reportingMessage.setString("method",mi.getMethod().getName());
                      reportingMessage.setString("args",ArrayUtils.toString( mi.getArguments()));
                     reportingProducer.send(reportingMessage);
-                    System.err.println(reportingMessage);
+                    System.err.println("Method invocation: " + reportingMessage);
                 } else if (o instanceof Exception) { // send error messaage
                     Exception e = (Exception)o;
                     o = q.take(); // expect another 
@@ -302,7 +354,7 @@ public class ActiveMQMessaging implements MessagingInternal, Startable , UserLog
     public void start() {
         try {
         connection.start();
-        reporter.start();
+        reporter.start();                
         } catch (JMSException e) {
             logger.fatal("Failed to start messaging",e);
         }      
@@ -365,6 +417,10 @@ public class ActiveMQMessaging implements MessagingInternal, Startable , UserLog
 
 /* 
 $Log: ActiveMQMessaging.java,v $
+Revision 1.2  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  

@@ -1,4 +1,4 @@
-/*$Id: ConeInformationBuilder.java,v 1.1 2005/10/18 16:53:34 nw Exp $
+/*$Id: ConeInformationBuilder.java,v 1.2 2005/11/04 10:14:26 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,6 +82,7 @@ public class ConeInformationBuilder extends ResourceInformationBuilder {
                 ,findName(xpath,element)
                 ,findDescription(xpath,element)
                 ,findAccessURL(xpath,element)
+                ,findLogo(xpath,element)
                 ,maxSR
                 ,maxRecords
                 ,verbosity
@@ -96,6 +97,10 @@ public class ConeInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ConeInformationBuilder.java,v $
+Revision 1.2  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.1  2005/10/18 16:53:34  nw
 refactored common functionality.
 added builders for siap and cone.

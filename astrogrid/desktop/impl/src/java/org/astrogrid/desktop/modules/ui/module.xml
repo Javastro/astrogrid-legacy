@@ -52,7 +52,6 @@
 		</method>
 	</component>	
 
-<!--
 
 		<component name="astroscopecluster" 
 		implementationClass="org.astrogrid.desktop.modules.ui.AstroScopeLauncherClusterImpl" 
@@ -80,7 +79,6 @@
 			</property>
 		</method>
 	</component>	
--->
 
 	<component name="datascopeLauncher" 
 		implementationClass="org.astrogrid.desktop.modules.ui.DataScopeLauncherImpl" 

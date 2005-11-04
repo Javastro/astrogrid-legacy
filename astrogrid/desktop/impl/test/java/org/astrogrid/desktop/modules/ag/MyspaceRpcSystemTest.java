@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcSystemTest.java,v 1.6 2005/10/13 18:33:47 nw Exp $
+/*$Id: MyspaceRpcSystemTest.java,v 1.7 2005/11/04 10:14:26 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -330,10 +330,12 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
            ResourceInformation[] result = new ResourceInformation[l.size()];
            for (int i = 0; i < l.size(); i++) {
                Map m = (Map)l.get(i);
+               URL logo = m.containsKey("logoURL") ? new URL((String)m.get("logoURL")): null;             
                result[i] =new ResourceInformation(new URI((String)m.get("id"))
                        ,(String)m.get("title")
                        ,(String)m.get("description")
                        ,new URL((String)m.get("accessURL"))
+                       ,logo
                        );
            }
            return result;
@@ -416,6 +418,10 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
 
 /* 
 $Log: MyspaceRpcSystemTest.java,v $
+Revision 1.7  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.6  2005/10/13 18:33:47  nw
 fixes supporting getWriteContentURL
 

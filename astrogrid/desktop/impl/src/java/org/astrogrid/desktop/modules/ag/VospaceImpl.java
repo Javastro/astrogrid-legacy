@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.7 2005/10/14 14:20:41 nw Exp $
+/*$Id: VospaceImpl.java,v 1.8 2005/11/04 10:14:26 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -802,7 +802,7 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
         arr =RegistryDelegateFactory.createQuery().getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
         ResourceInformation[] result = new ResourceInformation[arr.length];
         for (int i = 0; i < arr.length; i++) {
-            result[i] = new ResourceInformation(new URI(arr[i].getIvorn().toString()),arr[i].getTitle(),arr[i].getDescription(),arr[i].getAccessURL());
+            result[i] = new ResourceInformation(new URI(arr[i].getIvorn().toString()),arr[i].getTitle(),arr[i].getDescription(),arr[i].getAccessURL(),null);//@todo add in logo here.
         }
         return result;        
     } catch (RegistryException e) {
@@ -918,6 +918,10 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.8  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.7  2005/10/14 14:20:41  nw
 work around for problems with FileStoreOutputStream
 

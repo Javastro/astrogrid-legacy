@@ -1,4 +1,4 @@
-/*$Id: ApplicationsRpcSystemTest.java,v 1.4 2005/10/18 16:52:31 nw Exp $
+/*$Id: ApplicationsRpcSystemTest.java,v 1.5 2005/11/04 10:14:26 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -86,16 +87,20 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
         try {
             Map parameters = createParameters((Map)m.get("parameters"));
             InterfaceBean[] interfaces = createInterfaces((List)m.get("interfaces"));
+            URL logo = m.containsKey("logoURL") ? new URL((String)m.get("logoURL")): null;            
             return new ApplicationInformation (
                     new URI((String)m.get("id"))
                     ,(String)m.get("name")
                     ,(String)m.get("description")
                     ,parameters
                     ,interfaces
+                    ,null
+                    ,logo
                     );
         } catch (URISyntaxException e) {
             throw new ServiceException(e);
-
+        } catch (MalformedURLException e) {
+            throw new ServiceException(e);            
         }        
         }
     private Map createParameters(Map m)  {
@@ -286,10 +291,12 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
             ResourceInformation[] result = new ResourceInformation[l.size()];
             for (int i = 0; i < l.size(); i++) {
                 Map m = ((Map)l.get(i));
+                URL logo = m.containsKey("logoURL") ? new URL((String)m.get("logoURL")): null;                
                 result[i] =  new ResourceInformation(new URI((String)m.get("id"))
                         ,(String)m.get("title")
                         ,(String)m.get("description")
                         ,new URL((String)m.get("accessURL"))        
+                        ,logo
                         );
             }
             return result;
@@ -446,6 +453,10 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
 
 /* 
 $Log: ApplicationsRpcSystemTest.java,v $
+Revision 1.5  2005/11/04 10:14:26  nw
+added 'logo' attribute to registry beans.
+added to astroscope so that logo is displayed if present
+
 Revision 1.4  2005/10/18 16:52:31  nw
 deprecated a badly-named method
 
