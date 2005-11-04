@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.10 2005/11/04 10:14:26 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.11 2005/11/04 14:09:12 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,10 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.SiapInformation;
@@ -25,9 +27,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.io.Piper;
 
 import org.apache.commons.logging.Log;
@@ -51,7 +51,6 @@ import edu.berkeley.guir.prefuse.FocusManager;
 import edu.berkeley.guir.prefuse.ItemRegistry;
 import edu.berkeley.guir.prefuse.NodeItem;
 import edu.berkeley.guir.prefuse.VisualItem;
-import edu.berkeley.guir.prefuse.activity.ActivityMap;
 import edu.berkeley.guir.prefuse.action.ActionMap;
 import edu.berkeley.guir.prefuse.action.ActionSwitch;
 import edu.berkeley.guir.prefuse.action.RepaintAction;
@@ -65,8 +64,10 @@ import edu.berkeley.guir.prefuse.action.filter.GraphFilter;
 import edu.berkeley.guir.prefuse.action.filter.TreeFilter;
 import edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter;
 import edu.berkeley.guir.prefuse.activity.ActionList;
+import edu.berkeley.guir.prefuse.activity.ActivityMap;
 import edu.berkeley.guir.prefuse.activity.SlowInSlowOutPacer;
 import edu.berkeley.guir.prefuse.collections.DOIItemComparator;
+import edu.berkeley.guir.prefuse.event.ControlAdapter;
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.DefaultFocusSet;
@@ -74,23 +75,27 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTree;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
-import edu.berkeley.guir.prefuse.graph.Edge;
 import edu.berkeley.guir.prefuse.graph.Entity;
 import edu.berkeley.guir.prefuse.graph.Graph;
 import edu.berkeley.guir.prefuse.graph.Node;
 import edu.berkeley.guir.prefuse.graph.Tree;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 import edu.berkeley.guir.prefuse.graph.event.GraphEventAdapter;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTranslation;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTranslationEnd;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTreeLayout;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTreeMapper;
+import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicVisibilityFilter;
 import edu.berkeley.guir.prefuse.render.DefaultEdgeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultNodeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultRendererFactory;
 import edu.berkeley.guir.prefuse.render.ImageFactory;
+import edu.berkeley.guir.prefuse.render.NullRenderer;
 import edu.berkeley.guir.prefuse.render.Renderer;
 import edu.berkeley.guir.prefuse.render.RendererFactory;
 import edu.berkeley.guir.prefuse.render.ShapeRenderer;
 import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 import edu.berkeley.guir.prefuse.render.TextItemRenderer;
-import edu.berkeley.guir.prefuse.render.NullRenderer;
 import edu.berkeley.guir.prefuse.util.ColorLib;
 import edu.berkeley.guir.prefuse.util.ColorMap;
 import edu.berkeley.guir.prefuse.util.StringAbbreviator;
@@ -116,27 +121,21 @@ import edu.berkeley.guir.prefusex.layout.IndentedTreeLayout;
 import edu.berkeley.guir.prefusex.layout.RadialTreeLayout;
 import edu.berkeley.guir.prefusex.layout.ScatterplotLayout;
 import edu.berkeley.guir.prefusex.layout.SquarifiedTreeMapLayout;
-import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTranslation;
-import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTreeMapper;
-import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTreeLayout;
-import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicVisibilityFilter;
-import edu.berkeley.guir.prefuse.hyperbolictree.HyperbolicTranslationEnd;
-import edu.berkeley.guir.prefuse.event.ControlAdapter;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.awt.Cursor;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -146,8 +145,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
-import java.io.File;
-import java.io.FileOutputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -172,9 +169,7 @@ import javax.swing.tree.TreePath;
  * 
  * @todo replace JTree with prefuse Display of selection site? - and vizual clue to selected items in viz(color, or something). 
  * @todo debug and refine vizualizaitons.
- * @todo display thumbnails - there's a TextImageNodeRenderer thingie that sounds the job for this. most responses from siap services have the 
- * same coords anyhow - so a thumbnail would be better.
- * @todo saving of results.
+ * @todo display thumbnails of images
   # @todo fix selecton - as the moment the selection model doesn't seem to be doing anything - maye go back to AstroScopeMultiSelectionControl
  */
 public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLauncher, ActionListener {
@@ -580,23 +575,26 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * @return
      */
     private String getPosition() {
-        String pos = posText.getText().trim();
-        try {
-            return getPosition(pos);
-        }catch(IllegalArgumentException iae) {
-            return getPosition(getPositionFromObject());  
-        }
+        String pos = posText.getText().trim();       
+            String result =  getPosition(pos);
+            if (result == null) {
+                return getPosition(getPositionFromObject());
+            } else {
+                return result;
+            }
     }
     
-    private String getPosition(String pos) throws IllegalArgumentException {
+    // better to return null if we're just going to catch it straght away.
+    private String getPosition(String pos)  {
         if(pos == null || pos.trim().length() == 0) {
-            throw new IllegalArgumentException("No position given");
+            return null;
         }
         String expression = "-?\\d+\\.?\\d*,-?\\d+\\.?\\d*";
         if(pos.matches(expression)) {            
             return pos;            
+        } else {
+            return null;
         }
-        throw new IllegalArgumentException("No position found at the moment, expression did not match");
     }
     
     private String getPositionFromObject() {
@@ -832,35 +830,50 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      *
      */
     
+    private ImageFactory imageFactory;
+    //shared instance - used in both vizualizations.
+    private ImageFactory getImageFactory() {
+        if (imageFactory == null) {
+            imageFactory = new ImageFactory(75,75); // small thumbnails.
+            
+        }
+        return imageFactory;
+    }
+    
     private abstract class Vizualization extends GraphEventAdapter {
         public Vizualization(String name) {
-            this.name = name;
+            this.name = name;           
         }
         public final String getName() {
             return name;
         }
         final private String name;
     private ItemRegistry itemRegistry;
-    /** creates the default registry 
-     * 
-     * pre-initializes a selection called 'selection'
-     * */
+   /** create default node renderer */
+    private TextImageItemRenderer nodeRenderer;
+    protected final TextImageItemRenderer getTextRenderer() {
+        if (nodeRenderer == null) {
+            nodeRenderer = new TextImageItemRenderer() ;
+            nodeRenderer.setMaxTextWidth(75);
+            nodeRenderer.setRoundedCorner(8,8);
+            nodeRenderer.setTextAttributeName("label");
+            nodeRenderer.setImageAttributeName("img");
+            nodeRenderer.setMaxImageDimensions(50,50);
+            nodeRenderer.setAbbrevType(StringAbbreviator.TRUNCATE);
+            nodeRenderer.setImageFactory(getImageFactory());
+        }
+        return nodeRenderer;
+    }
+    
     protected final ItemRegistry getItemRegistry() {
         if (itemRegistry == null) {
             itemRegistry = new ItemRegistry(getTree());
             itemRegistry.getFocusManager().putFocusSet(FocusManager.SELECTION_KEY,getSelectionFocusSet());
             
-            TextImageItemRenderer nodeRenderer = new TextImageItemRenderer();
-            nodeRenderer.setMaxTextWidth(75);
-            nodeRenderer.setRoundedCorner(8,8);
-            nodeRenderer.setTextAttributeName("label");
-            nodeRenderer.setImageAttributeName("logo");
-            nodeRenderer.setMaxImageDimensions(50,50);
-            nodeRenderer.setAbbrevType(StringAbbreviator.FILE);                   
             DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer();
             edgeRenderer.setWeightAttributeName("weight");
             edgeRenderer.setWeightType(DefaultEdgeRenderer.WEIGHT_TYPE_LINEAR);
-            itemRegistry.setRendererFactory(new DefaultRendererFactory(nodeRenderer, edgeRenderer));            
+            itemRegistry.setRendererFactory(new DefaultRendererFactory(getTextRenderer(), edgeRenderer));            
         }
         return itemRegistry;
     }
@@ -929,13 +942,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 ItemRegistry registry = getItemRegistry();
                 display = new Display();
 
-            //initialize renderers
-                // create a text renderer with rounded corners and labels
-               // with a maximum length of 75 pixels, abbreviated as names.
-               TextItemRenderer nodeRenderer = new TextItemRenderer();
-               nodeRenderer.setRoundedCorner(8,8);
-               nodeRenderer.setMaxTextWidth(75);
-               //nodeRenderer.setAbbrevType(StringAbbreviator.NAME);
+
                // create a null renderer for use when no label should be shown
                NullRenderer nodeRenderer2 = new NullRenderer();
                // create an edge renderer with custom curved edges
@@ -950,10 +957,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 };
                edgeRenderer.setEdgeType(DefaultEdgeRenderer.EDGE_TYPE_CURVE);
                edgeRenderer.setRenderType(ShapeRenderer.RENDER_TYPE_DRAW);
+               edgeRenderer.setWeightAttributeName("weight");
+               edgeRenderer.setWeightType(DefaultEdgeRenderer.WEIGHT_TYPE_LINEAR);               
                 
                 // set the renderer factory
                registry.setRendererFactory(new DemoRendererFactory(
-                    nodeRenderer, nodeRenderer2, edgeRenderer));
+                    getTextRenderer(), nodeRenderer2, edgeRenderer));
                 
                 // initialize the display
                 //display.setSize(500,460);
@@ -1354,7 +1363,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
            
            // add jitter to layout nodes better. could maybe make the jitter larger - makes the nodes less
            // likely to overlap.
-           /*
+           
            ForceSimulator fsim = new ForceSimulator();
            fsim.addForce(new NBodyForce(-0.1f,15f,0.5f));
            fsim.addForce(new DragForce());
@@ -1363,7 +1372,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
            forces.add(new ForceDirectedLayout(fsim,true));
            forces.add(new RepaintAction());
            forces.alwaysRunAfter(animate);
-           */
+           
            
            display.setItemRegistry(registry);
            display.setSize(400,400);
@@ -1799,7 +1808,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 riNode.setAttribute("dec","0");
                 if (information.getLogoURL() != null) {
                     System.err.println("Found an image !!");
-                    riNode.setAttribute("logo",information.getLogoURL().toString());
+                    riNode.setAttribute("img",information.getLogoURL().toString());
                 }
                 StringBuffer sb = new StringBuffer();
                 sb.append("<html>Title: ").append(information.getTitle())
@@ -1813,7 +1822,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
                 // concurrent modification exceptions
                 if (riNode.getChildCount() > 0) { // found some results..
-                SwingUtilities.invokeLater(new Runnable() {
+                SwingUtilities.invokeLater(new Runnable() { // has to add nodes on event dispatch thread.
                     public void run() {
                         AstroScopeLauncherImpl.this.setStatusMessage("Adding results from " + information.getName());
                         DefaultEdge siaEdge = new DefaultEdge(siaNode,riNode);
@@ -1821,7 +1830,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         getTree().addChild(siaEdge);                                               
                     }
                 });  
-                }
+                }                
             } catch (Exception e) {
                 logger.warn("Failed to process " + information.getId(),e);
             }
@@ -1850,7 +1859,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 riNode.setAttribute("dec","0");     
                 if (information.getLogoURL() != null) {
                     System.out.println("found an image!!");
-                    riNode.setAttribute("logo",information.getLogoURL().toString());
+                    riNode.setAttribute("img",information.getLogoURL().toString());
                 }
                 StringBuffer sb = new StringBuffer();
                 sb.append("<html>Title: ").append(information.getTitle())
@@ -1887,6 +1896,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      */
     private abstract class AbstractRetreiver implements Runnable {
 
+        
+        private static final int MAX_INLINE_IMAGE_SIZE = 100000;
         /** build a node for each result in the votable.
          * set them up as children of the <tt>riNode</tt> element - which is the node ofor the service.
          */
@@ -1907,6 +1918,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 int raCol = -1;
                 int decCol = -1;
                 int imgCol = -1;
+                int formatCol = -1;
+                int sizeCol = -1;
                 String[] titles = new String[starTable.getColumnCount()];
                 for (int col = 0; col < starTable.getColumnCount(); col++) {
                     ColumnInfo columnInfo = starTable.getColumnInfo(col);
@@ -1918,9 +1931,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             decCol = col;
                         } else if (ucd.equals("VOX:Image_AccessReference")) {
                             imgCol = col;
-                        }                                        
+                        } else if (ucd.equals("VOX:Image_Format")) {
+                            formatCol = col;
+                        } else if (ucd.equals("VOX:Image_FileSize")) {
+                            sizeCol = col;
+                        }
                     }
-                    titles[col] = columnInfo.getName() + "(" + columnInfo.getUCD() + ")";
+                    titles[col] = columnInfo.getName() + " (" + columnInfo.getUCD() + ")";
                 }
                 // check we've got enough to proceed.
                 if (raCol < 0 || decCol < 0) {
@@ -1939,7 +1956,18 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         valNode.setAttribute("ra",rowRa); // these might come in handy for searching later.
                         valNode.setAttribute("dec",rowDec); 
                         if (imgCol >= 0) {
-                            valNode.setAttribute("url",row[imgCol].toString());
+                            String imgURL = row[imgCol].toString();
+                            long size;
+                            try {
+                                size = Long.parseLong(row[sizeCol].toString());
+                            } catch (Throwable t) { // not found, or can't parse
+                                size = Long.MAX_VALUE; // assume the worse
+                            }
+                            valNode.setAttribute("url",imgURL);
+                            String format = row[formatCol].toString();
+                            if (size < MAX_INLINE_IMAGE_SIZE && (format.equals("image/gif") || format.equals("image/png") || format.equals("image/jpeg"))) {
+                                valNode.setAttribute("preview",imgURL);
+                            }
                         } 
                         StringBuffer tooltip = new StringBuffer();
                         tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
@@ -1971,11 +1999,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      */
     private void query() {
         logger.debug("query() - inside query method)");
+        final String position = getPosition();
+        if (position == null) {
+            showError("Could not parse position\nYou must enter RA,DEC or name of object known to SIMBAD");
+            return;
+        }
         storageTable.clear();
         clearTree();
         
         // @todo refactor this string-munging methods.
-        final String position = getPosition();
+                       
         final double ra = getRA(position);
         final double dec = getDEC(position);
         final String region = regionText.getText().trim();
@@ -2341,6 +2374,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.11  2005/11/04 14:09:12  nw
+improved error handling in getPosition,
+started looking at image preview.
+
 Revision 1.10  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present
