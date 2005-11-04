@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.11 2005/11/04 14:09:12 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.12 2005/11/04 17:49:52 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.io.Piper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
@@ -66,6 +67,7 @@ import edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter;
 import edu.berkeley.guir.prefuse.activity.ActionList;
 import edu.berkeley.guir.prefuse.activity.ActivityMap;
 import edu.berkeley.guir.prefuse.activity.SlowInSlowOutPacer;
+import edu.berkeley.guir.prefuse.collections.BreadthFirstTreeIterator;
 import edu.berkeley.guir.prefuse.collections.DOIItemComparator;
 import edu.berkeley.guir.prefuse.event.ControlAdapter;
 import edu.berkeley.guir.prefuse.event.FocusEvent;
@@ -75,7 +77,6 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTree;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
-import edu.berkeley.guir.prefuse.graph.Entity;
 import edu.berkeley.guir.prefuse.graph.Graph;
 import edu.berkeley.guir.prefuse.graph.Node;
 import edu.berkeley.guir.prefuse.graph.Tree;
@@ -132,6 +133,7 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -141,36 +143,26 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 
 /** Implementation of the Datascipe launcher
  * 
- * @todo replace JTree with prefuse Display of selection site? - and vizual clue to selected items in viz(color, or something). 
- * @todo debug and refine vizualizaitons.
- * @todo display thumbnails of images
-  # @todo fix selecton - as the moment the selection model doesn't seem to be doing anything - maye go back to AstroScopeMultiSelectionControl
+ * @todo display thumbnails of images - urls are available under 'imgUrl' attribute - use ImageFactory to retrieve them, display in pane under search buttons.
+ * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
 public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLauncher, ActionListener {
     /**
@@ -214,24 +206,18 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     private final Vizualization[] vizualizations;
 
     //hashtable that holds all the id's with values of urls to votable results.
-    private Hashtable storageTable;
+    //private Hashtable storageTable;
     
     
     //Various gui components.
     private JTextField posText = null;
     private JTextField regionText = null;
-    private JButton advancedButton = null;
     private JButton submitButton = null;           
-    private DefaultListModel selectedListModel = null;
     protected final ResourceChooserInternal chooser;
-    private JTree selectTree;
-    private DefaultMutableTreeNode selectRootNode;
-    protected DefaultTreeModel treeModel;
     
     //JButton saveImageButton;
     JButton saveButton;
-    //JButton selectAllButton;
-    JButton clearTreeButton;
+  
     
     /** configurable thread-pool - used to perform the queries and background updates. */
     private PooledExecutor executor;
@@ -260,7 +246,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         this.reg = reg;
         this.ses = ses;
         this.chooser = chooser;
-        this.storageTable = new Hashtable();
         
         // configure vizualizations.
         vizualizations = new Vizualization[]{
@@ -309,266 +294,110 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      *
      */
     private void saveData() {
-             comm.getUserInformation();
-             //choose a uri to save the data to.             
-             final URI u = chooser.chooseResourceWithParent("Save Data",true,true,true,false,AstroScopeLauncherImpl.this);
-             if (u == null) {
-                 return;
-             }
-             
-             logger.debug("the uri chosen = " + u.toString());
-             (new BackgroundOperation("Saving Data") {
-                     protected Object construct() throws Exception {
-                         File file = null;
-                         //make sure they chose a directory if not then return.
-                         if(u.toString().startsWith("file:")) {
-                             file = new File(u);
-                             if(!file.isDirectory()) {
-                                 JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
-                                         "You can only save data to a folder or directory, nothing was saved.",
-                                         "No Directory Selected", JOptionPane.OK_OPTION );
-                                 return null;
-                             }                             
-                         }else {
-                             FileManagerNode fmn = myspace.node(u);
-                             if(!fmn.isFolder()) {
-                                 JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
-                                         "You can only save data to a folder or directory, nothing was saved",
-                                         "No Directory Selected", JOptionPane.OK_OPTION );
-                                 return null;
-                             }                             
-                         }//else
-                         Enumeration depthEnum;
-                         Enumeration storageLookUp;
-                         Iterator nodeIterator;
-                         String lookup;
-                         String key;
-                         String name;
-                         URL url;
-                         URI finalURI;
-                         DefaultMutableTreeNode dmTreeNode;
-                         for (Enumeration e = selectRootNode.children() ; e.hasMoreElements() ;) {
-                             DefaultMutableTreeNode tn = (DefaultMutableTreeNode)e.nextElement();
-                             if(tn.getChildCount() > 0) {
-                                 for (depthEnum = selectRootNode.depthFirstEnumeration() ; depthEnum.hasMoreElements() ;) {
-                                     dmTreeNode = (DefaultMutableTreeNode)depthEnum.nextElement();
-                                     if(!dmTreeNode.isRoot()) {
-                                         TreeNodeData treeData = (TreeNodeData)dmTreeNode.getUserObject();
-                                         if(treeData.getID() != null  && treeData.getID().trim().length() > 0) {
-                                             url = (URL)storageTable.get(treeData.getID());
-                                             //TODO
-                                             //now copy into the selected directory
-                                             //be sure to add an actual filename to that directory.
-                                             //should be the name of treeData.toString() with special characters and spaces
-                                             //set to "_" or something valid.
-                                             name = conformToMyspaceName(treeData.toString());
-                                             finalURI = new URI(u.toString() + "/" + name);
-                                             
-                                             logger.debug("the url found = " + url);
-                                             logger.debug("the finaluri = " + finalURI);
-                                             if(finalURI.getScheme().startsWith("ivo")) {
-                                                 myspace.copyURLToContent(url,finalURI);
-                                             }else {
-                                                 Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                                             }
-                                         }
-                                     }//if
-                                 }
-                             }else {
-                                 //they selected everything or sia or cone.
-                                 nodeIterator = tree.getNodes();
-                                 Node nd = null;
-                                 if(tn.toString().equals("All")) {
-                                     while(nodeIterator.hasNext()) {
-                                         nd = (Node)nodeIterator.next();
-                                         key = nd.getAttribute("id");
-                                         if(key != null && key.trim().length() > 0) {
-                                             url = (URL)storageTable.get(key);
-                                             //System.out.println("the url = " + url);
-                                             name = conformToMyspaceName(nd.getAttribute("label"));
-                                             finalURI = new URI(u.toString() + "/" + name);
-                                             //myspace.copyURLToContent(url,finalURI);
-                                             if(finalURI.getScheme().startsWith("ivo")) {
-                                                 myspace.copyURLToContent(url,finalURI);
-                                             }else {
-                                                 Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                                             }                                             
-                                             //TODO
-                                             //now copy into the selected directory
-                                             //be sure to add an actual filename to that directory.
-                                             //Use nd.getAttribute("label") for the filename.
-                                             //with special characters and spaces
-                                             //set to "_" or something valid.                                    
-                                             //copyContentToURL
-                                         }//if
-                                     }//while
-                                 }else {
-                                    lookup = tn.toString();                                    
-                                    while(nodeIterator.hasNext()) {
-                                        nd = (Node)nodeIterator.next();
-                                        key = nd.getAttribute("id");
-                                        if(key != null && key.trim().length() > 0 &&
-                                           key.startsWith(lookup)) {
-                                            url = (URL)storageTable.get(key);
-                                            logger.debug("the url = " + url);
-                                            name = conformToMyspaceName(nd.getAttribute("label"));
-                                            finalURI = new URI(u.toString() + "/" + name);
-                                            //myspace.copyURLToContent(url,finalURI);
-                                            if(finalURI.getScheme().startsWith("ivo")) {
-                                                myspace.copyURLToContent(url,finalURI);
-                                            }else {
-                                                Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                                            }                                            
-                                            //TODO
-                                            //now copy into the selected directory
-                                            //be sure to add an actual filename to that directory.
-                                            //Use nd.getAttribute("label") for the filename.
-                                            //with special characters and spaces
-                                            //set to "_" or something valid.                                    
-                                            //copyContentToURL
-                                        }//if
-                                    }//while
-                                 }//else                                 
-                             }//else
-                         }//for
-                         return null;
-                      }
-                 }).start();
-             saveImageData(u);
-    }
-
-    /**
-     * method: saveImageData
-     * Description: Runs through the selected objects in the JTree and begins saving selected images
-     * to myspace or filesystem.  User MUST CHOOSE a directory node.  Does the work in a background
-     * thread.  Also allows for selection of all or sub trees like only sia or cone (which looks at graph nodes).
-     * Called by the saveImageButton action.  
-     *
-     */    
-    private void saveImageData(URI saveURI) {
         comm.getUserInformation();
-        /*
-        final URI u = chooser.chooseResourceWithParent("Save Data",true,true,true,false,this);
+        //choose a uri to save the data to.             
+        final URI u = chooser.chooseResourceWithParent("Save Data",true,true,true,false,AstroScopeLauncherImpl.this);
         if (u == null) {
             return;
         }
-        */
-        final URI u = saveURI;
         
-
-        (new BackgroundOperation("Saving Images") {
-                protected Object construct() throws Exception {
-
-                    if(u.toString().startsWith("file:")) {
-                        File file = new File(u);
-                        if(!file.isDirectory()) {
-                            JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
-                                    "You can only save data to a folder or directory",
-                                    "No Directory Selected", JOptionPane.OK_OPTION );
-                        }                             
-                    }else {
-                        FileManagerNode fmn = myspace.node(u);
-                        if(!fmn.isFolder()) {
-                            JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
-                                    "You can only save data to a folder or directory",
-                                    "No Directory Selected", JOptionPane.OK_OPTION );
-                        }                             
-                    }//else
-
-                    Enumeration depthEnum;
-                    Enumeration storageLookUp;
-                    Iterator nodeIterator;
-                    String lookup;
-                    String key;
-                    URL url;
-                    String name;
-                    int randInc = 0;
-                    URI finalURI;
-                    DefaultMutableTreeNode dmTreeNode;
-                    Node nd;
-                    for (Enumeration e = selectRootNode.children() ; e.hasMoreElements() ;) {
-                        DefaultMutableTreeNode tn = (DefaultMutableTreeNode)e.nextElement();
-                        if(tn.getChildCount() > 0) {
-                            for (depthEnum = selectRootNode.depthFirstEnumeration() ; depthEnum.hasMoreElements() ;) {
-                                dmTreeNode = (DefaultMutableTreeNode)depthEnum.nextElement();
-                                if(!dmTreeNode.isRoot()) {
-                                    TreeNodeData treeData = (TreeNodeData)dmTreeNode.getUserObject();
-                                    if(treeData.getURL() != null  && treeData.getURL().trim().length() > 0) {
-                                        url = new URL(treeData.getURL());
-                                        name = conformToMyspaceName(((DefaultMutableTreeNode)dmTreeNode.getParent()).getUserObject().toString());
-                                        name += "_" + conformToMyspaceName(treeData.toString());
-                                        randInc++;
-                                        finalURI = new URI(u.toString() + "/" + name + "-uniquenum_" + randInc);
-                                        //myspace.copyURLToContent(url,finalURI);
-                                        if(finalURI.getScheme().startsWith("ivo")) {
-                                            myspace.copyURLToContent(url,finalURI);
-                                        }else {
-                                            Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                                        }                                        
-                                        logger.debug("the url found = " + treeData.getURL());
-                                    }//if
-                                    if(treeData.getID() != null && dmTreeNode.getChildCount() == 0) {
-                                        //Darn they chosen just a service.
-                                        //need to look through the nodes now.
-                                        nodeIterator = tree.getNodes(); 
-                                        while(nodeIterator.hasNext()) {                                            
-                                            nd = (Node)nodeIterator.next();
-                                            key = nd.getAttribute("id");
-                                            if(key != null && key.equals(treeData.getID())) {
-                                                //okay we found it id's matched go through the 
-                                                //neighbor nodes and see if there is a url attribute in which we 
-                                                //will start saving.                                                
-                                                nodeIterator = nd.getNeighbors();
-                                                while(nodeIterator.hasNext()) {
-                                                    nd = (Node)nodeIterator.next();
-                                                    if(nd.getAttribute("url") != null) {
-                                                        url = new URL(nd.getAttribute("url"));
-                                                        name = conformToMyspaceName(treeData.toString() + "/" + nd.getAttribute("label"));
-                                                        randInc++;                                                        
-                                                        finalURI = new URI(u.toString() + "/" + name  + "-uniquenum_" + randInc);
-                                                        //myspace.copyURLToContent(url,finalURI);
-                                                        if(finalURI.getScheme().startsWith("ivo")) {
-                                                            myspace.copyURLToContent(url,finalURI);
-                                                        }else {
-                                                              Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                                                        }                                                        
-                                                    }//if
-                                                }//while
-                                            }//if
-                                        }//while
-                                    }//if
-                                }//if
-                            }//for
+        logger.debug("the uri chosen = " + u.toString());
+        (new BackgroundOperation("Saving Data") {
+            protected Object construct() throws Exception {
+                //@todo KEVIN - this parameter checking and showing message dialogs musn't be done in a background operation
+                // do it before entering the background op.
+                File file = null;
+                //make sure they chose a directory if not then return.
+                if(u.toString().startsWith("file:")) {
+                    file = new File(u);
+                    if(!file.isDirectory()) {
+                        JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
+                                "You can only save data to a folder or directory, nothing was saved.",
+                                "No Directory Selected", JOptionPane.OK_OPTION );
+                        return null;
+                    }                             
+                }else {
+                    FileManagerNode fmn = myspace.node(u);
+                    if(!fmn.isFolder()) {
+                        JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
+                                "You can only save data to a folder or directory, nothing was saved",
+                                "No Directory Selected", JOptionPane.OK_OPTION );
+                        return null;
+                    }                             
+                }//else
+                
+                Set processedServices = new HashSet();
+                for (Iterator i = getSelectionFocusSet().iterator(); i.hasNext(); ) {
+                    final TreeNode tn = (TreeNode)i.next();
+                    // find each leaf node - these are the data points.
+                    if (tn.getChildCount() > 0) {
+                        continue;
+                    }
+                    TreeNode parent = tn.getParent(); // @todo with clustering, need grandparent here instead.                                
+                    try {
+                    // ok. got a bit of selected data. if it's an image, save it.
+                        if (tn.getAttribute("imgURL") != null) { // its siap - this is a reference to the image                                 
+                            URL url = new URL(tn.getAttribute("imgURL")); // url to the image.
+                            final String name= conformToMyspaceName(parent.getAttribute("label") +"_" + tn.getAttribute("label") + "_" + System.currentTimeMillis() + "." + tn.getAttribute("type")); 
+                            // @todo this will be different when clustering is introduced.
+                            //@todo not sure whether the label of the image node is enough to uniquely identify it - maybe we should use the row number of it within the votable siap response,
+                            // and save the siap response too - as it's
+                            URI finalURI = new URI(u.toString() + "/" + name);                                 
+                            SwingUtilities.invokeLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            AstroScopeLauncherImpl.this.setStatusMessage("Saving Image: " + name);
+                                        }
+                                    }
+                            );                            
+                            if(finalURI.getScheme().startsWith("ivo")) {
+                                myspace.copyURLToContent(url,finalURI);
+                            }else {
+                                //@todo close streams afterwards.
+                                Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));                                 
+                            }                                                                
+                        } 
+                        
+                        // save the parent document - either a cone, or the siap response - which describes all the images.                        
+                        // parent holds the url for this catalog. - @todo - this will be different when clustering is introduced. url will probably be with grandparent node then.
+                        // check we've not processed this catalog already - because the user has selected another child node..
+                        if (processedServices.contains(parent)) {
+                            continue;
+                        }
+                        processedServices.add(parent); // record that we've done this catalog now.
+                        URL url = new URL(parent.getAttribute("url"));
+                        final String name = conformToMyspaceName(parent.getAttribute("label") + ".vot");
+                        URI finalURI = new URI(u.toString() +"/" + name);
+                        SwingUtilities.invokeLater(
+                                new Runnable() {
+                                    public void run() {
+                                        AstroScopeLauncherImpl.this.setStatusMessage("Saving Table: " + name);
+                                    }
+                                }
+                        );                                 
+                        if(finalURI.getScheme().startsWith("ivo")) {
+                            myspace.copyURLToContent(url,finalURI);
                         }else {
-                            //they selected everything or sia or cone.
-                            //At the moment only SIA is available so it is the same as All.
-                            //Just grab all the url attributes and start saving.
-                            nodeIterator = tree.getNodes();                            
-                            while(nodeIterator.hasNext()) {
-                                nd = (Node)nodeIterator.next();
-                                key = nd.getAttribute("url");
-                                if(key != null && key.trim().length() > 0) {
-                                    url = new URL(key);
-                                    //all nodes with urls only have 1 neighbor which is the
-                                    //actual service so gets label as part of the name.
-                                    name = conformToMyspaceName(nd.getNeighbor(0).getAttribute("label"));
-                                    name += "_" + conformToMyspaceName(nd.getAttribute("label"));
-                                    randInc++;
-                                    finalURI = new URI(u.toString() + "/" + name  + "-uniquenum_" + randInc);
-                                    //myspace.copyURLToContent(url,finalURI);
-                                    if(finalURI.getScheme().startsWith("ivo")) {
-                                        myspace.copyURLToContent(url,finalURI);
-                                    }else {
-                                        Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                                    }                                    
-                                }//if
-                            }//while                            
-                        }//else
-                    }//for
-                    return null;
-                 }
-            }).start();
+                            //KEVIN - need to close streams in a finally block.
+                            Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
+                        }                                                                                      
+                    } catch (Exception e) {
+                        // @todo should it show an error, or just report??
+                        SwingUtilities.invokeLater(
+                                new Runnable() {
+                                    public void run() {
+                                        AstroScopeLauncherImpl.this.setStatusMessage("Failed to save " + tn.getAttribute("label"));
+                                    }
+                                }
+                        );                                 
+                    }
+                }                
+                return null;
+            }
+        }).start();
     }
+
+
     
     /**
      * Verify the entry in the position text box is a position.  If not it should try to look it up. 
@@ -686,73 +515,31 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         scopeMain.setMaximumSize(dim2);
         scopeMain.setPreferredSize(dim2); 
         
+        saveButton = new JButton("Save");
+        saveButton.setEnabled(false);
+        saveButton.addActionListener(this);
+
         scopeMain.add(new JLabel("Position/Object: "));
         scopeMain.add(posText);
         scopeMain.add(new JLabel("Region: "));
         scopeMain.add(regionText);
-        scopeMain.add(submitButton);
-        scopeMain.add(new JLabel(""));
         scopeMain.add(siaCheckBox);
         scopeMain.add(coneCheckBox);
+        scopeMain.add(submitButton);
+        scopeMain.add(saveButton);
         
         wrapPanel.add(scopeMain);
         
         //Dimension dim3 = new Dimension(200,500);
         
         JPanel bottomPanel = new JPanel();
-        //selectedList.setBackground(bottomPanel.getBackground());
-        JTextArea selectTextArea = new JTextArea();
-        selectTextArea.setBackground(bottomPanel.getBackground());
-        selectTextArea.setEditable(false);
-        //JScrollPane listScrollPane = new JScrollPane(selectTextArea);
-        //@todo replace this tree with a prefuse tree display.
-        selectRootNode = new DefaultMutableTreeNode("Selected Data");
-        /*
-        DefaultMutableTreeNode testNode = new DefaultMutableTreeNode("This is a very long node name to see the scrollbar work");
-        DefaultMutableTreeNode testNode2 = new DefaultMutableTreeNode("Another long node; This is a very long node name to see the scrollbar work");
-        testNode.add(testNode2);
-        selectRootNode.add(testNode);
-        */
-        treeModel = new DefaultTreeModel(selectRootNode);
-        selectTree = new JTree(treeModel); 
-        selectTree.setBackground(bottomPanel.getBackground());
-        JScrollPane listScrollPane = new JScrollPane(selectTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);        
-        wrapPanel.add(listScrollPane);
-        selectTree.setMaximumSize(selectTree.getSize());
-        
+   
         //getPathForRow        
         JPanel southCenterPanel = new JPanel();
-        dim2 = new Dimension(200,70);
-        southCenterPanel.setMaximumSize(dim2);
-        southCenterPanel.setPreferredSize(dim2);
-                
-        /*
-        selectAllButton = new JButton("Select All");
-        selectAllButton.setEnabled(false);
-        selectAllButton.addActionListener(this);
-        */      
-        saveButton = new JButton("Save");
-        saveButton.setEnabled(false);
-        saveButton.addActionListener(this);
-        
-        /*
-        saveImageButton = new JButton("Save Selected Images");
-        saveImageButton.setEnabled(false);
-        saveImageButton.addActionListener(this);
-        */
-        
-        clearTreeButton = new JButton("Clear");
-        clearTreeButton.setEnabled(false);
-        clearTreeButton.addActionListener(this);
-                
-        //southCenterPanel.add(selectAllButton);
-        southCenterPanel.add(saveButton);
-        //southCenterPanel.add(saveImageButton);
-        southCenterPanel.add(clearTreeButton);
+
+
         wrapPanel.add(southCenterPanel);
-        
-        treeModel.reload();
-        wrapPanel.setPreferredSize(new Dimension(200,selectTree.getSize().height));
+
         return wrapPanel;
     }
 
@@ -816,6 +603,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         getSelectionFocusSet().clear();
         for (Iterator i = getTree().getNodes(); i.hasNext(); ) {
             Node n = (Node)i.next();
+            n.setAttribute("selected","false");
             if (n != siaNode && n != coneNode && n != rootNode) {
                 getTree().removeNode(n);
             }
@@ -891,28 +679,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     private FocusSet getSelectionFocusSet() {
         if (selectionFocusSet == null) {
             selectionFocusSet = new DefaultFocusSet();
-            //@todo add a listener to this, to oupdate tree.
             selectionFocusSet.addFocusListener(new FocusListener() {                
-                public void focusChanged(FocusEvent arg0) {
-                    System.err.println(selectionFocusSet.size());
+                public void focusChanged(FocusEvent arg0) {                    
+                   saveButton.setEnabled(selectionFocusSet.size() > 0);
                 }
             });
         }
         return selectionFocusSet;
     }
     
-  
-    
-    /*
-    private AstroScopeMultiSelectionControl asms;
-    private ControlAdapter getSelectionControl() {
-        if (asms == null) {
-            asms = new AstroScopeMultiSelectionControl(getItemRegistry());
-        }
-        return asms;
-    }*/
-    
-    
+         
     /** vizualization that hides some of the data some of the time 
      * based on edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter
      * 
@@ -974,7 +750,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                display.addMouseListener(dragger);
                display.addMouseMotionListener(dragger);
                display.addControlListener(new ZoomControl());
-               display.addControlListener(new AstroScopeMultiSelectionControl(registry));
+               display.addControlListener(new DoubleClickMultiSelectFocusControl());
                display.addControlListener(new ToolTipControl("tooltip"));
                 
                // initialize repaint list
@@ -1112,6 +888,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         public class HyperbolicDemoColorFunction extends ColorFunction {
             private int  thresh = 5;
             private Color graphEdgeColor = Color.LIGHT_GRAY;
+            private Color selectedColor = Color.YELLOW;
             private Color nodeColors[];
             private Color edgeColors[];
            
@@ -1127,7 +904,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
            
             public Paint getFillColor(VisualItem item) {
                 if ( item instanceof NodeItem ) {
-                    return Color.WHITE;
+                    String attr=  item.getAttribute("selected");                
+                    if (attr != null && attr.equals("true")) {
+                        return selectedColor;
+                    } else {               
+                        return Color.WHITE;
+                    }
                 } else if ( item instanceof AggregateItem ) {
                     return Color.LIGHT_GRAY;
                 } else if ( item instanceof EdgeItem ) {
@@ -1385,8 +1167,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
            display.addControlListener(new ZoomControl(false));
            display.addControlListener(new ToolTipControl("tooltip"));   
            display.addControlListener(new NeighborHighlightControl(update));
-           //display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
-           display.addControlListener(new AstroScopeMultiSelectionControl(registry));
+           display.addControlListener(new DoubleClickMultiSelectFocusControl());
            
            registry.getFocusManager().putFocusSet(
                    FocusManager.HOVER_KEY, new DefaultFocusSet());
@@ -1754,27 +1535,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             query();
         }else if(source == saveButton) {
             saveData();
-        }else if(source == clearTreeButton) {
-            selectRootNode.removeAllChildren();
-            treeModel.reload();
         }
-        /*
-        else if(source == selectAllButton) {
-            if(storageTable.size() > 0) {
-                if(selectRootNode.getChildCount() >= 1) {
-                    if(!selectRootNode.getFirstChild().toString().equals("All")) {
-                        int result = JOptionPane.showConfirmDialog(AstroScopeLauncherImpl.this, 
-                                "You have chosen to 'select all' this will remove all other selections.  Is this correct?",
-                                "Clear Selection", JOptionPane.YES_NO_OPTION );
-                        if (result == JOptionPane.YES_OPTION) {
-                            selectRootNode.removeAllChildren();
-                            selectRootNode.add(new DefaultMutableTreeNode("All"));
-                            treeModel.reload();
-                        }
-                    }//if
-                }//if
-            }//if
-        }*/
+
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
     }
     
@@ -1796,18 +1558,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 //              Create a tree of VOElements from the given request url.
                 VOElement top = new VOElementFactory().makeVOElement( siapURL);
                 // managed to fetch the resource ok, so le's create the service node.
-                
-                //place in a hashtable the id and siapurl to the votable.
-                //the SIA prefix is used in case they select all SIA id's.
-                storageTable.put("Images-" + information.getId().toString(),siapURL);                            
+                          
                 final TreeNode riNode = new DefaultTreeNode();
                 riNode.setAttribute("label",information.getTitle());
                 riNode.setAttribute("weight","2");
-                riNode.setAttribute("id", "Images-" + information.getId());
+                riNode.setAttribute("id", information.getId().toString());
+                riNode.setAttribute("url",siapURL.toString());
                 riNode.setAttribute("ra","0");
                 riNode.setAttribute("dec","0");
                 if (information.getLogoURL() != null) {
-                    System.err.println("Found an image !!");
                     riNode.setAttribute("img",information.getLogoURL().toString());
                 }
                 StringBuffer sb = new StringBuffer();
@@ -1851,10 +1610,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             try {
                 //                 Create a tree of VOElements from the given request url.
                 VOElement top = new VOElementFactory().makeVOElement( coneURL);            
-                storageTable.put("Catalogs-" + information.getId().toString(),coneURL);
+
                 final TreeNode riNode = new DefaultTreeNode();
                 riNode.setAttribute("label",information.getTitle());              
-                riNode.setAttribute("id", "Catalogs-" + information.getId());
+                riNode.setAttribute("id", information.getId().toString());
+                riNode.setAttribute("url",coneURL.toString());
                 riNode.setAttribute("ra","0"); // dummies for the plot viualization.
                 riNode.setAttribute("dec","0");     
                 if (information.getLogoURL() != null) {
@@ -1963,10 +1723,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             } catch (Throwable t) { // not found, or can't parse
                                 size = Long.MAX_VALUE; // assume the worse
                             }
-                            valNode.setAttribute("url",imgURL);
+                            valNode.setAttribute("imgURL",imgURL);
                             String format = row[formatCol].toString();
+                            valNode.setAttribute("type" , StringUtils.substringAfterLast(format,"/"));
                             if (size < MAX_INLINE_IMAGE_SIZE && (format.equals("image/gif") || format.equals("image/png") || format.equals("image/jpeg"))) {
-                                valNode.setAttribute("preview",imgURL);
+                                valNode.setAttribute("preview",imgURL); // its a small image, of a suitable format for viewing.
                             }
                         } 
                         StringBuffer tooltip = new StringBuffer();
@@ -2004,7 +1765,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             showError("Could not parse position\nYou must enter RA,DEC or name of object known to SIMBAD");
             return;
         }
-        storageTable.clear();
         clearTree();
         
         // @todo refactor this string-munging methods.
@@ -2072,257 +1832,53 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         }).start();        
     }
 
-    
-    /**
-     * Small class used as TreeNodes in the JTREE not the graph.
-     * 
-     */
-    class TreeNodeData {
-        String label = null;
-        String id = null;
-        String url = null;
-        public TreeNodeData(String label, String id, String url) {
-            this.label = label;
-            this.id = id;
-            this.url = url;
-        }
-        
-        public String getLabel() {
-            return this.label;
-        }
-        
-        public String getID() {
-            return this.id;
-        }
-        
-        public String getURL() {
-            return this.url;
-        }
-        
-        public String toString() {
-            return this.label;
-        }
-        
-    }
-    
-    
-    /**
-     * Small MultiSelectionControl that extends the prefuse one.  In general MultiSelectFocusControl from
-     * prefuse allows a user to hold shift and select multiple nodes.  But in general I don't care about that to 
-     * much, even though it is probably a nice feature.  The main purpose of this class is to detect when a node
-     * is selected/deselected and do the appropriate action to a JTree that handles what the user selected.  So it 
-     * will add to the Jtree on new nodes and take them out on nodes they clicked a 2nd time(deselect).  Also clear
-     * the tree if need be if the user clicked on an empty space.
-     * @author Kevin Benson
-     *
-     * TODO To change the template for this generated type comment go to
-     * Window - Preferences - Java - Code Style - Code Templates
-     */
-    class AstroScopeMultiSelectionControl extends MultiSelectFocusControl {
-        
-        public AstroScopeMultiSelectionControl(ItemRegistry registry) {
-            super(registry);
-        }
-        
-        public AstroScopeMultiSelectionControl(ItemRegistry registry, java.lang.Object focusKey) {
-            super(registry,focusKey);
-        }
-        
-        public void itemClicked(VisualItem item, java.awt.event.MouseEvent e) {
-            logger.debug("the itemClicked happened tostring of item = " + item.toString());
-            //okay do the stuff to the graph first.
-            super.itemClicked(item,e);
-            
-            if(e.getClickCount() < 2) {
-                return;                
-            }
-            
-            //ge the label.
-            String label = item.getAttribute("label");
-            TreePath tp;
-            DefaultMutableTreeNode temp;            
-            DefaultMutableTreeNode child;
-            //User Chose AstroScope which is the top level of everything hence "all".
-            
-            ItemRegistry registry = item.getItemRegistry();
-            Entity entity = registry.getEntity(item);
-            //Okay it is not All, they are selecting something unique.
-            if(entity instanceof edu.berkeley.guir.prefuse.graph.TreeNode) {
-                //System.out.println("yes it was a defaulttreenode");
-                edu.berkeley.guir.prefuse.graph.TreeNode edgeNode = (edu.berkeley.guir.prefuse.graph.TreeNode)entity;
-                Vector treePath = new Vector();
-                
-                //check if we are the root (hence clicked on the root of the tree.
-                if(edgeNode.getParent() == null) {
-                    //Check if there are children already in the tree,
-                    //if they are and if there is already an All then he is deselecting.
-                    //if there are other children make sure he wants to clear things and put an "All"
-                    if(selectRootNode.getChildCount() >= 1) {
-                        if(!selectRootNode.getFirstChild().toString().equals("All")) {
-                            int result = JOptionPane.showConfirmDialog(AstroScopeLauncherImpl.this, 
-                                    "You have selected the top/root of the tree; (which is everything) this will remove all other selections.  Is this correct?",
-                                    "Clear Selection", JOptionPane.YES_NO_OPTION );
-                            if (result == JOptionPane.YES_OPTION) {
-                                selectRootNode.removeAllChildren();
-                                selectRootNode.add(new DefaultMutableTreeNode("All"));
-                                treeModel.reload();
-                            }
-                        }else {
-                            //user is deselecting.
-                            selectRootNode.removeAllChildren();
-                            treeModel.reload();
-                        }//else
-                    }else {
-                        //before we blindly put "All" in. lets make sure they have done some kind of query
-                        //hence there is data on the graph.
-                        if(storageTable.size() > 0) {
-                            selectRootNode.removeAllChildren();
-                            selectRootNode.add(new DefaultMutableTreeNode("All"));
-                            treeModel.reload();                        
-                        }
-                    }
-                    return;
-                }//if
-                
-                //double check if "all" is already in the tree and they obviosly clicked
-                //on something else then remove it.  
-                if(selectRootNode.getChildCount() >= 1 &&
-                   selectRootNode.getFirstChild().toString().equals("All")) {
-                    selectRootNode.removeAllChildren();
-                }
-                
-                
-                
-                //Okay put in a vector the nodes starting with selected node then its parents all the way up
-                //to AstroScope.  This is talking about nodes in the graph.
-                while(edgeNode.getParent() != null) {
-                    treePath.add(new TreeNodeData(edgeNode.getAttribute("label"),
-                            edgeNode.getAttribute("id"),
-                            edgeNode.getAttribute("url")));                    
-                    //treePath.add(label);
-                    //edgeNode = edgeNode.getEdge(0).getFirstNode();
-                    //edgeNode = (Node)edgeNode.getNeighbors().next();
-                    edgeNode = edgeNode.getParent();
-                    label = edgeNode.getAttribute("label");
-                }
-                
-                //System.out.println("done with filling treepath its size = " + treePath.size());
-                
 
-                //TODO  (maybe rethink) seems to work but looks confusing.
-                //below is a loop that will add nodes to the JTree.
-                //looks at the vector and goes through it once it finds something not
-                //already recognized in a tree it starts adding all the nodes.
-                //if it goes through the whole vector and everything matches then
-                //they are deslecting remove that node.                  
-                boolean hasNode = true;
-                boolean foundNode = false;
-                DefaultMutableTreeNode parent = selectRootNode;
-                child = null;
-                int index = 0;
-                for(int i = treePath.size() - 1;i >= 0;i--) {
-                    //System.out.println("in the treepath for loop i = " + i + " val = " + treePath.get(i));
-                    if(hasNode) {
-                        hasNode = false;
-                        //parent.
-                        for (Enumeration childEnum = parent.children() ; childEnum.hasMoreElements() ;) {
-                            child = (DefaultMutableTreeNode)childEnum.nextElement();
-                            if(treePath.get(i).toString().equals(child.toString())) {
-                                parent = child;
-                                hasNode = true;
-                            }
+    /** focus control - on double click, adds / removes node and children from focus set. */
+    class DoubleClickMultiSelectFocusControl extends ControlAdapter {
+        
+        public DoubleClickMultiSelectFocusControl() {
+            set = getSelectionFocusSet();
+        }
+        private final FocusSet set;
+        public void itemClicked(VisualItem item, MouseEvent e) {
+            if ( e.getClickCount() ==2 && 
+                    item instanceof NodeItem && 
+                    SwingUtilities.isLeftMouseButton(e)) {               
+                TreeNode node = (TreeNode)item.getEntity();
+                
+                if (set.contains(node)) {// do a remove of this, and all children, and any parents.
+                    for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
+                        TreeNode n = (TreeNode)i.next();
+                        set.remove(n);
+                        n.setAttribute("selected","false"); // attribute used to speed up coloring function.
+                    }
+                    while (node.getParent() != null) {
+                        node = node.getParent();
+                        if (set.contains(node)) {
+                            node.setAttribute("selected","false");
+                            set.remove(node);
                         }
                     }
-                    if(!hasNode) {
-                        //System.out.println("parent will be adding: " + treePath.get(i) + " the parent = " + parent.toString());
-                        child = new DefaultMutableTreeNode(treePath.get(i));
-                        parent.add( child );
-                        parent = child;
+                } else { // an add of this, and all children
+                    for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
+                        TreeNode n = (TreeNode)i.next();
+                        n.setAttribute("selected","true"); // yechh.
+                        if (! set.contains(n)) {
+                            set.add(n);
+                        }
                     }
-                }//for
-                if(child != null) {
-                    treeModel.reload();
-                    selectTree.scrollPathToVisible(new TreePath(child.getPath()));
                 }
-                //System.out.println("hasNode = " + hasNode);
-                if(hasNode){                    
-                    //if you went through the whole tree and it is still there,
-                    //then they must be deselecting it.  So remove it.
-                    //temp = parent.getParent();
-                    if(parent.getChildCount() > 0) {
-                        int result = JOptionPane.showConfirmDialog(AstroScopeLauncherImpl.this, 
-                                "You have chosen to remove an item that has children, all those children will be removed from the selection tree. Is this ok?  Item: " + parent.toString(),
-                                "Remove Selection", JOptionPane.YES_NO_OPTION );
-                        if (result == JOptionPane.YES_OPTION) {
-                            parent.removeFromParent();
-                        }
-                    }
-                    parent.removeFromParent();
-                    /*
-                    while(temp != null && temp.getChildCount == 0) {
-                        child = temp;
-                        temp = temp.getParent();
-                        child.removeFromParent();
-                    }
-                    */
-                    treeModel.reload();
-                }//if
-            }//if
-            //check there is some node in the tree and enable save buttons.
-            enableSaveButtons();
-        }
-        
-        private void enableSaveButtons() {
-            if(storageTable.size() > 0 && selectRootNode.getChildCount() > 0) {
-                //selectAllButton.setEnabled(true);
-                saveButton.setEnabled(true);
-                //saveImageButton.setEnabled(true);                
-                clearTreeButton.setEnabled(true);
-            }else {
-                //selectAllButton.setEnabled(false);
-                saveButton.setEnabled(false);
-                //saveImageButton.setEnabled(false);
-                clearTreeButton.setEnabled(false);
             }
         }
-        
-        /*
-         * User regular mouse click in an empty space before blindly removing things ask the user if there are nodes
-         * already in the tree.
-         */
-        public void mouseClicked(java.awt.event.MouseEvent e) {
-            logger.debug("entered mouseClicked");
-            //add a JoptionPane to make sure they want to do it if the tree is big.
-            if(selectRootNode.getChildCount() > 0) {
-                int result = JOptionPane.showConfirmDialog(AstroScopeLauncherImpl.this, 
-                        "You have clicked in an empty area on the display, this clears everything.  Confirm Clear Entire Selection Tree? ", 
-                        "Clear Selection", JOptionPane.YES_NO_OPTION );
-                if (result == JOptionPane.NO_OPTION) {
-                    return;
-                }                
-            }
-            super.mouseClicked(e);
-            selectRootNode.removeAllChildren();
-            treeModel.reload();
-            enableSaveButtons();
-        }
-    }
+    } // end inner class.
     
-    /**
-     * Rest of classes below come from prefuse.
-     */    
 
-       
-    
-    /** @todo maybe later we could color notdes based on some quality of the node - e.g.
-     * maybe waveband of the result? or something like this that could be set as an attribute of the node 
-     * when it's created, and then is used by this function to determine the colour.
-     *
-     */
-    public static class DemoColorFunction extends ColorFunction {
+
+    public class DemoColorFunction extends ColorFunction {
         private Color graphEdgeColor = Color.LIGHT_GRAY;
          private Color highlightColor = new Color(50,50,255);
          private Color focusColor = new Color(255,50,50);
+         private Color selectedColor = Color.YELLOW;
          private ColorMap colorMap;
        
         public DemoColorFunction(int thresh) {
@@ -2333,7 +1889,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
        
         public Paint getFillColor(VisualItem item) {
             if ( item instanceof NodeItem ) {
-                return Color.WHITE;
+                //NodeItem n = (NodeItem)item;
+                String attr=  item.getAttribute("selected");                
+                if (attr != null && attr.equals("true")) {
+                    return selectedColor;
+                } else {               
+                    return Color.WHITE;
+                }
             } else if ( item instanceof AggregateItem ) {
                 return Color.LIGHT_GRAY;
             } else if ( item instanceof EdgeItem ) {
@@ -2374,6 +1936,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.12  2005/11/04 17:49:52  nw
+reworked selection and save datastructures.
+
 Revision 1.11  2005/11/04 14:09:12  nw
 improved error handling in getPosition,
 started looking at image preview.
