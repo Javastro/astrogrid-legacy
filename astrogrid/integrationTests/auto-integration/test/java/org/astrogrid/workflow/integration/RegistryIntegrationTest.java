@@ -1,11 +1,11 @@
-/*$Id: RegistryIntegrationTest.java,v 1.15 2005/03/14 22:03:53 clq2 Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.16 2005/11/04 17:31:05 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.workflow.integration;
@@ -33,15 +33,15 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
     public RegistryIntegrationTest(String arg0) {
         super(arg0);
     }
-    
+
     protected void setUp() throws Exception {
         super.setUp();
 
         reg = ag.getWorkflowManager().getToolRegistry();
-        
+
     }
     protected ApplicationRegistry reg;
-    
+
     /** this is the funcitonality required by workflow */
     public void testListApplications() throws Exception {
         String[] appNames = reg.listApplications();
@@ -50,19 +50,19 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
         for (int i = 0; i < appNames.length; i++) {
             String name = appNames[i];
             softAssertNotNull("name is null",name);
-            softAssertTrue("empty name",name.trim().length() > 0);    
-            try {        
+            softAssertTrue("empty name",name.trim().length() > 0);
+            try {
             ApplicationDescription descr = reg.getDescriptionFor(name);
             softAssertNotNull("description is null",descr);
             softAssertEquals("name is not as expected",name,descr.getName());
             } catch(Exception e) {
                 System.out.println("Duff registry entry found for " + name);
                 softFail("failed for " + name + " " + e.getMessage());
-                
+
             }
         }
     }
-    
+
     /** should return the same list as listApplications, but fuller details */
     public void testListUIApplications() throws Exception {
         String[] appNames = reg.listApplications();
@@ -82,14 +82,22 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
             }
         }
     }
-        
-    /** this is the functionality required by jes - we get list of application names, then call a backdoor into the jes webapp to exercise te resolver code. */
+
+    /**
+     * Tests the resolution of application IVOIDs to service endpoints.
+     * Gets a list of all CEA applications and resolves each one in turn, using
+     * a servlet built into JES for testing. Any failures are treated as 'soft'
+     * failures: the test continues to resolve the other applications but is deemed
+     * to have failed if any application cannot be resolved. One application will
+     * always fail: it seems to be included for that purpose in other registry tests.
+     * In this case we do not let it make the test fail.
+     */
     public void testResolveApplications() throws Exception {
         String[] appNames = reg.listApplications();
 
-        String url = SimpleConfig.getProperty(JesSelfTest.JES_BASE_URL);                   
+        String url = SimpleConfig.getProperty(JesSelfTest.JES_BASE_URL);
         for (int i = 0; i < appNames.length; i++) {
- 
+
             URL requestURL = new URL(url + "/backdoor?action=locate&name=" + appNames[i]);
             InputStream is = null;
             try {
@@ -98,26 +106,37 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
                 String line = in.readLine();
                 System.out.println("Application " + appNames[i] + " resolves to " + line);
                 assertNotNull(line);
-                URL endpoint = new URL(line); // checks its a valid url.                
+                URL endpoint = new URL(line); // checks its a valid url.
             } catch (IOException e) {
                 System.err.println("failed to resolve location for " + appNames[i]);
-                softFail("failed to resolve location for " + appNames[i] + ": " + e.getMessage());
+                if (appNames[i].equals("ivo://org.astrogrid.localhost/InvalidHttpApp")) {
+                  System.err.println("This failure was expected.");
+                }
+                else {
+                  softFail("failed to resolve location for " + appNames[i] + ": " + e.getMessage());
+                }
             }
 
 
-            
+
         }
     }
-    
-    
-    
 
-    
+
+
+
+
 }
 
 
-/* 
+/*
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.16  2005/11/04 17:31:05  clq2
+axis_gtr_1046
+
+Revision 1.15.86.1  2005/10/25 17:43:31  gtr
+I set it not to fail when 'InvalidHttpApp' is not resolved, since that app should not be resolveable.
+
 Revision 1.15  2005/03/14 22:03:53  clq2
 auto-integration-nww-994
 
@@ -163,5 +182,5 @@ polished up the workflow integratioin tests
 
 Revision 1.1  2004/03/16 17:48:34  nw
 first stab at an auto-integration project
- 
+
 */

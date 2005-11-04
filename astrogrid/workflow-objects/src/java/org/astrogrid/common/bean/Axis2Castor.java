@@ -1,15 +1,15 @@
 /*
- * $Id: Axis2Castor.java,v 1.11 2004/12/03 14:47:41 jdt Exp $
- * 
+ * $Id: Axis2Castor.java,v 1.12 2005/11/04 17:31:05 clq2 Exp $
+ *
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
  * Copyright 2004 AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
- */ 
+ */
 
 package org.astrogrid.common.bean;
 
@@ -45,7 +45,8 @@ import org.apache.axis.types.NMToken;
 import sun.misc.Regexp;
 
 /**
- * Class of static methods to convert axis beans to castor beans. Copied from the util package in the jes project and put in common.
+ * Class of static methods to convert axis beans to castor beans. Copied from the util package in the jes project and put in
+ common.
  * @author Noel Winstanley
  * @author Paul Harrison (pah@jb.man.ac.uk) 18-Mar-2004
  * @version $Name:  $
@@ -61,20 +62,22 @@ public class Axis2Castor {
         if (message == null) {
             return null;
         }
-        org.astrogrid.applications.beans.v1.cea.castor.MessageType[] castor = new   org.astrogrid.applications.beans.v1.cea.castor.MessageType[message.length];
+        org.astrogrid.applications.beans.v1.cea.castor.MessageType[] castor = new
+        org.astrogrid.applications.beans.v1.cea.castor.MessageType[message.length];
         for (int i = 0; i < message.length; i++) {
             castor[i] = convert(message[i]);
         }
         return castor;
-    }  
-    
-    
+    }
+
+
     /** convert between castor and axis representations of the same schema object */
     public static org.astrogrid.applications.beans.v1.cea.castor.MessageType convert(MessageType mt) {
         if (mt == null) {
             return null;
         }
-        org.astrogrid.applications.beans.v1.cea.castor.MessageType result = new org.astrogrid.applications.beans.v1.cea.castor.MessageType();
+        org.astrogrid.applications.beans.v1.cea.castor.MessageType result = new org.astrogrid.applications.beans.v1.cea.castor.
+        MessageType();
         result.setContent(mt.getContent());
         result.setPhase(Axis2Castor.convert(mt.getPhase()));
         result.setLevel(Axis2Castor.convert(mt.getLevel()));
@@ -95,14 +98,15 @@ public class Axis2Castor {
     }
 
     /** convert between castor and axis representations of the same schema object */
-    public static org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase convert(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase phase) {
+    public static org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase convert(org.astrogrid.jes.types.v1.cea.axis.
+    ExecutionPhase phase) {
         if (phase == null) {
             return null;
         } else {
             return org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase.valueOf(phase.getValue());
         }
     }
-    
+
     /**
      * @param extension
      * @return
@@ -117,7 +121,7 @@ public class Axis2Castor {
         }
         return castor;
     }
-    
+
 
     public static Extension convert(_extension extension) {
         Extension castor = new Extension();
@@ -126,8 +130,8 @@ public class Axis2Castor {
         return castor;
     }
 
-       
-    
+
+
     public static Tool convert(org.astrogrid.workflow.beans.v1.axis._tool tool)
     {
        Tool result = new Tool();
@@ -139,7 +143,7 @@ public class Axis2Castor {
     }
 
    //--type convertors/////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
        /**
     * @param _output
     * @return
@@ -148,7 +152,7 @@ public class Axis2Castor {
       Output result = new Output();
       if ( _output != null) {
           org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] params = _output.getParameter();
-          if (params != null) { // bit more code armour          
+          if (params != null) { // bit more code armour
               for (int i = 0; i < params.length; i++) {
                   result.addParameter(convert(params[i]));
               }
@@ -164,22 +168,13 @@ public class Axis2Castor {
       public static ParameterValue convert(org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue value) {
          ParameterValue result = new ParameterValue();
          result.setName(value.getName());
-         result.setEncoding(value.getEncoding().toString());         
+         if (value.getEncoding() != null) {
+           result.setEncoding(value.getEncoding().toString());
+         }
          result.setIndirect(value.isIndirect());
          result.setValue(value.getValue());
          return result;
       }
-
-      /**
-    * @param types
-    * @return
-    */
-      /* not needed anymore..
-   public static ParameterTypes convert(org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes types) {
-      ParameterTypes result = ParameterTypes.valueOf(types.toString());
-      return result;
-   }
-   */
 
    /**
     * @param _input
@@ -216,7 +211,7 @@ public class Axis2Castor {
             return org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.valueOf(level.getValue());
         }
     }
-    
+
     /** rsultListType */
     public static ResultListType convert(org.astrogrid.jes.types.v1.cea.axis.ResultListType axis) {
         if (axis == null) {
@@ -227,23 +222,23 @@ public class Axis2Castor {
             ParameterValue[] castorRs = convert(axisRs);
             castor.setResult(castorRs);
             return castor;
-            
+
         }
     }
 
     public static ParameterValue[] convert(
         org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] axisRs) {
-		         
+
         final int axisRsLength = (axisRs==null ? 0 : axisRs.length);
         ParameterValue[] castorRs = new ParameterValue[axisRsLength];
-		for (int i = 0; i < axisRsLength; i++){
+    for (int i = 0; i < axisRsLength; i++){
             castorRs[i] = convert(axisRs[i]);
         }
         return castorRs;
     }
-    
 
-    
+
+
     /** execution summary type */
     public static ExecutionSummaryType convert(org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType axis) {
         if (axis == null) {
@@ -255,13 +250,13 @@ public class Axis2Castor {
             org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] axisArr = axis.getInputList().getInput();
             castor.setInputList(new InputListType());
             castor.getInputList().setInput(convert(axisArr));
-            castor.setResultList(convert(axis.getResultList())); 
+            castor.setResultList(convert(axis.getResultList()));
             castor.setStatus(convert(axis.getStatus()));
             return castor;
         }
     }
-    
-    
+
+
     /** convert a workflow summary between libraries.
      * @param type
      * @return
@@ -270,7 +265,8 @@ public class Axis2Castor {
         if (type == null) {
             return null;
         }
-        org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType castor = new org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType();
+        org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType castor = new org.astrogrid.workflow.beans.v1.execution.
+        WorkflowSummaryType();
         if (type.getDescription() != null) {
             castor.setDescription(type.getDescription());
         }
@@ -283,38 +279,12 @@ public class Axis2Castor {
         }
         castor.setJobId(Axis2Castor.convert(type.getJobId()));
         castor.setStartTime(type.getStartTime() == null ? null : type.getStartTime().getTime());
-        if (type.getStatus() != null) {                
+        if (type.getStatus() != null) {
         castor.setStatus(Axis2Castor.convert(type.getStatus()));
         }
         castor.setWorkflowName(type.getWorkflowName());
         return castor;
     }
 
-
-
-/* doesn't seem to be needed any more
-   private static org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition convert(BaseParameterDefinition inpar)
-   {
-      org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition  result=  new org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition();
-      result.setDefaultValue(inpar.getDefaultValue());
-      result.setName(inpar.getName());
-      result.setType(convert(inpar.getType()));
-      result.setSubType(inpar.getSubType());
-      String[] encodings = inpar.getAcceptEncodings().toString().split(" "); // @todo check this 
-      result.setAcceptEncodings(encodings);      
-      result.setUCD(inpar.getUCD());
-      
-      result.setUI_Description(convert(inpar.getUI_Description()));
-      result.setUI_Name(inpar.getUI_Name());
-      result.setUnits(inpar.getUnits());
-      return result;
-   }
-
-
-   private static XhtmlDocumentation convert(org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation documentation) {
-      XhtmlDocumentation result = new XhtmlDocumentation();
-      result.setContent(documentation.getValue());
-      return result;
-   }
-   */
 }
+

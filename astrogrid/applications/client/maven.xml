@@ -33,16 +33,4 @@
                 project="${pom}"
         />
   </goal>
-  <!-- nice addon unit test -->
-  <postGoal name="maven-junit-report-plugin:report">
-    <attainGoal name="full-junit-report" />
-  </postGoal>
-  <goal name="full-junit-report">
-  <mkdir dir="${basedir}/target/docs/junit-full" />${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-  <junitreport todir="${basedir}/target">
-    <fileset dir="${basedir}/target/test-reports">
-      <include name="TEST-*.xml" />
-    </fileset>
-    <report format="frames" styledir="${basedir}/../src/xslt" todir="${basedir}/target/docs/junit-full" />
-  </junitreport></goal>
 </project>

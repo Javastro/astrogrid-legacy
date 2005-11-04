@@ -131,148 +131,62 @@
                       <war.bundle>true</war.bundle>
              </properties>
             </dependency>
-        <!-- axis stuff -->
-        <dependency>
-            <artifactId>axis</artifactId>
-            <groupId>axis</groupId>
-            <version>1.1</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-                <dependency>
-                        <artifactId>axis-ant</artifactId>
-                        <groupId>axis</groupId>
-                        <version>1.1</version>
-                </dependency>
-        <dependency>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-            <version>1.0.3</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <artifactId>commons-discovery</artifactId>
-            <groupId>commons-discovery</groupId>
-            <version>20030211.213356</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-                <dependency>
-            <id>jaxrpc-api</id>
-            <version>1.0.3</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-                <id>saaj</id>
-                <version>1.0</version>
-                <jar>saaj.jar</jar>
-                    <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-        </dependency>
-
-    <dependency>
-      <id>wsdl4j</id>
-      <version>1.0</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
-
-
-    <!-- some experiments with other systems -->
-<!--
-    <dependency>
-      <id>jaxme</id>
-      <version>0.2</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
--->
-    <!-- jaxb and required jars -->
- <!--
-     <dependency>
-      <groupId>jaxb</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>1.0.2</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
-     <dependency>
-      <groupId>jaxb</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>1.0.2</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
-     <dependency>
-      <groupId>jaxb</groupId>
-      <artifactId>jaxb-libs</artifactId>
-      <version>1.0.2</version>
-          <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
-    </dependency>
-
-     <dependency>
-      <groupId>jaxb</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <version>1.0.2</version>
-          <properties>
-      <war.bundle>false</war.bundle>
-    </properties>
-    </dependency>
-    -->
-<!-- jaxb dependencies -->
-<!--
-     <dependency>
-      <artifactId>jax-qname</artifactId>
-      <groupId>jwsdp</groupId>
-      <version>1.3</version>
-          <properties>
-      <war.bundle>false</war.bundle>
-    </properties>
-    </dependency>
-
-      <dependency>
-      <artifactId>namespace</artifactId>
-      <groupId>jwsdp</groupId>
-      <version>1.3</version>
-          <properties>
-      <war.bundle>false</war.bundle>
-    </properties>
-    </dependency>
-
-      <dependency>
-      <artifactId>relaxngDatatype</artifactId>
-      <groupId>jwsdp</groupId>
-      <version>1.3</version>
-          <properties>
-      <war.bundle>false</war.bundle>
-    </properties>
-    </dependency>
-
-      <dependency>
-      <artifactId>xsdlib</artifactId>
-      <groupId>jwsdp</groupId>
-      <version>1.3</version>
-          <properties>
-      <war.bundle>false</war.bundle>
-    </properties>
-    </dependency>
-
-
--->
-    <!-- required by common -->
+    	
+    	<!-- axis, and the jars it relies upon -->
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>wsdl4j</artifactId>
+    		<version>1.5.1</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-saaj</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-jaxrpc</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-logging</artifactId>
+    		<version>1.0.4</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-discovery</artifactId>
+    		<version>0.2</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
 
     </dependencies>
 </project>

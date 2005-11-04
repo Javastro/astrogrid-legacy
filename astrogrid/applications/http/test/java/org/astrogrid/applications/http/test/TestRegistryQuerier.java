@@ -1,11 +1,11 @@
-/* $Id: TestRegistryQuerier.java,v 1.6 2005/08/04 09:40:11 clq2 Exp $
+/* $Id: TestRegistryQuerier.java,v 1.7 2005/11/04 17:31:05 clq2 Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file. 
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  */
 package org.astrogrid.applications.http.test;
 
@@ -43,7 +43,7 @@ import org.astrogrid.store.Ivorn;
 /**
  * Returns pretend meta data about the TestWebServer test services. Acts as both
  * a test registryQuerier, and a RegistryService.
- * 
+ *
  * @author jdt
  * @author pharriso@eso.org 07-Jun-2005
  */
@@ -57,7 +57,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /**
     * Ctor
-    * 
+    *
     * @throws ValidationException
     * @throws MarshalException
     */
@@ -79,7 +79,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
    /**
     * Get a specific application by its filename Useful additional method for
     * testing purposes You need to check that you don't get a null
-    * 
+    *
     * @param name
     *           filename of xml describing application
     * @return the unmarshalled CeaHttpApplicationType
@@ -91,7 +91,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
    /**
     * Add a CeaHttpApplicationType to our "registry" given the object serialised
     * to xml
-    * 
+    *
     * @param file
     *           filename of serialised object
     * @throws MarshalException
@@ -113,7 +113,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
     */
    public String getName() {
@@ -122,7 +122,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
     */
    public String getDescription() {
@@ -131,7 +131,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.component.descriptor.ComponentDescriptor#getInstallationTest()
     *      No installation tests required, since only used for unit testing.
     */
@@ -141,7 +141,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#getRegistries()
     */
    public Document getRegistries() throws RegistryException {
@@ -152,7 +152,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#search(java.lang.String)
     */
    public Document search(String arg0) throws RegistryException {
@@ -163,7 +163,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#search(org.w3c.dom.Document)
     */
    public Document search(Document arg0) throws RegistryException {
@@ -174,7 +174,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#searchFromSADQL(java.lang.String)
     */
    public Document searchFromSADQL(String arg0) throws RegistryException {
@@ -185,11 +185,11 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
          vor.addResource(element);
 
       }
-      return marshallResources(vor); 
+      return marshallResources(vor);
    }
-   
+
    public Document xquerySearch(String xquery) throws RegistryException {
-       
+
        return null;
    }
 
@@ -207,7 +207,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
          StringWriter sw = new StringWriter();
          DocumentBuilder builder = factory.
                newDocumentBuilder();
-        
+
          // more bloody castor bugs - the marshaller will not marshal correctly namespaces to a dom tree - do to a string first.
          Document finalDoc = builder.newDocument();
          Marshaller marshaller = new Marshaller(sw);
@@ -215,7 +215,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
          marshaller.setMarshalExtendedType(true);
          marshaller.setSuppressXSIType(false);
          marshaller.setMarshalAsDocument(true);
-         
+
          //     TODO write a castor wiki page about this.... it is useful to stop
          // castor putting namespace declarations all over the place, and
          // essential to get the correct declarations inserted for some derived
@@ -239,7 +239,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#submitQuery(java.lang.String)
     */
    public Document submitQuery(String arg0) throws RegistryException {
@@ -250,7 +250,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#submitQuery(org.w3c.dom.Document)
     */
    public Document submitQuery(Document arg0) throws RegistryException {
@@ -261,7 +261,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#loadRegistry()
     */
    public Document loadRegistry() throws RegistryException {
@@ -272,7 +272,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#managedAuthorities()
     */
    public HashMap managedAuthorities() throws RegistryException {
@@ -283,7 +283,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#getResourceByIdentifier(org.astrogrid.store.Ivorn)
     */
    public Document getResourceByIdentifier(Ivorn arg0) throws RegistryException {
@@ -294,7 +294,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#getResourceByIdentifier(java.lang.String)
     */
    public Document getResourceByIdentifier(String arg0)
@@ -302,16 +302,16 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
       String id = arg0.substring(6); // remove the ivo://prefix as internally the names are stored without it.
       CeaHttpApplicationType app = (CeaHttpApplicationType) applications.get(id);
       logger.info("cannot find application="+id);
-      
+
       VOResources vor = new VOResources();
       vor.addResource(app);
       return marshallResources(vor);
-      
+
    }
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#getResourceDataByIdentifier(org.astrogrid.store.Ivorn)
     */
    public ResourceData getResourceDataByIdentifier(Ivorn arg0)
@@ -323,7 +323,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#getResourceDataByRelationship(org.astrogrid.store.Ivorn)
     */
    public ResourceData[] getResourceDataByRelationship(Ivorn arg0)
@@ -335,7 +335,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#getResourceDataByRelationship(java.lang.String)
     */
    public ResourceData[] getResourceDataByRelationship(String arg0)
@@ -347,7 +347,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#getEndPointByIdentifier(org.astrogrid.store.Ivorn)
     */
    public String getEndPointByIdentifier(Ivorn arg0) throws RegistryException {
@@ -358,13 +358,21 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
 
    /*
     * (non-Javadoc)
-    * 
+    *
     * @see org.astrogrid.registry.client.query.RegistryService#getEndPointByIdentifier(java.lang.String)
     */
    public String getEndPointByIdentifier(String arg0) throws RegistryException {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException(
             "TestRegistryQuerier.getEndPointByIdentifier() not implemented");
+   }
+
+   public Document keywordSearch(String keywords,boolean orValues) throws RegistryException {
+     throw new RegistryException("keywordSearch(String keywords,boolean orValues) is not implemented.");
+   }
+
+    public Document keywordSearch(String keywords) throws RegistryException {
+      throw new RegistryException("keywordSearch(String keywords) is not implemented.");
    }
 
 }

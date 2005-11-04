@@ -114,9 +114,14 @@
 <filter token="TOMCATPASS" value="${tomcat.manager.password}"/>
 <filter token="CEAAPPID" value="${cea.app.id}"/>
 
-<!-- setup -->
+<!-- When cleaning, clear out the temporary directory (in which the software is unpacked
+	   and mutated) and working directory (in which some of the web-apps keep their
+	   volatile files. This must be done when deploying a new system. However, this cleaning
+	   should not be triggered by the basic clean:clean goal as the latter may be used to
+	   clear out test reports etc. for a new test run on an already-deployed system. -->
 <goal name="astrogrid-clean" prereqs="clean:clean">
-       <delete dir="${temporary.dir}" />
+	<delete dir="${temporary.dir}"/>
+	<delete dir="${work.dir}"/>
 </goal>
 
 
@@ -243,7 +248,7 @@
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
         <echo>Setting up working directory</echo>
-                <!-- do not delete the working dir here -->
+        <!-- do not delete the working dir here -->
         <mkdir dir="${work.dir}" />
         <copy todir="${work.dir}" overwrite="false" filtering="true">
             <fileset dir="work">
@@ -292,51 +297,8 @@
 <goal name="setup-community" description="Community setup">
     <echo>Configuring community database ....</echo>
     <attainGoal name="community-database"/>
-	<!--
-    <attainGoal name="community-register"/>
-    -->
 </goal>
-<!--
-<goal name="setup-exist" description="PUT documents in eXist">
-         <echo>Configuring eXist entries</echo>
-                <delete dir="${temporary.dir}/exist-entries" />
-        <copy todir="${temporary.dir}/exist-entries" filtering="true">
-                <fileset dir="exist-entries">
-                        <include name="**/*.xml" />
-                </fileset>
-        </copy>
-        <!- now upload each one ->
-        <pathconvert property="entries" pathsep=" ">
-                <path>
-                        <fileset dir="${temporary.dir}/exist-entries"/>
-            </path>
-        </pathconvert>
-        <util:tokenize var="entryList" delim=" ">${entries}</util:tokenize>
-        <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-                <j:set var="collpath" value="${temporary.dir}/exist-entries"/>
-        <j:forEach var="entry" items="${entryList}">
-          <echo>${entry}</echo>
 
-                        <util:file name="${entry}"  var="xmlentry" />
-                        <jxml:parse xml="${xmlentry}" var="xmlbody" />
-
-                        <echo>${existurl}/${entry.substring(collpath.length())}</echo>
-                        <j:set var="existtempurl" value="${existurl}${entry.substring(collpath.length())}"/>
-                    <util:replace oldChar="\" newChar="/" var="existputurl">${existtempurl}</util:replace>
-                    <echo>${existputurl}</echo>
-                <http:put var="xmlexist" uri="${existputurl}">
-                <header name="Content-Type" value="text/xml"/>
-                <http:body>
-                                        <jxml:copyOf select="$xmlbody" />
-                </http:body>
-                        </http:put>
-                <echo>${xmlexist.statusCode}</echo>
-
-        </j:forEach>
-        <echo>Finsihed setting up eXist</echo>
-
-</goal>
--->
 <goal name="populate-registry" description="populate the registry" >
         <echo>Populating Registry</echo>
         <!-- expand tokens -->
@@ -447,30 +409,8 @@
         >        
     	<property name="org.astrogrid.community.ident" value="${communityid}"/>
     	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>    	
-        <property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts.xml"/>
+      <property name="community.xmlfile" value="file:///${basedir}/community-entries/int-test-accounts.xml"/>
     </ant>
-
-	<!--
-    <ant
-        target="database.reset"
-        dir="${temporary.dir}/community/toolkit"
-        antfile="${temporary.dir}/community/toolkit/install.xml">
-    	<property name="org.astrogrid.community.ident" value="${communityid}.two"/>
-    	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
-    	
-    </ant>
-	
-	
-    <ant
-        target="database.load"
-        dir="${temporary.dir}/community/toolkit"
-        antfile="${temporary.dir}/community/toolkit/install.xml"
-        >
-         load the community from a file local to the autointegration rather than out of the community install kit 
-    	<property name="org.astrogrid.community.ident" value="${communityid}.two"/>
-    	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
-    	<property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts_two.xml"/>
-    </ant>-->
 	
 </goal>
 
@@ -497,15 +437,9 @@
     	<property name="org.astrogrid.community.ident" value="${communityid}"/>
     	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>
 	</ant>
-	<!--
-    <ant target="service.register"
-         dir="${temporary.dir}/community/toolkit"
-         antfile="${temporary.dir}/community/toolkit/install.xml">
-    	<property name="org.astrogrid.community.ident" value="${communityid}.two"/>
-    	<property name="service.url" value="${tomcat.url}/astrogrid-community-two-SNAPSHOT/services"/>
-	</ant>	-->
 </goal>
-<!--+
+
+	<!--+
     | Wait for the Community service to respond.
     +-->
 <goal name="community-wait">
@@ -902,28 +836,25 @@
             <property name="input.contact.name" value="AGINAB"/>
             <property name="input.contact.email" value="anon@astrogrid.org"/>      
        </ant>
-
-
 </goal>
-<goal name="filemanager-two-undeploy" prereqs="override-input-task,init,filemanager-init">    
-      <ant dir="${filemanager.deployment.jar.unpacked}" target="install-and-register" inheritAll="false" >
-            <property name="custom.tasks.defined" value="yes"/>
-            <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->
-            
-            <property name="input.tomcat.present" value="continue"/>
-            <property name="input.tomcat.url" value="${tomcat.url}"/>
-            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
-            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
-           
-            <property name="input.filestore.ivorn" value="${aginab.filestore2.ivorn}"/>
-            <property name="input.filemanager.contextpath" value="${aginab.filemanager2.contextpath}"/>
-			<property name="input.filemanager.regauthority" value="${registry.authorityid}"/>
-			<property name="input.filemanager.regkey" value="${aginab.filemanager2.regkey}"/>
-            <property name="input.filemanager.working.dir" value="${work.dir}/filemanager-two/repository/"/>
-            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
-            <property name="input.contact.name" value="AGINAB"/>
-            <property name="input.contact.email" value="anon@astrogrid.org"/>      
-       </ant>
+	
+<goal name="filemanager-two-undeploy" prereqs="override-input-task,init,filemanager-init">
+	<ant dir="${filemanager.deployment.jar.unpacked}" target="remove" inheritAll="false" >
+    <property name="custom.tasks.defined" value="yes"/>
+    <property name="continueifnodownload" value="true"/> <!-- allow use of local files-->        
+    <property name="input.tomcat.present" value="continue"/>
+    <property name="input.tomcat.url" value="${tomcat.url}"/>
+    <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+    <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+    <property name="input.filestore.ivorn" value="${aginab.filestore2.ivorn}"/>
+    <property name="input.filemanager.contextpath" value="${aginab.filemanager2.contextpath}"/>
+	  <property name="input.filemanager.regauthority" value="${registry.authorityid}"/>
+		<property name="input.filemanager.regkey" value="${aginab.filemanager2.regkey}"/>
+    <property name="input.filemanager.working.dir" value="${work.dir}/filemanager-two/repository/"/>
+    <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+    <property name="input.contact.name" value="AGINAB"/>
+    <property name="input.contact.email" value="anon@astrogrid.org"/>      
+  </ant>
 </goal>
 
 <goal name="filemanager-init">
@@ -932,12 +863,6 @@
     dest="${filemanager.deployment.jar.unpacked}"/>
 </goal>
 
-<!--	
-	<goal name="exist-deploy" >
-	          <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-	     path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
-	</goal>
--->		
 <!--Registry deploy/undeploy is now handled by a self-contained Ant script in the registry project itself.
     Please see astrogrid/registry/deployment -->
 
@@ -1003,72 +928,6 @@
     <property name="input.reg.enableharvesting" value="false"/>                   
 </goal>		
 	
-
-<!--
-<goal name="pal-deploy" >
-        <copy todir="${temporary.dir}/pal" filtering="true">
-                <fileset dir="contexts/pal" />
-        </copy>
-       <ag:maybe-enable-cougaar webapp="pal" />
-        <war update="true" destfile="${temporary.dir}/pal-${astrogrid.datacenter.version}.war">
-                <metainf dir="${temporary.dir}/pal"/>
-        </war>
-
-  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-${pom.currentVersion}" war="file:///${temporary.dir}/pal-${astrogrid.datacenter.version}.war"/>
-
-</goal>
--->
-<!-- NOEL - cougaar taglib won't work with these pal wars - pal uses a different naming pattern. arse -->
-<!--
-<goal name="pal-fits-deploy" >
-                <copy file="${temporary.dir}/pal-${astrogrid.datacenter.version}.war"
-                      tofile="${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war" />
-        <copy todir="${temporary.dir}/pal_fits" filtering="true">
-                <fileset dir="contexts/pal_fits" />
-        </copy>
-       <ag:maybe-enable-cougaar webapp="pal_fits" />
-        <war update="true" destfile="${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war">
-                <metainf dir="${temporary.dir}/pal_fits"/>
-        </war>
-
-  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-fits-${pom.currentVersion}" war="file:///${temporary.dir}/pal-fits-${astrogrid.datacenter.version}.war"/>
-
-</goal>
-
-<goal name="pal-sec-deploy" >
-        <copy todir="${temporary.dir}/pal_sec" filtering="true">
-                <fileset dir="contexts/pal_sec" />
-        </copy>
-       <ag:maybe-enable-cougaar webapp="pal-sec" />
-        <war update="true" destfile="${temporary.dir}/pal-sec-${astrogrid.datacenter.version}.war">
-                <metainf dir="${temporary.dir}/pal_sec"/>
-        </war>
-
-  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-sec-${pom.currentVersion}" war="file:///${temporary.dir}/pal-sec-${astrogrid.datacenter.version}.war"/>
-
-</goal>
-
-        <goal name="pal-cds-deploy" >
-
-                <copy todir="${temporary.dir}/pal_cds" filtering="true">
-                        <fileset dir="contexts/pal_cds" />
-                </copy>
-                <ag:maybe-enable-cougaar webapp="pal_cds" />
-                <war update="true" destfile="${temporary.dir}/pal-cds-${astrogrid.datacenter.version}.war">
-                        <metainf dir="${temporary.dir}/pal_cds"/>
-                </war>
-
-          <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                  path="/astrogrid-pal-cds-${pom.currentVersion}" war="file:///${temporary.dir}/pal-cds-${astrogrid.datacenter.version}.war"/>
-
-        </goal>
--->
-
-
-
 <!--
     Deploy/Undeploy Portal
     -->
@@ -1198,43 +1057,7 @@
 	</goal>
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!--	
-	<goal name="exist-undeploy" >
 
-	  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-	          path="/exist" />
-
-	</goal>	
-
-
-<goal name="pal-undeploy" >
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-${pom.currentVersion}" />
-
-</goal>
-
-<goal name="pal-fits-undeploy" >
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-fits-${pom.currentVersion}" />
-
-</goal>
-
-<goal name="pal-sec-undeploy" >
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-sec-${pom.currentVersion}" />
-
-</goal>
-
-<goal name="pal-cds-undeploy" >
-
-          <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                  path="/astrogrid-pal-cds-${pom.currentVersion}" />
-
-</goal>
--->
 <goal name="configuration-undeploy" >
 
         <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
@@ -1249,10 +1072,7 @@
 
 </goal>
 
-
-
-
-<goal name="community-undeploy" >
+<goal name="community-undeploy">
 
     <tomcat-remove
         url="${tomcat.manager.url}"

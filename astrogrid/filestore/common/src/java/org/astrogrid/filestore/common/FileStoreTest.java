@@ -1,10 +1,17 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/03/22 11:41:04 $</cvs:date>
- * <cvs:version>$Revision: 1.13 $</cvs:version>
+ * <cvs:source>$Source: /devel/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v
+ $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/11/04 17:31:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.14 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.14  2005/11/04 17:31:05  clq2
+ *   axis_gtr_1046
+ *
+ *   Revision 1.13.54.1  2005/10/11 15:07:06  gtr
+ *   The properties org.astrogrid.filestore.test.data.file.miss and org.astrogrid.filestore.test.data.file.text now take just file-names with no attempt to construct file:// URLs in the properties. The construction of the URLs from the file-names is now done in the test classes.
+ *
  *   Revision 1.13  2005/03/22 11:41:04  jdt
  *   merge from FS_KMB_1004
  *
@@ -161,6 +168,7 @@ import java.util.Date ;
 import java.io.OutputStream ;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import junit.framework.TestCase ;
 
@@ -1508,14 +1516,8 @@ public class FileStoreTest
         {
         assertNotNull(
             "Null transfer info",
-            new UrlGetTransfer(
-                new URL(
-                    getTestProperty(
-                        "data.file.text"
-                        )
-                    )
-                )
-            ) ;
+            new UrlGetTransfer(this.urlForTestTextFile())
+            );
         }
 
     /**
@@ -1545,15 +1547,7 @@ public class FileStoreTest
         throws Exception
         {
         try {
-            target.importData(
-                new UrlGetTransfer(
-                    new URL(
-                        getTestProperty(
-                            "data.file.miss"
-                            )
-                        )
-                    )
-                ) ;
+            target.importData(new UrlGetTransfer(this.urlForTestMissingFile()));
             }
         catch (FileStoreTransferException ouch)
             {
@@ -1569,16 +1563,8 @@ public class FileStoreTest
     public void testImportFile()
         throws Exception
         {
-        TransferProperties transfer = 
-            target.importData(
-                new UrlGetTransfer(
-                    new URL(
-                        getTestProperty(
-                            "data.file.text"
-                            )
-                        )
-                    )
-                ) ;
+        TransferProperties transfer
+            = target.importData(new UrlGetTransfer(this.urlForTestTextFile()));
         assertNotNull(
             "Null transfer properties",
             transfer
@@ -1592,7 +1578,7 @@ public class FileStoreTest
     public void testImportHttp()
         throws Exception
         {
-        TransferProperties transfer = 
+        TransferProperties transfer =
             target.importData(
                 new UrlGetTransfer(
                     new URL(
@@ -1615,16 +1601,8 @@ public class FileStoreTest
     public void testImportProperties()
         throws Exception
         {
-        TransferProperties transfer = 
-            target.importData(
-                new UrlGetTransfer(
-                    new URL(
-                        getTestProperty(
-                            "data.file.text"
-                            )
-                        )
-                    )
-                ) ;
+        TransferProperties transfer =
+            target.importData(new UrlGetTransfer(this.urlForTestTextFile()));
         assertNotNull(
             "Null transfer properties",
             transfer
@@ -1655,16 +1633,8 @@ public class FileStoreTest
         {
         //
         // Import a text file.
-        TransferProperties transfer = 
-            target.importData(
-                new UrlGetTransfer(
-                    new URL(
-                        getTestProperty(
-                            "data.file.text"
-                            )
-                        )
-                    )
-                ) ;
+        TransferProperties transfer =
+            target.importData(new UrlGetTransfer(this.urlForTestTextFile()));
         //
         // Get the imported data properties.
         FileProperties imported = new FileProperties(
@@ -1690,7 +1660,7 @@ public class FileStoreTest
         {
         //
         // Import a text file.
-        TransferProperties transfer = 
+        TransferProperties transfer =
             target.importData(
                 new UrlGetTransfer(
                     new URL(
@@ -1722,7 +1692,7 @@ public class FileStoreTest
         {
         //
         // Import a text file.
-        TransferProperties transfer = 
+        TransferProperties transfer =
             target.importData(
                 new UrlGetTransfer(
                     new URL(
@@ -1754,7 +1724,7 @@ public class FileStoreTest
         {
         //
         // Import a text file.
-        TransferProperties transfer = 
+        TransferProperties transfer =
             target.importData(
                 new UrlGetTransfer(
                     new URL(
@@ -1867,20 +1837,9 @@ public class FileStoreTest
         throws Exception
         {
         //
-        // Create our URL.
-        URL url = new URL(
-            getTestProperty(
-                "data.file.text"
-                )
-            ) ;
-        //
         // Import some bytes.
-        TransferProperties transfer = 
-            target.importData(
-                new UrlGetTransfer(
-                    url
-                    )
-                ) ;
+        TransferProperties transfer =
+            target.importData(new UrlGetTransfer(this.urlForTestTextFile()));
         //
         // Get the file properties.
         FileProperties properties = new FileProperties(
@@ -1889,7 +1848,7 @@ public class FileStoreTest
         //
         // Check the imported file size.
         assertEquals(
-            url.openConnection().getContentLength(),
+            this.urlForTestTextFile().openConnection().getContentLength(),
             properties.getContentSize()
             ) ;
         }
@@ -1910,7 +1869,7 @@ public class FileStoreTest
             ) ;
         //
         // Import the data.
-        TransferProperties transfer = 
+        TransferProperties transfer =
             target.importData(
                 new UrlGetTransfer(
                     url
@@ -2037,7 +1996,7 @@ public class FileStoreTest
             ) ;
         //
         // Transfer the data.
-        TransferProperties transfer = 
+        TransferProperties transfer =
             target.importData(
                 new UrlGetTransfer(
                     new URL(
@@ -2489,4 +2448,36 @@ public class FileStoreTest
                 )
             );
         }
+
+    /**
+     * Determines the URL for a test file.
+     * The file is specified in the system properties.
+     * No test is made that the file exists or is accessible.
+     *
+     * @return The URL.
+     * @throws Exception If the given file-name cannot be converted to a URL.
+     */
+    protected URL urlForTestTextFile() throws Exception {
+      String name = getTestProperty("data.file.text");
+      File file = new File(name);
+      URL url = file.toURL();
+      return url;
     }
+
+    /**
+     * Determines the URL for a test file.
+     * The file is specified in the system properties.
+     * No test is made that the file exists or is accessible.
+     *
+     * @return The URL.
+     * @throws Exception If the given file-name cannot be converted to a URL.
+     */
+    protected URL urlForTestMissingFile() throws Exception {
+      String name = getTestProperty("data.file.miss");
+      File file = new File(name);
+      URL url = file.toURL();
+      return url;
+    }
+
+    }
+

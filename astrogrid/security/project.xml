@@ -41,34 +41,43 @@
   
   <dependencies>
      
-    <dependency>
-      <groupId>axis</groupId>
-      <type>jar</type>
-      <artifactId>axis</artifactId>
-      <version>1.2.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>saaj</groupId>
-      <type>jar</type>
-      <artifactId>saaj</artifactId>
-      <version>unknown</version>
-      <jar>saaj.jar</jar>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <type>jar</type>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-discovery</groupId>
-      <type>jar</type>
-      <artifactId>commons-discovery</artifactId>
-      <version>20030211.213356</version>
-    </dependency>
+  	<!-- axis, and the jars it relies upon -->
+  	<dependency>
+  		<groupId>axis</groupId>
+  		<type>jar</type>
+  		<artifactId>axis</artifactId>
+  		<version>1.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>axis</groupId>
+  		<type>jar</type>
+  		<artifactId>wsdl4j</artifactId>
+  		<version>1.5.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>axis</groupId>
+  		<type>jar</type>
+  		<artifactId>axis-saaj</artifactId>
+  		<version>1.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>axis</groupId>
+  		<type>jar</type>
+  		<artifactId>axis-jaxrpc</artifactId>
+  		<version>1.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>axis</groupId>
+  		<type>jar</type>
+  		<artifactId>commons-logging</artifactId>
+  		<version>1.0.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>axis</groupId>
+  		<type>jar</type>
+  		<artifactId>commons-discovery</artifactId>
+  		<version>0.2</version>
+  	</dependency>
     
     <dependency>
       <groupId>castor</groupId>
@@ -76,13 +85,6 @@
       <artifactId>castor-xml</artifactId>
       <version>0.9.5</version>
       <jar>castor-0.9.5-xml.jar</jar>
-    </dependency>
-    
-    <dependency>
-      <groupId>jaxrpc-api</groupId>
-      <type>jar</type>
-      <artifactId>jaxrpc-api</artifactId>
-      <version>1.0.3</version>
     </dependency>
     
     <dependency>

@@ -97,7 +97,7 @@
 		<accessURL use="full">http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</accessURL>
     </interface> 
 	<cea:ManagedApplications>
-		<cea:ApplicationReference>ivo://astrogrid.org/CallMakeMPEGFitsImages</cea:ApplicationReference>
+		<cea:ApplicationReference>ivo://astrogrid.mssl/CallMakeMPEGFitsImages</cea:ApplicationReference>
 	</cea:ManagedApplications>
 </vor:Resource>
 <vor:Resource xsi:type="vs:TabularSkyService"  updated="2004-11-20T15:34:22Z" status="active">

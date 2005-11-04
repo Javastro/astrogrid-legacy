@@ -1,11 +1,12 @@
 /*
- * $Id: PiperTest.java,v 1.4 2004/09/24 14:17:40 pah Exp $
+ * $Id: PiperTest.java,v 1.5 2005/11/04 17:31:05 clq2 Exp $
  */
 
 package org.astrogrid.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -31,7 +32,7 @@ public class PiperTest extends TestCase
    public void testStreamPipe() throws IOException
    {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
-      
+
       Piper.bufferedPipe(new ByteArrayInputStream(testContents.getBytes()), out);
 
       assertEquals("Pipe has changed contents", testContents, out.toString());
@@ -43,7 +44,7 @@ public class PiperTest extends TestCase
    public void testReadPipe() throws IOException
    {
       StringWriter writer = new StringWriter();
-      
+
       Piper.bufferedPipe(new StringReader(testContents), writer);
 
       assertEquals("Pipe has changed contents", testContents, writer.toString());
@@ -51,15 +52,18 @@ public class PiperTest extends TestCase
 
    public void testBig() throws Exception
    {
-       FileOutputStream fs = new FileOutputStream("/dev/null");
+       File f = File.createTempFile("foo", ".dat");
+       FileOutputStream fs = new FileOutputStream(f);
        byte[] testin = new byte[1024*1024*31];
        Arrays.fill(testin, (byte)1);
-       
+
        System.out.println("attempting big copy");
        Piper.pipe(new ByteArrayInputStream(testin), fs);
        System.out.println("finished big copy");
-   }   
-   
+
+       f.delete();
+   }
+
 
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -81,6 +85,12 @@ public class PiperTest extends TestCase
 
 /*
  $Log: PiperTest.java,v $
+ Revision 1.5  2005/11/04 17:31:05  clq2
+ axis_gtr_1046
+
+ Revision 1.4.94.1  2005/10/10 15:33:47  gtr
+ Fix for BZ1408: a temporary file, named by java.io.File, is used instead of /dev/null.
+
  Revision 1.4  2004/09/24 14:17:40  pah
  added excessive transfer size warning at 30M
 

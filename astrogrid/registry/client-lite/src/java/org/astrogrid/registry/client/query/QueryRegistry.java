@@ -11,8 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
-import org.apache.axis.constants.Style;
-import org.apache.axis.constants.Use;
 import org.apache.axis.message.SOAPBodyElement;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.query.sql.Sql2Adql;
@@ -148,8 +146,6 @@ public class QueryRegistry implements RegistryService {
       _call = (Call)service.createCall();
       _call.setTargetEndpointAddress(this.endPoint);
       _call.setSOAPActionURI("");
-      _call.setOperationStyle(Style.MESSAGE);
-      _call.setOperationUse(Use.LITERAL);
       _call.setEncodingStyle(null);
       return _call;
    }
@@ -273,6 +269,7 @@ public class QueryRegistry implements RegistryService {
        NodeList vResources = null;
            //get a call object
            Call call = getCall();
+           call.setOperationName(new QName(NAMESPACE_URI, name));
            call.setSOAPActionURI(soapActionURI);
            //create the soap body to be placed in the
            //outgoing soap message.
@@ -291,7 +288,7 @@ public class QueryRegistry implements RegistryService {
               sbe = (SOAPBodyElement)result.get(0);
               //resultDoc = sbe.getAsDocument();
               wsDoc = sbe.getAsDocument();
-              logger.debug("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(wsDoc));
+//              logger.debug("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(wsDoc));
 //              if(resultDoc.getElementsByTagNameNS("*","Resource").getLength() == 0)
 //                  return DomHelper.newDocument();
               if(wsDoc.getDocumentElement() == null) {
@@ -305,6 +302,7 @@ public class QueryRegistry implements RegistryService {
                   boolean importedNodes = false;
                   if( soapChildNodes.getLength() == 0) {
                       logger.error("NO VOResources found, SHOULD NOT HAPPEN THERE SHOULD ALWAYS BE AN ELEMENT");
+                      logger.error("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(wsDoc));
                       throw new Exception("Error No VOResources found, should always be one.");
                   }else {
                       for(int i = 0;i < soapChildNodes.getLength();i++) {
@@ -413,7 +411,7 @@ public class QueryRegistry implements RegistryService {
          throw new RegistryException(pce);
       }
       try {
-          return callService(doc,"LoadRegistry","LoadRegistry");
+          return callService(doc,"loadRegistry","loadRegistry");
       } catch (RemoteException re) {
          logger.error(re);
          throw new RegistryException(re);

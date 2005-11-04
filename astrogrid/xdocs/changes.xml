@@ -5,12 +5,7 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-    		<action dev="gtr" type="fix">
-    			<em>Branch axis-gtr-1406:</em> I have upgraded everything to Axis 1.3 and fixed the major problems resulting plus some
-    			small errors in AGINAB. On my test-system, 88.80% of integration tests are passed, compared with 85.19% on head. I think
-    			a number of the remaining failures are bad tests. There are a few FileStore problems and some NPEs in JES that may be real
-    			bugs.
-    		</action>
+    		
     		<action dev="gtr" type="fix">
     			<em>Branch contracts-gtr-1373:</em> I have fixed the <i>schemaLocation</i> attributes in the schemata to be
     			systematically relative to each other. There are now many extra schemata copied from IVOA and imported
@@ -38,6 +33,13 @@
         </release>
 		
 		<release version="HEAD">
+		<action dev="gtr" type="fix">
+    			<em>Branch axis-gtr-1406:</em> I have upgraded everything to Axis 1.3 and fixed the major problems resulting plus some
+    			small errors in AGINAB. On my test-system, 88.80% of integration tests are passed, compared with 85.19% on head. I think
+    			a number of the remaining failures are bad tests. There are a few FileStore problems and some NPEs in JES that may be real
+    			bugs.
+    			see: http://www.astrogrid.org/maven/docs/HEAD/backupReports/integrationTests/20051104-17:27:18/junit-report.html  -- CLQ
+    		</action>
 			<action dev="clq" type="fix" issue="1367"><em>Branch: clq_reg_1367</em>
 				Rolled back QueryRegistry.java to suits the backward compability issue. recompiled relevent components with projec.properties version 1.206
 			</action>

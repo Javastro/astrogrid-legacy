@@ -42,26 +42,10 @@
             <version>${astrogrid.filemanager.version}</version>
             <properties/>
         </dependency>         
-<!--
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-mySpace</artifactId>
-            <version>${astrogrid.mySpace.version}</version>
-            <type>war</type>
-            <properties/>
-        </dependency>
--->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-deploy-script</artifactId>
             <version>${astrogrid.registry.version}</version>
-            <properties/>
-        </dependency>
-        <dependency>
-            <groupId>exist</groupId>
-            <artifactId>exist</artifactId>
-                <version>SNAPSHOT</version>
-            <type>war</type>
             <properties/>
         </dependency>
         <dependency>
@@ -92,41 +76,43 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
 
-                <!--standard web services stuff-->
-                <!-- axis libs -->
-                <dependency>
-                        <artifactId>commons-logging</artifactId>
-                        <groupId>commons-logging</groupId>
-                        <version>1.0.3</version>
-                </dependency>
-                <dependency>
-                        <artifactId>commons-discovery</artifactId>
-                        <groupId>commons-discovery</groupId>
-                        <version>20030211.213356</version>
-                </dependency>
-                <dependency>
-                        <id>wsdl4j</id>
-                        <version>1.4</version>
-                </dependency>
-                <dependency>
-                        <artifactId>jaxrpc</artifactId>
-                        <groupId>jaxrpc</groupId>
-                        <version>UNKNOWN</version>
-                        <jar>jaxrpc.jar</jar>
-                </dependency>
-                <dependency>
-                        <artifactId>saaj</artifactId>
-                        <groupId>saaj</groupId>
-                        <version>UNKNOWN</version>
-                        <jar>saaj.jar</jar>
-                </dependency>
-                <dependency>
-                        <artifactId>axis</artifactId>
-                        <groupId>axis</groupId>
-                        <version>1.1</version>
-                </dependency>
-
-
+    	<!-- axis, and the jars it relies upon -->
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis</artifactId>
+    		<version>1.3</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>wsdl4j</artifactId>
+    		<version>1.5.1</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-saaj</artifactId>
+    		<version>1.3</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-jaxrpc</artifactId>
+    		<version>1.3</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-logging</artifactId>
+    		<version>1.0.4</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-discovery</artifactId>
+    		<version>0.2</version>
+    	</dependency>
 
         <dependency>
             <groupId>hsqldb</groupId>

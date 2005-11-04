@@ -210,12 +210,6 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-        
-        <dependency>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-            <version>1.0.3</version>
-        </dependency>
     	
         <dependency>
             <groupId>org.astrogrid</groupId>
@@ -223,19 +217,6 @@
             <version>${astrogrid.pal.version}</version>
             <type>jar</type>
         </dependency>    
-		
-        <!-- for writing XML -->
-       <dependency>
-          <artifactId>astrogrid-xml</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.xml.stable}</version>
-       </dependency>
-
-       <dependency>
-          <artifactId>astrogrid-slinger-api</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.slinger.version}</version>
-       </dependency>
     	
         <dependency>
              <artifactId>astrogrid-utils</artifactId>
@@ -243,7 +224,7 @@
              <version>${astrogrid.utils.stable}</version>
       </dependency>
 
-        
+        <!--
         <dependency>
         	<id>xerces</id>
             <version>2.4.0</version>
@@ -259,14 +240,14 @@
           		<war.bundle>true</war.bundle>
           	</properties>
         </dependency>
-
+        	-->
     	
     	<!-- axis, and the jars it relies upon -->
     	<dependency>
     		<groupId>axis</groupId>
     		<type>jar</type>
     		<artifactId>axis</artifactId>
-    		<version>1.2.1</version>
+    		<version>1.3</version>
     		<properties>
     			<war.bundle>true</war.bundle>
     		</properties>
@@ -284,7 +265,7 @@
     		<groupId>axis</groupId>
     		<type>jar</type>
     		<artifactId>axis-saaj</artifactId>
-    		<version>1.2.1</version>
+    		<version>1.3</version>
     		<properties>
     			<war.bundle>true</war.bundle>
     		</properties>
@@ -293,7 +274,7 @@
     		<groupId>axis</groupId>
     		<type>jar</type>
     		<artifactId>axis-jaxrpc</artifactId>
-    		<version>1.2.1</version>
+    		<version>1.3</version>
     		<properties>
     			<war.bundle>true</war.bundle>
     		</properties>

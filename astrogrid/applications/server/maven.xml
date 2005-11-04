@@ -32,6 +32,7 @@
         </copy>
 </goal>
 <!-- full junit report -->
+	<!-- This breaks Maven 1.0.2 - GTR 2005-010-11
   <postGoal name="maven-junit-report-plugin:report">
     <attainGoal name="full-junit-report" />
   </postGoal>
@@ -45,6 +46,8 @@
     <report format="frames" styledir="${basedir}/../src/xslt" todir="${basedir}/target/docs/junit-full" />
   </junitreport>
   </goal>
+	-->
+	
   <!-- packaging of the war file
 
   need to

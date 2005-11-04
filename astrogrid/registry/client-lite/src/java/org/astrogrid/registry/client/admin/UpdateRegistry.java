@@ -11,8 +11,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
-//import org.apache.axis.constants.Style;
-//import org.apache.axis.constants.Use;
 import org.astrogrid.registry.common.RegistryValidator;
 import org.apache.axis.message.SOAPBodyElement;
 import org.apache.axis.utils.XMLUtils;
@@ -117,9 +115,6 @@ public class UpdateRegistry implements RegistryAdminService {
          _call = (Call) service.createCall();
          _call.setTargetEndpointAddress(this.endPoint);
          _call.setSOAPActionURI("");
-         //commented out for upgrading to newer axis
-         //_call.setOperationStyle(Style.MESSAGE);
-         //_call.setOperationUse(Use.LITERAL);
          _call.setEncodingStyle(null);
          return _call;
     }

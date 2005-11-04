@@ -3,10 +3,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2005/11/04 17:31:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.5  2005/11/04 17:31:05  clq2
+    |   axis_gtr_1046
+    |
+    |   Revision 1.4.64.2  2005/10/13 11:53:38  gtr
+    |   I eliminated commons-logging-1.0.3. Axis usesv1.0.4.
+    |
+    |   Revision 1.4.64.1  2005/10/13 11:45:55  gtr
+    |   I updated Axis to v1.3. This brought in several other upgrades of jars in the axis group: wsdj4j, commons-logging, commons-discovery. I changed the naming of some of the axis-group jars to match our new scheme: axis-jaxrpc-1.3 and axis-saaj-1.3 in, saaj and jaxrpxc-api out. In the process, I modernised the POM mark-up, changing <id> to <groupId> and <artifactId>.
+    |
     |   Revision 1.4  2005/03/11 13:37:06  clq2
     |   new filemanager merged with filemanager-nww-jdt-903-943
     |
@@ -73,17 +82,7 @@
         | The external libraries required to build our components common to all subprojects
         +-->
     <dependencies>
-        <!--+
-            | Commons logging API.
-            +-->
-        <dependency>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-            <version>1.0.3</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
+ 
         <!--+
             | Log4j toolkit.
             +-->
@@ -104,53 +103,62 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-        <!-- axis libraries -->
-        <dependency>
-            <artifactId>axis-ant</artifactId>
-            <groupId>axis</groupId>
-            <version>1.1</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <artifactId>axis</artifactId>
-            <groupId>axis</groupId>
-            <version>1.1</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-                    <dependency>
-            <id>wsdl4j</id>
-            <version>1.0</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <artifactId>commons-discovery</artifactId>
-            <groupId>commons-discovery</groupId>
-            <version>20030211.213356</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <id>jaxrpc-api</id>
-            <version>1.0.3</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <id>saaj</id>
-            <version>1.0</version>
-            <jar>saaj.jar</jar>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
+    	
+    	<!-- axis, and the jars it relies upon -->
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>wsdl4j</artifactId>
+    		<version>1.5.1</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-saaj</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-jaxrpc</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-logging</artifactId>
+    		<version>1.0.4</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-discovery</artifactId>
+    		<version>0.2</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
 
     </dependencies>
 

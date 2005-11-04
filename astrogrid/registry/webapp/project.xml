@@ -124,16 +124,6 @@
             <war.bundle>true</war.bundle>
         </properties>       	
        </dependency>
-
-       <dependency>
-          <artifactId>astrogrid-slinger-api</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.slinger.version}</version>
-        <properties>
-            <war.bundle>true</war.bundle>
-        </properties>       	
-       </dependency>
-    	
     	
         <!--+
             | The Registry server components.
@@ -207,15 +197,7 @@
   	  	  	<war.bundle>true</war.bundle>
             </properties>        	
         </dependency>        	  
-                        
-        <dependency>
-        	<id>xerces</id>
-            <version>2.4.0</version>
-            <properties>
-            	<war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
+ 
         <dependency>
         	<id>excalibur-cli</id>
             <version>1.0</version>
@@ -224,50 +206,75 @@
             </properties>
         </dependency>
 
-
-        <dependency>
-       		<id>xml-apis</id>
-          	<version>1.0.b2</version>
-          	<properties>
-          		<war.bundle>true</war.bundle>
-          	</properties>
-        </dependency>
-
-    	
-        <dependency>
-            <artifactId>commons-discovery</artifactId>
-            <groupId>commons-discovery</groupId>
-            <version>20030211.213356</version>
-        </dependency>        
-
-        <dependency>
-             <artifactId>commons-logging</artifactId>
-             <groupId>commons-logging</groupId>
-             <version>1.0.3</version>
-         </dependency>
+    	<!-- axis, and the jars it relies upon -->
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>wsdl4j</artifactId>
+    		<version>1.5.1</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-saaj</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-jaxrpc</artifactId>
+    		<version>1.3</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-logging</artifactId>
+    		<version>1.0.4</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-discovery</artifactId>
+    		<version>0.2</version>
+    		<properties>
+    			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
     	
          <dependency>
-             <artifactId>log4j</artifactId>
-             <groupId>log4j</groupId>
-             <version>1.2.4</version>
+           <artifactId>log4j</artifactId>
+           <groupId>log4j</groupId>
+           <version>1.2.8</version>
+         	 <properties>
+         		 <war.bundle>true</war.bundle>
+         	 </properties>
          </dependency>
 
         <dependency>
             <artifactId>servletapi</artifactId>
             <groupId>servletapi</groupId>
             <version>2.3</version>
-        </dependency>
-
-    	<dependency>
-           <id>jaxrpc</id>
-           <version>unknown</version>
-           <jar>jaxrpc.jar</jar>
-        </dependency>
-
-        <dependency>
-           <id>saaj</id>
-           <version>unknown</version>
-           <jar>saaj.jar</jar>
         </dependency>
     	
         <dependency>

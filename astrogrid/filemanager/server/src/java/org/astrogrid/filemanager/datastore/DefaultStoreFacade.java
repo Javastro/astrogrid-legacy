@@ -1,11 +1,11 @@
-/*$Id: DefaultStoreFacade.java,v 1.2 2005/03/11 13:37:06 clq2 Exp $
+/*$Id: DefaultStoreFacade.java,v 1.3 2005/11/04 17:31:05 clq2 Exp $
  * Created on 27-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.filemanager.datastore;
@@ -30,7 +30,7 @@ import java.util.Map;
 
 /** Default implementation of store facade - uses the standard file store delegate resolvers
  * to resolve to filestore dleegates as needed.
- * 
+ *
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Feb-2005
  *
  */
@@ -38,14 +38,14 @@ public class DefaultStoreFacade implements StoreFacade {
 
     /** Construct a new DefaultStoreFacade
      * @param resolver resolver used to map identifiers to filestore delegates.
-     * 
+     *
      */
     public DefaultStoreFacade(FileStoreDelegateResolver resolver) {
         super();
         this.resolver = resolver;
     }
-    
-    protected final FileStoreDelegateResolver resolver;      
+
+    protected final FileStoreDelegateResolver resolver;
 
     /**
      * @see org.astrogrid.filemanager.datastore.StoreFacade#resolve(org.apache.axis.types.URI)
@@ -58,7 +58,7 @@ public class DefaultStoreFacade implements StoreFacade {
             throw new FileStoreIdentifierException("URISyntaxException " + e.getMessage());
         }
     }
-    
+
     /** implementation of te StoreFacade.Store */
     static class DefaultStore implements StoreFacade.Store {
         /** Construct a new DefaultStore
@@ -82,26 +82,47 @@ public class DefaultStoreFacade implements StoreFacade {
          * @see org.astrogrid.filemanager.datastore.StoreFacade.Store#duplicate(java.lang.String)
          */
         public String duplicate(String ident) throws FileStoreException {
-            FileProperty[] origArr =new FileProperty[0]; 
+            FileProperty[] origArr =new FileProperty[0];
             FileProperty[] arr = fs.duplicate(ident,origArr);
             FileProperties fps = new FileProperties(arr);
             return fps.getStoreResourceIdent();
         }
 
         /**
+         * Sets up a read from the FileStore. The returned object tells the caller
+         * where and how to write the data: URL, method. Currently, the
+         * FileStore supports only HTTP-GET, so this is hard-coded.
+         *
+         * @param ident The file to be read, in the store's namespace.
+         * @return The recipe for reading the data from the store.
+         * @throws FileStoreException If errors are trapped in this class.
+         * @throws FileStoreException If the FileStore service faults.
          * @see org.astrogrid.filemanager.datastore.StoreFacade.Store#requestReadFromStore(java.lang.String)
          */
         public TransferInfo requestReadFromStore(String ident) throws FileStoreException {
             TransferProperties tps = identToTransferProperties(ident);
+            tps.setMethod("GET");
             TransferProperties tps1 = fs.exportInit(tps);
-            return transferPropertiesToTransferInfo(tps1);      
+            TransferInfo ti = this.transferPropertiesToTransferInfo(tps1);
+            ti.setMethod("GET");
+            return ti;
         }
 
         /**
+         * Sets up a write to the FileStore. The returned object tells the caller
+         * where and how to write the data: URL, method. Currently, the
+         * FileStore supports only HTTP-PUT, so this is hard-coded.
+         *
+         * @param ident The file to be written, in the store's namespace.
+         * @param overwrite If true, replace existing data in the store; otherwise append data.
+         * @return The recipe for writing the data to the store.
+         * @throws FileStoreException If errors are trapped in this class.
+         * @throws FileStoreException If the FileStore service faults.
          * @see org.astrogrid.filemanager.datastore.StoreFacade.Store#requestWriteToStore(java.lang.String, boolean)
          */
         public TransferInfo requestWriteToStore(String ident, boolean overwrite) throws FileStoreException {
             TransferProperties tps = identToTransferProperties(ident);
+            tps.setMethod("PUT");
             TransferProperties tps1;
             if (overwrite) {
                 tps1 = fs.importInit(tps);
@@ -109,9 +130,11 @@ public class DefaultStoreFacade implements StoreFacade {
               //* no implementation for append */
                 throw new FileStoreException("Append not supported");
             }
-            return transferPropertiesToTransferInfo(tps1);
+            TransferInfo ti = this.transferPropertiesToTransferInfo(tps1);
+            ti.setMethod("PUT");
+            return ti;
         }
-        
+
         /**
          * @see org.astrogrid.filemanager.datastore.StoreFacade.Store#requestWriteToStore()
          */
@@ -120,16 +143,17 @@ public class DefaultStoreFacade implements StoreFacade {
                 TransferProperties tps1 = fs.importInit(tps);
                 NewResource nr = new NewResource();
                 nr.ident = (new FileProperties(tps1.getFileProperties())).getStoreResourceIdent();
-                nr.transfer = transferPropertiesToTransferInfo(tps1);     
+                nr.transfer = transferPropertiesToTransferInfo(tps1);
                 return nr;
             }
-               
+
         /**
-         * @see org.astrogrid.filemanager.datastore.StoreFacade.Store#readIn(java.lang.String, org.astrogrid.filemanager.common.TransferInfo)
+         * @see org.astrogrid.filemanager.datastore.StoreFacade.Store#readIn(java.lang.String,
+         org.astrogrid.filemanager.common.TransferInfo)
          */
         public void readIn(String ident, TransferInfo info) throws FileStoreException {
             TransferProperties tp = transferInfoAndIdentToTransferProperties(ident,info);
-            fs.importData(tp);           
+            fs.importData(tp);
         }
 
         /**
@@ -140,9 +164,10 @@ public class DefaultStoreFacade implements StoreFacade {
             TransferProperties tp1 = fs.importData(tp);
             return  (new FileProperties(tp1.getFileProperties())).getStoreResourceIdent();
         }
-        
+
         /**
-         * @see org.astrogrid.filemanager.datastore.StoreFacade.Store#writeOut(java.lang.String, org.astrogrid.filemanager.common.TransferInfo)
+         * @see org.astrogrid.filemanager.datastore.StoreFacade.Store#writeOut(java.lang.String,
+         org.astrogrid.filemanager.common.TransferInfo)
          */
         public void writeOut(String ident, TransferInfo info) throws FileStoreException {
             TransferProperties tp = transferInfoAndIdentToTransferProperties(ident,info);
@@ -156,7 +181,7 @@ public class DefaultStoreFacade implements StoreFacade {
             FileProperty[] arr = fs.properties(ident);
             if (arr == null) {
                 return Collections.unmodifiableMap(Collections.EMPTY_MAP);
-            } 
+            }
             Map m = new HashMap(arr.length);
             for (int i = 0; i < arr.length; i++) {
                 m.put(arr[i].getName(),arr[i].getValue());
@@ -180,7 +205,8 @@ public class DefaultStoreFacade implements StoreFacade {
          * @return
          * @throws FileStoreException
          */
-        private TransferProperties transferInfoAndIdentToTransferProperties(String ident,TransferInfo info) throws FileStoreException {
+        private TransferProperties transferInfoAndIdentToTransferProperties(String ident,TransferInfo info) throws
+        FileStoreException {
             try {
             FileProperties props = new FileProperties();
             props.setStoreResourceIvorn(new Ivorn(location +"#" + ident));
@@ -189,14 +215,14 @@ public class DefaultStoreFacade implements StoreFacade {
             tp.setLocation(info.getUri().toString());
             tp.setProtocol("HTTP");
             tp.setMethod(info.getMethod());
-            tp.setIdent(ident);                 
+            tp.setIdent(ident);
             return tp;
             } catch (URISyntaxException e) {
                 throw new FileStoreException("Could not build valid ident " + e.getMessage());
-            }              
+            }
         }
-        
-        
+
+
         /** convert a transfer propertires to a transfer info
          * @param tps1
          * @return
@@ -210,7 +236,7 @@ public class DefaultStoreFacade implements StoreFacade {
             return result;
         } catch (MalformedURIException e) {
             throw new FileStoreException("File store returned invalid access URL " + e.getMessage());
-        }               
+        }
         }
 
 
@@ -222,13 +248,13 @@ public class DefaultStoreFacade implements StoreFacade {
         private TransferProperties identToTransferProperties(String ident) throws FileStoreException {
             try {
             FileProperties props = new FileProperties();
-            props.setStoreResourceIvorn(new Ivorn(location +"#" + ident));            
+            props.setStoreResourceIvorn(new Ivorn(location +"#" + ident));
             TransferProperties tps = new TransferProperties(props);
             tps.setIdent(ident);
             return tps;
             } catch (URISyntaxException e) {
                 throw new FileStoreException("Could not build valid ident " + e.getMessage());
-            }            
+            }
         }
 
 
@@ -247,8 +273,14 @@ public class DefaultStoreFacade implements StoreFacade {
 }
 
 
-/* 
+/*
 $Log: DefaultStoreFacade.java,v $
+Revision 1.3  2005/11/04 17:31:05  clq2
+axis_gtr_1046
+
+Revision 1.2.64.1  2005/10/19 13:46:27  gtr
+I added code to make sure that the method property of a TransferInfo bean is always set. Axis 1.3 requires this in order to serialize the bean.
+
 Revision 1.2  2005/03/11 13:37:06  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 
@@ -260,5 +292,5 @@ close to finished now.
 
 Revision 1.1.2.1  2005/02/27 23:03:12  nw
 first cut of talking to filestore
- 
+
 */

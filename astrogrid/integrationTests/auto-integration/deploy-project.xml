@@ -1,129 +1,233 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deploy-project.xml,v 1.1 2004/09/16 07:09:26 pah Exp $ -->
+
+<!-- $Id: deploy-project.xml,v 1.2 2005/11/04 17:31:05 clq2 Exp $ -->
+
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
     <groupId>org.astrogrid</groupId>
+
     <id>astrogrid-deploy-component</id>
+
     <name>Deploy component</name>
+
     <currentVersion>${astrogrid.release}</currentVersion>
+
     <organization>
+
         <name>AstroGrid</name>
+
         <url>http://www.astrogrid.org</url>
+
         <logo>http://www.astrogrid.org/images/AGlogo</logo>
+
     </organization>
+
     <description>
+
     Automated deployment of myspace.
+
     </description>
+
     <inceptionYear>2002</inceptionYear>
+
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+
     <package>org.astrogrid</package>
+
     <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/${astrogrid.name}</siteDirectory>
+
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
 
+
+
     <build />
+
     <dependencies>
+
  		
+
 		
+
         <!-- standard needed for all deployment -->
+
            <dependency>
+
                   <id>hsqldb</id>
+
                  <version>1.7.1</version>
+
            </dependency>
+
         <!-- for development -->
+
         <dependency>
+
             <artifactId>catalina-ant</artifactId>
+
             <groupId>catalina-ant</groupId>
+
             <!--<version>4.1.24</version>-->
+
             <version>5.0.18</version>
 
+
+
         </dependency>
+
         <!--+
+
             | Deployment tools
+
             | Required for the Registry upload.
+
             +-->
+
         <dependency>
+
             <groupId>org.astrogrid</groupId>
+
             <artifactId>astrogrid-common</artifactId>
+
             <version>${pom.currentVersion}</version>
+
             <type>jar</type>
+
             <url>http://www.astrogrid.org/</url>
+
         </dependency>
+
        <dependency>
+
             <groupId>org.astrogrid</groupId>
+
             <artifactId>astrogrid-deployment</artifactId>
+
             <version>${pom.currentVersion}</version>
+
             <type>jar</type>
+
             <url>http://www.astrogrid.org/</url>
+
         </dependency>
+
 		<dependency>
+
             <groupId>org.astrogrid</groupId>
+
             <artifactId>astrogrid-registry-client-lite</artifactId>
+
             <version>${pom.currentVersion}</version>
+
             <type>jar</type>
+
             <url>http://www.astrogrid.org/</url>
+
         </dependency>
+
 		 <dependency>
+
             <groupId>org.astrogrid</groupId>
+
             <artifactId>astrogrid-registry-common</artifactId>
+
             <version>${pom.currentVersion}</version>
+
             <type>jar</type>
+
             <url>http://www.astrogrid.org/</url>
+
         </dependency>
+
 		
+
 <!--standard web services stuff-->
-		<!-- axis libs -->
-		<dependency>
-			<artifactId>commons-logging</artifactId>
-			<groupId>commons-logging</groupId>
-			<version>1.0.3</version>
-		</dependency>
-		<dependency>
-			<artifactId>commons-discovery</artifactId>
-			<groupId>commons-discovery</groupId>
-			<version>20030211.213356</version>
-		</dependency>
-		<dependency>
-			<id>wsdl4j</id>
-			<version>1.4</version>
-		</dependency>
-		<dependency>
-			<artifactId>jaxrpc</artifactId>
-			<groupId>jaxrpc</groupId>
-			<version>UNKNOWN</version>
-			<jar>jaxrpc.jar</jar>
-		</dependency>
-		<dependency>
-			<artifactId>saaj</artifactId>
-			<groupId>saaj</groupId>
-			<version>UNKNOWN</version>
-			<jar>saaj.jar</jar>
-		</dependency>
-		<dependency>
-			<artifactId>axis</artifactId>
-			<groupId>axis</groupId>
-			<version>1.1</version>
-		</dependency>
+
+    	<!-- axis, and the jars it relies upon -->
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis</artifactId>
+    		<version>1.3</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>wsdl4j</artifactId>
+    		<version>1.5.1</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-saaj</artifactId>
+    		<version>1.3</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>axis-jaxrpc</artifactId>
+    		<version>1.3</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-logging</artifactId>
+    		<version>1.0.4</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>axis</groupId>
+    		<type>jar</type>
+    		<artifactId>commons-discovery</artifactId>
+    		<version>0.2</version>
+    	</dependency>
+    	
+
 		
+
         <!-- jelly stuff for the maven script -->
+
 		<dependency>
+
             <groupId>commons-jelly</groupId>
+
             <artifactId>commons-jelly-tags-jsl</artifactId>
+
             <version>20030211.143151</version>
+
             <properties/>
+
         </dependency>
+
         <dependency>
+
             <groupId>commons-jelly</groupId>
+
             <artifactId>commons-jelly-tags-xml</artifactId>
+
             <version>20030211.142705</version>
+
             <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
             <properties/>
+
         </dependency>
+
 		<dependency>
+
             <groupId>commons-jelly</groupId>
+
             <artifactId>commons-jelly-tags-http</artifactId>
+
             <version>SNAPSHOT</version>
+
             <properties/>
+
         </dependency>
+
 		
+
     </dependencies>
+
 </project>
+
