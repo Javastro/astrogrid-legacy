@@ -1,4 +1,4 @@
-/*$Id: ResourceInformation.java,v 1.4 2005/09/12 15:21:43 nw Exp $
+/*$Id: ResourceInformation.java,v 1.5 2005/11/04 14:38:58 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,16 +23,18 @@ import java.net.URL;
  */
 public class ResourceInformation extends AbstractInformation {
     
-    public ResourceInformation(URI ivorn,String title,String description, URL url) {
+    public ResourceInformation(URI ivorn,String title,String description, URL url, URL logo) {
         super(title,ivorn);
         this.description= description;
         this.url = url;
+        this.logo = logo;
     }
     
     protected final String description;
 
     protected final URL url;
-    
+    //@since 1.3
+    protected final URL logo;
     
     /** access the description of this entry 
      * @return contents of the 'description' element from the registry entry
@@ -54,6 +56,15 @@ public class ResourceInformation extends AbstractInformation {
     public URL getAccessURL() {
         return url;
     }
+    
+    /** access the url for the logo for this entry
+     * @return url for the logo for this resource, if defined.
+     * @xmlrpc key will be <tt>logoURL</tt>. May not be present.
+     */
+    public URL getLogoURL() {
+        return logo;
+    }
+    
     // also getInterface() - but don't know what this is, so will leave for now.
     public String toString() {
         StringBuffer buffer = new StringBuffer();
@@ -64,6 +75,8 @@ public class ResourceInformation extends AbstractInformation {
         buffer.append(description);
         buffer.append(" url: ");
         buffer.append(url);
+        buffer.append(" logo: ");
+        buffer.append(logo);        
         buffer.append("]");
         return buffer.toString();
     }
@@ -72,6 +85,9 @@ public class ResourceInformation extends AbstractInformation {
 
 /* 
 $Log: ResourceInformation.java,v $
+Revision 1.5  2005/11/04 14:38:58  nw
+added logo field
+
 Revision 1.4  2005/09/12 15:21:43  nw
 added stuff for adql.
 

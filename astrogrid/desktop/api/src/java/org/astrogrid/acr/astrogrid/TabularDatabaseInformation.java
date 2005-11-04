@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformation.java,v 1.1 2005/09/12 15:21:43 nw Exp $
+/*$Id: TabularDatabaseInformation.java,v 1.2 2005/11/04 14:38:58 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,8 +27,8 @@ public class TabularDatabaseInformation extends ResourceInformation {
      * @param description
      * @param url
      */
-    public TabularDatabaseInformation(URI ivorn, String title, String description, URL url, DatabaseBean[] databases) {
-        super(ivorn, title, description, url);
+    public TabularDatabaseInformation(URI ivorn, String title, String description, URL url, URL logo,DatabaseBean[] databases) {
+        super(ivorn, title, description, url,logo);
         this.databases = databases;
     }
     protected final DatabaseBean[] databases;
@@ -43,6 +43,9 @@ public class TabularDatabaseInformation extends ResourceInformation {
 
 /* 
 $Log: TabularDatabaseInformation.java,v $
+Revision 1.2  2005/11/04 14:38:58  nw
+added logo field
+
 Revision 1.1  2005/09/12 15:21:43  nw
 added stuff for adql.
  

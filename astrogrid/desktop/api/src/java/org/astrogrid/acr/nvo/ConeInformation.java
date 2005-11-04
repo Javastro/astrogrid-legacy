@@ -1,4 +1,4 @@
-/*$Id: ConeInformation.java,v 1.2 2005/10/19 18:07:06 nw Exp $
+/*$Id: ConeInformation.java,v 1.3 2005/11/04 14:38:58 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,8 +37,8 @@ public class ConeInformation extends ApplicationInformation {
      * @param description
      * @param url
      */
-    public ConeInformation(URI ivorn, String title, String description, URL url,float maxSR,int maxRecords, boolean verbosity) {
-        super(ivorn, title, description,parameters,ifaces,url);
+    public ConeInformation(URI ivorn, String title, String description, URL url, URL logo, float maxSR,int maxRecords, boolean verbosity) {
+        super(ivorn, title, description,parameters,ifaces,url,logo);
         this.maxSR = maxSR;
         this.maxRecords = maxRecords;
         this.verbosity = verbosity;
@@ -95,6 +95,9 @@ public class ConeInformation extends ApplicationInformation {
 
 /* 
 $Log: ConeInformation.java,v $
+Revision 1.3  2005/11/04 14:38:58  nw
+added logo field
+
 Revision 1.2  2005/10/19 18:07:06  nw
 changed inheritance hierarchy - now is a kind of application
 

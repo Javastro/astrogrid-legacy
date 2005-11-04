@@ -1,4 +1,4 @@
-/*$Id: SiapInformation.java,v 1.2 2005/10/19 18:07:06 nw Exp $
+/*$Id: SiapInformation.java,v 1.3 2005/11/04 14:38:58 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,11 +38,11 @@ public class SiapInformation extends ApplicationInformation {
      * @param description
      * @param url
      */
-    public SiapInformation(URI ivorn, String title, String description, URL url, 
+    public SiapInformation(URI ivorn, String title, String description, URL url, URL logo, 
             String imageServiceType, float maxQueryRegionSizeRa, float maxQueryRegionSizeDec,
             float maxImageExtentRa, float maxImageExtentDec, int maxImageSizeRa, int maxImageSizeDec,
             int maxFileSize, int maxRecords) {
-        super(ivorn, title, description, parameters,ifaces,url);
+        super(ivorn, title, description, parameters,ifaces,url,logo);
         this.imageServiceType = imageServiceType;
         this.maxQueryRegionSizeRa = maxQueryRegionSizeRa;
         this.maxQueryRegionSizeDec = maxQueryRegionSizeDec;
@@ -172,6 +172,9 @@ public class SiapInformation extends ApplicationInformation {
 
 /* 
 $Log: SiapInformation.java,v $
+Revision 1.3  2005/11/04 14:38:58  nw
+added logo field
+
 Revision 1.2  2005/10/19 18:07:06  nw
 changed inheritance hierarchy - now is a kind of application
 

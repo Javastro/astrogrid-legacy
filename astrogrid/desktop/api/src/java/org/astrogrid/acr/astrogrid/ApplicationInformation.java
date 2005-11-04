@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.5 2005/09/12 15:21:43 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.6 2005/11/04 14:38:58 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,12 +29,14 @@ public class ApplicationInformation extends ResourceInformation{
     /** @deprecated - use full contructor 
      * @since 1.2
      */
+    /*
     public ApplicationInformation(URI id,String name,String description,Map parameters,InterfaceBean[] interfaces) {
         this(id,name,description,parameters,interfaces,null);
-    }
+    }*/
+    
     /** construct a new application information, specifying an endpoint for it (i.e. a non-cea application) */
-    public ApplicationInformation(URI id,String name,String description,Map parameters,InterfaceBean[] interfaces,URL endpoint) {
-        super(id,name,description,endpoint);
+    public ApplicationInformation(URI id,String name,String description,Map parameters,InterfaceBean[] interfaces,URL endpoint, URL logo) {
+        super(id,name,description,endpoint,logo);
         this.interfaces = interfaces;
         this.parameters = parameters;
     }
@@ -86,6 +88,9 @@ public class ApplicationInformation extends ResourceInformation{
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.6  2005/11/04 14:38:58  nw
+added logo field
+
 Revision 1.5  2005/09/12 15:21:43  nw
 added stuff for adql.
 
