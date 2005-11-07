@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.12 2005/11/04 17:49:52 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.13 2005/11/07 16:25:05 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,6 +35,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import flanagan.math.Fmath;
 
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RowSequence;
@@ -127,6 +129,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Paint;
 import java.awt.Shape;
@@ -137,14 +140,20 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -265,6 +274,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         }
         
         // configure execution system
+        nodeSizingMap = Collections.synchronizedMap(new java.util.TreeMap());
         this.executor = new PooledExecutor(new LinkedQueue()); // infinite task buffer
         this.executor.setMinimumPoolSize(5); // always have 5 threads ready to go.
         this.setSize(700, 700);  
@@ -327,6 +337,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 }//else
                 
                 Set processedServices = new HashSet();
+                String []urls;
+                InputStream is = null;
+                OutputStream os = null;
                 for (Iterator i = getSelectionFocusSet().iterator(); i.hasNext(); ) {
                     final TreeNode tn = (TreeNode)i.next();
                     // find each leaf node - these are the data points.
@@ -336,26 +349,40 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                     TreeNode parent = tn.getParent(); // @todo with clustering, need grandparent here instead.                                
                     try {
                     // ok. got a bit of selected data. if it's an image, save it.
-                        if (tn.getAttribute("imgURL") != null) { // its siap - this is a reference to the image                                 
-                            URL url = new URL(tn.getAttribute("imgURL")); // url to the image.
-                            final String name= conformToMyspaceName(parent.getAttribute("label") +"_" + tn.getAttribute("label") + "_" + System.currentTimeMillis() + "." + tn.getAttribute("type")); 
-                            // @todo this will be different when clustering is introduced.
-                            //@todo not sure whether the label of the image node is enough to uniquely identify it - maybe we should use the row number of it within the votable siap response,
-                            // and save the siap response too - as it's
-                            URI finalURI = new URI(u.toString() + "/" + name);                                 
-                            SwingUtilities.invokeLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            AstroScopeLauncherImpl.this.setStatusMessage("Saving Image: " + name);
+                        if (tn.getAttribute("imgURL") != null) { // its siap - this is a reference to the image  
+                            urls = tn.getAttribute("imgURL").split("\\|");
+                            for(int j = 0;j < urls.length;j++) {
+                                URL url = new URL(urls[j]); // url to the image.
+                                String name = conformToMyspaceName(parent.getParent().getAttribute("label") + "_" + parent.getAttribute("label") +"_" + tn.getAttribute("label") + "_" + System.currentTimeMillis() + "." + tn.getAttribute("type"));
+                                final String finalName = name;
+                                // @todo this will be different when clustering is introduced.
+                                // @todo not sure whether the label of the image node is enough to uniquely identify it - maybe we should use the row number of it within the votable siap response,
+                                // and save the siap response too - as it's
+                                URI finalURI = new URI(u.toString() + "/" + name);
+                                
+                                SwingUtilities.invokeLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                AstroScopeLauncherImpl.this.setStatusMessage("Saving Image: " + finalName);
+                                            }
                                         }
-                                    }
-                            );                            
-                            if(finalURI.getScheme().startsWith("ivo")) {
-                                myspace.copyURLToContent(url,finalURI);
-                            }else {
-                                //@todo close streams afterwards.
-                                Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));                                 
-                            }                                                                
+                                );                            
+                                if(finalURI.getScheme().startsWith("ivo")) {
+                                    myspace.copyURLToContent(url,finalURI);
+                                }else {
+                                    //@todo close streams afterwards.
+                                    try {
+                                        is = url.openStream();
+                                        os = myspace.getOutputStream(finalURI);
+                                        Piper.pipe(is, os);
+                                    }finally {
+                                        if(is != null)
+                                            is.close();
+                                        if(os != null)
+                                            os.close();
+                                    }//try&finally
+                                }//else
+                            }//for
                         } 
                         
                         // save the parent document - either a cone, or the siap response - which describes all the images.                        
@@ -365,6 +392,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             continue;
                         }
                         processedServices.add(parent); // record that we've done this catalog now.
+                        if(parent.getAttribute("url") == null) {
+                            parent = parent.getParent();
+                            if (processedServices.contains(parent)) {
+                                continue;
+                            }
+                            processedServices.add(parent); // record that we've done this catalog now.                            
+                        }
                         URL url = new URL(parent.getAttribute("url"));
                         final String name = conformToMyspaceName(parent.getAttribute("label") + ".vot");
                         URI finalURI = new URI(u.toString() +"/" + name);
@@ -379,9 +413,19 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             myspace.copyURLToContent(url,finalURI);
                         }else {
                             //KEVIN - need to close streams in a finally block.
-                            Piper.pipe(url.openStream(), myspace.getOutputStream(finalURI));
-                        }                                                                                      
+                            try {
+                                is = url.openStream();
+                                os = myspace.getOutputStream(finalURI);
+                                Piper.pipe(url.openStream(), os);
+                            }finally {
+                                if(is != null)
+                                    is.close();
+                                if(os != null)
+                                    os.close();
+                            }//try&finally
+                        }//else
                     } catch (Exception e) {
+                        //e.printStackTrace();
                         // @todo should it show an error, or just report??
                         SwingUtilities.invokeLater(
                                 new Runnable() {
@@ -638,10 +682,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         final private String name;
     private ItemRegistry itemRegistry;
    /** create default node renderer */
-    private TextImageItemRenderer nodeRenderer;
+    private TextImageItemSizeRenderer nodeRenderer;
     protected final TextImageItemRenderer getTextRenderer() {
         if (nodeRenderer == null) {
-            nodeRenderer = new TextImageItemRenderer() ;
+            nodeRenderer = new TextImageItemSizeRenderer() ;
             nodeRenderer.setMaxTextWidth(75);
             nodeRenderer.setRoundedCorner(8,8);
             nodeRenderer.setTextAttributeName("label");
@@ -1547,6 +1591,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     private class SiapRetrieval extends AbstractRetreiver {
 
         public SiapRetrieval(ResourceInformation information, double ra, double dec, double raSize,double decSize) throws InvalidArgumentException, NotFoundException, URISyntaxException {
+            super(ra,dec);
             this.information = (SiapInformation)information;
             siapURL = siap.constructQueryS(new URI(information.getAccessURL().toString()),ra, dec,raSize,decSize);
         }
@@ -1600,6 +1645,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     private class ConeRetrieval extends AbstractRetreiver {
 
         public ConeRetrieval(ResourceInformation information, double ra, double dec, double sz) throws InvalidArgumentException, NotFoundException, URISyntaxException {
+            super(ra,dec);
             this.information = (ConeInformation)information;
             coneURL = cone.constructQuery(new URI(information.getAccessURL().toString()),ra,dec,sz);
         } 
@@ -1648,6 +1694,80 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     }
     
 
+    /**
+     * Method getOffset
+     * Description: method to calculate a distance offset between two points in the sky using the 
+     * haversine formula.  Uses the library from Dr Michael Thomas Flanagan at www.ee.ucl.ac.uk/~mflanaga
+     * @param queryra known query ra.
+     * @param querydec known query dec
+     * @param objectra objects ra from results of a service/votable
+     * @param objectdec objects dec from results of a service/votable
+     * @return distance between two points.
+     */
+    private double getOffset(double queryra, double querydec, double objectra, double objectdec) {
+        // gcdist = ahav( hav(dec1-dec2) + cos(dec1)*cos(dec2)*hav(ra1-ra2) )
+        queryra = Math.toRadians(queryra);  
+        querydec = Math.toRadians(querydec);
+        //from the look of the formula I suspect this to be ra1 and dec1 since it should be the greater distance
+        objectra = Math.toRadians(objectra); 
+        objectdec = Math.toRadians(objectdec);
+        double result = Fmath.ahav( Fmath.hav(objectdec-querydec) + Math.cos(objectdec)*Math.cos(querydec)*Fmath.hav(objectra-objectdec) );
+        //System.out.println("the haversine result = " + result);
+        return Math.toDegrees(result);
+    }  
+    
+    private String chopValue(String doubleValue, int scale) {
+        int decIndex = doubleValue.indexOf(".");
+        //we use the scale during the substring process
+        //and to go to scale we need to increment by one character
+        //to include the "." decimal point.
+        scale++;
+        if(decIndex != -1 && doubleValue.length() > (decIndex + scale)) {
+            return doubleValue.substring(0,(decIndex + scale));
+        }
+        return doubleValue;
+    }
+    
+    private static final int SMALL_NODE = 1;
+    private static final int MEDIUM_NODE = 2;
+    private static final int LARGE_NODE = 3;
+    private static final int []NODE_SIZING_ARRAY = {SMALL_NODE, MEDIUM_NODE, LARGE_NODE};
+    
+    class NodeSizing {
+        private Color color;
+        private double extraSize;
+        private Font font;
+        public NodeSizing(int constraint) {
+            switch(constraint) {
+               case 1:
+                   this.color = Color.BLUE;
+                   font = new Font(null,Font.PLAIN,10);
+                   extraSize = 5;
+               break;
+               case 2:
+                   this.color = Color.GREEN;
+                   this.font = new Font(null,Font.ITALIC, 14);
+                   this.extraSize = 10;
+               break;
+               case 3:
+                   this.color = Color.RED;
+                   this.font = new Font(null,Font.BOLD, 16);
+                   this.extraSize = 15;
+               break;
+               default:
+                   //hmmm not sure should be throw an illegalargumentexception?
+                   this.color = Color.BLACK;
+                   this.font = new Font(null,Font.PLAIN,10);
+                   this.extraSize = 0;
+               break;
+            }//switch            
+        }        
+        public Color getColor() { return this.color;}
+        public Font getFont() { return this.font;}
+        public double getSize() { return this.extraSize;}        
+    }
+    
+    private Map nodeSizingMap;    
     
     /** base class for something that fetches a resource
      *  - extensible for siap, cone, and later ssap, etc.
@@ -1655,9 +1775,43 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      *
      */
     private abstract class AbstractRetreiver implements Runnable {
-
-        
         private static final int MAX_INLINE_IMAGE_SIZE = 100000;
+        double ra;
+        double dec;
+        
+        public AbstractRetreiver(double ra, double dec) {
+            this.ra = ra;
+            this.dec = dec;
+        }        
+        
+        private void setNodeSizing() {
+            int size = nodeSizingMap.size();
+            int breakdown = size/3;
+            int increment = 0;
+            Object []keys = nodeSizingMap.keySet().toArray();
+            for(int i = 0;i < 3;i++) {
+                for(int j = increment;j < breakdown + increment;j++) {
+                    nodeSizingMap.put(keys[j],new NodeSizing(NODE_SIZING_ARRAY[i]));                    
+                }
+                increment += breakdown;                
+            }
+            if(keys.length > 0)
+                nodeSizingMap.put(keys[keys.length - 1], new NodeSizing(LARGE_NODE));
+        }  
+        
+        protected TreeNode findNode(String label, TreeNode startNode) {
+            if(startNode == null)
+                startNode = rootNode;
+            Iterator iter = startNode.getChildren();
+            while(iter.hasNext()) {
+                TreeNode n = (TreeNode)iter.next();
+                if(n.getAttribute("label").equals(label)) {
+                    return n;
+                }
+            }
+            return null;
+        }        
+        
         /** build a node for each result in the votable.
          * set them up as children of the <tt>riNode</tt> element - which is the node ofor the service.
          */
@@ -1709,12 +1863,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                     while (rSeq.hasNext()) {
                         rSeq.next();
                         Object[] row = rSeq.getRow();
-                        String rowRa =row[raCol].toString();
+                        String rowRa = row[raCol].toString();
                         String rowDec = row[decCol].toString();                                 
                         DefaultTreeNode valNode = new DefaultTreeNode();
-                        valNode.setAttribute("label",rowRa + "," + rowDec);
+                        valNode.setAttribute("label",chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2) );
                         valNode.setAttribute("ra",rowRa); // these might come in handy for searching later.
-                        valNode.setAttribute("dec",rowDec); 
+                        valNode.setAttribute("dec",rowDec);
                         if (imgCol >= 0) {
                             String imgURL = row[imgCol].toString();
                             long size;
@@ -1739,15 +1893,44 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             .append(row[v] == null ? "" : row[v].toString());
                         }
                         tooltip.append("</p></html>");
-                        valNode.setAttribute("tooltip",tooltip.toString());                                     
-                        riNode.addChild(new DefaultEdge(riNode,valNode));
-
+                        valNode.setAttribute("tooltip",tooltip.toString());  
+                        double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
+                        String offsetVal = chopValue(String.valueOf(offset),2);
+                        TreeNode discoverNode = findNode(offsetVal, riNode);
+                        String tempAttr;
+                        TreeNode clusterNode;
+                        if(discoverNode == null) {
+                            clusterNode = new DefaultTreeNode();
+                            clusterNode.setAttribute("label",offsetVal);
+                            clusterNode.setAttribute("offset",offsetVal);
+                            clusterNode.setAttribute("tooltip",String.valueOf(offset));
+                            nodeSizingMap.put(offsetVal,null);
+                            clusterNode.addChild(new DefaultEdge(clusterNode, valNode));
+                            riNode.addChild(new DefaultEdge(riNode,clusterNode));
+                        }else {
+                            clusterNode = findNode(valNode.getAttribute("label"), discoverNode);
+                            if(clusterNode == null) {
+                                discoverNode.addChild(new DefaultEdge(discoverNode, valNode));
+                            }else {
+                                //okay it already has this ra,dec child of the cluster
+                                //so add more urls to this imgURL attribute delimeted by "|".
+                                if(valNode.getAttribute("imgURL") != null) {
+                                    tempAttr = clusterNode.getAttribute("imgURL");
+                                    if(tempAttr == null)
+                                        tempAttr = valNode.getAttribute("imgURL");
+                                    else
+                                        tempAttr += "|" + valNode.getAttribute("imgURL");
+                                    clusterNode.setAttribute("imgURL",tempAttr);
+                                }
+                            }
+                        }
                     }//while rows in table.
                 }finally{
                     rSeq.close();
                 }
-            }
-        }
+            }//for
+            setNodeSizing();
+        }//buildNodes
     }
 
                        
@@ -1831,6 +2014,44 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             }
         }).start();        
     }
+    
+    
+    class TextImageItemSizeRenderer extends TextImageItemRenderer {
+        
+        public TextImageItemSizeRenderer() {
+            super();
+        }
+        
+        protected Shape getRawShape(VisualItem item) {
+            //System.out.println("getRawShape called and nodsizing size = " + nodeSizingMap.size());
+            String offset = item.getAttribute("offset");            
+            if(offset != null) {
+                Object obj = nodeSizingMap.get(offset);
+                if(obj != null) {
+                    //Font currentFont = item.getFont();
+                    //Font currentColor = item.getColor();
+                    
+                    item.setFont(((NodeSizing)obj).getFont());
+                    item.setColor(((NodeSizing)obj).getColor());
+                    double extraSize = ((NodeSizing)obj).getSize();
+                    super.getRawShape(item);                    
+                    if ( m_imageBox instanceof RoundRectangle2D ) {
+                        ((RoundRectangle2D)m_imageBox)
+                            .setRoundRect(((RoundRectangle2D)m_imageBox).getX(),((RoundRectangle2D)m_imageBox).getY(),
+                            ((RoundRectangle2D)m_imageBox).getWidth() + extraSize ,((RoundRectangle2D)m_imageBox).getHeight()  + extraSize,
+                            ((RoundRectangle2D)m_imageBox).getArcWidth(),((RoundRectangle2D)m_imageBox).getArcHeight());
+                    } else {
+                        m_imageBox.setFrame(m_imageBox.getX(),m_imageBox.getY(),m_imageBox.getWidth() + extraSize ,m_imageBox.getHeight()  + extraSize);
+                    }                    
+                }else {
+                    super.getRawShape(item);
+                }
+            }else {
+                super.getRawShape(item);
+            }
+            return m_imageBox;            
+        }
+    }    
 
 
     /** focus control - on double click, adds / removes node and children from focus set. */
@@ -1936,6 +2157,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.13  2005/11/07 16:25:05  KevinBenson
+added some clustering to it. so there is an offset and some clustered child nodes as well.
+
 Revision 1.12  2005/11/04 17:49:52  nw
 reworked selection and save datastructures.
 
