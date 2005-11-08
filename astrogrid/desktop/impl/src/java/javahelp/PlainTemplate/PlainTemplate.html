@@ -2,9 +2,10 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<link rel="stylesheet" href="../astrodoc.css"/>
+<link rel="stylesheet" href="../astrodoc.css" >
 
 <title>Sample Title</title>
+
 </head>
 <body>
 
@@ -14,8 +15,13 @@ people can still see it if they use "view source" on the displayed
 page (so not a good place to store your credit card details).  
 -->
 
+<!-- Leave this div here -->
+<div id="banner">&nbsp;</div>
+
+<!-- Put your content inside this div -->
+<div id="content">
+
 <h1>Main Heading</h1>
-<h3><em>Author Name, Last Revision Date (e.g. John Smith, 03 Feb 2005)</em></h3>
 
 <h2>Summary</h2>
 
@@ -46,13 +52,11 @@ Some text here.  Paragraphs should be enclosed in opening and closing
 Here is an ordered list of items:
 </p>
 
-<p>
 <ol>
 	<li> This is the first item </li>
 	<li> This is the second item </li>
 	<li> This is the third item </li>
 </ol>
-</p>
 
 <h2>Section 2</h2>
 <p>
@@ -66,13 +70,12 @@ the same layout as the ordered list, but uses a
 "ul" tag rather than an "ol" tag:
 </p>
 
-<p>
 <ul>
 	<li> This is the first item </li>
 	<li> This is the second item </li>
 	<li> This is the third item </li>
 </ul>
-</p>
+
 <p>
 Some more text here.
 You can make centered content like this:
@@ -86,7 +89,7 @@ good for images.  Here is an image:
 
 <p>
 <img src="sampleImage.jpg" width="300" height="200" alt="This is the 'alt-text'
-description for the sample image"/>
+description for the sample image">
 </p>
 </center>
 
@@ -94,5 +97,13 @@ description for the sample image"/>
 This is the end of the page.
 </p>
 
+<!-- Put author information here -->
+<hr>
+<p>
+<em>Author: John Smith, js@abc.com</em><br>
+<em>Last revised : 23 May 2005</em>
+</p>
+
+</div>
 </body>
 </html>
