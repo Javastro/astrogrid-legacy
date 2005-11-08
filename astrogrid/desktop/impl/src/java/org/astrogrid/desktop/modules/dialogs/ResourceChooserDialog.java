@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.6 2005/11/02 09:49:25 KevinBenson Exp $
+/*$Id: ResourceChooserDialog.java,v 1.7 2005/11/08 18:17:41 jdt Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,13 +133,34 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
     public void setEnableLocalFilePanel(boolean enableLocalFilePanel) {
         getJTabbedPane().setEnabledAt(0,enableLocalFilePanel); 
+        bumpTabs();
     }
         
     public void setEnableMySpacePanel(boolean enableMySpacePanel) {
         getJTabbedPane().setEnabledAt(1,enableMySpacePanel);
+        bumpTabs();
     }
     public void setEnableURIPanel(boolean enableURIPanel) {
-        getJTabbedPane().setEnabledAt(2,enableURIPanel);       
+        getJTabbedPane().setEnabledAt(2,enableURIPanel);
+        bumpTabs();
+    }
+    
+    /**
+     *   Bumps to the next enabled tab.
+     *   When tabs are disabled, Windows can sometimes leave a disabled
+     *   tab selected.  
+     */
+    private void bumpTabs() {
+        JTabbedPane tabbedPane = getJTabbedPane();
+        int numberOfTabs = tabbedPane.getTabCount();
+        int current = tabbedPane.getSelectedIndex();
+        int tryThisOne = current;
+        int count = 0;
+        while (!tabbedPane.isEnabledAt(tryThisOne) && count<numberOfTabs) {
+            tryThisOne = (tryThisOne + 1)%numberOfTabs;
+            ++count;
+        }
+        if (tryThisOne!=current) tabbedPane.setSelectedIndex(tryThisOne);
     }
     
     boolean enableDirectorySelection = false;
@@ -373,6 +394,9 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.7  2005/11/08 18:17:41  jdt
+MySpace browser now initialises on an enabled tab - previously it could open up with a disabled tab selected.
+
 Revision 1.6  2005/11/02 09:49:25  KevinBenson
 when directories are enabled allowed myspace folders to be selected.
 
