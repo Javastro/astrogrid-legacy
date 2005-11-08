@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.13 2005/11/07 16:25:05 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.14 2005/11/08 15:03:56 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,6 +37,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import flanagan.math.Fmath;
+
+import org.apache.commons.lang.WordUtils;
 
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RowSequence;
@@ -352,6 +354,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         if (tn.getAttribute("imgURL") != null) { // its siap - this is a reference to the image  
                             urls = tn.getAttribute("imgURL").split("\\|");
                             for(int j = 0;j < urls.length;j++) {
+                                //System.out.println("the image urls = " + urls[j]);
                                 URL url = new URL(urls[j]); // url to the image.
                                 String name = conformToMyspaceName(parent.getParent().getAttribute("label") + "_" + parent.getAttribute("label") +"_" + tn.getAttribute("label") + "_" + System.currentTimeMillis() + "." + tn.getAttribute("type"));
                                 final String finalName = name;
@@ -624,7 +627,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             siaNode.setAttribute("dec","0");
        
             coneNode  = new DefaultTreeNode();
-            coneNode.setAttribute("label","Catalogs");
+            coneNode.setAttribute("label","Catalogues");
             coneNode.setAttribute("ra","0");
             coneNode.setAttribute("dec","0");
             
@@ -644,6 +647,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     /** removes previous results, just leaving the skeleton */
     private void clearTree() {
         // reset selection too.
+        nodeSizingMap.clear();
         getSelectionFocusSet().clear();
         for (Iterator i = getTree().getNodes(); i.hasNext(); ) {
             Node n = (Node)i.next();
@@ -1584,6 +1588,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
     }
     
+    private static final int TOOLTIP_WRAP_LENGTH = 50;
+    
 
     /** task that retrives, parses and adds to the display results of one siap service 
      * 
@@ -1617,7 +1623,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 StringBuffer sb = new StringBuffer();
                 sb.append("<html>Title: ").append(information.getTitle())
                     .append("<br>ID: ").append(information.getId())
-                    .append("<br>Description: <p>").append(information.getDescription())                
+                    .append("<br>Description: <p>")
+                    .append(information.getDescription()!= null ?   WordUtils.wrap(information.getDescription(),TOOLTIP_WRAP_LENGTH,"<br>",false) : "")                
                     .append("</p><br>Service Type: ").append(information.getImageServiceType())
                     .append("</html>");                        
                 riNode.setAttribute("tooltip",sb.toString());
@@ -1670,7 +1677,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 StringBuffer sb = new StringBuffer();
                 sb.append("<html>Title: ").append(information.getTitle())
                     .append("<br>ID: ").append(information.getId())
-                    .append("<br>Description: <p>").append(information.getDescription())
+                    .append("<br>Description: <p>")
+                    .append(information.getDescription()!= null ?   WordUtils.wrap(information.getDescription(),TOOLTIP_WRAP_LENGTH,"<br>",false) : "")
                     .append("</p></html>");                        
                 riNode.setAttribute("tooltip",sb.toString());
                                 
@@ -1711,7 +1719,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         //from the look of the formula I suspect this to be ra1 and dec1 since it should be the greater distance
         objectra = Math.toRadians(objectra); 
         objectdec = Math.toRadians(objectdec);
-        double result = Fmath.ahav( Fmath.hav(objectdec-querydec) + Math.cos(objectdec)*Math.cos(querydec)*Fmath.hav(objectra-objectdec) );
+        double result = Fmath.ahav( Fmath.hav(objectdec-querydec) + Math.cos(objectdec)*Math.cos(querydec)*Fmath.hav(objectra-queryra) );
         //System.out.println("the haversine result = " + result);
         return Math.toDegrees(result);
     }  
@@ -1740,9 +1748,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         public NodeSizing(int constraint) {
             switch(constraint) {
                case 1:
-                   this.color = Color.BLUE;
-                   font = new Font(null,Font.PLAIN,10);
-                   extraSize = 5;
+                   this.color = Color.RED;
+                   font = new Font(null,Font.BOLD,16);
+                   extraSize = 15;
                break;
                case 2:
                    this.color = Color.GREEN;
@@ -1750,9 +1758,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                    this.extraSize = 10;
                break;
                case 3:
-                   this.color = Color.RED;
-                   this.font = new Font(null,Font.BOLD, 16);
-                   this.extraSize = 15;
+                   this.color = Color.BLUE;
+                   this.font = new Font(null,Font.PLAIN, 10);
+                   this.extraSize = 5;
                break;
                default:
                    //hmmm not sure should be throw an illegalargumentexception?
@@ -2157,6 +2165,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.14  2005/11/08 15:03:56  KevinBenson
+minor changes on sizing
+
 Revision 1.13  2005/11/07 16:25:05  KevinBenson
 added some clustering to it. so there is an offset and some clustered child nodes as well.
 
