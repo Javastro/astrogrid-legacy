@@ -9,8 +9,19 @@
 </head>
 <body>
 
+<!--
+THIS IS A COMMENT.  It doesn't show up in the rendered page, but
+people can still see it if they use "view source" on the displayed
+page (so not a good place to store your credit card details).
+-->
+
+<!-- Leave this div here -->
+<div id="banner">&nbsp;</div>
+
+<!-- Put your content inside this div -->
+<div id="content">
+
 <h1>Solar Movie Maker Help</h1>
-<h3><em>Silvia Dalla, 03 Feb 2005</em></h3>
 
 <h2>Summary</h2>
 <p>
@@ -21,11 +32,12 @@ on the Portal home page.
 
 <p>
 Datasets are: 
+</p>
+
 <ul>
   <li>SOHO/EIT</li>
   <li>TRACE</li>
 </ul>
-</p>
 
 <p>
 Currently the movie maker takes as input an instrument name and a time 
@@ -59,12 +71,10 @@ your input parameters:
 
 <h3>Input parameters</h3>
 
-<p>
 <ul>
   <li>Instrument name: either 'trace' or 'eit'</li>
   <li>Start date/time and end date/time (yyyy/mm/ddThh:mm:ss.000)</li>
 </ul>
-</p>
 
 <center>
   <img src="MovieInput.gif" width="300" height="333" alt="Input dialog box"/>
@@ -97,7 +107,6 @@ in the picture above it will be: eit2002-07-28T01:00:00.000.mpg .
 Usage Notes:
 </h2>
 
-<p>
 <ul>
   <li>
   Currently the source of TRACE data is the MSSL/SURF archive, which holds 
@@ -111,11 +120,9 @@ Usage Notes:
   present the movie maker produces TRACE movies of minimum duration 1 hour.
   </li>
 </ul>
-</p>
 
 <h3>Main workflow steps</h3>
 
-<p>
 <ul>
   <li>
   Start and end time are written into a template query and the query is 
@@ -130,15 +137,21 @@ Usage Notes:
   Output mpeg is sent to user's myspace.
   </li>
 </ul>
-</p>
 
 <h3>Workflow returns no movie if:</h3>
-<p>
 <ul>
   <li>End time is before start time</li>
   <li>Input start and end time would result in a huge movie</li>
   <li>Query to instrument dataset returns no files</li>
 </ul>
+
+<!-- Put author information here -->
+<hr/>
+<p>
+<em>Author: Silvia Dalla, s.dalla@manchester.ac.uk</em><br/>
+<em>Last revised : 23 May 2005</em>
 </p>
+
+</div>
 </body>
 </html>

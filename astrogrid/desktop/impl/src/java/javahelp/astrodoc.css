@@ -1,9 +1,25 @@
-h1 {
-  color: #0000FF;
+body {
+  background-color: #FFFFFF;
 }
-h2 {
-  color: #00FF00;
+div#banner {
+  position : absolute;
+  top: 5px;
+  left: 5px;
+  padding: 0px;
+  width: 400px;
+  height: 48px;
+  background-image: url(AGDocBanner.jpg);
+  background-repeat: repeat-none;
+  background-position: left top;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #666666;
 }
-h3 {
-  color: #FF0000;
+div#content {
+  position : absolute;
+  top: 53px;
+  left: 5px;
+  width: auto;
+  height: auto;
 }
+
