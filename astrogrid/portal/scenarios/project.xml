@@ -246,7 +246,8 @@
             <groupId>axis</groupId>
             <artifactId>axis-saaj</artifactId>
             <version>1.3</version>
-            <jar>saaj.jar</jar>
+            <!--in fact the jar name is axis-assj-1.3.jar catherine -->    
+            <!--jar>saaj.jar</jar-->
             <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
