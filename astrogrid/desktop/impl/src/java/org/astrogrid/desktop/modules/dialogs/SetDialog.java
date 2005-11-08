@@ -62,6 +62,7 @@ public class SetDialog extends BaseBeanEditorDialog {
 			label3 = new JLabel("");
 			varField = new JTextField(20);
 			varField.setEditable(true);
+			varField.setFocusable(true);
 			valField = new JTextField(20);
 			valField.setEditable(true);
 

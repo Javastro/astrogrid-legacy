@@ -175,7 +175,7 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 			target.scrollPathToVisible(treePath);
 			target.setSelectionPath(treePath);
 			 if (tree.getWorkflowBuilderImpl().autoPopUp && (action == DnDConstants.ACTION_COPY))
-			 	tree.getWorkflowBuilderImpl().editNode(draggedNode);
+			 	tree.getWorkflowBuilderImpl().editNode(draggedNode, true);
 			return true;
 		}
 		if (action == DnDConstants.ACTION_MOVE) {

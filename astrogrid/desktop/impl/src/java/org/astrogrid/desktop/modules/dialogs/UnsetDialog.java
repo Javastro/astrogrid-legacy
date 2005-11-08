@@ -61,6 +61,7 @@ public class UnsetDialog extends BaseBeanEditorDialog {
 			label1 = new JLabel("Variable: ", JLabel.TRAILING);
 			varField = new JTextField(20);
 			varField.setEditable(true);
+			varField.setFocusable(true);
 			label2 = new JLabel("");			
 	    	JPanel p = new JPanel(new SpringLayout());
 	    	p.add(label1);

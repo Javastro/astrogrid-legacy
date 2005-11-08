@@ -180,4 +180,24 @@ public class WastebinDropListener implements DropTargetListener {
 			return true;
 		}		
 	}
+	public boolean canPerformPaste(DefaultMutableTreeNode copiedNode, DefaultMutableTreeNode parentNode) {
+		if (!parentNode.getAllowsChildren()) {
+			return false;
+		} else if (parentNode.getUserObject() instanceof Workflow ||
+				   copiedNode.getUserObject() instanceof Workflow ||
+				   copiedNode.getUserObject() instanceof Tool ||
+				   copiedNode.getUserObject() instanceof String ||
+				   copiedNode.getUserObject() instanceof Then) {
+			return false;
+		} else if (parentNode.getUserObject() instanceof Else ||
+				   parentNode.getUserObject() instanceof Then ||
+				   parentNode.getUserObject() instanceof Scope ||
+				   parentNode.getUserObject() instanceof For ||
+				   parentNode.getUserObject() instanceof While ||
+				   parentNode.getUserObject() instanceof Parfor) {
+			return false;
+		} else {
+			return true;
+		}		
+	}
 }

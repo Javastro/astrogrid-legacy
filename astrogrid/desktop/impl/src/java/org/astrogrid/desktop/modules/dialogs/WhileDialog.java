@@ -57,6 +57,7 @@ public class WhileDialog extends BaseBeanEditorDialog {
 			label1 = new JLabel("Test: ", JLabel.TRAILING);
 			testField = new JTextField(20);
 			testField.setEditable(true);
+			testField.setFocusable(true);
 			label2 = new JLabel("");
 			
 	    	JPanel p = new JPanel(new SpringLayout());

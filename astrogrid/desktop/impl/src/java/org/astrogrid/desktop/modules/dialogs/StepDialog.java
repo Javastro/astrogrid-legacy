@@ -79,6 +79,7 @@ public class StepDialog extends BaseBeanEditorDialog {
 			label7 = new JLabel("");
 				   
 			nameField = new JTextField(20);
+			nameField.setFocusable(true);
 			nameField.setEditable(true);
 			descField = new JTextField(20);
 			descField.setEditable(true);

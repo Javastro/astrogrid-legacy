@@ -1,5 +1,6 @@
 package org.astrogrid.desktop.modules.dialogs.editors;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -16,9 +17,9 @@ import java.net.URI;
 import java.util.Arrays;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -27,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -62,26 +64,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
      */
 
 	
-    class DeleteCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+    class DeleteCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ItemListener {
         
-        JButton button;
         ParameterTableModel pm;
-        String delete;
+        Boolean delete;
+        boolean allowDel = false;
         int row;
-        
-        public DeleteCellEditor() {
-        	if (button == null) {        		
-                button = new JButton();
-                button.setText("del");
-                button.setToolTipText("Delete this optional parameter");
-                button.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                    	fireEditingStopped();
-                    	pm.fireTableRowsDeleted(row, row);                      
-                    }
-                });
-        	}
-        }
 
         public Object getCellEditorValue() {
             return delete;
@@ -92,7 +80,31 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             if (pm == null) {
                 pm = (ParameterTableModel)table.getModel();                
             }
-            return button;
+        	JComponent comp;
+        	if (((Boolean)value).booleanValue()) {
+        		comp = new JCheckBox();
+        		((JCheckBox)comp).setHorizontalAlignment(JLabel.HORIZONTAL);
+        		((JCheckBox)comp).setToolTipText("Check to delete this optional parameter, (uncheck to undelete)");
+        	} else {
+        		comp = new JLabel();
+        	}
+        	comp.setOpaque(true);
+        	
+        	if (isSelected) {
+        		comp.setForeground((Color)UIManager.get("Table.selectionForeground"));
+        		comp.setBackground((Color)UIManager.get("Table.selectionBackground"));
+        		comp.setBorder(BorderFactory.createEmptyBorder());
+        	} else {
+        		comp.setForeground((Color)UIManager.get("Table.foreground"));
+        		comp.setBackground((Color)UIManager.get("Table.background"));
+        		comp.setBorder(BorderFactory.createEmptyBorder());
+        	}        	
+        	if (hasFocus) {
+        		comp.setForeground((Color)UIManager.get("Table.focusCellForeground"));
+        		comp.setBackground((Color)UIManager.get("Table.focusCellBackground"));
+        		comp.setBorder((Border)UIManager.get("Table.focusCellHighlightBorder"));
+        	}
+        	return comp;
         }
         
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -100,31 +112,42 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             if (pm == null) {
                 pm = (ParameterTableModel)table.getModel();                
             }
-            return button;
-        }       
+        	JComponent comp;
+        	if (((Boolean)value).booleanValue()) {
+        		comp = new JCheckBox();
+        		((JCheckBox)comp).setHorizontalAlignment(JLabel.HORIZONTAL);
+        		((JCheckBox)comp).setToolTipText("Check to delete this optional parameter, (uncheck to undelete)");
+        		((JCheckBox)comp).addItemListener(this);
+        	} else {
+        		comp = new JLabel();
+        	}
+        	comp.setOpaque(true);
+        	
+        	return comp;
+        }  
+        
+        /** Listens to the check boxes. */
+        public void itemStateChanged(ItemEvent e) {
+            //Now that we know which button was pushed, find out
+            //whether it was selected or deselected.
+        	ParameterValue parameter = pm.getRows()[row];
+        	if (e.getStateChange() == ItemEvent.DESELECTED) {               
+        		//fireEditingStopped();
+        		logger.error("UNSELECT DEL");
+            } else {                
+                //fireEditingStopped();
+                logger.error("SELECT DEL");
+            }
+        }
     }
     
-    class RepeatCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+    class RepeatCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ItemListener {
         
-        JButton button;
         ParameterTableModel pm;
-        String delete;
-        int row;
+        Boolean delete;
+        int row;  
+        JComponent comp;
         
-        public RepeatCellEditor() {
-        	if (button == null) {        		
-                button = new JButton();
-                button.setText("add");
-                button.setToolTipText("Insert another repeating parameter");
-                button.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                    	fireEditingStopped();
-                    	pm.fireTableRowsInserted(row, row);                      
-                    }
-                });
-        	}
-        }
-
         public Object getCellEditorValue() {
             return delete;
         }
@@ -134,16 +157,67 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             if (pm == null) {
                 pm = (ParameterTableModel)table.getModel();                
             }
-            return button;
+        	
+        	if (((Boolean)value).booleanValue()) {
+        		comp = new JCheckBox();
+        		((JCheckBox)comp).setHorizontalAlignment(JLabel.HORIZONTAL);
+        		((JCheckBox)comp).setToolTipText("Add another " + pm.getValueAt(row, 0) + " parameter");        		
+        	} else {
+        		comp = new JLabel();
+        	}
+        	comp.setOpaque(true);
+        	
+        	if (isSelected) {
+        		comp.setForeground((Color)UIManager.get("Table.selectionForeground"));
+        		comp.setBackground((Color)UIManager.get("Table.selectionBackground"));
+        		comp.setBorder(BorderFactory.createEmptyBorder());
+        	} else {
+        		comp.setForeground((Color)UIManager.get("Table.foreground"));
+        		comp.setBackground((Color)UIManager.get("Table.background"));
+        		comp.setBorder(BorderFactory.createEmptyBorder());
+        	}        	
+        	if (hasFocus) {
+        		comp.setForeground((Color)UIManager.get("Table.focusCellForeground"));
+        		comp.setBackground((Color)UIManager.get("Table.focusCellBackground"));
+        		comp.setBorder((Border)UIManager.get("Table.focusCellHighlightBorder"));
+        	}
+        	return comp;
         }
         
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        	this.row = row;
+         	this.row = row;
             if (pm == null) {
                 pm = (ParameterTableModel)table.getModel();                
             }
-            return button;
-        }       
+        	JComponent comp;
+        	if (((Boolean)value).booleanValue()) {
+        		comp = new JCheckBox();
+        		((JCheckBox)comp).setHorizontalAlignment(JLabel.HORIZONTAL);
+        		((JCheckBox)comp).setToolTipText("Check to delete this optional parameter, (uncheck to undelete)");
+        		((JCheckBox)comp).addItemListener(this);
+        	} else {
+        		comp = new JLabel();
+        	}
+        	comp.setOpaque(true);
+        	comp.setBackground((Color)UIManager.get("Table.selectionBackground"));
+        	
+        	return comp;
+        } 
+        
+        /** Listens to the check boxes. */
+        public void itemStateChanged(ItemEvent e) {
+            //Now that we know which button was pushed, find out
+            //whether it was selected or deselected.
+        	ParameterValue parameter = pm.getRows()[row];
+        	if (e.getStateChange() == ItemEvent.DESELECTED) {               
+        		fireEditingStopped();
+        		logger.error("SELECT REPEAT");
+            } else {                
+                fireEditingStopped();
+                logger.error("UNSELECT REPEAT");
+            }
+        }
+       
     }    
 	
 	
@@ -226,10 +300,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         {                
            getColumnModel().getColumn(0).setPreferredWidth(30);    //Name                  
            getColumnModel().getColumn(1).setPreferredWidth(100);   //Value                   
-           getColumnModel().getColumn(2).setPreferredWidth(5);     //Indirect
+           getColumnModel().getColumn(2).setPreferredWidth(10);     //Indirect
            getColumnModel().getColumn(2).setCellEditor(new IndirectCellEditor());
-           getColumnModel().getColumn(3).setPreferredWidth(20);    //Repeating
+           getColumnModel().getColumn(3).setPreferredWidth(10);    //Repeating
+           getColumnModel().getColumn(4).setCellEditor(new RepeatCellEditor());
            getColumnModel().getColumn(4).setPreferredWidth(10);    //Delete
+           getColumnModel().getColumn(4).setCellEditor(new DeleteCellEditor());
            setPreferredScrollableViewportSize(new Dimension(200,100));
            putClientProperty("terminateEditOnFocusLost", Boolean.TRUE); // improves editing behaviour.           
         }        
@@ -294,11 +370,11 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         
         // getCellRenderer for delete button
         public TableCellRenderer getCellRenderer(int row, int column) {
-            if (column == 4 && (getValueAt(row, 4).toString().equalsIgnoreCase("delete"))) {
-            	DeleteCellEditor ed = new DeleteCellEditor();
+        	DeleteCellEditor ed = new DeleteCellEditor();
+        	RepeatCellEditor re = new RepeatCellEditor();
+            if (column == 4) {            	
                 return ed;
-             } else if (column == 3 && (getValueAt(row, 3).toString().equalsIgnoreCase("repeat"))) {
-            	RepeatCellEditor re = new RepeatCellEditor();
+             } else if (column == 3) {            	
                 return re;
              }
              // else...
@@ -307,11 +383,11 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         
         // getCellEditor for delete button
         public TableCellEditor getCellEditor(int row, int column) {
-            if (column == 4 && (getValueAt(row, 4).toString().equalsIgnoreCase("delete"))) {
-            	DeleteCellEditor ed = new DeleteCellEditor();
+        	DeleteCellEditor ed = new DeleteCellEditor();
+        	RepeatCellEditor re = new RepeatCellEditor();
+            if (column == 4) {            	
                 return ed;
-             } else if (column == 3 && (getValueAt(row, 3).toString().equalsIgnoreCase("repeat"))) {
-            	RepeatCellEditor re = new RepeatCellEditor();
+             } else if (column == 3) {            	
                 return re;
              }
              // else...
@@ -346,8 +422,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                 case 0: return "Name";
                 case 1: return "Value";
                 case 2: return "Ref?";
-                case 3: return "Repeating?";
-                case 4: return "Delete?";
+                case 3: return "Rep?";
+                case 4: return "Del?";
                 default:
                 return "";                      
             }
@@ -396,7 +472,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                         }
                         break;
                     }
-                    return new String(max <= 0? "repeat":"");                	
+                    return new Boolean(max <= 0? true:false);                	
                  case 4:
                  	int min = 1;
                     for (int i = 0; i < intBean.length; i++) { 
@@ -415,16 +491,17 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                         }
                         break;
                     }
-                    return new String(min <= 0? "delete":"");                    
+                    return new Boolean(min <= 0? true:false);                    
                  default:
                     return null;
             }
         }
+
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return editable && (columnIndex == 1 ||
             				   (columnIndex == 2 && allowIndirect) ||
-							   (columnIndex == 3 && (getValueAt(rowIndex, 3).toString().equalsIgnoreCase("repeat"))) ||
-							   (columnIndex == 4 && (getValueAt(rowIndex, 4).toString().equalsIgnoreCase("delete"))));
+							   (columnIndex == 3 && (((Boolean)getValueAt(rowIndex, 3)).booleanValue())) ||
+							   (columnIndex == 4 && (((Boolean)getValueAt(rowIndex, 4)).booleanValue())));
         }
         
         public void setRows(ParameterValue[] rows) {
@@ -447,9 +524,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
              	 toolModel.fireParameterAdded(BasicToolEditorPanel.this,row);
              	 break;
              case 4:
-             	toolModel.fireParameterRemoved(BasicToolEditorPanel.this, row);
+             	 //toolModel.fireParameterRemoved(BasicToolEditorPanel.this, row);
              	 break;
-             default: // do nothing in all oher caes.
+             default: // do nothing in all other cases.
                  break;
             }
         }
@@ -482,7 +559,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         public void parameterAdded(ToolEditEvent te) {
         	ParameterValue pv = te.getChangedParameter();
             for (int i = 0; i < getRows().length; i++) {
-                if (pv == getRows()[i] && ((getValueAt(i, 3).toString().equalsIgnoreCase("repeat")))) {
+                if (pv == getRows()[i] && ((Boolean)getValueAt(i, 3)).booleanValue()) {
                 	ParameterValue newPv = new ParameterValue();
                 	newPv.setName(pv.getName());
                 	newPv.setValue("");
@@ -513,6 +590,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     
     protected final ResourceChooserInternal resourceChooser;
     private boolean allowIndirect = true;
+    private boolean allowDelete = false;
 
    
    /** set to true to allow indirect parameters */
@@ -636,6 +714,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.6  2005/11/08 09:54:56  pjn3
+branch pjn_workbench_2_11_05
+
+Revision 1.5.2.1  2005/11/03 09:39:50  pjn3
+delete/repeat buttons swapped to checkboxes, listeners added
+
 Revision 1.5  2005/11/01 15:17:50  pjn3
 branch pjn_workbench_1306_again
 

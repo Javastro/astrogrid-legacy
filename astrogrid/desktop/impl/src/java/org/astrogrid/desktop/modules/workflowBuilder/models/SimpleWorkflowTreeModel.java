@@ -1,4 +1,4 @@
-/*$Id: SimpleWorkflowTreeModel.java,v 1.3 2005/10/12 13:30:10 nw Exp $
+/*$Id: SimpleWorkflowTreeModel.java,v 1.4 2005/11/08 09:56:04 pjn3 Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.workflowBuilder.models;
 
+import java.util.Enumeration;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
+import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
@@ -23,15 +29,11 @@ import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 /**
  * simple model, based on default tree model
@@ -42,7 +44,7 @@ public class SimpleWorkflowTreeModel extends DefaultTreeModel {
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(SimpleWorkflowTreeModel.class);
+    private static final Log logger = LogFactory.getLog(SimpleWorkflowTreeModel.class);    
 
 /** Construct a new WorkflowTreeModel
      * @param root
@@ -162,10 +164,87 @@ private DefaultMutableTreeNode activityTree( AbstractActivity activity ) {
       return node;
   }
 
+public DefaultMutableTreeNode copyTree(DefaultMutableTreeNode orig) {
+	//return (DefaultMutableTreeNode)orig.clone()
+	return deepClone(orig);
+}
+
+
+
+private DefaultMutableTreeNode deepClone(DefaultMutableTreeNode root){
+	DefaultMutableTreeNode nroot = (DefaultMutableTreeNode)root.clone();
+	Enumeration children = root.children();
+	while (children.hasMoreElements()) {
+		DefaultMutableTreeNode child = (DefaultMutableTreeNode)children.nextElement();
+		DefaultMutableTreeNode nchild = deepClone(child);
+		nroot.add(nchild);
+	}
+	return nroot;
+}
+
+private DefaultMutableTreeNode makeFreshCopy(DefaultMutableTreeNode origNode) {
+	DefaultMutableTreeNode copy = new DefaultMutableTreeNode();	
+    if( origNode.getUserObject() instanceof Sequence ) {
+      	copy.setUserObject(new Sequence());
+      }
+   	  else if( origNode.getUserObject() instanceof Flow ) {
+   	   	copy.setUserObject(new Flow());
+      }
+      else if( origNode.getUserObject() instanceof Step ) {
+        copy.setUserObject(new Step());
+      }
+      else if( origNode.getUserObject() instanceof Script ) {
+      	Script script = new Script();
+      	script.setDescription(((Script)origNode.getUserObject()).getDescription());
+      	script.setBody(((Script)origNode.getUserObject()).getBody());        
+        copy.setUserObject(script);
+        DefaultMutableTreeNode body = new DefaultMutableTreeNode();
+        body.setUserObject(script.getBody());
+        body.setAllowsChildren(false);
+        }               
+      else if( origNode.getUserObject() instanceof For ) {
+         copy.setUserObject(new For());
+      }
+      else if( origNode.getUserObject() instanceof If ) {
+      	copy.setUserObject(new If());
+      } 
+      else if( origNode.getUserObject() instanceof Then ) {
+    	  copy.setUserObject(new Then());
+      }
+      else if( origNode.getUserObject() instanceof Else ) {
+    	  copy.setUserObject(new Else());
+      } 
+      else if( origNode.getUserObject() instanceof Parfor ) {
+         copy.setUserObject(new Parfor());
+      }
+      else if( origNode.getUserObject() instanceof Scope ) {
+         copy.setUserObject(new Scope());
+      }
+      else if( origNode.getUserObject() instanceof Set ) {
+      	 copy.setUserObject(new Set());
+      }                    
+      else if( origNode.getUserObject() instanceof Unset ) {
+      	  copy.setUserObject(new Unset());
+      }                        
+      else if( origNode.getUserObject() instanceof While ) {
+          copy.setUserObject(new While());
+      }                                                            
+      else {
+         logger.error( "unsupported Activity:" + origNode.getUserObject() ) ;
+      } 	
+	return copy;
+}
+
 }
 
 /* 
 $Log: SimpleWorkflowTreeModel.java,v $
+Revision 1.4  2005/11/08 09:56:04  pjn3
+branch pjn_workbench_2_11_05
+
+Revision 1.3.6.1  2005/11/07 15:38:45  pjn3
+initial approach to copying nodes
+
 Revision 1.3  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

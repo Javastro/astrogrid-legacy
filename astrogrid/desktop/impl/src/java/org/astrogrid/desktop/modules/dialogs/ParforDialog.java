@@ -66,6 +66,7 @@ public class ParforDialog extends BaseBeanEditorDialog  {
 			JLabel label2 = new JLabel("Items: ", JLabel.TRAILING);
 			varField = new JTextField(20);
 			varField.setEditable(true);
+			varField.setFocusable(true);
 			itemField = new JTextField(20);
 			itemField.setEditable(true);
 			label3 = new JLabel("");

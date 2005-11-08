@@ -1,4 +1,4 @@
-/*$Id: WorkflowDetailsDialog.java,v 1.4 2005/10/12 13:30:10 nw Exp $
+/*$Id: WorkflowDetailsDialog.java,v 1.5 2005/11/08 09:54:37 pjn3 Exp $
  * Created on 29-5-05
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,6 +75,7 @@ public class WorkflowDetailsDialog extends BaseBeanEditorDialog {
 	    	
 	    	nameField = new JTextField();
 	    	nameField.setEditable(true);
+	    	nameField.setFocusable(true);
 	        descTextArea = new JTextArea(3,7);
 	        descTextArea.setEditable(true);
 			JScrollPane scrollPane = new JScrollPane(descTextArea);
