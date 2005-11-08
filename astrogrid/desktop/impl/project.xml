@@ -90,170 +90,26 @@
 		<artifactId>acr-interface-javahelp</artifactId>
 		<version>${astrogrid.desktop.version}</version>
 		<properties>
-			<jnlp.jar>true</jnlp.jar>
+			<jnlp.jar>true</jnlp.jar>			
 			<dist.bundle>true</dist.bundle>			
 		</properties>
 	</dependency>	
-        	
-        	<!-- Special Astro/Physics libray mainly used for Math at the moment for astroscope -->
-        	<dependency>
-        		<artifactId>flanagan</artifactId>
-        		<groupId>flanagan</groupId>
-        		<jar>flanagan.jar</jar>
-        		<properties>
-        			<jnlp.jar>true</jnlp.jar>
-        			<dist.bundle>true</dist.bundle>			
-        		</properties>
-        	</dependency>		
-        	
-<!-- container and aspects system -->
- 
-        <dependency>
-                <groupId>xmlrpc</groupId>
-                <artifactId>xmlrpc</artifactId>
-                <version>1.2-b1</version>
-                <type>jar</type>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-                </properties>
-        </dependency>
-        <dependency>
-                <groupId>prefuse</groupId>
-                <artifactId>prefuse</artifactId>
-                <version>1.0-alpha</version>
-                <type>jar</type>
-                <properties>
-                	<jnlp.jar>true</jnlp.jar>
-					 	<dist.bundle>true</dist.bundle>			
-                </properties>
-        </dependency>
-        
-        
-	<!-- wonder if i can remove this yet? -->
-        <dependency>
-                <artifactId>xstream</artifactId>
-                <groupId>xstream</groupId>
-                <version>1.1.2</version>
-                <type>jar</type>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-                </properties>
-        </dependency>
- 
-	<!-- where is this one used ? -->
-    <dependency>
-        <artifactId>commons-httpclient</artifactId>
-        <groupId>commons-httpclient</groupId>
-        <version>2.0.1</version>
-                <properties>
-                        <jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-                </properties>
-    </dependency>
-<!-- messaging system - move out to an extension eventually -->
 
-	<dependency>
-		<artifactId>activemq-core</artifactId>
-		<groupId>activemq</groupId>
-		<version>3.2</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-                </properties>		
-	</dependency>
-	<!--- for http -->
-	<dependency>
-		<artifactId>activemq-optional</artifactId>
-		<groupId>activemq</groupId>
-		<version>3.2</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-                </properties>		
-	</dependency>	
-	
-	<dependency>
-		<artifactId>geronimo-spec-jms</artifactId>
-		<groupId>geronimo-spec</groupId>
-		<version>1.1-rc4</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-		</properties>		
-	</dependency>	
-	<dependency>
-		<artifactId>geronimo-spec-jta</artifactId>
-		<groupId>geronimo-spec</groupId>
-		<version>1.0.1B-rc4</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-		</properties>		
-	</dependency>
-	<dependency>
-		<artifactId>geronimo-spec-j2ee-management</artifactId>
-		<groupId>geronimo-spec</groupId>
-		<version>1.0-rc4</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-		</properties>		
-	</dependency>	
-	<!-- for xstream only -->
-	<dependency>
-		<artifactId>xpp3</artifactId>
-		<groupId>xpp3</groupId>
-		<version>1.1.3.4d_b4_min</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-		</properties>		
-	</dependency>
-	
-	<!-- for jabber wire format -->
-	
-	<!--
-    <dependency>
-      <id>stax+api</id>
-      <version>1.0</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-		</properties>		  
-    </dependency>
-    <dependency>
-      <id>stax</id>
-      <version>1.1.1-dev</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
-		</properties>		  
-    </dependency>	
-	-->
-<!-- end of messaging system deps -->
+		
+		
+<!-- following libs are packaged up as separate jnlp extensions - so reference here,
+      for build time, but don't package in desktop jnlp -->
+<!-- various file-based libraries -->
 
-<!-- more stuff to factor out -->
-
-
- 
- <dependency>
-	<artifactId>rmi-lite</artifactId>
-	<groupId>rmilite</groupId>
-	<version>1.0</version>
-	<properties>
-		<jnlp.jar>true</jnlp.jar>
-		<dist.bundle>true</dist.bundle>		
-	</properties>
-</dependency>
 
 <dependency>
 	<artifactId>tar</artifactId>
 	<groupId>ice-tar</groupId>
 	<version>2.5</version>
 	<properties>
-		<jnlp.jar>true</jnlp.jar>
+		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		<jnlp.extension.dir>/jnlp/file</jnlp.extension.dir>
+		<jnlp.extension.jnlp>file.jnlp</jnlp.extension.jnlp>			
 		<dist.bundle>true</dist.bundle>			
 	</properties>
 </dependency>
@@ -263,14 +119,104 @@
 	<groupId>jdbm</groupId>
 	<version>1.0</version>
 	<properties>
-		<jnlp.jar>true</jnlp.jar>
 		<dist.bundle>true</dist.bundle>		
 	</properties>
 </dependency>
+<!-- Special Astro/Physics libray mainly used for Math at the moment for astroscope -->
+<dependency>
+	<artifactId>flanagan</artifactId>
+	<groupId>flanagan</groupId>
+	<jar>flanagan.jar</jar>
+	<properties>
+		<dist.bundle>true</dist.bundle>				
+		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		<jnlp.extension.dir>/jnlp/astro</jnlp.extension.dir>
+		<jnlp.extension.jnlp>astro.jnlp</jnlp.extension.jnlp>				
+	</properties>
+</dependency>		
 
- 
- <!-- following libs are packaged up as separate jnlp extensions - so reference here,
-      for build time, but don't package in desktop jnlp -->
+
+<!-- messaging system -->
+
+	<dependency>
+		<artifactId>activemq-core</artifactId>
+		<groupId>activemq</groupId>
+		<version>3.2</version>
+		<properties>
+			<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+			<jnlp.extension.dir>/jnlp/jms</jnlp.extension.dir>
+		 	<jnlp.extension.jnlp>jms.jnlp</jnlp.extension.jnlp>			
+			<dist.bundle>true</dist.bundle>			
+                </properties>		
+	</dependency>
+	
+	<dependency>
+		<artifactId>geronimo-spec-jms</artifactId>
+		<groupId>geronimo-spec</groupId>
+		<version>1.1-rc4</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>			
+		</properties>		
+	</dependency>	
+	<dependency>
+		<artifactId>geronimo-spec-jta</artifactId>
+		<groupId>geronimo-spec</groupId>
+		<version>1.0.1B-rc4</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>			
+		</properties>		
+	</dependency>
+	<dependency>
+		<artifactId>geronimo-spec-j2ee-management</artifactId>
+		<groupId>geronimo-spec</groupId>
+		<version>1.0-rc4</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>			
+		</properties>		
+	</dependency>	
+	<!--- for http -->
+	<dependency>
+		<artifactId>activemq-optional</artifactId>
+		<groupId>activemq</groupId>
+		<version>3.2</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>			
+		</properties>		
+	</dependency>	
+	<!-- for http / xstream protocol  -->
+	
+	<dependency>
+		<artifactId>xstream</artifactId>
+		<groupId>xstream</groupId>
+		<version>1.1.2</version>
+		<type>jar</type>
+		<properties>
+			<dist.bundle>true</dist.bundle>			
+		</properties>
+        </dependency>	
+	<dependency>
+		<artifactId>xpp3</artifactId>
+		<groupId>xpp3</groupId>
+		<version>1.1.3.4d_b4_min</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>			
+		</properties>		
+	</dependency>
+	<!-- unsure whether this is strictly needed,or the correct version.
+	     must experiment -->
+	<dependency>
+		<artifactId>commons-httpclient</artifactId>
+		<groupId>commons-httpclient</groupId>
+		<version>2.0.1</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>			
+		</properties>
+	</dependency>
+	
+
+<!-- end of messaging system deps -->
+
+
  <!-- container and aspect systems -->
  <dependency>
 	 <groupId>picocontainer</groupId>
@@ -285,7 +231,6 @@
 	 </properties>
  </dependency>
  
- <!-- nanocontainer, and it's deps-->
  <dependency>
 	 <groupId>nanocontainer</groupId>
 	 <artifactId>nanocontainer</artifactId>
@@ -366,7 +311,24 @@
 		 <dist.bundle>true</dist.bundle>
 	 </properties>	 
     </dependency>
- 
+    
+    <dependency>
+	    <artifactId>rmi-lite</artifactId>
+	    <groupId>rmilite</groupId>
+	    <version>1.0</version>
+	    <properties>
+		    <dist.bundle>true</dist.bundle>		
+	    </properties>
+</dependency> 
+<dependency>
+	<groupId>xmlrpc</groupId>
+	<artifactId>xmlrpc</artifactId>
+	<version>1.2-b1</version>
+	<type>jar</type>
+	<properties>
+		<dist.bundle>true</dist.bundle>			
+	</properties>
+</dependency>
  <!-- gui fluff and concurrent stuff-->
    <dependency><!-- look and feel -->
         <artifactId>looks</artifactId>
@@ -395,8 +357,26 @@
 		    <dist.bundle>true</dist.bundle>
 	 </properties>	 	    
  </dependency>    
+ <dependency><!-- graph viz -->
+	 <groupId>prefuse</groupId>
+	 <artifactId>prefuse</artifactId>
+	 <version>1.0-alpha</version>
+	 <type>jar</type>
+	 <properties>
+		 <dist.bundle>true</dist.bundle>			
+	 </properties>
+ </dependency>
+ <dependency><!-- syntax highlighting editor -->
+	 <groupId>jedit</groupId>
+	 <artifactId>jedit-syntax</artifactId>
+	 <version>1.0</version>
+	 <type>jar</type>
+	 <properties>
+		 <dist.bundle>true</dist.bundle>
+	 </properties>
+	</dependency>
+ 
 <!-- online help system -->
-
  <dependency>
 	 <artifactId>jhall</artifactId>
 	 <groupId>javahelp</groupId>
