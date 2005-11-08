@@ -13,6 +13,17 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	<release version="1.3-alpha-3" date="2005-11-8">
+		<action dev="pjn" type="fix">
+			further improvements to worklow builder and application launcher ui
+		</action>
+		<action dev="kmb" type="fix">
+			further improvements to astroscope
+		</action>
+		<action dev="nw" type="fix">
+			Moved more jars out into extensions, freshened versions
+		</action>
+	</release>
 	<release version="1.3-alpha-2" date="2005-11-3">
 		<action dev="nw" type="add">
 			Application launcher supports cone and siap
