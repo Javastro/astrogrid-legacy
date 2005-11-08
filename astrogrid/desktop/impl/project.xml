@@ -94,6 +94,18 @@
 			<dist.bundle>true</dist.bundle>			
 		</properties>
 	</dependency>	
+        	
+        	<!-- Special Astro/Physics libray mainly used for Math at the moment for astroscope -->
+        	<dependency>
+        		<artifactId>flanagan</artifactId>
+        		<groupId>flanagan</groupId>
+        		<jar>flanagan.jar</jar>
+        		<properties>
+        			<jnlp.jar>true</jnlp.jar>
+        			<dist.bundle>true</dist.bundle>			
+        		</properties>
+        	</dependency>		
+        	
 <!-- container and aspects system -->
  
         <dependency>
