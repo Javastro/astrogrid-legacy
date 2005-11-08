@@ -4,25 +4,33 @@
 
   <currentVersion>${astrogrid.aggregate.version}</currentVersion>
 
-  <id>javahelp</id>
+  <id>file</id>
 
-  <name>JavaHelp System Libraries</name>
+  <name>File-based Libraries</name>
 
-  <description>JavaHelp bundled as a JNLP Extension</description>
+  <description>Hodepodge of libraries that work with files bundled as a JNLP Extension</description>
 
-  <shortDescription>JavaHelp Libraries</shortDescription>
+  <shortDescription>FileLibraries</shortDescription>
 
   <dependencies>
-
 	  <dependency>
-		  <artifactId>jhall</artifactId>
-		  <groupId>javahelp</groupId>
-		  <version>2.0.02</version>
-		  <properties>			 
-			  <jnlp.jar>true</jnlp.jar>			  
+		  <artifactId>tar</artifactId>
+		  <groupId>ice-tar</groupId>
+		  <version>2.5</version>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>			
 		  </properties>
-		  <jar>jhall.jar</jar>
- </dependency>
+	  </dependency>
+	  
+	  <dependency>
+		  <artifactId>jdbm</artifactId>
+		  <groupId>jdbm</groupId>
+		  <version>1.0</version>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>	
+		  </properties>
+</dependency>
+
 <!-- stuff required in maven build -->
     <dependency>
       <groupId>commons-jelly</groupId>

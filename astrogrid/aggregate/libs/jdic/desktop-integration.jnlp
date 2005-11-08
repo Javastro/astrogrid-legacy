@@ -25,11 +25,13 @@
     	<jar href="jdic_stub_Windows-0.9.1.jar"/>
 	<nativelib href="jdic_native_Windows_i386-0.9.1.jar"/>
   </resources>
+  <!--
   <resources os="Linux" arch="i386">
 	<jar href="jdic-0.9.1.jar" />
     	<jar href="jdic_stub_Linux-0.9.1.jar"/>
     	<nativelib href="jdic_native_Linux_i386-0.9.1.jar"/>
   </resources>
+  -->
   <resources os="Solaris" arch="i386">
 	<jar href="jdic-0.9.1.jar" />
 	<jar href="jdic_stub_Solaris-0.9.1.jar"/>

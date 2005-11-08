@@ -6,9 +6,9 @@
 
   <id>jetty</id>
 
-  <name>Jetty Webserver Libraries</name>
+  <name>Communication libraries</name>
 
-  <description>Jetty Webserver and it's prerequisites bundled as a JNLP Extension</description>
+  <description>Jetty Webserver, JavaRMI and XMLRPC and it's prerequisites bundled as a JNLP Extension</description>
 
   <shortDescription>Jetty Webserver</shortDescription>
 
@@ -39,7 +39,26 @@
 		<properties>
 			<jnlp.jar>true</jnlp.jar>
 		</properties>
-    </dependency>	
+    </dependency>
+    
+    
+    <dependency>
+	    <artifactId>rmi-lite</artifactId>
+	    <groupId>rmilite</groupId>
+	    <version>1.0</version>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>		
+	    </properties>
+</dependency>  
+<dependency>
+	<groupId>xmlrpc</groupId>
+	<artifactId>xmlrpc</artifactId>
+	<version>1.2-b1</version>
+	<type>jar</type>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>		
+	</properties>
+  </dependency>
 <!-- stuff required in maven build -->
     <dependency>
       <groupId>commons-jelly</groupId>

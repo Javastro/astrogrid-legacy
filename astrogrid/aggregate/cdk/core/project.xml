@@ -297,7 +297,7 @@
         <dist.bundle>true</dist.bundle>
       </properties>
     </dependency>
-
+<!-- this is what I had for axis 1.1
     <dependency>
       <artifactId>axis</artifactId>
 
@@ -417,21 +417,83 @@
         <dist.bundle>true</dist.bundle>
       </properties>
     </dependency>
+-->
 
+    
+    <!-- axis, and the jars it relies upon -->
     <dependency>
-      <artifactId>commons-collections</artifactId>
-
-      <groupId>commons-collections</groupId>
-
-      <version>3.1</version>
-
-      <url>http://jakarta.apache.org/commons/</url>
-
-      <properties>
-
-        <dist.bundle>true</dist.bundle>
-      </properties>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis</artifactId>
+	    <version>1.3</version>
+	    <properties>
+		    <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		    <jnlp.extension.dir>/jnlp/beta/soap</jnlp.extension.dir>
+		    <jnlp.extension.jnlp>soap.jnlp</jnlp.extension.jnlp>
+        	<dist.bundle>true</dist.bundle>		    
+	    </properties>
     </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>wsdl4j</artifactId>
+	    <version>1.5.1</version>
+	    <properties>
+		    <dist.bundle>true</dist.bundle>	
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis-saaj</artifactId>
+	    <version>1.3</version>
+	    <properties>
+		    <dist.bundle>true</dist.bundle>	
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis-jaxrpc</artifactId>
+	    <version>1.3</version>
+	    <properties>
+		    <dist.bundle>true</dist.bundle>	
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>commons-logging</artifactId>
+	    <version>1.0.4</version>
+	    <properties>
+		    <dist.bundle>true</dist.bundle>	
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>commons-discovery</artifactId>
+	    <version>0.2</version>
+	    <properties>
+		    <dist.bundle>true</dist.bundle>	
+	    </properties>
+    	</dependency>    
+	<dependency>
+		<artifactId>commons-collections</artifactId>		
+		<groupId>commons-collections</groupId>		
+		<version>3.1</version>		
+		<url>http://jakarta.apache.org/commons/</url>		
+		<properties>			
+			<dist.bundle>true</dist.bundle>
+		</properties>
+    </dependency>	
+    <dependency>
+	    <id>log4j</id>	    
+	    <version>1.2.8</version>	    
+	    <properties>		    
+		    <dist.bundle>true</dist.bundle>
+	    </properties>
+    </dependency>    
 
 <!-- stuff required in maven build -->
     <dependency>

@@ -4,25 +4,28 @@
 
   <currentVersion>${astrogrid.aggregate.version}</currentVersion>
 
-  <id>javahelp</id>
+  <id>astro</id>
 
-  <name>JavaHelp System Libraries</name>
+  <name>Astronomy Libraries</name>
 
-  <description>JavaHelp bundled as a JNLP Extension</description>
+  <description>Various Astronomy Libraries bundled as a JNLP Extension</description>
 
-  <shortDescription>JavaHelp Libraries</shortDescription>
+  <shortDescription>Astronomy Libraries</shortDescription>
 
   <dependencies>
-
+	  
+	  <!-- Special Astro/Physics libray mainly used for Math at the moment for astroscope -->
 	  <dependency>
-		  <artifactId>jhall</artifactId>
-		  <groupId>javahelp</groupId>
-		  <version>2.0.02</version>
-		  <properties>			 
-			  <jnlp.jar>true</jnlp.jar>			  
+		  <artifactId>flanagan</artifactId>
+		  <groupId>flanagan</groupId>
+		  <jar>flanagan.jar</jar>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>			
 		  </properties>
-		  <jar>jhall.jar</jar>
- </dependency>
+        	</dependency>		
+
+
+
 <!-- stuff required in maven build -->
     <dependency>
       <groupId>commons-jelly</groupId>

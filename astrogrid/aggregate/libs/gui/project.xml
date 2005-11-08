@@ -29,6 +29,24 @@
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>
     </dependency>
+    <dependency> <!--graph viz library -->
+	    <groupId>prefuse</groupId>
+	    <artifactId>prefuse</artifactId>
+	    <version>1.0-alpha</version>
+	    <type>jar</type>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>			
+	    </properties>
+        </dependency>
+	<dependency><!-- syntax highlighting editor -->
+		<groupId>jedit</groupId>
+		<artifactId>jedit-syntax</artifactId>
+		<version>1.0</version>
+		<type>jar</type>
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+		</properties>
+	</dependency>
     <dependency><!-- contains SwingWorker class, for executing things in background threads -->
 	    <artifactId>concurrent</artifactId>
 	    <groupId>concurrent</groupId>

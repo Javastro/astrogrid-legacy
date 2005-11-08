@@ -25,7 +25,8 @@
 	  <dependency>
 		  <groupId>nanocontainer</groupId>
 		  <artifactId>nanocontainer</artifactId>
-		  <version>1.0-beta-4</version>
+		  <!--<version>1.0-beta-4</version>-->
+		  <version>1.0-RC-1</version>
 		  <type>jar</type>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
@@ -45,6 +46,7 @@
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>
 	  </dependency>
+	  <!--
 	  <dependency>
 		  <groupId>cglib</groupId>
 		  <artifactId>cglib-asm</artifactId>
@@ -53,6 +55,23 @@
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>
 	  </dependency>
+	  -->
+	  <dependency>
+		  <groupId>cglib</groupId>
+		  <artifactId>cglib</artifactId>
+		  <version>1.0</version>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>	 
+	  </dependency> 
+	  <dependency>
+		  <groupId>asm</groupId>
+		  <artifactId>asm</artifactId>
+		  <version>1.5.3</version>
+		  <properties>
+			  <jnlp.jar>true</jnlp.jar>
+		  </properties>	 
+ 	</dependency>
 	  <dependency>
 		  <id>oro</id>
 		  <version>2.0.7</version><!-- nanocontainer project says 2.0.8, but we're on 2.0.7 at the moment -->

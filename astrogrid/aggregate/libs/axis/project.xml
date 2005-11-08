@@ -15,6 +15,7 @@
   <dependencies>
 
 <!-- 3rd party libs -->
+
     <dependency>
       <groupId>xerces</groupId>
 
@@ -62,7 +63,7 @@
         <jnlp.jar>true</jnlp.jar>
       </properties>
     </dependency>
-
+<!-- axis 1.1 - can do better than this..
     <dependency>
       <artifactId>axis</artifactId>
 
@@ -188,7 +189,87 @@
 
       </properties>
     </dependency>
-
+-->
+    <!-- axis, and the jars it relies upon -->
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis</artifactId>
+	    <version>1.3</version>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>wsdl4j</artifactId>
+	    <version>1.5.1</version>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis-saaj</artifactId>
+	    <version>1.3</version>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis-jaxrpc</artifactId>
+	    <version>1.3</version>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>commons-logging</artifactId>
+	    <version>1.0.4</version>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>commons-discovery</artifactId>
+	    <version>0.2</version>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>
+	    </properties>
+    	</dependency>    
+	<dependency>
+		<id>log4j</id>
+		
+		<version>1.2.8</version>
+		
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+			
+		</properties>
+	</dependency>
+	
+	<dependency>
+		<artifactId>commons-collections</artifactId>
+		
+		<groupId>commons-collections</groupId>
+		
+		<version>3.1</version>
+		
+		<url>http://jakarta.apache.org/commons/</url>
+		
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+			
+		</properties>
+    </dependency>    
 <!-- stuff required in maven build -->
     <dependency>
       <groupId>commons-jelly</groupId>
