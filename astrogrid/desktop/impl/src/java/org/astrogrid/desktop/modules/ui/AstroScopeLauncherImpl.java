@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.15 2005/11/09 14:06:52 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.16 2005/11/09 14:10:44 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -469,18 +469,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     
     private String getPositionFromObject() {
         String pos = null;  
-        System.out.println("getPositionFromObject");
         try {
             String temp = ses.sesame(posText.getText().trim(),"x");
-            System.out.println("here is the xml response from sesame = " + temp);
             logger.debug("here is the xml response from sesame = " + temp);            
             pos = temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>"));
             pos += "," + temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>"));
-            System.out.println("here is the position extracted from sesame = " + pos);
             logger.debug("here is the position extracted from sesame = " + pos);
         }catch(Exception e) {
             //hmmm I think glueservice is throwing an exception but things seem to be okay.
-            e.printStackTrace();
+            //e.printStackTrace();
 				logger.debug("error from sesame - ho hum",e);
         }
         return pos;
@@ -1762,6 +1759,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.16  2005/11/09 14:10:44  KevinBenson
+removed some statemetns that were not needed
+
 Revision 1.15  2005/11/09 14:06:52  KevinBenson
 minor changes for clearTree to refocus in the center.  And fix an expression on the position
 
