@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.5 2005/10/12 13:30:10 nw Exp $
+/*$Id: UIImpl.java,v 1.6 2005/11/09 15:28:21 jdt Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -278,7 +278,7 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
             reportBugMenuItem .addActionListener(new java.awt.event.ActionListener() { 
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     try {                        
-                        browser.openURL(new URL("http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench"));
+                        browser.openURL(new URL("http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR"));
                     } catch (Exception ex) {
                         logger.error(e);
                     }
@@ -1053,6 +1053,9 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.6  2005/11/09 15:28:21  jdt
+fixed broken help  link
+
 Revision 1.5  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 
