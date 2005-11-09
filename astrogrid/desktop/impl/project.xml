@@ -433,7 +433,7 @@
 	 </properties>
  </dependency>
  <dependency>
-	 <artifactId>jdic_stub_${os.name}</artifactId>
+	 <artifactId>jdic_stub_${ag.os.name}</artifactId>
 	 <groupId>jdic</groupId>
 	 <version>0.9.1</version>
  </dependency>
@@ -441,7 +441,7 @@
       not a real dependency as such - and not needed for development
       -->
  <dependency>
-	 <artifactId>jdic_native_${os.name}_${os.arch}</artifactId>
+	 <artifactId>jdic_native_${ag.os.name}_${ag.os.arch}</artifactId>
 	 <groupId>jdic</groupId>
 	 <version>0.9.1</version>
  </dependency>
