@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.16 2005/11/09 14:10:44 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.17 2005/11/09 16:05:55 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -467,6 +467,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         }
     }
     
+    /**
+     * method: getPositionFromObject
+     * Description: Queries CDS-Simbad service for a position in the sky based on a object name.  This is typically 
+     * called if the user enters an invalid position then it will attempt a lookup.
+     * @return position in the sky based on a object name.
+     */
     private String getPositionFromObject() {
         String pos = null;  
         try {
@@ -534,7 +540,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     /**
      * Creates the left/WEST side of the GUI.  By creating a small search panel at the top(north-west).  Then
      * let the rest of the panel be a JTree for the selected data.
-     * @return
+     * @return JPanel consisting of the query gui and custom controls typically placedo on the WEST side of the main panel.
+     * @todo probably needs to use a gridbaglayout instead of all these other panels within panels.
      */
     public JPanel makeSearchPanel() {
         JPanel wrapPanel = new JPanel();
@@ -571,20 +578,30 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         scopeMain.add(saveButton);
         
         wrapPanel.add(scopeMain);
-        //JPanel graphPanel
         
-        //Dimension dim3 = new Dimension(200,500);
+    
+        JPanel graphControlsPanel = new JPanel();
+        graphControlsPanel.setMaximumSize(dim2);
+        graphControlsPanel.setPreferredSize(dim2);
+        Dimension buttonDim = new Dimension(80,20);
+        reFocusTopButton = new JButton("Go to Top");
+        reFocusTopButton.setPreferredSize(buttonDim);
+        reFocusTopButton.setMaximumSize(buttonDim);
+        graphControlsPanel.setLayout(new GridLayout(3,1));
+        //graphControlsPanel.add(new JLabel("<html><body><b>Custom Graph Controls:</b></body></html>"), BorderLayout.NORTH);
+        graphControlsPanel.add(new JLabel("<html><body><b>Custom Graph Controls:</b></body></html>"));
+        graphControlsPanel.add(reFocusTopButton);
+        graphControlsPanel.add(new JPanel());
+        reFocusTopButton.addActionListener(this);
+        reFocusTopButton.setEnabled(false);        
+        wrapPanel.add(graphControlsPanel);
         
-        JPanel bottomPanel = new JPanel();
-   
-        //getPathForRow        
-        JPanel southCenterPanel = new JPanel();
-
-
-        wrapPanel.add(southCenterPanel);
+        wrapPanel.add(new JPanel());
 
         return wrapPanel;
     }
+    
+    private JButton reFocusTopButton;
 
     /**
      * Makes the Center Panel for the GUI.  The main look is is the display graph which is the 
@@ -661,11 +678,31 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
   
     }
     
+    /**
+     * method: refocusMainNodes()
+     * description: Refocuses the graph on the main root node.  Typically called right before a query or user
+     * hits a particular button.  Seems to focus better if it focuses on cone and sia tree nodes first before root.
+     *
+     */
     private void refocusMainNodes() {
         for (int j =0; j < vizualizations.length; j++) {
             vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(coneNode);
             vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(siaNode);
             vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(rootNode);
+        }    
+    }
+    
+    /**
+     * method: reDrawGraphs
+     * description: Calls Redraw on all the displays/visualizations typically called after a refocus and needs to
+     * draw the new focus on the graph.  
+     * Note: clearTree does not call it because nodes are typically added from a query causing the graph to be 
+     * redrawn anyways.
+     *
+     */
+    private void reDrawGraphs() {
+        for (int j =0; j < vizualizations.length; j++) {
+            vizualizations[j].reDraw();
         }
     }
     
@@ -1175,6 +1212,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             query();
         }else if(source == saveButton) {
             saveData();
+        }else if(source == reFocusTopButton) {
+            refocusMainNodes();
+            reDrawGraphs();
         }
 
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
@@ -1263,7 +1303,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 riNode.setAttribute("ra","0"); // dummies for the plot viualization.
                 riNode.setAttribute("dec","0");     
                 if (information.getLogoURL() != null) {
-                    System.out.println("found an image!!");
+                    //System.out.println("found an image!!");
                     riNode.setAttribute("img",information.getLogoURL().toString());
                 }
                 StringBuffer sb = new StringBuffer();
@@ -1551,6 +1591,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             return;
         }
         clearTree();
+        reFocusTopButton.setEnabled(true);
         
         // @todo refactor this string-munging methods.
                        
@@ -1671,11 +1712,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 
                 if (set.contains(node)) {// do a remove of this, and all children, and any parents.
                     for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
+                        
                         TreeNode n = (TreeNode)i.next();
                         set.remove(n);
                         n.setAttribute("selected","false"); // attribute used to speed up coloring function.
                     }
                     while (node.getParent() != null) {
+                        
                         node = node.getParent();
                         if (set.contains(node)) {
                             node.setAttribute("selected","false");
@@ -1684,6 +1727,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                     }
                 } else { // an add of this, and all children
                     for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
+                        
                         TreeNode n = (TreeNode)i.next();
                         n.setAttribute("selected","true"); // yechh.
                         if (! set.contains(n)) {
@@ -1759,6 +1803,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.17  2005/11/09 16:05:55  KevinBenson
+minor change to add a "Go to Top" button.
+
 Revision 1.16  2005/11/09 14:10:44  KevinBenson
 removed some statemetns that were not needed
 
