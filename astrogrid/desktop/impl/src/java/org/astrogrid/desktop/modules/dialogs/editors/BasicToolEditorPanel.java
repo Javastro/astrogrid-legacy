@@ -132,10 +132,10 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             //whether it was selected or deselected.
         	ParameterValue parameter = pm.getRows()[row];
         	if (e.getStateChange() == ItemEvent.DESELECTED) {               
-        		//fireEditingStopped();
+        		fireEditingStopped();
         		logger.error("UNSELECT DEL");
             } else {                
-                //fireEditingStopped();
+                fireEditingStopped();
                 logger.error("SELECT DEL");
             }
         }
@@ -524,7 +524,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
              	 toolModel.fireParameterAdded(BasicToolEditorPanel.this,row);
              	 break;
              case 4:
-             	 //toolModel.fireParameterRemoved(BasicToolEditorPanel.this, row);
+             	 toolModel.fireParameterRemoved(BasicToolEditorPanel.this, row);
              	 break;
              default: // do nothing in all other cases.
                  break;
@@ -714,6 +714,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.7  2005/11/09 18:48:26  pjn3
+*** empty log message ***
+
+Revision 1.6.4.1  2005/11/09 18:39:41  pjn3
+added basic delete back in
+
 Revision 1.6  2005/11/08 09:54:56  pjn3
 branch pjn_workbench_2_11_05
 
