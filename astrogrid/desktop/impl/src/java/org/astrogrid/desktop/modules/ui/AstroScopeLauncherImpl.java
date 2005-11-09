@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.14 2005/11/08 15:03:56 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.15 2005/11/09 14:06:52 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -261,14 +261,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         // configure vizualizations.
         vizualizations = new Vizualization[]{
                 new WindowedRadial()
-               // , new FisheyeWindowedRadial()
                 , new Hyperbolic()
-              //  , new Balloon()
-       //         ,new TreeMap() //-- seems to throw exceptions.
-              // ,new ZoomPan()// - dodgy and ugly
              , new ConventionalTree()  // not working yet.
-          //  , new Plot() // doesn't seem to layout quite right. - evertything in same place. (as coords are always the same)
-             //,  new Force() //- takes too long to settle.               
         };
         // register each vizualization as a listener
         for (int i = 0; i < vizualizations.length; i++) {
@@ -465,7 +459,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         if(pos == null || pos.trim().length() == 0) {
             return null;
         }
-        String expression = "-?\\d+\\.?\\d*,-?\\d+\\.?\\d*";
+        String expression = "\\+?-?\\d+\\.?\\d*,\\+?-?\\d+\\.?\\d*";
         if(pos.matches(expression)) {            
             return pos;            
         } else {
@@ -474,15 +468,19 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     }
     
     private String getPositionFromObject() {
-        String pos = null;    
+        String pos = null;  
+        System.out.println("getPositionFromObject");
         try {
             String temp = ses.sesame(posText.getText().trim(),"x");
-            logger.debug("here is the xml response from sesame = " + temp);
+            System.out.println("here is the xml response from sesame = " + temp);
+            logger.debug("here is the xml response from sesame = " + temp);            
             pos = temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>"));
             pos += "," + temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>"));
+            System.out.println("here is the position extracted from sesame = " + pos);
             logger.debug("here is the position extracted from sesame = " + pos);
         }catch(Exception e) {
             //hmmm I think glueservice is throwing an exception but things seem to be okay.
+            e.printStackTrace();
 				logger.debug("error from sesame - ho hum",e);
         }
         return pos;
@@ -576,6 +574,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         scopeMain.add(saveButton);
         
         wrapPanel.add(scopeMain);
+        //JPanel graphPanel
         
         //Dimension dim3 = new Dimension(200,500);
         
@@ -649,12 +648,27 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         // reset selection too.
         nodeSizingMap.clear();
         getSelectionFocusSet().clear();
+        siaNode.removeAllChildren();
+        coneNode.removeAllChildren();
+        
+        //just for sanity go make sure the remaining nodes which are really just
+        //siaNode, rootNode, coneNode are set to false for the selected attribute.
         for (Iterator i = getTree().getNodes(); i.hasNext(); ) {
             Node n = (Node)i.next();
             n.setAttribute("selected","false");
-            if (n != siaNode && n != coneNode && n != rootNode) {
-                getTree().removeNode(n);
-            }
+        }        
+        // register each vizualization as a listener
+        //getSelectionFocusSet().set(rootNode);
+        //
+        refocusMainNodes();
+  
+    }
+    
+    private void refocusMainNodes() {
+        for (int j =0; j < vizualizations.length; j++) {
+            vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(coneNode);
+            vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(siaNode);
+            vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(rootNode);
         }
     }
     
@@ -662,7 +676,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * (as this contains the dispplay-specific info), but a shared tree of data objects - so 
      * each viz provides a different 'view' of the same data.
      * 
-
      *
      */
     
@@ -716,8 +729,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     /** access the display for this vizualization */
     public abstract Display getDisplay();
     
-    }
+    /** access the display for this vizualization */
+    public abstract void reDraw();
     
+    }
+        
     /** focus set used to maintain list of nodes selected for download.
      * focus set is shared between vizualizaitons- so changes in one will be seen in others.
      */
@@ -757,7 +773,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         // refresh display when new item added to results.
         public void nodeAdded(Graph arg0, Node arg1) {
             actmap.runNow("filter");
-        }        
+        }
+        
+        public void reDraw() {
+            actmap.runNow("filter");
+        }
         
         public Display getDisplay() {
         
@@ -990,141 +1010,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         
     }
 
-        
-    
-/** vizualization that hides some of the data some of the time 
- * based on edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter
- * 
- * needs to have it's nodes spaced out more.
- * 
- * */
-    public class Balloon extends Vizualization {
-        public Balloon() {
-            super("Balloon");            
-    }
-        private Display display;
-        private ActionList filter;
-        public Display getDisplay() {
-            if (display == null) {
-                // create display and filter
-                ItemRegistry registry =getItemRegistry();
-                registry.setItemComparator(new DOIItemComparator());
-                display = new Display();
-
-                // initialize renderers
-                TextItemRenderer nodeRenderer = new TextItemRenderer();
-                nodeRenderer.setMaxTextWidth(75);
-                nodeRenderer.setAbbrevType(StringAbbreviator.NAME);
-                nodeRenderer.setRoundedCorner(8,8);
-                nodeRenderer.setTextAttributeName("label");
-                
-                Renderer nodeRenderer2 = new DefaultNodeRenderer();
-                Renderer edgeRenderer = new DefaultEdgeRenderer();
-                
-                registry.setRendererFactory(new SizeVaryingRenderFactory(
-                    nodeRenderer, nodeRenderer2, edgeRenderer));
-                
-                // initialize action lists
-                filter = new ActionList(registry);
-                filter.add(new WindowedTreeFilter(-4,true));
-                filter.add(new BalloonTreeLayout());
-                filter.add(new DemoColorFunction(4));
-                
-                ActionList update = new ActionList(registry);
-                update.add(new DemoColorFunction(4));
-                update.add(new RepaintAction());
-                
-                ActionList animate = new ActionList(registry, 1500, 20);
-                animate.setPacingFunction(new SlowInSlowOutPacer());
-                animate.add(new LocationAnimator());
-                animate.add(new ColorAnimator());
-                animate.add(new RepaintAction());
-                animate.alwaysRunAfter(filter);
-                
-                // initialize display
-                display.setItemRegistry(registry);
-                display.setSize(400,400);
-                //display.setBackground(Color.WHITE);
-                display.addControlListener(new FocusControl(filter));
-                display.addControlListener(new SubtreeDragControl());
-                display.addControlListener(new PanControl());
-                display.addControlListener(new ZoomControl());
-                display.addControlListener(new NeighborHighlightControl(update));
-                display.addControlListener(new ToolTipControl("tooltip"));
-                display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
-            }
-           return display;
-        }
-        // refresh display when new item added to results.
-        public void nodeAdded(Graph arg0, Node arg1) {
-            filter.runNow();
-        }
-        /**
-         * A RendererFactory instance that assigns node renderers of varying size
-         * in response to a node's depth in the tree.
-         */        
-        public class SizeVaryingRenderFactory implements RendererFactory {
-            private Renderer nodeRenderer1;
-            private Renderer nodeRenderer2;
-            private Renderer edgeRenderer;
-            public SizeVaryingRenderFactory(Renderer nr1, Renderer nr2, Renderer er) {
-                nodeRenderer1 = nr1;
-                nodeRenderer2 = nr2;
-                edgeRenderer = er;
-            } //
-            public Renderer getRenderer(VisualItem item) {
-                if ( item instanceof NodeItem ) {
-                    int d = ((NodeItem)item).getDepth();
-                    if ( d > 1 ) {
-                        int r = (d == 2 ? 5 : 1);
-                        ((DefaultNodeRenderer)nodeRenderer2).setRadius(r);
-                        return nodeRenderer2;
-                    } else {
-                        return nodeRenderer1;
-                    }
-                } else if ( item instanceof EdgeItem ) {
-                    return edgeRenderer;
-                } else {
-                    return null;
-                }
-            } //
-        } // end of inner class DemoRendererFactory
-                
-    }// end bubble;
-   
-    
-
-    /** variation of the windowed radial, using fisheye distortion. also shows an overview in the corner 
-     * 
-     * bit jerky. fisheye is proabbly overkill.
-     * 
-     * */
-    public class FisheyeWindowedRadial extends WindowedRadial {
-        public FisheyeWindowedRadial() {
-            super("Fisheye radial");
-        }
-    public Display getDisplay() {
-        if (display == null) {
-            display = super.getDisplay();
-            Display overview = new Display(getItemRegistry());
-            overview.setBorder(
-                    BorderFactory.createLineBorder(Color.BLACK, 1));
-            overview.setSize(50,50);
-            overview.zoom(new Point2D.Float(0,0),0.1);
-            display.add(overview);
-            
-            Distortion feye = new FisheyeDistortion();
-            ActionList distort = new ActionList(getItemRegistry());
-            distort.add(feye);
-            distort.add(new RepaintAction());
-            AnchorUpdateControl auc = new AnchorUpdateControl(feye,distort);
-            display.addMouseListener(auc);
-            display.addMouseMotionListener(auc);       
-        }
-        return display;
-    }  
-    }
-    
     /**
      * Uses the Prefuse Radial Layout for display along with a little bit of Animation to it. Uses
      *windowing filter - displays nearer neighbours, not entire graph.
@@ -1146,137 +1031,95 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         protected Display display;
         protected ActionList graphLayout;
         
-    public Display getDisplay() {
-            if (display == null) {
-        ItemRegistry registry = getItemRegistry();
-         display = new Display(registry);
-        
-            graphLayout = new ActionList(registry);
+        public Display getDisplay() {
+                if (display == null) {
+            ItemRegistry registry = getItemRegistry();
+             display = new Display(registry);
             
-            // two different types of filter - only vary in window size.
-            Filter[] filters = new Filter[] {
-                    new WindowedTreeFilter(-2,true)
-                    ,new WindowedTreeFilter(-1,true)
-            };            
-                    
-            // switch between the two filters
-            final ActionSwitch filterSwitch = new ActionSwitch(filters,0);
-            
-            // add a listener, that selects the correct filter based on the current node.
-            registry.getDefaultFocusSet().addFocusListener(new FocusListener() {
-                public void focusChanged(FocusEvent event) {
-                    if (event.getEventType() == FocusEvent.FOCUS_SET || event.getEventType() == FocusEvent.FOCUS_ADDED) {
-                        if (event.getFirstAdded() == siaNode || event.getFirstAdded() == coneNode) {
-                            filterSwitch.setSwitchValue(1);
-                        } else {
-                            filterSwitch.setSwitchValue(0);
+                graphLayout = new ActionList(registry);
+                
+                // two different types of filter - only vary in window size.
+                Filter[] filters = new Filter[] {
+                        new WindowedTreeFilter(-2,true)
+                        ,new WindowedTreeFilter(-1,true)
+                };            
+                        
+                // switch between the two filters
+                final ActionSwitch filterSwitch = new ActionSwitch(filters,0);
+                
+                // add a listener, that selects the correct filter based on the current node.
+                registry.getDefaultFocusSet().addFocusListener(new FocusListener() {
+                    public void focusChanged(FocusEvent event) {
+                        if (event.getEventType() == FocusEvent.FOCUS_SET || event.getEventType() == FocusEvent.FOCUS_ADDED) {
+                            if (event.getFirstAdded() == siaNode || event.getFirstAdded() == coneNode) {
+                                filterSwitch.setSwitchValue(1);
+                            } else {
+                                filterSwitch.setSwitchValue(0);
+                            }
                         }
                     }
-                }
-            });
+                });
+                
+                graphLayout.add(filterSwitch);
+                graphLayout.add(new RadialTreeLayout());
+                graphLayout.add(new DemoColorFunction(3));
             
-            graphLayout.add(filterSwitch);
-            graphLayout.add(new RadialTreeLayout());
-            graphLayout.add(new DemoColorFunction(3));
-        
-           ActionList update = new ActionList(registry);
-           update.add(new DemoColorFunction(3));
-           update.add(new RepaintAction());
-
-           
-           ActionList animate = new ActionList(registry, 1500, 20);
-           animate.setPacingFunction(new SlowInSlowOutPacer());
-           animate.add(new PolarLocationAnimator());
-           animate.add(new ColorAnimator());
-           animate.add(new RepaintAction());
-           animate.alwaysRunAfter(graphLayout);
-           
-           // add jitter to layout nodes better. could maybe make the jitter larger - makes the nodes less
-           // likely to overlap.
-           
-           ForceSimulator fsim = new ForceSimulator();
-           fsim.addForce(new NBodyForce(-0.1f,15f,0.5f));
-           fsim.addForce(new DragForce());
-           
-           ActionList forces = new ActionList(registry,1000);
-           forces.add(new ForceDirectedLayout(fsim,true));
-           forces.add(new RepaintAction());
-           forces.alwaysRunAfter(animate);
-           
-           
-           display.setItemRegistry(registry);
-           display.setSize(400,400);
-           
-           //for radial tree
-           display.addControlListener(new FocusControl(graphLayout));
-           display.addControlListener(new FocusControl(0,FocusManager.HOVER_KEY));
-           display.addControlListener(new DragControl(false,true));
-           display.addControlListener(new PanControl(false));
-           display.addControlListener(new ZoomControl(false));
-           display.addControlListener(new ToolTipControl("tooltip"));   
-           display.addControlListener(new NeighborHighlightControl(update));
-           display.addControlListener(new DoubleClickMultiSelectFocusControl());
-           
-           registry.getFocusManager().putFocusSet(
-                   FocusManager.HOVER_KEY, new DefaultFocusSet());
-            }
-           return display;
-    }
-
-    // refresh display when new item added
-    public void nodeAdded(Graph arg0, Node arg1) {
-        graphLayout.runNow();
-    }
-    } /// end windowed radial vizualization
+               ActionList update = new ActionList(registry);
+               update.add(new DemoColorFunction(3));
+               update.add(new RepaintAction());
     
-    
-    /** force-based layout
-     * based on edu.berkeley.guir.prefuse.demos.ForceDemo
-     * 
-     * interersting to zoom out and watch, but takes forever to settle and eats the CPU.
-     * maybe useable if I could understand what params to set in the force sim to make it settle faster.
-     * @author Noel Winstanley nw@jb.man.ac.uk 31-Oct-2005
-     *
-     */
-    public class Force extends Vizualization {
-        public Force() {
-            super("Force");
+               
+               ActionList animate = new ActionList(registry, 1500, 20);
+               animate.setPacingFunction(new SlowInSlowOutPacer());
+               animate.add(new PolarLocationAnimator());
+               animate.add(new ColorAnimator());
+               animate.add(new RepaintAction());
+               animate.alwaysRunAfter(graphLayout);
+               
+               // add jitter to layout nodes better. could maybe make the jitter larger - makes the nodes less
+               // likely to overlap.
+               
+               ForceSimulator fsim = new ForceSimulator();
+               fsim.addForce(new NBodyForce(-0.1f,15f,0.5f));
+               fsim.addForce(new DragForce());
+               
+               ActionList forces = new ActionList(registry,1000);
+               forces.add(new ForceDirectedLayout(fsim,true));
+               forces.add(new RepaintAction());
+               forces.alwaysRunAfter(animate);
+               
+               
+               display.setItemRegistry(registry);
+               display.setSize(400,400);
+               
+               //for radial tree
+               display.addControlListener(new FocusControl(graphLayout));
+               display.addControlListener(new FocusControl(0,FocusManager.HOVER_KEY));
+               display.addControlListener(new DragControl(false,true));
+               display.addControlListener(new PanControl(false));
+               display.addControlListener(new ZoomControl(false));
+               display.addControlListener(new ToolTipControl("tooltip"));   
+               display.addControlListener(new NeighborHighlightControl(update));
+               display.addControlListener(new DoubleClickMultiSelectFocusControl());
+               
+               registry.getFocusManager().putFocusSet(
+                       FocusManager.HOVER_KEY, new DefaultFocusSet());
+                }
+               return display;
         }
-        private Display display;
-        private ActionList graphLayout;        
 
         // refresh display when new item added
         public void nodeAdded(Graph arg0, Node arg1) {
             graphLayout.runNow();
         }
-
-        public Display getDisplay() {
-            if (display == null) {
-                ItemRegistry registry = getItemRegistry();
-                display = new Display(registry);
         
-                
-                graphLayout = new ActionList(registry,-1,20);
-                graphLayout.add(new TreeFilter());
-                ForceSimulator fsim = new ForceSimulator();
-                fsim.addForce(new NBodyForce(-0.4f,-1f,0.9f));
-                fsim.addForce(new SpringForce(4E-5f,75f));
-                fsim.addForce(new DragForce(-0.0005f)); // shrunk by a factor of 10 - hopefully things will settle faster.
-                
-                graphLayout.add(new ForceDirectedLayout(fsim,false,false));
-                graphLayout.add(new DemoColorFunction(3));
-                graphLayout.add(new RepaintAction());
-                display.addControlListener(new NeighborHighlightControl());
-                display.addControlListener(new DragControl(false,true));
-                display.addControlListener(new FocusControl(0));
-                display.addControlListener(new PanControl(false));
-                display.addControlListener(new ZoomControl(false));
-                display.addControlListener(new ToolTipControl("tooltip"));   
-                display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));                
-            }
-            return display;
-        }        
-    }// end force vizualization.
+        // refresh display when new item added
+        public void reDraw() {
+            graphLayout.runNow();
+        }
+    } /// end windowed radial vizualization
+    
+    
     
     /** normal tree layout.
      * 
@@ -1294,6 +1137,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         protected Display display;
         protected ActionList graphLayout;
         public void nodeAdded(Graph arg0, Node arg1) {
+            graphLayout.runNow();
+        }
+        
+        public void reDraw() {
             graphLayout.runNow();
         }
         
@@ -1319,258 +1166,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         }
     } // end conventional tree layout.
     
-    /** x-y plot layout, using ra and dec. 
-     * 
-     * doesn't seem to spread thngs out correctly.
-     * uses attributes called ra and dec of the nodes - think I need to provide dummy values for 
-     * nodes with no ra and dec.
-     * */
-    public class Plot extends Vizualization {
-
-        public Plot() {
-            super("Plot");
-        }
-        protected Display display;
-        protected ActionList graphLayout;
-        public void nodeAdded(Graph arg0, Node arg1) {
-            graphLayout.runNow();
-        }
-        
-        public Display getDisplay() {
-            if (display == null) {
-                ItemRegistry registry = getItemRegistry();
-                display = new Display(registry);
-                
-                graphLayout = new ActionList(registry);
-                graphLayout.add(new TreeFilter());
-                graphLayout.add(new ScatterplotLayout("ra","dec"));
-                graphLayout.add(new DemoColorFunction(4));
-                display.setItemRegistry(registry);
-                display.setSize(400,400);
-                
-                display.addControlListener(new FocusControl(graphLayout));
-                display.addControlListener(new PanControl());
-                display.addControlListener(new ZoomControl());
-                display.addControlListener(new ToolTipControl("tooltip"));
-                display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));         
-            }
-            return display;
-        }
-    }
-       
-        
-    
-    /**
-     * Tends to show the data a little better, also sort of a Grid Radial kind of style.  You need to hold down the
-     * mouse button for zooming and panning at the same time.  Problem is it is a little hard to get used to and again
-     * so much data.
-     * 
-     * NWW - found the data was badly laid out. - not much used
-     * 
-     * based on edu.berkeley.guir.prefuse.demos.ZoomingPanDemo
-     * @return
-     */
-    public class ZoomPan extends Vizualization {
-    /** Construct a new ZoomPan
-         * @param name
-         */
-        public ZoomPan() {
-            super("Zoom Pan");
-        }
-
-        private Display display;
-        private ActionList graphLayout;
-        private ActionList update;
-    public Display getDisplay() {
-       if (display == null) {           
-        ItemRegistry registry = getItemRegistry();  
-        
-        display = new Display(registry);
-        
-        graphLayout = new ActionList(registry);
-        graphLayout.add(new GraphFilter());
-        ActionMap actionMap = new ActionMap();
-        graphLayout.add(actionMap.put("grid", new PrefuseGridLayout()));
-        
-        update = new ActionList(registry);
-        update.add(new ColorFunction());
-        update.add(new RepaintAction());
-        
-        ((Layout)actionMap.get("grid")).setLayoutBounds(
-                new Rectangle2D.Double(-1200,-1200,2400,2400));        
-        
-           // initialize display 
-           display.setSize(400,400);
-           display.setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
-           display.addControlListener(new DragControl());
-           display.addControlListener(new NeighborHighlightControl());
-           display.addControlListener(new FocusControl(0, update));
-           display.addControlListener(new ZoomingPanControl());
-           display.addControlListener(new ToolTipControl("tooltip"));
-           display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
-    }
-           return display;
-    }
-    // refresh display when new item added
-    public void nodeAdded(Graph arg0, Node arg1) {
-        graphLayout.runNow();
-        update.runNow();
-    }
-    
-    public class PrefuseGridLayout extends edu.berkeley.guir.prefuse.action.assignment.Layout {
-        public void run(ItemRegistry registry, double frac) {
-            Rectangle2D b = getLayoutBounds(registry);
-            double bx = b.getMinX(), by = b.getMinY();
-            double w = b.getWidth(), h = b.getHeight();
-            int m, n;
-            Graph g = (Graph)registry.getGraph();
-            Iterator iter = g.getNodes(); iter.next();
-            for ( n=2; iter.hasNext(); n++ ) {
-                Node nd = (Node)iter.next();
-                if ( nd.getEdgeCount() == 2 )
-                    break;
-            }
-            m = g.getNodeCount() / n;
-            iter = g.getNodes();
-            for ( int i=0; iter.hasNext(); i++ ) {
-                Node nd = (Node)iter.next();
-                NodeItem ni = registry.getNodeItem(nd);
-                double x = bx + w*((i%n)/(double)(n-1));
-                double y = by + h*((i/n)/(double)(m-1));
-                
-                // add some jitter, just for fun
-                x += (Math.random()-0.5)*(w/n);
-                y += (Math.random()-0.5)*(h/m);
-                
-                setLocation(ni,null,x,y);
-            }
-        } //
-    } // end of inner class GridLayout        
-    }// end zoom pan vizualizaiton.
-    
-    /**
-     * For the demos this is the best one for showing large amounts of data.  And if we can our data to form similar
-     * to what the demo has, then this will be the graph and display to use and should fit fairly nicely with our data.
-     * Vision Example: SIA(large box)->Siap Service(medium box)->Various RA,DEC(small box).
-     * UNKNOWN: does it allow selection so we can populate the JTree hope so.
-     *@todo NWW: can't get this one working. 
-     * based on edu.berkeley.guir.prefuse.demos.TreeMapDemo
-     * @return
-     */
-    public class TreeMap extends Vizualization {
-        
-    /** Construct a new TreeMap
-         * @param name
-         */
-        public TreeMap() {
-            super("TreeMap");
-        }
-        public void nodeAdded(Graph arg0, Node arg1) {
-            graphLayout.runNow();
-        }
-        private Display display;
-        private ActionList graphLayout;
-        
-    public Display getDisplay() {
-        if (display == null) {
-        ItemRegistry registry = getItemRegistry();
-        
-        display = new Display(registry);
-        display.setSize(500,350);
-        // causes probs.        
-        registry.setRendererFactory(new DefaultRendererFactory(new RectangleRenderer()));
-
-        // make sure we draw from larger->smaller to prevent
-        // occlusion from parent node boxes        
-        registry.setItemComparator(new Comparator() {
-            public int compare(Object o1, Object o2) {
-                double s1 = ((VisualItem)o1).getSize();
-                double s2 = ((VisualItem)o2).getSize();
-                return ( s1>s2 ? -1 : (s1<s2 ? 1 : 0));
-            } //
-        });
-        
-        
-           // create the single filtering and layout action list
-           graphLayout = new ActionList(registry);
-           graphLayout.add(new TreeFilter(false, false));
-           graphLayout.add(new TreeMapSizeFunction());
-           graphLayout.add(new SquarifiedTreeMapLayout(15));
-           //graphLayout.add(new TreeMapColorFunction());
-           graphLayout.add(new RepaintAction());
- 
-           display.setSize(500,350);           
-           PanControl  pH = new PanControl();
-           ZoomControl zH = new ZoomControl();
-           display.addMouseListener(pH);
-           display.addMouseMotionListener(pH);
-           display.addMouseListener(zH);
-           display.addMouseMotionListener(zH);        
-           display.addControlListener(new ToolTipControl("tooltip"));
-           //display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
-        }
-        return display;
-    }
-
-    public class TreeMapColorFunction extends ColorFunction {
-        Color c1 = new Color(0.5f,0.5f,0.f);
-        Color c2 = new Color(0.5f,0.5f,1.f);
-        ColorMap cmap = new ColorMap(ColorMap.getInterpolatedMap(10,c1,c2),0,9);
-        public Paint getColor(VisualItem item) {
-            return Color.WHITE;
-        } //
-        public Paint getFillColor(VisualItem item) {
-            double v = (item instanceof NodeItem ? ((NodeItem)item).getDepth():0);
-            return cmap.getColor(v);
-        } //
-    } // end of inner class TreeMapColorFunction
-    
-    public  class TreeMapSizeFunction extends edu.berkeley.guir.prefuse.action.AbstractAction {
-        public void run(ItemRegistry registry, double frac) {
-            System.out.println("in run of treemapsize frac = " + frac);
-            int leafCount = 0;
-            Iterator iter = registry.getNodeItems();
-            while ( iter.hasNext() ) {
-                NodeItem n = (NodeItem)iter.next();
-                if ( n.getChildCount() == 0 ) {
-                    n.setSize(1.0);
-                    NodeItem p = (NodeItem)n.getParent();
-                    for (; p!=null; p=(NodeItem)p.getParent())
-                        p.setSize(1.0+p.getSize());
-                    leafCount++;
-                }
-            }
-            
-            Dimension d = registry.getDisplay(0).getSize();
-            logger.debug("leafCount = " + leafCount + " display size, width = " + d.width + " height = " + d.height);
-            System.out.println("leafCount = " + leafCount + " display size, width = " + d.width + " height = " + d.height);
-            double area = d.width*d.height;
-            double divisor = ((double)leafCount)/area;
-            logger.debug("the area = " + area + " divisor = " + divisor);
-            System.out.println("the area = " + area + " divisor = " + divisor);
-            iter = registry.getNodeItems();
-            while ( iter.hasNext() ) {
-                NodeItem n = (NodeItem)iter.next();
-                System.out.println("the setsize for node = " + n.getAttribute("label") + " is " + n.getSize()/divisor + " the getsize = " + n.getSize());
-                n.setSize(n.getSize()/divisor);
-            }
-        } //
-    } // end of inner class TreeMapSizeFunction
-    
-    public class RectangleRenderer extends ShapeRenderer {
-        private Rectangle2D bounds = new Rectangle2D.Double();
-        protected Shape getRawShape(VisualItem item) {
-            Point2D d = (Point2D)item.getVizAttribute("dimension");
-            if (d == null)
-                System.out.println("uh-oh");
-            //System.out.println("in rectrender rect1x = " + item.getX() + " recty = " + item.getY() + " and dx = " + d.getX() + " and dy = " + d.getY());
-            bounds.setRect(item.getX(),item.getY(),d.getX(),d.getY());
-            return bounds;
-        } //
-    } // end of inner class NodeRenderer
-     
-    
-    } // end of tree map layout viz class.
 
     /**
      * Various action statements for when buttons are clicked.
@@ -1719,8 +1314,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         //from the look of the formula I suspect this to be ra1 and dec1 since it should be the greater distance
         objectra = Math.toRadians(objectra); 
         objectdec = Math.toRadians(objectdec);
+        //System.out.println("about to run haversine formula with " + queryra + ", " + querydec + ", " + objectra + ", " + objectdec);
         double result = Fmath.ahav( Fmath.hav(objectdec-querydec) + Math.cos(objectdec)*Math.cos(querydec)*Fmath.hav(objectra-queryra) );
-        //System.out.println("the haversine result = " + result);
+        //System.out.println("the haversine result = " + result + " throwing it toDegrees = " + Math.toDegrees(result));
         return Math.toDegrees(result);
     }  
     
@@ -1902,6 +1498,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         }
                         tooltip.append("</p></html>");
                         valNode.setAttribute("tooltip",tooltip.toString());  
+                        //System.out.println("about to call offset with vals " + ra + ", " + dec + ", " + Double.valueOf(rowRa).doubleValue() + ", " +  Double.valueOf(rowDec).doubleValue() + " for service = " + riNode.getAttribute("label"));
                         double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
                         String offsetVal = chopValue(String.valueOf(offset),2);
                         TreeNode discoverNode = findNode(offsetVal, riNode);
@@ -2165,6 +1762,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.15  2005/11/09 14:06:52  KevinBenson
+minor changes for clearTree to refocus in the center.  And fix an expression on the position
+
 Revision 1.14  2005/11/08 15:03:56  KevinBenson
 minor changes on sizing
 
