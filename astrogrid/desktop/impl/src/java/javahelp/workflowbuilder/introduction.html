@@ -1,0 +1,24 @@
+<html>
+  <body>
+    <h1>Workflow: Introduction</h1>
+      A workflow aims to accomplish a complex piece of work. 
+      In Astrogrid terms this would be an astronomical investigation. If the work could be done in one simple step (eg: by executing a single program from the command line), then it would hardly be a workflow. A prime dimension of a workflow is therefore that the objective will take more than one step to accomplish - it has a degree of complexity.
+      A simple example of a workflow might consist of the following steps:
+      <ol>
+        <li>Make a query against against one catalog (say a cone search of one area of the sky).</li>
+        <li>Make a similar query against another catalog.</li>
+        <li>Merge the contents.</li>
+        <li>Analyse the resulting data.</li>
+      </ol>
+      Each step is usually the invocation of a separate computer program (a task), each task requiring its own inputs and outputs. 
+      Some inputs to a step will be astronomical data, and some inputs will be control information for the selected tool. 
+      Outputs will normally be processed data destined as a final result, or as intermediate data to be used as inputs for subsequent steps within the workflow.
+      For Astrogrid, the final result of executing a workflow is usually a file held in MySpace. 
+      From that viewpoint, Astrogrid workflow is itself an intermediate tool, 
+      since we would envisage the final results file being subsequently loaded into another tool, for example, for visualization, or even for input into a different workflow.
+      Astrogrid tries to deal with the complexity of workflows. But it is not an easy thing to eliminate. 
+      We hold workflow designs as XML documents. This is a particularly verbose way of describing an individual workflow, 
+      but is convenient for its rigour. There is no necessity to interact directly with a workflow xml document 
+      and therefore there is no necessity to be intimately equainted with it; the workflow builder hides most of the intricacies.
+  </body>
+</html>

@@ -15,10 +15,20 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
 		<tocitem text="Application Launcher" target="userInterface.applicationLauncher">
 			<tocitem text="Available Applications" target="al.list" />
 		</tocitem>
-		<tocitem text="Workflow Builder" target="userInterface.workflowBuilder" />
+		<tocitem text="Workflow Builder" target="userInterface.workflowBuilder" >
+			<tocitem text="Introduction" target="userInterface.workflowBuilder.introduction" />
+			<tocitem text="Workflow overview" target="userInterface.workflowBuilder.workflow" />
+		    <tocitem text="Builder overview" target="userInterface.workflowBuilder.top" />
+		    <tocitem text="Tree view" target="userInterface.workflowBuilder.treePanel" />
+	        <tocitem text="Document view" target="userInterface.workflowBuilder.docPanel" />
+	        <tocitem text="Activity list" target="userInterface.workflowBuilder.activityList" />	        		    
+		</tocitem>
+		
 		<tocitem text="Job Monitor" target="userInterface.jobMonitor" >
 			<tocitem text="Functions" target="jm.functions" />
 		</tocitem>
+		
+		
 		<tocitem text="Myspace Browser" target="userInterface.myspaceBrowser" />
 		<tocitem text="AstroScope Lite" target="userInterface.datascopeLauncher" />
 		<tocitem text="Registry Browser" target="userInterface.registryBrowser" />

@@ -61,6 +61,16 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 	
 	<!-- workflow builder -->
 	<mapID target="userInterface.workflowBuilder" url="workflowbuilder/index.html" />
+	<mapID target="userInterface.workflowBuilder.introduction" url="workflowbuilder/introduction.html" />
+	<mapID target="userInterface.workflowBuilder.workflow" url="workflowbuilder/workflow.html" />
+	<mapID target="userInterface.workflowBuilder.treePanel" url="workflowbuilder/treePanel.html" />
+	<mapID target="userInterface.workflowBuilder.docPanel" url="workflowbuilder/docPanel.html" />
+	<mapID target="userInterface.workflowBuilder.activityList" url="workflowbuilder/activityList.html" />
+	<mapID target="userInterface.workflowBuilder.top" url="workflowbuilder/overview.html#top" />
+	<mapID target="userInterface.workflowBuilder.statusBar" url="workflowbuilder/overview.html#statusBar" />
+	<mapID target="userInterface.workflowBuilder.editMenu" url="workflowbuilder/overview.html#editMenu" />
+	<mapID target="userInterface.workflowBuilder.fileMenu" url="workflowbuilder/overview.html#fileMenu" />
+	<mapID target="userInterface.workflowBuilder.toolbar" url="workflowbuilder/overview.html#toolbar" />
 	
 	<!-- myspace browser -->
 	<mapID target="userInterface.myspaceBrowser" url="myspacebrowser/index.html" />	

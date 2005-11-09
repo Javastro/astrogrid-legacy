@@ -1,0 +1,89 @@
+<html>
+  <body>
+    <h1>Workflow overview</h1>
+      Workflow documents can be very complex but the builder aims to hide as much of the complexity as possible. 
+      Initially you may find running some of the Parameterized workflows and viewing the resulting workflow via the Job Monitor a good introduction.
+      <p>
+      When the workflow builder is first launched, <img src="../../org/astrogrid/desktop/icons/newfile_wiz.gif" alt="New" > pressed, or 'File/New' selected, an empty workflow document is created; this consists of a workflow containing a single sequence:
+      <p>
+      <center>
+        <img src="../../org/astrogrid/desktop/icons/newWorkflow.png" alt="New">
+      </center>
+      <p>
+      You can add a name and description to your workflow to identify it by double clicking the workflow details (once a workflow is submitted to the Job Entry System it will also be given a unique Job ID).<br>
+      To build a workflow simply drag an activity from the list on the left and drop it into an activity in the workflow tree. It is also possible to drag activities to different locations once they are in the tree:
+      The cursor will indicate whether it is possible to drop a particular activity at the chosen location:
+      <table align=center border=1>
+        <tr>
+          <th align=left>Microsoft<br>Windows</th>
+          <th align=left>Solaris/<br>Linux</th>
+          <th align=left>Description</th>
+        </tr>
+        <tr valign=center>
+          <td align=center>
+            <img SRC="../../org/astrogrid/desktop/icons/win32_CopyDrop.gif" WIDTH="23" HEIGHT="32" ALT="Copy cursor icon for Windows, the component below accepts the drop."></td>
+          <td align=center>
+            <img SRC="../../org/astrogrid/desktop/icons/copyDrop.gif" WIDTH="32" HEIGHT="32" ALT="Copy cursor icon for Linux/Solaris, the component below accepts the drop."></td>
+          <td>
+            Copy. The activity underneath accepts this type of drop.
+          </td>
+        </tr>
+        <tr valign=center>
+          <td align=center>
+            <img SRC="../../org/astrogrid/desktop/icons/no.gif" WIDTH="20" HEIGHT="20" ALT="Copy cursor icon for Windows, the component below won't accept."></td>
+          <td align=center>
+            <img SRC="../../org/astrogrid/desktop/icons/copyNoDrop.gif" WIDTH="32" HEIGHT="32" ALT="Copy cursor icon for Linux/Solaris, the component below won't accept."></td>
+          <td>
+            Copy. The activity underneath will not accept this drop.
+          </td>
+        </tr>
+        <tr>
+          <td align=center valign=center>
+            <img SRC="../../org/astrogrid/desktop/icons/win32_MoveDrop.gif" WIDTH="16" HEIGHT="27" ALT="Move cursor icon for Windows, the component accepts the drop."></td>
+          <td align=center valign=center>
+            <img SRC="../../org/astrogrid/desktop/icons/moveDrop.gif" WIDTH="32" HEIGHT="32" ALT="Move cursor icon for Linux/Solaris, the component accepts the drop."></td>
+          <td>
+            Move. The activity underneath accepts this type of drop.
+          </td>
+        </tr>
+        <tr>
+          <td align=center valign=center>
+            <img SRC="../../org/astrogrid/desktop/icons/no.gif" WIDTH="20" HEIGHT="20" ALT="Move cursor icon for Windows, the component won't accept."></td>
+          <td align=center valign=center>
+            <img SRC="../../org/astrogrid/desktop/icons/moveNoDrop.gif" WIDTH="32" HEIGHT="32" ALT="Move cursor icon for Linux/Solaris, the component won't accept."></td>
+          <td>
+            Move. The activity underneath will not accept this drop.
+          </td>
+        </tr>
+      </table>
+      <p>
+      If you successfully drop an activity into your tree an editor panel will appear automatically. Parameters relevant to the activity can be entered 
+      (some users maye prefer to turn off this auto popup feature and build the whole workflow before entering parameter values. This can be done with the preferences option.
+      Any parameter entry can can be popped up latter by double clicking the activity in the tree). 
+	  <p>
+	  <center>
+	    <img SRC="../../org/astrogrid/desktop/icons/stepEditor.png" alt="Step editor" >
+	  </center>
+	  <p>	
+      As mentioned each step will contain a task, once you have entered the task details a resource chooser panel will be displayed which will enable you to search for a particular task:
+      <p>
+      <center>
+        <img SRC="../../org/astrogrid/desktop/icons/taskChooser.png" alt="Task chooser" >	
+      </center>
+      <p>
+      Once you select a task, and a particular interface to that task if appropriate, you will be prompted to enter parameters for that task.
+      Certain task parameters accept indirect references as their value e.g. a task may require a file as an input, or produce a file as an output. Checking the reference checkbox will open a browser so you can enter the reference.
+      <p>
+      The workflow document can be viewed by selecting the Document tab (if the document is not yet valid details of missing values etc will be detailed):
+      <p>
+      <center>
+        <img SRC="../../org/astrogrid/desktop/icons/workflowDoc.png" alt="Workflow document" >
+      </center>
+      <p>
+      Once you are satisfied with your workflow it can be submitted to the Job Entry System or saved.
+                
+  </body>
+</html>
+
+
+

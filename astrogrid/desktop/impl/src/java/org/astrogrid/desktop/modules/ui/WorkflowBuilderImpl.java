@@ -82,7 +82,6 @@ import org.astrogrid.desktop.modules.dialogs.WhileDialog;
 import org.astrogrid.desktop.modules.dialogs.WorkflowDetailsDialog;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.DefaultTreeTransferHandler;
 import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.WorkflowDnDTree;
 import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.listeners.WastebinDropListener;
 import org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.listeners.WorkflowTreeModelListener;
@@ -443,7 +442,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     		}
     		else if (w.canPerformPaste(copiedNode, parentNode)) {
     			tree.expandPath(new TreePath(parentNode.getFirstLeaf().getPath()));
-    			//((DefaultTreeModel)tree.getModel()).insertNodeInto(getModel().copyTree(copiedNode), parentNode, 0);
+    			((DefaultTreeModel)tree.getModel()).insertNodeInto(getModel().copyTree(copiedNode), parentNode, 0);
     			TreePath treePath = new TreePath(copiedNode.getPath());
     			int i = 0;		
     			for (Enumeration enumeration = copiedNode.depthFirstEnumeration(); enumeration.hasMoreElements(); i++ ) {
@@ -704,6 +703,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			fileMenu = new JMenu();
 			fileMenu.setText("File");
 			fileMenu.setMnemonic(KeyEvent.VK_F);
+			getHelpServer().enableHelp(fileMenu,"userInterface.workflowBuilder.fileMenu");
 		}
 		return fileMenu;
 	}
@@ -717,6 +717,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			editMenu = new JMenu();
 			editMenu.setText("Edit");
 			editMenu.setMnemonic(KeyEvent.VK_E);
+			getHelpServer().enableHelp(editMenu,"userInterface.workflowBuilder.editMenu");
 		}
 		return editMenu;
 	}
@@ -730,6 +731,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			toolbar = new JToolBar();
 			toolbar.setFloatable(false);
             toolbar.setRollover(true);
+            getHelpServer().enableHelp(toolbar,"userInterface.workflowBuilder.toolbar");
 		}
 		return toolbar;
 	}
@@ -739,6 +741,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
             statusBar = super.getBottomPanel();
             statusBar.addZone("wastebin",getWasteBin(),"29");
             statusBar.addZone("workflowStatus",getWorkflowStatus(),"27");
+            getHelpServer().enableHelp(statusBar,"userInterface.workflowBuilder.statusBar");
         }
         return statusBar;
 	}
@@ -756,7 +759,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			workflowStatusLabel.setDisabledIcon(IconHelper.loadIcon("redcross.gif"));
 			workflowStatusLabel.setIcon(IconHelper.loadIcon("greentick.gif"));
 			workflowStatusLabel.setEnabled(false);
-			workflowStatusLabel.setToolTipText("Indicates whether workflow is valid");
+			workflowStatusLabel.setToolTipText("Indicates whether workflow is valid");			
 		}
 		return workflowStatusLabel;
 	} 
@@ -809,6 +812,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			});
 			//list.setTransferHandler(new DefaultActivityTransferHandler());
 			listView = new JScrollPane(list);
+			getHelpServer().enableHelp(listView,"userInterface.workflowBuilder.activityList");
 		}
 		return listView;
     }
@@ -1078,7 +1082,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		JScrollPane scrollPane = new JScrollPane(getTree());
 		panel.add(scrollPane);
 		panel.setBorder(BorderFactory.createTitledBorder("Tree view"));
-		panel.setPreferredSize(new Dimension(800,300));		
+		panel.setPreferredSize(new Dimension(800,300));
+		getHelpServer().enableHelp(panel,"userInterface.workflowBuilder.treePanel");
 		return panel;
 	}
 	
@@ -1090,7 +1095,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		panel.add(scrollPane, BorderLayout.CENTER);
 		panel.add(getFindPanel(), BorderLayout.SOUTH);
 		panel.setBorder(BorderFactory.createTitledBorder("Workflow document"));
-		panel.setPreferredSize(new Dimension(800,200));		
+		panel.setPreferredSize(new Dimension(800,200));	
+		getHelpServer().enableHelp(panel,"userInterface.workflowBuilder.docPanel");
 		return panel;
 	}
 	
