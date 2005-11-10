@@ -1,4 +1,4 @@
-/*$Id: StoreImpl.java,v 1.2 2005/11/10 12:05:53 nw Exp $
+/*$Id: StoreImpl.java,v 1.3 2005/11/10 16:28:26 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ public class StoreImpl implements Startable, StoreInternal{
     // whenever a binary incompatible change is made, change the version string
     // this will be detected, and a new store created (all old data lost - will do for now
     // later will add migration functions.
-    public static final String STORE_FORMAT_VERSION = "6";
+    public static final String STORE_FORMAT_VERSION = "8";
 
     public RecordManager getManager() {
         return manager;
@@ -97,6 +97,9 @@ public class StoreImpl implements Startable, StoreInternal{
 
 /* 
 $Log: StoreImpl.java,v $
+Revision 1.3  2005/11/10 16:28:26  nw
+added result display to vo lookout.
+
 Revision 1.2  2005/11/10 12:05:53  nw
 big change around for vo lookout
 

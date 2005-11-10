@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.2 2005/11/10 16:28:26 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,8 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.MutableACR;
 import org.astrogrid.desktop.framework.NewModuleEvent;
@@ -245,7 +247,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
             // search for result.
             for (int i = 0; i < ms.length; i++) {
                 if (ms[i].getMessage() instanceof ResultsExecutionMessage) {
-                    return  ((ResultsExecutionMessage)ms[i].getMessage()).getResults();
+                    return convert( ((ResultsExecutionMessage)ms[i].getMessage()).getResults());
                 }
             }
             } catch (IOException e) {
@@ -294,7 +296,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
                      : wildcardListeners.iterator();
             ExecutionMessage m = msg.getMessage();
             if (m instanceof ResultsExecutionMessage) {
-                Map result = ((ResultsExecutionMessage)m).getResults();
+                Map result = convert(((ResultsExecutionMessage)m).getResults());               
                 while(listeners.hasNext()) {
                     RemoteProcessListener l = (RemoteProcessListener)listeners.next();
                     l.resultsReceived(id,result);
@@ -314,13 +316,23 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
         }
     }
 
-
+   private Map convert(ResultListType rs) {
+    Map result = new HashMap();        
+    for (int i =0 ; i < rs.getResultCount(); i++) {
+        ParameterValue val = rs.getResult(i);
+        result.put(val.getName(),val.getValue());
+    }
+    return result;
+   }
 
 }
 
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.2  2005/11/10 16:28:26  nw
+added result display to vo lookout.
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
  

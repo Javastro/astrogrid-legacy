@@ -1,4 +1,4 @@
-/*$Id: ResultsExecutionMessage.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: ResultsExecutionMessage.java,v 1.2 2005/11/10 16:28:26 nw Exp $
  * Created on 09-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ag.recorder;
 
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 
 import java.util.Date;
 import java.util.Map;
@@ -30,20 +31,21 @@ public class ResultsExecutionMessage extends ExecutionMessage {
      * @param arg3
      * @param arg4
      */
-    public ResultsExecutionMessage(String source,  Date arg3, Map results) {
+    public ResultsExecutionMessage(String source,  Date arg3, ResultListType results) {
         super(source, "information", ExecutionInformation.COMPLETED, arg3, "Results");
         this.results =results;
     }
-    private final Map results;
-    public Map getResults() {
+    private final ResultListType results;
+    public ResultListType getResults() {
         return results;
     }
-
 }
-
 
 /* 
 $Log: ResultsExecutionMessage.java,v $
+Revision 1.2  2005/11/10 16:28:26  nw
+added result display to vo lookout.
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
  

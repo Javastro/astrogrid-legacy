@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderImpl.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: MessageRecorderImpl.java,v 1.2 2005/11/10 16:28:26 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -195,15 +195,18 @@ static {
                 );
     }
     
-    private Map parseResultMap(String s) throws CastorException {
+    private ResultListType parseResultList(String s) throws CastorException {
         Reader r = new StringReader(s);
         ResultListType rs = ResultListType.unmarshalResultListType(r);
+        return rs;
+        /*
         Map result = new HashMap();        
         for (int i =0 ; i < rs.getResultCount(); i++) {
             ParameterValue val = rs.getResult(i);
             result.put(val.getName(),val.getValue());
         }
         return result;
+        */
     }
     
     /** records all events on the user's queue */
@@ -282,7 +285,7 @@ static {
                         msg = new ResultsExecutionMessage(
                         id.toString()
                         ,new Date(t.getJMSTimestamp())
-                        ,parseResultMap(t.getText())
+                        ,parseResultList(t.getText())
                         );
 
                     } else if (type.equals(MessageUtils.STATUS_CHANGE_MESSAGE)) {
@@ -365,6 +368,9 @@ static {
 
 /* 
 $Log: MessageRecorderImpl.java,v $
+Revision 1.2  2005/11/10 16:28:26  nw
+added result display to vo lookout.
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
 

@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.2 2005/11/10 12:06:18 nw Exp $
+/*$Id: LookoutImpl.java,v 1.3 2005/11/10 16:28:26 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,10 +14,13 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.acr.ui.WorkflowBuilder;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
@@ -29,7 +32,13 @@ import org.astrogrid.desktop.modules.background.JesStrategyInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.transformers.Votable2XhtmlTransformer;
+import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
+import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
+import org.astrogrid.io.Piper;
 
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -37,16 +46,35 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.io.Writer;
 import java.net.URI;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.EventObject;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -58,19 +86,38 @@ import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Oct-2005
@@ -235,15 +282,22 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             if (u == null) {
                 return;
             }                
-            (new BackgroundOperation("Submitting Workflow") {
+            (new BackgroundOperation("Submitting Document") {
 
                 protected Object construct() throws Exception {
-                    return manager.submitStored(u);
-                } //@todo update display in some way?
+                    return manager.submitStored(u);          
+                }
+                protected void doFinished(Object result) {
+                    refresh();
+                }
             }).start();
         }
     }
+ 
+        public void refresh() {
 
+            getRefreshAction().actionPerformed(null); // should make the system refresh.            
+        }
 
     
     private final class TaskEditorAction extends AbstractAction {
@@ -293,7 +347,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     
     private JToolBar toolbar;
     private Action workflowEditorAction;
-    
+    private final BrowserControl browser;
     
     /** Construct a new Lookout
      * @param conf
@@ -308,9 +362,11 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             , RemoteProcessManager manager
             , Community comm
             ,JesStrategyInternal jesStrategy
+            , BrowserControl browser
             )
             throws HeadlessException {
         super(conf, hs, ui);
+        this.browser = browser;
         this.jesStrategy = jesStrategy;
         this.manager = manager;
         this.recorder = recorder;
@@ -364,6 +420,8 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             folderTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             folderTree.setShowsRootHandles(false);
             folderTree.addTreeSelectionListener(new TreeSelectionListener() {
+                final JPanel p = getMessageDetails();
+                final CardLayout c = (CardLayout)p.getLayout();                
                 // if I _knew_ that listeners were called on order of addition, I could optimize this.
                 public void valueChanged(TreeSelectionEvent e) {
                     Folder f = (Folder)folderTree.getLastSelectedPathComponent();
@@ -372,6 +430,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                         try {
                             getMessageTable().clearSelection();
                             getMessageContentPane().clear();
+                            c.show(p,MESSAGE_CONTENT);
                             getResultsTableModel().clear();
                             recorder.displayMessages(f);
                         } catch (IOException e1) {
@@ -659,16 +718,16 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         if (messageDetails == null) {
             messageDetails = new JPanel(new CardLayout());
             messageDetails.add(new JScrollPane(getMessageContentPane()), MESSAGE_CONTENT);
-            messageDetails.add(getResultsTable(),MESSAGE_RESULTS);
+            messageDetails.add(new JScrollPane(getResultsTable()),MESSAGE_RESULTS);
         }
         return messageDetails;
     }
     private static final String MESSAGE_CONTENT = "message_content";
     private static final String MESSAGE_RESULTS = "message_results";
-    private ResultsTableModel resultsTableModel;
-    private ResultsTableModel getResultsTableModel() {
+    private ResultListTableModel resultsTableModel;
+    private ResultListTableModel getResultsTableModel() {
         if (resultsTableModel == null) {
-            resultsTableModel = new ResultsTableModel();
+            resultsTableModel = new ResultListTableModel();
         }
         return resultsTableModel;
     }
@@ -676,24 +735,341 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private JTable resultsTable;
     private JTable getResultsTable() {
         if (resultsTable == null) {
-            resultsTable = new JTable(getResultsTableModel());
+            //cribbed from http://www.codeguru.com/java/articles/162.shtml
+            resultsTable = new JTable(getResultsTableModel()) {
+                public TableCellRenderer getCellRenderer(int row, int column) {
+                    TableColumn tableColumn = getColumnModel().getColumn(column);
+                    TableCellRenderer renderer = tableColumn.getCellRenderer();
+                    if (renderer == null) {
+                            Class c = getColumnClass(column);
+                            if( c.equals(Object.class) )
+                            {
+                                    Object o = getValueAt(row,column);
+                                    if( o != null )
+                                            c = getValueAt(row,column).getClass();
+                            }
+                            renderer = getDefaultRenderer(c);
+                    }
+                    return renderer;
+            }
+            
+            public TableCellEditor getCellEditor(int row, int column) {
+                    TableColumn tableColumn = getColumnModel().getColumn(column);
+                    TableCellEditor editor = tableColumn.getCellEditor();
+                    if (editor == null) {
+                            Class c = getColumnClass(column);
+                            if( c.equals(Object.class) )
+                            {
+                                    Object o = getValueAt(row,column);
+                                    if( o != null )
+                                            c = getValueAt(row,column).getClass();
+                            }
+                            editor = getDefaultEditor(c);
+                    }
+                    return editor;
+            }                
+            };
+            resultsTable.setDefaultRenderer(JComponent.class,new JComponentCellRenderer() );
+            resultsTable.setDefaultEditor(JComponent.class,new JComponentCellEditor() );
             getHelpServer().enableHelp(resultsTable,"lookout.resultsTable");
             resultsTable.setShowVerticalLines(false);
             resultsTable.setShowHorizontalLines(false);
-            resultsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);             
+            resultsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  
+            TableColumnModel columnModel = resultsTable.getColumnModel();
+            columnModel.getColumn(0).setPreferredWidth(10);
+            columnModel.getColumn(1).setPreferredWidth(40);
+            columnModel.getColumn(3).setPreferredWidth(10);
+            columnModel.getColumn(4).setPreferredWidth(10);            
         }
         return resultsTable;
     }
-    
-    /** class for disoaying a table of resultls */
-    private class ResultsTableModel extends DefaultTableModel {
-        public ResultsTableModel() {
-           
+
+    class JComponentCellRenderer implements TableCellRenderer
+    {
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+            return (JComponent)value;
+        }
+    }
+        public class JComponentCellEditor implements TableCellEditor, TreeCellEditor,
+        Serializable {
+                
+                protected EventListenerList listenerList = new EventListenerList();
+                transient protected ChangeEvent changeEvent = null;
+                
+                protected JComponent editorComponent = null;
+                protected JComponent container = null;          // Can be tree or table
+                
+                
+                public Component getComponent() {
+                        return editorComponent;
+                }
+                
+                
+                public Object getCellEditorValue() {
+                        return editorComponent;
+                }
+                
+                public boolean isCellEditable(EventObject anEvent) {
+                        return true;
+                }
+                
+                public boolean shouldSelectCell(EventObject anEvent) {
+                        if( editorComponent != null && anEvent instanceof MouseEvent
+                                && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED )
+                        {
+                    Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3 );
+                                MouseEvent e = (MouseEvent)anEvent;
+                                MouseEvent e2 = new MouseEvent( dispatchComponent, MouseEvent.MOUSE_RELEASED,
+                                        e.getWhen() + 100000, e.getModifiers(), 3, 3, e.getClickCount(),
+                                        e.isPopupTrigger() );
+                                dispatchComponent.dispatchEvent(e2); 
+                                e2 = new MouseEvent( dispatchComponent, MouseEvent.MOUSE_CLICKED,
+                                        e.getWhen() + 100001, e.getModifiers(), 3, 3, 1,
+                                        e.isPopupTrigger() );
+                                dispatchComponent.dispatchEvent(e2); 
+                        }
+                        return false;
+                }
+                
+                public boolean stopCellEditing() {
+                        fireEditingStopped();
+                        return true;
+                }
+                
+                public void cancelCellEditing() {
+                        fireEditingCanceled();
+                }
+                
+                public void addCellEditorListener(CellEditorListener l) {
+                        listenerList.add(CellEditorListener.class, l);
+                }
+                
+                public void removeCellEditorListener(CellEditorListener l) {
+                        listenerList.remove(CellEditorListener.class, l);
+                }
+                
+                protected void fireEditingStopped() {
+                        Object[] listeners = listenerList.getListenerList();
+                        // Process the listeners last to first, notifying
+                        // those that are interested in this event
+                        for (int i = listeners.length-2; i>=0; i-=2) {
+                                if (listeners[i]==CellEditorListener.class) {
+                                        // Lazily create the event:
+                                        if (changeEvent == null)
+                                                changeEvent = new ChangeEvent(this);
+                                        ((CellEditorListener)listeners[i+1]).editingStopped(changeEvent);
+                                }              
+                        }
+                }
+                
+                protected void fireEditingCanceled() {
+                        // Guaranteed to return a non-null array
+                        Object[] listeners = listenerList.getListenerList();
+                        // Process the listeners last to first, notifying
+                        // those that are interested in this event
+                        for (int i = listeners.length-2; i>=0; i-=2) {
+                                if (listeners[i]==CellEditorListener.class) {
+                                        // Lazily create the event:
+                                        if (changeEvent == null)
+                                                changeEvent = new ChangeEvent(this);
+                                        ((CellEditorListener)listeners[i+1]).editingCanceled(changeEvent);
+                                }              
+                        }
+                }
+                
+                // implements javax.swing.tree.TreeCellEditor
+                public Component getTreeCellEditorComponent(JTree tree, Object value,
+                        boolean isSelected, boolean expanded, boolean leaf, int row) {
+                        String         stringValue = tree.convertValueToText(value, isSelected,
+                                expanded, leaf, row, false);
+                        
+                        editorComponent = (JComponent)value;
+                        container = tree;
+                        return editorComponent;
+                }
+                
+                // implements javax.swing.table.TableCellEditor
+                public Component getTableCellEditorComponent(JTable table, Object value,
+                        boolean isSelected, int row, int column) {
+                        
+                        editorComponent = (JComponent)value;
+                        container = table;
+                        return editorComponent;
+                }
+                
+        } // End of class JComponentCellEditor
+        
+    /** class for disoaying a table of resultls - also handles button presses, etc.*/
+    private class ResultListTableModel extends AbstractTableModel implements ActionListener {
+        public ResultListTableModel() {           
         }
         public void clear() {
+            arr = new ParameterValue[]{};
+            fireTableDataChanged();
         }
-        public void setResults(Map results) {
+        public void setResults(ResultListType results) {
+            arr = results.getResult();
+            fireTableDataChanged();
         }
+        //store for buttons
+        private List saveButtonsStore = new ArrayList();
+        // nifty list that creats buttons as needed.
+        private List saveButtons = ListUtils.lazyList(saveButtonsStore, new Factory() {  
+            public Object create() {
+                JButton save = new JButton (IconHelper.loadIcon("fileexport.png"));
+                save.setActionCommand(SAVE);
+                save.setToolTipText("Save this result to myspace or local disk");
+                save.addActionListener(ResultListTableModel.this);
+                return save;
+            }            
+        });
+        private final String VIEW = "VIEW";
+        private final String SAVE = "SAVE";
+        private List viewButtonsStore = new ArrayList();
+        // dynamically creates buttons as needed.
+        private List viewButtons = ListUtils.lazyList(viewButtonsStore, new Factory() {  
+            public Object create() {
+                JButton view = new JButton (IconHelper.loadIcon("read_obj.gif"));
+                view.setActionCommand(VIEW);
+                view.setToolTipText("View this result in a browser");
+                view.addActionListener(ResultListTableModel.this);
+                return view;
+            }            
+        });        
+        
+        private ParameterValue[] arr = new ParameterValue[]{};
+        
+
+        public void actionPerformed(ActionEvent e) {
+            if (SAVE.equals(e.getActionCommand())) {
+                // find the row.
+                int row = saveButtonsStore.indexOf(e.getSource());
+                if (row < 0  || row > arr.length -1) {
+                    return;
+                }
+                final ParameterValue pv = arr[row];
+                final URI u =  chooser.chooseResourceWithParent("Save result: " + pv.getName(),true, true, true,LookoutImpl.this);
+                if (u == null) {
+                    return;
+                }                
+                (new BackgroundOperation("Saving Result") {
+
+                    protected Object construct() throws Exception {
+                        Writer w=  null;
+                        try {
+                         w= new OutputStreamWriter(vos.getOutputStream(u)); // @todo could specify size here  
+                         Piper.pipe(new StringReader(pv.getValue()),w);
+                        } finally {
+                            if (w != null) {
+                                try {
+                                w.close();
+                                } catch (IOException e) {
+                                    logger.warn("error closing write stream",e);
+                                }
+                            } 
+                        }
+                        return null;     
+                    }
+                }).start();
+                
+            } else if (VIEW.equals(e.getActionCommand())){
+                int row = viewButtonsStore.indexOf(e.getSource());
+                if (row < 0  || row > arr.length -1) {
+                    return;
+                }            
+                final ParameterValue pv = arr[row];
+                // determine how to style.
+                (new BackgroundOperation("Displaying Result") {
+                    protected Object construct() throws Exception {
+                        URL url = displayResult(pv);
+                        browser.openURL(url);
+                        return null;
+                    }                    
+                }).start();
+            }
+        }        
+        
+        // table model methods.
+        
+        public Class getColumnClass(int column) {
+            switch(column) {
+                case 0:
+                    return Boolean.class;
+                 case 1:
+                     return Object.class;
+                  case 2:
+                    return Object.class;
+                  case 3:
+                      return JComponent.class;
+                  case 4:
+                      return JComponent.class;
+                  default:
+                      return Object.class;
+                  
+            }
+        }
+        public String getColumnName(int column) {
+            switch(column) {
+                case 0:
+                    return "Indirect?";
+                case 1:
+                    return "Name";
+                case 2:
+                    return "Value";
+                case 3:
+                    return ""; //view
+                 case 4:
+                     return ""; //save
+                default:
+                    return "";
+            }
+        }
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            if (rowIndex > arr.length -1|| rowIndex < 0) {
+                return false;
+            }
+            return columnIndex  > 2 && ! arr[rowIndex].getIndirect();  
+        }
+
+        public int getColumnCount() {
+            return 5;
+        }
+
+        public int getRowCount() {
+            return arr.length;
+        }
+ 
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            if (rowIndex > arr.length -1 || rowIndex < 0) {
+                return null;
+            }
+            ParameterValue pv = arr[rowIndex];
+            JComponent c;
+            switch(columnIndex) {
+                case 0:
+                    return Boolean.valueOf(pv.getIndirect());
+                case 1:
+                    return pv.getName();
+                case 2:
+                    return StringUtils.abbreviate(pv.getValue(),VALUE_WIDTH);
+                 case 3:
+                      c = (JComponent) viewButtons.get(rowIndex);
+                     c.setEnabled(! pv.getIndirect());
+                     return c;
+                 case 4:
+                         c = (JComponent)saveButtons.get(rowIndex);
+                         c.setEnabled(! pv.getIndirect());
+                         return c;                         
+                  default:
+                      return null;
+            }
+            
+        }
+        
+        public final int VALUE_WIDTH = 60;
+
+        
     }
     
     
@@ -725,12 +1101,80 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         pane.add(leftRight,BorderLayout.CENTER);
         this.setContentPane(pane);
     }
+    
+    
+    // dislpaying results
+    //@todo hard-coded for now. replace later with a strategy engine -
+    // file and mime types, maybe.
+    // later handle indirect too.
+    private URL displayResult(ParameterValue pv ) throws TransformerFactoryConfigurationError, IOException, TransformerException {
+        Transformer trans;
+        if (pv.getValue().indexOf("<workflow") != -1) {
+            trans = getWorkflowTransformer();
+        } else if (pv.getValue().indexOf("<VOTABLE") != -1) {
+            trans = getVotableTransformer();
+        } else if (pv.getValue().indexOf("<?xml") != -1) {
+            trans = getXmlTransformer();
+        } else {
+            trans = null;
+        }
+        File f = File.createTempFile(pv.getName(),".html");
+        OutputStream out = new FileOutputStream(f);
+        if (trans != null) {
+            Result result= new StreamResult(out);
+            Source source = new StreamSource(new ByteArrayInputStream(pv.getValue().getBytes()));
+            trans.transform(source,result);
+        } else {
+            OutputStreamWriter w = new OutputStreamWriter(out);
+            w.write(pv.getValue());
+            w.flush();
+        }
+        out.close();
+        return f.toURL();
+        
+    }
+    
+    private Transformer workflowTransformer;
+    private Transformer votableTransformer;
+    private Transformer xmlTransformer;
+    private Transformer getWorkflowTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+        if (workflowTransformer == null) {
+            Source styleSource = WorkflowResultTransformerSet.Workflow2XhtmlTransformer.getStyleSource();
+            workflowTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
+            workflowTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
+        }
+        return workflowTransformer;
+    }
+    
+    private Transformer getVotableTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+        if (votableTransformer == null) {
+            Source styleSource = Votable2XhtmlTransformer.getStyleSource();
+            votableTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
+            votableTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
+        }
+        return votableTransformer;
+    }
+    
+    private Transformer getXmlTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+        if (xmlTransformer == null) {
+            Source styleSource = Xml2XhtmlTransformer.getStyleSource();
+            xmlTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
+            xmlTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
+        }
+        return xmlTransformer;
+    }
+        
+   
+    
 
 }
 
 
 /* 
 $Log: LookoutImpl.java,v $
+Revision 1.3  2005/11/10 16:28:26  nw
+added result display to vo lookout.
+
 Revision 1.2  2005/11/10 12:06:18  nw
 early draft of volookout
 

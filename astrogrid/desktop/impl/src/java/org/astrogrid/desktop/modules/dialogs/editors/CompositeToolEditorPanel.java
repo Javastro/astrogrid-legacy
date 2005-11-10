@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.5 2005/11/01 09:19:46 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.6 2005/11/10 16:28:26 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -205,6 +205,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                         Tool t = getToolModel().getTool();
                         Writer w = new OutputStreamWriter(myspace.getOutputStream(u));
                         t.marshal(w);
+                        w.close();
                         return null;
                     }
                 }).start();            
@@ -328,6 +329,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.6  2005/11/10 16:28:26  nw
+added result display to vo lookout.
+
 Revision 1.5  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

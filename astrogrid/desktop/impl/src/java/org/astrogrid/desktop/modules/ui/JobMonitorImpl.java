@@ -1,4 +1,4 @@
-/*$Id: JobMonitorImpl.java,v 1.8 2005/11/01 09:19:46 nw Exp $
+/*$Id: JobMonitorImpl.java,v 1.9 2005/11/10 16:28:26 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,8 +23,8 @@ import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MessagingInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.background.MessagingInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
@@ -1053,6 +1053,9 @@ public class JobMonitorImpl extends UIComponent implements JobMonitor, UserLogin
 
 /* 
 $Log: JobMonitorImpl.java,v $
+Revision 1.9  2005/11/10 16:28:26  nw
+added result display to vo lookout.
+
 Revision 1.8  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 
