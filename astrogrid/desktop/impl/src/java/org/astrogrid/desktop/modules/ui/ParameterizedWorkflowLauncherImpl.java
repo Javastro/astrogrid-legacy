@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.4 2005/09/12 15:21:16 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.5 2005/11/10 12:06:19 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,14 +64,14 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
      * @throws SAXException
      * 
      */
-    public ParameterizedWorkflowLauncherImpl(Community community, JobMonitor monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor,ResourceChooserInternal chooser) throws MalformedURLException, IOException, SAXException {
+    public ParameterizedWorkflowLauncherImpl(Community community, Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor,ResourceChooserInternal chooser) throws MalformedURLException, IOException, SAXException {
         this(community,monitor,jobs,vos,apps,editor, chooser,new URL(DEFAULT_INDEX_URL));       
     }
     
     /** url of pw workflow index */
     public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
 /** construct a new launcher, specifying the index url to use */
-    public ParameterizedWorkflowLauncherImpl(Community community,JobMonitor monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,URL indexURL) throws IOException, SAXException{ 
+    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,URL indexURL) throws IOException, SAXException{ 
         URL[] list = getWorkflowList(indexURL);
     templates = loadWorkflows(list);        
     this.community = community;
@@ -88,7 +88,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     protected final ParameterizedWorkflowTemplate[] templates;
     protected final Jobs jobs;
     protected final Community community;
-    protected final JobMonitor monitor;
+    protected final Lookout monitor;
     protected final ResourceChooserInternal chooser;
     protected final ToolEditorInternal editor;
     
@@ -126,7 +126,6 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         ResultDialog rd = new ResultDialog(null,"Workflow Submitted \nJob ID is \n" + id);
         rd.show();
         monitor.show(); // brings monitor to the front, if not already there.
-        monitor.refresh();
 
         } catch (Exception e) {
             logger.warn("Failed",e);
@@ -200,6 +199,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.5  2005/11/10 12:06:19  nw
+early draft of volookout
+
 Revision 1.4  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

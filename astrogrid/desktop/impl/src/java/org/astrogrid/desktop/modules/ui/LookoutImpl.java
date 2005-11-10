@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: LookoutImpl.java,v 1.2 2005/11/10 12:06:18 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,31 +10,43 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.Jobs;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.ExecutionMessage;
+import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.acr.ui.WorkflowBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.background.MessageRecorder;
-import org.astrogrid.desktop.modules.background.MessageRecorderImpl;
-import org.astrogrid.desktop.modules.background.MessageRecorder.Folder;
-import org.astrogrid.desktop.modules.background.MessageRecorder.Message;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
+import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
+import org.astrogrid.desktop.modules.background.JesStrategyInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JEditorPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -42,25 +54,71 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
+import javax.swing.ToolTipManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Oct-2005
- *@todo style result messages.
  *
  *   
  *
  */
 public class LookoutImpl extends UIComponent implements  Lookout {
+    
+    private final class RefreshAction extends AbstractAction {
+        public RefreshAction() {
+            super("Refresh",IconHelper.loadIcon("update.gif"));
+            this.putValue(SHORT_DESCRIPTION,"Check for new events and messages now");            
+        }
+        public void actionPerformed(ActionEvent e) {
+            jesStrategy.triggerUpdate();
+            LookoutImpl.this.setStatusMessage("Refreshing..");
+        }
+    }
+    
+    private final class MarkAllReadAction extends AbstractAction implements TreeSelectionListener {
+        public MarkAllReadAction() {
+            super("Mark all Read", IconHelper.loadIcon("complete_status.gif"));
+            this.putValue(SHORT_DESCRIPTION,"Mark all messages from this process as read");
+            this.setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+            try {
+            Folder f =getCurrentFolder();
+            MessageContainer[] msgs = recorder.listFolder(f);
+            for (int i = 0; i < msgs.length; i++) {
+                if (msgs[i].isUnread()) {
+                    msgs[i].setUnread(false);
+                    recorder.updateMessage(msgs[i]);
+                }
+                f.setUnreadCount(0);
+                recorder.updateFolder(f);
+            }
+            } catch (IOException ex) {
+                showError("Failed to mark all as read",ex);
+            }
+        }
+        public void valueChanged(TreeSelectionEvent e) {
+            //@todo - unsure whether it's safe to optimze this by calling 'getCurrentFolder()' - race condition..
+            Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();
+            setEnabled(f != null && isTaskFolder(f.getInformation().getId()));
+        }
+    }
     
     /** delete an alert message, or a task folder
      * listens to both tree and list to work out whether enabled or not.
@@ -76,33 +134,58 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         public void actionPerformed(ActionEvent e) {   
             try {
             if (folderMode) { // delete a task            
-                Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();
-                recorder.deleteFolder(f);
-                //@todo remove from cea server in a background thread.
+                Folder f = getCurrentFolder();
+                //@todo should I do this in a background thread?
+                // considering remote process, probably should.
+                // but then, what about table update? aghh. leave as is for now.
+                // should probably halt first, if still running.
+                if (isRunning(f.getInformation().getStatus())) {
+                    try {
+                        manager.halt(f.getInformation().getId());
+                    } catch (Exception ex) {
+                        //@todo warn someone.
+                    }
+                }
+                manager.delete(f.getInformation().getId());
             } else { // delete an alert message
                 int row = getMessageTable().getSelectedRow();                
                 recorder.deleteMessage(row);
             }
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 showError("Failed to delete",ex);
             }
         }
 
         public void valueChanged(ListSelectionEvent e) {
             folderMode=false;
-            int index = getMessageTable().getSelectedRow();
-            Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();
-            setEnabled(f != null && f.getUserObject() instanceof MessageRecorderImpl.AlertFolderSummary
+            int index = getMessageTable().getSelectedRow();           
+            Folder f = getCurrentFolder();
+            setEnabled(f != null && f.getInformation().getId().equals(MessageRecorderImpl.ALERTS)
                     && index > 0 &&  index < getMessageTable().getRowCount()) ;            
         }
 
         public void valueChanged(TreeSelectionEvent e) {
             folderMode = true;
-            Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();
-            setEnabled(f != null &&  f.getUserObject() instanceof MessageRecorderImpl.TaskFolderSummary);             
+            // can't optimize this - race condition.
+            Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();            
+            setEnabled(f != null &&  isTaskFolder(f.getInformation().getId()));             
         }
+
         private boolean folderMode;
     }
+
+    private boolean isTaskFolder(URI uri) {
+        return ! (uri.equals(MessageRecorderImpl.ALERTS) 
+           || uri.equals(MessageRecorderImpl.JOBS)
+           || uri.equals(MessageRecorderImpl.QUERIES)
+           || uri.equals(MessageRecorderImpl.ROOT)
+           || uri.equals(MessageRecorderImpl.TASKS)
+           );
+    }
+    
+    private boolean isRunning(String status) {
+        return ! (status.equals(ExecutionInformation.ERROR) || status.equals(ExecutionInformation.COMPLETED));
+    }        
     
     /** action for halting something. listens to current tree selection to determine whether enabled or not */
     private final class HaltAction extends AbstractAction implements TreeSelectionListener{
@@ -113,11 +196,10 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
 
         public void actionPerformed(ActionEvent e) {
-                final Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();                
-                (new BackgroundOperation("Cancellig Application") {
+                final Folder f = (Folder)getCurrentFolder();                
+                (new BackgroundOperation("Cancelling Application") {
                     protected Object construct() throws Exception {
-                        URI id = new URI(f.getKey());
-                        apps.cancel(id);
+                        manager.halt(f.getInformation().getId());
                         return null;
                     }                    
                 }).start();                
@@ -125,8 +207,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 
         public void valueChanged(TreeSelectionEvent e) {
             Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();
-            // @todo extend to jobs
-            setEnabled(f != null &&  f.getUserObject() instanceof MessageRecorderImpl.TaskFolderSummary); 
+            setEnabled(f != null &&  isTaskFolder(f.getInformation().getId()) && isRunning(f.getInformation().getStatus())); 
         }        
     }
     
@@ -145,44 +226,25 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private final class SubmitTaskAction extends AbstractAction {
         public SubmitTaskAction() {
             super("Submit Task",IconHelper.loadIcon("file_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Submit a saved task document for execution");
+            this.putValue(SHORT_DESCRIPTION,"Submit a saved task or workflow for execution");
             this.setEnabled(true);
         }
 
         public void actionPerformed(ActionEvent e) {
-            final URI u =  chooser.chooseResourceWithParent("Select workflow to submit",true, true, true,LookoutImpl.this);
+            final URI u =  chooser.chooseResourceWithParent("Select document to execute",true, true, true,LookoutImpl.this);
             if (u == null) {
                 return;
             }                
             (new BackgroundOperation("Submitting Workflow") {
 
                 protected Object construct() throws Exception {
-                    return apps.submitStored(u);
-                }
+                    return manager.submitStored(u);
+                } //@todo update display in some way?
             }).start();
         }
     }
 
-    private final class SubmitWorkflowAction extends AbstractAction {
-        public SubmitWorkflowAction() {
-            super("Submit Workflow",IconHelper.loadIcon("file_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Submit a saved workflow document for execution");
-            this.setEnabled(true);
-        }
 
-        public void actionPerformed(ActionEvent e) {
-                final URI u =  chooser.chooseResourceWithParent("Select workflow to submit",true, true, true,LookoutImpl.this);
-                if (u == null) {
-                    return;
-                }                
-                (new BackgroundOperation("Submitting Workflow") {
-                    protected Object construct() throws Exception {
-                        return jobs.submitStoredJob(u);
-                    }
-
-                }).start();
-            }        
-    }
     
     private final class TaskEditorAction extends AbstractAction {
         public TaskEditorAction() {
@@ -208,14 +270,13 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
     }
     final ResourceChooserInternal chooser;
-    final Jobs jobs;
-
-    final MessageRecorder recorder;
-    final Applications apps;
+    final JesStrategyInternal jesStrategy;
+    final MessageRecorderInternal recorder;
     final MyspaceInternal vos;
     final ParameterizedWorkflowLauncher pwLauncher;
     final ApplicationLauncher appLauncher;
     final WorkflowBuilder workflowLauncher;
+    final RemoteProcessManager manager;
     private MessageDisplayPane contentPane;
     private DeleteAction deleteAction;
     private JTree folderTree;
@@ -228,7 +289,6 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private Action parameteriedWorkflowAction;
     
     private Action submitTaskAction;
-    private Action submitWorkflowAction;
     private Action taskEditorAction;
     
     private JToolBar toolbar;
@@ -242,20 +302,25 @@ public class LookoutImpl extends UIComponent implements  Lookout {
      * @throws HeadlessException
      */
     public LookoutImpl(Configuration conf, HelpServerInternal hs, UIInternal ui
-            , MessageRecorder recorder, ResourceChooserInternal chooser
-            ,Jobs jobs, MyspaceInternal vos, ParameterizedWorkflowLauncher pw
-            ,WorkflowBuilder workflows, ApplicationLauncher appLauncher, Applications apps
+            , MessageRecorderInternal recorder, ResourceChooserInternal chooser
+             ,MyspaceInternal vos, ParameterizedWorkflowLauncher pw
+            ,WorkflowBuilder workflows, ApplicationLauncher appLauncher
+            , RemoteProcessManager manager
+            , Community comm
+            ,JesStrategyInternal jesStrategy
             )
             throws HeadlessException {
         super(conf, hs, ui);
+        this.jesStrategy = jesStrategy;
+        this.manager = manager;
         this.recorder = recorder;
         this.chooser = chooser;
         this.vos = vos;
-        this.jobs = jobs;
         this.pwLauncher = pw;
         this.workflowLauncher = workflows;
         this.appLauncher = appLauncher;
-        this.apps = apps;
+        // force community visible.
+        comm.getUserInformation();
         initialize();
     }
 
@@ -268,16 +333,46 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
         return deleteAction;
     }
+    
+    private RefreshAction refreshAction;
+    private RefreshAction getRefreshAction() {
+        if (refreshAction == null) {
+            refreshAction = new RefreshAction();
+        }
+        return refreshAction;
+    }
+    
+    private String calcColour(String status) {
+        if ("ERROR".equalsIgnoreCase(status)) {
+            return "red";
+        } else if ("RUNNING".equalsIgnoreCase(status)) {
+            return "green";
+        } else if ("PENDING".equalsIgnoreCase(status) || "INITIALIZING".equalsIgnoreCase(status)) {
+            return "blue";
+        } else {
+            return "black";
+        }
+    }
+    
+    private final DateFormat df = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.SHORT,SimpleDateFormat.SHORT);
     private JTree getFolderTree() {
-        if (folderTree == null) {            
+        if (folderTree == null) {                        
             folderTree = new JTree(recorder.getFolderList());
-            folderTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);                    
+            ToolTipManager.sharedInstance().registerComponent(folderTree);
+            getHelpServer().enableHelp(folderTree,"lo.folderTree");
+            folderTree.putClientProperty("JTree.lineStyle", "None");            
+            folderTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            folderTree.setShowsRootHandles(false);
             folderTree.addTreeSelectionListener(new TreeSelectionListener() {
-                
+                // if I _knew_ that listeners were called on order of addition, I could optimize this.
                 public void valueChanged(TreeSelectionEvent e) {
                     Folder f = (Folder)folderTree.getLastSelectedPathComponent();
                     if (f != null && folderTree.getModel().isLeaf(f)) {
+                        setCurrentFolder(f);
                         try {
+                            getMessageTable().clearSelection();
+                            getMessageContentPane().clear();
+                            getResultsTableModel().clear();
                             recorder.displayMessages(f);
                         } catch (IOException e1) {
                             showError("Failed to display folder",e1);
@@ -285,6 +380,56 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     }
                 }
             });
+            TreeCellRenderer renderer = new DefaultTreeCellRenderer() {
+  
+                public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                    super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                    Folder f= (Folder)value;
+                    ExecutionInformation info = f.getInformation();
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("<html><p>").append(info.getDescription()).append("<br>").append(info.getId()).append("<br>");
+                    if (info.getStartTime() != null) {
+                        sb.append(df.format(info.getStartTime()));                        
+                    }
+                    if (info.getFinishTime() != null) {
+                        sb.append(" - ").append(df.format(info.getFinishTime()));
+                    }
+                    sb.append("</p></html>");
+                    setToolTipText(sb.toString());
+                    sb = new StringBuffer();
+                    sb.append("<html><font color='");
+                    sb.append(calcColour(info.getStatus()));
+                    sb.append("'>");
+                    if (f.getUnreadCount() > 0) {
+                        sb.append("<b>");
+                    }
+                    sb.append(info.getName());                    
+                    if (f.getUnreadCount() > 0) {
+                        sb.append(" ");
+                        sb.append(f.getUnreadCount());
+                        sb.append("</b>");
+                    }                    
+                    sb.append("</font></html>");
+                    setText(sb.toString());
+                    // finally set the icon.
+                    if (info.getId().equals(MessageRecorderImpl.ALERTS)) {
+                        setIcon(IconHelper.loadIcon("info_obj.gif"));
+                    } else if (info.getId().equals(MessageRecorderImpl.JOBS)) {
+                        setIcon(IconHelper.loadIcon("wf_small.gif"));
+                    } else if (info.getId().equals(MessageRecorderImpl.QUERIES)) {
+                        setIcon(IconHelper.loadIcon("search.gif"));
+                    } else if (info.getId().equals(MessageRecorderImpl.TASKS)) {
+                        setIcon(IconHelper.loadIcon("exec.png"));    
+                    } else if (info.getId().equals(MessageRecorderImpl.ROOT)) {
+                        setIcon(IconHelper.loadIcon("package_network.png"));
+                    } else {
+                        setIcon(IconHelper.loadIcon("thread_view.gif"));
+                    }
+                    return this;
+                }
+                
+            };
+            folderTree.setCellRenderer(renderer);
             // when things get added, make sure they're displayed         
             folderTree.getModel().addTreeModelListener(new TreeModelListener() {
 
@@ -292,7 +437,8 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 }
 
                 public void treeNodesInserted(TreeModelEvent e) { 
-                    folderTree.expandPath(e.getTreePath());
+      
+                    folderTree.expandPath(e.getTreePath());                    
                 }
 
                 public void treeNodesRemoved(TreeModelEvent e) {
@@ -302,9 +448,16 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 }
             });
         }
-        getHelpServer().enableHelp(folderTree,"lo.folderTree");
         return folderTree;
         
+    }
+    
+    private Folder currentFolder;
+    private void setCurrentFolder(Folder f) {
+        this.currentFolder = f;
+    }
+    private Folder getCurrentFolder() {
+        return currentFolder;
     }
     private HaltAction getHaltAction() {
         if (haltAction == null) {
@@ -325,8 +478,11 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         if (manageMenu == null) {
             manageMenu = new JMenu();
             manageMenu.setText("Manage");
+            manageMenu.add(getRefreshAction());
             manageMenu.add(getHaltAction());
-            manageMenu.add(getDeleteAction());            
+            manageMenu.add(getDeleteAction());   
+            newMenu.add(new JSeparator());                        
+            manageMenu.add(getMarkAllReadAction());
         }
         return manageMenu;
         
@@ -339,22 +495,36 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         return contentPane;
     }
     
-    private class MessageDisplayPane extends JEditorPane {
-        {
-            setEditable(false);
+    private class MessageDisplayPane extends JTextPane {
+        public MessageDisplayPane() {
             setContentType("text/html");
+            setEditable(false);
         }
-        public void setMessage(Message m) {
-            setText(fmt(m));
+        
+        public void setMessage(MessageContainer m) {
+           setText(fmt(m));
             setCaretPosition(0);
         }
-        private String fmt(Message m) {
+        
+        public void clear() {       
+            setText("");
+        }
+        
+        private String fmt(MessageContainer m) {
             StringBuffer sb = new StringBuffer();
+            ExecutionMessage message = m.getMessage();
             sb.append("<html><p bgcolor='#CCDDEE'>")
                 .append("<b>Subject:</b> ").append(m.getSummary()).append("<br>")
-                .append("<b>Date: </b> " ).append(m.getTimestamp()).append("<br></p>")
-                .append("<pre>").append(m.getText())
-                .append("</pre></html>");
+                .append("<b>Date: </b> " ).append(message.getTimestamp()).append("<br>")
+                .append("<b>From: </b> ").append(message.getSource()).append("<br></p><tt>")
+                .append( //todo - work out how to preserve space indentation here..
+                                StringUtils.replace(
+                                        StringEscapeUtils.escapeHtml(message.getContent())
+                                ,"\n"
+                                ,"<br>"
+                                )
+                        )
+                .append("</tt></html>");
           return sb.toString();
         }
     }
@@ -362,11 +532,14 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private JTable getMessageTable() {
         if (messageTable == null) {
             messageTable = new JTable(recorder.getMessageList());
+            getHelpServer().enableHelp(messageTable,"lo.messageTable");
             messageTable.setShowVerticalLines(false);
             messageTable.setShowHorizontalLines(false);
             messageTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             messageTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
                 int previous = -1;
+                final JPanel p = getMessageDetails();
+                final CardLayout c = (CardLayout)p.getLayout();
                 public void valueChanged(ListSelectionEvent e) {
                     int index = messageTable.getSelectedRow();
                     if (index == previous || index < 0 || index >= messageTable.getRowCount()) {
@@ -374,16 +547,42 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     }
                     previous = index;
                     try {
-                        Message m = recorder.getMessage(index);
+                        MessageContainer m = recorder.getMessage(index);
                         getMessageContentPane().setMessage(m);
+                        if (m.getMessage() instanceof ResultsExecutionMessage) {
+                            getResultsTableModel().setResults(((ResultsExecutionMessage)m.getMessage()).getResults());
+                            c.show(p,MESSAGE_RESULTS);
+                        } else {
+                            c.show(p, MESSAGE_CONTENT);
+                            getResultsTableModel().clear();
+                        }
+                        if (m.isUnread()) {
+                            // mark as read.
+                            m.setUnread(false);
+                            recorder.updateMessage(m);
+                            Folder f= getCurrentFolder();
+                            f.setUnreadCount(f.getUnreadCount()-1);
+                            recorder.updateFolder(f);
+                        }
                     } catch (IOException ex) {
                         showError("Failed to display message",ex);
                     }
                 }
             });
+
             messageTable.getTableHeader().setReorderingAllowed(false);
-            messageTable.getColumnModel().getColumn(1).setPreferredWidth(100);
-            getHelpServer().enableHelp(messageTable,"lo.messageTable");
+            TableColumn titleColumn = messageTable.getColumnModel().getColumn(0);
+            titleColumn.setPreferredWidth(150);
+            titleColumn.setCellRenderer(new DefaultTableCellRenderer() {
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
+                    if (recorder.getMessage(row).isUnread()) { 
+                        setText("<html><b>" + getText() + "</b></html>");
+                    }
+                    return this;
+                }               
+            });
+            //@todo - add a consideration of message log level
             
         }
         return messageTable;
@@ -393,11 +592,10 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             newMenu = new JMenu();
             newMenu.setText("New");
             newMenu.add(getParameterizedWorkflowAction());
-            newMenu.add(getSubmitWorkflowAction());
             newMenu.add(getWorkflowEditorAction());
+            newMenu.add(getTaskEditorAction());            
             newMenu.add(new JSeparator());
             newMenu.add(getSubmitTaskAction());
-            newMenu.add(getTaskEditorAction());            
         }
         return newMenu;
     }
@@ -413,32 +611,39 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
         return submitTaskAction;
     }
-    private Action getSubmitWorkflowAction() {
-        if (submitWorkflowAction == null) {
-            submitWorkflowAction = new SubmitWorkflowAction();
-        }
-        return submitWorkflowAction;
-    }
+
     private Action getTaskEditorAction() {
         if (taskEditorAction == null) {
             taskEditorAction = new TaskEditorAction();
         }
         return taskEditorAction;
     }
+    
+    private MarkAllReadAction markAllReadAction;
+    private Action getMarkAllReadAction() {
+        if (markAllReadAction == null) {
+            markAllReadAction = new MarkAllReadAction();
+            getFolderTree().addTreeSelectionListener(markAllReadAction);
+        }
+        return markAllReadAction;
+    }
+    
     private JToolBar getToolbar() {
         if (toolbar == null) {
             toolbar = new JToolBar();
             toolbar.setFloatable(false);
             toolbar.setRollover(true);
             toolbar.add(getParameterizedWorkflowAction());
-            toolbar.add(getSubmitWorkflowAction());
             toolbar.add(getWorkflowEditorAction());
-            toolbar.add(new JToolBar.Separator());
-            toolbar.add(getSubmitTaskAction());
             toolbar.add(getTaskEditorAction());
             toolbar.add(new JToolBar.Separator());
+            toolbar.add(getSubmitTaskAction());
+            toolbar.add(new JToolBar.Separator());
+            toolbar.add(getRefreshAction());
             toolbar.add(getHaltAction());
             toolbar.add(getDeleteAction());
+            toolbar.add(new JToolBar.Separator());
+            toolbar.add(getMarkAllReadAction());
         }
         return toolbar;
     }
@@ -449,13 +654,55 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         return workflowEditorAction;        
     }
     
+    private JPanel messageDetails;
+    private JPanel getMessageDetails() {
+        if (messageDetails == null) {
+            messageDetails = new JPanel(new CardLayout());
+            messageDetails.add(new JScrollPane(getMessageContentPane()), MESSAGE_CONTENT);
+            messageDetails.add(getResultsTable(),MESSAGE_RESULTS);
+        }
+        return messageDetails;
+    }
+    private static final String MESSAGE_CONTENT = "message_content";
+    private static final String MESSAGE_RESULTS = "message_results";
+    private ResultsTableModel resultsTableModel;
+    private ResultsTableModel getResultsTableModel() {
+        if (resultsTableModel == null) {
+            resultsTableModel = new ResultsTableModel();
+        }
+        return resultsTableModel;
+    }
+    
+    private JTable resultsTable;
+    private JTable getResultsTable() {
+        if (resultsTable == null) {
+            resultsTable = new JTable(getResultsTableModel());
+            getHelpServer().enableHelp(resultsTable,"lookout.resultsTable");
+            resultsTable.setShowVerticalLines(false);
+            resultsTable.setShowHorizontalLines(false);
+            resultsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);             
+        }
+        return resultsTable;
+    }
+    
+    /** class for disoaying a table of resultls */
+    private class ResultsTableModel extends DefaultTableModel {
+        public ResultsTableModel() {
+           
+        }
+        public void clear() {
+        }
+        public void setResults(Map results) {
+        }
+    }
+    
     
     private void initialize() {
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.lookout");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(ui.getComponent());
         this.setJMenuBar(getJJMenuBar());
-        this.setSize(600, 500);
+        this.setSize(700, 800);
         JPanel pane = getJContentPane();    
         this.setTitle("VO Lookout");
         
@@ -463,15 +710,17 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         
         JSplitPane leftRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         leftRight.setDividerSize(5);
-        leftRight.setDividerLocation(200);
+        leftRight.setDividerLocation(250);
         leftRight.setTopComponent(new JScrollPane(getFolderTree()));
         JSplitPane topBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         leftRight.setBottomComponent(topBottom);
         
-        topBottom.setTopComponent(new JScrollPane(getMessageTable()));
-        topBottom.setBottomComponent(new JScrollPane(getMessageContentPane()));
+        JScrollPane tableScrollPane = new JScrollPane(getMessageTable());
+        tableScrollPane.getViewport().setBackground(Color.WHITE);
+        topBottom.setTopComponent(tableScrollPane);
+        topBottom.setBottomComponent(getMessageDetails());
         topBottom.setDividerSize(5);
-        topBottom.setDividerLocation(100);
+        topBottom.setDividerLocation(200);
         pane.add(getToolbar(),BorderLayout.NORTH);
         pane.add(leftRight,BorderLayout.CENTER);
         this.setContentPane(pane);
@@ -482,6 +731,9 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 
 /* 
 $Log: LookoutImpl.java,v $
+Revision 1.2  2005/11/10 12:06:18  nw
+early draft of volookout
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  
