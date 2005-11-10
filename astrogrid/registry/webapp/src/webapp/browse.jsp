@@ -130,8 +130,10 @@ Browse for another version
       for (int n=0;n<resources.getLength();n++) {
          Element resourceElement = (Element) resources.item(n);
 	     	boolean deleted = false; 
+	     	boolean inactive = false;
 	     	if(resourceElement.getAttribute("status") != null)
 		  	deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");         
+		  	inactive = resourceElement.getAttribute("status").toLowerCase().equals("inactive");
          String bgColour = "#FFFFFF";
          String fgColour = "#000000";
          
@@ -139,6 +141,10 @@ Browse for another version
             bgColour = "#FFFFFF";
             fgColour = "#AAAAAA";
          }
+         if (inactive) {
+            bgColour = "#FFFFFF";
+            fgColour = "#AAAAAA";
+         }         
          String setFG = "<font color='"+fgColour+"'>";
          String endFG = "</font>";
          

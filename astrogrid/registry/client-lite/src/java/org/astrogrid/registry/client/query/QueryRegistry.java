@@ -163,6 +163,7 @@ public class QueryRegistry implements RegistryService {
        try {
            Document doc = (Document)cache.get(adql);
            if(doc != null) return doc;
+           logger.debug("not in cache");
            String adqlString = Sql2Adql.translateToAdql074(adql);
            doc = search(DomHelper.newDocument(adqlString));
            cache.put(adqlString,doc);
@@ -225,7 +226,10 @@ public class QueryRegistry implements RegistryService {
           //newRoot.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ad",currentRoot.getNamespaceURI());
       }
       newRoot.appendChild(currentRoot);
-      adql.removeChild(adql.getDocumentElement());
+      if(adql.getDocumentElement() != null && 
+         adql.getDocumentElement().getNodeName().indexOf("Where") == -1) {
+          adql.removeChild(adql.getDocumentElement());
+      } 
       adql.appendChild(newRoot);
       logger.debug("THE ADQL IN SEARCH = " + DomHelper.DocumentToString(adql));
       try {
@@ -301,9 +305,16 @@ public class QueryRegistry implements RegistryService {
                   NodeList soapChildNodes = wsDoc.getDocumentElement().getChildNodes();
                   boolean importedNodes = false;
                   if( soapChildNodes.getLength() == 0) {
-                      logger.error("NO VOResources found, SHOULD NOT HAPPEN THERE SHOULD ALWAYS BE AN ELEMENT");
-                      logger.error("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(wsDoc));
-                      throw new Exception("Error No VOResources found, should always be one.");
+                      //logger.error("NO VOResources found, SHOULD NOT HAPPEN THERE SHOULD ALWAYS BE AN ELEMENT");
+                      //throw new Exception("Error No VOResources found, should always be one.");
+                      /*
+                       * Okay to be compatible with old restry servers which may just return
+                       * an empty message signature element back like <searchResponse/>
+                       * we can't throw ane exception here just yet.  so just return the dom for now.
+                       * No need to transform it either.
+                       * 
+                       */
+                      return wsDoc;
                   }else {
                       for(int i = 0;i < soapChildNodes.getLength();i++) {
                           if(soapChildNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -314,10 +325,12 @@ public class QueryRegistry implements RegistryService {
                           }
                       }//for
                       if(!importedNodes) {
-                          logger.error("NO VOResources found, SHOULD NOT HAPPEN THERE SHOULD ALWAYS BE AN ELEMENT " +
-                                       "(Child Nodes were found though)");
-                          throw new Exception("Error No VOResources found, should always be one. " +
-                                              "(Child Nodes were found in the soap body)");
+                          //logger.error("NO VOResources found, SHOULD NOT HAPPEN THERE SHOULD ALWAYS BE AN ELEMENT (Child Nodes were found though)");
+                          //throw new Exception("Error No VOResources found, should always be one. (Child Nodes were found in the soap body)");
+                          /*
+                           * Don't throw an exception just yet, need to rethink this later.
+                           * XQuerySearches won't have VOResources.
+                           */
                       }//if
                   }//else
               }//else
@@ -343,12 +356,41 @@ public class QueryRegistry implements RegistryService {
                              versionNumber,reg_transform_version);
                   }//if
               }//if
+              makeIdentifierCache(resultDoc); 
+              
               return resultDoc;
            }
            logger.error("ERROR RESULT FROM WEB SERVICE WAS LITERALLY NOTHING IN THE MESSAGE SHOULD NOT HAPPEN.");
            throw new Exception("ERROR RESULT FROM WEB SERVICE WAS LITERALLY NOTHING IN THE MESSAGE SHOULD NOT HAPPEN.");
            //return null;
    }
+   
+   private void makeIdentifierCache(Document results) throws ParserConfigurationException {
+       NodeList nl = results.getElementsByTagNameNS("*","Resource");
+       String identifier = null;
+       NodeList identList = null;
+       if(nl.getLength() > 0 && nl.item(0).getParentNode() != null && 
+          nl.item(0).getParentNode().getNodeType() == Node.ELEMENT_NODE) {
+           //NodeList resourceNodes = nl.item(0).getChildNodes();
+           final int resourceNum = nl.getLength();
+           for(int i = 0;i < resourceNum;i++) {
+               identList = ((Element)nl.item(i)).getElementsByTagNameNS("*","identifier");
+               if(identList.getLength() > 0) {
+                   identifier = DomHelper.getValue((Element)identList.item(0));
+                   if(cache.get(identifier) == null) {
+                       Document doc = DomHelper.newDocument();
+                       Node importNode = doc.importNode(nl.item(i).getParentNode(),false);
+                       doc.appendChild(importNode);
+                       Node resourceNode = doc.importNode(nl.item(i),true);
+                       doc.getDocumentElement().appendChild(resourceNode);
+                       logger.debug("placing in cache dom for identifier = " + identifier);
+                       cache.put(identifier,doc);
+                   }//if
+               }//if
+           }//for
+       }//if
+   }
+   
 
    /**
     * Performas a query to return all Resources of a type of Registry.
@@ -462,6 +504,7 @@ public class QueryRegistry implements RegistryService {
        logger.debug("entered xquerySearch");
        resultDoc = (Document)cache.get(xquery);
        if(resultDoc != null) return resultDoc;
+       logger.debug("not in cache");
        try {
            DocumentBuilder registryBuilder = null;
            registryBuilder =
@@ -551,11 +594,13 @@ public class QueryRegistry implements RegistryService {
        if (ident == null) {
            logger.error("Cannot call this method with a null ivorn identifier");
            throw new RegistryException("Cannot call this method with a null identifier");
-       }
+       }       
        if (!useCache) {
+           logger.debug("GetResourceByIdentifier() not using local filestore cache grab from web service");
            resultDoc = (Document)cache.get(ident);
            if(resultDoc != null) return resultDoc;
-           logger.debug("GetResourceByIdentifier() not using cache");
+           logger.debug("not in cache");
+           
            try {
 
              DocumentBuilder registryBuilder = null;
@@ -563,13 +608,13 @@ public class QueryRegistry implements RegistryService {
                 DocumentBuilderFactory.newInstance().newDocumentBuilder();
              doc = registryBuilder.newDocument();
              //roll back to version 1.35 so it's compatible with all the old delegates -clq
-             //Element root = doc.createElementNS(NAMESPACE_URI, "GetResource");
+             //Element root = doc.createElementNS(NAMESPACE_URI, "GetResource");             
              Element root = doc.createElementNS(NAMESPACE_URI, "GetResourcesByIdentifier");
              String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
              root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);
 //           roll back to version 1.35 so it's compatible with all the old delegates -clq
              //Element identElem = doc.createElementNS(NAMESPACE_URI, "identifier");
-             Element identElem = doc.createElement( "identifier");
+             Element identElem = doc.createElement("identifier");
              identElem.appendChild(doc.createTextNode(ident));
              root.appendChild(identElem);
              doc.appendChild(root);
@@ -590,8 +635,8 @@ public class QueryRegistry implements RegistryService {
               if(backupEndpoint != null) {
                   QueryRegistry qr = new QueryRegistry(backupEndpoint);
                   try {
-                      resultDoc = qr.callService(doc,"GetResource","GetResource");
-                      cache.put(ident,resultDoc);
+                      resultDoc = qr.callService(doc,"GetResourcesByIdentifier","GetResourcesByIdentifier");
+                      //cache.put(ident,resultDoc);
                   }catch(RemoteException re2) {
                       logger.error(re2);
                       throw new RegistryException(re2);
@@ -693,16 +738,13 @@ public class QueryRegistry implements RegistryService {
              orValueElem.appendChild(doc.createTextNode(java.lang.String.valueOf(orValue)));
              root.appendChild(orValueElem);
              doc.appendChild(root);
-             //System.out.println("the DOC IN GETRESOURCEBYIDNET1 = " + DomHelper.ElementToString(doc.getDocumentElement()));
           } catch (ParserConfigurationException pce) {
               logger.error(pce);
               throw new RegistryException(pce);
           }
           try {
-              //System.out.println("calling with GetResources now");
               resultDoc =  callService(doc,"KeywordSearch","KeywordSearch");
               cache.put(keywords,resultDoc);
-              //System.out.println("resultDoc = " + DomHelper.DocumentToString(resultDoc));
           } catch (RemoteException re) {
               URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
               if(backupEndpoint != null) {
@@ -802,7 +844,6 @@ public class QueryRegistry implements RegistryService {
        for(int i = 0;i < nl.getLength(); i++) {
            rd[i] = new ResourceData();
            serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","title");
-           //System.out.println("title length = " + serviceNodes.getLength());
            if(serviceNodes.getLength() > 0)
                rd[i].setTitle(DomHelper.getValue((Element)serviceNodes.item(0)));
            serviceNodes = ((Element)nl.item(i)).getElementsByTagNameNS("*","description");

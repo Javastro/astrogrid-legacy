@@ -30,8 +30,7 @@
    <xs:element name="VOResources">
       <xs:complexType>
          <xs:sequence>
-            <xs:element name="Resource" type="vr:Resource" 
-                        maxOccurs="unbounded"/>
+            <xs:element name="Resource" type="vr:Resource" minOccurs="0" maxOccurs="unbounded"/>
          </xs:sequence>
       </xs:complexType>
    </xs:element>

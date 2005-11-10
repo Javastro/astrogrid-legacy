@@ -141,22 +141,33 @@
      -  Intersection Search:  a AND b
      -->
    <xsl:template match="*[@xsi:type='intersectionSearchType']">
+    <!--
+   	<xsl:if test="../local-name() = 'Where'">
+     -->
+   	<xsl:if test="local-name(..) = 'Where'">
 	  <xsl:text>(</xsl:text>
+    </xsl:if>
       <xsl:apply-templates select="*[1]"/>
       <xsl:text> and </xsl:text>
       <xsl:apply-templates select="*[2]"/>
+	<xsl:if test="local-name(..) = 'Where'">
  	  <xsl:text>)</xsl:text>
+    </xsl:if>
    </xsl:template>
 
    <!--
      -  Union: a OR b
      -->
    <xsl:template match="*[@xsi:type='unionSearchType']">
-	 <xsl:text>(</xsl:text>
+     <xsl:if test="local-name(..) = 'Where'">
+	 	<xsl:text>(</xsl:text>
+     </xsl:if>
       <xsl:apply-templates select="*[1]"/>
       <xsl:text> or </xsl:text>
       <xsl:apply-templates select="*[2]"/>
-	 <xsl:text>)</xsl:text>
+     <xsl:if test="local-name(..) = 'Where'">
+		 <xsl:text>)</xsl:text>
+	 </xsl:if>
    </xsl:template>
 
    <!--
@@ -214,6 +225,7 @@
       <xsl:variable name="comp">
          <xsl:value-of select="@Comparison"/>
       </xsl:variable>
+      <xsl:text>(</xsl:text>      
       <xsl:apply-templates select="ad:Arg[1]"/>
       <xsl:text> </xsl:text>      
       <xsl:choose>
@@ -229,6 +241,7 @@
       </xsl:choose>
       <xsl:text> </xsl:text>
       <xsl:apply-templates select="ad:Arg[2]"/>
+      <xsl:text>) </xsl:text>
    </xsl:template>
    <!--
      -  Negates comparisons below:  a NOT comp b

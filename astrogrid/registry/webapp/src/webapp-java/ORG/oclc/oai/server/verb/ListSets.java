@@ -109,10 +109,26 @@ public class ListSets extends ServerVerb {
 		    listSetsMap = abstractCatalog.listSets(oldResumptionToken);
 		}
 		sb.append("<ListSets>");
+        /*
 		Iterator sets = (Iterator)listSetsMap.get("sets");
 		while (sets.hasNext()) {
 		    sb.append((String)sets.next());
 		}
+        */
+        
+      Iterator sets = (Iterator)listSetsMap.keySet().iterator();
+      String tempKey = null;
+      while (sets.hasNext()) {
+          tempKey = (String)sets.next();
+          sb.append("<set>");
+          sb.append("<setSpec>" + tempKey.substring(5) + "</setSpec>");
+          if(listSetsMap.get(tempKey) != null) {
+              sb.append("<setName>" + (String)listSetsMap.get(tempKey) + "</setName>");
+          }
+          sb.append("</set>");
+      }
+      /*
+       * Dont bother astrogrid will never support resumptionTokens for ListSets.
 		Map newResumptionMap = (Map)listSetsMap.get("resumptionMap");
 		if (newResumptionMap != null) {
 		    String newResumptionToken = (String)newResumptionMap.get("resumptionToken");
@@ -141,6 +157,7 @@ public class ListSets extends ServerVerb {
 		} else if (oldResumptionToken != null) {
 		    sb.append("<resumptionToken />");
 		}
+      */
 		sb.append("</ListSets>");
 	    } catch (NoSetHierarchyException e) {
 		sb.append(e.getMessage());

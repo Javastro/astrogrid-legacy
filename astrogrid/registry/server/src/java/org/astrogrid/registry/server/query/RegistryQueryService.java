@@ -319,9 +319,9 @@ public class RegistryQueryService {
           ResourceSet rs = xqs.query(xqlExpression);
           log.debug("Total Query Time = " + (System.currentTimeMillis() - beginQ));
           log.info("Number of results found in query = " + rs.getSize());
-          if(rs.getSize() == 0) {
-              return null;
-          }
+          //if(rs.getSize() == 0) {
+          //    return null;
+          //}
           Resource xmlr = rs.getMembersAsResource();
           return DomHelper.newDocument(xmlr.getContent().toString());
       }catch(XMLDBException xdbe) {
@@ -448,7 +448,7 @@ public class RegistryQueryService {
        for(int i = 0;i < xqlPath.length;i++) {
            xqlString += " (";
            for(int j = 0;j < keyword.length;j++) {
-             xqlString += "$x/" + xqlPath[i] + " &= '*" + keyword[j] + "*'";
+             xqlString += "$x/" + xqlPath[i].trim() + " &= '*" + keyword[j] + "*'";
              if(j != (keyword.length - 1)) {
                  if(orKeywords) {
                      xqlString += " or ";

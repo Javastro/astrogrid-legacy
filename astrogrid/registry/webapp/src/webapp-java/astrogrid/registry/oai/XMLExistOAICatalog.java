@@ -121,7 +121,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    private SortedMap nativeMap = null;
    private HashMap          resumptionResults=new HashMap();
    private int              maxListSize;
-   private ArrayList sets = null;
+   private HashMap sets = null;
    private Transformer getMetadataTransformer = null;
    private boolean schemaLocationIndexed = false;
    private static String returnVersionNumber = null;
@@ -339,17 +339,19 @@ public class XMLExistOAICatalog extends AbstractCatalog {
           }
    }
 
-    private static ArrayList getSets(Properties properties) {
-        TreeMap treeMap = new TreeMap();
+    private static HashMap getSets(Properties properties) {
+        //TreeMap treeMap = new TreeMap();
+        HashMap hashMap = new HashMap();
         String propertyPrefix = "Sets.";
         Enumeration propNames = properties.propertyNames();
         while (propNames.hasMoreElements()) {
             String propertyName = (String)propNames.nextElement();
             if (propertyName.startsWith(propertyPrefix)) {
-                treeMap.put(propertyName, properties.get(propertyName));
+                hashMap.put(propertyName, properties.get(propertyName));
             }
         }
-        return new ArrayList(treeMap.values());
+        //return new ArrayList(treeMap.values());
+        return hashMap;
     }
 
    /**
@@ -972,9 +974,12 @@ public class XMLExistOAICatalog extends AbstractCatalog {
              NoSetHierarchyException {
         if (sets.size() == 0)
             throw new NoSetHierarchyException();
+        /*
          Map listSetsMap = new LinkedHashMap();
          listSetsMap.put("sets", sets.iterator());
          return listSetsMap;
+        */
+        return sets;
     }
 
 

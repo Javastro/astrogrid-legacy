@@ -69,6 +69,9 @@ public class RegistryHarvestService {
                           LogFactory.getLog(RegistryHarvestService.class);
    private static final String HARVEST_TEMPLATE_URL_PROPERTY =
                           "org.astrogrid.registry.harvest.template.url";
+   
+   private static final String MAIN_HARVEST_SET = "ivo_managed";
+   
 
    public static Config conf = null;
 
@@ -231,6 +234,7 @@ public class RegistryHarvestService {
       //System.out.println(resource.getNodeName() + " " + resource.getNodeValue());
 
       NamedNodeMap attributes = resource.getAttributes();
+      String identifier = RegistryDOMHelper.getIdentifier(resource);
 
       //get the accessurl and invocation type.
       //invocationtype is either WebService or WebBrowser.
@@ -269,11 +273,11 @@ public class RegistryHarvestService {
           accessURL = accessURL.substring(0,accessURL.indexOf("?wsdl"));
       }
       log.debug("The access URL = " + accessURL + " invocationType = " + invocationType);
-      beginHarvest(accessURL, invocationType,dt,version);
+      beginHarvest(accessURL, invocationType,dt,version, identifier);
       log.debug("exist beginHarvest(Node)");
    }
    
-   public void beginHarvest(String accessURL, String invocationType, Date dt, String version) throws RegistryException, IOException  {
+   public void beginHarvest(String accessURL, String invocationType, Date dt, String version, String identifier) throws RegistryException, IOException  {
        log.debug("entered beginharvest(url,invocation)");
        int failureCount = 0;
        boolean resumptionSuccess = false;      
@@ -285,7 +289,7 @@ public class RegistryHarvestService {
        //instantiate the Admin service that contains the update methods.
        RegistryAdminService ras = new RegistryAdminService();
 
-      
+      String setName = conf.getString("reg.custom.harvest.set-" + identifier,MAIN_HARVEST_SET);
       if(invocationType != null && invocationType.endsWith("WebService")) {
          //call the service
          //remember to look at the date
@@ -310,9 +314,9 @@ public class RegistryHarvestService {
                root = doc.createElementNS(nameSpaceURI,interfaceMethod);
                String value = "http://www.ivoa.net/xml/VOResource/v" + version;
                root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);
-               if(hasManagedSetViaWebService(accessURL,version)) {
+               if(hasSetViaWebService(setName, accessURL,version)) {
                    childElem = doc.createElementNS(nameSpaceURI,"set");
-                   childElem.appendChild(doc.createTextNode("ivo_managed"));
+                   childElem.appendChild(doc.createTextNode(setName));
                    root.appendChild(childElem);                   
                }
                if(dt != null) {
@@ -387,10 +391,10 @@ public class RegistryHarvestService {
             //unknown.
             log.debug("A web browser invocation not a web service");
             String httpSet = "";
-            if(hasManagedSetViaHTTP(accessURL)) {
-                httpSet = "&set=ivo_managed";
+            
+            if(hasSetViaHTTP(setName, accessURL)) {
+                httpSet = "&set=" + setName;
             }
-
             if(accessURL.indexOf("?") == -1) {
                ending = "?verb=ListRecords&metadataPrefix=ivo_vor" + httpSet;
                if(dt != null) {
@@ -457,7 +461,7 @@ public class RegistryHarvestService {
       log.debug("end beginHarvest");
    }//beginHarvest
    
-   private boolean hasManagedSetViaHTTP(String accessURL) throws ParserConfigurationException, SAXException, IOException {
+   private boolean hasSetViaHTTP(String setName, String accessURL) throws ParserConfigurationException, SAXException, IOException {
        String ending = "";
        if(accessURL.indexOf("?") == -1) {
            ending = "?verb=ListSets";
@@ -467,13 +471,13 @@ public class RegistryHarvestService {
        log.debug("the spec doc = " + DomHelper.DocumentToString(doc));
        NodeList nl = doc.getElementsByTagNameNS("*","setSpec");
        for(int i = 0;i < nl.getLength();i++) {
-           if("ivo_managed".equals(nl.item(i).getFirstChild().getNodeValue()))
+           if(setName.equals(nl.item(i).getFirstChild().getNodeValue()))
                return true;
        }//for
        return false;
    }
    
-   private boolean hasManagedSetViaWebService(String accessURL, String version)  throws ParserConfigurationException, RemoteException, Exception  {
+   private boolean hasSetViaWebService(String setName, String accessURL, String version)  throws ParserConfigurationException, RemoteException, Exception  {
        Element childElem = null;
        Element root = null;
        
@@ -513,7 +517,7 @@ public class RegistryHarvestService {
            Document soapDoc = sbe.getAsDocument();
            NodeList nl = soapDoc.getElementsByTagNameNS("*","setSpec");
            for(int i = 0;i < nl.getLength();i++) {
-               if("ivo_managed".equals(nl.item(i).getFirstChild().getNodeValue()))
+               if(setName.equals(nl.item(i).getFirstChild().getNodeValue()))
                    return true;
            }//for
        }

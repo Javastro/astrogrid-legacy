@@ -455,12 +455,7 @@ public class RegistryAdminService {
                      //update this registry resource into our registry.
                      try {
                         coll = xdb.openAdminCollection(collectionName);
-                        //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
-                          xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)root));                        
-                        //String storeTestString3 = DomHelper.ElementToString((Element)root);
-                        //System.out.println("THIS IS THE STORESTRINGNEW SAXWAYREG = " + storeTestString3);
-                        //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml","<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + storeTestString3);
-                        
+                        xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)root));
                         collStat = xdb.openAdminCollection("statv" + versionNumber.replace('.','_'));
                         if(xdb.getResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml") == null) {
                             xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent,false));
@@ -777,13 +772,15 @@ public class RegistryAdminService {
       // but later on an appendChild is performed which
       // automatically reduced the length by one.
       final int resourceNum = nl.getLength();
+      boolean updateResource = true;
       for(int i = 0;i < resourceNum;i++) {
+         updateResource = true;
          ident = RegistryDOMHelper.getAuthorityID( (Element)nl.item(0));
          resKey = RegistryDOMHelper.getResourceKey( (Element)nl.item(0));
          Element currentResource = (Element)nl.item(0);
          if(manageAuths.containsValue(new AuthorityList(ident,versionNumber,authorityID))) {
              log.error("Either your harvesting your own Registry or another Registry is submitting authority id's owned by this registry. Ident = " + ident);
-             xsDoc.getDocumentElement().removeChild(currentResource);
+             currentResource.getParentNode().removeChild(currentResource);
          } else {
              //tempIdent = "ivo://" + ident;
              tempIdent = ident;
@@ -829,14 +826,10 @@ public class RegistryAdminService {
                                String manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
                                if(manageAuths.containsKey((tempAuthorityListKey = new AuthorityList(manageNodeVal,versionNumber)))) {
                                    tempAuthorityListVal = (AuthorityList)manageAuths.get(tempAuthorityListKey);
-                                    log.error("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
+                                   log.error("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
                                         " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
-                                        " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner());
-                                    /*
-                                    throw AxisFault.makeFault(new RegistryException("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
-                                            " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
-                                            " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner()));
-                                    */
+                                        " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner() + "; NO UPDATE WILL HAPPEN FOR THIS Registry Type Resouce Entry");
+                                   updateResource = false;                                   
                                }//if                           
                                if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
                                    manageAuths.put(tempAuthorityListKey, new AuthorityList(manageNodeVal,versionNumber,ident));
@@ -846,10 +839,12 @@ public class RegistryAdminService {
                  }//if
                  root = xsDoc.createElement("AstrogridResource");
                  root.appendChild(currentResource);
+                 
                  try {
-                     coll = xdb.openAdminCollection(collectionName);
-                     //xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
-                     xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)root));
+                     if(updateResource) {
+                         coll = xdb.openAdminCollection(collectionName);
+                         xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",DomHelper.ElementToString((Element)root));
+                     }//if
                  } finally {
                      try {
                          xdb.closeCollection(coll);

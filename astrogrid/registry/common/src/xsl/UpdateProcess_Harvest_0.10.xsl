@@ -85,7 +85,8 @@
                        xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
                        xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
                        xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" 
-                       xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7">
+                       xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+					   xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1">
          
             <xsl:call-template name="setResourceAttrs"/>
             <xsl:apply-templates select="@*|node()"/>   
