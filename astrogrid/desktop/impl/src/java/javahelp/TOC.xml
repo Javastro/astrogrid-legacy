@@ -8,13 +8,17 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
 		<tocitem text="Getting Started" target="gettingstarted" />
 		<!-- add children to each of these headings, once they're written -->
 		<tocitem text="Main Window" target="system.ui" />
+		<tocitem text="Astroscope" target="userInterface.astroscopeLauncher" />
+		
 		<tocitem text="Parameterized Workflows" target="userInterface.parameterizedWorkflows">
 			<tocitem text="Solar Movie Maker" target="pw.movieMaker" />
 			<tocitem text="Redshift Maker" target="pw.redshiftMaker" />
 		</tocitem>
+		
 		<tocitem text="Application Launcher" target="userInterface.applicationLauncher">
 			<tocitem text="Available Applications" target="al.list" />
 		</tocitem>
+		
 		<tocitem text="Workflow Builder" target="userInterface.workflowBuilder" >
 			<tocitem text="Introduction" target="userInterface.workflowBuilder.introduction" />
 			<tocitem text="Workflow overview" target="userInterface.workflowBuilder.workflow" />
@@ -23,11 +27,11 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
 	        <tocitem text="Document view" target="userInterface.workflowBuilder.docPanel" />
 	        <tocitem text="Activity list" target="userInterface.workflowBuilder.activityList" />	        		    
 		</tocitem>
-		
+		<!-- not there any more
 		<tocitem text="Job Monitor" target="userInterface.jobMonitor" >
 			<tocitem text="Functions" target="jm.functions" />
 		</tocitem>
-		
+		-->
 		
 		<tocitem text="Myspace Browser" target="userInterface.myspaceBrowser" />
 		<tocitem text="AstroScope Lite" target="userInterface.datascopeLauncher" />
