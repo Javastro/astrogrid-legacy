@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.20 2005/11/10 14:18:52 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.21 2005/11/10 14:55:15 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -279,6 +279,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         pane.add(makeCenterPanel(),BorderLayout.CENTER);
         this.setContentPane(pane);
         this.setTitle("AstroScope");
+        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
     }
        
     private String conformToMyspaceName(String name) {
@@ -1772,6 +1773,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.21  2005/11/10 14:55:15  KevinBenson
+minor tweaks plus javahelp is there now
+
 Revision 1.20  2005/11/10 14:18:52  KevinBenson
 minor fixes to highlight other displays on selects. and fous on nodes
 
