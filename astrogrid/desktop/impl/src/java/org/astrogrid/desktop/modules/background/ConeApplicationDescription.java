@@ -1,4 +1,4 @@
-/*$Id: ConeApplicationDescription.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: ConeApplicationDescription.java,v 1.2 2005/11/10 10:46:58 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,6 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.MandatoryParameterNotPassedException;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.AbstractApplication.IDs;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
@@ -27,7 +25,6 @@ import org.astrogrid.applications.description.base.ApplicationDescriptionEnviron
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
-import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -40,11 +37,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /** implementation of a cone-search cea proxy.
@@ -171,6 +165,9 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: ConeApplicationDescription.java,v $
+Revision 1.2  2005/11/10 10:46:58  nw
+big change around for vo lookout
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  

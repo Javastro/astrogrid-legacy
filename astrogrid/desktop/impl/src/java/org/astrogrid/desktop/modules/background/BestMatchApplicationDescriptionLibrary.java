@@ -1,4 +1,4 @@
-/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.2 2005/11/10 10:46:58 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,7 +47,6 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
      * @return
      */
     public boolean hasMatch(ApplicationInformation info) {
-        // @todo - test this. will only work if tests using equals(), not ==
         return ArrayUtils.contains(getApplicationNames(),info.getClass().getName());
     } 
     
@@ -70,6 +69,9 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: BestMatchApplicationDescriptionLibrary.java,v $
+Revision 1.2  2005/11/10 10:46:58  nw
+big change around for vo lookout
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  

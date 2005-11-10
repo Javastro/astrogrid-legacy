@@ -1,4 +1,4 @@
-/*$Id: TasksInternal.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: TasksInternal.java,v 1.2 2005/11/10 10:46:58 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.background;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
 
-/** interface into a minimalistic cea server
+/**low-level interface into a minimalistic cea server
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
  *
  */
@@ -28,6 +28,9 @@ public interface TasksInternal {
 
 /* 
 $Log: TasksInternal.java,v $
+Revision 1.2  2005/11/10 10:46:58  nw
+big change around for vo lookout
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  

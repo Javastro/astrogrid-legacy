@@ -1,4 +1,4 @@
-/*$Id: MessagingExecutionController.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: MessagingExecutionController.java,v 1.2 2005/11/10 10:46:58 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,8 @@ import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.ThreadPoolExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.desktop.modules.ag.MessageUtils;
+import org.astrogrid.desktop.modules.ag.MessagingInternal;
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -51,12 +53,9 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
         sess = messaging.createSession();
         prod = sess.createProducer(messaging.getEventQueue());       
         prod.setDisableMessageID(true);
-        msg = sess.createMapMessage();
         txtMsg = sess.createTextMessage();
-        txtMsg.setStringProperty("type","results");        
     }
     final Session sess;
-    final MapMessage msg;
     final TextMessage txtMsg;
     final MessageProducer prod;
     final Executor exec = new QueuedExecutor();
@@ -69,19 +68,17 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
                 public void run() {
                     try {
                         Application app = (Application)o;
-                        msg.setStringProperty("cea_application_name",app.getApplicationDescription().getName());
-                        msg.setStringProperty("cea_application_id",app.getID());
-                        msg.setStringProperty("cea_application_jid",app.getJobStepID());
+                        txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,app.getApplicationDescription().getName());
+                        txtMsg.setStringProperty(MessageUtils.PROCESS_ID_PROPERTY,app.getID());
+                        txtMsg.setStringProperty(MessageUtils.CLIENT_ASSIGNED_ID_PROPERTY,app.getJobStepID());
 
                         if (arg instanceof Status) {
                             Status stat = (Status)arg;                            
-                            msg.setStringProperty("type","status-change");
-                            msg.setString("phase",stat.toExecutionPhase().toString());
-                            prod.send(msg);
+                            txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.STATUS_CHANGE_MESSAGE);
+                            txtMsg.setText(stat.toExecutionPhase().toString());
+                            prod.send(txtMsg);
                             if (stat.equals(Status.COMPLETED)) {// send a results message too.
-                                txtMsg.setStringProperty("cea_application_name",app.getApplicationDescription().getName());                                                                
-                                txtMsg.setStringProperty("cea_application_id",app.getID());
-                                txtMsg.setStringProperty("cea_application_jid",app.getJobStepID());                                
+                                txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.RESULTS_MESSAGE);
                                 StringWriter sw = new StringWriter();
                                 app.getResult().marshal(sw);
                                 txtMsg.setText(sw.toString());
@@ -89,14 +86,11 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
                             }
                         } else if (arg instanceof MessageType) {
                             MessageType m = (MessageType)arg;
-                            msg.setStringProperty("type","message");
-                            // payload.
-                            msg.setString("content",m.getContent());
-                            msg.setString("level",m.getLevel().toString());
-                            msg.setString("phase",m.getPhase().toString());
-                            msg.setString("source",m.getSource());
-                            msg.setString("timestamp",m.getTimestamp().toString()); //@todo if we need to parse this back, may need to specify a format
-                            prod.send(msg);
+                            txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.INFORMATION_MESSAGE);
+                            StringWriter s= new StringWriter();
+                            m.marshal(s);                            
+                            txtMsg.setText(s.toString());
+                            prod.send(txtMsg);
                         }                      
                     } catch (JMSException e) {                        
                         logger.warn("Failed to send notification message",e);
@@ -116,6 +110,9 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
 
 /* 
 $Log: MessagingExecutionController.java,v $
+Revision 1.2  2005/11/10 10:46:58  nw
+big change around for vo lookout
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  

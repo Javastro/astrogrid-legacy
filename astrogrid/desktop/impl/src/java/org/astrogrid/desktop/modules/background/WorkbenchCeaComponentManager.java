@@ -1,4 +1,4 @@
-/*$Id: WorkbenchCeaComponentManager.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: WorkbenchCeaComponentManager.java,v 1.2 2005/11/10 10:46:58 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,26 +12,17 @@ package org.astrogrid.desktop.modules.background;
 
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
-import org.astrogrid.applications.manager.CeaThreadPool;
 import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
 import org.astrogrid.applications.manager.DefaultQueryService;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
-import org.astrogrid.applications.manager.ThreadPoolExecutionController;
-import org.astrogrid.applications.manager.idgen.GloballyUniqueIdGen;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.applications.parameter.protocol.FileProtocol;
-import org.astrogrid.applications.parameter.protocol.FtpProtocol;
-import org.astrogrid.applications.parameter.protocol.HttpProtocol;
-import org.astrogrid.applications.parameter.protocol.IvornProtocol;
-import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.desktop.modules.system.ConfigurationKeys;
 
@@ -48,7 +39,7 @@ import java.util.Iterator;
 
 /** Custom cea component manager - just the things needed for an in-process cea server.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
- * @todo add method to delete unnneeded applications
+ * @todo add method to delete application execution records once the user is done with them.
  */
 public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
 
@@ -136,6 +127,9 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
 
 /* 
 $Log: WorkbenchCeaComponentManager.java,v $
+Revision 1.2  2005/11/10 10:46:58  nw
+big change around for vo lookout
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  
