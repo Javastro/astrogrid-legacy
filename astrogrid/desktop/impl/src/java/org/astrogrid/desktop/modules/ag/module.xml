@@ -1213,4 +1213,30 @@
 				<value>true</value>								
 			</property>						
 	</component>
+	
+	<!-- messaging server - relies on community -->	
+	<component name="messaging"
+		implementationClass="org.astrogrid.desktop.modules.ag.ActiveMQMessaging"
+		interfaceClass="org.astrogrid.desktop.modules.ag.MessagingInternal" >
+			<property>
+				<key>hidden.component</key>
+				<value>true</value>								
+			</property>			
+	</component>	
+	
+	<!-- message recorder - relies on messaging -->
+
+	<component name="recorder"
+		implementationClass="org.astrogrid.desktop.modules.ag.MessageRecorderImpl"
+		interfaceClass="org.astrogrid.desktop.modules.ag.MessageRecorderInternal" >
+			<property>
+				<key>hidden.component</key>
+				<value>true</value>								
+			</property>		
+	</component>			
+	<component name="manager"
+		implementationClass="org.astrogrid.desktop.modules.ag.RemoteProcessManagerImpl"
+		interfaceClass="org.astrogrid.acr.astrogrid.RemoteProcessManager">
+		<!-- todo - enumerate methods here -->
+	</component>
 </module>

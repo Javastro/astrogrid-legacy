@@ -1,4 +1,4 @@
-/*$Id: ACRImpl.java,v 1.3 2005/11/01 09:19:46 nw Exp $
+/*$Id: ACRImpl.java,v 1.4 2005/11/10 12:05:05 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,8 @@ import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
+import org.astrogrid.desktop.modules.ag.MessagingInternal;
 import org.astrogrid.desktop.modules.system.Check;
 import org.astrogrid.desktop.modules.system.ThrobbingInterceptor;
 
@@ -241,8 +243,12 @@ public class ACRImpl implements MutableACR {
                                 , cuts.packageName("org.astrogrid.desktop.modules.system")
                         )
                         ,
+                        cuts.union(
                         //cuts.className("\\.*Internal")// don't work
-                        cuts.packageName("org.astrogrid.desktop.modules.background")
+                        //cuts.packageName("org.astrogrid.desktop.modules.background")
+                                cuts.instancesOf(MessageRecorderInternal.class)
+                                , cuts.instancesOf(MessagingInternal.class)
+                                )
                         )
         );
     }
@@ -345,6 +351,9 @@ public class ACRImpl implements MutableACR {
 
 /* 
 $Log: ACRImpl.java,v $
+Revision 1.4  2005/11/10 12:05:05  nw
+big change around for vo lookout
+
 Revision 1.3  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

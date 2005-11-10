@@ -373,6 +373,16 @@
 			<value>true</value>
 		</property>
 	</component>
+	
+	<!-- scheduler -->
+	<component name="scheduler"
+		implementationClass="org.astrogrid.desktop.modules.system.ClockDaemonScheduler"
+		interfaceClass="org.astrogrid.desktop.modules.system.SchedulerInternal" >
+			<property>
+				<key>hidden.component</key>
+				<value>true</value>								
+			</property>			
+	</component>
 		
 
 </module>

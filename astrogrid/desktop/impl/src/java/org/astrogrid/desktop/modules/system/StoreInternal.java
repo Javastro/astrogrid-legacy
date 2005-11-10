@@ -1,4 +1,4 @@
-/*$Id: StoreInternal.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: StoreInternal.java,v 1.2 2005/11/10 12:05:53 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.desktop.modules.system;
 
 import jdbm.RecordManager;
 
-/** Internal-only interface to a store component - very low-level
+/** Internal-only interface to a store component - very low-level - hence internal only.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Oct-2005
  *
  */
@@ -26,6 +26,9 @@ public interface StoreInternal {
 
 /* 
  $Log: StoreInternal.java,v $
+ Revision 1.2  2005/11/10 12:05:53  nw
+ big change around for vo lookout
+
  Revision 1.1  2005/11/01 09:19:46  nw
  messsaging for applicaitons.
  

@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.3 2005/09/12 15:21:16 nw Exp $
+/*$Id: JobsImpl.java,v 1.4 2005/11/10 12:05:43 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.ivoa.Adql074;
@@ -37,26 +38,37 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 /** Job management service.implementation
- * @todo refine to call job delegate directly - more efficient, and better exception reporting.
  */
-public class JobsImpl implements JobsInternal, UserLoginListener {
+public class JobsImpl implements JobsInternal {
     /**
      * Commons Logger for this class
      */
@@ -66,25 +78,14 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
     /** Construct a new Jes
      * 
      */
-    public JobsImpl(Community community, Myspace vos, ApplicationsInternal apps) {
+    public JobsImpl(Community community, RemoteProcessManager manager) {
         this.community = community;
-        this.vos = vos;
-        this.apps = apps;
-        community.addUserLoginListener(this);
+        this.manager = manager;
     }
+    protected final RemoteProcessManager manager;
     protected final Community community;
-    protected final Myspace vos;
-   private JobExecutionService jes;
-   private  ApplicationsInternal apps;
    private WorkflowManagerFactory fac;
    private Account acc;  
-     private synchronized JobExecutionService getJes() throws WorkflowInterfaceException {
-         if (jes == null) {
-             jes = getFactory().getManager().getJobExecutionService();
-         } 
-         return jes;
-    }
-    
 
     private synchronized WorkflowManagerFactory getFactory() {
         if (fac == null) {
@@ -129,187 +130,98 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
     }
     
     public URI[] list() throws ServiceException {
-        try {
-        WorkflowSummaryType[] summs = getJes().listJobs(getAccount());
-        URI[] result = new URI[summs.length];
-        for (int i = 0; i < summs.length; i++) {
-            result[i] = cvt(summs[i].getJobId());
-        }
-        return result;
-        } catch (WorkflowInterfaceException e) {
-            throw new ServiceException(e);
-        }
+        //  implement as filter on list from manager.
+        Collection c = new ArrayList(Arrays.asList(manager.list()));
+        CollectionUtils.filter(c,new Predicate() {
+            public boolean evaluate(Object arg0) {
+                return "jes".equals(((URI)arg0).getScheme());
+            }
+        });
+        return (URI[])c.toArray(new URI[]{});     
     }
     
   
-    public WorkflowSummaryType[] fullList() throws WorkflowInterfaceException {
-        return getJes().listJobs(getAccount());
-    }
-       
-    public Document getJobTranscript(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
-        try {        
-        Workflow wf =  getJes().readJob(cvt(jobURN));
-        Document doc = XMLUtils.newDocument();
-        Marshaller.marshal(wf, doc);
-        return doc;
-        } catch (Exception e) {
-            throw new ServiceException(e);            
-        }
-    }
-    
-    private JobURN cvt(URI uri) {
-        JobURN urn = new JobURN();
-        urn.setContent(uri.toString());
-        return urn;
-    }
-    
-    private URI cvt(JobURN urn) throws ServiceException {       
-        try {
-            return new URI(urn.getContent());
-        } catch (URISyntaxException e) {
-            throw new ServiceException(e);
-        }       
-    }
-    
 
-    public ExecutionInformation getJobInformation(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+       
+    public Document getJobTranscript(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {        
+        String val = (String)manager.getResults(jobURN).get("transcript");
+        InputStream is= new ByteArrayInputStream(val.getBytes());
         try {
-            WorkflowSummaryType[] summs =  getJes().listJobs(getAccount());
-            for (int i = 0; i < summs.length; i++) {
-                if (jobURN.equals(cvt(summs[i].getJobId()))) {
-                    String status =summs[i].getStatus().toString();
-                    return new ExecutionInformation(
-                        cvt(summs[i].getJobId())
-                        ,summs[i].getWorkflowName()
-                        ,summs[i].getDescription()
-                        ,status
-                        ,summs[i].getStartTime()
-                        ,summs[i].getFinishTime()
-                        );
-                }
-            }            
-            } catch (WorkflowInterfaceException e) {
-                throw new ServiceException(e);
-            } 
-            throw new NotFoundException(jobURN.toString());
+            return XMLUtils.newDocument(is);
+        } catch (Exception e) {
+            throw new ServiceException("Failed to parse result as job transcript",e);
+        } 
+    }
+    
+  
+    public ExecutionInformation getJobInformation(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        return manager.getExecutionInformation(jobURN);     
     }
     
  
     public void cancelJob(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
-        try {
-        getJes().cancelJob(cvt(jobURN));
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        manager.halt(jobURN);
     }
     
 
     public void deleteJob(URI jobURN) throws NotFoundException, ServiceException, SecurityException {
         try {
-        getJes().deleteJob(cvt(jobURN));
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+            manager.delete(jobURN);
+        } catch (InvalidArgumentException e) {
+            throw new NotFoundException(e); // just wrap it up as something else.
+        } 
     }
     
-    /**
-     * @see org.astrogrid.desktop.modules.ag.JobsInternal#submitWorkflow(org.astrogrid.workflow.beans.v1.Workflow)
-     */
+
     public URI submitWorkflow(Workflow workflow) throws InvalidArgumentException, ServiceException {
-        // check workflow belongs to us - if not, alter it.
         try {
-        workflow.getCredentials().setAccount(getAccount());
-        // fiddle any string-adql..
-        //@todo improve this query, to cut down on amout of work..
-        Iterator i = workflow.findXPathIterator("//tool[input/parameter/indirect='false']" ); // find all tools with at least one inline parameter.
-        while(i.hasNext()) {
-            Tool t = (Tool)i.next();
-            try {
-            ApplicationInformation info =apps.getInfoForTool(t);
-            apps.translateQueries(info,t);
-            } catch (NotFoundException e) {
-                throw new InvalidArgumentException(e);
-            }
-        }
-        return cvt(getJes().submitWorkflow(workflow));
-        } catch (WorkflowInterfaceException e) {
+        Document doc = XMLUtils.newDocument(); 
+        Marshaller.marshal(workflow,doc);
+       return manager.submit(doc);
+        } catch (SecurityException e) {
             throw new ServiceException(e);
-        }
+        } catch (NotFoundException e) {
+            throw new InvalidArgumentException(e);            
+        } catch (ParserConfigurationException e) {
+            throw new ServiceException(e);
+        } catch (CastorException e) {
+            throw new InvalidArgumentException(e);
+            
+        } 
     }
     public URI submitJob(Document doc) throws ServiceException, InvalidArgumentException {
-        // check workflow belongs to us - if not, alter it.
         try {
-        Workflow workflow = (Workflow)Unmarshaller.unmarshal(Workflow.class, doc);
-        return submitWorkflow(workflow);       
-        } catch (MarshalException e) {
-            throw new InvalidArgumentException(e);
-        } catch (ValidationException e) {
-            throw new InvalidArgumentException(e);
-        }
+        return manager.submit(doc);
+        } catch (SecurityException e) {
+            throw new ServiceException(e);
+        } catch (NotFoundException e) {
+            throw new InvalidArgumentException(e);            
+        }         
     }
     public URI submitStoredJob(URI workflowReference) throws ServiceException, InvalidArgumentException {
-        Workflow wf = null;
         try {
-        if ( workflowReference.getScheme() == null || workflowReference.getScheme().equals("ivo")) {
-            String content = vos.read(workflowReference);
-            wf = Workflow.unmarshalWorkflow(new StringReader(content));            
-        } else {
-            InputStream is = workflowReference.toURL().openStream();
-            wf = Workflow.unmarshalWorkflow(new InputStreamReader(is));
-        }
-        wf.getCredentials().setAccount(getAccount());        
-        return cvt(getJes().submitWorkflow(wf));        
-        } catch (WorkflowInterfaceException e) {
-            throw new ServiceException(e);
-        } catch (MarshalException e) {
-            throw new InvalidArgumentException(e);
-        } catch (ValidationException e) {
-            throw new InvalidArgumentException(e);
-        } catch (NotFoundException e) {
-            throw new InvalidArgumentException(e);
+            return manager.submitStored(workflowReference);
+
         } catch (SecurityException e) {
-            throw new InvalidArgumentException(e);
-        } catch (IOException e) {
-            throw new InvalidArgumentException(e);
-        } catch (NotApplicableException e) {
-            throw new InvalidArgumentException(e);
-        }
+            throw new ServiceException(e);
+        } catch (NotFoundException e) {
+            throw new InvalidArgumentException(e);            
+        } 
     }
 
     public ExecutionInformation[] listFully() throws ServiceException {
+        URI[] jobs = this.list(); // get filtered list of job ids.
+        ExecutionInformation[] result = new ExecutionInformation[jobs.length];
         try {
-        WorkflowSummaryType[] summs =  getJes().listJobs(getAccount());
-        ExecutionInformation[] result = new ExecutionInformation[summs.length];
-        for (int i = 0; i < summs.length; i++) {
-            String status =summs[i].getStatus().toString();
-            result[i]= new ExecutionInformation(
-                    cvt(summs[i].getJobId())
-                    ,summs[i].getWorkflowName()
-                    ,summs[i].getDescription()
-                    ,status
-                    ,summs[i].getStartTime()
-                    ,summs[i].getFinishTime()
-                    );
+        for (int i = 0; i < jobs.length; i++) {
+            result[i] = manager.getExecutionInformation(jobs[i]);
         }
         return result;
-        } catch (WorkflowInterfaceException e) {
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
+   
     }
-    
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
-    public void userLogin(UserLoginEvent e) {
-    }
-
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
-    public synchronized void userLogout(UserLoginEvent e) {
-        acc = null;
-    }
-
 
 
 
@@ -321,6 +233,9 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.4  2005/11/10 12:05:43  nw
+big change around for vo lookout
+
 Revision 1.3  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

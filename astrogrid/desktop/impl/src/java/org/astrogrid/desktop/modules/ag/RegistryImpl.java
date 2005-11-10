@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.3 2005/09/12 15:21:16 nw Exp $
+/*$Id: RegistryImpl.java,v 1.4 2005/11/10 12:05:43 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -130,10 +130,16 @@ public class RegistryImpl implements Registry {
     /**@todo implement
      */
     public Document keywordSearch(String arg0, boolean arg1) throws ServiceException {
-        throw new ServiceException("Not implemented - waiting for delegate support");
+        try {
+            //throw new ServiceException("Not implemented - waiting for delegate support");
+            return reg.keywordSearch(arg0,arg1);
+        } catch (RegistryException e) {
+            throw new ServiceException(e);
+        }
     }
     /** @todo implement */
     public ResourceInformation[] keywordSearchRI(String arg0, boolean arg1) throws ServiceException {
+        
         throw new ServiceException("Not implemented - waiting for delegate support");
     }    
 
@@ -232,6 +238,9 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.4  2005/11/10 12:05:43  nw
+big change around for vo lookout
+
 Revision 1.3  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

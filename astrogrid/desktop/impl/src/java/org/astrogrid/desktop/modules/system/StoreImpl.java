@@ -1,4 +1,4 @@
-/*$Id: StoreImpl.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: StoreImpl.java,v 1.2 2005/11/10 12:05:53 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,6 +48,11 @@ public class StoreImpl implements Startable, StoreInternal{
     }
     private final Configuration conf;
     private RecordManager manager;
+    // unique key that defines the format of store, plus all classes within it.
+    // whenever a binary incompatible change is made, change the version string
+    // this will be detected, and a new store created (all old data lost - will do for now
+    // later will add migration functions.
+    public static final String STORE_FORMAT_VERSION = "6";
 
     public RecordManager getManager() {
         return manager;
@@ -63,16 +68,17 @@ public class StoreImpl implements Startable, StoreInternal{
         if (!workDir.exists()) {
             workDir.mkdirs();
         }
-        File f = new File(workDir,"store");
+        File f = new File(workDir,"store-" + STORE_FORMAT_VERSION);
         Properties props = new Properties();
         props.setProperty(RecordManagerOptions.THREAD_SAFE,"true"); // assume this is what we need to do.
         //@todo review configuration later.
-        manager = RecordManagerFactory.createRecordManager(f.getAbsolutePath(),props);
+        manager = RecordManagerFactory.createRecordManager(f.getAbsolutePath(),props);     
         } catch (IOException e) {
             logger.fatal("Failed to create JDBM file",e);
         }
     }
 
+    
     /**
      * @see org.picocontainer.Startable#stop()
      */
@@ -91,6 +97,9 @@ public class StoreImpl implements Startable, StoreInternal{
 
 /* 
 $Log: StoreImpl.java,v $
+Revision 1.2  2005/11/10 12:05:53  nw
+big change around for vo lookout
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  

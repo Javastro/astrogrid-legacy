@@ -1,4 +1,4 @@
-/*$Id: ThrobbingInterceptor.java,v 1.3 2005/11/01 09:19:46 nw Exp $
+/*$Id: ThrobbingInterceptor.java,v 1.4 2005/11/10 12:05:53 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.UI;
-import org.astrogrid.desktop.modules.background.MessagingInternal;
+import org.astrogrid.desktop.modules.ag.MessagingInternal;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -91,11 +91,13 @@ public class ThrobbingInterceptor implements MethodInterceptor {
                 reporter.sendTrackingMessage(invocation);
             }
             return invocation.proceed();
+            
         } catch (Exception t) { // throwables are probably too low-level.
             if (reporter != null) {
                 reporter.sendErrorMessage(invocation,t);                
             }
-            throw t;
+            throw t; // @todo verify that this preserves the original stack trace.
+            
         } finally {
             if (ui != null) {
                 ui.stopThrobbing();
@@ -112,6 +114,9 @@ public class ThrobbingInterceptor implements MethodInterceptor {
 
 /* 
 $Log: ThrobbingInterceptor.java,v $
+Revision 1.4  2005/11/10 12:05:53  nw
+big change around for vo lookout
+
 Revision 1.3  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

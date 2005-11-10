@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.4 2005/11/10 12:05:53 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,6 +89,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiSe
         logger.info("Registering components in " + name);
         for (Iterator i = module.getDescriptor().componentIterator(); i.hasNext(); ) {
             ComponentDescriptor cd = (ComponentDescriptor)i.next();
+            if ("true".equals(cd.getProperty("hidden.component"))) {
+                continue; // don't want to expose this one. 
+            }
             Class iface = cd.getInterfaceClass();
             List listenerClasses= new ArrayList();
             if (cd.getProperty(LISTENER_INTERFACES_KEY) != null) {
@@ -147,6 +150,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiSe
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.4  2005/11/10 12:05:53  nw
+big change around for vo lookout
+
 Revision 1.3  2005/09/02 14:03:34  nw
 javadocs for impl
 
