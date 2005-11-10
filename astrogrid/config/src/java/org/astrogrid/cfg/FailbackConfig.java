@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.2 2005/03/28 01:24:42 mch Exp $
+ * $Id: FailbackConfig.java,v 1.3 2005/11/10 17:10:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -30,7 +30,7 @@ import java.security.AccessControlException;
  * The fallback works like this:
  * <ul>
  * <li> Look in local cache (so calling 'setProperty' will override file properties)
- * <li> Look in jndi for the property.
+ * <li> if that fails, Look in jndi for the property.
  * <li> If that fails, then look in the configuration file (see below for how this is located)
  * <li> If that fails, then look in the system environments.
  * <li> If that fails, throw an exception unless a default has been supplied.
@@ -38,25 +38,26 @@ import java.security.AccessControlException;
  * <p>
  * The configuration file locator works like this:
  * <ul>
- * <li> look in jndi for the key "org.astrogrid.config.url" which gives the url to the file
- * <li> look in jndi for the key "org.astrogrid.config" which gives the property filename
+ * <li> look in jndi for the key <code>"org.astrogrid.config.url"</code> which gives the url to the file
+ * <li> if that fails, look in jndi for the key <code>"org.astrogrid.config.filename"</code> which gives the property filename
  * <li> if that fails, look in the system environment vars for the same key
- * <li> if that fails, look for the file "astrogrid.properties" on the classpath (not yet implemented)
- * <li> if that fials, look for the file "astrogrid.properties" in the working directory
+ * <li> if that fails, look for the file <code>"astrogrid.properties"</code> on the classpath 
+ * <li> if that fails, look for the file <code>"astrogrid.properties"</code> in the working directory
+ * <li> if that fails, look for the file <code>"default.properties"</code> on the classpath 
  * </ul>
  * <p>
- * The configuration file lookup stops at the first find, so we don't get *too* confused
+ * The configuration file lookup stops at the first find, so we don't get too confused
  * with lots of configuration files around, and properties being found in one
  * but not others.  If at any point it is referred to (ie JNDI key for the config filename exists) but
  * there is a problem loading the file, it fails.  This means you can be sure that
- * if you've *tried* to configure it, you will know if it hasn't worked.
+ * if you've <i>tried</i> to configure it, you will know if it hasn't worked.
  * <p>
  * Initialisation is 'lazy' - particularly as we may not want to go looking for
  * configuration files if everything is in Jndi. However given the dangers of
  * double-checked locking, the initialisation routines are synchronised and
- * checked *within* for the initialisation flag
+ * checked <i>within</i> for the initialisation flag
  * <p>
- * Failures are *all* reported as exceptions, unless a default is given.  So
+ * Failures are all reported as exceptions, unless a default is given.  So
  * if you think a value might be missing and you don't want your app to fallover,
  * supply a default.
  * <p>
@@ -748,6 +749,9 @@ public class FailbackConfig extends ConfigReader {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.3  2005/11/10 17:10:39  mch
+Fixed javadoc
+
 Revision 1.2  2005/03/28 01:24:42  mch
 Added UserOptions
 
