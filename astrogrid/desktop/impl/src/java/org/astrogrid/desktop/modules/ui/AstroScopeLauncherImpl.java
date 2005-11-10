@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.17 2005/11/09 16:05:55 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.18 2005/11/10 10:43:13 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -1334,6 +1334,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     }
     
 
+    private double hav(double val) {
+     return Math.pow((Math.sin(0.5D * val)),2);    
+    }
+    
+    private double ahav(double val) {
+        return 2.0D * Math.asin(Math.sqrt(val));
+    }
+    
+
     /**
      * Method getOffset
      * Description: method to calculate a distance offset between two points in the sky using the 
@@ -1352,7 +1361,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         objectra = Math.toRadians(objectra); 
         objectdec = Math.toRadians(objectdec);
         //System.out.println("about to run haversine formula with " + queryra + ", " + querydec + ", " + objectra + ", " + objectdec);
-        double result = Fmath.ahav( Fmath.hav(objectdec-querydec) + Math.cos(objectdec)*Math.cos(querydec)*Fmath.hav(objectra-queryra) );
+        double result = ahav( hav(objectdec-querydec) + Math.cos(objectdec)*Math.cos(querydec)*hav(objectra-queryra) );
         //System.out.println("the haversine result = " + result + " throwing it toDegrees = " + Math.toDegrees(result));
         return Math.toDegrees(result);
     }  
@@ -1803,6 +1812,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.18  2005/11/10 10:43:13  KevinBenson
+minor change on the haversine formula
+
 Revision 1.17  2005/11/09 16:05:55  KevinBenson
 minor change to add a "Go to Top" button.
 
