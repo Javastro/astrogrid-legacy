@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.18 2005/11/10 10:43:13 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.19 2005/11/10 12:18:27 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,8 +35,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import flanagan.math.Fmath;
 
 import org.apache.commons.lang.WordUtils;
 
@@ -260,10 +258,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         
         // configure vizualizations.
         vizualizations = new Vizualization[]{
-                new WindowedRadial()
-                , new Hyperbolic()
-             , new ConventionalTree()  // not working yet.
+                new WindowedRadial(),
+                new Hyperbolic()
         };
+        
         // register each vizualization as a listener
         for (int i = 0; i < vizualizations.length; i++) {
             getTree().addGraphEventListener(vizualizations[i]);
@@ -438,8 +436,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         }).start();
     }
 
-
-    
     /**
      * Verify the entry in the position text box is a position.  If not it should try to look it up. 
      * @return
@@ -556,9 +552,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         
         
         submitButton = new JButton("Submit");
+        submitButton.setToolTipText("Process Query");
         submitButton.addActionListener(this);
         posText = new JTextField();
+        posText.setToolTipText("Place postion e.g. 120,0 or M11");
+        
         regionText = new JTextField();
+        regionText.setToolTipText("Enter region size e.g. 0.1");
        
         Dimension dim2 = new Dimension(200,70);
         scopeMain.setMaximumSize(dim2);
@@ -567,6 +567,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         saveButton = new JButton("Save");
         saveButton.setEnabled(false);
         saveButton.addActionListener(this);
+        saveButton.setToolTipText("Save to Myspace or Local Filestore");
 
         scopeMain.add(new JLabel("Position/Object: "));
         scopeMain.add(posText);
@@ -579,7 +580,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         
         wrapPanel.add(scopeMain);
         
-    
         JPanel graphControlsPanel = new JPanel();
         graphControlsPanel.setMaximumSize(dim2);
         graphControlsPanel.setPreferredSize(dim2);
@@ -587,8 +587,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         reFocusTopButton = new JButton("Go to Top");
         reFocusTopButton.setPreferredSize(buttonDim);
         reFocusTopButton.setMaximumSize(buttonDim);
+        reFocusTopButton.setToolTipText("Focus display to 'Search Results' ");
         graphControlsPanel.setLayout(new GridLayout(3,1));
-        //graphControlsPanel.add(new JLabel("<html><body><b>Custom Graph Controls:</b></body></html>"), BorderLayout.NORTH);
         graphControlsPanel.add(new JLabel("<html><body><b>Custom Graph Controls:</b></body></html>"));
         graphControlsPanel.add(reFocusTopButton);
         graphControlsPanel.add(new JPanel());
@@ -1057,7 +1057,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
          * @param name
          */
         public WindowedRadial() {
-            super("Windowed Radial");
+            super("Radial");
         }
         public WindowedRadial(String name) {
             super(name);
@@ -1153,54 +1153,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         }
     } /// end windowed radial vizualization
     
-    
-    
-    /** normal tree layout.
-     * 
-     * having a bit of trouble getting this to show anything.
-     * pity - would like to use this on the left-hand-side instead of the current JTree - would be
-     * nice to have nodes looking the same, and then no need for a separate datamodel for the JTree
-     * 
-     * 
-     *  */
-    public class ConventionalTree extends Vizualization {
-
-        public ConventionalTree() {
-            super("Tree");
-        }
-        protected Display display;
-        protected ActionList graphLayout;
-        public void nodeAdded(Graph arg0, Node arg1) {
-            graphLayout.runNow();
-        }
-        
-        public void reDraw() {
-            graphLayout.runNow();
-        }
-        
-        public Display getDisplay() {
-            if (display == null) {
-                ItemRegistry registry = getItemRegistry();
-                display = new Display(registry);
-                
-                graphLayout = new ActionList(registry);
-                graphLayout.add(new TreeFilter());
-                graphLayout.add(new IndentedTreeLayout());
-                graphLayout.add(new DemoColorFunction(4));
-                display.setItemRegistry(registry);
-                display.setSize(400,400);
-                
-                display.addControlListener(new FocusControl(graphLayout));
-                display.addControlListener(new PanControl());
-                display.addControlListener(new ZoomControl());
-                display.addControlListener(new ToolTipControl("tooltip"));
-                display.addControlListener(new MultiSelectFocusControl(registry,FocusManager.SELECTION_KEY));
-            }
-            return display;
-        }
-    } // end conventional tree layout.
-    
-
     /**
      * Various action statements for when buttons are clicked.
      */
@@ -1721,13 +1673,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 
                 if (set.contains(node)) {// do a remove of this, and all children, and any parents.
                     for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
-                        
                         TreeNode n = (TreeNode)i.next();
                         set.remove(n);
                         n.setAttribute("selected","false"); // attribute used to speed up coloring function.
                     }
                     while (node.getParent() != null) {
-                        
                         node = node.getParent();
                         if (set.contains(node)) {
                             node.setAttribute("selected","false");
@@ -1812,6 +1762,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.19  2005/11/10 12:18:27  KevinBenson
+small tweaks
+
 Revision 1.18  2005/11/10 10:43:13  KevinBenson
 minor change on the haversine formula
 
