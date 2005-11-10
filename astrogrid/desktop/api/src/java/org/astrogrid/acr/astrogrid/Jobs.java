@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.3 2005/09/12 15:21:43 nw Exp $
+/*$Id: Jobs.java,v 1.4 2005/11/10 12:13:52 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,13 +52,17 @@ public interface Jobs {
      * list the jobs for the current user 
      * @return list of identifiers for the user's jobs (both current and completed jobs )
      * @throws ServiceException if an error occurs while talking to the server
+     * @deprecated - See {@link RemoteProcessManager}     * 
      */   
     URI[] list() throws ServiceException;
     
     /** list summaries of the jobs for the current user 
      * @return a beanful of information on each job
      * @throws ServiceException if an error occurs while talking to the server
-     * @xmlrpc returns a struct. see {@link ExecutionInformation} for details of keys available.*/
+     * @xmlrpc returns a struct. see {@link ExecutionInformation} for details of keys available.
+     * @deprecated - See {@link RemoteProcessManager}     * 
+     * 
+     * */
     ExecutionInformation[] listFully() throws ServiceException;
 
     /** create a new initialized workflow document, suitable as a starting point for building workflows
@@ -80,6 +84,7 @@ public interface Jobs {
      * @throws NotFoundException if this job could not be found
      * @throws InvalidArgumentException if the job identifier is malformed.
      * @xmlrpc returns a xml document string
+     * @deprecated - See {@link RemoteProcessManager}
      */
      Document getJobTranscript(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
@@ -92,6 +97,7 @@ public interface Jobs {
      * @throws NotFoundException if this job could not be found
      * @throws InvalidArgumentException if the job identifier is malformed.
      * @xmlrpc returns a struct. see {@link ExecutionInformation} for details of keys available. 
+     *      * @deprecated - See {@link RemoteProcessManager}
    */
     ExecutionInformation getJobInformation(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
@@ -103,6 +109,7 @@ public interface Jobs {
      * @throws SecurityException if the user is not permitted to access this job
      * @throws NotFoundException if the job could not be found
      * @throws InvalidArgumentException if the job is not currently running.
+     * @deprecated - See {@link RemoteProcessManager}     * 
      */
     void cancelJob(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
@@ -113,6 +120,7 @@ public interface Jobs {
      * @throws NotFoundException if the job could not be found
      * @throws ServiceException if an error occurs while connecting to the server
      * @throws SecurityException if the user is not permitted to access this job.
+     * @deprecated - See {@link RemoteProcessManager}     * 
      */
     void deleteJob(URI jobURN) throws NotFoundException, ServiceException, SecurityException;
 
@@ -125,6 +133,7 @@ public interface Jobs {
      * @throws SecurityException if the user is not permitted to submit this job
      * @throws InvalidArgumentException if the workflow document is invalid or malformed
      * @xmlrpc pass the workflow parameter as a string
+     * @deprecated - See {@link RemoteProcessManager}     * 
      */
     URI submitJob(Document workflow) throws ServiceException, SecurityException, InvalidArgumentException;
 
@@ -135,6 +144,7 @@ public interface Jobs {
      * @throws ServiceException if an error occurs while connecting to server
      * @throws SecurityException if the user is not permitted to submit this job.
      * @throws InvalidArgumentException if the workflow document is invalid or inaccessible.
+     * @deprecated - See {@link RemoteProcessManager}     * 
      */
     URI submitStoredJob(URI workflowReference) throws ServiceException, SecurityException, InvalidArgumentException ;
         
@@ -142,6 +152,9 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.4  2005/11/10 12:13:52  nw
+ interface changes for lookout.
+
  Revision 1.3  2005/09/12 15:21:43  nw
  added stuff for adql.
 

@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.4 2005/10/18 16:51:49 nw Exp $
+/*$Id: Applications.java,v 1.5 2005/11/10 12:13:52 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -195,6 +195,7 @@ public interface Applications {
      * @throws InvalidArgumentException if the tool document is invalid in some way
      * @see #submitStored(URI)
      * @see #submitTo(Document, URI)
+     * @deprecated - See {@link RemoteProcessManager}
      * */
     URI submit(Document document) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
     
@@ -208,7 +209,8 @@ public interface Applications {
      * @throws SecurityException if user is prevented from executing this application.
      * @see #submitStored(URI)
      * @see #submitStoredTo(URI, URI)
-     * */
+     * @deprecated - See {@link RemoteProcessManager}
+     *      * */
     URI submitTo(Document document, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException;
 
     /** variant of {@link #submit} where tool document is stored somewhere and referenced by URI 
@@ -218,6 +220,7 @@ public interface Applications {
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
      * @throws NotFoundException if no provider of this application is found
+     * @deprecated - See {@link RemoteProcessManager}     * 
      */
      URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException ;
 
@@ -229,7 +232,7 @@ public interface Applications {
      * @throws InvalidArgumentException if the tool document is inacessible or ther service is inacesssible
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
-     * 
+     * @deprecated - See {@link RemoteProcessManager}     * 
      * */
     URI submitStoredTo(URI documentLocation, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException ;
         
@@ -239,6 +242,7 @@ public interface Applications {
      * @throws InvalidArgumentException if the execution id is malformed
      * @throws ServiceException if an error occurs while communicating with server
      * @throws SecurityException if the user is not permitted to cancel this application
+     * @deprecated - See {@link RemoteProcessManager}     * 
      * */
     void cancel(URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException;
     
@@ -250,6 +254,7 @@ public interface Applications {
      * @throws SecurityException if the user cannot access ths invocation
      * @throws InvalidArgumentException if the invocation id is malformed in some way.
      * @xmlrpc will return a struct containing keys documented in {@link ExecutionInformation}
+     * @deprecated - See {@link RemoteProcessManager}     * 
      * */
     ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException;
     
@@ -260,7 +265,8 @@ public interface Applications {
      * @throws ServiceException if error occurs communicating with the server
      * @throws NotFoundException if this application invocation cannot be found
      * @throws SecurityException if the user cannot access ths invocation
-     * @throws InvalidArgumentException if the invocation id is malformed in some way.*/
+     * @throws InvalidArgumentException if the invocation id is malformed in some way.
+     * @deprecated - See {@link RemoteProcessManager}     * */
     Map getResults(URI executionid) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;               
     
     
@@ -268,6 +274,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.5  2005/11/10 12:13:52  nw
+ interface changes for lookout.
+
  Revision 1.4  2005/10/18 16:51:49  nw
  deprecated a badly-named method
 
