@@ -55,6 +55,10 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 	<!-- application launcher -->
 	<mapID target="userInterface.applicationLauncher" url="applauncher/index.html" />
 	<mapID target="al.list" url="http://wiki.astrogrid.org/bin/view/Astrogrid/ToolDocumentation" />
+
+	<!-- astroscope -->
+	<mapID target="userInterface.astroscopeLauncher" url="astroscope/index.html" />
+
 	
 	<!-- datascope -->
 	<mapID target="userInterface.datascopeLauncher" url="datascope/index.html" />
