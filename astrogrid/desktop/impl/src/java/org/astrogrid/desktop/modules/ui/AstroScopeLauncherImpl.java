@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.19 2005/11/10 12:18:27 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.20 2005/11/10 14:18:52 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -700,7 +700,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * redrawn anyways.
      *
      */
-    private void reDrawGraphs() {
+    public void reDrawGraphs() {
         for (int j =0; j < vizualizations.length; j++) {
             vizualizations[j].reDraw();
         }
@@ -844,7 +844,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 
                 // initialize the display
                 //display.setSize(500,460);
-               display.setSize(500,350);
+               display.setSize(500,400);
                display.setItemRegistry(registry);
                display.setBackground(Color.WHITE);
                display.addControlListener(new DemoControl());          
@@ -1076,6 +1076,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 Filter[] filters = new Filter[] {
                         new WindowedTreeFilter(-2,true)
                         ,new WindowedTreeFilter(-1,true)
+                        ,new WindowedTreeFilter(-3,true)
                 };            
                         
                 // switch between the two filters
@@ -1088,7 +1089,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             if (event.getFirstAdded() == siaNode || event.getFirstAdded() == coneNode) {
                                 filterSwitch.setSwitchValue(1);
                             } else {
-                                filterSwitch.setSwitchValue(0);
+                                if(event.getFirstAdded() instanceof TreeNode &&
+                                  ((TreeNode)event.getFirstAdded()).getChildCount() == 0) {
+                                    filterSwitch.setSwitchValue(2);
+                                }else {
+                                    filterSwitch.setSwitchValue(0);
+                                }
                             }
                         }
                     }
@@ -1344,17 +1350,17 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                case 1:
                    this.color = Color.RED;
                    font = new Font(null,Font.BOLD,16);
-                   extraSize = 15;
+                   extraSize = 0;
                break;
                case 2:
                    this.color = Color.GREEN;
-                   this.font = new Font(null,Font.ITALIC, 14);
-                   this.extraSize = 10;
+                   this.font = new Font(null,Font.PLAIN, 12);
+                   this.extraSize = 0;
                break;
                case 3:
                    this.color = Color.BLUE;
                    this.font = new Font(null,Font.PLAIN, 10);
-                   this.extraSize = 5;
+                   this.extraSize = 0;
                break;
                default:
                    //hmmm not sure should be throw an illegalargumentexception?
@@ -1665,7 +1671,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             set = getSelectionFocusSet();
         }
         private final FocusSet set;
-        public void itemClicked(VisualItem item, MouseEvent e) {
+        public void itemClicked(VisualItem item, MouseEvent e) {            
             if ( e.getClickCount() ==2 && 
                     item instanceof NodeItem && 
                     SwingUtilities.isLeftMouseButton(e)) {               
@@ -1694,7 +1700,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         }
                     }
                 }
-            }
+                //System.out.println("lets repaint in itemClicked");
+                for (int j =0; j < vizualizations.length; j++) {
+                    vizualizations[j].reDraw();
+                }                
+            }//if
         }
     } // end inner class.
     
@@ -1712,7 +1722,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 ColorMap.getInterpolatedMap(thresh+1, Color.RED, Color.BLACK),
                 0, thresh);
         } //
-       
+               
         public Paint getFillColor(VisualItem item) {
             if ( item instanceof NodeItem ) {
                 //NodeItem n = (NodeItem)item;
@@ -1762,6 +1772,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.20  2005/11/10 14:18:52  KevinBenson
+minor fixes to highlight other displays on selects. and fous on nodes
+
 Revision 1.19  2005/11/10 12:18:27  KevinBenson
 small tweaks
 
