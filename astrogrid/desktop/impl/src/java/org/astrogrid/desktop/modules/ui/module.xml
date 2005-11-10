@@ -5,10 +5,12 @@
 	<property>
 		<key>system.ui.menu.links</key>
 		<value>
+			<!--
 						<link text="AstroGrid v1.1 Release"
 				icon="logo1.gif"
 				toolTipText="AstroGrid Release Documentation"
 				url="http://software.astrogrid.org" />
+				-->
 				<helpLink id="top" />
 		</value>
 		</property>		
@@ -52,6 +54,7 @@
 		</method>
 	</component>	
 
+<!--
 
 		<component name="astroscopecluster" 
 		implementationClass="org.astrogrid.desktop.modules.ui.AstroScopeLauncherClusterImpl" 
@@ -79,34 +82,8 @@
 			</property>
 		</method>
 	</component>	
-
-	<component name="datascopeLauncher" 
-		implementationClass="org.astrogrid.desktop.modules.ui.DataScopeLauncherImpl" 
-		interfaceClass="org.astrogrid.acr.ui.DataScopeLauncher" >
-		<description>Launch DataScope</description>	
-		<property>
-			<key>system.ui.menu.links</key>
-			<value>		
-				<helpLink id="userInterface.datascopeLauncher" />									
-			</value>
-		</property>			
-		<property>
-			<key>icon</key>
-			<value>thread_view.gif</value><!-- use nvo icon here -->
-		</property>				
-		<method name="show">
-			<description>Run the Launcher</description>
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Run..</value>
-				<property>
-					<key>icon</key>
-					<value>run_tool.gif</value>
-				</property>					
-			</property>
-		</method>
+-->
 	
-	</component>
 	
 	
 
@@ -351,5 +328,33 @@
 
 		</method>		
 		</component>
+		
+<component name="datascopeLauncher" 
+		implementationClass="org.astrogrid.desktop.modules.ui.DataScopeLauncherImpl" 
+		interfaceClass="org.astrogrid.acr.ui.DataScopeLauncher" >
+		<description>Launch DataScope</description>	
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.datascopeLauncher" />									
+			</value>
+		</property>			
+		<property>
+			<key>icon</key>
+			<value>thread_view.gif</value><!-- use nvo icon here -->
+		</property>				
+		<method name="show">
+			<description>Run the Launcher</description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run..</value>
+				<property>
+					<key>icon</key>
+					<value>run_tool.gif</value>
+				</property>					
+			</property>
+		</method>
+	
+	</component>		
 			  
 </module>
