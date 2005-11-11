@@ -562,8 +562,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         public void parameterAdded(ToolEditEvent te) {
         	ParameterValue pv = te.getChangedParameter();
         	if (!pv.equals(repParameterValue)) {
-        		for (int i = 0; i < getRows().length; i++) {
-        			repParameterValue = pv;
+        		repParameterValue = pv;
+        		for (int i = 0; i < getRows().length; i++) {        			
         			if (pv == getRows()[i] && ((Boolean)getValueAt(i, 3)).booleanValue()) {
         				ParameterValue newPv = new ParameterValue();
         				newPv.setName(pv.getName());
@@ -726,8 +726,11 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
-Revision 1.8  2005/11/11 10:42:16  pjn3
-Fix to prevent multiple repeating parameters
+Revision 1.9  2005/11/11 15:24:23  pjn3
+overwrote previous fix!
+
+Revision 1.7.2.2  2005/11/11 15:11:17  pjn3
+corrected overwritten fix
 
 Revision 1.7.2.1  2005/11/10 10:47:34  pjn3
 Single parameter insert working
