@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.11 2005/09/09 10:19:39 nw Exp $
+/*$Id: RegistryChooserPanel.java,v 1.12 2005/11/11 15:25:08 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,6 +53,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.text.Caret;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -297,6 +298,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                         }
                         protected void doFinished(Object o) {
                             editorPane.setText(o.toString());
+                            editorPane.setCaretPosition(0);
                         }
                      }).start();                     
 
@@ -312,7 +314,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
      */
     public Object transform(Object arg0) {
         try {
-            Source styleSource = Xml2XhtmlTransformer.getStyleSource();
+            Source styleSource = Xml2XhtmlTransformer.getRegistryStyleSource();
             Transformer transformer = TransformerFactory.newInstance().newTransformer(styleSource);
             Source source = new DOMSource((Document)arg0);
             StringWriter sw = new StringWriter();
@@ -513,6 +515,12 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.12  2005/11/11 15:25:08  pjn3
+caret added
+
+Revision 1.11.24.1  2005/11/11 15:13:23  pjn3
+caret added
+
 Revision 1.11  2005/09/09 10:19:39  nw
 implemented filtering
 
