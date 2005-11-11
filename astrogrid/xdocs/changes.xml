@@ -24,7 +24,7 @@
 				Fixed a few areas.  Harvesting can now use specefic sets for certain registries determined in Properties.
                 Server now always returns a VOResoruces element, it wasn't earlier for some reason.  Commented out some exceptions
                 in the client area to make sure yet again it is backwards compatible. Finally  a small fix on jsp's to highlight invalid entries as well
-                as deleted ones.
+                as deleted ones. <p>new version project.properties 1.212 - apart from portal still having problems which will be built later.-CLQ</p>
 			</action>
 			<action dev="jl" type="fix" issue="1347"><em>Branch: por-jl-1374</em>
                 This moves as much as I can at present from login to first use of MySpace.
