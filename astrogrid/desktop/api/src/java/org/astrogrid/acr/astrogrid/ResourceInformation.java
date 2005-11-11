@@ -1,4 +1,4 @@
-/*$Id: ResourceInformation.java,v 1.5 2005/11/04 14:38:58 nw Exp $
+/*$Id: ResourceInformation.java,v 1.6 2005/11/11 10:09:01 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,6 +60,7 @@ public class ResourceInformation extends AbstractInformation {
     /** access the url for the logo for this entry
      * @return url for the logo for this resource, if defined.
      * @xmlrpc key will be <tt>logoURL</tt>. May not be present.
+     * @since 1.3
      */
     public URL getLogoURL() {
         return logo;
@@ -85,6 +86,9 @@ public class ResourceInformation extends AbstractInformation {
 
 /* 
 $Log: ResourceInformation.java,v $
+Revision 1.6  2005/11/11 10:09:01  nw
+improved javadoc
+
 Revision 1.5  2005/11/04 14:38:58  nw
 added logo field
 

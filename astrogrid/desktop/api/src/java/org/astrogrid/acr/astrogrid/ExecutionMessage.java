@@ -1,4 +1,4 @@
-/*$Id: ExecutionMessage.java,v 1.1 2005/11/10 12:13:52 nw Exp $
+/*$Id: ExecutionMessage.java,v 1.2 2005/11/11 10:09:01 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,9 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
+/** Information bean describing a single message returned by a running remote process - e.g.
+ * a workflow or cea task
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
- *@todo document
  */
 public class ExecutionMessage implements Serializable{
 
@@ -36,18 +36,23 @@ public class ExecutionMessage implements Serializable{
     private final Date timestamp;
     private final String source;
 
+    /** access the message body - text */
     public String getContent() {
         return this.content;
     }
+    /** access the level/ importance of the message - expected values <tt>information|warning|error</tt>*/
     public String getLevel() {
         return this.level;
     }
+    /** the originator of this message */
     public String getSource() {
         return this.source;
     }
+    /** current status of the process -expected values <tt>unknown|pending|initializing|running|completed|error</tt>*/
     public String getStatus() {
         return this.status;
     }
+    /** access time this method was sent */
     public Date getTimestamp() {
         return this.timestamp;
     }
@@ -56,6 +61,9 @@ public class ExecutionMessage implements Serializable{
 
 /* 
 $Log: ExecutionMessage.java,v $
+Revision 1.2  2005/11/11 10:09:01  nw
+improved javadoc
+
 Revision 1.1  2005/11/10 12:13:52  nw
 interface changes for lookout.
  

@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManager.java,v 1.1 2005/11/10 12:13:52 nw Exp $
+/*$Id: RemoteProcessManager.java,v 1.2 2005/11/11 10:09:01 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,9 +20,12 @@ import org.w3c.dom.Document;
 import java.net.URI;
 import java.util.Map;
 
-/**Manages the execution , tracking, and control of remote processes
+/**Manages the execution , monitoring, and control of remote processes.
+ * <p>
+ * Generalizes functionality in {@link org.astrogrid.acr.astrogrid.Jobs} and {@link org.astrogrid.acr.astrogrid.Applications}
+ * and provides additional features - notably ability to register callbacks for progress notifications.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
- *
+ *@since 1.3
  */
 public interface RemoteProcessManager {
     
@@ -45,12 +48,12 @@ public interface RemoteProcessManager {
      * */
     URI submit(Document document) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
     
-    /** Submit a tool document for execution  on a named CEA server 
-     * @param document tool document to execute
-     * @param server CEA server to execute on
+    /** Submit a document for execution  on a named server 
+     * @param document the document to execute - a workflow, cea task, etc
+     * @param server server to execute on
      * @return  a new unique execution id 
-     * @throws NotFoundException if the specified CEA server could not be found
-     * @throws InvalidArgumentException if the tool document is malformed, or the server is inacessible.
+     * @throws NotFoundException if the specified server could not be found
+     * @throws InvalidArgumentException if the document is malformed, or the server is inacessible.
      * @throws ServiceException  if an error occurs communicating with the server
      * @throws SecurityException if user is prevented from executing this application.
      * @see #submitStored(URI)
@@ -58,29 +61,29 @@ public interface RemoteProcessManager {
      * */
     URI submitTo(Document document, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException;
 
-    /** variant of {@link #submit} where tool document is stored somewhere and referenced by URI 
-     * @param documentLocation pointer to tool document - may be file:/, http://, ftp:// or ivo:// (myspace) protocols 
+    /** variant of {@link #submit} where document is stored somewhere and referenced by URI 
+     * @param documentLocation pointer to document - may be file:/, http://, ftp:// or ivo:// (myspace) protocols 
      * @return a new unique execution id
-     * @throws InvalidArgumentException if the tool document is inacessible
+     * @throws InvalidArgumentException if the document is inacessible
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
-     * @throws NotFoundException if no provider of this application is found
+     * @throws NotFoundException if no server able to execute this document is found
      */
      URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException ;
 
-    /** variant of {@link #submitTo} where tool document is referenced by URL 
+    /** variant of {@link #submitTo} where document is referenced by URL 
      *      * @param documentLocation pointer to tool document - may be file:/, http://, ftp:// or ivo:// (myspace) protocols 
-     * @param server CEA server to execute on
+     * @param server to execute on
      * @return a new unique execution id
-     * @throws NotFoundException if the specified CEA server could not be found
-     * @throws InvalidArgumentException if the tool document is inacessible or ther service is inacesssible
+     * @throws NotFoundException if the specified server could not be found
+     * @throws InvalidArgumentException if the document is inacessible or ther service is inacesssible
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
      * 
      * */
     URI submitStoredTo(URI documentLocation, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException ;
         
-    /** halt execution of an application 
+    /** halt execution of a process
      * @param executionId id of execution to cancel
      * @throws NotFoundException if this application cannot be found.
      * @throws InvalidArgumentException if the execution id is malformed
@@ -89,17 +92,17 @@ public interface RemoteProcessManager {
      * */
     void halt(URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException;
 
-    /** delete all record of a job from the job server
+    /** delete all record of a process
      * 
-     * @param jobURN identifier of the job to delete 
-     * @throws NotFoundException if the job could not be found
+     * @param jobURN identifier of the process to delete 
+     * @throws NotFoundException if the process could not be found
      * @throws ServiceException if an error occurs while connecting to the server
      * @throws SecurityException if the user is not permitted to access this job.
      */
-    void delete(URI jobURN) throws NotFoundException, ServiceException,InvalidArgumentException, SecurityException;
+    void delete(URI executionId) throws NotFoundException, ServiceException,InvalidArgumentException, SecurityException;
     
     
-    /** get  information about an application execution
+    /** get  information about an process execution
      * @param executionId id of application to query 
      * @return summary of this execution
      * @throws ServiceException if error occurs communicating with the server
@@ -112,15 +115,17 @@ public interface RemoteProcessManager {
     
     /** return an array of messages received from a remote process 
      * 
-     * @param executionId
-     * @return
+     * @param executionId id of process to query/
+     * @return an array of all messages received from process     
      * @throws ServiceException
      * @throws NotFoundException
+     * @xmlrpc will return a list of structs containing keys documented in {@ExecutionMessage}
      */
     ExecutionMessage[] getMessages(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException;
     /** Retreive results of the application execution 
      * @param executionid id of application to query 
-     * @return results of this execution (name - value pairs). Note that this will only be the actual results for <b>direct</b> output parameters. For output parameters specified as <b>indirect</b>, the value returned
+     * @return results of this execution (name - value pairs). 
+     * Note that this will only be the actual results for <b>direct</b> output parameters. For output parameters specified as <b>indirect</b>, the value returned
      * will be the URI pointing to the location where the results are stored.
      * @throws ServiceException if error occurs communicating with the server
      * @throws NotFoundException if this application invocation cannot be found
@@ -128,8 +133,18 @@ public interface RemoteProcessManager {
      * @throws InvalidArgumentException if the invocation id is malformed in some way.*/
     Map getResults(URI executionid) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;               
     
-    //@todo document
+    /** register interest in the execution of a remote process 
+     * 
+     * @param executionId id of process to watch (null signifies 'all') 
+     * @param l a listener object 
+     * @xmlrpc not available - technology constraints don't permit listeners.
+     */
     void addRemoteProcessListener(URI executionId,RemoteProcessListener l);
+    /** stop listening to events from a remote process
+     * 
+     * @param executionId id of process to remove attention on (null signifies all)
+     * @param l the listener object to be removed. 
+     */
     void removeRemoteProcessListener(URI executionId,RemoteProcessListener l);
     
 }
@@ -137,6 +152,9 @@ public interface RemoteProcessManager {
 
 /* 
 $Log: RemoteProcessManager.java,v $
+Revision 1.2  2005/11/11 10:09:01  nw
+improved javadoc
+
 Revision 1.1  2005/11/10 12:13:52  nw
 interface changes for lookout.
  
