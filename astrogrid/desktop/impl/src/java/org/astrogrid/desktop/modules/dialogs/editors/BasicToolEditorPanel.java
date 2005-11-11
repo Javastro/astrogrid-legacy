@@ -206,11 +206,14 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         
         /** Listens to the check boxes. */
         public void itemStateChanged(ItemEvent e) {
+        	repParameterValue = null;
             //Now that we know which button was pushed, find out
             //whether it was selected or deselected.
         	ParameterValue parameter = pm.getRows()[row];
-        	if (e.getStateChange() == ItemEvent.DESELECTED) {               
+        	if (e.getStateChange() == ItemEvent.SELECTED) {
+        		
         		fireEditingStopped();
+
         		logger.error("SELECT REPEAT");
             } else {                
                 fireEditingStopped();
@@ -512,18 +515,18 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
          final ParameterValue row= rows[rowIndex];
          switch(columnIndex) {
-             case 1:
+             case 1: // name
                  row.setValue(aValue.toString());
                  toolModel.fireParameterChanged(BasicToolEditorPanel.this,row);
                  break;
-             case 2:
+             case 2: // ref
                  row.setIndirect(((Boolean)aValue).booleanValue());
                  toolModel.fireParameterChanged(BasicToolEditorPanel.this,row);
                  break;
-             case 3:
+             case 3: // rep
              	 toolModel.fireParameterAdded(BasicToolEditorPanel.this,row);
              	 break;
-             case 4:
+             case 4: // del
              	 toolModel.fireParameterRemoved(BasicToolEditorPanel.this, row);
              	 break;
              default: // do nothing in all other cases.
@@ -558,16 +561,19 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
         public void parameterAdded(ToolEditEvent te) {
         	ParameterValue pv = te.getChangedParameter();
-            for (int i = 0; i < getRows().length; i++) {
-                if (pv == getRows()[i] && ((Boolean)getValueAt(i, 3)).booleanValue()) {
-                	ParameterValue newPv = new ParameterValue();
-                	newPv.setName(pv.getName());
-                	newPv.setValue("");
-                	toolModel.getTool().getInput().addParameter(i+1, newPv);                	
-                	fireTableRowsInserted(i+1, i+1);
-                }
-            }
-            toolSet(te);            
+        	if (!pv.equals(repParameterValue)) {
+        		for (int i = 0; i < getRows().length; i++) {
+        			repParameterValue = pv;
+        			if (pv == getRows()[i] && ((Boolean)getValueAt(i, 3)).booleanValue()) {
+        				ParameterValue newPv = new ParameterValue();
+        				newPv.setName(pv.getName());
+        				newPv.setValue("");
+        				toolModel.getTool().getInput().addParameter(i+1, newPv);                	
+        				//fireTableRowsInserted(i+1, i+1);
+        			}            
+        		}
+            toolSet(te);
+        	}
         }
 
         public void parameterRemoved(ToolEditEvent te) {
@@ -590,12 +596,18 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     
     protected final ResourceChooserInternal resourceChooser;
     private boolean allowIndirect = true;
-    private boolean allowDelete = false;
+    private boolean cancelRepeat = false;
+    private ParameterValue repParameterValue;
 
    
    /** set to true to allow indirect parameters */
    public void setAllowIndirect(boolean allowIndirect) {
        this.allowIndirect = allowIndirect;
+   }
+   
+   /** set to true to allow removal of repeating parameters parameters */
+   public void setCancelRepeat(boolean cancelRepeat) {
+       this.cancelRepeat = cancelRepeat;
    }
 
     /** create a parameters panel, 
@@ -714,6 +726,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.8  2005/11/11 10:42:16  pjn3
+Fix to prevent multiple repeating parameters
+
+Revision 1.7.2.1  2005/11/10 10:47:34  pjn3
+Single parameter insert working
+
 Revision 1.7  2005/11/09 18:48:26  pjn3
 *** empty log message ***
 
