@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.2 2005/11/01 09:19:46 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.3 2005/11/11 18:39:40 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,12 +45,16 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
         add(new JLabel("Select an Application:"));
        final RegistryChooserPanel rcp = new RegistryChooserPanel( parent,reg) ;
         rcp.setMultipleResources(false);
+        //@todo quick hack to work around pre-release oddness. typical.
+        if (! allApps.booleanValue()) {
         rcp.setFilter(" ((@xsi:type like '%CeaApplicationType' " +
-                " or @xsi:type like '%CeaHttpApplicationType' " +                
+                " or @xsi:type like '%CeaHttpApplicationType' " + 
+                /*
                 ( allApps.booleanValue() ? " or @xsi:type like '%ConeSearch' " + 
                         " or @xsi:type like '%SimpleImageAccess' " 
-                        : "") +
+                        : "") +*/
                 " ) and @status = 'active')");
+        }
         toolModel.addToolEditListener(new ToolEditAdapter() {
             public void toolCleared(ToolEditEvent te) {
                 rcp.clear();
@@ -109,6 +113,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.3  2005/11/11 18:39:40  nw
+2 final tweaks
+
 Revision 1.2  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

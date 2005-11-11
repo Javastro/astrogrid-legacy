@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.4 2005/11/11 10:08:18 nw Exp $
+/*$Id: LookoutImpl.java,v 1.5 2005/11/11 18:39:40 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
+import org.astrogrid.desktop.modules.background.CeaStrategyInternal;
 import org.astrogrid.desktop.modules.background.JesStrategyInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
@@ -135,6 +136,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
         public void actionPerformed(ActionEvent e) {
             jesStrategy.triggerUpdate();
+            ceaStrategy.triggerUpdate();
             LookoutImpl.this.setStatusMessage("Refreshing..");
         }
     }
@@ -363,12 +365,14 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             , RemoteProcessManager manager
             , Community comm
             ,JesStrategyInternal jesStrategy
+            ,CeaStrategyInternal ceaStrategy
             , BrowserControl browser
             )
             throws HeadlessException {
         super(conf, hs, ui);
         this.browser = browser;
         this.jesStrategy = jesStrategy;
+        this.ceaStrategy = ceaStrategy;
         this.manager = manager;
         this.recorder = recorder;
         this.chooser = chooser;
@@ -381,7 +385,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         initialize();
     }
 
- 
+   private final CeaStrategyInternal ceaStrategy;
     private DeleteAction getDeleteAction() {
         if (deleteAction == null) {
             deleteAction = new DeleteAction();
@@ -1176,6 +1180,9 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 
 /* 
 $Log: LookoutImpl.java,v $
+Revision 1.5  2005/11/11 18:39:40  nw
+2 final tweaks
+
 Revision 1.4  2005/11/11 10:08:18  nw
 cosmetic fixes
 
