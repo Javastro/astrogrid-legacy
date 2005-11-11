@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.1 2005/11/10 10:46:58 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.2 2005/11/11 10:08:18 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -155,27 +155,7 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
     }
     
     
-    // just stick this here for now - is 'list fully'
-    /*
-     *      try {
-WorkflowSummaryType[] summs =  getJes().listJobs(getAccount());
-ExecutionInformation[] result = new ExecutionInformation[summs.length];
-for (int i = 0; i < summs.length; i++) {
-    String status =summs[i].getStatus().toString();
-    result[i]= new ExecutionInformation(
-            cvt(summs[i].getJobId())
-            ,summs[i].getWorkflowName()
-            ,summs[i].getDescription()
-            ,status
-            ,summs[i].getStartTime()
-            ,summs[i].getFinishTime()
-            );
-}
-return result;
-} catch (WorkflowInterfaceException e) {
-    throw new ServiceException(e);
-}
-     */    
+
 
     /** check a single job for updates.
      * to be called within shceduler thread.
@@ -382,6 +362,9 @@ return result;
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.2  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.1  2005/11/10 10:46:58  nw
 big change around for vo lookout
  

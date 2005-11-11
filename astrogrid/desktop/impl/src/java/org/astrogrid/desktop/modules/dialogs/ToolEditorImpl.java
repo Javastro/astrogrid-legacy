@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.5 2005/10/12 13:30:10 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.6 2005/11/11 10:08:18 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,7 @@ public class ToolEditorImpl implements ToolEditorInternal {
     public ToolEditorImpl( PicoContainer pico, Configuration conf, HelpServerInternal help, UIInternal ui, Applications apps, MyspaceInternal myspace) {
         super();
         dialog = new ToolEditorDialog(pico, conf,help,ui);
-        dialog.setSize(500,600);
+        dialog.setSize(600,425);
         //dialog.pack();      
         
         this.apps = apps;
@@ -195,6 +195,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.6  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.5  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

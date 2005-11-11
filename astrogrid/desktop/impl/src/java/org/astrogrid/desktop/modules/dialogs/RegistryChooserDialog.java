@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserDialog.java,v 1.5 2005/10/12 13:30:10 nw Exp $
+/*$Id: RegistryChooserDialog.java,v 1.6 2005/11/11 10:08:18 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,7 +69,7 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
         }
     });                
         this.setModal(true);
-        this.setSize(450,350);
+        this.setSize(425,600);
         this.setContentPane(getJOptionPane());           
     }
     
@@ -179,6 +179,9 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
 /* 
 $Log: RegistryChooserDialog.java,v $
+Revision 1.6  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.5  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

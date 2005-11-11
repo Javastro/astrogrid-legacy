@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.6 2005/11/10 16:28:26 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.7 2005/11/11 10:08:18 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.acr.ui.JobMonitor;
+import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -30,7 +31,6 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.Lookout;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -329,6 +329,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.7  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.6  2005/11/10 16:28:26  nw
 added result display to vo lookout.
 

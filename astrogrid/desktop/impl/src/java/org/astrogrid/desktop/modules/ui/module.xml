@@ -34,12 +34,12 @@
 		<property>
 			<key>system.ui.menu.links</key>
 			<value>		
-				<helpLink id="userInterface.astroscope" />									
+				<helpLink id="userInterface.astroscopeLauncher" />									
 			</value>
 		</property>			
 		<property>
 			<key>icon</key>
-			<value>thread_view.gif</value>
+			<value>search.gif</value>
 		</property>				
 		<method name="show">
 			<description>Run AstroScope</description>
@@ -54,47 +54,21 @@
 		</method>
 	</component>	
 
-<!--
-
-		<component name="astroscopecluster" 
-		implementationClass="org.astrogrid.desktop.modules.ui.AstroScopeLauncherClusterImpl" 
-		interfaceClass="org.astrogrid.acr.ui.AstroScopeLauncherCluster" >
-		<description>Launch AstroScope</description>	
-		<property>
-			<key>system.ui.menu.links</key>
-			<value>		
-				<helpLink id="userInterface.astroscope" />									
-			</value>
-		</property>			
-		<property>
-			<key>icon</key>
-			<value>thread_view.gif</value>
-		</property>				
-		<method name="show">
-			<description>Run AstroScope</description>
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Run..</value>
-				<property>
-					<key>icon</key>
-					<value>run_tool.gif</value>
-				</property>					
-			</property>
-		</method>
-	</component>	
--->
-	
-	
-	
 
 	<component name="lookout"
 		implementationClass="org.astrogrid.desktop.modules.ui.LookoutImpl"
-		interfaceClass="org.astrogrid.desktop.modules.ui.Lookout">
+		interfaceClass="org.astrogrid.acr.ui.Lookout">
 		<description>Launch and monitor queries, tasks and workflows</description>
 	<property>
 		<key>icon</key>
 		<value>thread_and_monitor_view.gif</value>
 	</property>	
+			<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.lookout" />									
+			</value>
+		</property>
 		<method name="show">
 			<description>Run the Monitor GUI </description>
 			<property>
@@ -106,6 +80,12 @@
 		<value>run_tool.gif</value>
 	</property>		
 		</method>
+		<method name="hide">
+			<description>Hide the Monitor GUI </description>
+		</method>		
+		<method name="refresh">
+			<description>Refresh the job list </description>
+		</method>			
 		</component>		
 		
 		
@@ -240,62 +220,34 @@
 		</component>	
 
 	
-		<!-- todo - add back in for backwards compatability
+		<!-- just here for backwards compatability - delegatees to lookout -->
 	<component name="jobMonitor" 
-		implementationClass="org.astrogrid.desktop.modules.ui.Lookout" 
+		implementationClass="org.astrogrid.desktop.modules.ui.LegacyJobMonitor" 
 		interfaceClass="org.astrogrid.acr.ui.JobMonitor" >
-		<description>View progress of jobs and applications</description>
-		<property>
-			<key>system.ui.menu.links</key>
-			<value>		
-				<helpLink id="userInterface.jobMonitor" />									
-			</value>
-		</property>		
-	<property>
-		<key>icon</key>
-		<value>thread_and_monitor_view.gif</value>
-	</property>		
+		<description>Legacy interface to VO Lookout - deprecated in favour of lookout</description>	
 	  <method name="displayApplicationTab">
-			<descripiption>bring the application tab uppermost</descripiption>
+			<descripiption>does nothing</descripiption>
 		</method>
 		<method name="displayJesTab">
-			<description>bring the jes tab uppermost</description>
+			<description>does nothing</description>
 		</method>		
 		<method name="addApplication">
-			<description>Provide the execution id of a running CEA application to add it to the job monitor</description>
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Add a running application to the monitor</value>			
-			</property>			
-			<property>
-		<key>icon</key>
-		<value>add_obj.gif</value>
-	</property>			
+			<description>does nothing.</description>			
 			<parameter name="name"><description>Descriptive name of the application</description></parameter>
 			<parameter name="executionId"><description>ExecutionID for this application</description></parameter>		
 			</method>
 		<method name="show">
-			<description>Run the Monitor GUI </description>
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Run..</value>			
-			</property>			
-			<property>
-		<key>icon</key>
-		<value>run_tool.gif</value>
-	</property>		
+			<description>Run the Monitor GUI </description>	
 		</method>
 		<method name="hide">
 			<description>Hide the Monitor GUI </description>
-
 		</method>		
 		<method name="refresh">
 			<description>Refresh the job list </description>
-
 		</method>			
 		</component>
-		-->
-
+		
+						
 	
 	<component name="registryBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 

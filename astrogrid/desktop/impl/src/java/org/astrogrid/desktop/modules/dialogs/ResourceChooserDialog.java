@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.7 2005/11/08 18:17:41 jdt Exp $
+/*$Id: ResourceChooserDialog.java,v 1.8 2005/11/11 10:08:18 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -345,6 +345,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
             }
         });        
 		this.setContentPane(getOptionPane());
+        this.setSize(425,600);
 	}
     /**
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
@@ -394,6 +395,9 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.8  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.7  2005/11/08 18:17:41  jdt
 MySpace browser now initialises on an enabled tab - previously it could open up with a disabled tab selected.
 

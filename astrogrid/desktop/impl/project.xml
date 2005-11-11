@@ -123,6 +123,7 @@
 	</properties>
 </dependency>
 <!-- Special Astro/Physics libray mainly used for Math at the moment for astroscope -->
+<!-- unused.
 <dependency>
 	<artifactId>flanagan</artifactId>
 	<groupId>flanagan</groupId>
@@ -134,7 +135,7 @@
 		<jnlp.extension.jnlp>astro.jnlp</jnlp.extension.jnlp>				
 	</properties>
 </dependency>		
-
+-->
 
 <!-- messaging system -->
 

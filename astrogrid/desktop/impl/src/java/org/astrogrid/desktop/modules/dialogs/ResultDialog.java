@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: ResultDialog.java,v 1.3 2005/11/11 10:08:18 nw Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,7 +87,7 @@ public class ResultDialog extends JDialog {
 		this.setTitle("Result");
 		//this.setModal(true);
 		this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(400,200);
+		this.setSize(565,400);
 		this.setContentPane(getJContentPane());
 	}
 	/**
@@ -109,6 +109,9 @@ public class ResultDialog extends JDialog {
 
 /* 
 $Log: ResultDialog.java,v $
+Revision 1.3  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

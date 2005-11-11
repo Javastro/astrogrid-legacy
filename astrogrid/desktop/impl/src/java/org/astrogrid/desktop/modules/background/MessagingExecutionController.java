@@ -1,4 +1,4 @@
-/*$Id: MessagingExecutionController.java,v 1.2 2005/11/10 10:46:58 nw Exp $
+/*$Id: MessagingExecutionController.java,v 1.3 2005/11/11 10:08:18 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.background;
 
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
@@ -67,8 +68,9 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
             exec.execute(new Runnable() {
                 public void run() {
                     try {
-                        Application app = (Application)o;
-                        txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,app.getApplicationDescription().getName());
+                        AbstractApplication app = (AbstractApplication)o;
+                        //txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,app.getApplicationDescription().getName());
+                        txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,app.getTool().getName());                        
                         txtMsg.setStringProperty(MessageUtils.PROCESS_ID_PROPERTY,app.getID());
                         txtMsg.setStringProperty(MessageUtils.CLIENT_ASSIGNED_ID_PROPERTY,app.getJobStepID());
 
@@ -110,6 +112,9 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
 
 /* 
 $Log: MessagingExecutionController.java,v $
+Revision 1.3  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.2  2005/11/10 10:46:58  nw
 big change around for vo lookout
 

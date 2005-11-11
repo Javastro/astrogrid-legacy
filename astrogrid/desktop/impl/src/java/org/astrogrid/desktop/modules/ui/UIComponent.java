@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.7 2005/11/01 09:19:46 nw Exp $
+/*$Id: UIComponent.java,v 1.8 2005/11/11 10:08:18 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -103,13 +103,15 @@ public class UIComponent extends PositionRememberingJFrame {
             PrintWriter pw = new PrintWriter(sw);
             pw.println("<html><body><pre>");
             pw.println("Date of Error: " + (new Date()).toString());
-            pw.println("Within component: " + parent.getClass().getName());
+            if (parent != null) {
+                pw.println("Within component: " + parent.getClass().getName());
+            }
             // maybe add more header info here - user, etc. - hard to get to.
         
             pw.println();
             e.printStackTrace(pw);
 
-            if (parent instanceof UIComponent) {            
+            if (parent != null && parent instanceof UIComponent) {            
                 pw.println();
                 UIComponent ui = (UIComponent)parent;
                 try {
@@ -142,7 +144,6 @@ public class UIComponent extends PositionRememberingJFrame {
 
             // display report in a dialogue
             ResultDialog rd = new ResultDialog(parent,sw.toString());
-            rd.setSize(500,300);
             rd.setVisible(true);
         }
     }
@@ -318,6 +319,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.8  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.7  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

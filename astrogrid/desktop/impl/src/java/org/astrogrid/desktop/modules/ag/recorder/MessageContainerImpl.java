@@ -1,4 +1,4 @@
-/*$Id: MessageContainerImpl.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: MessageContainerImpl.java,v 1.2 2005/11/11 10:08:18 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import java.util.Date;
  *
  */
 public class MessageContainerImpl implements Serializable, MessageContainer{
+    static final long serialVersionUID = 12345689123456789L;    
     public MessageContainerImpl(String summary,ExecutionMessage msg) {
         this.summary = summary;
         this.msg = msg;
@@ -55,6 +56,9 @@ public class MessageContainerImpl implements Serializable, MessageContainer{
 
 /* 
 $Log: MessageContainerImpl.java,v $
+Revision 1.2  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
  

@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.3 2005/11/10 16:28:26 nw Exp $
+/*$Id: LookoutImpl.java,v 1.4 2005/11/11 10:08:18 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.ApplicationLauncher;
+import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.acr.ui.WorkflowBuilder;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
@@ -121,7 +122,7 @@ import javax.xml.transform.stream.StreamSource;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Oct-2005
- *
+ *@todo after release refactor into smaller classes.
  *   
  *
  */
@@ -718,7 +719,9 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         if (messageDetails == null) {
             messageDetails = new JPanel(new CardLayout());
             messageDetails.add(new JScrollPane(getMessageContentPane()), MESSAGE_CONTENT);
-            messageDetails.add(new JScrollPane(getResultsTable()),MESSAGE_RESULTS);
+            JScrollPane tableScrollPane = new JScrollPane(getResultsTable());
+            tableScrollPane.getViewport().setBackground(Color.WHITE);
+            messageDetails.add(tableScrollPane,MESSAGE_RESULTS);
         }
         return messageDetails;
     }
@@ -1078,7 +1081,6 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(ui.getComponent());
         this.setJMenuBar(getJJMenuBar());
-        this.setSize(700, 800);
         JPanel pane = getJContentPane();    
         this.setTitle("VO Lookout");
         
@@ -1086,7 +1088,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         
         JSplitPane leftRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         leftRight.setDividerSize(5);
-        leftRight.setDividerLocation(250);
+        leftRight.setDividerLocation(200);
         leftRight.setTopComponent(new JScrollPane(getFolderTree()));
         JSplitPane topBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         leftRight.setBottomComponent(topBottom);
@@ -1096,10 +1098,12 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         topBottom.setTopComponent(tableScrollPane);
         topBottom.setBottomComponent(getMessageDetails());
         topBottom.setDividerSize(5);
-        topBottom.setDividerLocation(200);
+        topBottom.setDividerLocation(300);
         pane.add(getToolbar(),BorderLayout.NORTH);
         pane.add(leftRight,BorderLayout.CENTER);
         this.setContentPane(pane);
+        this.setSize(565,800);
+        setIconImage(IconHelper.loadIcon("thread_and_monitor_view.gif").getImage()); 
     }
     
     
@@ -1163,8 +1167,8 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
         return xmlTransformer;
     }
-        
-   
+
+
     
 
 }
@@ -1172,6 +1176,9 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 
 /* 
 $Log: LookoutImpl.java,v $
+Revision 1.4  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.3  2005/11/10 16:28:26  nw
 added result display to vo lookout.
 

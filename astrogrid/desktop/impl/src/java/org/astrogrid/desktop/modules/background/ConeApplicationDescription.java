@@ -1,4 +1,4 @@
-/*$Id: ConeApplicationDescription.java,v 1.2 2005/11/10 10:46:58 nw Exp $
+/*$Id: ConeApplicationDescription.java,v 1.3 2005/11/11 10:08:18 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.MandatoryParameterNotPassedException;
 import org.astrogrid.applications.Status;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
@@ -78,7 +79,8 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
                 MandatoryParameterNotPassedException, ParameterDescriptionNotFoundException {
             return true; // don't care about parameter checking - wantto be freer in what we accept.
         }
-              
+
+         
         public Runnable createExecutionTask() throws CeaException {
            // createAdapters(); - nope, we'll do this by hand.
             getResult().clearResult();
@@ -165,6 +167,9 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: ConeApplicationDescription.java,v $
+Revision 1.3  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.2  2005/11/10 10:46:58  nw
 big change around for vo lookout
 

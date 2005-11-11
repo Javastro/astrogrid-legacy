@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.21 2005/11/10 14:55:15 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.22 2005/11/11 10:08:18 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.AstroScopeLauncher;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
@@ -271,7 +272,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         nodeSizingMap = Collections.synchronizedMap(new java.util.TreeMap());
         this.executor = new PooledExecutor(new LinkedQueue()); // infinite task buffer
         this.executor.setMinimumPoolSize(5); // always have 5 threads ready to go.
-        this.setSize(700, 700);  
+        this.setSize(800, 565); // same proportions as A4, etc., and max 800 wide   
+                   
+//        this.setSize(700, 700);  
         JPanel pane = getJContentPane();
         JPanel searchPanel = makeSearchPanel();
         searchPanel.setMaximumSize(searchPanel.getSize());
@@ -280,6 +283,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         this.setContentPane(pane);
         this.setTitle("AstroScope");
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
+        setIconImage(IconHelper.loadIcon("search.gif").getImage());
     }
        
     private String conformToMyspaceName(String name) {
@@ -341,7 +345,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                     if (tn.getChildCount() > 0) {
                         continue;
                     }
-                    TreeNode parent = tn.getParent(); // @todo with clustering, need grandparent here instead.                                
+                    TreeNode parent = tn.getParent();                           
                     try {
                     // ok. got a bit of selected data. if it's an image, save it.
                         if (tn.getAttribute("imgURL") != null) { // its siap - this is a reference to the image  
@@ -351,7 +355,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                 URL url = new URL(urls[j]); // url to the image.
                                 String name = conformToMyspaceName(parent.getParent().getAttribute("label") + "_" + parent.getAttribute("label") +"_" + tn.getAttribute("label") + "_" + System.currentTimeMillis() + "." + tn.getAttribute("type"));
                                 final String finalName = name;
-                                // @todo this will be different when clustering is introduced.
                                 // @todo not sure whether the label of the image node is enough to uniquely identify it - maybe we should use the row number of it within the votable siap response,
                                 // and save the siap response too - as it's
                                 URI finalURI = new URI(u.toString() + "/" + name);
@@ -1773,6 +1776,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.22  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.21  2005/11/10 14:55:15  KevinBenson
 minor tweaks plus javahelp is there now
 

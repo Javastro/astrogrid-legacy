@@ -1,4 +1,4 @@
-/*$Id: StatusChangeExecutionMessage.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: StatusChangeExecutionMessage.java,v 1.2 2005/11/11 10:08:18 nw Exp $
  * Created on 09-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import java.util.Date;
  *
  */
 public class StatusChangeExecutionMessage extends ExecutionMessage {
-
+    static final long serialVersionUID = 12345689123456789L;
     /** Construct a new StatusChangeExecutionMessage
      * @param arg0
      * @param arg1
@@ -36,6 +36,9 @@ public class StatusChangeExecutionMessage extends ExecutionMessage {
 
 /* 
 $Log: StatusChangeExecutionMessage.java,v $
+Revision 1.2  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
  

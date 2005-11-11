@@ -1,4 +1,4 @@
-/*$Id: ResultsExecutionMessage.java,v 1.2 2005/11/10 16:28:26 nw Exp $
+/*$Id: ResultsExecutionMessage.java,v 1.3 2005/11/11 10:08:18 nw Exp $
  * Created on 09-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import java.util.Map;
  *
  */
 public class ResultsExecutionMessage extends ExecutionMessage {
-
+    static final long serialVersionUID = 12345689123456789L;
     /** Construct a new ResultsExecutionMessage
      * @param source
      * @param arg1
@@ -43,6 +43,9 @@ public class ResultsExecutionMessage extends ExecutionMessage {
 
 /* 
 $Log: ResultsExecutionMessage.java,v $
+Revision 1.3  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.2  2005/11/10 16:28:26  nw
 added result display to vo lookout.
 

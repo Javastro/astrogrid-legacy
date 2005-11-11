@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: CommunityImpl.java,v 1.3 2005/11/11 10:08:18 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,8 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
+import org.astrogrid.desktop.modules.system.UIImpl;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.ui.script.LoginFactory;
 import org.astrogrid.ui.script.ScriptEnvironment;
@@ -45,13 +47,13 @@ public class CommunityImpl implements CommunityInternal  {
     /** Construct a new Community
      * 
      */
-    public CommunityImpl(BrowserControl browser,UI ui) {       
+    public CommunityImpl(BrowserControl browser,UIInternal ui) {       
         this.browser = browser;
         this.ui = ui;
         loginDialogue = new LoginDialogue();
         ui.setStatusMessage("Not Logged In");
     }
-    protected final UI ui;
+    protected final UIInternal ui;
     protected final BrowserControl browser;
     protected final LoginDialogue loginDialogue;
     protected UserInformation userInformation;
@@ -111,9 +113,7 @@ public class CommunityImpl implements CommunityInternal  {
             try {
                 authenticate();
             } catch (Exception e) {
-                logger.info(e);
-                e.printStackTrace();
-                loginDialogue.showError(null,e.getMessage());
+                UIImpl.showError(null,"Failed to login",e);
             }
         }                    
     }
@@ -204,6 +204,9 @@ public class CommunityImpl implements CommunityInternal  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.3  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

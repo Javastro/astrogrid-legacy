@@ -26,6 +26,12 @@
 		<action dev="nw" type="add">
 			First working draft of vo lookout
 		</action>
+		<action dev="nw" type="fix">
+			view results in volookout
+		</action>
+		<action dev="kmb" type="fix">
+			Visual improvements to astroscope, basic help
+		</action>
 		<action dev="pjn" type="fix">
 			further improvements to worklow builder and application launcher ui
 		</action>

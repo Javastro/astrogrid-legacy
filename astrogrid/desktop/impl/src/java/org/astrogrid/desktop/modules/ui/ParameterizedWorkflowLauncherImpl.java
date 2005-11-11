@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.5 2005/11/10 12:06:19 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.6 2005/11/11 10:08:18 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.ui.JobMonitor;
+import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
@@ -50,6 +51,7 @@ import javax.swing.JOptionPane;
 
 /** Implementaton of the parameterized workflow launcher component.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
+ * @todo adjust to use process manager, instead of jes.
  *
  */
 public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowLauncher {
@@ -119,7 +121,6 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
                 writer.close();
             }
         }
-       // @todo check this works - otherwise will need to go via a string reader. 
         Document doc = XMLUtils.newDocument();
         Marshaller.marshal(wf,doc);
         URI id = jobs.submitJob(doc);
@@ -199,6 +200,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.6  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.5  2005/11/10 12:06:19  nw
 early draft of volookout
 

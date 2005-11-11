@@ -65,6 +65,7 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.JobsInternal;
@@ -531,7 +532,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	private  void initialize() {
 
 		this.setTitle("Workflow Builder");
-		this.setJMenuBar(getJJMenuBar());	
+		this.setJMenuBar(getJJMenuBar());
+        setIconImage(IconHelper.loadIcon("wf_small.gif").getImage());        
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.workflowBuilder");  			
 		tabbedPaneWF = new JTabbedPane();		
 		tabbedPaneWF.addTab ("Tree View", IconHelper.loadIcon("wf_small.gif"), getTabbedTreePanel(), "Display workflow graphically");
@@ -666,6 +668,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         pane.add(getActivityList(),BorderLayout.WEST);
 		this.setContentPane(pane);
 		pack();
+           this.setSize(565,800);        
 		this.w = new WastebinDropListener();
 		createAction.actionPerformed(null); // fire the create action to initialize everything.
 	}

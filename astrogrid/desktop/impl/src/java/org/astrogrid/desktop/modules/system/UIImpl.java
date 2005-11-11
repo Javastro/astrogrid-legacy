@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.6 2005/11/09 15:28:21 jdt Exp $
+/*$Id: UIImpl.java,v 1.7 2005/11/11 10:08:18 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -140,17 +140,21 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
 	 */
 	private void initialize() {
 		this.setJMenuBar(getAppMenuBar());
-		this.setSize(500, 600);
         JPanel main = getJContentPane();
         main.add(getJSplitPane(), java.awt.BorderLayout.CENTER);    
 		this.setContentPane(main);
-        getHelpServer().enableHelpKey(this.getRootPane(),"system.ui");          
+        getHelpServer().enableHelpKey(this.getRootPane(),"top");          
 		this.setTitle("Astrogrid Workbench");
+        setIconImage(IconHelper.loadIcon("AGlogo16x16.png").getImage());            
+        this.setSize(425, 600); // same proportions as A4, etc., and 600 high.   
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e) {
                 int code = JOptionPane.showConfirmDialog(UIImpl.this,"Closing the UI. Do you want  the ACR service to continue to run in the background?", 
                         "Closing UI",JOptionPane.INFORMATION_MESSAGE);
+                if (code == JOptionPane.CANCEL_OPTION) {
+                    return;
+                }
                 hide(); // always fo this..
                 if (code == JOptionPane.NO_OPTION) {                    
                         shutdown.halt(); 
@@ -1053,6 +1057,9 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.7  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.6  2005/11/09 15:28:21  jdt
 fixed broken help  link
 

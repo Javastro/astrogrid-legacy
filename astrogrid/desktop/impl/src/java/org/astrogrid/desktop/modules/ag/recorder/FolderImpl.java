@@ -1,4 +1,4 @@
-/*$Id: FolderImpl.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: FolderImpl.java,v 1.2 2005/11/11 10:08:18 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import java.util.List;
  *
  */
 public class FolderImpl implements Serializable, Folder {
+    static final long serialVersionUID = 12345689123456789L;
     public FolderImpl(ExecutionInformation info,URI parentKey) {
         this.info = info;
         this.parentKey = parentKey;
@@ -89,6 +90,9 @@ public class FolderImpl implements Serializable, Folder {
 
 /* 
 $Log: FolderImpl.java,v $
+Revision 1.2  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
  

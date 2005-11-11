@@ -691,7 +691,9 @@
 		interfaceClass="org.astrogrid.acr.astrogrid.Applications" 
 		implementationClass="org.astrogrid.desktop.modules.ag.ApplicationsImpl" 
 		>
-		<description>Remote Applications: list those registered, provide parameters, execute and monitor progress of CEA applications </description>
+		<description>Remote Applications: list those registered, provide parameters, execute and monitor progress of CEA applications
+			Exection and monitor functions are convenience versions of functions provided by processManager
+			 </description>
 	<property>
 		<key>icon</key>
 		<value>thread_view.gif</value>
@@ -1051,7 +1053,9 @@
 	<component name="jobs" 
 		implementationClass="org.astrogrid.desktop.modules.ag.JobsImpl" 
 		interfaceClass="org.astrogrid.acr.astrogrid.Jobs">
-		<description>Submit workflows to an execution server, and manage running jobs</description>
+		<description>Submit workflows to an execution server, and manage running jobs
+			Convenience methods around operations in manager.
+			</description>
 	<property>
 		<key>icon</key>
 		<value>debugt_obj.gif</value>
@@ -1233,10 +1237,195 @@
 				<key>hidden.component</key>
 				<value>true</value>								
 			</property>		
-	</component>			
-	<component name="manager"
+	</component>	
+	
+	<!-- process manager -->		
+	<component name="processManager"
 		implementationClass="org.astrogrid.desktop.modules.ag.RemoteProcessManagerImpl"
 		interfaceClass="org.astrogrid.acr.astrogrid.RemoteProcessManager">
-		<!-- todo - enumerate methods here -->
+		<description>Remote Process Manager - create, manage, inspect remote jobs, queries, tasks.</description>
+	<property>
+		<key>icon</key>
+		<value>debugt_obj.gif</value>
+	</property>				
+		<method name="list">
+			<description>list users remote processes.</description>
+	<property>
+		<key>icon</key>
+		<value>flatLayout.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>List Processes</value>
+			</property>
+			<return>
+				<description>list of process identifiers</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</return>
+		</method>
+		
+		<method name="submit">
+			<description>Submit a document for execution</description>
+			<return>
+				<description>unique identifier of the new process</description>
+			</return>
+			<parameter name="document">
+				<description>document to execute</description>
+			</parameter>
+		</method>
+
+		<method name="submitTo">
+			<description>Execute a document on a specified server</description>	
+			<return>
+				<description>A new process identifier</description>
+			</return>				
+			<parameter name="doc">
+				<description>an executable document</description>
+			</parameter>		
+			<parameter name="server">
+				<description>Ivorn of the service to execute this application on</description>
+			</parameter>						
+		</method>	
+			
+	<method name="submitStored">
+			<description>Submit a stored document for execution</description>
+	<property>
+		<key>icon</key>
+		<value>run_tool.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Execute</value>								
+			</property>					
+			<return>
+				<description>unique identifier of the new process</description>
+			</return>
+			<parameter name="uri">
+				<description>URI Reference (ftp://, http://, file://, ivo://) of file containing executable document - a workflow, cea app, etc.</description>
+			</parameter>
+		</method>		
+<method name="submitStoredTo">
+			<description>Submit a stored document for execution</description>
+<property>
+			<key>icon</key>
+			<value>run_tool.gif</value>
+		</property>						
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Execute  on Server</value>								
+			</property>		
+			<return>
+				<description>A new process identifier</description>
+			</return>				
+			<parameter name="url">
+				<description>Url of the executable document to submit</description>
+			</parameter>		
+			<parameter name="server">
+				<description>Ivorn of the service to execute this application on</description>
+			</parameter>						
+		</method>		
+	<method name="halt">
+			<description>Halt a running process</description>
+	<property>
+		<key>icon</key>
+		<value>stop.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Halt Process</value>								
+			</property>			
+			<return>
+				<description>nothing</description>
+			</return>					
+			<parameter name="processID">
+				<description>identifier of process to cancel</description>
+			</parameter>
+		</method>
+		<method name="delete">
+			<description>Delete all recordof a finished process</description>
+	<property>
+		<key>icon</key>
+		<value>delete_obj.gif</value>
+	</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Delete Process Record</value>								
+			</property>	
+			<return>
+				<description>nothing</description>
+			</return>									
+			<parameter name="processID">
+				<description>identifier of process to delete.</description>
+			</parameter>
+		</method>		
+
+	<method name="getExecutionInformation">
+			<description>Retrieve information about a process</description>
+	<property>
+		<key>icon</key>
+		<value>info_obj.gif</value>
+	</property>							
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Get Process Summary</value>								
+			</property>					
+			<return>
+				<description>a summary of the process</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>struct</value>
+				</property>				
+			</return>
+			<parameter name="processID">
+				<description>identifier of process to retreive status of.</description>
+			</parameter>
+		</method>
+
+		<method name="getMesages">
+			<description>Access messages received from a remote execution</description>
+		<property>
+			<key>icon</key>
+			<value>progressbar_obj.gif</value>
+		</property>						
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>List Execution Messages</value>								
+			</property>		
+	<return>
+				<description>list of messages</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+				</return>					
+			<parameter name="processId">
+				<description>id of the process execution to query</description>
+			</parameter>				
+		</method>
+		<method name="getResults">
+			<description>Get results of an process execution</description>
+		<property>
+			<key>icon</key>
+			<value>MultipleImages.gif</value>
+		</property>						
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Get Execution Results</value>								
+			</property>		
+	<return>
+				<description>map of name - result pairs</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>struct</value>
+				</property>
+				</return>					
+			<parameter name="processId">
+				<description>id of the process execution to query</description>
+			</parameter>				
+		</method>
+	 		
 	</component>
 </module>

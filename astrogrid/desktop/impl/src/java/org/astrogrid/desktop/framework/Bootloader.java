@@ -1,4 +1,4 @@
-/*$Id: Bootloader.java,v 1.5 2005/11/01 09:19:46 nw Exp $
+/*$Id: Bootloader.java,v 1.6 2005/11/11 10:08:18 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /** Parses a series of module descriptors to populate the registry.
- * @todo replace this with lazy loading of resources, based on lists stored in config.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  *
  */
@@ -99,6 +98,9 @@ public class Bootloader implements Startable{
 
 /* 
 $Log: Bootloader.java,v $
+Revision 1.6  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.5  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

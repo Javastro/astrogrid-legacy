@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.8 2005/10/14 14:20:41 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.9 2005/11/11 10:08:18 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -853,13 +853,14 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         this.setName("MyspaceBrowser");
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.myspaceBrowser");          
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        this.setSize(600, 800);
+        setIconImage(IconHelper.loadIcon("filenav_nav.gif").getImage());         
         JPanel pane = getJContentPane();
         pane.add(getJSplitPane(), java.awt.BorderLayout.CENTER);
         JToolBar toolBar = getToolBar();
         pane.add(toolBar, java.awt.BorderLayout.NORTH);
         this.setContentPane(pane);
         this.setTitle("MySpace Browser");
+        this.setSize(565, 800);
         readRoot();
     }
     
@@ -874,6 +875,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.9  2005/11/11 10:08:18  nw
+ * cosmetic fixes
+ *
  * Revision 1.8  2005/10/14 14:20:41  nw
  * work around for problems with FileStoreOutputStream
  *

@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.4 2005/10/12 13:30:10 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.5 2005/11/11 10:08:18 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,12 +62,13 @@ public class RegistryBrowserImpl extends UIComponent implements  RegistryBrowser
     protected final Registry reg;
 
 	private void initialize() {
-		this.setSize(500, 600);   
+		this.setSize(425, 600); // same proportions as A4, etc., and 600 high.   
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
         JPanel pane = getJContentPane();
         pane.add(getRegistryChooser(),BorderLayout.CENTER); 
 		this.setContentPane(pane);
 		this.setTitle("Registry Browser");
+        setIconImage(IconHelper.loadIcon("java_lib_obj.gif").getImage());        
 	}
     
     private RegistryChooserPanel regChooser;
@@ -83,6 +84,9 @@ public class RegistryBrowserImpl extends UIComponent implements  RegistryBrowser
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.5  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.4  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

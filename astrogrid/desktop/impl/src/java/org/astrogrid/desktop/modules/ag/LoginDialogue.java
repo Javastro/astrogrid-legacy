@@ -1,4 +1,4 @@
-/*$Id: LoginDialogue.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: LoginDialogue.java,v 1.2 2005/11/11 10:08:18 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,6 +60,7 @@ class LoginDialogue extends JPanel {
         stack.addItem( "Community", commField_ );
         stack.addItem( "User", userField_ );
         stack.addItem( "Password", passField_ );
+
         Component strut = Box.createHorizontalStrut( 300 );
 
 
@@ -153,10 +154,11 @@ class LoginDialogue extends JPanel {
     /** show the dialog, to get user input. will return 'true' if user confirms, 'false' if user cancels*/
     public boolean showDialog( Component parent ) {
         JDialog dialog = opane_.createDialog( parent, "Astrogrid Login" );
-        dialog.getContentPane().add( opane_ );       
+        dialog.getContentPane().add( opane_ );               
             dialog.show();
+            passField_.requestFocusInWindow();                      
             dialog.requestFocus();
-            dialog.toFront();
+            dialog.toFront();  
             Object status = opane_.getValue();            
             dialog.dispose();
             boolean result =   status instanceof Integer &&
@@ -167,16 +169,7 @@ class LoginDialogue extends JPanel {
             return result;
     }
 
-    /**
-     * Informs the user of an error.
-     *
-     * @param  parent  parent component
-     * @param  message  message text
-     */
-    public void showError( Component parent, String message ) {
-        JOptionPane.showMessageDialog( parent, message, "Login Error", 
-                                       JOptionPane.ERROR_MESSAGE );
-    }
+ 
 
     /**
      * Helper class for positioning pairs of components in a vertical stack.
@@ -216,6 +209,9 @@ class LoginDialogue extends JPanel {
 
 /* 
 $Log: LoginDialogue.java,v $
+Revision 1.2  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

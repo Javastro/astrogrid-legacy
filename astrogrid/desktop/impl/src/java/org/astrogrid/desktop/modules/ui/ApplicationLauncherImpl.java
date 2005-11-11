@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.6 2005/11/01 09:19:46 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.7 2005/11/11 10:08:18 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,7 +89,8 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             editor =  new CompositeToolEditorPanel(this,true,pico);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
             this.setLocationRelativeTo(ui.getComponent());
-            this.setSize(400,500);
+            this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
+            setIconImage(IconHelper.loadIcon("thread_view.gif").getImage());                
             JPanel pane = getJContentPane();
              pane.add(editor, java.awt.BorderLayout.CENTER);
             this.setContentPane(pane);
@@ -112,6 +113,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.7  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.6  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

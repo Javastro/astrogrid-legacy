@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.4 2005/11/10 12:05:43 nw Exp $
+/*$Id: RegistryImpl.java,v 1.5 2005/11/11 10:08:18 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -127,7 +127,7 @@ public class RegistryImpl implements Registry {
         return adqlSearch(arg0);
     }
 
-    /**@todo implement
+    /**@todo get working
      */
     public Document keywordSearch(String arg0, boolean arg1) throws ServiceException {
         try {
@@ -221,6 +221,7 @@ public class RegistryImpl implements Registry {
         }
     }
     /**@todo add declaration of common prefixes to front of query?
+     * @todo geet working.
      * @see org.astrogrid.acr.astrogrid.Registry#xquery(java.lang.String)
      */
     public Document xquerySearch(String xquery) throws ServiceException {        
@@ -238,6 +239,9 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.5  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.4  2005/11/10 12:05:43  nw
 big change around for vo lookout
 

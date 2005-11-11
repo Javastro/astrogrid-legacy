@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderImpl.java,v 1.2 2005/11/10 16:28:26 nw Exp $
+/*$Id: MessageRecorderImpl.java,v 1.3 2005/11/11 10:08:18 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -235,13 +235,15 @@ static {
             // a little hacky - relies on parsing the uri to know what kind of thing we're dealing with.
             // so only works for known uri types.
             URI parent = TASKS;
+                    String name= msg.getStringProperty(MessageUtils.PROCESS_NAME_PROPERTY);
             if ("jes".equals(id.getScheme())) {
                 parent = JOBS;
             } else {
                 // assume it's a cea id...
-                //@todo come back to this - may need to parse the id a little.
-                try {
-                ResourceInformation ri = reg.getResourceInformation(id);
+                //@todo come back to this - need to decide on format of id, and then parse to get ouot application id.
+                try {   
+                    URI uri = new URI (name.startsWith("ivo") ? name : "ivo://" + name);
+                ResourceInformation ri = reg.getResourceInformation(uri);
                 if (ri instanceof SiapInformation 
                         || ri instanceof ConeInformation
                         || isAdqlApplication(ri)) {
@@ -251,8 +253,7 @@ static {
                     //oh well, never mind;
                 }
             }
-            
-            String name= msg.getStringProperty(MessageUtils.PROCESS_NAME_PROPERTY);           
+                      
             Date startDate = msg.getStringProperty(MessageUtils.START_TIME_PROPERTY) != null
                 ? new Date(msg.getStringProperty(MessageUtils.START_TIME_PROPERTY))
                 : new Date(msg.getJMSTimestamp());
@@ -368,6 +369,9 @@ static {
 
 /* 
 $Log: MessageRecorderImpl.java,v $
+Revision 1.3  2005/11/11 10:08:18  nw
+cosmetic fixes
+
 Revision 1.2  2005/11/10 16:28:26  nw
 added result display to vo lookout.
 
