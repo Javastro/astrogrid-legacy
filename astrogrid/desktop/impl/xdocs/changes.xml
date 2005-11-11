@@ -13,6 +13,14 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	<release version="1.3-beta-4" date="2005-11-11">
+		<action dev="nw" type="update">
+			upgraded to new registry delegate
+		</action>
+		<action dev="nw" type="fix">
+			icons and other cosmetic improvements
+		</action>
+	</release>
 	<release version="1.3-alpha-3" date="2005-11-8">
 		<action dev="jdt" type="fix" issue="1448">
 			Broken report a bug link in help.

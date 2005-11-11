@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.5 2005/11/11 10:08:18 nw Exp $
+/*$Id: RegistryImpl.java,v 1.6 2005/11/11 10:27:41 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -134,6 +134,7 @@ public class RegistryImpl implements Registry {
             //throw new ServiceException("Not implemented - waiting for delegate support");
             return reg.keywordSearch(arg0,arg1);
         } catch (RegistryException e) {
+            logger.error("Keyword search failed to work",e);
             throw new ServiceException(e);
         }
     }
@@ -228,6 +229,7 @@ public class RegistryImpl implements Registry {
             try {
                 return reg.xquerySearch(xquery);
             } catch (RegistryException e) {
+                logger.error("xquery failed to work",e);
                 throw new ServiceException(e);
             }
             
@@ -239,6 +241,9 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.6  2005/11/11 10:27:41  nw
+minor changes.
+
 Revision 1.5  2005/11/11 10:08:18  nw
 cosmetic fixes
 

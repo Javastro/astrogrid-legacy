@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.22 2005/11/11 10:08:18 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.23 2005/11/11 10:27:41 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -272,7 +272,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         nodeSizingMap = Collections.synchronizedMap(new java.util.TreeMap());
         this.executor = new PooledExecutor(new LinkedQueue()); // infinite task buffer
         this.executor.setMinimumPoolSize(5); // always have 5 threads ready to go.
-        this.setSize(800, 565); // same proportions as A4, etc., and max 800 wide   
+        this.setSize(1000,707); // same proportions as A4,    
                    
 //        this.setSize(700, 700);  
         JPanel pane = getJContentPane();
@@ -1776,6 +1776,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.23  2005/11/11 10:27:41  nw
+minor changes.
+
 Revision 1.22  2005/11/11 10:08:18  nw
 cosmetic fixes
 
