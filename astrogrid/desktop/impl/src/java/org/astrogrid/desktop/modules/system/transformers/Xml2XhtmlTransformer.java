@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.3 2005/11/11 15:25:49 pjn3 Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,6 +53,9 @@ public class Xml2XhtmlTransformer implements Transformer{
     public static Source getStyleSource() {
         return new StreamSource(Xml2XhtmlTransformer.class.getResourceAsStream("xmlverbatim.xsl"));
     }
+    public static Source getRegistryStyleSource() {
+        return new StreamSource(Xml2XhtmlTransformer.class.getResourceAsStream("registryResults.xsl"));
+    }
     private final javax.xml.transform.Transformer xslt;
 
     /**
@@ -61,8 +64,8 @@ public class Xml2XhtmlTransformer implements Transformer{
     public static Transformer getInstance() {
         if (theInstance == null) {
             try {
-                Source styleSoutce = getStyleSource();
-                theInstance = new Xml2XhtmlTransformer(styleSoutce);
+                Source styleSource = getStyleSource();
+                theInstance = new Xml2XhtmlTransformer(styleSource);
             } catch (Exception e) {
                 logger.error("Could not load stylesheet ",e);
                 theInstance = IDTransformer.getInstance();
@@ -95,6 +98,12 @@ public class Xml2XhtmlTransformer implements Transformer{
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.3  2005/11/11 15:25:49  pjn3
+new stylesheet
+
+Revision 1.2.32.1  2005/11/11 15:14:13  pjn3
+registry stylesheet
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 
