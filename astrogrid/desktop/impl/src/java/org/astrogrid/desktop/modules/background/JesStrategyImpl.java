@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.2 2005/11/11 10:08:18 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.3 2005/11/11 17:53:27 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,9 +71,9 @@ import javax.jms.TextMessage;
 
 /** 
  * remote process strategy for jobs.
- * 
+ *  - see RemoteProcessManagerImpl
  * periodically poll job service, inject messages into the system
- * temporary class, until jes actually passes messages itself.
+ * temporary , until jes actually passes messages itself.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Nov-2005
  *
  */
@@ -231,7 +231,7 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
         }
     }
 
-    private boolean isCompletedOrError(String s) {
+    public static boolean isCompletedOrError(String s) {
         return s.equals(ExecutionInformation.COMPLETED) 
         || s.equals(ExecutionInformation.ERROR);
     }
@@ -362,6 +362,9 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.3  2005/11/11 17:53:27  nw
+added cea polling to lookout.
+
 Revision 1.2  2005/11/11 10:08:18  nw
 cosmetic fixes
 

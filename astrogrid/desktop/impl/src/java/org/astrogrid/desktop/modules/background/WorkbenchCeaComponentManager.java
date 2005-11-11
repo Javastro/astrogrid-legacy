@@ -1,4 +1,4 @@
-/*$Id: WorkbenchCeaComponentManager.java,v 1.2 2005/11/10 10:46:58 nw Exp $
+/*$Id: WorkbenchCeaComponentManager.java,v 1.3 2005/11/11 17:53:27 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,8 +57,8 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
         pico.registerComponentImplementation(ProtocolLibrary.class,DefaultProtocolLibrary.class);
 
         // persistence
-        pico.registerComponentImplementation(ExecutionHistory.class,FileStoreExecutionHistory.class);
-        pico.registerComponentInstance(FileStoreExecutionHistory.StoreDir.class, new FileStoreExecutionHistory.StoreDir(){
+        pico.registerComponentImplementation(ExecutionHistory.class,ManagingFileStoreExecutionHistory.class);
+        pico.registerComponentInstance(FileStoreExecutionHistory.StoreDir.class, new ManagingFileStoreExecutionHistory.StoreDir(){
             private final File dir= new File(new File(configuration.getKey(ConfigurationKeys.WORK_DIR_KEY)),"cea");
             public File getDir() {
                 if (!dir.exists()) {
@@ -99,8 +99,8 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
         pico.registerComponentImplementation(ConeApplicationDescription.class);        
     }
 
-    public ExecutionController getExecutionController() {
-        return (ExecutionController)pico.getComponentInstanceOfType(ExecutionController.class);
+    public ManagingExecutionController getExecutionController() {
+        return (ManagingExecutionController)pico.getComponentInstanceOfType(ExecutionController.class);
         
     }
 
@@ -127,6 +127,9 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
 
 /* 
 $Log: WorkbenchCeaComponentManager.java,v $
+Revision 1.3  2005/11/11 17:53:27  nw
+added cea polling to lookout.
+
 Revision 1.2  2005/11/10 10:46:58  nw
 big change around for vo lookout
 

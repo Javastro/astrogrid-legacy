@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.6 2005/11/11 10:27:41 nw Exp $
+/*$Id: RegistryImpl.java,v 1.7 2005/11/11 17:53:27 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,6 +43,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 /** implementation of the registry component
+ * 
+ * @todo optimize to take advantage of new registry delegate not returning 'wrapped' results - so no
+ * need to parse doubly at this end. - but test first :)
+ * @todo adjust reg dialogue to use keyword search
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
  *
  */
@@ -127,21 +131,56 @@ public class RegistryImpl implements Registry {
         return adqlSearch(arg0);
     }
 
-    /**@todo get working
-     */
     public Document keywordSearch(String arg0, boolean arg1) throws ServiceException {
         try {
-            //throw new ServiceException("Not implemented - waiting for delegate support");
-            return reg.keywordSearch(arg0,arg1);
+            Document doc =  reg.keywordSearch(arg0,arg1);
+            NodeList l = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"VOResources");
+            Document result = XMLUtils.newDocument();
+            if (l.getLength() > 0) { // otherwise we'll reutrn the empty document
+                Element el = (Element)l.item(0);                    
+                result.appendChild(result.importNode(el,true));
+            } else {
+                result.appendChild(result.createElementNS(XPathHelper.VOR_NS,"VOResources"));
+            }
+            return result;            
+        } catch (NoResourcesFoundException e) {
+            // shouldn't ever return this - should return an empty result document instead.
+            logger.fatal("search is never expected to return a 'NoResourcesFoundException'",e);
+            try {
+                Document result =  XMLUtils.newDocument(); 
+                result.appendChild(result.createElementNS(XPathHelper.VOR_NS,"VOResources"));
+                return result;
+            } catch (ParserConfigurationException e1) {
+                throw new ServiceException(e); 
+            }
         } catch (RegistryException e) {
-            logger.error("Keyword search failed to work",e);
             throw new ServiceException(e);
-        }
+        } catch (ParserConfigurationException e1) {
+            throw new ServiceException(e1); 
+        }                
     }
-    /** @todo implement */
     public ResourceInformation[] keywordSearchRI(String arg0, boolean arg1) throws ServiceException {
-        
-        throw new ServiceException("Not implemented - waiting for delegate support");
+        try {
+        Document doc = reg.keywordSearch(arg0,arg1);
+        NodeList l = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"Resource");
+        ResourceInformation[] results = new ResourceInformation[l.getLength()];
+        CachedXPathAPI xpath = new CachedXPathAPI(); // create one once for the entire document
+        for (int i =0 ; i < l.getLength(); i++) {
+            Element el = (Element)l.item(i);
+            ResourceInformation x = fromCacheOrBuild(el);
+            if (x == null) {
+                x = rib.build(xpath, el);
+                cache.put(x.getId(),x);
+            }
+           results[i] = x;
+        }
+        return results;
+    } catch (NoResourcesFoundException e) {
+        logger.fatal("search is never expected to return a 'NoResourcesFoundException'",e);
+            return new ResourceInformation[]{};    
+    } catch (RegistryException e) {
+        throw new ServiceException(e);
+    } 
     }    
 
     public Document adqlSearch(String adql) throws ServiceException  {
@@ -229,7 +268,6 @@ public class RegistryImpl implements Registry {
             try {
                 return reg.xquerySearch(xquery);
             } catch (RegistryException e) {
-                logger.error("xquery failed to work",e);
                 throw new ServiceException(e);
             }
             
@@ -241,6 +279,9 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.7  2005/11/11 17:53:27  nw
+added cea polling to lookout.
+
 Revision 1.6  2005/11/11 10:27:41  nw
 minor changes.
 

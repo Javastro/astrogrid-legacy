@@ -1,4 +1,4 @@
-/*$Id: MessagingExecutionController.java,v 1.3 2005/11/11 10:08:18 nw Exp $
+/*$Id: MessagingExecutionController.java,v 1.4 2005/11/11 17:53:27 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.background;
 
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
@@ -18,6 +19,8 @@ import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.ThreadPoolExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
+import org.astrogrid.desktop.modules.ag.CeaHelper;
 import org.astrogrid.desktop.modules.ag.MessageUtils;
 import org.astrogrid.desktop.modules.ag.MessagingInternal;
 
@@ -41,7 +44,7 @@ import javax.jms.TextMessage;
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
  *
  */
-public class MessagingExecutionController extends ThreadPoolExecutionController {
+public class MessagingExecutionController extends ThreadPoolExecutionController implements ManagingExecutionController {
 
     /** Construct a new MessagingExecutionController
      * @param arg0
@@ -49,8 +52,9 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
      * @throws ServiceException
      * @throws JMSException
      */
-    public MessagingExecutionController(ApplicationDescriptionLibrary arg0, ExecutionHistory arg1, PooledExecutor e,MessagingInternal messaging) throws ServiceException, JMSException {
+    public MessagingExecutionController(ApplicationDescriptionLibrary arg0, ExecutionHistory arg1, PooledExecutor e,MessagingInternal messaging, Registry reg) throws ServiceException, JMSException {
         super(arg0, arg1, e);
+        ceaHelper = new CeaHelper(reg);
         sess = messaging.createSession();
         prod = sess.createProducer(messaging.getEventQueue());       
         prod.setDisableMessageID(true);
@@ -60,6 +64,7 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
     final TextMessage txtMsg;
     final MessageProducer prod;
     final Executor exec = new QueuedExecutor();
+    final CeaHelper ceaHelper;
 
     public void update(final Observable o, final Object arg) {
         super.update(o, arg);
@@ -71,7 +76,7 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
                         AbstractApplication app = (AbstractApplication)o;
                         //txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,app.getApplicationDescription().getName());
                         txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,app.getTool().getName());                        
-                        txtMsg.setStringProperty(MessageUtils.PROCESS_ID_PROPERTY,app.getID());
+                        txtMsg.setStringProperty(MessageUtils.PROCESS_ID_PROPERTY,ceaHelper.mkLocalTaskURI(app.getID()).toString());
                         txtMsg.setStringProperty(MessageUtils.CLIENT_ASSIGNED_ID_PROPERTY,app.getJobStepID());
 
                         if (arg instanceof Status) {
@@ -79,7 +84,7 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
                             txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.STATUS_CHANGE_MESSAGE);
                             txtMsg.setText(stat.toExecutionPhase().toString());
                             prod.send(txtMsg);
-                            if (stat.equals(Status.COMPLETED)) {// send a results message too.
+                            if (stat.equals(Status.COMPLETED) || stat.equals(Status.ERROR)) {// send a results message too.
                                 txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.RESULTS_MESSAGE);
                                 StringWriter sw = new StringWriter();
                                 app.getResult().marshal(sw);
@@ -100,6 +105,9 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
                         logger.warn("Failed to send notification message",e);
                     } catch (ValidationException e) {
                         logger.warn("Failed to send notification message",e);
+                    } catch (ServiceException e) {
+                        // @todo Auto-generated catch block
+                        logger.debug("ServiceException",e);
                     }
                 }
             });
@@ -107,11 +115,25 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
             logger.debug("InterruptedException",e);
         }
     }
+
+    /**
+     * @see org.astrogrid.desktop.modules.background.ManagingExecutionController#delete(java.lang.String)
+     */
+    public void delete(String execId) {
+        if (executionHistory.isApplicationInCurrentSet(execId)) {
+            return; // not finished yet.
+        }
+        ManagingFileStoreExecutionHistory f = (ManagingFileStoreExecutionHistory)executionHistory;
+        f.delete(execId);
+    }
 }
 
 
 /* 
 $Log: MessagingExecutionController.java,v $
+Revision 1.4  2005/11/11 17:53:27  nw
+added cea polling to lookout.
+
 Revision 1.3  2005/11/11 10:08:18  nw
 cosmetic fixes
 

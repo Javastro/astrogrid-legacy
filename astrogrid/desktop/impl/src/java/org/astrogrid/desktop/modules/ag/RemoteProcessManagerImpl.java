@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.2 2005/11/10 16:28:26 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.3 2005/11/11 17:53:27 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
+import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.framework.DefaultModule;
@@ -37,8 +38,10 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
+import org.astrogrid.desktop.modules.background.JesStrategyImpl;
 import org.astrogrid.desktop.modules.system.ScheduledTask;
 
+import org.picocontainer.Startable;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -63,7 +66,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
  *
  */
-public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModuleListener, MessageRecorderInternal.RecorderListener {
+public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModuleListener, MessageRecorderInternal.RecorderListener, Startable {
     /**
      * Commons Logger for this class
      */
@@ -72,15 +75,20 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
     /** Construct a new RemoteProcessManagerImpl
      * 
      */
-    public RemoteProcessManagerImpl(MessageRecorderInternal recorder, MutableACR reg, MyspaceInternal vos
+    public RemoteProcessManagerImpl(MessageRecorderInternal recorder, MutableACR reg, MyspaceInternal vos) {
+            this(recorder,reg,vos,null);
+    }; 
+    public RemoteProcessManagerImpl(MessageRecorderInternal recorder, MutableACR reg, MyspaceInternal vos, SystemTray tray
              ) {
         super();
         this.recorder = recorder;
         this.vos = vos;
+        this.tray = tray;
         strategies = new ArrayList();
         reg.addNewModuleListener(this);
         recorder.addRecorderListener(this);
     }
+    final SystemTray tray;
     final MessageRecorderInternal recorder;
     final List strategies;
     final MyspaceInternal vos;
@@ -325,11 +333,54 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
     return result;
    }
 
+/**
+ * register sys tray as a listener, if its around.
+ */
+public void start() {
+    if (tray != null) { // as not available on all platforms
+        addRemoteProcessListener(null,new RemoteProcessListener() {
+
+            public void statusChanged(URI arg0, String arg1) {
+                if (JesStrategyImpl.isCompletedOrError(arg1)) {
+                    try {
+                    Folder f = recorder.getFolder(arg0);
+                    String name = f.getInformation().getName();
+                    if (arg1.equals("ERROR")) {
+                        tray.displayWarningMessage(name + " ended in error","See VO Lookout for details");
+                    } else {
+                        tray.displayInfoMessage(name + " completed successfuly","See VO Lookout for results");
+                    }
+                    } catch (IOException e) {
+                        logger.warn("Failed to find folder for id - " + arg0,e);
+                    }
+                }
+            }
+
+            public void messageReceived(URI arg0, ExecutionMessage arg1) {
+            }
+
+            public void resultsReceived(URI arg0, Map arg1) {
+            }
+            
+        });
+    }
+}
+
+/**
+ * @see org.picocontainer.Startable#stop()
+ */
+public void stop() {
+    // does nothing
+}
+
 }
 
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.3  2005/11/11 17:53:27  nw
+added cea polling to lookout.
+
 Revision 1.2  2005/11/10 16:28:26  nw
 added result display to vo lookout.
 

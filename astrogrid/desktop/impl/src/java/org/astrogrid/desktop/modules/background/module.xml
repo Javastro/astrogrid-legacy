@@ -22,13 +22,14 @@
 			</property>		
 	</component>
 
-	<component name="ceamonitor"
-		implementationClass="org.astrogrid.desktop.modules.background.CeaMonitorScheduledTask"
-		interfaceClass="org.astrogrid.desktop.modules.system.ScheduledTask">
+	<component name="ceaStrategy"
+		implementationClass="org.astrogrid.desktop.modules.background.CeaStrategyImpl"
+		interfaceClass="org.astrogrid.desktop.modules.background.CeaStrategyInternal">
 			<property>
 				<key>hidden.component</key>
 				<value>true</value>								
 			</property>		
 	</component>
-	
+
+
 </module>

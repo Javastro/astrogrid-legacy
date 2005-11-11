@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.7 2005/11/01 09:19:46 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.8 2005/11/11 17:53:27 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,27 +17,20 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.acr.nvo.ConeInformation;
-import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.delegate.CEADelegateException;
-import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.common.bean.BaseBean;
-import org.astrogrid.desktop.modules.background.TasksInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
-import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -60,11 +53,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -86,22 +76,19 @@ public class ApplicationsImpl implements ApplicationsInternal {
     /** 
      * 
      */
-    public ApplicationsImpl(Community community,MyspaceInternal vos, Registry reg, ACR acr) throws  ACRException{
+    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, Registry reg, ACR acr) throws  ACRException{
+        this.manager = manager;
         this.vos = vos;
         this.reg = reg;
-        this.community = community;
+        //@todo move this into strategy, or remote process manager, later.
         this.adql = (Adql074) acr.getService(Adql074.class); // necessary work-around - can't get at the adql component by constructor-injection
-        // as it belongs in a later module, and so isn't visible from this component. - so fetch manually from the acr
-        // likewise, can't reorder modules - as other components in the later module depend on components in this one.
-        this.cea = (TasksInternal) acr.getService(TasksInternal.class);
-        this.ceaHelper = new CeaHelper(reg);
+
     }
-    protected final MyspaceInternal vos;
+    protected final RemoteProcessManager manager;
+    private final MyspaceInternal vos;
     protected final Registry reg;
     protected final Adql074 adql;
-    protected final TasksInternal cea;
-    protected final Community community;
-    protected final CeaHelper ceaHelper;
+
    
     public URI[] list() throws ServiceException {   
         try {
@@ -493,141 +480,25 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
            }
   
     }
-    
-    
+        
     public URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException {
-        InputStream r = vos.getInputStream(documentLocation);
-        try {
-        Document doc = XMLUtils.newDocument(r);
-        return submit(doc);
-        } catch (IOException e) {
-            throw new NotFoundException(e);
-        } catch (ParserConfigurationException e) {
-            throw new ServiceException(e);
-        } catch (SAXException e) {
-            throw new InvalidArgumentException(e);
-        }
+        return manager.submitStored(documentLocation);       
     }
-    
-   
-
-    
+           
     public URI submitStoredTo(URI documentLocation, URI server) throws InvalidArgumentException, ServiceException, SecurityException, NotFoundException {
-        InputStream r = vos.getInputStream(documentLocation);
-        try {
-        Document doc = XMLUtils.newDocument(r);
-        return submitTo(doc,server);
-        } catch (IOException e) {
-            throw new NotFoundException(e);
-        } catch (ParserConfigurationException e) {
-            throw new ServiceException(e);
-        } catch (SAXException e) {
-            throw new InvalidArgumentException(e);
-        }
+        return manager.submitStoredTo(documentLocation,server);    
     } 
     
 
     public URI submit(Document doc) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
-        // munge name in document, if incorrect..       
-        Tool document;
-        ApplicationInformation info;
-        try {
-            document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
-        if (document.getName().startsWith("ivo://")) {
-            document.setName(document.getName().substring(6));
-        }
-            URI application = new URI("ivo://" + document.getName());
-            info = getApplicationInformation(application);
-        } catch (URISyntaxException e) {
-            throw new InvalidArgumentException(e);
-        } catch (MarshalException e) {
-            throw new InvalidArgumentException(e);
-        } catch (ValidationException e) {
-            throw new InvalidArgumentException(e);
-        }
-
-        
-        ResourceInformation[] arr = listProvidersOf(info.getId());
-        ResourceInformation target = null;
-        switch(arr.length) {            
-            case 0:
-                throw new IllegalArgumentException(info.getName() +" has no registered providers");
-            case 1:
-                target = arr[0];
-                break;
-            default:
-                List l =  Arrays.asList(arr);
-                Collections.shuffle(l);
-                target = (ResourceInformation)l.get(0);
-        }
-        return invoke(info,document,target);    
+       return manager.submit(doc);
     }
     
     public URI submitTo(Document doc, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException {
-        // munge name in document, if incorrect..       
-        ApplicationInformation info;
-        Tool document;
-        try {
-            document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
-        if (document.getName().startsWith("ivo://")) {
-            document.setName(document.getName().substring(6));
-        }
-            URI application = new URI("ivo://" + document.getName());
-            info = getApplicationInformation(application);
-        } catch (URISyntaxException e) {
-            throw new InvalidArgumentException(e);
-        } catch (MarshalException e) {
-            throw new InvalidArgumentException(e);
-        } catch (ValidationException e) {
-            throw new InvalidArgumentException(e);
-        }
-        ResourceInformation[] arr = listProvidersOf(info.getId());
-        ResourceInformation target = null;
-        for (int i = 0; i < arr.length ; i++) {
-            if (arr[i].getId().equals(server)) { 
-                target = arr[i];
-                break;
-            }
-        }
-        if (target == null) {
-            throw new InvalidArgumentException(server + " does not provide application " + info.getName());            
-        }        
-       return invoke(info,document,target);        
+      return manager.submitTo(doc,server); 
     }   
     
-    /** actually executes an applicaiton.
-     * first checks whether it can be serviced by the local cea lib.
-     * if not, delegates to a remote cea server 
-     * @param application
-     * @param document
-     * @param server
-     * @return
-     * @throws ServiceException
-     */
-    private URI invoke(ApplicationInformation application, Tool document, ResourceInformation server)
-    throws ServiceException {
-        translateQueries(application, document);
-        try {
-        //fudge some kind of job id type. hope this will do.
-            JobIdentifierType jid = new JobIdentifierType(server.getId().toString());
-            if (cea.getAppLibrary().hasMatch(application)) {           
-                String primId = cea.getExecutionController().init(document,jid.toString());
-                if (!cea.getExecutionController().execute(primId)) {
-                    throw new ServiceException("Failed to start application, for unknown reason");
-                }
-                return ceaHelper.mkLocalTaskURI(primId);
-            } else {
-                CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(server);
-                String primId = del.init(document,jid);
-                del.execute(primId);
-                return ceaHelper.mkRemoteTaskURI(primId,server);
-            }
-        } catch (CeaException e) {
-            throw new ServiceException(e);
-        } catch (CEADelegateException e) {
-            throw new ServiceException(e);
-        } 
-    }
+  
     
     /**
      * @param application
@@ -657,65 +528,14 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
  
  
     public void cancel(URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException {
-        try { 
-            String ceaid = ceaHelper.getAppId(executionId);
-            if (ceaHelper.isLocal(executionId)) {
-                cea.getExecutionController().abort(ceaid);
-            } else {
-                CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(executionId);
-                del.abort(ceaid);
-            }
-        } catch (CeaException e) { //@todo improve this - match subtypes to different kinds of excpeiton.
-            throw new ServiceException(e);
-        } catch (CEADelegateException e) {
-            throw new ServiceException(e);
-        }
+        manager.halt(executionId);
     }  
 
     public ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException {
-        try {
-            String ceaId = ceaHelper.getAppId(executionId);
-            final ExecutionSummaryType ex;
-            if (ceaHelper.isLocal(executionId)) {
-                ex = cea.getQueryService().getSummary(ceaId);
-            } else {
-                ex = ceaHelper.createCEADelegate(executionId).getExecutionSumary(ceaId);
-            }
-        //@todo see if we can improve information returned.
-        return new ExecutionInformation(
-                executionId
-                ,ex.getApplicationName()
-                ,"Single Application"
-                ,ex.getStatus().toString()
-                ,null
-                ,null
-                );
-        } catch (CeaException e) {
-            throw new ServiceException(e);
-        } catch (CEADelegateException e) {
-            throw new ServiceException(e);
-        }        
+        return manager.getExecutionInformation(executionId);
     }
     public Map getResults(URI executionId) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
-        try {
-            final ResultListType results;
-            String ceaId = ceaHelper.getAppId(executionId);
-            if (ceaHelper.isLocal(executionId)) {                
-                results = cea.getQueryService().getResults(ceaId);
-            } else {
-                results = ceaHelper.createCEADelegate(executionId).getResults(ceaId);
-            }     
-            Map map = new HashMap();
-            ParameterValue[] vals = results.getResult();        
-            for (int i = 0; i < vals.length; i++) {
-                map.put(vals[i].getName(),vals[i].getValue());
-            }
-            return map;
-        } catch (CeaException e) {
-            throw new ServiceException(e);
-        } catch (CEADelegateException e) {
-            throw new ServiceException(e);
-        }  
+        return manager.getResults(executionId);
     }
            
     
@@ -724,6 +544,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.8  2005/11/11 17:53:27  nw
+added cea polling to lookout.
+
 Revision 1.7  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

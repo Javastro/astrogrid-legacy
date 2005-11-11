@@ -1,4 +1,4 @@
-/*$Id: TasksInternal.java,v 1.2 2005/11/10 10:46:58 nw Exp $
+/*$Id: TasksInternal.java,v 1.3 2005/11/11 17:53:27 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.applications.manager.QueryService;
  *
  */
 public interface TasksInternal {
-    public ExecutionController getExecutionController();
+    public ManagingExecutionController getExecutionController();
 
     public QueryService getQueryService();
     
@@ -28,6 +28,9 @@ public interface TasksInternal {
 
 /* 
 $Log: TasksInternal.java,v $
+Revision 1.3  2005/11/11 17:53:27  nw
+added cea polling to lookout.
+
 Revision 1.2  2005/11/10 10:46:58  nw
 big change around for vo lookout
 

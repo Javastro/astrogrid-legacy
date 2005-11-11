@@ -13,151 +13,89 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	<release version="1.3-beta-4" date="2005-11-11">
-		<action dev="nw" type="update">
-			upgraded to new registry delegate
+	<release version="1.3-beta" date="2005-11-11">
+		<action dev="kmb" type="add">
+			AstroScope - query all registered siap and cone services, 
+			vizualize and navigate results, save data locally or to myspace
 		</action>
-		<action dev="nw" type="fix">
-			icons and other cosmetic improvements
-		</action>
-	</release>
-	<release version="1.3-alpha-3" date="2005-11-8">
-		<action dev="jdt" type="fix" issue="1448">
-			Broken report a bug link in help.
-		</action>			
-		<action dev="jdt" type="fix" issue="1365">
-			Stopped VOSpace browser intialising with a disabled tab selected.
-		</action>		
+
 		<action dev="pjn" type="add">
-			Workflow Builder JavaHelp 
+			Completed JES Workflow editor.
 		</action>
-		<action dev="nw" type="add">
-			First working draft of vo lookout
+							
+		<action dev="pjn, nw" type="fix">
+			Improved Query and Application launcher for CEA / SIAP / CONE services.
+			Handles repeating and optional parameters.
+		</action>	
+				
+		<action dev="kmb, pjn, nw" type="add">
+			Registry  Google - search, browse and select formatted registry entries. 
 		</action>
-		<action dev="nw" type="fix">
-			view results in volookout
-		</action>
-		<action dev="kmb" type="fix">
-			Visual improvements to astroscope, basic help
-		</action>
-		<action dev="pjn" type="fix">
-			further improvements to worklow builder and application launcher ui
-		</action>
-		<action dev="kmb" type="fix">
-			further improvements to astroscope - reset on new query, positioning fixes.
-		</action>
-		<action dev="nw" type="fix">
-			Moved more jars out into extensions, freshened versions
-		</action>
-		<action dev="nw" type="update">
-			Updated to axis 1.3, and new set of AG delegates
-		</action>
-	</release>
-	<release version="1.3-alpha-2" date="2005-11-3">
-		<action dev="nw" type="add">
-			Application launcher supports cone and siap
-		</action>
-		<action dev="pjn" type="fix">
-			improvements to worklow builder and application launcher ui
-		</action>
-		<action dev="kmb" type="fix">
-			improvements to astroscope
-		</action>
+
 		<action dev="kmb" type="add">
-			alternative, clustering astroscope implementation
-		</action>
-	</release>
-	<release version="1.3-alpha-1" date="2005-10-27">
-		<action dev="nw" type="add" issue="1389">
-			Local CEA server (for siap and cone) messages workbench of execution progress.
-			Remote CEA servers to follow.
-		</action>
-		<action dev="nw" type="add" issue="1393">
-			Integrated Cone into application execution system - siap to follow
-		</action>
+			NVO DataScope launcher - saves results from datascope into myspace
+		</action>		
+
 		<action dev="nw" type="add">
-			Lookout - first draft
+			VO Lookout - launch, monitor, and control remote processes 
+			(CEA / SIAP / Cone queries and tasks, JES workflows). View results.
 		</action>
-		<action dev="kmb" type="add">
-			AstroScope - first draft
+
+		<action dev="nw" type="add">
+			In-program help - some documentation there, more to come
 		</action>
-	</release>
-	<release version="1.2.4-beta-3" date="unreleased">
+		
 		<action dev="nw" type="add" issue="1392">
-			Added ACR support for Siap and Cone services
-		</action>
-		<action dev="nw" type="fix">
-			added fallback registry endpoint to configuraiton
-		</action>
-	</release>
-	<release version="1.2.4-beta-2" date="2005-10-14">
-		<action dev="nw" type="fix" due-to="Mark Taylor">
-			Fixed myspace upload to work under java 1.5.
-			Fixed documentation for getWriteContentURL()
-		</action>
-	</release>
-	<release version="1.2.4-beta-1" date="2005-10-12">
-		<action dev="nw" type="add">
-			Help system
-		</action>
-		<action dev="kmb" type="add">
-			datascope lite
-		</action>
+			ACR support for Siap and Cone services - low level interface, plus
+			integration with remote process system.
+		</action>		
+					
 		<action dev="kmb" type="add">
 			Upload and unzip archives to myspace
-		</action>
-		<action dev="nw" type="fix" issue="1379">
-			job monitor handles failure to communicate with cea servers gracefully
-		</action>
-		<action dev="nw" type="fix" issue="1380">
-			exception handling in pw launcher more graceful
-		</action>
-	</release>
-	<release version="1.2-beta-3" date="2005-10-05">
+		</action>		
+
 		<action dev="nw" type="fix">
-			hide left-hand button bar on startup - less daunting for novices.
+			hide left-hand button bar on startup - less daunting for beginners.
 		</action>
-		<action dev="pjn" type="fix">
-			made code work with 1.4 again.
-		</action>			
-		<action dev="pjn" type="add">
-			Workflow viewer is now a Workflow builder!
-		</action>
-		<action dev="jdt" type="fix">
-			This build should include a rebuilt CDK, which in turn should
-			contain a fixed registry delegate.  Those strange ivorn://null
-			errors should go away.
-		</action>
-	</release>		
-<release version="1.2-beta-2" date="2005-09-16">
-		<action dev="nw" type="fix">
-			Registry Beans now cached
-		</action>
-		<action dev="kmb" type="add">
-			Registry Chooser / Google
-		</action>
-		<action dev="nw" type="add">
-			Tool editor infrastructure
-		</action>
+
 		<action dev="nw" type="add">
 			Basic ADQL query builder
 		</action>
+
+		<action dev="nw" type="fix">
+			added fallback registry endpoint to configuraiton
+		</action>		
+
 		<action dev="nw" type="update">
-			Improved Workflow editor
+			Moved more jars into extensions, updated versions.
+			(Axis 1.3, new Astrogrid libraries)
+		</action>	
+
+		<action dev="nw" type="fix" due-to="Mark Taylor">
+			Fixed myspace upload to work under java 1.5.
+			Fixed documentation for getWriteContentURL()
+		</action>	
+
+		<action dev="jdt" type="fix" issue="1448">
+			Broken report a bug link in help.
+		</action>			
+
+		<action dev="jdt" type="fix" issue="1365">
+			Stopped VOSpace browser intialising with a disabled tab selected.
+		</action>		
+		
+		<action dev="nw" type="fix">
+			Improved icons and other cosmetic improvements
 		</action>
-		<action dev="nw" type="add">
-			Added ADQL translation service
-		</action>
+
 	</release>
-	<release version="1.2-beta-1" date="unreleased">
-		<action dev="nw" type="add">
-			Added interfaces and development skeletons for registry google and
-			query editor dialogs.
-		</action>
-		<action dev="nw" type="add">
-			Added methods to Job service to create new workflow document
-		</action>
-	</release>
+
+
+
+
+
+	
+	
 	<release version="1.1" date="2005-09-01">
 		<action dev="nw" type="update">
 			Based on 1.1-beta-3
