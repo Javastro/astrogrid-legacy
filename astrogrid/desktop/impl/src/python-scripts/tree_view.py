@@ -24,14 +24,13 @@ def show(folder, indentLvl=0):
     for f in files:
         print indent + "  " + f
 
+def showRoot():
+    home = acr.astrogrid.myspace.getHome()
+    print "HomeSpace: " + home
+    # home should be a directory !
+    show(home)
 
-
-
-home = acr.astrogrid.myspace.getHome()
-print "HomeSpace: " + home
-# home should be a directory !
-show(home)
-
+showRoot()
 
 
     
