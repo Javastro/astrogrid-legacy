@@ -1,6 +1,6 @@
 # A module to connect to the ACR
 # Use it as:
-#   from import import acr
+#   from astrogrid import acr
 #   Then acr.astrogrid.myspace ....etc
 #   Author: jdt@roe.ac.uk
 
