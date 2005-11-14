@@ -1,5 +1,5 @@
 /**
- * $Id: Validator.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: Validator.java,v 1.3 2005/11/14 15:04:47 kea Exp $
  *
  */
 
@@ -50,6 +50,7 @@ public class Validator  {
     */
    public static ErrorRecorder isValid(InputStream xml) throws SAXException, IOException {
       ErrorRecorder recorder = isValidUsingXerces(xml);
+
       if (recorder.hasErrors() || recorder.hasWarnings()) {
          return recorder;
       }
@@ -89,11 +90,13 @@ public class Validator  {
 
    }
 
-   /** This validates the given stream using the Xerces library */
+   /** This validates the given stream using the Xerces library.
+    * Note that schema validation (rather than DTD validation) is used. 
+    * @TOFIX: Work out why the CatalogResolver isn't working.
+    */
    private static ErrorRecorder isValidUsingXerces(InputStream xml) throws SAXException, IOException {
-
-      // set up catalog so that local schema copies are used instead of remote ones
-      // if possible
+      // set up catalog so that local schema copies are used instead of 
+      // remote ones if possible (NOTE - actual use disabled below)
       String[] catalogs = new String[] { ""+Validator.class.getResource("catalog.xml") };
       XMLCatalogResolver resolver = new XMLCatalogResolver();
       resolver.setPreferPublic(true);
@@ -101,8 +104,15 @@ public class Validator  {
       
       SAXParser parser = new SAXParser();
       parser.setFeature("http://xml.org/sax/features/validation", true);
-      parser.setProperty("http://apache.org/xml/properties/internal/entity-resolver", resolver);
-      
+      // Use schema (rather than DTD) validation
+      parser.setFeature ("http://apache.org/xml/features/validation/schema", 
+          true);
+      parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true); 
+
+      // Disabled by KEA because it was causing parse failures (couldn't find
+      // the schema, I think)
+      // parser.setProperty("http://apache.org/xml/properties/internal/entity-resolver", resolver);
+
       ErrorRecorder recorder = new ErrorRecorder();
       parser.setErrorHandler(recorder);
       parser.parse(new InputSource(xml));
@@ -111,4 +121,3 @@ public class Validator  {
    }
 
 }
-
