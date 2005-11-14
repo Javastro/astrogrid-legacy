@@ -1,4 +1,4 @@
-/*$Id: ValidatorTest.java,v 1.2 2005/05/27 16:21:16 clq2 Exp $
+/*$Id: ValidatorTest.java,v 1.3 2005/11/14 15:05:52 kea Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,7 @@ public class ValidatorTest extends TestCase  {
       
       assert badVoTable != null : "Test votable not found"; //throws error rather than fail
       
-      assertNull("Validator incorrectly finds no errors in invalid xml document at "+badVoTable, Validator.isValid(badVoTable.openStream()));
+      assertNotNull("Validator incorrectly finds no errors in invalid xml document at "+badVoTable, Validator.isValid(badVoTable.openStream()));
    }
    
    /** checks that badly formed votable fails */

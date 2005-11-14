@@ -5,8 +5,8 @@
          version='1.1'>
 <RESOURCE>
 <TABLE>
-<FIELD name='RA' ID='TEST:TABLE.RA'  ucd='POS_EQ_RA_MAIN' datatype='float' unit='deg' />
-<FIELD name='ID' ID='TEST:TABLE.ID'  ucd='ID' datatype='char' arraysize='*' unit='' />
+<FIELD name='RA' ID='TABLE.RA'  ucd='POS_EQ_RA_MAIN' datatype='float' unit='deg' />
+<FIELD name='ID' ID='TABLE.ID'  ucd='ID' datatype='char' arraysize='*' unit='' />
 <DATA>
 <TABLEDATA>
 <TR><TD>0.0</TD><TD>0</TD></TR>
