@@ -1,4 +1,4 @@
-/*$Id: DefaultModule.java,v 1.2 2005/09/12 15:21:16 nw Exp $
+/*$Id: DefaultModule.java,v 1.3 2005/11/15 19:39:07 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.picocontainer.PicoRegistrationException;
 import org.picocontainer.PicoVerificationException;
 import org.picocontainer.PicoVisitor;
 import org.picocontainer.alternatives.ImmutablePicoContainer;
+import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 import org.picocontainer.defaults.DefaultPicoContainer;
 
 import java.io.Serializable;
@@ -186,14 +187,22 @@ public class DefaultModule  implements PicoContainer, Module, Serializable{
             throws PicoRegistrationException {
         return this.pico.registerComponentImplementation(arg0);
     }
-    public ComponentAdapter registerComponentImplementation(Object arg0, Class arg1)
-            throws PicoRegistrationException {
-        return this.pico.registerComponentImplementation(arg0, arg1);
-    }
+
     public ComponentAdapter registerComponentImplementation(Object arg0, Class arg1, Parameter[] arg2)
             throws PicoRegistrationException {
         return this.pico.registerComponentImplementation(arg0, arg1, arg2);
     }
+    
+    //
+    
+    // uses the default component configuraiton - a singleton.
+    public ComponentAdapter registerComponentImplementation(Object interfaces, Class impl) throws PicoRegistrationException{
+        return this.pico.registerComponentImplementation(interfaces,impl);
+    }
+
+    
+    //
+    
     public ComponentAdapter registerComponentInstance(Object arg0) throws PicoRegistrationException {
         return this.pico.registerComponentInstance(arg0);
     }
@@ -228,6 +237,12 @@ public class DefaultModule  implements PicoContainer, Module, Serializable{
 
 /* 
 $Log: DefaultModule.java,v $
+Revision 1.3  2005/11/15 19:39:07  nw
+merged in improvements from release branch.
+
+Revision 1.2.24.1  2005/11/15 19:33:38  nw
+allowed singlton and non-singleton components.
+
 Revision 1.2  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

@@ -29,7 +29,9 @@
 	
 		<component name="astroscope" 
 		implementationClass="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" 
-		interfaceClass="org.astrogrid.acr.ui.AstroScopeLauncher" >
+		interfaceClass="org.astrogrid.acr.ui.AstroScopeLauncher" 
+		singleton="false"
+		>
 		<description>Launch AstroScope</description>	
 		<property>
 			<key>system.ui.menu.links</key>
@@ -119,7 +121,8 @@
 	
 <component name="applicationLauncher" 
 		implementationClass="org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl" 
-		interfaceClass="org.astrogrid.acr.ui.ApplicationLauncher" >
+		interfaceClass="org.astrogrid.acr.ui.ApplicationLauncher" 
+		singleton="false">
 		<description>Launch Queries and Applications</description>
 		<property>
 			<key>system.ui.menu.links</key>
@@ -149,7 +152,8 @@
 
 	<component name="workflowBuilder" 
 	  implementationClass="org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl" 
-	  interfaceClass="org.astrogrid.acr.ui.WorkflowBuilder" >
+	  interfaceClass="org.astrogrid.acr.ui.WorkflowBuilder" 
+	  singleton="false">
 	  <description>Build workflows</description>
 		<property>
 			<key>system.ui.menu.links</key>
@@ -176,7 +180,8 @@
 	  
 	<component name="myspaceBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" 
-		interfaceClass="org.astrogrid.acr.ui.MyspaceBrowser" >
+		interfaceClass="org.astrogrid.acr.ui.MyspaceBrowser" 
+		singleton="false">
 		<description>Work with your files in MySpace</description>
 		<property>
 			<key>system.ui.menu.links</key>
@@ -251,7 +256,9 @@
 	
 	<component name="registryBrowser" 
 		implementationClass="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" 
-		interfaceClass="org.astrogrid.acr.ui.RegistryBrowser" >
+		interfaceClass="org.astrogrid.acr.ui.RegistryBrowser" 
+		singleton="false"
+		>
 		<description>View registry entries using a basic browser</description>
 	<property>
 			<key>system.ui.menu.links</key>

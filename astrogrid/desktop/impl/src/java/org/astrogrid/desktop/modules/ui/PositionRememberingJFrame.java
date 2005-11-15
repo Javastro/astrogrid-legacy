@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.5 2005/11/01 09:19:46 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.6 2005/11/15 19:39:07 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,6 +50,7 @@ public class PositionRememberingJFrame extends JFrame {
         this.configuration = conf;
         this.ui = ui;
         this.help = help;
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
  
     
@@ -119,16 +120,22 @@ public class PositionRememberingJFrame extends JFrame {
         if(this.isVisible() != b) {
         if (b) {
             loadConfiguration();
+            super.setVisible(b);            
         } else {
             saveConfiguration();
+            super.setVisible(b);
+            this.dispose();
+            System.gc();
         }
-        super.setVisible(b);
+
         }
     }
     public void hide() {
         if (this.isVisible()) {
             saveConfiguration();
             super.hide();
+            this.dispose();
+            System.gc();
         }
     }
     public void show() {
@@ -142,6 +149,12 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.6  2005/11/15 19:39:07  nw
+merged in improvements from release branch.
+
+Revision 1.5.10.1  2005/11/15 19:34:41  nw
+added cleanup on window close.
+
 Revision 1.5  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

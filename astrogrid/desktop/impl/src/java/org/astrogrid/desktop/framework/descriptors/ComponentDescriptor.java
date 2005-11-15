@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.3 2005/11/15 19:39:07 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,6 +48,15 @@ public class ComponentDescriptor extends Descriptor{
     
     protected Class interfaceClass;
     protected transient Class implementationClass;
+    protected boolean singleton = true; // defaults to true.
+    
+    public void setSingleton(boolean singleton) {
+        this.singleton = singleton;    
+    }
+    
+    public boolean isSingleton() {
+        return this.singleton;
+    }
     
     /** return the implementation class for this component */
     public Class getImplementationClass() {
@@ -94,6 +103,12 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.3  2005/11/15 19:39:07  nw
+merged in improvements from release branch.
+
+Revision 1.2.28.1  2005/11/15 19:33:47  nw
+allowed singlton and non-singleton components.
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

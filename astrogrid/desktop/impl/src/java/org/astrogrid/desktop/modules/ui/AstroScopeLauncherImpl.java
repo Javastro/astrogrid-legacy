@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.23 2005/11/11 10:27:41 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.24 2005/11/15 19:39:07 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
@@ -94,6 +96,7 @@ import edu.berkeley.guir.prefuse.render.DefaultEdgeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultNodeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultRendererFactory;
 import edu.berkeley.guir.prefuse.render.ImageFactory;
+import edu.berkeley.guir.prefuse.render.MultiLineTextItemRenderer;
 import edu.berkeley.guir.prefuse.render.NullRenderer;
 import edu.berkeley.guir.prefuse.render.Renderer;
 import edu.berkeley.guir.prefuse.render.RendererFactory;
@@ -132,6 +135,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -300,9 +304,14 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * to myspace or filesystem.  User MUST CHOOSE a directory node.  Does the work in a background
      * thread.  Allows for selection of All or pieces such as only sia and/or cone (which looks at graph nodes).
      * Called by the saveButton action.
+     * @throws InvalidArgumentException
+     * @throws SecurityException
+     * @throws NotFoundException
+     * @throws ServiceException
+     * @throws HeadlessException
      *
      */
-    private void saveData() {
+    private void saveData() throws HeadlessException, ServiceException, NotFoundException, SecurityException, InvalidArgumentException {
         comm.getUserInformation();
         //choose a uri to save the data to.             
         final URI u = chooser.chooseResourceWithParent("Save Data",true,true,true,false,AstroScopeLauncherImpl.this);
@@ -311,29 +320,27 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         }
         
         logger.debug("the uri chosen = " + u.toString());
+        File file = null;
+        //make sure they chose a directory if not then return.
+        if("file".equals(u.getScheme())) {
+            file = new File(u);
+            if(!file.isDirectory()) {
+                JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
+                        "You can only save data to a folder or directory, nothing was saved.",
+                        "No Directory Selected", JOptionPane.OK_OPTION );
+                return;
+            }                             
+        }else {
+            if(!     myspace.getNodeInformation(u).isFolder()) {
+                JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
+                        "You can only save data to a folder or directory, nothing was saved",
+                        "No Directory Selected", JOptionPane.OK_OPTION );
+                return;
+            }                             
+        }//else        
         (new BackgroundOperation("Saving Data") {
             protected Object construct() throws Exception {
-                //@todo KEVIN - this parameter checking and showing message dialogs musn't be done in a background operation
-                // do it before entering the background op.
-                File file = null;
-                //make sure they chose a directory if not then return.
-                if(u.toString().startsWith("file:")) {
-                    file = new File(u);
-                    if(!file.isDirectory()) {
-                        JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
-                                "You can only save data to a folder or directory, nothing was saved.",
-                                "No Directory Selected", JOptionPane.OK_OPTION );
-                        return null;
-                    }                             
-                }else {
-                    FileManagerNode fmn = myspace.node(u);
-                    if(!fmn.isFolder()) {
-                        JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
-                                "You can only save data to a folder or directory, nothing was saved",
-                                "No Directory Selected", JOptionPane.OK_OPTION );
-                        return null;
-                    }                             
-                }//else
+             
                 
                 Set processedServices = new HashSet();
                 String []urls;
@@ -345,15 +352,17 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                     if (tn.getChildCount() > 0) {
                         continue;
                     }
-                    TreeNode parent = tn.getParent();                           
+                    TreeNode point = tn.getParent();      
+                    TreeNode catalog = point.getParent().getParent();
                     try {
                     // ok. got a bit of selected data. if it's an image, save it.
-                        if (tn.getAttribute("imgURL") != null) { // its siap - this is a reference to the image  
-                            urls = tn.getAttribute("imgURL").split("\\|");
+                        if (tn.getAttribute("imgURL") != null) { // its siap - this is a reference to the image
+                            //@todo remove this - don't have multiple urls anymore.
+                            urls = new String[]{tn.getAttribute("imgURL")};// not clustering any more.tn.getAttribute("imgURL").split("\\|");
                             for(int j = 0;j < urls.length;j++) {
                                 //System.out.println("the image urls = " + urls[j]);
                                 URL url = new URL(urls[j]); // url to the image.
-                                String name = conformToMyspaceName(parent.getParent().getAttribute("label") + "_" + parent.getAttribute("label") +"_" + tn.getAttribute("label") + "_" + System.currentTimeMillis() + "." + tn.getAttribute("type"));
+                                String name = conformToMyspaceName(catalog.getAttribute("label") + "_" + point.getAttribute("label") +"_" + tn.getAttribute("label") + "_" + System.currentTimeMillis() + "." + tn.getAttribute("type"));
                                 final String finalName = name;
                                 // @todo not sure whether the label of the image node is enough to uniquely identify it - maybe we should use the row number of it within the votable siap response,
                                 // and save the siap response too - as it's
@@ -369,7 +378,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                 if(finalURI.getScheme().startsWith("ivo")) {
                                     myspace.copyURLToContent(url,finalURI);
                                 }else {
-                                    //@todo close streams afterwards.
                                     try {
                                         is = url.openStream();
                                         os = myspace.getOutputStream(finalURI);
@@ -385,21 +393,14 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         } 
                         
                         // save the parent document - either a cone, or the siap response - which describes all the images.                        
-                        // parent holds the url for this catalog. - @todo - this will be different when clustering is introduced. url will probably be with grandparent node then.
+                        // parent holds the url for this catalog. - 
                         // check we've not processed this catalog already - because the user has selected another child node..
-                        if (processedServices.contains(parent)) {
+                        if (processedServices.contains(catalog)) {
                             continue;
                         }
-                        processedServices.add(parent); // record that we've done this catalog now.
-                        if(parent.getAttribute("url") == null) {
-                            parent = parent.getParent();
-                            if (processedServices.contains(parent)) {
-                                continue;
-                            }
-                            processedServices.add(parent); // record that we've done this catalog now.                            
-                        }
-                        URL url = new URL(parent.getAttribute("url"));
-                        final String name = conformToMyspaceName(parent.getAttribute("label") + ".vot");
+                        processedServices.add(catalog); // record that we've done this catalog now.
+                        URL url = new URL(catalog.getAttribute("url"));
+                        final String name = conformToMyspaceName(catalog.getAttribute("label") + ".vot");
                         URI finalURI = new URI(u.toString() +"/" + name);
                         SwingUtilities.invokeLater(
                                 new Runnable() {
@@ -411,7 +412,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         if(finalURI.getScheme().startsWith("ivo")) {
                             myspace.copyURLToContent(url,finalURI);
                         }else {
-                            //KEVIN - need to close streams in a finally block.
                             try {
                                 is = url.openStream();
                                 os = myspace.getOutputStream(finalURI);
@@ -423,13 +423,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                                     os.close();
                             }//try&finally
                         }//else
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         //e.printStackTrace();
                         // @todo should it show an error, or just report??
                         SwingUtilities.invokeLater(
                                 new Runnable() {
                                     public void run() {
-                                        AstroScopeLauncherImpl.this.setStatusMessage("Failed to save " + tn.getAttribute("label"));
+                                        AstroScopeLauncherImpl.this.setStatusMessage("Failed to save " + tn.getAttribute("label") + " : " + e.getMessage());
                                     }
                                 }
                         );                                 
@@ -593,7 +593,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         reFocusTopButton.setMaximumSize(buttonDim);
         reFocusTopButton.setToolTipText("Focus display to 'Search Results' ");
         graphControlsPanel.setLayout(new GridLayout(3,1));
-        graphControlsPanel.add(new JLabel("<html><body><b>Custom Graph Controls:</b></body></html>"));
+        graphControlsPanel.add(new JLabel("<html><body><b>Vizualization Controls:</b></body></html>"));
         graphControlsPanel.add(reFocusTopButton);
         graphControlsPanel.add(new JPanel());
         reFocusTopButton.addActionListener(this);
@@ -675,10 +675,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             Node n = (Node)i.next();
             n.setAttribute("selected","false");
         }        
-        // register each vizualization as a listener
-        //getSelectionFocusSet().set(rootNode);
-        //
-        refocusMainNodes();
+        refocusMainNodes();                
   
     }
     
@@ -689,10 +686,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      *
      */
     private void refocusMainNodes() {
-        for (int j =0; j < vizualizations.length; j++) {
-            vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(coneNode);
-            vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(siaNode);
-            vizualizations[j].getItemRegistry().getFocusManager().getDefaultFocusSet().set(rootNode);
+        for (int j =0; j < vizualizations.length; j++) {            
+            ItemRegistry itemReg = vizualizations[j].getItemRegistry();
+            FocusSet defaultFocusSet = itemReg.getFocusManager().getDefaultFocusSet();
+            defaultFocusSet.set(coneNode);
+            defaultFocusSet.set(siaNode);
+            defaultFocusSet.set(rootNode);
+            // force a garbage collection too - will remove any old visual nodes lurking after the real nodes have been removed.
+            itemReg.garbageCollectAggregates();
+            itemReg.garbageCollectEdges();
+            itemReg.garbageCollectNodes();
         }    
     }
     
@@ -741,7 +744,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
     protected final TextImageItemRenderer getTextRenderer() {
         if (nodeRenderer == null) {
             nodeRenderer = new TextImageItemSizeRenderer() ;
-            nodeRenderer.setMaxTextWidth(75);
+            nodeRenderer.setMaxTextWidth(150);
             nodeRenderer.setRoundedCorner(8,8);
             nodeRenderer.setTextAttributeName("label");
             nodeRenderer.setImageAttributeName("img");
@@ -1080,7 +1083,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 Filter[] filters = new Filter[] {
                         new WindowedTreeFilter(-2,true)
                         ,new WindowedTreeFilter(-1,true)
-                        ,new WindowedTreeFilter(-3,true)
+                        ,new WindowedTreeFilter(-4,true)
                 };            
                         
                 // switch between the two filters
@@ -1173,7 +1176,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
             logger.debug("actionPerformed(ActionEvent) - submit button clicked");
             query();
         }else if(source == saveButton) {
-            saveData();
+            try {
+                saveData();
+            } catch (Exception ex) {
+                showError("Failed to save results",ex);
+            }
         }else if(source == reFocusTopButton) {
             refocusMainNodes();
             reDrawGraphs();
@@ -1209,8 +1216,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 riNode.setAttribute("weight","2");
                 riNode.setAttribute("id", information.getId().toString());
                 riNode.setAttribute("url",siapURL.toString());
-                riNode.setAttribute("ra","0");
-                riNode.setAttribute("dec","0");
+                // unused - remove for efficiencie's sake
+                //riNode.setAttribute("ra","0");
+                //riNode.setAttribute("dec","0");
                 if (information.getLogoURL() != null) {
                     riNode.setAttribute("img",information.getLogoURL().toString());
                 }
@@ -1262,8 +1270,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 riNode.setAttribute("label",information.getTitle());              
                 riNode.setAttribute("id", information.getId().toString());
                 riNode.setAttribute("url",coneURL.toString());
-                riNode.setAttribute("ra","0"); // dummies for the plot viualization.
-                riNode.setAttribute("dec","0");     
+                //not usesd.
+                //riNode.setAttribute("ra","0"); // dummies for the plot viualization.
+                //riNode.setAttribute("dec","0");     
                 if (information.getLogoURL() != null) {
                     //System.out.println("found an image!!");
                     riNode.setAttribute("img",information.getLogoURL().toString());
@@ -1446,6 +1455,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                 int imgCol = -1;
                 int formatCol = -1;
                 int sizeCol = -1;
+                int titleCol = -1;
                 String[] titles = new String[starTable.getColumnCount()];
                 for (int col = 0; col < starTable.getColumnCount(); col++) {
                     ColumnInfo columnInfo = starTable.getColumnInfo(col);
@@ -1461,6 +1471,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                             formatCol = col;
                         } else if (ucd.equals("VOX:Image_FileSize")) {
                             sizeCol = col;
+                        } else if (ucd.equals("VOX:Image_Title")) {
+                            titleCol = col;
                         }
                     }
                     titles[col] = columnInfo.getName() + " (" + columnInfo.getUCD() + ")";
@@ -1478,23 +1490,35 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         String rowRa = row[raCol].toString();
                         String rowDec = row[decCol].toString();                                 
                         DefaultTreeNode valNode = new DefaultTreeNode();
-                        valNode.setAttribute("label",chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2) );
-                        valNode.setAttribute("ra",rowRa); // these might come in handy for searching later.
-                        valNode.setAttribute("dec",rowDec);
-                        if (imgCol >= 0) {
+                        String positionString = chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2) ;
+                        valNode.setAttribute("label","*");
+                        // unused
+                        //valNode.setAttribute("ra",rowRa); // these might come in handy for searching later.
+                        //valNode.setAttribute("dec",rowDec);
+                        if (imgCol >= 0) { // its an image - treat differently;.
                             String imgURL = row[imgCol].toString();
                             long size;
                             try {
-                                size = Long.parseLong(row[sizeCol].toString());
+                                size = Long.parseLong(row[sizeCol].toString()) / 1024; // kb.
                             } catch (Throwable t) { // not found, or can't parse
                                 size = Long.MAX_VALUE; // assume the worse
                             }
+                            String title; 
+                            if (titleCol > -1) {
+                                title = row[titleCol].toString();
+                            } else {
+                                title  = "untitled";
+                            }
                             valNode.setAttribute("imgURL",imgURL);
                             String format = row[formatCol].toString();
-                            valNode.setAttribute("type" , StringUtils.substringAfterLast(format,"/"));
+                            String type =  StringUtils.substringAfterLast(format,"/");
+                            valNode.setAttribute("type" ,type);
+                            /* unused
                             if (size < MAX_INLINE_IMAGE_SIZE && (format.equals("image/gif") || format.equals("image/png") || format.equals("image/jpeg"))) {
                                 valNode.setAttribute("preview",imgURL); // its a small image, of a suitable format for viewing.
                             }
+                            */
+                            valNode.setAttribute("label",title + ", " + type + ", " + size + "k");
                         } 
                         StringBuffer tooltip = new StringBuffer();
                         tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
@@ -1509,34 +1533,27 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
                         //System.out.println("about to call offset with vals " + ra + ", " + dec + ", " + Double.valueOf(rowRa).doubleValue() + ", " +  Double.valueOf(rowDec).doubleValue() + " for service = " + riNode.getAttribute("label"));
                         double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
                         String offsetVal = chopValue(String.valueOf(offset),2);
-                        TreeNode discoverNode = findNode(offsetVal, riNode);
+                        TreeNode offsetNode = findNode(offsetVal, riNode);
                         String tempAttr;
-                        TreeNode clusterNode;
-                        if(discoverNode == null) {
-                            clusterNode = new DefaultTreeNode();
-                            clusterNode.setAttribute("label",offsetVal);
-                            clusterNode.setAttribute("offset",offsetVal);
-                            clusterNode.setAttribute("tooltip",String.valueOf(offset));
+                        if(offsetNode == null) { // not found offset node.
+                            offsetNode = new DefaultTreeNode();
+                            offsetNode.setAttribute("label",offsetVal);
+                            offsetNode.setAttribute("offset",offsetVal);
+                            offsetNode.setAttribute("tooltip",String.valueOf(offset));
+                            riNode.addChild(new DefaultEdge(riNode,offsetNode));
                             nodeSizingMap.put(offsetVal,null);
-                            clusterNode.addChild(new DefaultEdge(clusterNode, valNode));
-                            riNode.addChild(new DefaultEdge(riNode,clusterNode));
-                        }else {
-                            clusterNode = findNode(valNode.getAttribute("label"), discoverNode);
-                            if(clusterNode == null) {
-                                discoverNode.addChild(new DefaultEdge(discoverNode, valNode));
-                            }else {
-                                //okay it already has this ra,dec child of the cluster
-                                //so add more urls to this imgURL attribute delimeted by "|".
-                                if(valNode.getAttribute("imgURL") != null) {
-                                    tempAttr = clusterNode.getAttribute("imgURL");
-                                    if(tempAttr == null)
-                                        tempAttr = valNode.getAttribute("imgURL");
-                                    else
-                                        tempAttr += "|" + valNode.getAttribute("imgURL");
-                                    clusterNode.setAttribute("imgURL",tempAttr);
-                                }
-                            }
                         }
+                        // now have found or created the offsetNode, find the pointNode within it.
+                        TreeNode pointNode = findNode(positionString,offsetNode);
+                        if (pointNode == null) {
+                            pointNode = new DefaultTreeNode();
+                            offsetNode.addChild(new DefaultEdge(offsetNode,pointNode));
+                            pointNode.setAttribute("label",positionString);
+                        }
+                        // now have found or created point node. add new result to this.
+                        
+                       pointNode.addChild(new DefaultEdge(pointNode,valNode));
+                                                                                                           
                     }//while rows in table.
                 }finally{
                     rSeq.close();
@@ -1556,77 +1573,85 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      */
     private void query() {
         logger.debug("query() - inside query method)");
-        final String position = getPosition();
-        if (position == null) {
-            showError("Could not parse position\nYou must enter RA,DEC or name of object known to SIMBAD");
-            return;
-        }
-        clearTree();
-        reFocusTopButton.setEnabled(true);
-        
-        // @todo refactor this string-munging methods.
-                       
-        final double ra = getRA(position);
-        final double dec = getDEC(position);
-        final String region = regionText.getText().trim();
-        final double size = needsParsedRegion() ? getRA(region) : getConeRegion();
-        final double raSize = needsParsedRegion() ?  getRA(region) : Double.parseDouble(region);
-        final double decSize= needsParsedRegion() ? getDEC(region) : raSize;
-                    
-        (new BackgroundWorker(AstroScopeLauncherImpl.this,"Searching For Services") {
-            private ResourceInformation[] siaps = new ResourceInformation[]{};
-            private ResourceInformation[] cones = new ResourceInformation[]{};
+        (new BackgroundOperation("Checking Position") {
             protected Object construct() throws Exception {
-                // query registry for resources.
-                // for each resource found, create a new task to retrieve, parse and add it to the display.
-                // each task is sent to the executor - which queues them and then executes them on 5 threads.
-                // this is better than writing a single thread that loops over all tasks, as a network-block on one service
-                // only holds up it's own thread - the others continue regardless.
-                if (siaCheckBox.isSelected()) {
-                    siaps = reg.adqlSearchRI(siap.getRegistryQuery());                    
-                    for (int i = 0; i < siaps.length; i++) {
-                        if (siaps[i].getAccessURL() != null) {
-                            try {
-                            executor.execute(new SiapRetrieval(siaps[i],ra,dec,raSize,decSize));
-                            } catch (Exception e) {
-                                // carry on
-                                logger.info("Failed to start task",e);
-                            }
-                        }
-                    }
-                } 
-                if (coneCheckBox.isSelected()) {
-                    cones = reg.adqlSearchRI(cone.getRegistryQuery());
-                    for (int i = 0; i < cones.length; i++) {
-                        if (cones[i].getAccessURL() != null) {
-                            try {
-                            executor.execute(new ConeRetrieval(cones[i],ra,dec,size));
-                            } catch (Exception e) {
-                                logger.info("Failed to start task",e);
-                            }
-                        }
-                    }                        
+                return getPosition();
+            }
+            protected void doFinished(Object o) {
+                String position = (String)o;
+                if (position == null) {
+                    showError("Could not parse position\nYou must enter RA,DEC or name of object known to SIMBAD");
+                    return;
                 }
-                // finally add another task to the executor queue - all it does iis put a status message 'completed'
-                // as there's 5 background threads, it might be run while there's still 4 other queries running,
-                // but it's better than nothing..
-                executor.execute(new Runnable() {
-                    public void run() {
-                        // meh. got to put it on the event thread.
-                        SwingUtilities.invokeLater(new Runnable() {
+                setStatusMessage(position);
+                clearTree();
+                reFocusTopButton.setEnabled(true);
+                
+                //  @todo refactor this string-munging methods.                
+                final double ra = getRA(position);
+                final double dec = getDEC(position);
+                final String region = regionText.getText().trim();
+                final double size = needsParsedRegion() ? getRA(region) : getConeRegion();
+                final double raSize = needsParsedRegion() ?  getRA(region) : Double.parseDouble(region);
+                final double decSize= needsParsedRegion() ? getDEC(region) : raSize;
+                
+                // dispatch queries in a separate thread.
+                (new BackgroundOperation("Searching For Services") {
+                    private ResourceInformation[] siaps = new ResourceInformation[]{};
+                    private ResourceInformation[] cones = new ResourceInformation[]{};
+                    protected Object construct() throws Exception {
+                        // query registry for resources.
+                        // for each resource found, create a new task to retrieve, parse and add it to the display.
+                        // each task is sent to the executor - which queues them and then executes them on 5 threads.
+                        // this is better than writing a single thread that loops over all tasks, as a network-block on one service
+                        // only holds up it's own thread - the others continue regardless.
+                        if (siaCheckBox.isSelected()) {
+                            siaps = reg.adqlSearchRI(siap.getRegistryQuery());                    
+                            for (int i = 0; i < siaps.length; i++) {
+                                if (siaps[i].getAccessURL() != null) {
+                                    try {
+                                        executor.execute(new SiapRetrieval(siaps[i],ra,dec,raSize,decSize));
+                                    } catch (Exception e) {
+                                        // carry on
+                                        logger.info("Failed to start task",e);
+                                    }
+                                }
+                            }
+                        } 
+                        if (coneCheckBox.isSelected()) {
+                            cones = reg.adqlSearchRI(cone.getRegistryQuery());
+                            for (int i = 0; i < cones.length; i++) {
+                                if (cones[i].getAccessURL() != null) {
+                                    try {
+                                        executor.execute(new ConeRetrieval(cones[i],ra,dec,size));
+                                    } catch (Exception e) {
+                                        logger.info("Failed to start task",e);
+                                    }
+                                }
+                            }                        
+                        }
+                        // finally add another task to the executor queue - all it does iis put a status message 'completed'
+                        // as there's 5 background threads, it might be run while there's still 4 other queries running,
+                        // but it's better than nothing..
+                        executor.execute(new Runnable() {
                             public void run() {
-                                AstroScopeLauncherImpl.this.setStatusMessage("Completed querying servers");
+                                // meh. got to put it on the event thread.
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    public void run() {
+                                        AstroScopeLauncherImpl.this.setStatusMessage("Completed querying servers");
+                                    }
+                                });
                             }
                         });
+                        return null;
                     }
-                });
-                return null;
+                    protected void doFinished(Object result) {
+                        // just report what we found - querying will have already started.
+                        AstroScopeLauncherImpl.this.setStatusMessage("Found " + siaps.length + " image servers, "+ cones.length + " catalogue servers");                                     
+                    }
+                }).start();
             }
-            protected void doFinished(Object result) {
-                // just report what we found - querying will have already started.
-               AstroScopeLauncherImpl.this.setStatusMessage("Found " + siaps.length + " image servers, "+ cones.length + " catalogue servers");                                     
-            }
-        }).start();        
+        }).start();
     }
     
     
@@ -1776,6 +1801,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.24  2005/11/15 19:39:07  nw
+merged in improvements from release branch.
+
+Revision 1.23.2.2  2005/11/15 19:34:19  nw
+improvements to saving, threading, clustering.
+
+Revision 1.23.2.1  2005/11/15 13:26:23  nw
+fixed astroscope.
+worked on javahelp
+
 Revision 1.23  2005/11/11 10:27:41  nw
 minor changes.
 

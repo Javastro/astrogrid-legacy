@@ -1,4 +1,4 @@
-/*$Id: ACRImpl.java,v 1.4 2005/11/10 12:05:05 nw Exp $
+/*$Id: ACRImpl.java,v 1.5 2005/11/15 19:39:07 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -142,7 +142,11 @@ public class ACRImpl implements MutableACR {
                 impl  = selectImplementation(c);
              }
                 if (impl != null) { // as there may be no suitable implementation
-                    m1.registerComponentImplementation(impl.getInterfaces(),impl);
+                    if (c.isSingleton()) {
+                        m1.registerSingletonComponentImplementation(impl.getInterfaces(),impl);
+                    } else{                       
+                        m1.registerComponentImplementation(impl.getInterfaces(),impl);
+                    }
                 } else {
                     // no suitable implementation found - not going to instantiate this component,
                     // so remove it from the module descriptor.
@@ -351,6 +355,12 @@ public class ACRImpl implements MutableACR {
 
 /* 
 $Log: ACRImpl.java,v $
+Revision 1.5  2005/11/15 19:39:07  nw
+merged in improvements from release branch.
+
+Revision 1.4.2.1  2005/11/15 19:33:38  nw
+allowed singlton and non-singleton components.
+
 Revision 1.4  2005/11/10 12:05:05  nw
 big change around for vo lookout
 
