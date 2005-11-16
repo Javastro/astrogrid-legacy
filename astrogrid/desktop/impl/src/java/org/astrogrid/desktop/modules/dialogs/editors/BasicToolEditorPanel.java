@@ -301,14 +301,19 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     protected final class ParameterTable extends JTable {
     	
         {                
-           getColumnModel().getColumn(0).setPreferredWidth(30);    //Name                  
-           getColumnModel().getColumn(1).setPreferredWidth(100);   //Value                   
-           getColumnModel().getColumn(2).setPreferredWidth(10);     //Indirect
+           getColumnModel().getColumn(0).setPreferredWidth(150);    //Name
+           getColumnModel().getColumn(0).setMinWidth(110);
+           getColumnModel().getColumn(1).setPreferredWidth(200);   //Value
+           getColumnModel().getColumn(1).setMinWidth(160);
            getColumnModel().getColumn(2).setCellEditor(new IndirectCellEditor());
-           getColumnModel().getColumn(3).setPreferredWidth(10);    //Repeating
-           getColumnModel().getColumn(4).setCellEditor(new RepeatCellEditor());
-           getColumnModel().getColumn(4).setPreferredWidth(10);    //Delete
+           getColumnModel().getColumn(2).setPreferredWidth(35);     //Indirect    
+           getColumnModel().getColumn(2).setMaxWidth(35);
+           getColumnModel().getColumn(3).setCellEditor(new RepeatCellEditor());           
+           getColumnModel().getColumn(3).setPreferredWidth(35);    // Repeat
+           getColumnModel().getColumn(3).setMaxWidth(35);
            getColumnModel().getColumn(4).setCellEditor(new DeleteCellEditor());
+           getColumnModel().getColumn(4).setPreferredWidth(35);    //Delete
+           getColumnModel().getColumn(4).setMaxWidth(35);           
            setPreferredScrollableViewportSize(new Dimension(200,100));
            putClientProperty("terminateEditOnFocusLost", Boolean.TRUE); // improves editing behaviour.           
         }        
@@ -441,6 +446,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
+        	if (!isInput)
+        		outputLabel.setText("Outputs:");
             final ParameterValue  row =  rows[rowIndex];
             ParameterBean d = (ParameterBean)toolModel.getInfo().getParameters().get(row.getName());
             ParameterReferenceBean[] paramRef;
@@ -671,6 +678,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     /**
      * 
      */
+    JLabel outputLabel = new JLabel("Outputs: none for this tool");
     protected void initialize() {
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         JLabel label = new JLabel("Inputs");
@@ -682,9 +690,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             add(getInputTable());
         }
         add(new JSeparator());
-        label = new JLabel("Outputs");
-        label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-        add(label);
+        outputLabel.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        add(outputLabel);
         if (useScrollBars) {
             add(new JScrollPane(getOutputTable()));
         } else {
@@ -726,6 +733,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.10  2005/11/16 20:49:58  pjn3
+Checkbox column widths improved
+
 Revision 1.9  2005/11/11 15:24:23  pjn3
 overwrote previous fix!
 
