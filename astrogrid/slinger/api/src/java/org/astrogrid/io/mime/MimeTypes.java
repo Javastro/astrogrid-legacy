@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: MimeTypes.java,v 1.3 2005/11/17 10:17:18 kea Exp $
  *
  */
 
@@ -41,6 +41,7 @@ public interface MimeTypes  {
    public static final String IMAGE    = "image";
    public static final String GIF      = "image/gif";
    public static final String JPG      = "image/jpg";
+   public static final String PNG      = "image/png";
 }
 
 
