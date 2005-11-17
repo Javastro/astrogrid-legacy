@@ -160,16 +160,25 @@
   <br/>
 </xsl:template>
 
+<xsl:template match="vs:param"/>
 
 <!-- CURATION -->
 <xsl:template match="vr:curation">
   <div class="element">
-    <font color="black">Publisher: </font><xsl:value-of select="vr:publisher"/>
-    <font color="black"> Creator: </font><xsl:value-of select="vr:creator"/>
+    <xsl:if test="vr:publisher != ''">
+      <font color="black">Publisher: </font><xsl:value-of select="vr:publisher"/>
+    </xsl:if>
+    <xsl:if test="vr:creator != ''">
+      <font color="black"> Creator: </font><xsl:value-of select="vr:creator"/>
+    </xsl:if>
   </div>
   <div class="element">
-    <font color="black">Date: </font><xsl:value-of select="vr:date"/>
-    <font color="black"> Version: </font><xsl:value-of select="vr:version"/>
+    <xsl:if test="vr:date != ''">
+      <font color="black">Date: </font><xsl:value-of select="vr:date"/>
+    </xsl:if>
+    <xsl:if test="vr:version != ''">
+      <font color="black"> Version: </font><xsl:value-of select="vr:version"/>
+    </xsl:if>
   </div>
   <div class="element">
     <font color="black">Contact: </font><xsl:value-of select="vr:contact"/>
@@ -200,7 +209,8 @@
 <!-- INTERFACES -->      
 <xsl:template match="cea:Interfaces/ceab:Interface">  
   <xsl:value-of select="@name"/>,
-</xsl:template>      
+</xsl:template>
+    
             
 <!-- XML TO HTML -->
   <!-- Default node handler, convert to HTML and apply templates -->
