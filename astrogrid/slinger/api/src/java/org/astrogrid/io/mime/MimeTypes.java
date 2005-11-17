@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.3 2005/11/17 10:17:18 kea Exp $
+ * $Id: MimeTypes.java,v 1.4 2005/11/17 11:03:09 kea Exp $
  *
  */
 
@@ -27,7 +27,12 @@ public interface MimeTypes  {
    public static final String ADQL     = "text/xml +org.astrogrid.adql"     ;
 
    
+   // application/fits is the general mimetype for FITS.
+   // Simple FITS images (which use the subset of FITS described in the
+   // original standard) can have mimetype image/fits.  
+   // See RFC4047 at http://fits.gsfc.nasa.gov/
    public static final String FITS        = "application/fits"  ;
+   public static final String FITS_IMAGE  = "image/fits"  ;
 
    //see ivoa forum comments http://www.ivoa.net/forum/dal/0406/0198.htm.
    public static final String VOTABLE           = "application/x-votable+xml";
