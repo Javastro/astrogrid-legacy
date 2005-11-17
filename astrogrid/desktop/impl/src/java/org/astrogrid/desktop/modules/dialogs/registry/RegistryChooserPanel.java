@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.12 2005/11/11 15:25:08 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.13 2005/11/17 13:34:59 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -424,10 +424,10 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                if(joinSQL == null) joinSQL = " or ";
                
                     sql += "(vr:title like '" + keyword[j] + "'" + " or " +
-                    "vr:description like '" + keyword[j] + "'" + " or " +
+                    "vr:content/vr:description like '" + keyword[j] + "'" + " or " +
                     "vr:identifier like '" + keyword[j] + "'" + " or " +
                     "vr:shortName like '" + keyword[j] + "'" + " or " +
-                    "vr:subject like '" + keyword[j] + "')";
+                    "vr:content/vr:subject like '" + keyword[j] + "')";
                     if(j != (keyword.length - 1)) {
                    sql += joinSQL;
                     }//if
@@ -515,6 +515,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.13  2005/11/17 13:34:59  pjn3
+Query sql string alterred to include vr:content as per Kevin's email
+
 Revision 1.12  2005/11/11 15:25:08  pjn3
 caret added
 
