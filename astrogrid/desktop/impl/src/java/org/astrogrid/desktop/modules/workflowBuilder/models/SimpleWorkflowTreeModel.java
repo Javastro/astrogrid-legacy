@@ -1,4 +1,4 @@
-/*$Id: SimpleWorkflowTreeModel.java,v 1.4 2005/11/08 09:56:04 pjn3 Exp $
+/*$Id: SimpleWorkflowTreeModel.java,v 1.5 2005/11/17 17:48:49 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.workflowBuilder.models;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -18,6 +20,11 @@ import javax.swing.tree.TreePath;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
@@ -164,13 +171,21 @@ private DefaultMutableTreeNode activityTree( AbstractActivity activity ) {
       return node;
   }
 
-public DefaultMutableTreeNode copyTree(DefaultMutableTreeNode orig) {
+public DefaultMutableTreeNode copyTree(DefaultMutableTreeNode orig) throws CastorException{
 	//return (DefaultMutableTreeNode)orig.clone()
-	return deepClone(orig);
+    // ok. first take a copy of the user objects. by marshalong and unmarshalling.
+    AbstractActivity a = (AbstractActivity) orig.getUserObject();    
+    StringWriter sw = new StringWriter();
+    a.marshal(sw); 
+    StringReader sr = new StringReader(sw.toString());
+    AbstractActivity aCopy = (AbstractActivity)Unmarshaller.unmarshal(a.getClass(),sr); // this should work whatever the subclass of AbstractActivity that a is.
+	//return deepClone(orig, aCopy);
+    // now use the cloned activity tree to create a new tree of mutable treenodes - handily we've already got code for this..
+    return activityTree(aCopy);
 }
 
 
-
+// not used anymore.
 private DefaultMutableTreeNode deepClone(DefaultMutableTreeNode root){
 	DefaultMutableTreeNode nroot = (DefaultMutableTreeNode)root.clone();
 	Enumeration children = root.children();
@@ -239,6 +254,9 @@ private DefaultMutableTreeNode makeFreshCopy(DefaultMutableTreeNode origNode) {
 
 /* 
 $Log: SimpleWorkflowTreeModel.java,v $
+Revision 1.5  2005/11/17 17:48:49  nw
+different approach to making a tree copy.
+
 Revision 1.4  2005/11/08 09:56:04  pjn3
 branch pjn_workbench_2_11_05
 
