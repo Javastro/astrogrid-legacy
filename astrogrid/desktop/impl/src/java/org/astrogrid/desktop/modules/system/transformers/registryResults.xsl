@@ -91,6 +91,75 @@
   <center>--------------------------------</center>
 </xsl:template>
 
+<xsl:template match="vr:accessURL"/>
+<xsl:template match="vs:resultType"/>
+
+
+<!-- COVERAGE -->
+<xsl:template match="vs:coverage">
+  <div class="element">          
+    <font color="black">Coverage:</font>
+    <font color="black">All sky:</font>
+    <xsl:apply-templates select="vr:spatial/vs:allSky" /> 
+    <font color="black">region of regard:</font>         
+    <xsl:apply-templates select="vr:spatial/vs:regionOfRegard" /> 
+    <font color="black">Spectral:</font>         
+    <xsl:apply-templates select="vs:spectral/vs:waveband" />
+  </div>
+  <center>--------------------------------</center>
+</xsl:template>
+
+<xsl:template match="vs:spectral/vs:waveband">  
+  <xsl:value-of select="."/>,
+</xsl:template>
+      
+<xsl:template match="vr:spatial/vs:allSky">
+  <xsl:value-of select="."/><br /> 
+</xsl:template>      
+
+<xsl:template match="vr:spatial/vs:regionOfRegard">  
+  <xsl:value-of select="."/><br />
+</xsl:template>
+
+
+<!-- TABLE -->
+<xsl:template match="vs:table">
+  <div class="element">
+    <font color="black">Table name:</font>
+    <xsl:value-of select="vs:name"/>
+    <!-- COLUMN DETAILS -->      
+    <div class="element">
+      <xsl:apply-templates select="vs:column" />
+    </div>
+  </div>
+</xsl:template>
+
+
+<!-- COLUMN -->      
+<xsl:template match="vs:column">
+  <font color="black"> Column: </font>
+  <xsl:if test="vs:name != ''">
+    <xsl:value-of select="vs:name"/>
+  </xsl:if>  
+  <xsl:if test="vs:description != ''">
+    <font color="black"> Desc: </font>  
+    <xsl:value-of select="vs:description"/>
+  </xsl:if>
+  <xsl:if test="vs:dataType != ''">
+    <font color="black"> Type: </font>
+    <xsl:value-of select="vs:dataType"/>
+  </xsl:if>
+  <xsl:if test="vs:unit != ''">
+    <font color="black"> Units: </font>
+    <xsl:value-of select="vs:unit"/>
+  </xsl:if>
+  <xsl:if test="vs:UCD != ''">
+    <font color="black"> UCD: </font>
+    <xsl:value-of select="vs:UCD"/>
+  </xsl:if>
+  <br/>
+</xsl:template>
+
 
 <!-- CURATION -->
 <xsl:template match="vr:curation">
@@ -135,7 +204,7 @@
             
 <!-- XML TO HTML -->
   <!-- Default node handler, convert to HTML and apply templates -->
-  <xsl:template match="*" name="xml-html" mode="showxml">
+  <xsl:template match="*" name="xml-html" mode="showxml">  
     <br></br> 
       <!--Indent by number of parent nodes -->
         <xsl:for-each select="ancestor::*">
