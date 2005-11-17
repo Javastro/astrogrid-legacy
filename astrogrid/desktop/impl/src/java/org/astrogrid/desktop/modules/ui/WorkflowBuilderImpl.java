@@ -104,6 +104,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -442,18 +443,22 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     			setStatusMessage("Select where you wish to paste activity");
     		}
     		else if (w.canPerformPaste(copiedNode, parentNode)) {
-    			tree.expandPath(new TreePath(parentNode.getFirstLeaf().getPath()));
-    			((DefaultTreeModel)tree.getModel()).insertNodeInto(getModel().copyTree(copiedNode), parentNode, 0);
-    			TreePath treePath = new TreePath(copiedNode.getPath());
-    			int i = 0;		
-    			for (Enumeration enumeration = copiedNode.depthFirstEnumeration(); enumeration.hasMoreElements(); i++ ) {
-    				DefaultMutableTreeNode element = (DefaultMutableTreeNode)enumeration.nextElement();
-    			    TreePath path = new TreePath(element.getPath());
-    			    tree.expandPath(path);
-    			}		
-    			tree.scrollPathToVisible(treePath);
-    			tree.setSelectionPath(treePath);    			
-    			setStatusMessage("");
+    			try {
+    				tree.expandPath(new TreePath(parentNode.getFirstLeaf().getPath()));
+    				((DefaultTreeModel)tree.getModel()).insertNodeInto(getModel().copyTree(copiedNode), parentNode, 0);
+    				TreePath treePath = new TreePath(copiedNode.getPath());
+    				int i = 0;		
+    				for (Enumeration enumeration = copiedNode.depthFirstEnumeration(); enumeration.hasMoreElements(); i++ ) {
+    					DefaultMutableTreeNode element = (DefaultMutableTreeNode)enumeration.nextElement();
+    					TreePath path = new TreePath(element.getPath());
+    					tree.expandPath(path);
+    				}		
+    				tree.scrollPathToVisible(treePath);
+    				tree.setSelectionPath(treePath);    			
+    				setStatusMessage("");
+    			} catch (CastorException cex) {
+    				logger.error("Error creating copy of node, " + cex.getMessage());
+    			}
     		} else {
     			setStatusMessage("Unable to paste activity here, paste into either Sequence or Flow activities");
     		}	            	        	            	
