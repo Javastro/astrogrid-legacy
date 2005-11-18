@@ -40,7 +40,7 @@
 <property name="cea.app.id" value="testdsa" /><!--this is a property that will be set when installing a single cea application-->
 <property name="cea.cmd.config" value="${work.dir}/cea/commandline/config/TestApplicationConfig.xml"/>
 <property name="toolbasedir" value="${work.dir}/cea/commandline/work/" />
-<property name="registry.exclusions" value="examples/**" />
+<property name="registry.exclusions" value="examples/**, prod_xml/**" />
 
 <!--Context paths--> <!--remove these to a file?-->
 <property name="aginab.jes.contextpath" value="/astrogrid-jes-SNAPSHOT"/>
@@ -303,10 +303,8 @@
         <echo>Populating Registry</echo>
         <!-- expand tokens -->
         <copy todir="${temporary.dir}/registry-entries" filtering="true">
-                <fileset dir="registry-entries">
-                        <include name="**/*.xml" />						
-                        <exclude name="${registry.exclusions}" />
-                </fileset>
+                <fileset dir="registry-entries" includes="**/*.xml" excludes="${registry.exclusions}" />
+               
         </copy>
         <!-- now upload each one -->
         <pathconvert property="entriesr" pathsep=" ">
