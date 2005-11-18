@@ -16,7 +16,8 @@
    Interface definition for the 'monitor' web service - used as a callback endpoint by the application controller.
  </wsdl:documentation>
 
-        <wsdl:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" location="../schema/CEATypes.xsd"/>
+        <wsdl:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" 
+        	location="../../cea/CEATypes/v1.0/CEATypes.xsd"/>
    <wsdl:types>
            <xsd:schema targetNamespace="urn:jes/jobmonitor-wrapper/v1" xmlns="http://www.w3.org/2001/XMLSchema">
             <xsd:element name="monitorJob">

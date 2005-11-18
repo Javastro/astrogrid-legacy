@@ -48,7 +48,7 @@
       </xs:documentation>
    </xs:annotation>
 
-   <xs:include schemaLocation="VOResourceRelType.xsd"/>
+   <xs:include schemaLocation="../../../vo-resource-types/VOResourceRelType/v0.2/VOResourceRelType.xsd"/>
 
    <xs:element name="VODescription">
       <xs:annotation>

@@ -23,9 +23,9 @@
    </xs:annotation>
 
    <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.10"
-      schemaLocation="http://www.ivoa.net/xml/VOResource/VOResource-v0.10.xsd"/>
+      schemaLocation="../../../vo-resource-types/VOResource/v0.10/VOResource.xsd"/>
 
-   <xs:include schemaLocation="VODataServiceCoverage-v0.5.xsd"/>
+   <xs:include schemaLocation="../../../vo-resource-types/VODataServiceCoverage/v0.5/VODataServiceCoverage.xsd"/>
 
    <xs:complexType name="DataCollection">
       <xs:annotation>

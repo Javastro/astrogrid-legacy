@@ -2,9 +2,12 @@
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <!-- $id$ -->
 <xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
-        <xsd:import namespace="http://www.astrogrid.org/schema/Credentials/v1" schemaLocation="Credentials.xsd"/>
-        <xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
-        <xsd:import namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" schemaLocation="ExecutionRecord.xsd"/>
+        <xsd:import namespace="http://www.astrogrid.org/schema/Credentials/v1" 
+        	schemaLocation="../../../jes/Credentials/v1.0/Credentials.xsd"/>
+        <xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
+        	schemaLocation="../../../jes/AGParameterDefinition/v1.0/AGParameterDefinition.xsd"/>
+        <xsd:import namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" 
+        	schemaLocation="../../../jes/ExecutionRecord/v1.0/ExecutionRecord.xsd"/>
         <xsd:element name="workflow">
                 <xsd:annotation>
                         <xsd:documentation>

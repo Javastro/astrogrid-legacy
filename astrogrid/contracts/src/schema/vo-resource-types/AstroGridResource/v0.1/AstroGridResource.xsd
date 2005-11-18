@@ -6,7 +6,8 @@
         An extension to the core resource metadata (VOResource) for describing astrogrid specific resources
       	      </xs:documentation>
 	</xs:annotation>
-	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" schemaLocation="./externalSchema/VOResource-v0.9.xsd"/>
+	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" 
+		schemaLocation="../../../vo-resource-types/VOResource/v0.9/VOResource.xsd"/>
 	<xs:simpleType name="AGServiceKindType">
 		<xs:annotation>
 			<xs:documentation>Enumeration of the various types of Astrogrid Service</xs:documentation>

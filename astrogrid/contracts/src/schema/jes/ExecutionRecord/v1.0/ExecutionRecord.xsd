@@ -4,7 +4,8 @@
 	xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1"
 	xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<xsd:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" schemaLocation="CEATypes.xsd"/>
+	<xsd:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" 
+		schemaLocation="../../../cea/CEATypes/v1.0/CEATypes.xsd"/>
 	
 		<xsd:element name="job-execution-record">
 			<xsd:annotation>

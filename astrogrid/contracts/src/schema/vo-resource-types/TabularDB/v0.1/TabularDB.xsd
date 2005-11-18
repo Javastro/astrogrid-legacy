@@ -11,11 +11,11 @@
   <!-- IVOA schema from which elements are referenced below. The VOTable schema is not used
        directly but is used by the VODataService schema. -->
   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9"
-             schemaLocation="http://www.ivoa.net/xml/VOResource/VOResource-v0.9.xsd"/>
+             schemaLocation="../../../vo-resource-types/VOResource/v0.9/VOResource.xsd"/>
   <xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0"
-             schemaLocation="http://www.ivoa.net/xml/VOTable/VOTable-1.0.xsd"/>
+             schemaLocation="../../../vo-formats/VOTable/v1.0/VOTable.xsd"/>
   <xs:import namespace="http://www.ivoa.net/xml/VODataService/v0.4"
-             schemaLocation="http://www.ivoa.net/xml/VODataService/VODataService-v0.4.xsd"/>
+             schemaLocation="../../../vo-resource-types/VODataService/v0.4/VODataService.xsd"/>
   
 
   <!-- The sub-type of VOResource that allows the database to be described.

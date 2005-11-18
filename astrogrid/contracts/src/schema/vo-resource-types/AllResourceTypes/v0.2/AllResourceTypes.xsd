@@ -11,19 +11,19 @@
  >
 
   <xsd:import namespace="http://www.ivoa.net/xml/VOResource/v0.10"
-    schemaLocation="http://www.ivoa.net/xml/VOResource/VOResource-v0.10.xsd"/>
+    schemaLocation="../../../vo-resource-types/VOResource/v0.10/VOResource.xsd"/>
   
   <xsd:import namespace="http://www.ivoa.net/xml/VODataService/v0.5"
-    schemaLocation="http://www.ivoa.net/xml/VODataService/VODataService-v0.5.xsd"/>
+    schemaLocation="../../../vo-resource-types/VODataService/v0.5/VODataService.xsd"/>
   
   <xsd:import namespace="http://www.ivoa.net/xml/VORegistry/v0.3"
-    schemaLocation="http://www.ivoa.net/xml/VORegistry/VORegistry-v0.3.xsd"/>
+    schemaLocation="../../../vo-resource-types/VORegistry/v0.3/VORegistry.xsd"/>
   
   <xsd:import namespace="http://www.ivoa.net/xml/CEAService/v0.2"
-    schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/VOCEA.xsd"/>
+    schemaLocation="../../../vo-resource-types/CEAService/v0.2/CEAService.xsd"/>
   
   <xsd:import namespace="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"
-    schemaLocation="http://software.astrogrid.org/schema/vo-resource-types/TabularDB/v0.3/TabularDB.xsd"/>
+    schemaLocation="../../../vo-resource-types/TabularDB/v0.3/TabularDB.xsd"/>
     
   
   <xsd:element name="authority"         type="voreg:Authority"/>

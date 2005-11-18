@@ -57,7 +57,7 @@
       </xs:documentation>
    </xs:annotation>
 
-   <xs:include schemaLocation="VOResourceRelType-v0.10.xsd"/>
+   <xs:include schemaLocation="../../../vo-resource-types/VOResourceRelType/v0.10/VOResourceRelType.xsd"/>
 
    <xs:complexType name="Resource">
       <xs:annotation>

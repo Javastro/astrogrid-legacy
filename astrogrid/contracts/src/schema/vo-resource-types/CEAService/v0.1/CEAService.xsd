@@ -12,10 +12,14 @@
       	describing applications and server within the Common Execution Architecture
       </xs:documentation>
 	</xs:annotation>
-	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" schemaLocation="./externalSchema/VOResource-v0.9.xsd"/>
-	<xs:import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" schemaLocation="AGApplicationBase.xsd"/>
-	<xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0" schemaLocation="./externalSchema/VOTable.xsd"/>
-	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
+	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" 
+		schemaLocation="../../../vo-resource-types/VOResource/v0.9/VOResource.xsd"/>
+	<xs:import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" 
+		schemaLocation="../../../cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd"/>
+	<xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0" 
+		schemaLocation="../../../vo-formats/VOTable/v1.0/VOTable.xsd"/>
+	<xs:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
+		schemaLocation="../../../jes/AGParameterDefinition/v1.0/AGParameterDefinition.xsd"/>
 	
 	<xs:element name="CeaApplication" type="cea:CeaApplicationType" substitutionGroup="vr:Resource"/>
 	<!-- This schema would benefit from some constraints being added to do better validation on the cross references within it -->

@@ -4,7 +4,8 @@
         xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
         xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
-        <xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
+        <xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
+        	schemaLocation="../../../jes/AGParameterDefinition/v1.0/AGParameterDefinition.xsd"/>
               <xsd:element name="message" type="ceat:message-type" />
         <!-- needed to change schema of this. unit tests reveal that axis can't transport xsd:dateTime as an attrib.
         works as an element though. gah

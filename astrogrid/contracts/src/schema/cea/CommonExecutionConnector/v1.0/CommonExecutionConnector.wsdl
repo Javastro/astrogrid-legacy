@@ -40,19 +40,19 @@
             </xsd:annotation>
             <xsd:import
                 namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
-                schemaLocation="../schema/AGApplicationBase.xsd"/>
+                schemaLocation="../../../cea/CommonExecutionArchitectureApplicationBase/v1.0/CommonExecutionArchitectureBaseApplicationBase.xsd"/>
             <xsd:annotation>
                 <xsd:documentation>Workflow.xsd is needed for the tool element</xsd:documentation>
             </xsd:annotation>
             <xsd:import
                 namespace="http://www.astrogrid.org/schema/AGWorkflow/v1"
-                schemaLocation="../schema/Workflow.xsd"/>
+                schemaLocation="../../../jes/AGWorkflow/v1.0/AGWorkflow.xsd"/>
             <xsd:annotation>
                 <xsd:documentation>CEATypes is needed for the status callback..</xsd:documentation>
             </xsd:annotation>
             <xsd:import
                 namespace="http://www.astrogrid.org/schema/CEATypes/v1"
-                schemaLocation="../schema/CEATypes.xsd"/>
+                schemaLocation="../../../cea/CEATypes/v1.0/CEATypes.xsd"/>
             <xsd:annotation>
                 <xsd:documentation>The following types are all needed for the wrapped style of the interface</xsd:documentation>
             </xsd:annotation>

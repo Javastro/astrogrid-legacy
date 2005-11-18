@@ -15,9 +15,11 @@
    <wsdl:documentation>
            Interface definition for the controller web service
    </wsdl:documentation>
-        <wsdl:import location="../schema/ExecutionRecord.xsd" namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" />
+        <wsdl:import location="../../../jes/ExecutionRecord/v1.0/ExecutionRecord.xsd" 
+        	namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" />
 
-        <wsdl:import location="../schema/Credentials.xsd" namespace="http://www.astrogrid.org/schema/Credentials/v1" />
+        <wsdl:import location="../../../jes/Credentials/v1.0/Credentials.xsd" 
+        	namespace="http://www.astrogrid.org/schema/Credentials/v1" />
    <wsdl:types>
            <xsd:schema targetNamespace="urn:jes/jobcontroller-wrapper/v1" xmlns="http://www.w3.org/2001/XMLSchema">
         <xsd:element name="submitWorkflow">
