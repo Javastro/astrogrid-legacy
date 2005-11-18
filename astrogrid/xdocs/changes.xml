@@ -5,8 +5,14 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-    		
-    		<action dev="gtr" type="fix">
+         <action dev="kea" type="fix">
+            <em>Branch: DSA_KEA_1451</em>
+            Fixes to broken DSA unit tests.  All now fixed except for 
+            org.astrogrid.datacenter.service.v06.DatacenterCEAComponentManagerTest, which I will raise a separate bugzilla bug on and hope to pass to Noel.
+          </action>
+        </release>
+        <release version="(Undertest)">
+            <action dev="gtr" type="fix">
     			<em>Branch contracts-gtr-1373:</em> I have fixed the <i>schemaLocation</i> attributes in the schemata to be
     			systematically relative to each other. There are now many extra schemata copied from IVOA and imported
     			schemata are taken from our tree not from the IVOA site. There is also a new stylesheet in astrogrid-software-site
@@ -16,14 +22,6 @@
 				<em>Branch: Reg_JDT_anti1350</em>
 				Removed the edits mistakenly applied to the registry installer during the merge of 1350.
 			</action>
-         <action dev="kea" type="fix">
-            <em>Branch: DSA_KEA_1451</em>
-            Fixes to broken DSA unit tests.  All now fixed except for 
-            org.astrogrid.datacenter.service.v06.DatacenterCEAComponentManagerTest, which I will raise a separate bugzilla bug on and hope to pass to Noel.
-          </action>
-        </release>
-        <release version="(Undertest)">
-            
 			<action dev="jl" type="fix" issue="1347"><em>Branch: por-jl-1374</em>
                 This moves as much as I can at present from login to first use of MySpace.
                 Still some room for improvement. Please note the branch name as compared with
