@@ -23,13 +23,7 @@
           </action>
         </release>
         <release version="(Undertest)">
-            <action dev="kmb" type="fix">
-				<em>Branch: Reg_KMB_1350</em>
-				Fixed a few areas.  Harvesting can now use specefic sets for certain registries determined in Properties.
-                Server now always returns a VOResoruces element, it wasn't earlier for some reason.  Commented out some exceptions
-                in the client area to make sure yet again it is backwards compatible. Finally  a small fix on jsp's to highlight invalid entries as well
-                as deleted ones. <p>new version project.properties 1.212 - apart from portal still having problems which will be built later.-CLQ</p>
-			</action>
+            
 			<action dev="jl" type="fix" issue="1347"><em>Branch: por-jl-1374</em>
                 This moves as much as I can at present from login to first use of MySpace.
                 Still some room for improvement. Please note the branch name as compared with
@@ -38,6 +32,13 @@
         </release>
 		
 		<release version="HEAD">
+		<action dev="kmb" type="fix">
+				<em>Branch: Reg_KMB_1350</em>
+				Fixed a few areas.  Harvesting can now use specefic sets for certain registries determined in Properties.
+                Server now always returns a VOResoruces element, it wasn't earlier for some reason.  Commented out some exceptions
+                in the client area to make sure yet again it is backwards compatible. Finally  a small fix on jsp's to highlight invalid entries as well
+                as deleted ones. <p>new version project.properties 1.212 </p>
+			</action>
 		<action dev="gtr" type="fix">
     			<em>Branch axis-gtr-1406:</em> I have upgraded everything to Axis 1.3 and fixed the major problems resulting plus some
     			small errors in AGINAB. On my test-system, 88.80% of integration tests are passed, compared with 85.19% on head. I think
