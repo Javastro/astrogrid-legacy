@@ -5,6 +5,10 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+    		<action dev="gtr" type="add">
+    			<em>Branch architecture-gtr-1454-2:</em> I added the architecture document for system v1.1 to astrogrid-software-site.
+    			I also fixed BZ1457, making the module buildable on Windows.
+    		</action>
          <action dev="kea" type="fix">
             <em>Branch: DSA_KEA_1451</em>
             Fixes to broken DSA unit tests.  All now fixed except for 
