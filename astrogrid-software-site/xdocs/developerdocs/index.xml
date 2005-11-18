@@ -37,7 +37,19 @@
 							<p>
 								The set of WSDL and XML Schema that define the AstroGrid web services are available <a href="../schemata/index.html">here</a>
 						</p></subsection>
-						</section>
+                </section>
+    	
+    	<section name="Architecture">
+    		<p>
+    		An introduction to the 
+    		<a href="astrogrid-v1.1-architecture.htm">software architecture of the v1.1 system</a> 
+    	  was prepared for the AstroGrid Oversight Committee of September 2005. A
+    	  <a href="astrogrid-v1.1-architecture.doc">MS-Word version of the architecture document</a> 
+    	  is also available.
+    	  Please note that this architecture document is introductory rather than complete. Some aspects 
+    	  of the system are omitted or simplified.
+    	  </p>
+    	</section>
 		
 		<section name="Using or Contributing to AstroGrid Source Code"><p>	
 			See <a href="source.html">Working with AstroGrid Source</a>
