@@ -16,7 +16,11 @@
 				<em>Branch: Reg_JDT_anti1350</em>
 				Removed the edits mistakenly applied to the registry installer during the merge of 1350.
 			</action>
-			
+         <action dev="kea" type="fix">
+            <em>Branch: DSA_KEA_1451</em>
+            Fixes to broken DSA unit tests.  All now fixed except for 
+            org.astrogrid.datacenter.service.v06.DatacenterCEAComponentManagerTest, which I will raise a separate bugzilla bug on and hope to pass to Noel.
+          </action>
         </release>
         <release version="(Undertest)">
             <action dev="kmb" type="fix">
