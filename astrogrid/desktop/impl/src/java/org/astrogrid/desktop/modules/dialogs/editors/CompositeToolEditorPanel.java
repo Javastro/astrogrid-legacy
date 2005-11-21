@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.7 2005/11/11 10:08:18 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.8 2005/11/21 16:43:51 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -126,11 +126,11 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected final class NewAction extends AbstractAction {
         public NewAction() {
             super("New",IconHelper.loadIcon("newfile_wiz.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Create a new tool");
+            this.putValue(SHORT_DESCRIPTION,"Create a new task");
             this.setEnabled(true);
         }
         public void actionPerformed(ActionEvent e) {
-            int code = JOptionPane.showConfirmDialog(CompositeToolEditorPanel.this,"Discard current tool?","Are you sure?",JOptionPane.OK_CANCEL_OPTION);
+            int code = JOptionPane.showConfirmDialog(CompositeToolEditorPanel.this,"Discard current task?","Are you sure?",JOptionPane.OK_CANCEL_OPTION);
             if (code == JOptionPane.OK_OPTION) {
                 getToolModel().clear();
             }
@@ -140,7 +140,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
         public OpenAction() {
             super("Open",IconHelper.loadIcon("file_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Load tool document from storage");
+            this.putValue(SHORT_DESCRIPTION,"Load task document from storage");
         }        
 
         public void actionPerformed(ActionEvent e) {
@@ -148,7 +148,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
             if (u == null) {
                 return;
             }                   
-                (new BackgroundWorker(parent,"Opening tool definition") {
+                (new BackgroundWorker(parent,"Opening task definition") {
                     private ApplicationInformation newApp;
                     private InterfaceBean newInterface;
                     protected Object construct() throws Exception {
@@ -182,7 +182,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
  
         public SaveAction() {
             super("Save",IconHelper.loadIcon("fileexport.png"));
-            this.putValue(SHORT_DESCRIPTION,"Save tool document");
+            this.putValue(SHORT_DESCRIPTION,"Save task document");
             this.setEnabled(toolModel.getTool() != null);
             toolModel.addToolEditListener(new ToolEditAdapter() {
                 public void toolSet(ToolEditEvent te) {
@@ -195,11 +195,11 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResourceWithParent("Save Tool Document",true,true, true,CompositeToolEditorPanel.this);
+            final URI u = chooser.chooseResourceWithParent("Save Task Document",true,true, true,CompositeToolEditorPanel.this);
             if (u == null) {
                 return;
             }
-                (new BackgroundWorker(parent,"Saving tool definition") {
+                (new BackgroundWorker(parent,"Saving task definition") {
 
                     protected Object construct() throws Exception {
                         Tool t = getToolModel().getTool();
@@ -329,6 +329,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.8  2005/11/21 16:43:51  pjn3
+Tool -> Task
+
 Revision 1.7  2005/11/11 10:08:18  nw
 cosmetic fixes
 
