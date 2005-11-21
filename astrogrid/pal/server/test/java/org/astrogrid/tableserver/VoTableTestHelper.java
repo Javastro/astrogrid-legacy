@@ -1,4 +1,4 @@
-/*$Id: VoTableTestHelper.java,v 1.2 2005/05/27 16:21:05 clq2 Exp $
+/*$Id: VoTableTestHelper.java,v 1.3 2005/11/21 12:54:18 clq2 Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,6 @@ public class VoTableTestHelper extends TestCase {
       //temporary to ignore this assertion failure while we look for other errors
       //return DomHelper.newDocument(candidate);
 
-      
       ErrorRecorder recorder = Validator.isValid(new ByteArrayInputStream(candidate.getBytes()));
       if ((recorder != null ) && (recorder.hasErrors())) {
             fail("VOTable produced is not valid: "+recorder.listErrors());
@@ -39,9 +38,6 @@ public class VoTableTestHelper extends TestCase {
       return doc;
       /**/
    }
-   
-   
-   
 }
 
 

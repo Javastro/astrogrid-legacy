@@ -119,7 +119,14 @@ public class XqlMaker {
          //if (xsltIn == null) {
             //if it's in a JAR under tomcat the above won't find it - look for it on class path
            ClassLoader loader = this.getClass().getClassLoader();
-           xsltIn = loader.getResourceAsStream("xsl/" + xsltDoc);
+
+           xsltIn = loader.getResourceAsStream("xslt/" + xsltDoc);
+           if (xsltIn == null) {
+             xsltIn = loader.getResourceAsStream(xsltDoc);
+           }
+           if (xsltIn == null) {
+             xsltIn = loader.getResourceAsStream("xsl/" + xsltDoc);
+           }
          //}
       
          if (xsltIn == null) {
@@ -127,7 +134,7 @@ public class XqlMaker {
          }
          
          //log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at './xslt/"+xsltDoc+"'");
-         log.debug("Transforming ADQL ["+namespaceURI+"] using Xsl doc at 'xsl/"+xsltDoc+"'");
+         log.debug("Transforming ADQL ["+namespaceURI+"] using Xsl doc at 'xslt/"+xsltDoc+"'");
          TransformerFactory tFactory = TransformerFactory.newInstance();
          transformer = tFactory.newTransformer(new StreamSource(xsltIn));
          try {
@@ -172,6 +179,13 @@ public class XqlMaker {
 
 /*
 $Log$
+Revision 1.7  2005/11/21 12:54:18  clq2
+DSA_KEA_1451
+
+Revision 1.6.58.1  2005/11/14 16:40:32  kea
+Fix to allow unit tests to find xslt stylesheet (included stylesheet
+in pal-query.jar).  Made search for xslt a little more flexible too.
+
 Revision 1.6  2005/03/21 18:31:51  mch
 Included dates; made function types more explicit
 

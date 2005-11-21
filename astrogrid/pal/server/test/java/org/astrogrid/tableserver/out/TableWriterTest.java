@@ -1,4 +1,4 @@
-/*$Id: TableWriterTest.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
+/*$Id: TableWriterTest.java,v 1.3 2005/11/21 12:54:18 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,8 +38,8 @@ public class TableWriterTest extends TestCase  {
       votWriter.open();
       
       ColumnInfo[] cols = new ColumnInfo[] {
-         new ColumnInfo("RA", "TEST:TABLE", "Right Ascension", Double.class, "POS_EQ_RA_MAIN", "deg"),
-         new ColumnInfo("ID", "TEST:TABLE", "Object unique identifier", "string", "ID", null)
+         new ColumnInfo("RA", "TABLE", "Right Ascension", Double.class, "POS_EQ_RA_MAIN", "deg"),
+         new ColumnInfo("ID", "TABLE", "Object unique identifier", "string", "ID", null)
       };
       
       votWriter.startTable(cols);

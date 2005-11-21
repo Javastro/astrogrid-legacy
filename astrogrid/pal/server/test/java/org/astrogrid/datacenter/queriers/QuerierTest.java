@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: QuerierTest.java,v 1.6 2005/11/21 12:54:18 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -118,8 +118,8 @@ public class QuerierTest extends TestCase {
       
       //and results should have already produce a valid xml document in the StringWriter sw
       assertNotNull("results return null",sw.toString());
+
       Document doc = VoTableTestHelper.assertIsVotable(sw.toString());
-      
       //does a quick check for certain elements
       assertTrue(doc.getElementsByTagName("TR").getLength() > 1);
       

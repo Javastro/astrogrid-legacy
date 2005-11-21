@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.2 2005/09/07 08:54:42 clq2 Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.3 2005/11/21 12:54:18 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,10 +50,14 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 //        EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
         // metadata
         EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
+
         // the protocol lib
-        EmptyCEAComponentManager.registerProtocolLibrary(pico);
-        EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
-        EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
+        // KEA NOTE : These are now registered in 
+        //    EmptyCEAComponentManager.registerDefaultServices
+        // Must remove them here or pico gets upset about duplicate calls
+        //EmptyCEAComponentManager.registerProtocolLibrary(pico);
+        //EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
+        //EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
         registerDatacenterProvider(pico,config);
     }
     
@@ -87,6 +91,14 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.3  2005/11/21 12:54:18  clq2
+DSA_KEA_1451
+
+Revision 1.2.10.1  2005/11/15 15:34:45  kea
+Removed duplicate calls to protocol registration stuff (now occurring
+in base class and pico didn't like duplication).
+NOTE: This class is currently broken according to unit tests.
+
 Revision 1.2  2005/09/07 08:54:42  clq2
 changes for cea static method changing
 

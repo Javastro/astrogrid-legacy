@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.2 2005/11/21 12:54:18 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -128,14 +128,14 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
    
        //removed cone altogether for the moment, otherwise it turns up before the adql i/f on the portal
        //UI, which at the omment can only handle one i/f
-//        BaseApplicationInterface cone = new BaseApplicationInterface(CONE_IFACE,this);
-//        this.addInterface(cone);
-//        cone.addInputParameter(FORMAT);
-//        cone.addInputParameter(RA);
-//        cone.addInputParameter(DEC);
-//        cone.addInputParameter(RADIUS);
-//        cone.addOutputParameter(RESULT);
-       
+       // PUT BACK BY KEA WHEN FIXING UNIT TESTS - JDT says portal can now cope 
+        BaseApplicationInterface cone = new BaseApplicationInterface(CONE_IFACE,this);
+        this.addInterface(cone);
+        cone.addInputParameter(FORMAT);
+        cone.addInputParameter(RA);
+        cone.addInputParameter(DEC);
+        cone.addInputParameter(RADIUS);
+        cone.addOutputParameter(RESULT);
     }
     
     protected final DataServer ds;
@@ -156,8 +156,15 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /*
 $Log: DatacenterApplicationDescription.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/11/21 12:54:18  clq2
+DSA_KEA_1451
+
+Revision 1.1.1.1.66.1  2005/11/15 15:33:34  kea
+Re-instated cone-search interface (in addition to existing adql interface)
+as JDT says portal can now cope with >1 interface.
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

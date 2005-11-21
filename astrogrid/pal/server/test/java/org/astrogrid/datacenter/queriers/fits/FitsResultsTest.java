@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.6 2005/05/27 16:21:07 clq2 Exp $
+/*$Id: FitsResultsTest.java,v 1.7 2005/11/21 12:54:18 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -51,6 +51,11 @@ public class FitsResultsTest extends TestCase
       StringWriter sw = new StringWriter();
       fixedResults.sendTable(new ReturnTable(new WriterTarget(sw), MimeTypes.VOTABLE), LoginAccount.ANONYMOUS);
       
+      // For viewing output VOTable in testing 
+      //System.out.println("===================================");
+      //System.out.println(sw.toString());
+      //System.out.println("===================================");
+      //
       //check results
       DomHelper.newDocument(sw.toString());
       
@@ -93,6 +98,12 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.7  2005/11/21 12:54:18  clq2
+ DSA_KEA_1451
+
+ Revision 1.6.38.1  2005/11/15 15:42:57  kea
+ Debugging code added.
+
  Revision 1.6  2005/05/27 16:21:07  clq2
  mchv_1
 

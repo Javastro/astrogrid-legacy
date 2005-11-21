@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.8 2005/06/09 08:53:58 clq2 Exp $
+ * $Id: CeaResources.java,v 1.9 2005/11/21 12:54:18 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -83,6 +83,12 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                   "<ceapd:UCD>POS_RA_MAIN</ceapd:UCD>"+
                   "<ceapd:Units>deg</ceapd:Units>"+
                "</cea:ParameterDefinition>"+
+               "<cea:ParameterDefinition name='DEC' type='double'>"+
+                  "<ceapd:UI_Name>DEC</ceapd:UI_Name>"+
+                  "<ceapd:UI_Description>Declination of cone</ceapd:UI_Description>"+
+                  "<ceapd:UCD>POS_DEC_MAIN</ceapd:UCD>"+
+                  "<ceapd:Units>deg</ceapd:Units>"+
+               "</cea:ParameterDefinition>"+
                "<cea:ParameterDefinition name='Radius' type='double'>"+
                   "<ceapd:UI_Name>Radius</ceapd:UI_Name>"+
                   "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>"+
@@ -100,11 +106,23 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                      "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>"+
                   "</ceab:output>"+
                "</ceab:Interface>"+
+               "<ceab:Interface name='cone'>"+
+                  "<ceab:input>"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='RA'/>"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='DEC'/>"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>"+
+                  "</ceab:input>"+
+                  "<ceab:output>"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>"+
+                  "</ceab:output>"+
+               "</ceab:Interface>"+
             "</cea:Interfaces>"+
          "</cea:ApplicationDefinition>"+
          "</"+VORESOURCE_ELEMENT+">";
 
          
+      System.out.println(ceaService+ceaApplication);
          return ceaService+ceaApplication;
    }
 

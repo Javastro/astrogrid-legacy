@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: VoTableWriter.java,v 1.6 2005/11/21 12:54:18 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -50,11 +50,12 @@ public class VoTableWriter implements TableWriter {
    
    public void open() {
       printOut.println("<?xml version='1.0' encoding='UTF-8'?>");
-      printOut.println("<VOTABLE xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
-                        +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
-                        +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://www.ivoa.net/xml/VOTable/VOTable-1.1.xsd'  "
-                        +"version='1.1'"
-                        +">");
+      printOut.println("<VOTABLE " 
+         +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
+         +"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
+         +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://www.ivoa.net/xml/VOTable/VOTable-1.1.xsd'  "
+         +"version='1.1'"
+         +">");
          
          /* don't know where to find this info - in the netadata I expect
           <DEFINITIONS>
@@ -175,6 +176,12 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.6  2005/11/21 12:54:18  clq2
+ DSA_KEA_1451
+
+ Revision 1.5.38.1  2005/11/15 15:38:46  kea
+ Layout change only.
+
  Revision 1.5  2005/05/27 16:21:02  clq2
  mchv_1
 

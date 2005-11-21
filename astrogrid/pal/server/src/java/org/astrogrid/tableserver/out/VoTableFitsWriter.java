@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableFitsWriter.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: VoTableFitsWriter.java,v 1.4 2005/11/21 12:54:18 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,11 +25,19 @@ public class VoTableFitsWriter extends VoTableWriter {
     */
    public VoTableFitsWriter(TargetIdentifier target, String title, Principal user) throws IOException {
       super(target, title, user);
-      
    }
    
-   /** Opens writer - does nothing */
+   /** Opens writer - starts the document with appropriate headers */
    public void open() {
+      printOut.println("<?xml version='1.0' encoding='UTF-8'?>");
+            // The current astrogrid/xml validator wants this next
+            // line, but then falls over at the xmlns:xsi stuff.  
+            // printOut.println("<!DOCTYPE VOTABLE SYSTEM \"http://us-vo.org/xml/VOTable.dtd\">");
+             printOut.println("<VOTABLE "
+                +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
+                +"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
+                +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://www.ivoa.net/xml/VOTable/VOTable-1.1.xsd'  "
+                +"version='1.1'"                                                                +">");
    }
    
    /** Start body - writes out header and preps col array */
@@ -53,12 +61,20 @@ public class VoTableFitsWriter extends VoTableWriter {
    public void endTable() {
       
    }
-   
-   
+   public void close() {
+      printOut.println("</VOTABLE>");
+      printOut.close();
+   }
 }
 
 /*
  $Log: VoTableFitsWriter.java,v $
+ Revision 1.4  2005/11/21 12:54:18  clq2
+ DSA_KEA_1451
+
+ Revision 1.3.38.1  2005/11/15 15:37:28  kea
+ Fixed open() and close() methods so as to produce valid VOTable.
+
  Revision 1.3  2005/05/27 16:21:02  clq2
  mchv_1
 
@@ -98,6 +114,3 @@ public class VoTableFitsWriter extends VoTableWriter {
 
 
  */
-
-
-

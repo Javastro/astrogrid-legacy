@@ -1,4 +1,4 @@
-/*$Id: XqlMaker.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+/*$Id: XqlMaker.java,v 1.3 2005/11/21 12:54:18 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,7 +113,14 @@ public class XqlMaker {
          //find specified sheet on classpath/working directory
          //InputStream xsltIn = new BufferedInputStream(FitsMaker.class.getResourceAsStream("./xslt/"+xsltDoc));
         ClassLoader loader = this.getClass().getClassLoader();
-        InputStream xsltIn = loader.getResourceAsStream(xsltDoc);
+        InputStream xsltIn = null;
+        xsltIn = loader.getResourceAsStream("xslt/" + xsltDoc);
+        if (xsltIn == null) {
+           xsltIn = loader.getResourceAsStream(xsltDoc);
+         }
+         if (xsltIn == null) {
+            xsltIn = loader.getResourceAsStream("xsl/" + xsltDoc);
+         }
       
          if (xsltIn == null) {
             throw new QueryException("Could not find/create ADQL->XQL transformer doc "+xsltDoc);
@@ -164,6 +171,12 @@ public class XqlMaker {
 
 /*
 $Log: XqlMaker.java,v $
+Revision 1.3  2005/11/21 12:54:18  clq2
+DSA_KEA_1451
+
+Revision 1.2.58.1  2005/11/15 15:39:17  kea
+Looks in additional places to find xslt stylesheet.
+
 Revision 1.2  2005/03/21 18:45:55  mch
 Naughty big lump of changes
 
