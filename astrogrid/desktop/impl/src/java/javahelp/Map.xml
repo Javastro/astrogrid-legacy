@@ -75,6 +75,7 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 	<mapID target="userInterface.workflowBuilder.editMenu" url="workflowbuilder/overview.html#editMenu" />
 	<mapID target="userInterface.workflowBuilder.fileMenu" url="workflowbuilder/overview.html#fileMenu" />
 	<mapID target="userInterface.workflowBuilder.toolbar" url="workflowbuilder/overview.html#toolbar" />
+	<mapID target="userInterface.workflowBuilder.taskEditor" url="workflowbuilder/taskEditor.html" />
 	
 	<!-- myspace browser -->
 	<mapID target="userInterface.myspaceBrowser" url="myspacebrowser/index.html" />	

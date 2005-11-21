@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.8 2005/11/21 16:43:51 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.9 2005/11/21 18:26:05 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -261,18 +262,18 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected final ResourceChooserInternal chooser;
     protected final MyspaceInternal myspace;
     protected final Lookout lookout;
-   protected final UIComponent parent;
+    protected final UIComponent parent;
     protected final  JTabbedPane tabPane;
     protected final AbstractToolEditorPanel[] views;
    
 
-    public CompositeToolEditorPanel(UIComponent parent, PicoContainer pico) {
-        this(parent,false,pico);
+    public CompositeToolEditorPanel(UIComponent parent, PicoContainer pico, HelpServerInternal hs) {
+        this(parent,false,pico, hs);
     }
     
     /** constructor when being used as an app. */
-    public CompositeToolEditorPanel(UIComponent parent, boolean allApps, PicoContainer pico) {        
-        this.parent = parent;      
+    public CompositeToolEditorPanel(UIComponent parent, boolean allApps, PicoContainer pico, HelpServerInternal hs) {        
+        this.parent = parent;        
         this.chooser = (ResourceChooserInternal)pico.getComponentInstanceOfType(ResourceChooserInternal.class);
         this.apps = (ApplicationsInternal)pico.getComponentInstanceOfType(ApplicationsInternal.class);
         this.myspace = (MyspaceInternal)pico.getComponentInstanceOfType(MyspaceInternal.class);
@@ -302,6 +303,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         tabPane.addTab("XML",xml);
         tabPane.addTab("Info",information);        
         tabPane.addTab("Chooser",chooser);
+        hs.enableHelp(tabPane, "userInterface.workflowBuilder.taskEditor");
                 
         JToolBar tb = new JToolBar();
         tb.setRollover(true);
@@ -329,6 +331,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.9  2005/11/21 18:26:05  pjn3
+basic task editor help added
+
 Revision 1.8  2005/11/21 16:43:51  pjn3
 Tool -> Task
 

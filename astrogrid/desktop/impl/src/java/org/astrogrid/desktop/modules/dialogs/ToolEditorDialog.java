@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.2 2005/10/12 13:30:10 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.3 2005/11/21 18:25:39 pjn3 Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
         super();          
         this.parent = new UIComponent(conf,help,ui);
    
-        parametersPanel = new CompositeToolEditorPanel(parent,pico);
+        parametersPanel = new CompositeToolEditorPanel(parent,pico, help);
         this.setTitle("Task Editor");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -165,6 +165,9 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.3  2005/11/21 18:25:39  pjn3
+basic task editor help added
+
 Revision 1.2  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

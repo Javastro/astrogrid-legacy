@@ -25,7 +25,8 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
 		    <tocitem text="Builder overview" target="userInterface.workflowBuilder.top" />
 		    <tocitem text="Tree view" target="userInterface.workflowBuilder.treePanel" />
 	        <tocitem text="Document view" target="userInterface.workflowBuilder.docPanel" />
-	        <tocitem text="Activity list" target="userInterface.workflowBuilder.activityList" />	        		    
+	        <tocitem text="Activity list" target="userInterface.workflowBuilder.activityList" />
+	        <tocitem text="Task Editor" target="userInterface.workflowBuilder.taskEditor" />	        		    
 		</tocitem>
 		<!-- not there any more
 		<tocitem text="Job Monitor" target="userInterface.jobMonitor" >

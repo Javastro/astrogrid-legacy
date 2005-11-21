@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.7 2005/11/11 10:08:18 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.8 2005/11/21 18:26:23 pjn3 Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,7 +86,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
     public ApplicationLauncherImpl(  PicoContainer pico,Configuration conf, HelpServerInternal help, UIInternal ui) {
             super(conf, help, ui);
-            editor =  new CompositeToolEditorPanel(this,true,pico);
+            editor =  new CompositeToolEditorPanel(this,true,pico, help);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
             this.setLocationRelativeTo(ui.getComponent());
             this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
@@ -113,6 +113,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.8  2005/11/21 18:26:23  pjn3
+basic task editor help added
+
 Revision 1.7  2005/11/11 10:08:18  nw
 cosmetic fixes
 
