@@ -5,18 +5,20 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-    		<action dev="gtr" type="add">
-    			<em>Branch architecture-gtr-1454-2:</em> I added the architecture document for system v1.1 to astrogrid-software-site.
-    			I also fixed BZ1457, making the module buildable on Windows.
-    		</action>
-         <action dev="kea" type="fix">
-            <em>Branch: DSA_KEA_1451</em>
-            Fixes to broken DSA unit tests.  All now fixed except for 
-            org.astrogrid.datacenter.service.v06.DatacenterCEAComponentManagerTest, which I will raise a separate bugzilla bug on and hope to pass to Noel.
-          </action>
+    		
+         
         </release>
         <release version="(Undertest)">
-            <action dev="gtr" type="fix">
+           <action dev="kea" type="fix">
+               <em>Branch: DSA_KEA_1451</em>
+               Fixes to broken DSA unit tests.  All now fixed except for 
+               org.astrogrid.datacenter.service.v06.DatacenterCEAComponentManagerTest, which I will raise a separate bugzilla bug on and hope to pass to Noel.
+           </action>
+            
+        </release>
+		
+		<release version="HEAD">
+		   <action dev="gtr" type="fix">
     			<em>Branch contracts-gtr-1373:</em> I have fixed the <i>schemaLocation</i> attributes in the schemata to be
     			systematically relative to each other. There are now many extra schemata copied from IVOA and imported
     			schemata are taken from our tree not from the IVOA site. There is also a new stylesheet in astrogrid-software-site
@@ -31,9 +33,10 @@
                 Still some room for improvement. Please note the branch name as compared with
                 the bugzilla number. It is a typo when I was creating the branch.
     	</action> 	    
-        </release>
-		
-		<release version="HEAD">
+		<action dev="gtr" type="add">
+    			<em>Branch architecture-gtr-1454-2:</em> I added the architecture document for system v1.1 to astrogrid-software-site.
+    			I also fixed BZ1457, making the module buildable on Windows.
+    		</action>
 		<action dev="kmb" type="fix">
 				<em>Branch: Reg_KMB_1350</em>
 				Fixed a few areas.  Harvesting can now use specefic sets for certain registries determined in Properties.
