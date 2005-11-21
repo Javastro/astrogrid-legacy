@@ -1,14 +1,12 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.37 2005/04/26 15:27:47 clq2 Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.38 2005/11/21 12:32:20 clq2 Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/04/26 15:27:47 $</cvs:date>
- * <cvs:version>$Revision: 1.37 $</cvs:version>
+ * <cvs:date>$Date: 2005/11/21 12:32:20 $</cvs:date>
+ * <cvs:version>$Revision: 1.38 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 
-//import java.net.MalformedURLException;
-//import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,34 +17,22 @@ import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
-//import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
-//import org.astrogrid.community.common.config.CommunityConfig;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
-//import org.astrogrid.community.common.exception.CommunityPolicyException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.community.common.security.data.SecurityToken;
-//import org.astrogrid.community.common.security.service.SecurityServiceMock;
-import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
 import org.astrogrid.community.resolver.CommunityPasswordResolver;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
-//import org.astrogrid.config.Config;
-//import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.portal.common.session.AstrogridSessionFactory;
 import org.astrogrid.portal.common.session.AstrogridSession ;
 import org.astrogrid.portal.common.session.AttributeKey ;
-import org.astrogrid.portal.myspace.filesystem.Tree;
 import org.astrogrid.portal.client.Screen ;
-// import org.astrogrid.portal.login.common.SessionKeys;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.filemanager.client.FileManagerClientFactory ;
 import org.astrogrid.filemanager.client.FileManagerClient ;
-// import org.astrogrid.filemanager.client.exception.FileManagerLoginException ;
-
-//import org.astrogrid.portal.myspace.filesystem.*;
 
 
 /**
@@ -196,27 +182,12 @@ public final class LoginAction extends AbstractAction {
         log.debug("  Token   : " + token);
         log.debug("  Token   : " + token.getToken());
         log.debug("  Account : " + token.getAccount());
-        
-        // Get MySpace Manager end point.
-        Ivorn accountSpace = null;
-        try {
-          CommunityAccountSpaceResolver accSpaceResolver = new CommunityAccountSpaceResolver();
-          accountSpace = accSpaceResolver.resolve(ivorn);
-          
-          assert accountSpace != null : "Account Space should not be null";
-        }
-        catch(Exception e) {
-          accountSpace = null;
-          
-          throw new LoginException("Failed to resolve account space for <" + ivorn.toString() + ">", e);
-        }
 
         // We pass the tests so set the current account info in our session.
         session.setAttribute( AttributeKey.USER, name ) ;
         session.setAttribute( AttributeKey.CREDENTIAL, "guest@is.this.needed?" ) ;
         session.setAttribute( AttributeKey.COMMUNITY_ACCOUNT, token.getAccount() ) ;
         // session.setAttribute( AttributeKey.COMMUNITY_NAME, CommunityConfig.getCommunityName() ) ;
-        session.setAttribute( AttributeKey.ACOUNTSPACE_IVORN, accountSpace ) ;         
         session.setAttribute( AttributeKey.COMMUNITY_AUTHORITY, community) ;
            
         //
@@ -228,25 +199,19 @@ public final class LoginAction extends AbstractAction {
         session.setAttribute( AttributeKey.CLIENT_SCREEN, getScreenDetails( request, log ) ) ;
        
         // Retrieve FileManagerClient for MySpace access and store in session object...
+        // I dont think it is safe to move this from login at present. Because of the need
+        // for a password or equivalent.
         FileManagerClient fmc = null ;
         try {
             // fmc = new FileManagerClientFactory().login( token ) ;  
             fmc = new FileManagerClientFactory().login( ivorn, pass ) ;              
-            session.setAttribute( AttributeKey.FILE_MANAGER_CLIENT, fmc ) ;            
+            session.setAttribute( AttributeKey.FILE_MANAGER_CLIENT, fmc ) ;   
+            session.setAttribute( AttributeKey.USER_IVORN, ivorn ) ;
         }
         catch( Exception ex ) {
             log.error( "FileManagerClientFactory().login( token ) failed", ex ) ;
             throw new LoginException( "FileManagerClientFactory().login( token ) failed", ex);        
         }
-        
-        try {
-            Tree fileTree = Tree.constructTree( ivorn, fmc ) ;
-            session.setAttribute( AttributeKey.MYSPACE_TREE, fileTree ) ;
-        }
-        catch( Exception ex ) {
-            log.error( "Tree.constructTree( ivorn, fmc ) failed", ex ) ;
-            throw new LoginException("Tree.constructTree( ivorn, fmc ) failed",ex);
-        }        
 
 		//
         // Add our results.
@@ -362,6 +327,15 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.38  2005/11/21 12:32:20  clq2
+ * branch por-jl-1374
+ *
+ * Revision 1.37.62.2  2005/08/25 14:50:24  jl99
+ * Rationalize MySpace calls within Login. Had taken too much from session object.
+ *
+ * Revision 1.37.62.1  2005/08/25 10:57:29  jl99
+ * Rationalize MySpace calls within Login
+ *
  * Revision 1.37  2005/04/26 15:27:47  clq2
  * por_jl_1046
  *

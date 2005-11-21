@@ -18,6 +18,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
 
+//import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.portal.common.session.AstrogridSessionFactory ;
 import org.astrogrid.portal.common.session.AstrogridSession ;
 import org.astrogrid.portal.common.session.AttributeKey ;
@@ -26,6 +27,7 @@ import org.astrogrid.portal.common.session.AttributeKey ;
 
 import org.astrogrid.portal.myspace.acting.framework.MySpaceHandler;
 import org.astrogrid.portal.myspace.filesystem.*;
+// import org.astrogrid.store.Ivorn;
 
 /**
  * Generate <code>StoreClient</code> list of files as XML.
@@ -77,11 +79,8 @@ public class DirectoryViewGenerator extends AbstractGenerator {
     String mode = request.getParameter( MySpaceHandler.PARAM_REQUESTED_MODE ) ;
     this.getLogger().debug( "mode: " + mode ) ;
     
-    Tree tree = (Tree)session.getAttribute( AttributeKey.MYSPACE_TREE ) ;
+    Tree tree = TreeHelper.getTree( session ) ;
     try {       
-        if( tree == null ) {
-            throw new ProcessingException( "Filesystem Tree not returned from session object") ;
-        }
         // First of all we try for a specifically requested directory.
         // This may not always be present, eg: on first display...
         Directory directory = tree.getDirectory( path ) ; 

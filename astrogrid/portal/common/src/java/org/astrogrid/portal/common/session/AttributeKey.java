@@ -21,6 +21,7 @@ public final class AttributeKey {
     	CREDENTIAL = new AttributeKey( "credential" ),
     	COMMUNITY_ACCOUNT = new AttributeKey( "community_account" ),
        	ACOUNTSPACE_IVORN = new AttributeKey( "ivorn" ),
+       	USER_IVORN = new AttributeKey( "AGO_USER_IVORN" ),
        	FILE_MANAGER_CLIENT = new AttributeKey( "AGO_FILEMANAGERCLIENT" ),
        	MYSPACE_TREE = new AttributeKey( "AGO_MYSPACETREE" ),
         MYSPACE_TREE_OPEN_BRANCHES = new AttributeKey( "AGO_MYSPACETREE_OPENBRANCHES" ),

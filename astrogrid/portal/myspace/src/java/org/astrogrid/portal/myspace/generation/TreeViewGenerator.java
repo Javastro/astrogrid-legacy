@@ -18,9 +18,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
 
+//import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.portal.common.session.AstrogridSessionFactory ;
 import org.astrogrid.portal.common.session.AstrogridSession ;
 import org.astrogrid.portal.common.session.AttributeKey ;
+//import org.astrogrid.store.Ivorn;
 
 //import org.apache.log.Logger ;
 
@@ -63,7 +65,7 @@ public class TreeViewGenerator extends AbstractGenerator {
     if( TRACE_ENABLED) this.getLogger().debug( "enter: TreeViewGenerator.generate()" );
         
     try {        
-        Tree fileTree = (Tree)session.getAttribute(AttributeKey.MYSPACE_TREE) ;
+        Tree fileTree = TreeHelper.getTree( session ) ;
         String[] openBranches = (String[])session.getAttribute(AttributeKey.MYSPACE_TREE_OPEN_BRANCHES ) ;
         if( DEBUG_ENABLED ) {
             if( openBranches == null ) {
