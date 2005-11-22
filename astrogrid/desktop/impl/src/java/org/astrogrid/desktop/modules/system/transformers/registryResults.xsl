@@ -28,14 +28,15 @@
   <html>
     <head>
       <style type="text/css">
-	    cite{font-style:normal}
-		.namespace{color: }
+        .title{text-align:center; text-decoration:underline}
 		.element{color:blue;}
-		.body{font-family:sans-serif,monospaced;}   
+		.body{font-family:sans-serif,monospaced;}
+		.solid{border-style:solid;}
       </style>            
     </head>
     <body>
       <xsl:apply-templates />
+      <div class="title">XML registry entry:</div>  
       <xsl:apply-templates mode="showxml" />
     </body>
   </html>
@@ -44,18 +45,16 @@
 
 <!-- RESOURCE -->
 <xsl:template match="vor:Resource">
-  <div class="cite">                    
-    <div class="element">
-      <font color="black">Title: </font>
-      <xsl:value-of select="vr:title"/> (<font color="black">Short name: </font><xsl:value-of select="vr:shortName"/>)
-    </div>
-    <div class="element">
-      <font color="black">Identifier: </font>
-      <xsl:value-of select="vr:identifier"/>
-    </div>
-    <center>--------------------------------</center>
-    <xsl:apply-templates/>
-  </div> 
+  <div class="title">Resource:</div>        
+  <div class="element">
+    <font color="black">Title: </font><xsl:value-of select="vr:title"/> 
+    <br/>
+    <font color="black">Short name: </font><xsl:value-of select="vr:shortName"/>
+    <br/>
+    <font color="black">Identifier: </font><xsl:value-of select="vr:identifier"/>
+  </div>  
+  <hr width="90%" align="center"></hr>
+  <xsl:apply-templates/> 
 </xsl:template>
             
 <xsl:template match="vr:title"/>
@@ -66,37 +65,48 @@
          
 <!-- CONTENT -->
 <xsl:template match="vr:content">
-  <xsl:if test="vr:description != 'not set'">
-    <div class="element">
-      <font color="black">Description: </font>
-      <xsl:value-of select="vr:description"/>
-    </div>
-  </xsl:if>  
-  <div class="element">
+  <div class="title">Content:</div>  
+  <div class="element">      
+    <xsl:if test="vr:description != 'not set'">    
+      <font color="black">Description: </font><xsl:value-of select="vr:description"/>
+      <br/>
+    </xsl:if>    
     <xsl:if test="vr:referenceURL != ''">
-      <font color="black">Reference URL: </font>
-      <xsl:value-of select="vr:referenceURL"/>
+      <font color="black">Reference URL: </font><xsl:value-of select="vr:referenceURL"/>
+      <br/>
+    </xsl:if>  
+    <xsl:if test="vr:type != ''">    
+      <font color="black">Type: </font><xsl:apply-templates select="vr:type" /> 
+      <br/>
     </xsl:if>
-  </div>
-  <div class="element">
-    <font color="black">Type: </font>
-    <xsl:value-of select="vr:type"/>
-  </div>
-  <xsl:if test="vr:subject != '???'">
-    <div class="element">
-      <font color="black">Type:</font>
-      <xsl:value-of select="vr:subject"/>
-    </div>            
-  </xsl:if>
-  <center>--------------------------------</center>
+    <xsl:if test="vr:subject != '???'">
+      <font color="black">Type:</font><xsl:value-of select="vr:subject"/>
+      <br/>           
+    </xsl:if>
+    <xsl:if test="vr:contentLevel != ''">    
+      <font color="black">Level: </font><xsl:apply-templates select="vr:contentLevel" /> 
+      <br/>
+    </xsl:if>
+  </div> 
+  <hr width="90%" align="center"></hr>
+</xsl:template>
+
+<xsl:template match="vr:type">  
+  <xsl:value-of select="."/><xsl:text>, </xsl:text>
+</xsl:template>
+
+<xsl:template match="vr:contentLevel">  
+  <xsl:value-of select="."/><xsl:text>, </xsl:text>
 </xsl:template>
 
 <xsl:template match="vr:accessURL"/>
 <xsl:template match="vs:resultType"/>
+<xsl:template match="vs:facility"/>
 
 
 <!-- COVERAGE -->
 <xsl:template match="vs:coverage">
+  <div class="title">Coverage:</div>        
   <div class="element">          
     <font color="black">Coverage:</font>
     <font color="black">All sky:</font>
@@ -106,7 +116,7 @@
     <font color="black">Spectral:</font>         
     <xsl:apply-templates select="vs:spectral/vs:waveband" />
   </div>
-  <center>--------------------------------</center>
+  <hr width="90%" align="center"></hr>
 </xsl:template>
 
 <xsl:template match="vs:spectral/vs:waveband">  
@@ -124,6 +134,7 @@
 
 <!-- TABLE -->
 <xsl:template match="vs:table">
+  <div class="title">Table:</div>
   <div class="element">
     <font color="black">Table name:</font>
     <xsl:value-of select="vs:name"/>
@@ -132,11 +143,13 @@
       <xsl:apply-templates select="vs:column" />
     </div>
   </div>
+  <hr width="90%" align="center"></hr>
 </xsl:template>
 
 
 <!-- COLUMN -->      
 <xsl:template match="vs:column">
+  <nobr>
   <font color="black"> Column: </font>
   <xsl:if test="vs:name != ''">
     <xsl:value-of select="vs:name"/>
@@ -157,6 +170,7 @@
     <font color="black"> UCD: </font>
     <xsl:value-of select="vs:UCD"/>
   </xsl:if>
+  </nobr>
   <br/>
 </xsl:template>
 
@@ -164,38 +178,43 @@
 
 <!-- CURATION -->
 <xsl:template match="vr:curation">
-  <div class="element">
+  <div class="title">Curation:</div>  
+  <div class="element">        
     <xsl:if test="vr:publisher != ''">
-      <font color="black">Publisher: </font><xsl:value-of select="vr:publisher"/>
+      <font color="black">Publisher: </font><xsl:value-of select="vr:publisher"/> 
+      <br/>     
     </xsl:if>
-    <xsl:if test="vr:creator != ''">
-      <font color="black"> Creator: </font><xsl:value-of select="vr:creator"/>
+    <xsl:if test="vr:creator != ''">    
+      <font color="black">Creator: </font><xsl:value-of select="normalize-space(vr:creator)"/>      
+      <br/>
     </xsl:if>
-  </div>
-  <div class="element">
     <xsl:if test="vr:date != ''">
-      <font color="black">Date: </font><xsl:value-of select="vr:date"/>
+      <font color="black">Date: </font><xsl:value-of select="vr:date"/><xsl:text>,  </xsl:text>      
     </xsl:if>
     <xsl:if test="vr:version != ''">
-      <font color="black"> Version: </font><xsl:value-of select="vr:version"/>
+      <font color="black">Version: </font><xsl:value-of select="vr:version"/>      
+      <br/>
+    </xsl:if>
+    <xsl:if test="vr:contact/vr:name != ''">
+      <font color="black">Contact: </font><xsl:value-of select="vr:contact/vr:name"/>
+    </xsl:if>
+    <xsl:if test="vr:contact/vr:email != ''">
+      <font color="black">, Email: </font><xsl:value-of select="vr:contact/vr:email"/>
     </xsl:if>
   </div>
-  <div class="element">
-    <font color="black">Contact: </font><xsl:value-of select="vr:contact"/>
-  </div>
-  <center>--------------------------------</center>
+  <hr width="90%" align="center"></hr>
 </xsl:template>
      
 
 <!-- APPLICATION DEFINITION -->
 <xsl:template match="cea:ApplicationDefinition">          
-  <font color="black">Parameters:</font>
+  <div class="title">Parameters:</div>
   <xsl:apply-templates select="cea:Parameters/cea:ParameterDefinition" />
   <div class="element">
     <font color="black">Interfaces: </font>
     <xsl:apply-templates select="cea:Interfaces/ceab:Interface" />
   </div>    
-    <center>--------------------------------</center>          
+  <hr width="90%" align="center"></hr>
 </xsl:template>                  
 
 <!-- PARAMETER DEFINITION -->
@@ -208,14 +227,16 @@
 
 <!-- INTERFACES -->      
 <xsl:template match="cea:Interfaces/ceab:Interface">  
-  <xsl:value-of select="@name"/>,
+  <xsl:value-of select="@name"/><xsl:text>,  </xsl:text>
 </xsl:template>
+
+<xsl:template match="cea:ApplicationReference"/>
     
             
 <!-- XML TO HTML -->
   <!-- Default node handler, convert to HTML and apply templates -->
-  <xsl:template match="*" name="xml-html" mode="showxml">  
-    <br></br> 
+  <xsl:template match="*" name="xml-html" mode="showxml">      
+    <br/> 
       <!--Indent by number of parent nodes -->
         <xsl:for-each select="ancestor::*">
           <xsl:text>....</xsl:text>

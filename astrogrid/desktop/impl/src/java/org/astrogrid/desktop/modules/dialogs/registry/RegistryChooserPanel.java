@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.13 2005/11/17 13:34:59 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.14 2005/11/22 18:58:19 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.text.Caret;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -297,6 +296,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                             return (String)transform(doc);
                         }
                         protected void doFinished(Object o) {
+                        	editorPane.setEditorKit(new XHTMLEditorKit());
                             editorPane.setText(o.toString());
                             editorPane.setCaretPosition(0);
                         }
@@ -515,6 +515,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.14  2005/11/22 18:58:19  pjn3
+added XHTMLEditorKit to improve how xhtml is displayed in JEditorPane
+
 Revision 1.13  2005/11/17 13:34:59  pjn3
 Query sql string alterred to include vr:content as per Kevin's email
 
