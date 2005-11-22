@@ -142,32 +142,38 @@
      -->
    <xsl:template match="*[@xsi:type='intersectionSearchType']">
     <!--
-   	<xsl:if test="../local-name() = 'Where'">
-     -->
    	<xsl:if test="local-name(..) = 'Where'">
-	  <xsl:text>(</xsl:text>
     </xsl:if>
+     -->
+	  <xsl:text>(</xsl:text>
       <xsl:apply-templates select="*[1]"/>
       <xsl:text> and </xsl:text>
       <xsl:apply-templates select="*[2]"/>
+      <!--
 	<xsl:if test="local-name(..) = 'Where'">
- 	  <xsl:text>)</xsl:text>
     </xsl:if>
+       -->
+ 	  <xsl:text>)</xsl:text>
    </xsl:template>
 
    <!--
      -  Union: a OR b
      -->
    <xsl:template match="*[@xsi:type='unionSearchType']">
+     <!--
      <xsl:if test="local-name(..) = 'Where'">
-	 	<xsl:text>(</xsl:text>
      </xsl:if>
+     -->
+	 	<xsl:text>(</xsl:text>
       <xsl:apply-templates select="*[1]"/>
       <xsl:text> or </xsl:text>
       <xsl:apply-templates select="*[2]"/>
+    <!--
      <xsl:if test="local-name(..) = 'Where'">
-		 <xsl:text>)</xsl:text>
+
 	 </xsl:if>
+    -->
+		 <xsl:text>)</xsl:text>
    </xsl:template>
 
    <!--
