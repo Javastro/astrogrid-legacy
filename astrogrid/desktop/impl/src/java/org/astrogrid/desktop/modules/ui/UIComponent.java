@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.8 2005/11/11 10:08:18 nw Exp $
+/*$Id: UIComponent.java,v 1.9 2005/11/22 12:14:20 pjn3 Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -300,6 +300,7 @@ public class UIComponent extends PositionRememberingJFrame {
         }
         if (getTasksMenu().getSubElements().length == 0) {
             setBusy(false);
+            setStatusMessage("");
         }
     }
 
@@ -319,6 +320,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.9  2005/11/22 12:14:20  pjn3
+Bug #1472 - clear status message once background task finishes
+
 Revision 1.8  2005/11/11 10:08:18  nw
 cosmetic fixes
 
