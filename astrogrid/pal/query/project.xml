@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.8 2005/11/21 12:54:18 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.9 2005/11/22 12:13:31 kea Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -79,7 +79,7 @@
    <build>
      <resources>
        <resource>
-         <directory>${basedir}/src/java/</directory>
+         <directory>${basedir}/src/</directory>
          <includes>
            <include>**/*.xml</include>
            <include>**/*.xsl</include>
