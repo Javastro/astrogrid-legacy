@@ -21,13 +21,13 @@ import org.votech.plastic.incoming.handlers.StandardHandler;
  */
 public class MessengerImpl implements MessengerInternal, PlasticListener {
     private static final String IVORN = "ivo://org.astrogrid/acr";
+
     private static final String NAME = "ACR Plastic Hub";
 
     /**
      * Logger for this class
      */
-    private static final Log logger = LogFactory
-            .getLog(MessengerImpl.class);
+    private static final Log logger = LogFactory.getLog(MessengerImpl.class);
 
     private MessageHandler handler;
 
@@ -38,17 +38,18 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
     public MessengerImpl() {
         logger.trace("Constructing HubApplicationImpl");
         handler = new LoggingHandler(logger);
-        handler.setNextHandler(new StandardHandler(NAME,IVORN, PlasticListener.CURRENT_VERSION));
+        handler.setNextHandler(new StandardHandler(NAME, IVORN,
+                PlasticListener.CURRENT_VERSION));
 
-        logger.info("Hub self-registered with ID "+id);
+        logger.info("Hub self-registered with ID " + id);
     }
-    
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.votech.plastic.PlasticListener#receive(java.lang.String, java.lang.String, java.util.Vector)
      */
-    public Object perform(String sender, String message, Vector args)  {
+    public Object perform(String sender, String message, Vector args) {
         return handler.perform(sender, message, args);
     }
 
@@ -59,68 +60,91 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
         return handler.getHandledMessages();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.acr.plastic.HubApplication#getHubPlasticVersion()
      */
     public String getHubPlasticVersion() {
-        return (String) handler.perform(this.id, CommonMessageConstants.GET_VERSION, CommonMessageConstants.EMPTY_VECTOR);
+        return (String) handler.perform(this.id,
+                CommonMessageConstants.GET_VERSION,
+                CommonMessageConstants.EMPTY_VECTOR);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.acr.plastic.HubApplication#getHubName()
      */
     public String getHubName() {
-        return (String) handler.perform(this.id, CommonMessageConstants.GET_NAME, CommonMessageConstants.EMPTY_VECTOR);
+        return (String) handler.perform(this.id,
+                CommonMessageConstants.GET_NAME,
+                CommonMessageConstants.EMPTY_VECTOR);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.acr.plastic.HubApplication#getHubIvorn()
      */
     public String getHubIvorn() {
-        return (String) handler.perform(this.id, CommonMessageConstants.GET_IVORN, CommonMessageConstants.EMPTY_VECTOR);
+        return (String) handler.perform(this.id,
+                CommonMessageConstants.GET_IVORN,
+                CommonMessageConstants.EMPTY_VECTOR);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.acr.plastic.HubApplication#getPlasticVersions()
      */
     public String[] getPlasticVersions() {
-        return prettify(hub.request(this.id, CommonMessageConstants.GET_VERSION, CommonMessageConstants.EMPTY_VECTOR));
+        return prettify(hub.request(this.id,
+                CommonMessageConstants.GET_VERSION,
+                CommonMessageConstants.EMPTY_VECTOR));
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.acr.plastic.HubApplication#getNames()
      */
     public String[] getNames() {
-        Vector results = hub.request(this.id, CommonMessageConstants.GET_NAME, CommonMessageConstants.EMPTY_VECTOR);
+        Vector results = hub.request(this.id, CommonMessageConstants.GET_NAME,
+                CommonMessageConstants.EMPTY_VECTOR);
         return prettify(results);
     }
 
     /**
      * Takes a Vector of Hashtables and returns an array of Strings of key: value
+     * 
      * @param results see above
      * @return see above
      */
     private String[] prettify(Vector results) {
         String[] prettified = new String[results.size()];
-        for (int i=0;i< prettified.length;++i) {
+        for (int i = 0; i < prettified.length; ++i) {
             Hashtable result = (Hashtable) results.get(i);
             Object key = result.keys().nextElement();
             Object value = result.get(key);
-            prettified[i]= key+": "+value;
+            prettified[i] = key + ": " + value;
         }
         return prettified;
     }
 
-
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.acr.plastic.HubApplication#getIvorns()
      */
     public String[] getIvorns() {
-        return prettify(hub.request(this.id, CommonMessageConstants.GET_IVORN, CommonMessageConstants.EMPTY_VECTOR));
+        return prettify(hub.request(this.id, CommonMessageConstants.GET_IVORN,
+                CommonMessageConstants.EMPTY_VECTOR));
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.acr.plastic.HubApplication#echo(java.lang.String)
      */
     public String[] echo(String message) {
@@ -129,16 +153,18 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
         return prettify(hub.request(this.id, CommonMessageConstants.ECHO, args));
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.acr.plastic.HubApplication#sendMessage(java.lang.String)
      */
     public Object[] sendNoArgMessage(String message) {
         return sendMessage(message, CommonMessageConstants.EMPTY_VECTOR);
     }
 
-
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.desktop.modules.plastic.HubApplication#registerWith(org.votech.plastic.PlasticHub)
      */
     public String registerWith(PlasticHubListener hub) {
@@ -147,9 +173,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
         return id;
     }
 
-
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.astrogrid.desktop.modules.plastic.MessengerInternal#sendMessage(java.lang.String, java.util.Vector)
      */
     public Object[] sendMessage(String message, Vector args) {

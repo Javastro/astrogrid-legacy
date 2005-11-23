@@ -64,7 +64,8 @@
 			</return>
 		</method>
 		<method name="registerXMLRPC">
-			<description>Register an application that can be called back by XMLRPC</description>
+			<description>Register an application that can be called back by
+				XMLRPC</description>
 			<property>
 				<key>icon</key>
 				<value>frgmt_obj.gif</value>
@@ -79,7 +80,7 @@
 					<key>system.xmlrpc.type</key>
 					<value>String</value>
 				</property>
-			</parameter>			
+			</parameter>
 			<parameter name="messages">
 				<description>Understood messages (comma separated)</description>
 				<property>
@@ -100,10 +101,11 @@
 					<key>system.xmlrpc.type</key>
 					<value>String</value>
 				</property>
-			</return>			
-		</method>	
+			</return>
+		</method>
 		<method name="registerNoCallBack">
-			<description>Register an application that offers no callback mechanism</description>
+			<description>Register an application that offers no callback
+				mechanism</description>
 			<property>
 				<key>icon</key>
 				<value>frgmt_obj.gif</value>
@@ -118,15 +120,15 @@
 					<key>system.xmlrpc.type</key>
 					<value>String</value>
 				</property>
-			</parameter>			
+			</parameter>
 			<return>
 				<description>id</description>
 				<property>
 					<key>system.xmlrpc.type</key>
 					<value>String</value>
 				</property>
-			</return>			
-		</method>			
+			</return>
+		</method>
 		<method name="unregister">
 			<description>Unregister a PLASTIC-compliant app</description>
 			<property>
@@ -166,17 +168,18 @@
 					<key>system.xmlrpc.type</key>
 					<value>Array</value>
 				</property>
-			</parameter>						
+			</parameter>
 			<return>
 				<description>Responses</description>
 				<property>
 					<key>system.xmlrpc.type</key>
 					<value>Array</value>
 				</property>
-			</return>			
+			</return>
 		</method>
 		<method name="markUnresponsiveApps">
-			<description>Ping all registered applications and mark those that don't respond</description>
+			<description>Ping all registered applications and mark those that don't
+				respond</description>
 			<property>
 				<key>icon</key>
 				<value>sleeping.gif</value>
@@ -192,9 +195,10 @@
 					<value>Array</value>
 				</property>
 			</return>
-		</method>		
+		</method>
 		<method name="purgeUnresponsiveApps">
-			<description>Unregister any unresponsive applications from the hub</description>
+			<description>Unregister any unresponsive applications from the
+				hub</description>
 			<property>
 				<key>icon</key>
 				<value>delete_obj.gif</value>
@@ -212,13 +216,13 @@
 			</return>
 		</method>
 	</component>
-	<component name="messenger" 
+	<component name="messenger"
 		implementationClass="org.astrogrid.desktop.modules.plastic.MessengerImpl"
 		interfaceClass="org.astrogrid.desktop.modules.plastic.MessengerInternal">
 		<!--This means that the xml-rpc methods for this component will begin plastic.messenger rather
-			than plastic.client as mandated in the Plastic Spec.  However, this is OK
-			as this component is not accessed externally, and DOES implement the PlasticListener
-			RMI interface correctly-->
+		than plastic.client as mandated in the Plastic Spec.  However, this is OK
+		as this component is not accessed externally, and DOES implement the PlasticListener
+		RMI interface correctly-->
 		<description>Send messages to applications</description>
 		<property>
 			<key>icon</key>
@@ -388,8 +392,7 @@
 			</return>
 		</method>
 		<method name="sendMessage">
-			<description>Send a  message to registered
-				applications</description>
+			<description>Send a message to registered applications</description>
 			<property>
 				<key>icon</key>
 				<value>event_prop_arrow_obj.gif</value>
@@ -411,7 +414,7 @@
 					<key>system.xmlrpc.type</key>
 					<value>Array</value>
 				</property>
-			</parameter>			
+			</parameter>
 			<return>
 				<description>The responses</description>
 				<property>
@@ -419,46 +422,46 @@
 					<value>Array</value>
 				</property>
 			</return>
-		</method>		
+		</method>
 		<!--Don't want to expose this one-->
 		<!--method name="perform">
-			<description>Directly access the perform method</description>
-			<property>
-				<key>icon</key>
-				<value>event_prop_arrow_obj.gif</value>
-			</property>
-			<property>
-				<key>system.ui.menu.entry</key>
-				<value>Perform on application</value>
-			</property>
-			<parameter name="sender">
-				<description>sender</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
-			</parameter>
-			<parameter name="message">
-				<description>The message to send</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
-			</parameter>
-			<parameter name="args">
-				<description>The arguments</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>Array</value>
-				</property>
-			</parameter>									
-			<return>
-				<description>The response</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>Object</value>
-				</property>
-			</return>
-		</method-->		
+		<description>Directly access the perform method</description>
+		<property>
+		<key>icon</key>
+		<value>event_prop_arrow_obj.gif</value>
+		</property>
+		<property>
+		<key>system.ui.menu.entry</key>
+		<value>Perform on application</value>
+		</property>
+		<parameter name="sender">
+		<description>sender</description>
+		<property>
+		<key>system.xmlrpc.type</key>
+		<value>String</value>
+		</property>
+		</parameter>
+		<parameter name="message">
+		<description>The message to send</description>
+		<property>
+		<key>system.xmlrpc.type</key>
+		<value>String</value>
+		</property>
+		</parameter>
+		<parameter name="args">
+		<description>The arguments</description>
+		<property>
+		<key>system.xmlrpc.type</key>
+		<value>Array</value>
+		</property>
+		</parameter>									
+		<return>
+		<description>The response</description>
+		<property>
+		<key>system.xmlrpc.type</key>
+		<value>Object</value>
+		</property>
+		</return>
+		</method-->
 	</component>
 </module>
