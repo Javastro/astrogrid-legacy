@@ -24,7 +24,7 @@ public interface UCD  {
     public java.lang.String UCDList()throws ServiceException;
     /** resolve a UCD1 (wont work with UCD1+)
      * @param ucd             ucd  the UCD1 to resolve (example : PHOT_JHN_V)
-
+
      * @return  sentence corresponding to the UCD1 (example : Johnson magnitude V (JHN))
 
      * @throws ServiceException

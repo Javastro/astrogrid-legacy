@@ -1,4 +1,4 @@
-/*$Id: Coordinate.java,v 1.1 2005/08/25 16:59:44 nw Exp $
+/*$Id: Coordinate.java,v 1.2 2005/11/23 19:11:42 jdt Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,6 @@ public interface Coordinate {
      * @param equinox2 (Julian Years or Besselian, unused for GAL, SGAL, ICRS)
 
      * @return a String like 150.4806267 -05.3873952 (Gal)
-
 
      * @throws ServiceException if fails to communicate with web service.
      */
@@ -80,6 +79,12 @@ public interface Coordinate {
 
 /* 
 $Log: Coordinate.java,v $
+Revision 1.2  2005/11/23 19:11:42  jdt
+Removed some bad chars that were stopping the build on Windows.
+
+Revision 1.1.8.1  2005/11/23 12:57:14  jdt
+removed some dodgy characters that were causing checkstyle some grief on windows.
+
 Revision 1.1  2005/08/25 16:59:44  nw
 1.1-beta-3
  
