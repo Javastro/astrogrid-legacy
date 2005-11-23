@@ -550,6 +550,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		tabbedPaneWF.addMouseListener(new MouseAdapter(){
 	        public void mouseClicked(MouseEvent event)
 	        {
+	        	setStatusMessage("");
 	        	if (((JTabbedPane)event.getSource()).getSelectedIndex() == 1) { // only if user is selecting text tab	        		
 		            try{
 		                Document doc = DomHelper.newDocument();
@@ -575,7 +576,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		            		XMLUtils.PrettyDocumentToWriter(doc,sw);
 		            		docTextArea.setText(sw.toString());
 			                docTextArea.setCaretPosition(0);
-			                showError("Your workflow document contains invalid xml",ex);
+			                String message = ex.getLocation().toString().replaceFirst("XPATH:", "Error at:");
+			                setStatusMessage("" + message);
+			                showError("Your workflow document contains invalid xml",ex);			                
 		            	} catch(Exception exc) {
 		            		logger.error("Error unmarshalling workflow object with validation turned off");
 		            	}	                    
