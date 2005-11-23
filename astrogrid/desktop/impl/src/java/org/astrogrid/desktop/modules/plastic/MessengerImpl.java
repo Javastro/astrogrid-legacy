@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.EchoHandler;
+import org.votech.plastic.incoming.handlers.LoggingHandler;
 import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.incoming.handlers.StandardHandler;
 
@@ -37,7 +37,7 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
 
     public MessengerImpl() {
         logger.trace("Constructing HubApplicationImpl");
-        handler = new EchoHandler(System.out);
+        handler = new LoggingHandler(logger);
         handler.setNextHandler(new StandardHandler(NAME,IVORN, PlasticListener.CURRENT_VERSION));
 
         logger.info("Hub self-registered with ID "+id);
