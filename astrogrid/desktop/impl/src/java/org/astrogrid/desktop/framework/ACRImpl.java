@@ -1,4 +1,4 @@
-/*$Id: ACRImpl.java,v 1.5 2005/11/15 19:39:07 nw Exp $
+/*$Id: ACRImpl.java,v 1.6 2005/11/23 19:15:30 jdt Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,8 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.Module;
 import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.common.namegen.InMemoryNameGen;
+import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
@@ -33,6 +35,9 @@ import org.nanocontainer.aop.ClassPointcut;
 import org.nanocontainer.aop.MethodPointcut;
 import org.nanocontainer.aop.PointcutsFactory;
 import org.xml.sax.SAXException;
+
+import EDU.oswego.cs.dl.util.concurrent.Executor;
+import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -78,6 +83,10 @@ public class ACRImpl implements MutableACR {
         DefaultModule m = new DefaultModule();
         m.registerComponentInstance(MutableACR.class,this);
         m.registerComponentInstance(Shutdown.class,new ShutdownImpl(modules));
+        //NOEL is this the correct place to do this?  Or should they be given
+        //entries in my module.xml and registered that way?
+        m.registerComponentImplementation(NameGen.class, InMemoryNameGen.class);
+        m.registerComponentInstance(Executor.class, new PooledExecutor());  //Thread pool with default settings
         ModuleDescriptor md = new ModuleDescriptor();
         md.setName("builtin");
         md.setDescription("Builtin components");
@@ -355,6 +364,9 @@ public class ACRImpl implements MutableACR {
 
 /* 
 $Log: ACRImpl.java,v $
+Revision 1.6  2005/11/23 19:15:30  jdt
+Extruded plastic.
+
 Revision 1.5  2005/11/15 19:39:07  nw
 merged in improvements from release branch.
 

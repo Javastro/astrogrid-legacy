@@ -2,4 +2,5 @@ target
 .classpath
 .project
 javadoc*
-.settings
+*.settings
+native

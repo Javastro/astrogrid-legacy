@@ -177,7 +177,12 @@ public class MyComponent {
 	<subsection name="Running"><p>
 		To run a local instance of the workbench, run the class <tt>org.astrogrid.desktop.Main</tt> from within eclipse.
 		When running locally, some features (e.g. JavaWebstart and JDIC integration) won't be available. However, the system should degrade gracefully
-		and use fallbalks (although a few exceptions will be thrown in the logs).
+		and use fallbalks (although a few exceptions will be thrown in the logs).  If you want to avoid the exceptions (and have the JDIC integration), here's a tip: 
+		<ul>
+			<li>locate the jdic native jar file for your OS (on windows it's jdic_native_Windows_i386-0.9.1.jar)</li>
+			<li>unjar the contents and put the shared libs (e.g. dlls) into a directory of your choice relative to your project root (e.g. natives) </li>
+			<li>Edit your run configuration in Eclipse: on the arguments tab, add the VM arguments <tt>-Djava.library.path=natives</tt></li>
+		</ul>
 		</p></subsection>
 </section>
 

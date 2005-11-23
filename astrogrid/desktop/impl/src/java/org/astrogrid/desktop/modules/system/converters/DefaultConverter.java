@@ -1,4 +1,4 @@
-/*$Id: DefaultConverter.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: DefaultConverter.java,v 1.2 2005/11/23 19:15:30 jdt Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,10 @@
  *
 **/
 package org.astrogrid.desktop.modules.system.converters;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Vector;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
@@ -30,6 +34,21 @@ public class DefaultConverter implements Converter {
      */
     private DefaultConverter() {
         super();
+        //FIXME this is almost certainly not the right place to put this...
+        //NOEL I need a String->Vector converter - how do you want this doing?
+        ConvertUtils.register(new Converter() {
+
+            public Object convert(Class arg0, Object arg1) {
+                //can we assume that arg0 IS Vector?
+                assert arg0==Vector.class;
+                assert arg1 instanceof String;
+                if (arg1.equals("")) return new Vector();//empty vector in this case
+                String[] tokenized = ((String) arg1).split(",");
+                Vector results = new Vector(Arrays.asList(tokenized));
+                return results;
+            }
+            
+        }, Vector.class);
     }
 
     
@@ -49,7 +68,8 @@ public class DefaultConverter implements Converter {
         if (logger.isDebugEnabled()) {
             logger.debug(c.getName() + " " + o.getClass().getName());
         }
-        return ConvertUtils.lookup(c).convert(c,o);
+        Converter lookup = ConvertUtils.lookup(c);
+        return lookup.convert(c,o);
     }
 
 }
@@ -57,6 +77,15 @@ public class DefaultConverter implements Converter {
 
 /* 
 $Log: DefaultConverter.java,v $
+Revision 1.2  2005/11/23 19:15:30  jdt
+Extruded plastic.
+
+Revision 1.1.16.2  2005/11/23 17:34:57  jdt
+added a note to Noel
+
+Revision 1.1.16.1  2005/11/20 18:30:45  jdt
+Added a converter for Strings to Vectors, but it needs putting in the right place.
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

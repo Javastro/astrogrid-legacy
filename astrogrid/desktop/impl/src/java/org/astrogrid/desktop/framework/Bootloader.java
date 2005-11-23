@@ -1,4 +1,4 @@
-/*$Id: Bootloader.java,v 1.6 2005/11/11 10:08:18 nw Exp $
+/*$Id: Bootloader.java,v 1.7 2005/11/23 19:15:30 jdt Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public class Bootloader implements Startable{
         registerModule("ui","/org/astrogrid/desktop/modules/ui/module.xml");            
         registerModule("scripting","/org/astrogrid/desktop/modules/scripting/module.xml");
         registerModule("external","/org/astrogrid/desktop/modules/external/module.xml");  
-        
+        registerModule("plastic","/org/astrogrid/desktop/modules/plastic/module.xml");
     }
     
 /**Parse and process a module descriptor
@@ -98,6 +98,9 @@ public class Bootloader implements Startable{
 
 /* 
 $Log: Bootloader.java,v $
+Revision 1.7  2005/11/23 19:15:30  jdt
+Extruded plastic.
+
 Revision 1.6  2005/11/11 10:08:18  nw
 cosmetic fixes
 

@@ -2,3 +2,4 @@
 .project
 junit*.properties
 build.properties
+target

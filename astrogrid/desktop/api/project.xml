@@ -9,7 +9,7 @@
 	 See xdocs.
 		  </description>
         <shortDescription>Astronomy Client Runtime Interfaces</shortDescription>
-	
+    	<package>org</package> <!-- have to override that in maven-base to include org.votech-->
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
                 <resources>

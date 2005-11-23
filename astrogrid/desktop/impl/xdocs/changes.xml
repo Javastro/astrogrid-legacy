@@ -13,7 +13,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	<release version="1.3-beta" date="2005-11-11">
+	<release version="1.3-beta" date="2005-11-23">
+		<action dev="jdt" type="add" issue="1478">
+            Merged in Plastic.
+		</action>		
 		<action dev="kmb" type="add">
 			AstroScope - query all registered siap and cone services, 
 			vizualize and navigate results, save data locally or to myspace
