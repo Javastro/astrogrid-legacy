@@ -26,14 +26,9 @@ def copyFolder(folder, indentLvl=""):
             print "Copying " + f + " to " + indentLvl
             try:
                 contentsURL = acr.astrogrid.myspace.getReadContentURL(f)
-                #externalFile = urllib2.urlopen(contentsURL)
                 localFileName = indentLvl+"/"+fileInfo['name']
-                #localFile = open(localFileName,'w')
-                
                 print urllib.urlretrieve(contentsURL, localFileName);
-                
-                #localFile.write(externalFile.read());
-                #localFile.close()
+
             except Exception, e:
                 print "Whoops " + str(e)
                 
