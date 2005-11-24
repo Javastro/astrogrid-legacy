@@ -43,8 +43,7 @@ import org.votech.plastic.util.ImmutableVector;
 import EDU.oswego.cs.dl.util.concurrent.CountDown;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 
-public class PlasticHubImpl implements PlasticHubListener,
-        PlasticHubListenerInternal, Startable {
+public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInternal, Startable {
     /**
      * Logger for this class
      */
@@ -108,8 +107,7 @@ public class PlasticHubImpl implements PlasticHubListener,
          * @return true if yes
          */
         public boolean understands(String message) {
-            if (supportedMessages.size() == 0
-                    || supportedMessages.contains(message))
+            if (supportedMessages.size() == 0 || supportedMessages.contains(message))
                 return true;
             return false;
         }
@@ -122,8 +120,7 @@ public class PlasticHubImpl implements PlasticHubListener,
          * @return
          * @throws PlasticException
          */
-        public abstract Object perform(String sender, String message,
-                Vector args) throws PlasticException;
+        public abstract Object perform(String sender, String message, Vector args) throws PlasticException;
 
         protected void setResponding(boolean responding) {
             this.responding = responding;
@@ -138,16 +135,13 @@ public class PlasticHubImpl implements PlasticHubListener,
 
         private PlasticListener remoteClient;
 
-        public RMIPlasticClient(String name, Vector supportedMessages,
-                PlasticListener plastic) {
+        public RMIPlasticClient(String name, Vector supportedMessages, PlasticListener plastic) {
             super(name, supportedMessages);
-            logger.debug("Ctor: RMIPlasticClient supports messages: "
-                    + supportedMessages);
+            logger.debug("Ctor: RMIPlasticClient supports messages: " + supportedMessages);
             this.remoteClient = plastic;
         }
 
-        public Object perform(String sender, String message, Vector args)
-                throws PlasticException {
+        public Object perform(String sender, String message, Vector args) throws PlasticException {
             try {
                 Object response = remoteClient.perform(sender, message, args);
                 setResponding(true);
@@ -175,11 +169,9 @@ public class PlasticHubImpl implements PlasticHubListener,
 
         private boolean validURL;
 
-        public XMLRPCPlasticClient(String name, Vector supportedMessages,
-                String callbackURL) {
+        public XMLRPCPlasticClient(String name, Vector supportedMessages, String callbackURL) {
             super(name, supportedMessages);
-            logger.info("Ctor: XMLRPCPlasticClient with callBackURL "
-                    + callbackURL + " and supports messages: "
+            logger.info("Ctor: XMLRPCPlasticClient with callBackURL " + callbackURL + " and supports messages: "
                     + supportedMessages);
             try {
                 xmlrpc = new XmlRpcClient(callbackURL);
@@ -190,11 +182,9 @@ public class PlasticHubImpl implements PlasticHubListener,
             }
         }
 
-        public Object perform(String sender, String message, Vector args)
-                throws PlasticException {
+        public Object perform(String sender, String message, Vector args) throws PlasticException {
             if (!validURL)
-                throw new PlasticException("Cannot send message to " + getId()
-                        + " due to invalid callback URL");
+                throw new PlasticException("Cannot send message to " + getId() + " due to invalid callback URL");
             logger.info("Performing " + message + " from " + sender);
             try {
                 Vector xmlrpcArgs = new Vector();
@@ -205,8 +195,7 @@ public class PlasticHubImpl implements PlasticHubListener,
                 return xmlrpc.execute(PLASTIC_CLIENT_PERFORM, xmlrpcArgs);
             } catch (Exception e) {
                 setResponding(false);
-                logger.warn("Got " + e + " trying to send message to "
-                        + getId());
+                logger.warn("Got " + e + " trying to send message to " + getId());
                 throw new PlasticException(e);
             }
         }
@@ -247,8 +236,6 @@ public class PlasticHubImpl implements PlasticHubListener,
 
     private NameGen idGenerator;
 
-    private final Vector EMPTYVECTOR = new ImmutableVector();
-
     private Executor executor;
 
     private String hubId;
@@ -261,8 +248,8 @@ public class PlasticHubImpl implements PlasticHubListener,
      * @param idGenerator
      * @param app
      */
-    public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app, RmiServer rmiServer, WebServer webServer) {
+    public PlasticHubImpl(Executor executor, NameGen idGenerator, MessengerInternal app, RmiServer rmiServer,
+            WebServer webServer) {
         this.executor = executor;
         this.idGenerator = idGenerator;
         this.rmiServer = rmiServer;
@@ -271,8 +258,8 @@ public class PlasticHubImpl implements PlasticHubListener,
         // todo Not sure about this next line. Need
         // PlasticHub and HubApplication to hold
         // refs to each other...is this a code
-        // smell?        
-        hubId = app.registerWith(this); 
+        // smell?
+        hubId = app.registerWith(this);
     }
 
     public Vector getRegisteredIds() {
@@ -280,17 +267,13 @@ public class PlasticHubImpl implements PlasticHubListener,
         return new Vector(ids);
     }
 
-    public String registerXMLRPC(String name, Vector supportedOperations,
-            String callBackURL) {
-        PlasticClientProxy client = new XMLRPCPlasticClient(name,
-                supportedOperations, callBackURL);
+    public String registerXMLRPC(String name, Vector supportedOperations, String callBackURL) {
+        PlasticClientProxy client = new XMLRPCPlasticClient(name, supportedOperations, callBackURL);
         return register(client);
     }
 
-    public String registerRMI(String name, Vector supportedOperations,
-            PlasticListener caller) {
-        PlasticClientProxy client = new RMIPlasticClient(name,
-                supportedOperations, caller);
+    public String registerRMI(String name, Vector supportedOperations, PlasticListener caller) {
+        PlasticClientProxy client = new RMIPlasticClient(name, supportedOperations, caller);
         return register(client);
     }
 
@@ -307,8 +290,7 @@ public class PlasticHubImpl implements PlasticHubListener,
         Vector args = new Vector();
         args.add(id);
         logger.info(id + " has registered");
-        requestAsynch(hubId, HubMessageConstants.APPLICATION_REGISTERED_EVENT,
-                args);
+        requestAsynch(hubId, HubMessageConstants.APPLICATION_REGISTERED_EVENT, args);
 
         // Only display this if it's not the hub itself that's registering
         // todo this is a bit of a hack...relies on the hubId not having been
@@ -357,13 +339,11 @@ public class PlasticHubImpl implements PlasticHubListener,
         clients.remove(id);
         Vector args = new Vector();
         args.add(id);
-        requestAsynch(hubId,
-                HubMessageConstants.APPLICATION_UNREGISTERED_EVENT, args);
+        requestAsynch(hubId, HubMessageConstants.APPLICATION_UNREGISTERED_EVENT, args);
         logger.info(id + " has unregistered");
 
         if (tray != null) {
-            tray.displayInfoMessage("Plastic", "The application with id " + id
-                    + " has unregistered.");
+            tray.displayInfoMessage("Plastic", "The application with id " + id + " has unregistered.");
         }
     }
 
@@ -376,15 +356,14 @@ public class PlasticHubImpl implements PlasticHubListener,
      * @param recipients if non-null, then only multiplex to these recipients, otherwise send to all
      * @param shouldWaitForResults
      */
-    private Vector send(final String sender, final String message,
-            final Vector args, Vector recipients, boolean shouldWaitForResults) {
+    private Vector send(final String sender, final String message, final Vector args, Vector recipients,
+            boolean shouldWaitForResults) {
         final List returns = Collections.synchronizedList(new ArrayList());
         Iterator it = clients.keySet().iterator();
         List clientsToMessage = new ArrayList();
         // We need to get the number of clients to wait for first
         while (it.hasNext()) {
-            PlasticClientProxy client = (PlasticClientProxy) clients.get(it
-                    .next());
+            PlasticClientProxy client = (PlasticClientProxy) clients.get(it.next());
             if (client.getId().equals(sender))
                 continue;
             if (!client.understands(message))
@@ -438,8 +417,7 @@ public class PlasticHubImpl implements PlasticHubListener,
                     // LOW consider sending a message, but beware we don't get
                     // an endlessly
                     // increasing cascade of messages.
-                    logger.warn("There was an exception while messaging "
-                            + client.getId() + e);
+                    logger.warn("There was an exception while messaging " + client.getId() + e);
                 } finally {
                     gate.release();
                 }
@@ -454,8 +432,7 @@ public class PlasticHubImpl implements PlasticHubListener,
                 executor.execute(new Messager(currentClient));
             } catch (InterruptedException e) {
                 // LOW what happens now?
-                logger.warn("Interrupted executing client "
-                        + currentClient.getId(), e);
+                logger.warn("Interrupted executing client " + currentClient.getId(), e);
             }
         }
 
@@ -479,13 +456,11 @@ public class PlasticHubImpl implements PlasticHubListener,
         return send(sender, message, args, null, true);
     }
 
-    public Vector requestToSubset(String sender, String message, Vector args,
-            Vector recipientIds) {
+    public Vector requestToSubset(String sender, String message, Vector args, Vector recipientIds) {
         return send(sender, message, args, recipientIds, true);
     }
 
-    public void requestToSubsetAsynch(String sender, String message,
-            Vector args, Vector recipientIds) {
+    public void requestToSubsetAsynch(String sender, String message, Vector args, Vector recipientIds) {
         send(sender, message, args, recipientIds, false);
     }
 
@@ -502,44 +477,35 @@ public class PlasticHubImpl implements PlasticHubListener,
         // see the Plastic spec http://plastic.sourceforge.net and
         // discussions on the DS6 forum about debranding.
         // todo To allow concurrent use of the ACR and alterative
-        // platic hubs (if there should ever be one), 
+        // platic hubs (if there should ever be one),
         // we'll need a mechanism to disable PLASTIC
         // and prevent this file being written.
         try {
             int rmiPort = rmiServer.getPort();
             String xmlServer = webServer.getUrlRoot() + "xmlrpc/";
             Properties props = new Properties();
-            props.put(PlasticHubListener.PLASTIC_RMI_PORT_KEY, new Integer(
-                    rmiPort).toString());
+            props.put(PlasticHubListener.PLASTIC_RMI_PORT_KEY, new Integer(rmiPort).toString());
             props.put(PlasticHubListener.PLASTIC_XMLRPC_URL_KEY, xmlServer);
-            props.put(PlasticHubListener.PLASTIC_VERSION_KEY,
-                    PlasticListener.CURRENT_VERSION);
+            props.put(PlasticHubListener.PLASTIC_VERSION_KEY, PlasticListener.CURRENT_VERSION);
             File homeDir = new File(System.getProperty("user.home"));
-            plasticPropertyFile = new File(homeDir,
-                    PlasticHubListener.PLASTIC_CONFIG_FILENAME);
+            plasticPropertyFile = new File(homeDir, PlasticHubListener.PLASTIC_CONFIG_FILENAME);
             if (plasticPropertyFile.exists()) {
                 // If there are competing versions of Plastic we'll have to
                 // change this behaviour.
-                logger
-                        .warn("Plastic config file was already present - deleting");
+                logger.warn("Plastic config file was already present - deleting");
                 plasticPropertyFile.delete();
             }
             plasticPropertyFile.deleteOnExit();
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(
-                    plasticPropertyFile));
-            props
-                    .store(os,
-                            "Plastic Hub Properties.  See http://plastic.sourceforge.net");
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(plasticPropertyFile));
+            props.store(os, "Plastic Hub Properties.  See http://plastic.sourceforge.net");
             os.close();
         } catch (IOException e) {
-            logger
-                    .error("There was a problem creating the Plastic config file .plastic");
+            logger.error("There was a problem creating the Plastic config file .plastic");
         }
     }
 
     public void stop() {
-        requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT,
-                EMPTYVECTOR);
+        requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY_VECTOR);
         if (plasticPropertyFile != null) {
             logger.debug("Deleting Plastic Property File");
             plasticPropertyFile.delete();
@@ -582,8 +548,7 @@ public class PlasticHubImpl implements PlasticHubListener,
         Iterator it = appsIds.iterator();
         while (it.hasNext()) {
             String proxyId = (String) it.next();
-            PlasticClientProxy proxy = (PlasticClientProxy) clients
-                    .get(proxyId);
+            PlasticClientProxy proxy = (PlasticClientProxy) clients.get(proxyId);
             if (!proxy.isResponding()) {
                 String id = proxy.getId();
                 logger.debug("Application " + id + " is marked as dead.");
