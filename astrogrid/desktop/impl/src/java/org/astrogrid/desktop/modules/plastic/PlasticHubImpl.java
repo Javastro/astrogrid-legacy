@@ -262,14 +262,17 @@ public class PlasticHubImpl implements PlasticHubListener,
      * @param app
      */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app) {
+            MessengerInternal app, RmiServer rmiServer, WebServer webServer) {
         this.executor = executor;
         this.idGenerator = idGenerator;
+        this.rmiServer = rmiServer;
+        this.webServer = webServer;
         logger.info("Constructing a PlasticHubImpl");
-        hubId = app.registerWith(this); // todo Not sure about this. Need
+        // todo Not sure about this next line. Need
         // PlasticHub and HubApplication to hold
         // refs to each other...is this a code
-        // smell?
+        // smell?        
+        hubId = app.registerWith(this); 
     }
 
     public Vector getRegisteredIds() {
@@ -320,6 +323,10 @@ public class PlasticHubImpl implements PlasticHubListener,
     private SystemTray tray;
 
     private boolean failedToGetTray = false;
+
+    private RmiServer rmiServer;
+
+    private WebServer webServer;
 
     /**
      * Displays an info message on the system tray, if there is one.
@@ -495,12 +502,10 @@ public class PlasticHubImpl implements PlasticHubListener,
         // see the Plastic spec http://plastic.sourceforge.net and
         // discussions on the DS6 forum about debranding.
         // todo To allow concurrent use of the ACR and alterative
-        // platic hubs, we'll need a mechanism to disable PLASTIC
+        // platic hubs (if there should ever be one), 
+        // we'll need a mechanism to disable PLASTIC
         // and prevent this file being written.
         try {
-            ACR acr = new Finder().find();
-            RmiServer rmiServer = (RmiServer) acr.getService(RmiServer.class);
-            WebServer webServer = (WebServer) acr.getService(WebServer.class);
             int rmiPort = rmiServer.getPort();
             String xmlServer = webServer.getUrlRoot() + "xmlrpc/";
             Properties props = new Properties();
@@ -526,11 +531,6 @@ public class PlasticHubImpl implements PlasticHubListener,
                     .store(os,
                             "Plastic Hub Properties.  See http://plastic.sourceforge.net");
             os.close();
-        } catch (ACRException e) {
-            logger
-                    .error(
-                            "Unable to obtain RmiServer and WebServer to read connection properties for .plastic",
-                            e);
         } catch (IOException e) {
             logger
                     .error("There was a problem creating the Plastic config file .plastic");
