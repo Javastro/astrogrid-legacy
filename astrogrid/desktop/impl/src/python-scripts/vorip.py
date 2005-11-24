@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# Produce a tree-view of the user's homespace
 """ 
 Backup your entire myspace to the current directory
 Needs astrogrid.py
