@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.1 2005/11/11 17:53:27 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.2 2005/11/24 01:13:24 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,8 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
@@ -71,7 +73,7 @@ import javax.jms.TextMessage;
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Nov-2005
  *
  */
-public class CeaStrategyImpl implements CeaStrategyInternal {
+public class CeaStrategyImpl implements CeaStrategyInternal, UserLoginListener {
     /**
      * Commons Logger for this class
      */
@@ -86,7 +88,8 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
             , SchedulerInternal scheduler
             , TasksInternal ceaInternal
             , Registry reg
-            , ApplicationsInternal apps) throws JMSException {
+            , ApplicationsInternal apps
+            ,Community comm) throws JMSException {
         super();         
         this.apps = apps;
         this.ceaInternal = ceaInternal;
@@ -97,6 +100,7 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
         this.prod = sess.createProducer(messaging.getEventQueue());
         prod.setDisableMessageID(true);
         txtMsg = sess.createTextMessage();
+        comm.addUserLoginListener(this);
         
     }
     final DateFormat df = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.SHORT,SimpleDateFormat.SHORT);
@@ -108,6 +112,7 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
     final ApplicationsInternal apps;
     final TasksInternal ceaInternal;
     final CeaHelper ceaHelper;
+    boolean poll = false;
     
 
     /**
@@ -128,7 +133,7 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
      * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#canProcess(java.net.URI)
      */
     public boolean canProcess(URI execId) {
-        return "cea".equals(execId.getScheme()) || "local".equals(execId.getScheme());
+        return "ivo".equals(execId.getScheme()) || "local".equals(execId.getScheme());
     }
 
     /**
@@ -316,20 +321,29 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+        logger.debug("run() - start");
+      
+        if (!poll) {
+            logger.debug("run() - bailing out");
+            return;
+        }
         try {
-            URI[] ids = recorder.listLeaves();
-            for (int i = 0; i < ids.length; i++) {
-                if ("cea".equals(ids[i].getScheme())) {
+            List ids = recorder.listLeaves();
+            for (int i = 0; i < ids.size(); i++) {               
+                URI uri = ((URI)ids.get(i));
+                if ("ivo".equals(uri.getScheme())) {
                     try {
-                    checkSingleApp(ids[i]);
+                    checkSingleApp(uri);
                 } catch (Exception e) {
-                    logger.warn("Failed to refresh cea apps progress - " + ids[i],e);
+                    logger.warn("Failed to refresh cea apps progress - " + uri,e);
                 }                    
                 }
             }
         } catch (IOException e) {
             logger.error("Failed to list folders in recorder",e);
         }
+
+        logger.debug("run() - end");
     }
     
     /**run-once class that gets added to the scheduler queue
@@ -369,12 +383,12 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
                 mt.setTimestamp(new Date());
                 StringWriter sw = new StringWriter();
                 document.marshal(sw);
-                mt.setContent(sw.toString());
+                txtMsg.setText(sw.toString());
                 prod.send(txtMsg);
+                txtMsg.clearBody();
             } catch (JMSException e) {
                 logger.warn("Failed to send creation message",e);
         } catch (CastorException e) {
-                // @todo Auto-generated catch block
                 logger.warn("CastorlException",e);            
             }        
         }
@@ -389,6 +403,8 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
      * @throws ValidationException
      * @throws MarshalException*/
     private void checkSingleApp(URI executionId) throws IOException, NotFoundException, ServiceException, CEADelegateException, JMSException, MarshalException, ValidationException {
+        logger.debug("checkSingleApp(executionId = " + executionId + ") - start");
+
         if (ceaHelper.isLocal(executionId)) {
             logger.warn("Shouldn't have seen a local id here " + executionId);
             return;            
@@ -398,12 +414,18 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
             logger.warn("Odd - can't find folder - must hae been there a moment ago" + executionId);
             return;
         }
-        if (JesStrategyImpl.isCompletedOrError(f.getInformation().getStatus())) {
+        String currentStatus = f.getInformation().getStatus().trim();
+        logger.debug("Current status is " + currentStatus);
+        if (JesStrategyImpl.isCompletedOrError(currentStatus)) {
+            logger.debug("checkSingleApp() - end: app already finished.");
             return; // nothing more to see here.
         }
         String ceaId = ceaHelper.getAppId(executionId);
-        MessageType msg = ceaHelper.createCEADelegate(executionId).queryExecutionStatus(ceaId);
-        if  (f.getInformation().getStatus().equals(msg.getPhase().toString())) { // nothing changed.
+        MessageType msg = ceaHelper.createCEADelegate(executionId).queryExecutionStatus(ceaId);       
+        String newStatus = msg.getPhase().toString().trim();
+        if  (currentStatus.equals(newStatus)) { // nothing changed.
+
+            logger.debug("checkSingleApp() - end: app no change");
             return;
         }
         // ok, send a status-change message
@@ -412,9 +434,9 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
         // don't use jid for much at present - sort later.
        // nowhere to store this. txtMsg.setStringProperty(MessageUtils.CLIENT_ASSIGNED_ID_PROPERTY,f.);
         txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.STATUS_CHANGE_MESSAGE);
-        txtMsg.setText(msg.getPhase().toString());
+        txtMsg.setText(newStatus);
         prod.send(txtMsg);        
-        if (JesStrategyImpl.isCompletedOrError(msg.getPhase().toString())) { // new status is completion - send a results message        
+        if (JesStrategyImpl.isCompletedOrError(newStatus)) { // new status is completion - send a results message        
             ExecutionSummaryType ex =  ceaHelper.createCEADelegate(executionId).getExecutionSumary(ceaId);
             if (ex != null && ex.getResultList() != null) {
                 txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.RESULTS_MESSAGE);
@@ -422,8 +444,26 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
                 ex.getResultList().marshal(sw);
                 txtMsg.setText(sw.toString());
                 prod.send(txtMsg);
+                txtMsg.clearBody();
             }
         }
+
+        logger.debug("checkSingleApp() - end");
+    }
+
+    /**
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.acr.astrogrid.UserLoginEvent)
+     */
+    public void userLogin(UserLoginEvent arg0) {
+        poll = true;
+        scheduler.runNow(this);
+    }
+
+    /**
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.acr.astrogrid.UserLoginEvent)
+     */
+    public void userLogout(UserLoginEvent arg0) {
+        poll = false;        
     }  
     
 }
@@ -431,6 +471,15 @@ public class CeaStrategyImpl implements CeaStrategyInternal {
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.2  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.1.2.2  2005/11/23 18:09:28  nw
+tuned up.
+
+Revision 1.1.2.1  2005/11/23 04:50:11  nw
+got working
+
 Revision 1.1  2005/11/11 17:53:27  nw
 added cea polling to lookout.
  

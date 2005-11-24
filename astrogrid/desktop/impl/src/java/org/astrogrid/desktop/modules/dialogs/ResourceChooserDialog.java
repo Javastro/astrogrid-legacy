@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.8 2005/11/11 10:08:18 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.9 2005/11/24 01:13:24 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -166,7 +166,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     boolean enableDirectorySelection = false;
     public void setEnabledDirectorySelection(boolean enableDirectorySelection) {
         if(enableDirectorySelection) {
-            localPanel.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            localPanel.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         } else {
             localPanel.setFileSelectionMode(JFileChooser.FILES_ONLY);            
         }
@@ -179,7 +179,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
         setEnableLocalFilePanel(true);
         setEnableMySpacePanel(true);
         setEnableURIPanel(true);
-        getResourceUriField().setText(null);
+      //  getResourceUriField().setText(null);
         
     }
     
@@ -395,6 +395,12 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.9  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.8.2.1  2005/11/23 04:48:02  nw
+when select directories, it's only directories.
+
 Revision 1.8  2005/11/11 10:08:18  nw
 cosmetic fixes
 

@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.5 2005/11/11 18:39:40 nw Exp $
+/*$Id: LookoutImpl.java,v 1.6 2005/11/24 01:13:24 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,7 +7,7 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
-**/
+ **/
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Community;
@@ -48,14 +48,12 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -70,10 +68,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -101,7 +97,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -128,17 +123,204 @@ import javax.xml.transform.stream.StreamSource;
  *
  */
 public class LookoutImpl extends UIComponent implements  Lookout {
+    //forgotten what this is for..
+    public class JComponentCellEditor implements TableCellEditor, TreeCellEditor,
+    Serializable {
+        transient protected ChangeEvent changeEvent = null;
+        protected JComponent container = null;          // Can be tree or table
+        
+        protected JComponent editorComponent = null;
+        
+        protected EventListenerList listenerList = new EventListenerList();
+        
+        public void addCellEditorListener(CellEditorListener l) {
+            listenerList.add(CellEditorListener.class, l);
+        }
+        
+        public void cancelCellEditing() {
+            fireEditingCanceled();
+        }
+        
+        
+        public Object getCellEditorValue() {
+            return editorComponent;
+        }
+        
+        
+        public Component getComponent() {
+            return editorComponent;
+        }
+        
+        // implements javax.swing.table.TableCellEditor
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                boolean isSelected, int row, int column) {
+            
+            editorComponent = (JComponent)value;
+            container = table;
+            return editorComponent;
+        }
+        
+        // implements javax.swing.tree.TreeCellEditor
+        public Component getTreeCellEditorComponent(JTree tree, Object value,
+                boolean isSelected, boolean expanded, boolean leaf, int row) {
+            /*
+            String         stringValue = tree.convertValueToText(value, isSelected,
+                    expanded, leaf, row, false);
+            */
+            editorComponent = (JComponent)value;
+            container = tree;
+            return editorComponent;
+        }
+        
+        public boolean isCellEditable(EventObject anEvent) {
+            return true;
+        }
+        
+        public void removeCellEditorListener(CellEditorListener l) {
+            listenerList.remove(CellEditorListener.class, l);
+        }
+        
+        public boolean shouldSelectCell(EventObject anEvent) {
+            if( editorComponent != null && anEvent instanceof MouseEvent
+                    && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED )
+            {
+                Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3 );
+                MouseEvent e = (MouseEvent)anEvent;
+                MouseEvent e2 = new MouseEvent( dispatchComponent, MouseEvent.MOUSE_RELEASED,
+                        e.getWhen() + 100000, e.getModifiers(), 3, 3, e.getClickCount(),
+                        e.isPopupTrigger() );
+                dispatchComponent.dispatchEvent(e2); 
+                e2 = new MouseEvent( dispatchComponent, MouseEvent.MOUSE_CLICKED,
+                        e.getWhen() + 100001, e.getModifiers(), 3, 3, 1,
+                        e.isPopupTrigger() );
+                dispatchComponent.dispatchEvent(e2); 
+            }
+            return false;
+        }
+        
+        public boolean stopCellEditing() {
+            fireEditingStopped();
+            return true;
+        }
+        
+        protected void fireEditingCanceled() {
+            // Guaranteed to return a non-null array
+            Object[] listeners = listenerList.getListenerList();
+            // Process the listeners last to first, notifying
+            // those that are interested in this event
+            for (int i = listeners.length-2; i>=0; i-=2) {
+                if (listeners[i]==CellEditorListener.class) {
+                    // Lazily create the event:
+                    if (changeEvent == null)
+                        changeEvent = new ChangeEvent(this);
+                    ((CellEditorListener)listeners[i+1]).editingCanceled(changeEvent);
+                }              
+            }
+        }
+        
+        protected void fireEditingStopped() {
+            Object[] listeners = listenerList.getListenerList();
+            // Process the listeners last to first, notifying
+            // those that are interested in this event
+            for (int i = listeners.length-2; i>=0; i-=2) {
+                if (listeners[i]==CellEditorListener.class) {
+                    // Lazily create the event:
+                    if (changeEvent == null)
+                        changeEvent = new ChangeEvent(this);
+                    ((CellEditorListener)listeners[i+1]).editingStopped(changeEvent);
+                }              
+            }
+        }
+        
+    } // End of class JComponentCellEditor
     
-    private final class RefreshAction extends AbstractAction {
-        public RefreshAction() {
-            super("Refresh",IconHelper.loadIcon("update.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Check for new events and messages now");            
+    class JComponentCellRenderer implements TableCellRenderer
+    {
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            return (JComponent)value;
         }
+    }
+    
+    /** delete an alert message, or a task folder
+     * listens to both tree and list to work out whether enabled or not.
+     */
+    private final class DeleteAction extends AbstractAction implements TreeSelectionListener, ListSelectionListener {
+        
+        private boolean folderMode;
+        
+        public DeleteAction() {
+            super("Delete", IconHelper.loadIcon("delete_obj.gif"));
+            this.putValue(SHORT_DESCRIPTION,"Delete a task record, or event message");
+            this.setEnabled(false);            
+        }
+        
+        public void actionPerformed(ActionEvent e) {   
+                if (folderMode) { // delete a task            
+                    final Folder f = getCurrentFolder();
+                    (new BackgroundOperation("Deleting Process Record") {
+                        protected Object construct() throws Exception {
+                            if (isRunning(f.getInformation().getStatus())) {
+                                try {
+                                    manager.halt(f.getInformation().getId());
+                                } catch (Exception ex) {
+                                    //  @todo warn someone.
+                                }
+                            }
+                            manager.delete(f.getInformation().getId()); // this in turn fires a table update event, in the swing thread.
+                            return null;
+                        }
+                    }).start();
+               
+                } else { // delete an alert message
+                    (new BackgroundOperation("Deleting Message") {
+                        protected Object construct() throws Exception {                    
+                            int row = getMessageTable().getSelectedRow();                
+                            recorder.deleteMessage(row);
+                            return null;
+                        }
+                    }).start();
+                }
+        }
+        
+        public void valueChanged(ListSelectionEvent e) {
+            folderMode=false;
+            int index = getMessageTable().getSelectedRow();           
+            Folder f = getCurrentFolder();
+            setEnabled(f != null && f.getInformation().getId().equals(MessageRecorderImpl.ALERTS)
+                    && index > 0 &&  index < getMessageTable().getRowCount()) ;            
+        }
+        
+        public void valueChanged(TreeSelectionEvent e) {
+            folderMode = true;
+            // can't optimize this - race condition.
+            Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();            
+            setEnabled(f != null &&  isTaskFolder(f.getInformation().getId()));             
+        }
+    }
+    
+    /** action for halting something. listens to current tree selection to determine whether enabled or not */
+    private final class HaltAction extends AbstractAction implements TreeSelectionListener{
+        public HaltAction() {
+            super("Halt", IconHelper.loadIcon("stop.gif"));
+            this.putValue(SHORT_DESCRIPTION,"Halt the execution of a task or job");
+            this.setEnabled(false);
+        }
+        
         public void actionPerformed(ActionEvent e) {
-            jesStrategy.triggerUpdate();
-            ceaStrategy.triggerUpdate();
-            LookoutImpl.this.setStatusMessage("Refreshing..");
+            final Folder f = (Folder)getCurrentFolder();                
+            (new BackgroundOperation("Cancelling Application") {
+                protected Object construct() throws Exception {
+                    manager.halt(f.getInformation().getId());
+                    return null;
+                }                    
+            }).start();                
         }
+        
+        public void valueChanged(TreeSelectionEvent e) {
+            Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();
+            setEnabled(f != null &&  isTaskFolder(f.getInformation().getId()) && isRunning(f.getInformation().getStatus())); 
+        }        
     }
     
     private final class MarkAllReadAction extends AbstractAction implements TreeSelectionListener {
@@ -148,20 +330,22 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             this.setEnabled(false);
         }
         public void actionPerformed(ActionEvent e) {
-            try {
-            Folder f =getCurrentFolder();
-            MessageContainer[] msgs = recorder.listFolder(f);
-            for (int i = 0; i < msgs.length; i++) {
-                if (msgs[i].isUnread()) {
-                    msgs[i].setUnread(false);
-                    recorder.updateMessage(msgs[i]);
+            (new BackgroundOperation("Marking messages as read") {// therre's a lot of inefficient IO here, so do in background.
+                protected Object construct() throws Exception {         
+                Folder f =getCurrentFolder();
+                MessageContainer[] msgs = recorder.listFolder(f);
+                for (int i = 0; i < msgs.length; i++) {
+                    if (msgs[i].isUnread()) {
+                        msgs[i].setUnread(false);
+                        recorder.updateMessage(msgs[i]);
+                    }
+                    f.setUnreadCount(0);
+                    recorder.updateFolder(f);
                 }
-                f.setUnreadCount(0);
-                recorder.updateFolder(f);
-            }
-            } catch (IOException ex) {
-                showError("Failed to mark all as read",ex);
-            }
+                return null;
+                }
+            }).start();
+
         }
         public void valueChanged(TreeSelectionEvent e) {
             //@todo - unsure whether it's safe to optimze this by calling 'getCurrentFolder()' - race condition..
@@ -170,95 +354,40 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
     }
     
-    /** delete an alert message, or a task folder
-     * listens to both tree and list to work out whether enabled or not.
-     */
-    private final class DeleteAction extends AbstractAction implements TreeSelectionListener, ListSelectionListener {
-
-        public DeleteAction() {
-            super("Delete", IconHelper.loadIcon("delete_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Delete a task record, or event message");
-            this.setEnabled(false);            
+    private class MessageDisplayPane extends JTextPane {
+        public MessageDisplayPane() {
+            setContentType("text/html");
+            setEditable(false);
         }
-
-        public void actionPerformed(ActionEvent e) {   
-            try {
-            if (folderMode) { // delete a task            
-                Folder f = getCurrentFolder();
-                //@todo should I do this in a background thread?
-                // considering remote process, probably should.
-                // but then, what about table update? aghh. leave as is for now.
-                // should probably halt first, if still running.
-                if (isRunning(f.getInformation().getStatus())) {
-                    try {
-                        manager.halt(f.getInformation().getId());
-                    } catch (Exception ex) {
-                        //@todo warn someone.
-                    }
-                }
-                manager.delete(f.getInformation().getId());
-            } else { // delete an alert message
-                int row = getMessageTable().getSelectedRow();                
-                recorder.deleteMessage(row);
-            }
-            } catch (Exception ex) {
-                showError("Failed to delete",ex);
-            }
+        
+        public void clear() {       
+            setText("");
         }
-
-        public void valueChanged(ListSelectionEvent e) {
-            folderMode=false;
-            int index = getMessageTable().getSelectedRow();           
-            Folder f = getCurrentFolder();
-            setEnabled(f != null && f.getInformation().getId().equals(MessageRecorderImpl.ALERTS)
-                    && index > 0 &&  index < getMessageTable().getRowCount()) ;            
+        
+        public void setMessage(MessageContainer m) {
+            setText(fmt(m));
+            setCaretPosition(0);
         }
-
-        public void valueChanged(TreeSelectionEvent e) {
-            folderMode = true;
-            // can't optimize this - race condition.
-            Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();            
-            setEnabled(f != null &&  isTaskFolder(f.getInformation().getId()));             
+        
+        private String fmt(MessageContainer m) {
+            //@todo replace with a better display pane - something that can handle html, xml, plain text sensibly and automatically
+            StringBuffer sb = new StringBuffer();
+            ExecutionMessage message = m.getMessage();
+            sb.append("<html><p bgcolor='#CCDDEE'>")
+            .append("<b>Subject:</b> ").append(m.getSummary()).append("<br>")
+            .append("<b>Date: </b> " ).append(message.getTimestamp()).append("<br>")
+            .append("<b>From: </b> ").append(message.getSource()).append("<br></p><tt>")
+            .append( //@todo - work out how to preserve space indentation here..
+                    
+                    StringUtils.replace(
+                            StringEscapeUtils.escapeHtml(message.getContent())
+                            ,"\n"
+                            ,"<br>"
+                    )
+            )
+            .append("</tt></html>");
+            return sb.toString();
         }
-
-        private boolean folderMode;
-    }
-
-    private boolean isTaskFolder(URI uri) {
-        return ! (uri.equals(MessageRecorderImpl.ALERTS) 
-           || uri.equals(MessageRecorderImpl.JOBS)
-           || uri.equals(MessageRecorderImpl.QUERIES)
-           || uri.equals(MessageRecorderImpl.ROOT)
-           || uri.equals(MessageRecorderImpl.TASKS)
-           );
-    }
-    
-    private boolean isRunning(String status) {
-        return ! (status.equals(ExecutionInformation.ERROR) || status.equals(ExecutionInformation.COMPLETED));
-    }        
-    
-    /** action for halting something. listens to current tree selection to determine whether enabled or not */
-    private final class HaltAction extends AbstractAction implements TreeSelectionListener{
-        public HaltAction() {
-            super("Halt", IconHelper.loadIcon("stop.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Halt the execution of a task or job");
-            this.setEnabled(false);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-                final Folder f = (Folder)getCurrentFolder();                
-                (new BackgroundOperation("Cancelling Application") {
-                    protected Object construct() throws Exception {
-                        manager.halt(f.getInformation().getId());
-                        return null;
-                    }                    
-                }).start();                
-            }
-
-        public void valueChanged(TreeSelectionEvent e) {
-            Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();
-            setEnabled(f != null &&  isTaskFolder(f.getInformation().getId()) && isRunning(f.getInformation().getStatus())); 
-        }        
     }
     
     private final class ParameterizedWorkflowAction extends AbstractAction {
@@ -267,26 +396,211 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             this.putValue(SHORT_DESCRIPTION,"Launch a parameterized workflow");
             this.setEnabled(true);
         }
-
+        
         public void actionPerformed(ActionEvent e) {
             pwLauncher.run();
         }
     }    
-
+    
+    private final class RefreshAction extends AbstractAction {
+        public RefreshAction() {
+            super("Refresh",IconHelper.loadIcon("update.gif"));
+            this.putValue(SHORT_DESCRIPTION,"Check for new events and messages now");            
+        }
+        public void actionPerformed(ActionEvent e) {
+            jesStrategy.triggerUpdate();
+            ceaStrategy.triggerUpdate();
+            //@todo add a 'completed' task that sets the status message.
+            LookoutImpl.this.setStatusMessage("Refreshing..");
+        }
+    }
+    
+    /** class for disoaying a table of resultls - also handles button presses, etc.*/
+    private class ResultListTableModel extends AbstractTableModel implements ActionListener {
+        
+        public final int VALUE_WIDTH = 60;
+        
+        private ParameterValue[] arr = new ParameterValue[]{};
+        private final String SAVE = "SAVE";
+        private List saveButtonsStore = new ArrayList();
+        // nifty list that creats buttons as needed.
+        private List saveButtons = ListUtils.lazyList(saveButtonsStore, new Factory() {  
+            public Object create() {
+                JButton save = new JButton (IconHelper.loadIcon("fileexport.png"));
+                save.setActionCommand(SAVE);
+                save.setToolTipText("Save this result to myspace or local disk");
+                save.addActionListener(ResultListTableModel.this);
+                return save;
+            }            
+        });
+        //store for buttons
+        private final String VIEW = "VIEW";
+        private List viewButtonsStore = new ArrayList();
+        // dynamically creates buttons as needed.
+        private List viewButtons = ListUtils.lazyList(viewButtonsStore, new Factory() {  
+            public Object create() {
+                JButton view = new JButton (IconHelper.loadIcon("read_obj.gif"));
+                view.setActionCommand(VIEW);
+                view.setToolTipText("View this result in a browser");
+                view.addActionListener(ResultListTableModel.this);
+                return view;
+            }            
+        });        
+        public ResultListTableModel() {           
+        }
+        
+        
+        public void actionPerformed(ActionEvent e) {
+            if (SAVE.equals(e.getActionCommand())) {
+                // find the row.
+                int row = saveButtonsStore.indexOf(e.getSource());
+                if (row < 0  || row > arr.length -1) {
+                    return;
+                }
+                final ParameterValue pv = arr[row];
+                final URI u =  chooser.chooseResourceWithParent("Save result: " + pv.getName(),true, true, true,LookoutImpl.this);
+                if (u == null) {
+                    return;
+                }                
+                (new BackgroundOperation("Saving Result") {
+                    
+                    protected Object construct() throws Exception {
+                        Writer w=  null;
+                        try {
+                            w= new OutputStreamWriter(vos.getOutputStream(u)); // @todo could specify size here  
+                            Piper.pipe(new StringReader(pv.getValue()),w);
+                        } finally {
+                            if (w != null) {
+                                try {
+                                    w.close();
+                                } catch (IOException e) {
+                                    logger.warn("error closing write stream",e);
+                                }
+                            } 
+                        }
+                        return null;     
+                    }
+                }).start();
+                
+            } else if (VIEW.equals(e.getActionCommand())){
+                int row = viewButtonsStore.indexOf(e.getSource());
+                if (row < 0  || row > arr.length -1) {
+                    return;
+                }            
+                final ParameterValue pv = arr[row];
+                // determine how to style.
+                (new BackgroundOperation("Displaying Result") {
+                    protected Object construct() throws Exception {
+                        URL url = displayResult(pv);
+                        browser.openURL(url);
+                        return null;
+                    }                    
+                }).start();
+            }
+        }        
+        public void clear() {
+            arr = new ParameterValue[]{};
+            fireTableDataChanged();
+        }
+        
+        // table model methods.
+        
+        public Class getColumnClass(int column) {
+            switch(column) {
+                case 0:
+                    return Boolean.class;
+                case 1:
+                    return Object.class;
+                case 2:
+                    return Object.class;
+                case 3:
+                    return JComponent.class;
+                case 4:
+                    return JComponent.class;
+                default:
+                    return Object.class;
+                
+            }
+        }
+        
+        public int getColumnCount() {
+            return 5;
+        }
+        public String getColumnName(int column) {
+            switch(column) {
+                case 0:
+                    return "Indirect?";
+                case 1:
+                    return "Name";
+                case 2:
+                    return "Value";
+                case 3:
+                    return ""; //view
+                case 4:
+                    return ""; //save
+                default:
+                    return "";
+            }
+        }
+        
+        public int getRowCount() {
+            return arr.length;
+        }
+        
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            if (rowIndex > arr.length -1 || rowIndex < 0) {
+                return null;
+            }
+            ParameterValue pv = arr[rowIndex];
+            JComponent c;
+            switch(columnIndex) {
+                case 0:
+                    return Boolean.valueOf(pv.getIndirect());
+                case 1:
+                    return pv.getName();
+                case 2:
+                    return StringUtils.abbreviate(pv.getValue(),VALUE_WIDTH);
+                case 3:
+                    c = (JComponent) viewButtons.get(rowIndex);
+                    c.setEnabled(! pv.getIndirect());
+                    return c;
+                case 4:
+                    c = (JComponent)saveButtons.get(rowIndex);
+                    c.setEnabled(! pv.getIndirect());
+                    return c;                         
+                default:
+                    return null;
+            }
+            
+        }
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            if (rowIndex > arr.length -1|| rowIndex < 0) {
+                return false;
+            }
+            return columnIndex  > 2 && ! arr[rowIndex].getIndirect();  
+        }
+        public void setResults(ResultListType results) {
+            arr = results.getResult();
+            fireTableDataChanged();
+        }
+        
+        
+    }
+    
     private final class SubmitTaskAction extends AbstractAction {
         public SubmitTaskAction() {
             super("Submit Task",IconHelper.loadIcon("file_obj.gif"));
             this.putValue(SHORT_DESCRIPTION,"Submit a saved task or workflow for execution");
             this.setEnabled(true);
         }
-
+        
         public void actionPerformed(ActionEvent e) {
             final URI u =  chooser.chooseResourceWithParent("Select document to execute",true, true, true,LookoutImpl.this);
             if (u == null) {
                 return;
             }                
             (new BackgroundOperation("Submitting Document") {
-
+                
                 protected Object construct() throws Exception {
                     return manager.submitStored(u);          
                 }
@@ -296,12 +610,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             }).start();
         }
     }
- 
-        public void refresh() {
-
-            getRefreshAction().actionPerformed(null); // should make the system refresh.            
-        }
-
+    
     
     private final class TaskEditorAction extends AbstractAction {
         public TaskEditorAction() {
@@ -309,7 +618,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             this.putValue(SHORT_DESCRIPTION,"Create and execute a stand-alone query or task");
             this.setEnabled(true);
         }
-
+        
         public void actionPerformed(ActionEvent e) {
             appLauncher.show();
         }
@@ -321,36 +630,57 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             this.putValue(SHORT_DESCRIPTION,"Create and execute a workflow");
             this.setEnabled(true);
         }
-
+        
         public void actionPerformed(ActionEvent e) {
             workflowLauncher.show();
         }
     }
+    private static final String MESSAGE_CONTENT = "message_content";
+    private static final String MESSAGE_RESULTS = "message_results";
+    final ApplicationLauncher appLauncher;
     final ResourceChooserInternal chooser;
     final JesStrategyInternal jesStrategy;
+    final RemoteProcessManager manager;
+    final ParameterizedWorkflowLauncher pwLauncher;
     final MessageRecorderInternal recorder;
     final MyspaceInternal vos;
-    final ParameterizedWorkflowLauncher pwLauncher;
-    final ApplicationLauncher appLauncher;
     final WorkflowBuilder workflowLauncher;
-    final RemoteProcessManager manager;
+    final BrowserControl browser;
+    
+    final CeaStrategyInternal ceaStrategy;
     private MessageDisplayPane contentPane;
+    
+    private Folder currentFolder;
     private DeleteAction deleteAction;
+    
+    private final DateFormat df = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.SHORT,SimpleDateFormat.SHORT);
     private JTree folderTree;
     private HaltAction haltAction;
     private JMenuBar jJMenuBar;
     private JMenu manageMenu;
+    
+    private MarkAllReadAction markAllReadAction;
+    
+    private JPanel messageDetails;
     private JTable messageTable;
     
     private JMenu newMenu;
     private Action parameteriedWorkflowAction;
     
+    private RefreshAction refreshAction;
+    
+    private JTable resultsTable;
+    private ResultListTableModel resultsTableModel;
+    
     private Action submitTaskAction;
     private Action taskEditorAction;
     
     private JToolBar toolbar;
+    private Transformer votableTransformer;
     private Action workflowEditorAction;
-    private final BrowserControl browser;
+    
+    private Transformer workflowTransformer;
+    private Transformer xmlTransformer;
     
     /** Construct a new Lookout
      * @param conf
@@ -360,15 +690,15 @@ public class LookoutImpl extends UIComponent implements  Lookout {
      */
     public LookoutImpl(Configuration conf, HelpServerInternal hs, UIInternal ui
             , MessageRecorderInternal recorder, ResourceChooserInternal chooser
-             ,MyspaceInternal vos, ParameterizedWorkflowLauncher pw
+            ,MyspaceInternal vos, ParameterizedWorkflowLauncher pw
             ,WorkflowBuilder workflows, ApplicationLauncher appLauncher
             , RemoteProcessManager manager
             , Community comm
             ,JesStrategyInternal jesStrategy
             ,CeaStrategyInternal ceaStrategy
             , BrowserControl browser
-            )
-            throws HeadlessException {
+    )
+    throws HeadlessException {
         super(conf, hs, ui);
         this.browser = browser;
         this.jesStrategy = jesStrategy;
@@ -380,27 +710,14 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         this.pwLauncher = pw;
         this.workflowLauncher = workflows;
         this.appLauncher = appLauncher;
-        // force community visible.
+        // force community login.
         comm.getUserInformation();
         initialize();
     }
-
-   private final CeaStrategyInternal ceaStrategy;
-    private DeleteAction getDeleteAction() {
-        if (deleteAction == null) {
-            deleteAction = new DeleteAction();
-            getFolderTree().addTreeSelectionListener(deleteAction);
-            getMessageTable().getSelectionModel().addListSelectionListener(deleteAction);
-        }
-        return deleteAction;
-    }
     
-    private RefreshAction refreshAction;
-    private RefreshAction getRefreshAction() {
-        if (refreshAction == null) {
-            refreshAction = new RefreshAction();
-        }
-        return refreshAction;
+    public void refresh() {
+        
+        getRefreshAction().actionPerformed(null); // should make the system refresh.            
     }
     
     private String calcColour(String status) {
@@ -415,8 +732,49 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
     }
     
-    private final DateFormat df = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.SHORT,SimpleDateFormat.SHORT);
-    private JTree getFolderTree() {
+    
+    // dislpaying results
+    //@todo hard-coded for now. replace later with a strategy engine - or a component that just knows how to do the right thing.
+    // file and mime types, maybe.
+    // later handle indirect too.
+    URL displayResult(ParameterValue pv ) throws TransformerFactoryConfigurationError, IOException, TransformerException {
+        Transformer trans;
+        if (pv.getValue().indexOf("<workflow") != -1) {
+            trans = getWorkflowTransformer();
+        } else if (pv.getValue().indexOf("<VOTABLE") != -1) {
+            trans = getVotableTransformer();
+        } else if (pv.getValue().indexOf("<?xml") != -1) {
+            trans = getXmlTransformer();
+        } else {
+            trans = null;
+        }
+        File f = File.createTempFile(pv.getName(),".html");
+        OutputStream out = new FileOutputStream(f);
+        if (trans != null) {
+            Result result= new StreamResult(out);
+            Source source = new StreamSource(new ByteArrayInputStream(pv.getValue().getBytes()));
+            trans.transform(source,result);
+        } else {
+            OutputStreamWriter w = new OutputStreamWriter(out);
+            w.write(pv.getValue());
+            w.flush();
+        }
+        out.close();
+        return f.toURL();
+        
+    }
+    Folder getCurrentFolder() {
+        return currentFolder;
+    }
+    private DeleteAction getDeleteAction() {
+        if (deleteAction == null) {
+            deleteAction = new DeleteAction();
+            getFolderTree().addTreeSelectionListener(deleteAction);
+            getMessageTable().getSelectionModel().addListSelectionListener(deleteAction);
+        }
+        return deleteAction;
+    }
+    JTree getFolderTree() {
         if (folderTree == null) {                        
             folderTree = new JTree(recorder.getFolderList());
             ToolTipManager.sharedInstance().registerComponent(folderTree);
@@ -445,7 +803,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 }
             });
             TreeCellRenderer renderer = new DefaultTreeCellRenderer() {
-  
+                
                 public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
                     super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
                     Folder f= (Folder)value;
@@ -496,32 +854,24 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             folderTree.setCellRenderer(renderer);
             // when things get added, make sure they're displayed         
             folderTree.getModel().addTreeModelListener(new TreeModelListener() {
-
+                
                 public void treeNodesChanged(TreeModelEvent e) {
                 }
-
+                
                 public void treeNodesInserted(TreeModelEvent e) { 
-      
+                    
                     folderTree.expandPath(e.getTreePath());                    
                 }
-
+                
                 public void treeNodesRemoved(TreeModelEvent e) {
                 }
-
+                
                 public void treeStructureChanged(TreeModelEvent e) {
                 }
             });
         }
         return folderTree;
         
-    }
-    
-    private Folder currentFolder;
-    private void setCurrentFolder(Folder f) {
-        this.currentFolder = f;
-    }
-    private Folder getCurrentFolder() {
-        return currentFolder;
     }
     private HaltAction getHaltAction() {
         if (haltAction == null) {
@@ -551,49 +901,32 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         return manageMenu;
         
     }
+    private Action getMarkAllReadAction() {
+        if (markAllReadAction == null) {
+            markAllReadAction = new MarkAllReadAction();
+            getFolderTree().addTreeSelectionListener(markAllReadAction);
+        }
+        return markAllReadAction;
+    }
     private MessageDisplayPane getMessageContentPane() {
         if (contentPane == null) {
             contentPane = new MessageDisplayPane();
-
+            
         }
         return contentPane;
     }
-    
-    private class MessageDisplayPane extends JTextPane {
-        public MessageDisplayPane() {
-            setContentType("text/html");
-            setEditable(false);
+    JPanel getMessageDetails() {
+        if (messageDetails == null) {
+            messageDetails = new JPanel(new CardLayout());
+            messageDetails.add(new JScrollPane(getMessageContentPane()), MESSAGE_CONTENT);
+            JScrollPane tableScrollPane = new JScrollPane(getResultsTable());
+            tableScrollPane.getViewport().setBackground(Color.WHITE);
+            messageDetails.add(tableScrollPane,MESSAGE_RESULTS);
         }
-        
-        public void setMessage(MessageContainer m) {
-           setText(fmt(m));
-            setCaretPosition(0);
-        }
-        
-        public void clear() {       
-            setText("");
-        }
-        
-        private String fmt(MessageContainer m) {
-            StringBuffer sb = new StringBuffer();
-            ExecutionMessage message = m.getMessage();
-            sb.append("<html><p bgcolor='#CCDDEE'>")
-                .append("<b>Subject:</b> ").append(m.getSummary()).append("<br>")
-                .append("<b>Date: </b> " ).append(message.getTimestamp()).append("<br>")
-                .append("<b>From: </b> ").append(message.getSource()).append("<br></p><tt>")
-                .append( //todo - work out how to preserve space indentation here..
-                                StringUtils.replace(
-                                        StringEscapeUtils.escapeHtml(message.getContent())
-                                ,"\n"
-                                ,"<br>"
-                                )
-                        )
-                .append("</tt></html>");
-          return sb.toString();
-        }
+        return messageDetails;
     }
     
-    private JTable getMessageTable() {
+    JTable getMessageTable() {
         if (messageTable == null) {
             messageTable = new JTable(recorder.getMessageList());
             getHelpServer().enableHelp(messageTable,"lo.messageTable");
@@ -601,9 +934,9 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             messageTable.setShowHorizontalLines(false);
             messageTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             messageTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-                int previous = -1;
                 final JPanel p = getMessageDetails();
                 final CardLayout c = (CardLayout)p.getLayout();
+                int previous = -1;
                 public void valueChanged(ListSelectionEvent e) {
                     int index = messageTable.getSelectedRow();
                     if (index == previous || index < 0 || index >= messageTable.getRowCount()) {
@@ -612,6 +945,10 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     previous = index;
                     try {
                         MessageContainer m = recorder.getMessage(index);
+                        if (m == null) {
+                            // must be trying to get a message that's not there. no matter.
+                            return;
+                        }
                         getMessageContentPane().setMessage(m);
                         if (m.getMessage() instanceof ResultsExecutionMessage) {
                             getResultsTableModel().setResults(((ResultsExecutionMessage)m.getMessage()).getResults());
@@ -633,14 +970,15 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     }
                 }
             });
-
+            
             messageTable.getTableHeader().setReorderingAllowed(false);
             TableColumn titleColumn = messageTable.getColumnModel().getColumn(0);
             titleColumn.setPreferredWidth(150);
             titleColumn.setCellRenderer(new DefaultTableCellRenderer() {
                 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                     super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
-                    if (recorder.getMessage(row).isUnread()) { 
+                    MessageContainer msg = recorder.getMessage(row);                    
+                    if (msg!= null && msg.isUnread()) { 
                         setText("<html><b>" + getText() + "</b></html>");
                     }
                     return this;
@@ -669,27 +1007,80 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
         return parameteriedWorkflowAction;
     }
+    private RefreshAction getRefreshAction() {
+        if (refreshAction == null) {
+            refreshAction = new RefreshAction();
+        }
+        return refreshAction;
+    }
+    private JTable getResultsTable() {
+        if (resultsTable == null) {
+            //cribbed from http://www.codeguru.com/java/articles/162.shtml
+            resultsTable = new JTable(getResultsTableModel()) {
+                
+                public TableCellEditor getCellEditor(int row, int column) {
+                    TableColumn tableColumn = getColumnModel().getColumn(column);
+                    TableCellEditor editor = tableColumn.getCellEditor();
+                    if (editor == null) {
+                        Class c = getColumnClass(column);
+                        if( c.equals(Object.class) )
+                        {
+                            Object o = getValueAt(row,column);
+                            if( o != null )
+                                c = getValueAt(row,column).getClass();
+                        }
+                        editor = getDefaultEditor(c);
+                    }
+                    return editor;
+                }                
+                public TableCellRenderer getCellRenderer(int row, int column) {
+                    TableColumn tableColumn = getColumnModel().getColumn(column);
+                    TableCellRenderer renderer = tableColumn.getCellRenderer();
+                    if (renderer == null) {
+                        Class c = getColumnClass(column);
+                        if( c.equals(Object.class) )
+                        {
+                            Object o = getValueAt(row,column);
+                            if( o != null )
+                                c = getValueAt(row,column).getClass();
+                        }
+                        renderer = getDefaultRenderer(c);
+                    }
+                    return renderer;
+                }
+            };
+            resultsTable.setDefaultRenderer(JComponent.class,new JComponentCellRenderer() );
+            resultsTable.setDefaultEditor(JComponent.class,new JComponentCellEditor() );
+            getHelpServer().enableHelp(resultsTable,"lookout.resultsTable");
+            resultsTable.setShowVerticalLines(false);
+            resultsTable.setShowHorizontalLines(false);
+            resultsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  
+            TableColumnModel columnModel = resultsTable.getColumnModel();
+            columnModel.getColumn(0).setPreferredWidth(10);
+            columnModel.getColumn(1).setPreferredWidth(40);
+            columnModel.getColumn(3).setPreferredWidth(10);
+            columnModel.getColumn(4).setPreferredWidth(10);            
+        }
+        return resultsTable;
+    }
+    private ResultListTableModel getResultsTableModel() {
+        if (resultsTableModel == null) {
+            resultsTableModel = new ResultListTableModel();
+        }
+        return resultsTableModel;
+    }
     private Action getSubmitTaskAction() {
         if (submitTaskAction == null) {
             submitTaskAction = new SubmitTaskAction();
         }
         return submitTaskAction;
     }
-
+    
     private Action getTaskEditorAction() {
         if (taskEditorAction == null) {
             taskEditorAction = new TaskEditorAction();
         }
         return taskEditorAction;
-    }
-    
-    private MarkAllReadAction markAllReadAction;
-    private Action getMarkAllReadAction() {
-        if (markAllReadAction == null) {
-            markAllReadAction = new MarkAllReadAction();
-            getFolderTree().addTreeSelectionListener(markAllReadAction);
-        }
-        return markAllReadAction;
     }
     
     private JToolBar getToolbar() {
@@ -711,372 +1102,37 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
         return toolbar;
     }
+    
+    private Transformer getVotableTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+        if (votableTransformer == null) {
+            Source styleSource = Votable2XhtmlTransformer.getStyleSource();
+            votableTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
+            votableTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
+        }
+        return votableTransformer;
+    }
     private Action getWorkflowEditorAction() {
         if (workflowEditorAction == null) {
             workflowEditorAction = new WorkflowEditorAction();
         }
         return workflowEditorAction;        
     }
-    
-    private JPanel messageDetails;
-    private JPanel getMessageDetails() {
-        if (messageDetails == null) {
-            messageDetails = new JPanel(new CardLayout());
-            messageDetails.add(new JScrollPane(getMessageContentPane()), MESSAGE_CONTENT);
-            JScrollPane tableScrollPane = new JScrollPane(getResultsTable());
-            tableScrollPane.getViewport().setBackground(Color.WHITE);
-            messageDetails.add(tableScrollPane,MESSAGE_RESULTS);
+    private Transformer getWorkflowTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+        if (workflowTransformer == null) {
+            Source styleSource = WorkflowResultTransformerSet.Workflow2XhtmlTransformer.getStyleSource();
+            workflowTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
+            workflowTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
         }
-        return messageDetails;
-    }
-    private static final String MESSAGE_CONTENT = "message_content";
-    private static final String MESSAGE_RESULTS = "message_results";
-    private ResultListTableModel resultsTableModel;
-    private ResultListTableModel getResultsTableModel() {
-        if (resultsTableModel == null) {
-            resultsTableModel = new ResultListTableModel();
-        }
-        return resultsTableModel;
+        return workflowTransformer;
     }
     
-    private JTable resultsTable;
-    private JTable getResultsTable() {
-        if (resultsTable == null) {
-            //cribbed from http://www.codeguru.com/java/articles/162.shtml
-            resultsTable = new JTable(getResultsTableModel()) {
-                public TableCellRenderer getCellRenderer(int row, int column) {
-                    TableColumn tableColumn = getColumnModel().getColumn(column);
-                    TableCellRenderer renderer = tableColumn.getCellRenderer();
-                    if (renderer == null) {
-                            Class c = getColumnClass(column);
-                            if( c.equals(Object.class) )
-                            {
-                                    Object o = getValueAt(row,column);
-                                    if( o != null )
-                                            c = getValueAt(row,column).getClass();
-                            }
-                            renderer = getDefaultRenderer(c);
-                    }
-                    return renderer;
-            }
-            
-            public TableCellEditor getCellEditor(int row, int column) {
-                    TableColumn tableColumn = getColumnModel().getColumn(column);
-                    TableCellEditor editor = tableColumn.getCellEditor();
-                    if (editor == null) {
-                            Class c = getColumnClass(column);
-                            if( c.equals(Object.class) )
-                            {
-                                    Object o = getValueAt(row,column);
-                                    if( o != null )
-                                            c = getValueAt(row,column).getClass();
-                            }
-                            editor = getDefaultEditor(c);
-                    }
-                    return editor;
-            }                
-            };
-            resultsTable.setDefaultRenderer(JComponent.class,new JComponentCellRenderer() );
-            resultsTable.setDefaultEditor(JComponent.class,new JComponentCellEditor() );
-            getHelpServer().enableHelp(resultsTable,"lookout.resultsTable");
-            resultsTable.setShowVerticalLines(false);
-            resultsTable.setShowHorizontalLines(false);
-            resultsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  
-            TableColumnModel columnModel = resultsTable.getColumnModel();
-            columnModel.getColumn(0).setPreferredWidth(10);
-            columnModel.getColumn(1).setPreferredWidth(40);
-            columnModel.getColumn(3).setPreferredWidth(10);
-            columnModel.getColumn(4).setPreferredWidth(10);            
+    private Transformer getXmlTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+        if (xmlTransformer == null) {
+            Source styleSource = Xml2XhtmlTransformer.getStyleSource();
+            xmlTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
+            xmlTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
         }
-        return resultsTable;
-    }
-
-    class JComponentCellRenderer implements TableCellRenderer
-    {
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-            return (JComponent)value;
-        }
-    }
-        public class JComponentCellEditor implements TableCellEditor, TreeCellEditor,
-        Serializable {
-                
-                protected EventListenerList listenerList = new EventListenerList();
-                transient protected ChangeEvent changeEvent = null;
-                
-                protected JComponent editorComponent = null;
-                protected JComponent container = null;          // Can be tree or table
-                
-                
-                public Component getComponent() {
-                        return editorComponent;
-                }
-                
-                
-                public Object getCellEditorValue() {
-                        return editorComponent;
-                }
-                
-                public boolean isCellEditable(EventObject anEvent) {
-                        return true;
-                }
-                
-                public boolean shouldSelectCell(EventObject anEvent) {
-                        if( editorComponent != null && anEvent instanceof MouseEvent
-                                && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED )
-                        {
-                    Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3 );
-                                MouseEvent e = (MouseEvent)anEvent;
-                                MouseEvent e2 = new MouseEvent( dispatchComponent, MouseEvent.MOUSE_RELEASED,
-                                        e.getWhen() + 100000, e.getModifiers(), 3, 3, e.getClickCount(),
-                                        e.isPopupTrigger() );
-                                dispatchComponent.dispatchEvent(e2); 
-                                e2 = new MouseEvent( dispatchComponent, MouseEvent.MOUSE_CLICKED,
-                                        e.getWhen() + 100001, e.getModifiers(), 3, 3, 1,
-                                        e.isPopupTrigger() );
-                                dispatchComponent.dispatchEvent(e2); 
-                        }
-                        return false;
-                }
-                
-                public boolean stopCellEditing() {
-                        fireEditingStopped();
-                        return true;
-                }
-                
-                public void cancelCellEditing() {
-                        fireEditingCanceled();
-                }
-                
-                public void addCellEditorListener(CellEditorListener l) {
-                        listenerList.add(CellEditorListener.class, l);
-                }
-                
-                public void removeCellEditorListener(CellEditorListener l) {
-                        listenerList.remove(CellEditorListener.class, l);
-                }
-                
-                protected void fireEditingStopped() {
-                        Object[] listeners = listenerList.getListenerList();
-                        // Process the listeners last to first, notifying
-                        // those that are interested in this event
-                        for (int i = listeners.length-2; i>=0; i-=2) {
-                                if (listeners[i]==CellEditorListener.class) {
-                                        // Lazily create the event:
-                                        if (changeEvent == null)
-                                                changeEvent = new ChangeEvent(this);
-                                        ((CellEditorListener)listeners[i+1]).editingStopped(changeEvent);
-                                }              
-                        }
-                }
-                
-                protected void fireEditingCanceled() {
-                        // Guaranteed to return a non-null array
-                        Object[] listeners = listenerList.getListenerList();
-                        // Process the listeners last to first, notifying
-                        // those that are interested in this event
-                        for (int i = listeners.length-2; i>=0; i-=2) {
-                                if (listeners[i]==CellEditorListener.class) {
-                                        // Lazily create the event:
-                                        if (changeEvent == null)
-                                                changeEvent = new ChangeEvent(this);
-                                        ((CellEditorListener)listeners[i+1]).editingCanceled(changeEvent);
-                                }              
-                        }
-                }
-                
-                // implements javax.swing.tree.TreeCellEditor
-                public Component getTreeCellEditorComponent(JTree tree, Object value,
-                        boolean isSelected, boolean expanded, boolean leaf, int row) {
-                        String         stringValue = tree.convertValueToText(value, isSelected,
-                                expanded, leaf, row, false);
-                        
-                        editorComponent = (JComponent)value;
-                        container = tree;
-                        return editorComponent;
-                }
-                
-                // implements javax.swing.table.TableCellEditor
-                public Component getTableCellEditorComponent(JTable table, Object value,
-                        boolean isSelected, int row, int column) {
-                        
-                        editorComponent = (JComponent)value;
-                        container = table;
-                        return editorComponent;
-                }
-                
-        } // End of class JComponentCellEditor
-        
-    /** class for disoaying a table of resultls - also handles button presses, etc.*/
-    private class ResultListTableModel extends AbstractTableModel implements ActionListener {
-        public ResultListTableModel() {           
-        }
-        public void clear() {
-            arr = new ParameterValue[]{};
-            fireTableDataChanged();
-        }
-        public void setResults(ResultListType results) {
-            arr = results.getResult();
-            fireTableDataChanged();
-        }
-        //store for buttons
-        private List saveButtonsStore = new ArrayList();
-        // nifty list that creats buttons as needed.
-        private List saveButtons = ListUtils.lazyList(saveButtonsStore, new Factory() {  
-            public Object create() {
-                JButton save = new JButton (IconHelper.loadIcon("fileexport.png"));
-                save.setActionCommand(SAVE);
-                save.setToolTipText("Save this result to myspace or local disk");
-                save.addActionListener(ResultListTableModel.this);
-                return save;
-            }            
-        });
-        private final String VIEW = "VIEW";
-        private final String SAVE = "SAVE";
-        private List viewButtonsStore = new ArrayList();
-        // dynamically creates buttons as needed.
-        private List viewButtons = ListUtils.lazyList(viewButtonsStore, new Factory() {  
-            public Object create() {
-                JButton view = new JButton (IconHelper.loadIcon("read_obj.gif"));
-                view.setActionCommand(VIEW);
-                view.setToolTipText("View this result in a browser");
-                view.addActionListener(ResultListTableModel.this);
-                return view;
-            }            
-        });        
-        
-        private ParameterValue[] arr = new ParameterValue[]{};
-        
-
-        public void actionPerformed(ActionEvent e) {
-            if (SAVE.equals(e.getActionCommand())) {
-                // find the row.
-                int row = saveButtonsStore.indexOf(e.getSource());
-                if (row < 0  || row > arr.length -1) {
-                    return;
-                }
-                final ParameterValue pv = arr[row];
-                final URI u =  chooser.chooseResourceWithParent("Save result: " + pv.getName(),true, true, true,LookoutImpl.this);
-                if (u == null) {
-                    return;
-                }                
-                (new BackgroundOperation("Saving Result") {
-
-                    protected Object construct() throws Exception {
-                        Writer w=  null;
-                        try {
-                         w= new OutputStreamWriter(vos.getOutputStream(u)); // @todo could specify size here  
-                         Piper.pipe(new StringReader(pv.getValue()),w);
-                        } finally {
-                            if (w != null) {
-                                try {
-                                w.close();
-                                } catch (IOException e) {
-                                    logger.warn("error closing write stream",e);
-                                }
-                            } 
-                        }
-                        return null;     
-                    }
-                }).start();
-                
-            } else if (VIEW.equals(e.getActionCommand())){
-                int row = viewButtonsStore.indexOf(e.getSource());
-                if (row < 0  || row > arr.length -1) {
-                    return;
-                }            
-                final ParameterValue pv = arr[row];
-                // determine how to style.
-                (new BackgroundOperation("Displaying Result") {
-                    protected Object construct() throws Exception {
-                        URL url = displayResult(pv);
-                        browser.openURL(url);
-                        return null;
-                    }                    
-                }).start();
-            }
-        }        
-        
-        // table model methods.
-        
-        public Class getColumnClass(int column) {
-            switch(column) {
-                case 0:
-                    return Boolean.class;
-                 case 1:
-                     return Object.class;
-                  case 2:
-                    return Object.class;
-                  case 3:
-                      return JComponent.class;
-                  case 4:
-                      return JComponent.class;
-                  default:
-                      return Object.class;
-                  
-            }
-        }
-        public String getColumnName(int column) {
-            switch(column) {
-                case 0:
-                    return "Indirect?";
-                case 1:
-                    return "Name";
-                case 2:
-                    return "Value";
-                case 3:
-                    return ""; //view
-                 case 4:
-                     return ""; //save
-                default:
-                    return "";
-            }
-        }
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            if (rowIndex > arr.length -1|| rowIndex < 0) {
-                return false;
-            }
-            return columnIndex  > 2 && ! arr[rowIndex].getIndirect();  
-        }
-
-        public int getColumnCount() {
-            return 5;
-        }
-
-        public int getRowCount() {
-            return arr.length;
-        }
- 
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            if (rowIndex > arr.length -1 || rowIndex < 0) {
-                return null;
-            }
-            ParameterValue pv = arr[rowIndex];
-            JComponent c;
-            switch(columnIndex) {
-                case 0:
-                    return Boolean.valueOf(pv.getIndirect());
-                case 1:
-                    return pv.getName();
-                case 2:
-                    return StringUtils.abbreviate(pv.getValue(),VALUE_WIDTH);
-                 case 3:
-                      c = (JComponent) viewButtons.get(rowIndex);
-                     c.setEnabled(! pv.getIndirect());
-                     return c;
-                 case 4:
-                         c = (JComponent)saveButtons.get(rowIndex);
-                         c.setEnabled(! pv.getIndirect());
-                         return c;                         
-                  default:
-                      return null;
-            }
-            
-        }
-        
-        public final int VALUE_WIDTH = 60;
-
-        
+        return xmlTransformer;
     }
     
     
@@ -1088,7 +1144,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         JPanel pane = getJContentPane();    
         this.setTitle("VO Lookout");
         
-      
+        
         
         JSplitPane leftRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         leftRight.setDividerSize(5);
@@ -1110,76 +1166,40 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         setIconImage(IconHelper.loadIcon("thread_and_monitor_view.gif").getImage()); 
     }
     
+    boolean isRunning(String status) {
+        return ! (status.equals(ExecutionInformation.ERROR) || status.equals(ExecutionInformation.COMPLETED));
+    }        
     
-    // dislpaying results
-    //@todo hard-coded for now. replace later with a strategy engine -
-    // file and mime types, maybe.
-    // later handle indirect too.
-    private URL displayResult(ParameterValue pv ) throws TransformerFactoryConfigurationError, IOException, TransformerException {
-        Transformer trans;
-        if (pv.getValue().indexOf("<workflow") != -1) {
-            trans = getWorkflowTransformer();
-        } else if (pv.getValue().indexOf("<VOTABLE") != -1) {
-            trans = getVotableTransformer();
-        } else if (pv.getValue().indexOf("<?xml") != -1) {
-            trans = getXmlTransformer();
-        } else {
-            trans = null;
-        }
-        File f = File.createTempFile(pv.getName(),".html");
-        OutputStream out = new FileOutputStream(f);
-        if (trans != null) {
-            Result result= new StreamResult(out);
-            Source source = new StreamSource(new ByteArrayInputStream(pv.getValue().getBytes()));
-            trans.transform(source,result);
-        } else {
-            OutputStreamWriter w = new OutputStreamWriter(out);
-            w.write(pv.getValue());
-            w.flush();
-        }
-        out.close();
-        return f.toURL();
-        
+    boolean isTaskFolder(URI uri) {
+        return ! (uri.equals(MessageRecorderImpl.ALERTS) 
+                || uri.equals(MessageRecorderImpl.JOBS)
+                || uri.equals(MessageRecorderImpl.QUERIES)
+                || uri.equals(MessageRecorderImpl.ROOT)
+                || uri.equals(MessageRecorderImpl.TASKS)
+        );
+    }
+    private void setCurrentFolder(Folder f) {
+        this.currentFolder = f;
     }
     
-    private Transformer workflowTransformer;
-    private Transformer votableTransformer;
-    private Transformer xmlTransformer;
-    private Transformer getWorkflowTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        if (workflowTransformer == null) {
-            Source styleSource = WorkflowResultTransformerSet.Workflow2XhtmlTransformer.getStyleSource();
-            workflowTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
-            workflowTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
-        }
-        return workflowTransformer;
-    }
     
-    private Transformer getVotableTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        if (votableTransformer == null) {
-            Source styleSource = Votable2XhtmlTransformer.getStyleSource();
-            votableTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
-            votableTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
-        }
-        return votableTransformer;
-    }
     
-    private Transformer getXmlTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        if (xmlTransformer == null) {
-            Source styleSource = Xml2XhtmlTransformer.getStyleSource();
-            xmlTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
-            xmlTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
-        }
-        return xmlTransformer;
-    }
-
-
     
-
 }
 
 
 /* 
+ 
 $Log: LookoutImpl.java,v $
+Revision 1.6  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.5.2.2  2005/11/23 18:08:43  nw
+code reviewed and tuned
+
+Revision 1.5.2.1  2005/11/23 04:56:29  nw
+added checks for nulls.
+
 Revision 1.5  2005/11/11 18:39:40  nw
 2 final tweaks
 

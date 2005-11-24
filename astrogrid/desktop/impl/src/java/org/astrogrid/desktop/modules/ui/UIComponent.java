@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.9 2005/11/22 12:14:20 pjn3 Exp $
+/*$Id: UIComponent.java,v 1.10 2005/11/24 01:13:24 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -145,6 +145,8 @@ public class UIComponent extends PositionRememberingJFrame {
             // display report in a dialogue
             ResultDialog rd = new ResultDialog(parent,sw.toString());
             rd.setVisible(true);
+            rd.toFront();
+            rd.requestFocus();
         }
     }
     private JLabel bottomLabel = null;
@@ -320,6 +322,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.10  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
 Revision 1.9  2005/11/22 12:14:20  pjn3
 Bug #1472 - clear status message once background task finishes
 

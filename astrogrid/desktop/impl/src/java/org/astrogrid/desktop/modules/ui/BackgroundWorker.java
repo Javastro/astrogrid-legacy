@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.2 2005/10/12 13:30:10 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.3 2005/11/24 01:13:24 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import javax.swing.JMenuItem;
 /** abstract class for all long-running operations - all requests to VO services should be done in instances of this class.
       * <p/>
       * Extends the standard SwingWorker, but integrates with the ui component - takes care of starting and  stopping busy indicator, progress message.
-      * @todo later will extend so a popup 'cancel' dialogue appears if the op takes a _very_ long time. (i.e. is stalled)  there's a way for the user to recover
+      *
       * @todo integrate with glass pane / hourglass cursor in cases where it should be a blocking operation (but still must be in a background thread so that other
       * UI windows are responsive, and the UI is repainted).     
       * @author Noel Winstanley nw@jb.man.ac.uk 02-Apr-2005
@@ -121,6 +121,12 @@ import javax.swing.JMenuItem;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.3  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.2.14.1  2005/11/23 04:42:15  nw
+doc fix.
+
 Revision 1.2  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

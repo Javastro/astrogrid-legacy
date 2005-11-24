@@ -82,15 +82,19 @@
 		<property>
 			<key>system.ui.menu.entry</key>
 			<value>Execute a Cone Search</value>
-		</property>			
+		</property>	
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>				
 			<parameter name="coneQuery">
 				<description>A query URL</description>
 			</parameter>
 			<return>
 				<description>A votable document</description>
-				<property><!-- TODO - later use votable stylesheet for this -->
+				<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.VotableResultTransformerSet</value>
 				</property>				
 			</return>
 		</method>

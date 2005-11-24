@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.7 2005/11/11 17:53:27 nw Exp $
+/*$Id: RegistryImpl.java,v 1.8 2005/11/24 01:13:24 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.net.MalformedURLException;
@@ -260,18 +261,70 @@ public class RegistryImpl implements Registry {
             return null;
         }
     }
-    /**@todo add declaration of common prefixes to front of query?
-     * @todo geet working.
+    /**
+     * @todo get errors reported correctly - at moment, causes a null pointer.
+     * 
+     * works around registyr returning results wrapped in a VOResources. 
      * @see org.astrogrid.acr.astrogrid.Registry#xquery(java.lang.String)
      */
     public Document xquerySearch(String xquery) throws ServiceException {        
             try {
-                return reg.xquerySearch(xquery);
+                xquery = prependNamespaces(xquery);
+                Document doc = reg.xquerySearch(xquery);
+                
+                NodeList l = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"VOResources");              
+                if (l.getLength() > 0) { // otherwise we'll reutrn the document as is.
+                    Element el = (Element)l.item(0);    // now find the contents of this.
+                    NodeList children = el.getChildNodes();
+                    // find number of elements within this.
+                    Element onlyChild = null;
+                    for (int i =0 ; i < children.getLength(); i++) {
+                        Node n = children.item(i);
+                        if (n.getNodeType() == Node.ELEMENT_NODE) {
+                            if (onlyChild == null) {
+                            // store if we've not already found one
+                                onlyChild = (Element)n;
+                            } else {
+                            //if we have already found one, bail out.
+                                onlyChild = null;
+                                break;
+                            }
+                        }
+                    }
+                    if (onlyChild != null) { // a single result - reutrn it unwrapped.
+                        doc = XMLUtils.newDocument();                    
+                        doc.appendChild(doc.importNode(onlyChild,true));
+                    } else {
+                        // its no results, or text, or a fragment, best return as is.
+                    }
+                }                
+                return doc;
             } catch (RegistryException e) {
+                throw new ServiceException(e);
+            } catch (ParserConfigurationException e) {
                 throw new ServiceException(e);
             }
             
     }    
+    private String prependNamespaces(String xquery) {
+        String[][] ns = XPathHelper.listDefaultNamespaces();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < ns.length; i++) {
+            sb.append("declare namespace ")
+                .append(ns[i][0])
+                .append(" = '")
+                .append(ns[i][1])
+                .append("';\n");
+        }
+        sb.append(xquery);
+        return(sb.toString());
+    }
+    
+    public String[][] listNamespaces() {
+        return XPathHelper.listDefaultNamespaces();
+    }
+            
+            
 
     
 }
@@ -279,6 +332,16 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.8  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.7.2.3  2005/11/23 04:53:08  nw
+implemented new method
+fixed xquery
+
+Revision 1.7.2.2  2005/11/17 21:17:10  nw
+blechg
+
 Revision 1.7  2005/11/11 17:53:27  nw
 added cea polling to lookout.
 

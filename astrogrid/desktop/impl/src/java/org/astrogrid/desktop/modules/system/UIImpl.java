@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.7 2005/11/11 10:08:18 nw Exp $
+/*$Id: UIImpl.java,v 1.8 2005/11/24 01:13:24 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -884,9 +884,9 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
                     String s = md.getProperty(DISPLAY_RESULT_BROWSER_KEY) ;
                     if (s != null && s.trim().equals("true")) {
                         try {
-                            File f = File.createTempFile("ui-result","html");
+                            File f = File.createTempFile("ui-result",".html");
                             Writer out = new FileWriter(f);
-                            out.write(s);
+                            out.write(r.toString());
                             out.close();
                             f.deleteOnExit();
                             browser.openURL(f.toURL());
@@ -897,6 +897,8 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
                     } else {                  
                         ResultDialog rd = new ResultDialog(UIImpl.this,r);
                         rd.show();
+                        rd.toFront();
+                        rd.requestFocus();
                     }
                 }    
          }
@@ -1057,6 +1059,12 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.8  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.7.2.1  2005/11/23 04:44:35  nw
+attempted to improve dialogue behaviour
+
 Revision 1.7  2005/11/11 10:08:18  nw
 cosmetic fixes
 

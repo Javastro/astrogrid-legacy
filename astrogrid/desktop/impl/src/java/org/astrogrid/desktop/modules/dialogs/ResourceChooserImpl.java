@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.6 2005/10/12 13:30:10 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.7 2005/11/24 01:13:24 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,17 +28,23 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
     public ResourceChooserImpl(MyspaceInternal vos,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
         this.vos = vos;
+        this.comm = comm;
         dialog = new ResourceChooserDialog(vos,conf,help,ui, comm) ;
         dialog.pack();
     }
+    protected final Community comm;
     protected final MyspaceInternal vos;
     protected final ResourceChooserDialog dialog;
     public synchronized URI chooseResource(String title,boolean enableMySpace) {
+        // force login.
+         comm.getUserInformation();
         dialog.setTitle(title);
         dialog.setEnableMySpacePanel(enableMySpace);
-        dialog.setUri(null);
+       // dialog.setUri(null);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
+        dialog.requestFocus();
+        dialog.toFront();
         return dialog.getUri();        
     }
     
@@ -53,14 +59,18 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
     }    
     
     public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableDirectorySelection, boolean enableURI,Component comp) {
+        comm.getUserInformation(); // force login, to avoid duplicate modal dialogue lockup.
+                
         dialog.setLocationRelativeTo(comp);
         dialog.setTitle(title);
         dialog.setEnableLocalFilePanel(enableLocalFile);
         dialog.setEnableURIPanel(enableURI);
         dialog.setEnableMySpacePanel(enableMySpace);
         dialog.setEnabledDirectorySelection(enableDirectorySelection);
-        dialog.setUri(null);
+        //dialog.setUri(null);
         dialog.setVisible(true);
+        dialog.requestFocus();
+        dialog.toFront();
         return dialog.getUri();    
     }
 
@@ -69,6 +79,12 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.7  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.6.14.1  2005/11/23 04:48:33  nw
+attempted to improve dialogue behaviour
+
 Revision 1.6  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

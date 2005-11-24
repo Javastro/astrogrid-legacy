@@ -1,4 +1,4 @@
-/*$Id: LoginDialogue.java,v 1.2 2005/11/11 10:08:18 nw Exp $
+/*$Id: LoginDialogue.java,v 1.3 2005/11/24 01:13:24 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -156,8 +156,7 @@ class LoginDialogue extends JPanel {
         JDialog dialog = opane_.createDialog( parent, "Astrogrid Login" );
         dialog.getContentPane().add( opane_ );               
             dialog.show();
-            passField_.requestFocusInWindow();                      
-            dialog.requestFocus();
+            passField_.requestFocus();     
             dialog.toFront();  
             Object status = opane_.getValue();            
             dialog.dispose();
@@ -209,6 +208,12 @@ class LoginDialogue extends JPanel {
 
 /* 
 $Log: LoginDialogue.java,v $
+Revision 1.3  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.2.2.1  2005/11/23 04:54:10  nw
+tried to improve dialogue behavour
+
 Revision 1.2  2005/11/11 10:08:18  nw
 cosmetic fixes
 

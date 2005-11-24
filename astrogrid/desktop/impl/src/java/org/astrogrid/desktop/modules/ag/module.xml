@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 
 <module name="astrogrid">
-	<description>Direct access to Astrogrid Components</description>
+	<description>Direct access to Astrogrid Services</description>
 	<property>
 		<key>system.ui.menu.links</key>
 		<value>
@@ -294,6 +294,25 @@
 			<parameter name="xquery">
 				<description>XQuery to execute </description>
 			</parameter>
+		</method>
+		
+		<method name="listNamespaces">
+			<description>List the namespaces that are prepended to each adql and xquery expression</description>
+		<property>
+			<key>icon</key>
+			<value>flatLayout.gif</value>
+		</property>					
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>List Namespaces</value>								
+			</property>			
+			<return>
+				<description>A list of 2-element arrays. First element of each is the namespace name used, while the second element is the uri that defines that namespace</description>
+			<property>
+				<key>system.xmlrpc.type</key>
+				<value>array</value>
+			</property>				
+			</return>
 		</method>
 		<method name="keywordSearch">
 			<description>Execute a keywordquery the registry. </description>
@@ -1144,7 +1163,17 @@
 				</property>				
 			</return>
 		</method>
-		
+		<method name="wrapTask">
+			<description>Create a new initialized workflow document, containing a single step that executes the parameter task.</description>
+			<parameter name="tool"><description>Tool document to wrap as a single-step workflow</description></parameter>			
+			<return>
+				<description>a single step workflow document</description>
+				<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet</value>						
+				</property>				
+			</return>
+		</method>
 		<method name="submitJob">
 			<description>Submit a workflow for execution</description>
 			<return>
@@ -1384,7 +1413,7 @@
 			</parameter>
 		</method>
 
-		<method name="getMesages">
+		<method name="getMessages">
 			<description>Access messages received from a remote execution</description>
 		<property>
 			<key>icon</key>
@@ -1406,7 +1435,7 @@
 			</parameter>				
 		</method>
 		<method name="getResults">
-			<description>Get results of an process execution</description>
+			<description>Get results of an process execution</description>			
 		<property>
 			<key>icon</key>
 			<value>MultipleImages.gif</value>
@@ -1426,6 +1455,41 @@
 				<description>id of the process execution to query</description>
 			</parameter>				
 		</method>
-	 		
+	<method name="getSingleResult">
+			<description>Get one result from a process execution</description>
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>				
+		<property>
+			<key>icon</key>
+			<value>MultipleImages.gif</value>
+		</property>						
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Get Single Execution Result</value>								
+			</property>		
+	<return>
+				<description>text of one result of this computation</description>
+
+				</return>					
+			<parameter name="processId">
+				<description>id of the process execution to query</description>
+			</parameter>				
+			<parameter name="resultName">
+				<description>name of the result to access. For processes that return only a single result, this value will be returned no matter what resultName is used
+				</description>
+			</parameter>
+		</method>	 		
 	</component>
+	
+	<!-- store -->
+	<component name="store"
+		implementationClass="org.astrogrid.desktop.modules.ag.StoreImpl"
+		interfaceClass="org.astrogrid.desktop.modules.ag.StoreInternal">
+		<property>
+			<key>hidden.component</key>
+			<value>true</value>
+		</property>
+	</component>	
 </module>

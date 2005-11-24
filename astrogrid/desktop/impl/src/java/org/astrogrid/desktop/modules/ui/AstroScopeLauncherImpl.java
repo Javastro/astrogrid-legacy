@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.24 2005/11/15 19:39:07 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.25 2005/11/24 01:13:24 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,10 +24,11 @@ import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.AstroScopeLauncher;
+import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.filemanager.client.FileManagerNode;
@@ -50,6 +51,7 @@ import uk.ac.starlink.votable.VOElementFactory;
 import uk.ac.starlink.votable.VOStarTable;
 import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
+import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.EdgeItem;
@@ -140,6 +142,7 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -161,6 +164,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Set;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -170,6 +174,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 
@@ -178,7 +183,7 @@ import javax.swing.SwingUtilities;
  * @todo display thumbnails of images - urls are available under 'imgUrl' attribute - use ImageFactory to retrieve them, display in pane under search buttons.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
-public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLauncher, ActionListener {
+public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, ActionListener {
     /**
      * Commons Logger for this class
      */
@@ -276,6 +281,16 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         nodeSizingMap = Collections.synchronizedMap(new java.util.TreeMap());
         this.executor = new PooledExecutor(new LinkedQueue()); // infinite task buffer
         this.executor.setMinimumPoolSize(5); // always have 5 threads ready to go.
+        this.executor.setThreadFactory(new ThreadFactory() { // name threads, and make them slightly lower priority.
+            private final ThreadFactory wrapped = executor.getThreadFactory();
+
+            public Thread newThread(Runnable arg0) {
+                Thread t = wrapped.newThread(arg0);
+                t.setName("Astroscope Query Thread - " + t.getName());
+                t.setPriority(Thread.NORM_PRIORITY -1);
+                return t;
+            }
+        });
         this.setSize(1000,707); // same proportions as A4,    
                    
 //        this.setSize(700, 700);  
@@ -543,7 +558,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
      * @return JPanel consisting of the query gui and custom controls typically placedo on the WEST side of the main panel.
      * @todo probably needs to use a gridbaglayout instead of all these other panels within panels.
      */
-    public JPanel makeSearchPanel() {
+    private JPanel makeSearchPanel() {
         JPanel wrapPanel = new JPanel();
         wrapPanel.setLayout(new BoxLayout(wrapPanel,BoxLayout.Y_AXIS));
         JPanel scopeMain = new JPanel();
@@ -558,6 +573,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
         submitButton = new JButton("Submit");
         submitButton.setToolTipText("Process Query");
         submitButton.addActionListener(this);
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+        wrapPanel.getInputMap(wrapPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
+        wrapPanel.getActionMap().put("search",new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                AstroScopeLauncherImpl.this.actionPerformed(e);
+            }
+        });        
         posText = new JTextField();
         posText.setToolTipText("Place postion e.g. 120,0 or M11");
         
@@ -1801,6 +1823,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScopeLau
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.25  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
 Revision 1.24  2005/11/15 19:39:07  nw
 merged in improvements from release branch.
 

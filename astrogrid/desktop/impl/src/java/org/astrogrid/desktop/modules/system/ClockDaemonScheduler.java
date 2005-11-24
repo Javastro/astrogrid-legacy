@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.1 2005/11/10 12:05:53 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.2 2005/11/24 01:13:24 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.picocontainer.Startable;
 
 import EDU.oswego.cs.dl.util.concurrent.ClockDaemon;
+import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +43,17 @@ public class ClockDaemonScheduler implements SchedulerInternal, Startable, NewMo
     public ClockDaemonScheduler(MutableACR reg) {
         super();
         this.daemon = new ClockDaemon();
+        // make shceduled tasks run at lowest priority.
+        this.daemon.setThreadFactory(new ThreadFactory() {
+            private final ThreadFactory wrapped = daemon.getThreadFactory();
+
+            public Thread newThread(Runnable arg0) {
+                Thread t = wrapped.newThread(arg0);
+                t.setName("Scheduled Tasks Thread - " + t.getName());
+                t.setPriority(Thread.MIN_PRIORITY);
+                return t;
+            }
+        });
         reg.addNewModuleListener(this);
     }
     // the implementation of the clock.
@@ -55,9 +67,8 @@ public class ClockDaemonScheduler implements SchedulerInternal, Startable, NewMo
         daemon.shutDown();
     }
 
-    public Object executePeriodically(long milliseconds, Runnable task) {
+    public void executePeriodically(long milliseconds, Runnable task) {
         daemon.executePeriodically(milliseconds,task,false);
-        return task; // key is self.
     }
 
     /** listens to the ACR registry - scans new modules for class that implement 'ScheduledTask'
@@ -75,9 +86,9 @@ public class ClockDaemonScheduler implements SchedulerInternal, Startable, NewMo
     }
     
    
-    public void runNow(Object key) {
+    public void runNow(Runnable key) {
         // assume key is the runnable..
-        daemon.executeAfterDelay(1L,(Runnable)key); // execute as soon as possible
+        daemon.executeAfterDelay(1L,key); // execute as soon as possible
     }
 
 }
@@ -85,6 +96,12 @@ public class ClockDaemonScheduler implements SchedulerInternal, Startable, NewMo
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.2  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.1.2.1  2005/11/23 04:43:57  nw
+tuned threads to run at low priority.
+
 Revision 1.1  2005/11/10 12:05:53  nw
 big change around for vo lookout
 

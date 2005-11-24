@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.9 2005/11/11 10:08:18 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.10 2005/11/24 01:13:24 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -193,6 +193,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         }
 
         public void actionPerformed(ActionEvent e) {
+            getBlockingGlassPane().setVisible(true);
             final FileManagerNode n = getCurrentNodeManager().getCurrent();
             if (n == null) {
                 return;
@@ -204,7 +205,6 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             }
             final boolean isFile = n.isFile(); // take note of these, before I
                                                // delete the thing.
-            getBlockingGlassPane().setVisible(true);
             (new BackgroundOperation("Deleting " + n.getName()) {
                 protected Object construct() throws Exception {
                     FileManagerNode parent = n.getParentNode(); // find it's
@@ -217,6 +217,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                 }
 
                 protected void doAlways() {
+                    getCurrentNodeManager().clear();
                     getBlockingGlassPane().setVisible(false);
                 }
                 protected void doFinished(Object o) {
@@ -875,6 +876,12 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.10  2005/11/24 01:13:24  nw
+ * merged in final changes from release branch.
+ *
+ * Revision 1.9.2.1  2005/11/23 04:41:26  nw
+ * make sure blocking glass pane is down - so same resource can't be deleted twice.
+ *
  * Revision 1.9  2005/11/11 10:08:18  nw
  * cosmetic fixes
  *

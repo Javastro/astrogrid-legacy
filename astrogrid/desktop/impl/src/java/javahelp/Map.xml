@@ -10,17 +10,8 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 	overview	stuff
 -->
 	<mapID target="top" url="index.html"/>
-	<mapID target="getttingstarted" url="gettingstarted.html" />
+    
 
-	<!-- template -->
-	<mapID target="template" url="PlainTemplate/PlainTemplate.html" />
-	<!-- sample -->
-	<mapID target="sample" url="SolarMovie-sample/SolarMovie.html" />
-<!-- 
-	tutorial
--->
-
-	<mapID target="votutorial" url="votutorial/index.html"/>
 <!-- 
 	reference
 -->
@@ -30,28 +21,29 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 	-->
 	
 	<!-- main workbench window -->
-	<mapID target="system.ui" url="workbench/index.html" />	
+	<mapID target="workbench.main" url="workbench/index.html" />	
+	<mapID target="workbench.main.moduleMenu" url="workbench/index.html#moduleMenu" />
+	<mapID target="workbench.main.helpMenu" url="workbench/index.html#helpMenu" />
+	<mapID target="workbench.main.footer" url="workbench/index.html#footer" />
 	
-<!-- 
-	help for acr
--->
-	<mapID target="acr" url="acr/index.html" />	
-	<mapID target="acr.modules" url="acr/modules.html" />
-    <mapID target="acr.examples" url="acr/examples.html" />
-	
+	<mapID target="workbench.userInterface" url="workbench/modules.html#userInterface" />
+	<mapID target="workbench.apps" url="workbench/modules.html#apps" />
+	<mapID target="workbench.acr" url="workbench/modules.html#acr" />
+	<mapID target="workbench.astrogrid" url="workbench/modules.html#astrogrid" />
+	<mapID target="workbench.cds" url="workbench/modules.html#cds" />
+	<mapID target="workbench.ivoa" url="workbench/modules.html#ivoa" />
+	<mapID target="workbench.nvo" url="workbench/modules.html#nvo" />
+	<mapID target="workbench.system" url="workbench/modules.html#system" />
 <!--
 	Help for each UI component
 -->
-	
-	<!-- job monitor -->
-	<mapID target="userInterface.jobMonitor" url="jobmonitor/index.html" />
-	<mapID target="jm.workflowTab" url="jobmonitor/index.html#workflowTab" />
-	<mapID target="jm.appTab" url="jobMonitor/index.html#appTab" />
-	<mapID target="jm.functions" url="jobMonitor/functions.html" />
+
 	<!-- pw workflows -->
 	<mapID target="userInterface.parameterizedWorkflows" url="parameterizedworkflows/index.html" />
-	<mapID target="pw.movieMaker" 	url="http://wiki.astrogrid.org/bin/view/Astrogrid/MovieMaker" />
+	<mapID target="pw.movieMaker" 	url="pw-SolarMovie/SolarMovie.html" />
 	<mapID target="pw.redshiftMaker" 	url="http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker"/>
+	<mapID target="pw.ctip" url="pw-ctip/CTIP_mode_A.html" />
+
 	<!-- application launcher -->
 	<mapID target="userInterface.applicationLauncher" url="applauncher/index.html" />
 	<mapID target="al.list" url="http://wiki.astrogrid.org/bin/view/Astrogrid/ToolDocumentation" />
@@ -63,8 +55,8 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 	<!-- datascope -->
 	<mapID target="userInterface.datascopeLauncher" url="datascope/index.html" />
 	
-	<!-- workflow builder -->
-	<mapID target="userInterface.workflowBuilder" url="workflowbuilder/index.html" />
+	<!-- workflow builder -->		
+	<mapID target="userInterface.workflowBuilder" url="workflowbuilder/introduction.html" /> <!-- redundant id - point to introduction for now -->
 	<mapID target="userInterface.workflowBuilder.introduction" url="workflowbuilder/introduction.html" />
 	<mapID target="userInterface.workflowBuilder.workflow" url="workflowbuilder/workflow.html" />
 	<mapID target="userInterface.workflowBuilder.treePanel" url="workflowbuilder/treePanel.html" />
@@ -75,13 +67,15 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 	<mapID target="userInterface.workflowBuilder.editMenu" url="workflowbuilder/overview.html#editMenu" />
 	<mapID target="userInterface.workflowBuilder.fileMenu" url="workflowbuilder/overview.html#fileMenu" />
 	<mapID target="userInterface.workflowBuilder.toolbar" url="workflowbuilder/overview.html#toolbar" />
-	<mapID target="userInterface.workflowBuilder.taskEditor" url="workflowbuilder/taskEditor.html" />
 	
 	<!-- myspace browser -->
 	<mapID target="userInterface.myspaceBrowser" url="myspacebrowser/index.html" />	
 	
 	<!-- registry browser -->
 	<mapID target="userInterface.registryBrowser" url="registrybrowser/index.html" />
+
+	<!-- volookout -->
+	<mapID target="userInterface.lookout" url="lookout/index.html" />
 
 <!-- 
 	information about astrogird	

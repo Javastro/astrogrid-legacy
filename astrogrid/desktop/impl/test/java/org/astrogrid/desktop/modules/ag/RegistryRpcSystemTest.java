@@ -1,4 +1,4 @@
-/*$Id: RegistryRpcSystemTest.java,v 1.3 2005/11/04 10:14:26 nw Exp $
+/*$Id: RegistryRpcSystemTest.java,v 1.4 2005/11/24 01:13:24 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,7 @@ import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -220,12 +221,35 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
             throw new ServiceException(e);
         }
     }
+    /**
+     * @see org.astrogrid.acr.astrogrid.Registry#listNamespaces()
+     */
+    public String[][] listNamespaces() {
+        v.clear();
+        try {
+            List s = (List)client.execute("astrogrid.registry.listNamespaces",v);
+            String[][] result = new String[s.size()][2];
+            for (int i =0 ; i < result.length; i++) {
+                List ns = (List)s.get(i);
+                result[i] = new String[]{ns.get(0).toString(),ns.get(1).toString()};
+            }
+            return result;
+        } catch (Exception e) {
+            throw new AssertionFailedError("transport failure" + e.getMessage());
+        }
+    }
 
 }
 
 
 /* 
 $Log: RegistryRpcSystemTest.java,v $
+Revision 1.4  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.3.8.1  2005/11/23 05:01:13  nw
+updated for new methods.
+
 Revision 1.3  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present

@@ -1,4 +1,4 @@
-/*$Id: MessagingExecutionController.java,v 1.4 2005/11/11 17:53:27 nw Exp $
+/*$Id: MessagingExecutionController.java,v 1.5 2005/11/24 01:13:24 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -98,7 +98,8 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
                             m.marshal(s);                            
                             txtMsg.setText(s.toString());
                             prod.send(txtMsg);
-                        }                      
+                        }
+                        txtMsg.clearBody();
                     } catch (JMSException e) {                        
                         logger.warn("Failed to send notification message",e);
                     } catch (MarshalException e) {
@@ -131,6 +132,12 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
 
 /* 
 $Log: MessagingExecutionController.java,v $
+Revision 1.5  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.4.2.1  2005/11/23 18:09:28  nw
+tuned up.
+
 Revision 1.4  2005/11/11 17:53:27  nw
 added cea polling to lookout.
 

@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.3 2005/11/11 17:53:27 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.4 2005/11/24 01:13:24 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
-import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
@@ -34,26 +31,18 @@ import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;
-import org.astrogrid.portal.workflow.intf.JobExecutionService;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.CastorException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,7 +53,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -131,7 +119,7 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
         return acc;
     }
  
-    
+    //@todo make period configurable 
     public final  long getPeriod() {
         return 1000 * 60 * 5;
     }
@@ -162,7 +150,7 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
      * @param jobSummary
      * @throws JesDelegateException
      */
-    private void checkSingleJob(WorkflowSummaryType jobSummary) throws JesDelegateException {
+    private void checkSingleJob(WorkflowSummaryType jobSummary) {
         try {
             Folder f= recorder.getFolder(new URI(jobSummary.getJobId().getContent()));
             String currentStatus;
@@ -178,7 +166,7 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
                 } // otherwise..
                 messageCount = recorder.listFolder(f).length;
             }
-            String newStatus = jobSummary.getStatus().toString(); //@todo may need to convert between phase and status, or something - I forget..
+            String newStatus = jobSummary.getStatus().toString(); 
             txtMsg.setStringProperty(MessageUtils.PROCESS_ID_PROPERTY,jobSummary.getJobId().getContent());
             txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,jobSummary.getWorkflowName());
             if (jobSummary.getStartTime() != null) {
@@ -200,11 +188,14 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
                     jobSummary.getMessage()[j].marshal(s);
                     txtMsg.setText(s.toString());
                     prod.send(txtMsg);
+                    // clear space.
+                    txtMsg.clearBody();
                 }
             }
             if (isCompletedOrError(newStatus)) { // emit result message  
                 txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.RESULTS_MESSAGE);                                       
                 Workflow wf = getJes().readJob(jobSummary.getJobId());
+                wf.getJobExecutionRecord().clearExtension(); // clears out junk
                 ResultListType results = new ResultListType();
                 ParameterValue v = new ParameterValue();
                 v.setIndirect(false);
@@ -220,15 +211,9 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
                 // free space.
                 txtMsg.clearBody();                
         }
-        } catch (JMSException e) {
+        } catch (Exception e) {
             logger.warn("Failed to process job info for " + jobSummary.getJobId().getContent());
-        } catch (IOException e) {
-            logger.warn("Failed to process job info for " + jobSummary.getJobId().getContent());
-        } catch (CastorException e) {
-            logger.warn("Failed to process job info for " + jobSummary.getJobId().getContent());
-        } catch (URISyntaxException e) {
-            logger.warn("Failed to process job info for " + jobSummary.getJobId().getContent());
-        }
+        } 
     }
 
     public static boolean isCompletedOrError(String s) {
@@ -329,7 +314,7 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
     public Map getLatestResults(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {        
             try {
                 Workflow wf = getJes().readJob(cvt(jobURN));
-           
+                wf.getJobExecutionRecord().clearExtension(); // remove a load of implementation-junk that takes up a _lot_ of space.
             StringWriter sw = new StringWriter();
              wf.marshal(sw);
             HashMap m = new HashMap();
@@ -362,6 +347,15 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.4  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.3.2.2  2005/11/23 18:09:28  nw
+tuned up.
+
+Revision 1.3.2.1  2005/11/23 04:50:49  nw
+tidied up
+
 Revision 1.3  2005/11/11 17:53:27  nw
 added cea polling to lookout.
 

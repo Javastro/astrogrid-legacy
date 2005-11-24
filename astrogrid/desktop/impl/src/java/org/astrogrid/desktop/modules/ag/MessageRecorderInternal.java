@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderInternal.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: MessageRecorderInternal.java,v 1.2 2005/11/24 01:13:24 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 import java.util.Observable;
 
 import javax.swing.table.TableModel;
@@ -68,7 +69,7 @@ public interface MessageRecorderInternal {
      * @return - the folder, or null*/
     Folder getFolder(URI id) throws IOException;
     
-    public URI[] listLeaves() throws IOException ;
+    public List listLeaves() throws IOException ;
     /** save an updated version of a folder */
     void updateFolder(Folder f) throws IOException;    
     /** delete a folder, and any messages associated with it */
@@ -105,6 +106,12 @@ public interface MessageRecorderInternal {
 
 /* 
  $Log: MessageRecorderInternal.java,v $
+ Revision 1.2  2005/11/24 01:13:24  nw
+ merged in final changes from release branch.
+
+ Revision 1.1.2.1  2005/11/23 04:54:34  nw
+ changed return type.
+
  Revision 1.1  2005/11/10 12:05:43  nw
  big change around for vo lookout
 

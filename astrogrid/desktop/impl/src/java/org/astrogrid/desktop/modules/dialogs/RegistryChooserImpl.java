@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserImpl.java,v 1.3 2005/10/12 13:30:10 nw Exp $
+/*$Id: RegistryChooserImpl.java,v 1.4 2005/11/24 01:13:24 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,8 @@ public class RegistryChooserImpl implements RegistryChooser {
         dialog.setFilter(arg1);
         dialog.setMultipleResources(false);
         dialog.setVisible(true);
+        dialog.toFront();
+        dialog.requestFocus();
         ResourceInformation[] arr = dialog.getSelectedResources();
         return arr == null || arr.length < 1 ? null : arr[0]; 
     }
@@ -70,6 +72,8 @@ public class RegistryChooserImpl implements RegistryChooser {
         dialog.setFilter(arg1);
         dialog.setMultipleResources(true);
         dialog.setVisible(true);
+        dialog.toFront();
+        dialog.requestFocus();        
         return dialog.getSelectedResources();
     }
 
@@ -78,6 +82,12 @@ public class RegistryChooserImpl implements RegistryChooser {
 
 /* 
 $Log: RegistryChooserImpl.java,v $
+Revision 1.4  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.3.14.1  2005/11/23 04:47:36  nw
+attempted to improve dialogue behaviour
+
 Revision 1.3  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

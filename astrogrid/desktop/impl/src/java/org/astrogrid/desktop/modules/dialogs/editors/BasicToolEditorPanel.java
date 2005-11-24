@@ -226,12 +226,14 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 	
 	class IndirectCellEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
         
-        JCheckBox button;
-        Boolean indirect;
-        ParameterTableModel pm;
-        int row;
-        
-        public IndirectCellEditor() {
+        private final JCheckBox button;
+        private Boolean indirect;
+        private ParameterTableModel pm;
+        private int row;
+        private final boolean isInput;
+
+        public IndirectCellEditor(boolean isInput) {
+            this.isInput = isInput;
             button = new JCheckBox();            
             button.addItemListener(this);
             button.setBorderPainted(false);           
@@ -263,7 +265,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         
             } else {                
                 fireEditingStopped();
-                URI uri = resourceChooser.chooseResourceWithParent("Select resource", true,true, true,BasicToolEditorPanel.this);
+                URI uri; 
+                if (isInput) {
+                        uri = resourceChooser.chooseResourceWithParent("Select input location", true,true, true,BasicToolEditorPanel.this);
+                } else {
+                    uri = resourceChooser.chooseResourceWithParent("Select output location", true,false, true,BasicToolEditorPanel.this);                    
+                }
                 parameter.setIndirect(true);
                 this.indirect = Boolean.TRUE;                  
                 pm.fireTableCellUpdated(row,2);                       
@@ -299,13 +306,13 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     
     /** custom table - no functionality, just hacks and tweaks to make it look / work nicer */
     protected final class ParameterTable extends JTable {
-    	
-        {                
+        public ParameterTable(ParameterTableModel dm,boolean isInput) {
+            super(dm);
            getColumnModel().getColumn(0).setPreferredWidth(150);    //Name
            getColumnModel().getColumn(0).setMinWidth(110);
            getColumnModel().getColumn(1).setPreferredWidth(200);   //Value
            getColumnModel().getColumn(1).setMinWidth(160);
-           getColumnModel().getColumn(2).setCellEditor(new IndirectCellEditor());
+           getColumnModel().getColumn(2).setCellEditor(new IndirectCellEditor(isInput));
            getColumnModel().getColumn(2).setPreferredWidth(35);     //Indirect    
            getColumnModel().getColumn(2).setMaxWidth(35);
            getColumnModel().getColumn(3).setCellEditor(new RepeatCellEditor());           
@@ -318,9 +325,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
            putClientProperty("terminateEditOnFocusLost", Boolean.TRUE); // improves editing behaviour.           
         }        
         
-        public ParameterTable(ParameterTableModel dm) {
-            super(dm);
-        }
+
+       
         
         // overriden to make the height of scroll match viewpost height if smaller 
         public boolean getScrollableTracksViewportHeight() { 
@@ -650,7 +656,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         if (inputTable == null) {
             ParameterTableModel inputs = getInputTableModel();         
             toolModel.addToolEditListener(inputs);            
-            inputTable = new ParameterTable(inputs);              
+            inputTable = new ParameterTable(inputs,true);              
         }
         return inputTable;
     }
@@ -670,7 +676,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         if (outputTable == null) {
             ParameterTableModel outputs = new ParameterTableModel(false);
             toolModel.addToolEditListener(outputs); 
-            outputTable = new ParameterTable(outputs);         
+            outputTable = new ParameterTable(outputs,false);         
         }
         return outputTable;              
     }
@@ -733,6 +739,15 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.11  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.9.2.2  2005/11/23 04:46:33  nw
+disabled 'file' tab of indirect dialogue for output parameters.
+
+Revision 1.9.2.1  2005/11/17 21:18:22  nw
+*** empty log message ***
+
 Revision 1.10  2005/11/16 20:49:58  pjn3
 Checkbox column widths improved
 

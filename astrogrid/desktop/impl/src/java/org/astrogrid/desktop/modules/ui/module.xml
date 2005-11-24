@@ -29,7 +29,7 @@
 	
 		<component name="astroscope" 
 		implementationClass="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" 
-		interfaceClass="org.astrogrid.acr.ui.AstroScopeLauncher" 
+		interfaceClass="org.astrogrid.acr.ui.AstroScope" 
 		singleton="false"
 		>
 		<description>Launch AstroScope</description>	

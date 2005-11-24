@@ -5,63 +5,42 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
 <!-- defines the table of contents view of the data -->
 <toc version="1.0" topicimage="topicIcon" categoryopenimage="openFolderIcon" categoryclosedimage="closedFolderIcon" >
 	<tocitem text="Workbench" target="top" image="toplevelfolder">
-		<tocitem text="Getting Started" target="gettingstarted" />
 		<!-- add children to each of these headings, once they're written -->
-		<tocitem text="Main Window" target="system.ui" />
+		<tocitem text="Main Window" target="workbench.main" />
+
 		<tocitem text="Astroscope" target="userInterface.astroscopeLauncher" />
+		
+		<tocitem text="Lookout" target="userInterface.lookout" />
 		
 		<tocitem text="Parameterized Workflows" target="userInterface.parameterizedWorkflows">
 			<tocitem text="Solar Movie Maker" target="pw.movieMaker" />
 			<tocitem text="Redshift Maker" target="pw.redshiftMaker" />
+			<tocitem text="CTIP" target="pw.ctip" />
 		</tocitem>
 		
 		<tocitem text="Application Launcher" target="userInterface.applicationLauncher">
 			<tocitem text="Available Applications" target="al.list" />
 		</tocitem>
 		
-		<tocitem text="Workflow Builder" target="userInterface.workflowBuilder" >
-			<tocitem text="Introduction" target="userInterface.workflowBuilder.introduction" />
+		<tocitem text="Workflow Builder" target="userInterface.workflowBuilder.introduction" >
 			<tocitem text="Workflow overview" target="userInterface.workflowBuilder.workflow" />
 		    <tocitem text="Builder overview" target="userInterface.workflowBuilder.top" />
 		    <tocitem text="Tree view" target="userInterface.workflowBuilder.treePanel" />
 	        <tocitem text="Document view" target="userInterface.workflowBuilder.docPanel" />
-	        <tocitem text="Activity list" target="userInterface.workflowBuilder.activityList" />
-	        <tocitem text="Task Editor" target="userInterface.workflowBuilder.taskEditor" />	        		    
+	        <tocitem text="Activity list" target="userInterface.workflowBuilder.activityList" />	        		    
 		</tocitem>
-		<!-- not there any more
-		<tocitem text="Job Monitor" target="userInterface.jobMonitor" >
-			<tocitem text="Functions" target="jm.functions" />
-		</tocitem>
-		-->
-		
-		<tocitem text="Myspace Browser" target="userInterface.myspaceBrowser" />
-		<tocitem text="AstroScope Lite" target="userInterface.datascopeLauncher" />
-		<tocitem text="Registry Browser" target="userInterface.registryBrowser" />
-	</tocitem>
 
-	<tocitem text="Virtual Observatory Tutorial" target="votutorial" image="toplevelfolder">
-		<!-- add contents in here once astros write it -->
+		<tocitem text="Myspace Browser" target="userInterface.myspaceBrowser" />
+		<tocitem text="Registry Browser" target="userInterface.registryBrowser" />
+		<tocitem text="Datascope Launcher" target="userInterface.datascopeLauncher" />
 	</tocitem>
 	
 	<tocitem text="About AstroGrid" target="astrogrid.about" image="toplevelfolder">
 		<tocitem text="AstroGrid Release 1.1" target="astrogrid.release" />
 	</tocitem>	
 	
-	<tocitem text="Astro Client Runtime" target="acr" image="toplevelfolder">
-		<tocitem text="Modules">
-			<tocitem text="System" target="system" />
-			<tocitem text="Astrogrid" target="astrogrid" />
-			<tocitem text="CDS" target="cds" />
-			<tocitem text="ivoa" target="ivoa" />
-			<tocitem text="External Apps" target="Apps" />
-		
-		</tocitem>
-		<tocitem text="Examples" target="acr.examples" />
-	</tocitem>
-	<tocitem text="Kona" image="toplevelfolder">
-		<tocitem text="Template Page" target="template" />
-		<tocitem text="Sample Page" target="sample" />
-	</tocitem>
+
+
 <!-- ACR reference automatically added in here -->
 	
 </toc>

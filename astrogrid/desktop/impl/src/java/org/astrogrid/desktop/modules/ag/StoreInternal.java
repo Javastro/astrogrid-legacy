@@ -1,4 +1,4 @@
-/*$Id: StoreInternal.java,v 1.2 2005/11/10 12:05:53 nw Exp $
+/*$Id: StoreInternal.java,v 1.2 2005/11/24 01:13:24 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
  **/
-package org.astrogrid.desktop.modules.system;
+package org.astrogrid.desktop.modules.ag;
 
 import jdbm.RecordManager;
 
@@ -26,6 +26,13 @@ public interface StoreInternal {
 
 /* 
  $Log: StoreInternal.java,v $
+ Revision 1.2  2005/11/24 01:13:24  nw
+ merged in final changes from release branch.
+
+ Revision 1.1.2.1  2005/11/17 21:06:26  nw
+ moved store to be user-dependent
+ debugged message monitoring.
+
  Revision 1.2  2005/11/10 12:05:53  nw
  big change around for vo lookout
 

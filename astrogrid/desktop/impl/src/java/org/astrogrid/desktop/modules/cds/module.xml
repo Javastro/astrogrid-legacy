@@ -122,11 +122,15 @@
 		<key>icon</key>
 		<value>info_obj.gif</value>
 	</property>			
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>	
 		<description>get metadata about catalogues</description>
 		<return><description>A VOTable containing metadata about catalogues depending on the given parameters</description>
 		<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.VotableResultTransformerSet</value>
 				</property>			
 		</return>
 		<parameter name="target"><description>example : M31</description></parameter>
@@ -144,12 +148,16 @@
 			<property>
 		<key>icon</key>
 		<value>info_obj.gif</value>
-	</property>			
+	</property>
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>				
 		<description>get metadata about catalogues</description>
 		<return><description>A VOTable containing metadata about catalogues depending on the given parameters</description>
 		<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.VotableResultTransformerSet</value>
 				</property>			
 		</return>
 		<parameter name="target"><description>example : M31</description></parameter>
@@ -168,12 +176,16 @@
 			<property>
 		<key>icon</key>
 		<value>info_obj.gif</value>
-	</property>			
+	</property>
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>				
 		<description>get catalogues data</description>
 		<return><description>A VOTable containing data about catalogues depending on the given parameters</description>
 		<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.VotableResultTransformerSet</value>
 				</property>			
 		</return>
 		<parameter name="target"><description>example : M31</description></parameter>
@@ -191,12 +203,16 @@
 			<property>
 		<key>icon</key>
 		<value>info_obj.gif</value>
-	</property>			
+	</property>
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>				
 		<description>get catalogues data </description>
 		<return><description>A VOTable containing metadata about catalogues depending on the given parameters</description>
 		<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.VotableResultTransformerSet</value>
 				</property>			
 		</return>
 		<parameter name="target"><description>example : M31</description></parameter>
@@ -215,11 +231,15 @@
 			<property>
 		<key>icon</key>
 		<value>document.gif</value>
-	</property>			
+	</property>
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>				
 	<return><description>all metadata about catalogues in VizieR</description>
 		<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.VotableResultTransformerSet</value>
 				</property>		
 		</return>
 	</method>

@@ -5,22 +5,20 @@
 		<property>
 			<key>system.ui.menu.links</key>			
 			<value>		
-				<helpLink text="ACR Introduction" id="acr"
-					tooltipText="Defintion of the  Astronomy Client Runtime (ACR), how to connect to it, and the operations it provides"
-					/>
-				<helpLink text="ACR Reference" id="overview"
-					tooltipText="API documentation - lists available methods, gives examples of their use"/>
+
+				<helpLink text="Astro Client Runtime -  Documentation" id="overview"
+					tooltipText="Concepts,  lists available functions, gives examples of their use"/>
 					
-				<link text="Download ACR Library and Documentation"
+				<link text="Download ACR for Java"
 					icon="source_java.png"
 					tooltipText="Call ACR from java using JavaRMI"
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/acr-interface.tar.gz" />		
 				
-				<link text="ACR Commandline Utilities in Python"
+				<link text="Download ACR examples for Python"
 					icon="source_py.png"
 					toolTipText="A collection of scripts that call VO Services through the ACR - useful in their own right and as examples"
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip"/>
-				<link text="ACR Examples in Perl"
+				<link text="Download ACR examples for Perl"
 					icon="source_pl.png"
 					toolTipText="Perl scripts that show how to connect to ACR"
 					url="http://software.astrogrid.org/jnlp/astrogrid-desktop/perl-scripts.zip"/>				

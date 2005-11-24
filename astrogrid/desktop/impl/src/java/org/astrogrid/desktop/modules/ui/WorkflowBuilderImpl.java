@@ -32,6 +32,7 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -62,6 +63,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
@@ -165,6 +167,16 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		                    Reader reader = new InputStreamReader(vos.getInputStream(u));		                		         
 		                    Workflow wf = (Workflow)Unmarshaller.unmarshal(Workflow.class, reader);	                
 		                    reader.close();
+                            // pre-populate the application information  cache.
+                            Iterator i = wf.findXPathIterator("//tool"); // find al tools.
+                            while (i.hasNext()) {
+                                Tool t = (Tool)i.next();
+                                try {
+                                    apps.getInfoForTool(t);
+                                } catch (NotFoundException e) {
+                                    logger.warn("Failed to find app info for " + t.getName());
+                                }                                
+                            }
                             return wf;
                         }
                         protected void doFinished(Object o) { // do all updating of ui in this method, as runs on swing thread
@@ -679,6 +691,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
            this.setSize(565,800);        
 		this.w = new WastebinDropListener();
 		createAction.actionPerformed(null); // fire the create action to initialize everything.
+        // keep guy happy.
+        this.setStatusMessage("Drag activities from the list and drop them into the Tree View to build a Workflow");
 	}
 
 
@@ -824,6 +838,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			//list.setTransferHandler(new DefaultActivityTransferHandler());
 			listView = new JScrollPane(list);
 			getHelpServer().enableHelp(listView,"userInterface.workflowBuilder.activityList");
+            list.setToolTipText("Drag activities from this list and drop them into the Tree View to build a workflow");
 		}
 		return listView;
     }

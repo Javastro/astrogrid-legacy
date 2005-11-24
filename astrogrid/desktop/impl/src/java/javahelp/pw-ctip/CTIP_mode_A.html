@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<link rel="stylesheet" href="../astrodoc.css"/>
+
+<title>CTIP Mode A: Help</title>
+
+</head>
+<body>
+
+<!--
+THIS IS A COMMENT.  It doesn't show up in the rendered page, but
+people can still see it if they use "view source" on the displayed
+page (so not a good place to store your credit card details).
+-->
+
+<!-- Leave this div here -->
+<div id="banner">&nbsp;</div>
+
+<!-- Put your content inside this div -->
+<div id="content">
+
+<h1>CTIP Mode A: Help</h1>
+
+<h2>Summary</h2>
+<p>
+This Astrogrid science service allows a user to run the Coupled Thermosphere 
+Ionosphere Plasmasphere model (CTIP) in a "steady state" mode by means of a 
+simple interface. It is available via the Workbench or the Portal home page.
+Mode A accepts 2 input parameters: the Day Number (between 1 and 365) and the
+Solar Flux F10.7 (between 50 and 300, but might work for lower or higher values).
+Astrogrid then goes ahead and runs CTIP - returning the output data files to the 
+users "myspace".
+</p>
+
+<h2>How to run CTIP in mode A:</h2> 
+
+<p>
+In the AstroGrid Workbench, click on 
+<tt>Parametrised Workflows</tt> and <tt>Run</tt>.
+</p>
+
+<center>
+<p>
+  <img src="Astrogrid_workbench.png" alt="AstroGrid Dashboard"/>
+</p>
+</center>
+
+<p>
+Type in your AstroGrid login details, 
+then choose the "CTIP model - mode A" template workflow:
+
+<center>
+  <img src="choose_CTIP_template.png" alt="CTIP mode A template"/>
+</center>
+
+</p>
+
+<h3>Input parameters</h3>
+
+Mode A is a straightforward mode which runs CTIP in steady state as a function of
+the day number and the solar F10.7 flux.
+
+<ul>
+  <li>Day number: an integer between 1 and 365</li>
+  <li>F10.7: an integer between 50 and 300 (might work OK for lower or higher values)</li>
+</ul>
+
+<center>
+  <img src="CTIP_mode_A_parameters.png" alt="Input dialog box"/>
+</center>
+
+</p>
+Don't worry about the lower box for the Outputs. This is dealt with automatically.</p>
+
+<p>
+Now click on <tt>OK</tt>. This submits the job for execution. You will be asked 
+if you want to save the workflow document - answer either Yes or No to this.
+</p>
+
+<p>
+Next, the VO lookout window opens: 
+</p>
+
+<center>
+<p>
+  <img src="VO_lookout.png" alt="Jobs Monitor Window"/>
+</p>
+</center>
+
+<p>
+While the job is running it is displayed in the Workflows list on the left in green text. 
+Upon completion the text will change to black and Astrogrid will automatically 
+save the output files to your Myspace area.
+</p>
+ 
+<p>
+Running the CTIP model will create a "CTIP" subdirectory in your home
+directory in Myspace. This is where the output files will be located.
+To retrieve the files, click on 
+<tt>Myspace browser</tt> in the Workbench. Click on the Refresh icon, then
+go into the "CTIP" directory, where you will be able to view the files
+and download them on your local computer.
+
+</p>
+The name of 
+the output files will depend on your input parameters, e.g. for a CTIP run using the default
+parameters the output files will be:
+</p>
+
+<center>
+<TABLE border="1">
+<TR>
+   <TH>File</TH>
+   <TH>Parameter</TH>
+   <TH>Units</TH>
+<TR>
+<TR><TD>CTIP_A_82_120MMM<TD>Mean Molecular Mass<TD>amu</TD>
+<TR><TD>CTIP_A_82_120O<TD>Atomic Oxygen concentration<TD>m-3</TD>
+<TR><TD>CTIP_A_82_120O2<TD>Molecular Oxygen concentration<TD>m-3</TD>
+<TR><TD>CTIP_A_82_120N2<TD>Molecular Nitrogen concentration<TD>m-3</TD>
+<TR><TD>CTIP_A_82_120TN<TD>Neutral Temperature<TD>K</TD>
+<TR><TD>CTIP_A_82_120VNX<TD>Southwards Wind Speed<TD>ms-1</TD>
+<TR><TD>CTIP_A_82_120VNY<TD>Eastwards Wind Speed<TD>ms-1</TD>
+<TR><TD>CTIP_A_82_120VNZ<TD>Upwards Wind Speed<TD>ms-1</TD>
+<TR><TD>CTIP_A_82_120HT<TD>Height of the Pressure Level<TD>km</TD>
+<TR><TD>CTIP_A_82_120NE<TD>Electron Concentration<TD>m-3</TD>
+<TR><TD>CTIP_A_82_120LOG<TD>a Log file showing details of the run</TD>
+</TABLE>
+</center>
+
+</p>
+
+
+<h2>
+Format of the Data:
+</h2></p>
+Each of the datafiles produced is in ASCII form.  The format of the data, for
+analysis using IDL etc., and example IDL routines are here: </p>
+
+<center>
+<A href="ctip_data_format.html">CTIP data format and Example IDL routines</A>
+</center>
+
+<hr/>
+<p>
+<em>Author: George Millward, george@apl.ucl.ac.uk</em><br/>
+<em>Last revised : 18 November 2005</em>
+</p>
+
+</div>
+</body>
+</html>

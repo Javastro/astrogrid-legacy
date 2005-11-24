@@ -40,7 +40,7 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp HelpSet Version 2.0//EN" "helpset
 	
 	<presentation default="true">
 <name>main window</name>
-<size width="600" height="400"/>
+<size width="600" height="850"/>
 <location x="0" y="0"/>
 <title>Workbench and Astro Client Runtime Help </title>
 <toolbar>

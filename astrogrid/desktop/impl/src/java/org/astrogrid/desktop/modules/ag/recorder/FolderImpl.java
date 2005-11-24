@@ -1,4 +1,4 @@
-/*$Id: FolderImpl.java,v 1.2 2005/11/11 10:08:18 nw Exp $
+/*$Id: FolderImpl.java,v 1.3 2005/11/24 01:13:24 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,33 +63,17 @@ public class FolderImpl implements Serializable, Folder {
         return info.getId();
     }
     
-    /**
-     *     public String toString() {
-        StringBuffer sb = new StringBuffer("<html>");
-        if (phase == null || phase.equals(ExecutionInformation.UNKNOWN)) {
-            sb.append("<font style='color:blue'>");
-        }else if (ExecutionInformation.ERROR.equals(phase)) {
-                sb.append("<font style='color:red'>");
-        } else if(ExecutionInformation.INITIALIZING.equals(phase)) {              
-                sb.append("<font style='color:blue'>"); 
-        } else if (ExecutionInformation.PENDING.equals(phase)) {              
-            sb.append("<font style='color:blue'>"); 
-        } else if (ExecutionInformation.RUNNING.equals(phase)) {               
-                sb.append("<font style='color:green'>"); 
-        } else {
-                sb.append("<font>"); // nothing
-        }
-        sb.append(StringUtils.abbreviate(label,label.length()-1,20));            
-        sb.append("</font></html>");
-        return sb.toString();
-    }
-    */
-
 
 }
 
 /* 
 $Log: FolderImpl.java,v $
+Revision 1.3  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.2.2.1  2005/11/23 18:09:37  nw
+tuned up
+
 Revision 1.2  2005/11/11 10:08:18  nw
 cosmetic fixes
 

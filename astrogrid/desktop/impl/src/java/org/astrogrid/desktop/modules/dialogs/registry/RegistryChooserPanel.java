@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.14 2005/11/22 18:58:19 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.15 2005/11/24 01:13:24 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,12 +27,14 @@ import org.w3c.dom.Document;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.BorderLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -47,12 +49,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.text.Caret;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -365,6 +369,13 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
             goButton.setToolTipText("Retrieve matching resources from the registry");
             goButton.addActionListener(this);
             //parent.setDefaultButton(goButton);
+            KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+            this.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(enter,"search");
+            this.getActionMap().put("search",new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    RegistryChooserPanel.this.actionPerformed(e);
+                }
+            });
         }
         return goButton;
     }
@@ -374,7 +385,6 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         final String keywords = keywordField.getText();
-        final Object source = e.getSource();
         (new BackgroundWorker(parent,"Searching") {
             protected Object construct() throws Exception {        
                     if(exhaustiveCheck.isSelected()) {
@@ -467,7 +477,6 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
    private String filter = null;
                     
     /** set an additional result filter
-     * @todo implemnt
      * @param filter an adql-like where clause, null indicates 'no filter'
      */
    public void setFilter(String filter) {
@@ -515,6 +524,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.15  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
 Revision 1.14  2005/11/22 18:58:19  pjn3
 added XHTMLEditorKit to improve how xhtml is displayed in JEditorPane
 

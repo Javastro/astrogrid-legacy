@@ -1,4 +1,4 @@
-/*$Id: ActiveMQMessaging.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: ActiveMQMessaging.java,v 1.2 2005/11/24 01:13:24 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,6 +53,7 @@ import javax.jms.Topic;
  * reports back tot he server.
  * 
  * @todo configure message transport
+ * @todo tune down messaging thread priorities.
  *  @todo attach to server.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
  *
@@ -308,6 +309,12 @@ public class ActiveMQMessaging implements MessagingInternal, Startable , UserLog
 
 /* 
 $Log: ActiveMQMessaging.java,v $
+Revision 1.2  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.1.2.1  2005/11/23 04:56:44  nw
+doc fix
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
 

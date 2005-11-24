@@ -1,4 +1,4 @@
-/*$Id: Folders.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: Folders.java,v 1.2 2005/11/24 01:13:24 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,7 @@ public class Folders implements TreeModel {
     private final  EventListenerList listenerList = new EventListenerList();        
     
     // initialie the first time..
-    private void initialize() throws IOException {
+    private synchronized void initialize() throws IOException {
         rec.setNamedObject(TREE_NAME,b.getRecid());
         root = new FolderImpl(
                 new ExecutionInformation(MessageRecorderImpl.ROOT,
@@ -144,17 +144,18 @@ public class Folders implements TreeModel {
          return (Folder)b.find(key);        
     }
     
-    public URI[] listLeaves() throws IOException {
+    /** returns a List of URI */
+    public List listLeaves() throws IOException {
         List result = new ArrayList(b.size() - 4); 
         TupleBrowser browser = b.browse();
         Tuple t = new Tuple();
         while (browser.getNext(t)) {
             FolderImpl f = (FolderImpl)t.getValue();
-            if (f.getChildKeyList().size() == 0) {
+            if (f.getChildKeyList().size() == 0) { // add it if it has no children.
                 result.add(f.getKey());
             }
         }
-        return (URI[])result.toArray(new URI[result.size()]);
+        return result;
         
     }
     
@@ -345,6 +346,15 @@ public class Folders implements TreeModel {
 
 /* 
 $Log: Folders.java,v $
+Revision 1.2  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.1.2.2  2005/11/23 18:09:37  nw
+tuned up
+
+Revision 1.1.2.1  2005/11/23 04:51:41  nw
+changed return type.
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
  

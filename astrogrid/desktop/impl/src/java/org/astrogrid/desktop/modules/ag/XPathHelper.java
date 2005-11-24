@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.3 2005/10/18 16:53:13 nw Exp $
+/*$Id: XPathHelper.java,v 1.4 2005/11/24 01:13:24 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,6 +46,20 @@ public class XPathHelper {
     public final static String CS_NS = "http://www.ivoa.net/xml/ConeSearch/v0.3"; 
     /** namespace for siap v0.7 */
     public final static String SIA_NS = "http://www.ivoa.net/xml/SIA/v0.7";
+
+    // list of all namespace names andurls.
+    private static String[][] namespaces  = new String[][] {
+            new String[] {"xsi",XSI_NS}
+            ,new String[]{"vr",VR_NS}
+            ,new String[]{"vor",VOR_NS}    
+            ,new String[]{"ceab",CEAB_NS}
+            ,new String[]{"cea",CEA_NS}
+            ,new String[]{"ceapd",CEAPD_NS}
+            ,new String[]{"tdb",TDB_NS}
+            ,new String[]{"vods",VODS_NS}
+            ,new String[]{"cs",CS_NS}
+            ,new String[]{"sia",SIA_NS}
+    };    
     /** Construct a new XPathHelper
      * 
      */
@@ -70,9 +84,13 @@ public class XPathHelper {
     
        // Document namespaceHolder = DomHelper.newDocument();
         Element namespaceNode = namespaceHolder.getDocumentElement();
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns",VR_NS);
+        for (int i = 0; i < namespaces.length; i++) {
+            namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:" + namespaces[i][0],namespaces[i][1]);
+        }
+        /*
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xsi",XSI_NS);
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",VR_NS);
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns",VR_NS);
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vor", VOR_NS);
 
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceab", CEAB_NS);     
@@ -83,15 +101,28 @@ public class XPathHelper {
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vods", VODS_NS);   
 
         namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:cs", CS_NS);           
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:sia", SIA_NS); 
+        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:sia", SIA_NS);
+        */ 
         return namespaceNode;
     }
+
+    public static String[][] listDefaultNamespaces() {
+        return namespaces;
+    }
+    
+
 
 }
 
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.4  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.3.14.1  2005/11/23 04:52:39  nw
+improved namespace datastructure.
+
 Revision 1.3  2005/10/18 16:53:13  nw
 added siap and cone namespaces
 

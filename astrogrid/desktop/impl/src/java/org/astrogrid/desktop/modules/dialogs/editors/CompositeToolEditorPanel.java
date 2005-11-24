@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.9 2005/11/21 18:26:05 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.10 2005/11/24 01:13:24 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,6 +47,7 @@ import org.w3c.dom.Document;
 //import sun.security.krb5.internal.p;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -320,6 +321,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
         views = new AbstractToolEditorPanel[] {datacenter,basic,xml,information,chooser};
         this.getToolModel().addToolEditListener(new Controller());
+        this.setPreferredSize(new Dimension(600,425));
     }
 
     /** able to handle everything */
@@ -331,6 +333,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.10  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
 Revision 1.9  2005/11/21 18:26:05  pjn3
 basic task editor help added
 

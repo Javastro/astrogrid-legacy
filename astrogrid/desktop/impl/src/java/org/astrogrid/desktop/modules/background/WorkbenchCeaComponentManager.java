@@ -1,4 +1,4 @@
-/*$Id: WorkbenchCeaComponentManager.java,v 1.3 2005/11/11 17:53:27 nw Exp $
+/*$Id: WorkbenchCeaComponentManager.java,v 1.4 2005/11/24 01:13:24 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,24 +33,41 @@ import org.picocontainer.defaults.DefaultPicoContainer;
 
 import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
+import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
+import EDU.oswego.cs.dl.util.concurrent.ThreadFactoryUser;
 
 import java.io.File;
 import java.util.Iterator;
 
 /** Custom cea component manager - just the things needed for an in-process cea server.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
- * @todo add method to delete application execution records once the user is done with them.
+ * 
  */
 public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
 
     private final MutablePicoContainer pico;
+    
     public WorkbenchCeaComponentManager(MutablePicoContainer parent, final Configuration configuration) { 
         super();
         this.pico = new DefaultPicoContainer(parent);
         pico.registerComponentImplementation(ApplicationDescriptionEnvironment.class,ApplicationDescriptionEnvironment.class);
         pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, DefaultApplicationEnvironmentRetriever.class);
         pico.registerComponentImplementation(ExecutionController.class, MessagingExecutionController.class);
-        pico.registerComponentInstance(new PooledExecutor(new LinkedQueue(),4)) ; // 4-thread queue. @todo check this is configured enough - compare to use in astroscope launcher.
+        final PooledExecutor pooledExecutor = new PooledExecutor(new LinkedQueue());        
+        pooledExecutor.setMinimumPoolSize(4);
+        pooledExecutor.setMaximumPoolSize(4);
+        
+        pooledExecutor.setThreadFactory(new ThreadFactory() { // cea apps to run at lowest priority.
+            private final ThreadFactory wrapped = pooledExecutor.getThreadFactory();
+            public Thread newThread(Runnable arg0) {
+                Thread t = wrapped.newThread(arg0);
+                t.setName("CEA Execution Thread - " + t.getName());
+                t.setPriority(Thread.MIN_PRIORITY);
+                return t;
+            }
+            
+        });
+        pico.registerComponentInstance(pooledExecutor) ;
         pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);
         
         // protocol library - necessary, but not using it.
@@ -127,6 +144,12 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
 
 /* 
 $Log: WorkbenchCeaComponentManager.java,v $
+Revision 1.4  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.3.2.1  2005/11/23 04:51:20  nw
+configured to use low-priority threads.
+
 Revision 1.3  2005/11/11 17:53:27  nw
 added cea polling to lookout.
 

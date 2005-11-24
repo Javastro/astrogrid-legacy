@@ -63,7 +63,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  * @modified nww - optimized a little using string buffers. embedded tool panels.
  * @todo add indication when a required field is missing (e.g. iwhen 'test' of If is null, put in a red 'missing')
  * @todo get labels left aligned, make all panels a standard size.
- * @todo solve how to fecth tool informaton in a background step.
  */
 public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 
@@ -158,7 +157,8 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
                         if (iface.length() > 0)
                             sb.append(" <b>Interface</b> ").append(iface);
                         try {
-                            //@todo later get this info object in a background thread - or prefetch them on workflow load.
+                            //the application info should already be in the cache - as it'll be there if the user has just added a tool by hand,
+                            // while on loading a new workkflow, we pre-populate the cache with all the applicatiton descriptions it contains.
                             ApplicationInformation info = apps.getInfoForTool(t);
                             toolPanel.getToolModel().populate(t,info);
                             rendererPanel.add(toolPanel);

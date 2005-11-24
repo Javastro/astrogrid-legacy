@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.3 2005/11/11 17:53:27 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.4 2005/11/24 01:13:24 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,14 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.iterators.IteratorChain;
-import org.apache.commons.collections.map.LazyMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
@@ -39,11 +31,19 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
 import org.astrogrid.desktop.modules.background.JesStrategyImpl;
-import org.astrogrid.desktop.modules.system.ScheduledTask;
 
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.iterators.IteratorChain;
+import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.picocontainer.Startable;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,9 +55,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.SwingUtilities;
-import javax.xml.parsers.ParserConfigurationException;
 
 /** implementation of a remote process manager.
  *  - handles running cea / jes / whatever else.
@@ -123,7 +120,13 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
     
     public URI[] list() throws ServiceException {
         try {
-            return recorder.listLeaves();
+           List l = recorder.listLeaves();
+           CollectionUtils.filter(l, new Predicate() {
+               public boolean evaluate(Object arg0) {
+                   return !( "folder".equals(((URI)arg0).getScheme()));
+               }               
+           });
+           return (URI[])l.toArray(new URI[l.size()]);
         } catch (IOException e) {
             throw new ServiceException(e);
         }
@@ -191,7 +194,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
         RemoteProcessStrategy s = selectStrategy(arg0);
         // problem here about which to delete first - would like to do both really..
         // curent solution isn't perfect - complicated because shouldn't throw exceptions from within finally blocks
-
+        //@todo not happy with this.
         try {
             Folder f = recorder.getFolder(arg0);
         if (f == null) {
@@ -231,6 +234,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
             }
             MessageContainer[] ms = recorder.listFolder(f);
             // only safe to return plain messages.
+            //@todo check this - maybe we can serialize messages of an unknown subtype. I'd have thought this was possible.
             List result = new ArrayList(ms.length);
             for (int i = 0; i < ms.length; i++) {
                 if (ms[i].getMessage().getClass() == ExecutionMessage.class) {
@@ -265,6 +269,18 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
         RemoteProcessStrategy s = selectStrategy(arg0);
         return s.getLatestResults(arg0);
     }
+    
+    public String getSingleResult(URI arg0, String resultName) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
+        Map m = getResults(arg0);
+        if (!m.containsKey(resultName)) {
+            if (m.size() == 1) { // return the single result - it's probably what they want.
+                return m.values().iterator().next().toString();
+            } else {
+            throw new NotFoundException("Result " + resultName +" not present");
+            }
+        }
+        return m.get(resultName).toString();
+    }
 
     // map of listeners - key is the exec id, value is a list of listeners.
     private Map  listenerMap = LazyMap.decorate(new HashMap(),new Factory() {
@@ -277,7 +293,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
     
     public void addRemoteProcessListener(URI arg0, RemoteProcessListener arg1) {
         if (arg0 == null) {
-            wildcardListeners.add(arg0);
+            wildcardListeners.add(arg1);
         } else {
             Set s = (Set)listenerMap.get(arg0);
             s.add(arg1);
@@ -287,7 +303,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
 
     public void removeRemoteProcessListener(URI arg0, RemoteProcessListener arg1) {
         if (arg0 == null) {
-            wildcardListeners.remove(arg0);
+            wildcardListeners.remove(arg1);
         } else {
             Set s = (Set)listenerMap.get(arg0);
             s.remove(arg1);
@@ -312,12 +328,12 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
             } else if (m instanceof StatusChangeExecutionMessage) {
                 String status = m.getStatus();
                 while(listeners.hasNext()) {
-                    RemoteProcessListener l = (RemoteProcessListener)listeners.next();
+                    RemoteProcessListener l = (RemoteProcessListener)listeners.next();     
                     l.statusChanged(id,status);
                 }                
             } else {
                 while(listeners.hasNext()) {
-                    RemoteProcessListener l = (RemoteProcessListener)listeners.next();
+                    RemoteProcessListener l = (RemoteProcessListener)listeners.next();                  
                     l.messageReceived(id,m);
                 }                
             }
@@ -337,7 +353,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
  * register sys tray as a listener, if its around.
  */
 public void start() {
-    if (tray != null) { // as not available on all platforms
+   if (tray != null) { // as not available on all platforms
         addRemoteProcessListener(null,new RemoteProcessListener() {
 
             public void statusChanged(URI arg0, String arg1) {
@@ -348,15 +364,19 @@ public void start() {
                     if (arg1.equals("ERROR")) {
                         tray.displayWarningMessage(name + " ended in error","See VO Lookout for details");
                     } else {
-                        tray.displayInfoMessage(name + " completed successfuly","See VO Lookout for results");
-                    }
+                       tray.displayInfoMessage(name + " completed successfuly","See VO Lookout for results");
+                    }                    
                     } catch (IOException e) {
-                        logger.warn("Failed to find folder for id - " + arg0,e);
+                        logger.fatal("Failed to find folder for id - " + arg0,e);
                     }
+                } else {
+                    System.err.println(arg0 + " " + arg1);
                 }
+                
             }
 
             public void messageReceived(URI arg0, ExecutionMessage arg1) {
+                
             }
 
             public void resultsReceived(URI arg0, Map arg1) {
@@ -378,6 +398,19 @@ public void stop() {
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.4  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.3.2.3  2005/11/23 18:10:03  nw
+reviewed and tuned up.
+
+Revision 1.3.2.2  2005/11/23 04:56:00  nw
+adjusted to work with changed return type in recorder
+
+Revision 1.3.2.1  2005/11/17 21:06:26  nw
+moved store to be user-dependent
+debugged message monitoring.
+
 Revision 1.3  2005/11/11 17:53:27  nw
 added cea polling to lookout.
 

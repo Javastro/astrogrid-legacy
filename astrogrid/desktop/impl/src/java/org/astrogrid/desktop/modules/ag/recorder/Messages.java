@@ -1,4 +1,4 @@
-/*$Id: Messages.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: Messages.java,v 1.2 2005/11/24 01:13:24 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,7 @@ public class Messages extends AbstractTableModel implements TableModel {
     private final List messageList; // the actual model.
     private final Comparator comp;
     private BTree currentFolder = null;
-    public void displayFolder(URI key) throws IOException {
+    public synchronized void displayFolder(URI key) throws IOException {
         this.currentFolder = findStoreFor(key);
         messageList.clear();
         populateList(this.currentFolder,messageList);
@@ -86,7 +86,11 @@ public class Messages extends AbstractTableModel implements TableModel {
     }
 
     public MessageContainer getMessage(int row) {
-        return (MessageContainer)messageList.get(row);
+        if (row > -1 && row <  messageList.size()) { 
+            return (MessageContainer)messageList.get(row);
+        } else {
+            return null;
+        }
     }
 
     public synchronized void deleteFolder(URI key) throws IOException {
@@ -196,6 +200,15 @@ public class Messages extends AbstractTableModel implements TableModel {
 
 /* 
 $Log: Messages.java,v $
+Revision 1.2  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.1.2.2  2005/11/23 18:09:37  nw
+tuned up
+
+Revision 1.1.2.1  2005/11/23 04:52:02  nw
+fix for index out of bounds problems from ui.
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
  

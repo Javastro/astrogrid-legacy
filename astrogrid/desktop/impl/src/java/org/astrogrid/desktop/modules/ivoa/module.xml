@@ -158,18 +158,22 @@
 			<key>icon</key>
 			<value>run_tool.gif</value>
 		</property>				
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>		
 		<property>
 			<key>system.ui.menu.entry</key>
-			<value>Execute a Cone Search</value>
+			<value>Execute a Siap Search</value>
 		</property>			
-			<parameter name="coneQuery">
+			<parameter name="siapQuery">
 				<description>A query URL</description>
 			</parameter>
 			<return>
 				<description>A votable document</description>
-				<property><!-- TODO - later use votable stylesheet for this -->
+				<property>
 					<key>system.result.transformer</key>
-					<value>org.astrogrid.desktop.modules.system.transformers.DocumentResultTransformerSet</value>
+					<value>org.astrogrid.desktop.modules.system.transformers.VotableResultTransformerSet</value>
 				</property>				
 			</return>
 		</method>
@@ -182,9 +186,9 @@
 		</property>				
 		<property>
 			<key>system.ui.menu.entry</key>
-			<value>Execute a Cone Search and save results</value>
+			<value>Execute a Siap Search and save results</value>
 		</property>			
-			<parameter name="coneQuery">
+			<parameter name="siapQuery">
 				<description>A query URL</description>
 			</parameter>
 			<parameter name="saveLocation">

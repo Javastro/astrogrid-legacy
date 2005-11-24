@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserDialog.java,v 1.6 2005/11/11 10:08:18 nw Exp $
+/*$Id: RegistryChooserDialog.java,v 1.7 2005/11/24 01:13:24 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,19 +25,24 @@ import org.apache.commons.logging.LogFactory;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 /** wraps a dialogue around a registry chooser pane.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
+ * @todo catch 'enter' and pass to search button, instead of 'ok' button. am trying todo this here, but don't seem to be working.
  *
  */
 public class RegistryChooserDialog extends JDialog implements PropertyChangeListener {
@@ -56,6 +61,8 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
         super();
         this.parent = new UIComponent(conf,help,ui);
         this.chooserPanel = new RegistryChooserPanel(parent,reg);
+        this.setContentPane(getJOptionPane());           
+     
         this.setTitle("Resource Chooser");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -69,29 +76,11 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
         }
     });                
         this.setModal(true);
-        this.setSize(425,600);
-        this.setContentPane(getJOptionPane());           
+        this.setSize(425,600);        
     }
     
     public RegistryChooserDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,Registry reg) throws HeadlessException {
-        super();
-        this.parent = new UIComponent(conf,help,ui);
-        this.chooserPanel = new RegistryChooserPanel(parent,reg);
-        this.setTitle("Resource Chooser");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
-        this.setSize(400,250);
-        this.setContentPane(getJOptionPane()); 
+        this(conf,help,ui,reg);
         setLocationRelativeTo(parentComponent);
     }
     
@@ -168,6 +157,16 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
            main.add(chooserPanel,BorderLayout.CENTER);
            jOptionPane = new JOptionPane(main,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
            jOptionPane.addPropertyChangeListener(this);
+           KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+           jOptionPane.getInputMap().remove(enter);
+           jOptionPane.getInputMap(jOptionPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).remove(enter);
+           jOptionPane.getInputMap(jOptionPane.WHEN_IN_FOCUSED_WINDOW).remove(enter);
+           jOptionPane.getInputMap(jOptionPane.WHEN_IN_FOCUSED_WINDOW).put(enter,"search");
+           jOptionPane.getActionMap().put("search",new AbstractAction() {
+               public void actionPerformed(ActionEvent e) {
+                   chooserPanel.actionPerformed(e);
+               }
+           });              
        }
        return jOptionPane;
     }
@@ -179,6 +178,12 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
 /* 
 $Log: RegistryChooserDialog.java,v $
+Revision 1.7  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.6.2.1  2005/11/23 04:47:18  nw
+added keybindings
+
 Revision 1.6  2005/11/11 10:08:18  nw
 cosmetic fixes
 

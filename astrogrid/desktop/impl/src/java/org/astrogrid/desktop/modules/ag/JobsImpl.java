@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.4 2005/11/10 12:05:43 nw Exp $
+/*$Id: JobsImpl.java,v 1.5 2005/11/24 01:13:24 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
+import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -114,6 +115,26 @@ public class JobsImpl implements JobsInternal {
         }
     }
 
+    /**
+     * @see org.astrogrid.acr.astrogrid.Jobs#wrapTask(org.w3c.dom.Document)
+     */
+    public Document wrapTask(Document arg0) throws ServiceException {
+        try {
+        Workflow wf = createWorkflow();
+        Tool  t = (Tool)Unmarshaller.unmarshal(Tool.class,arg0);
+        Step step = new Step();
+        step.setDescription("Wrapped Task");
+        step.setName("Task #1");
+        step.setTool(t);       
+        wf.getSequence().addActivity(step);
+        Document doc = XMLUtils.newDocument();
+        Marshaller.marshal(wf,doc);
+        return doc;
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }    
+    
     public Workflow createWorkflow() throws ServiceException {
         Credentials creds = new Credentials();
         creds.setAccount(getAccount());
@@ -225,14 +246,17 @@ public class JobsImpl implements JobsInternal {
 
 
 
-
-
-
 }
 
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.5  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.4.2.1  2005/11/23 04:52:18  nw
+implemented new method
+
 Revision 1.4  2005/11/10 12:05:43  nw
 big change around for vo lookout
 

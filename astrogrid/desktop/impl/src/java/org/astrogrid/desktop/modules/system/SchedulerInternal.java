@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.1 2005/11/10 12:05:53 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.2 2005/11/24 01:13:24 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,15 +17,21 @@ package org.astrogrid.desktop.modules.system;
 public interface SchedulerInternal {
     /** execute a task periodically 
      * @return a key for this scheduled task*/
-    public Object executePeriodically(long milliseconds, Runnable task);
+    public void executePeriodically(long milliseconds, Runnable task);
     
-    /** execute a previously-registered task as soon as possible */
-    public void runNow(Object key) ;
+    /** execute a task as soon as possible */
+    public void runNow(Runnable task) ;
 }
 
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.2  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.1.2.1  2005/11/23 04:44:14  nw
+improved interface.
+
 Revision 1.1  2005/11/10 12:05:53  nw
 big change around for vo lookout
 

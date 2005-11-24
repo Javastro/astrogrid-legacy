@@ -78,18 +78,33 @@
 					<jxml:element name="title">ACR API Docs</jxml:element>
 				</jxml:element>					
 				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench</jxml:attribute>
+					<jxml:attribute name="href">http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</jxml:attribute>
 					<jxml:element name="title">Report Bugs</jxml:element>
 				</jxml:element>		
 			
 				<jsl:applyTemplates select="@* | node()" />
 			</jxml:copy>
 		</jsl:template>
-                <jsl:template match="jnlp|@*">
+                <jsl:template match="jnlp">
+					<jxml:copy>
+  								<jsl:applyTemplates select="@* | information | security | resources "/>																
+								<jxml:element name="resources"><!-- need to splice in different resources for mac os -->
+									<jxml:attribute name="os">Mac OS</jxml:attribute>
+									<jxml:element name="j2se">
+										<jxml:attribute name="version">1.4+</jxml:attribute>
+										<jxml:attribute name="max-heap-size">256m</jxml:attribute>
+										<jxml:attribute name="initial-heap-size">32m</jxml:attribute>										
+									</jxml:element>
+								</jxml:element>	
+								<jxml:copyOf select="application-desc" />
+                            </jxml:copy>
+                </jsl:template>
+				
+				<jsl:template match="@*">
                                 <jxml:copy>
                                         <jsl:applyTemplates select="@* | node()" />
-                                </jxml:copy>
-                </jsl:template>
+                                </jxml:copy>				
+				</jsl:template>
                 <jsl:template match="resources">
                         <jxml:copy>
                                 <jxml:element name="extension">

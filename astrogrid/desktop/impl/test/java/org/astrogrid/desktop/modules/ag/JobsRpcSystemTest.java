@@ -1,4 +1,4 @@
-/*$Id: JobsRpcSystemTest.java,v 1.2 2005/09/12 15:21:16 nw Exp $
+/*$Id: JobsRpcSystemTest.java,v 1.3 2005/11/24 01:13:24 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -211,6 +211,13 @@ public class JobsRpcSystemTest extends JobsSystemTest implements Jobs {
 
         }
     }
+    /**
+     * @see org.astrogrid.acr.astrogrid.Jobs#wrapTask(org.w3c.dom.Document)
+     */
+    public Document wrapTask(Document arg0) throws ServiceException {
+        //@todo implement
+        throw new RuntimeException("Not implemented");
+    }
 
 
 }
@@ -218,6 +225,12 @@ public class JobsRpcSystemTest extends JobsSystemTest implements Jobs {
 
 /* 
 $Log: JobsRpcSystemTest.java,v $
+Revision 1.3  2005/11/24 01:13:24  nw
+merged in final changes from release branch.
+
+Revision 1.2.24.1  2005/11/23 05:01:13  nw
+updated for new methods.
+
 Revision 1.2  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 
