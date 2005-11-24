@@ -13,7 +13,7 @@
     <menu name="Navigation">
 	<item name="Home" href="index.html" />
 	<item name="ACR Interface" href="multiproject/acr-interface/index.html" />
-	<item name="ACR &amp; Workbench Implementation" href="multiproject/astrogrid-desktopl/index.html" />
+	<item name="ACR &amp; Workbench Implementation" href="multiproject/astrogrid-desktop/index.html" />
 		
     </menu>
  

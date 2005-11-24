@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncher.java,v 1.1 2005/10/26 15:52:28 KevinBenson Exp $
+/*$Id: AstroScope.java,v 1.2 2005/11/24 01:18:42 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,29 @@
 **/
 package org.astrogrid.acr.ui;
 
-/** Interface to the Application Launcher GUI
+/** Interface to the AstroScope UI
  * <p>
- * <img src="doc-files/applauncher.png">
- * @service userInterface.applicationLauncher
- * @author Noel Winstanley nw@jb.man.ac.uk 12-May-2005
- *@see org.astrogrid.acr.astrogrid.Applications
+ * <img src="doc-files/astroscope.png">
+ * @service userInterface.astroscope
+ * @author Kevin Benson
  */
-public interface AstroScopeLauncher {
-    /** display the application launcher gui */
+public interface AstroScope {
+    /** display a new instance of astroscope */
     public void show() ;
-    /** hide the application launcher window */
-    public void hide();
 }
 
 
 /* 
-$Log: AstroScopeLauncher.java,v $
+$Log: AstroScope.java,v $
+Revision 1.2  2005/11/24 01:18:42  nw
+merged in final changes from release branch.
+
+Revision 1.1.2.2  2005/11/23 18:07:22  nw
+improved docs.
+
+Revision 1.1.2.1  2005/11/23 04:32:54  nw
+tidied up
+
 Revision 1.1  2005/10/26 15:52:28  KevinBenson
 new app for astroscope
 

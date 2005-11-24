@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.5 2005/11/11 10:09:01 nw Exp $
+/*$Id: Jobs.java,v 1.6 2005/11/24 01:18:42 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,6 +74,15 @@ public interface Jobs {
      */
     Document createJob() throws ServiceException;
     
+    
+    /** wrap a tool document, to create a single-step workflow
+     * @param taskDocument - a task document in the <tt> http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
+     *  @return a workflow document with a single step that executes the parameter task - a <tt>workflow</tt> document in the the <tt>http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
+     * @throws ServiceException if an inavoidable error ocurs.
+     * @since 1.3
+     * 
+     */
+    Document wrapTask(Document taskDocument) throws ServiceException;
     /** retrieve  the execution transcript for a job.
      * 
      * @param jobURN the identifier of the job to retrieve
@@ -147,6 +156,12 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.6  2005/11/24 01:18:42  nw
+ merged in final changes from release branch.
+
+ Revision 1.5.2.1  2005/11/23 04:32:36  nw
+ added new method
+
  Revision 1.5  2005/11/11 10:09:01  nw
  improved javadoc
 

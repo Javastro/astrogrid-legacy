@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManager.java,v 1.2 2005/11/11 10:09:01 nw Exp $
+/*$Id: RemoteProcessManager.java,v 1.3 2005/11/24 01:18:42 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,6 +133,19 @@ public interface RemoteProcessManager {
      * @throws InvalidArgumentException if the invocation id is malformed in some way.*/
     Map getResults(URI executionid) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;               
     
+    /** convenience method to retreive a single result from an application executioin.
+     * <p>
+     * equaivalent to <tt>getResults(execId).get(resultName)</tt>, but may be more convenient from some scripting languages, or cases
+     * where there's only a single result returned.
+     * @param executionId id of the application to query
+     * @param resultName name of the result to return. If the name is null or unrecognized AND this application only returns one result, that is returned.
+     * @return a result. Never null.
+     * @throws ServiceException if error occurs communicating with server
+     * @throws SecurityException if the user cannot access this process
+     * @throws NotFoundException if the application cannot be found, or the resultname is not recognized where there's more than one result.
+     * @throws InvalidArgumentException if the execution id is malformed in some way.
+     */
+    public String getSingleResult(URI executionId, String resultName) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
     /** register interest in the execution of a remote process 
      * 
      * @param executionId id of process to watch (null signifies 'all') 
@@ -152,6 +165,12 @@ public interface RemoteProcessManager {
 
 /* 
 $Log: RemoteProcessManager.java,v $
+Revision 1.3  2005/11/24 01:18:42  nw
+merged in final changes from release branch.
+
+Revision 1.2.2.1  2005/11/23 18:07:11  nw
+added new method
+
 Revision 1.2  2005/11/11 10:09:01  nw
 improved javadoc
 

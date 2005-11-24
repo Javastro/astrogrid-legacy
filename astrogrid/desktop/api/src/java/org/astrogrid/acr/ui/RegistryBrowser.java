@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowser.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: RegistryBrowser.java,v 1.3 2005/11/24 01:18:42 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ package org.astrogrid.acr.ui;
  *@see org.astrogrid.acr.astrogrid.Registry
  */
 public interface RegistryBrowser {
-    /**show the registry browser ui*/
+    /**show a new instance of registry browser ui*/
     public void show();
     /** hide the registry browser ui*/
     public void hide();
@@ -29,6 +29,12 @@ public interface RegistryBrowser {
 
 /* 
  $Log: RegistryBrowser.java,v $
+ Revision 1.3  2005/11/24 01:18:42  nw
+ merged in final changes from release branch.
+
+ Revision 1.2.16.1  2005/11/23 04:32:54  nw
+ tidied up
+
  Revision 1.2  2005/08/12 08:45:15  nw
  souped up the javadocs
 

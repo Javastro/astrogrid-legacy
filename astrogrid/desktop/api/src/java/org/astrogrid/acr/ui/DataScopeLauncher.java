@@ -1,4 +1,4 @@
-/*$Id: DataScopeLauncher.java,v 1.1 2005/10/04 20:36:30 KevinBenson Exp $
+/*$Id: DataScopeLauncher.java,v 1.2 2005/11/24 01:18:42 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,12 @@
 **/
 package org.astrogrid.acr.ui;
 
-/** Interface to the Application Launcher GUI
+/** Interface to the Datascope launcher
  * <p>
- * <img src="doc-files/applauncher.png">
- * @service userInterface.applicationLauncher
- * @author Noel Winstanley nw@jb.man.ac.uk 12-May-2005
- *@see org.astrogrid.acr.astrogrid.Applications
+
+ * @service userInterface.datascopeLauncher
+ * @author Kevin Benson
+
  */
 public interface DataScopeLauncher {
     /** display the application launcher gui */
@@ -27,6 +27,12 @@ public interface DataScopeLauncher {
 
 /* 
 $Log: DataScopeLauncher.java,v $
+Revision 1.2  2005/11/24 01:18:42  nw
+merged in final changes from release branch.
+
+Revision 1.1.8.1  2005/11/23 18:07:22  nw
+improved docs.
+
 Revision 1.1  2005/10/04 20:36:30  KevinBenson
 new small app for datascope.
 

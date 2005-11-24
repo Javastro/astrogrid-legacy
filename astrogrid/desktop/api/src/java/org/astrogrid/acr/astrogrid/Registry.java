@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.4 2005/09/12 15:21:43 nw Exp $
+/*$Id: Registry.java,v 1.5 2005/11/24 01:18:42 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -130,6 +130,9 @@ public interface Registry {
     /** perform an xquery over the registry
      * @param xquery the query to perform.
      * @return the result of executing this xquery over the registry - a document of arbitrary structure.
+     * If the result of executing this query is not a well-formed xml document itself (e.g. it's a list of nodes, or a
+     * text result, it will be wrapped in a <tt>&lt;vor:resources&gt;</tt> element. The name of this element is liable change in 
+     * later versions - so queries that return well-formed documents re recommended).
      * @throws ServiceException if there's a problem connecting to the registry
          * @example
          * <pre> 
@@ -140,12 +143,35 @@ public interface Registry {
      * Finder f = new Finder();
      * ACR acr = f.find();
      * Registry reg = (Registry)acr.getService(Registry.class);
-     * String query =   "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.10\"; declare namespace vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\"; "
-     *    + " for $x in //vor:Resource where $x/vr:identifier = 'ivo://uk.ac.le.star/filemanager' return $x/vr:curation"  ;      
+     * String query = "&lt;stores&gt;\n" + 
+          "{\n" + 
+          "for $x in //vor:Resource where $x/vr:identifier &= 'filemanager' \n" +  
+          "return &lt;service curator="{$x/vr:curation/vr:contact/vr:name}"&gt;{data($x/vr:identifier)}&lt;/service&gt;\n" + 
+          "}\n" + 
+          "&lt;/storesgt;"   
      * Document d = reg.xquerySearch(query)
      *</pre>
+     *will return the follwing result document
+     *<pre>      
+&lt;stores&gt;
+  &lt;service curator ="Tony Linde"&gt;ivo://uk.ac.le.star/filemanager&lt;/ service&gt;
+  &lt;service curator ="Matthew Wild"&gt;ivo://uk.ac.ral.ukssdc/astrogrid-filemanager&lt;/ service&gt;     
+  &lt;service curator ="KMB"&gt;ivo://mssl.ucl.ac.uk/filemanage&lt;/ service&gt;   
+  &lt;service curator ="ElizabethAuden"&gt;ivo://esdo.mssl.ucl.ac.uk/esdo-filemanager&lt;/ service&gt;    
+  &lt;service curator ="Sergey Stupnikov"&gt;ivo://ipi.ac.ru/filemanager&lt;/ service&gt;   
+&lt;/stores&gt;
+     </pre>
      */
     Document xquerySearch(String xquery) throws ServiceException;
+    
+    /** lists the namespaces that are used to qualify adql and xquery searches
+     * <p>
+     * these namepsaces are automatically prepended to queries submitted to the acr - simplifies query entry.
+     * 
+     * @return an arry of 2-element arrays. the first in each pair is the namespace name used within the queries., while the second is the uri that defines this namespace
+     * @since 1.3
+     */
+    String[][] listNamespaces();
     
     /** perform a keyword search over the registry
      * 
@@ -163,6 +189,12 @@ public interface Registry {
 
 /* 
  $Log: Registry.java,v $
+ Revision 1.5  2005/11/24 01:18:42  nw
+ merged in final changes from release branch.
+
+ Revision 1.4.10.1  2005/11/23 04:32:36  nw
+ added new method
+
  Revision 1.4  2005/09/12 15:21:43  nw
  added stuff for adql.
 

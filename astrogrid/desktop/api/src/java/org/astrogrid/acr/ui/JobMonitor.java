@@ -1,4 +1,4 @@
-/*$Id: JobMonitor.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: JobMonitor.java,v 1.3 2005/11/24 01:18:42 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,9 +14,8 @@ import java.net.URI;
 
 /** Interface to the Job Monitor GUI
  * <p>
- * <img src="doc-files/monitor.png">
  * @service userInterface.jobMonitor
- * @todo add methods to alter automatic refresh rate, and to dispose the job monitor
+ * @deprecated replaced by {@link Lookout} 
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Mar-2005
  *@see org.astrogrid.acr.astrogrid.Jobs
  */
@@ -44,6 +43,12 @@ public interface JobMonitor {
 
 /* 
  $Log: JobMonitor.java,v $
+ Revision 1.3  2005/11/24 01:18:42  nw
+ merged in final changes from release branch.
+
+ Revision 1.2.16.1  2005/11/23 18:07:22  nw
+ improved docs.
+
  Revision 1.2  2005/08/12 08:45:15  nw
  souped up the javadocs
 
