@@ -14,7 +14,7 @@ def copyFolder(folder, indentLvl=""):
     if not folderInfo['folder']:
         raise RuntimeError, "This function should be called with a folder"
     
-    indentLvl=indentLvl+"/"+folderInfo['name']
+    indentLvl=os.path.join(indentLvl,folderInfo['name'])
     os.mkdir(indentLvl)
     print indentLvl
     contents = acr.astrogrid.myspace.listIvorns(folder)
@@ -26,7 +26,7 @@ def copyFolder(folder, indentLvl=""):
             print "Copying " + f + " to " + indentLvl
             try:
                 contentsURL = acr.astrogrid.myspace.getReadContentURL(f)
-                localFileName = indentLvl+"/"+fileInfo['name']
+                localFileName = os.path.join(indentLvl,fileInfo['name'])
                 print urllib.urlretrieve(contentsURL, localFileName);
 
             except Exception, e:
@@ -40,7 +40,7 @@ def copyRoot():
     home = acr.astrogrid.myspace.getHome()
     print "HomeSpace: " + home
     # home should be a directory !
-    copyFolder(home,".")
+    copyFolder(home,os.path.curdir)
 
 if __name__ == "__main__":
     copyRoot()
