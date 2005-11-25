@@ -116,7 +116,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         	if (((Boolean)value).booleanValue()) {
         		comp = new JCheckBox();
         		((JCheckBox)comp).setHorizontalAlignment(JLabel.HORIZONTAL);
-        		((JCheckBox)comp).setToolTipText("Check to delete this optional parameter, (uncheck to undelete)");
+        		((JCheckBox)comp).setToolTipText("Check to delete this optional parameter");
         		((JCheckBox)comp).addItemListener(this);
         	} else {
         		comp = new JLabel();
@@ -133,10 +133,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         	ParameterValue parameter = pm.getRows()[row];
         	if (e.getStateChange() == ItemEvent.DESELECTED) {               
         		fireEditingStopped();
-        		logger.error("UNSELECT DEL");
             } else {                
                 fireEditingStopped();
-                logger.error("SELECT DEL");
             }
         }
     }
@@ -193,7 +191,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         	if (((Boolean)value).booleanValue()) {
         		comp = new JCheckBox();
         		((JCheckBox)comp).setHorizontalAlignment(JLabel.HORIZONTAL);
-        		((JCheckBox)comp).setToolTipText("Check to delete this optional parameter, (uncheck to undelete)");
+        		((JCheckBox)comp).setToolTipText("Check to delete this optional parameter");
         		((JCheckBox)comp).addItemListener(this);
         	} else {
         		comp = new JLabel();
@@ -210,17 +208,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             //Now that we know which button was pushed, find out
             //whether it was selected or deselected.
         	ParameterValue parameter = pm.getRows()[row];
-        	if (e.getStateChange() == ItemEvent.SELECTED) {
-        		
-        		fireEditingStopped();
-
-        		logger.error("SELECT REPEAT");
+        	if (e.getStateChange() == ItemEvent.SELECTED) {       		
+        		fireEditingStopped(); 
             } else {                
                 fireEditingStopped();
-                logger.error("UNSELECT REPEAT");
             }
         }
-       
     }    
 	
 	
@@ -455,6 +448,10 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         	if (!isInput)
         		outputLabel.setText("Outputs:");
             final ParameterValue  row =  rows[rowIndex];
+            ParameterValue  previousRow = null;
+            if (rowIndex >= 1) {
+            	previousRow =  rows[rowIndex-1];
+            }
             ParameterBean d = (ParameterBean)toolModel.getInfo().getParameters().get(row.getName());
             ParameterReferenceBean[] paramRef;
             InterfaceBean intBean[] = toolModel.getInfo().getInterfaces();
@@ -507,6 +504,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                         }
                         break;
                     }
+                    if (previousRow != null && previousRow.getName().equalsIgnoreCase(row.getName()))
+                    	return new Boolean(true);                    
                     return new Boolean(min <= 0? true:false);                    
                  default:
                     return null;
@@ -537,7 +536,11 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                  toolModel.fireParameterChanged(BasicToolEditorPanel.this,row);
                  break;
              case 3: // rep
-             	 toolModel.fireParameterAdded(BasicToolEditorPanel.this,row);
+				ParameterValue newPv = new ParameterValue();
+				 newPv.setName(row.getName());
+				 newPv.setValue("");
+				 toolModel.getTool().getInput().addParameter(rowIndex+1, newPv);
+             	 toolModel.fireParameterAdded(BasicToolEditorPanel.this,newPv);
              	 break;
              case 4: // del
              	 toolModel.fireParameterRemoved(BasicToolEditorPanel.this, row);
@@ -574,19 +577,12 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
         public void parameterAdded(ToolEditEvent te) {
         	ParameterValue pv = te.getChangedParameter();
-        	if (!pv.equals(repParameterValue)) {
-        		repParameterValue = pv;
-        		for (int i = 0; i < getRows().length; i++) {        			
-        			if (pv == getRows()[i] && ((Boolean)getValueAt(i, 3)).booleanValue()) {
-        				ParameterValue newPv = new ParameterValue();
-        				newPv.setName(pv.getName());
-        				newPv.setValue("");
-        				toolModel.getTool().getInput().addParameter(i+1, newPv);                	
-        				//fireTableRowsInserted(i+1, i+1);
-        			}            
-        		}
-            toolSet(te);
-        	}
+            for (int i = 0; i < getRows().length; i++) {
+                if (pv == getRows()[i]) {
+                    fireTableRowsInserted(i,i);
+                }
+            }
+            toolSet(te);       	
         }
 
         public void parameterRemoved(ToolEditEvent te) {
@@ -739,6 +735,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.12  2005/11/25 15:39:09  pjn3
+Reworked repeating parameters, and added delete to all repeated params
+
 Revision 1.11  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 
