@@ -482,7 +482,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // and prevent this file being written.
         try {
             int rmiPort = rmiServer.getPort();
-            String xmlServer = webServer.getUrlRoot() + "xmlrpc/";
+            String xmlServer = webServer.getUrlRoot() + "xmlrpc";
             Properties props = new Properties();
             props.put(PlasticHubListener.PLASTIC_RMI_PORT_KEY, new Integer(rmiPort).toString());
             props.put(PlasticHubListener.PLASTIC_XMLRPC_URL_KEY, xmlServer);
