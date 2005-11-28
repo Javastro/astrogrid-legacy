@@ -21,6 +21,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -204,7 +205,6 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         
         /** Listens to the check boxes. */
         public void itemStateChanged(ItemEvent e) {
-        	repParameterValue = null;
             //Now that we know which button was pushed, find out
             //whether it was selected or deselected.
         	ParameterValue parameter = pm.getRows()[row];
@@ -215,6 +215,63 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             }
         }
     }    
+    
+    class ValueCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ItemListener {
+        
+        ParameterTableModel pm;
+        Boolean delete;
+        int row;
+
+        public Object getCellEditorValue() {
+            return null;
+        }
+        
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        	this.row = row;
+            if (pm == null) {
+                pm = (ParameterTableModel)table.getModel();                
+            }
+        	JComponent comp;
+        	if (value instanceof String[]) {    		
+        		comp = new JComboBox((String[])value);        	
+        	} else {
+        		comp = new JLabel();
+        	}
+        	comp.setOpaque(true);
+        	
+        	return comp;
+        }
+        
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        	this.row = row;
+            if (pm == null) {
+                pm = (ParameterTableModel)table.getModel();                
+            }
+        	JComponent comp;
+        	if (value instanceof String[]) {  		
+        		comp = new JComboBox((String[])value);
+        		((JComboBox)comp).setSelectedItem(pm.getValueAt(row, 1));
+        		((JComboBox)comp).setToolTipText("Select value");
+        		((JComboBox)comp).addItemListener(this);
+        	} else {
+        		comp = new JLabel();
+        	}
+        	comp.setOpaque(true);
+        	
+        	return comp;
+        } 
+        
+        /** Listens to the check boxes. */
+        public void itemStateChanged(ItemEvent e) {
+        	//fireEditingStopped();
+            //Now that we know which button was pushed, find out
+            //whether it was selected or deselected.
+        	ParameterValue parameter = pm.getRows()[row];
+        	JComboBox cb = (JComboBox)e.getSource();
+        	parameter.setValue((String)cb.getSelectedItem());
+        	pm.fireTableCellUpdated(row,1);
+        }
+    }
 	
 	
 	class IndirectCellEditor extends AbstractCellEditor implements TableCellEditor, ItemListener {
@@ -379,10 +436,13 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         public TableCellRenderer getCellRenderer(int row, int column) {
         	DeleteCellEditor ed = new DeleteCellEditor();
         	RepeatCellEditor re = new RepeatCellEditor();
+        	ValueCellEditor ve = new ValueCellEditor();
             if (column == 4) {            	
                 return ed;
              } else if (column == 3) {            	
                 return re;
+             } else if(column == 1 && (getValueAt(row, 1) instanceof String[])) {
+             	return ve;
              }
              // else...
             return super.getCellRenderer(row, column);
@@ -392,11 +452,15 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         public TableCellEditor getCellEditor(int row, int column) {
         	DeleteCellEditor ed = new DeleteCellEditor();
         	RepeatCellEditor re = new RepeatCellEditor();
+        	ValueCellEditor ve = new ValueCellEditor();
             if (column == 4) {            	
                 return ed;
              } else if (column == 3) {            	
                 return re;
              }
+        	 else if(column == 1 && (getValueAt(row, 1) instanceof String[])) {
+         	return ve;
+         }
              // else...
             return super.getCellEditor(row, column);
         }
@@ -464,7 +528,19 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                     }
 
                  case 1:
-                     return row.getValue();
+                 	 // Value may be made from an options list in registry
+                 	 if (d.getOptions() != null) { // Entry has options list
+                 	 	String[] ol = d.getOptions(); // Option List
+                 	 	String[] options = new String[d.getOptions().length + 1];
+                 	 	options[0] = "Please select:"; // Set 1st item to message
+                 	 	for (int i = 0; i< ol.length; i++) { // Add other options
+                 	 		options[i+1] = ol[i];
+                 	 	}
+                 	 	if (row.getValue() != "") // Parameter already has value entered, set to 1st item in list
+                      	   options[0] = row.getValue();
+                 	 	return options;
+                 	 }
+                 	 return row.getValue();
                  case 2:
                      return new Boolean(row.getIndirect());
                  case 3:                 	
@@ -528,7 +604,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
          final ParameterValue row= rows[rowIndex];
          switch(columnIndex) {
              case 1: // name
-                 row.setValue(aValue.toString());
+             	 if (aValue != null) 
+                   row.setValue(aValue.toString());
                  toolModel.fireParameterChanged(BasicToolEditorPanel.this,row);
                  break;
              case 2: // ref
@@ -536,7 +613,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                  toolModel.fireParameterChanged(BasicToolEditorPanel.this,row);
                  break;
              case 3: // rep
-				ParameterValue newPv = new ParameterValue();
+				 ParameterValue newPv = new ParameterValue();
 				 newPv.setName(row.getName());
 				 newPv.setValue("");
 				 toolModel.getTool().getInput().addParameter(rowIndex+1, newPv);
@@ -605,18 +682,11 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     
     protected final ResourceChooserInternal resourceChooser;
     private boolean allowIndirect = true;
-    private boolean cancelRepeat = false;
-    private ParameterValue repParameterValue;
 
    
    /** set to true to allow indirect parameters */
    public void setAllowIndirect(boolean allowIndirect) {
        this.allowIndirect = allowIndirect;
-   }
-   
-   /** set to true to allow removal of repeating parameters parameters */
-   public void setCancelRepeat(boolean cancelRepeat) {
-       this.cancelRepeat = cancelRepeat;
    }
 
     /** create a parameters panel, 
@@ -725,7 +795,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     /** applicable to any kind of tool */
     public boolean isApplicable(Tool t, ApplicationInformation info) {
         return t != null;
-    }
+    }    
 }
 
 
@@ -735,6 +805,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.13  2005/11/28 10:41:48  pjn3
+Now displaying parameters that take their values in the form of an option list.
+
 Revision 1.12  2005/11/25 15:39:09  pjn3
 Reworked repeating parameters, and added delete to all repeated params
 
