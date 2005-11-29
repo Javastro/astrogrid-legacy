@@ -124,6 +124,7 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
     private String[] prettify(Vector results) {
         String[] prettified = new String[results.size()];
         for (int i = 0; i < prettified.length; ++i) {
+            //JOHN - this assumes that each hash map only ever has one key - is this always true?? ifso, why the hash?
             Hashtable result = (Hashtable) results.get(i);
             Object key = result.keys().nextElement();
             Object value = result.get(key);

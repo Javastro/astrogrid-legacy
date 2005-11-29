@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
-
+<!--
+	
+	JOHN - changed type from 'Array' to 'array' - 
+			- remove xmlrpc type when == 'String' - as 'string' is the default, if no type is specified
+	
+	-->
 <module name="plastic">
 	<description>PLatform for AStronomical Tools Inter Connection</description>
 	<property>
@@ -41,7 +46,7 @@
 				<description>This hub's ID</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>String</value>
+					<value>string</value>
 				</property>
 			</return>
 		</method>
@@ -59,7 +64,7 @@
 				<description>Array of Ids</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Vector</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -76,30 +81,22 @@
 			</property>
 			<parameter name="name">
 				<description>Application's human-readable name</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 			<parameter name="messages">
 				<description>Understood messages (comma separated)</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</parameter>
 			<parameter name="callback">
 				<description>xml-rpc callback URL</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 			<return>
 				<description>id</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>String</value>
+					<value>string</value>
 				</property>
 			</return>
 		</method>
@@ -116,16 +113,12 @@
 			</property>
 			<parameter name="name">
 				<description>Application's human-readable name</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 			<return>
 				<description>id</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>String</value>
+					<value>string</value>
 				</property>
 			</return>
 		</method>
@@ -141,39 +134,27 @@
 			</property>
 			<parameter name="id">
 				<description>The id of the app to unregister</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 		</method>
 		<method name="request">
 			<parameter name="name">
 				<description>Sender</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 			<parameter name="message">
 				<description>Message</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 			<parameter name="args">
 				<description>Arguments (comma separated)</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</parameter>
 			<return>
 				<description>Responses</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -192,7 +173,7 @@
 				<description>An array of marked ids</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -211,7 +192,7 @@
 				<description>An array of purged application ids</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -240,10 +221,6 @@
 			</property>
 			<return>
 				<description>This hub's Name</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</return>
 		</method>
 		<method name="getHubIvorn">
@@ -258,10 +235,6 @@
 			</property>
 			<return>
 				<description>This hub's IVORN</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</return>
 		</method>
 		<method name="getHubPlasticVersion">
@@ -276,10 +249,6 @@
 			</property>
 			<return>
 				<description>Version of Plastic supported by this hub</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</return>
 		</method>
 		<method name="getNames">
@@ -297,7 +266,7 @@
 				<description>The names</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -316,7 +285,7 @@
 				<description>The ivorns</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -335,7 +304,7 @@
 				<description>Version of Plastic supported</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -352,16 +321,12 @@
 			</property>
 			<parameter name="greeting">
 				<description>The string for the application to echo</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 			<return>
 				<description>The echoed messages</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -378,16 +343,12 @@
 			</property>
 			<parameter name="message">
 				<description>The message to send</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 			<return>
 				<description>The responses</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -403,23 +364,19 @@
 			</property>
 			<parameter name="message">
 				<description>The message to send</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>String</value>
-				</property>
 			</parameter>
 			<parameter name="args">
 				<description>Message arguments (comma-separated)</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</parameter>
 			<return>
 				<description>The responses</description>
 				<property>
 					<key>system.xmlrpc.type</key>
-					<value>Array</value>
+					<value>array</value>
 				</property>
 			</return>
 		</method>
@@ -463,5 +420,16 @@
 		</property>
 		</return>
 		</method-->
+	</component>
+	
+	
+	<component name="namegen"
+		implementationClass="org.astrogrid.common.namegen.InMemoryNameGen"
+		interfaceClass="org.astrogrid.common.namegen.NameGen">
+		<!-- JOHN - moved here from builtin module. -->
+			<property>
+				<key>hidden.component</key>
+				<value>true</value>								
+			</property>					
 	</component>
 </module>

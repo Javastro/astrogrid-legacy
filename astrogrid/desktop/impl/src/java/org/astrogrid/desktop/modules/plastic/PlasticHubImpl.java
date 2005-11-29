@@ -232,34 +232,43 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     }
 
-    private Map clients = new HashMap();
+    private final Map clients = new HashMap();
 
-    private NameGen idGenerator;
+    private final  NameGen idGenerator;
 
-    private Executor executor;
+    private final SystemTray tray;
+    
+    private final RmiServer rmiServer;
+    private final WebServer webServer;
+    
+    private final Vector EMPTYVECTOR = new ImmutableVector(); 
 
-    private String hubId;
+    private final Executor executor;
+
+    private final String hubId;
 
     private File plasticPropertyFile;
 
-    /**
-     * 
-     * @param executor
-     * @param idGenerator
-     * @param app
-     */
-    public PlasticHubImpl(Executor executor, NameGen idGenerator, MessengerInternal app, RmiServer rmiServer,
-            WebServer webServer) {
+    /** constrcutor selected by pico when systemtray is not available */
+    public PlasticHubImpl(Executor executor, NameGen idGenerator,
+            MessengerInternal app, RmiServer rmi, WebServer web) {
+        this(executor,idGenerator,app,rmi,web,null);
+    }
+    
+    /** constructor selected by pico when systemtray is available */
+    public PlasticHubImpl(Executor executor, NameGen idGenerator,
+            MessengerInternal app,RmiServer rmi,WebServer web,SystemTray tray) {
+        this.tray = tray;
+        this.rmiServer= rmi;
+        this.webServer= web;
         this.executor = executor;
         this.idGenerator = idGenerator;
-        this.rmiServer = rmiServer;
-        this.webServer = webServer;
         logger.info("Constructing a PlasticHubImpl");
-        // todo Not sure about this next line. Need
+        hubId = app.registerWith(this); // todo Not sure about this. Need
         // PlasticHub and HubApplication to hold
         // refs to each other...is this a code
         // smell?
-        hubId = app.registerWith(this);
+        // NWW - not too much - makes them kind of like co-routhines. not ideal - but maybe better than having one monster class.
     }
 
     public Vector getRegisteredIds() {
@@ -302,39 +311,26 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         return id;
     }
 
-    private SystemTray tray;
 
-    private boolean failedToGetTray = false;
-
-    private RmiServer rmiServer;
-
-    private WebServer webServer;
 
     /**
      * Displays an info message on the system tray, if there is one.
-     * 
+     * JOHN - systray won't be available when developing, or when running on Mac, or some other more esoteric arch
      * @param caption
      * @param message todo refactor this
      */
     private void displayInfoMessage(String caption, String message) {
-        if (failedToGetTray)
-            return; // don't want to keep trying to get it, if it's not there.
-        if (tray == null) {
-            try {
-                ACR acr = new Finder().find();
-                tray = (SystemTray) acr.getService(SystemTray.class);
-            } catch (Exception e) {
-                logger.warn("Failed to get System Tray", e);
-                failedToGetTray = true;
-                return;
-            }
+        if (tray != null) {
+            tray.displayInfoMessage(caption, message);
+        } else {
+            logger.info(caption + " : " + message);
         }
-        tray.displayInfoMessage(caption, message);
 
     }
 
     public void unregister(String id) {
         if (id.equals(hubId))
+            // JOHN - sure you want to throw a runtime here? bettr to just log and ignore is some client is playing sillybuggers?
             throw new RuntimeException("Cannot unregister the hub itself");
         clients.remove(id);
         Vector args = new Vector();
@@ -423,7 +419,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 }
             }
 
-        }
+        }// end of message class.
 
         it = clientsToMessage.iterator();
         while (it.hasNext()) {
@@ -432,7 +428,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 executor.execute(new Messager(currentClient));
             } catch (InterruptedException e) {
                 // LOW what happens now?
-                logger.warn("Interrupted executing client " + currentClient.getId(), e);
+                //NWW - ignore - shit happens. will only get interrupted if some other thread has called interrupt on this thread in the meantime - which isn't going to happen.
+                logger.warn("Interrupted executing client "
+                        + currentClient.getId(), e);
             }
         }
 
@@ -477,10 +475,16 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // see the Plastic spec http://plastic.sourceforge.net and
         // discussions on the DS6 forum about debranding.
         // todo To allow concurrent use of the ACR and alterative
-        // platic hubs (if there should ever be one),
-        // we'll need a mechanism to disable PLASTIC
+        // platic hubs, we'll need a mechanism to disable PLASTIC
         // and prevent this file being written.
         try {
+            // JOHN - not to keen on creating finders internally. if you need to dynamically lookup services, 
+            // get pico to pass you in an ACRImpl. in this case, the dependencies are known - so just ask for them in the constrctor.
+            /*
+            ACR acr = new Finder().find();
+            RmiServer rmiServer = (RmiServer) acr.getService(RmiServer.class);
+            WebServer webServer = (WebServer) acr.getService(WebServer.class);
+            */
             int rmiPort = rmiServer.getPort();
             String xmlServer = webServer.getUrlRoot() + "xmlrpc";
             Properties props = new Properties();
@@ -499,6 +503,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             OutputStream os = new BufferedOutputStream(new FileOutputStream(plasticPropertyFile));
             props.store(os, "Plastic Hub Properties.  See http://plastic.sourceforge.net");
             os.close();
+            /*
+        } catch (ACRException e) {
+            logger
+                    .error(
+                            "Unable to obtain RmiServer and WebServer to read connection properties for .plastic",
+                            e);
+                            */
         } catch (IOException e) {
             logger.error("There was a problem creating the Plastic config file .plastic");
         }
