@@ -10,6 +10,10 @@ import java.util.Vector;
  * @author jdt@roe.ac.uk
  * @version 0.1
  * @service plastic.hub
+ * @JOHN should IDs be URIs throughout?
+ * @JOHN use List instead of Vector - more abstract type. looks the same to xmlrpc anyhow. Or consider returning arrays of things - strongly typed, better documenting.
+ * likewise for input vectors.
+ * @since 1.3
  * @date 11-Oct-2005
  */
 public interface PlasticHubListener {
@@ -73,6 +77,8 @@ public interface PlasticHubListener {
      * @see #registerRMI(String, Vector, PlasticListener)
      * @see #registerNoCallBack(String)
      * @xmlrpc The supportedMessages parameter is an Array
+     * @JOHN - callbackURL should be a URL.
+     * @JOHN - should vector contains URIs specifying supported messages? 
      */
     public String registerXMLRPC(String name, Vector supportedMessages,
             String callBackURL);
@@ -121,6 +127,7 @@ public interface PlasticHubListener {
      * @param message the message to send.
      * @param args any arguments to pass with the message
      * @return a Vector of Hashtables mapping application ids to responses
+     * @JOHN a Map[] would be more unambiguous. I don't understand why a list of maps is needed instead of just a map.
      * @xmlrpc the return object is an array of structs mapping application ids to responses
      */
     public Vector request(String sender, String message, Vector args);

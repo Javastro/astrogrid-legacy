@@ -9,6 +9,7 @@ import java.util.Vector;
  * @author jdt@roe.ac.uk
  * @date 11-Oct-2005
  * @version 0.1 
+ * @since 1.3
  * FIXME check that the xml on the wire is correct (maybe add in logging permanently?) 
  * FIXME R interface
  */
@@ -22,7 +23,7 @@ public interface PlasticListener {
      * Request that the application perform an action based on a message.
      * 
      * @param sender the ID of the originating application
-     * @param message the string representing the action.
+     * @param message the string representing the action. - should this be a URI?
      * @param args any argumentss to pass
      * @return any return value of the action
      * @see <a href="http://plastic.sourceforge.net">http://plastic.sourceforge.net</a>
