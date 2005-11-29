@@ -1,4 +1,4 @@
-/*$Id: DefaultConverter.java,v 1.2 2005/11/23 19:15:30 jdt Exp $
+/*$Id: DefaultConverter.java,v 1.3 2005/11/29 11:27:55 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,22 +33,7 @@ public class DefaultConverter implements Converter {
      * 
      */
     private DefaultConverter() {
-        super();
-        //FIXME this is almost certainly not the right place to put this...
-        //NOEL I need a String->Vector converter - how do you want this doing?
-        ConvertUtils.register(new Converter() {
-
-            public Object convert(Class arg0, Object arg1) {
-                //can we assume that arg0 IS Vector?
-                assert arg0==Vector.class;
-                assert arg1 instanceof String;
-                if (arg1.equals("")) return new Vector();//empty vector in this case
-                String[] tokenized = ((String) arg1).split(",");
-                Vector results = new Vector(Arrays.asList(tokenized));
-                return results;
-            }
-            
-        }, Vector.class);
+        super(); 
     }
 
     
@@ -77,6 +62,9 @@ public class DefaultConverter implements Converter {
 
 /* 
 $Log: DefaultConverter.java,v $
+Revision 1.3  2005/11/29 11:27:55  nw
+refactored converters
+
 Revision 1.2  2005/11/23 19:15:30  jdt
 Extruded plastic.
 

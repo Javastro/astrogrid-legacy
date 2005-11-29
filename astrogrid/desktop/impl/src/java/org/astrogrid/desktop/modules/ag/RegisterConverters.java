@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.3 2005/09/12 15:21:16 nw Exp $
+/*$Id: RegisterConverters.java,v 1.4 2005/11/29 11:28:05 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.desktop.modules.system.converters.CastorBeanUtilsConvertor;
 import org.astrogrid.desktop.modules.system.converters.URIConverter;
+import org.astrogrid.desktop.modules.system.converters.VectorConvertor;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -98,6 +100,7 @@ public class RegisterConverters implements IRegisterConverters, Startable {
                    
             }
         },Document.class);
+        ConvertUtils.register(VectorConvertor.getInstance(), Vector.class);        
     }
 
     /**
@@ -110,6 +113,9 @@ public class RegisterConverters implements IRegisterConverters, Startable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.4  2005/11/29 11:28:05  nw
+ * refactored converters
+ *
  * Revision 1.3  2005/09/12 15:21:16  nw
  * reworked application launcher. starting on workflow builder
  *
