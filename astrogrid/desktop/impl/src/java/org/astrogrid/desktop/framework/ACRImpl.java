@@ -1,4 +1,4 @@
-/*$Id: ACRImpl.java,v 1.6 2005/11/23 19:15:30 jdt Exp $
+/*$Id: ACRImpl.java,v 1.7 2005/11/29 12:10:49 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,10 +83,8 @@ public class ACRImpl implements MutableACR {
         DefaultModule m = new DefaultModule();
         m.registerComponentInstance(MutableACR.class,this);
         m.registerComponentInstance(Shutdown.class,new ShutdownImpl(modules));
-        //NOEL is this the correct place to do this?  Or should they be given
-        //entries in my module.xml and registered that way?
-        m.registerComponentImplementation(NameGen.class, InMemoryNameGen.class);
-        m.registerComponentInstance(Executor.class, new PooledExecutor());  //Thread pool with default settings
+    m.registerComponentInstance(Executor.class, new PooledExecutor());  //Thread pool with default settings
+    
         ModuleDescriptor md = new ModuleDescriptor();
         md.setName("builtin");
         md.setDescription("Builtin components");
@@ -364,6 +362,9 @@ public class ACRImpl implements MutableACR {
 
 /* 
 $Log: ACRImpl.java,v $
+Revision 1.7  2005/11/29 12:10:49  nw
+put in the executor for now - will take out again after.
+
 Revision 1.6  2005/11/23 19:15:30  jdt
 Extruded plastic.
 
