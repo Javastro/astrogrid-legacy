@@ -5,7 +5,10 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-    		
+    		<action dev="gtr" type="add">
+    			<em>Branch common-gtr-1459:</em> new code providing an editor for environment entries in
+    			web applications.
+    		</action>
          
         </release>
         <release version="(Undertest)">
