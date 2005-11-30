@@ -1,4 +1,4 @@
-/*$Id: ResourceInformationBuilder.java,v 1.3 2005/11/04 10:14:26 nw Exp $
+/*$Id: ResourceInformationBuilder.java,v 1.4 2005/11/30 14:28:34 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,23 +79,42 @@ public class ResourceInformationBuilder implements InformationBuilder {
      * @throws TransformerException
      */
     protected final URL findAccessURL(CachedXPathAPI xpath, Element element) throws TransformerException {
-        URL accessURL;
+        String s = null;
         try {
-            accessURL =  new URL(xpath.eval(element,"vr:interface/vr:accessURL",nsNode).str());
+            //work around for duffs.
+            s = xpath.eval(element,"normalize-space(vr:interface/node()[local-name()='accessURL'])",nsNode).str();
+            logger.debug("AccessURL: '" + s + "'");
+            if (s == null) {
+                return null;
+            }
+            s = s.trim();
+            if (s.length() == 0) {
+                return null;
+            }
+            return new URL(s);
         } catch (MalformedURLException e) {
-            accessURL = null;
+            logger.info("Failed to parse access url " + s);
+            return null;
         }
-        return accessURL;
     }
     
     protected final URL findLogo(CachedXPathAPI xpath, Element element) throws TransformerException {
-        URL logo;
+        String s = null;
         try {
-            logo = new URL(xpath.eval(element,"vr:curation/vr:creator/vr:logo",nsNode).str());
+            s = xpath.eval(element,"normalize-space(vr:curation/vr:creator/vr:logo)",nsNode).str();
+            logger.debug("LogoURL: '" + s + "'");
+            if (s == null) {
+                return null;
+            }
+            s = s.trim();
+            if (s.length() == 0) {
+                return null;
+            }
+            return new URL(s);
         } catch (MalformedURLException e) {
-            logo = null;
-        }
-        return logo;            
+            logger.info("Failed to parse logo url " + s);
+            return null;
+        }      
     }
 
     /**
@@ -105,7 +124,7 @@ public class ResourceInformationBuilder implements InformationBuilder {
      * @throws TransformerException
      */
     protected final String findDescription(CachedXPathAPI xpath, Element element) throws TransformerException {
-        return xpath.eval(element,"vr:content/vr:description",nsNode).str();
+        return xpath.eval(element,"normalize-space(vr:content/vr:description)",nsNode).str();
     }
 
     /**
@@ -115,7 +134,7 @@ public class ResourceInformationBuilder implements InformationBuilder {
      * @throws TransformerException
      */
     protected final String findName(CachedXPathAPI xpath, Element element) throws TransformerException {
-        return xpath.eval(element,"vr:title",nsNode).str();
+        return xpath.eval(element,"normalize-space(vr:title)",nsNode).str();
     }
 
     /**
@@ -127,7 +146,8 @@ public class ResourceInformationBuilder implements InformationBuilder {
     protected final URI findId(CachedXPathAPI xpath, Element element) throws TransformerException {
         URI uri;
         try {
-            uri = new URI(xpath.eval(element,"vr:identifier",nsNode).str());
+            uri = new URI(xpath.eval(element,"normalize-space(vr:identifier)",nsNode).str());
+            logger.debug("ID: " + uri);
         } catch (URISyntaxException e) {
             
             uri = null;
@@ -138,6 +158,9 @@ public class ResourceInformationBuilder implements InformationBuilder {
 
 /* 
 $Log: ResourceInformationBuilder.java,v $
+Revision 1.4  2005/11/30 14:28:34  nw
+improved reg entry parsing - handles erroneous reg entries.
+
 Revision 1.3  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present
