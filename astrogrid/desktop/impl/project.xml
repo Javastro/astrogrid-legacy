@@ -475,7 +475,7 @@
                 <dependency>
                         <groupId>votech</groupId>
                         <artifactId>plastic</artifactId>
-                        <version>0.1</version>
+                        <version>0.2</version>
                         <url>http://plastic.sourceforge.net</url>
                 </dependency>			
     </dependencies>
