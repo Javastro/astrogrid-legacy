@@ -5,10 +5,7 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-    		<action dev="gtr" type="add">
-    			<em>Branch common-gtr-1459:</em> new code providing an editor for environment entries in
-    			web applications.
-    		</action>
+    		
          
         </release>
         <release version="(Undertest)">
@@ -21,6 +18,10 @@
         </release>
 		
 		<release version="HEAD">
+			<action dev="gtr" type="add">
+    			<em>Branch common-gtr-1459:</em> new code providing an editor for environment entries in
+    			web applications.
+    		</action>
 		   <action dev="gtr" type="fix">
     			<em>Branch contracts-gtr-1373:</em> I have fixed the <i>schemaLocation</i> attributes in the schemata to be
     			systematically relative to each other. There are now many extra schemata copied from IVOA and imported
