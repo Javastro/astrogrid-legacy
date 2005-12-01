@@ -11,11 +11,8 @@ import java.util.Map;
  * 
  * @see <a href="http://plastic.sourceforge.net/">http://plastic.sourceforge.net</a>
  * @author jdt@roe.ac.uk
- * @version 0.1
+ * @version 0.2
  * @service plastic.hub
- * @JOHN should IDs be URIs throughout?
- * @JOHN use List instead of Vector - more abstract type. looks the same to xmlrpc anyhow. Or consider returning arrays of things - strongly typed, better documenting.
- * likewise for input vectors.
  * @since 1.3
  * @date 11-Oct-2005
  */
@@ -59,7 +56,7 @@ public interface PlasticHubListener {
 
     /**
      * Get this hub's ID. The hub "registers with itself", and this method will give you its own Id.
-     * 
+     * @xmlrpc returns a string
      * @return see above
      */
     public URI getHubId();
@@ -69,19 +66,17 @@ public interface PlasticHubListener {
      * hub may not forward messages from applications whose ID it doesn't recognise. There are different register
      * methods dependening on how (and whether) the application wishes to receive messages back from the hub.
      * 
-     * @param name An optional string with a short name describing the application. This may be pre-pended to the hub
+     * @param name An optional string with a short name describing the application. This may be added to the hub
      *            assigned ID, making it more human friendly.
-     * @param supportedMessages an array of operations the application is interested in. An empty Vector signifies
+     * @param supportedMessages an array of messages (as URIs) the application is interested in. An empty List signifies
      *            "all".
      * @param callBackURL the application's internal xmlrpc server URL. Used by the hub to send messages to the
      *            application.
      * @return a hub-assigned ID
      * @see <a href="http://plastic.sourceforge.net/">http://plastic.sourceforge.net</a>
-     * @see #registerRMI(String, Vector, PlasticListener)
+     * @see #registerRMI(String, List, PlasticListener)
      * @see #registerNoCallBack(String)
-     * @xmlrpc The supportedMessages parameter is an Array
-     * @JOHN - callbackURL should be a URL.
-     * @JOHN - should vector contains URIs specifying supported messages? 
+     * @xmlrpc The supportedMessages parameter is an array of strings formatted as URIs.
      */
     public URI registerXMLRPC(String name, List supportedMessages,
             URL callBackURL);
@@ -91,13 +86,11 @@ public interface PlasticHubListener {
      * 
      * @param name see {@link #registerRMI(String, List, PlasticListener) registerRMI}
      * @param supportedMessages
-     * @see #registerXMLRPC(String, List, URL)
      * @param caller the PlasticListener that wishes to register
-     * @return
      * @see #registerXMLRPC(String, List, URL)
      * @xmlrpc Not available.
      * @example Suppose your application implements {@link PlasticListener PlasticListener}. Then you register with the
-     *          hub to receive ALL messages using <code>String id = hub.registerRMI("MyApp", new Vector(),this);</code>
+     *          hub to receive ALL messages using <code>String id = hub.registerRMI("MyApp", new ArrayList(),this);</code>
      */
     public URI registerRMI(String name, List supportedMessages,
             PlasticListener caller);
@@ -108,9 +101,6 @@ public interface PlasticHubListener {
      * spec.
      * 
      * @param name
-     * @see #registerXMLRPC(String, List, URL)
-     * @return
-     * @see #registerXMLRPC(String, List, URL)
      * @see #registerXMLRPC(String, List, URL)
      */
     public URI registerNoCallBack(String name);
@@ -129,9 +119,8 @@ public interface PlasticHubListener {
      *            don't come from an ID that it has registered.
      * @param message the message to send.
      * @param args any arguments to pass with the message
-     * @return a Vector of Hashtables mapping application ids to responses
-     * @JOHN a Map[] would be more unambiguous. I don't understand why a list of maps is needed instead of just a map.
-     * @xmlrpc the return object is an array of structs mapping application ids to responses
+     * @return a Map of application ids to responses
+     * @xmlrpc the return object is an array a struct whos elements names are application ids
      */
     public Map request(URI sender, URI message, List args);
 
@@ -148,8 +137,9 @@ public interface PlasticHubListener {
     /**
      * Send a request to listed registered Plastic apps, but don't wait for a response.
      * 
-     * @param recipientIds a list of target application ids See {@link #request(URI, URI, List) request} for
+     * @param recipientIds a List of target application ids (as URIs). See {@link #request(URI, URI, List) request} for
      *            details of the other parameters.
+     * @xmlrpc the recipientIds is an array of strings formatted as URIs
      */
 
     public void requestToSubsetAsynch(URI sender, URI message,
@@ -157,7 +147,7 @@ public interface PlasticHubListener {
 
     /**
      * Send a request to all registered Plastic apps, but don't wait for a response. See
-     * {@link #request(URI, URI, List) request} for details of the other parameters.
+     * {@link #request(URI, URI, List) request} for details of parameters.
      */
     public void requestAsynch(URI sender, URI message, List args);
 

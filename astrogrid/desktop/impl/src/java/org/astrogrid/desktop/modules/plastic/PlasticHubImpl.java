@@ -5,14 +5,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +18,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.Finder;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
@@ -72,11 +67,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.executor = executor;
         this.idGenerator = idGenerator;
         logger.info("Constructing a PlasticHubImpl");
-        hubId = app.registerWith(this); // todo Not sure about this. Need
-        // PlasticHub and HubApplication to hold
-        // refs to each other...is this a code
-        // smell?
-        // NWW - not too much - makes them kind of like co-routhines. not ideal - but maybe better than having one monster class.
+        hubId = app.registerWith(this); 
     }
 
     public List getRegisteredIds() {
@@ -123,9 +114,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     /**
      * Displays an info message on the system tray, if there is one.
-     * JOHN - systray won't be available when developing, or when running on Mac, or some other more esoteric arch
      * @param caption
-     * @param message todo refactor this
+     * @param message 
      */
     private void displayInfoMessage(String caption, String message) {
         if (tray != null) {
@@ -137,9 +127,10 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public void unregister(URI id) {
-        if (id.equals(hubId))
-            // JOHN - sure you want to throw a runtime here? bettr to just log and ignore is some client is playing sillybuggers?
-            throw new RuntimeException("Cannot unregister the hub itself");
+        if (id.equals(hubId)) {
+            logger.warn("A client is attempting to unregister the hub itself - not allowed");
+            return;
+        }
         clients.remove(id);
         Vector args = new Vector();
         args.add(id);
@@ -186,10 +177,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // the method.
         //
         class Messager implements Runnable {
-            /**
-             * Logger for this class
-             */
-            private final Log logger = LogFactory.getLog(Messager.class);
 
             private PlasticClientProxy client;
 
@@ -234,9 +221,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             try {
                 executor.execute(new Messager(currentClient));
             } catch (InterruptedException e) {
-                // LOW what happens now?
-                //NWW - ignore - shit happens. will only get interrupted if some other thread has called interrupt on this thread in the meantime - which isn't going to happen.
-                logger.warn("Interrupted executing client "
+               logger.warn("Interrupted executing client "
                         + currentClient.getId(), e);
             }
         }
@@ -245,7 +230,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             try {
                 gate.acquire();
             } catch (InterruptedException e) {
-                // LOW what happens now?
                 logger.warn("Interrupted aquiring gate ", e);
             }
         }
@@ -286,13 +270,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // we'll need a mechanism to disable PLASTIC
         // and prevent this file being written.
         try {
-            // JOHN - not to keen on creating finders internally. if you need to dynamically lookup services, 
-            // get pico to pass you in an ACRImpl. in this case, the dependencies are known - so just ask for them in the constrctor.
-            /*
-            ACR acr = new Finder().find();
-            RmiServer rmiServer = (RmiServer) acr.getService(RmiServer.class);
-            WebServer webServer = (WebServer) acr.getService(WebServer.class);
-            */
             int rmiPort = rmiServer.getPort();
             String xmlServer = webServer.getUrlRoot() + "xmlrpc";
             Properties props = new Properties();
@@ -311,13 +288,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             OutputStream os = new BufferedOutputStream(new FileOutputStream(plasticPropertyFile));
             props.store(os, "Plastic Hub Properties.  See http://plastic.sourceforge.net");
             os.close();
-            /*
-        } catch (ACRException e) {
-            logger
-                    .error(
-                            "Unable to obtain RmiServer and WebServer to read connection properties for .plastic",
-                            e);
-                            */
         } catch (IOException e) {
             logger.error("There was a problem creating the Plastic config file .plastic");
         }

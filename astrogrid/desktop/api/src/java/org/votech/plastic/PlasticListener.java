@@ -12,7 +12,6 @@ import java.util.List;
  * @date 11-Oct-2005
  * @version 0.2
  * @since 1.3
- * JDTTODO R interface
  */
 public interface PlasticListener {
     /**
