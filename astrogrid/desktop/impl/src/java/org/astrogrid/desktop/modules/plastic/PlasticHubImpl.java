@@ -20,11 +20,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
-import net.ladypleaser.rmilite.RemoteInvocationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlrpc.XmlRpcClient;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.RmiServer;
@@ -43,197 +41,13 @@ import EDU.oswego.cs.dl.util.concurrent.Executor;
 
 public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInternal, Startable {
     /**
-     * 
-     */
-    private static final URI[] EMPTY_URI_ARRAY = new URI[0];
-
-    /**
      * Logger for this class
      */
     private static final Log logger = LogFactory.getLog(PlasticHubImpl.class);
 
-    /**
-     * Delegate to the actual remote Plastic app.
-     * 
-     * @author jdt@roe.ac.uk
-     * @date 01-Nov-2005
-     */
-    private abstract class PlasticClientProxy {
-        /**
-         * Logger for this class
-         */
-        private final Log logger = LogFactory.getLog(PlasticClientProxy.class);
-
-        private boolean responding = true;
-
-        protected URI id;
-
-        protected String name;
-
-        protected List supportedMessages;
-
-        public boolean isResponding() {
-            return responding;
-        }
-
-        public URI getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public List getMessages() {
-            return supportedMessages;
-        }
-
-        public PlasticClientProxy(String name, List supportedMessages2) {
-            try {
-                this.id = new URI("plastic://acr/"+idGenerator.next()+"#"+name); //todo reexamine this
-            } catch (Exception e) {
-                logger.error("Exception in unique name generator ", e);
-                // we're going to use the InMemoryNameGen
-                // class, so this shouldn't happen.  
-            }
-            this.supportedMessages = supportedMessages2;
-        }
-
-        public PlasticClientProxy(String name) {
-            this(name, CommonMessageConstants.EMPTY);
-        }
-
-        /**
-         * Does this client understand this message?
-         * 
-         * @param message
-         * @return true if yes
-         */
-        public boolean understands(URI message) {
-            if (supportedMessages.size() == 0 || supportedMessages.contains(message))
-                return true;
-            return false;
-        }
-
-        /**
-         * See PlasticListerner.perform()
-         * 
-         * @param message
-         * @param args
-         * @return
-         * @throws PlasticException
-         */
-        public abstract Object perform(URI sender, URI message, List args) throws PlasticException;
-
-        protected void setResponding(boolean responding) {
-            this.responding = responding;
-        }
-    }
-
-    private class RMIPlasticClient extends PlasticClientProxy {
-        /**
-         * Logger for this class
-         */
-        private final Log logger = LogFactory.getLog(RMIPlasticClient.class);
-
-        private PlasticListener remoteClient;
-
-        public RMIPlasticClient(String name, List supportedMessages, PlasticListener plastic) {
-            super(name, supportedMessages);
-            logger.debug("Ctor: RMIPlasticClient supports messages: " + supportedMessages);
-            this.remoteClient = plastic;
-        }
-
-        public Object perform(URI sender, URI message, List args) throws PlasticException {
-            try {
-                Object response = remoteClient.perform(sender, message, args);
-                setResponding(true);
-                return response;
-            } catch (RemoteInvocationException e) {
-                setResponding(false);
-                throw new PlasticException(e);
-            }
-        }
-
-    }
-
-    private class XMLRPCPlasticClient extends PlasticClientProxy {
-        /**
-         * 
-         */
-        private static final String PLASTIC_CLIENT_PERFORM = "plastic.client.perform";
-
-        /**
-         * Logger for this class
-         */
-        private final Log logger = LogFactory.getLog(XMLRPCPlasticClient.class);
-
-        private XmlRpcClient xmlrpc;
-
-        private boolean validURL;
-
-        public XMLRPCPlasticClient(String name, List supportedMessages, URL callbackURL) {
-            super(name, supportedMessages);
-            logger.info("Ctor: XMLRPCPlasticClient with callBackURL " + callbackURL + " and supports messages: "
-                    + supportedMessages);
-
-            xmlrpc = new XmlRpcClient(callbackURL);
-            validURL = true;
-        }
-
-        public Object perform(URI sender, URI message, List args) throws PlasticException {
-            if (!validURL)
-                throw new PlasticException("Cannot send message to " + getId() + " due to invalid callback URL");
-            logger.info("Performing " + message + " from " + sender);
-            try {
-                Vector xmlrpcArgs = new Vector();
-                xmlrpcArgs.add(sender);
-                xmlrpcArgs.add(message);
-                xmlrpcArgs.add(args);
-                setResponding(true);
-                return xmlrpc.execute(PLASTIC_CLIENT_PERFORM, xmlrpcArgs);
-            } catch (Exception e) {
-                setResponding(false);
-                logger.warn("Got " + e + " trying to send message to " + getId());
-                throw new PlasticException(e);
-            }
-        }
-
-    }
-
-    /**
-     * Represents a client such as a scripting environment that can't be called back.
-     * 
-     * @author jdt@roe.ac.uk
-     * @date 18-Nov-2005
-     */
-    private class DeafPlasticClient extends PlasticClientProxy {
-
-        /**
-         * A proxy for a client that can't receive callbacks.
-         * 
-         * @param name
-         */
-        public DeafPlasticClient(String name) {
-            super(name);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.astrogrid.desktop.modules.plastic.PlasticHubImpl.PlasticClientProxy#perform(java.lang.String,
-         *      java.lang.String, java.util.Vector)
-         */
-        public Object perform(URI sender, URI message, List args) {
-            // do nothing
-            return CommonMessageConstants.RPCNULL;
-        }
-
-    }
-
     private final Map clients = new HashMap();
 
-    private final NameGen idGenerator;
+    final NameGen idGenerator;
     private final SystemTray tray;
     private final RmiServer rmiServer;
     private final WebServer webServer;
@@ -243,7 +57,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     private File plasticPropertyFile;
 
-    /** constrcutor selected by pico when systemtray is not available */
+    /** constructor selected by pico when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
             MessengerInternal app, RmiServer rmi, WebServer web) {
         this(executor,idGenerator,app,rmi,web,null);
@@ -271,17 +85,17 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public URI registerXMLRPC(String name, List supportedOperations, URL callBackURL) {
-        PlasticClientProxy client = new XMLRPCPlasticClient(name, supportedOperations, callBackURL);
+        PlasticClientProxy client = new XMLRPCPlasticClient(idGenerator, name, supportedOperations, callBackURL);
         return register(client);
     }
 
     public URI registerRMI(String name, List supportedOperations, PlasticListener caller) {
-        PlasticClientProxy client = new RMIPlasticClient(name, supportedOperations, caller);
+        PlasticClientProxy client = new RMIPlasticClient(idGenerator, name, supportedOperations, caller);
         return register(client);
     }
 
     public URI registerNoCallBack(String name) {
-        PlasticClientProxy client = new DeafPlasticClient(name);
+        PlasticClientProxy client = new DeafPlasticClient(idGenerator, name);
         return register(client);
     }
 

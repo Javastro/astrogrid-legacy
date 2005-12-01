@@ -1,0 +1,44 @@
+/*
+ * 
+ */
+package org.astrogrid.desktop.modules.plastic;
+
+import java.net.URI;
+import java.util.List;
+
+import net.ladypleaser.rmilite.RemoteInvocationException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.common.namegen.NameGen;
+import org.votech.plastic.PlasticListener;
+import org.votech.plastic.outgoing.PlasticException;
+
+class RMIPlasticClient extends PlasticClientProxy {
+
+
+    /**
+     * Logger for this class
+     */
+    private final Log logger = LogFactory.getLog(RMIPlasticClient.class);
+
+    private PlasticListener remoteClient;
+
+    public RMIPlasticClient(NameGen gen, String name, List supportedMessages, PlasticListener plastic) {
+        super(gen, name, supportedMessages);
+        logger.debug("Ctor: RMIPlasticClient supports messages: " + supportedMessages);
+        this.remoteClient = plastic;
+    }
+
+    public Object perform(URI sender, URI message, List args) throws PlasticException {
+        try {
+            Object response = remoteClient.perform(sender, message, args);
+            setResponding(true);
+            return response;
+        } catch (RemoteInvocationException e) {
+            setResponding(false);
+            throw new PlasticException(e);
+        }
+    }
+
+}
