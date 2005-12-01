@@ -102,10 +102,10 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#getPlasticVersions()
      */
-    public List getPlasticVersions() {
-        return prettify(hub.request(this.id,
-                CommonMessageConstants.GET_VERSION,
-                CommonMessageConstants.EMPTY));
+    public Map getPlasticVersions() {
+        return hub.request(this.id,
+        CommonMessageConstants.GET_VERSION,
+        CommonMessageConstants.EMPTY);
     }
 
     /*
@@ -113,28 +113,10 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#getNames()
      */
-    public List getNames() {
+    public Map getNames() {
         Map results = hub.request(this.id, CommonMessageConstants.GET_NAME,
                 CommonMessageConstants.EMPTY);
-        return prettify(results);
-    }
-
-    /**
-     * Takes a Vector of Hashtables and returns an array of Strings of key: value
-     * 
-     * @param results see above
-     * @return see above
-     */
-    private List prettify(Map results) {
-        List prettified = new ArrayList();
-        Set keySet = results.keySet();
-        Iterator it = keySet.iterator();
-        while (it.hasNext()) {
-            Object key = it.next();
-            Object value = results.get(key);
-            prettified.add(key + ": " + value);
-        }
-        return prettified;
+        return results;
     }
 
     /*
@@ -142,9 +124,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#getIvorns()
      */
-    public List getIvorns() {
-        return prettify(hub.request(this.id, CommonMessageConstants.GET_IVORN,
-                CommonMessageConstants.EMPTY));
+    public Map getIvorns() {
+        return hub.request(this.id, CommonMessageConstants.GET_IVORN,
+        CommonMessageConstants.EMPTY);
     }
 
     /*
@@ -152,10 +134,10 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#echo(java.lang.String)
      */
-    public List echo(String message) {
+    public Map echo(String message) {
         List args = new ArrayList();
         args.add(message);
-        return prettify(hub.request(this.id, CommonMessageConstants.ECHO, args));
+        return hub.request(this.id, CommonMessageConstants.ECHO, args);
     }
 
     /*
@@ -163,7 +145,7 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#sendMessage(java.lang.String)
      */
-    public List sendNoArgMessage(URI message) {
+    public Map sendNoArgMessage(URI message) {
         return sendMessage(message, CommonMessageConstants.EMPTY);
     }
 
@@ -183,8 +165,8 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.desktop.modules.plastic.MessengerInternal#sendMessage(java.lang.String, java.util.Vector)
      */
-    public List sendMessage(URI message, List args) {
-        return prettify(hub.request(this.id, message, args));
+    public Map sendMessage(URI message, List args) {
+        return hub.request(this.id, message, args);
     }
 
 }

@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import org.votech.plastic.PlasticHubListener;
 
@@ -23,17 +24,17 @@ public interface MessengerInternal {
 
     String getHubIvorn();
 
-    List getPlasticVersions();
+    Map getPlasticVersions();
 
-    List getNames();
+    Map getNames();
 
-    List getIvorns();
+    Map getIvorns();
 
-    List echo(String greeting);
+    Map echo(String greeting);
 
-    List sendNoArgMessage(URI message);
+    Map sendNoArgMessage(URI message);
 
-    List sendMessage(URI message, List args);
+    Map sendMessage(URI message, List args);
 
     URI registerWith(PlasticHubListener hub);
 }
