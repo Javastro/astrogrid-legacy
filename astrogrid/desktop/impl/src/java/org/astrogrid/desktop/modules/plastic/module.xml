@@ -38,10 +38,6 @@
 			</property>
 			<return>
 				<description>This hub's ID</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>string</value>
-				</property>
 			</return>
 		</method>
 		<method name="getRegisteredIds">
@@ -88,10 +84,6 @@
 			</parameter>
 			<return>
 				<description>id</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>string</value>
-				</property>
 			</return>
 		</method>
 		<method name="registerNoCallBack">
@@ -110,10 +102,6 @@
 			</parameter>
 			<return>
 				<description>id</description>
-				<property>
-					<key>system.xmlrpc.type</key>
-					<value>string</value>
-				</property>
 			</return>
 		</method>
 		<method name="unregister">
@@ -131,6 +119,7 @@
 			</parameter>
 		</method>
 		<method name="request">
+			<description>Send a message to all registered applications</description>
 			<parameter name="name">
 				<description>Sender</description>
 			</parameter>
@@ -389,14 +378,14 @@
 		<description>sender</description>
 		<property>
 		<key>system.xmlrpc.type</key>
-		<value>String</value>
+		
 		</property>
 		</parameter>
 		<parameter name="message">
 		<description>The message to send</description>
 		<property>
 		<key>system.xmlrpc.type</key>
-		<value>String</value>
+		
 		</property>
 		</parameter>
 		<parameter name="args">
