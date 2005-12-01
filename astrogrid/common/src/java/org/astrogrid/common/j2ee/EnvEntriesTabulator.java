@@ -37,6 +37,9 @@ import javax.xml.transform.stream.StreamSource;
  * This class will only work inside a servlet container; it uses
  * classes from javax.servlet to access web.xml.
  *
+ * @deprecated Use the classes in
+ * {@link org.astrogrid.common.j2ee.environment} instead of this bean.
+ *
  * @author Guy Rixon
  */
 public class EnvEntriesTabulator {

@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	
+	<body>
+		
+		<p>An environment editor for web applications.</p>
+		
+		<h3>Purpose</h3>
+		<p>
+			The configuration of an AstroGrid server-side component is set through
+			its J2EE environment-entries, the values of which are made available 
+			to the application via JNDI. In a correctly-written web-application,
+			all the environment entries are declared (name, type, description)
+			in the deployment descriptor (web.xml) and may have default values there.
+			The servlet container running the web application is supposed to 
+			supply controls by which the environment entries may be set.
+		</p>
+		<p>
+			Jakarta-Tomcat, the preferred servlet container for AstroGrid components,
+			has a poor UI for setting the environment entries. In the most-recent
+			versions of Tomcat, this UI is not even present by default. Therefore,
+			it is convenient for a web application to provide its own UI
+			for setting environment entries.
+		</p>
+		<p>
+			This package contains components for a UI that sets environment entries
+			in its parent web-application. These components comply with J2EE
+			restrictions and can be used with any J2EE-compliant servlet container.
+			However, they are specifically intended for use with Tomcat.
+		</p>
+		
+		<h3>Structure and usage</h3>
+		<p>The environment-editing sub-system consists in:</p>
+		<ul>
+			<li>Java beans ({@link org.astrogrid.common.j2ee.environment.Environment} annd
+				{@link org.astrogrid.common.j2ee.environment.EnvEntry})
+				representing the relevant content of <i>web.xml</i>;</li>
+			<li>a servlet 
+				({@link org.astrogrid.common.j2ee.environment.EnvironmentServlet})
+				which parses <i>web.xml</i> and makes the results available as Java beans;</li>
+			<li>JSPs that present the content of the Java beans.</li>
+		</ul>
+		<p></p>
+		<p>
+			An <i>EnvEntry</i> bean represents one environment entry. It holds the name, 
+			description, type and default value from <i>web.xml</i>, the operational value from JNDI
+			and a replacement value set be an editor JSP. See the bean class for more details.
+		</p>
+		<p>
+			An <i>Environment</i> bean is
+			a container for a collection of <i>EnvEntry</i> beans. It also has a property holding the
+			context path of the web application; see the bean class for more details.
+		</p>
+		<p>
+			The servlet should be set to load as the web application starts (see the section below
+			for details). On loading, it parses <i>web.xml</i> and stores the results as a collection
+			of <i>EnvEntry</i> beans inside a <i>Environment</i> bean. The <i>Environment</i> bean is
+			added to the servlet context as an attribute of name <i>environment</i>.
+		</p>
+		<p>
+			There should be three JSPs with an optional fourth.
+		</p>
+		<ul>
+			<li><i>admin/environment-main.jsp</i> is an index page with instructions and links to the
+				other JSPs.</li>
+			<li><i>admin/environment-edit.jsp</i> displays the environment entries in an HTML form.
+			Submitting the form activates the <i>EnvironmentServlet</i> and updates the 
+			<i>EnvEntry</i> beans.</li>
+			<li><i>admin/environment-tomcat.jsp</i> writes out the environment as a context file for
+			Tomcat. It uses the replacement values if they are set, otherwise the operational values.
+			The output can be saved to file and inserted into Tomcat's configuration directory to
+				reconfigure the running application.</li>
+			<li><i>admin/environment-properties.jsp</i> works like 
+				<i>admin/environment-tomcat.jsp</i> but writes out the values as a properties file.
+			  This JSP isn't always needed in a Tomcat environment.</li>
+		</ul>
+		<p>
+			There are ready-to-use versions of all four of these JSPs in the Maven project 
+			<i>astrogrid/common</i>, in the 
+			<i>src/webapp/admin</i> directory. These should be copied into the Maven project
+			for the web application where they will be used. The JSPs can be used as provided or
+			can be customized.
+		</p>
+		<p>
+			A JSP that needs to display the environment entries loads the <i>Environment</i>
+			bean thus:
+		</p>
+		<pre>
+&lt;jsp:useBean class="org.astrogrid.common.j2ee.environment.Environment" 
+		 id="environment" scope="application"/&gt;
+		</pre>
+		<p>
+			This loads the bean that was set up by the <i>EnvironmentServlet</i> when the web application
+			started. The JSP then iterates through the <i>EnvEntry</i> beans thus:
+		</p>
+		<pre>
+&lt;%
+org.astrogrid.common.j2ee.environment.EnvEntry[] entries = environment.getEnvEntry();
+pageContext.setAttribute("entries", entries);
+%&gt;
+&lt;c:forEach var="e" items="${entries}"&gt;
+	...
+&lt;/c:forEach&gt;
+		</pre>
+		<p>
+			where the <i>c</i> prefix in the tags implies the core part of the Java standard tag library.
+			(An alternative to using JSTL is to use "scriptlets" to iterate and process the beans.
+			JSTL is neater.)
+		</p>
+		<p>
+			A JSP that wants to update the replacement values of the <i>EnvEntry</i> beans sends an
+			HTTP request (either get or post method) to the <i>EnvironmentServlet</i>, setting the request 
+			parameters as follows.
+		</p>
+		<ul>
+			<li>Each parameter is the replacement value for one <i>EnvEntry</i> bean.</li>
+			<li>The name of each parameter matches the name property of the bean whose value it sets.</li>
+		</ul>
+		<p>
+			Any other parameters are ignored. 
+		</p>
+		
+		
+		<h3>Adding this package to a web application</h3>
+		
+		<h4>Make the classes available</h4>
+		<p>You must make sure that you web application has, in <i>WEB-INF/lib</i>,
+		the AstroGrid jar including <i>org.astrogrid.common.j2ee.environment</i>.
+			The Maven dependency code for this is as follows.</p>
+		<pre>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.astrogrid&lt;/groupId&gt;
+	&lt;type&gt;jar&lt;/type&gt;
+	&lt;artifactId&gt;astrogrid-common&lt;/artifactId&gt;
+	&lt;version&gt;&lt;/version&gt;
+&lt;/dependency&gt;
+		</pre>
+		<p>and you will have to set the version yourself.</p>
+
+	  <h4>Configure the servlet</h4>
+		<p>Edit <i>web.xml</i> to configure the servlet:</p>
+		<pre>
+&lt;servlet&gt;
+	&lt;servlet-name&gt;EnvironmentServlet&lt;/servlet-name&gt;
+	&lt;display-name&gt;Environment control servlet&lt;/display-name&gt;
+	&lt;servlet-class&gt;org.astrogrid.common.j2ee.environment.EnvironmentServlet&lt;/servlet-class&gt;
+	&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+			
+&lt;servlet-mapping&gt;
+	&lt;servlet-name&gt;EnvironmentServlet&lt;/servlet-name&gt;
+	&lt;url-pattern&gt;/admin/EnvironmentServlet&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+		</pre>
+    <p>
+	    You will need to split this block of code to put the <i>servlet</i> and
+    	<i>servlet-mapping</i> elements in their proper places in <i>web.xml</i>.
+    	(The schema for <i>web.xml</i> prescribes the order of elements; all
+    	<i>servlet</i> elements must come before the first <i>servlet-mapping</i>
+    	so you can't put the mappings after the servlets to which they refer.)
+    </p>
+		<p>
+			The <i>load-on-startup</i> element causes the servlet to be loaded and initialized
+			before it is first called by the JSPs. This is important; the displays will be
+			wrong if this part is left out.
+		</p>
+		<p>
+			You can change the details of the declaration if you wish. E.g., you may wish
+			to change the <i>url-mapping</i> in order to use a different URL path for this
+			sub-system. If you do make changes, then you will useually have to change the JSPs
+			to suit.
+		</p>
+		
+		<h4>Add the JSPs</h4>
+		<p>
+			Copy the JSPs from the <i>src/webapp/admin</i> branch of the  
+			<i>astrogrid-common</i> Maven-project. Put them in the 
+			<i>src/webapp/admin</i> branch of the Maven project for your
+			own application, such that they go into CVS and appear in the <i>admin</i>
+			subdirectory of the web-application when it is deployed.
+			The JSPs need to be in this sub-directory in order to connect with
+			the environment servlet.
+		</p>
+		<p>
+			You are encouraged to customize the JSPs to suit your web application.
+			The JSP code in <i>astrogrid-common</i> should be used as examples for
+			creating your own JSPs which you keep CVS with your web-application code.
+		</p>
+		
+		<h4>Add jars for the Java standard tag library</h4>
+		<p>
+			The example JSPs use the Java standard tag library and you will need to provide
+			classes that implement this (unless your servlet container provides them). 
+		</p>
+	
+	</body>
+
+	
+</html>
