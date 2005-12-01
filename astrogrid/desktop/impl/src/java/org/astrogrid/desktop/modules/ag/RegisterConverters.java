@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.4 2005/11/29 11:28:05 nw Exp $
+/*$Id: RegisterConverters.java,v 1.5 2005/12/01 16:11:08 jdt Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,28 +10,27 @@
  **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.desktop.modules.system.converters.CastorBeanUtilsConvertor;
-import org.astrogrid.desktop.modules.system.converters.URIConverter;
-import org.astrogrid.desktop.modules.system.converters.VectorConvertor;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
-import org.picocontainer.Startable;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Vector;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.Converter;
+import org.astrogrid.desktop.modules.system.converters.CastorBeanUtilsConvertor;
+import org.astrogrid.desktop.modules.system.converters.CollectionConvertor;
+import org.astrogrid.desktop.modules.system.converters.URIConverter;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
+import org.picocontainer.Startable;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * registers all the result converters used in the ag module.
@@ -100,7 +99,7 @@ public class RegisterConverters implements IRegisterConverters, Startable {
                    
             }
         },Document.class);
-        ConvertUtils.register(VectorConvertor.getInstance(), Vector.class);        
+        ConvertUtils.register(CollectionConvertor.getInstance(), List.class);        
     }
 
     /**
@@ -113,6 +112,9 @@ public class RegisterConverters implements IRegisterConverters, Startable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.5  2005/12/01 16:11:08  jdt
+ * added a general Collections converter and registered it for Lists.
+ *
  * Revision 1.4  2005/11/29 11:28:05  nw
  * refactored converters
  *
