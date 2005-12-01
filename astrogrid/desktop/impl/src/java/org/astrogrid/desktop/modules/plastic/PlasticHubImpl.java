@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,10 +25,7 @@ import net.ladypleaser.rmilite.RemoteInvocationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcClient;
-import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.Finder;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
@@ -38,12 +37,16 @@ import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.PlasticListener;
 import org.votech.plastic.outgoing.PlasticException;
-import org.votech.plastic.util.ImmutableVector;
 
 import EDU.oswego.cs.dl.util.concurrent.CountDown;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 
 public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInternal, Startable {
+    /**
+     * 
+     */
+    private static final URI[] EMPTY_URI_ARRAY = new URI[0];
+
     /**
      * Logger for this class
      */
@@ -63,17 +66,17 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
         private boolean responding = true;
 
-        protected String id;
+        protected URI id;
 
         protected String name;
 
-        protected Vector supportedMessages;
+        protected List supportedMessages;
 
         public boolean isResponding() {
             return responding;
         }
 
-        public String getId() {
+        public URI getId() {
             return id;
         }
 
@@ -81,23 +84,23 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             return name;
         }
 
-        public Vector getMessages() {
+        public List getMessages() {
             return supportedMessages;
         }
 
-        public PlasticClientProxy(String name, Vector supportedMessages) {
+        public PlasticClientProxy(String name, List supportedMessages2) {
             try {
-                this.id = name + "(" + idGenerator.next() + ")";
+                this.id = new URI("plastic://acr/"+idGenerator.next()+"#"+name); //todo reexamine this
             } catch (Exception e) {
                 logger.error("Exception in unique name generator ", e);
                 // we're going to use the InMemoryNameGen
-                // class, so this can't happen.
+                // class, so this shouldn't happen.  
             }
-            this.supportedMessages = supportedMessages;
+            this.supportedMessages = supportedMessages2;
         }
 
         public PlasticClientProxy(String name) {
-            this(name, CommonMessageConstants.EMPTY_VECTOR);
+            this(name, CommonMessageConstants.EMPTY);
         }
 
         /**
@@ -106,7 +109,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
          * @param message
          * @return true if yes
          */
-        public boolean understands(String message) {
+        public boolean understands(URI message) {
             if (supportedMessages.size() == 0 || supportedMessages.contains(message))
                 return true;
             return false;
@@ -120,7 +123,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
          * @return
          * @throws PlasticException
          */
-        public abstract Object perform(String sender, String message, Vector args) throws PlasticException;
+        public abstract Object perform(URI sender, URI message, List args) throws PlasticException;
 
         protected void setResponding(boolean responding) {
             this.responding = responding;
@@ -135,13 +138,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
         private PlasticListener remoteClient;
 
-        public RMIPlasticClient(String name, Vector supportedMessages, PlasticListener plastic) {
+        public RMIPlasticClient(String name, List supportedMessages, PlasticListener plastic) {
             super(name, supportedMessages);
             logger.debug("Ctor: RMIPlasticClient supports messages: " + supportedMessages);
             this.remoteClient = plastic;
         }
 
-        public Object perform(String sender, String message, Vector args) throws PlasticException {
+        public Object perform(URI sender, URI message, List args) throws PlasticException {
             try {
                 Object response = remoteClient.perform(sender, message, args);
                 setResponding(true);
@@ -169,20 +172,16 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
         private boolean validURL;
 
-        public XMLRPCPlasticClient(String name, Vector supportedMessages, String callbackURL) {
+        public XMLRPCPlasticClient(String name, List supportedMessages, URL callbackURL) {
             super(name, supportedMessages);
             logger.info("Ctor: XMLRPCPlasticClient with callBackURL " + callbackURL + " and supports messages: "
                     + supportedMessages);
-            try {
-                xmlrpc = new XmlRpcClient(callbackURL);
-                validURL = true;
-            } catch (MalformedURLException e) {
-                logger.warn("Attempt to register with invalid callback URL");
-                setResponding(false);
-            }
+
+            xmlrpc = new XmlRpcClient(callbackURL);
+            validURL = true;
         }
 
-        public Object perform(String sender, String message, Vector args) throws PlasticException {
+        public Object perform(URI sender, URI message, List args) throws PlasticException {
             if (!validURL)
                 throw new PlasticException("Cannot send message to " + getId() + " due to invalid callback URL");
             logger.info("Performing " + message + " from " + sender);
@@ -225,7 +224,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
          * @see org.astrogrid.desktop.modules.plastic.PlasticHubImpl.PlasticClientProxy#perform(java.lang.String,
          *      java.lang.String, java.util.Vector)
          */
-        public Object perform(String sender, String message, Vector args) {
+        public Object perform(URI sender, URI message, List args) {
             // do nothing
             return CommonMessageConstants.RPCNULL;
         }
@@ -234,18 +233,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     private final Map clients = new HashMap();
 
-    private final  NameGen idGenerator;
-
+    private final NameGen idGenerator;
     private final SystemTray tray;
-    
     private final RmiServer rmiServer;
     private final WebServer webServer;
-    
-    private final Vector EMPTYVECTOR = new ImmutableVector(); 
-
     private final Executor executor;
 
-    private final String hubId;
+    private final URI hubId;
 
     private File plasticPropertyFile;
 
@@ -271,32 +265,32 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // NWW - not too much - makes them kind of like co-routhines. not ideal - but maybe better than having one monster class.
     }
 
-    public Vector getRegisteredIds() {
+    public List getRegisteredIds() {
         Set ids = clients.keySet();
-        return new Vector(ids);
+        return new ArrayList(ids);
     }
 
-    public String registerXMLRPC(String name, Vector supportedOperations, String callBackURL) {
+    public URI registerXMLRPC(String name, List supportedOperations, URL callBackURL) {
         PlasticClientProxy client = new XMLRPCPlasticClient(name, supportedOperations, callBackURL);
         return register(client);
     }
 
-    public String registerRMI(String name, Vector supportedOperations, PlasticListener caller) {
+    public URI registerRMI(String name, List supportedOperations, PlasticListener caller) {
         PlasticClientProxy client = new RMIPlasticClient(name, supportedOperations, caller);
         return register(client);
     }
 
-    public String registerNoCallBack(String name) {
+    public URI registerNoCallBack(String name) {
         PlasticClientProxy client = new DeafPlasticClient(name);
         return register(client);
     }
 
     // todo - think about synch issues
-    private synchronized String register(PlasticClientProxy client) {
-        String id = client.getId();
+    private synchronized URI register(PlasticClientProxy client) {
+        URI id = client.getId();
 
         clients.put(id, client);
-        Vector args = new Vector();
+        List args = new ArrayList();
         args.add(id);
         logger.info(id + " has registered");
         requestAsynch(hubId, HubMessageConstants.APPLICATION_REGISTERED_EVENT, args);
@@ -328,7 +322,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     }
 
-    public void unregister(String id) {
+    public void unregister(URI id) {
         if (id.equals(hubId))
             // JOHN - sure you want to throw a runtime here? bettr to just log and ignore is some client is playing sillybuggers?
             throw new RuntimeException("Cannot unregister the hub itself");
@@ -349,12 +343,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * @param sender hub id of sending app
      * @param message the message string being sent
      * @param args any arguments
-     * @param recipients if non-null, then only multiplex to these recipients, otherwise send to all
+     * @param recipients if nonzero length, then only multiplex to these recipients, otherwise send to all
      * @param shouldWaitForResults
      */
-    private Vector send(final String sender, final String message, final Vector args, Vector recipients,
+    private Map send(final URI sender, final URI message, final List args, List recipients,
             boolean shouldWaitForResults) {
-        final List returns = Collections.synchronizedList(new ArrayList());
+        final Map returns = Collections.synchronizedMap(new HashMap());
         Iterator it = clients.keySet().iterator();
         List clientsToMessage = new ArrayList();
         // We need to get the number of clients to wait for first
@@ -364,7 +358,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 continue;
             if (!client.understands(message))
                 continue;
-            if (recipients == null || recipients.contains(client.getId())) {
+            if (recipients.size()==0 || recipients.contains(client.getId())) {
                 clientsToMessage.add(client);
             }
         }
@@ -397,7 +391,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             public void run() {
                 try {
                     Object rv = client.perform(sender, message, args);
-                    Hashtable result = new Hashtable();
+
                     // A return value really shouldn't be null, as xml-rpc
                     // doesn't
                     // support it...but insulate ourselves in case java-rmi
@@ -406,8 +400,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                     if (rv == null) {
                         rv = CommonMessageConstants.RPCNULL;
                     }
-                    result.put(client.getId(), rv);
-                    returns.add(result);
+                    returns.put(client.getId(), rv);
                 } catch (PlasticException e) {
                     // Not much to do except log it...
                     // LOW consider sending a message, but beware we don't get
@@ -442,7 +435,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 logger.warn("Interrupted aquiring gate ", e);
             }
         }
-        return new Vector(returns);
+        return returns;
     }
 
     /*
@@ -450,23 +443,23 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * 
      * @see org.votech.plastic.PlasticHub#send(java.lang.String, java.lang.String, java.util.Vector)
      */
-    public Vector request(String sender, String message, Vector args) {
-        return send(sender, message, args, null, true);
+    public Map request(URI sender, URI message, List args) {
+        return send(sender, message, args, CommonMessageConstants.EMPTY, true);
     }
 
-    public Vector requestToSubset(String sender, String message, Vector args, Vector recipientIds) {
+    public Map requestToSubset(URI sender, URI message, List args, List recipientIds) {
         return send(sender, message, args, recipientIds, true);
     }
 
-    public void requestToSubsetAsynch(String sender, String message, Vector args, Vector recipientIds) {
+    public void requestToSubsetAsynch(URI sender, URI message, List args, List recipientIds) {
         send(sender, message, args, recipientIds, false);
     }
 
-    public void requestAsynch(String sender, String message, Vector args) {
-        send(sender, message, args, null, false);
+    public void requestAsynch(URI sender, URI message, List args) {
+        send(sender, message, args, CommonMessageConstants.EMPTY, false);
     }
 
-    public String getHubId() {
+    public URI getHubId() {
         return hubId;
     }
 
@@ -475,7 +468,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // see the Plastic spec http://plastic.sourceforge.net and
         // discussions on the DS6 forum about debranding.
         // todo To allow concurrent use of the ACR and alterative
-        // platic hubs, we'll need a mechanism to disable PLASTIC
+        // platic hubs (if there should ever be one),
+        // we'll need a mechanism to disable PLASTIC
         // and prevent this file being written.
         try {
             // JOHN - not to keen on creating finders internally. if you need to dynamically lookup services, 
@@ -516,7 +510,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public void stop() {
-        requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY_VECTOR);
+        requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
         if (plasticPropertyFile != null) {
             logger.debug("Deleting Plastic Property File");
             plasticPropertyFile.delete();
@@ -528,12 +522,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * 
      * @see org.votech.plastic.PlasticHub#purgeNonresponsiveApps()
      */
-    public Vector purgeUnresponsiveApps() {
-        Vector nonResponders = getNonResponders();
+    public List purgeUnresponsiveApps() {
+        List nonResponders = getNonResponders();
         Set deadIds = new HashSet(nonResponders);
         Iterator it = deadIds.iterator();
         while (it.hasNext()) {
-            String id = (String) it.next();
+            URI id = (URI) it.next();
             unregister(id);
         }
         logger.info("Removed " + nonResponders.size() + " dead applications");
@@ -545,23 +539,23 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * 
      * @see org.votech.plastic.PlasticHubListener#markUnresponsiveApps()
      */
-    public Vector markUnresponsiveApps() {
+    public List markUnresponsiveApps() {
         // ping them. Applications will automcatically mark themselves as duff.
-        Vector args = new Vector();
+        List args = new ArrayList();
         args.add("ping");
         request(hubId, CommonMessageConstants.ECHO, args);
         return getNonResponders();
     }
 
-    private Vector getNonResponders() {
-        Vector dead = new Vector();
+    private List getNonResponders() {
+        List dead = new ArrayList();
         Set appsIds = clients.keySet();
         Iterator it = appsIds.iterator();
         while (it.hasNext()) {
-            String proxyId = (String) it.next();
+            URI proxyId = (URI) it.next();
             PlasticClientProxy proxy = (PlasticClientProxy) clients.get(proxyId);
             if (!proxy.isResponding()) {
-                String id = proxy.getId();
+                URI id = proxy.getId();
                 logger.debug("Application " + id + " is marked as dead.");
                 dead.add(id);
             }

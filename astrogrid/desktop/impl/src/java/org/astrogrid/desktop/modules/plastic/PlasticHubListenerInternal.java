@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.plastic;
 
-import java.util.Vector;
+import java.util.List;
 
 /**
  * @author jdt@roe.ac.uk
@@ -15,12 +15,12 @@ public interface PlasticHubListenerInternal {
      * 
      * @return the list ids of dead apps.
      */
-    Vector markUnresponsiveApps();
+    List markUnresponsiveApps();
 
     /**
      * Unregister any apps marked as unresponsive.
      * 
      * @return the list of ids of unregistered apps.
      */
-    Vector purgeUnresponsiveApps();
+    List purgeUnresponsiveApps();
 }

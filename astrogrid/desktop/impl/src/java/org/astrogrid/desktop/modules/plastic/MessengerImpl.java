@@ -3,8 +3,12 @@
  */
 package org.astrogrid.desktop.modules.plastic;
 
-import java.util.Hashtable;
-import java.util.Vector;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +26,7 @@ import org.votech.plastic.incoming.handlers.StandardHandler;
 public class MessengerImpl implements MessengerInternal, PlasticListener {
     private static final String IVORN = "ivo://org.astrogrid/acr";
 
-    private static final String NAME = "ACR Plastic Hub";
+    private static final String NAME = "ACR-Plastic-Hub";
 
     /**
      * Logger for this class
@@ -31,7 +35,7 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
 
     private MessageHandler handler;
 
-    private String id = "undefined";
+    private URI id;
 
     private PlasticHubListener hub;
 
@@ -49,14 +53,14 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.votech.plastic.PlasticListener#receive(java.lang.String, java.lang.String, java.util.Vector)
      */
-    public Object perform(String sender, String message, Vector args) {
-        return handler.perform(sender, message, args);
+    public Object perform(URI sender, URI message, List args) {
+        return handler.handle(sender, message, args);
     }
 
     /**
      * @return
      */
-    public Vector getSupportedMessages() {
+    public List getSupportedMessages() {
         return handler.getHandledMessages();
     }
 
@@ -66,9 +70,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @see org.astrogrid.acr.plastic.HubApplication#getHubPlasticVersion()
      */
     public String getHubPlasticVersion() {
-        return (String) handler.perform(this.id,
+        return (String) handler.handle(this.id,
                 CommonMessageConstants.GET_VERSION,
-                CommonMessageConstants.EMPTY_VECTOR);
+                CommonMessageConstants.EMPTY);
     }
 
     /*
@@ -77,9 +81,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @see org.astrogrid.acr.plastic.HubApplication#getHubName()
      */
     public String getHubName() {
-        return (String) handler.perform(this.id,
+        return (String) handler.handle(this.id,
                 CommonMessageConstants.GET_NAME,
-                CommonMessageConstants.EMPTY_VECTOR);
+                CommonMessageConstants.EMPTY);
     }
 
     /*
@@ -88,9 +92,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @see org.astrogrid.acr.plastic.HubApplication#getHubIvorn()
      */
     public String getHubIvorn() {
-        return (String) handler.perform(this.id,
+        return (String) handler.handle(this.id,
                 CommonMessageConstants.GET_IVORN,
-                CommonMessageConstants.EMPTY_VECTOR);
+                CommonMessageConstants.EMPTY);
     }
 
     /*
@@ -98,10 +102,10 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#getPlasticVersions()
      */
-    public String[] getPlasticVersions() {
+    public List getPlasticVersions() {
         return prettify(hub.request(this.id,
                 CommonMessageConstants.GET_VERSION,
-                CommonMessageConstants.EMPTY_VECTOR));
+                CommonMessageConstants.EMPTY));
     }
 
     /*
@@ -109,9 +113,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#getNames()
      */
-    public String[] getNames() {
-        Vector results = hub.request(this.id, CommonMessageConstants.GET_NAME,
-                CommonMessageConstants.EMPTY_VECTOR);
+    public List getNames() {
+        Map results = hub.request(this.id, CommonMessageConstants.GET_NAME,
+                CommonMessageConstants.EMPTY);
         return prettify(results);
     }
 
@@ -121,14 +125,14 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @param results see above
      * @return see above
      */
-    private String[] prettify(Vector results) {
-        String[] prettified = new String[results.size()];
-        for (int i = 0; i < prettified.length; ++i) {
-            //JOHN - this assumes that each hash map only ever has one key - is this always true?? ifso, why the hash?
-            Hashtable result = (Hashtable) results.get(i);
-            Object key = result.keys().nextElement();
-            Object value = result.get(key);
-            prettified[i] = key + ": " + value;
+    private List prettify(Map results) {
+        List prettified = new ArrayList();
+        Set keySet = results.keySet();
+        Iterator it = keySet.iterator();
+        while (it.hasNext()) {
+            Object key = it.next();
+            Object value = results.get(key);
+            prettified.add(key + ": " + value);
         }
         return prettified;
     }
@@ -138,9 +142,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#getIvorns()
      */
-    public String[] getIvorns() {
+    public List getIvorns() {
         return prettify(hub.request(this.id, CommonMessageConstants.GET_IVORN,
-                CommonMessageConstants.EMPTY_VECTOR));
+                CommonMessageConstants.EMPTY));
     }
 
     /*
@@ -148,8 +152,8 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#echo(java.lang.String)
      */
-    public String[] echo(String message) {
-        Vector args = new Vector();
+    public List echo(String message) {
+        List args = new ArrayList();
         args.add(message);
         return prettify(hub.request(this.id, CommonMessageConstants.ECHO, args));
     }
@@ -159,8 +163,8 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.acr.plastic.HubApplication#sendMessage(java.lang.String)
      */
-    public Object[] sendNoArgMessage(String message) {
-        return sendMessage(message, CommonMessageConstants.EMPTY_VECTOR);
+    public List sendNoArgMessage(URI message) {
+        return sendMessage(message, CommonMessageConstants.EMPTY);
     }
 
     /*
@@ -168,7 +172,7 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.desktop.modules.plastic.HubApplication#registerWith(org.votech.plastic.PlasticHub)
      */
-    public String registerWith(PlasticHubListener hub) {
+    public URI registerWith(PlasticHubListener hub) {
         this.hub = hub;
         this.id = hub.registerRMI(NAME, this.getSupportedMessages(), this);
         return id;
@@ -179,7 +183,7 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * 
      * @see org.astrogrid.desktop.modules.plastic.MessengerInternal#sendMessage(java.lang.String, java.util.Vector)
      */
-    public Object[] sendMessage(String message, Vector args) {
+    public List sendMessage(URI message, List args) {
         return prettify(hub.request(this.id, message, args));
     }
 
