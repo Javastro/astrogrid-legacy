@@ -92,8 +92,7 @@
         <faq id="contact">
             <question id="faq-whom"> My question isn't answered by the FAQ. Whom should I contact? </question>
             <answer>
-                <p> First try our <a href="http://wiki.astrogrid.org">wiki</a> or post a question on the <a href="http://forum.astrogrid.org">forum</a>. Technical 
-                    questions concerning individual software components may be addressed to any <a href="http://wiki.astrogrid.org/bin/view/Astrogrid/TeamMembers">AstroGrid software developer</a>. </p>
+                <p> Try our <a href="http://wiki.astrogrid.org">wiki</a>. Technical questions concerning individual software components may be addressed to any <a href="http://wiki.astrogrid.org/bin/view/Astrogrid/TeamMembers">AstroGrid software developer</a>. </p>
             </answer>
         </faq>
         <faq id="faq-where">

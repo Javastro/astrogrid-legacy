@@ -12,7 +12,7 @@ try to keep in synch with navigation.xml
         -->
 
     <menu name="About Astrogrid">
-      <item name="Announcing Astrogrid 1.1" href="/index.html" />
+      <item name="Announcing Astrogrid 1.3" href="/index.html" />
       <item name="What is Astrogrid?" href="/what-is-ag.html" />
       <!--item name="Feature Summary" href="/feature-summary.html" /-->
       <item name="FAQ" href="/faq.html" />
@@ -284,6 +284,7 @@ try to keep in synch with navigation.xml
         <item name="Client Development Kits" href="/developerdocs/cdk.html" />
         <item name="Work with AstroGrid Source"       href="/developerdocs/source.html"/>
           <item name="Obtaining source code" href="/cvs-usage.html" />
+          <item name="Architecture" href="/developerdocs/astrogrid-v1.1-architecture.htm" />
 		  <!-- NWW: we've not policy on this, and there's not much to say here that hasn't been said on previous pages
           <item name="Contributing" href="/developerdocs/contributing.html" />
 		  -->
@@ -305,7 +306,7 @@ try to keep in synch with navigation.xml
       <item name="Development Site" target="_blank"      href="http://www.astrogrid.org/maven/docs/HEAD/" />
       <item name="Latest news" target="_blank"      href="http://news.astrogrid.org/" />
       <item name="Wiki" target="_blank" href="http://wiki.astrogrid.org" />
-      <item name="Forum" target="_blank" href="http://forum.astrogrid.org" />
+      <!--item name="Forum" target="_blank" href="http://forum.astrogrid.org" /-->
       <!--item name="Publications" href="/publications.html" /-->
       <!--item name="Contacts" href="/team-list.html" /-->
     </menu><!-- end further information -->
@@ -315,7 +316,7 @@ try to keep in synch with navigation.xml
         -->
 
     <menu name="Other Formats">
-      <item name="PDF" href="/astrogrid-release-1.1.pdf" />
+      <item name="PDF" href="/astrogrid-release-1.3.pdf" />
     </menu>
 
     <menu name="Previous Releases">
