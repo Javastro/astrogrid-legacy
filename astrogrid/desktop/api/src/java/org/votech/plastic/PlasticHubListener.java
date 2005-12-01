@@ -1,6 +1,9 @@
 package org.votech.plastic;
 
-import java.util.Vector;
+import java.net.URI;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The interface that a Plastic Hub should support. For information on what a Plastic Hub is, and why you'd want one,
@@ -50,16 +53,16 @@ public interface PlasticHubListener {
      * Get all the IDs of the currently registered applications.
      * 
      * @return see above
-     * @xmlrpc returns an array
+     * @xmlrpc returns an array of strings
      */
-    public Vector getRegisteredIds();
+    public List getRegisteredIds();
 
     /**
      * Get this hub's ID. The hub "registers with itself", and this method will give you its own Id.
      * 
      * @return see above
      */
-    public String getHubId();
+    public URI getHubId();
 
     /**
      * Register an application with the hub. Each application that wishes to use the hub should register with it - the
@@ -80,23 +83,23 @@ public interface PlasticHubListener {
      * @JOHN - callbackURL should be a URL.
      * @JOHN - should vector contains URIs specifying supported messages? 
      */
-    public String registerXMLRPC(String name, Vector supportedMessages,
-            String callBackURL);
+    public URI registerXMLRPC(String name, List supportedMessages,
+            URL callBackURL);
 
     /**
-     * A java-rmi version of {@link #registerXMLRPC(String, Vector, String) registerXMLRPC}
+     * A java-rmi version of {@link #registerXMLRPC(String, List, URL) registerXMLRPC}
      * 
-     * @param name see {@link #registerRMI(String, Vector, PlasticListener) registerRMI}
+     * @param name see {@link #registerRMI(String, List, PlasticListener) registerRMI}
      * @param supportedMessages
-     * @see #registerXMLRPC(String, Vector, String)
+     * @see #registerXMLRPC(String, List, URL)
      * @param caller the PlasticListener that wishes to register
      * @return
-     * @see #registerXMLRPC(String, Vector, String)
+     * @see #registerXMLRPC(String, List, URL)
      * @xmlrpc Not available.
      * @example Suppose your application implements {@link PlasticListener PlasticListener}. Then you register with the
      *          hub to receive ALL messages using <code>String id = hub.registerRMI("MyApp", new Vector(),this);</code>
      */
-    public String registerRMI(String name, Vector supportedMessages,
+    public URI registerRMI(String name, List supportedMessages,
             PlasticListener caller);
 
     /**
@@ -105,19 +108,19 @@ public interface PlasticHubListener {
      * spec.
      * 
      * @param name
-     * @see #registerXMLRPC(String, Vector, String)
+     * @see #registerXMLRPC(String, List, URL)
      * @return
-     * @see #registerXMLRPC(String, Vector, String)
-     * @see #registerXMLRPC(String, Vector, String)
+     * @see #registerXMLRPC(String, List, URL)
+     * @see #registerXMLRPC(String, List, URL)
      */
-    public String registerNoCallBack(String name);
+    public URI registerNoCallBack(String name);
 
     /**
      * Unregister the application from the hub.
      * 
      * @param id the application to unregister
      */
-    public void unregister(String id);
+    public void unregister(URI id);
 
     /**
      * Send a message to all registered Plastic applications.
@@ -130,32 +133,32 @@ public interface PlasticHubListener {
      * @JOHN a Map[] would be more unambiguous. I don't understand why a list of maps is needed instead of just a map.
      * @xmlrpc the return object is an array of structs mapping application ids to responses
      */
-    public Vector request(String sender, String message, Vector args);
+    public Map request(URI sender, URI message, List args);
 
     /**
-     * Send a request to listed registered Plastic apps. See {@link #request(String, String, Vector) request} for
+     * Send a request to listed registered Plastic apps. See {@link #request(URI, URI, List) request} for
      * details of the other parameters.
      * 
      * @param recipientIds a list of target application ids
      * @xmlrpc the list of target application ids is an Array
      */
-    public Vector requestToSubset(String sender, String message, Vector args,
-            Vector recipientIds);
+    public Map requestToSubset(URI sender, URI message, List args,
+            List recipientIds);
 
     /**
      * Send a request to listed registered Plastic apps, but don't wait for a response.
      * 
-     * @param recipientIds a list of target application ids See {@link #request(String, String, Vector) request} for
+     * @param recipientIds a list of target application ids See {@link #request(URI, URI, List) request} for
      *            details of the other parameters.
      */
 
-    public void requestToSubsetAsynch(String sender, String message,
-            Vector args, Vector recipientIds);
+    public void requestToSubsetAsynch(URI sender, URI message,
+            List args, List recipientIds);
 
     /**
      * Send a request to all registered Plastic apps, but don't wait for a response. See
-     * {@link #request(String, String, Vector) request} for details of the other parameters.
+     * {@link #request(URI, URI, List) request} for details of the other parameters.
      */
-    public void requestAsynch(String sender, String message, Vector args);
+    public void requestAsynch(URI sender, URI message, List args);
 
 }

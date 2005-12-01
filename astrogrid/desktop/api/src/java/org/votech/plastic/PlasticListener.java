@@ -1,6 +1,8 @@
 package org.votech.plastic;
 
-import java.util.Vector;
+import java.net.URI;
+import java.util.List;
+
 
 /**
  * The interface that java-rmi Plastic-compatible applications should support.
@@ -28,6 +30,6 @@ public interface PlasticListener {
      * @return any return value of the action
      * @see <a href="http://plastic.sourceforge.net">http://plastic.sourceforge.net</a>
      */
-    public Object perform(String sender, String message, Vector args);
+    public Object perform(URI sender, URI message, List args);
 
 }
