@@ -10,16 +10,15 @@ import java.util.List;
  * @see <a href="http://plastic.sourceforge.net/">http://plastic.sourceforge.net</a>
  * @author jdt@roe.ac.uk
  * @date 11-Oct-2005
- * @version 0.1 
+ * @version 0.2
  * @since 1.3
- * FIXME check that the xml on the wire is correct (maybe add in logging permanently?) 
- * FIXME R interface
+ * JDTTODO R interface
  */
 public interface PlasticListener {
     /**
      * The current version of Plastic defined by this interface.
      */
-    String CURRENT_VERSION = "0.1";
+    String CURRENT_VERSION = "0.2";
 
     /**
      * Request that the application perform an action based on a message.
@@ -28,6 +27,7 @@ public interface PlasticListener {
      * @param message the string representing the action. - should this be a URI?
      * @param args any argumentss to pass
      * @return any return value of the action
+     * @xmlrpc the URIs are strings (of the appropriate form) and the List is an array
      * @see <a href="http://plastic.sourceforge.net">http://plastic.sourceforge.net</a>
      */
     public Object perform(URI sender, URI message, List args);
