@@ -85,12 +85,11 @@ public interface PlasticHubListener {
      * A java-rmi version of {@link #registerXMLRPC(String, List, URL) registerXMLRPC}
      * 
      * @param name see {@link #registerRMI(String, List, PlasticListener) registerRMI}
-     * @param supportedMessages
      * @param caller the PlasticListener that wishes to register
-     * @see #registerXMLRPC(String, List, URL)
+     * @see #registerXMLRPC(String, List, URL) for other parameters
      * @xmlrpc Not available.
      * @example Suppose your application implements {@link PlasticListener PlasticListener}. Then you register with the
-     *          hub to receive ALL messages using <code>String id = hub.registerRMI("MyApp", new ArrayList(),this);</code>
+     *          hub to receive ALL messages using <code>URI id = hub.registerRMI("MyApp", new ArrayList(),this);</code>
      */
     public URI registerRMI(String name, List supportedMessages,
             PlasticListener caller);
@@ -100,8 +99,7 @@ public interface PlasticHubListener {
      * applications like scripting environments to register. Note: this method is currently not part of the Plastic
      * spec.
      * 
-     * @param name
-     * @see #registerXMLRPC(String, List, URL)
+     * @see #registerXMLRPC(String, List, URL) for parameters
      */
     public URI registerNoCallBack(String name);
 
@@ -120,7 +118,7 @@ public interface PlasticHubListener {
      * @param message the message to send.
      * @param args any arguments to pass with the message
      * @return a Map of application ids to responses
-     * @xmlrpc the return object is an array a struct whos elements names are application ids
+     * @xmlrpc the return object is an array a struct whose elements names are application ids 
      */
     public Map request(URI sender, URI message, List args);
 
@@ -128,8 +126,8 @@ public interface PlasticHubListener {
      * Send a request to listed registered Plastic apps. See {@link #request(URI, URI, List) request} for
      * details of the other parameters.
      * 
-     * @param recipientIds a list of target application ids
-     * @xmlrpc the list of target application ids is an Array
+     * @param recipientIds a list of target application ids (as URIs)
+     * @xmlrpc the list of target application ids is an array of strings
      */
     public Map requestToSubset(URI sender, URI message, List args,
             List recipientIds);

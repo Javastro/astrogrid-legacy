@@ -22,10 +22,10 @@ public interface PlasticListener {
     /**
      * Request that the application perform an action based on a message.
      * 
-     * @param sender the ID of the originating application
-     * @param message the string representing the action. - should this be a URI?
-     * @param args any argumentss to pass
-     * @return any return value of the action
+     * @param sender the ID of the originating application.
+     * @param message the URI representing the action.
+     * @param args any arguments to pass.
+     * @return any return value of the action.
      * @xmlrpc the URIs are strings (of the appropriate form) and the List is an array
      * @see <a href="http://plastic.sourceforge.net">http://plastic.sourceforge.net</a>
      */
