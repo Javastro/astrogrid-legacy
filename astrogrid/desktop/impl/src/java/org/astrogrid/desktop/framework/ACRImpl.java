@@ -1,4 +1,4 @@
-/*$Id: ACRImpl.java,v 1.7 2005/11/29 12:10:49 nw Exp $
+/*$Id: ACRImpl.java,v 1.8 2005/12/02 13:40:13 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,8 +36,6 @@ import org.nanocontainer.aop.MethodPointcut;
 import org.nanocontainer.aop.PointcutsFactory;
 import org.xml.sax.SAXException;
 
-import EDU.oswego.cs.dl.util.concurrent.Executor;
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -83,7 +81,6 @@ public class ACRImpl implements MutableACR {
         DefaultModule m = new DefaultModule();
         m.registerComponentInstance(MutableACR.class,this);
         m.registerComponentInstance(Shutdown.class,new ShutdownImpl(modules));
-    m.registerComponentInstance(Executor.class, new PooledExecutor());  //Thread pool with default settings
     
         ModuleDescriptor md = new ModuleDescriptor();
         md.setName("builtin");
@@ -362,6 +359,9 @@ public class ACRImpl implements MutableACR {
 
 /* 
 $Log: ACRImpl.java,v $
+Revision 1.8  2005/12/02 13:40:13  nw
+removed temporary executor
+
 Revision 1.7  2005/11/29 12:10:49  nw
 put in the executor for now - will take out again after.
 
