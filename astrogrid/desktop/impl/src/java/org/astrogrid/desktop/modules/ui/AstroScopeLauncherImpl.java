@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.25 2005/11/24 01:13:24 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.26 2005/12/02 13:42:48 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,8 @@ import org.w3c.dom.NodeList;
 
 import org.apache.commons.lang.WordUtils;
 
+import com.l2fprod.common.swing.StatusBar;
+
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
@@ -49,9 +51,6 @@ import uk.ac.starlink.votable.TableElement;
 import uk.ac.starlink.votable.VOElement;
 import uk.ac.starlink.votable.VOElementFactory;
 import uk.ac.starlink.votable.VOStarTable;
-import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
-import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.EdgeItem;
@@ -172,6 +171,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -237,9 +237,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
     //JButton saveImageButton;
     JButton saveButton;
   
-    
-    /** configurable thread-pool - used to perform the queries and background updates. */
-    private PooledExecutor executor;
+
    
     /**
      * 
@@ -279,18 +277,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         
         // configure execution system
         nodeSizingMap = Collections.synchronizedMap(new java.util.TreeMap());
-        this.executor = new PooledExecutor(new LinkedQueue()); // infinite task buffer
-        this.executor.setMinimumPoolSize(5); // always have 5 threads ready to go.
-        this.executor.setThreadFactory(new ThreadFactory() { // name threads, and make them slightly lower priority.
-            private final ThreadFactory wrapped = executor.getThreadFactory();
 
-            public Thread newThread(Runnable arg0) {
-                Thread t = wrapped.newThread(arg0);
-                t.setName("Astroscope Query Thread - " + t.getName());
-                t.setPriority(Thread.NORM_PRIORITY -1);
-                return t;
-            }
-        });
         this.setSize(1000,707); // same proportions as A4,    
                    
 //        this.setSize(700, 700);  
@@ -304,6 +291,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
         setIconImage(IconHelper.loadIcon("search.gif").getImage());
     }
+    
+
        
     private String conformToMyspaceName(String name) {
         name = name.replaceAll(" ", "_");
@@ -697,7 +686,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
             Node n = (Node)i.next();
             n.setAttribute("selected","false");
         }        
-        refocusMainNodes();                
+        refocusMainNodes(); 
+        setProgressMax(1);
+        setProgressValue(0);
   
     }
     
@@ -1219,16 +1210,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
      * @todo refactor more of the commonality of Siap and Cone into the base class.*/
     private class SiapRetrieval extends AbstractRetreiver {
 
-        public SiapRetrieval(ResourceInformation information, double ra, double dec, double raSize,double decSize) throws InvalidArgumentException, NotFoundException, URISyntaxException {
-            super(ra,dec);
-            this.information = (SiapInformation)information;
-            siapURL = siap.constructQueryS(new URI(information.getAccessURL().toString()),ra, dec,raSize,decSize);
+        public SiapRetrieval(ResourceInformation information, double ra, double dec, double raSize,double decSize)  {
+            super(information,ra,dec);
+            this.raSize = raSize;
+            this.decSize = decSize;
         }
-        private final URL siapURL;
-        private final SiapInformation information;
- 
-        public void run() {
-            try {
+        private final double raSize;
+        private final double decSize;
+        protected Object construct() throws Exception{
+                URL siapURL = siap.constructQueryS(new URI(information.getAccessURL().toString()),ra, dec,raSize,decSize);
                 //              Create a tree of VOElements from the given request url.
                 VOElement top = new VOElementFactory().makeVOElement( siapURL);
                 // managed to fetch the resource ok, so le's create the service node.
@@ -1243,48 +1233,46 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
                 //riNode.setAttribute("dec","0");
                 if (information.getLogoURL() != null) {
                     riNode.setAttribute("img",information.getLogoURL().toString());
+                    logger.debug("set images to " + information.getLogoURL());
+                            
                 }
                 StringBuffer sb = new StringBuffer();
                 sb.append("<html>Title: ").append(information.getTitle())
                     .append("<br>ID: ").append(information.getId())
                     .append("<br>Description: <p>")
                     .append(information.getDescription()!= null ?   WordUtils.wrap(information.getDescription(),TOOLTIP_WRAP_LENGTH,"<br>",false) : "")                
-                    .append("</p><br>Service Type: ").append(information.getImageServiceType())
+                    .append("</p><br>Service Type: ").append(((SiapInformation)information).getImageServiceType())
                     .append("</html>");                        
                 riNode.setAttribute("tooltip",sb.toString());
                 // build subtree for this service
                 buildNodes(top, riNode);
-                // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
-                // concurrent modification exceptions
-                if (riNode.getChildCount() > 0) { // found some results..
-                SwingUtilities.invokeLater(new Runnable() { // has to add nodes on event dispatch thread.
-                    public void run() {
-                        AstroScopeLauncherImpl.this.setStatusMessage("Adding results from " + information.getName());
-                        DefaultEdge siaEdge = new DefaultEdge(siaNode,riNode);
-                        siaEdge.setAttribute("weight","2");
-                        getTree().addChild(siaEdge);                                               
-                    }
-                });  
-                }                
-            } catch (Exception e) {
-                logger.warn("Failed to process " + information.getId(),e);
-            }
+                return riNode;              
+        }
+        protected void doFinished(Object result) {        
+            // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
+            // concurrent modification exceptions
+            TreeNode riNode = (TreeNode)result;
+            if (riNode.getChildCount() > 0) {
+                DefaultEdge siaEdge = new DefaultEdge(siaNode,riNode);
+                siaEdge.setAttribute("weight","2");
+                setStatusMessage(information.getTitle() + " : Adding Results");                
+                getTree().addChild(siaEdge);   
+            } else {
+                setStatusMessage(information.getTitle() + " : No Results");
+            }                                        
         }
     } // end siap retriever
     
     /** taks that retreives, parses and adds to the display the results of one cone service */
     private class ConeRetrieval extends AbstractRetreiver {
 
-        public ConeRetrieval(ResourceInformation information, double ra, double dec, double sz) throws InvalidArgumentException, NotFoundException, URISyntaxException {
-            super(ra,dec);
-            this.information = (ConeInformation)information;
-            coneURL = cone.constructQuery(new URI(information.getAccessURL().toString()),ra,dec,sz);
+        public ConeRetrieval(ResourceInformation information, double ra, double dec, double sz)  {
+            super(information,ra,dec);
+            this.sz = sz;
         } 
-        private final ConeInformation information;
-        private final URL coneURL;
-
-        public void run() {
-            try {
+        private final double sz;
+        protected Object construct() throws Exception {
+            URL coneURL = cone.constructQuery(new URI(information.getAccessURL().toString()),ra,dec,sz);
                 //                 Create a tree of VOElements from the given request url.
                 VOElement top = new VOElementFactory().makeVOElement( coneURL);            
 
@@ -1308,22 +1296,24 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
                 riNode.setAttribute("tooltip",sb.toString());
                                 
                 buildNodes(top, riNode);
-                // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
-                // concurrent modification exceptions
-                if (riNode.getChildCount() > 0) { // i.e. found some results.
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        AstroScopeLauncherImpl.this.setStatusMessage("Adding results from " + information.getName());
-                        DefaultEdge coneEdge = new DefaultEdge(coneNode,riNode);
-                        coneEdge.setAttribute("weight","2");
-                        getTree().addChild(coneEdge);
-                     }
-                });
-                }
-            } catch (Exception e) {
-                logger.warn("Failed to process " + information.getId(),e);
-            }
+                return riNode;
         }
+        
+        protected void doFinished(Object result) {        
+            // splice our subtree into the main tree.. do on the event dispatch thread, as this will otherwise cause 
+            // concurrent modification exceptions
+            TreeNode riNode = (TreeNode)result;
+            if (riNode.getChildCount() > 0) { // i.e. found some results.                
+                DefaultEdge coneEdge = new DefaultEdge(coneNode,riNode);
+                coneEdge.setAttribute("weight","2");
+                setStatusMessage(information.getTitle() + " : Adding Results");
+                getTree().addChild(coneEdge);
+            } else {
+                setStatusMessage(information.getTitle() + " : No Results");
+            }
+            
+        }
+  
     }
     
 
@@ -1417,14 +1407,17 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
      * @author Noel Winstanley nw@jb.man.ac.uk 28-Oct-2005
      *
      */
-    private abstract class AbstractRetreiver implements Runnable {
+    private abstract class AbstractRetreiver extends BackgroundOperation {
         private static final int MAX_INLINE_IMAGE_SIZE = 100000;
-        double ra;
-        double dec;
+        protected final double ra;
+        protected final double dec;
+        protected final ResourceInformation information;
         
-        public AbstractRetreiver(double ra, double dec) {
+        public AbstractRetreiver(ResourceInformation information, double ra, double dec) {
+            super(information.getTitle(),1000*60L,Thread.MIN_PRIORITY+3); // make low priority, timeout after 1 min.
             this.ra = ra;
             this.dec = dec;
+            this.information = information;
         }        
         
         private void setNodeSizing() {
@@ -1454,11 +1447,13 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
             }
             return null;
         }        
-        
+    // //   public class MyTableHandler implements uk.ac.starlink.votable.Ta{
+    //    }
         /** build a node for each result in the votable.
          * set them up as children of the <tt>riNode</tt> element - which is the node ofor the service.
          */
         protected void buildNodes(VOElement top, TreeNode riNode) throws IOException {
+            
             // Find the first RESOURCE element using standard DOM methods.
             NodeList resources = top.getElementsByTagName( "RESOURCE" );
             Element resource = (Element) resources.item( 0 );
@@ -1583,6 +1578,17 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
             }//for
             setNodeSizing();
         }//buildNodes
+
+ 
+
+        protected void doError(Throwable ex) {
+            //@todo do something better here - add to list of errors in separate pane maybe.
+            AstroScopeLauncherImpl.this.setStatusMessage(information.getName() + " : Service Failed  : " + ex.getMessage());
+        }
+
+        protected void doAlways() {
+           setProgressValue(getProgressValue() + 1);
+        }
     }
 
                        
@@ -1618,60 +1624,43 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
                 final double decSize= needsParsedRegion() ? getDEC(region) : raSize;
                 
                 // dispatch queries in a separate thread.
-                (new BackgroundOperation("Searching For Services") {
-                    private ResourceInformation[] siaps = new ResourceInformation[]{};
-                    private ResourceInformation[] cones = new ResourceInformation[]{};
-                    protected Object construct() throws Exception {
-                        // query registry for resources.
-                        // for each resource found, create a new task to retrieve, parse and add it to the display.
-                        // each task is sent to the executor - which queues them and then executes them on 5 threads.
-                        // this is better than writing a single thread that loops over all tasks, as a network-block on one service
-                        // only holds up it's own thread - the others continue regardless.
-                        if (siaCheckBox.isSelected()) {
-                            siaps = reg.adqlSearchRI(siap.getRegistryQuery());                    
+                if (siaCheckBox.isSelected()) {
+                    (new BackgroundOperation("Searching For SIAP Services") {
+                        protected Object construct() throws Exception {
+                            
+                            // query registry for resources.
+                            // for each resource found, create a new task to retrieve, parse and add it to the display.                            
+                            return reg.adqlSearchRI(siap.getRegistryQuery());
+                        }
+                        protected void doFinished(Object result) {
+                            ResourceInformation[] siaps = (ResourceInformation[])result;
+                            logger.info("Siap query returned " + siaps.length + " records");
                             for (int i = 0; i < siaps.length; i++) {
                                 if (siaps[i].getAccessURL() != null) {
-                                    try {
-                                        executor.execute(new SiapRetrieval(siaps[i],ra,dec,raSize,decSize));
-                                    } catch (Exception e) {
-                                        // carry on
-                                        logger.info("Failed to start task",e);
-                                    }
+                                    setProgressMax(getProgressMax()+1); // should give a nice visual effect.
+                                    (new SiapRetrieval(siaps[i],ra,dec,raSize,decSize)).start();
                                 }
-                            }
-                        } 
-                        if (coneCheckBox.isSelected()) {
-                            cones = reg.adqlSearchRI(cone.getRegistryQuery());
+                            }                            
+                        }
+                    }).start();
+                }
+                if (coneCheckBox.isSelected()) {
+                    (new BackgroundOperation("Searching For Cone Services") {
+                        protected Object construct() throws Exception {
+                            return  reg.adqlSearchRI(cone.getRegistryQuery());
+                        }
+                        protected void doFinished(Object result) {
+                            ResourceInformation[] cones = (ResourceInformation[])result;
+                            logger.info("Cone query returned " + cones.length + " records");
                             for (int i = 0; i < cones.length; i++) {
                                 if (cones[i].getAccessURL() != null) {
-                                    try {
-                                        executor.execute(new ConeRetrieval(cones[i],ra,dec,size));
-                                    } catch (Exception e) {
-                                        logger.info("Failed to start task",e);
-                                    }
+                                    setProgressMax(getProgressMax()+1);
+                                    (new ConeRetrieval(cones[i],ra,dec,size)).start();
                                 }
-                            }                        
-                        }
-                        // finally add another task to the executor queue - all it does iis put a status message 'completed'
-                        // as there's 5 background threads, it might be run while there's still 4 other queries running,
-                        // but it's better than nothing..
-                        executor.execute(new Runnable() {
-                            public void run() {
-                                // meh. got to put it on the event thread.
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    public void run() {
-                                        AstroScopeLauncherImpl.this.setStatusMessage("Completed querying servers");
-                                    }
-                                });
-                            }
-                        });
-                        return null;
-                    }
-                    protected void doFinished(Object result) {
-                        // just report what we found - querying will have already started.
-                        AstroScopeLauncherImpl.this.setStatusMessage("Found " + siaps.length + " image servers, "+ cones.length + " catalogue servers");                                     
-                    }
-                }).start();
+                            }                                          
+                        }               
+                    }).start();
+                }
             }
         }).start();
     }
@@ -1823,6 +1812,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.26  2005/12/02 13:42:48  nw
+changed to use system pooled executor, re-worked background processes
+
 Revision 1.25  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 
