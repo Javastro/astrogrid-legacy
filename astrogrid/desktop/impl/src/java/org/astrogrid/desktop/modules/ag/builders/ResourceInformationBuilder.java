@@ -1,4 +1,4 @@
-/*$Id: ResourceInformationBuilder.java,v 1.4 2005/11/30 14:28:34 nw Exp $
+/*$Id: ResourceInformationBuilder.java,v 1.5 2005/12/02 13:40:32 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,11 +84,7 @@ public class ResourceInformationBuilder implements InformationBuilder {
             //work around for duffs.
             s = xpath.eval(element,"normalize-space(vr:interface/node()[local-name()='accessURL'])",nsNode).str();
             logger.debug("AccessURL: '" + s + "'");
-            if (s == null) {
-                return null;
-            }
-            s = s.trim();
-            if (s.length() == 0) {
+            if (s == null || s.length() == 0) {
                 return null;
             }
             return new URL(s);
@@ -103,11 +99,7 @@ public class ResourceInformationBuilder implements InformationBuilder {
         try {
             s = xpath.eval(element,"normalize-space(vr:curation/vr:creator/vr:logo)",nsNode).str();
             logger.debug("LogoURL: '" + s + "'");
-            if (s == null) {
-                return null;
-            }
-            s = s.trim();
-            if (s.length() == 0) {
+            if (s == null || s.length() == 0) {
                 return null;
             }
             return new URL(s);
@@ -158,6 +150,9 @@ public class ResourceInformationBuilder implements InformationBuilder {
 
 /* 
 $Log: ResourceInformationBuilder.java,v $
+Revision 1.5  2005/12/02 13:40:32  nw
+optimized, and made more error-tolerant
+
 Revision 1.4  2005/11/30 14:28:34  nw
 improved reg entry parsing - handles erroneous reg entries.
 

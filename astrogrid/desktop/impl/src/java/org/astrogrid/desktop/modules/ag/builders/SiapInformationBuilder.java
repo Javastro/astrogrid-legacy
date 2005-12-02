@@ -1,4 +1,4 @@
-/*$Id: SiapInformationBuilder.java,v 1.2 2005/11/04 10:14:26 nw Exp $
+/*$Id: SiapInformationBuilder.java,v 1.3 2005/12/02 13:40:32 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,8 +40,8 @@ public class SiapInformationBuilder extends ResourceInformationBuilder {
      */
     public boolean isApplicable(CachedXPathAPI xpath, Element el) {
         try {
-            String type = xpath.eval(el,"@xsi:type",nsNode).str();
-            return StringUtils.contains(type,"SimpleImageAccess");
+           return xpath.eval(el,"contains(@xsi:type,'SimpleImageAccess')",nsNode).bool();
+           /// return StringUtils.contains(type,"SimpleImageAccess");
             } catch (TransformerException e) {
                 logger.debug("TransformerException",e);
                 return false;
@@ -67,13 +67,13 @@ public class SiapInformationBuilder extends ResourceInformationBuilder {
             Node cap = xpath.selectSingleNode(element,".//sia:capability",nsNode); // some capability have vr namespace, others sia. try to find any with sia contents
             if (cap != null) {
                 
-                String val = xpath.eval(cap,"sia:imageServiceType",nsNode).str();
+                String val = xpath.eval(cap,"normalize-space(sia:imageServiceType)",nsNode).str();
                 if (val != null) {
-                    imageServiceType = val.trim();
+                    imageServiceType = val;
                 }
                 
                 val = null;
-                val = xpath.eval(cap,"sia:maxQueryRegionSize/sia:long",nsNode).str();
+                val = xpath.eval(cap,"sia:maxQueryRegionSize/sia:long",nsNode).str(); // @todo parse in xpath.
                 if (val != null) {
                     try {
                     maxQueryRegionSizeRa = Float.parseFloat(val);
@@ -172,6 +172,9 @@ public class SiapInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: SiapInformationBuilder.java,v $
+Revision 1.3  2005/12/02 13:40:32  nw
+optimized, and made more error-tolerant
+
 Revision 1.2  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present

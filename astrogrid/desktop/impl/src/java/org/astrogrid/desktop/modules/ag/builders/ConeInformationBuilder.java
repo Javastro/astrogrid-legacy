@@ -1,4 +1,4 @@
-/*$Id: ConeInformationBuilder.java,v 1.2 2005/11/04 10:14:26 nw Exp $
+/*$Id: ConeInformationBuilder.java,v 1.3 2005/12/02 13:40:32 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,8 +33,7 @@ public class ConeInformationBuilder extends ResourceInformationBuilder {
      */
     public boolean isApplicable(CachedXPathAPI xpath, Element el) {
         try {
-        String type = xpath.eval(el,"@xsi:type",nsNode).str();
-        return StringUtils.contains(type,"ConeSearch");
+        return xpath.eval(el,"contains(@xsi:type,'ConeSearch')",nsNode).bool();
         } catch (TransformerException e) {
             logger.debug("TransformerException",e);
             return false;
@@ -53,7 +52,7 @@ public class ConeInformationBuilder extends ResourceInformationBuilder {
             //try to extract some data from the cone.            
             Node cap = xpath.selectSingleNode(element,".//cs:capability",nsNode);
             if (cap != null) {
-                String val = xpath.eval(cap,"cs:maxSR",nsNode).str();
+                String val = xpath.eval(cap,"cs:maxSR",nsNode).str(); //@todo parse int in xpath? - need way to specify default.
                 if (val != null) {
                     try {
                     maxSR = Float.parseFloat(val);
@@ -62,7 +61,7 @@ public class ConeInformationBuilder extends ResourceInformationBuilder {
                     }
                 }
                 val = null;
-                val = xpath.eval(cap,"cs:maxRecords",nsNode).str();
+                val = xpath.eval(cap,"cs:maxRecords",nsNode).str(); //@todo parse int in xpath
                 if (val != null) {
                     try {
                     maxRecords = Integer.parseInt(val);
@@ -97,6 +96,9 @@ public class ConeInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ConeInformationBuilder.java,v $
+Revision 1.3  2005/12/02 13:40:32  nw
+optimized, and made more error-tolerant
+
 Revision 1.2  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present

@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformationBuilder.java,v 1.5 2005/11/04 10:14:26 nw Exp $
+/*$Id: TabularDatabaseInformationBuilder.java,v 1.6 2005/12/02 13:40:32 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,8 +44,8 @@ public class TabularDatabaseInformationBuilder extends ResourceInformationBuilde
 
 public boolean isApplicable(CachedXPathAPI xpath, Element el) {
     try {
-        String type = xpath.eval(el, "@xsi:type",nsNode ).str();
-        return StringUtils.contains(type,"TabularDB");
+        return xpath.eval(el, "contains(@xsi:type,'TabularDB')",nsNode ).bool();
+        //return StringUtils.contains(type,"TabularDB");
     } catch (TransformerException e) {        
         logger.debug("TransformerException",e);
         return false;
@@ -88,8 +88,8 @@ public boolean isApplicable(CachedXPathAPI xpath, Element el) {
            tables[i] = buildBeanFromTableElement(xpath,(Element)l.item(i));
        }
         return new DatabaseBean(
-                xpath.eval(element,"tdb:name",nsNode).str()
-                ,xpath.eval(element,"tdb:description",nsNode).str()
+                xpath.eval(element,"normalize-space(tdb:name)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(tdb:description)",nsNode).str()
                 ,tables
                 );
     }
@@ -106,8 +106,8 @@ public boolean isApplicable(CachedXPathAPI xpath, Element el) {
             columns[i] = buildBeanFromColumnElement(xpath,(Element)l.item(i));
         }
          return new TableBean(
-                 xpath.eval(element,"vods:name",nsNode).str()
-                 ,xpath.eval(element,"vods:description",nsNode).str()
+                 xpath.eval(element,"normalize-space(vods:name)",nsNode).str()
+                 ,xpath.eval(element,"normalize-space(vods:description)",nsNode).str()
                  ,columns
                  );
     }
@@ -120,11 +120,11 @@ public boolean isApplicable(CachedXPathAPI xpath, Element el) {
      */
     private ColumnBean buildBeanFromColumnElement(CachedXPathAPI xpath, Element element) throws TransformerException {
         return new ColumnBean(
-                xpath.eval(element,"vods:name",nsNode).str()
-                ,xpath.eval(element,"vods:description",nsNode).str()
-                ,xpath.eval(element,"vods:ucd",nsNode).str()
-                ,xpath.eval(element,"vods:datatype",nsNode).str()
-                ,xpath.eval(element,"vods:unit",nsNode).str()                
+                xpath.eval(element,"normalize-space(vods:name)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(vods:description)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(vods:ucd)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(vods:datatype)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(vods:unit)",nsNode).str()                
                 );        
     }
 
@@ -133,6 +133,9 @@ public boolean isApplicable(CachedXPathAPI xpath, Element el) {
 
 /* 
 $Log: TabularDatabaseInformationBuilder.java,v $
+Revision 1.6  2005/12/02 13:40:32  nw
+optimized, and made more error-tolerant
+
 Revision 1.5  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present

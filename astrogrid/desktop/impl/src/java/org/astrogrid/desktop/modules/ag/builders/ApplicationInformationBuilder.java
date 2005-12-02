@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformationBuilder.java,v 1.5 2005/11/04 10:14:26 nw Exp $
+/*$Id: ApplicationInformationBuilder.java,v 1.6 2005/12/02 13:40:32 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,8 +47,8 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
      */
     public boolean isApplicable(CachedXPathAPI xpath, Element el) {
         try {
-            String type = xpath.eval(el, "@xsi:type",nsNode ).str();
-            return StringUtils.contains(type, "CeaApplicationType") || StringUtils.contains(type,"CeaHttpApplicationType");
+            return xpath.eval(el, "contains(@xsi:type,'CeaApplicationType') or contains(@xsi:type,'CeaHttpApplicationType')",nsNode ).bool();
+            //return StringUtils.contains(type, "CeaApplicationType") || StringUtils.contains(type,"CeaHttpApplicationType");
         } catch (TransformerException e) {  
             logger.debug("TransformerException",e);
             return false;
@@ -94,14 +94,14 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
             }
         }
         return new ParameterBean(
-                xpath.eval(element,"@name",nsNode).str()
-                ,xpath.eval(element,"ceapd:UI_Name",nsNode).str()
-                ,xpath.eval(element,"ceapd:UI_Description",nsNode).str()
-                ,xpath.eval(element,"ceapd:UCD",nsNode).str()
-                ,xpath.eval(element,"ceapd:DefaultValue",nsNode).str()
-                ,xpath.eval(element,"ceapd:Units",nsNode).str()
-                ,xpath.eval(element,"@type",nsNode).str()
-                ,xpath.eval(element,"@subtype",nsNode).str()
+                xpath.eval(element,"normalize-space(@name)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(ceapd:UI_Name)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(ceapd:UI_Description)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(ceapd:UCD)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(ceapd:DefaultValue)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(ceapd:Units)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(@type)",nsNode).str()
+                ,xpath.eval(element,"normalize-space(@subtype)",nsNode).str()
                 ,options
                 );
     }
@@ -118,7 +118,7 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
             outputs[i] = builtBeanFromParameterReference(xpath,(Element)l.item(i));
         }         
         return new InterfaceBean(
-                xpath.eval(element,"@name",nsNode).str()
+                xpath.eval(element,"normalize-space(@name)",nsNode).str()
                 ,inputs
                 ,outputs
                 );
@@ -128,7 +128,7 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
         int max;
         int min;
         try {
-            max = Integer.parseInt(xpath.eval(element,"@maxoccurs",nsNode).str());
+            max = Integer.parseInt(xpath.eval(element,"@maxoccurs",nsNode).str()); //@todo use xpath to parse number here?
         } catch (NumberFormatException e) {
             max = 1; // default
         }
@@ -139,7 +139,7 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
         }
             
         return new ParameterReferenceBean(
-                xpath.eval(element,"@ref",nsNode).str()
+                xpath.eval(element,"normalize-space(@ref)",nsNode).str()
                 ,max
                 ,min             
                 );
@@ -150,6 +150,9 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ApplicationInformationBuilder.java,v $
+Revision 1.6  2005/12/02 13:40:32  nw
+optimized, and made more error-tolerant
+
 Revision 1.5  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present
