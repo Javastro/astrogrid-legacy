@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.2 2005/12/02 13:56:28 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.3 2005/12/02 17:05:29 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,9 +43,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
     public static int QUEUE_SIZE = 10000; // ten thousand queued tasks.
     final static class TimeoutPooledExecutor extends PooledExecutor {
         TimeoutPooledExecutor(Channel arg0) {
-            super(arg0,20); // when queue is full, up to 30 concurrent threads.
-            setMinimumPoolSize(10);
-            createThreads(10); // start with 20 threads. keep-alive is a minute by default.
+            super(arg0,30); // when queue is full, up to 30 concurrent threads.
+            setMinimumPoolSize(15);
+            createThreads(15); // start with 20 threads. keep-alive is a minute by default.
             discardOldestWhenBlocked(); // when queue is full, on new request discard oldest unfulfilled request.                
             setThreadFactory(new ThreadFactory() {
                 public Thread newThread(Runnable arg0) {
@@ -89,7 +89,11 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
                 public void run() {
                     for (;;) {
                         try {
-                        Object o = c.take(); // wait until passed a timeout value.
+                            Object o;
+                            do {
+                                o = c.take(); // wait until passed a timeout value.
+                            } while (! (o instanceof Long)); // must have gotten out-of-step - lets try again..
+                        
                         Long l = (Long)o;
                         Object result = c.poll(l.longValue()); // wait for the prescribed timeout.
                         if (result == null) {
@@ -184,6 +188,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.3  2005/12/02 17:05:29  nw
+turned up numer of concurrent threads,
+
 Revision 1.2  2005/12/02 13:56:28  nw
 tweaked pool parameters.
 
