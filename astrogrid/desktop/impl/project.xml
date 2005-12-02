@@ -84,7 +84,18 @@
 			<dist.bundle>true</dist.bundle>			
 		</properties>
 	</dependency>
-	
+
+  <dependency>
+                        <groupId>votech</groupId>
+                        <artifactId>plastic</artifactId>
+                        <version>0.2</version>
+                        <url>http://plastic.sourceforge.net</url>
+		<properties>
+			<jnlp.jar>true</jnlp.jar>
+			<dist.bundle>true</dist.bundle>			
+		</properties>						
+   </dependency>		
+   
 	<dependency>
 		<groupId>org.astrogrid</groupId>
 		<artifactId>acr-interface-javahelp</artifactId>
@@ -94,7 +105,7 @@
 			<dist.bundle>true</dist.bundle>			
 		</properties>
 	</dependency>	
-
+              	
 		
 		
 <!-- following libs are packaged up as separate jnlp extensions - so reference here,
@@ -472,11 +483,6 @@
                         <version>0.8.1</version>
                         <url>http://www.apache.org/~andyc/neko/doc/html/</url>
                 </dependency>
-                <dependency>
-                        <groupId>votech</groupId>
-                        <artifactId>plastic</artifactId>
-                        <version>0.2</version>
-                        <url>http://plastic.sourceforge.net</url>
-                </dependency>			
+	
     </dependencies>
 </project>
