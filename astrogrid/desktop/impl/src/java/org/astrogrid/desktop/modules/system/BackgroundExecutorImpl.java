@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.1 2005/12/02 13:43:18 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.2 2005/12/02 13:56:28 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,9 +43,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
     public static int QUEUE_SIZE = 10000; // ten thousand queued tasks.
     final static class TimeoutPooledExecutor extends PooledExecutor {
         TimeoutPooledExecutor(Channel arg0) {
-            super(arg0,15);
+            super(arg0,20); // when queue is full, up to 30 concurrent threads.
             setMinimumPoolSize(10);
-            createThreads(10); // start with 10 threads. keep-alive is a minute by default.
+            createThreads(10); // start with 20 threads. keep-alive is a minute by default.
             discardOldestWhenBlocked(); // when queue is full, on new request discard oldest unfulfilled request.                
             setThreadFactory(new ThreadFactory() {
                 public Thread newThread(Runnable arg0) {
@@ -184,6 +184,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.2  2005/12/02 13:56:28  nw
+tweaked pool parameters.
+
 Revision 1.1  2005/12/02 13:43:18  nw
 new compoent that manages a pool of threads to execute background processes on
  
