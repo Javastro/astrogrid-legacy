@@ -375,5 +375,14 @@
 			</property>			
 	</component>
 		
+<!-- executor -->
+	<component name="executor"
+		implementationClass="org.astrogrid.desktop.modules.system.BackgroundExecutorImpl"
+		interfaceClass="org.astrogrid.desktop.modules.system.BackgroundExecutor" >
+			<property>
+				<key>hidden.component</key>
+				<value>true</value>								
+			</property>			
+	</component>		
 
 </module>

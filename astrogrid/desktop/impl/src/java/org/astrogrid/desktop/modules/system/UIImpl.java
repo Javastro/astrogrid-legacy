@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.8 2005/11/24 01:13:24 nw Exp $
+/*$Id: UIImpl.java,v 1.9 2005/12/02 13:43:18 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.PositionRememberingJFrame;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -117,12 +118,13 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
 
     
     /** this is the production constructor */
-    public UIImpl(BrowserControl browser,MutableACR reg, Shutdown sh, ConfigurationInternal conf, HelpServerInternal help) {     
+    public UIImpl(BrowserControl browser,MutableACR reg, Shutdown sh, ConfigurationInternal conf, HelpServerInternal help, BackgroundExecutor executor) {     
         super(conf,help,null);
         this.confInternal = conf;
         this.browser = browser;
         this.shutdown = sh;
         this.reg = reg;
+        this.executor = executor;
         this.maybeRegisterSingleInstanceListener();
 
     }
@@ -130,6 +132,7 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
     protected final BrowserControl browser;
     protected final Shutdown shutdown;
     protected final MutableACR reg;
+    protected final BackgroundExecutor executor;
 
     private JMenuItem reportBugMenuItem;
     
@@ -298,7 +301,7 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
             helpContentsMenuItem.setText("Help Contents");
             helpContentsMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    help.showHelp();
+                    getHelpServer().showHelp();
                 }
             });
         } 
@@ -841,7 +844,7 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
             }
             args.add(result);
         }
-        SwingWorker worker = new InvokerWorker(component,md,(String[])args.toArray(new String[]{}));
+        BackgroundWorker worker = new InvokerWorker(component,md,(String[])args.toArray(new String[]{}));
         worker.start();                                  
     }
     
@@ -1054,11 +1057,38 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
 	}
     
     private CardLayout cardManager = new CardLayout();
-       }  //  @jve:decl-index=0:visual-constraint="10,11"
+
+
+    public BackgroundExecutor getExecutor() {
+        return executor;
+    }
+    
+    
+    //overrridden to return self;
+    public UIInternal getUI() {
+        return this;
+    }
+
+    /**
+     * @see org.astrogrid.desktop.modules.system.UIInternal#wrap(java.lang.Runnable)
+     */
+    public BackgroundWorker wrap(final Runnable r) {
+        return new BackgroundOperation("Background Task") {
+
+            protected Object construct() throws Exception {
+                r.run();
+                return null;
+            }
+        };
+    }
+}
 
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.9  2005/12/02 13:43:18  nw
+new compoent that manages a pool of threads to execute background processes on
+
 Revision 1.8  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 
