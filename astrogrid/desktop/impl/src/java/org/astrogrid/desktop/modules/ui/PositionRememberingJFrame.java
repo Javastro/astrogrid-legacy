@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.6 2005/11/15 19:39:07 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.7 2005/12/02 17:04:28 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,9 +54,9 @@ public class PositionRememberingJFrame extends JFrame {
     }
  
     
-    protected final Configuration configuration;
-    protected final UIInternal ui;
-    protected final HelpServerInternal help;
+    private final Configuration configuration;
+    private final UIInternal ui;
+    private final HelpServerInternal help;
 
     /** convenience method - access the configuraiton componoent */
     public Configuration getConfiguration() {
@@ -149,6 +149,9 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.7  2005/12/02 17:04:28  nw
+minor change
+
 Revision 1.6  2005/11/15 19:39:07  nw
 merged in improvements from release branch.
 
