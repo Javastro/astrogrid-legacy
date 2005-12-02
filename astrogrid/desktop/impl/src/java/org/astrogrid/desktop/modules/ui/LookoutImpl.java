@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.6 2005/11/24 01:13:24 nw Exp $
+/*$Id: LookoutImpl.java,v 1.7 2005/12/02 13:40:56 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -1139,7 +1139,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private void initialize() {
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.lookout");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        this.setLocationRelativeTo(ui.getComponent());
+        this.setLocationRelativeTo(getUI().getComponent());
         this.setJMenuBar(getJJMenuBar());
         JPanel pane = getJContentPane();    
         this.setTitle("VO Lookout");
@@ -1191,6 +1191,9 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.7  2005/12/02 13:40:56  nw
+minor change
+
 Revision 1.6  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 
