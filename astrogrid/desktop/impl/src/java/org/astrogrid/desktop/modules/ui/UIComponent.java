@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.10 2005/11/24 01:13:24 nw Exp $
+/*$Id: UIComponent.java,v 1.11 2005/12/02 13:41:20 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import com.l2fprod.common.swing.StatusBar;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -31,15 +32,28 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Properties;
 
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 
 /** baseclass for ui components.
@@ -60,6 +74,16 @@ public class UIComponent extends PositionRememberingJFrame {
      protected abstract class BackgroundOperation extends BackgroundWorker {
          public BackgroundOperation(String msg) {
              super(UIComponent.this,msg);
+         }
+         
+         public BackgroundOperation(String msg,long timeout) {
+             super(UIComponent.this,msg,timeout);
+         }
+         public BackgroundOperation(String msg,int priority) {
+             super(UIComponent.this,msg,priority);
+         }
+         public BackgroundOperation(String msg,long timeout, int priority) {
+             super(UIComponent.this,msg,timeout,priority);
          }
      }
 
@@ -113,9 +137,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
             if (parent != null && parent instanceof UIComponent) {            
                 pw.println();
-                UIComponent ui = (UIComponent)parent;
+                UIComponent u = (UIComponent)parent;
                 try {
-                    Map m = ui.configuration.list();
+                    Map m = u.getConfiguration().list();
                     Properties props = new Properties();
                     props.putAll(m);
                     // nggg. clunky.
@@ -149,7 +173,7 @@ public class UIComponent extends PositionRememberingJFrame {
             rd.requestFocus();
         }
     }
-    private JLabel bottomLabel = null;
+    private JProgressBar bottomLabel = null;
     
 
 
@@ -200,7 +224,7 @@ public class UIComponent extends PositionRememberingJFrame {
      * @param s a message ("" to clear a previous message");
      */
     public void setStatusMessage(String s) {
-        getBottomLabel().setText(s);
+        getBottomLabel().setString(s);
     }
 
     /** display a well-formatted error message in a popup dialogue.
@@ -214,12 +238,31 @@ public class UIComponent extends PositionRememberingJFrame {
         showError(this,msg,e);
     }
     
-    private JLabel getBottomLabel() {
+    private JProgressBar getBottomLabel() {
         if (bottomLabel == null) {
-            bottomLabel = new JLabel();
-            bottomLabel.setText(" ");
+            bottomLabel = new JProgressBar(0,100);
+            bottomLabel.setStringPainted(true);     
+            bottomLabel.setString("");
         }
         return bottomLabel;
+    }
+    
+    /** set maximum value for progress bar */
+    public void setProgressMax(int i) {
+        getBottomLabel().setMaximum(i);
+        getBottomLabel().setString("");
+    }
+    /** set current value in progress bar - between <tt>0</tt> and <tt>getProgressMax()</tt> */
+    public void setProgressValue(int i) {
+        getBottomLabel().setValue(i);
+    }
+    /** get the current progress value - between <tt>0</tt> and <tt>getProgressMax()</tt> */
+    public int getProgressValue() {
+        return getBottomLabel().getValue();
+    }
+    /** get the maximum value for the progress bar */
+    public int getProgressMax() {
+        return getBottomLabel().getMaximum();
     }
 
     /**
@@ -254,7 +297,7 @@ public class UIComponent extends PositionRememberingJFrame {
         if (tasksButton == null) {
             tasksButton = new JButton(IconHelper.loadIcon("stop.gif"));
             tasksButton.setEnabled(false);
-            tasksButton.setToolTipText("Halt running background processes");
+            tasksButton.setToolTipText("List running background processes");
             tasksButton.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
                     getTasksMenu().show(tasksButton,e.getX(),e.getY());
@@ -265,7 +308,6 @@ public class UIComponent extends PositionRememberingJFrame {
         return tasksButton;
     }
     private JButton tasksButton;
-    
     private JButton getHelpButton() {
         if (helpButton == null) {
             helpButton = new JButton(IconHelper.loadIcon("help.gif"));
@@ -281,14 +323,126 @@ public class UIComponent extends PositionRememberingJFrame {
     private JPopupMenu getTasksMenu() {
         if (tasksMenu == null) {
             tasksMenu = new JPopupMenu();
+            tasksMenu.setPopupSize(200,600);
+            JPanel p = new JPanel(new BorderLayout());
+            final JList list = new JList(getTasksModel());
+            list.setToolTipText("Click task to cancel it");
+            list.setCellRenderer(new DefaultListCellRenderer() {
+                Icon pending = IconHelper.loadIcon("sleeping.gif");
+                Icon running = IconHelper.loadIcon("flashpoint.gif");
+                Icon completed = IconHelper.loadIcon("complete_status.gif");
+                public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                    JLabel label = (JLabel) super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
+                    BackgroundWorker bw = (BackgroundWorker)value;
+                    label.setText(bw.getMessage());
+                    switch (bw.getStatus()) {
+                        case BackgroundWorker.PENDING:
+                            label.setIcon(pending);
+                            break;
+                        case BackgroundWorker.RUNNING:
+                            label.setIcon(running);
+                            break;
+                         case BackgroundWorker.COMPLETED:
+                             label.setIcon(completed);
+                        defaut:
+                            break;                           
+                    }
+                    return label;
+                }
+            });
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+                public void valueChanged(ListSelectionEvent e) {
+                    Object o = list.getSelectedValue();
+                    if (o == null) {
+                        return;
+                    }
+                    ((BackgroundWorker)o).interrupt();                                        
+                }
+            });
+            JScrollPane sp = new JScrollPane(list);
+            p.add(sp,BorderLayout.CENTER);
+
+            p.setPreferredSize(new Dimension(200,600));            
+            tasksMenu.add(p);
             tasksMenu.setLabel("Running processes:");
         }
         return tasksMenu;
     }
     
+    private ObservingListModel tasksModel;
+    private ObservingListModel getTasksModel() {
+        if (tasksModel == null) {
+            tasksModel = new ObservingListModel();
+        }
+        return tasksModel;
+    }
+    
+    /** list model that spots when the contents of the model 'change' in some way, and fires a notification on this 
+     * constaint - items in the model must be observables.
+     * */
+    static class ObservingListModel extends DefaultListModel implements Observer {
+        
+        public void add(int index, Object element) {
+            super.add(index, element);
+            ((Observable)element).addObserver(this);
+        }
+        public void addElement(Object obj) {
+            super.addElement(obj);
+            ((Observable)obj).addObserver(this);            
+        }
+        public void clear() {
+            for (Enumeration e = elements(); e.hasMoreElements(); ) {
+                ((Observable)e.nextElement()).deleteObserver(this);
+            }
+            super.clear();
+        }
+        public Object remove(int index) {
+            Object o =  super.remove(index);
+            ((Observable)o).deleteObserver(this);
+            return o;
+        }
+        public void removeAllElements() {
+            for (Enumeration e = elements(); e.hasMoreElements(); ) {
+                ((Observable)e.nextElement()).deleteObserver(this);
+            }            
+            super.removeAllElements();
+        }
+        public boolean removeElement(Object obj) {
+            boolean c =  super.removeElement(obj);
+            ((Observable)obj).deleteObserver(this);
+            return c;         
+        }
+        public void removeElementAt(int index) {
+            Object o = getElementAt(index);
+            ((Observable)o).deleteObserver(this);
+            super.removeElementAt(index);
+        }
+
+        public Object set(int index, Object element) {
+            Object o  =super.set(index, element);
+            ((Observable)o).deleteObserver(this);
+            ((Observable)element).addObserver(this);
+            return o;
+        }
+        public void setElementAt(Object obj, int index) {
+            Object o = getElementAt(index);
+            ((Observable)o).deleteObserver(this);
+            super.setElementAt(obj, index);
+            ((Observable)obj).addObserver(this);
+        }
+        public void update(Observable o, Object arg) {
+            int ix;
+            if (o != null && (ix = indexOf(o)) != -1) {
+                fireContentsChanged(o,ix,ix);
+            }
+        }
+    }
+    
     /** called by a {@link BackgroundWorker} to notify the UI that it's started executing */ 
-    public void addBackgroundWorker(final BackgroundWorker w) {
-        getTasksMenu().add(w.getMenuItem());
+    public void addBackgroundWorker(final BackgroundWorker w) {        
+        getTasksModel().addElement(w);
         setStatusMessage(w.getMessage());   
         setBusy(true);
   
@@ -296,11 +450,8 @@ public class UIComponent extends PositionRememberingJFrame {
     
     /** called by {@link BackgroundWorker} to notify the UI it's finished running */
     public void removeBackgroundWorker(BackgroundWorker w) {
-        int ix = getTasksMenu().getComponentIndex(w.getMenuItem());
-        if (ix >= 0) {
-            getTasksMenu().remove(ix);
-        }
-        if (getTasksMenu().getSubElements().length == 0) {
+        getTasksModel().removeElement(w);   
+        if (getTasksModel().size() == 0) {
             setBusy(false);
             setStatusMessage("");
         }
@@ -322,6 +473,9 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.11  2005/12/02 13:41:20  nw
+improved task-reporting system
+
 Revision 1.10  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

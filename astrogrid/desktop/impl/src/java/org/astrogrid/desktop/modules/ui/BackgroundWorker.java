@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.3 2005/11/24 01:13:24 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.4 2005/12/02 13:42:18 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,61 +12,235 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.desktop.icons.IconHelper;
 
+import EDU.oswego.cs.dl.util.concurrent.Callable;
+import EDU.oswego.cs.dl.util.concurrent.FutureResult;
+import EDU.oswego.cs.dl.util.concurrent.TimedCallable;
+import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Observable;
 
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 
 /** abstract class for all long-running operations - all requests to VO services should be done in instances of this class.
       * <p/>
-      * Extends the standard SwingWorker, but integrates with the ui component - takes care of starting and  stopping busy indicator, progress message.
+      *Based on standard implementation of SwingWorker (EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker) 
+      *but integrates with the ui component - takes care of starting and  stopping busy indicator, progress message.
+      *also has concept of priority, and is executed by pooled executor, instead of by creating a new thread.
       *
+      *@todo - make task menu scroll..
       * @todo integrate with glass pane / hourglass cursor in cases where it should be a blocking operation (but still must be in a background thread so that other
       * UI windows are responsive, and the UI is repainted).     
       * @author Noel Winstanley nw@jb.man.ac.uk 02-Apr-2005
       *
       */
-    public abstract class BackgroundWorker extends SwingWorker implements ActionListener {
+    public abstract class BackgroundWorker  extends Observable implements Runnable, Comparable  {
+        /** default timeout for tasks - all requests should timeout, rather than blocking indefinately 
+         * this is a timeout for execution time - doesn't consider time spent on queue
+         * 
+         * */
+        public final static long DEFAULT_TIMEOUT = 1000 * 60 * 2; // 2 minutes
         /** string displayed in status bar while operation is in progress */
         protected final String msg;
         /** ui component that this operation is displaying progress in */
         protected final UIComponent parent;
         
-        /** menu item corresponding to this background task */
-        private final JMenuItem menuItem;
+        /** Holds the value to be returned by the <code>get</code> method. */
+        private final FutureResult result = new FutureResult();
+
+        /** Maximum time to wait for worker to complete. */
+        private final long timeout;
+        private final long timestamp;
+        private static long timestampGen = 0L;
+        /** priority for this tasks */
+        private int priority;
+        public BackgroundWorker(UIComponent parent,String msg) {
+            this(parent,msg,DEFAULT_TIMEOUT,Thread.NORM_PRIORITY);
+        }
+        public BackgroundWorker(UIComponent parent,String msg, long msecs) {
+            this(parent,msg,msecs,Thread.NORM_PRIORITY);
+        }
+        public BackgroundWorker(UIComponent parent,String msg, int priority) {
+            this(parent,msg,DEFAULT_TIMEOUT,priority);
+        }
+       
         /**
          *  Construct a new BackgroundOperation
          * @param parent - UICOmponent to report progress in.
          * @param msg message to display in status bar in parent UIComponent.
          */
-        public BackgroundWorker(UIComponent parent,String msg) {
+        public BackgroundWorker(UIComponent parent,String msg, long msecs, int priority) {
             super();
             this.parent = parent;
             this.msg = msg;
-            this.menuItem = new JMenuItem(msg,IconHelper.loadIcon("stop.gif"));
-            this.menuItem.addActionListener(this);
+            if (msecs < 0) {
+                throw new IllegalArgumentException("timeout = " + msecs);
+            }
+            this.timeout = msecs;
+            this.priority = priority;
+            this.timestamp = ++timestampGen;
+            
         }
         
-        public final JMenuItem getMenuItem() {
-            return menuItem;
+        public static final int PENDING = 0;
+        public static final int RUNNING = 1;
+        public static final int COMPLETED = 2;
+        private int status = PENDING;
+        /** get the status of this background process - one of the int constants in this class */
+        public int getStatus() {
+            return status;
         }
+        
+        void setStatus(int i) {
+            this.status = i;
+            super.setChanged();
+            super.notifyObservers();
+        }
+
         
         public final String getMessage() {
             return msg;
         }
         
-        /** start the background operation running in a separate thread.
-         * safe to call this mehod from the event-dispatch thread.
-         * @see EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker#start()
+        public final int getPriority() {
+            return priority;
+        }
+        
+        /**
+         * Returns timeout period in milliseconds. Timeout is the
+         * maximum time to wait for worker to complete. There is
+         * no time limit if timeout is <code>0</code> (default).
          */
-        public final  synchronized void start() {
-            parent.addBackgroundWorker(this);
-            super.start();
-        }        
+        public long getTimeout() {
+            return timeout;
+        }                
+        
+        /**
+         * Calls the <code>construct</code> method to compute the result,
+         * and then invokes the <code>finished</code> method on the event
+         * dispatch thread.
+         */
+        public void run() {
+            if (!run) return; // halt here if has been cancelled while on queue            
+            SwingUtilities.invokeLater(new Runnable() {// notify ui that we're starting to execute
+                public void run() {
+                    setStatus(RUNNING);
+                } 
+            });
+            result.setter(new Callable() {// execute the computation
+                public Object call() throws Exception {
+                    return construct();
+                }
+            }).run();           
+            SwingUtilities.invokeLater(new Runnable() {// finish off by updating ui.
+                public void run() {
+                    try {
+                        Object result = get();
+                        doFinished(result);
+                    } catch (InterruptedException e) {
+                        parent.setStatusMessage(msg + " - Interrupted");
+                    } catch (InvocationTargetException e) {                    
+                        Throwable ex= e.getCause() != null ? e.getCause() : e;
+                        if (InterruptedException.class.isAssignableFrom(ex.getClass())) {
+                            // it's a wrapped interruption, caused by the user pressing cancel.
+                            parent.setStatusMessage(msg + " - Interrupted");
+                        } else { // it's some kind of failure                    
+                            doError(ex);
+                        }
+                    } finally {
+                        parent.removeBackgroundWorker(BackgroundWorker.this);
+                        doAlways();
+                        setStatus(COMPLETED);
+                    }
+                }
+            });
+        }
+        private boolean run = true;
+        /**
+         * Starts the worker thread.
+         */
+        public synchronized void start() {
+            if (SwingUtilities.isEventDispatchThread()) {
+                parent.addBackgroundWorker(this);
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        parent.addBackgroundWorker(BackgroundWorker.this);                        
+                    }
+                });
+            }
+            parent.getUI().getExecutor().executeWorker(this);
+        }
+
+        /**
+         * Stops the worker . haven't got a handle on the thread, so can't easily interrupt it.
+         */
+        public synchronized void interrupt() {
+            run = false; // will halt a task if it hasn't already been executed.
+            parent.getUI().getExecutor().interrupt(this); // will try to halt a running task
+            result.setException(new InterruptedException());
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+            parent.removeBackgroundWorker(BackgroundWorker.this);
+                }
+            });
+            
+        }
+    
+
+        /**
+         * Return the value created by the <code>construct</code> method,
+         * waiting if necessary until it is ready.
+         *
+         * @return the value created by the <code>construct</code> method
+         * @exception InterruptedException if current thread was interrupted
+         * @exception InvocationTargetException if the constructing thread
+         * encountered an exception or was interrupted.
+         */
+        public Object get()
+        throws InterruptedException, InvocationTargetException {
+            return result.get();
+        }
+
+        /**
+         * Wait at most msecs to access the constructed result.
+         * @return current value
+         * @exception TimeoutException if not ready after msecs
+         * @exception InterruptedException if current thread has been interrupted
+         * @exception InvocationTargetException if the constructing thread
+         * encountered an exception or was interrupted.
+         */
+        public Object timedGet(long msecs) 
+        throws TimeoutException, InterruptedException, InvocationTargetException {
+            return result.timedGet(msecs);
+        }
+
+        /**
+         * Get the exception, or null if there isn't one (yet).
+         * This does not wait until the worker is ready, so should
+         * ordinarily only be called if you know it is.
+         * @return the exception encountered by the <code>construct</code>
+         * method wrapped in an InvocationTargetException
+         */
+        public InvocationTargetException getException() {
+            return result.getException();
+        }
+
+        /**
+         * Return whether the <code>get</code> method is ready to
+         * return a value.
+         *
+         * @return true if a value or exception has been set. else false
+         */
+        public boolean isReady() {
+            return result.isReady();
+        }
+        
         /** implement this method to define the computation to execute on the background thread. 
          * @return some result, which is then passed to {@link #doFinished(Object)}. To return multiple results, use member variables in the subclass.
          * @see EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker#construct()
@@ -90,37 +264,29 @@ import javax.swing.JMenuItem;
          */
         protected void doAlways() {
         }
-            protected final void finished() {
-                try {
-                    Object result = this.get();
-                    doFinished(result);
-                } catch (InterruptedException e) {
-                    parent.setStatusMessage(msg + " - Interrupted");
-                } catch (InvocationTargetException e) {                    
-                    Throwable ex= e.getCause() != null ? e.getCause() : e;
-                    if (InterruptedException.class.isAssignableFrom(ex.getClass())) {
-                        // it's a wrapped interruption, caused by the user pressing cancel.
-                        parent.setStatusMessage(msg + " - Interrupted");
-                    } else { // it's some kind of failure                    
-                        parent.showError(msg + ": Failed",ex);
-                    }
-                } finally {
-                    parent.removeBackgroundWorker(this);
-                    doAlways();
-                }
+
+        /**
+         * defalt implementation of do error - displays an error message. override to handle errors differently.
+         */
+        protected void doError(Throwable ex) {
+            parent.showError(msg + ": Failed",ex);
         }
         
-            /** used from the menuItem - when the menu item is called, this method interrupts the
-             * running background task.
-             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-             */
-    public void actionPerformed(ActionEvent e) {
-        this.interrupt();
-    }
+        public int compareTo(Object o) {
+                BackgroundWorker other = (BackgroundWorker)o;
+                int val = other.priority - this.priority; // higher priority => higher value. the queue takes the _least_ value - so reversed here.
+                if (val == 0) {
+                    val =(int)( this.timestamp - other.timestamp); // smallest timestamp takes priority 
+                }
+                return val;
+        }            
 }
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.4  2005/12/02 13:42:18  nw
+improved task-reporting system
+
 Revision 1.3  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 
