@@ -1,4 +1,4 @@
-/*$Id: WorkbenchCeaComponentManager.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: WorkbenchCeaComponentManager.java,v 1.5 2005/12/02 13:43:41 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,21 +53,8 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
         pico.registerComponentImplementation(ApplicationDescriptionEnvironment.class,ApplicationDescriptionEnvironment.class);
         pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, DefaultApplicationEnvironmentRetriever.class);
         pico.registerComponentImplementation(ExecutionController.class, MessagingExecutionController.class);
-        final PooledExecutor pooledExecutor = new PooledExecutor(new LinkedQueue());        
-        pooledExecutor.setMinimumPoolSize(4);
-        pooledExecutor.setMaximumPoolSize(4);
-        
-        pooledExecutor.setThreadFactory(new ThreadFactory() { // cea apps to run at lowest priority.
-            private final ThreadFactory wrapped = pooledExecutor.getThreadFactory();
-            public Thread newThread(Runnable arg0) {
-                Thread t = wrapped.newThread(arg0);
-                t.setName("CEA Execution Thread - " + t.getName());
-                t.setPriority(Thread.MIN_PRIORITY);
-                return t;
-            }
-            
-        });
-        pico.registerComponentInstance(pooledExecutor) ;
+
+        pico.registerComponentImplementation(PooledExecutor.class,PooledExecutorAdapter.class);
         pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);
         
         // protocol library - necessary, but not using it.
@@ -144,6 +131,9 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
 
 /* 
 $Log: WorkbenchCeaComponentManager.java,v $
+Revision 1.5  2005/12/02 13:43:41  nw
+linked internal cea into new thread-pool system.
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 
