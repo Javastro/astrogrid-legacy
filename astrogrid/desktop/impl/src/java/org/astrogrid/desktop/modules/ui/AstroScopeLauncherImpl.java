@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.26 2005/12/02 13:42:48 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.27 2005/12/02 17:05:08 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import org.apache.commons.lang.WordUtils;
 
@@ -47,7 +50,9 @@ import com.l2fprod.common.swing.StatusBar;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.votable.TableContentHandler;
 import uk.ac.starlink.votable.TableElement;
+import uk.ac.starlink.votable.TableHandler;
 import uk.ac.starlink.votable.VOElement;
 import uk.ac.starlink.votable.VOElementFactory;
 import uk.ac.starlink.votable.VOStarTable;
@@ -176,6 +181,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
 
 /** Implementation of the Datascipe launcher
@@ -1220,10 +1228,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         protected Object construct() throws Exception{
                 URL siapURL = siap.constructQueryS(new URI(information.getAccessURL().toString()),ra, dec,raSize,decSize);
                 //              Create a tree of VOElements from the given request url.
-                VOElement top = new VOElementFactory().makeVOElement( siapURL);
-                // managed to fetch the resource ok, so le's create the service node.
-                          
-                final TreeNode riNode = new DefaultTreeNode();
+                TreeNode riNode = new DefaultTreeNode();
                 riNode.setAttribute("label",information.getTitle());
                 riNode.setAttribute("weight","2");
                 riNode.setAttribute("id", information.getId().toString());
@@ -1245,7 +1250,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
                     .append("</html>");                        
                 riNode.setAttribute("tooltip",sb.toString());
                 // build subtree for this service
-                buildNodes(top, riNode);
+
+                InputSource source = new InputSource(siapURL.openStream());                             
+                parseTable(source, riNode);
                 return riNode;              
         }
         protected void doFinished(Object result) {        
@@ -1273,10 +1280,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         private final double sz;
         protected Object construct() throws Exception {
             URL coneURL = cone.constructQuery(new URI(information.getAccessURL().toString()),ra,dec,sz);
-                //                 Create a tree of VOElements from the given request url.
-                VOElement top = new VOElementFactory().makeVOElement( coneURL);            
-
-                final TreeNode riNode = new DefaultTreeNode();
+ 
+                TreeNode riNode = new DefaultTreeNode();
                 riNode.setAttribute("label",information.getTitle());              
                 riNode.setAttribute("id", information.getId().toString());
                 riNode.setAttribute("url",coneURL.toString());
@@ -1294,8 +1299,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
                     .append(information.getDescription()!= null ?   WordUtils.wrap(information.getDescription(),TOOLTIP_WRAP_LENGTH,"<br>",false) : "")
                     .append("</p></html>");                        
                 riNode.setAttribute("tooltip",sb.toString());
-                                
-                buildNodes(top, riNode);
+                InputSource source = new InputSource(coneURL.openStream());               
+                parseTable(source, riNode);
                 return riNode;
         }
         
@@ -1447,137 +1452,163 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
             }
             return null;
         }        
-    // //   public class MyTableHandler implements uk.ac.starlink.votable.Ta{
-    //    }
-        /** build a node for each result in the votable.
-         * set them up as children of the <tt>riNode</tt> element - which is the node ofor the service.
+        
+        /** shold be called by subclasses to SAX-parse a votable, attaching results as nodes to riNode 
+         * @throws FactoryConfigurationError
+         * @throws ParserConfigurationException
+         * @throws SAXException
+         * @throws IOException*/
+        protected void parseTable(InputSource source, TreeNode riNode) throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
+            XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+            TableContentHandler votHandler = new TableContentHandler(false);
+            votHandler.setReadHrefTables(true);
+            votHandler.setTableHandler(new AstroscopeTableHandler(riNode));
+            parser.setContentHandler(votHandler);
+            parser.parse(source);
+            
+        }
+        
+        /** sax-style parser for votables - these methods get called in callbacks, sax-style, as the document whizzes by, instead of having an in-memory model
+         * maybe this will stop my laptop overheating whenever I do M54,1.0 - at the moment the overheating trip cuts in and shus the machine down. :)
+         * @author Noel Winstanley nw@jb.man.ac.uk 02-Dec-2005
+         *
          */
-        protected void buildNodes(VOElement top, TreeNode riNode) throws IOException {
-            
-            // Find the first RESOURCE element using standard DOM methods.
-            NodeList resources = top.getElementsByTagName( "RESOURCE" );
-            Element resource = (Element) resources.item( 0 );
-            //              Locate the TABLE children of this resource using one of the
-            // VOElement convenience methods.
-            VOElement vResource = (VOElement) resource;
-            VOElement[] tables = vResource.getChildrenByName( "TABLE" );
-            
-            for(int j = 0;j < tables.length;j++) {
-                TableElement tableEl = (TableElement) tables[j];
-                //Turn it into a StarTable so we can access its data.
-                StarTable starTable = new VOStarTable( tableEl );   
-                // first locate the column indexes for the columns we're interested in.
-                int raCol = -1;
-                int decCol = -1;
-                int imgCol = -1;
-                int formatCol = -1;
-                int sizeCol = -1;
-                int titleCol = -1;
-                String[] titles = new String[starTable.getColumnCount()];
-                for (int col = 0; col < starTable.getColumnCount(); col++) {
-                    ColumnInfo columnInfo = starTable.getColumnInfo(col);
-                    String ucd = columnInfo.getUCD();
-                    if (ucd != null) {
-                        if (ucd.equals("POS_EQ_RA_MAIN")) {
-                            raCol = col;
-                        } else if (ucd.equals("POS_EQ_DEC_MAIN")) {
-                            decCol = col;
-                        } else if (ucd.equals("VOX:Image_AccessReference")) {
-                            imgCol = col;
-                        } else if (ucd.equals("VOX:Image_Format")) {
-                            formatCol = col;
-                        } else if (ucd.equals("VOX:Image_FileSize")) {
-                            sizeCol = col;
-                        } else if (ucd.equals("VOX:Image_Title")) {
-                            titleCol = col;
-                        }
+       public class AstroscopeTableHandler implements TableHandler {
+           public AstroscopeTableHandler(TreeNode riNode) {
+               this.riNode = riNode;
+           }
+           final TreeNode riNode;
+           int raCol = -1;
+           int decCol = -1;
+           int imgCol = -1;
+           int formatCol = -1;
+           int sizeCol = -1;
+           int titleCol = -1;
+           String[] titles;
+           boolean processTable;
+        /** here we get passed in a start table that is meta-data only
+         * @see uk.ac.starlink.votable.TableHandler#startTable(uk.ac.starlink.table.StarTable)
+         */
+        public void startTable(StarTable starTable) throws SAXException {
+
+            titles = new String[starTable.getColumnCount()];
+            for (int col = 0; col < starTable.getColumnCount(); col++) {
+                ColumnInfo columnInfo = starTable.getColumnInfo(col);
+                String ucd = columnInfo.getUCD();
+                if (ucd != null) {
+                    if (ucd.equals("POS_EQ_RA_MAIN")) {
+                        raCol = col;
+                    } else if (ucd.equals("POS_EQ_DEC_MAIN")) {
+                        decCol = col;
+                    } else if (ucd.equals("VOX:Image_AccessReference")) {
+                        imgCol = col;
+                    } else if (ucd.equals("VOX:Image_Format")) {
+                        formatCol = col;
+                    } else if (ucd.equals("VOX:Image_FileSize")) {
+                        sizeCol = col;
+                    } else if (ucd.equals("VOX:Image_Title")) {
+                        titleCol = col;
                     }
-                    titles[col] = columnInfo.getName() + " (" + columnInfo.getUCD() + ")";
                 }
-                // check we've got enough to proceed.
-                if (raCol < 0 || decCol < 0) {
-                    continue; // on to the next table
-                }                                
-                //make a node for each row of the table.
-                RowSequence rSeq = starTable.getRowSequence();
+                titles[col] = columnInfo.getName() + " (" + columnInfo.getUCD() + ")";
+            }
+            // check we've got enough to proceed.
+                processTable = raCol >= 0 && decCol >= 0 ;                                       
+        }
+
+        /** called once for each row in the table
+         * @see uk.ac.starlink.votable.TableHandler#rowData(java.lang.Object[])
+         */
+        public void rowData(Object[] row) throws SAXException {
+            if (!processTable) { // no point, not enough metadata
+                return;
+            }
+            String rowRa = row[raCol].toString();
+            String rowDec = row[decCol].toString();                                 
+            DefaultTreeNode valNode = new DefaultTreeNode();
+            String positionString = chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2) ;
+            valNode.setAttribute("label","*");
+            // unused
+            //valNode.setAttribute("ra",rowRa); // these might come in handy for searching later.
+            //valNode.setAttribute("dec",rowDec);
+            if (imgCol >= 0) { // its an image - treat differently;.
+                String imgURL = row[imgCol].toString();
+                long size;
                 try {
-                    while (rSeq.hasNext()) {
-                        rSeq.next();
-                        Object[] row = rSeq.getRow();
-                        String rowRa = row[raCol].toString();
-                        String rowDec = row[decCol].toString();                                 
-                        DefaultTreeNode valNode = new DefaultTreeNode();
-                        String positionString = chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2) ;
-                        valNode.setAttribute("label","*");
-                        // unused
-                        //valNode.setAttribute("ra",rowRa); // these might come in handy for searching later.
-                        //valNode.setAttribute("dec",rowDec);
-                        if (imgCol >= 0) { // its an image - treat differently;.
-                            String imgURL = row[imgCol].toString();
-                            long size;
-                            try {
-                                size = Long.parseLong(row[sizeCol].toString()) / 1024; // kb.
-                            } catch (Throwable t) { // not found, or can't parse
-                                size = Long.MAX_VALUE; // assume the worse
-                            }
-                            String title; 
-                            if (titleCol > -1) {
-                                title = row[titleCol].toString();
-                            } else {
-                                title  = "untitled";
-                            }
-                            valNode.setAttribute("imgURL",imgURL);
-                            String format = row[formatCol].toString();
-                            String type =  StringUtils.substringAfterLast(format,"/");
-                            valNode.setAttribute("type" ,type);
-                            /* unused
-                            if (size < MAX_INLINE_IMAGE_SIZE && (format.equals("image/gif") || format.equals("image/png") || format.equals("image/jpeg"))) {
-                                valNode.setAttribute("preview",imgURL); // its a small image, of a suitable format for viewing.
-                            }
-                            */
-                            valNode.setAttribute("label",title + ", " + type + ", " + size + "k");
-                        } 
-                        StringBuffer tooltip = new StringBuffer();
-                        tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
-                        for (int v = 0; v < row.length; v++) {
-                            tooltip.append("<br>")
-                            .append(titles[v])
-                            .append( ": ")
-                            .append(row[v] == null ? "" : row[v].toString());
-                        }
-                        tooltip.append("</p></html>");
-                        valNode.setAttribute("tooltip",tooltip.toString());  
-                        //System.out.println("about to call offset with vals " + ra + ", " + dec + ", " + Double.valueOf(rowRa).doubleValue() + ", " +  Double.valueOf(rowDec).doubleValue() + " for service = " + riNode.getAttribute("label"));
-                        double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
-                        String offsetVal = chopValue(String.valueOf(offset),2);
-                        TreeNode offsetNode = findNode(offsetVal, riNode);
-                        String tempAttr;
-                        if(offsetNode == null) { // not found offset node.
-                            offsetNode = new DefaultTreeNode();
-                            offsetNode.setAttribute("label",offsetVal);
-                            offsetNode.setAttribute("offset",offsetVal);
-                            offsetNode.setAttribute("tooltip",String.valueOf(offset));
-                            riNode.addChild(new DefaultEdge(riNode,offsetNode));
-                            nodeSizingMap.put(offsetVal,null);
-                        }
-                        // now have found or created the offsetNode, find the pointNode within it.
-                        TreeNode pointNode = findNode(positionString,offsetNode);
-                        if (pointNode == null) {
-                            pointNode = new DefaultTreeNode();
-                            offsetNode.addChild(new DefaultEdge(offsetNode,pointNode));
-                            pointNode.setAttribute("label",positionString);
-                        }
-                        // now have found or created point node. add new result to this.
-                        
-                       pointNode.addChild(new DefaultEdge(pointNode,valNode));
-                                                                                                           
-                    }//while rows in table.
-                }finally{
-                    rSeq.close();
+                    size = Long.parseLong(row[sizeCol].toString()) / 1024; // kb.
+                } catch (Throwable t) { // not found, or can't parse
+                    size = Long.MAX_VALUE; // assume the worse
                 }
-            }//for
+                String title; 
+                if (titleCol > -1) {
+                    title = row[titleCol].toString();
+                } else {
+                    title  = "untitled";
+                }
+                valNode.setAttribute("imgURL",imgURL);
+                String format = row[formatCol].toString();
+                String type =  StringUtils.substringAfterLast(format,"/");
+                valNode.setAttribute("type" ,type);
+                /* unused
+                if (size < MAX_INLINE_IMAGE_SIZE && (format.equals("image/gif") || format.equals("image/png") || format.equals("image/jpeg"))) {
+                    valNode.setAttribute("preview",imgURL); // its a small image, of a suitable format for viewing.
+                }
+                */
+                valNode.setAttribute("label",title + ", " + type + ", " + size + "k");
+            } 
+            StringBuffer tooltip = new StringBuffer();
+            tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
+            for (int v = 0; v < row.length; v++) {
+                tooltip.append("<br>")
+                .append(titles[v])
+                .append( ": ")
+                .append(row[v] == null ? "" : row[v].toString());
+            }
+            tooltip.append("</p></html>");
+            valNode.setAttribute("tooltip",tooltip.toString());  
+            //System.out.println("about to call offset with vals " + ra + ", " + dec + ", " + Double.valueOf(rowRa).doubleValue() + ", " +  Double.valueOf(rowDec).doubleValue() + " for service = " + riNode.getAttribute("label"));
+            double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
+            String offsetVal = chopValue(String.valueOf(offset),2);
+            TreeNode offsetNode = findNode(offsetVal, riNode);
+            String tempAttr;
+            if(offsetNode == null) { // not found offset node.
+                offsetNode = new DefaultTreeNode();
+                offsetNode.setAttribute("label",offsetVal);
+                offsetNode.setAttribute("offset",offsetVal);
+                offsetNode.setAttribute("tooltip",String.valueOf(offset));
+                riNode.addChild(new DefaultEdge(riNode,offsetNode));
+                nodeSizingMap.put(offsetVal,null);
+            }
+            // now have found or created the offsetNode, find the pointNode within it.
+            TreeNode pointNode = findNode(positionString,offsetNode);
+            if (pointNode == null) {
+                pointNode = new DefaultTreeNode();
+                offsetNode.addChild(new DefaultEdge(offsetNode,pointNode));
+                pointNode.setAttribute("label",positionString);
+            }
+            // now have found or created point node. add new result to this.
+            
+           pointNode.addChild(new DefaultEdge(pointNode,valNode));
+                       
+        }
+
+        /** called at the end
+         * @see uk.ac.starlink.votable.TableHandler#endTable()
+         */
+        public void endTable() throws SAXException {
             setNodeSizing();
-        }//buildNodes
+            //finally reset all member variables, ready to process next table...
+            raCol = -1;
+            decCol = -1;
+            imgCol = -1;
+            formatCol = -1;
+            sizeCol = -1;
+            titleCol = -1;    
+            titles = null;
+            processTable = false;
+        }       
+        } //end of table parser.
+ 
 
  
 
@@ -1812,6 +1843,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.27  2005/12/02 17:05:08  nw
+replaced dom-style parsing of votables with sax-style. faster, better for memory
+
 Revision 1.26  2005/12/02 13:42:48  nw
 changed to use system pooled executor, re-worked background processes
 
