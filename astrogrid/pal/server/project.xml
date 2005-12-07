@@ -111,7 +111,7 @@
     </dependency>
     <dependency>
       <id>picocontainer</id>
-      <version>1.0</version>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <id>concurrent</id>
@@ -299,18 +299,16 @@
     </dependency>
 
     <dependency>
-        <id>xerces</id>
-        <version>2.4.0</version>
-    </dependency>
-
-    <!-- I don't like putting this here, since we're using 
-    xerces 2.4.0, but the astrogrid/xml project needs it :-(
-    TODO : Convert this project to use xerces 2.6.2 -->
-    <dependency>
   		<groupId>xerces</groupId>
   		<type>jar</type>
   		<artifactId>xercesImpl</artifactId>
-      <version>2.6.2</version>
+      <version>2.7.1</version>
+    </dependency>
+    <dependency>
+  		<groupId>xerces</groupId>
+  		<type>jar</type>
+  		<artifactId>xml-apis</artifactId>
+      <version>2.7.1</version>
     </dependency>
 
     <dependency>

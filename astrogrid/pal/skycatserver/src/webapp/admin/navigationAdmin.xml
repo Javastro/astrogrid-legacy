@@ -1,0 +1,46 @@
+<div id='leftColumn'>
+<div id='navcolumn'>
+   <div id='menuInstall'>
+      <h5>Public links</h5>
+      <ul>
+         <li><a href="../index.jsp">Main index page</a>
+         <li><a href="../serverStatus.jsp">Server status</a>
+      </ul>
+   </div>
+
+   <div id='menuConfigure'>
+      <h5>Configure</h5>
+      <ul>
+         <li><a href="../docs/configure.jsp">Docs</a>
+         <li><a href="../setup/index.jsp">Setup</a>
+      </ul>
+   </div>
+   <div id='menuService'>
+      <h5>Service</h5>
+      <ul>
+         <li><a href="clearStatusLog.jsp">Clear Status</a>
+         <li><a href="GetLog">View Log</a>
+         <li><a href="fingerprint.jsp">View Fingerprint</a>
+      </ul>
+   </div>
+   <div id='menuMetadata'>
+      <h5>Metadata</h5>
+      <ul>
+         <li><a href="../GetMetadata">XML</a>
+         <li><a href="../viewMetadata.jsp">View</a>
+         <!-- <li><a href="editMetadata.jsp">Edit</a> -->
+         <li><a href="register.jsp">Register</a>
+         <li><a href="../docs/resourcePlugins.jsp">Configuring Metadata</a>
+      </ul>
+   </div>
+   <div id='menuTomcat'>
+      <h5>Tomcat</h5>
+      <ul>
+         <li><a href='/manager/html/'>Manager</a>
+         <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
+      </ul>
+   </div>
+
+</div>
+</div>
+

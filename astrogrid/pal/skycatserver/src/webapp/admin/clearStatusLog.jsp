@@ -13,14 +13,14 @@
 <head>
 <title>Clearing Status Log on <%=DataServer.getDatacenterName() %></title>
 <style type="text/css" media="all">
-          @import url("./style/astrogrid.css");
+          @import url("../style/astrogrid.css");
 </style>
 </title>
 </head>
 
 <body>
 <%@ include file='../header.xml' %>
-<%@ include file='navigation.xml' %>
+<%@ include file='navigationAdmin.xml' %>
 
 <div id='bodyColumn'>
 <h1>Status Log</h1>

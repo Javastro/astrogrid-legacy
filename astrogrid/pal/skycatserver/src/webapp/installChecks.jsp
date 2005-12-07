@@ -55,7 +55,7 @@ the SQL you would like to run instead.
 <ul>
 
 <li>Run the PAL installation self-tests (see link on left)</li>
-<li>Take a <a href="fingerprint.jsp">fingerprint</a> of the datacenter installation</li>
+<li>Take a <a href="admin/fingerprint.jsp">fingerprint</a> of the datacenter installation</li>
 </ul>
 </p>
 

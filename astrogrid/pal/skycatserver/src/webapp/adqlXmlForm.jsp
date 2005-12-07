@@ -36,8 +36,11 @@
         </p>
       </form>
       <a href="adqlSqlForm.jsp">Translate from SQL</a> *
-      <a href="http://openskyquery.net/AdqlTranslator/Convertor.aspx">NVO Translator</a> *
+      <a href="http://openskyquery.net/AdqlTranslator/Convertor.aspx">NVO Translator</a> 
+      <!--
+      *
       <a href="adql">Sample queries</a>
+      -->
       <br />
     </p>
 </div>

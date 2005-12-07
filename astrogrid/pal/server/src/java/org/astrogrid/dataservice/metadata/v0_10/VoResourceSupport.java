@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.11 2005/06/09 08:53:58 clq2 Exp $
+ * $Id: VoResourceSupport.java,v 1.12 2005/12/07 15:55:21 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,8 +43,11 @@ public class VoResourceSupport {
     * the date must be GMT */
    public final static SimpleDateFormat REGISTRY_DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-   public static final String VORESOURCE_ELEMENT = "Resource";
-   
+   public static final String VORESOURCE_ELEMENT = "vor:Resource";
+   public static final String VORESOURCE_ELEMENT_NAMESPACES = 
+     "xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" " + 
+     "xmlns=\"http://www.ivoa.net/xml/VOResource/v0.10\"";
+     
    /** Constructs a miniumum set of core elements for a VOresource from the given
     * strings */
    public String makeCore(String title, String id, String publisher, String contactName, String contactEmail, String description, String refUrl, String type) {
@@ -70,10 +73,11 @@ public class VoResourceSupport {
 
    /** Constructs  a VoResource opening tag with the given resource type */
    public String makeVoResourceElement(String vorType, String namespaces) {
-      return "<" + VORESOURCE_ELEMENT + " " +
+      return "<" + VORESOURCE_ELEMENT + " " + 
+         VORESOURCE_ELEMENT_NAMESPACES + " " + 
          "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
-         "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
-         "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+
+         //"xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
+         //"xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+
          namespaces+
          " status='active' updated='"+toRegistryForm(new Date())+"' xsi:type='"+vorType+"'"+
          ">";

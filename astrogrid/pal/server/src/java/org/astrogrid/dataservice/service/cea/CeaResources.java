@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.9 2005/11/21 12:54:18 clq2 Exp $
+ * $Id: CeaResources.java,v 1.10 2005/12/07 15:55:21 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -127,10 +127,3 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
    }
 
 }
-
-
-
-
-
-
-

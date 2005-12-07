@@ -1,37 +1,61 @@
 <div id='leftColumn'>
 <div id='navcolumn'>
-   <div id='menuConfigure'>
-      <h5>Configure</h5>
+   <div id='menuInstall'>
+      <h5>Install</h5>
       <ul>
-         <li><a href="../docs/configure.jsp">Docs</a>
-         <li><a href="../setup/index.jsp">Setup</a>
+         <li><a href="../docs/release.jsp">Release Notes</a>
+         <li><a href="../docs/configure.jsp">Configure</a>
+         <li><a href="../installChecks.jsp">Installation Checks</a>
+         <li><a href="../TestServlet?suite=org.astrogrid.dataservice.service.InstallationSelfCheck">Self Test</a>
+         <!-- li><a href="../client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a -->
       </ul>
    </div>
-   <div id='menuService'>
-      <h5>Service</h5>
+   <div id='menuQuery'>
+      <h5>Query</h5>
       <ul>
-         <li><a href="../index.jsp">Index</a>
-         <li><a href="../serverStatus.jsp">Status</a>
-         <li><a href="clearStatusLog.jsp">Clear Status</a>
-         <li><a href="GetLog">Log</a>
-         <li><a href="fingerprint.jsp">Fingerprint</a>
+         <li><a href="../coneForm.jsp" >Cone Search</a>
+         <!-- li><a  href="../queryBuilder-1-SelectFrom.jsp" >Build Query</a -->
+         <li><a href="../adqlSqlForm.jsp" >Ask Adql/Sql Query</a>
+         <li><a  href="../adqlXmlForm.jsp" >Ask Adql/Xml Query</a>
+         <!-- li><a  href="../translateAdql.jsp" >Translate ADQL/SQL to XML</a -->
+         <!-- li><a  href="../adql">Examples</a -->
       </ul>
    </div>
-   <div id='menuMetadata'>
-      <h5>Metadata</h5>
+   <div id='menuServer'>
+      <h5>Server</h5>
       <ul>
-         <li><a href="../GetMetadata">XML</a>
-         <li><a href="../viewMetadata.jsp">View</a>
-         <!-- <li><a href="editMetadata.jsp">Edit</a> -->
-         <li><a href="register.jsp">Register</a>
-         <li><a href="../docs/resourcePlugins.jsp">Configuring Metadata</a>
+         <!-- li><a href="../serverStatus.jsp">Status</a -->
+         <li><a href="../viewMetadata.jsp">Metadata</a> (<a href='GetMetadata'>XML</a>)
+         <li><a href="../admin/fingerprint.jsp">Fingerprint</a>
+         <li><a href="../serverStatus.jsp">Server Status</a>
+         <li><a href="../admin/">Server Administration</a>
       </ul>
    </div>
-   <div id='menuTomcat'>
-      <h5>Tomcat</h5>
+   <!-- div id='menuStores'>
+      <h5>Stores</h5>
       <ul>
-         <li><a href='/manager/html/'>Manager</a>
-         <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
+         <li><a href="../StoreBrowser">Browse</a>
+      </ul>
+   </div -->
+   <div id='menuDevelop'>
+      <h5>Develop</h5>
+      <ul>
+         <li><a href="../servlet/AxisServlet">SOAP WSDL</a>
+           <!--
+         <li><a href="../services/AxisDataService05">SOAP endpoint (v0.5)</a>
+           -->
+         <li><a href="../docs/" >Server Development Documentation </a>
+         <li><a href="../bugs.jsp" >Report Bugs</a>
+      </ul>
+   </div>
+   <div id='menuCEA'>
+      <h5>CEA</h5>
+      <ul>
+         <li><a href="../cea-fingerprint.jsp" >Fingerprint</a>
+         <li><a href="../TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" >Installation Tests</a>
+           <!--
+         <li><a href="../cec-http?method=returnRegistryEntry" >View VODescription </a>
+           -->
       </ul>
    </div>
 

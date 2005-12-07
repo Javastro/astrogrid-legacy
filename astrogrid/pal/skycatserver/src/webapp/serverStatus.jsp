@@ -43,7 +43,8 @@
          server.getLog().error("Reading Status Log", ioe);
       }
    
-   renderer.writeHtmlStatus(out, server.getStatus().getServiceStatus(), persisted); %>
+   renderer.writeHtmlStatus(out, server.getStatus().getServiceStatus(), persisted); 
+   %>
 
 <%= ServletHelper.makeRefreshSnippet(10,
          new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/serverStatus.jsp").toString()
@@ -51,4 +52,3 @@
 </div>
 </body>
 </html>
-

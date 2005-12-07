@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.11 2005/06/09 08:53:58 clq2 Exp $
+ * $Id: VoDescriptionServer.java,v 1.12 2005/12/07 15:55:21 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,7 @@ import org.astrogrid.slinger.ivo.IVORN;
 
 /**
  * Assembles the various VoResource elements provided by the plugins, and
- * serves them all up wrapped in a VoDescrption element for submitting to registries
+ * serves them all up wrapped in a VoDescription element for submitting to registries
  * @see VoResourceSupport for how resource elements are generated
  * @see package documentation
  * <p>
@@ -53,13 +53,11 @@ public class VoDescriptionServer {
                    "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' " + //default namespace
                    ">";
  */
+   public final static String VODESCRIPTION_ELEMENT =
+         "<vor:VOResources xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\">";
 
-   //
-   // Patch fix - found by experimenting with current registry.
-   // Probably not the right element, but it works.
-   public final static String VODESCRIPTION_ELEMENT     = "<resources>" ;
-   public final static String VODESCRIPTION_ELEMENT_END = "</resources>" ;
-
+   public final static String VODESCRIPTION_ELEMENT_END = "</vor:VOResources>";
+     
 
    /**
     * Returns the whole metadata file as a DOM document

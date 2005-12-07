@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: SubmitCone.java,v 1.6 2005/12/07 15:55:21 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -85,11 +85,34 @@ public class SubmitCone extends DefaultServlet {
             response.getWriter().flush();
          }
       }
+      catch (java.lang.IllegalArgumentException ex) {
+        //Typically thrown if a bad table name is given
+        doPotentialConfigError(request, response, coneCondition, tableDef, ex);
+      } 
+      catch (java.lang.NullPointerException ex) {
+        //Typically thrown if a bad column name is given
+        doPotentialConfigError(request, response, coneCondition, tableDef, ex);
+      }
       catch (Throwable th) {
          LogFactory.getLog(request.getContextPath()).error(th+" searching ("+coneCondition+")",th);
+
          doError(response, "Searching Cone ("+coneCondition+") -> "+tableDef,th);
       }
    }
 
+   private void doPotentialConfigError(
+       HttpServletRequest request, HttpServletResponse response, 
+       CircleCondition coneCondition, ReturnSpec tableDef, 
+       Exception ex) throws IOException {
+
+      String errorResponseString = 
+         "Searching Cone ("+coneCondition+") -> "+tableDef + "\n" +
+         "<p>An error has occurred (see below); this may be because this datacenter installation is misconfigured.\n" +
+         "<p>Please check that the properties 'conesearch.table', 'conesearch.ra.column', 'conesearch.dec.column' and 'conesearch.columns.units' are correctly configured in your properties file.\n";
+          
+      LogFactory.getLog(request.getContextPath()).error( ex+errorResponseString,ex);
+
+      doError(response, errorResponseString, ex);
+   }
 
 }

@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.3 2005/11/21 12:54:18 clq2 Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.4 2005/12/07 15:55:21 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,8 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
     private static final Log logger = LogFactory.getLog(DatacenterCEAComponentManager.class);
 
     /** Construct a new DatacenterCEAComponentManager
-     *
+     * @TOFIX : are the default implementations of various new interfaces
+     * adequate here?  Ask Paul.
      */
     public DatacenterCEAComponentManager() {
         super();
@@ -58,6 +59,13 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         //EmptyCEAComponentManager.registerProtocolLibrary(pico);
         //EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
         //EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
+        
+        // Added by KEA to fix broken unit test after CEA changes.
+        // TOFIX: are the default implementations adequate here?
+        //DefaultQueryServicesregister
+        
+        // need input from Paul.
+        //
         registerDatacenterProvider(pico,config);
     }
     
@@ -91,6 +99,12 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.4  2005/12/07 15:55:21  clq2
+KEA-PAL-1471
+
+Revision 1.3.4.1  2005/11/25 16:06:08  kea
+Fixes for incorrect registry xml (fixing namespace prefixes, namespaces) - see bug 1450
+
 Revision 1.3  2005/11/21 12:54:18  clq2
 DSA_KEA_1451
 

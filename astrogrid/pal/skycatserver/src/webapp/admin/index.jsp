@@ -14,7 +14,7 @@
 
 <body>
 <%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="navigationAdmin.xml" %>
 
 <div id='bodyColumn'>
 

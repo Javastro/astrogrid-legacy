@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.3 2005/05/27 16:21:04 clq2 Exp $
+ * $Id: JdbcPlugin.java,v 1.4 2005/12/07 15:55:21 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,6 +44,7 @@ public class JdbcPlugin extends DefaultPlugin {
    
    /** Adql -> SQL translator class */
    public static final String SQL_TRANSLATOR = "datacenter.querier.plugin.sql.translator";
+   public static final String DEFAULT_SQL_TRANSLATOR = "org.astrogrid.tableserver.jdbc.StdSqlMaker";
    
    /** execute timeout  */
    public static final String TIMEOUT = "datacenter.sql.timeout";
@@ -113,6 +114,8 @@ public class JdbcPlugin extends DefaultPlugin {
          
       }
       catch (SQLException e) {
+         log.error("SQLException when querying database with query  " + sql);
+         log.error("Exception is :" + e.toString());
          querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query Failed",e));
          //we don't really need to store stack info for the SQL exception, which saves logging...
          throw new DatabaseAccessException(e+" using '" + sql + "': ",e);
@@ -171,6 +174,8 @@ public class JdbcPlugin extends DefaultPlugin {
          return count;
       }
       catch (SQLException e) {
+         log.error("SQLException when querying database with query  " + sql);
+         log.error("Exception is :" + e.toString());
          querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query Failed",e));
          //we don't really need to store stack info for the SQL exception, which saves logging...
          throw new DatabaseAccessException(e+" using '" + sql + "': ",e);
@@ -212,7 +217,8 @@ public class JdbcPlugin extends DefaultPlugin {
     * Makes the right SqlQueryMaker for this database
     */
    public SqlMaker makeSqlMaker() throws QuerierPluginException {
-      String makerClass = ConfigFactory.getCommonConfig().getString(SQL_TRANSLATOR, "org.astrogrid.datacenter.queriers.sql.StdSqlMaker");
+      String makerClass = ConfigFactory.getCommonConfig().getString(
+            SQL_TRANSLATOR, DEFAULT_SQL_TRANSLATOR);
       
       try {
          Object o = QuerierPluginFactory.instantiate(makerClass);

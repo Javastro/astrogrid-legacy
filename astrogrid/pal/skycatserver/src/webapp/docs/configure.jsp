@@ -41,8 +41,8 @@ Astrogrid components already installed) 'astrogrid.properties'
 and make sure this is in your classpath; a suitable place on Tomcat might be
 the common/classes directory so it is not overwritten on updates.</p>
 <p>If you want to have individual configuration files for each component, then create it and
-set the environment variable 'astrogrid.config.filename' to the appropriate path and
-filename, or the environment variable 'astrogrid.config.url' to the appropriate URL.
+set the environment variable 'org.astrogrid.config.filename' to the appropriate path and
+filename, or the environment variable 'org.astrogrid.config.url' to the appropriate URL.
   You can use environment variables in the variable value. For example, using <code>${catalina.home}/conf/datacenter.properties</code>
 will cause the datacenter to look in tomcat's configuration directory if you are running tomcat.</p>
 <p>If you have several datacenters it will be necessary to do have a separate configuration file
@@ -52,7 +52,7 @@ environment variable under each context to a different properties file.</p>
 
 <h3>Using Environment Variables</h3>
 <p>You can set system environment variables from the command line.  For example, you
-can use the command <code>setenv astrogrid.config.filename=/disk1/webapp/pal.properties</code> under linux.
+can use the command <code>setenv org.astrogrid.config.filename=/disk1/webapp/pal.properties</code> under linux.
 <p>If you are using Tomcat, you can also change environment variables by editing the 'Environment Entries'
 as a Tomcat Administrator</p>
 
@@ -197,4 +197,3 @@ can be found in the <a href='resourcePlugins.jsp'>Resource Plugins</a> documenta
 
 </body>
 </html>
-

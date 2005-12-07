@@ -25,15 +25,19 @@ Functionality supported
 Known bugs and ommissions, with workarounds where possible
 How to report bugs (BugZilla, content etc)
 -->
-<h1>Datacenter Release v1.0 rc1</h1>
+<h1>Datacenter Release v1.2</h1>
 <p>
 
 <h2>Functionality Supported</h2>
 <ul>
 <li>Querying datacenters via ADQL 0.7.4 and region searches.
 <li>CEA web service interfaces
-<li>JSP pages, including a <a href="../queryBuilder-1-SelectFrom.jsp">query builder</a>
-and <a href="../adqlSqlForm.jsp">SQL</a> parser/submission form.
+<li>JSP pages, including a 
+<!--
+<a href="../queryBuilder-1-SelectFrom.jsp">query builder</a>
+and 
+-->
+<a href="../adqlSqlForm.jsp">SQL</a> parser/submission form.
 <li>Log views
 <li>Metadata views
 <li>Registry resource plugins

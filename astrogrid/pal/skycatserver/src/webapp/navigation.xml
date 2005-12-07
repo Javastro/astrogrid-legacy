@@ -3,7 +3,6 @@
    <div id='menuInstall'>
       <h5>Install</h5>
       <ul>
-         <li><a href="docs/install.jsp">INSTALL</a>
          <li><a href="docs/release.jsp">Release Notes</a>
          <li><a href="docs/configure.jsp">Configure</a>
          <li><a href="installChecks.jsp">Installation Checks</a>
@@ -27,8 +26,9 @@
       <ul>
          <!-- li><a href="serverStatus.jsp">Status</a -->
          <li><a href="viewMetadata.jsp">Metadata</a> (<a href='GetMetadata'>XML</a>)
-         <li><a href="admin/">Admin</a>
          <li><a href="admin/fingerprint.jsp">Fingerprint</a>
+         <li><a href="serverStatus.jsp">Server Status</a>
+         <li><a href="admin/">Server Administration</a>
       </ul>
    </div>
    <!-- div id='menuStores'>
@@ -41,7 +41,9 @@
       <h5>Develop</h5>
       <ul>
          <li><a href="servlet/AxisServlet">SOAP WSDL</a>
+           <!--
          <li><a href="services/AxisDataService05">SOAP endpoint (v0.5)</a>
+           -->
          <li><a href="docs/" >Server Development Documentation </a>
          <li><a href="bugs.jsp" >Report Bugs</a>
       </ul>
@@ -51,7 +53,9 @@
       <ul>
          <li><a href="cea-fingerprint.jsp" >Fingerprint</a>
          <li><a href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" >Installation Tests</a>
+           <!--
          <li><a href="cec-http?method=returnRegistryEntry" >View VODescription </a>
+           -->
       </ul>
    </div>
 
