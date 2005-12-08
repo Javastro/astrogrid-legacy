@@ -13,6 +13,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+    <action dev="pjn" type="fix">
+	    Improved registry browser, added script validation
+	</action>
 	<release version="2.0-alpha-1" date="2005-11-23">
 		<action dev="nw" type="update">
 			updated to latest version of stil (2.3-1)
