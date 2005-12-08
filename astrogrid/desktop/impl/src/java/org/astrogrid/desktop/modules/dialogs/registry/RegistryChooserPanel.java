@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.15 2005/11/24 01:13:24 nw Exp $
+/*$Id: RegistryChooserPanel.java,v 1.16 2005/12/08 13:01:12 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,32 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.registry;
 
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-
-import org.apache.axis.utils.XMLUtils;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
-import org.w3c.dom.Document;
-
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.BorderLayout;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractListModel;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -47,7 +30,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
@@ -56,7 +41,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.text.Caret;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -64,6 +48,18 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.w3c.dom.Document;
 
 
 
@@ -74,6 +70,7 @@ import javax.xml.transform.stream.StreamResult;
 public class RegistryChooserPanel extends JPanel implements ActionListener {
     
     private static final int TOOLTIP_WRAP_LENGTH = 50;
+    
     
     /** model that maintains resource information objects - rather than deconstructing them and then rebuilding them afterwards
      * 
@@ -124,7 +121,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         }
         // makes a checkbox appear in col 1
         public Class getColumnClass(int columnIndex) {
-            if (columnIndex == 0) {
+            if (columnIndex == 0 && parent.getClass().equals(UIComponent.class)) {
                 return Boolean.class;
             } else {
             return super.getColumnClass(columnIndex);
@@ -151,7 +148,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         }
         // make the first cell editable
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return columnIndex == 0;
+            return (columnIndex == 0 && parent.getClass().equals(UIComponent.class));
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
@@ -211,7 +208,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     private JButton goButton = null;
     
     /** assemble the ui */
-    private void initialize() {
+    private void initialize() {    	
         this.setSize(new Dimension(300,500));
         
         setLayout(new BorderLayout());
@@ -221,9 +218,16 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         
         JComponent bottomComp = getBottomPanel();
         jp.setPreferredSize(new Dimension(300,200));
-        bottomComp.setPreferredSize(new Dimension(300,200));
+        bottomComp.setPreferredSize(new Dimension(300,200)); 
         
-        split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jp,bottomComp);
+        JTabbedPane tabPane = new JTabbedPane();
+        
+        tabPane.add(new JScrollPane(detailsPane), "Details");
+        tabPane.add(bottomComp, "Registry entry");
+        tabPane.setToolTipTextAt(0,"Details");
+        tabPane.setToolTipTextAt(1,"View the XML as entered in the registry");
+        
+        split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jp,tabPane);
         split.setPreferredSize(new Dimension(300,200));
         split.setSize(new Dimension(300,200));
         split.setDividerSize(5);
@@ -244,6 +248,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         topPanel.add(exhaustiveCheck,null);
         return topPanel;
     }
+
 
 
     ResourceInformationTableModel selectTableModel= new ResourceInformationTableModel();
@@ -289,7 +294,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                  ListSelectionModel lsm = (ListSelectionModel)e.getSource();
                  if (lsm.isSelectionEmpty()) {
                      if(selectTableModel.getRowCount() > 0) {
-                         editorPane.setText("<html><body></body></html>");
+                         xmlPane.setText("");
                      }
                  } else if (selectTable.getSelectedColumn() ==1) {                                            
                      final int selectedRow = lsm.getMinSelectionIndex();
@@ -297,12 +302,15 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
                         protected Object construct() throws Exception {
                             Document doc = reg.getRecord(selectTableModel.getRows()[selectedRow].getId());
-                            return (String)transform(doc);
+                            //return (String)transform(doc);
+                            return doc;
                         }
                         protected void doFinished(Object o) {
-                        	editorPane.setEditorKit(new XHTMLEditorKit());
-                            editorPane.setText(o.toString());
-                            editorPane.setCaretPosition(0);
+                        	detailsPane.setEditorKit(new XHTMLEditorKit());
+                        	detailsPane.setText((String)transform((Document)o));
+                        	detailsPane.setCaretPosition(0);
+                            xmlPane.setText(XMLUtils.DocumentToString((Document)o));
+                            xmlPane.setCaretPosition(0);
                         }
                      }).start();                     
 
@@ -333,14 +341,15 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     }
 
     
-    JEditorPane editorPane = new JEditorPane("text/html","<html><body></body></html>");
+    JEditorPane detailsPane = new JEditorPane("text/html","<html><body><font size='-1'>No entry selected</font></body></html>");
+    JTextArea xmlPane = new JTextArea();
     private JComponent getBottomPanel() {
-        editorPane.setEditable(false);
-        
+        xmlPane.setEditable(false);
+        xmlPane.setText("No entry selected");
         //Put the editor pane in a scroll pane.
-        JScrollPane editorScrollPane = new JScrollPane(editorPane);
+        JScrollPane editorScrollPane = new JScrollPane(xmlPane);
         editorScrollPane.setVerticalScrollBarPolicy(
-                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         return editorScrollPane;
     }
                
@@ -518,12 +527,21 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
            results[i] = (ResourceInformation)m.getElementAt(i);
        }
        return results;                
-   }
+   }     
 }
 
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.16  2005/12/08 13:01:12  pjn3
+Merge of pjn_wprkbench_1_12_05
+
+Revision 1.15.4.2  2005/12/08 11:35:14  pjn3
+Prevent checkbox appearing when not req'd
+
+Revision 1.15.4.1  2005/12/08 10:37:46  pjn3
+Moved xml to seperate tab to improve display
+
 Revision 1.15  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 
