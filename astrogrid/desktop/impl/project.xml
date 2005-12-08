@@ -387,6 +387,15 @@
 		 <dist.bundle>true</dist.bundle>
 	 </properties>
 	</dependency>
+	<dependency><!-- groovy validation -->
+	 <groupId>groovy</groupId>
+	 <artifactId>groovy</artifactId>
+	 <version>1.0-jsr-04</version>
+	 <type>jar</type>
+	 <properties>
+		 <dist.bundle>true</dist.bundle>			
+	 </properties>
+    </dependency>
  
 <!-- online help system -->
  <dependency>
