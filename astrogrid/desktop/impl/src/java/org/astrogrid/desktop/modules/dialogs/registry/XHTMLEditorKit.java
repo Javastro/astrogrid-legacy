@@ -56,12 +56,14 @@ public class XHTMLEditorKit extends HTMLEditorKit {
 		}
 		
 		public void endElement(String uri, String name, String qName) throws SAXException {
-			callback.handleEndTag(HTML.getTag(qName), -1);
+			if (HTML.getTag(qName) != null)
+			    callback.handleEndTag(HTML.getTag(qName), -1);
 		}
 		
-		public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {
-			SimpleAttributeSet attributeSet = convertAttributes(atts);
-			callback.handleStartTag(HTML.getTag(qName), attributeSet, -1);
+		public void startElement(String uri, String name, String qName, Attributes atts) throws SAXException {			
+			SimpleAttributeSet attributeSet = convertAttributes(atts);			
+			if (HTML.getTag(qName) != null)
+			    callback.handleStartTag(HTML.getTag(qName), attributeSet, -1);
 		}
 		
 		private SimpleAttributeSet convertAttributes(Attributes atts) {
