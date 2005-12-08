@@ -10,38 +10,46 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.workflow.beans.v1.Script;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import groovy.lang.MissingMethodException;
+import groovy.lang.MissingPropertyException;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
 import jedit.JEditTextArea;
 import jedit.JavaTokenMarker;
 import jedit.SyntaxDocument;
+
+import org.astrogrid.workflow.beans.v1.Script;
+import org.codehaus.groovy.control.CompilationFailedException;
 /**
- * Simple dialog that displays script body
- * the result into something else.
+ * Simple dialog that displays script activities
  * @author Phil Nicolson pjn3@star.le.ac.uk 12/8/05
  * 
- *@modified nww - display results in a jedit box - gives syntax coloring. rewrittn to use joptionpane.
+ * @modified nww - display results in a jedit box - gives syntax coloring. rewrittn to use joptionpane.
+ * @modified pjn - groovy validation added
  */
-public class ScriptDialog extends BaseBeanEditorDialog {
+public class ScriptDialog extends BaseBeanEditorDialog implements ActionListener {
 	private JEditTextArea scriptField;
 	private JPanel displayPanel;
 	private JTextField descField;
+	private JButton validateButton;
+	
 	/**
 	 * This method initializes jTextArea	
 	 * 	
@@ -53,6 +61,15 @@ public class ScriptDialog extends BaseBeanEditorDialog {
             scriptField.setDocument(new SyntaxDocument()); // prevents aliasing between jeditors.
             scriptField.setTokenMarker(new JavaTokenMarker());
             scriptField.setEditable(true);
+            scriptField.addCaretListener(new CaretListener(){
+            	public void caretUpdate(CaretEvent e) {
+            		if (scriptField.getDocumentLength() >0) {
+            		  validateButton.setEnabled(true);
+            		} else {
+            			validateButton.setEnabled(false);
+            		}
+            	}
+            });
 		}
 		return scriptField;
 	}
@@ -71,8 +88,14 @@ public class ScriptDialog extends BaseBeanEditorDialog {
 		JPanel p = new JPanel(new FlowLayout());
 		JLabel label = new JLabel("Description:  ");
 		descField = new JTextField(30);
+		validateButton = new JButton();
+		validateButton.setText("Validate script");
+		validateButton.setToolTipText("<html>Check if script is valid groovy script. <br>(Scripts are validated in isolation to the workflow document)</html>");
+		validateButton.setEnabled(false);
+		validateButton.addActionListener(this);
 		p.add(label);
 		p.add(descField);
+		p.add(validateButton);
 		p.setBorder(BorderFactory.createEtchedBorder());
 		return p;
 	}	
@@ -107,7 +130,38 @@ public class ScriptDialog extends BaseBeanEditorDialog {
         return (Script)getTheBean();
     }
 
+    /**
+     * 
+     */
+    public void actionPerformed(ActionEvent e) {
+    	try{
+    		Binding binding = new Binding();
+    		GroovyShell shell = new GroovyShell(binding);
+    		Object value = shell.evaluate(getScriptField().getText());
+    		JOptionPane.showMessageDialog(this, 
+    				                      "Your script appears to be valid",
+										  "Script appears valid", 
+										  JOptionPane.INFORMATION_MESSAGE);
+        } 
+        catch (CompilationFailedException ex ) {
+        	showError("Your script may contain errors",ex);
+        }
+    	catch (MissingMethodException ex)  {
+    		showError("Your script may contain errors",ex);
+    	}
+    	catch (MissingPropertyException ex) {
+    		JOptionPane.showMessageDialog(this, 
+                                          "<html>Your script appears valid, assuming the following variable is set <br>elsewhere in your workflow document (if not please add a 'SET' activity..)<br><br>" +ex + "</html>" ,
+					                      "Script appears valid", 
+					                      JOptionPane.INFORMATION_MESSAGE);
+    	}
+    }
     
-
-	
+    /**
+     * @param s
+     * @throws HeadlessException
+     */
+    protected void showError(String s, Exception ex) throws HeadlessException {
+        JOptionPane.showMessageDialog(this,ex,s,JOptionPane.ERROR_MESSAGE);
+    }
 }
