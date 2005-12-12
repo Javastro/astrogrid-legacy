@@ -5,6 +5,13 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+    		<action dev="gtr" type="fix">
+    			<em>Branch jes-gtr-1462</em> Various incremental improvements: environment entries declared in wb.xml; 
+    			new configuration editor; changes to logging; 
+    			fixes for some broken unit tests; 
+    			fixes for some code that was misrepresenting integration-test results.
+    			This version seems to be fully compatible with the A/G v1.1 system.
+    		</action>
            <action dev="kea" type="fix">
                <em>Branch: KEA_PAL_1474</em>
                Placeholder branch for a number of bugzilla ticket fixes.  NB This branch involves astrogrid/pal and astrogrid/status projects.
