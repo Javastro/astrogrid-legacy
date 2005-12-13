@@ -46,9 +46,9 @@ class XMLRPCPlasticClient extends PlasticClientProxy {
         logger.info("Performing " + message + " from " + sender);
         try {
             Vector xmlrpcArgs = new Vector();
-            xmlrpcArgs.add(sender);
-            xmlrpcArgs.add(message);
-            xmlrpcArgs.add(args);
+            xmlrpcArgs.add(sender.toString());
+            xmlrpcArgs.add(message.toString());
+            xmlrpcArgs.add(new Vector(args));
             setResponding(true);
             return xmlrpc.execute(PLASTIC_CLIENT_PERFORM, xmlrpcArgs);
         } catch (Exception e) {

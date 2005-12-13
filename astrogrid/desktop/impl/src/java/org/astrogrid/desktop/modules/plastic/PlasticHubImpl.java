@@ -96,7 +96,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
         clients.put(id, client);
         List args = new ArrayList();
-        args.add(id);
+        args.add(id.toString());
         logger.info(id + " has registered");
         requestAsynch(hubId, HubMessageConstants.APPLICATION_REGISTERED_EVENT, args);
 
@@ -133,7 +133,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         }
         clients.remove(id);
         Vector args = new Vector();
-        args.add(id);
+        args.add(id.toString());
         requestAsynch(hubId, HubMessageConstants.APPLICATION_UNREGISTERED_EVENT, args);
         logger.info(id + " has unregistered");
 

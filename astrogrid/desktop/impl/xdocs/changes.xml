@@ -13,6 +13,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+    <action dev="jdt" type="fix">
+	    Fixed bug in the xmlrpc plastic client that was trying to send non-xmlrpc compatible objects.
+	</action>
     <action dev="pjn" type="fix">
 	    Improved registry browser, added script validation
 	</action>
