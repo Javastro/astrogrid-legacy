@@ -10,14 +10,29 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.renderers;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.ToolTipManager;
+import javax.swing.border.Border;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.RawXMLToolEditorPanel;
 import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
@@ -33,28 +48,8 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTree;
-import javax.swing.ToolTipManager;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
+import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 /**
  * @author pjn3
@@ -112,8 +107,8 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					value = ((DefaultMutableTreeNode)value).getUserObject();
 				if (value instanceof Workflow) {
 					Workflow w = (Workflow)value;					
-                    String name = w.getName() == null? "--" : w.getName();
-					String desc = w.getDescription() == null? "--" : w.getDescription();
+                    String name = w.getName() == null? "--" : "Name: " + w.getName();
+					String desc = w.getDescription() == null? "--" : "Desc: " +  w.getDescription();
                     rendererPanel.removeAll();
 					rendererPanel.add(new JLabel(name));
 					rendererPanel.add(new JLabel(desc));
@@ -289,9 +284,60 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					jta.setText(text);
 					return jta;
 				}
+				else if (value instanceof StepExecutionRecord) {
+					StepExecutionRecord o = (StepExecutionRecord)value;
+					sb.append("<html><b>Status:</b> ");
+					sb.append(formatStatus(o.getStatus().toString()));
+					sb.append(" <b>Start:</b> " + o.getStartTime());
+					sb.append(" <b>Finish:</b> " + o.getFinishTime() + "</html>");
+					label.setText(sb.toString());
+					label.setToolTipText(null);
+					label.setIcon(null);
+					
+				}
+				else if (value instanceof JobExecutionRecord) {
+					JobExecutionRecord o = (JobExecutionRecord)value;
+					sb.append("<html><b>JobURN:</b> " + o.getJobId().getContent() + "<br>");
+					sb.append("<b>Status:</b> ");
+					sb.append(formatStatus(o.getStatus().toString()));
+					sb.append(" <b>Start:</b> " + o.getStartTime());
+					sb.append(" <b>Finish:</b> " + o.getFinishTime() + "</html>");
+					label.setText(sb.toString());
+					label.setToolTipText(null);
+					label.setIcon(null);
+				}				
+				else if (value instanceof MessageType) {
+					MessageType o = (MessageType)value;
+					sb.append("<html><b>Phase:</b> ");
+					sb.append(formatStatus(o.getPhase().toString()));
+					sb.append(" <b>Time:</b> " + o.getTimestamp());
+					sb.append(" <b>Source:</b> " + o.getSource());
+					if (o.getContent() != "") {
+						sb.append(" <b>Message:</b> " + o.getContent());
+					}
+					label.setText(sb.toString());
+					label.setToolTipText(null);
+					label.setIcon(null);
+				}				
 				else {    			
-					label.setText("");
+					label.setText("" + value);
 				}   		
 				return(label);																	 
+	}
+	
+	private String formatStatus(String s) {
+		if (s.equalsIgnoreCase("INITIALIZING")) {
+			return "<font color='GREEN'>INITIALIZING</font>";
+		} else if (s.equalsIgnoreCase("RUNNING")) {
+			return "<font color='GREEN'>RUNNING</font>";
+		} else if (s.equalsIgnoreCase("ERROR")) {
+			return "<font color='RED'>ERROR</font>";
+		} else if (s.equalsIgnoreCase("COMPLETED")) {
+			return "<font color='BLUE'>COMPLETED</font>";
+		} else if(s.equalsIgnoreCase("PENDING")) {
+			return "<font color='BLUE'>PENDING</font>";
+		} else {
+			return "<font color='ORANGE'>UNKNOW</font>";
+		}
 	}
 }

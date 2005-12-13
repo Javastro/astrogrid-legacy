@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.dnd.DropTarget;
@@ -24,9 +25,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.PrinterJob;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
@@ -183,12 +188,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                             getModel().setWorkflow((Workflow)o);   
                             getTree().expandAll(true);
                             tabbedPaneWF.setSelectedIndex(0);
-                    	    tabbedPaneWF.setEnabledAt(0, true);
-                    	    tabbedPaneWF.setEnabledAt(1, true);
-                    	    //@todo tidy this up.
-                    		saveAction.setEnabled(true);
-                    		caretPos = 0;
-                    		wfDocFindField.setText("");
+                    	    activateMenus();
                     		validateWorkflow();
 	                    }
 	                }).start();	                	    
@@ -200,7 +200,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
             super("Submit Workflow",IconHelper.loadIcon("run_tool.gif"));
             this.putValue(SHORT_DESCRIPTION,"Submit a workflow for execution");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_W));
-            this.setEnabled(true);
+            this.setEnabled(false);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -240,12 +240,6 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         		catch (ServiceException ex) { // quite unlikely.
         			showError("Failed to create workflow",ex);
         		}
-        		tabbedPaneWF.setSelectedIndex(0);
-        		tabbedPaneWF.setEnabledAt(0, true);
-        		tabbedPaneWF.setEnabledAt(1, true);
-
-        		submitAction.setEnabled(true);
-        		saveAction.setEnabled(true);
         	} else {
         	    i = JOptionPane.showConfirmDialog(null, "Creating a new workflow will mean current workflow is deleted. \n" 
         	    		                               +"Do you wish to save your workflow prior to creating new one?", "Create new workflow", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE); 
@@ -259,12 +253,6 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         		catch (ServiceException ex) { // quite unlikely.
         			showError("Failed to create workflow",ex);
         		}
-        		tabbedPaneWF.setSelectedIndex(0);
-        		tabbedPaneWF.setEnabledAt(0, true);
-        		tabbedPaneWF.setEnabledAt(1, true);
-
-        		submitAction.setEnabled(true);
-        		saveAction.setEnabled(true);
         	}
         	if (i == JOptionPane.NO_OPTION) {
         		try {
@@ -274,13 +262,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         		catch (ServiceException ex) { // quite unlikely.
         			showError("Failed to create workflow",ex);
         		}
-        		tabbedPaneWF.setSelectedIndex(0);
-        		tabbedPaneWF.setEnabledAt(0, true);
-        		tabbedPaneWF.setEnabledAt(1, true);
-
-        		submitAction.setEnabled(true);
-        		saveAction.setEnabled(true);
         	}
+    		tabbedPaneWF.setSelectedIndex(0);
+        	activateMenus();
         }
     }    
     /** close action */
@@ -307,7 +291,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        super("Collapse", IconHelper.loadIcon("collapse.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Collapse tree");
 	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-	        this.setEnabled(true);            
+	        this.setEnabled(false);            
 	    }
         public void actionPerformed(ActionEvent e) {
        //     TreeNode node = (TreeNode)tree.getLastSelectedPathComponent();
@@ -325,7 +309,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        super("Expand", IconHelper.loadIcon("expand.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Expand tree");
 	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
-	        this.setEnabled(true);            
+	        this.setEnabled(false);            
 	    }
         public void actionPerformed(ActionEvent e) {
        //     TreeNode node = (TreeNode)tree.getLastSelectedPathComponent();
@@ -343,19 +327,19 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        super("Move up", IconHelper.loadIcon("promote.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Move activity up");
 	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_U));
-	        this.setEnabled(true);
+	        this.setEnabled(false);
 	    }
         public void actionPerformed(ActionEvent e) {
         	moveNode(true);
 	    }
 	}
     /** demote node */
-	protected final class DemoteActivity extends AbstractAction {
-	    public DemoteActivity() {
+	protected final class DemoteAction extends AbstractAction {
+	    public DemoteAction() {
 	        super("Move down", IconHelper.loadIcon("demote.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Move activity down");
 	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));
-	        this.setEnabled(true);            
+	        this.setEnabled(false);            
 	    }
         public void actionPerformed(ActionEvent e) {
         	moveNode(false);
@@ -367,7 +351,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        super("Delete", IconHelper.loadIcon("delete_obj.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Delete selected activity");
 	        this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_D).intValue(),InputEvent.CTRL_DOWN_MASK));
-	        this.setEnabled(true);            
+	        this.setEnabled(false);            
 	    }
         public void actionPerformed(ActionEvent e) {
         	DefaultMutableTreeNode deleteNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
@@ -388,7 +372,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        super("Copy", IconHelper.loadIcon("copy.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Copy selected activity");
 	        this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_C).intValue(),InputEvent.SHIFT_DOWN_MASK));
-	        this.setEnabled(true);            
+	        this.setEnabled(false);            
 	    }
         public void actionPerformed(ActionEvent e) {
         	/**
@@ -416,7 +400,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        super("Cut", IconHelper.loadIcon("cut_edit.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Cut selected activity");
 	        this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_X).intValue(),InputEvent.SHIFT_DOWN_MASK));
-	        this.setEnabled(true);            
+	        this.setEnabled(false);            
 	    }
         public void actionPerformed(ActionEvent e) {
         	/**
@@ -444,7 +428,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        super("Paste", IconHelper.loadIcon("paste_edit.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Paste copied activity");
 	        this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_V).intValue(),InputEvent.SHIFT_DOWN_MASK));
-	        this.setEnabled(true);            
+	        this.setEnabled(false);            
 	    }
         public void actionPerformed(ActionEvent e) {
         	DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
@@ -476,6 +460,32 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     		}	            	        	            	
 	    }
 	}
+    /** print workflow transcript */
+	protected final class PrintAction extends AbstractAction {
+	    public PrintAction() {
+	        super("Print", IconHelper.loadIcon("printer.gif"));
+	        this.putValue(SHORT_DESCRIPTION,"Print the workflow transcript");
+	        this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_P).intValue(),InputEvent.CTRL_DOWN_MASK));
+	        this.setEnabled(true); 
+	    }
+        public void actionPerformed(ActionEvent e) {
+            (new BackgroundOperation("Printing....") {
+                    protected Object construct() throws Exception {        		
+                    	PrinterJob printJob = PrinterJob.getPrinterJob();
+                    	//printJob.setPrintable(docTextArea.getText());
+                        if (printJob.printDialog()) {
+                            try {
+                                printJob.print();
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                        return null;
+                     }
+                }).start();	            
+    
+	    }
+	}
 	// components this ui uses.
     protected final ToolEditorInternal toolEditor;
     protected final BrowserControl browser;
@@ -494,16 +504,18 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     protected Action collapseAction;
     protected Action expandAction;
     protected Action promoteAction;
-    protected Action demoteActivity;
+    protected Action demoteAction;
     protected Action deleteAction;
     protected Action copyAction;
     protected Action cutAction;
     protected Action pasteAction;
+    protected Action printAction;
     
     private JButton  findButton = null;
     private JEditorPane docTextArea;
     private JList list;
     private JLabel statusLabel, workflowStatusLabel, wastebinLabel = null;
+    private JPanel pane;
     private JMenuBar jJMenuBar = null;
     private JMenu fileMenu, editMenu = null;
     private JToolBar toolbar = null;    
@@ -516,8 +528,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     private int caretPos = 0;
     private StatusBar statusBar = null;
     private DefaultMutableTreeNode copiedNode; // used for cut and copy
-    WastebinDropListener w;
-    public boolean autoPopUp = true;    
+    private WastebinDropListener w;
+    public boolean autoPopUp = true;  
+    private boolean workflowTranscript = false; // Indicate whether we are viewing a transcript
     
     ActivityListRenderer activityListRenderer = new ActivityListRenderer();
 	
@@ -548,22 +561,21 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	 */
 	private  void initialize() {
 
-		this.setTitle("Workflow Builder");
 		this.setJMenuBar(getJJMenuBar());
-        setIconImage(IconHelper.loadIcon("wf_small.gif").getImage());        
+        setIconImage(IconHelper.loadIcon("tree.gif").getImage());        
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.workflowBuilder");  			
 		tabbedPaneWF = new JTabbedPane();		
-		tabbedPaneWF.addTab ("Tree View", IconHelper.loadIcon("wf_small.gif"), getTabbedTreePanel(), "Display workflow graphically");
+		tabbedPaneWF.addTab ("Tree View", IconHelper.loadIcon("tree.gif"), getTabbedTreePanel(), "Display workflow graphically");
 		tabbedPaneWF.setMnemonicAt(0,KeyEvent.VK_T);
 		tabbedPaneWF.addTab("Document", IconHelper.loadIcon("document.gif"), getTabbedDocPanel(), "Display text version of workflow");
 		tabbedPaneWF.setMnemonicAt(1,KeyEvent.VK_D);
-		tabbedPaneWF.setEnabledAt(0, false);
-		tabbedPaneWF.setEnabledAt(1, false);
 		tabbedPaneWF.addMouseListener(new MouseAdapter(){
 	        public void mouseClicked(MouseEvent event)
 	        {
 	        	setStatusMessage("");
-	        	if (((JTabbedPane)event.getSource()).getSelectedIndex() == 1) { // only if user is selecting text tab	        		
+	        	if (((JTabbedPane)event.getSource()).getSelectedIndex() == 1) { // only if user is selecting text tab
+            		caretPos = 0;
+            		wfDocFindField.setText("");
 		            try{
 		                Document doc = DomHelper.newDocument();
 		                Marshaller.marshal(getModel().getWorkflow(),doc);
@@ -599,25 +611,24 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        }
 	    });
 			
-		JPanel pane = getJContentPane();
+		pane = getJContentPane();
 		pane.add(tabbedPaneWF, BorderLayout.CENTER);
 		pane.add(getToolbar(), BorderLayout.NORTH);
 		
 		submitAction = new SubmitAction();
-        submitAction.setEnabled(false); // Initially false until a workflow is loaded/created
         loadAction = new LoadAction();
         createAction = new CreateAction(); 
         saveAction = new SaveAction();
-        saveAction.setEnabled(false); // Initially false until a workflow is loaded/created
         closeAction = new CloseAction();
         collapseAction = new CollapseAction();
         expandAction = new ExpandAction();
         promoteAction = new PromoteAction();
-        demoteActivity = new DemoteActivity();
+        demoteAction = new DemoteAction();
         deleteAction = new DeleteAction();
         copyAction = new CopyAction();
         cutAction = new CutAction();
         pasteAction = new PasteAction();
+        printAction = new PrintAction();
         
         toolbar.add(createAction);
         toolbar.add(loadAction);
@@ -626,11 +637,12 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         toolbar.add(collapseAction);
         toolbar.add(expandAction);
         toolbar.add(promoteAction);
-        toolbar.add(demoteActivity);
+        toolbar.add(demoteAction);
         toolbar.add(deleteAction);
         toolbar.add(copyAction);
         toolbar.add(cutAction);
         toolbar.add(pasteAction);
+        toolbar.add(printAction);
         
         fileMenu.add(createAction);
         fileMenu.add(loadAction);
@@ -672,6 +684,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         preferencesMenu.add(cbMenuItem2);
         fileMenu.add(preferencesMenu);
         fileMenu.add(new JSeparator());
+        fileMenu.add(printAction);
+        fileMenu.add(new JSeparator());
         fileMenu.add(closeAction);
         
         editMenu.add(cutAction);
@@ -683,12 +697,12 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         editMenu.add(expandAction);
         editMenu.add(collapseAction);
         editMenu.add(promoteAction);
-        editMenu.add(demoteActivity);
+        editMenu.add(demoteAction);
         
         pane.add(getActivityList(),BorderLayout.WEST);
 		this.setContentPane(pane);
 		pack();
-           this.setSize(565,800);        
+           this.setSize(800,800);        
 		this.w = new WastebinDropListener();
 		createAction.actionPerformed(null); // fire the create action to initialize everything.
         // keep guy happy.
@@ -825,10 +839,11 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			activityListModel.addElement("For");
 			activityListModel.addElement("ParFor");
 			activityListModel.addElement("While");
-			list = new JList(activityListModel);			
+			list = new JList(activityListModel);
 			list.setDragEnabled(true);
 			singleClickDnD(list);
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			list.setToolTipText("Drag activities from this list and drop them into the Tree View to build a workflow");
 			list.setCellRenderer(activityListRenderer);
 			list.addMouseListener(new MouseAdapter() {				
 				public void mousePressed(MouseEvent evt) {
@@ -837,8 +852,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			});
 			//list.setTransferHandler(new DefaultActivityTransferHandler());
 			listView = new JScrollPane(list);
-			getHelpServer().enableHelp(listView,"userInterface.workflowBuilder.activityList");
-            list.setToolTipText("Drag activities from this list and drop them into the Tree View to build a workflow");
+			getHelpServer().enableHelp(listView,"userInterface.workflowBuilder.activityList");            
 		}
 		return listView;
     }
@@ -881,6 +895,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
      * @param boolean enableCancel used to test if cancel button pressed
      */
     public void editNode(DefaultMutableTreeNode node, boolean enableCancel) {
+    	if (workflowTranscript)
+    		return;
     	setStatusMessage("");        
         Object o = node.getUserObject();
         
@@ -1011,6 +1027,48 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         	setStatusMessage("No inputs required for this activity");
         }                    
     
+    }
+    
+    /**
+     * activate menus as workflow is loaded or work is commenced on a workflow.
+     * Do not activate menus when builder is being used as a transcript viewer.
+     * Stop dnd from activity list etc
+     */
+    private void activateMenus() {
+    	if (getModel().getWorkflow().getJobExecutionRecord() == null) {
+    		workflowTranscript = false;
+    		this.setTitle("Workflow Builder");
+    		tree.allowDnD(true);
+    		saveAction.putValue(Action.SHORT_DESCRIPTION,"Save this workflow");
+    		demoteAction.setEnabled(true);
+    		promoteAction.setEnabled(true);
+    		expandAction.setEnabled(true);
+    		collapseAction.setEnabled(true);
+    		deleteAction.setEnabled(true);
+    		cutAction.setEnabled(true);
+    		copyAction.setEnabled(true);
+    		pasteAction.setEnabled(true);
+    		submitAction.setEnabled(true);
+    		pane.add(getActivityList(),BorderLayout.WEST);
+    		setContentPane(pane);
+    	} else {
+    		workflowTranscript = true;
+    		this.setTitle("Transcript Viewer");
+    		setStatusMessage("Transcript Viewer - transcripts are not editable");
+    		tree.allowDnD(false);
+    		saveAction.putValue(Action.SHORT_DESCRIPTION,"Save this workflow transcript");
+    		demoteAction.setEnabled(false);
+    		promoteAction.setEnabled(false);
+    		expandAction.setEnabled(false);
+    		collapseAction.setEnabled(false);
+    		deleteAction.setEnabled(false);
+    		cutAction.setEnabled(false);
+    		copyAction.setEnabled(false);
+    		pasteAction.setEnabled(false);
+    		submitAction.setEnabled(false);
+    		pane.remove((Component)getActivityList());
+    		setContentPane(pane);
+    	}
     }
  
     private ForDialog forDialog;
@@ -1180,11 +1238,37 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	 */
 	public void validateWorkflow() {
 		if (getModel().getWorkflow().isValid()) {
-			submitAction.setEnabled(true);
+			if (!workflowTranscript)
+			    submitAction.setEnabled(true);
 			workflowStatusLabel.setEnabled(true);
 		} else {
 			submitAction.setEnabled(false);	
 			workflowStatusLabel.setEnabled(false);
+		}
+	}
+	
+	/**
+	 * Open workflow transcript in viewer
+	 * @param wf String
+	 */
+	public void showTranscript(String wf) {	
+		try {
+			Reader reader = new StringReader(wf);
+			Workflow workflow = (Workflow)Unmarshaller.unmarshal(Workflow.class, reader);
+			model.setWorkflow(workflow);
+			reader.close();
+			activateMenus();
+			show();
+			tree.expandAll(true);
+		} catch(ValidationException ve) {
+			logger.error("" + ve);
+			showError("Unable to display transcript ",ve);
+		} catch (MarshalException me) {
+			logger.error("" + me);
+			showError("Unable to display transcript ",me);
+		} catch (IOException ioe) {
+			logger.error("" + ioe);
+			showError("Unable to display transcript ",ioe);
 		}
 	}
 	
@@ -1298,4 +1382,5 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			return false;
 		}
 	}
+	
 } 

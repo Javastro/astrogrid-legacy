@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.7 2005/12/02 13:40:56 nw Exp $
+/*$Id: LookoutImpl.java,v 1.8 2005/12/13 15:08:43 pjn3 Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,7 @@ import org.astrogrid.desktop.modules.system.transformers.Votable2XhtmlTransforme
 import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.io.Piper;
+import org.astrogrid.portal.workflow.intf.WorkflowStore;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
@@ -97,6 +98,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -445,7 +447,18 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 view.addActionListener(ResultListTableModel.this);
                 return view;
             }            
-        });        
+        });
+        private final String VIEWTRANS = "VIEWTRANS";
+        private List viewTransButtonsStore = new ArrayList();
+        private List viewTransButtons = ListUtils.lazyList(viewTransButtonsStore, new Factory() {  
+            public Object create() {
+                JButton viewTrans = new JButton (IconHelper.loadIcon("read_obj.gif"));
+                viewTrans.setActionCommand(VIEWTRANS);
+                viewTrans.setToolTipText("View this result in transaction viewer");
+                viewTrans.addActionListener(ResultListTableModel.this);
+                return viewTrans;
+            }            
+        });
         public ResultListTableModel() {           
         }
         
@@ -496,8 +509,21 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                         return null;
                     }                    
                 }).start();
+            } else if (VIEWTRANS.equals(e.getActionCommand())){
+                int row = viewTransButtonsStore.indexOf(e.getSource());
+                if (row < 0  || row > arr.length -1) {
+                    return;
+                }            
+                final ParameterValue pv = arr[row];
+                (new BackgroundOperation("Launching transcript viewer") {
+                    protected Object construct() throws Exception {
+                    	if (pv.getValue().indexOf("<?xml") != -1)
+                    	  workflowLauncher.showTranscript(pv.getValue());
+                        return null;
+                    }                    
+                }).start();
             }
-        }        
+        }         
         public void clear() {
             arr = new ParameterValue[]{};
             fireTableDataChanged();
@@ -517,6 +543,8 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     return JComponent.class;
                 case 4:
                     return JComponent.class;
+                case 5:
+                    return JComponent.class;                    
                 default:
                     return Object.class;
                 
@@ -524,7 +552,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
         
         public int getColumnCount() {
-            return 5;
+            return 6;
         }
         public String getColumnName(int column) {
             switch(column) {
@@ -535,8 +563,10 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 case 2:
                     return "Value";
                 case 3:
-                    return ""; //view
+                    return ""; //view trans
                 case 4:
+                    return ""; //view browser
+                case 5:
                     return ""; //save
                 default:
                     return "";
@@ -561,10 +591,14 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 case 2:
                     return StringUtils.abbreviate(pv.getValue(),VALUE_WIDTH);
                 case 3:
+                    c = (JComponent) viewTransButtons.get(rowIndex);
+                    c.setEnabled(! pv.getIndirect());
+                    return c;                	
+                case 4:
                     c = (JComponent) viewButtons.get(rowIndex);
                     c.setEnabled(! pv.getIndirect());
                     return c;
-                case 4:
+                case 5:
                     c = (JComponent)saveButtons.get(rowIndex);
                     c.setEnabled(! pv.getIndirect());
                     return c;                         
@@ -583,7 +617,6 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             arr = results.getResult();
             fireTableDataChanged();
         }
-        
         
     }
     
@@ -1048,7 +1081,45 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     }
                     return renderer;
                 }
+                //Implement table cell tool tips.
+                public String getToolTipText (MouseEvent e) {
+                    String tip = null;
+                    java.awt.Point p = e.getPoint();
+                    int rowIndex = rowAtPoint(p);
+                    if (rowIndex < 0) {
+                        return super.getToolTipText(e);
+                    }
+                    int colIndex = columnAtPoint(p);
+                    int realColumnIndex = convertColumnIndexToModel(colIndex);               
+                    
+                       tip = super.getToolTipText(e);
+                    
+                    return tip;
+                }
+                protected String[] columnToolTips = {
+                		"Indirect?",
+        				"Name",
+        				"Value",
+        				"View this result in the transcript viewer",
+        				"View this result in a web browser",
+						"Save this result to myspace or local disk"
+                };
+                
+                // Implement column header tool tips
+                protected JTableHeader createDefaultTableHeader() {
+                	return new JTableHeader(columnModel) {
+                		public String getToolTipText(MouseEvent e) {
+                			String tip = null;
+                			java.awt.Point p = e.getPoint();
+                			int index = columnModel.getColumnIndexAtX(p.x);
+                			int realIndex = columnModel.getColumn(index).getModelIndex();
+                			return columnToolTips[realIndex];
+                		}
+                	};
+                }
+                	
             };
+           
             resultsTable.setDefaultRenderer(JComponent.class,new JComponentCellRenderer() );
             resultsTable.setDefaultEditor(JComponent.class,new JComponentCellEditor() );
             getHelpServer().enableHelp(resultsTable,"lookout.resultsTable");
@@ -1191,6 +1262,15 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.8  2005/12/13 15:08:43  pjn3
+Merge of pjn_workbench_8_12_05
+
+Revision 1.7.2.2  2005/12/13 14:02:50  pjn3
+Enable transcript viewer to be launched from Lookout
+
+Revision 1.7.2.1  2005/12/12 18:01:04  pjn3
+Initial work to include transaction viewer
+
 Revision 1.7  2005/12/02 13:40:56  nw
 minor change
 

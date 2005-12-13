@@ -389,7 +389,7 @@
 	</dependency>
 	<dependency><!-- groovy validation -->
 	 <groupId>groovy</groupId>
-	 <artifactId>groovy</artifactId>
+	 <artifactId>groovy-all</artifactId>
 	 <version>1.0-jsr-04</version>
 	 <type>jar</type>
 	 <properties>

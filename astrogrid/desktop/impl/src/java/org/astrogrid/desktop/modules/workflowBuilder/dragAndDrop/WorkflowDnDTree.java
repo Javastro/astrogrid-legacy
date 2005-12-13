@@ -60,6 +60,7 @@ public class WorkflowDnDTree extends JTree {
 	
 	private Insets autoscrollInsets = new Insets(20,20,20,20); // insets
 	private WorkflowBuilderImpl workflowBuilder;
+	private DefaultTreeTransferHandler defaultTreeTransferHandler;
 
 	/**
 	 * 
@@ -74,7 +75,12 @@ public class WorkflowDnDTree extends JTree {
 		setBorder(new EmptyBorder(10,10,10,10));
 		setCellRenderer(new WorkflowTreeCellRenderer(apps));
 		workflowBuilder = w;
-		new DefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE, true);
+		defaultTreeTransferHandler = new DefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE, true);
+		this.setTransferHandler(defaultTreeTransferHandler);
+	}
+	
+	public void allowDnD(boolean b) {
+		defaultTreeTransferHandler.allowDnD(b);
 	}
 
     /** if expand is true, expand all nodes in the tree. otherwise collapse all nodes */

@@ -163,7 +163,7 @@
 		</property>	  
 	    <property>
 		  <key>icon</key>
-		  <value>wf_small.gif</value>
+		  <value>tree.gif</value>
 		</property>				
 		<method name="show">
 		  <description>Run the Workflow builder GUI </description>

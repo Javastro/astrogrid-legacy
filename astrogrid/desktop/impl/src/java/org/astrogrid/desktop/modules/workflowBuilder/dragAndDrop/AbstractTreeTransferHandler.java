@@ -84,6 +84,7 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	private static JLabel draggedLabel;
 	private static JLayeredPane dragPane;
 	private boolean drawImage;
+	private boolean allowDnD; // Enable DnD to be turned off
 	
 	protected AbstractTreeTransferHandler(WorkflowDnDTree tree, int action, boolean drawIcon) {
 		this.tree = tree;
@@ -91,13 +92,24 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 		dragSource = new DragSource();
 		dragSource.createDefaultDragGestureRecognizer(tree, action, this);
 		dropTarget = new DropTarget(tree, action, this);
+		allowDnD = true;
+	}
+	
+	/**
+	 * Allow drag and drop to be turned on or off
+	 * @param b
+	 */
+	public void allowDnD(boolean b) {
+		allowDnD = b;
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.dnd.DragGestureListener#dragGestureRecognized(java.awt.dnd.DragGestureEvent)
 	 */
 	public void dragGestureRecognized(DragGestureEvent dge) {
-		TreePath path = tree.getSelectionPath();
+		if (!allowDnD)
+			return;
+		TreePath path = tree.getSelectionPath();		
 		if (path != null) {
 			draggedNode = (DefaultMutableTreeNode)path.getLastPathComponent();
 			Vector expandedStates = new Vector();

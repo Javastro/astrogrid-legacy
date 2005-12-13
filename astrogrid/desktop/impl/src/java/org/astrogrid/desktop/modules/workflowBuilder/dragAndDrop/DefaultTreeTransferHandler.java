@@ -15,26 +15,25 @@ import java.awt.dnd.DnDConstants;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.workflow.beans.v1.Else;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.Parfor;
 import org.astrogrid.workflow.beans.v1.Scope;
-import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 /**
  * @author pjn3
@@ -65,6 +64,13 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 	public DefaultTreeTransferHandler(WorkflowDnDTree tree, int action, boolean drawIcon) {
 		super(tree, action, drawIcon);
 		this.tree = tree;
+	}
+	
+	/**
+	 * allow drag and drop
+	 */
+	public void allowDnD(boolean b) {
+		super.allowDnD(b);
 	}
 
 	/* (non-Javadoc)
@@ -141,8 +147,13 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 					draggedNode.getUserObject() instanceof Else ||
 					parentNode.getUserObject() instanceof Else ||
 					draggedNode.getUserObject() instanceof Then ||
-					parentNode.getUserObject() instanceof Then
-					) {
+					parentNode.getUserObject() instanceof Then ) {
+					return false;
+				} 
+				// Prevent dragging new workflow transcript nodes
+				else if (draggedNode.getUserObject() instanceof StepExecutionRecord ||
+					     draggedNode.getUserObject() instanceof MessageType ||
+						 draggedNode.getUserObject() instanceof JobExecutionRecord) {
 					return false;
 				}
 				else {

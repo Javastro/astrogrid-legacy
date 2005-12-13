@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.swing.TransferHandler;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
@@ -23,7 +24,7 @@ import javax.swing.event.TreeModelListener;
  * Handles the registration of tree model listeners and event notifications
  * @modified nww - replaced vector with a set - then guaranteed to have no duplicates.
  */
-public class WorkflowTreeModelSupport {
+public class WorkflowTreeModelSupport extends TransferHandler {
 	   private Collection vector = new HashSet();
 
 	   public void addTreeModelListener( TreeModelListener listener ) {
