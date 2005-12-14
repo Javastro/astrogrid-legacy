@@ -15,6 +15,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.PrintGraphics;
+import java.awt.PrintJob;
+import java.awt.Toolkit;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -25,10 +31,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
@@ -38,6 +45,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -470,22 +478,94 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	    }
         public void actionPerformed(ActionEvent e) {
             (new BackgroundOperation("Printing....") {
-                    protected Object construct() throws Exception {        		
-                    	PrinterJob printJob = PrinterJob.getPrinterJob();
-                    	//printJob.setPrintable(docTextArea.getText());
-                        if (printJob.printDialog()) {
-                            try {
-                                printJob.print();
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
+                    protected Object construct() throws Exception {
+                    	Properties p = new Properties();
+                    	Toolkit toolkit = parent.getToolkit();
+                    	PrintJob printJob = toolkit.getPrintJob(parent, "Workflow transcript", p);
+                    	PrinterJob printerJob = PrinterJob.getPrinterJob();
+                    	if (printerJob.printDialog()) {
+                    		try {
+                            	if (printJob != null) {
+                            		Graphics pg = printJob.getGraphics();
+                            		if (pg != null) {
+                            			printLongString(printJob, pg, docTextArea.getText());
+                            			pg.dispose();
+                            		}
+                            		printJob.end();
+                            	}
+                    		} catch(Exception ex) {
+                    			ex.printStackTrace();
+                    		}
+                    	}                    	
                         return null;
                      }
                 }).start();	            
     
 	    }
 	}
+	
+	/**
+	 * Take care of printing transcripts
+	 * @param printJob PrintJob
+	 * @param pg Graphics
+	 * @param s String to print
+	 */
+	private void printLongString(PrintJob printJob, Graphics pg, String s) {
+		int pageNum = 1;
+		int linesForThisPage = 0;
+		int linesForThisJob = 0;
+		
+		if (!(pg instanceof PrintGraphics)) {
+			throw new IllegalArgumentException("Graphics context not PrintGraphics");
+		}
+		// create stringreader and linereader objects
+		StringReader sr = new StringReader(s);
+		LineNumberReader lnr = new LineNumberReader(sr);
+		String nextLine;
+		// get the page height
+		int pageHeight = printJob.getPageDimension().height;
+		// set font to print with
+		Font helv = new Font("Helvetica", Font.PLAIN, 12);
+		pg.setFont(helv);
+		// get dimensions of the fone
+		FontMetrics fm = pg.getFontMetrics(helv);
+		int fontHeight = fm.getHeight();
+		int fontDescent = fm.getDescent();
+		int curHeight = 0;
+		
+		try {
+			do {
+				// get next line from text area
+				nextLine = lnr.readLine();
+				if ((curHeight + fontHeight) > pageHeight) {
+					// if we are over the page, create a new one
+					pageNum ++;
+					linesForThisPage = 0;
+					pg.dispose();
+					pg = printJob.getGraphics();
+					if (pg != null) {
+						pg.setFont(helv);
+					}
+					curHeight = 0;
+				}
+				curHeight += fontHeight;
+				if (pg != null) {
+					//draw the line to the painter
+					pg.setColor(Color.BLACK);
+					pg.drawString(nextLine, 20, curHeight - fontDescent + 20);
+					linesForThisPage++;
+					linesForThisJob++;
+				} else {
+					logger.error("printJob is null");
+				}
+			} while (nextLine != null);
+		} catch (EOFException eof) {
+			; // fine, ignore
+		} catch (Exception ex) {
+			logger.error("Error printing: " + ex);
+		}
+	} 
+	
 	// components this ui uses.
     protected final ToolEditorInternal toolEditor;
     protected final BrowserControl browser;
