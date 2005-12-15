@@ -36,8 +36,8 @@
     </head>
     <body>
       <xsl:apply-templates />
-      <div class="title">XML registry entry:</div>  
-      <xsl:apply-templates mode="showxml" />
+      <!-- div class="title">XML registry entry:</div -->  
+      <!-- xsl:apply-templates mode="showxml" / -->
     </body>
   </html>
 </xsl:template>
@@ -56,12 +56,6 @@
   <hr width="90%" align="center"></hr>
   <xsl:apply-templates/> 
 </xsl:template>
-            
-<xsl:template match="vr:title"/>
-<xsl:template match="vr:description"/>
-<xsl:template match="vr:shortName"/>
-<xsl:template match="vr:identifier"/>
-<xsl:template match="vr:subject"/>
          
 <!-- CONTENT -->
 <xsl:template match="vr:content">
@@ -99,10 +93,6 @@
   <xsl:value-of select="."/><xsl:text>, </xsl:text>
 </xsl:template>
 
-<xsl:template match="vr:accessURL"/>
-<xsl:template match="vs:resultType"/>
-<xsl:template match="vs:facility"/>
-
 
 <!-- COVERAGE -->
 <xsl:template match="vs:coverage">
@@ -134,7 +124,6 @@
 
 <!-- TABLE -->
 <xsl:template match="vs:table">
-  <div class="title">Table:</div>
   <div class="element">
     <font color="black">Table name:</font>
     <xsl:value-of select="vs:name"/>
@@ -173,8 +162,6 @@
   </nobr>
   <br/>
 </xsl:template>
-
-<xsl:template match="vs:param"/>
 
 <!-- CURATION -->
 <xsl:template match="vr:curation">
@@ -230,54 +217,9 @@
   <xsl:value-of select="@name"/><xsl:text>,  </xsl:text>
 </xsl:template>
 
-<xsl:template match="cea:ApplicationReference"/>
     
-            
-<!-- XML TO HTML -->
-  <!-- Default node handler, convert to HTML and apply templates -->
-  <xsl:template match="*" name="xml-html" mode="showxml">      
-    <br/> 
-      <!--Indent by number of parent nodes -->
-        <xsl:for-each select="ancestor::*">
-          <xsl:text>....</xsl:text>
-        </xsl:for-each>
-        <!-- Open the element -->
-        <xsl:text>&lt;</xsl:text>
-        <!-- Add the element name -->
-        <xsl:value-of select="name()"/>
-        <!-- Copy all of the node attributes -->
-        <xsl:for-each select="attribute::*">
-          <xsl:text>.</xsl:text>
-          <xsl:value-of select="name()"/>
-          <xsl:text>=</xsl:text>
-          <xsl:text>&quot;</xsl:text>
-          <xsl:value-of select="."/>
-          <xsl:text>&quot;</xsl:text>
-        </xsl:for-each>
-        <!-- If this node does not have any child nodes -->
-        <xsl:if test="count(child::node()) + count(child::text()) + count(child::comment()) = 0">
-          <!-- Close the element -->
-          <xsl:text>/&gt;</xsl:text>                              
-        </xsl:if>
-        <!-- If this node does have some child nodes -->
-        <xsl:if test="count(child::node()) + count(child::text()) + count(child::comment()) > 0">
-          <!-- Close the element -->
-          <xsl:text>&gt;</xsl:text>                       
-          <!-- Add the element content -->
-          <xsl:apply-templates mode="showxml"/>
-          <br/> 
-          <!--Indent by number of parent nodes -->
-          <xsl:for-each select="ancestor::*">
-          <xsl:text>....</xsl:text>
-        </xsl:for-each>
-        <!-- Open the element -->
-        <xsl:text>&lt;</xsl:text>
-        <xsl:text>/</xsl:text>
-        <!-- Add the element name -->
-        <xsl:value-of select="name()"/>
-        <!-- Close the element -->
-        <xsl:text>&gt;</xsl:text>
-      </xsl:if>
-    </xsl:template>    
+    <!-- Default, copy all and apply templates -->
+    <xsl:template match="@*|node()" priority="-2"/>
+    <xsl:template match="text()" priority="-1"/>
              
 </xsl:stylesheet>
