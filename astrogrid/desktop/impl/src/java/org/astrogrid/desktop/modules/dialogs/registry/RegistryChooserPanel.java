@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.16 2005/12/08 13:01:12 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.17 2005/12/15 15:19:07 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,6 +58,7 @@ import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.RegistryBrowserImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.w3c.dom.Document;
 
@@ -119,9 +120,10 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                 //parent.setStatusMessage("No Results Found.");
             }//else            
         }
-        // makes a checkbox appear in col 1
+        // makes a checkbox appear in col 1 if parent is application launcher or workflow builder, not registry browser
         public Class getColumnClass(int columnIndex) {
-            if (columnIndex == 0 && parent.getClass().equals(UIComponent.class)) {
+            if (columnIndex == 0 && 
+            	!(parent.getClass().equals(RegistryBrowserImpl.class))) {
                 return Boolean.class;
             } else {
             return super.getColumnClass(columnIndex);
@@ -533,6 +535,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.17  2005/12/15 15:19:07  pjn3
+corrected when checkbox appear
+
 Revision 1.16  2005/12/08 13:01:12  pjn3
 Merge of pjn_wprkbench_1_12_05
 
