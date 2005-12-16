@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.18 2005/12/16 10:35:00 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.19 2005/12/16 12:03:12 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -364,7 +364,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     private JTextField getKeywordField() {
         if (keywordField == null) {
             keywordField = new JTextField();
-            keywordField.setToolTipText("<html>Enter keywords to search for,<br> logical connectors (AND, OR),<br> or the key of a resource - e.g <tt>ivo://org.astrogrid/Galaxev</tt></html>");
+            keywordField.setToolTipText("<html>Enter keywords to search for,<br> logical connectors (AND, OR),<br> or the key of a resource - e.g <tt>ivo://org.astrogrid/Galaxev</tt></html>");            
             //keywordField.addActionListener(this);
         }
         return keywordField;
@@ -418,10 +418,31 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                 clear();                
                 ResourceInformation[] ri = (ResourceInformation[])result;
                 selectTableModel.setRows(ri);
+                
+                // if only 1 matching entry might as well render straight away
+                if (ri.length == 1) {
+                    (new BackgroundWorker(parent,"Found 1 record, rendering") {
+                    protected Object construct() throws Exception {
+                       Document doc = reg.getRecord(selectTableModel.getRows()[0].getId());
+                       return doc;
+                    }
+                    protected void doFinished(Object o) {
+                    detailsPane.setEditorKit(new XHTMLEditorKit());
+                    detailsPane.setText((String)transform((Document)o));
+                    detailsPane.setCaretPosition(0);
+                    xmlPane.setText(XMLUtils.DocumentToString((Document)o));
+                    xmlPane.setCaretPosition(0);
+                    }
+                }).start();
+                }               
             }
             
             protected void doAlways() {
-                parent.setStatusMessage("Found " + selectTableModel.getRowCount() + " matching resources");
+            	if (selectTableModel.getRowCount() == 1) {
+            		parent.setStatusMessage("Found 1 matching resource, rendering...");
+            	} else {
+            		parent.setStatusMessage("Found " + selectTableModel.getRowCount() + " matching resources");
+            	}                
             }
 
        }).start();
@@ -535,6 +556,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.19  2005/12/16 12:03:12  pjn3
+render immediately if only 1 match
+
 Revision 1.18  2005/12/16 10:35:00  pjn3
 *** empty log message ***
 
