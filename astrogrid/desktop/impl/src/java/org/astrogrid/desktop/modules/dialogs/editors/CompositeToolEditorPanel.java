@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.10 2005/11/24 01:13:24 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.11 2005/12/16 09:42:47 jl99 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -286,7 +286,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         MutablePicoContainer builder = new DefaultPicoContainer(pico);
         builder.registerComponentInstance(this.getToolModel());
         builder.registerComponentInstance(parent);
-        builder.registerComponentImplementation(DatacenterToolEditorPanel.class);
+//        builder.registerComponentImplementation(DatacenterToolEditorPanel.class);
+        builder.registerComponentImplementation(ADQLToolEditorPanel.class);
         builder.registerComponentImplementation(BasicToolEditorPanel.class);
         builder.registerComponentImplementation(RawXMLToolEditorPanel.class);       
         builder.registerComponentImplementation(ToolInformationPanel.class);
@@ -295,9 +296,11 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         builder.start();
         AbstractToolEditorPanel information =(AbstractToolEditorPanel)builder.getComponentInstance(ToolInformationPanel.class);
         AbstractToolEditorPanel chooser = (AbstractToolEditorPanel)builder.getComponentInstance(ChooseAToolEditorPanel.class);
-        AbstractToolEditorPanel datacenter =(AbstractToolEditorPanel)builder.getComponentInstance(DatacenterToolEditorPanel.class);
+//        AbstractToolEditorPanel datacenter =(AbstractToolEditorPanel)builder.getComponentInstance(DatacenterToolEditorPanel.class);
+        AbstractToolEditorPanel adqlEditor =(AbstractToolEditorPanel)builder.getComponentInstance(ADQLToolEditorPanel.class);
 
-        tabPane.addTab("Query",datacenter);       
+//        tabPane.addTab("Query",datacenter);   
+        tabPane.addTab("Query",adqlEditor);   
         AbstractToolEditorPanel basic =(AbstractToolEditorPanel)builder.getComponentInstance(BasicToolEditorPanel.class);
         tabPane.addTab("Parameter",basic);       
         AbstractToolEditorPanel xml = (AbstractToolEditorPanel)builder.getComponentInstance(RawXMLToolEditorPanel.class);
@@ -319,7 +322,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         this.add(tb,BorderLayout.NORTH);
         this.add(tabPane,BorderLayout.CENTER);
 
-        views = new AbstractToolEditorPanel[] {datacenter,basic,xml,information,chooser};
+//        views = new AbstractToolEditorPanel[] {datacenter,basic,xml,information,chooser};
+        views = new AbstractToolEditorPanel[] { adqlEditor, basic, xml, information, chooser } ;
         this.getToolModel().addToolEditListener(new Controller());
         this.setPreferredSize(new Dimension(600,425));
     }
@@ -333,6 +337,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.11  2005/12/16 09:42:47  jl99
+Merge from branch desktop-querybuilder-jl-1404
+
 Revision 1.10  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

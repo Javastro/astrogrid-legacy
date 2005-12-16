@@ -13,6 +13,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+ 	<action dev="jl" type="add">
+	    Adql Editor added.
+	    The previous datacenter editor is still there but unused; it will be cannibalized in the next release.
+	</action>
     <action dev="pjn" type="add">
 	    New workflow transcript viewer added - integrated with Lookout
 	</action>

@@ -1,7 +1,7 @@
-/*$Id: UIImpl.java,v 1.9 2005/12/02 13:43:18 nw Exp $
+/*$Id: UIImpl.java,v 1.10 2005/12/16 09:42:47 jl99 Exp $
  * Created on 01-Feb-2005
  *
- * Copyright (C) AstroGrid. All rights reserved.
+ * Copyright (C) AstroGrid. All rights reserved. 
  *
  * This software is published under the terms of the AstroGrid 
  * Software License version 1.2, a copy of which has been included 
@@ -1086,6 +1086,9 @@ public class UIImpl extends UIComponent implements Startable,UIInternal,Invocati
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.10  2005/12/16 09:42:47  jl99
+Merge from branch desktop-querybuilder-jl-1404
+
 Revision 1.9  2005/12/02 13:43:18  nw
 new compoent that manages a pool of threads to execute background processes on
 

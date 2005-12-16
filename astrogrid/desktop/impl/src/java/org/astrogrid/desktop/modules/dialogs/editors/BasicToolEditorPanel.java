@@ -348,6 +348,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                         pm.fireTableCellUpdated(row,1);
                     }                       
                 }
+                        toolModel.fireParameterChanged(BasicToolEditorPanel.this, parameter ) ; 
             }
         }        
     }
@@ -644,6 +645,8 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         }
 
         public void parameterChanged(ToolEditEvent te) {
+            if( te.getSource() == BasicToolEditorPanel.this )
+                return ;
             ParameterValue pv = te.getChangedParameter();
             for (int i = 0; i < getRows().length; i++) {
                 if (pv == getRows()[i]) {
@@ -805,6 +808,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.14  2005/12/16 09:42:47  jl99
+Merge from branch desktop-querybuilder-jl-1404
+
 Revision 1.13  2005/11/28 10:41:48  pjn3
 Now displaying parameters that take their values in the form of an option list.
 
