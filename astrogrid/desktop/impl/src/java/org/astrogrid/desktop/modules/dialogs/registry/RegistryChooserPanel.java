@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.17 2005/12/15 15:19:07 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.18 2005/12/16 10:35:00 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -150,7 +150,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         }
         // make the first cell editable
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return (columnIndex == 0 && parent.getClass().equals(UIComponent.class));
+            return (columnIndex == 0 && !(parent.getClass().equals(RegistryBrowserImpl.class)));
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
@@ -535,6 +535,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.18  2005/12/16 10:35:00  pjn3
+*** empty log message ***
+
 Revision 1.17  2005/12/15 15:19:07  pjn3
 corrected when checkbox appear
 
