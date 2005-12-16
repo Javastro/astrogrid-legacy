@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.19 2005/12/16 12:03:12 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.20 2005/12/16 12:30:01 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -377,6 +377,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     private JButton getGoButton() {
         if (goButton == null) {
             goButton = new JButton("Search");
+            goButton.setMnemonic(KeyEvent.VK_S);
             goButton.setToolTipText("Retrieve matching resources from the registry");
             goButton.addActionListener(this);
             //parent.setDefaultButton(goButton);
@@ -420,6 +421,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                 selectTableModel.setRows(ri);
                 
                 // if only 1 matching entry might as well render straight away
+                // also select row for consistency
                 if (ri.length == 1) {
                     (new BackgroundWorker(parent,"Found 1 record, rendering") {
                     protected Object construct() throws Exception {
@@ -432,6 +434,12 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                     detailsPane.setCaretPosition(0);
                     xmlPane.setText(XMLUtils.DocumentToString((Document)o));
                     xmlPane.setCaretPosition(0);
+                    SwingUtilities.invokeLater(new Runnable() {
+                    	public void run(){
+                    		selectTable.requestFocusInWindow();
+                    		selectTable.changeSelection(0,1,false,false);
+                    	}
+                    });
                     }
                 }).start();
                 }               
@@ -556,6 +564,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.20  2005/12/16 12:30:01  pjn3
+*** empty log message ***
+
 Revision 1.19  2005/12/16 12:03:12  pjn3
 render immediately if only 1 match
 
