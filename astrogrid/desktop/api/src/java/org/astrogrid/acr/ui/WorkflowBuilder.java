@@ -21,8 +21,10 @@ package org.astrogrid.acr.ui;
 public interface WorkflowBuilder {
     /** show the workflow builder UI */
 	public void show();
-	
-	/** display transcript viewer*/
+    
+	/** display transcript viewer
+@since 2.0
+@todo draft - final shold probably take a Document - if a string is needed, should be internal interface.*/
 	public void showTranscript(String wf);	
     
     /** hide the workflow builder UI */
