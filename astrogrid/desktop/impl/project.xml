@@ -387,13 +387,14 @@
 		 <dist.bundle>true</dist.bundle>
 	 </properties>
 	</dependency>
-	<dependency><!-- groovy validation -->
+	<dependency><!-- groovy validation --><!-- NWW - package as a separate extension-->
 	 <groupId>groovy</groupId>
 	 <artifactId>groovy-all</artifactId>
 	 <version>1.0-jsr-04</version>
 	 <type>jar</type>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>			
+		<jnlp.jar>true</jnlp.jar>
 	 </properties>
     </dependency>
  
@@ -460,7 +461,8 @@
  </dependency>
  
  <!-- Following required for the Adql editor, which depends on xmlbeans -->
- <dependency>
+<!-- NWW: package as a separate extension - or move these into existing xml extension -->
+ <dependency> 
      <!-- jaxp will be native for java 1.5. Until then this is required -->
 	 <artifactId>jaxp</artifactId>
 	 <groupId>jaxp</groupId>
@@ -468,6 +470,7 @@
 	 <type>jar</type>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
+		  <jnlp.jar>true</jnlp.jar>
 	 </properties>		 
  </dependency>
  <dependency>
@@ -479,6 +482,7 @@
 	 <type>jar</type>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
+		<jnlp.jar>true</jnlp.jar>
 	 </properties>		 
  </dependency>
   <dependency>
@@ -489,6 +493,7 @@
 	 <type>jar</type>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
+		<jnlp.jar>true</jnlp.jar>
 	 </properties>		 
  </dependency>
  
