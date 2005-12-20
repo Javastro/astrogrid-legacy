@@ -311,12 +311,12 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					sb.append("<html><b>Phase:</b> ");
 					sb.append(formatStatus(o.getPhase().toString()));
 					sb.append(" <b>Time:</b> " + o.getTimestamp());
-					sb.append(" <b>Source:</b> " + o.getSource());
+					//sb.append(" <b>Source:</b> " + o.getSource());
 					if (o.getContent() != "") {
 						sb.append(" <b>Message:</b> " + o.getContent());
 					}
 					label.setText(sb.toString());
-					label.setToolTipText(null);
+					label.setToolTipText("<html><b>Source:</b> " + o.getSource() + "</html>");
 					label.setIcon(null);
 				}				
 				else {    			
@@ -329,13 +329,13 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 		if (s.equalsIgnoreCase("INITIALIZING")) {
 			return "<font color='GREEN'>INITIALIZING</font>";
 		} else if (s.equalsIgnoreCase("RUNNING")) {
-			return "<font color='GREEN'>RUNNING</font>";
-		} else if (s.equalsIgnoreCase("ERROR")) {
+			return "<font color='GREEN'>RUNNING.....</font>";
+		} else if (s.equalsIgnoreCase("ERROR.....")) {
 			return "<font color='RED'>ERROR</font>";
 		} else if (s.equalsIgnoreCase("COMPLETED")) {
 			return "<font color='BLUE'>COMPLETED</font>";
 		} else if(s.equalsIgnoreCase("PENDING")) {
-			return "<font color='BLUE'>PENDING</font>";
+			return "<font color='BLUE'>PENDING.....</font>";
 		} else {
 			return "<font color='ORANGE'>UNKNOW</font>";
 		}
