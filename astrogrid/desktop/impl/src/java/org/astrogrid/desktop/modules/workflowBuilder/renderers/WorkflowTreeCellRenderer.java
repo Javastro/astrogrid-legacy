@@ -337,7 +337,7 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 		} else if(s.equalsIgnoreCase("PENDING")) {
 			return "<font color='BLUE'>PENDING.....</font>";
 		} else {
-			return "<font color='ORANGE'>UNKNOW</font>";
+			return "<font color='ORANGE'>UNKNOWN</font>";
 		}
 	}
 }
