@@ -5,6 +5,11 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+    		<action dev="gtr" type="fix">
+    			<em>Branch apps-gtr-1489:</em> General tidying up of the deployment controls, which has involved
+    			some heavy refactoring to work round Picocontainer problems. The deployer documentation is much
+    			better now (IMHO), and the chance of getting duff registrations is less.
+    		</action>
  
         </release>
         <release version="(Undertest)">
