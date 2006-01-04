@@ -38,6 +38,17 @@
         <servlet-class>org.astrogrid.jes.servlet.BackdoorServlet</servlet-class>
   </servlet>
 
+	<servlet>
+		<servlet-name>EnvironmentServlet</servlet-name>
+		<display-name>Environment control servlet</display-name>
+		<servlet-class>org.astrogrid.common.j2ee.environment.EnvironmentServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>EnvironmentServlet</servlet-name>
+		<url-pattern>/admin/EnvironmentServlet</url-pattern>
+	</servlet-mapping>
 
  <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
@@ -81,13 +92,46 @@
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
+	
+	<env-entry>
+		<description>The service endpoint (i.e. access URL) of a registry in which this JES can look up other resource.</description>
+		<env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
+		<env-entry-value>http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<env-entry>
+		<description>The endpoint (i.e. access URL) of the job-monitor service in this web application. Replace localhost, 8080 and astrogrid-jes with the appropriate values.</description>
+		<env-entry-name>jes.monitor.endpoint.url</env-entry-name>
+		<env-entry-value>http://localhost:8080/astrogrid-jes/services/JobMonitorService</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
 
-
-  <resource-ref>
-    <description>Datasource to use to access the database</description>
-    <res-ref-name>jdbc/jes-datasource</res-ref-name>
-    <res-type>java.sql.DataSource</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
-
+	<env-entry>
+		<description>The endpoint (i.e. access URL) of the results-listener service in this web application. Replace localhost, 8080 and astrogrid-jes with the appropriate values.</description>
+		<env-entry-name>jes.monitor.endpoint.url</env-entry-name>
+		<env-entry-value>http://localhost:8080/astrogrid-jes/services/ResultListener</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<env-entry>
+		<description>The path (not URL) to a directory where JES may write records of its jobs.</description>
+		<env-entry-name>jes.jobfactory.file.basedir</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<env-entry>
+		<description>The location method for external services. Don't change this entry.</description>
+		<env-entry-name>jes.locator</env-entry-name>
+		<env-entry-value>registry</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<env-entry>
+		<description>The kind of storage to use for job records. Don't change this entry.</description>
+		<env-entry-name>jes.store</env-entry-name>
+		<env-entry-value>file</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
 </web-app>

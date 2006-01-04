@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImplTest.java,v 1.4 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: FileJobFactoryImplTest.java,v 1.5 2006/01/04 09:52:32 clq2 Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,11 @@
 package org.astrogrid.jes.impl.workflow;
 
 import java.io.File;
-
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.astrogrid.jes.util.BaseDirectory;
+import org.astrogrid.jes.util.TemporaryBaseDirectory;
 
 /** Test functionality of the file-backed job factory
  * <p/> 
@@ -54,18 +55,9 @@ public class FileJobFactoryImplTest extends InMemoryJobFactoryImplTest {
 
             protected File baseDir ;
             protected void setUp() throws Exception {
-                baseDir = File.createTempFile("filejobfactory-test-basedir",null);           
-                baseDir.deleteOnExit();     
-                assertNotNull(baseDir);
-                assertTrue(baseDir.exists());
-                baseDir.delete();
-                FileJobFactoryImpl.BaseDirectory finder = new FileJobFactoryImpl.BaseDirectory() {
-
-                    public File getDir() {
-                        return baseDir;
-                    }
-                };
-                jf = new CachingFileJobFactory(finder);
+              BaseDirectory finder = new TemporaryBaseDirectory();
+              this.baseDir = finder.getDir();
+              jf = new CachingFileJobFactory(finder);
             }
         };
     }
@@ -75,6 +67,12 @@ public class FileJobFactoryImplTest extends InMemoryJobFactoryImplTest {
 
 /* 
 $Log: FileJobFactoryImplTest.java,v $
+Revision 1.5  2006/01/04 09:52:32  clq2
+jes-gtr-1462
+
+Revision 1.4.42.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.4  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

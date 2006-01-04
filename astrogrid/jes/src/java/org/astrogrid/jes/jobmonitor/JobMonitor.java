@@ -3,12 +3,12 @@
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
-package org.astrogrid.jes.jobmonitor; 
+package org.astrogrid.jes.jobmonitor;
 
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
@@ -22,7 +22,7 @@ import junit.framework.Test;
 
 
 /** Implementation of a component that notifies the scheduler when a task has completed
- * <p> 
+ * <p>
  Job Monitor is a greatly reduced from what it used to be. now just acts as a conduit into the job scheduler.
  *@todo - maybe add synchronous service call, so clients that need to know can block until reaching confirmation?
  * @author  Jeff Lusted
@@ -31,36 +31,36 @@ import junit.framework.Test;
  */
 public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor, ComponentDescriptor{
 
-	private static Log
-		logger = LogFactory.getLog( JobMonitor.class ) ;
-         
-        
+  private static Log
+    logger = LogFactory.getLog( JobMonitor.class ) ;
+
+
     public JobMonitor(JobScheduler nudger) {
         assert nudger != null;
-        this.nudger = nudger; 
+        this.nudger = nudger;
 
     }
 
     protected final JobScheduler
      nudger;
-    
-    /** do a load of validity checks, then pass on to schedulerr 
+
+    /** do a load of validity checks, then pass on to schedulerr
      * @todo add validity checks*/
     public void monitorJob(JobIdentifierType id,MessageType info ) {
         if (id == null) {
-            logger.info("Null id object encountered");
+            logger.warn("Job monitor received a notification with a null object-identifier.");
             return;
         }
         if (info == null) {
-            logger.info("Null info object encountered");
+            logger.warn("Job monitor received a notification with a null object-identifier.");
             return;
         }
-
-		try {	
+        logger.info("Job monitor was notified that job " + id +
+                    " changed to state to " + info.getPhase());
+        try {
             nudger.resumeJob(id,info);
         } catch (Exception e) {
             logger.error("Could not pass on notification",e);
-
         }
     }
 
@@ -87,9 +87,9 @@ public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobM
     public Test getInstallationTest() {
         return null;
     }
-        
-   
-         	
-    } 
-    
- 
+
+
+
+    }
+
+

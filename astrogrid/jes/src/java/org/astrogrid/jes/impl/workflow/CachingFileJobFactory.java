@@ -1,4 +1,4 @@
-/*$Id: CachingFileJobFactory.java,v 1.2 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: CachingFileJobFactory.java,v 1.3 2006/01/04 09:52:31 clq2 Exp $
  * Created on 11-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.jes.job.DuplicateFoundException;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.NotFoundException;
+import org.astrogrid.jes.util.BaseDirectory;
 import org.astrogrid.jes.util.Cache;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -52,7 +53,9 @@ public class CachingFileJobFactory extends FileJobFactoryImpl {
      * @throws IllegalArgumentException
      * 
      */
-    public CachingFileJobFactory(FileJobFactoryImpl.BaseDirectory bd) throws IllegalArgumentException, IOException, ResourceManagerException{
+    public CachingFileJobFactory(BaseDirectory bd) throws IllegalArgumentException, 
+                                                          IOException, 
+                                                          ResourceManagerException{
         super(bd);       
     }
     protected static final int WORKFLOW_CACHE_SIZE = 20;
@@ -108,6 +111,12 @@ public class CachingFileJobFactory extends FileJobFactoryImpl {
 
 /* 
 $Log: CachingFileJobFactory.java,v $
+Revision 1.3  2006/01/04 09:52:31  clq2
+jes-gtr-1462
+
+Revision 1.2.42.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.2  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

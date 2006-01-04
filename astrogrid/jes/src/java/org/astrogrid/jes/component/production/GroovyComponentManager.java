@@ -1,4 +1,4 @@
-/*$Id: GroovyComponentManager.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: GroovyComponentManager.java,v 1.7 2006/01/04 09:52:32 clq2 Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,7 @@ import org.astrogrid.jes.jobscheduler.locator.RegistryToolLocator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.resultlistener.JesResultsListener;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
+import org.astrogrid.jes.util.BaseDirectory;
 import org.astrogrid.jes.util.TemporaryBuffer;
 
 import org.picocontainer.MutablePicoContainer;
@@ -170,7 +171,7 @@ public class GroovyComponentManager extends EmptyJesComponentManager{
       
       private static final void registerFallbackFactory(MutablePicoContainer pico) {
               pico.registerComponentImplementation(AbstractJobFactoryImpl.class,CachingFileJobFactory.class);
-              pico.registerComponentImplementation(FileJobFactoryImpl.BaseDirectory.class,BaseDirectoryFromConfig.class);
+              pico.registerComponentImplementation(BaseDirectory.class,BaseDirectoryFromConfig.class);
                      
       }
       /** key to look in config for implementation of locator to use
@@ -219,6 +220,12 @@ public class GroovyComponentManager extends EmptyJesComponentManager{
 
 /* 
 $Log: GroovyComponentManager.java,v $
+Revision 1.7  2006/01/04 09:52:32  clq2
+jes-gtr-1462
+
+Revision 1.6.42.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.6  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

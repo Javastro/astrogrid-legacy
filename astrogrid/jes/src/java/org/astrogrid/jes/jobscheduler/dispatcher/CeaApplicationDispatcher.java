@@ -1,11 +1,11 @@
-/*$Id: CeaApplicationDispatcher.java,v 1.4 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: CeaApplicationDispatcher.java,v 1.5 2006/01/04 09:52:31 clq2 Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
@@ -51,9 +51,10 @@ public  class CeaApplicationDispatcher implements Dispatcher, ComponentDescripto
       URI monitorEndpoint();
       URI resultListenerEndpoint();
    }
-   /** Construct a new ApplicationControllerDispatcher    
+   /** Construct a new ApplicationControllerDispatcher
     * @param locator tool locator component to use to resolve endpoints
-    * @param endpoint configuration component that specifies the endpoint of the JobMonitor service. This is used by the ApplicationController to 
+    * @param endpoint configuration component that specifies the endpoint of the JobMonitor service. This is used by the
+    ApplicationController to
     * return execution information back to the JES server.
     */
    public CeaApplicationDispatcher(Locator locator, Endpoints endpoint) {
@@ -71,7 +72,7 @@ public  class CeaApplicationDispatcher implements Dispatcher, ComponentDescripto
    protected final URI monitorURI;
    /** endpoint of local result listener servuce - again, used as a callback */
    protected final URI resultListenerURI;
-   
+
 
    public void dispatchStep(Workflow job, Tool tool,String stepId) throws JesException {
 
@@ -84,21 +85,28 @@ public  class CeaApplicationDispatcher implements Dispatcher, ComponentDescripto
       List exceptions = new ArrayList();
       for (int i = 0; i < toolLocations.length && ! connected ; i++) { // try each one in the list, until something sticks.
           try {
-              logger.debug(  "Calling CEA server at " + toolLocations[i] + " for " + tool.getName() + ", "+ id.getValue());
+              logger.debug("Creating a job on CEA server at " + toolLocations[i] +
+                           " for " + tool.getName() + ", "+ id.getValue());
               CommonExecutionConnectorClient appController =    DelegateFactory.createDelegate(toolLocations[i]);
               String applicationId = appController.init(tool,id);
-              appController.registerResultsListener(applicationId,resultListenerURI);         
+              logger.debug("Registering results listener " + resultListenerURI + " with " + toolLocations[i]);
+              appController.registerResultsListener(applicationId,resultListenerURI);
+              logger.debug("Registering progress listener " + monitorURI + " with " + toolLocations[i]);
               appController.registerProgressListener(applicationId,monitorURI);
+              logger.debug("Activating the job on " + toolLocations[i]);
               appController.execute(applicationId);
+              logger.debug("The job on " + toolLocations[i] + " was dispatched successfully.");
               connected = true; // signal that we've connected to a cea, so no need to keep looping.
           }
           catch (Throwable e) {
               logger.warn("Failed to communicate or initialize application with CEA Server",e);
-              exceptions.add(e); // only want to fail when we can't connect to any of them - but need to preserve the exceptions, for reporting in case all fail.
+              exceptions.add(e); // only want to fail when we can't connect to any of them -
+                                 // but need to preserve the exceptions, for reporting in case all fail.
           }
       }
       if (! connected) {// exhausted all possibilities, so fail
-          String str = "Failed to communicate or initialize application with any CEA Server that provides this application:" + Arrays.asList(toolLocations);
+          String str = "Failed to communicate or initialize application with any CEA Server that provides this application:" +
+          Arrays.asList(toolLocations);
           Throwable cause = null;
           if (exceptions.size() == 1) {
               cause = (Throwable)exceptions.get(0);
@@ -159,8 +167,14 @@ public  class CeaApplicationDispatcher implements Dispatcher, ComponentDescripto
 
 }
 
-/* 
+/*
 $Log: CeaApplicationDispatcher.java,v $
+Revision 1.5  2006/01/04 09:52:31  clq2
+jes-gtr-1462
+
+Revision 1.4.42.1  2005/12/02 11:38:48  gtr
+I changed the logging slightly, logging more to do with transactions on other services.
+
 Revision 1.4  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 
@@ -252,5 +266,5 @@ merged branch nww-itn05-bz#91
 
 Revision 1.1.2.1  2004/02/27 00:27:07  nw
 rearranging code
- 
+
 */

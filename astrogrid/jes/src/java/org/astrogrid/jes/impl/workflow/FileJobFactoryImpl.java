@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.13 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.14 2006/01/04 09:52:31 clq2 Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
+import org.astrogrid.jes.util.BaseDirectory;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -50,30 +51,6 @@ public abstract class FileJobFactoryImpl extends AbstractJobFactoryImpl implemen
     private static final Log logger = LogFactory
             .getLog(FileJobFactoryImpl.class);
 
-    /** Configuration component for FileJobFactory Impl
-     * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
-     *
-     */
-    public static  interface BaseDirectory {
-
-
-        File getDir();
-    }
-    /** simple implementation of BaseDirectory, used for testing. */
-    public static class TestBaseDirectory implements BaseDirectory {
-        public File getDir() {
-            File f;
-            try {
-                f = File.createTempFile("jes-test-base-directory",".tmp");
-                f.delete();
-                f.mkdirs();
-                f.deleteOnExit();
-                return f;
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage());
-            } 
-        }
-    }
     private static final String WORKFLOW_SUFFIX = "-workflow.xml";
     /** Construct a new FileJobFactoryImpl
      *  Construct a new FileJobFactoryImpl
@@ -82,15 +59,16 @@ public abstract class FileJobFactoryImpl extends AbstractJobFactoryImpl implemen
      * @throws ResourceManagerException
      * @throws IllegalArgumentException
      */
-    public FileJobFactoryImpl(BaseDirectory bd) throws IOException, IllegalArgumentException, ResourceManagerException{
+    public FileJobFactoryImpl(BaseDirectory bd) throws IOException, 
+                                                       IllegalArgumentException, 
+                                                       ResourceManagerException{
         super(new FileNameGen(bd.getDir(),"jes"));
         log.info("File Store Job Factory");
         this.baseDir = bd.getDir();
         assert baseDir != null;
         log.info("Base directory of file store:" + baseDir.getAbsolutePath());
         initStore();       
-    }
-    
+    }    
     
     protected final File baseDir;
     /** initialize the store directory */
@@ -317,6 +295,12 @@ public abstract class FileJobFactoryImpl extends AbstractJobFactoryImpl implemen
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.14  2006/01/04 09:52:31  clq2
+jes-gtr-1462
+
+Revision 1.13.42.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.13  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

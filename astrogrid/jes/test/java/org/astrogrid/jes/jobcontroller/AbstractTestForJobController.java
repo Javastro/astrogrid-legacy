@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.11 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: AbstractTestForJobController.java,v 1.12 2006/01/04 09:52:32 clq2 Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.jes.impl.workflow.CachingFileJobFactory;
 import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
+import org.astrogrid.jes.util.TemporaryBaseDirectory;
 import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -60,13 +61,9 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
     /**
      * @return
      */
-    protected AbstractJobFactoryImpl createJobFactory() {
-        try {
-            return new CachingFileJobFactory(new FileJobFactoryImpl.TestBaseDirectory());
-        } catch (Exception e) {
-            fail(e.getMessage());
-            return null; // can't be reached, but java doesn't know this.
-        }
+    protected AbstractJobFactoryImpl createJobFactory() throws Exception {
+      TemporaryBaseDirectory d = new TemporaryBaseDirectory();
+      return new CachingFileJobFactory(d);
     }
 
 
@@ -110,6 +107,12 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.12  2006/01/04 09:52:32  clq2
+jes-gtr-1462
+
+Revision 1.11.42.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.11  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

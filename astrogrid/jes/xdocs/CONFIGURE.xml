@@ -9,8 +9,16 @@
 
 
 
-<section name="Configuration"><p>
-The component may be manually configued using the standard astrogrid config system - i.e. setting properties as environment variables, or in a configuration file (<tt>astrogrid.properties</tt>), or within the JNDI service in Tomcat. See the general <a href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/config/FailbackConfig.html">config documentation</a> for details.</p>
+<section name="Configuration">
+<p>
+You should set the configuration by editing the component's properties, using the
+editor pages built into the component. This is accessible via the 'administration controls' menu
+on the left-hand side-bar of the web pages included in the component itself (so you won't see it
+if you're reading this on the AstroGrid web site).
+The editor pages include specific instructions for applying the new configuration to a 
+JES running in a Tomcat container.
+The meaning of the properties is discussed below.
+</p>
 </section>
 
 <section name="Configuration Properties">
@@ -22,18 +30,28 @@ JES requires a directory in which to store workflow transcripts, and other booke
 </p></subsection>
 
 <subsection name="Registry Endpoint"><p>
-The property <tt>astrogrid.registry.endpoint</tt> should contain the URL endpoint of the Registry webservice this JES is to use.
+The property <i>org.astrogrid.registry.endpoint</i> should contain the URL endpoint of the Registry webservice this JES is to use.
 </p>
 </subsection>
 
 <subsection name="Callback Endpoints"><p>
-When JES dispatches a step to a CEA server, it needs to tell the server where to send notification of the step execution. The properties <tt>jes.monitor.endpoint.url</tt> and <tt>jes.results.endpoint.url</tt> contain the absolute URL endpoints of the callback webservices for this JES server. These always follow the same pattern</p>
+When JES dispatches a step to a CEA service, it needs to tell that service where to send notification of the step execution. 
+The properties <tt>jes.monitor.endpoint.url</tt> and <tt>jes.results.endpoint.url</tt> contain the absolute URL endpoints 
+of the callback webservices for this JES server. These always follow the same pattern:</p>
 <source>
 jes.monitor.endpoint.url=http://<i>server.name</i>:<i>port</i>/<i>jes-context</i>/services/JobMonitorService
 jes.results.endpoint.url=http://<i>server.name</i>:<i>port</i>/<i>jes-context</i>/services/ResultListener
 </source>
 <p>
-Where <i>server.name</i> is the DNS resolvable name (<b>not 'localhost'</b>) of the machine the Tomcat is running on, <i>port</i> is the port that Tomcat is listening on, and <i>jes-context</i> is the context in Tomcat that the jes service is installed at.
+where <i>server.name</i> is the DNS-resolvable name of the machine the Tomcat is running on, 
+<i>port</i> is the port that Tomcat is listening on, and <i>jes-context</i> is the context in Tomcat at which 
+the JES component is installed. The default settings, when the component is first deployed, include <i>localhost</i>
+as the address. This is <em>not</em> sufficient for normal operation, as an endpoint based on <i>localhost</i> is not
+meaningful on other computers.
+</p>
+<p>
+After changing these endpoints it is best to re-run the installation tests: see the menu in the left-hand side-bar.
+The installation tests check that the endpoints are accessible.
 </p>
 </subsection>
 
@@ -41,29 +59,34 @@ Where <i>server.name</i> is the DNS resolvable name (<b>not 'localhost'</b>) of 
 
 <section name="Required Properties">
 <p>
-JES also requires the following keys to be set. Don't alter the values - these keys just need to be as follows for a deployed JES Server.</p>
+JES also uses the following properties. The defaults are correct by definition, so don't
+try to change them.
+</p>
 <source>
 jes.locator=registry
 jes.store=file
-#org.astrogrid.registry.result.version=0.9
 </source>
 </section>
+	
 <section name="Example Configuration File">
+<p>
+This is how a complete set of JES properties might look if written out in a properties file.
+You may wish to list your properties in this format (the configuration-editor pages allow
+this) for comparison.
+</p>
 <source>
 # file: astrogrid.properties - sample configuration file for a JES Server
 # Working directory for jes
-jes.jobfactory.file.basedir=/home/tomcat/jes
+jes.jobfactory.file.basedir=/home/tomcat/jes/jobs
 
-#Registry Endpoint
-org.astrogrid.registry.query.endpoint=http://capc49.ast.cam.ac.uk/galahad-registry/services/RegistryQuery
+#Registry Endpoint - AstroGrid central registry
+org.astrogrid.registry.query.endpoint=http://galahad.ast.cam.ac.uk:8080/galahad-registry/services/RegistryQuery
 
 #Callback Endpoints
 jes.monitor.endpoint.url=http://my.server.name:8080/astrogrid-jes/services/JobMonitorService
 jes.results.endpoint.url=http://my.server.name:8080/astrogrid-jes/services/ResultListener
 
-
 #Required Properties.
-org.astrogrid.registry.result.version=0.9
 jes.locator=registry
 jes.store=file
 </source>

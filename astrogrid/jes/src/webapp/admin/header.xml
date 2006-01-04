@@ -1,0 +1,25 @@
+<div>
+	<div id="banner">
+		<a href="http://www.astrogrid.org" id="organizationLogo">
+			<img alt="AstroGrid" src="http://www.astrogrid.org/images/AGlogo"/>
+		</a>
+		<a href="http://www.astrogrid.org/maven/docs/HEAD/jes/index.html" id="projectLogo">
+			<img alt="AstroGrid Job Management" src="http://www.astrogrid.org/images/AGlogo"/>
+		</a>
+		<div class="clear">
+			<hr/>
+		</div>
+	</div>
+	<div id="breadcrumbs">
+		<div class="xleft"> Last published: Fri 02 December 2005 17:21 GMT | Doc for test2</div>
+		<div class="xright">
+			<a href="http://www.astrogrid.org" class="externalLink" title="External Link">AstroGrid</a>
+			<span class="separator">|</span>
+			<a href="http://www.astrogrid.org/maven/docs/HEAD/jes/index.html" class="externalLink"
+				title="External Link">Job Management</a>
+		</div>
+		<div class="clear">
+			<hr/>
+		</div>
+	</div>
+</div>

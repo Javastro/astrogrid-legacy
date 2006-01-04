@@ -1,4 +1,4 @@
-/*$Id: BaseDirectoryFromConfig.java,v 1.5 2004/07/01 21:15:00 nw Exp $
+/*$Id: BaseDirectoryFromConfig.java,v 1.6 2006/01/04 09:52:32 clq2 Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.jes.component.production;
 
 import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.config.Config;
-import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl.BaseDirectory;
+import org.astrogrid.jes.util.BaseDirectory;
 
 import java.io.File;
 
@@ -29,7 +29,8 @@ public class BaseDirectoryFromConfig extends SimpleComponentDescriptor implement
          baseDir = new File(fileLoc);
          name = "FileJobFactory - Base Directory configuration";
         description = "Loads base-directory configuration parameter for FileJobFactory from Config\n" +
-            "key :" + BASE_DIR_KEY            + "\n current value:" + baseDir.getAbsolutePath();
+            "key :" + BASE_DIR_KEY
+            + "\n current value:" + baseDir.getAbsolutePath();
      }
      private final File baseDir;
     /**
@@ -44,6 +45,12 @@ public class BaseDirectoryFromConfig extends SimpleComponentDescriptor implement
 
 /* 
 $Log: BaseDirectoryFromConfig.java,v $
+Revision 1.6  2006/01/04 09:52:32  clq2
+jes-gtr-1462
+
+Revision 1.5.194.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.5  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

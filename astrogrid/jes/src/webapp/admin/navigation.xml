@@ -1,0 +1,174 @@
+<div id="leftColumn">
+	<div id="navcolumn">
+		<div id="menuAdministrator_Quickstart">
+			<h5>Administrator Quickstart</h5>
+			<ul>
+				<li class="none">
+					<a href="index.html">Overview</a>
+				</li>
+				<li class="none">
+					<a href="DOWNLOAD.html">Download</a>
+				</li>
+				<li class="none">
+					<a href="INSTALL.html">Installation</a>
+				</li>
+				<li class="none">
+					<a href="CONFIGURE.html">Configuration</a>
+				</li>
+				<li class="none">
+					<a href="SELF-TEST.html">Self-testing</a>
+				</li>
+				<li class="none">
+					<a href="REGISTER.html">Registration</a>
+				</li>
+				<li class="none">
+					<a href="EXTTEST.html">External testing</a>
+				</li>
+				<li class="none">
+					<a href="UPGRADE.html">Upgrading</a>
+				</li>
+				<li class="none">
+					<a href="UNINSTALL.html">Uninstallation</a>
+				</li>
+			</ul>
+		</div>
+		<div id="menuAdministration_controls">
+			<h5>Administration controls</h5>
+			<ul>
+				<li class="none">
+					<a href="admin/environment-main.jsp">Configure this web application</a>
+				</li>
+			</ul>
+		</div>
+		<div id="menuInstallation_Checks">
+			<h5>Installation Checks</h5>
+			<ul>
+				<li class="none">
+					<a href="happyaxis.jsp">Axis Check</a>
+				</li>
+				<li class="none">
+					<a href="TestServlet?suite=org.astrogrid.jes.component.JesComponentManagerFactory"
+						>Installation Tests</a>
+				</li>
+				<li class="none">
+					<a href="fingerprint.jsp">Fingerprint</a>
+				</li>
+				<li class="none">
+					<a href="servlet/AxisServlet">View web services</a>
+				</li>
+				<li class="none">
+					<a href="query-form.html">HTML Jes Interface</a>
+				</li>
+			</ul>
+		</div>
+		<div id="menuAdministrator_Reference">
+			<h5>Administrator Reference</h5>
+			<ul>
+				<li class="none">
+					<a href="REFERENCE.html">Reference guide</a>
+				</li>
+			</ul>
+		</div>
+		<div id="menuWorkflow_Userguide">
+			<h5>Workflow Userguide</h5>
+			<ul>
+				<li class="expanded">
+					<a href="userguide-architecture.html">Introduction &amp; Overview</a>
+					<ul>
+						<li class="none">
+							<a href="userguide-architecture.html">System Architecture</a>
+						</li>
+						<li class="none">
+							<a href="userguide-faq.html">FAQ</a>
+						</li>
+						<li class="none">
+							<a href="userguide-glossary.html">Glossary</a>
+						</li>
+					</ul>
+				</li>
+				<li class="expanded">
+					<a href="userguide-activities.html">Workflow Documents</a>
+					<ul>
+						<li class="none">
+							<a href="userguide-activities.html">Activities</a>
+						</li>
+						<li class="none">
+							<a href="userguide-jescript.html">Control Logic, Variables &amp; Scripts</a>
+						</li>
+						<li class="none">
+							<a href="api-reference.html">JEScript Objects</a>
+						</li>
+						<li class="none">
+							<a href="userguide-running.html">Execution Results</a>
+						</li>
+						<li class="none">
+							<a href="userguide-workflowschema.html">Document Schema</a>
+						</li>
+					</ul>
+				</li>
+				<li class="expanded">
+					<a href="userguide-examples.html">Examples</a>
+					<ul>
+						<li class="none">
+							<a href="userguide-examples.html">Simple Examples</a>
+						</li>
+						<li class="none">
+							<a href="userguide-scripted-examples.html">Scripted Workflows</a>
+						</li>
+						<li class="none">
+							<a href="userguide-recipes.html">JEScript Recipes</a>
+						</li>
+					</ul>
+				</li>
+				<li class="none">
+					<a href="astrogrid-workflow-userguide.pdf">Workflow Userguide (pdf)</a>
+				</li>
+			</ul>
+		</div>
+		<div id="menuResources">
+			<h5>Resources</h5>
+			<ul>
+				<li class="none">
+					<a href="schema">Schema</a>
+				</li>
+				<li class="none">
+					<a href="wsdl">WSDL</a>
+				</li>
+			</ul>
+		</div>
+		<div id="menuDevelopment_Documentation">
+			<h5>Development Documentation</h5>
+			<ul>
+				<li class="none">
+					<a href="apidocs">javadoc</a>
+				</li>
+				<li class="none">
+					<a href="xref">Formatted Source</a>
+				</li>
+				<li class="none">
+					<a href="xref-test">Formatted Test Source</a>
+				</li>
+			</ul>
+		</div>
+		<div id="menuProject_Documentation">
+			<h5>Project Documentation</h5>
+			<ul>
+				<li class="none">
+					<strong>
+						<a href="index.html">About AstroGrid Job Management</a>
+					</strong>
+				</li>
+				<li class="collapsed">
+					<a href="project-info.html">Project Info</a>
+				</li>
+				<li class="collapsed">
+					<a href="maven-reports.html">Project Reports</a>
+				</li>
+				<li class="none">
+					<a href="http://wiki.astrogrid.org/bin/view/Astrogrid/DevelopmentDocs"
+						class="externalLink" title="External Link">Development Process</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

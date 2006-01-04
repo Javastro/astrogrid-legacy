@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForFeature.java,v 1.7 2005/07/27 15:35:08 clq2 Exp $
+/*$Id: AbstractTestForFeature.java,v 1.8 2006/01/04 09:52:31 clq2 Exp $
  * Created on 08-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
+import org.astrogrid.jes.util.TemporaryBaseDirectory;
 import org.astrogrid.jes.util.TemporaryBuffer;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
@@ -46,8 +47,8 @@ public abstract class AbstractTestForFeature extends TestCase{
     }
     
     protected void setUp() throws Exception {
-
-        jobFactory = new CachingFileJobFactory(new FileJobFactoryImpl.TestBaseDirectory());
+        TemporaryBaseDirectory d = new TemporaryBaseDirectory();
+        jobFactory = new CachingFileJobFactory(d);
         trans = new GroovyTransformers();
         disp = new MockDispatcher();
         interpFactory = new GroovyInterpreterFactory(new XStreamPickler(),new TemporaryBuffer());
@@ -210,6 +211,12 @@ public abstract class AbstractTestForFeature extends TestCase{
 
 /* 
 $Log: AbstractTestForFeature.java,v $
+Revision 1.8  2006/01/04 09:52:31  clq2
+jes-gtr-1462
+
+Revision 1.7.18.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.7  2005/07/27 15:35:08  clq2
 jes_nww_review_unit_tests
 

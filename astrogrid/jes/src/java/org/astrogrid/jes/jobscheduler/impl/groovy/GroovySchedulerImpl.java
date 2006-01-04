@@ -1,4 +1,4 @@
-/*$Id: GroovySchedulerImpl.java,v 1.6 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: GroovySchedulerImpl.java,v 1.7 2006/01/04 09:52:32 clq2 Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,6 +93,8 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
         //maybe a bit redundant - should be able to add in xml directly - but this is a good sanity check - no point going any further if
         // we can't deserialize the generated rules as an interpreter.
         buff.readMode();
+        // Debug: dump text to standard out for the JUnit logs. @todo remove this after debugging GTR 2005-12-09
+        System.out.println(buff.getContents());
         GroovyInterpreter interp = interpFactory.newInterpreter(buff.getContents(),new JesInterface(annotatedJob,disp,this));
         interpFactory.pickleTo(interp,annotatedJob);
 
@@ -200,6 +202,12 @@ public class GroovySchedulerImpl extends AbstractJobSchedulerImpl
 
 /* 
 $Log: GroovySchedulerImpl.java,v $
+Revision 1.7  2006/01/04 09:52:32  clq2
+jes-gtr-1462
+
+Revision 1.6.42.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.6  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

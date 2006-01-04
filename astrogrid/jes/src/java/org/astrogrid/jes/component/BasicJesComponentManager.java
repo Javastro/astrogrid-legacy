@@ -1,4 +1,4 @@
-/*$Id: BasicJesComponentManager.java,v 1.7 2005/04/25 12:13:54 clq2 Exp $
+/*$Id: BasicJesComponentManager.java,v 1.8 2006/01/04 09:52:32 clq2 Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,9 @@ import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.resultlistener.JesResultsListener;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
+import org.astrogrid.jes.util.BaseDirectory;
 import org.astrogrid.jes.util.TemporaryBuffer;
+import org.astrogrid.jes.util.TemporaryBaseDirectory;
 
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
@@ -105,10 +107,10 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
     //    pico.registerComponentImplementation(AbstractJobFactoryImpl.class,InMemoryJobFactoryImpl.class); // could possibly get away with file here..
     //    pico.registerComponentImplementation(NameGen.class,RandomNameGen.class);
         pico.registerComponentImplementation(AbstractJobFactoryImpl.class,CachingFileJobFactory.class);
-        pico.registerComponentImplementation(FileJobFactoryImpl.BaseDirectory.class,FileJobFactoryImpl.TestBaseDirectory.class);
         pico.registerComponentImplementation(JobMonitor.class,org.astrogrid.jes.jobmonitor.JobMonitor.class);
         pico.registerComponentImplementation(ResultsListener.class,JesResultsListener.class);
         pico.registerComponentImplementation(JobController.class,org.astrogrid.jes.jobcontroller.JobController.class);
+        pico.registerComponentImplementation(BaseDirectory.class,org.astrogrid.jes.util.TemporaryBaseDirectory.class);
         // register factory for temp buffers- so each component that requires one is passed it.
         pico.registerComponent(new ConstructorInjectionComponentAdapter(TemporaryBuffer.class,TemporaryBuffer.class));
                
@@ -134,6 +136,12 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
 
 /* 
 $Log: BasicJesComponentManager.java,v $
+Revision 1.8  2006/01/04 09:52:32  clq2
+jes-gtr-1462
+
+Revision 1.7.42.1  2005/12/09 23:11:55  gtr
+I refactored the base-directory feature out of its inner class and interface in FileJobFactory and into org.aastrogrid.jes.util. This addresses part, but not all, of BZ1487.
+
 Revision 1.7  2005/04/25 12:13:54  clq2
 jes-nww-776-again
 

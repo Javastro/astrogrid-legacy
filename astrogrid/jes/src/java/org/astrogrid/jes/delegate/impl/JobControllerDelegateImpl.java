@@ -84,26 +84,44 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
      * @see org.astrogrid.jes.delegate.JobController#cancelJob(org.astrogrid.workflow.beans.v1.execution.JobURN)
      */
     public void cancelJob(JobURN urn) throws JesDelegateException {
-        try {
-            JobController jc = getBinding();
-            jc.cancelJob(new org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN(urn.getContent()));
-        } catch (IOException e) {
-            throw new JesDelegateException(e);
-        }
+      // Tests often try to cancel non-existant jobs. This turns the
+      // exception from an NPE to a checked exception.
+      if (urn == null) {
+        throw new JesDelegateException("Can't cancel a job with a null URN!");
+      }
+      try {
+        JobController jc = getBinding();
+        jc.cancelJob(convertJobUrn(urn));
+      } catch (IOException e) {
+        throw new JesDelegateException(e);
+      }
     }
 
     /**
      * @see org.astrogrid.jes.delegate.JobController#deleteJob(org.astrogrid.workflow.beans.v1.execution.JobURN)
      */
     public void deleteJob(JobURN urn) throws JesDelegateException {
+      // Tests often try to delete non-existant jobs. This turns the
+      // exception from an NPE to a checked exception.
+      if (urn == null) {
+        throw new JesDelegateException("Can't delete a job with a null URN!");
+      }
         try {
             JobController jc = getBinding();
-            jc.deleteJob(new org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN(urn.getContent()));
+            jc.deleteJob(convertJobUrn(urn));
         } catch (IOException e) {
             throw new JesDelegateException(e);
         }        
     }
-
+ 
+    /**
+     * Derives a JES JobURN from a workflow JobURN.
+     */
+    private org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN convertJobUrn
+        (org.astrogrid.workflow.beans.v1.execution.JobURN urn) throws IOException {
+      String content = urn.getContent();
+      return new org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN(content);
+    }
 
     public org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType[] listJobs(Account acc) throws JesDelegateException {
         try {

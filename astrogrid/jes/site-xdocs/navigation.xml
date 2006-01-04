@@ -19,7 +19,10 @@
        <item name="External testing" href="EXTTEST.html"/>
        <item name="Upgrading" href="UPGRADE.html"/>
        <item name="Uninstallation" href="UNINSTALL.html"/>
-    </menu>
+   </menu>
+  	<menu name="Administration controls">
+  		<item name="Configure this web application" href="admin/environment-main.jsp"/>
+  	</menu>
     <menu name="Installation Checks">
             <item name="Axis Check" href="happyaxis.jsp" />
             <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.jes.component.JesComponentManagerFactory" />
