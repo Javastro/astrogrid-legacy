@@ -36,9 +36,7 @@
 
 <form action="registerSelfInExternalRegistry.jsp" method="post">
   <p>In order to make another registry to mirror ("harvest") the contents of your registry, you must copy the <span style="font-style: italic;">registryType</span>
-registration from your registry into the other registry. This form
-copies that registration into a specific registry: that on AstroGrid's
-machine <span style="font-style: italic;">Galahad</span>.<br>
+registration from your registry into the other registry.
 </p>
 <input type="hidden" name="postrequest" value="true" />
 <select name="version">
@@ -48,7 +46,14 @@ machine <span style="font-style: italic;">Galahad</span>.<br>
       ><%=al.get(k)%></option>  
    <%}%>
 </select>
-<input name="regaddurl" type="text" value="http://galahad.star.le.ac.uk:8081/astrogrid-registry" />
+<%
+    String prevurl = request.getParameter("regaddurl");
+    if (null == prevurl)
+        {
+        prevurl = "target registry url" ;
+        }
+%>
+<input name="regaddurl" size="40" type="text" value="<%= prevurl %>"/>
 <p><input name="postregsubmit" value="Set up harvesting" type="submit"></p>
 </form>
 
@@ -64,7 +69,7 @@ machine <span style="font-style: italic;">Galahad</span>.<br>
 	  String regaddurl = request.getParameter("regaddurl");
 	  String fullRegistryAddURL = regaddurl + "/addResourceEntry.jsp";
 	  String regBas = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-	  regBas += "getRegistriesXML.jsp?version=" + version ;
+      regBas += "/getRegistriesXML.jsp?version=" + version ;
 %>
 
 <h1>Adding Entry</h1>
@@ -73,12 +78,12 @@ machine <span style="font-style: italic;">Galahad</span>.<br>
 
 <pre>
 <%
-String callURL = fullRegistryAddURL + "?addFromURL=\"true\"&docurl=\"" + regBas + "\"";
-out.write("<p>Attempting to tell hydra full registry about you: </p>");
+String callURL = fullRegistryAddURL + "?addFromURL=true&docurl=" + regBas ;
+out.write("<p>Calling remote registry to initiate harvest from this registry</p>");
 URL url = new URL(callURL);
 HttpURLConnection huc = (HttpURLConnection)url.openConnection();
-out.write("<p>Connection opened to hydra and hydra is extracting known registry type entries from here, the response code = " 
-          + huc.getResponseCode() + "</p>");
+out.write("<p>Connection opened to remote registry .... the response code = " 
++ huc.getResponseCode() + "</p>");
 %>
 </pre>
 

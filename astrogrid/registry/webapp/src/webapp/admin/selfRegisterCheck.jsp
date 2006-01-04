@@ -38,7 +38,7 @@
 <input type="checkbox" name="validate" value="true">Validate</input>
 <input type="hidden" name="addFromText" value="true" />
 
-<textarea name="Resource" cols='60' rows='20'>
+<textarea name="Resource" cols='80' rows='20'>
 <%
 String version = request.getParameter("version");
 if(version == null || version.trim().length() <= 0 || version.equals("null") ||  version.equals("0.9")) {
