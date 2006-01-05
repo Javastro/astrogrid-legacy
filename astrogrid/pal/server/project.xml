@@ -274,11 +274,6 @@
   			<war.bundle>true</war.bundle>
   		</properties>
   	</dependency>
-  	
-    <dependency>
-      <id>xml-apis</id>
-      <version>1.0.b2</version>
-    </dependency>
 
     <dependency>
       <id>hsqldb</id>

@@ -358,9 +358,12 @@
       </properties>
     </dependency>
 
-    <dependency>
-      <id>xml-apis</id>
-      <version>1.0.b2</version>
+	<dependency>
+  		<groupId>xerces</groupId>
+  		<type>jar</type>
+  		<artifactId>xml-apis</artifactId>
+      <version>2.7.1</version>
+    </dependency>
 
       <properties>
          <war.bundle>true</war.bundle>
@@ -378,11 +381,10 @@
     </dependency>
 
     <dependency>
-      <id>xercesImpl</id>
-      <version>2.6.2</version>
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
+  		<groupId>xerces</groupId>
+  		<type>jar</type>
+  		<artifactId>xercesImpl</artifactId>
+      <version>2.7.1</version>
     </dependency>
 
 
