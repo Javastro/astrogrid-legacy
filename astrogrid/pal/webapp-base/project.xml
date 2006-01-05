@@ -365,11 +365,6 @@
       <version>2.7.1</version>
     </dependency>
 
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
     <!-- castor, and what it needs -->
     <dependency>
       <id>castor</id>
