@@ -14,13 +14,13 @@
 </p>
 	<ol>
 		<li>preserve the existing configuration in a safe place
-			(see the <a href="CONFIGURE.html#preserve">configuration guide</a>);</li>
+			(see the <a href="CONFIGURE.html">configuration guide</a>);</li>
 		<li>delete the existing version of the web-application;
 		(see the <a href="UNINSTALL.html">uninstallaion guide</a>)</li>
 		<li>install the new version of the web-application
-			(see the <a href="INSTALL.html#preserve">installation guide</a>);</li>
+			(see the <a href="INSTALL.html">installation guide</a>);</li>
 		<li>restore the old configuration to the new version
-			(see the <a href="CONFIGURE.html#restore">configuration guide</a>).</li>
+			(see the <a href="CONFIGURE.html">configuration guide</a>).</li>
 	</ol>
 	<p>
 		There are many other tricks with Tomcat and web-applications for changing the software

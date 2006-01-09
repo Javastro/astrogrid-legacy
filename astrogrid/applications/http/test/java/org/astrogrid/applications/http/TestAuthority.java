@@ -1,4 +1,4 @@
-/*$Id: TestAuthority.java,v 1.2 2004/11/27 13:20:02 pah Exp $
+/*$Id: TestAuthority.java,v 1.3 2006/01/09 17:52:36 clq2 Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,10 @@
 **/
 package org.astrogrid.applications.http;
 
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 
 //@TODO jdt check out the significance of this...can we push it up?
-public class TestAuthority implements HttpApplicationDescriptionLibrary.AppAuthorityIDResolver {
+public class TestAuthority implements AppAuthorityIDResolver {
     public String getAuthorityID() {
         return "org.astrogrid.test";
     }
@@ -21,6 +22,12 @@ public class TestAuthority implements HttpApplicationDescriptionLibrary.AppAutho
 
 /* 
 $Log: TestAuthority.java,v $
+Revision 1.3  2006/01/09 17:52:36  clq2
+gtr_1489_apps
+
+Revision 1.2.114.1  2005/12/22 13:56:03  gtr
+Refactored to match the other kinds of CEC.
+
 Revision 1.2  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

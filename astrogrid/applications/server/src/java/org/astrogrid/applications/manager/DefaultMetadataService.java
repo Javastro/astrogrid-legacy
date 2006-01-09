@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataService.java,v 1.8 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: DefaultMetadataService.java,v 1.9 2006/01/09 17:52:36 clq2 Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -88,12 +88,6 @@ public class DefaultMetadataService implements MetadataService,
    /** library to generate description for */
    private final ApplicationDescriptionLibrary lib;
 
-   private VOResources template;
-
-   private String serverID;
-
-   private String authorityID;
-
    /**
     * Configuration interface - specifies location of resources required by
     * {@link RegistryEntryBuilder}
@@ -113,20 +107,13 @@ public class DefaultMetadataService implements MetadataService,
     * Construct a new RegistryEntryBuilder
     * 
     * @param lib
-    *           the library of descriptions to build a registry entry for
+    *           The library of descriptions for which to build a registry entry.
     * @param urls
-    *           configuration urls
+    *           URLs needed for configuration.
     */
    public DefaultMetadataService(ApplicationDescriptionLibrary lib, URLs urls) {
-      this.lib = lib;
-      this.urls = urls;
-      try {
-         //FIXME need to read the template to get hold of the AuthorityID and
-         // the serverID to have those set early
-         template = makeTemplate();
-      } catch (Exception e) {
-         logger.error("error with template", e);
-      }
+     this.lib = lib;
+     this.urls = urls;
    }
 
    /**
@@ -134,17 +121,25 @@ public class DefaultMetadataService implements MetadataService,
     * 
     * @return a VOResources.
     */
-   public VOResources makeEntry() throws MarshalException, ValidationException,
-         IOException, ApplicationDescriptionNotFoundException {
+   public VOResources makeEntry() 
+       throws ApplicationDescriptionNotFoundException,
+              MarshalException,
+              ValidationException, 
+              ParserConfigurationException,
+              FactoryConfigurationError, 
+              TransformerException, 
+              IOException {
+     
+      // Make a new template, parsing the input file. This picks up any
+      // recent changes to the template file.
+      VOResources template = this.makeTemplate();
+      
       VOResources vodesc = new VOResources();
       CeaApplicationType applicationTemplate = (CeaApplicationType) template
             .getResource(0);
       CeaServiceType serviceTemplate = (CeaServiceType) template.getResource(1);
 
       CeaServiceType service = cloneTemplate(serviceTemplate);
-      //set the service idetifier just in case this has been redefined from the
-      // UI
-      service.setIdentifier(makeIvorn(getAuthorityID(), serverID));
       ManagedApplications managedApplications = new ManagedApplications();
       service.setManagedApplications(managedApplications);
       ApplicationList applist = makeApplist(lib);
@@ -204,7 +199,7 @@ public class DefaultMetadataService implements MetadataService,
     */
    private CeaApplicationType makeApplicationEntry(CeaApplicationType template,
          ApplicationBase app) throws MarshalException, ValidationException {
-
+      
       CeaApplicationType entry = cloneTemplate(template);
       //FIXME the identifier needs to be rationalized...
       entry.setIdentifier(makeIvorn(IvornUtil.extractAuthorityFragment(app
@@ -328,13 +323,21 @@ public class DefaultMetadataService implements MetadataService,
     * 
     * return result; }
     */
+   
+   /**
+    * Gets a URL leading to the current registration-template. The
+    * location of the template is set during construction.
+    */
+   public URL getRegistrationTemplate() {
+     return this.urls.getRegistryTemplate();
+   }
+   
    /**
     * This should potentially be overriden by subclasses.
     * @see org.astrogrid.applications.component.ProvidesVODescription#getDescription()
     * @todo could cache the result.
     */
-   public VOResources getVODescription() throws CastorException,
-         ApplicationDescriptionNotFoundException, IOException {
+   public VOResources getVODescription() throws Exception {
       return makeEntry();
    }
 
@@ -348,61 +351,26 @@ public class DefaultMetadataService implements MetadataService,
     * @throws FactoryConfigurationError
     * @throws ParserConfigurationException
     */
-   private VOResources makeTemplate() throws MarshalException,
-         ValidationException, ParserConfigurationException,
-         FactoryConfigurationError, TransformerException, IOException {
+   private VOResources makeTemplate() 
+       throws MarshalException,
+              ValidationException, 
+              ParserConfigurationException,
+              FactoryConfigurationError, 
+              TransformerException, 
+              IOException {
       logger.info("using " + urls.getRegistryTemplate()
             + " as registry template");
       String hackedtemplate = transformTemplateForCastor(urls
             .getRegistryTemplate().openStream(), this.getClass()
             .getResourceAsStream("/CastorHacker.xsl"));
 
-      //logger.trace("hacked template\n"+hackedtemplate);
       Unmarshaller um = new Unmarshaller(VOResources.class);
       um.setIgnoreExtraAttributes(true);
       um.setIgnoreExtraElements(true);
       StringReader sr = new StringReader(hackedtemplate);
       InputSource is = new InputSource(sr);
       VOResources temp = (VOResources) um.unmarshal(is);
-
-      //reset the authorityID and the server ID from the server entry
-      if (temp.getResource(1) instanceof CeaServiceType) {
-         CeaServiceType service = (CeaServiceType) temp.getResource(1);
-         authorityID = IvornUtil.extractAuthorityFragment(service
-               .getIdentifier());
-         serverID = IvornUtil.extractIDFragment(service.getIdentifier());
-         logger.info("from template the service is called "
-               + service.getIdentifier().toString());
-      } else {
-         logger
-               .error("template not in expected format - resulting VOResourcess may be wrong");
-      }
       return temp;
-   }
-
-   public void reloadTemplate() throws MarshalException, ValidationException,
-         ParserConfigurationException, FactoryConfigurationError,
-         TransformerException, IOException {
-      template = makeTemplate();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.astrogrid.applications.component.ProvidesVODescription#getAuthorityID()
-    */
-   public String getAuthorityID() {
-      return authorityID;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.astrogrid.applications.component.ProvidesVODescription#setServerID(java.lang.String)
-    */
-   public String setServerID(String id) {
-      serverID = id;
-      return serverID;
    }
 
    private String makeIvorn(String auth, String id) {
@@ -462,10 +430,15 @@ public class DefaultMetadataService implements MetadataService,
       Document finalDoc = null;
 
       try {
+        
+         // Serialize the registration metadata into an XML document using
+         // Castor. Note that the metadata are actually accessed on the very
+         // last call of this block, via getVODescription(); everything else
+         // in the block is setting up Castor. Leave the serialized XML in 
+         // the StringWriter sw.
          DocumentBuilder builder = DocumentBuilderFactory.newInstance()
                .newDocumentBuilder();
          StringWriter sw = new StringWriter(1000);
-         finalDoc = builder.newDocument();
          Marshaller marshaller = new Marshaller(sw);
          marshaller.setDebug(true);
          marshaller.setMarshalExtendedType(true);
@@ -481,19 +454,18 @@ public class DefaultMetadataService implements MetadataService,
          marshaller.setNamespaceMapping("ceab", Namespaces.CEAB);
          marshaller.setNamespaceMapping("vs", Namespaces.VODATASERVICE);
          marshaller.marshal(this.getVODescription());
-//         logger.debug("marshalled vodescription\n"+sw.toString());
 
-         // now transform to make suitable for the registry entry
-
+         // Transform the contents of sw to make a cleaned-up registration.
+         // Extract the result as a DOM.
          TransformerFactory fac = TransformerFactory.newInstance();
          String xslpath = DefaultMetadataService.class.getPackage() + FORMATTER_XSL;
          formatterXSL = DefaultMetadataService.class.getResourceAsStream(FORMATTER_XSL);
          Source formatter = new StreamSource(formatterXSL);
-         Templates template = fac.newTemplates(formatter);
-
-         Transformer xformer = template.newTransformer();
+         Templates xsltTemplate = fac.newTemplates(formatter);
+         Transformer xformer = xsltTemplate.newTransformer();
          StringReader sr = new StringReader(sw.toString());
          Source source = new StreamSource(sr);
+         finalDoc = builder.newDocument();
          Result result = new DOMResult(finalDoc);
          xformer.transform(source, result);
       } catch (Exception e) {
@@ -552,6 +524,18 @@ public class DefaultMetadataService implements MetadataService,
 
 /*
  * $Log: DefaultMetadataService.java,v $
+ * Revision 1.9  2006/01/09 17:52:36  clq2
+ * gtr_1489_apps
+ *
+ * Revision 1.8.38.3  2005/12/22 10:13:26  gtr
+ * I removed unused methods.
+ *
+ * Revision 1.8.38.2  2005/12/21 17:45:42  gtr
+ * I changed the dataflow so that the template document is reloaded each time a registration document is produced.
+ *
+ * Revision 1.8.38.1  2005/12/21 14:44:35  gtr
+ * Changed to make the registration template available through the InitServlet.
+ *
  * Revision 1.8  2005/07/05 08:27:00  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

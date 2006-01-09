@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+        <title>Configuration</title>
+</properties>
+
+<body>
+
+<section name="Configuration">
+  <p>
+  	You must configure the CEC so that it works with your chosen applications and in the
+  	environment of your site. Please follow this sequence:
+  </p>
+	<ol>
+		<li>Choose a directory for the configuration files of this CEC.</li>
+		<li>Make a "registration-template" document.</li>
+		<li>Set the "environment entries" for this web application.</li>
+		<li>Preview the registration document.</li>
+		<li>Write-protect the configuration files.</li>
+		<li>Restart the web application to pick up the changed environment.</li>
+	</ol>
+	<p>
+		Instructions for each step are gven below.
+	</p>
+</section>
+	
+<section name="Choose a directory for configuration files">
+  <p>
+  	During configuration and registration, you will create several files that
+  	control operation of the CEC. Make a directory for these. Use a separate 
+  	directory for each CEC that you configure, to avoid file-name clashes.
+  </p>
+	<p>
+		Your configuration directory must be safe against accidental deletion and
+		overwriting. You'll probably want to re-use the same configuration for
+		later versions of the CEC. Therefore, <em>don't</em> put the configuration
+		directory inside the directory where Tomcat unpacks the web application from
+		the WAR. If you put it there, then it will be deleted when you deploy your
+		next software update. Ideally, put the configuration directory outside the
+		Tomcat tree altogether. The CEC needs to be able to read from the configuration
+		directory but need not write to it.
+  </p>
+</section>	
+	
+<section name="Make the registration template">
+  <p>
+  	The CEC uses an XML document called a registration template to generate the 
+  	registration documents that it submits to the IVO resource-registry. You need
+  	to obtain an initial copy of this template, edit it and save the edited copy
+  	in the configuration directory. You need to do this <em>now</em>,
+  	before the rest of the configuration sequence,
+  	while you still have access to the template shipped with the web application.
+  </p>
+	<p>
+		Use the "show registration template" link in the left-hand side-bar of this page.
+		Save the resulting document to the configuration directory; pick whatever name for 
+		it you like.
+	</p>
+	<p>
+		Now open the registration template in a text editor (or XML editor if you have one)
+		and edit the values of the elements according to the commends in the template file.
+	</p>
+</section>
+	
+	
+<section name="Set the environment entries">
+  <p>
+  	The environment entries describe the use of the resource registry,
+  	directories for scratch files, etc. Use the "configuration editor"
+  	link in the sidebar to set them.
+  </p>
+	<p>
+		The configuration editor includes descriptions of the uses and proper
+		values of the environment entries. More detail is available in the
+		reference manual for the CEC.
+	</p>
+	<p>
+		To apply the changed environment entries, follow the instructions in
+		the editor pages. You should also save the environment as a Tomcat-context
+		file in the configuration directory. This latter copy is not used by Tomcat
+		or the CEC; it's a back-up in case the primary copy gets damaged.
+	</p>
+</section>
+	
+<section name="Preview the registration document">
+	<p>
+		When you have the environment set, including the entry that leads the URL
+		to your edited copy of the registration template, you should check that the
+		registration documents are coming out satisfactorily. Use the
+		"show registration document" link in the side-bar.
+	</p>
+	<p>
+		The registration document is what will eventually be sent to the IVO
+		resource registry to identify your CEC and its applications. These documents
+		are public and are read both by human users of your service and by machines.
+		Therefore, they need to be both scientifically useful and technically correct.
+		You need to check them at this stage before going on to registration.
+	</p>
+	<p>
+		The most important thing to check is the <i>identifier</i> element in the service
+		description. This is the formal name for your service in the registry, and you
+		can't change it once you've registered (changing the name creates a second
+		registration; it doesn't rename the original one). Almost anything else can be
+		patched up by registry updates, but you have to get the identifier right first time.
+		Things to check:
+	</p>
+	<ul>
+		<li>Is the authority ID part of the identifier (e.g. the <i>foo.bar</i> in
+			<i>ivo://foo.bar/baz</i> right for the registry where you're publishing?
+		  A given registry accepts registrations only under a limited, pre-agreed
+			set of authorities.</li>
+		<li>Is the resource-key part (e.g. the <i>baz</i> in <i>ivo://foo.bar/baz</i>
+			unique within the naming authority?</li>
+		<li>Is the resource key a sensible and memorable name for the service?</li>
+	</ul>
+</section>
+	
+<section name="Write-protect the configuration files">
+	<p>
+		When you are satisfied with your configuration files and the resulting
+		registration document, you should write-protect the files in the
+		configuration directory for safety.
+	</p>
+</section>
+	
+<section name="Restart the web application">
+	<p>
+		The CEC web-service needs to be restarted to pick up the changed configuration.
+		This means that you have to restart the whole web-application. Either restart
+		Tomcat itself, or use the Tomcat Manager application to restart the current
+		web-application.
+	</p>
+</section>
+	
+</body>
+</document>

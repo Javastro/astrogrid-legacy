@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractComponentManagerTestCase.java,v 1.3 2005/08/10 17:45:10 clq2 Exp $
+ * $Id: AbstractComponentManagerTestCase.java,v 1.4 2006/01/09 17:52:36 clq2 Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.component.EmptyCEAComponentManager.VerifyRequiredComponents;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.MetadataService;
@@ -79,10 +78,6 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
         manager.getContainer().verify();
     }
 
-   public void testVerifyRequiredComponents() {
-        assertNotNull(manager.getContainer().getComponentInstanceOfType(EmptyCEAComponentManager.VerifyRequiredComponents.class));
-    }
-
    public void testGetController() {
         assertNotNull(manager.getExecutionController());
     }
@@ -127,6 +122,12 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
 
 /*
  * $Log: AbstractComponentManagerTestCase.java,v $
+ * Revision 1.4  2006/01/09 17:52:36  clq2
+ * gtr_1489_apps
+ *
+ * Revision 1.3.20.1  2005/12/18 14:48:25  gtr
+ * Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
+ *
  * Revision 1.3  2005/08/10 17:45:10  clq2
  * cea-server-nww-improve-tests
  *

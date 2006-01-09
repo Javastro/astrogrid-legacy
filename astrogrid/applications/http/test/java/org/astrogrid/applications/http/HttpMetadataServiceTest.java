@@ -1,5 +1,5 @@
 /*
- * $Id: HttpMetadataServiceTest.java,v 1.2 2005/07/05 08:26:56 clq2 Exp $
+ * $Id: HttpMetadataServiceTest.java,v 1.3 2006/01/09 17:52:36 clq2 Exp $
  * 
  * Created on 14-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -82,8 +82,7 @@ public class HttpMetadataServiceTest extends TestCase {
             httpApplicationDescriptionLibrary, urls);
    }
    
-   public void testGetMetadata() throws ApplicationDescriptionNotFoundException, CastorException, IOException
-   {
+   public void testGetMetadata() throws Exception {
       VOResources desc = metadataService.getVODescription();
       assertNotNull("metadata is null", desc);
       assertEquals("should only be one resource",1, desc.getResourceCount());
@@ -91,13 +90,18 @@ public class HttpMetadataServiceTest extends TestCase {
       assertTrue("resource should be CeaService" ,resource instanceof CeaServiceType);
       CeaServiceType ceaservice = (CeaServiceType) resource;
       assertTrue("should manage at least one application", ceaservice.getManagedApplications().getApplicationReferenceCount() > 0);
-      
    }
 
 }
 
 /*
  * $Log: HttpMetadataServiceTest.java,v $
+ * Revision 1.3  2006/01/09 17:52:36  clq2
+ * gtr_1489_apps
+ *
+ * Revision 1.2.34.1  2005/12/22 13:56:03  gtr
+ * Refactored to match the other kinds of CEC.
+ *
  * Revision 1.2  2005/07/05 08:26:56  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManagerFactoryTest.java,v 1.4 2005/08/10 17:45:10 clq2 Exp $
+/*$Id: CEAComponentManagerFactoryTest.java,v 1.5 2006/01/09 17:52:36 clq2 Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,8 @@ public class CEAComponentManagerFactoryTest extends TestCase {
         CEAComponentManager man = CEAComponentManagerFactory.getInstance();
         assertNotNull(man);
         assertTrue(man instanceof JavaClassCEAComponentManager);
+        man.getContainer().verify();
+        man.informationHTML();
         // would be nice to test that the picocontainer has been started too, but no method on the container for this.
     }
     
@@ -65,6 +67,12 @@ public class CEAComponentManagerFactoryTest extends TestCase {
 
 /* 
 $Log: CEAComponentManagerFactoryTest.java,v $
+Revision 1.5  2006/01/09 17:52:36  clq2
+gtr_1489_apps
+
+Revision 1.4.20.1  2005/12/18 14:48:25  gtr
+Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
+
 Revision 1.4  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests
 

@@ -1,5 +1,5 @@
 /*
- * $Id: TestCmdDescriptionLoaderFactory.java,v 1.2 2005/07/05 08:27:01 clq2 Exp $
+ * $Id: TestCmdDescriptionLoaderFactory.java,v 1.3 2006/01/09 17:52:36 clq2 Exp $
  * 
  * Created on 02-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -24,8 +24,12 @@ import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 import org.picocontainer.defaults.DefaultPicoContainer;
 
 import org.astrogrid.applications.commandline.CommandLineApplicationDescription;
+import org.astrogrid.applications.commandline.CommandLineConfiguration;
+import org.astrogrid.applications.commandline.TestCommandLineConfiguration;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
+import org.astrogrid.applications.manager.TestAppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 
@@ -52,7 +56,18 @@ public class TestCmdDescriptionLoaderFactory {
        throw  new Exception("working dir does not exist");
     }
     workingDir.deleteOnExit();
+    
+    // Arrange the configuration parameters in a suitable adaptor.
+    // This mimics the use, in operation, of an implementation
+    // of CommandLineConfiguration that can get metadata for itself.
+    TestCommandLineConfiguration config = new TestCommandLineConfiguration();
+    config.setWorkingDirectory(workingDir);
+    config.setApplicationDescriptionUrl(inputFile);
+    
     DefaultPicoContainer container = new DefaultPicoContainer();
+    
+    container.registerComponentImplementation(CommandLineConfiguration.class, 
+                                              TestCommandLineConfiguration.class);
     container.registerComponent(new ConstructorInjectionComponentAdapter(
             CommandLineApplicationDescription.class,
             CommandLineApplicationDescription.class,
@@ -60,24 +75,17 @@ public class TestCmdDescriptionLoaderFactory {
             ));
     container.registerComponentImplementation(InMemoryIdGen.class);
     container.registerComponentImplementation(DefaultProtocolLibrary.class);
-    container.registerComponentInstance(BaseApplicationDescriptionLibrary.AppAuthorityIDResolver.class, new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver(){/* (non-Javadoc)
-   * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary.AppAuthorityIDResolver#getAuthorityID()
-   */
-  public String getAuthorityID() {
-    return "org.astrogrid.test";
-  }});
+    container.registerComponentInstance(AppAuthorityIDResolver.class, 
+                                        new TestAppAuthorityIDResolver("org.astrogrid.test"));
     container
             .registerComponentImplementation(ApplicationDescriptionEnvironment.class);
 
   
      container.verify();
-     CommandLineDescriptionsLoader dl = new CommandLineDescriptionsLoader(
-            new CommandLineDescriptionsLoader.DescriptionURL() {
-
-                public URL getURL() {
-                    return inputFile;
-                }
-            }, new CommandLineApplicationDescriptionFactory(container),(ApplicationDescriptionEnvironment)container.getComponentInstanceOfType(ApplicationDescriptionEnvironment.class));
+     CommandLineDescriptionsLoader dl 
+         = new CommandLineDescriptionsLoader(config, 
+                                             new CommandLineApplicationDescriptionFactory(container),
+                                             (ApplicationDescriptionEnvironment)container.getComponentInstanceOfType(ApplicationDescriptionEnvironment.class));
      return dl;
    }
 
@@ -86,6 +94,12 @@ public class TestCmdDescriptionLoaderFactory {
 
 /*
  * $Log: TestCmdDescriptionLoaderFactory.java,v $
+ * Revision 1.3  2006/01/09 17:52:36  clq2
+ * gtr_1489_apps
+ *
+ * Revision 1.2.34.1  2005/12/19 18:12:30  gtr
+ * Refactored: changes in support of the fix for 1492.
+ *
  * Revision 1.2  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

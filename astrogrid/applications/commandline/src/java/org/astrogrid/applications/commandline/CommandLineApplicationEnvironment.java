@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationEnvironment.java,v 1.4 2005/08/10 14:45:37 clq2 Exp $
+ * $Id: CommandLineApplicationEnvironment.java,v 1.5 2006/01/09 17:52:36 clq2 Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 
 package org.astrogrid.applications.commandline;
 
+import org.astrogrid.applications.commandline.CommandLineConfiguration;
 import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
 import org.astrogrid.applications.manager.idgen.IdGen;
 
@@ -59,13 +60,13 @@ public class CommandLineApplicationEnvironment {
    private final TempFileFactory tempFileFactory;
 
 
-   public CommandLineApplicationEnvironment(final IdGen idgen, final WorkingDir workingDirectory)
+   public CommandLineApplicationEnvironment(final IdGen idgen, CommandLineConfiguration config)
       throws CannotCreateWorkingDirectoryException {
 
       
       executionId = idgen.getNewID();
       logger.info("new execution id="+executionId);
-      executionDirectory = createExecutionDirectoryName(executionId, workingDirectory);
+      executionDirectory = createExecutionDirectoryName(executionId, config.getWorkingDirectory());
          
       if (!executionDirectory.exists()) {
 
@@ -126,8 +127,8 @@ public class CommandLineApplicationEnvironment {
     * @param wd
     * @return the execution directory name - note that it is not created.
     */
-   public static File createExecutionDirectoryName(String exid, WorkingDir wd){
-      return new File(wd.getDir(),URLEncoder.encode(exid));
+   public static File createExecutionDirectoryName(String exid, File wd){
+      return new File(wd,URLEncoder.encode(exid));
    }
 
 

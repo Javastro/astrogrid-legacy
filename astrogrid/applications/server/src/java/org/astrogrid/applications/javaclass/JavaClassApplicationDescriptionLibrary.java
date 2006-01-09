@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.7 2005/08/10 14:45:37 clq2 Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.8 2006/01/09 17:52:36 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.applications.javaclass;
 
-
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.idgen.IdGen;
@@ -34,7 +34,9 @@ import java.lang.reflect.Modifier;
  * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary
  *
  */
-public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescriptionLibrary implements  ComponentDescriptor{
+public class JavaClassApplicationDescriptionLibrary 
+    extends BaseApplicationDescriptionLibrary 
+    implements ComponentDescriptor{
     /**
      * Commons Logger for this class
      */
@@ -48,7 +50,8 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
      * @param env standard container object for helper code.
      * 
      */
-    public JavaClassApplicationDescriptionLibrary(Class implClass, ApplicationDescriptionEnvironment env) {
+    public JavaClassApplicationDescriptionLibrary(Class implClass, 
+                                                  ApplicationDescriptionEnvironment env) {
         super(env);
         this.implClass= implClass;
         populate(implClass,env.getIdGen(), env.getAuthIDResolver());
@@ -58,7 +61,8 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
      * @param imp
     * @param authidresolver
      */
-    protected final void populate(Class imp,IdGen idgen, BaseApplicationDescriptionLibrary.AppAuthorityIDResolver authidresolver) {
+    protected final void populate(Class imp,IdGen idgen,
+                                  AppAuthorityIDResolver authidresolver) {
         String communityName = authidresolver.getAuthorityID();
         Method[] methods = imp.getDeclaredMethods();
         for (int i = 0; i < methods.length; i++) {
@@ -88,6 +92,12 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.8  2006/01/09 17:52:36  clq2
+gtr_1489_apps
+
+Revision 1.7.20.1  2005/12/18 14:48:25  gtr
+Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
+
 Revision 1.7  2005/08/10 14:45:37  clq2
 cea_pah_1317
 

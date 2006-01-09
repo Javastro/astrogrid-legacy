@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.8 2005/07/05 08:27:01 clq2 Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.9 2006/01/09 17:52:36 clq2 Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.apache.commons.digester.NodeCreateRule;
 import org.apache.commons.digester.RegexRules;
 import org.apache.commons.digester.SimpleRegexMatcher;
 import org.astrogrid.applications.beans.v1.ParameterRef;
+import org.astrogrid.applications.commandline.CommandLineConfiguration;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
@@ -53,10 +54,12 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
     }
 
 
-   public CommandLineDescriptionsLoader(DescriptionURL finder, CommandLineApplicationDescriptionFactory appDescFactory, ApplicationDescriptionEnvironment envin) 
+   public CommandLineDescriptionsLoader(CommandLineConfiguration configuration, 
+                                        CommandLineApplicationDescriptionFactory appDescFactory, 
+                                        ApplicationDescriptionEnvironment envin) 
    {
           super(envin);
-          this.configFile = finder.getURL();
+          this.configFile = configuration.getApplicationDescriptionUrl();
           this.appDescFactory = appDescFactory;
           try {
             loadDescription();

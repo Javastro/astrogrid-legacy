@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationDescriptionTest.java,v 1.5 2005/07/05 08:26:56 clq2 Exp $
+/*$Id: CommandLineApplicationDescriptionTest.java,v 1.6 2006/01/09 17:52:36 clq2 Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,12 @@ package org.astrogrid.applications.commandline;
 
 
 import org.astrogrid.applications.Application;
+import org.astrogrid.applications.commandline.TestCommandLineConfiguration;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
+import org.astrogrid.applications.manager.TestAppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
@@ -47,29 +49,22 @@ public class CommandLineApplicationDescriptionTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         IdGen idgen = new InMemoryIdGen();
-        fac = new CommandLineApplicationEnvironment(idgen,new CommandLineApplicationEnvironment.WorkingDir() {
-            final File file; 
-            { 
-                file = File.createTempFile("CommandLineApplicationDescriptionTest",null);
-                file.delete();
-                file.mkdirs();
-                file.deleteOnExit();
-            }
-            public File getDir() {
-                return file; 
-            }
-        });
+        File file = File.createTempFile("CommandLineApplicationDescriptionTest",null);
+        file.delete();
+        file.mkdirs();
+        file.deleteOnExit();
+        TestCommandLineConfiguration config = new TestCommandLineConfiguration();
+        config.setWorkingDirectory(file);
+        fac = new CommandLineApplicationEnvironment(idgen, config);
+        
         DefaultPicoContainer container = new DefaultPicoContainer();
         container.registerComponentInstance(fac);
         ProtocolLibrary lib = new DefaultProtocolLibrary();
         container.registerComponentInstance(lib);
         //FIXME need to think about how the cmdline apps have their authorityID set....
-        appDescEnv = new ApplicationDescriptionEnvironment(idgen,lib, new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver(){/* (non-Javadoc)
-       * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary.AppAuthorityIDResolver#getAuthorityID()
-       */
-      public String getAuthorityID() {
-        return "org.astrogrid.test" ;
-      }});
+        appDescEnv = new ApplicationDescriptionEnvironment(idgen,
+                                                           lib, 
+                                                           new TestAppAuthorityIDResolver("org.astrogrid.test"));
         descr = new CommandLineApplicationDescription(appDescEnv,container);
         
         descr.setName("test");
@@ -103,6 +98,12 @@ public class CommandLineApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: CommandLineApplicationDescriptionTest.java,v $
+Revision 1.6  2006/01/09 17:52:36  clq2
+gtr_1489_apps
+
+Revision 1.5.34.1  2005/12/19 18:12:30  gtr
+Refactored: changes in support of the fix for 1492.
+
 Revision 1.5  2005/07/05 08:26:56  clq2
 paul's 559b and 559c for wo/apps and jes
 

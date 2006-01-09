@@ -13,9 +13,8 @@
 		<section name="Prerequisites">
 			<subsection name="Web container (Jakarta-Tomcat)">
 			<p> You must install Jakarta-Tomcat: this is the only supported container for the
-				web-application. To deploy a service into AstroGrid's production network, you should install
-				Tomcat v5.0.19. To deploy a service into AstroGrid's development network, you should install
-				Tomcat v5.0.28. </p>
+				web-application. AstroGrid recommends Tomcat v5.0.28. V5.5.x is not suitable.
+			</p>
 			</subsection>
 			<subsection name="Tomcat roles">
 			<p> You will need to use Tomcat's administration features to configure the web-application.

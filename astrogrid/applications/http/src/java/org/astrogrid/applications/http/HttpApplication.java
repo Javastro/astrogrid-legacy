@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.9 2005/07/05 08:27:01 clq2 Exp $
+/* $Id: HttpApplication.java,v 1.10 2006/01/09 17:52:36 clq2 Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -175,10 +175,10 @@ public boolean execute() throws CeaException {
                 reportError("Unknown http method requested"); //this really shouldn't happen, given the constraints in the schema
                 return;
             }            
-            final Enumeration enum = httpCall.enumerateSimpleParameter();
+            final Enumeration en = httpCall.enumerateSimpleParameter();
             Map inputArguments = new HashMap();
-            while (enum.hasMoreElements()) {
-                final SimpleParameter parameter = (SimpleParameter) enum.nextElement();
+            while (en.hasMoreElements()) {
+                final SimpleParameter parameter = (SimpleParameter) en.nextElement();
                 assert parameter!=null;
                 assert parameter.getName()!=null;
                 assert parameter.getValue()!=null;
@@ -244,6 +244,12 @@ public boolean execute() throws CeaException {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.10  2006/01/09 17:52:36  clq2
+ * gtr_1489_apps
+ *
+ * Revision 1.9.34.1  2005/12/22 11:46:14  gtr
+ * I eliminated enum as a variable name so that the code can be compiled with Java 5.
+ *
  * Revision 1.9  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes
  *
