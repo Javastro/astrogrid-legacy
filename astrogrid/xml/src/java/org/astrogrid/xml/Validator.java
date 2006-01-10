@@ -1,5 +1,5 @@
 /**
- * $Id: Validator.java,v 1.3 2005/11/14 15:04:47 kea Exp $
+ * $Id: Validator.java,v 1.4 2006/01/10 12:23:59 kea Exp $
  *
  */
 
@@ -11,7 +11,7 @@ import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import org.apache.xerces.parsers.SAXParser;
-import org.apache.xerces.util.XMLCatalogResolver;
+//import org.apache.xerces.util.XMLCatalogResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -58,9 +58,10 @@ public class Validator  {
       return null;
    }
    
-   /** This validates the given stream using the JAXP version
+   /** NOW DISABLED: This validates the given stream using the JAXP version
     * - ie it uses the parserfactory, however this just seems to give a
     * DTD validator */
+   /*
    private static ErrorRecorder isValidUsingFactory(InputStream xml) throws SAXException, IOException {
 
       try {
@@ -89,6 +90,7 @@ public class Validator  {
       }
 
    }
+   */
 
    /** This validates the given stream using the Xerces library.
     * Note that schema validation (rather than DTD validation) is used. 
@@ -97,10 +99,10 @@ public class Validator  {
    private static ErrorRecorder isValidUsingXerces(InputStream xml) throws SAXException, IOException {
       // set up catalog so that local schema copies are used instead of 
       // remote ones if possible (NOTE - actual use disabled below)
-      String[] catalogs = new String[] { ""+Validator.class.getResource("catalog.xml") };
-      XMLCatalogResolver resolver = new XMLCatalogResolver();
-      resolver.setPreferPublic(true);
-      resolver.setCatalogList(catalogs);
+      //String[] catalogs = new String[] { ""+Validator.class.getResource("catalog.xml") };
+      //XMLCatalogResolver resolver = new XMLCatalogResolver();
+      //resolver.setPreferPublic(true);
+      //resolver.setCatalogList(catalogs);
       
       SAXParser parser = new SAXParser();
       parser.setFeature("http://xml.org/sax/features/validation", true);
@@ -109,8 +111,8 @@ public class Validator  {
           true);
       parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true); 
 
-      // Disabled by KEA because it was causing parse failures (couldn't find
-      // the schema, I think)
+      // Disabled by KEA because of need to store resolver jar in 
+      // common/endorsed in tomcat
       // parser.setProperty("http://apache.org/xml/properties/internal/entity-resolver", resolver);
 
       ErrorRecorder recorder = new ErrorRecorder();
