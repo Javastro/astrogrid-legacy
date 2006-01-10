@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManagerTest.java,v 1.5 2005/05/27 16:21:04 clq2 Exp $
+/*$Id: DatacenterCEAComponentManagerTest.java,v 1.6 2006/01/10 14:12:50 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentMana
       SimpleConfig.getSingleton().setProperty(VoResourceSupport.AUTHID_KEY, "org.astrogrid.test");
       SimpleConfig.getSingleton().setProperty(VoResourceSupport.RESKEY_KEY, "test_dsa");
       //for some wierd CEAy test reason this needs to be after the above
+      //NWW - it's because we're setting configuration keys which are read in the super method.
       super.setUp();
    }
    /** Construct a new DatacenterCEAComponentManagerTest
@@ -46,6 +47,7 @@ public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentMana
      */
     protected CEAComponentManager createManager() {
         return new DatacenterCEAComponentManager();
+
     }
 
    /**
