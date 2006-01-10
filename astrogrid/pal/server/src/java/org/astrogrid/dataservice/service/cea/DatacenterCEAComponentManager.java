@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.4 2005/12/07 15:55:21 clq2 Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.5 2006/01/10 14:13:13 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,6 +45,8 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         //CLQ bug 1359 relace the following line with registerDefaultServices(pico); to accomodate changed cea class.
         //EmptyCEAComponentManager.registerDefaultServices(pico);
         registerDefaultServices(pico);
+        //NWW - fix missing dependency by just using dummy implemntation. later pal may want a custom implementation of this component.
+        registerDummyControlService();
         // store - force in-memory
         pico.registerComponentImplementation(ExecutionHistory.class,InMemoryExecutionHistory.class);
         pico.registerComponentImplementation(IdGen.class,GloballyUniqueIdGen.class);
@@ -99,6 +101,9 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.5  2006/01/10 14:13:13  nw
+added dumy implementation of missinig service
+
 Revision 1.4  2005/12/07 15:55:21  clq2
 KEA-PAL-1471
 
