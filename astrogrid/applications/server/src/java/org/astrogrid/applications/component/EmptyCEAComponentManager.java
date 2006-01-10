@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.16 2006/01/10 11:26:52 clq2 Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.17 2006/01/10 14:10:45 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -125,6 +125,20 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         }
     }
 
+    /** register a dummy implementatioin of the controlService introduced by paul.
+     * @todo see whether the control service should really be part of the core cea server
+     * - unsure whether it is required in other configurations of the cea system apart from applications
+     *
+     */
+    protected final void registerDummyControlService() {
+        log.info("Registering a dummy implementaton of the control service");
+        pico.registerComponentInstance(ControlService.class, new ControlService() {
+
+            public String deleteOldRuntimeWorkFiles(int days) {
+                return "not implemented";
+            }
+        });
+    }
  
 
     // convenience methods for regostering commnly used sets of components
@@ -359,6 +373,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.17  2006/01/10 14:10:45  nw
+added method to register default implementation of ControlService
+
 Revision 1.16  2006/01/10 11:26:52  clq2
 rolling back to before gtr_1489
 

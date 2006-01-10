@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManager.java,v 1.8 2006/01/10 11:26:52 clq2 Exp $
+/*$Id: JavaClassCEAComponentManager.java,v 1.9 2006/01/10 14:10:45 nw Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,8 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
         final Config config = SimpleConfig.getSingleton();
         // controller & queriers        
         registerDefaultServices(pico);
+        //NWW - added to provide missing service.
+        registerDummyControlService();
         // store
         EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
         // metadata
@@ -71,6 +73,9 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
 
 /* 
 $Log: JavaClassCEAComponentManager.java,v $
+Revision 1.9  2006/01/10 14:10:45  nw
+added method to register default implementation of ControlService
+
 Revision 1.8  2006/01/10 11:26:52  clq2
 rolling back to before gtr_1489
 
