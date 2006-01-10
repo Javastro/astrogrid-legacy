@@ -1,4 +1,4 @@
-/*$Id: ValidatorTest.java,v 1.3 2005/11/14 15:05:52 kea Exp $
+/*$Id: ValidatorTest.java,v 1.4 2006/01/10 12:23:10 kea Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,6 +47,19 @@ public class ValidatorTest extends TestCase  {
       
       assertNull("Validator incorrectly finds errors in "+okVoTable, Validator.isValid(okVoTable.openStream()));
    }
+
+   /** checks that valid votable parses OK */
+   /*
+   public void testValid2() throws IOException, SAXException {
+      
+      URL okVoTable = ValidatorTest.class.getResource("sample-metadata.xml");
+      
+      assert okVoTable != null : "Test metadata not found"; //throws error rather than fail
+      
+      assertNull("Validator incorrectly finds errors in "+okVoTable, Validator.isValid(okVoTable.openStream()));
+   }
+   */
+   
    
    /** checks that invalid votable fails */
    public void testInvalid() throws IOException, SAXException {
