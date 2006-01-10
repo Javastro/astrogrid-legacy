@@ -141,10 +141,12 @@
    -->
    
     <!-- for XML Catalog with Xerces -->
+    <!--
     <dependency>
       <id>resolver</id>
       <version>20030708</version>
     </dependency>
+    -->
 
    <!-- XML Database dependencies for running an internal instance of a db -->
     <dependency>
@@ -293,6 +295,7 @@
       <jar>castor-0.9.5-xml.jar</jar>
     </dependency>
 
+    <!--
     <dependency>
   		<groupId>xerces</groupId>
   		<type>jar</type>
@@ -305,6 +308,12 @@
   		<artifactId>xml-apis</artifactId>
       <version>2.7.1</version>
     </dependency>
+    -->
+    <dependency>
+      <id>xercesImpl</id>
+      <version>2.6.2</version>
+   </dependency>
+
 
     <dependency>
       <id>regexp</id>

@@ -358,6 +358,16 @@
       </properties>
     </dependency>
 
+    <!--
+    <dependency>
+  		<groupId>xerces</groupId>
+  		<type>jar</type>
+  		<artifactId>xercesImpl</artifactId>
+      <version>2.7.1</version>
+		<properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
 	<dependency>
   		<groupId>xerces</groupId>
   		<type>jar</type>
@@ -367,6 +377,13 @@
          <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    -->
+     <dependency>
+         <id>xercesImpl</id>
+         <version>2.6.2</version>
+     </dependency>
+
+
 
     <!-- castor, and what it needs -->
     <dependency>
@@ -378,15 +395,6 @@
       </properties>
     </dependency>
 
-    <dependency>
-  		<groupId>xerces</groupId>
-  		<type>jar</type>
-  		<artifactId>xercesImpl</artifactId>
-      <version>2.7.1</version>
-		<properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
 
 
     <dependency>
@@ -408,6 +416,7 @@
     </dependency>
 
     <!-- for XML Catalog with Xerces -->
+    <!--
     <dependency>
       <id>resolver</id>
       <version>20030708</version>
@@ -415,6 +424,7 @@
          <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+    -->
 
    <!--  The JXpath library - required for Registry delegate -->
     <dependency>
