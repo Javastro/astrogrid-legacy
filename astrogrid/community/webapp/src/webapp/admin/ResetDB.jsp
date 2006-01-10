@@ -4,46 +4,48 @@
     session="false" %>
 <%
 	DatabaseManagerImpl dmi = new DatabaseManagerImpl();
-String resetdb = request.getParameter("resetdb");
+    String resetdb = request.getParameter("resetdb");
 
-if(resetdb != null && "true".equals(resetdb)) {
-	System.out.println("resetting db tables");
-	dmi.resetDatabaseTables();
-}
-boolean health = dmi.checkDatabaseTables();
+    if (resetdb != null && "true".equals(resetdb))
+        {
+        System.out.println("resetting db tables");
+        dmi.resetDatabaseTables();
+        }
 
+    String status = dmi.checkDatabaseTables() ? "<font color=\"green\">Ok</font>" : "<font color=\"red\">Fail</font>" ;
 %>
-
-    <html>
-<head>
-     <title>Account Administration</title>
-<style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
-</style>
-</head>
-
-<body>
-<%@ include file="header.xml" %>
-<%@ include file="navigation.xml" %>
-
-<h1>
-<font color="red">WARNING:DANGER THIS WILL RESET AND CLEAN OUT THE DATABASE ONLY EXPECT TO USE THE FIRST TIME DURING SETUP.</font>
-</h1>
-
-
-<div id='bodyColumn'>
-	<i>*The health check is by looking for a small amount of test data in the database, if the sql scripts have been changed to not insert this test data, then the health check will always be false.</i>
-   <p>
-     Current Health Check of database (true=health,false=bad) = <%=health%>
-   </p>
-	<p>
-	<form name="resetdatabaseform">
-		<input type="hidden" name="resetdb" value="true" />
-		<input type="submit" name="resetdbsubmit" value="Reset"/>
-	</form>
-	
-	</p>
-    
-    
-   </body>  
+<html>
+    <head>
+        <title>Database admin</title>
+        <style type="text/css" media="all">
+            @import url("../style/astrogrid.css");
+        </style>
+    </head>
+    <body>
+        <%@ include file="header.xml" %>
+        <%@ include file="navigation.xml" %>
+        <div id='bodyColumn'>
+            <p>
+                <h1>
+                    <font color="red">WARNING</font>
+                </h1>
+                <font color="red">This will reset the database tables, deleting any existing data in the database.</font>
+                <br>
+                <font color="red">This should only be used during initial installation and setup.</font>
+            </p>
+            <p>
+                Current database status : [<%= (status) %>]
+                <br>
+                <font size="-2">
+                    <i>*The health check looks for a known set of test data in the database, if the test data has not been added, then the health check will fail.</i>
+                </font>
+            </p>
+            <p>
+                <form name="resetdatabaseform" method="post">
+                    <input type="hidden" name="resetdb" value="true" />
+                    <input type="submit" name="resetdbsubmit" value="Reset"/>
+                </form>
+            </p>
+        </div>
+    </body>  
 </html>    

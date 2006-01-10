@@ -4,14 +4,13 @@
 %>
 
 <html>
-<head>
-<title>AstroGrid Community publish to Registry</title>
-<style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
-</style>
-</title>
-</head>
-
+    <head>
+        <title>Service registration</title>
+        <style type="text/css" media="all">
+            @import url("../style/astrogrid.css");
+        </style>
+        </title>
+    </head>
 <body>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
@@ -30,7 +29,7 @@ details below and hit submit.
 <p>
 <select name="version">
 	<option value="0.9">0.9</option>
-	<option value="0.10">0.10</option>
+	<option selected="true" value="0.10">0.10</option>
 </select>
 <table>
  <tr><td>Contact Name <td> <input type="text" name="ContactName">

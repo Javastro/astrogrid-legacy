@@ -117,6 +117,7 @@
             <filter token="FILESTORE_IVORN"   value="${input.filestore.ivorn}"/>        	
             <filter token="FILEMANAGER_REPO" value="${input.filemanager.working.dir}"/>    
 	    	<filter token="REG_QUERY_ENDPOINT" value="${astrogrid.registry.query.endpoint}"/>
+	    	<filter token="REG_ADMIN_ENDPOINT" value="${astrogrid.registry.query.endpoint}"/>
         </filterset>
     	<echo>This filemanager is being installed with the following settings:</echo>
     	<echo>Name: ${input.filemanager.name}</echo>
@@ -124,7 +125,8 @@
     	<echo>IVORN: ${filemanager.ivorn}</echo>
     	<echo>Default FileStore ivorn: ${input.filestore.ivorn}</echo>    		
     	<echo>FileManager Repository ${input.filemanager.working.dir}</echo>
-    	<echo>Registry query endpoint ${astrogrid.registry.update.endpoint}</echo>
+    	<echo>Registry query endpoint ${astrogrid.registry.query.endpoint}</echo>
+    	<echo>Registry admin endpoint ${astrogrid.registry.update.endpoint}</echo>
         <copy todir="${temporary.dir}/filemanager">
             <filterset refid="myfilter"/>
             <fileset dir="context" />

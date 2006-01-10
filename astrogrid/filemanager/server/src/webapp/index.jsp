@@ -17,7 +17,7 @@
 <p>Normal operation of the File Manager:</p>
 <ul>
   <li><a href="admin/index.jsp">File Manager Administration</a></li>
-  <li><a href="index.html">Apache Axis Index</a></li>  
+  <li><a href="happyaxis.jsp">Apache Axis test page</a></li>  
   <li><a href="configure.jsp">Configure/Install</a></li>  
 </ul>
 

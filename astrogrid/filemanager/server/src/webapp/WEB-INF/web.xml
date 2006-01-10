@@ -134,14 +134,14 @@
    
    <env-entry>
       <description>Publishing Metadata to Registry endpoint, Point to the Registry that has or will contain your authorityid.</description>
-      <env-entry-name>registry.admin.endpoint</env-entry-name>
+      <env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
       <env-entry-value></env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
    </env-entry>
 
    <env-entry>
       <description>Query Registry endpoint; set as same of the publishing registry.</description>
-      <env-entry-name>registry.query.endpoint</env-entry-name>
+      <env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
       <env-entry-value></env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
    </env-entry>

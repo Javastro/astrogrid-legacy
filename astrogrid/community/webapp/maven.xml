@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
-    | <cvs:version>$Revision: 1.25 $</cvs:version>
+    | <cvs:date>$Date: 2006/01/10 10:25:22 $</cvs:date>
+    | <cvs:version>$Revision: 1.26 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.26  2006/01/10 10:25:22  clq2
+    |   dave_dev_200601051057
+    |
+    |   Revision 1.25.22.1  2006/01/09 00:26:04  dave
+    |   Fixed bugs in JSP pages.
+    |
     |   Revision 1.25  2005/08/04 09:40:11  clq2
     |   kevin's second batch
     |
@@ -256,6 +262,13 @@
         <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
         <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.webapp.dir', axisDir)}"/>
         <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+
+        <!--+
+            | Move the Axis index page(s) sideways.
+            +-->
+        <ant:move file="${axisDir}/index.jsp"  tofile="${axisDir}/axis.index.jsp"/>
+        <ant:move file="${axisDir}/index.html" tofile="${axisDir}/axis.index.html"/>
+
     </preGoal>
 
     <!--+

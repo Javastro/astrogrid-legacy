@@ -2,65 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/03/22 11:41:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2006/01/10 10:25:23 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.8  2005/03/22 11:41:03  jdt
-    |   merge from FS_KMB_1004
+    |   Revision 1.9  2006/01/10 10:25:23  clq2
+    |   dave_dev_200601051057
     |
-    |   Revision 1.7.14.2  2005/03/20 10:32:21  KevinBenson
-    |   added the servlet to web.xml and changed maven.xml to not xsl it anymore.
-    |   small install instruciton tweak on configure.jsp
-    |
-    |   Revision 1.7.14.1  2005/03/18 15:37:06  KevinBenson
-    |   Added jsp files and a small change or two to some other files for a selftest.jsp
-    |
-    |   Revision 1.7  2005/02/08 16:03:49  jdt
-    |   Bug 937
-    |
-    |   Revision 1.6  2004/09/17 16:46:14  dave
-    |   Fixed servlet deployment in FileStore ...
-    |   Changed tabs to spaces in source code ...
-    |
-    |   Revision 1.5.4.1  2004/09/17 15:10:32  dave
-    |   Uncommented the call to servlet deploy in the build script.
-    |   Replaced tabs with spaces in source code.
-    |
-    |   Revision 1.5  2004/09/17 06:57:10  dave
-    |   Added commons logging to FileStore.
-    |   Updated logging properties in Community.
-    |   Fixed bug in AGINAB deployment.
-    |   Removed MySpace tests with hard coded grendel address.
-    |
-    |   Revision 1.4.32.2  2004/09/17 02:52:31  dave
-    |   Added DTD and validation to web.xml and servlet.xsl ....
-    |
-    |   Revision 1.4.32.1  2004/09/17 01:08:36  dave
-    |   Updated debug to use commons logging API ....
-    |
-    |   Revision 1.4  2004/08/18 19:00:01  dave
-    |   Myspace manager modified to use remote filestore.
-    |   Tested before checkin - integration tests at 91%.
-    |
-    |   Revision 1.3.20.2  2004/08/04 15:39:08  dave
-    |   Added servlet mapping
-    |
-    |   Revision 1.3.20.1  2004/08/04 06:35:02  dave
-    |   Added initial stubs for servlet ....
-    |
-    |   Revision 1.3  2004/07/15 13:24:28  dave
-    |   Merged development branch, dave-dev-200407141515, into HEAD
-    |
-    |   Revision 1.2.2.1  2004/07/15 11:13:19  dave
-    |   Refactored Filestore build scripts to use the artifact:deploy plugin
-    |
-    |   Revision 1.2  2004/07/14 13:50:29  dave
-    |   Merged development branch, dave-dev-200406301228, into HEAD
-    |
-    |   Revision 1.1.2.1  2004/07/13 11:51:57  dave
-    |   Added webapp goals
+    |   Revision 1.8.64.1  2006/01/09 09:39:48  dave
+    |   Added workshop community, filemanager and filestore instructions.
+    |   Fixed bugs in admin pages.
     |
     | </cvs:log>
     |
@@ -238,6 +190,11 @@
         <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
         <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.webapp.dir', axisDir)}"/>
         <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+        <!--+
+            | Move the Axis index page(s) sideways.
+            +-->
+        <ant:move file="${axisDir}/index.jsp"  tofile="${axisDir}/axis.index.jsp"/>
+        <ant:move file="${axisDir}/index.html" tofile="${axisDir}/axis.index.html"/>
     </preGoal>
 
     <!--+

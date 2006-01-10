@@ -17,7 +17,7 @@
 <p>Normal operation of the community:</p>
 <ul>
   <li><a href="admin/index.jsp">Community Administration</a></li>
-  <li><a href="index.html">Apache Axis Index</a></li>  
+  <li><a href="axis.index.jsp">Apache Axis Index</a></li>  
 </ul>
 
 <i>To enter the Administration pages you will need a username and password for the servlet containers <strong>manager</strong> role</i>

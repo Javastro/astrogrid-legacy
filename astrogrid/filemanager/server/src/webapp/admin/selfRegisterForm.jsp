@@ -2,16 +2,13 @@
    isThreadSafe="false"
    session="false"
 %>
-
 <html>
-<head>
-<title>AstroGrid FileManager publish to Registry</title>
-<style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
-</style>
-</title>
-</head>
-
+    <head>
+        <title>Service registration</title>
+        <style type="text/css" media="all">
+            @import url("../style/astrogrid.css");
+        </style>
+    </head>
 <body>
 <%@ include file="../header.xml" %>
 <%@ include file="navigation.xml" %>

@@ -244,7 +244,7 @@ else
       %>
       </table>
       <br />
-      <a href="index.html">Administration Index</a>
+      <a href="index.jsp">Administration Index</a>
       </p>  
    </body>  
 </html>
