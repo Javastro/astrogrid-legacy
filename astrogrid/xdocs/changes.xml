@@ -5,25 +5,37 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-    		<action dev="gtr" type="fix">
-    			<em>Branch apps-gtr-1489:</em> General tidying up of the deployment controls, which has involved
-    			some heavy refactoring to work round Picocontainer problems. The deployer documentation is much
-    			better now (IMHO), and the chance of getting duff registrations is less.
-    		</action>
+    		
  
         </release>
         <release version="(Undertest)">
-        <action dev="gtr" type="fix">
+			<action dev="dave" type="fix">
+				branch <em>dave-dev-200601051057</em> contains Multiple changes to the workshop code, Plus changes to JSP pages in :
+                    <li>Registry</li>
+                    <li>Community</li>
+                    <li>FileManager</li>
+                    <li>FileStore</li>
+		    </action>	   
+        </release>
+		
+		<release version="HEAD">
+			<action dev="gtr" type="fix">
+    			<em>Branch apps-gtr-1489:</em> General tidying up of the deployment controls, which has involved
+    			some heavy refactoring to work round Picocontainer problems. The deployer documentation is much
+    			better now (IMHO), and the chance of getting duff registrations is less.
+    		</action>  
+			<action dev="dave" type="fix">
+				branch dave-dev-200512141139 contains 
+				1) Minor changes to JSP pages in registry webapp (which will mean new version of registry)  
+				2) New sub-project called workshop - contains maven build scripts for the workshop tomcats. 
+		    </action>	 
+			<action dev="gtr" type="fix">
     			<em>Branch jes-gtr-1462</em> Various incremental improvements: environment entries declared in wb.xml; 
     			new configuration editor; changes to logging; 
     			fixes for some broken unit tests; 
     			fixes for some code that was misrepresenting integration-test results.
     			This version seems to be fully compatible with the A/G v1.1 system.
     		</action>
-            
-        </release>
-		
-		<release version="HEAD">
 		<action dev="kea" type="fix">
                <em>Branch: KEA_PAL_1474</em>
                Placeholder branch for a number of bugzilla ticket fixes.  NB This branch involves astrogrid/pal and astrogrid/status projects.
