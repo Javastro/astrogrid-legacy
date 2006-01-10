@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.20 2005/12/16 12:30:01 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.21 2006/01/10 11:13:16 KevinBenson Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -473,15 +473,15 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
            }else {
                if(joinSQL == null) joinSQL = " or ";
                
-                    sql += "(vr:title like '" + keyword[j] + "'" + " or " +
-                    "vr:content/vr:description like '" + keyword[j] + "'" + " or " +
-                    "vr:identifier like '" + keyword[j] + "'" + " or " +
-                    "vr:shortName like '" + keyword[j] + "'" + " or " +
-                    "vr:content/vr:subject like '" + keyword[j] + "')";
+                    sql += "(vr:title like '%" + keyword[j] + "%'" + " or " +
+                    "vr:content/vr:description like '%" + keyword[j] + "%'" + " or " +
+                    "vr:identifier like '%" + keyword[j] + "%'" + " or " +
+                    "vr:shortName like '%" + keyword[j] + "%'" + " or " +
+                    "vr:content/vr:subject like '%" + keyword[j] + "%')";
                     if(j != (keyword.length - 1)) {
-                   sql += joinSQL;
+                        sql += joinSQL;
                     }//if
-           }
+           }//else
        }//for
        if (keyword.length > 0 && shallFilter) {
            sql +=") and ";
@@ -505,7 +505,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                joinSQL = " or ";
            }else {
                if(joinSQL == null) joinSQL = " or ";
-                    sql += "(* like '" + keyword[j] + "')";
+                    sql += "(* like '%" + keyword[j] + "%')";
                     if(j != (keyword.length - 1)) {
                         sql += " " + joinSQL + " ";
                     }//if
@@ -564,6 +564,10 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.21  2006/01/10 11:13:16  KevinBenson
+very small change the sql built up for keyword searches should have had a "%" sign
+before and after the keyword for the sql 'like'.  This has now been added.
+
 Revision 1.20  2005/12/16 12:30:01  pjn3
 *** empty log message ***
 
