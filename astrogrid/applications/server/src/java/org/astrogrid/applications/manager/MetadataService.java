@@ -1,4 +1,4 @@
-/*$Id: MetadataService.java,v 1.4 2006/01/09 17:52:36 clq2 Exp $
+/*$Id: MetadataService.java,v 1.5 2006/01/10 11:26:52 clq2 Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.applications.manager;
 
-import java.net.URL;
 import org.w3c.dom.Document;
+
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
 
@@ -29,32 +29,24 @@ public interface MetadataService {
      * @throws CeaException
      */
     public Document returnRegistryEntry() throws CeaException;
-    
     /**
      *  access the vodescription for this server.
      * @return the object model of the VO description for this service
      */
     public VOResources getVODescription()  throws Exception;
-    
-    /**
-     * Get a URL leading to the template document for the 
-     * service and application registration.
-     */
-    public URL getRegistrationTemplate();
+    /** return the authorityID that this server is running under. */
+    public String getAuthorityID();
+    /** set the serverID that this server should run under. This string should include the authorityID part*/
+    public String setServerID(String id);
+
 
 }
 
 
 /* 
 $Log: MetadataService.java,v $
-Revision 1.4  2006/01/09 17:52:36  clq2
-gtr_1489_apps
-
-Revision 1.3.38.2  2005/12/22 10:13:26  gtr
-I removed unused methods.
-
-Revision 1.3.38.1  2005/12/21 14:44:35  gtr
-Changed to make the registration template available through the InitServlet.
+Revision 1.5  2006/01/10 11:26:52  clq2
+rolling back to before gtr_1489
 
 Revision 1.3  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes

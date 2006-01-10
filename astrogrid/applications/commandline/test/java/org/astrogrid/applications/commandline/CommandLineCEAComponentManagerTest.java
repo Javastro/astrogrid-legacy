@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManagerTest.java,v 1.4 2006/01/09 17:52:36 clq2 Exp $
+/*$Id: CommandLineCEAComponentManagerTest.java,v 1.5 2006/01/10 11:26:52 clq2 Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLo
 import org.astrogrid.applications.component.AbstractComponentManagerTestCase;
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
-import org.astrogrid.applications.manager.DefaultMetadataService.URLs;
 import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.config.SimpleConfig;
@@ -57,17 +56,12 @@ public class CommandLineCEAComponentManagerTest extends AbstractComponentManager
       
    }
    
-   public void testIsValid() {
-     super.testIsValid();
-   }
-   
    public void testUse () throws Exception
    {
       // TODO This is only a very basic stab at a test - main intention was to be able to run the querier test.
       CommandLineDescriptionsLoader dl = (CommandLineDescriptionsLoader) manager.getContainer().getComponentInstanceOfType(CommandLineDescriptionsLoader.class);
-      assertNotNull("CommandLineDescriptionLoader was instantiated", dl);
       CommandLineApplicationDescription desc = (CommandLineApplicationDescription) dl.getDescription(TestAppConst.TESTAPP_NAME);
-      assertNotNull("Application description was obtained", desc);
+      assertNotNull("could not get the application description",desc);
       Toolbuilder.fixupExecutionPath(desc);
       ExecutionController cec = manager.getExecutionController();
       Tool tool = Toolbuilder.buildTool("0", desc);
@@ -97,14 +91,8 @@ public class CommandLineCEAComponentManagerTest extends AbstractComponentManager
 
 /* 
 $Log: CommandLineCEAComponentManagerTest.java,v $
-Revision 1.4  2006/01/09 17:52:36  clq2
-gtr_1489_apps
-
-Revision 1.3.34.2  2005/12/19 18:51:03  gtr
-New class, generated in the refactoring for BZ1492.
-
-Revision 1.3.34.1  2005/12/19 18:12:30  gtr
-Refactored: changes in support of the fix for 1492.
+Revision 1.5  2006/01/10 11:26:52  clq2
+rolling back to before gtr_1489
 
 Revision 1.3  2005/07/05 08:26:56  clq2
 paul's 559b and 559c for wo/apps and jes

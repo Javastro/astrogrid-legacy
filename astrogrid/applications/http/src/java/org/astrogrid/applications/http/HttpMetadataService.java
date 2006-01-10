@@ -1,5 +1,5 @@
 /*
- * $Id: HttpMetadataService.java,v 1.3 2006/01/09 17:52:36 clq2 Exp $
+ * $Id: HttpMetadataService.java,v 1.4 2006/01/10 11:26:52 clq2 Exp $
  * 
  * Created on 13-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -58,7 +58,9 @@ public class HttpMetadataService extends DefaultMetadataService {
     * Specialization of the getVODescription that
     * @see org.astrogrid.applications.manager.MetadataService#getVODescription()
     */
-   public VOResources getVODescription() throws Exception {
+   public VOResources getVODescription() throws CastorException,
+         ApplicationDescriptionNotFoundException, IOException {
+      
       VOResources desc = super.getVODescription();
       VOResources newdesc = new VOResources();
       for (int i = 0; i < desc.getResourceCount(); i++) {
@@ -77,11 +79,8 @@ public class HttpMetadataService extends DefaultMetadataService {
 
 /*
  * $Log: HttpMetadataService.java,v $
- * Revision 1.3  2006/01/09 17:52:36  clq2
- * gtr_1489_apps
- *
- * Revision 1.2.34.1  2005/12/22 13:56:03  gtr
- * Refactored to match the other kinds of CEC.
+ * Revision 1.4  2006/01/10 11:26:52  clq2
+ * rolling back to before gtr_1489
  *
  * Revision 1.2  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes

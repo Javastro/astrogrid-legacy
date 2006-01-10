@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.7 2006/01/09 17:52:36 clq2 Exp $
+/*$Id: JavaClassProviderTest.java,v 1.8 2006/01/10 11:26:52 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import org.astrogrid.applications.Application;
 import org.astrogrid.applications.MockMonitor;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
@@ -51,7 +50,7 @@ public class JavaClassProviderTest extends TestCase {
         IdGen idgen = new InMemoryIdGen();
         ProtocolLibrary protocolLib = new DefaultProtocolLibrary();
         monitor = new MockMonitor();
-        AppAuthorityIDResolver aresolver = new TestAuthorityResolver();
+        JavaClassApplicationDescriptionLibrary.AppAuthorityIDResolver aresolver = new TestAuthorityResolver();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib,aresolver);
         lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,env);
         assertNotNull(lib);
@@ -170,11 +169,8 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
-Revision 1.7  2006/01/09 17:52:36  clq2
-gtr_1489_apps
-
-Revision 1.6.34.1  2005/12/18 14:48:25  gtr
-Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
+Revision 1.8  2006/01/10 11:26:52  clq2
+rolling back to before gtr_1489
 
 Revision 1.6  2005/07/15 14:44:32  jdt
 merge from cea_jdt_1295

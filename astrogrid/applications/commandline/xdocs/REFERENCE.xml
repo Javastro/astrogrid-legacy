@@ -10,7 +10,6 @@
 <section name="Administrator Reference">
 	<ul>
 		<li><a href="installation-options.html">Alternative installations</a></li>
-		<li><a href="env-entry-reference.html">Details of environment entries</a></li>
 		<li><a href="ApplicationConfiguration.html">The local configuration of applications in CL-CECs</a></li>
 	</ul>
 </section>

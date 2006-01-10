@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCmdLineAppTestCase.java,v 1.6 2006/01/09 17:52:36 clq2 Exp $
+ * $Id: AbstractCmdLineAppTestCase.java,v 1.7 2006/01/10 11:26:52 clq2 Exp $
  * 
  * Created on 23-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -24,16 +24,13 @@ import org.picocontainer.defaults.ConstantParameter;
 import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
 import org.picocontainer.defaults.DefaultPicoContainer;
 
-import org.astrogrid.applications.commandline.CommandLineConfiguration;
-import org.astrogrid.applications.commandline.TestCommandLineConfiguration;
+import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment.WorkingDir;
 import org.astrogrid.applications.commandline.digester.CommandLineApplicationDescriptionFactory;
 import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader;
 import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader.DescriptionURL;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.manager.TestAppAuthorityIDResolver;
-import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.DefaultExecutionController;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
@@ -67,70 +64,69 @@ public abstract class AbstractCmdLineAppTestCase extends
     }
 
     protected void setUp() throws Exception {
-      super.setUp();
-        
-      // Create a temporary working-directory on disc.
-      // This may not work reliably on Windows.
-      // JES has a safer way of creating the directory.
-      final File workingDir = File.createTempFile("CommandLineApplicationTest", null);
-      workingDir.delete();
-      workingDir.mkdir();
-      assertTrue(workingDir.exists());
-      workingDir.deleteOnExit();
-        
-      // Arrange the configuration parameters in a suitable adaptor.
-      // This mimics the use, in operation, of an implementation
-      // of CommandLineConfiguration that can get metadata for itself.
-      TestCommandLineConfiguration config = new TestCommandLineConfiguration();
-      config.setWorkingDirectory(workingDir);
-      config.setApplicationDescriptionUrl(this.inputFile); // Defined in superclass.
-      
-      container = new DefaultPicoContainer();
-
-      container.registerComponentInstance(CommandLineConfiguration.class, config);
+        super.setUp();
+        final File workingDir = File.createTempFile(
+                "CommandLineApplicationTest", null);
+        workingDir.delete();
+        workingDir.mkdir();
+        assertTrue(workingDir.exists());
+        workingDir.deleteOnExit();
+        container = new DefaultPicoContainer();
       container.registerComponent(new ConstructorInjectionComponentAdapter(
                 CommandLineApplicationDescription.class,
                 CommandLineApplicationDescription.class,
                 new Parameter[]{new ComponentParameter(ApplicationDescriptionEnvironment.class), new ConstantParameter(container)}
         ));
-      container.registerComponent(new ConstructorInjectionComponentAdapter(
+        container.registerComponent(new ConstructorInjectionComponentAdapter(
                 CommandLineApplicationEnvironment.class,
                 CommandLineApplicationEnvironment.class));
-      container.registerComponentImplementation(InMemoryIdGen.class);
+        container.registerComponentImplementation(InMemoryIdGen.class);
+        container
+                .registerComponentInstance(new CommandLineApplicationEnvironment.WorkingDir() {
+    
+                    public File getDir() {
+                        return workingDir;
+                    }
+                });
+        DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
+        lib.addProtocol(new FileProtocol());
+        container.registerComponentInstance(lib);
+        container.registerComponentInstance(BaseApplicationDescriptionLibrary.AppAuthorityIDResolver.class, new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver(){/* (non-Javadoc)
+            * @see org.astrogrid.applications.description.BaseApplicationDescriptionLibrary.AppAuthorityIDResolver#getAuthorityID()
+            */
+           public String getAuthorityID() {
+             return "org.astrogrid.test";
+           }});
+
+        container
+                .registerComponentImplementation(ApplicationDescriptionEnvironment.class);
+        CommandLineApplicationDescriptionFactory descFactory = new CommandLineApplicationDescriptionFactory(
+                container);
         
-      DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
-      lib.addProtocol(new FileProtocol());
-      container.registerComponentInstance(lib);
-      container.registerComponentInstance(AppAuthorityIDResolver.class, 
-                                          new TestAppAuthorityIDResolver("org.astrogrid.test"));
-      container.registerComponentImplementation(ApplicationDescriptionEnvironment.class);
-      CommandLineApplicationDescriptionFactory descFactory 
-          = new CommandLineApplicationDescriptionFactory(container);
-      
-      try {
-        container.verify();
-      }
-      catch (PicoException t) {
-        t.printStackTrace();
-        fail("Container misconfigured");
-      }
-      
-      ApplicationDescriptionEnvironment env 
-          = (ApplicationDescriptionEnvironment)container.getComponentInstanceOfType(ApplicationDescriptionEnvironment.class);
-      CommandLineDescriptionsLoader dl 
-          = new CommandLineDescriptionsLoader(config, descFactory, env);
-      assertNotNull("cannot create the DescriptionLoader", dl);
-      descs = dl;
+        try {
+            container.verify();
+        }
+        catch (PicoException t) {
+            t.printStackTrace();
+            fail("Container misconfigured");
+        }
+        CommandLineDescriptionsLoader dl = new CommandLineDescriptionsLoader(
+                new CommandLineDescriptionsLoader.DescriptionURL() {
+    
+                    public URL getURL() {
+                        return inputFile;
+                    }
+                }, descFactory, (ApplicationDescriptionEnvironment)container.getComponentInstanceOfType(ApplicationDescriptionEnvironment.class));
+        assertNotNull("cannot create the DescriptionLoader", dl);
+        descs = dl;
+        testAppDescr = (CommandLineApplicationDescription)descs.getDescription(TESTAPPNAME);
+        assertNotNull(testAppDescr);
+        // now fix the execution path for this app description.
+        Toolbuilder.fixupExecutionPath( testAppDescr);
+              assertTrue(testAppDescr instanceof CommandLineApplicationDescription);
+        ExecutionHistory history = new InMemoryExecutionHistory();
         
-      testAppDescr = (CommandLineApplicationDescription)descs.getDescription(TESTAPPNAME);
-      assertNotNull(testAppDescr);
-      
-      // now fix the execution path for this app description.
-      Toolbuilder.fixupExecutionPath( testAppDescr);
-      assertTrue(testAppDescr instanceof CommandLineApplicationDescription);
-      ExecutionHistory history = new InMemoryExecutionHistory();
-        
-      controller = new DefaultExecutionController(dl,history);
+        controller = new DefaultExecutionController(dl,history);
     }
 
     protected BaseApplicationDescriptionLibrary descs;

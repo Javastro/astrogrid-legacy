@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" ?>
 <document>
-	<properties>
-		<author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
-		<title>Java-class CEC: overview</title>
-	</properties>
-	<body>
-		<section name="Overview">
-			<p> This component provides a Common Execution Connector web-service for applications written as
-				Java classes (JC-CEC for short). The JC-CEC makes astronomy applications available to the
-				virtual observatory; notably, it makes them visible to AstroGrid's web portal, desktop UI
-				and workflow system.</p>
-		</section>
-	</body>
+<properties>
+	<author email="pah@jb.man.ac.uk">Paul Harrison</author>
+	<title>CEA Framework</title>
+</properties>
+
+<body>
+<section name="Common Execution Architecture Framework">
+
+<p>This is the Common Execution Architecture (CEA) Framework It provides an environment in which applications can be run as web services.</p>
+<p>Information about the sorts of application that this Exectution Controller can run are found <a href="provider/">here</a></p>
+</section>
+</body>
 </document>

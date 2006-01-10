@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAComponentManager.java,v 1.5 2006/01/09 17:52:36 clq2 Exp $
+/*$Id: HttpApplicationCEAComponentManager.java,v 1.6 2006/01/10 11:26:52 clq2 Exp $
  * Created on Jul 24, 2004 or thereabouts
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,10 +57,10 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
         final Config config = SimpleConfig.getSingleton();
         // controller & queriers
         registerDefaultServices(pico);
-        
+        // store
+        EmptyCEAComponentManager.registerDefaultPersistence(pico, config);
         // metadata - note that his is not the default provider
-        EmptyCEAComponentManager.registerVOProvider(pico,
-                                                    HttpMetadataService.class);
+        EmptyCEAComponentManager.registerVOProvider(pico, config, HttpMetadataService.class);
         
         //registry uploader
         EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
@@ -99,11 +99,8 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
 
 /*
  * $Log: HttpApplicationCEAComponentManager.java,v $
- * Revision 1.5  2006/01/09 17:52:36  clq2
- * gtr_1489_apps
- *
- * Revision 1.4.20.1  2005/12/22 13:56:03  gtr
- * Refactored to match the other kinds of CEC.
+ * Revision 1.6  2006/01/10 11:26:52  clq2
+ * rolling back to before gtr_1489
  *
  * Revision 1.4  2005/08/10 14:45:37  clq2
  * cea_pah_1317

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineCECControlTest.java,v 1.3 2006/01/09 17:52:36 clq2 Exp $
+ * $Id: CommandLineCECControlTest.java,v 1.4 2006/01/10 11:26:52 clq2 Exp $
  * 
  * Created on 20-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -49,8 +49,12 @@ public class CommandLineCECControlTest extends AbstractCommandLineEnvironmentTes
     */
    protected void setUp() throws Exception {
       super.setUp();
-      
-      cs = new CommandLineCECControl(this.configuration);
+      cs = new CommandLineCECControl(new CommandLineApplicationEnvironment.WorkingDir() {
+         
+         public File getDir() {
+             return workingDir;
+         }
+       });
       
       logger.info(workingDir.getAbsolutePath());
       testdir = new File(workingDir, "dir");
@@ -75,11 +79,8 @@ public class CommandLineCECControlTest extends AbstractCommandLineEnvironmentTes
 
 /*
  * $Log: CommandLineCECControlTest.java,v $
- * Revision 1.3  2006/01/09 17:52:36  clq2
- * gtr_1489_apps
- *
- * Revision 1.2.20.1  2005/12/19 18:12:30  gtr
- * Refactored: changes in support of the fix for 1492.
+ * Revision 1.4  2006/01/10 11:26:52  clq2
+ * rolling back to before gtr_1489
  *
  * Revision 1.2  2005/08/10 14:45:37  clq2
  * cea_pah_1317

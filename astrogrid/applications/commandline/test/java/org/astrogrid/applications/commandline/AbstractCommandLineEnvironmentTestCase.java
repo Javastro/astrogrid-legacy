@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.3 2006/01/09 17:52:36 clq2 Exp $
+ * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.4 2006/01/10 11:26:52 clq2 Exp $
  * 
  * Created on 20-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -14,7 +14,6 @@ package org.astrogrid.applications.commandline;
 
 import java.io.File;
 
-import org.astrogrid.applications.commandline.TestCommandLineConfiguration;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 
 import junit.framework.TestCase;
@@ -28,7 +27,6 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 
    protected CommandLineApplicationEnvironment env;
    protected File workingDir;
-   protected TestCommandLineConfiguration configuration;
 
    /**
     * 
@@ -53,9 +51,12 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
       workingDir.mkdir();
       assertTrue(workingDir.exists());
       workingDir.deleteOnExit();
-      this.configuration = new TestCommandLineConfiguration();
-      this.configuration.setWorkingDirectory(this.workingDir);
-      env = new CommandLineApplicationEnvironment(new InMemoryIdGen(), this.configuration);
+      env = new CommandLineApplicationEnvironment(new InMemoryIdGen(),new CommandLineApplicationEnvironment.WorkingDir() {
+   
+        public File getDir() {
+            return workingDir;
+        }
+      });
       assertNotNull(env);
       
       
@@ -66,11 +67,8 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 
 /*
  * $Log: AbstractCommandLineEnvironmentTestCase.java,v $
- * Revision 1.3  2006/01/09 17:52:36  clq2
- * gtr_1489_apps
- *
- * Revision 1.2.20.1  2005/12/19 18:12:30  gtr
- * Refactored: changes in support of the fix for 1492.
+ * Revision 1.4  2006/01/10 11:26:52  clq2
+ * rolling back to before gtr_1489
  *
  * Revision 1.2  2005/08/10 14:45:37  clq2
  * cea_pah_1317

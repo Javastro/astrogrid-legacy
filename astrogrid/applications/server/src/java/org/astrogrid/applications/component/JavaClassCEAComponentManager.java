@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManager.java,v 1.7 2006/01/09 17:52:36 clq2 Exp $
+/*$Id: JavaClassCEAComponentManager.java,v 1.8 2006/01/10 11:26:52 clq2 Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,10 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
         final Config config = SimpleConfig.getSingleton();
         // controller & queriers        
         registerDefaultServices(pico);
+        // store
+        EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
+        // metadata
+        EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
         //registry uploader
         EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
         // now hook in out own implementation
@@ -67,11 +71,8 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
 
 /* 
 $Log: JavaClassCEAComponentManager.java,v $
-Revision 1.7  2006/01/09 17:52:36  clq2
-gtr_1489_apps
-
-Revision 1.6.20.1  2005/12/18 14:48:24  gtr
-Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
+Revision 1.8  2006/01/10 11:26:52  clq2
+rolling back to before gtr_1489
 
 Revision 1.6  2005/08/10 14:45:37  clq2
 cea_pah_1317

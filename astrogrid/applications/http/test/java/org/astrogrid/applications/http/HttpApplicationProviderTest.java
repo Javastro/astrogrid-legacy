@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.12 2006/01/09 17:52:36 clq2 Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.13 2006/01/10 11:26:52 clq2 Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,6 @@ import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.applications.http.test.FileUnmarshaller;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
 import org.astrogrid.applications.http.test.TestWebServer;
-import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
@@ -69,7 +68,7 @@ public class HttpApplicationProviderTest extends TestCase {
         DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary();
         protocolLib.addProtocol(new FileProtocol()); //this is done by the component manager normally
         monitor = new MockMonitor();
-        AppAuthorityIDResolver aresolver = new TestAuthority();
+        HttpApplicationDescriptionLibrary.AppAuthorityIDResolver aresolver = new TestAuthority();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib, aresolver);
         RegistryQuerier querier = new TestRegistryQuerier(null);
         numberOfApps = querier.getHttpApplications().size();
@@ -372,11 +371,8 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
-Revision 1.12  2006/01/09 17:52:36  clq2
-gtr_1489_apps
-
-Revision 1.11.34.1  2005/12/22 13:56:03  gtr
-Refactored to match the other kinds of CEC.
+Revision 1.13  2006/01/10 11:26:52  clq2
+rolling back to before gtr_1489
 
 Revision 1.11  2005/07/05 08:26:56  clq2
 paul's 559b and 559c for wo/apps and jes
