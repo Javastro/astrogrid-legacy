@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+#Noel Winstanley, Astrogrid, 2005
+#basic perl example - incomplete.
+#connects to acr using xmlrpc interface.
 
 #xmlrpc client for perl, downloadable from cpan
 use Frontier::Client;
@@ -10,12 +13,12 @@ $prefix=<CONFIG_FILE>;
 close(CONFIG_FILE);
 chomp $prefix;
 $url = $prefix . "xmlrpc";
-print $url;
-$server = Frontier::Client->new(url => $url);
+#create xmlrpc client
+$acr = Frontier::Client->new(url => $url);
 
-# call some methods on the server
-$record = $server->call('astrogrid.registry.getRecord','ivo://org.astrogrid/Pegase');
+# call some methods on the acr
+$record = $acr->call('astrogrid.registry.getRecord','ivo://org.astrogrid/Pegase');
 print $record, "\n";
 
-$endpoint = $server->call('astrogrid.registry.resolveIdentifier','ivo://uk.ac.le.star/filemanager');
+$endpoint = $acr->call('astrogrid.registry.resolveIdentifier','ivo://uk.ac.le.star/filemanager');
 print $endpoint, "\n";
