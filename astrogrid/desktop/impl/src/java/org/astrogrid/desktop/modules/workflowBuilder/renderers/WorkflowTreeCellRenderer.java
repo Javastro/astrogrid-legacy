@@ -301,7 +301,9 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					sb.append("<b>Status:</b> ");
 					sb.append(formatStatus(o.getStatus().toString()));
 					sb.append(" <b>Start:</b> " + o.getStartTime());
-					sb.append(" <b>Finish:</b> " + o.getFinishTime() + "</html>");
+					if (o.getFinishTime() != null)
+					  sb.append(" <b>Finish:</b> " + o.getFinishTime());
+					sb.append("</html>");
 					label.setText(sb.toString());
 					label.setToolTipText(null);
 					label.setIcon(null);

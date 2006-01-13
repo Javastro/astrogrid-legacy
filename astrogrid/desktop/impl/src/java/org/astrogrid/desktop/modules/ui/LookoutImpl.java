@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.8 2005/12/13 15:08:43 pjn3 Exp $
+/*$Id: LookoutImpl.java,v 1.9 2006/01/13 14:25:05 pjn3 Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,41 +10,6 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.ExecutionMessage;
-import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.ApplicationLauncher;
-import org.astrogrid.acr.ui.Lookout;
-import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
-import org.astrogrid.acr.ui.WorkflowBuilder;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
-import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
-import org.astrogrid.desktop.modules.background.CeaStrategyInternal;
-import org.astrogrid.desktop.modules.background.JesStrategyInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.system.transformers.Votable2XhtmlTransformer;
-import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
-import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
-import org.astrogrid.io.Piper;
-import org.astrogrid.portal.workflow.intf.WorkflowStore;
-
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -52,7 +17,11 @@ import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -72,11 +41,14 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -117,6 +89,42 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.ExecutionMessage;
+import org.astrogrid.acr.astrogrid.RemoteProcessManager;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.ApplicationLauncher;
+import org.astrogrid.acr.ui.Lookout;
+import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
+import org.astrogrid.acr.ui.WorkflowBuilder;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.JobsInternal;
+import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
+import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
+import org.astrogrid.desktop.modules.background.CeaStrategyInternal;
+import org.astrogrid.desktop.modules.background.JesStrategyInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.transformers.Votable2XhtmlTransformer;
+import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
+import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
+import org.astrogrid.io.Piper;
+import org.w3c.dom.Document;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Oct-2005
@@ -297,7 +305,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             folderMode = true;
             // can't optimize this - race condition.
             Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();            
-            setEnabled(f != null &&  isTaskFolder(f.getInformation().getId()));             
+            setEnabled(f != null &&  isTaskFolder(f.getInformation().getId()));        
         }
     }
     
@@ -417,12 +425,34 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
     }
     
+    private final class ViewTranscriptAction extends AbstractAction {
+        public ViewTranscriptAction() {
+            super("View",IconHelper.loadIcon("read_obj.gif"));
+            this.putValue(SHORT_DESCRIPTION,"View transcript of selected workflow"); 
+            this.setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+        	setEnabled(false);
+            (new BackgroundOperation("Launching transcript viewer") {
+                protected Object construct() throws Exception {
+                	Document doc = jobs.getJobTranscript(getCurrentFolder().getInformation().getId());
+                	try {
+                		workflowLauncher.showTranscript(XMLUtils.DocumentToString(doc));
+                	} catch (Exception ex) {
+                		showError("Unable to load workflow transcript. ", ex);
+                	}                	                	
+                    return null;
+                }
+            }).start();
+        }
+    }
+    
     /** class for disoaying a table of resultls - also handles button presses, etc.*/
     private class ResultListTableModel extends AbstractTableModel implements ActionListener {
         
         public final int VALUE_WIDTH = 60;
         
-        private ParameterValue[] arr = new ParameterValue[]{};
+        private ParameterValue[] arr = new ParameterValue[]{};        
         private final String SAVE = "SAVE";
         private List saveButtonsStore = new ArrayList();
         // nifty list that creats buttons as needed.
@@ -454,14 +484,11 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             public Object create() {
                 JButton viewTrans = new JButton (IconHelper.loadIcon("read_obj.gif"));
                 viewTrans.setActionCommand(VIEWTRANS);
-                viewTrans.setToolTipText("View this result in transaction viewer");
+                viewTrans.setToolTipText("View this result in transcript viewer");
                 viewTrans.addActionListener(ResultListTableModel.this);
                 return viewTrans;
             }            
         });
-        public ResultListTableModel() {           
-        }
-        
         
         public void actionPerformed(ActionEvent e) {
             if (SAVE.equals(e.getActionCommand())) {
@@ -523,7 +550,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     }                    
                 }).start();
             }
-        }         
+        } 
         public void clear() {
             arr = new ParameterValue[]{};
             fireTableDataChanged();
@@ -542,8 +569,6 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 case 3:
                     return JComponent.class;
                 case 4:
-                    return JComponent.class;
-                case 5:
                     return JComponent.class;                    
                 default:
                     return Object.class;
@@ -552,7 +577,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         }
         
         public int getColumnCount() {
-            return 6;
+            return 5;
         }
         public String getColumnName(int column) {
             switch(column) {
@@ -563,11 +588,11 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 case 2:
                     return "Value";
                 case 3:
-                    return ""; //view trans
+                    return "View"; //view trans
+                //case 4:
+                //    return ""; //view browser
                 case 4:
-                    return ""; //view browser
-                case 5:
-                    return ""; //save
+                    return "Save"; //save
                 default:
                     return "";
             }
@@ -593,12 +618,13 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 case 3:
                     c = (JComponent) viewTransButtons.get(rowIndex);
                     c.setEnabled(! pv.getIndirect());
+                    c.setEnabled((pv.getValue().indexOf("<workflow") != -1));
                     return c;                	
+                //case 4:
+                //    c = (JComponent) viewButtons.get(rowIndex);
+                //    c.setEnabled(! pv.getIndirect());
+                //    return c;
                 case 4:
-                    c = (JComponent) viewButtons.get(rowIndex);
-                    c.setEnabled(! pv.getIndirect());
-                    return c;
-                case 5:
                     c = (JComponent)saveButtons.get(rowIndex);
                     c.setEnabled(! pv.getIndirect());
                     return c;                         
@@ -659,7 +685,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     
     private final class WorkflowEditorAction extends AbstractAction {
         public WorkflowEditorAction() {
-            super("Open workflow editor",IconHelper.loadIcon("wf_small.gif"));
+            super("Open workflow editor",IconHelper.loadIcon("tree.gif"));
             this.putValue(SHORT_DESCRIPTION,"Create and execute a workflow");
             this.setEnabled(true);
         }
@@ -679,6 +705,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     final MyspaceInternal vos;
     final WorkflowBuilder workflowLauncher;
     final BrowserControl browser;
+    final JobsInternal jobs;
     
     final CeaStrategyInternal ceaStrategy;
     private MessageDisplayPane contentPane;
@@ -715,6 +742,11 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private Transformer workflowTransformer;
     private Transformer xmlTransformer;
     
+    private JPopupMenu messageLevelMenu;
+    private String messageLevel = "All";
+    
+    private JCheckBoxMenuItem cbMenuItem1, cbMenuItem2, cbMenuItem3, cbMenuItem4;
+    
     /** Construct a new Lookout
      * @param conf
      * @param hs
@@ -730,6 +762,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             ,JesStrategyInternal jesStrategy
             ,CeaStrategyInternal ceaStrategy
             , BrowserControl browser
+			, JobsInternal jobs
     )
     throws HeadlessException {
         super(conf, hs, ui);
@@ -743,6 +776,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         this.pwLauncher = pw;
         this.workflowLauncher = workflows;
         this.appLauncher = appLauncher;
+        this.jobs = jobs;
         // force community login.
         comm.getUserInformation();
         initialize();
@@ -815,13 +849,22 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             folderTree.putClientProperty("JTree.lineStyle", "None");            
             folderTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             folderTree.setShowsRootHandles(false);
-            folderTree.addTreeSelectionListener(new TreeSelectionListener() {
+            folderTree.addTreeSelectionListener(new TreeSelectionListener() {            	
                 final JPanel p = getMessageDetails();
                 final CardLayout c = (CardLayout)p.getLayout();                
                 // if I _knew_ that listeners were called on order of addition, I could optimize this.
                 public void valueChanged(TreeSelectionEvent e) {
+                	messageLevel = "All";
+                	if (cbMenuItem1 != null)
+                	    cbMenuItem1.setSelected(true);
+                	if (viewTranscriptAction.isEnabled()) {
+                		viewTranscriptAction.setEnabled(false);
+                	}                	
                     Folder f = (Folder)folderTree.getLastSelectedPathComponent();
                     if (f != null && folderTree.getModel().isLeaf(f)) {
+                        if (f.getInformation().getId() != null && !viewTranscriptAction.isEnabled()) {
+                        	viewTranscriptAction.setEnabled(true);
+                        }
                         setCurrentFolder(f);
                         try {
                             getMessageTable().clearSelection();
@@ -870,7 +913,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     if (info.getId().equals(MessageRecorderImpl.ALERTS)) {
                         setIcon(IconHelper.loadIcon("info_obj.gif"));
                     } else if (info.getId().equals(MessageRecorderImpl.JOBS)) {
-                        setIcon(IconHelper.loadIcon("wf_small.gif"));
+                        setIcon(IconHelper.loadIcon("tree.gif"));
                     } else if (info.getId().equals(MessageRecorderImpl.QUERIES)) {
                         setIcon(IconHelper.loadIcon("search.gif"));
                     } else if (info.getId().equals(MessageRecorderImpl.TASKS)) {
@@ -930,10 +973,12 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             manageMenu.add(getDeleteAction());   
             newMenu.add(new JSeparator());                        
             manageMenu.add(getMarkAllReadAction());
+            manageMenu.add(viewTranscriptAction);
+    
         }
-        return manageMenu;
-        
+        return manageMenu;        
     }
+    
     private Action getMarkAllReadAction() {
         if (markAllReadAction == null) {
             markAllReadAction = new MarkAllReadAction();
@@ -944,7 +989,6 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private MessageDisplayPane getMessageContentPane() {
         if (contentPane == null) {
             contentPane = new MessageDisplayPane();
-            
         }
         return contentPane;
     }
@@ -954,7 +998,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             messageDetails.add(new JScrollPane(getMessageContentPane()), MESSAGE_CONTENT);
             JScrollPane tableScrollPane = new JScrollPane(getResultsTable());
             tableScrollPane.getViewport().setBackground(Color.WHITE);
-            messageDetails.add(tableScrollPane,MESSAGE_RESULTS);
+            messageDetails.add(tableScrollPane,MESSAGE_RESULTS); 
         }
         return messageDetails;
     }
@@ -962,11 +1006,13 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     JTable getMessageTable() {
         if (messageTable == null) {
             messageTable = new JTable(recorder.getMessageList());
+            MouseListener popupListener = new PopupListener();
+            messageTable.addMouseListener(popupListener);
             getHelpServer().enableHelp(messageTable,"lo.messageTable");
             messageTable.setShowVerticalLines(false);
             messageTable.setShowHorizontalLines(false);
             messageTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            messageTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            messageTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {            	
                 final JPanel p = getMessageDetails();
                 final CardLayout c = (CardLayout)p.getLayout();
                 int previous = -1;
@@ -974,7 +1020,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     int index = messageTable.getSelectedRow();
                     if (index == previous || index < 0 || index >= messageTable.getRowCount()) {
                         return;
-                    }
+                    }                                         
                     previous = index;
                     try {
                         MessageContainer m = recorder.getMessage(index);
@@ -983,10 +1029,10 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                             return;
                         }
                         getMessageContentPane().setMessage(m);
-                        if (m.getMessage() instanceof ResultsExecutionMessage) {
+                        if (m.getMessage() instanceof ResultsExecutionMessage) {     	
                             getResultsTableModel().setResults(((ResultsExecutionMessage)m.getMessage()).getResults());
                             c.show(p,MESSAGE_RESULTS);
-                        } else {
+                        } else {                       	
                             c.show(p, MESSAGE_CONTENT);
                             getResultsTableModel().clear();
                         }
@@ -1011,17 +1057,87 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                     super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
                     MessageContainer msg = recorder.getMessage(row);                    
-                    if (msg!= null && msg.isUnread()) { 
+                    if (msg!= null && msg.isUnread() ) { 
                         setText("<html><b>" + getText() + "</b></html>");
                     }
                     return this;
                 }               
             });
-            //@todo - add a consideration of message log level
             
         }
         return messageTable;
     }
+    
+    public void getMessageLevelMenu() {
+    	if (messageLevelMenu == null) {
+    		messageLevelMenu = new JPopupMenu();
+    		cbMenuItem1 = new JCheckBoxMenuItem("All");
+            cbMenuItem1.setToolTipText("Display all messages");
+            cbMenuItem1.setSelected(true);
+            cbMenuItem1.addItemListener(new ItemListener() {
+            	public void itemStateChanged(ItemEvent e) {
+            		if (e.getStateChange() == ItemEvent.SELECTED) {
+                		displayMessageLevel("All");
+            		}
+            	}
+            });
+    		cbMenuItem2 = new JCheckBoxMenuItem("Status change");
+            cbMenuItem2.setToolTipText("Display all status change messages");
+            cbMenuItem2.addItemListener(new ItemListener() {
+            	public void itemStateChanged(ItemEvent e) {
+            		if (e.getStateChange() == ItemEvent.SELECTED) {
+                		displayMessageLevel("STATUS CHANGE");
+            		}
+            	}
+            });
+    		cbMenuItem3 = new JCheckBoxMenuItem("Information");
+            cbMenuItem3.setToolTipText("Display all information level messages");
+            cbMenuItem3.addItemListener(new ItemListener() {
+            	public void itemStateChanged(ItemEvent e) {
+            		if (e.getStateChange() == ItemEvent.SELECTED) {
+            			displayMessageLevel("INFORMATION");
+            		}
+            	}
+            });
+    		cbMenuItem4 = new JCheckBoxMenuItem("Results");
+            cbMenuItem4.setToolTipText("Display all results messages");
+            cbMenuItem4.addItemListener(new ItemListener() {
+            	public void itemStateChanged(ItemEvent e) {
+            		if (e.getStateChange() == ItemEvent.SELECTED) {
+            		displayMessageLevel("RESULTS");
+            		}
+            	}
+            });
+            ButtonGroup group = new ButtonGroup();
+            group.add(cbMenuItem1);
+            group.add(cbMenuItem2);
+            group.add(cbMenuItem3);
+            group.add(cbMenuItem4);
+            messageLevelMenu.add(cbMenuItem1);
+            messageLevelMenu.add(cbMenuItem2);
+            messageLevelMenu.add(cbMenuItem3);
+            messageLevelMenu.add(cbMenuItem4);
+    	}
+    }
+    
+    
+    public void displayMessageLevel(String level) {            
+        for (int i =0; i < getMessageTable().getRowCount(); i++) {
+        	if (getMessageTable().getRowCount() <= 1) { // prevent users being able to hide single row with no way back
+        		cbMenuItem1.setSelected(true);
+        		return;
+        	}
+            if (level.equalsIgnoreCase("ALL")) {
+            	getMessageTable().setRowHeight(i, 16);
+            } else if (!level.equalsIgnoreCase(getMessageTable().getValueAt(i,0).toString())) {
+            	getMessageTable().setRowHeight(i,1);
+            } else {
+            	getMessageTable().setRowHeight(i, 16);
+            }
+            messageLevel = level;
+        }
+    }
+    
     private JMenu getNewMenu() {
         if (newMenu == null) {
             newMenu = new JMenu();
@@ -1101,7 +1217,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         				"Name",
         				"Value",
         				"View this result in the transcript viewer",
-        				"View this result in a web browser",
+        				//"View this result in a web browser",
 						"Save this result to myspace or local disk"
                 };
                 
@@ -1154,6 +1270,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         return taskEditorAction;
     }
     
+    ViewTranscriptAction viewTranscriptAction = new ViewTranscriptAction();
     private JToolBar getToolbar() {
         if (toolbar == null) {
             toolbar = new JToolBar();
@@ -1170,6 +1287,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             toolbar.add(getDeleteAction());
             toolbar.add(new JToolBar.Separator());
             toolbar.add(getMarkAllReadAction());
+            toolbar.add(viewTranscriptAction);
         }
         return toolbar;
     }
@@ -1253,7 +1371,22 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         this.currentFolder = f;
     }
     
-    
+    class PopupListener extends MouseAdapter {
+    	public void mousePressed(MouseEvent e) {
+    		maybeShowPopup(e);
+    	}
+    	public void mouseReleased(MouseEvent e) {
+    		maybeShowPopup(e);
+    	}
+    	
+    	private void maybeShowPopup(MouseEvent e) {
+    		if (e.isPopupTrigger()) {
+    			if (messageLevelMenu == null)
+    				getMessageLevelMenu();
+    		  messageLevelMenu.show(e.getComponent(), e.getX(), e.getY());
+    		}
+    	}
+    }
     
     
 }
@@ -1262,6 +1395,33 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.9  2006/01/13 14:25:05  pjn3
+pjn_workbench_20_12_05 merge
+
+Revision 1.8.4.8  2006/01/13 11:38:54  pjn3
+menu tweak
+
+Revision 1.8.4.7  2006/01/11 16:30:24  pjn3
+Transcripts loading
+
+Revision 1.8.4.6  2006/01/11 12:20:26  pjn3
+loading transcript should work
+
+Revision 1.8.4.5  2006/01/11 11:28:26  pjn3
+Tweak to prevent user hiding all messages with no way back
+
+Revision 1.8.4.4  2006/01/10 17:07:04  pjn3
+*** empty log message ***
+
+Revision 1.8.4.3  2006/01/10 16:23:11  pjn3
+message level popup menu added
+
+Revision 1.8.4.2  2006/01/09 16:20:26  pjn3
+add viewTranscriptAction
+
+Revision 1.8.4.1  2005/12/22 12:11:08  pjn3
+Removed view in browser button, only allow workflow to be viewed
+
 Revision 1.8  2005/12/13 15:08:43  pjn3
 Merge of pjn_workbench_8_12_05
 

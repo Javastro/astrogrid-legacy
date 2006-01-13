@@ -479,26 +479,25 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         public void actionPerformed(ActionEvent e) {
             (new BackgroundOperation("Printing....") {
                     protected Object construct() throws Exception {
+                    	populateTextArea();
+                    	tabbedPaneWF.setSelectedIndex(1);
                     	Properties p = new Properties();
                     	Toolkit toolkit = parent.getToolkit();
                     	PrintJob printJob = toolkit.getPrintJob(parent, "Workflow transcript", p);
-                    	PrinterJob printerJob = PrinterJob.getPrinterJob();
-                    	if (printerJob.printDialog()) {
-                    		try {
-                            	if (printJob != null) {
-                            		Graphics pg = printJob.getGraphics();
-                            		if (pg != null) {
-                            			printLongString(printJob, pg, docTextArea.getText());
-                            			pg.dispose();
-                            		}
-                            		printJob.end();
+                    	try {
+                          	if (printJob != null) {
+                            	Graphics pg = printJob.getGraphics();
+                            	if (pg != null) {
+                            		printLongString(printJob, pg, docTextArea.getText());
+                            		pg.dispose();
                             	}
-                    		} catch(Exception ex) {
-                    			ex.printStackTrace();
-                    		}
+                            	printJob.end();
+                            }
+                    	} catch(Exception ex) {
+                    		ex.printStackTrace();
                     	}                    	
-                        return null;
-                     }
+                    return null;
+                    }
                 }).start();	            
     
 	    }
@@ -525,14 +524,13 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		// get the page height
 		int pageHeight = printJob.getPageDimension().height;
 		// set font to print with
-		Font helv = new Font("Helvetica", Font.PLAIN, 12);
+		Font helv = new Font("Helvetica", Font.PLAIN, 8);
 		pg.setFont(helv);
 		// get dimensions of the fone
 		FontMetrics fm = pg.getFontMetrics(helv);
 		int fontHeight = fm.getHeight();
 		int fontDescent = fm.getDescent();
 		int curHeight = 0;
-		
 		try {
 			do {
 				// get next line from text area
@@ -561,8 +559,10 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			} while (nextLine != null);
 		} catch (EOFException eof) {
 			; // fine, ignore
+		} catch (NullPointerException ne) {
+			; // fine, ignore
 		} catch (Exception ex) {
-			logger.error("Error printing: " + ex);
+			logger.error("Error printing: " + ex.getMessage());
 		}
 	} 
 	
@@ -654,39 +654,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	        {
 	        	setStatusMessage("");
 	        	if (((JTabbedPane)event.getSource()).getSelectedIndex() == 1) { // only if user is selecting text tab
-            		caretPos = 0;
-            		wfDocFindField.setText("");
-		            try{
-		                Document doc = DomHelper.newDocument();
-		                Marshaller.marshal(getModel().getWorkflow(),doc);
-		                StringWriter sw = new StringWriter();
-		                XMLUtils.PrettyDocumentToWriter(doc,sw);
-		                docTextArea.setText(sw.toString());
-		                docTextArea.setCaretPosition(0);
-		            }
-		            catch(ParserConfigurationException ex){
-	                    logger.error("ParserConfigurationException thrown: " + ex);
-		            }
-		            catch(MarshalException ex){
-		            	logger.error("MarshalException thrown: " + ex);
-		            }
-		            catch(ValidationException ex){
-		            	try {		            		
-		            		Document doc = DomHelper.newDocument();
-		            		Marshaller marshaller = new Marshaller(doc);
-		            		marshaller.setValidation(false);
-		            		marshaller.marshal(getModel().getWorkflow());
-		            		StringWriter sw = new StringWriter();
-		            		XMLUtils.PrettyDocumentToWriter(doc,sw);
-		            		docTextArea.setText(sw.toString());
-			                docTextArea.setCaretPosition(0);
-			                String message = ex.getLocation().toString().replaceFirst("XPATH:", "Error at:");
-			                setStatusMessage("" + message);
-			                showError("Your workflow document contains invalid xml",ex);			                
-		            	} catch(Exception exc) {
-		            		logger.error("Error unmarshalling workflow object with validation turned off");
-		            	}	                    
-		            }
+            		populateTextArea();
 	        	}
 	        }
 	    });
@@ -788,6 +756,46 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         // keep guy happy.
         this.setStatusMessage("Drag activities from the list and drop them into the Tree View to build a Workflow");
 	}
+	
+	/**
+	 * Marshal workflow object and set docTextArea to this 
+	 *
+	 */
+	private void populateTextArea() {
+		caretPos = 0;
+		wfDocFindField.setText("");
+        try{
+            Document doc = DomHelper.newDocument();
+            Marshaller.marshal(getModel().getWorkflow(),doc);
+            StringWriter sw = new StringWriter();
+            XMLUtils.PrettyDocumentToWriter(doc,sw);
+            docTextArea.setText(sw.toString());
+            docTextArea.setCaretPosition(0);
+        }
+        catch(ParserConfigurationException ex){
+            logger.error("ParserConfigurationException thrown: " + ex);
+        }
+        catch(MarshalException ex){
+        	logger.error("MarshalException thrown: " + ex);
+        }
+        catch(ValidationException ex){
+        	try {		            		
+        		Document doc = DomHelper.newDocument();
+        		Marshaller marshaller = new Marshaller(doc);
+        		marshaller.setValidation(false);
+        		marshaller.marshal(getModel().getWorkflow());
+        		StringWriter sw = new StringWriter();
+        		XMLUtils.PrettyDocumentToWriter(doc,sw);
+        		docTextArea.setText(sw.toString());
+                docTextArea.setCaretPosition(0);
+                String message = ex.getLocation().toString().replaceFirst("XPATH:", "Error at:");
+                setStatusMessage("" + message);
+                showError("Your workflow document contains invalid xml",ex);			                
+        	} catch(Exception exc) {
+        		logger.error("Error unmarshalling workflow object with validation turned off");
+        	}	                    
+        }
+	}	
 
 
 
@@ -1139,8 +1147,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     		saveAction.putValue(Action.SHORT_DESCRIPTION,"Save this workflow transcript");
     		demoteAction.setEnabled(false);
     		promoteAction.setEnabled(false);
-    		expandAction.setEnabled(false);
-    		collapseAction.setEnabled(false);
+    		expandAction.setEnabled(true);
+    		collapseAction.setEnabled(true);
     		deleteAction.setEnabled(false);
     		cutAction.setEnabled(false);
     		copyAction.setEnabled(false);
