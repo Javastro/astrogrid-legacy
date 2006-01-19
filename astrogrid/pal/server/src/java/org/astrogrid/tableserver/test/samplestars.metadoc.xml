@@ -38,7 +38,7 @@
          <Datatype>float</Datatype>
          <Description>Declination (up-downness)</Description>
          <Units>deg</Units>
-         <UCD version='1'>POS_EQ_RA_MAIN</UCD>
+         <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
          <UCD version='1+'>pos.eq.dec</UCD>
          <ErrorColumn> </ErrorColumn>
          <SkyPolarCoord epoch='J2000'>DEC</SkyPolarCoord>
@@ -78,7 +78,7 @@
          <Datatype>float</Datatype>
          <Description>Declination (up-downness)</Description>
          <Units>deg</Units>
-         <UCD version='1'>POS_EQ_RA_MAIN</UCD>
+         <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
          <UCD version='1+'>pos.eq.dec</UCD>
          <ErrorColumn> </ErrorColumn>
          <SkyPolarCoord epoch='J2000'>DEC</SkyPolarCoord>
@@ -115,7 +115,7 @@
          <Datatype>float</Datatype>
          <Description>Declination (up-downness)</Description>
          <Units>deg</Units>
-         <UCD version='1'>POS_EQ_RA_MAIN</UCD>
+         <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
          <UCD version='1+'>pos.eq.dec</UCD>
          <ErrorColumn> </ErrorColumn>
       </Column>
