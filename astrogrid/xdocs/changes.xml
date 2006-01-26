@@ -16,6 +16,8 @@
     			<em>Branch Reg_KMB_WSDLS (in astrogrid/registry):</em>  *Note: it should be okay to overwrite Dave's jsp's if you see a merge conflict there, notice his fix below* 
                  Now works with contracts for obtaining wsdls, along with other bug fixes for XQuery Search and when there 
                  are no results.  Plus new eXist db backend.  And some added features. And finally fixed jars in repository, will give you a zip file to help with that.<br />
+                 Okay just made the zip file you should be able to find it at http://msslxv.mssl.ucl.ac.uk:8080/servlets-examples/downloads called reg_repository.zip this is a zip
+                 file of all the jars that need to go into the maven repository.  Hopefully I did not miss any, but if so then just e-mail me it and I will send you the missing jars.<br />
     			<em>Branch Reg_KMB_WSDLS (in astrogrid/contracts):</em> New Filter to help construct wsdls and schemas, plus additional schemas added.<br />
     			<em>Branch REG_KMB_WSDLS (in astrogrid/xmldb "ALL CAPS"):</em> refactor of xmldb.<br />
     			<em>Branch Pal_KMB_WSDLS (in astrogrid/pal):</em> removed reference to xmldb for a short term, since xmldb was refactored.  Will add back at a later date currently
