@@ -11,8 +11,18 @@
     			better now (IMHO), and the chance of getting duff registrations is less.
 				Merged but jes and pal are not compiling see bug 1500, Rolled back for now until problem solved - CLQ
     		</action>
- 
+
+    		<action dev="kmb" type="add, fix">
+    			<em>Branch Reg_KMB_WSDLS (in astrogrid/registry):</em>  *Note: it should be okay to overwrite Dave's jsp's if you see a merge conflict there, notice his fix below* 
+                 Now works with contracts for obtaining wsdls, along with other bug fixes for XQuery Search and when there 
+                 are no results.  Plus new eXist db backend.  And some added features. And finally fixed jars in repository, will give you a zip file to help with that.<br />
+    			<em>Branch Reg_KMB_WSDLS (in astrogrid/contracts):</em> New Filter to help construct wsdls and schemas, plus additional schemas added.<br />
+    			<em>Branch REG_KMB_WSDLS (in astrogrid/xmldb "ALL CAPS"):</em> refactor of xmldb.<br />
+    			<em>Branch Pal_KMB_WSDLS (in astrogrid/pal):</em> removed reference to xmldb for a short term, since xmldb was refactored.  Will add back at a later date currently
+nothing in pal uses xmldb.
+    		</action>
         </release>
+
         <release version="(Undertest)">
 			<action dev="dave" type="fix">
 				branch <em>dave-dev-200601051057</em> contains Multiple changes to the workshop code, Plus changes to JSP pages in :
