@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.4 2005/11/02 09:29:15 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.5 2006/01/30 17:16:42 jdt Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,6 +70,10 @@ public class HelpServerImpl implements Startable, HelpServerInternal{
             broker = hs.createHelpBroker();
         } catch (Exception e) {
             logger.error("Failed to load helpset",e);
+            //create an empty helpset to avoid any future NullPointer problems
+            hs = new HelpSet();
+            hs.setTitle("Help not available");
+            broker = hs.createHelpBroker();
         }
         
         cl = ACRJavaHelpResourceAnchor.class.getClassLoader();
@@ -138,6 +142,9 @@ public class HelpServerImpl implements Startable, HelpServerInternal{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.5  2006/01/30 17:16:42  jdt
+Make robust to help system failures - bug 1519.
+
 Revision 1.4  2005/11/02 09:29:15  nw
 fixed bug on windows
 
