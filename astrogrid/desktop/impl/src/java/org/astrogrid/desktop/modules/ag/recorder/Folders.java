@@ -1,4 +1,4 @@
-/*$Id: Folders.java,v 1.2 2005/11/24 01:13:24 nw Exp $
+/*$Id: Folders.java,v 1.3 2006/01/31 14:50:33 jdt Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,14 +67,14 @@ public class Folders implements TreeModel {
     private Folders(BTree tree, RecordManager rec) throws IOException {
         this.b = tree;
         this.rec = rec;
-        this.root = (FolderImpl)getFolder(MessageRecorderImpl.ROOT); // will reurn null the first time
+        this.root = (FolderImpl)getFolder(MessageRecorderImpl.ROOT); // will return null the first time
     }
     private FolderImpl root;
     private final BTree b;
     private final RecordManager rec;        
     private final  EventListenerList listenerList = new EventListenerList();        
     
-    // initialie the first time..
+    // initialise the first time..
     private synchronized void initialize() throws IOException {
         rec.setNamedObject(TREE_NAME,b.getRecid());
         root = new FolderImpl(
@@ -138,7 +138,7 @@ public class Folders implements TreeModel {
     
     
     //
-    /** retrive a folder 
+    /** retrieve a folder 
      * @throws IOException*/
     public Folder getFolder(URI key) throws IOException {
          return (Folder)b.find(key);        
@@ -346,6 +346,9 @@ public class Folders implements TreeModel {
 
 /* 
 $Log: Folders.java,v $
+Revision 1.3  2006/01/31 14:50:33  jdt
+The odd typo and a bit of tidying.
+
 Revision 1.2  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

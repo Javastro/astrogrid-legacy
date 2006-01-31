@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderImpl.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: MessageRecorderImpl.java,v 1.5 2006/01/31 14:50:33 jdt Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -138,22 +138,12 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
     }
        
     // id keys for well-known folders.
-    public static URI ROOT ;
-        public static URI ALERTS ;
-        public static URI TASKS;
-        public static URI QUERIES;
-        public static URI JOBS;
-static {
-    try {
- ROOT = new URI("folder:root");
- ALERTS = new URI("folder:alerts");
- TASKS =  new URI("folder:tasks");
- QUERIES = new URI("folder:queries");
- JOBS = new URI("folder:jobs");
-    } catch (URISyntaxException e) {
-        logger.fatal("Programming error - failed to initialize folder constants",e);
-    }
-}
+    public final static URI ROOT = URI.create("folder:root") ;
+    public final static URI ALERTS = URI.create("folder:alerts");
+    public final static URI TASKS = URI.create("folder:tasks");
+    public final static URI QUERIES = URI.create("folder:queries");
+    public final static URI JOBS = URI.create("folder:jobs");
+
     /** simple recorder - listens to all alert messages
      * expects them to be text messages
      * disabled for now - as no-one is firing alerts.
@@ -340,7 +330,7 @@ static {
             // this condition should catch all messages - but leaves options open in the future.
             m.addEventProcessor(MessageUtils.PROCESS_ID_PROPERTY +" is not null",notificationRecorder);
             } catch (Exception e) {
-                logger.error("COuld not start recorder",e);
+                logger.error("Could not start recorder",e);
             }        
     }
     
@@ -378,6 +368,9 @@ static {
 
 /* 
 $Log: MessageRecorderImpl.java,v $
+Revision 1.5  2006/01/31 14:50:33  jdt
+The odd typo and a bit of tidying.
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 
