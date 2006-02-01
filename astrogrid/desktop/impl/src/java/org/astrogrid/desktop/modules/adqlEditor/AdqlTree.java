@@ -1,61 +1,45 @@
 package org.astrogrid.desktop.modules.adqlEditor ;
 
-import org.apache.xerces.impl.dtd.XMLSimpleType;
-import org.apache.xmlbeans.SchemaProperty;
-import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.SimpleValue;
-import org.apache.xmlbeans.XmlString;
-import org.apache.xmlbeans.* ;
-
-import java.util.Hashtable;
-
-//import net.ivoa.xml.adql.v10.*;
-import org.astrogrid.adql.v1_0.beans.* ;
-
-import java.awt.Rectangle;
-import java.awt.Graphics;
-import javax.swing.ImageIcon;
-import javax.swing.JTree;
-import javax.swing.JLabel ;
-import javax.swing.JPanel;
-import javax.swing.Action ;
-import java.awt.GridBagLayout;
-import javax.swing.KeyStroke ;
-import javax.swing.event.CellEditorListener;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.TreeCellEditor;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.DefaultCellEditor; 
-import javax.swing.JTextField;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-import javax.swing.JComponent ; 
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.AbstractAction;
-import javax.swing.JTextArea ;
-import javax.swing.BorderFactory; 
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent ;
-
-import java.awt.Insets;
-import java.util.Vector ;
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.Color; 
-import java.awt.event.ActionEvent ;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.InputEvent ;
-import java.awt.event.ActionListener;
-import java.awt.Dimension ;
-import java.awt.GridBagConstraints;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.EventObject;
 import java.io.InputStream;
+import java.util.EventObject;
+import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.KeyStroke;
+import javax.swing.event.CellEditorListener;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellEditor;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.SimpleValue;
+import org.apache.xmlbeans.XmlAnySimpleType;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlString;
+import org.astrogrid.adql.v1_0.beans.SelectDocument;
 /**
  * A tree view on XML, with nodes representing both elements and attributes. See
  * {@link XmlEntry}and {@link XmlModel}for information on how information

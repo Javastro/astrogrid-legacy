@@ -13,6 +13,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+    <action dev="jl" type="add" issue="1495">
+	    Enhancements to Adql editing; ie: to the Query Builder.
+	    Principle visual enhancement is the addition of a metadata pane.
+	</action>
 	<release version="alpha" date="now">
 	 	<action dev="jdt" type="fix" issue="1519">
 			Make robust to failure to load HelpSet.	

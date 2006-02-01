@@ -23,7 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 
-import org.astrogrid.adql.v1_0.beans.* ;
+// import org.astrogrid.adql.v1_0.beans.* ;
 
 /**
  * @author jl99

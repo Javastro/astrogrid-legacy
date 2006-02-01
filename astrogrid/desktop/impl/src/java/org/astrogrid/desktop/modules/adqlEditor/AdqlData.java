@@ -19,8 +19,20 @@ import java.util.Hashtable;
  */
 public class AdqlData {
     
-    public static final String DUMMY_ENTRY = "".intern() ;
+    public static String NAMESPACE_0_74 = "http://www.ivoa.net/xml/ADQL/v0.7.4" ;
+    public static String NAMESPACE_1_0 = "http://www.ivoa.net/xml/ADQL/v1.0" ;
     
+    public static final String DUMMY_ENTRY = "".intern() ;
+    public static final String COLUMN_REFERENCE_TYPE = "columnReferenceType" ;
+    public static final String SELECT_TYPE = "selectType" ;
+    public static final String FROM_TYPE = "fromType" ;
+    public static final String JOIN_TABLE_TYPE = "joinTableType" ;
+    public static final String ARRAY_OF_FROM_TABLE_TYPE = "ArrayOfFromTableType" ;
+    public static final String TABLE_TYPE = "tableType" ;
+    public static final String ARCHIVE_TABLE_TYPE = "archiveTableType" ;
+    
+    public static final String TYPE_ENTRY = "TYPE".intern() ;
+    public static final String ELEMENT_ENTRY = "ELEMENT".intern() ;
  
     public static final Hashtable T2D_NAMES ;
     static {
@@ -72,7 +84,9 @@ public class AdqlData {
         T2D_NAMES.put( "intoType", "Into" ) ;  
         T2D_NAMES.put( "inclusiveSearchType", "In" ) ; 
         T2D_NAMES.put( "exclusiveSearchType", "Not In" ) ;
-        
+        T2D_NAMES.put( "ArrayOfFromTableType", "Tables" ) ;
+        T2D_NAMES.put( "jointTableQualifierType", "Join Qualifier" ) ;
+             
         T2D_NAMES.put( "Select", "Select" ) ;
         T2D_NAMES.put( "From", "From" ) ;
         T2D_NAMES.put( "Where", "Where" ) ; 
@@ -133,9 +147,58 @@ public class AdqlData {
     public static final Hashtable UNSUPPORTED_TYPES ;
     static {
         UNSUPPORTED_TYPES = new Hashtable() ;
-//        UNSUPPORTED_TYPES.put( "joinTableType", DUMMY_ENTRY ) ;
-//        UNSUPPORTED_TYPES.put( "archiveTableType", DUMMY_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "joinTableType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "archiveTableType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "aliasSelectionItemType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "exclusiveSearchType", TYPE_ENTRY ) ;
+//???      UNSUPPORTED_TYPES.put( "inclusiveSetType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "inclusiveSearchType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "subQuerySet", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "constantListSet", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "intoType", TYPE_ENTRY ) ;
+        
+        UNSUPPORTED_TYPES.put( "xMatchType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "likePredType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "notLikePredType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "regionSearchType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "closedSearchType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "betweenPredType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "notBetweenPredType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "userDefinedFunctionType", TYPE_ENTRY ) ;
+        
+        UNSUPPORTED_TYPES.put( "StartComment", ELEMENT_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "EndComment", ELEMENT_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "Unit", ELEMENT_ENTRY ) ;    
     }
+    
+//    public static final Hashtable UNSUPPORTED_TYPES_74 ;
+//    static {
+//        UNSUPPORTED_TYPES_74 = new Hashtable() ;
+//        UNSUPPORTED_TYPES_74.put( "joinTableType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "archiveTableType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "aliasSelectionItemType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "exclusiveSearchType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "inclusiveSetType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "inclusiveSearchType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "subQuerySet", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "constantListSet", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "intoType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "StartComment", ELEMENT_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "EndComment", ELEMENT_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( "Unit", ELEMENT_ENTRY ) ;    
+//    }
+//    
+//    public static final Hashtable UNSUPPORTED_TYPES_10 ;
+//    static {
+//        UNSUPPORTED_TYPES_10 = new Hashtable() ;
+//        UNSUPPORTED_TYPES_10.put( "joinTableType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_10.put( "archiveTableType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_10.put( "aliasSelectionItemType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_10.put( "intoType", TYPE_ENTRY ) ; 
+//    }
+    
+    
+    
     
     public static final Hashtable CASCADEABLE ;
     static {
@@ -146,7 +209,7 @@ public class AdqlData {
         CASCADEABLE.put( "mathFunctionType", DUMMY_ENTRY ) ;  
         CASCADEABLE.put( "aggregateFunctionType", DUMMY_ENTRY ) ;  
         CASCADEABLE.put( "archiveTableType", DUMMY_ENTRY ) ;  
-        CASCADEABLE.put( "joinTableType", DUMMY_ENTRY ) ;   
+        CASCADEABLE.put( "jointTableQualifierType", DUMMY_ENTRY ) ;   
         CASCADEABLE.put( "binaryExprType", DUMMY_ENTRY ) ;  
         CASCADEABLE.put( "unaryExprType", DUMMY_ENTRY ) ;  
         CASCADEABLE.put( "selectionOptionType", DUMMY_ENTRY ) ;  
@@ -165,7 +228,14 @@ public class AdqlData {
         ENUMERATED_ATTRIBUTES.put( "selectionOptionType" , "allOrDistinctType" ) ;
         ENUMERATED_ATTRIBUTES.put( "comparisonPredType" , "comparisonType" ) ;
         ENUMERATED_ATTRIBUTES.put( "orderOptionType" , "orderDirectionType" ) ;
-        ENUMERATED_ATTRIBUTES.put( "joinTableType" , "jointTableQualifierType" ) ;
+//        ENUMERATED_ATTRIBUTES.put( "joinTableType" , "jointTableQualifierType" ) ;  // this is incorrect
+    }
+    
+    
+    public static final Hashtable ENUMERATED_ELEMENTS ;
+    static {
+        ENUMERATED_ELEMENTS = new Hashtable() ;
+        ENUMERATED_ELEMENTS.put( "jointTableQualifierType" , "jointTableQualifierType" ) ;
     }
     
     
@@ -173,7 +243,7 @@ public class AdqlData {
     static {
         METADATA_LINK_TABLE = new Hashtable() ;
         METADATA_LINK_TABLE.put( "tableType", DUMMY_ENTRY ) ;
-//        METADATA_LINK_TABLE.put( "joinTableType", DUMMY_ENTRY ) ;
+        METADATA_LINK_TABLE.put( "joinTableType", DUMMY_ENTRY ) ;
         METADATA_LINK_TABLE.put( "archiveTableType", DUMMY_ENTRY ) ;
     }
     
