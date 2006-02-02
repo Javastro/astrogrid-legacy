@@ -22,7 +22,12 @@
 		<value>70</value>
 	</property>	
 	
-
+	<component name="ssap"
+		implementationClass="org.astrogrid.desktop.modules.ivoa.SsapImpl"
+		interfaceClass="org.astrogrid.acr.ivoa.Ssap">
+		<description>Interface to Simple Spectrum Access (SSAP) Servers</description>
+		<!-- todo add declaration of methods here.. -->
+	</component>
 	<component name="siap" 
 		implementationClass="org.astrogrid.desktop.modules.ivoa.SiapImpl"
 		interfaceClass="org.astrogrid.acr.ivoa.Siap">
