@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.9 2006/01/13 14:25:05 pjn3 Exp $
+/*$Id: LookoutImpl.java,v 1.10 2006/02/02 14:50:23 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -466,25 +466,14 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             }            
         });
         //store for buttons
-        private final String VIEW = "VIEW";
-        private List viewButtonsStore = new ArrayList();
-        // dynamically creates buttons as needed.
-        private List viewButtons = ListUtils.lazyList(viewButtonsStore, new Factory() {  
-            public Object create() {
-                JButton view = new JButton (IconHelper.loadIcon("read_obj.gif"));
-                view.setActionCommand(VIEW);
-                view.setToolTipText("View this result in a browser");
-                view.addActionListener(ResultListTableModel.this);
-                return view;
-            }            
-        });
+
         private final String VIEWTRANS = "VIEWTRANS";
         private List viewTransButtonsStore = new ArrayList();
         private List viewTransButtons = ListUtils.lazyList(viewTransButtonsStore, new Factory() {  
             public Object create() {
                 JButton viewTrans = new JButton (IconHelper.loadIcon("read_obj.gif"));
                 viewTrans.setActionCommand(VIEWTRANS);
-                viewTrans.setToolTipText("View this result in transcript viewer");
+                viewTrans.setToolTipText("View this result");
                 viewTrans.addActionListener(ResultListTableModel.this);
                 return viewTrans;
             }            
@@ -522,33 +511,26 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     }
                 }).start();
                 
-            } else if (VIEW.equals(e.getActionCommand())){
-                int row = viewButtonsStore.indexOf(e.getSource());
-                if (row < 0  || row > arr.length -1) {
-                    return;
-                }            
-                final ParameterValue pv = arr[row];
-                // determine how to style.
-                (new BackgroundOperation("Displaying Result") {
-                    protected Object construct() throws Exception {
-                        URL url = displayResult(pv);
-                        browser.openURL(url);
-                        return null;
-                    }                    
-                }).start();
+
+
             } else if (VIEWTRANS.equals(e.getActionCommand())){
                 int row = viewTransButtonsStore.indexOf(e.getSource());
                 if (row < 0  || row > arr.length -1) {
                     return;
                 }            
-                final ParameterValue pv = arr[row];
-                (new BackgroundOperation("Launching transcript viewer") {
-                    protected Object construct() throws Exception {
-                    	if (pv.getValue().indexOf("<?xml") != -1)
+                final ParameterValue pv = arr[row];    
+                if (pv.getValue().indexOf("<workflow") != -1) {
                     	  workflowLauncher.showTranscript(pv.getValue());
-                        return null;
-                    }                    
-                }).start();
+                } else { // assume it's some kind of xml or votable.
+                    // determine how to style.
+                    (new BackgroundOperation("Displaying Result") {
+                        protected Object construct() throws Exception {
+                            URL url = displayResult(pv);
+                            browser.openURL(url);
+                            return null;
+                        }                    
+                    }).start();                    
+                }
             }
         } 
         public void clear() {
@@ -589,8 +571,6 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     return "Value";
                 case 3:
                     return "View"; //view trans
-                //case 4:
-                //    return ""; //view browser
                 case 4:
                     return "Save"; //save
                 default:
@@ -618,12 +598,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                 case 3:
                     c = (JComponent) viewTransButtons.get(rowIndex);
                     c.setEnabled(! pv.getIndirect());
-                    c.setEnabled((pv.getValue().indexOf("<workflow") != -1));
                     return c;                	
-                //case 4:
-                //    c = (JComponent) viewButtons.get(rowIndex);
-                //    c.setEnabled(! pv.getIndirect());
-                //    return c;
                 case 4:
                     c = (JComponent)saveButtons.get(rowIndex);
                     c.setEnabled(! pv.getIndirect());
@@ -811,7 +786,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         } else if (pv.getValue().indexOf("<VOTABLE") != -1) {
             trans = getVotableTransformer();
         } else if (pv.getValue().indexOf("<?xml") != -1) {
-            trans = getXmlTransformer();
+            trans = getXmlTransformer();                        
         } else {
             trans = null;
         }
@@ -1395,6 +1370,9 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.10  2006/02/02 14:50:23  nw
+improved results viewing.
+
 Revision 1.9  2006/01/13 14:25:05  pjn3
 pjn_workbench_20_12_05 merge
 
