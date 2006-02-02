@@ -1,4 +1,4 @@
-/*$Id: ResourceInformation.java,v 1.6 2005/11/11 10:09:01 nw Exp $
+/*$Id: ResourceInformation.java,v 1.7 2006/02/02 14:19:48 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
 
-/** Information Bean that summarizes the most useful bits of a registry entry
- * <p>
+/** summarizes the most useful fields of a registry record.
+ * 
  * <tt>getId()</tt> will return a registry identifier - an ivorn of form <tt>ivo://<i>Authority-Id</i>/<i>Resource-Id</i></tt>
  * @xmlrpc returned as a struct, with keys corresponding to bean names
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Aug-2005
@@ -36,20 +36,20 @@ public class ResourceInformation extends AbstractInformation {
     //@since 1.3
     protected final URL logo;
     
-    /** access the description of this entry 
+    /** the description of this entry 
      * @return contents of the 'description' element from the registry entry
      * @xmlrpc key is <tt>description</tt>*/
     public String getDescription() {
         return description;
     }
-/** access the title of this entry - synonym for {@link #getName}
+/** the title of this entry - synonym for {@link #getName}
  * @return contents of 'title' field of this registry entry
  * @xmlrpc key is <tt>title</tt>
  * */
     public String getTitle() {
         return getName();
     }
-    /** access the endpoint URL for this entry 
+    /** the endpoint URL for this entry 
      * @return the contents of the 'accessURL' element in the registry entry - the URL where this service
      * may be accessed. Will be empty for registry resouces that aren't services (e.g. catalogues, people)
      * @xmlrpc key will be <tt>accessURL</tt>. May not be present in cases where registry entry has not endpoint*/
@@ -57,7 +57,7 @@ public class ResourceInformation extends AbstractInformation {
         return url;
     }
     
-    /** access the url for the logo for this entry
+    /** the url for the logo for this entry
      * @return url for the logo for this resource, if defined.
      * @xmlrpc key will be <tt>logoURL</tt>. May not be present.
      * @since 1.3
@@ -86,6 +86,9 @@ public class ResourceInformation extends AbstractInformation {
 
 /* 
 $Log: ResourceInformation.java,v $
+Revision 1.7  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.6  2005/11/11 10:09:01  nw
 improved javadoc
 

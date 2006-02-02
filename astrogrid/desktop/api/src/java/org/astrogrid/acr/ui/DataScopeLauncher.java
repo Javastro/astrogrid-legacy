@@ -1,4 +1,4 @@
-/*$Id: DataScopeLauncher.java,v 1.2 2005/11/24 01:18:42 nw Exp $
+/*$Id: DataScopeLauncher.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.acr.ui;
 
-/** Interface to the Datascope launcher
- * <p>
+/**Control the  Datascope launcher
+ * 
 
  * @service userInterface.datascopeLauncher
  * @author Kevin Benson
@@ -27,6 +27,9 @@ public interface DataScopeLauncher {
 
 /* 
 $Log: DataScopeLauncher.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/11/24 01:18:42  nw
 merged in final changes from release branch.
 

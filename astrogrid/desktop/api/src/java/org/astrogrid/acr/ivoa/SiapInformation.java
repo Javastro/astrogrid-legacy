@@ -1,4 +1,4 @@
-/*$Id: SiapInformation.java,v 1.3 2005/11/04 14:38:58 nw Exp $
+/*$Id: SiapInformation.java,v 1.4 2006/02/02 14:19:47 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-/**Information bean that describes a registered siap service
- *  * <p>
+/** Description of the registry entry for a Simple Image Access (SIAP) service.
+ *  
  * Adds fields for the extra service information provided by a SIAP registry entry. 
  * @see http://www.ivoa.net/xml/SIA/v0.7 for definition of this information
  * @xmlrpc returned as a struct, with keys corresponding to bean names.
@@ -111,7 +111,7 @@ public class SiapInformation extends ApplicationInformation {
         ParameterBean crpix = new ParameterBean("CRPIX","CRPix","Coordinates of the reference pixel, expressed in the pixel coordinates of the output image",null,null,null,"int,int",null,null);
         ParameterBean crval = new ParameterBean("CRVAL","CRVal","World coordinates relative to CFrame at the reference point",null,null,null,"coordinates",null,null);
         ParameterBean cdelt = new ParameterBean("CDELT","CDelt","The scale of the output image",null,null,"decimal degrees per pixel","int,int",null,null);
-        ParameterBean rotang = new ParameterBean("ROTANG","Rotation angle", "Rotation angle of the image in defgrees relative to CFrame",null,"0",null,"angle",null,null);
+        ParameterBean rotang = new ParameterBean("ROTANG","Rotation angle", "Rotation angle of the image in degrees relative to CFrame",null,"0",null,"angle",null,null);
         ParameterBean proj = new ParameterBean("PROJ","Projection","Celestial projection of the output image",null,"TAN",null,"String",null,null);
         ParameterBean verb = new ParameterBean("VERB","Verbose","Desired level of information to be returned",null,",1",null,"int",null,new String[]{"0","1","2","3"});
         
@@ -172,6 +172,9 @@ public class SiapInformation extends ApplicationInformation {
 
 /* 
 $Log: SiapInformation.java,v $
+Revision 1.4  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.3  2005/11/04 14:38:58  nw
 added logo field
 

@@ -9,7 +9,7 @@ package org.astrogrid.acr.cds;
 
 import org.astrogrid.acr.ServiceException;
 
-/** This XML Web Service resolves a tag through GLU (Generateur de Liens Uniformes).
+/** Webservice to resolve  GLU  (Generateur de Liens Uniformes).tags.
  * @see http://cdsweb.u-strasbg.fr/cdsws/glu_resolver.gml
  * @author CDS
  *@service cds.glu

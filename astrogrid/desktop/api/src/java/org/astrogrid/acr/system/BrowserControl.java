@@ -1,4 +1,4 @@
-/*$Id: BrowserControl.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: BrowserControl.java,v 1.3 2006/02/02 14:19:47 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,8 @@ import org.astrogrid.acr.InvalidArgumentException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/** Service Interface to the system webbrowser
+/** Control the desktop webbrowser.
  * 
- * <p>
  * Trivial interface to display a URL in the desktop's webbrowser (relies on this being correclty configured in java web start 
  * console - mostly fine for windows, sometimes needs to be configured by hand on unixes.)
  * @service system.browser
@@ -54,6 +53,9 @@ public interface BrowserControl {
 
 /* 
 $Log: BrowserControl.java,v $
+Revision 1.3  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.2  2005/08/12 08:45:15  nw
 souped up the javadocs
 

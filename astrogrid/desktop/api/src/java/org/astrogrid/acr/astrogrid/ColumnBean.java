@@ -1,4 +1,4 @@
-/*$Id: ColumnBean.java,v 1.1 2005/09/12 15:21:43 nw Exp $
+/*$Id: ColumnBean.java,v 1.2 2006/02/02 14:19:47 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
 
-/** Information about a single column in a tabular db.
+/** describes a single column in a tabular database.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
  * @since 1.2
  */
@@ -37,18 +37,27 @@ public class ColumnBean implements Serializable{
     private final String datatype;
     private final String unit;
 
+    /**
+     * the type of this column     
+     */
     public String getDatatype() {
         return this.datatype;
     }
+/**
+ * human-readable description of this column
+ */
     public String getDescription() {
         return this.description;
     }
+    /** name of this column */
     public String getName() {
         return this.name;
     }
+    /** Universal column descriptor for this column */
     public String getUCD() {
         return this.UCD;
     }
+    /** description of the units of this column */
     public String getUnit() {
         return this.unit;
     }
@@ -57,6 +66,9 @@ public class ColumnBean implements Serializable{
 
 /* 
 $Log: ColumnBean.java,v $
+Revision 1.2  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.1  2005/09/12 15:21:43  nw
 added stuff for adql.
  

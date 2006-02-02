@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.3 2005/08/16 13:14:42 nw Exp $
+/*$Id: NodeInformation.java,v 1.4 2006/02/02 14:19:48 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Bean that summarizes the properties of a myspace resource (a file or folder)
- * <p>
+/** descripiton of the properties of a myspace resource (a file or folder).
+ * 
  * <tt>getId()</tt> will return a myspace resouce locator - an ivorn of form 
  * <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#<i>File-Path</i></tt>
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Aug-2005
@@ -46,47 +46,47 @@ public class NodeInformation extends AbstractInformation {
     private final Map attributes;
     private final URI contentLocation;
 
-    /** access other metadata attributes of this node 
+    /** other metadata attributes of this node 
      * @return a map containing key-value pairs of other metadata about this resource
      * @xmlrpc key will be 'attributes', type will be 'struct'*/
     public Map getAttributes() {
         return this.attributes;
     }
-    /** access the creation date for this node 
+    /** the creation date for this node 
      * @return object representing creation date
      * @xmlrpc key will be <tt>createDate</tt>, type will be 'date'*/
     public Calendar getCreateDate() {
         return this.createDate;
     }
-    /** access the modification date for this node 
+    /** the modification date for this node 
      * @return object representing modification date
      * @xmlrpc key will be <tt>modifyDate</tt>, type will be 'date'*/
     public Calendar getModifyDate() {
         return this.modifyDate;
     }
  
-    /** access the size of this resource 
+    /** the size of this resource 
      * @return size in bytes of this resource
      * @xmlrpc key will be <tt>size</tt>, type will be 'int' - beware of exceeding max size.*/
     public long getSize() {
         return this.size;
     }
     
-    /**  Check whether this resource is a file
+    /**  determines whether this resource is a file
      * @return true if this resource is a file 
      * @xmlrpc key will be <tt>file</tt>, type will be 'boolean'*/
     public boolean isFile() {
         return file;
     }
     
-    /** Check whether this resource is a folder
+    /** determines whether this resource is a folder
      * @return true if this resource is a folder 
      * @xmlrpc key will be <tt>folder</tt>, type will be 'boolean'*/
     public boolean isFolder() {
         return !file;
     }
     
-    /** access the name of the filestore that holds the data of this resource.
+    /** the name of the filestore that holds the data of this resource.
      * 
      * @return a registy identifier - ivorn - may be null in case of a folder, or a file with no content.
      * @xmlrpc key will be <tt>contentLocation</tt>, type will be 'string'
@@ -119,6 +119,9 @@ public class NodeInformation extends AbstractInformation {
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.4  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.3  2005/08/16 13:14:42  nw
 added 'name' as a common field for all information objects
 

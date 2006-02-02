@@ -1,4 +1,4 @@
-/*$Id: ExecutionInformation.java,v 1.3 2005/08/16 13:14:42 nw Exp $
+/*$Id: ExecutionInformation.java,v 1.4 2006/02/02 14:19:48 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,9 +14,9 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.Date;
 
-/**  Information Bean that summarizes the properties of a running job or application
- * <p>
- * <tt>getId()</tt> will return the execution identifier - either a job urn (for workfows) or an execution ivorn (for cea apps).
+/**  description of  the progress of a remote process - e.g. a workflow job, or CEA application.
+ *  
+ * <tt>getId()</tt> will return the execution identifier - either a job urn (for workfows) or an execution ivorn (for cea and other remote appilications).
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
   * @xmlrpc returned as a struct, with keys corresponding to bean names
  *
@@ -56,20 +56,20 @@ public class ExecutionInformation extends AbstractInformation {
  
 
     
-    /** description of the execution 
+    /** description of the process being executed.
      * @return a string
      * @xmlrpc key will e <tt>description</tt>*/
     public String getDescription() {
         return this.description;
     }    
     
-    /** time the exection started 
+    /** the time the exection started 
      * @return  may be null if still pending. Also null for application executions at the moment 
      * @xmlrpc key will be <tt>startTime</tt>, type will be 'date'*/
     public Date getStartTime() {
         return this.startTime;
     }
-    /** time the workflow finished 
+    /** the time that execution finished 
      * @return may be null if still running. Also null for application execution at the moment 
      * @xmlrpc key will be <tt>startTime</tt>, type will be 'date'*/     
     public Date getFinishTime() {
@@ -103,6 +103,9 @@ public class ExecutionInformation extends AbstractInformation {
 
 /* 
 $Log: ExecutionInformation.java,v $
+Revision 1.4  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.3  2005/08/16 13:14:42  nw
 added 'name' as a common field for all information objects
 

@@ -1,4 +1,4 @@
-/*$Id: AcrPicoContainer.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: AcrPicoContainer.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 10-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,19 +32,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/** A Picocontainer that exports services of the ACR .
- * <p>
+/** A Picocontainer that exports services of the ACR.
+ * 
  * A picocontainer is a very small IoC container that takes care of instantiating classes registered with it. In particular, it passes
  * dependencies into constructors, and works out the order that various classes need to be instantiated. This leads to a 
  * style of programming called <i>constructor-injection</i>, which removes the need to retreive objects in-code - they are passed in by the container, and so 
  * can be guaranteed to be present at object creation.
  * 
- * <p>
+ * <br />
  * I don't think I explained that very well, you'll just have to trust that it's a good thing to do. Try it.
- * <p>
+ * <br />
  * So this class makes an ACR appear like a picocontainer - so client classes can be instantiated and the service objects they depend on will be passed
  * in at construction. This works both when directly linked to an ACR, and when the link is over JavaRMI.
- * <p>
+ * <br />
  * Picocontainers are used within the ACR implementation to manage the service objects - so this class would be useful when developing plugins that are intended to 
  * be either run in-process or external to the ACR.
  * 
@@ -86,8 +86,8 @@ import java.util.List;
  */
 public class AcrPicoContainer implements PicoContainer {
 /**
- * A component adapter that wraps a service provided by the ACR
- *<p>
+ * A component adapter that wraps a service provided by the ACR.
+ *
  *Used in the <tt>AcrPicoContainer</tt>, but may also be used in other picocontainer implementations
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Aug-2005
  *
@@ -221,6 +221,9 @@ public class AcrPicoContainer implements PicoContainer {
 
 /* 
 $Log: AcrPicoContainer.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/08/12 08:45:16  nw
 souped up the javadocs
 

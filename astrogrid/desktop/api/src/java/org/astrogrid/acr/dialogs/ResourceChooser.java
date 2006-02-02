@@ -1,4 +1,4 @@
-/*$Id: ResourceChooser.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: ResourceChooser.java,v 1.3 2006/02/02 14:19:47 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,12 @@ package org.astrogrid.acr.dialogs;
 
 import java.net.URI;
 
-/**Service Interface to the  Resource Chooser Dialoge 
- * - a generalisation of the 'open/save file' browser, that also allows a myspace resource, or arbitrary URL to be selected
- * <p>
- * <img src="doc-files/myspacechooser.png">
- * <p>
+/** Prompt the user to select a local file / myspace resource / url by displaying a resource chooser dialogue.
+ *  
+ * This is a  generalisation of the 'open/save file' browser that also allows a myspace resource, or arbitrary URL to be selected.
+ * <br />
+ * <img src="doc-files/myspacechooser.png"/>
+ * <br />
  * @service  dialogs.resourceChooser
  * @see org.astrogrid.acr.astrogrid.Myspace
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
@@ -44,6 +45,9 @@ public interface ResourceChooser {
 
 /* 
  $Log: ResourceChooser.java,v $
+ Revision 1.3  2006/02/02 14:19:47  nw
+ fixed up documentation.
+
  Revision 1.2  2005/08/12 08:45:15  nw
  souped up the javadocs
 

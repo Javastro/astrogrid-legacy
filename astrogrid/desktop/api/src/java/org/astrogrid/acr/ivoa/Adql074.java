@@ -1,4 +1,4 @@
-/*$Id: Adql074.java,v 1.1 2005/09/12 15:21:43 nw Exp $
+/*$Id: Adql074.java,v 1.2 2006/02/02 14:19:47 nw Exp $
  * Created on 09-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.astrogrid.acr.ServiceException;
 
 import org.w3c.dom.Document;
 
-/** Service interface for working with adql expressions
+/** Routines for  with Astronomy Data Query Language (ADQL)
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Sep-2005
  *@service ivoa.adql074
  */
@@ -23,14 +23,14 @@ public interface Adql074 {
     
     /** convert ADQL/s to ADQL/x
      * 
-     * @param adqls query string
-     * @return equivalen adqlx (v 7.4)
+     * @param adqls query string (human readable)
+     * @return equivalent adqlx (xml, v 7.4)
      */
     Document  s2x(String adqls) throws ServiceException;
     /** convert ADQL/x to ADQL/s
      * 
-     * @param doc adqlx document (v 7.4)
-     * @return equivalent adql/s
+     * @param doc adqlx document (xml, v 7.4)
+     * @return equivalent adql/s (human readable)
      */
     String x2s(Document doc) throws ServiceException;
 
@@ -39,6 +39,9 @@ public interface Adql074 {
 
 /* 
 $Log: Adql074.java,v $
+Revision 1.2  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.1  2005/09/12 15:21:43  nw
 added stuff for adql.
  

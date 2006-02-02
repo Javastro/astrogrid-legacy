@@ -1,4 +1,4 @@
-/*$Id: ParameterBean.java,v 1.1 2005/08/25 16:59:44 nw Exp $
+/*$Id: ParameterBean.java,v 1.2 2006/02/02 14:19:48 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.net.URI;
 
-/** information bean for an application parameter.
- * <p>
+/** description of a single parameter for a remote application.
+ * 
  * NB - all fields, apart from <tt>name</tt> and <tt>type</tt> may be null
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
  *
@@ -57,7 +57,7 @@ public class ParameterBean  implements Serializable{
     public String getDescription() {
         return this.description;
     }
-    /** name of the parameter- as used in the generated tool document */
+    /** name of the parameter- as used in the generated invocation document */
     public String getName() {
         return this.name;
     }
@@ -134,6 +134,9 @@ public class ParameterBean  implements Serializable{
 
 /* 
 $Log: ParameterBean.java,v $
+Revision 1.2  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.1  2005/08/25 16:59:44  nw
 1.1-beta-3
  

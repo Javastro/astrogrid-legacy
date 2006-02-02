@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessListener.java,v 1.2 2005/11/11 10:09:01 nw Exp $
+/*$Id: RemoteProcessListener.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@ package org.astrogrid.acr.astrogrid;
 import java.net.URI;
 import java.util.Map;
 
-/** Listener interface to execution of remote processes
- * <p>
+/** Listener interface to execution of remote processes,
+ *
  * Can be used over javarmi by clients that wish to be notified of progress of remote processes
  * @since 1.3 
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
@@ -45,6 +45,9 @@ public interface RemoteProcessListener {
 
 /* 
 $Log: RemoteProcessListener.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/11/11 10:09:01  nw
 improved javadoc
 

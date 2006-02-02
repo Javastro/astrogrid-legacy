@@ -1,4 +1,4 @@
-/*$Id: RmiServer.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: RmiServer.java,v 1.3 2006/02/02 14:19:47 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.acr.system;
 
-/** Service Interface to the  JavaRMI interface to the ACR
- * <p>
+/**Access information about the JavaRMI interface to the ACR.
+ * 
  * No management functions - just query methods.
  * @service system.rmi
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
@@ -28,6 +28,9 @@ public interface RmiServer {
 
 /* 
 $Log: RmiServer.java,v $
+Revision 1.3  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.2  2005/08/12 08:45:15  nw
 souped up the javadocs
 

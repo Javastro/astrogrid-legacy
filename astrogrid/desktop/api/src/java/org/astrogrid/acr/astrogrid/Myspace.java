@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.8 2005/10/18 07:57:07 nw Exp $
+/*$Id: Myspace.java,v 1.9 2006/02/02 14:19:48 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,13 +21,15 @@ import java.net.URL;
 
 import java.io.InputStream;
 
-/** Service Interface to Myspace - a distributed storage system, AstroGrid's implementation of VOSpace
- * <p>
+/** Work with  Myspace - a distributed storage system, AstroGrid's implementation of VOSpace.
+ * 
  * All resources in myspace are uniquely identified by a myspace resource identifier - which is an URI of form
  *  * <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#<i>File-Path</i></tt>. However, for convenience methods in this interface also accept an
  * abridged form of reference - <tt>#<i>File-Path</i></tt> - this is resolved relative to the currently logged-in user. The abridged
  * form is more concise, and means hard-coded file references can be avoided if needed.   
- * 
+ * <br/>
+ * <b>NB</b>: At present this interface doesn't contain suficient functionality to work with myspace in a truly efficient manner. Expect a cleaner, more efficient interface
+ * to myspace to be added later. However this interface and it's current methods will remain available, and won't be deprecated. 
  * @see <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaGridAndWebServices#VO_Store_Proposal">IVOA VOStore</a>
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
   * @service astrogrid.myspace
@@ -35,9 +37,11 @@ import java.io.InputStream;
   * @see org.astrogrid.acr.dialogs.ResourceChooser
   * @see org.astrogrid.acr.astrogrid.NodeInformation
  */
+// divide myspace into separate interface into 2-3 levels - trivial, advanced, optimized, depending on use case.
+//  maybe one interface could be stateful - passing in a 'current position' object as first arg.
 public interface Myspace {
-    /** retreive the uri of the currently logged-in user's home folder in myspace 
-     * <p>
+    /** retreive the identifier of the current user's home folder in myspace. 
+     * 
      * Each user has a single root folder. this method returns the name of it.
      * @return uri of the home folder - typically has form  <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#</tt>
      * @throws SecurityException if authentication / authorization fails
@@ -45,7 +49,7 @@ public interface Myspace {
      * @throws NotFoundException if there is no home folder associated with the user
      */
     URI getHome() throws SecurityException, ServiceException, NotFoundException;
-   /** verify whether a myspace resource exists
+   /** test whether a myspace resource exists.
     * 
     * @param ivorn uri to check (full or abridged form)
     * @return true if the resource exists
@@ -56,8 +60,9 @@ public interface Myspace {
     */
     boolean exists(URI ivorn) throws ServiceException, SecurityException, InvalidArgumentException;
 
-    /** access metadata about a myspace resource
-     * 
+    
+    /** access metadata about a myspace resource.
+     * <b>NB: </b> At the moment, this is a costly operation.
      * @param ivorn resource to investigate
      * @return a beanful of information
      * @throws ServiceException if error occurs calling the service
@@ -69,7 +74,9 @@ public interface Myspace {
     NodeInformation getNodeInformation(URI ivorn) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException;
 
 // creation    
-    /** create a new myspace file. any parent folders that are missing will be created too.
+    /** create a new myspace file. 
+     * 
+     * Any parent folders that are missing will be created too.
      * 
      * @param ivorn the resource to create.
      * @throws ServiceException if error occurs calling the service
@@ -92,7 +99,9 @@ public interface Myspace {
      */
     public void createFile(URI ivorn) throws ServiceException, SecurityException, InvalidArgumentException;
     
-    /** create a new myspace folder. any parent folders that are missing will be created too.
+    /** create a new myspace folder.
+     * 
+     * Any parent folders that are missing will be created too.
      * 
      * @param ivorn the resource to create.
      * @throws ServiceException if error occurs calling the service
@@ -105,7 +114,7 @@ public interface Myspace {
 
 // node based creation
     
-    /** create a child folder of this resource
+    /** create a child folder of  the specified resource.
      * @param parentIvorn parent of the new resource (must be a folder)
      * @param name name of the new folder
      * @return the ivorn of the new folder
@@ -118,7 +127,7 @@ public interface Myspace {
      */
     public URI createChildFolder(URI parentIvorn, String name) throws NotFoundException, ServiceException, SecurityException, InvalidArgumentException, NotApplicableException;
 
-    /** create a child file of this resource
+    /** create a child file of the specified resource.
      * @param parentIvorn parent of the new resource (must be a folder)
      * @param name name of the new file
      * @return the ivorn of the new file
@@ -134,7 +143,7 @@ public interface Myspace {
 
     //navigation
     
-    /** retrieve the URI of the parent of a myspace resource
+    /** retrieve the ID  of the parent of a myspace resource
      * @param ivorn uri of the resource to find parent for
      * @return uri of the parent
      * @throws NotFoundException  if <code>ivorn</code> does not exist
@@ -170,6 +179,7 @@ public interface Myspace {
 
    /** list the node information objects for the children ( files and folders)  of a myspace folder   
     * 
+    * <b>NB: </b> Expensive operation at present.
     * @param ivorn uri of the folder to inspect
     * @return an array of the node information objects.
     * @throws ServiceException if an error occurs calling the service
@@ -178,8 +188,8 @@ public interface Myspace {
     * @throws InvalidArgumentException if <code>ivorn</code> is not a folder
     */
    NodeInformation[] listNodeInformation(URI ivorn) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
-   /** refresh the information held on a myspace resource with the server
-    * <p>
+   /** refresh the metadata held about  a myspace resource with the server.
+    * <br/>
     * For performance, metadata about myspace resources is used in a LRU cache. This method forces the ACR to re-query the myspace server
     * about this resource. 
  * @param ivorn resource to refresh
@@ -226,8 +236,8 @@ URI rename(URI srcIvorn, String newName) throws NotFoundException, SecurityExcep
    */
    URI move(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException, NotApplicableException;
 
-   /** relocate this resource to another store.
-    * <p>
+   /** relocate a myspace resource to a different store.
+    * 
     * The relocated file remains in the same position in the user's myspace filetree. However, this method moves the data associated with the 
     * file from one filestore to another.
  * @param srcIvorn uri of the resource to relocate
@@ -241,7 +251,7 @@ URI rename(URI srcIvorn, String newName) throws NotFoundException, SecurityExcep
  */
 void changeStore(URI srcIvorn, URI storeIvorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
 
-   /**take a copy of a resource 
+   /**make a copy of a resource 
  * @param srcIvorn uri of the resource to copy
  * @param newParentIvorn uri of the folder to copy to 
  * @param newName name to copy to
@@ -255,9 +265,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
    
    
     
-    /** read the content of a myspace resource directly .
-     * <p>
-     * NB: not a good idea for large files. in this case use {@link #copyContentToURL(URI, URL) } or {@link #getReadContentURL(URI) }
+    /** read the content of a myspace resource directly.
+     * 
+     * <b>NB:</b> not a good idea for large files. in this case use {@link #copyContentToURL(URI, URL) } or {@link #getReadContentURL(URI) }
      * @param ivorn resource to read
      * @return content of this resource (as a string)
      * @throws NotFoundException if this resource does not exist.
@@ -269,9 +279,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
     String read(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
     
-    /** Write data to a myspace resource
-     * <p>
-     * NB : not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
+    /** Write data to a myspace resource.
+     * 
+     * <b>NB: </b> not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
      * @param ivorn resource to write to
      * @param content the data to write
      * @throws InvalidArgumentException is the resource is malformed
@@ -282,9 +292,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
     void write(URI ivorn, String content) throws InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
     
     
-    /** read the content of a myspace resource directly
-     * <p>
-     * NB: not a good idea for large files. in this case use {@link #copyContentToURL(URI, URL) } or {@link #getReadContentURL(URI) }
+    /** read the binary content of a myspace resource directly.
+     * 
+     * <b>NB: </b> not a good idea for large files. in this case use {@link #copyContentToURL(URI, URL) } or {@link #getReadContentURL(URI) }
      * @param ivorn resource to read
      * @return byte array of the contents of this resource
      * @throws NotFoundException if this resource does not exist.
@@ -296,9 +306,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
     byte[] readBinary(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
     
     
-    /**Write data to a myspace resource
-     * <p>
-     * NB : not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
+    /**Write binary data to a myspace resource.
+     *
+     *<b>NB: </b> not a good idea for large files. In this case use {@link #copyURLToContent(URL, URI) }
      * @param ivorn resource to write to
      * @param content the data to write
      * @throws InvalidArgumentException is the resource is malformed
@@ -308,7 +318,7 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      */
     void writeBinary(URI ivorn,byte[] content) throws InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
     
-    /** access a URL from which can be read contents (i.e. data) of a myspace resource
+    /** compute a URL which can then be read to access the contents (data) of a myspace resource.
      * @param ivorn resource to read
      * @return a url from which the contents of the resource can be read
      * @throws NotFoundException if the resource does not exist
@@ -333,8 +343,8 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      */
     URL getReadContentURL(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
 
-    /** access a URL to which can be written the  contents (i.e. data) of a myspace resource
-     * <p>
+    /** compute  a URL which can then be written to set the contents (i.e. data) of a myspace resource.
+     *
      * @param ivorn resource to write to
      * @return a url to  which the contents of the resource can be written
      * @throws NotFoundException if the resource does not exist
@@ -379,7 +389,7 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 //    
     /**
      * Notify the filemanager  server that the data for a filestore node has been changed. 
-     * <p>
+     * 
      * This method must be called after storing data in a myspace file via the URL returned by {@link #getWriteContentURL}.
      * There's no need to call this method when storing data using any other method
      * @param ivorn the myspace resource just written to
@@ -394,7 +404,7 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
     void transferCompleted(URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
     
     
-    /** write the contents (data) of a myspace resource out to a URL location
+    /** Copy the contents (data) of a resource out of myspace into a URL location.
      * @param ivorn the myspace resource to write out
      * @param destination a writable URL - file:/, http:/ or ftp:/ protocol
      * @throws NotFoundException if the myspace resource does not exist
@@ -405,7 +415,7 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      */
     void copyContentToURL(URI ivorn, URL destination) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
 
-    /** write the contents (data) of a URL location into a myspace resource
+    /** Copy the contents (data) of a URL location into a myspace resource
      * @param src url to read data from - file:/, http:/ or ftp:/ protocol.
      * @param ivorn the myspace resource to store the data in.
      * @throws NotFoundException if the folder containing the new myspace resource does not exist
@@ -431,6 +441,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.9  2006/02/02 14:19:48  nw
+ fixed up documentation.
+
  Revision 1.8  2005/10/18 07:57:07  nw
  fixed documentation
 

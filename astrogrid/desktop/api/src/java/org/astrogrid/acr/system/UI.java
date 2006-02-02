@@ -1,4 +1,4 @@
-/*$Id: UI.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: UI.java,v 1.3 2006/02/02 14:19:47 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,10 @@ package org.astrogrid.acr.system;
 
 
 
-/** Service Interface to main user interface.
- * <p>
- * Show or Hide the main user interface, display messages in the status bar<p>
- * <img src="doc-files/workbench.png">
+/** Control the main user interface of the workbench.
+ * 
+ * Show or Hide the main user interface, display messages in the status bar<br />
+ * <img src="doc-files/workbench.png"/>
  * @service system.ui
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
  *
@@ -49,6 +49,9 @@ public interface UI{
 
 /* 
  $Log: UI.java,v $
+ Revision 1.3  2006/02/02 14:19:47  nw
+ fixed up documentation.
+
  Revision 1.2  2005/08/12 08:45:15  nw
  souped up the javadocs
 

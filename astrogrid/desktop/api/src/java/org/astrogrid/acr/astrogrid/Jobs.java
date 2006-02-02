@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.6 2005/11/24 01:18:42 nw Exp $
+/*$Id: Jobs.java,v 1.7 2006/02/02 14:19:48 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,30 +19,31 @@ import org.w3c.dom.Document;
 
 import java.net.URI;
 
-/** Service Interface to the Distributed Workflow System (JES)
- * <p>
- * For now, an interface to a single JES server  - which is configured in the system properties for the ACR
+/** Execute and control workflows on remote job servers.
+ *
+ *
+ * For now, an interface to a single JES server  - which is configured in the system properties for the ACR.
  * In future, JES servers should be registered, and a default server associated with a user in a community .
  * It may also be necessary to be able to browse a selection of job servers, and maybe aggregate a user's jobs from a set of servers.
- * <p>
+ * <br />
  * Each workflow submitted is assigned a globally-unique identifier. This takes the form of a URI, but should be treated as opaque - the structure is
  * liable to change  once JES servers are registered.
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/jes/userguide-architecture.html">Workflow Userguide</a> 
  * @see <a href="http://wiki.astrogrid.org/bin/view/Astrogrid/JesScriptingFAQ">Workflow Scripting FAQ</a> 
- * <br>
+ * <br/>
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/Workflow.html">Workflow Schema-Documentation</a>
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/ExecutionRecord.html">Execution Record Schema-Document</a>
  * @see <a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">XSD Schemas</a>
- * <br>
+ * <br/>
  * @see <a href="doc-files/example-workflow.xml">Example workflow</a>
  * @see <a href="doc-files/example-workflow-transcript.xml">Example execution transcript</a>
  * @see <a href="doc-files/example-workflow-transcript.html">Html-formatted execution transcript</a>
- * <br>
+ * <b/>
  * @see org.astrogrid.acr.astrogrid.Applications Information about executing single applications
  * @see org.astrogrid.acr.astrogrid.Myspace Information about distributed file storage
  * @see org.astrogrid.acr.astrogrid.RemoteProcessManager for more general process management - methods
  * in this class are convenicne wrapper around operations in <tt>RemoteProcessManager</tt>
- * <br>
+ * <br/>
  * @see org.astrogrid.acr.ui.JobMonitor
  * @see org.astrogrid.acr.ui.WorkflowBuilder
  * @see org.astrogrid.acr.astrogrid.ExecutionInformation
@@ -51,14 +52,14 @@ import java.net.URI;
  */
 public interface Jobs {
     /**
-     * list the jobs for the current user 
+     * list the jobs for the current user.
      * @return list of identifiers for the user's jobs (both current and completed jobs )
      * @throws ServiceException if an error occurs while talking to the server
     * 
      */   
     URI[] list() throws ServiceException;
     
-    /** list summaries of the jobs for the current user 
+    /** list summaries of the jobs for the current user. 
      * @return a beanful of information on each job
      * @throws ServiceException if an error occurs while talking to the server
      * @xmlrpc returns a struct. see {@link ExecutionInformation} for details of keys available.
@@ -66,7 +67,7 @@ public interface Jobs {
      * */
     ExecutionInformation[] listFully() throws ServiceException;
 
-    /** create a new initialized workflow document, suitable as a starting point for building workflows
+    /** create a new initialized workflow document, suitable as a starting point for building workflows.
      * 
      * @return a workflow document - a <tt>workflow</tt> document in the the <tt>http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
      * @throws ServiceException if an inavoidable error ocurs.
@@ -75,15 +76,14 @@ public interface Jobs {
     Document createJob() throws ServiceException;
     
     
-    /** wrap a tool document, to create a single-step workflow
+    /** wrap a remote application invocation document, to create a single-step workflow.
      * @param taskDocument - a task document in the <tt> http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
      *  @return a workflow document with a single step that executes the parameter task - a <tt>workflow</tt> document in the the <tt>http://www.astrogrid.org/schema/AGWorkflow/v1</tt> namespace
      * @throws ServiceException if an inavoidable error ocurs.
-     * @since 1.3
-     * 
+     * @since 1.3    
      */
     Document wrapTask(Document taskDocument) throws ServiceException;
-    /** retrieve  the execution transcript for a job.
+    /** retrieve the execution transcript for a job.
      * 
      * @param jobURN the identifier of the job to retrieve
      * @return a workflow transcript  document - A <tt>workflow</tt> document in
@@ -97,7 +97,7 @@ public interface Jobs {
      */
      Document getJobTranscript(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
-  /** retrive summary for a job
+  /** retrive summary for a job.
    * 
    * @param jobURN the identifier of the job to summarize
    * @return information about this job.
@@ -110,7 +110,7 @@ public interface Jobs {
     ExecutionInformation getJobInformation(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
 
-    /** cancel the exeuciton of a running job
+    /** cancel the exeuciton of a running job.
      * 
      * @param jobURN identifier of the job to cancel.
      * @throws ServiceException if an error occurs while connecting to the server
@@ -121,7 +121,7 @@ public interface Jobs {
     void cancelJob(URI jobURN) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
 
   
-    /** delete all record of a job from the job server
+    /** delete all record of a job from the job server.
      * 
      * @param jobURN identifier of the job to delete 
      * @throws NotFoundException if the job could not be found
@@ -131,10 +131,10 @@ public interface Jobs {
     void deleteJob(URI jobURN) throws NotFoundException, ServiceException, SecurityException;
 
  
-    /** submit a workflow for execution 
+    /** submit a workflow for execution. 
      * 
      * @param workflow workflow document to submit
-     * @return a new unique identifier for this job 
+     * @return a unique identifier for this new job 
      * @throws ServiceException if an error occurs while connecting to server
      * @throws SecurityException if the user is not permitted to submit this job
      * @throws InvalidArgumentException if the workflow document is invalid or malformed
@@ -142,10 +142,10 @@ public interface Jobs {
      */
     URI submitJob(Document workflow) throws ServiceException, SecurityException, InvalidArgumentException;
 
-    /** submit a workflow (stored in a file) for execution 
+    /** submit a workflow (stored in a file) for execution. 
      * 
      * @param workflowReference url  refernce to the workflow document to submit (may be file://, http://, ftp:// or ivo:// - a myspace reference.)
-     * @return a new unique identifier for this job.
+     * @return a unique identifier for this new job.
      * @throws ServiceException if an error occurs while connecting to server
      * @throws SecurityException if the user is not permitted to submit this job.
      * @throws InvalidArgumentException if the workflow document is invalid or inaccessible.
@@ -156,6 +156,9 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.7  2006/02/02 14:19:48  nw
+ fixed up documentation.
+
  Revision 1.6  2005/11/24 01:18:42  nw
  merged in final changes from release branch.
 

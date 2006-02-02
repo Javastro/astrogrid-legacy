@@ -1,4 +1,4 @@
-/*$Id: Coordinate.java,v 1.2 2005/11/23 19:11:42 jdt Exp $
+/*$Id: Coordinate.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.cds;
 
 import org.astrogrid.acr.ServiceException;
 
-/** Interface to CDS's Astronomical Coordinate XML Web Service
+/** Astronomical Coordinate Web Service, from CDS
  * @author CDS
  * @see http://cdsweb.u-strasbg.fr/cdsws/astroCoo.gml
  * @service cds.coordinate
@@ -79,6 +79,9 @@ public interface Coordinate {
 
 /* 
 $Log: Coordinate.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/11/23 19:11:42  jdt
 Removed some bad chars that were stopping the build on Windows.
 

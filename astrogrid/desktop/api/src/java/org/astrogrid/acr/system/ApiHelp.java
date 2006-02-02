@@ -1,4 +1,4 @@
-/*$Id: ApiHelp.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: ApiHelp.java,v 1.3 2006/02/02 14:19:47 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,9 @@ package org.astrogrid.acr.system;
 import org.astrogrid.acr.NotFoundException;
 
 
-/** Service Interface to documentation on the  services and methods available in the ACR.
- * <p>
- * Returns type information  applicable for xmlrpc only at moment
+/** Access documentation on the functions available in the ACR..
+ * 
+ * Returns type information  applicable for xmlrpc only at moment. For JavaRMI consult the javadoc (available from the workbench in-program help) 
  * @todo generalize to return full type info, etc.
  * @service system.apihelp
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Jun-2005
@@ -87,6 +87,9 @@ public interface ApiHelp {
 
 /* 
  $Log: ApiHelp.java,v $
+ Revision 1.3  2006/02/02 14:19:47  nw
+ fixed up documentation.
+
  Revision 1.2  2005/08/12 08:45:15  nw
  souped up the javadocs
 

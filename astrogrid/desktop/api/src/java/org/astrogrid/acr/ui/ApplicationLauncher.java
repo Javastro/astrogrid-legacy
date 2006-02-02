@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncher.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: ApplicationLauncher.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,9 @@
 **/
 package org.astrogrid.acr.ui;
 
-/** Interface to the Application Launcher GUI
- * <p>
- * <img src="doc-files/applauncher.png">
+/**Control the  Application Launcher GUI.
+ * 
+ * <img src="doc-files/applauncher.png"/>
  * @service userInterface.applicationLauncher
  * @author Noel Winstanley nw@jb.man.ac.uk 12-May-2005
  *@see org.astrogrid.acr.astrogrid.Applications
@@ -27,6 +27,9 @@ public interface ApplicationLauncher {
 
 /* 
 $Log: ApplicationLauncher.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/08/12 08:45:15  nw
 souped up the javadocs
 

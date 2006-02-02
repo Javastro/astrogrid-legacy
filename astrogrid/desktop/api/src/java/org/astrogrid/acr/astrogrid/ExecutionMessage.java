@@ -1,4 +1,4 @@
-/*$Id: ExecutionMessage.java,v 1.2 2005/11/11 10:09:01 nw Exp $
+/*$Id: ExecutionMessage.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.util.Date;
 
-/** Information bean describing a single message returned by a running remote process - e.g.
- * a workflow or cea task
+/** A single message returned by a remote process - e.g.
+ * a workflow job or remote application
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
  */
 public class ExecutionMessage implements Serializable{
@@ -36,11 +36,13 @@ public class ExecutionMessage implements Serializable{
     private final Date timestamp;
     private final String source;
 
-    /** access the message body - text */
+    /** the message body - text */
     public String getContent() {
         return this.content;
     }
-    /** access the level/ importance of the message - expected values <tt>information|warning|error</tt>*/
+    /** the level/ importance of the message.
+     * 
+     * Expected values <tt>information|warning|error</tt>*/
     public String getLevel() {
         return this.level;
     }
@@ -48,11 +50,13 @@ public class ExecutionMessage implements Serializable{
     public String getSource() {
         return this.source;
     }
-    /** current status of the process -expected values <tt>unknown|pending|initializing|running|completed|error</tt>*/
+    /** the status of the process when this message was sent.
+     * 
+     * Expected values <tt>unknown|pending|initializing|running|completed|error</tt>*/
     public String getStatus() {
         return this.status;
     }
-    /** access time this method was sent */
+    /** the time this method was sent */
     public Date getTimestamp() {
         return this.timestamp;
     }
@@ -61,6 +65,9 @@ public class ExecutionMessage implements Serializable{
 
 /* 
 $Log: ExecutionMessage.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/11/11 10:09:01  nw
 improved javadoc
 

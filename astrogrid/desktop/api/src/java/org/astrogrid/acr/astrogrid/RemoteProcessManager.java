@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManager.java,v 1.3 2005/11/24 01:18:42 nw Exp $
+/*$Id: RemoteProcessManager.java,v 1.4 2006/02/02 14:19:48 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,10 +20,10 @@ import org.w3c.dom.Document;
 import java.net.URI;
 import java.util.Map;
 
-/**Manages the execution , monitoring, and control of remote processes.
- * <p>
- * Generalizes functionality in {@link org.astrogrid.acr.astrogrid.Jobs} and {@link org.astrogrid.acr.astrogrid.Applications}
- * and provides additional features - notably ability to register callbacks for progress notifications.
+/** a general manager for the execution , monitoring, and control of all remote processes.
+ *
+ * RemoteProcessManager unifies the  functionality in {@link org.astrogrid.acr.astrogrid.Jobs} and {@link org.astrogrid.acr.astrogrid.Applications}
+ * and provides additional features - notably ability to register callbacks for progress notifications. It is still valid to use the <tt>Jobs</tt> or <tt>Applications</tt>
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
  *@since 1.3
  */
@@ -35,7 +35,7 @@ public interface RemoteProcessManager {
     URI[] list() throws ServiceException;
     
     /** Submit a document for execution.
-     * <p>
+     * 
      * No particular  server is specified - the system will choose a suitable server.
      * @param document the document to execute - a program / script / workflow / tool document
      * @return  a new unique execution id 
@@ -113,7 +113,7 @@ public interface RemoteProcessManager {
      * */
     ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException;
     
-    /** return an array of messages received from a remote process 
+    /** return the messages received from a remote process 
      * 
      * @param executionId id of process to query/
      * @return an array of all messages received from process     
@@ -134,7 +134,7 @@ public interface RemoteProcessManager {
     Map getResults(URI executionid) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;               
     
     /** convenience method to retreive a single result from an application executioin.
-     * <p>
+     * 
      * equaivalent to <tt>getResults(execId).get(resultName)</tt>, but may be more convenient from some scripting languages, or cases
      * where there's only a single result returned.
      * @param executionId id of the application to query
@@ -165,6 +165,9 @@ public interface RemoteProcessManager {
 
 /* 
 $Log: RemoteProcessManager.java,v $
+Revision 1.4  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.3  2005/11/24 01:18:42  nw
 merged in final changes from release branch.
 

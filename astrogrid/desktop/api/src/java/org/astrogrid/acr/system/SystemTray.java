@@ -1,4 +1,4 @@
-/*$Id: SystemTray.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: SystemTray.java,v 1.3 2006/02/02 14:19:47 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
  **/
 package org.astrogrid.acr.system;
 
-/**  Service Interface to the ACR icon in the Desktop system tray 
- * <p>
- * can display popup alert messages in the notification area, and control the progress indicator.
- * <p>
+/** Control the  ACR icon in the Desktop system tray. 
+ * 
+ * Can display popup alert messages in the notification area, and control the progress indicator.
+ * <br/>
  * Only supported on some operating systems - windows and some flavours of unix. If not supported on the current OS,
  * {@link org.astrogrid.acr.builtin.ACR#getService(Class)} will throw a {@link org.astrogrid.acr.NotFoundException} when attempting to retreive this service.
  * @service system.systemtray
@@ -47,6 +47,9 @@ public interface SystemTray {
 
 /* 
  $Log: SystemTray.java,v $
+ Revision 1.3  2006/02/02 14:19:47  nw
+ fixed up documentation.
+
  Revision 1.2  2005/08/12 08:45:15  nw
  souped up the javadocs
 

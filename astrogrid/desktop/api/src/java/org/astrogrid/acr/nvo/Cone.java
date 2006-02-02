@@ -1,4 +1,4 @@
-/*$Id: Cone.java,v 1.1 2005/10/18 07:58:21 nw Exp $
+/*$Id: Cone.java,v 1.2 2006/02/02 14:19:48 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 import java.net.URI;
 import java.net.URL;
 
-/** Interface for querying Cone-search services
+/** Query  catalogs using Cone-search services
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
  * @service nvo.cone
  * @since 1.3
@@ -49,8 +49,8 @@ public interface Cone {
      */
     URL addOption(URL coneQuery, String optionName, String optionValue) throws InvalidArgumentException;
     
-    /** execute a cone query
-     * <p>
+    /** execute a cone query.
+     * 
      * Convenience method - just performs a 'GET' on the query URL - many programming languages
      * support this themselves
      * @param coneQuery query url to execute
@@ -70,9 +70,9 @@ public interface Cone {
     void saveResults(URL coneQuery, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
     
     /** helper method - returns an ADQL query that should be passed to a registry to list all available 
-     * siap services
-     * <p>
-     * can be used as a starting point for building filters, etc
+     * siap services.
+     *
+     * Can be used as a starting point for building filters, etc
      * @return an adql query string
      */
     String getRegistryQuery();
@@ -81,6 +81,9 @@ public interface Cone {
 
 /* 
 $Log: Cone.java,v $
+Revision 1.2  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.1  2005/10/18 07:58:21  nw
 added first DAL interfaces
  

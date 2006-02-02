@@ -11,14 +11,14 @@ import org.astrogrid.acr.ServiceException;
 
 import org.w3c.dom.Document;
 /**
- * This XML Web Service resolves a name which is present in , Simbad and/or NED and/or VizieR.
+ * Resolve object  names to position by querying  Simbad and/or NED and/or VizieR.
  * @see http://cdsweb.u-strasbg.fr/cdsws/name_resolver.gml
  * @author CDS
  *@service cds.sesame
  */
 public interface Sesame {
 
-    /** resolve a name
+    /** resolve a name to position.
   * @param name the name to resolve
      * @param resultType
      * <pre>
@@ -31,7 +31,7 @@ public interface Sesame {
      * @throws ServiceException
      */
     public java.lang.String sesame(java.lang.String name, java.lang.String resultType)throws ServiceException;
-    /** resolve a name
+    /** resolve a name, selecing which services to use.
   * @param name the name to resolve
      * @param resultType      * <pre>
      *           u = usual (corresponding to the deprecated Sesame(String name) output)

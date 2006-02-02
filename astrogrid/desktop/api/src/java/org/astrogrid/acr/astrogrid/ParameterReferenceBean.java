@@ -1,4 +1,4 @@
-/*$Id: ParameterReferenceBean.java,v 1.1 2005/08/25 16:59:44 nw Exp $
+/*$Id: ParameterReferenceBean.java,v 1.2 2006/02/02 14:19:48 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
 
-/** Description of a parameter occuring in an interface to a cea application
+/** Description of a parameter occuring in an interface to a remote application
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
  *@see org.astrogrid.acr.astrogrid.InterfaceBean;
  *@see org.astrogrid.acr.astrogrid.ParameterBean
@@ -41,7 +41,7 @@ public class ParameterReferenceBean implements Serializable {
     public int getMin() {
         return this.min;
     }
-    /** name of the parameter - a reference name of the parameterBean */
+    /** name of the parameter - should be used as a reference  of the corresponding parameterBean */
     public String getRef() {
         return this.ref;
     }
@@ -62,6 +62,9 @@ public class ParameterReferenceBean implements Serializable {
 
 /* 
 $Log: ParameterReferenceBean.java,v $
+Revision 1.2  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.1  2005/08/25 16:59:44  nw
 1.1-beta-3
  

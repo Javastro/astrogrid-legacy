@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.5 2005/11/10 12:13:52 nw Exp $
+/*$Id: Applications.java,v 1.6 2006/02/02 14:19:48 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,32 +21,32 @@ import org.w3c.dom.Document;
 import java.net.URI;
 import java.util.Map;
 
-/** Service Interface to remote Compute and Data Query services - (CEA)
+/**  Work with remote applications -  Compute and Data Query services.
  * 
- * <p>
- * The Common Execution Architecture provides a uniform way to describe and execute astronomical applications and data services on the VO.
+ * 
+ * The Common Execution Architecture (CEA) provides a uniform way to describe and execute astronomical applications and data services on the VO.
  * This interface provides methods to
  * <ul>
- * <li>Discover available applications
- * <li>Build invocation documents containing the correct parameters
- * <li>Submit invocation documents for execution on remote servers
- * <li>Monitor progress and retreive results of execution
+ * <li>Discover available applications</li>
+ * <li>Build invocation documents containing the correct parameters</li>
+ * <li>Submit invocation documents for execution on remote servers</li>
+ * <li>Monitor progress and retreive results of execution</li>
  * </ul>
  * 
- * <p>
- * Each new application invocation is assigned a new globally unique id. As with Job execution identifiers, they should be treated as opaque objects - the internal structure is still liable to change.
+ * Each new application invocation is assigned a new globally unique id.
+ *  These id's  should be treated as opaque objects - the internal structure is still liable to change.
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/applications/design/CEADesignIVOANote.html">Common Execution Architecture - IVOA Proposal</a>
- * <br>
+ * <br/>
 * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/Workflow.html#element_tool">Tool Document Schema-Documentation</a>
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameter">Value Parameter Element Schema-Documentation</a>
  * @see <a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">XSD Schemas</a>
- * <br>
+ * <br/>
  * @see <a href="doc-files/run-app-demo.py">Calling CEA services - example python script</a>
  * @see <a href="doc-files/runAppDemo.groovy">Calling CEA services - example groovy script</a>
  * @see <a href="../dialogs/doc-files/example-tool.xml"> Example Tool Document</a>
- * <br> 
+ * <br/> 
  * @see org.astrogrid.acr.ui.ApplicationLauncher
  * @see org.astrogrid.acr.astrogrid.ApplicationInformation
  * @see org.astrogrid.acr.dialogs.ToolEditor
@@ -54,7 +54,7 @@ import java.util.Map;
  * @service astrogrid.applications
  */
 public interface Applications {
-    /** list registered applications 
+    /** list remote applications available in the registry. 
      * @return a list of the registry identifiers of available applications
      * @throws ServiceException if error occurs while talking to server 
      * @see Registry#getRecord(URI)  
@@ -69,16 +69,17 @@ public interface Applications {
     /** @deprecated - use {@link #getRegistryQuery} */
     String getQueryToListApplications(); 
     
-    /** helper method that returns the ADQL query that should be passed to the registry to
+    /** helper method - returns the ADQL query that should be passed to the registry to
      * list all available applications.
-     * <p>
+     * 
      * can be used as a starting point to build up filters, etc.
      * @return an adql query string.
+     * @see Registry
      * @since 1.3
      */ 
     String getRegistryQuery();
        
-    /** get information for a specific application 
+    /** get information for a specific application from the registry. 
      * @param applicationName name of the application to hunt for
      * @return details of this application
      * @throws ServiceException if error occurs when talking to the sever
@@ -88,7 +89,7 @@ public interface Applications {
      * */
     ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
    
-    /** access formatted iniformation about an application 
+    /** get formatted information about an application 
  * @param applicationName
  * @return formatted, human-readable information about the application
      * @throws ServiceException if error occurs when talking to the sever
@@ -99,8 +100,8 @@ public interface Applications {
     String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
     
  
-   /** Create a template tool document, suitable for invoking this application
-    * <p>
+   /** create a template invocation document for a particular application.
+    * 
     * Examines the registry entry for this application, and constructs a template document containing fields for the required input and output parameters. 
  * @param applicationName the application to create the template for
  * @param interfaceName interface of this application to create a template from.
@@ -116,12 +117,12 @@ public interface Applications {
             throws ServiceException, NotFoundException, InvalidArgumentException;
     
     
-    /** Create a template tool object, suitable for invoking this application
-     * <p>
+    /** create a template invocation datastucture for a particular application.
      * 
     * Examines the registry entry for this application, and constructs a template document containing fields for the required input and output parameters. 
-    * <p>
-     * This method is provided for convenience of constructing invocations in scripting languages with minimal
+    * <br />
+    * The datastructure returned is equivalent to the document returned by {@link #createTemplateDocument(URI, String)} - 
+     * this is a convenience method for scripting languages with minimal
      * xml abilities. 
   * @param applicationName the application to create the template for
   * @param interfaceName interface of this application to create a template from.
@@ -135,8 +136,8 @@ public interface Applications {
      Map createTemplateStruct(URI applicationName, String interfaceName)
              throws ServiceException, NotFoundException, InvalidArgumentException;
    
-     /** convert a tool document to a tool structure 
-      * <p>
+     /** convert a invocation document to a invocation structure. 
+      * <br />
       * Translates an invocation document between two equvalent forms - a datastructure and a document
      * @param document a tool document
      * @return the equvalent tool structure
@@ -146,7 +147,7 @@ public interface Applications {
    Map convertDocumentToStruct(Document document) throws InvalidArgumentException ;
     
     
-    /** convert a tool structure to the equivalent document 
+    /** convert a invocation structure to the equivalent document. 
      * 
      * @param struct a tool structure
      * @return the equivalent tool document
@@ -155,8 +156,8 @@ public interface Applications {
      * */
    Document convertStructToDocument(Map struct) throws InvalidArgumentException ;
     
-  /**Validate a tool document against the  application's description
-   * <p>
+  /**Validate an invocation document against the  application's description
+   * <br />
    * Verifies that all required parameters are present.  
  * @param document tool document to validate
  * @throws ServiceException if fails to communicate with server
@@ -164,7 +165,7 @@ public interface Applications {
  * @see #createTemplateDocument(URI, String)*/
     void validate(Document document) throws ServiceException, InvalidArgumentException;
 
-    /** Validate a tool document (referenced by url) against 
+    /** Validate an invocation document (referenced by url) against 
                 an application description 
      * @param applicationName name of the application to validate against.
      * @param documentLocation location of a resource containing the tool document to validate
@@ -175,7 +176,9 @@ public interface Applications {
     void validateStored(URI documentLocation)
             throws ServiceException, InvalidArgumentException, NotFoundException;
     
-    /** list the CEA servers that provides a particular application 
+    /** list the remote servers that provides a particular application.
+     * 
+     *  (It's possible, for CEA especially, that an application may be provided by multiple servers)
      * @param applicationId registry identifier of the application to search servers for.
      * @return list of registry summaries of cea servers that support this application
      * @throws ServiceException if fail to communicate with server
@@ -184,9 +187,9 @@ public interface Applications {
     ResourceInformation[] listProvidersOf(URI applicationId) throws ServiceException, NotFoundException, InvalidArgumentException;
      
     
-    /** Submit a tool (invocation) document for execution.
-     * <p>
-     * No particular CEA server is specified - the system will choose a suitable CEA server.
+    /** submit an invocation document for execution..
+     * 
+     * No particular remote server is specified - the system will select a suitable one.
      * @param document tool document to execute
      * @return  a new unique execution id 
      * @throws ServiceException if error occurs communicating with servers
@@ -194,71 +197,66 @@ public interface Applications {
      * @throws NotFoundException if no provider of this application is found
      * @throws InvalidArgumentException if the tool document is invalid in some way
      * @see #submitStored(URI)
-     * @see #submitTo(Document, URI)
-     * @deprecated - See {@link RemoteProcessManager}
+     * @see #submitTo(Document, URI)    
      * */
     URI submit(Document document) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;
     
-    /** Submit a tool document for execution  on a named CEA server 
+    /** submit an invocation document for execution  on a named remote server.
+     *  
      * @param document tool document to execute
-     * @param server CEA server to execute on
+     * @param server remote server to execute on
      * @return  a new unique execution id 
-     * @throws NotFoundException if the specified CEA server could not be found
-     * @throws InvalidArgumentException if the tool document is malformed, or the server is inacessible.
+     * @throws NotFoundException if the specified remote server could not be found
+     * @throws InvalidArgumentException if the invocation document is malformed, or the server is inacessible.
      * @throws ServiceException  if an error occurs communicating with the server
      * @throws SecurityException if user is prevented from executing this application.
      * @see #submitStored(URI)
      * @see #submitStoredTo(URI, URI)
-     * @deprecated - See {@link RemoteProcessManager}
      *      * */
     URI submitTo(Document document, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException;
 
-    /** variant of {@link #submit} where tool document is stored somewhere and referenced by URI 
+    /** a variant of {@link #submit} where invocation document is stored somewhere and referenced by URI. 
      * @param documentLocation pointer to tool document - may be file:/, http://, ftp:// or ivo:// (myspace) protocols 
      * @return a new unique execution id
      * @throws InvalidArgumentException if the tool document is inacessible
      * @throws ServiceException if error occurs communicating with servers
      * @throws SecurityException if user is prevented from executing this application
      * @throws NotFoundException if no provider of this application is found
-     * @deprecated - See {@link RemoteProcessManager}     * 
      */
      URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException ;
 
-    /** variant of {@link #submitTo} where tool document is referenced by URL 
+    /** variant of {@link #submitTo} where tool document is referenced by URI. 
      *      * @param documentLocation pointer to tool document - may be file:/, http://, ftp:// or ivo:// (myspace) protocols 
-     * @param server CEA server to execute on
+     * @param server remote server to execute on
      * @return a new unique execution id
-     * @throws NotFoundException if the specified CEA server could not be found
+     * @throws NotFoundException if the specified remote server could not be found
      * @throws InvalidArgumentException if the tool document is inacessible or ther service is inacesssible
      * @throws ServiceException if error occurs communicating with servers
-     * @throws SecurityException if user is prevented from executing this application
-     * @deprecated - See {@link RemoteProcessManager}     * 
+     * @throws SecurityException if user is prevented from executing this application 
      * */
     URI submitStoredTo(URI documentLocation, URI server) throws NotFoundException,InvalidArgumentException, ServiceException, SecurityException ;
         
-    /** cancel execution of an application 
+    /** cancel execution of an application.
      * @param executionId id of execution to cancel
      * @throws NotFoundException if this application cannot be found.
      * @throws InvalidArgumentException if the execution id is malformed
      * @throws ServiceException if an error occurs while communicating with server
-     * @throws SecurityException if the user is not permitted to cancel this application
-     * @deprecated - See {@link RemoteProcessManager}     * 
+     * @throws SecurityException if the user is not permitted to cancel this application 
      * */
     void cancel(URI executionId) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException;
     
-    /** get  information about an application execution
+    /** retrive  information about an application execution.
      * @param executionId id of application to query 
      * @return summary of this execution
      * @throws ServiceException if error occurs communicating with the server
      * @throws NotFoundException if this application invocation cannot be found
      * @throws SecurityException if the user cannot access ths invocation
      * @throws InvalidArgumentException if the invocation id is malformed in some way.
-     * @xmlrpc will return a struct containing keys documented in {@link ExecutionInformation}
-     * @deprecated - See {@link RemoteProcessManager}     * 
+     * @xmlrpc will return a struct containing keys documented in {@link ExecutionInformation} 
      * */
     ExecutionInformation getExecutionInformation(URI executionId) throws ServiceException, NotFoundException, SecurityException, InvalidArgumentException;
     
-    /** Retreive results of the application execution 
+    /** retreive results of the application execution .
      * @param executionid id of application to query 
      * @return results of this execution (name - value pairs). Note that this will only be the actual results for <b>direct</b> output parameters. For output parameters specified as <b>indirect</b>, the value returned
      * will be the URI pointing to the location where the results are stored.
@@ -266,7 +264,7 @@ public interface Applications {
      * @throws NotFoundException if this application invocation cannot be found
      * @throws SecurityException if the user cannot access ths invocation
      * @throws InvalidArgumentException if the invocation id is malformed in some way.
-     * @deprecated - See {@link RemoteProcessManager}     * */
+     */
     Map getResults(URI executionid) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException;               
     
     
@@ -274,6 +272,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.6  2006/02/02 14:19:48  nw
+ fixed up documentation.
+
  Revision 1.5  2005/11/10 12:13:52  nw
  interface changes for lookout.
 

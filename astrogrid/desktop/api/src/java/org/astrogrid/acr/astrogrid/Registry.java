@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.5 2005/11/24 01:18:42 nw Exp $
+/*$Id: Registry.java,v 1.6 2006/02/02 14:19:48 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,11 +19,12 @@ import org.w3c.dom.Document;
 import java.net.URI;
 import java.net.URL;
 
-/** Service Interface to an AstroGrid registry
- * <p>
+/** access the  AstroGrid registry.
+ * 
  * Astrogrid use an IVOA-compliant registry to store details of available resources - servers, applications,
  * catalogues, etc.
  * 
+ * Later, a generic interface to arbitrary IVOA registries will be added. This will allow other registries to be interrogated.
  * @see <a href="http://www.ivoa.net/Documents/latest/IDs.html">IVOA Identifiers</a>
  * @see <a href="http://www.ivoa.net/twiki/bin/view/IVOA/ResourceMetadata">Resource Metadata</a>
  * @see <a href="http://www.ivoa.net/Documents/latest/RM.html">IVOA Resource Metadata for the VO</a>
@@ -36,7 +37,7 @@ import java.net.URL;
  * @see org.astrogrid.acr.astrogrid.ResourceInformation
  */
 public interface Registry {
-    /**Resolve a registry identifier to an endpoint 
+    /**Resolve a registry identifier to an endpoint.
      * 
      * @param ivorn registry identifier for the registered service
      * @return a URL endpoint of this service
@@ -58,7 +59,7 @@ public interface Registry {
      */
     URL resolveIdentifier(URI ivorn) throws NotFoundException, ServiceException, NotApplicableException;
 
-    /**Retreive a registry Entry
+    /**Retreive a record from the registry.
      * 
      * @param ivorn identifier of the registry entry to retrrieve
      * @return xml document of the registry entry - a <tt>Resource</tt> document i
@@ -81,8 +82,9 @@ public interface Registry {
      */
     Document getRecord(URI ivorn) throws NotFoundException, ServiceException;
 
-    /**
-     * Retreive information about a registry entry
+    /** Retrieve a record from the registry, returning it as a datastructure that contains the most commonly used parts.
+     * 
+     * For most uses, it's better to use this method instead of {@link #getRecord} as the result is easier to work with.
      * 
      * @param ivorn identifier of the registry entry to retrieve
      * @return a  summary of the most significant parts of the registry entry - will be a {@link ResourceInformation}
@@ -95,7 +97,7 @@ public interface Registry {
     ResourceInformation getResourceInformation(URI ivorn) throws  NotFoundException, ServiceException;
     
     
-    /** perform a query on the registry
+    /** Perform a ADQL query.
      * 
      * @param adql a string query (string form of ADQL)
      * @return  xml document of search results -  a series of matching registry records contained within an element
@@ -118,8 +120,9 @@ public interface Registry {
      */ 
     Document adqlSearch(String adql) throws ServiceException;
     
-    /** 
-     * Equivalent of {@link #adqlSearch(String)} but returning a structure 
+    /**  Perform an ADQL query, returning a list of datastructures.
+     * 
+     * Equivalent of {@link #adqlSearch(String)} but returning a ist of datastructues that contain the most comonly used pats of the registry record. 
      * @see #adqlSearch(String) */
     ResourceInformation[] adqlSearchRI(String adql) throws NotFoundException, ServiceException;
     
@@ -127,7 +130,7 @@ public interface Registry {
     Document searchForRecords(String adql) throws ServiceException;
     
     
-    /** perform an xquery over the registry
+    /** perform an XQuery 
      * @param xquery the query to perform.
      * @return the result of executing this xquery over the registry - a document of arbitrary structure.
      * If the result of executing this query is not a well-formed xml document itself (e.g. it's a list of nodes, or a
@@ -164,16 +167,16 @@ public interface Registry {
      */
     Document xquerySearch(String xquery) throws ServiceException;
     
-    /** lists the namespaces that are used to qualify adql and xquery searches
-     * <p>
-     * these namepsaces are automatically prepended to queries submitted to the acr - simplifies query entry.
+    /** List the namespaces that are used to qualify adql and xquery searches.
+     * 
+     * These namepsaces are automatically prepended to queries submitted, which simplifies query entry.
      * 
      * @return an arry of 2-element arrays. the first in each pair is the namespace name used within the queries., while the second is the uri that defines this namespace
      * @since 1.3
      */
     String[][] listNamespaces();
     
-    /** perform a keyword search over the registry
+    /** perform a keyword search
      * 
      * @param keywords list of keywords to search for
      * @param orValues - true to 'OR' together matches. false to 'AND' together matches
@@ -182,13 +185,19 @@ public interface Registry {
      */
     Document keywordSearch(String keywords,boolean orValues) throws ServiceException;
     
-    /** Equivalent of {@link #keywordSearch(String, boolean)} but returning an array of structs */
+    /** Perform a keyword search and return a list of datastructures.
+     * 
+     *  
+     *  Equivalent of {@link #keywordSearch(String, boolean)} but more convenient to use. */
     ResourceInformation[] keywordSearchRI(String keywords, boolean orValues) throws ServiceException;
     
    }
 
 /* 
  $Log: Registry.java,v $
+ Revision 1.6  2006/02/02 14:19:48  nw
+ fixed up documentation.
+
  Revision 1.5  2005/11/24 01:18:42  nw
  merged in final changes from release branch.
 

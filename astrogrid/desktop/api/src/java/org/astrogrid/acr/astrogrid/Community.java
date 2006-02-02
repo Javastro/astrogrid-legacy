@@ -1,4 +1,4 @@
-/*$Id: Community.java,v 1.3 2005/08/25 16:59:44 nw Exp $
+/*$Id: Community.java,v 1.4 2006/02/02 14:19:48 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,10 +13,10 @@ package org.astrogrid.acr.astrogrid;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 
-/** Service Interface to Astogrid identity and authentication system
+/** astogrid identity and authentication.
  * 
- * <p>
- * <img src="doc-files/login.png">
+ * At the moment provides login ability. Later will provide access to permissioning and quota information for the current user.
+ * <img src="doc-files/login.png"/>
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
  * @service astrogrid.community
  */
@@ -24,9 +24,9 @@ public interface Community {
 
     /** login to astrogrid - identify yourself
      * 
-     * @param username user name
+     * @param username user name (e.g. <tt>fredbloggs</tt>)
      * @param password password for this user
-     * @param community community the user is registered with
+     * @param community community the user is registered with (e.g. <tt>uk.ac.astogrid</tt> )
      * @throws SecurityException if login fails due to incorrect credentials
      * @throws ServiceException if error occurs while communicating with server.
      */
@@ -34,23 +34,23 @@ public interface Community {
             throws SecurityException, ServiceException;
 
     
-    /** Access information about the currently logged in user
-     * <p>
-     * This method forces login if not already logged in.
+    /** access information about the currently logged in user.
+     * 
+     * <b>This method forces login if not already logged in.</b>
      * @return information about the current user.
      */
     public UserInformation getUserInformation();
     
-    /** log out of astrogrid */
+    /** log current user out of astrogrid */
     public abstract void logout();
 
-    /** verify user is currently logged in
+    /** verify user is currently logged in.
      * 
      * @return true if the user is logged in
      */
     public abstract boolean isLoggedIn();
 
-    /** show the login dialogue to prompt the user for input, and then log in */
+    /** display the login dialogue to prompt the user for input, and then log in */
     public abstract void guiLogin();
     
     /** register a listener, that will be notified when the user logs in or out 
@@ -66,6 +66,9 @@ public interface Community {
 
 /* 
  $Log: Community.java,v $
+ Revision 1.4  2006/02/02 14:19:48  nw
+ fixed up documentation.
+
  Revision 1.3  2005/08/25 16:59:44  nw
  1.1-beta-3
 

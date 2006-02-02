@@ -1,4 +1,4 @@
-/*$Id: ToolEditor.java,v 1.4 2005/09/12 15:21:43 nw Exp $
+/*$Id: ToolEditor.java,v 1.5 2006/02/02 14:19:47 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,16 +18,16 @@ import org.w3c.dom.Document;
 
 import java.net.URI;
 
-/** Service Interface to the CEA Tool Editor Dialogue
- * <p>
- * Can be used to construct calls to CEA Applications, Databases and collections.
- * Later will extend to construct calls to other VO services.
- * <p>
- * Displays the content of a Tool document, augmented with data about this application loaded from
+/** Display the remote invocation document editor as a dialogue.
+ * 
+ * Can be used to construct calls to Remote applications, such as data processor and catalogues.
+ *
+ * <br />
+ * Displays the content of a invocation document, augmented with data about this application loaded from
  * the registry. Enables user to edit input ad output parameters (including using the {@link org.astrogrid.acr.dialogs.ResourceChooser}
  * dialogue to select indirect parameters.
- * <p>
- * <img src="doc-files/pw-params.png">
+ * <br />
+ * <img src="doc-files/pw-params.png"/>
  * @service dialogs.toolEditor
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/Workflow.html#element_tool">Tool Document Schema-Documentation</a>
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameter">Value Parameter Element Schema-Documentation</a>
@@ -79,6 +79,9 @@ public interface ToolEditor {
 
 /* 
 $Log: ToolEditor.java,v $
+Revision 1.5  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.4  2005/09/12 15:21:43  nw
 added stuff for adql.
 

@@ -1,4 +1,4 @@
-/*$Id: InvalidArgumentException.java,v 1.2 2005/08/12 08:45:15 nw Exp $
+/*$Id: InvalidArgumentException.java,v 1.3 2006/02/02 14:19:47 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,37 +10,36 @@
 **/
 package org.astrogrid.acr;
 
-/** An incorrect / malformed value was passed as an input parameter.
+/** Indicates that n incorrect / malformed value was passed as an input parameter.
  * 
- * <p>
  * e.g. an unrecognized form of URI was passed in.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Aug-2005
  *
  */
 public class InvalidArgumentException extends ACRException {
 
-    /** Construct a new InvalidArgumentException
+    /** Construct a new InvalidArgumentException.
      * 
      */
     public InvalidArgumentException() {
         super();
     }
 
-    /** Construct a new InvalidArgumentException
+    /** Construct a new InvalidArgumentException.
      * @param message
      */
     public InvalidArgumentException(String message) {
         super(message);
     }
 
-    /** Construct a new InvalidArgumentException
+    /** Construct a new InvalidArgumentException.
      * @param cause
      */
     public InvalidArgumentException(Throwable cause) {
         super(cause);
     }
 
-    /** Construct a new InvalidArgumentException
+    /** Construct a new InvalidArgumentException.
      * @param message
      * @param cause
      */
@@ -53,6 +52,9 @@ public class InvalidArgumentException extends ACRException {
 
 /* 
 $Log: InvalidArgumentException.java,v $
+Revision 1.3  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.2  2005/08/12 08:45:15  nw
 souped up the javadocs
 

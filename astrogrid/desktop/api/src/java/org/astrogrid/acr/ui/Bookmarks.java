@@ -1,4 +1,4 @@
-/*$Id: Bookmarks.java,v 1.2 2005/11/24 01:18:42 nw Exp $
+/*$Id: Bookmarks.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,8 @@
 **/
 package org.astrogrid.acr.ui;
 
-/** Interface to an acr-wide bookmarking system.
+/**Access acr-wide bookmarking system.
+ * <b>Unimplemented</b>
  * allows resource references to resources to be bookmarked, listed, organized.
  * @todo implement.
  * 
@@ -36,6 +37,9 @@ interface Bookmarks {
 
 /* 
 $Log: Bookmarks.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/11/24 01:18:42  nw
 merged in final changes from release branch.
 

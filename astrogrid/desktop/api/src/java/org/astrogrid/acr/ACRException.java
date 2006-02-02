@@ -1,4 +1,4 @@
-/*$Id: ACRException.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: ACRException.java,v 1.3 2006/02/02 14:19:47 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import java.lang.reflect.Constructor;
 
 /** Base exception type for all exceptions thrown by the ACR interface.
  * 
- * <p>
  * This type is rarely thrown - usualy more specific subtypes are thrown. However, it's convenient to catch all exceptions in one place
  * by matching against this type in a <tt>catch</tt> clause.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
@@ -92,6 +91,9 @@ public class ACRException extends Exception {
 
 /* 
 $Log: ACRException.java,v $
+Revision 1.3  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.2  2005/08/12 08:45:16  nw
 souped up the javadocs
 

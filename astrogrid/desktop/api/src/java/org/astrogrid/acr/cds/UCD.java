@@ -9,7 +9,7 @@ package org.astrogrid.acr.cds;
 
 import org.astrogrid.acr.ServiceException;
 /**
- * This XML Web Service provides a few methods to ease manipulation of the
+ *  Web Service for manipulating 
 Unified Content Descriptors (UCD).
 
  * @author CDS

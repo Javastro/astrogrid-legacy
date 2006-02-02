@@ -11,7 +11,7 @@ import org.astrogrid.acr.ServiceException;
 
 import org.w3c.dom.Document;
 /**
- * VizieR Catalogues XML Web Service
+ * Access VizieR catalogues from CDS
  * @author CDS
  *@see http://cdsweb.u-strasbg.fr/cdsws/vizierAccess.gml
  *@service cds.vizier

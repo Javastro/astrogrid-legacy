@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformation.java,v 1.2 2005/11/04 14:38:58 nw Exp $
+/*$Id: TabularDatabaseInformation.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
-/** Extension of the standard registry ResourceInformation that models the information in a 
- * tabular data base registry entry.
+/** description of a tabular databse registry entry (TabularDB record).
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
  *@since 1.2
  */
@@ -33,7 +33,7 @@ public class TabularDatabaseInformation extends ResourceInformation {
     }
     protected final DatabaseBean[] databases;
     
-    /** return a series of database bean objects */
+    /** list the databases described by this registry entry */
     public DatabaseBean[] getDatabases() {
         return databases;
     }
@@ -43,6 +43,9 @@ public class TabularDatabaseInformation extends ResourceInformation {
 
 /* 
 $Log: TabularDatabaseInformation.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/11/04 14:38:58  nw
 added logo field
 

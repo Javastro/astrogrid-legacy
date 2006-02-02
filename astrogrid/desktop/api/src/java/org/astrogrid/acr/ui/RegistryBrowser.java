@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowser.java,v 1.3 2005/11/24 01:18:42 nw Exp $
+/*$Id: RegistryBrowser.java,v 1.4 2006/02/02 14:19:48 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,9 @@
  **/
 package org.astrogrid.acr.ui;
 
-/** Interface to the registry browser UI
- * <p>
- * <img src="doc-files/registry.png">
+/** Control the registry browser UI
+ * 
+ * <img src="doc-files/registry.png"/>
  * @todo UI is pretty simple at present. needs a lot of improvements
  * @todo improve browsing and linking methods - maybe easier once integrate JDIC.
  * @todo add 'show resource' methods.
@@ -29,6 +29,9 @@ public interface RegistryBrowser {
 
 /* 
  $Log: RegistryBrowser.java,v $
+ Revision 1.4  2006/02/02 14:19:48  nw
+ fixed up documentation.
+
  Revision 1.3  2005/11/24 01:18:42  nw
  merged in final changes from release branch.
 

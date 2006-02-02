@@ -1,4 +1,4 @@
-/*$Id: AstroScope.java,v 1.2 2005/11/24 01:18:42 nw Exp $
+/*$Id: AstroScope.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,9 @@
 **/
 package org.astrogrid.acr.ui;
 
-/** Interface to the AstroScope UI
- * <p>
- * <img src="doc-files/astroscope.png">
+/**Control  AstroScope.
+ * 
+ * <img src="doc-files/astroscope.png"/>
  * @service userInterface.astroscope
  * @author Kevin Benson
  */
@@ -24,6 +24,9 @@ public interface AstroScope {
 
 /* 
 $Log: AstroScope.java,v $
+Revision 1.3  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.2  2005/11/24 01:18:42  nw
 merged in final changes from release branch.
 

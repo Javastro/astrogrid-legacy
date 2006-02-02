@@ -1,4 +1,4 @@
-/*$Id: JobMonitor.java,v 1.3 2005/11/24 01:18:42 nw Exp $
+/*$Id: JobMonitor.java,v 1.4 2006/02/02 14:19:48 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,8 @@ package org.astrogrid.acr.ui;
 
 import java.net.URI;
 
-/** Interface to the Job Monitor GUI
- * <p>
+/** Control the Job Monitor GUI
+ * 
  * @service userInterface.jobMonitor
  * @deprecated replaced by {@link Lookout} 
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Mar-2005
@@ -43,6 +43,9 @@ public interface JobMonitor {
 
 /* 
  $Log: JobMonitor.java,v $
+ Revision 1.4  2006/02/02 14:19:48  nw
+ fixed up documentation.
+
  Revision 1.3  2005/11/24 01:18:42  nw
  merged in final changes from release branch.
 

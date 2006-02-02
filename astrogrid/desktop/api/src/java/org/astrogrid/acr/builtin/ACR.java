@@ -1,4 +1,4 @@
-/*$Id: ACR.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: ACR.java,v 1.3 2006/02/02 14:19:48 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,10 +17,10 @@ import org.astrogrid.acr.NotFoundException;
 
 import java.util.Iterator;
 
-/** Interface into a running ACR - used to retreive instances of service interfaces
+/** Interface into a running ACR - used to retreive instances of service interfaces.
  * 
- * <p>
  * Note that this isn't a service interface itself.
+ *
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
  * @see org.astrogrid.acr.Finder#find() How to create an ACR
  *
@@ -45,9 +45,9 @@ public interface ACR {
      * */
     public Object getService(Class interfaceClass) throws ACRException, InvalidArgumentException, NotFoundException;
     
-    /** Retreive an instance of a service interface
+    /** Retreive an instance of a service interface.
      * 
-     * <p>
+     * 
      * This method is a less-well-typed equvalent to {@link #getService(Class)} - preferably use that method. However, this method is handy when it isn't easy to get hold of 
      * class objects - e.g. from in-java scripting languages. 
      * @param componentName the name of the service - see <b>Service</b> tags in javadoc. These are the same component names as used in the XMLRPC interface - all follow the form
@@ -71,6 +71,9 @@ public interface ACR {
 
 /* 
  $Log: ACR.java,v $
+ Revision 1.3  2006/02/02 14:19:48  nw
+ fixed up documentation.
+
  Revision 1.2  2005/08/12 08:45:16  nw
  souped up the javadocs
 

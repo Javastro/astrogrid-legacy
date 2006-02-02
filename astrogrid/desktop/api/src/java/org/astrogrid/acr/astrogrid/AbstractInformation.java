@@ -1,4 +1,4 @@
-/*$Id: AbstractInformation.java,v 1.3 2005/08/16 13:14:42 nw Exp $
+/*$Id: AbstractInformation.java,v 1.4 2006/02/02 14:19:48 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.net.URI;
 
-/** Abstract Base class for all information beans returned by ACR.
+/** Base class - all 'information' structures returned by ACR extend this class.
  * @xmlrpc returned as a struct, with keys corresponding to bean names
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
  *
@@ -31,7 +31,7 @@ public abstract class AbstractInformation implements Serializable {
     
     protected final URI id;
     protected final String name;
-    /** access the unique identifier for the resource this bean provides information on 
+    /** The unique identifier for the resource this bean provides information about. 
      * @return some form of URI - possibly an ivo:// form
      * @xmlrpc structure key will be <tt>id</tt>
      */
@@ -39,7 +39,7 @@ public abstract class AbstractInformation implements Serializable {
         return this.id;
     }
     
-    /** access the name of this resource
+    /**The name of this resource.
      * 
      * @return some kind of human-friendly name. - unlike the machine-friendly {@link #getId()}
      * @xmlrpc structure key will be <tt>name</tt>
@@ -80,6 +80,9 @@ public abstract class AbstractInformation implements Serializable {
 
 /* 
 $Log: AbstractInformation.java,v $
+Revision 1.4  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.3  2005/08/16 13:14:42  nw
 added 'name' as a common field for all information objects
 

@@ -1,4 +1,4 @@
-/*$Id: ConeInformation.java,v 1.3 2005/11/04 14:38:58 nw Exp $
+/*$Id: ConeInformation.java,v 1.4 2006/02/02 14:19:48 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Information bean that describes a registered cone server
- * <p>
+/** Description of  a registered cone-search service.
+ * 
  * Adds fields for the extra service information provided by a cone search registry entry. 
  * @see http://www.ivoa.net/xml/ConeSearch/v0.3 for definition of this information
  * @xmlrpc returned as a struct, with keys corresponding to bean names.
@@ -95,6 +95,9 @@ public class ConeInformation extends ApplicationInformation {
 
 /* 
 $Log: ConeInformation.java,v $
+Revision 1.4  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.3  2005/11/04 14:38:58  nw
 added logo field
 

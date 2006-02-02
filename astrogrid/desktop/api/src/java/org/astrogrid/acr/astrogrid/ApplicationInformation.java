@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.6 2005/11/04 14:38:58 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.7 2006/02/02 14:19:48 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,8 +15,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
-/** Information Bean that contains information about an registered application
- * <p>
+/** Information Bean describing a registered remote  application.
+ * 
  * <tt>getId()</tt> will contain a registry identifier - see {@link org.astrogrid.acr.astrogrid.ResourceInformation} for
  * definition
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
@@ -26,13 +26,7 @@ import java.util.Map;
  * @since 1.2 extends ResourceInformation
  */
 public class ApplicationInformation extends ResourceInformation{
-    /** @deprecated - use full contructor 
-     * @since 1.2
-     */
-    /*
-    public ApplicationInformation(URI id,String name,String description,Map parameters,InterfaceBean[] interfaces) {
-        this(id,name,description,parameters,interfaces,null);
-    }*/
+
     
     /** construct a new application information, specifying an endpoint for it (i.e. a non-cea application) */
     public ApplicationInformation(URI id,String name,String description,Map parameters,InterfaceBean[] interfaces,URL endpoint, URL logo) {
@@ -44,7 +38,7 @@ public class ApplicationInformation extends ResourceInformation{
     private final InterfaceBean[] interfaces;
     private final Map parameters;
 
-    /** access the names of the interfaces this application supports
+    /** The names of the interfaces provided by this application.
      * @return an array of interface names
      * @xmlrpc key will be <tt>interfaces</tt>, type will be array.
      */
@@ -52,7 +46,7 @@ public class ApplicationInformation extends ResourceInformation{
         return this.interfaces;
     }
 
-    /** returns descriptions of parameters used in this application
+    /** The Parameters used in this application.
      * 
      * @return a map of <tt>parameter name</tt> - {@link ParameterBean} pairs
      */
@@ -88,6 +82,9 @@ public class ApplicationInformation extends ResourceInformation{
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.7  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.6  2005/11/04 14:38:58  nw
 added logo field
 

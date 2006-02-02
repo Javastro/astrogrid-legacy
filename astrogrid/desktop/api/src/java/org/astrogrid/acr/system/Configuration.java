@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.4 2005/11/01 09:26:29 nw Exp $
+/*$Id: Configuration.java,v 1.5 2006/02/02 14:19:47 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,10 +14,11 @@ import org.astrogrid.acr.ACRException;
 
 import java.util.Map;
 
-/**Service Interface to persistent configuration store
- * <p>
+/**Inspect and alter the configuration of the workbench and ACR.
+ * 
  * Allows the user / applications to set key-value pairs,  which are automatically persisted between executions.
- * Useful for storing bits of state that should persist (e.g. window positions and sizes), plus configuration information (e.g. username, service endpoints)
+ * As well as alteriing configuration settings, this is also 
+ * useful for storing bits of state that should persist between script invocations (e.g. preferences, window positions and sizes), plus configuration information (e.g. username, service endpoints)
  * @service system.configuration
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
@@ -63,6 +64,9 @@ public interface Configuration {
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.5  2006/02/02 14:19:47  nw
+ fixed up documentation.
+
  Revision 1.4  2005/11/01 09:26:29  nw
  moved required keys elsewhere
 

@@ -1,4 +1,4 @@
-/*$Id: Siap.java,v 1.1 2005/10/18 07:58:21 nw Exp $
+/*$Id: Siap.java,v 1.2 2006/02/02 14:19:47 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 import java.net.URI;
 import java.net.URL;
 
-/** Interface for querying Simple Image Access Protocol (SIAP)Services
+/**Queryi for Images from Simple Image Access Protocol (SIAP) services
  * @see http://www.ivoa.net/Documents/latest/SIA.html 
  * @service ivoa.siap
  * @since 1.3
@@ -84,9 +84,9 @@ public interface Siap {
    URL addOption(URL query, String optionName, String optionValue) throws InvalidArgumentException;
       
     
-   /** execute a SIAP query
-    * <p>
-    * convenience method  - just performs a 'GET' on the query url- many programming languages support this functionality themselves
+   /** execute a SIAP query.
+    * 
+    * This is a convenience method  - just performs a 'GET' on the query url- many programming languages support this functionality themselves
  * @param siapQuery query url to execute
  * @return a votable of results
  * @throws ServiceException if an error occurs while communicating with the SIAP service
@@ -94,7 +94,7 @@ public interface Siap {
     */
    Document getResults(URL siapQuery) throws ServiceException;
    
-   /**execute a SIAP query and save the results
+   /**execute a SIAP query and save the results.
  * @param siapQuery query url to execute
  * @param saveLocation location to save result document - may be file:/, ivo:// (myspace), ftp://
  * @throws SecurityException if the user is not permitted to write to the save location
@@ -104,8 +104,8 @@ public interface Siap {
 void saveResults(URL siapQuery, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
    
    /** helper method - returns an ADQL query that should be passed to a registry to list all 
-    * available siap services 
-    * <p>
+    * available siap services. 
+    * <br/>
     * can be used as a starting point for filters, etc.
     * @return an adql query string
     */
@@ -118,6 +118,9 @@ void saveResults(URL siapQuery, URI saveLocation) throws SecurityException, Serv
 
 /* 
 $Log: Siap.java,v $
+Revision 1.2  2006/02/02 14:19:47  nw
+fixed up documentation.
+
 Revision 1.1  2005/10/18 07:58:21  nw
 added first DAL interfaces
  

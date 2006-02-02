@@ -1,4 +1,4 @@
-/*$Id: InterfaceBean.java,v 1.1 2005/08/25 16:59:44 nw Exp $
+/*$Id: InterfaceBean.java,v 1.2 2006/02/02 14:19:48 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
 
-/** Description of a single interface of a cea application
+/** Description of  an interface to a remote application.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
  *@see org.astrogrid.acr.astrogrid.ParameterBean
  *@see org.astrogrid.acr.astrogrid.ParameterReferenceBean
@@ -34,7 +34,7 @@ public class InterfaceBean implements Serializable {
     protected ParameterReferenceBean[] outputs;
     
 
-    /** series of input parameters */
+    /**  list of input parameters */
     public ParameterReferenceBean[] getInputs() {
         return this.inputs;
     }
@@ -42,7 +42,7 @@ public class InterfaceBean implements Serializable {
     public String getName() {
         return this.name;
     }
-    /** series of output parameters */
+    /** list of output parameters */
     public ParameterReferenceBean[] getOutputs() {
         return this.outputs;
     }
@@ -71,6 +71,9 @@ public class InterfaceBean implements Serializable {
 
 /* 
 $Log: InterfaceBean.java,v $
+Revision 1.2  2006/02/02 14:19:48  nw
+fixed up documentation.
+
 Revision 1.1  2005/08/25 16:59:44  nw
 1.1-beta-3
  
