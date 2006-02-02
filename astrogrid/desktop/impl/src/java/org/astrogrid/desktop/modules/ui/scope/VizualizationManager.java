@@ -1,0 +1,103 @@
+/*$Id: VizualizationManager.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+ * Created on 27-Jan-2006
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.desktop.modules.ui.scope;
+
+
+import org.apache.commons.collections.iterators.UnmodifiableIterator;
+
+import edu.berkeley.guir.prefuse.ItemRegistry;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.render.ImageFactory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+/**
+ * aggregates a set of vizualizations together - enables them to be worked
+ * with as a whole, attached to a single vizualization model.
+ * 
+ *<p>
+ *also contains resources, helper objects, etc that are shared between vizualizations.
+ * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ *
+ */
+public class VizualizationManager {
+    public VizualizationManager(VizModel model) {            
+        this.model = model;
+        imageFactory = new ImageFactory(75,75); // small thumbnails.        
+    
+    }
+    private final ImageFactory imageFactory;    
+    private final ArrayList l = new ArrayList();
+    private final VizModel model;
+    
+    public void add(Vizualization v) {
+        l.add(v);
+        model.getTree().addGraphEventListener(v);
+    }
+    
+    /** access the common image factory.*/
+    public ImageFactory getImageFactory() {
+        return imageFactory;
+    }
+    
+    public VizModel getVizModel() {
+        return model;
+    }
+    
+    public Iterator iterator() {
+        return UnmodifiableIterator.decorate(l.iterator());
+    }
+    
+    /**
+     * method: refocusMainNodes()
+     * description: Refocuses the graph on the main root node.  Typically called right before a query or user
+     * hits a particular button.  Seems to focus better if it focuses on cone and sia tree nodes first before root.
+     *
+     */
+    public void refocusMainNodes() {
+        for (Iterator i = this.iterator(); i.hasNext(); ) {
+            Vizualization vis = (Vizualization)i.next();
+            ItemRegistry itemReg = vis.getItemRegistry();
+            FocusSet defaultFocusSet = itemReg.getFocusManager().getDefaultFocusSet();
+            for (Iterator j = model.getProtocols().iterator(); j.hasNext(); ) {
+                DalProtocol p = (DalProtocol)j.next();
+                defaultFocusSet.set(p.getPrimaryNode());
+            }  
+            defaultFocusSet.set(model.getRootNode());
+            // force a garbage collection too - will remove any old visual nodes lurking after the real nodes have been removed.
+            itemReg.garbageCollectAggregates();
+            itemReg.garbageCollectEdges();
+            itemReg.garbageCollectNodes();
+        }    
+    }
+    
+    /**
+     * method: reDrawGraphs
+     * description: Calls Redraw on all the displays/visualizations typically called after a refocus and needs to
+     * draw the new focus on the graph.  
+     * Note: clearTree does not call it because nodes are typically added from a query causing the graph to be 
+     * redrawn anyways.
+     *
+     */
+    public void reDrawGraphs() {
+        for (Iterator i = this.iterator(); i.hasNext(); ) {
+            Vizualization vis = (Vizualization)i.next();
+            vis.reDraw();
+        }
+    }        
+}
+
+/* 
+$Log: VizualizationManager.java,v $
+Revision 1.1  2006/02/02 14:51:11  nw
+components of astroscope, plus new ssap component.
+ 
+*/

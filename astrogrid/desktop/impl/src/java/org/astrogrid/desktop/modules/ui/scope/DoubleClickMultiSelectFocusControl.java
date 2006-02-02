@@ -1,0 +1,59 @@
+package org.astrogrid.desktop.modules.ui.scope;
+
+
+
+import edu.berkeley.guir.prefuse.NodeItem;
+import edu.berkeley.guir.prefuse.VisualItem;
+import edu.berkeley.guir.prefuse.collections.BreadthFirstTreeIterator;
+import edu.berkeley.guir.prefuse.event.ControlAdapter;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
+
+import java.awt.event.MouseEvent;
+import java.util.Iterator;
+
+import javax.swing.SwingUtilities;
+
+/** focus control - on double click, adds / removes node and children from focus set. */
+public class DoubleClickMultiSelectFocusControl extends ControlAdapter {
+    
+    public DoubleClickMultiSelectFocusControl(VizualizationManager viz) {
+        set = viz.getVizModel().getSelectionFocusSet();
+        this.viz = viz;
+    }
+    private final VizualizationManager viz;
+    private final FocusSet set;
+    public void itemClicked(VisualItem item, MouseEvent e) {            
+        if ( e.getClickCount() ==2 && 
+                item instanceof NodeItem && 
+                SwingUtilities.isLeftMouseButton(e)) {               
+            TreeNode node = (TreeNode)item.getEntity();
+            
+            if (set.contains(node)) {// do a remove of this, and all children, and any parents.
+                for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
+                    TreeNode n = (TreeNode)i.next();
+                    set.remove(n);
+                    n.setAttribute("selected","false"); // attribute used to speed up coloring function.
+                }
+                while (node.getParent() != null) {
+                    node = node.getParent();
+                    if (set.contains(node)) {
+                        node.setAttribute("selected","false");
+                        set.remove(node);
+                    }
+                }
+            } else { // an add of this, and all children
+                for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
+                    
+                    TreeNode n = (TreeNode)i.next();
+                    n.setAttribute("selected","true"); // yechh.
+                    if (! set.contains(n)) {
+                        set.add(n);
+                    }
+                }
+            }
+            viz.reDrawGraphs();
+           
+        }//if
+    }
+}
