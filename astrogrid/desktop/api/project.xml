@@ -83,5 +83,19 @@
 	</properties>	
  </dependency>
  
+ 	<!-- only used within build -->
+	<dependency>
+		<groupId>jeldoclet</groupId>
+		<artifactId>jeldoclet</artifactId>
+		<version>1.0</version>
+		<type>jar</type>
+	</dependency>
+	<dependency>
+		<groupId>xalan</groupId>
+		<artifactId>xalan</artifactId>
+		<version>2.4.1</version>
+		<type>jar</type>
+	</dependency>
+
     </dependencies>
 </project>

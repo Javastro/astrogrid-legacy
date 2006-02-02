@@ -19,9 +19,18 @@
 	<postGoal name="dist:prepare-bin-filesystem">
 		<j:forEach var="lib" items="${pom.artifacts}">
 			<j:set var="dep" value="${lib.dependency}"/>			
-			<copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}"/>			
+			<j:if test="${dep.getProperty('dist.bundle')=='true'}">
+				<j:choose>
+					<copy todir="${maven.dist.bin.assembly.dir}" 
+					      file="${lib.path}"/>			
+				</j:choose>
+			</j:if>
                 </j:forEach>		
 	</postGoal>
+	
+	<preGoal name="xdoc:jelly-transform">
+		<attainGoal name="xmlrpcdoc"/>
+	</preGoal>
 	
 	<goal name="javahelp-install">
 		<maven:maven goals="jar:install" descriptor="javahelp/project.xml" />
@@ -34,6 +43,26 @@
 	</goal>	
 	<goal name="javahelp-clean">
 		<maven:maven goals="clean:clean" descriptor="javahelp/project.xml" />
+	</goal>
+	
+	<goal name="xmlrpcdoc">		
+		<j:set var="maven.javadoc.doclet" value="com.jeldoclet.JELDoclet" />
+		<mkdir dir="${basedir}/target/xmlrpcdoc" />
+		<j:set var="maven.javadoc.additionalparam" value="-d ${basedir}/target/xmlrpcdoc" />
+		<j:set var="maven.javadoc.docletpath" value="${pom.getDependencyPath('jeldoclet')}" />
+		<attainGoal name="javadoc" />
+		<!-- hack from mailing list to fix Maven XLST bug -->
+		${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+				
+		<xslt style="${basedir}/xmlrpcdoc.xsl" 
+		      in="${basedir}/target/xmlrpcdoc/jel.xml"
+		      out="${basedir}/target/generated-xdocs/xmlrpc.xml" 
+		      force="true"
+		      >
+			<outputproperty name="method" value="xml"/>			
+			<outputproperty name="standalone" value="yes"/>
+  			<outputproperty name="indent" value="yes"/>
+		</xslt>
 	</goal>
 	
 </project>
