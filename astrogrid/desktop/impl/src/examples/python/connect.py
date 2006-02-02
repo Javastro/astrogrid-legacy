@@ -17,9 +17,10 @@ acr = xmlrpclib.Server(endpoint)
 registry = acr.astrogrid.registry
 
 #call a method
+print registry.getResourceInformation('ivo://org.astrogrid/Pegase') 
+	# returns a struct of data
 
-print registry.getResourceInformation('ivo://org.astrogrid/Pegase') # returns a struct of data
-
-print registry.getRecord('ivo://org.astrogrid/Pegase') # return the xml of a registry entry (string)
+print registry.getRecord('ivo://org.astrogrid/Pegase') 
+	# return the xml of a registry entry (string)
 
 print registry.resolveIdentifier('ivo://uk.ac.le.star/filemanager')
