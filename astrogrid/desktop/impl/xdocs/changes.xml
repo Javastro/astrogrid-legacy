@@ -13,11 +13,19 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+   <release version="2.0-beta-3" date="2006-02-02">
     <action dev="jl" type="add" issue="1495">
 	    Enhancements to Adql editing; ie: to the Query Builder.
 	    Principle visual enhancement is the addition of a metadata pane.
 	</action>
-	<release version="alpha" date="now">
+   </release>
+	<release version="2.0-beta-2" date="2006-01-27">
+		<action dev="nw" type="add">
+		astroscope summarizes services called, number of results returned, any errors.
+		</action>
+		<action dev="nw" type="add">
+		  added ssa component, and display of spectra in astroscope.
+		</action>
 	 	<action dev="jdt" type="fix" issue="1519">
 			Make robust to failure to load HelpSet.	
 		</action>
