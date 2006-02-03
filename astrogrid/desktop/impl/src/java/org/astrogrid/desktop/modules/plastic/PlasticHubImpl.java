@@ -148,11 +148,19 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * @param sender hub id of sending app
      * @param message the message string being sent
      * @param args any arguments
-     * @param recipients if nonzero length, then only multiplex to these recipients, otherwise send to all
+     * @param recipients if nonzero length, then only multiplex to these recipients, otherwise send to all.  
      * @param shouldWaitForResults
      */
     private Map send(final URI sender, final URI message, final List args, List recipients,
             boolean shouldWaitForResults) {
+    	//Gotcha.  The recipients in a List of URIs from Java, but a List of Strings from xml-rpc
+    	if (recipients.size()!=0 && recipients.get(0).getClass()==String.class) {
+    		List recipientURIs = new ArrayList();
+    		for (Iterator it = recipients.iterator();it.hasNext();recipientURIs.add(URI.create((String) it.next())));
+    		recipients = recipientURIs;
+    		//Now we can carry on with our List of URIs....
+    	}
+    	
         final Map returns = Collections.synchronizedMap(new HashMap());
         Iterator it = clients.keySet().iterator();
         List clientsToMessage = new ArrayList();
@@ -163,7 +171,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 continue;
             if (!client.understands(message))
                 continue;
-            if (recipients.size()==0 || recipients.contains(client.getId())) {
+            if (recipients.size()==0 || recipients.contains(client.getId())) { 
                 clientsToMessage.add(client);
             }
         }
