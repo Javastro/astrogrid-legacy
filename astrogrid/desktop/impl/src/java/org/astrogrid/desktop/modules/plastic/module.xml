@@ -141,6 +141,75 @@
 				</property>
 			</return>
 		</method>
+		<method name="requestAsynch">
+			<description>Send a message to all registered applications asynchronously</description>
+			<parameter name="name">
+				<description>Sender</description>
+			</parameter>
+			<parameter name="message">
+				<description>Message</description>
+			</parameter>
+			<parameter name="args">
+				<description>Arguments (comma separated)</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</parameter>
+		</method>
+		<method name="requestToSubset">
+			<description>Send a message to a subset of registered applications</description>
+			<parameter name="name">
+				<description>Sender</description>
+			</parameter>
+			<parameter name="message">
+				<description>Message</description>
+			</parameter>
+			<parameter name="args">
+				<description>Arguments (comma separated)</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</parameter>
+			<parameter name="recipientIds">
+				<description>Recipient IDs (comma separated)</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</parameter>			
+			<return>
+				<description>Responses</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</return>
+		</method>
+		<method name="requestToSubsetAsynch">
+			<description>Send a message to a subset of registered applications asynchronously</description>
+			<parameter name="name">
+				<description>Sender</description>
+			</parameter>
+			<parameter name="message">
+				<description>Message</description>
+			</parameter>
+			<parameter name="args">
+				<description>Arguments (comma separated)</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</parameter>
+			<parameter name="recipientIds">
+				<description>Recipient IDs (comma separated)</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</parameter>				
+		</method>					
 		<method name="markUnresponsiveApps">
 			<description>Ping all registered applications and mark those that don't
 				respond</description>

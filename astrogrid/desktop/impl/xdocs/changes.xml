@@ -13,6 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+   <release version="-" date="-">
+    <action dev="jdt" type="fix" issue="1527">
+		Some Plastic methods weren't visible from xml-rpc.
+	</action>
+   </release>
    <release version="2.0-beta-3" date="2006-02-02">
     <action dev="jl" type="add" issue="1495">
 	    Enhancements to Adql editing; ie: to the Query Builder.
