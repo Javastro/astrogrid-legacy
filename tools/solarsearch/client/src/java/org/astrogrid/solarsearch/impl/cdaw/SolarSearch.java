@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.io.BufferedWriter;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Set;
 
 import org.astrogrid.solarsearch.ws.cdaw.ViewDescription;
 import org.astrogrid.solarsearch.ws.cdaw.DatasetDescription;
@@ -25,15 +26,33 @@ import java.io.IOException;
 
 public class SolarSearch implements ISolarSearch {
     
+    public SolarSearch() {
+        System.out.println("instantiated");
+    }
+    
+    private void printMap(Map info) {
+        Set st = info.keySet();
+        Object []keyarray = st.toArray();
+        for(int i = 0;i < keyarray.length;i++) {
+            System.out.println("key = " + keyarray[i] + " val = " + ((String [])info.get(keyarray[i]))[0]  );
+        }//for
+    }
+    
     
     public void execute(Calendar startTime, Calendar endTime, Map info, PrintWriter output) throws IOException {
+        System.out.println("enter execute");
         
         SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd'T'HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
         
         String []missionName = new String[1];
-        missionName[0] = (String)info.get("mission");
+        printMap(info);
+        if(!info.containsKey("mission")) {
+            output.print("could not find mission");
+        }
+        System.out.println("the info.get(mission) = " + info.get("mission"));
+        missionName[0] = ((String [])info.get("mission"))[0];
         Calendar startTimeCal = Calendar.getInstance();
         Calendar endTimeCal = Calendar.getInstance();
         
@@ -102,17 +121,17 @@ public class SolarSearch implements ISolarSearch {
                         }
                         String []dsURLS = binding.getDataUrls(dsd[k].getId(),startTemp,endTemp);
                         System.out.println("urls found for the dataset");
-                        if(dsURLS != null) {
+                        if(dsURLS != null && dsURLS.length > 0) {
                            for(int m = 0;m < dsURLS.length;m++) {
                               System.out.println("url number = " + m + " is " + dsURLS[m]);
                               astro.addRow( new Object[] { dsd[k].getLabel(),
                                     dateFormat.format(dsd[k].getStartTime().getTime()), dateFormat.format(dsd[k].getEndTime().getTime()),dsURLS[m] } );
                            }
+                           VOSerializer vos = VOSerializer.makeSerializer( DataFormat.TABLEDATA, astro );
+                           vos.writeInlineTableElement(out);
+                           astro.clearRows();
+                           vos = null;                           
                         }
-                        VOSerializer vos = VOSerializer.makeSerializer( DataFormat.TABLEDATA, astro );
-                        vos.writeInlineTableElement(out);
-                        astro.clearRows();
-                        vos = null;
                      }//for
                   }//if
                }//for

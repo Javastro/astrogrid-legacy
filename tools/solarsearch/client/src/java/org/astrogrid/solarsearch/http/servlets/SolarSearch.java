@@ -18,7 +18,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: SolarSearch.java,v 1.1 2006/02/02 12:01:20 KevinBenson Exp $
+ *  $Id: SolarSearch.java,v 1.1 2006/02/06 16:10:42 KevinBenson Exp $
  */
 
 package org.astrogrid.solarsearch.http.servlets;
@@ -81,7 +81,7 @@ public class SolarSearch extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) {
         
            
-
+        res.setContentType("text/xml;charset=UTF-8");
         SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd'T'HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
@@ -99,7 +99,10 @@ public class SolarSearch extends HttpServlet {
                 System.out.println("Service name not part of the request exiting now, later default it");
                 return;
             }
+            
             String className = conf.getString("solarsearch.service." + service);
+            System.out.println("classname found = " + className );
+            
             try {
                 PrintWriter output = res.getWriter();        
                 try {
