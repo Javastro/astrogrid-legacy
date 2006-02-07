@@ -36,8 +36,7 @@ import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
  */
 public class XML2ivo_vrCrosswalk extends Crosswalk {
     private static String elementName = "Resource";
-    private static final String prefix_09 = "vr:";
-    private static final String prefix_10 = "vor:";
+    private static final String prefix = "vr:";
 
     //private static final String elementStart = "<" + elementName;
     //private static final String elementEnd = elementName + ">";
@@ -58,12 +57,11 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
      * @return true if DC format is possible, false otherwise.
      */
     public boolean isAvailableFor(Object nativeItem) {
-   String fullItem = (String)nativeItem;
-   if ((fullItem.indexOf(("<" + prefix_09 + elementName)) >= 0) || 
-       (fullItem.indexOf(("<" + prefix_10 + elementName)) >= 0))
-       return true;
-   return false;
-    }
+        String fullItem = (String)nativeItem;
+        if ((fullItem.indexOf(("<" + elementName)) >= 0) || (fullItem.indexOf(("<" + prefix +  elementName)) >= 0) )
+            return true;
+        return false;
+   }
 
     /**
      * Perform the actual crosswalk.
@@ -78,17 +76,16 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
     public String createMetadata(Object nativeItem)
    throws CannotDisseminateFormatException {
    String fullItem = (String)nativeItem;
-   String elementEnd = prefix_09 + elementName + ">";
-   int startOffset = fullItem.indexOf(("<" + prefix_09 + elementName));
+   String elementEnd = "</" + elementName + ">";
+   int startOffset = fullItem.indexOf(("<" + elementName));
    if(startOffset == -1) {
-       startOffset = fullItem.indexOf(("<" + prefix_10 + elementName));
-       elementEnd = prefix_10 + elementName + ">";
+       startOffset = fullItem.indexOf(("<" + prefix + elementName));
+       elementEnd = "</" + prefix + elementName + ">";
    }
    if (startOffset == -1) {
        throw new CannotDisseminateFormatException(getSchemaLocation());
    }
       int endOffset = fullItem.indexOf(elementEnd) + elementEnd.length();
-      System.out.println("STARTOFFSET = " + startOffset + " ENDOFFSET=" + endOffset + "THE FULLITEM = " + fullItem);
       return fullItem.substring(startOffset, endOffset);
     }
 }

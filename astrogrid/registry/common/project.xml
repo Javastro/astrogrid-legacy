@@ -2,169 +2,157 @@
 <!--+
     | Maven project description for the AstroGrid registry common components.
     +-->
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-    <!--+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
+  <!--+
         | Extend the top level project descriptor.
         +-->
-    <extend>${basedir}/../maven/project.xml</extend>
-
-
-    <!--+
+  <extend>${basedir}/../maven/project.xml</extend>
+  <!--+
         | The short name of the project.
         | This is used when naming jars and distribution files.
         +-->
-    <id>astrogrid-registry-common</id>
+  <pomVersion>1</pomVersion>
 
-    <!--+
+	<id>astrogrid-registry-common</id>
+  <!--+
         | The full name of the project.
         | This is used when generating JavaDoc titles.
         +-->
-    <name>AstroGrid registry common</name>
-
-    <!--+
+  <name>AstroGrid registry common</name>
+  <!--+
         | The Java package name of the project.
         | This value is used when generating JavaDoc.
         +-->
-    <package>org.astrogrid.registry.common</package>
-
-    <!--+
+  <package>org.astrogrid.registry.common</package>
+  <!--+
         | Optional.
         | A detailed description of the project.
         | This element is usually specified as CDATA to enable the use of HTML tags within the description.
         | This description is used to generate the front page of the project's web site. 
         +-->
-    <description>
-        <![CDATA[
-	<p>
+  <description>
+        
+	&lt;p&gt;
 		The Common area are what is common between both the Client and Server areas.
-	</p>
-	<section name="Builds">
-		<p>			
+	&lt;/p&gt;
+	&lt;section name="Builds"&gt;
+		&lt;p&gt;			
 			Here are the maven goals for building the registry, it has a one extra goal compared to the other sub-projects.
-			<ul>
-				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
-				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
-				<li>astrogrid-install-artifact - Builds all the necessry jar and war files.</li>    	
-				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
-				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
-			</ul>
-		</p>
-	</section>
-		]]>
+			&lt;ul&gt;
+				&lt;li&gt;astrogrid-clean - cleans out and removes all previous builds.&lt;/li&gt;
+				&lt;li&gt;astrogrid-install-snapshot - Builds all the necessry jar and war files.&lt;/li&gt;
+				&lt;li&gt;astrogrid-install-artifact - Builds all the necessry jar and war files.&lt;/li&gt;    	
+				&lt;li&gt;astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.&lt;/li&gt;
+				&lt;li&gt;astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.&lt;/li&gt;
+			&lt;/ul&gt;
+		&lt;/p&gt;
+	&lt;/section&gt;
+		
 </description>
-
-    <!--+
+  <!--+
         | A short description of the project.
         | The short description should be limited to a single line.
         +-->
-    <shortDescription>Registry classes used by both the client and server</shortDescription>
-
-    <!--+
+  <shortDescription>Registry classes used by both the client and server</shortDescription>
+  <!--+
         | Our cvs repository location.
         +-->
-    <repository>
-        <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry/common
-        </connection>
-        <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry/common
-        </developerConnection>
-    </repository>
-
-    <!--+
+  <repository>
+    <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry/common</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry/common</developerConnection>
+  </repository>
+  <!--+
         | The external dependencies required to build and test the project.
         +-->
-    <dependencies>
-      <dependency>
-        <artifactId>astrogrid-common</artifactId>
-        <groupId>org.astrogrid</groupId>
-        <version>${astrogrid.common.version}</version>
-      </dependency>
-
-      <dependency>
-        <id>junit</id>
-        <version>3.8</version>
-      </dependency>
-    	
-      <dependency>
-        <id>xmlunit</id>
-        <version>1.0</version>
-      </dependency>
-    	
-    	<!-- axis, and the jars it relies upon -->
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>axis</artifactId>
-    		<version>1.3</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>wsdl4j</artifactId>
-    		<version>1.5.1</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>axis-saaj</artifactId>
-    		<version>1.3</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>axis-jaxrpc</artifactId>
-    		<version>1.3</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>commons-logging</artifactId>
-    		<version>1.0.4</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>commons-discovery</artifactId>
-    		<version>0.2</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-        
-    </dependencies>
-
-    <!--+
+  <dependencies>
+    <dependency>
+      <artifactId>commons-discovery</artifactId>
+      <type>jar</type>
+      <groupId>commons-discovery</groupId>
+      <version>20030211.213356</version>
+    </dependency>
+    <dependency>
+      <artifactId>commons-logging</artifactId>
+      <type>jar</type>
+      <groupId>commons-logging</groupId>
+      <version>1.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>${astrogrid.common.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xerces</artifactId>
+      <version>2.4.0</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.0.b2</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <version>1.4</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>jaxrpc</groupId>
+      <artifactId>jaxrpc</artifactId>
+      <version>unknown</version>
+      <jar>jaxrpc.jar</jar>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <version>1.1</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>saaj</groupId>
+      <artifactId>saaj</artifactId>
+      <version>unknown</version>
+      <jar>saaj.jar</jar>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-contracts</artifactId>
+      <version>${astrogrid.contracts.version}</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+  <!--+
         | The build properties for our project.
         +-->
-    <build>
-        <!--+
+  <build>
+    <!--+
             | The location of our Java source code.
             +-->
-        <sourceDirectory>src/java</sourceDirectory>
-        <!--+
+    <sourceDirectory>src/java</sourceDirectory>
+    <!--+
             | The location of our JUnit source code.
             +-->
-        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
-
-    	<!--
+    <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+    <!--
             <resources>
                 <resource>
                	   <directory>${basedir}/src</directory>
@@ -175,40 +163,35 @@
                 </resource>
             </resources>
         	-->
-    	
-
-        <resources>
-            <resource>
-           	   <directory>${basedir}/src</directory>
-		        <includes>
-		           	<include>xsl/*.xsl</include>
-		           	<include>schema/*.xsd</include>
-	            	<include>schema/**/*.xsd</include>
-		        </includes>            	
-            </resource>
-        </resources>
-
-        <!--+
+    <resources>
+      <resource>
+        <directory>${basedir}/src</directory>
+        <includes>
+          <include>xsl/*.xsl</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+    <!--+
             | Our JUnit test classes.
             +-->
-        <unitTest>
-            <!--+
+    <unitTest>
+      <!--+
                 | Which tests to include.
                 +-->
-            <includes>
-                <include>**/*Test.java</include>
-            </includes>
-            
-            <resources>
-                <resource>
-               	   <directory>${basedir}/src/junit</directory>
-    		        <includes>
-    		           	<include>**/*.xml</include>
-    		        </includes>            	
-                </resource>
-            </resources>
-        	
-        </unitTest>
-    </build>
-
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+      <resources>
+        <resource>
+          <directory>${basedir}/src/junit</directory>
+          <includes>
+            <include>**/*.xml</include>
+          </includes>
+          <filtering>false</filtering>
+        </resource>
+      </resources>
+    </unitTest>
+  </build>
 </project>
+

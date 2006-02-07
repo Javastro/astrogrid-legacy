@@ -18,6 +18,7 @@ import org.xml.sax.InputSource;
 import junit.framework.*;
 import java.io.File;
 import java.util.Date;
+import org.astrogrid.query.sql.Sql2Adql;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import java.util.*;
@@ -72,6 +73,20 @@ public class RegistryQueryTest extends TestCase {
        rs = RegistryDelegateFactory.createQuery();
        if (DEBUG_FLAG) System.out.println("----\"----");
    }
+   
+   public void testconvertSQLToADQL() throws Exception {
+       System.out.println("enter testSADQLOne");
+       String sql = "Select * from Registry where ((vr:title like 'sextractor' or vr:description " +      
+       " like 'sextractor' or vr:identifier like 'sextractor' or vr:shortName like " + 
+       " 'sextractor' or vr:subject like 'sextractor')) and  ( ((@xsi:type like " + 
+       " '%CeaApplicationType'  or @xsi:type like '%CeaHttpApplicationType'  ) and " + 
+       " @status = 'active')) ";   
+       String adqlString = Sql2Adql.translateToAdql074(sql);
+       System.out.println("the adql string = " + adqlString);
+       
+       System.out.println("exit testSADQLOne");
+   }
+   
    
    /**
     * Method: testGetResource

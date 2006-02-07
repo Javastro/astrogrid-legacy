@@ -3,7 +3,7 @@ package org.astrogrid.registry.webapp.junit;
 import java.io.InputStream;
 import java.io.File;
 import java.util.Iterator;
-import org.astrogrid.xmldb.client.XMLDBFactory;
+import org.astrogrid.xmldb.client.XMLDBManager;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -12,13 +12,12 @@ import org.apache.axis.AxisFault;
 import java.util.HashMap;
 
 import junit.framework.*;
-import org.astrogrid.registry.server.query.RegistryQueryService;
-import org.astrogrid.registry.server.RegistryServerHelper;
+
 import org.astrogrid.registry.server.XSLHelper;
-import org.astrogrid.registry.common.RegistrySchemaMap;
 import java.util.Map;
 import java.util.Iterator;
 import org.astrogrid.config.Config;
+import java.util.Properties;
 //import org.astrogrid.config.FallbackConfig;
 /**
  * Class: XSLHelperTest
@@ -43,10 +42,13 @@ public class XSLHelperTest extends TestCase {
     */ 
     public void setUp() throws Exception {
         super.setUp();
-      //  XMLDBFactory xdf = new XMLDBFactory();
-        File fi = new File("target/test-classes/exist.xml");
+        File fi = new File("target/test-classes/conf.xml");
+        Properties props = new Properties();
+        props.setProperty("create-database", "true");
+        props.setProperty("configuration",fi.getAbsolutePath());
+        
         if(fi != null) {
-          XMLDBFactory.registerDB(fi.getAbsolutePath());
+          XMLDBManager.registerDB(props);
         }
     }
     

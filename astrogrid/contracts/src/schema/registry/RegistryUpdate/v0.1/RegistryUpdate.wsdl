@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="updateRegistry" 
+             xmlns="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+             xmlns:ris="http://www.ivoa.net/wsdl/RegistryUpdate/v0.1"
+             xmlns:tns="http://www.astrogrid.org/registry/wsdl"
+             targetNamespace="http://www.astrogrid.org/registry/wsdl">             
+   <import namespace="http://www.ivoa.net/wsdl/RegistryUpdate/v0.1"
+           location="./Update.wsdl"/>
+   <service name="RegistryInterfaceService">
+      <port name="RegistryUpdatePort" binding="ris:RegistryUpdateSOAP">
+         <soap:address 
+        location="http://localhost:8080/astrogrid-registry/services/RegistryUpdatePort"/>
+      </port>   </service>
+</definitions>

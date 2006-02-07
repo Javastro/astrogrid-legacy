@@ -1,7 +1,5 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
                  org.astrogrid.store.Ivorn,
-                 org.astrogrid.registry.server.RegistryServerHelper,
-                 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.registry.common.RegistryValidator,
                  junit.framework.AssertionFailedError,
                  org.w3c.dom.Document,
@@ -89,13 +87,13 @@
 <head>
 <title>Edit Registry Entry</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
@@ -107,8 +105,8 @@
 <%
    if(update) {
       Document result = null;
-      RegistryAdminService server = new RegistryAdminService();      
-      server.updateNoCheck(doc,RegistryDOMHelper.getRegistryVersionFromNode(doc.getDocumentElement().getFirstChild()));
+      RegistryAdminService server = new RegistryAdminService();   
+      result = server.updateResource(doc);
       out.write("<p>Attempt at updating Registry, if any errors occurred it will be printed below<br /></p>");
       if (result != null) {
         DomHelper.DocumentToWriter(result, out);

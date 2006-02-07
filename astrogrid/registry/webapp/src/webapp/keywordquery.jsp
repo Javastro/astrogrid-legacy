@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-				 org.astrogrid.registry.server.*,
-				 org.astrogrid.registry.common.RegistryDOMHelper,
+				 	  org.astrogrid.registry.server.*,
+				 	  org.astrogrid.registry.common.RegistryDOMHelper,
+  	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -10,29 +11,20 @@
                  org.w3c.dom.Element,                 
                  java.net.*,
                  java.util.*,
-                org.apache.commons.fileupload.*,                  
+                 org.apache.commons.fileupload.*,                  
                  java.io.*"
     session="false" %>
-<%
-      RegistryQueryService server = new RegistryQueryService();
-      ArrayList al = server.getAstrogridVersions();
-      String version = request.getParameter("version");
-	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryDOMHelper.getDefaultVersionNumber();
-   	}
-            
-%>
 <html>
 <head>
 <title>Keyword Search Query</title>
 <style type="text/css" media="all">
-          @import url("style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
@@ -44,17 +36,9 @@
 
 <form method="post">
 <input type="hidden" name="keywordquery" value="true" />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
 <br />
 Keywords: <input type="text" name="keywords"/><br />
-Search for "any" of the words: <input type="checkbox" name="orValues" value="true">Any/Or the words</input>
+Require all words: <input type="checkbox" name="orValues" value="true">All words</input>
 <input type="submit" name="keywordquerysubmit" value="Query" />
 </form>
 
@@ -72,7 +56,7 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
    }else {
       error = "Cannot find any words to query";
    }
-  String maxCount = SimpleConfig.getSingleton().getString("exist.query.returncount", "25");
+   String maxCount = SimpleConfig.getSingleton().getString("exist.query.returncount", "25");
 %>
 <br />
 
@@ -88,11 +72,9 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
 
       
       Document entry = null;
-      if(version != null || version.trim().length() > 0)
-	      entry = server.keywordQuery(keywords,orValue,version);
-	  else
-	      entry = server.keywordQuery(keywords,orValue);
-	      
+   	ISearch server = JSPHelper.getQueryService(request);      
+      entry = server.getQueryHelper().keywordQuery(keywords,!orValue);
+      
       if (entry == null) {
         out.write("<p>No entry returned</p>");
       }
@@ -129,9 +111,9 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
            xsiType = xsiType.substring(xsiType.indexOf(":")+1);
          }         
 
-         out.write("<td><a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">View,</a>");
-         out.write("<a href=editEntry.jsp?version="+version+"&IVORN="+ivoStr+">Edit,</a>");
-         out.write("<a href=xforms/XFormsProcessor.jsp?version="+version+"&mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a></td>");         
+         out.write("<td><a href=viewResourceEntry.jsp?IVORN="+ivoStr+">View,</a>");
+         out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit,</a>");
+         out.write("<a href=admin/xforms/XFormsProcessor.jsp?mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a></td>");         
          out.write("</tr>\n");
          
       }//for

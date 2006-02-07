@@ -4,6 +4,23 @@
         <title>AstroGrid registry configure</title>
     </properties>
     <body>
+	<section name="Properties for Servlet/J2ee containers">
+	<p>
+		This small section gives you a brief overview of properties in general for servlet containers and for the registry.
+		JNDI environment entries are the typical way to set properties.  By default this information is all stored in a file
+        called web.xml and is located in the WEB-INF directory ex: tomcat/webapps/astrogrid-registry/WEB-INF.  
+		<br />
+		 Tomcat 5.5 though creates what is known as a context file in the tomcat/conf/Catalina/localhost directory with the name of
+         {context}.xml  You can change this file directory and it will automatically get set in tomcat, no restart is required. This context
+file is generated from the web.xml hence tomcat ignores the web.xml and only uses the context file.  So do not channge the web.xml in this instance.
+         <br /> Tomcat 5.0 -- Uses the web.xml till a user manually creates a context file in tomcat/conf/Catalina/localhost or by using the "Tomcat Administration GUI" found on the main Tomcat page hence http://localhost:8080
+         hits commit changes, whereby it will create a context file in the conf/Catalina/localhost directory.
+		 <br />Consult your servlet container docs for other info on JNDI environment entries.  Typically they use web.xml
+		 <br />
+		<i>Astrogrid Registry stores all properties that are more comment to be changed in these JNDI environment entries.  More rare properties are located
+         in a file called astrogrid.properties located in the webapps/{context name}/WEB-INF/classes directory.</i>
+	</p>
+	</section>
     <section name="Configuration">
       <p>
          This page will take you step-by-step on how to setup the registry to be complete.  Again this page
@@ -13,31 +30,34 @@ a lot in various documentation usually with curly brackets around it.</i>
 <br />
          <strong>By default the registry runs a xml database inside the webapp where all the data is stored inside the webapp directory.
               It is STRONGLY RECOMMENDED to read the "eXist With Registry Guide" to explain on how to move the data outside your webapp to ensure
-no data is lost when upgrading later.</strong>
+no data is lost when upgrading later (this is a fairly simple task and can save you a lot of effort later).  There is also details of backups, client connection to the db in that setion.</strong>
       </p>
-      
       <subsection name="Changing Properties">
       <p>
          First we need to change some properties in the environment entries.<br />
          <ul>
-            <li>Go to your Administration GUI known as "Tomcat Administration" and login.  This link is on the main tomcat
-menu site http://{server}:{port} example on your local machine with default tomcat port is; http://localhost:8080</li>
-                <li>Go to your environment entries for your {context name} this is located at:
-                     Service->Host->Context {context name}->Environment Entries.</li>
-                <li>Now change the following properties (don't commit yet)</li>
-                <li>reg.amend.authorityid - Your main authority id for this registry, normally an institution domain name ex: mssl.ucl.ac.uk</li>
+            <li>You may have a client GUI able to change jndi environment entries.  Tomcat 5.0 has a administration GUI.  If not then
+changes will need to be made manually to the xml file.  If your using tomcat check in your tomcat/conf/Catalina/localhost diretory
+for a  file [context-name].xml if it does not exist then change in the web.xml located in webapps/[context-name]/WEB-INf/web.xml</li>
+
+            <li>reg.amend.authorityid - Your main authority id for this registry, normally an institution domain name ex: mssl.ucl.ac.uk</li>
             <li>reg.amend.harvest - *Only if you want registry to automatically harvest then set to "true"</li>
             <li>reg.amend.identify.adminEmail - to your contact e-mail.</li>
             <li>reg.amend.oaipublish.0.10 - *Only if your {context name} is not "astrogrid-registry" then change it.</li>
-            <li>That is all for properties, it is strongly recommended to read the "Users Guide" to understand other properties.</li>
+            <li>That is all for properties, it is strongly recommended to read the "Users Guide" to understand other properties.  This also explains further advanced abilities of the registry</li>
          </ul>
       </p>
-       </subsection>
+      </subsection>
       <subsection name="Setting up for data">
          <p>
             <strong>DO NOT NEED TO DO WHEN UPGRADING</strong>
+            
           <ul>
-            <li>1.) Go to the registry jsp page of "http://...../{context name}/admin/index.jsp" and do the first registration process to register
+			<li><strong>**If you know your going to be a full registry you can download a full version of the embedded database and unzip it in your
+                tomcat/webapps/{context}/WEB-INF directory (or better yet where you placed your actual database if you followed the recomendation).<br />
+				This can be found at <a href='http://www.astrogrid.org/maven/org.astrogrid/zips'>Zip Directory</a> in the form of ex: astrogrid-registry-xmldb_exist-{release version}-full.zip</strong>
+			</li>
+            <li>1.) Go to the registry jsp page of "http://../[context name]/admin/index.jsp" and do the first registration process to register
               this registry. This will in setup your first entry into your registry which is your Registry Type describing about this registry.
             </li>
             <li>
@@ -46,7 +66,7 @@ menu site http://{server}:{port} example on your local machine with default tomc
                  managed by this Registry. <i>Notice that Registry Type you entered in step one had {managedAuthority} element tags this is what is read to 
 determine what authority ids you are allowed to use.</i>
             </li>
-               <li>Now it is time to register your new Registry to the rest of the world.</li>
+            <li>Now it is time to register your new Registry to the rest of the world.</li>
             <li>2.) Do the Second link on "/admin/index.jsp" for registering your registry to a full registry.</li>
             <li>Now if your not planning on being a Full Registry then stop here.</li>
             <li>3.)Finally do the Third link on "/admin/index.jsp" to become a full registry by grabbing all the

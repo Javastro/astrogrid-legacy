@@ -5,8 +5,8 @@
 <Context path="@REGISTRY_WEBAPP@">
     <Environment name="reg.amend.authorityid" override="false" type="java.lang.String" value="@REGISTRY_AUTHID@" 
         description="The Main Authority ID for this Registry (Authority ID used for the Registry type)"/>
-    <!--Environment name="xmldb.uri" override="false" type="java.lang.String" value="xmldb:exist://" 
-        description="&#10;			The XMLDB server location url. By default it is set to use the internal eXist db.  &#10;			You may set it to xmldb:exist://host:port/exist/xmlrpc for external eXist db. e.g. xmldb:exist://localhost:8080/exist/xmlrpc.  &#10;			In general you can switch to another db but this is untested read configuration page from your context on that."/>
+    <Environment name="xmldb.uri" override="false" type="java.lang.String" value="xmldb:exist://" 
+        description="The XMLDB server location url. By default it is set to use the internal eXist db. You may set it to xmldb:exist://host:port/exist/xmlrpc for external eXist db. e.g. xmldb:exist://localhost:8080/exist/xmlrpc. In general you can switch to another db but this is untested read configuration page from your context on that."/>
     <Environment name="xmldb.driver" override="false" type="java.lang.String" value="org.exist.xmldb.DatabaseImpl" 
         description="The XMLDB driver to be the registered xml database."/>
     <Environment name="xmldb.query.service" override="false" type="java.lang.String" value="XQueryService" 
@@ -25,12 +25,12 @@
     <Environment name="reg.amend.quiton.invalid" override="false" type="java.lang.String" value="false" description="Quit on validation."/>
     <Environment name="reg.amend.returncount" override="false" type="java.lang.String" value="100" 
         description="The maximum number of results to return from queries."/>
-    <Environment name="reg.amend.harvest" override="false" type="java.lang.String" value="false" description="Does this registry need to do harvesting."/-->
-    <Environment name="reg.amend.oaipublish.0.9" override="false" type="java.lang.String" value="@reg.amend.oaipublish.0.9@" 
-        description="The url to the oai publishing url for 0.9, default is set to astrogrid servlet, but is not required to use."/>
+    <Environment name="reg.amend.harvest" override="false" type="java.lang.String" value="false" description="Does this registry need to do harvesting."/>
+    <Environment name="reg.amend.oaipublish.0.1" override="false" type="java.lang.String" value="@reg.amend.oaipublish.0.10@" 
+        description="The url to the oai publishing url for 0.10, default is set to astrogrid servlet, but is not required to use."/>
     <Environment name="reg.amend.oaipublish.0.10" override="false" type="java.lang.String" value="@reg.amend.oaipublish.0.10@" 
         description="The url to the oai publishing url for 0.10, default is set to astrogrid servlet, but is not required to use."/>
-    <!--Environment name="reg.custom.exist.configuration" override="false" type="java.lang.String" value="" 
+    <Environment name="reg.custom.exist.configuration" override="false" type="java.lang.String" value="" 
         description="Point to another exist configuration file on your disk hence a different data directory as well.  (only for internal db use).  This might be handly if you want to use the internal database, but not have the configuration file and data directory of eXist db with the war file so undeploying/updating wars will not lose data. Also use if servlet container does not unpack war file."/>
     <Environment name="reg.custom.harvest.interval_hours" override="false" type="java.lang.String" value="2" 
         description="Number of hours between harvest (if harvest is enabled)"/>
@@ -40,31 +40,18 @@
         description="Used for the Identify verb in OAI.  The administration Email of this OAI repository."/>
     <Environment name="reg.custom.identify.earliestDatestamp" override="false" type="java.lang.String" value="1950-03-03T22:14:22" 
         description="Used for the Identify verb in OAI.  The earliest date stamp for records/metadata being published."/>
-    <Environment name="reg.custom.updatestylesheet.0.9" override="false" type="java.lang.String" value="true" 
-        description="(Advanced) Specify stylesheets to be used on updates for particular versions."/>
     <Environment name="reg.custom.updatestylesheet.0.10" override="false" type="java.lang.String" value="true" 
         description="(Advanced) Specify stylesheets to be used on updates for particular versions."/>
-    <Environment name="reg.custom.harveststylesheet.0.9" override="false" type="java.lang.String" value="true" 
-        description="(Advanced) Specify stylesheets to be used on harvest updates for particular versions."/>
     <Environment name="reg.custom.harveststylesheet.0.10" override="false" type="java.lang.String" value="true" 
         description="(Advanced) Specify stylesheets to be used on harvest updates for particular versions."/>
-    <Environment name="reg.custom.keywordxpaths.0.9" override="false" type="java.lang.String" value="vr:Summary/vr:Description, vr:Title, vr:Subject" 
-        description="(Advanced) Specify xpath for keyword search based on various versions in the registry."/>
     <Environment name="reg.custom.keywordxpaths.0.10" override="false" type="java.lang.String" 
         value="vr:content/vr:description, vr:title, vr:content/vr:subject" 
         description="(Advanced) Specify xpath for keyword search based on various versions in the registry."/>
-    <Environment name="reg.custom.identifier.hasauthorityid.0.9" override="false" type="java.lang.String" value="true" 
-        description="(Advanced) Does the Identifier split up with an AuthorityID element based on version in registry."/>
     <Environment name="reg.custom.rootNode.default" override="false" type="java.lang.String" value="vor:Resource" 
         description="(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry."/>
     <Environment name="reg.custom.rootNode.0.10" override="false" type="java.lang.String" value="vor:Resource" 
         description="(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry."/>
-    <Environment name="reg.custom.rootNode.0.9" override="false" type="java.lang.String" value="vr:Resource" 
-        description="(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry."/>
-    <Environment name="reg.custom.declareNS.0.9" override="false" type="java.lang.String" 
-        value="&#10;			declare namespace vr = &quot;http://www.ivoa.net/xml/VOResource/v0.9&quot;; declare namespace vc = &quot;http://www.ivoa.net/xml/VOCommunity/v0.2&quot;; declare namespace vg = &quot;http://www.ivoa.net/xml/VORegistry/v0.2&quot;; declare namespace vs = &quot;http://www.ivoa.net/xml/VODataService/v0.4&quot;; declare namespace vt = &quot;http://www.ivoa.net/xml/VOTable/v0.1&quot;; declare namespace cs = &quot;http://www.ivoa.net/xml/ConeSearch/v0.2&quot;; declare namespace sia = &quot;http://www.ivoa.net/xml/SIA/v0.6&quot;; declare namespace cea=&quot;http://www.ivoa.net/xml/CEAService/v0.1&quot;; declare namespace ceapd=&quot;http://www.astrogrid.org/schema/AGParameterDefinition/v1&quot;; declare namespace ag=&quot;http://www.astrogrid.org/schema/AstrogridDataService/v0.1&quot;; declare namespace xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;; &#10;		" 
-        description="(Advanced) Declare the namespaces used on the registry, based on registry versions."/>
     <Environment name="reg.custom.declareNS.0.10" override="false" type="java.lang.String" 
         value="&#10;			declare namespace vr = &quot;http://www.ivoa.net/xml/VOResource/v0.10&quot;; declare namespace vor=&quot;http://www.ivoa.net/xml/RegistryInterface/v0.1&quot;; declare namespace vs = &quot;http://www.ivoa.net/xml/VODataService/v0.5&quot;; declare namespace cs = &quot;http://www.ivoa.net/xml/ConeSearch/v0.3&quot;; declare namespace sia = &quot;http://www.ivoa.net/xml/SIA/v0.7&quot;; declare namespace vg = &quot;http://www.ivoa.net/xml/VORegistry/v0.3&quot;; declare namespace vc = &quot;http://www.ivoa.net/xml/VORegistry/v0.3&quot;; declare namespace cea=&quot;http://www.ivoa.net/xml/CEAService/v0.2&quot;; declare namespace ceapd=&quot;http://www.astrogrid.org/schema/AGParameterDefinition/v1&quot;; declare namespace ag=&quot;http://www.astrogrid.org/schema/AstrogridDataService/v0.2&quot;; declare namespace tdb=&quot;urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3&quot;; declare namespace xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;; &#10;		" 
-        description="(Advanced) Declare the namespaces used on the registry, based on registry versions."/-->
+        description="(Advanced) Declare the namespaces used on the registry, based on registry versions."/>
 </Context>

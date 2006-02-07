@@ -4,6 +4,7 @@
    version="1.0" 
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xmlns:exist="http://exist.sourceforge.net/NS/exist"
    xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10"
    xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
    xmlns:oai="http://www.openarchives.org/OAI/2.0/">
@@ -17,6 +18,17 @@
    -->
 
    <xsl:output method="xml" />
+
+    <xsl:template match="exist:match">
+         <xsl:apply-templates />
+    </xsl:template>
+    
+    <xsl:template match="vor:VOResources">
+      <xsl:element name="OAIINFO">
+         <xsl:apply-templates />
+      </xsl:element>
+    </xsl:template>
+
 
     <xsl:template match="vor:Resource">
       <xsl:variable name="dtVar">
@@ -129,13 +141,14 @@
                -->
                </oai_dc:dc>
                
-               <vr:Resource xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
-               xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" 
+               <vr:Resource xmlns="http://www.ivoa.net/xml/VOResource/v0.10" 
+               xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
    xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
    xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
    xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
    xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" 
+   xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1"   
    xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" 
    xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" 
    xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" 

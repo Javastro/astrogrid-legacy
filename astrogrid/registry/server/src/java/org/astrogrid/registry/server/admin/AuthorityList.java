@@ -122,7 +122,6 @@ public class AuthorityList {
             al = (AuthorityList)authList;
         else
             return false;
-        //System.out.println("IN EQUALS THIS- " + this.toString() + " EQUALS AL = " + al.toString());
         if(this.authorityID.equals(al.getAuthorityID()) && 
            this.versionNumber.equals(al.getVersionNumber())) {
             if(this.owner == null && al.getOwner() == null)

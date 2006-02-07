@@ -55,8 +55,17 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+
+import org.astrogrid.registry.server.query.ISearch;
+import org.astrogrid.registry.server.query.QueryFactory;
+
 import ORG.oclc.oai.server.catalog.AbstractCatalog;
 import ORG.oclc.oai.server.verb.*;
+
+import org.astrogrid.registry.server.query.ISearch;
+import org.astrogrid.registry.server.query.QueryFactory;
+
+
 import java.net.URL;
 
 // import org.apache.log4j.BasicConfigurator;
@@ -102,9 +111,17 @@ public class OAIHandler extends HttpServlet {
 	super.init(config);
 	String fileName =
 	    config.getServletContext().getInitParameter("properties");
-    String versionNumber =
-       config.getInitParameter("registry_version");
-	try {
+    String contractVersion =
+       config.getInitParameter("registry_contract_version");
+    ISearch rsSearch = null;
+    try {
+        rsSearch = QueryFactory.createQueryService(contractVersion);
+    }catch(Exception e) {
+        e.printStackTrace();
+   //     throw new OAIInternalServerError("Could not get Query Service" + e.toString());
+    }
+    String versionNumber = rsSearch.getResourceVersion();    
+    try {
 	    ServletContext context = getServletContext();
 	    attributes = new HashMap();
 	    Enumeration attrNames = context.getAttributeNames();
@@ -118,6 +135,7 @@ public class OAIHandler extends HttpServlet {
 	    Properties properties = new Properties();
 	    //properties.load(in);
        properties.load(configUrl.openStream());
+       properties.setProperty("registry_contract_version",contractVersion);
        properties.setProperty("registry_version",versionNumber);
 	    attributes.put("OAIHandler.properties", properties);
        

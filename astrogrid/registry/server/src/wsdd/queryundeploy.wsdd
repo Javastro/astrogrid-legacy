@@ -9,8 +9,8 @@
 <undeployment
     xmlns="http://xml.apache.org/axis/wsdd/">
 
-  <!-- Services from RegistryInterfaceService WSDL service -->
-
-  <service name="Registry"/>
   <service name="RegistryQuery"/>
+  <service name="RegistryQueryv1_0"/>
+  <service name="RegistryHarvest"/>
+  
 </undeployment>

@@ -1,11 +1,13 @@
 <%@ page import="org.astrogrid.config.SimpleConfig,
+ 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.w3c.dom.NodeList,
                  org.w3c.dom.Element,
                  org.w3c.dom.Document,   
                  org.astrogrid.util.DomHelper,
-                 org.astrogrid.registry.server.RegistryServerHelper,
+                 org.astrogrid.registry.server.http.servlets.Log4jInit,
+                 org.astrogrid.xmldb.client.XMLDBManager,
                  org.astrogrid.registry.common.RegistryDOMHelper,                 
-             org.astrogrid.registry.server.query.*"
+             	  org.astrogrid.registry.server.query.*"
    isThreadSafe="false"
    session="false"
 %>
@@ -14,14 +16,14 @@
 <head>
 <title>AstroGrid Registry Access Pages</title>
 <style type="text/css" media="all">
-          @import url("./style/astrogrid.css");
+	<%@ include file="/style/astrogrid.css" %>          
 </style>
 </title>
 </head>
 
 <body>
-<%@ include file="header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
@@ -33,13 +35,18 @@ are available.
 </p>
 <p>
 <%
-   RegistryQueryService server = new RegistryQueryService();
+   ISearch server = JSPHelper.getQueryService(request);
+   
    Document entry = null;
+   boolean dbInit = XMLDBManager.isInitialized();
+   boolean logInit = Log4jInit.getLoggingInit();
    try {
       entry = server.loadRegistry(DomHelper.newDocument());
    }catch(Exception e) {
       //do nothing for now.  
+      entry = null;
    }
+   
    boolean newRegistry = true;
    String ivoStr = null;
    if(entry != null) {
@@ -49,9 +56,15 @@ are available.
       }//if
    }//if
    
+   if(!dbInit) {
+   	out.write("<font color='red'>Could not detect that your database was initalizaed with the eXist default xml database</font><br />");
+   }
+   if(!logInit) {
+   	out.write("<font color='red'>Could not initalize logging, See <a href='docs/configure.html'>Configure</a></font><br />");
+   }
+   
    if (newRegistry) {
-      out.write("This Registry has not yet been configured; click <a href='setup/configure.jsp'>here</a> to set it up");
-      out.write("<br /><font color='blue'>Your logs may show a NoResourcesFoundException; this is okay if you are setting up your registry for the firs time; see the <a href='configure.jsp'>configure</a></fong>");
+      out.write("This Registry has not yet been configured; click <a href='docs/configure.html'>here</a> to set it up");
    }
    else {
       out.write("This Registry main authorityid <b>"+SimpleConfig.getSingleton().getString("reg.amend.authorityid")+"</b>");
@@ -61,9 +74,7 @@ are available.
           SimpleConfig.getSingleton().getString("reg.custom.exist.configuration").trim().length() == 0)) {
           out.write("<br /><font color='green'>Your registry is in embed/internal mode with the data storage inside your webapp. It is advisable" +
           " to have the data storage outside your webapp, read the configure page to see how this is done in the documentation area.</font>");
-      
       }
-      
    }
 %>
 </body>

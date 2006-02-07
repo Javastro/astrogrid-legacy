@@ -1,33 +1,40 @@
-/*
- * First created on 25-Apr-2003
- *
- */
 package org.astrogrid.registry.server.harvest;
 
 import java.rmi.RemoteException;
 
-
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+
 import org.xml.sax.SAXException;
+
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.rpc.ServiceException;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
-import org.xml.sax.InputSource;
-//import org.astrogrid.registry.server.RegistryServerHelper;
+
+
 import org.astrogrid.registry.common.RegistryDOMHelper;
-import org.astrogrid.registry.server.QueryHelper;
-import org.astrogrid.registry.server.admin.RegistryAdminService;
-import org.astrogrid.registry.server.query.RegistryQueryService;
+import org.astrogrid.registry.server.query.QueryHelper;
+import org.astrogrid.registry.server.xmldb.XMLDBRegistry;
+import org.astrogrid.util.DomHelper;
+import org.astrogrid.config.Config;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.xmldb.client.XMLDBFactory;
+import org.astrogrid.registry.server.InvalidStorageNodeException;
+import org.astrogrid.registry.common.XSLHelper;
+
 import java.net.URL;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Date;
+
 import java.text.SimpleDateFormat;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -38,24 +45,14 @@ import org.apache.axis.client.Service;
 import org.apache.axis.message.SOAPBodyElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import javax.xml.rpc.ServiceException;
-import org.astrogrid.util.DomHelper;
-import org.astrogrid.config.Config;
-import org.astrogrid.registry.RegistryException;
-
-import org.astrogrid.registry.common.XSLHelper;
 
 import java.net.MalformedURLException;
-//import org.apache.axis.AxisFault;
-
-import org.astrogrid.xmldb.client.XMLDBFactory;
 
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.XMLDBException;
-
 
 /**
  *
@@ -80,9 +77,15 @@ public class RegistryHarvestService {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
       }
    }
-
-
-
+   
+   XMLDBRegistry xdbRegistry;
+   RegistryHarvestAdmin rha = null;
+   
+   public RegistryHarvestService() {
+       xdbRegistry = new XMLDBRegistry();
+       rha = new RegistryHarvestAdmin();
+   }
+   
    /**
        * Will start a harvest of all the Registries known to this registry.
        *
@@ -112,25 +115,22 @@ public class RegistryHarvestService {
       String tempIdent = null;
       String resKey = null;
       
-      //instantiate the Admin service that contains the update methods.c
-      RegistryAdminService ras = new RegistryAdminService();
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
-             //System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
-             ArrayList versions = null;
-             RegistryQueryService rqs = new RegistryQueryService();
+             ArrayList versions = null;             
              try {
-                 versions = rqs.getAstrogridVersions();
+                 versions = QueryHelper.getAstrogridVersions();
              }catch(XMLDBException xdbe) {
                  log.error(xdbe);
                  throw new RegistryException("Could not find any Astrogrid Versions in the Registry");
              }
-             
+             QueryHelper queryHelper = null;             
              for(int k = 0;k < versions.size();k++) {
                  log.debug("Start processing Registry Types from version = " + (String)versions.get(k));
                  try {
-                     harvestDoc = rqs.getRegistriesQuery((String)versions.get(k));
+                     queryHelper = new QueryHelper((String)versions.get(k));
+                     harvestDoc = queryHelper.getRegistriesQuery();
                  }catch(Exception e) {
                      log.error(e);
                      harvestDoc = null;
@@ -145,11 +145,10 @@ public class RegistryHarvestService {
                        if(useDates) {
                           String dateString = null;
                           try {
-                              coll = xdb.openCollection("statv" + versionNumber.replace('.','_'));
                               tempIdent = RegistryDOMHelper.getAuthorityID(elem);
                               resKey = RegistryDOMHelper.getResourceKey(elem);
                               if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;                              
-                              XMLResource xmlr = (XMLResource)xdb.getResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml");
+                              XMLResource xmlr = xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml","statv" + versionNumber.replace('.','_'));
                               if(xmlr != null) {
                                   Document statDoc = DomHelper.newDocument(xmlr.getContent().toString());
                                   dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
@@ -170,13 +169,7 @@ public class RegistryHarvestService {
                           } catch(SAXException sax) {
                               log.error(sax);
                               dateString = null;
-                          }finally {
-                              try {
-                                  xdb.closeCollection(coll);
-                              }catch(XMLDBException xmldb) {
-                                  log.error(xmldb);
-                              }
-                          }//finally
+                          }
                           if(dateString != null && dateString.trim().length() > 0) {
                               dt = new Date(Long.parseLong(dateString));
                           }//if
@@ -187,16 +180,18 @@ public class RegistryHarvestService {
                                log.debug("This is our main Registry type do not do a harvest of it");
                            } else {                           
                                beginHarvest(elem,dt,(String)versions.get(k));                  
-                               ras.updateNoCheck(DomHelper.newDocument(DomHelper.ElementToString(elem)),(String)versions.get(k));
+                               rha.harvestingUpdate(DomHelper.newDocument(DomHelper.ElementToString(elem)),(String)versions.get(k));
                            }
-                       }catch(RegistryException re) {
-                           log.error(re);
-                           log.info("still continue to the next Registry type if there are any");
                        }catch(IOException ioe) {
                            log.error(ioe);
                            log.info("still continue to the next Registry type if there are any");
                        }catch(XMLDBException xmldbe) {
                            log.error(xmldbe);
+                       }catch(InvalidStorageNodeException isne) {
+                           log.error(isne);
+                       }catch(RegistryException re) {
+                           log.error(re);
+                           log.info("still continue to the next Registry type if there are any");
                        }catch(SAXException sax) {
                            log.error(sax);
                        }catch(ParserConfigurationException pce) {
@@ -231,7 +226,6 @@ public class RegistryHarvestService {
       String soapActionURI = null;
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
       
-      //System.out.println(resource.getNodeName() + " " + resource.getNodeValue());
 
       NamedNodeMap attributes = resource.getAttributes();
       String identifier = RegistryDOMHelper.getIdentifier(resource);
@@ -241,7 +235,6 @@ public class RegistryHarvestService {
       Node typeAttribute = resource.getAttributes().getNamedItem("xsi:type");
       isRegistryType = (typeAttribute != null) &&
                        (typeAttribute.getNodeValue().indexOf("Registry") >= 0);
- //   System.out.println("RegistryType attribute =" + isRegistryType);
 
       nl = ((Element) resource).getElementsByTagNameNS("*","AccessURL");
       if(nl.getLength() == 0) {
@@ -287,8 +280,6 @@ public class RegistryHarvestService {
        String soapActionURI = null;
        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
        //instantiate the Admin service that contains the update methods.
-       RegistryAdminService ras = new RegistryAdminService();
-
       String setName = conf.getString("reg.custom.harvest.set-" + identifier,MAIN_HARVEST_SET);
       if(invocationType != null && invocationType.endsWith("WebService")) {
          //call the service
@@ -341,7 +332,7 @@ public class RegistryHarvestService {
                    Document soapDoc = sbe.getAsDocument();
                    //log.debug("SOAPDOC RETURNED = " + DomHelper.DocumentToString(soapDoc));
                    //(new HarvestThread(ras,soapDoc.getDocumentElement())).start();
-                   ras.updateNoCheck(soapDoc,version);
+                   rha.harvestingUpdate(soapDoc,version);
                    //if(isRegistryType) {
                       nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
                       while(nl.getLength() > 0) {
@@ -361,7 +352,7 @@ public class RegistryHarvestService {
     									    (new Object[] {sbeRequest});
                           soapDoc = sbe.getAsDocument();
                           //(new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
-                          ras.updateNoCheck(soapDoc,version);
+                          rha.harvestingUpdate(soapDoc,version);
                            nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
                       }//while
                    //}//if
@@ -407,7 +398,7 @@ public class RegistryHarvestService {
             //log.info("Okay got this far to reading the url doc = " +
              //         DomHelper.DocumentToString(doc));
             //(new HarvestThread(ras,doc.getDocumentElement().cloneNode(true))).start();
-            ras.updateNoCheck(doc,version);
+            rha.harvestingUpdate(doc,version);
             NodeList moreTokens = null;
             //log.info("resumptionToken length = " +
             //         doc.getElementsByTagName("resumptionToken").
@@ -437,7 +428,7 @@ public class RegistryHarvestService {
                }
                }//while
                if(resumptionSuccess) {
-                   ras.updateNoCheck(doc,version);
+                   rha.harvestingUpdate(doc,version);
                }else {
                    doc = null;
                }//else
@@ -456,6 +447,9 @@ public class RegistryHarvestService {
          }catch(XMLDBException xdbe) {
              xdbe.printStackTrace();
              log.error(xdbe);
+         }catch(InvalidStorageNodeException isne) {
+             isne.printStackTrace();
+             log.error(isne);             
          }
       }//elseif
       log.debug("end beginHarvest");
@@ -538,8 +532,6 @@ public class RegistryHarvestService {
          _call = (Call) service.createCall();
          _call.setTargetEndpointAddress(endPoint);
          _call.setSOAPActionURI("");
-         _call.setOperationStyle(org.apache.axis.enum.Style.MESSAGE);
-         _call.setOperationUse(org.apache.axis.enum.Use.LITERAL);
          _call.setEncodingStyle(null);
       } catch(ServiceException se) {
          se.printStackTrace();

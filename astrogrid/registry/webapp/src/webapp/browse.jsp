@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-				 org.astrogrid.registry.server.*,
-				 org.astrogrid.registry.common.RegistryDOMHelper,
+	  				  org.astrogrid.registry.server.*,
+ 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+				 	  org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.w3c.dom.Element,
@@ -15,26 +16,19 @@
 <html>
 <head><title>Browse Registred Resources</title>
 <style type="text/css" media="all">
-          @import url("./style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
 <%
 
-   RegistryQueryService server = new RegistryQueryService();
-   ArrayList al = server.getAstrogridVersions();
-
-   String version = request.getParameter("version");
-   if(version == null || version.trim().length() <= 0) {
-   	version = RegistryDOMHelper.getDefaultVersionNumber();
-   }
-
+   ISearch server = JSPHelper.getQueryService(request);
 
    long offset = 0;
    String off = request.getParameter("Index");
@@ -66,34 +60,11 @@
 
 <form method='get'>
 <p>
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
 <br/>
 Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart %>'/>
 <input type="submit" name="button" value='List'/>
 </p>
 </form>
-
-<form method='get'>
-<p>
-Browse for another version
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>
-   <%}%>
-</select>
-<input type="submit" name="button" value='List'/>
-</p>
-</form>
-
 
 <p>
    
@@ -107,14 +78,12 @@ Browse for another version
 <%
    //out.write("*"+ivornpart+"*:<br/");
    
-   Document entries = null;
-//   System.out.println("version in browse.jsp=" + version);
-   
+   Document entries = null;   
    if ( (ivornpart != null) && (ivornpart.trim().length() > 0) ) {
-   		 entries = server.getResourcesByAnyIdentifier(ivornpart,version);
+   		 entries = server.getQueryHelper().getResourcesByAnyIdentifier(ivornpart);
    }
    else {
-   		 entries = server.getAll(version);
+   		 entries = server.getQueryHelper().getAll();
    }
    
    if (entries == null) {
@@ -149,13 +118,7 @@ Browse for another version
          String endFG = "</font>";
          
          out.write("<tr bgcolor='"+bgColour+"'>\n");
-
-			if("0.9".equals(version)) {
-				out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "Title")+endFG+"</td>");
-	      }else {
-  	         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "title")+endFG+"</td>");	         
-	      }
-         
+         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "title")+endFG+"</td>");	         
          //type
          String xsiType = resourceElement.getAttribute("xsi:type");
          out.write("<td>"+setFG+xsiType+endFG+"</td>");
@@ -170,7 +133,7 @@ Browse for another version
             if (authority == null || authority.trim().length() <= 0) {
                out.write("<td>null?!</td>");
             } else {
-               out.write("<td><a href='browse.jsp?version="+version+"&IvornPart="+authority+"'>"+authority+"</a></td>\n");
+               out.write("<td><a href='browse.jsp?IvornPart="+authority+"'>"+authority+"</a></td>\n");
                ivoStr = authority;
             }
    
@@ -184,13 +147,10 @@ Browse for another version
    
             //last update date
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
-            
             out.write("<td>");
-   
-            out.write("<a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">XML,</a>  ");
-
-            out.write("<a href=editEntry.jsp?version="+version+"&IVORN="+ivoStr+">Edit,</a>");
-            out.write("<a href=xforms/XFormsProcessor.jsp?version="+version+"&mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a>");
+            out.write("<a href=viewResourceEntry.jsp?IVORN="+ivoStr+">XML,</a>  ");
+            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit,</a>");
+            out.write("<a href=admin/xforms/XFormsProcessor.jsp?mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a>");
 
 			/*
             if (!deleted) {

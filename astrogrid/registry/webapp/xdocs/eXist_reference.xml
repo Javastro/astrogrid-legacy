@@ -20,6 +20,28 @@ everything correct again.<br />
 wish to read it and tweak it.
 		</p>
 	  </subsection>
+	  <subsection name="Making backups and restores">
+		<p>
+			As noted  in the above section backing up the data directory is a good way to do backups, but it is still possible you might get the binary files
+corruped in some way.  In the WEB-INF directory you will find a backupandrestore executable.  Look at the top of the executable to see how to run the file.  This
+will allow you to create the raw xml files as backup and restore them later if necessary.  
+		Typical procedure with eXist embedded with the registry:
+		<br />
+			<ul>
+				<li>set a EXIST_HOME variable to the location of your conf.xml file</li>
+						<li>
+				Run this command for backups script located in webapps/{context}/WEB-INF directory:<br />
+               "backupandrestore.{bat/sh} -d {backupdirectory} -u admin -b /db  -ouri=xmldb:exist://"
+			</li>
+			<li>
+			   Run this command for restores:<br />
+               "backupandrestore.{bat/sh} -r {backupdirectory}/db/__contents__.xml -u admin -ouri=xmldb:exist://"
+			</li>
+		    </ul>
+		  If your using an external eXist then you will find a backup.{bat/sh} in the /bin directory of your eXist install which takes the same
+          parameters as above.
+		</p>
+	  </subsection>
       <subsection name="Increasing memorry">
 		<p>
 			If your going to be a full registry then you will most likely need to increase your memorry, otherwise either eXist or Registry webapp may get OutOfMemorry errors.
@@ -29,7 +51,7 @@ wish to read it and tweak it.
             **In the external eXist case you would only need to change if your going to be a full registry; in which case you look at startup.bat or startup.sh file in the bin directory and change its default setting for JAVA_OPTS to have a -Xmx=512m instead of 128 like it has.
 		</p>
 	  </subsection>
-      <subsection name="eXist embedded">
+      <subsection name="eXist embedded (Moving your Data Out)">
       <p>
 		By default eXist is embedded into the registry web application meaning you don't have to download it or setup any settings.  The Registry
  already has all the necessary libraries to run eXist.  The default of the registry though puts all the information (xml data storate) inside the webapp and
@@ -38,10 +60,13 @@ wish to read it and tweak it.
  But there is a easier way to make settings use a different directory to store your data:
 		<ul>
 			<li>Create some other direcotry not under tomcat of where you would like your data to be stored for eXist.</li>
-            <li>Copy the conf.xml, and the whole data directory from your {context name}/WEB-INF directory. So inside your directory you should now have conf.xml, data {directory}.</li>
-			<li>Using the tomcat Administration GUI, go and change the "reg.custom.exist.configuration" property and point to this directory.</li>
-			<li>Be sure to hit "save" then hit "commit changes".</li>
-			<li>That is all you, now when data is being stored it is using this new data directory, be sure during upgrades to set that property to your directory.  Also note "Windows" OS users normally need to escape there slashes ex: c:\\existstore.</li>
+            <li>Copy the conf.xml, and the whole "data" directory from your {context name}/WEB-INF directory and the whole "lib" directory. So inside your directory you should now have conf.xml, data {directory}, lib {directory}.</li>
+            <li>Optionally if this is a brand new registry and your not able to get at your directory because the servlet container did not unpack the war then you can download an empty or
+                full registry at <a href='http://www.astrogrid.org/maven/org.astrogrid/zips'>Zip Directory</a> with the name astrogrid-registry-xmldb_exist-{version relase}.zip or -full.zip may be encountered.
+			</li>
+			<li>Using the tomcat Administration GUI or other ways of changing JNDI env entries, go and change the "reg.custom.exist.configuration" property and point to this directory plus conf.xml ex: /exist/db/conf.xml.</li>
+			<li>Be sure to hit "save" then hit "commit changes" if you used the Administration GUI.</li>
+			<li>That is all you, now when data is being stored it is using this new data directory, be sure during upgrades to set that property to your directory.  Also note "Windows" OS users "may" need to escape there slashes ex: c:\\existstore.</li>
 		</ul>		
       </p>
       </subsection>
@@ -51,15 +76,7 @@ wish to read it and tweak it.
  		you may download it from <a href="http://exist.sourceforge.net/">here</a>.  But there are a few settings you may wish to do.<br />
 	  </p>
 	  <p>
-	Changing default port: By default eXist runs on port 8080 through jetty. YOu may wish to change that port number.  This can be found in the tools/jetty/etc/jetty.xml file to change the port number.
-	</p>
-    <p>
-	<strong>Currently you must do</strong><br />
-	Getting rid of "match" tags: eXist by default on the "like" or "match" type xqueries where by you search for a substring in the registry, eXist will put exist:match tags around everything that
-was matches.  You need to switch this off in one of two ways.<br />
-			1.) Go to the "conf.xml" file and you will find a "match-tagging-elements" set to true, set it to false.<br /> Or <br />
-			2.) In the {context name}/WEB-INF/classes/xsl you will find a file called ExistRegistryResult???.xml file, if you know xsl you could essentially strip out the tags in this stylesheet.  The registry always calls
-the appropriate stylesheet.  The ??? is the version number of the queried vr namespace normally now 0.10.<br />
+	Changing default port: By default eXist runs on port 8080 through jetty. You may wish to change that port number.  This can be found in the tools/jetty/etc/jetty.xml file to change the port number.
 	</p>
     <p>
 		<strong>You must do this:</strong>
@@ -70,30 +87,20 @@ the appropriate stylesheet.  The ??? is the version number of the queried vr nam
         <br />
 		<p>
 			eXist has a nice client ability in case you really need to dig into the database itself.  Such as inspecting the xml more closely, admin the documents more, run special xqueries, do backups. Normally most of 
-these functions are available through the registry jsp pages, but it can be nicer to have a look at the eXist db if needed.
-        <i>* If your using eXist, you may go into your {context}/WEB-INF directory and there you will see a file called "startclientexample.txt" for you to look at and shows how to
-        go into eXist in shell mode "-s" or gui client then drop the "-s".</i>
-        <br />
-        In general this is what it says:<br />
-        *Run this in the WEB-INF directory.<br />
-        *if you have GUI ability drop the "-s" for a GUI client. Windows and Unix commands are the same except the "/" for the endorsed.dirs area.<br />
-        <i>Internal/Embed--</i>
-        ***Windows-- java -Djava.endorsed.dirs=\lib -jar start.jar client -s -ouri=xmldb:exist://   <br />
-        ***Unix-- java -Djava.endorsed.dirs=\lib -jar start.jar client -s -ouri=xmldb:exist://   <br />
-        (if your conf.xml and data directory are outside the webapp which is advisable then a -Dexist.home={directory of conf.xml} needs to be added as a parameter)<br />
-		  <i>External--</i>
-          First I should note the eXternal installations should have client an backup scripts in the bin directory already, but you may also run it with the registry webapp start.jar area if desired or even the eXist start.jar.<br />
-		  * The ouri should be what you have in your xmldb.uri property for the registry.<br />
-	     *here is an example of an exist on the same machine on port 9080<br />
-        ***Windows--java -Djava.endorsed.dirs=\lib -jar start.jar client -s -ouri=xmldb:exist://localhost:9080/exist/xmlrpc<br />
-		***Unix--java -Djava.endorsed.dirs=/lib -jar start.jar client -s -ouri=xmldb:exist://localhost:9080/exist/xmlrpc
+these functions are available through the registry jsp pages, but it can be nicer to have a look at the eXist db if needed. <br/>
        <br />
-      <strong>
-       Other client and backup abilities direct to eXist
-      </strong>
+			Just like the backup and restore there is an executable file called "client" in the WEB-INF directory.  Read the 
+top of that file to see how it works. Typical procedure:<br />
+		<ul>
+			<li> Go to your tomcat/WEB-INF </li>
+			<li> run "client.{bat/sh}" (you may add a "-s" for shell mode and "-ouri={location}" see below for location syntax)</li>
+			<li> This will show you a login box.  User by default is admin with no password.</li>
+			<li> The type it seems needs to be "Remote" for Windows users because of a locking problem, linux or mac can do local.</li>
+			<li> For location on Windows: needs to use the rpc servlet ex: xmldb:exist://localhost:8080/{context_name}/xmlrpc</li>
+			<li> For Location on Linux/Mac: you can use xmldb:exist://</li>
+		</ul>
       <br />
-      * See <a href="http://exist.sourceforge.net/client.html">Exist Client Docs</a> for other various commands you will notice that you can run everything by following the commands above with the proper parameters
-for the start.jar.  Remember the client shell is "start.jar client {other params}" and backup is "start.jar backup {other params}"
+      * See <a href="http://exist.sourceforge.net/client.html">Exist Client Docs for any other info on the client</a>
       <br />
 	  </p>
 	  </subsection>
@@ -101,7 +108,20 @@ for the start.jar.  Remember the client shell is "start.jar client {other params
 		<p>
 		In general I recommend to use the default settings for users and passwords in embed mode and usually the same for external eXist mode just have eXist on a non-public url (where by it can only be seen by the registry webapp).  But you may wish to
 have more strict settings on this, the registry webapp can cope with this if you desire.  First it will be up to you to setup users and passwords through the client, see above section.  Also advise reading the eXist webpage dealing with users.  Finally 
- the JNDI properties needs to be changed such as through the Tomcat Administration GUI.  You will see xmldb.admin.user, xmldb.admin.password, xmldb.query.user, xmldb.query.password that are available for setting.
+ the JNDI properties that needs to be changed on how you setup users in the eXist database.  You will see xmldb.admin.user, xmldb.admin.password, xmldb.query.user, xmldb.query.password that are available for setting.  See the client section above for starting the client and setting users and passwords for the database.
+		</p>
+	  </subsection>
+	  <subsection name="WebDav">
+		<p>
+			Recently added to the registry is the ability to connect to your database via WebDav.  Which allows you to view your database through file manager
+like a network directory.  This has tremendous advantages having other xml/text editors manipulate entries, delete, or even add xml entries.
+			<br />**Note -- if adding xml files this way you need to have the right filename and see other xml content on the actual structure of the xml.
+			<br />
+			WebDav has huge advantages, but also security concerns.  Because of this a JNDI environement entry named: "reg.custom.restrict.ipaddresses"
+            is used to restrict ip addresses that can access webdav, it can use expressions 127.0* if needed.  By default it is set to localhost or 127.0.0.1<br />
+            See: <a href='http://wiki.exist-db.org/space/WebDAV'>WebDav for eXist (info mainly for Windows users)</a>
+			<br />
+			Linux konquoror: 
 		</p>
 	  </subsection>
     </section>

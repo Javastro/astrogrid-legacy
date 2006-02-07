@@ -34,29 +34,10 @@ html>
 
 <div id='bodyColumn'>
 
-<%
-   RegistryQueryService server = new RegistryQueryService();
-   ArrayList al = server.getAstrogridVersions();
-   String version = request.getParameter("version");
-   if(version == null || version.trim().length() <= 0) {
-      version = RegistryDOMHelper.getDefaultVersionNumber();
-   }
-
-%>
-
 <h1>Get Resource</h1>
 
 <form method="post">
 <p>
-Paste ADQL xml version:<br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
 <br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
 <input type="hidden" name="performquery" value="true" />
 Identifier: <input type="text" name="IVORN" value="ivo://" /><br />
@@ -94,14 +75,7 @@ Identifier: <input type="text" name="IVORN" value="ivo://" /><br />
       }catch(AssertionFailedError afe) {
             out.write("<p><font color='red'>Invalid xml (VOResources): " + afe.getMessage() + "</font></p>");
       }
-      
-      
-      if(entry.getDocumentElement().hasChildNodes()) {
-          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
-      }else {
-          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement());
-      }
-      
+                  
       out.write("<table border=1>");
       out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>View XML</td></tr>");
       NodeList resources = entry.getElementsByTagNameNS("*","Resource");
@@ -109,8 +83,6 @@ Identifier: <input type="text" name="IVORN" value="ivo://" /><br />
       for (int n=0; n < resources.getLength();n++) {
          out.write("<tr>\n");
          
-//         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
-//         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
            String authority = RegistryDOMHelper.getAuthorityID((Element)resources.item(n));
            String resource = RegistryDOMHelper.getResourceKey((Element)resources.item(n));
 
@@ -131,10 +103,8 @@ Identifier: <input type="text" name="IVORN" value="ivo://" /><br />
          ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");
          endpoint = java.net.URLEncoder.encode(endpoint,"UTF-8");
 
-         out.write("<td><a href=externalResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");
-         
+         out.write("<td><a href=externalResourceEntry.jsp?"IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");         
          out.write("</tr>\n");
-         
       }                  
          out.write("</table> <hr />");
          out.write("The xml<br />");

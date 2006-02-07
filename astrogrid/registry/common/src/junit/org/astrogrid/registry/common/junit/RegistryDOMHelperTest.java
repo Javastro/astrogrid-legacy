@@ -80,6 +80,23 @@ public class RegistryDOMHelperTest extends TestCase {
         assertEquals("0.10",
                      RegistryDOMHelper.getRegistryVersionFromNode(queryDoc.getDocumentElement()));
     }
+    
+    public void testfindRegistryVersionFromXML() throws Exception {
+        Document queryDoc = askQueryFromFile("Cambridge0_10.xml");
+        String version = RegistryDOMHelper.findVOResourceVersionFromNode(queryDoc.getDocumentElement());
+        System.out.println("the version returned = " + version);
+        
+    }
+    
+    public void testfindADQLVersionFromXML() throws Exception {
+        Document adql = askQueryFromFile("QueryForIdentifier--adql-v0.7.4.xml");
+        String version = RegistryDOMHelper.findADQLVersionFromNode(adql.getDocumentElement());
+        System.out.println("the version returned2 = " + version);
+        
+    }
+    
+    
+    
       
     /**
      * Method: askQueryFromFile

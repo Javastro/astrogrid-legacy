@@ -13,13 +13,13 @@
 <head>
 <title>Adding External Registries</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
@@ -52,21 +52,21 @@ come back to the admin screens to finish the setup process.
 
 
 Upload from a local file:
-<form enctype="multipart/form-data" method="post" action="../addResourceEntry.jsp">
+<form enctype="multipart/form-data" method="post" action="addResourceEntry.jsp">
 <input type="file" name="docfile" />
 <input type="hidden" name="addFromFile" value="true" />
 <input type="submit" name="uploadFromFile" value="upload" />
 </form>
 <br />
 Upload from a url:
-<form method="post" action="../addResourceEntry.jsp">
+<form method="post" action="addResourceEntry.jsp">
 <input type="text" name="docurl" />
 <input type="hidden" name="addFromURL" value="true" />
 <input type="submit" name="uploadFromURL" value="upload" />
 </form>
 
 Upload from text:<br />
-<form action="../addResourceEntry.jsp" method="post">
+<form action="addResourceEntry.jsp" method="post">
 <input type="hidden" name="addFromText" value="true" />
 <p>
 <textarea name="Resource" rows="30" cols="90">

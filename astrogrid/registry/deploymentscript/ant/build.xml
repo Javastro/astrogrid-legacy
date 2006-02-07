@@ -39,20 +39,17 @@
 		<property name="astrogrid.registry.update.endpoint" value="${input.registry.public.url}/${astrogrid.registry.update.offset}"/>
 		<echo>Self registering under authority ${input.registry.regauthority} with endpoint ${astrogrid.registry.update.endpoint}...</echo>
 
-		<tempfile property="registry.regentry"/>
 		<tempfile property="registry.regentry10"/>
 		<filterset id="regfilter">
             <filter token="REGISTRY_AUTHID"   value="${input.registry.regauthority}"/>
-            <filter token="reg.amend.oaipublish.0.9"   value="${input.registry.public.url}/OAIHandlerv0_9"/>
             <filter token="reg.amend.oaipublish.0.10" value="${input.registry.public.url}/OAIHandlerv0_10"/>
+            <filter token="reg.amend.oaipublish.0.1" value="${input.registry.public.url}/OAIHandlerv0_10"/>
             <filter token="TITLE" value="${input.reg.title}"/>
         	<filter token="CONTACT_NAME" value="${input.reg.contact.name}"/>            	
         	<filter token="CONTACT_EMAIL" value="${input.reg.contact.email}"/>            				
         </filterset>
 
-		<copy file="registryentries/ARegistry.xml" tofile="${registry.regentry}">
-			<filterset refid="regfilter"/>
-		</copy>		
+
 		<copy file="registryentries/ARegistryv10.xml" tofile="${registry.regentry10}">
 			<filterset refid="regfilter"/>
 		</copy>
@@ -62,7 +59,6 @@
     	<waitfor maxwait="60" maxwaitunit="second" checkevery="10" checkeveryunit="second">
     	    <http url="${astrogrid.registry.update.endpoint}"/>
     	</waitfor> 
-		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${registry.regentry}"/>
 		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${registry.regentry10}"/>		
 		<property name="registry.registered" value="true"/>
 	</target>
@@ -79,7 +75,6 @@
 		<echo>Registering authority ${input.reg.managedauthority} with endpoint ${astrogrid.registry.update.endpoint}...</echo>
 
 		<tempfile property="authority.regentry10"/>
-		<tempfile property="authority.regentry"/>
 		<filterset id="authfilter">
             <filter token="TITLE"   value="${input.reg.managedauthority.title}"/>
             <filter token="SHORTNAME"   value="${input.reg.managedauthority.shorttitle}"/>
@@ -92,16 +87,12 @@
 		<copy file="registryentries/AstrogridStandardAuthorityv10.xml" tofile="${authority.regentry10}">
 			<filterset refid="authfilter"/>
 		</copy>
-		<copy file="registryentries/AstrogridStandardAuthority.xml" tofile="${authority.regentry}">
-			<filterset refid="authfilter"/>
-		</copy>
 
 		<echo>Waiting...</echo><!-- for ${astrogrid.registry.update.endpoint} to become available</echo-->
 		<sleep seconds="10"/>
     	<waitfor maxwait="60" maxwaitunit="second" checkevery="10" checkeveryunit="second">
     	    <http url="${astrogrid.registry.update.endpoint}"/>
     	</waitfor> 
-		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${authority.regentry}"/>
 		<register-entry registry="${astrogrid.registry.update.endpoint}" data="${authority.regentry10}"/>
 	</target>
 	
@@ -173,8 +164,8 @@
         <filterset id="myfilter">
             <filter token="REGISTRY_AUTHID"   value="${input.registry.regauthority}"/>
             <filter token="REGISTRY_WEBAPP" value="${input.registry.contextpath}"/>
-            <filter token="reg.amend.oaipublish.0.9"   value="${input.registry.public.url}/OAIHandlerv0_9"/>
             <filter token="reg.amend.oaipublish.0.10" value="${input.registry.public.url}/OAIHandlerv0_10"/>
+            <filter token="reg.amend.oaipublish.0.1" value="${input.registry.public.url}/OAIHandlerv0_10"/>
         </filterset>
     	<echo>This registry is being installed with the following settings:</echo>
     	<echo>AuthId: ${input.registry.regauthority}</echo>

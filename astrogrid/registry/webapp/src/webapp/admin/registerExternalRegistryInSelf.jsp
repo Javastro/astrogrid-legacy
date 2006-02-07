@@ -1,6 +1,9 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
  				     org.astrogrid.registry.server.query.*,
  				     org.astrogrid.registry.server.*,
+                 org.astrogrid.registry.client.query.*,
+                 org.astrogrid.registry.client.*,
+                 org.astrogrid.registry.server.*, 				     
  				     org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
@@ -11,26 +14,18 @@
                   org.apache.axis.utils.XMLUtils,                 
                  java.io.*"
     session="false" %>
-<%
-      RegistryQueryService server = new RegistryQueryService();
-      ArrayList al = server.getAstrogridVersions();
-      String version = request.getParameter("version");
-	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryDOMHelper.getDefaultVersionNumber();
-   	}      
-%>
 
 <html>
 <head>
 <title>Adding External Registries</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
@@ -49,14 +44,14 @@ Please enter the URL for a registry to be harvested.
 A default registry in AstroGrid is pre-set.
 </p>
 <p>
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
-<input name="getregs" value="http://hydra.star.le.ac.uk:8080/astrogrid-registry" size="64" type="text">
+<%
+  String getregs = request.getParameter("getregs");
+  if(getregs == null || getregs.trim().length() == 0) {
+    getregs = "http://galahad.star.le.ac.uk:8080/galahad-registry";
+  }
+%>
+<input name="doget" value="1" type="hidden" />
+<input name="getregs" value="<%=getregs%>" size="64" type="text">
 <input name="getregsubmit" value="Set up harvesting" type="submit">
 </p>
 </form>
@@ -64,9 +59,11 @@ A default registry in AstroGrid is pre-set.
 <%
   String postregsubmit = request.getParameter("postregsubmit");
   String getregsubmit= request.getParameter("getregsubmit");
-  String getregs = request.getParameter("getregs");
-  String regBas = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-  if(getregs != null && getregs.trim().length() > 0) {
+  if(getregs != null && getregs.trim().length() > 0 && 
+     request.getParameter("doget") != null) {
+  	     System.out.println("the url for the delegatefactory = " + getregs + "/services/RegistryQuery");
+        RegistryService rs = RegistryDelegateFactory.createQuery(new URL(getregs + "/services/RegistryQuery"));
+        rs.getRegistries();
 %>
 
 <h1>Grabbing and Adding Registry Entries From <%= getregs %></h1>
@@ -76,23 +73,14 @@ A default registry in AstroGrid is pre-set.
 <pre>
 <%
 RegistryAdminService serverAdmin = new RegistryAdminService();
-String domurl = getregs + "/getRegistriesXML.jsp?version=" + version;
-URL urlDom = new URL(domurl);
-//System.out.println("the domurl = " + domurl);
 out.write("<p>getregs: " + getregs + "</p><br />");
-out.write("<p>url to grab registries : " + domurl + "</p><br />");
-Document doc = DomHelper.newDocument(urlDom);
-//Document result = serverAdmin.updateResource(doc);
-serverAdmin.updateNoCheck(doc,version);
+out.write("<p>Attempt at grabbing registries from above url and updating the registry, any errors in the updating of this registry will be below.<br /></p>");
+Document doc = rs.getRegistries();
+Document resultDoc = serverAdmin.updateResource(doc);
 
-out.write("<p>Attempt at grabbing registries from above url and updating the registry, any errors in the updating of this registry will be below<br /></p>");
-//if (result != null) {
-//  XMLUtils.ElementToWriter(result.getDocumentElement(), out);
-//}
+
 out.write("<p><br /><br />Here were the entries attempted to be updated into the registry (Remember only the Resource elements are placed into the registry):<br /></p>");
-//System.out.println("result not null");
 if(doc != null) {
-	//System.out.println("doc not null");
       String testxml = DomHelper.DocumentToString(doc);
       testxml = testxml.replaceAll("<","&lt;");
       testxml = testxml.replaceAll(">","&gt;");

@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-				 org.astrogrid.registry.server.*,
-				 org.astrogrid.registry.common.RegistryDOMHelper,
+				     org.astrogrid.registry.server.*,
+				     org.astrogrid.registry.common.RegistryDOMHelper,
+ 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper, 
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.query.sql.Sql2Adql,
@@ -11,7 +12,7 @@
                  org.w3c.dom.Element,                 
                  java.net.*,
                  java.util.*,
-                org.apache.commons.fileupload.*,                  
+                 org.apache.commons.fileupload.*,                  
                  java.io.*"
     session="false" %>
 
@@ -19,23 +20,17 @@
 <head>
 <title>Advanced Query of Registry</title>
 <style type="text/css" media="all">
-          @import url("style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
 <%
-   RegistryQueryService server = new RegistryQueryService();
-   ArrayList al = server.getAstrogridVersions();
-   String version = request.getParameter("version");
-   if(version == null || version.trim().length() <= 0) {
-   	version = RegistryDOMHelper.getDefaultVersionNumber();
-   }
 
 %>
 
@@ -68,14 +63,6 @@
 
 <form action="sadqlquery.jsp">
 <p>
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select><br />
 <input type="hidden" name="performquery" value="true" />
 <textarea name="Resource" rows="30" cols="90"></textarea>
 </p>
@@ -89,30 +76,27 @@ Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:descriptio
 <%
   boolean isMultipart = FileUpload.isMultipartContent(request);
   if(isMultipart || (request.getParameter("performquery") != null && request.getParameter("performquery").trim().equals("true"))) {
-  Document adql = null;
-  if(isMultipart) {
-   DiskFileUpload upload = new DiskFileUpload();
-   List /* FileItem */ items = upload.parseRequest(request);
-   Iterator iter = items.iterator();
-   while (iter.hasNext()) {
-      FileItem item = (FileItem) iter.next();
-       if (!item.isFormField()) {
-         adql = DomHelper.newDocument(item.getInputStream());
-       }//if
-   }//while
-  }else if(request.getParameter("queryFromURL") != null &&
-     request.getParameter("queryFromURL").trim().length() > 0) {
-     adql = DomHelper.newDocument(new URL(request.getParameter("docurl")));
-  }else if(request.getParameter("Resource").trim().length() > 0) {  
-  System.out.println("okay lets do the translation");
-   String resource = Sql2Adql.translateToAdql074(request.getParameter("Resource").trim());
-   System.out.println("okay about to do vrNS");
-   String vrNS = "xmlns:vr=\"http://www.ivoa.net/xml/VOResource/v" + version + "\"";
-   System.out.println("finished with vrns = " + vrNS);
-   resource = resource.replaceFirst("Select",("Select " + vrNS));   
-   System.out.println("finished with Select replace the xml = " + resource);
-   adql = DomHelper.newDocument(resource);
-  }//elseif
+	  ISearch server = JSPHelper.getQueryService(request);
+  	  Document adql = null;
+	  if(isMultipart) {
+	   DiskFileUpload upload = new DiskFileUpload();
+	   List /* FileItem */ items = upload.parseRequest(request);
+	   Iterator iter = items.iterator();
+	   while (iter.hasNext()) {
+	      FileItem item = (FileItem) iter.next();
+	       if (!item.isFormField()) {
+	         adql = DomHelper.newDocument(item.getInputStream());
+	       }//if
+	   }//while
+	  }else if(request.getParameter("queryFromURL") != null &&
+	     request.getParameter("queryFromURL").trim().length() > 0) {
+	     adql = DomHelper.newDocument(new URL(request.getParameter("docurl")));
+	  }else if(request.getParameter("Resource").trim().length() > 0) {  
+	  System.out.println("okay lets do the translation");
+	   String resource = Sql2Adql.translateToAdql074(request.getParameter("Resource").trim());
+	   System.out.println("translated to = " + resource);
+	   adql = DomHelper.newDocument(resource);
+	  }//elseif
   String maxCount = SimpleConfig.getSingleton().getString("exist.query.returncount", "25");
 %>
 <br />
@@ -125,13 +109,7 @@ Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:descriptio
       if (entry == null) {
         out.write("<p>No entry returned</p>");
       }
-      else {
-      if(entry.getDocumentElement().hasChildNodes()) {
-          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
-      }else {
-          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement());
-      }
-      
+      else {      
       
       out.write("<table border=1>");
       out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>Actions</td></tr>");
@@ -164,9 +142,9 @@ Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:descriptio
            xsiType = xsiType.substring(xsiType.indexOf(":")+1);
          }
          
-         out.write("<td><a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">View,</a>");
-         out.write("<a href=editEntry.jsp?version="+version+"&IVORN="+ivoStr+">Edit,</a>");
-         out.write("<a href=xforms/XFormsProcessor.jsp?version="+version+"&mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a></td>");
+         out.write("<td><a href=viewResourceEntry.jsp?IVORN="+ivoStr+">View,</a>");
+         out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit,</a>");
+         out.write("<a href=admin/xforms/XFormsProcessor.jsp?mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a></td>");
                   
          out.write("</tr>\n");         
       }                  

@@ -58,17 +58,16 @@ import java.util.Vector;
 
 //import org.xmldb.api.modules.XQueryService;
 //import org.exist.xmldb.XQueryService;
-import org.astrogrid.xmldb.client.QueryService;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.XMLDBException;
 import org.astrogrid.xmldb.client.XMLDBFactory;
+import org.astrogrid.xmldb.client.XMLDBService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -100,10 +99,14 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.astrogrid.config.Config;
 import org.astrogrid.util.DomHelper;
-import org.astrogrid.registry.server.RegistryServerHelper;
+//import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.server.admin.AuthorityList;
-import org.astrogrid.registry.server.QueryHelper;
-import org.astrogrid.registry.server.query.RegistryQueryService;
+import org.astrogrid.registry.server.admin.AuthorityListManager;
+import org.astrogrid.registry.server.query.QueryConfigExtractor;
+
+import org.astrogrid.registry.server.query.ISearch;
+import org.astrogrid.registry.server.query.QueryFactory;
+
 import org.astrogrid.registry.server.XSLHelper;
 import java.util.HashMap;
 import java.util.Set;
@@ -141,18 +144,23 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    }
 
    public XMLExistOAICatalog(Properties properties) throws IOException {
-
-         System.out.println("I am in the constructor");
          this.props = properties;         
          sets = getSets(properties);
    }
    
    private void populateNativeMapFromIdentifier(String oaiIdentifier) throws OAIInternalServerError, IdDoesNotExistException {
-       RegistryQueryService rs = new RegistryQueryService();
-       String versionNumber = props.getProperty("registry_version",null);
+       String contractVersion = props.getProperty("registry_contract_version","0.1");
+       ISearch rsSearch = null;
+       try {
+           rsSearch = QueryFactory.createQueryService(contractVersion);
+       }catch(Exception e) {
+           throw new OAIInternalServerError("Could not get Query Service" + e.toString());
+       }
+       String versionNumber = rsSearch.getResourceVersion();
+       
        maxListSize = conf.getInt("XMLFileOAICatalog.maxListSize",200);
        try {
-           Document sourceFile = rs.getResourceByIdentifier(oaiIdentifier,versionNumber);
+           Document sourceFile = rsSearch.getQueryHelper().getResourceByIdentifier(oaiIdentifier);
            if(sourceFile.getElementsByTagNameNS("*","Resource").getLength() == 0)
                throw new IdDoesNotExistException(oaiIdentifier);
 
@@ -195,9 +203,14 @@ public class XMLExistOAICatalog extends AbstractCatalog {
    
    private void populateNativeMap(String from, String until, String set,int fromSequence) throws OAIInternalServerError, NoItemsMatchException {
        try {
-           String versionNumber = props.getProperty("registry_version",null);
-           if(versionNumber == null)
-               versionNumber = conf.getString("reg.amend.defaultversion");
+           String contractVersion = props.getProperty("registry_contract_version","0.1");
+           ISearch rsSearch = null;
+           try {
+               rsSearch = QueryFactory.createQueryService(contractVersion);
+           }catch(Exception e) {
+               throw new OAIInternalServerError("Could not get Query Service" + e.toString());
+           }
+           String versionNumber = rsSearch.getResourceVersion();
            
            //versionNumber = versionNumber.replace('.','_');
            String collectionName = "astrogridv" + versionNumber.replace('.','_');
@@ -207,20 +220,20 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            maxListSize = conf.getInt("XMLFileOAICatalog.maxListSize",200);
            if(debug)
               System.out.println("in XMLFileOAICatalog(): maxListSize=" + maxListSize);
-
-           System.out.println("get the managedauths");
            
            HashMap manageAuths = null;
            boolean managedSet = false;
            if("ivo_managed".equals(set)) {
                managedSet = true;
            }
-           String xqlQuery = QueryHelper.getXQLDeclarations(versionNumber);
-           xqlQuery += " let $hits := " + QueryHelper.getStartQuery(versionNumber);
+           String xqlQuery = QueryConfigExtractor.getXQLDeclarations(versionNumber);
+           xqlQuery += " let $hits := (" + QueryConfigExtractor.getStartQuery(versionNumber);
            
-           if(managedSet) {
+           if(managedSet) {               
                try {
-                   manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+                   //manageAuths = RegistryServerHelper.getManagedAuthorities(collectionName, versionNumber);
+                   AuthorityListManager alm = new AuthorityListManager();
+                   manageAuths = alm.getManagedAuthorities(collectionName,versionNumber);
                }catch(XMLDBException xdbe) {
                    log.error(xdbe);
                }
@@ -232,22 +245,17 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                if(authList.size() == 0) {
                   throw new OAIInternalServerError("Could not find any authorites");
                }
-               boolean hasAuthorityElement = conf.getBoolean("reg.custom.identifier.hasauthorityid." + versionNumber,false);
-               String identWhere = " near($x/vr:Identifier/vr:AuthorityID,'";
+               String identWhere = " $x/vr:identifier &= 'ivo://";
                String wildCard = "";
-               if(!hasAuthorityElement) {
-                   identWhere = " near($x/vr:identifier,'ivo://";
-                   wildCard = "";
-               }
                AuthorityList al = null;
                while(keyIter.hasNext()) {
-                   al = (AuthorityList)keyIter.next();               
+                   al = (AuthorityList)keyIter.next();
                    if(authorityID.equals(al.getOwner())) {               
-                       xqlQuery +=  identWhere + al.getAuthorityID() + "') ";
+                       xqlQuery +=  identWhere + al.getAuthorityID() + "*' ";
                        while(keyIter.hasNext()) {
                            al = (AuthorityList)keyIter.next();
                            if(authorityID.equals(al.getOwner())) {                           
-                               xqlQuery += " or " + identWhere + al.getAuthorityID() + "') ";
+                               xqlQuery += " or " + identWhere + al.getAuthorityID() + "*' ";
                            }//if
                        }//while
                    }//if
@@ -255,7 +263,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            }else if("ivo_standard".equals(set) || set == null || set.trim().length() == 0) {
                xqlQuery += " exists($x/vr:identifier) ";
            }else {
-               xqlQuery += " near($x/@xsi:type,'" + set.substring(4) + "')";
+               xqlQuery += " $x/@xsi:type &= '" + set.substring(4) + "' ";
            }
            
            if(from != null && from.trim().length() > 0) {
@@ -265,18 +273,16 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                xqlQuery += "and $x/@updated <= '" + until + "' ";
            }           
            //xqlQuery += " return $x";
-           xqlQuery += " order by $x/vr:identifier ascending return $x return subsequence($hits," + fromSequence + "," + (maxListSize + fromSequence + 2) + ")";
+           xqlQuery += " order by $x/vr:identifier ascending return $x) return subsequence($hits," + fromSequence + "," + (maxListSize + fromSequence + 2) + ")";
            
            System.out.println("the build xql = " + xqlQuery);
-
-           //QueryDBService qs = new QueryDBService();
-           XMLDBFactory xdb = new XMLDBFactory();
+           
+           XMLDBService xdb = XMLDBFactory.createXMLDBService();
            Node sourceFile = null;
            Collection coll = null;
            try {
-               coll = xdb.openCollection(collectionName);      
-               QueryService xqs = xdb.getQueryService(coll);      
-               ResourceSet rs = xqs.query(xqlQuery);
+               coll = xdb.openCollection(collectionName);            
+               ResourceSet rs = xdb.queryXQuery(coll, xqlQuery);
                log.info("OAI query performed resulted in returns/size = " + rs.getSize());
                if(rs.getSize() > 0) {
                    Resource xmlr = rs.getMembersAsResource();
@@ -296,33 +302,21 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                }
            }
            
-           //Document sourceFile = qs.runQuery(collectionName,xqlQuery);
-           //Document resultDoc = null;
-           System.out.println("the verisonNumber = " + versionNumber);
            XSLHelper xsh = new XSLHelper();
-           //resultDoc = sourceFile;
-           /*
-           if(!versionNumber.equals(returnVersionNumber)) {
-              resultDoc = xsh.transformResultVersions(sourceFile,versionNumber,returnVersionNumber);
-           }else {
-              resultDoc = sourceFile;
-           }
-           */
            //Document oaiDoc = xsh.transformToOAI(resultDoc,versionNumber);
            Document oaiDoc = xsh.transformToOAI(sourceFile,versionNumber);
 
            //System.out.println("the oai version = " + DomHelper.DocumentToString(oaiDoc));
            String xmlDoc = DomHelper.DocumentToString(oaiDoc);
+           //System.out.println("here is the xmlDOC = " + xmlDoc);
            ByteArrayInputStream bas = new ByteArrayInputStream(xmlDoc.getBytes());
            RecordStringHandler rsh = new RecordStringHandler();
            SAXParserFactory factory = SAXParserFactory.newInstance();
            factory.setNamespaceAware(true);
            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
            SAXParser saxParser = factory.newSAXParser();
-           //saxParser.parse(new File(sourceFile), rsh);
            saxParser.parse(bas, rsh);
            nativeMap = rsh.getNativeRecords();
-
           } catch (SAXException e) {
               e.printStackTrace();
               throw new OAIInternalServerError(e.getMessage());
@@ -707,7 +701,8 @@ public class XMLExistOAICatalog extends AbstractCatalog {
             if ((schemaURL = getCrosswalks().getSchemaURL(metadataPrefix)) == null)
                 throw new CannotDisseminateFormatException(metadataPrefix);
         }
-        System.out.println("calling create for metataDataPrefix = " + metadataPrefix);
+        //System.out.println("calling create for metataDataPrefix = " + metadataPrefix);
+        //System.out.println("the nativeRecord CHECK = " + nativeRecord);
         return ((XMLExistRecordFactory)getRecordFactory()).create(nativeRecord, schemaURL, metadataPrefix, setSpecs, abouts);
     }
 

@@ -7,14 +7,14 @@
 <head>
 <title>AstroGrid Registry Setup Pages</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </title>
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="../admin/navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
@@ -55,7 +55,7 @@ registryType entries into your registry. (This is optional)</p>
 </ul>
 
 <h2>Populating your Registry</h2>
-<p>Add new entries using the <a href='../editEntry.jsp'>Entry/Update Form</a> </p>
+<p>Add new entries using the <a href='editEntry.jsp'>Entry/Update Form</a> </p>
 
 
 

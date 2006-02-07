@@ -7,18 +7,81 @@
     <section name="Upgrading">
       <p>
          This page deals with upgrading your registry.
-         <strong>By default registry uses an xml database known as eXist embedded into its webapp and data is stored in the webapp.  If you have
-not done so already it is STRONGLY RECOMMENDED to read the "eXist With Registry Guide" on how to move the data out or at least know where the data is stored 
-for coping back over if needed.  Otherwise all your data will be lost and have to re-add it through the jsp pages.</strong>
+		 <strong>If your upgrading from 1.1 to 1.2 and your using the standard embedded eXist, read the below section "Upgrade to 1.2" first before following these steps.</strong>
+         <strong>
+          By default registry uses an xml database known as eXist embedded into its webapp and data is stored in the webapp.  
+          If you have not done so already it is STRONGLY RECOMMENDED to read the <a href='exist_reference.html'>eXist Reference Guide</a> 
+          on how to move the data out or at least know where the data is stored for coping back over if needed when your using the embedded eXist.  
+          </strong>
          <ul>
-            <li>First go into your Tomcat Manager (Read "Installation" section if your having trouble getting into it).</li>
+			<li>Not required but might be good to copy the current registry under webapps directory and possibly if using tomcat the tomcat/conf/Catalina/localhost directory as a reference for environment entry changes.</li>
+            <li>First go into your Tomcat Manager.</li>
             <li>Find your registry context and click on "undeploy".  This should delete the war file and the directory.
                <i>*If it doesn't then shutdown tomcat and delete it war file and directory, then start tomcat back up.</i>
-                </li>
-            <li>Finally you just do the installation and configuration sections again.  In the configuration section
-                you only need to change the properties in the Tomcat Administration area.  Be sure to change all properties like you had it before.</li>
+            </li>
+            <li>Now deploy the new war file via tomcat manager or by simply dropping in the war file into the webapps directory (if using tomcat).</li>
+            <li>Now set the enviornment entries like you had before, typically only two or three properties is all that is changed.  This can be done using Tomcat Administration GUI, or other ways of changing environment entries see the "Installation" page on how enviornment entries work.</li>
          </ul>       
       </p>
    </section>
+	<section name="Upgrading to 1.2 for embedded eXist">
+	  <p>
+		Version 1.2 of the registry comes with a new fault tolerant eXist xml database along with other fixes to the eXist xml database.  
+        See <a href='featues.html'>features</a> for more info.  Because of this new eXist the binaries ofr the database storage 
+        mechanism has changed.  There are two options you can choose, option one is by far the easiest.
+        <br />Option 1:<br />
+        <ul>
+			<li>Go ahead and follow the normal "Upgrading" section above and upgrade your registry to the newer version.
+            </li>
+			<li>Since there is not a huge amount of astrogrid registries, a zip file has been made of the majority of registries plus a full registry. 
+                Go to: <a href='http://www.astrogrid.org/maven/org.astrogrid/zips'>Zips</a>
+			</li>
+			<li>There you will find a version of eXist ready to use for embedding into your registry based around 'your' registry.
+                It takes the form of xmldb_exist-{version}-{main reg authority}.zip ex: xmdb_exist-1.2-rvo.zip
+			</li>
+			<li>
+				<i>If you run a full registry then xmldb_exist-1.2-full.zip</i>
+			</li>
+			<li>
+				Now simply unzip this file over your other embedded eXist directory, restart your registry webapp.  And enverything is set.
+			</li>
+		</ul>
+		<br />Option 2:<br />
+		<ul>
+			<li>The other option is to do a backup and restore of your xml files.  The current 1.2 has shell/batch scripts to help do this, but 1.1 version
+                has the ability, but requires you to do a few more commands.</li>
+			<li>Copy your tomcat/webapps/{registry}/WEB-INF/lib directory to the same location as your conf.xml.  So you should have:
+				conf.xml, "data" directory, and "lib" directory previous instructions missed the note about lib directory needing to be copied.
+			</li>
+			<li>Create a backup directory on your system.</li>
+			<li>
+				Run this command:<br />
+				Windows:<br />
+				"java -Djava.endorsed.dirs=\lib -Dexist.home={directory of conf.xml} -jar start.jar backup -d {backupdirectory} -u admin -b /db  -ouri=xmldb:exist://"
+				<br />Unix:<br />
+				"java -Djava.endorsed.dirs=/lib -Dexist.home={directory of conf.xml} -jar start.jar backup -d {backupdirectory} -u admin -b /db  -ouri=xmldb:exist://"				
+			</li>
+			<li>
+			   Go through the normal upgrading steps and you will again need to move your embedded eXist data to a directory.
+			</li>
+			<li>
+				Now that you have the new 1.2 installed a restore is needed.
+			</li>
+			<li>
+				Go to your tomcat/webapps/{registry}/WEB-INF again
+			</li>
+			<li>
+				Set a EXIST_HOME variable to the location of your conf.xml
+			</li>
+			<li>
+				Now run "backupandrestore.{bat/sh} -r {backupdirectory}/db/__contents__.xml -u admin -ouri=xmldb:exist://"
+			</li>
+			<li>
+				Your done.
+			</li>
+		</ul>
+
+	  </p>
+	</section>
    </body>
 </document>

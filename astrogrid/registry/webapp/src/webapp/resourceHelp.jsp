@@ -4,13 +4,14 @@
 <head>
 <title>XForms</title>
 <style type="text/css" media="all">
-          @import url("style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
+
 
 <div id='bodyColumn'>
 

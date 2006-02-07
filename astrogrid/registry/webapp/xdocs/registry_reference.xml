@@ -12,7 +12,9 @@
 		<p>
          Here is a more detailed list of each property in the registry.  There are a lot of properties and the majority you will not ever change.  But they are there for you to tweak.  See following
 sections on other certain ideas on manipulating the properties to help you in certain objectives you wish to do with the registry.
-      Below are a list of all the properties of the registry, most are custom and require no changing, but you might want to have a read through in case of another version of the registry schema or small tweaks you wisht to perform.:<br />
+      Below are a list of all the properties of the registry, most are custom and require no changing, but you 
+      might want to have a read through in case of another version of the registry schema or small tweaks 
+      you wish to perform.  These are either a JNDI property (environment entry) or in the WEB-INF/classes/astrogrid.properties in your webapp/context:<br />
       <ul>
          <li>reg.amend.authorityid -- The Main Authority ID for this Registry (Authority ID used for the Registry type)</li>
          <li>xmldb.uri --     
@@ -39,10 +41,13 @@ sections on other certain ideas on manipulating the properties to help you in ce
       Quit on validation; if a document being updated is invalid then don't update it.</li>
          <li>reg.amend.returncount -- 
       The maximum number of results to return from queries.</li>
+		  <li>reg.custom.restrict.ipaddresses
+	  The ip addresses restricted for WebDav and XMLRPC servlet.  You may use expressions as well ex: 127.*  by defaut it is set to localhost.</li>
+		  <li>reg.custom.loggingdirectory
+	  The logging directory where logs are placed.</li>
+		 
          <li>reg.amend.harvest -- 
       Does this registry need to do harvesting.</li>
-         <li>reg.oaipublish.0.9 -- 
-      The url to the oai publishing url for 0.9, default is set to astrogrid servlet, but is not required to use.</li>
          <li>reg.amend.oaipublish.0.10 -- 
       The url to the oai publishing url for 0.10, default is set to astrogrid servlet, but is not required to use.</li>
          <li>reg.custom.exist.configuration -- 
@@ -55,26 +60,14 @@ sections on other certain ideas on manipulating the properties to help you in ce
       Used for the Identify verb in OAI.  The administration Email of this OAI repository.</li>
          <li>reg.custom.identify.earliestDatestamp -- 
       Used for the Identify verb in OAI.  The earliest date stamp for records/metadata being published.</li>
-         <li>reg.custom.updatestylesheet.0.9 -- 
-      (Advanced) Specify stylesheets to be used on updates for particular versions.</li>
-         <li>reg.custom.harveststylesheet.0.9 -- 
-      (Advanced) Specify stylesheets to be used on harvest updates for particular versions.</li>
          <li>reg.custom.harveststylesheet.0.10 -- 
       (Advanced) Specify stylesheets to be used on harvest updates for particular versions.</li>
-         <li>reg.custom.keywordxpaths.0.9 -- 
-      (Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
          <li>reg.custom.keywordxpaths.0.10 -- 
       (Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
-         <li>reg.custom.identifier.hasauthorityid.0.9 -- 
-      (Advanced) Does the Identifier split up with an AuthorityID element based on version in registry.</li>
          <li>reg.custom.rootNode.default -- 
       (Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
          <li>reg.custom.rootNode.0.10 -- 
       (Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
-         <li>reg.custom.rootNode.0.9 -- 
-      (Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
-         <li>reg.custom.declareNS.0.9 -- 
-      (Advanced) Declare the namespaces used on the registry, based on registry versions.</li>
          <li>reg.custom.declareNS.0.10 --
       (Advanced) Declare the namespaces used on the registry, based on registry versions.</li>
    </ul>
@@ -87,18 +80,17 @@ manage more, such as other departments, instead of setting up another registry j
 are two ways of doing this:<br />
 1.) The preferred way is to add a "Authroity Type" xml resource, once added it will then automatically change your Registry Type xml entry to put this as a managed
  authority you can use.<br />
-2.) The easy quick way is go and edit your main Registry Type xml entry to add more {managedAuthority} elements.
+2.) The easy quick way is go and edit your main Registry Type xml entry to add more {managedAuthority} elements which is an element at the bottom of your xml on your main Registry type.  Your main registry type
+is found on the home page of your registry.
    </p>
    </subsection>
    <subsection name="Extend Registry">
 	<p>
       Lets say you needed to extend some of the xml resources, meaning add your own namespaces with your own element extensions.  Well you can add this already now, you won't be able to validate
- the xml though, but you can add it into the registry.  Now for querying on it though you will need to change the property "reg.custom.declareNS.0.10" (if your on an older 0.9 version then change that one.  In
-  here add your declare namespace for your extensions.  Now you are able to query on your data.<br />
-   <i>
-      Unfortunately Tomcat 5.0 versions have an error and does not allow you to update through the Administration GUI such a long value its max is 70 characters.  You
-will need to change it manually in {tomcat install}/conf/Catalina/localhost/{context name}.xml  in there you can find the value and change it manually, does not require a restart.
-   </i>
+ the xml though, but you can add it into the registry.  Now for querying on it though you will need to change the property "reg.custom.declareNS.0.10".  In
+  here add your declare namespace for your extensions.  Now you are able to query on your data. Advisable that soon registry will have by default quiton.invalid set to true
+this means that invalid xml resources coming in for an update will be rejected.  Advise on extensions to use schemalocations or be sure your namespace points to your schema file so 
+validation can continue otherwise you will need to turn off validation which is not endorsed.<br />
    </p>
    </subsection>
    <subsection name="Another XMLDB">

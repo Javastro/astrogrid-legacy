@@ -30,7 +30,7 @@
       <parameter name="className" value="org.astrogrid.registry.server.admin.RegistryAdminService"/>
       <parameter name="wsdlPortType" value="UpdateRegistryPortType"/>
       <parameter name="allowedMethods" value="Update"/>
-  		<wsdlFile>/../../wsdl/updateRegistry.wsdl</wsdlFile>      
+		<wsdlFile>/../../schema/registry/RegistryUpdate/v0.1/RegistryUpdate.wsdl</wsdlFile>
    </service>  
   
 </deployment>

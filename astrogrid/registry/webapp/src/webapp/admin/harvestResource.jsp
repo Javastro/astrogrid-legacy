@@ -2,6 +2,7 @@
 					  org.astrogrid.registry.server.query.*,
 					  org.astrogrid.registry.server.harvest.*,
 					  org.astrogrid.registry.server.*,
+ 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,					  
 					  org.astrogrid.registry.common.RegistryDOMHelper,
 					  java.text.*,					  
                  org.w3c.dom.*,
@@ -13,20 +14,15 @@
     session="false" %>
     
 <%
-   RegistryQueryService server = new RegistryQueryService();
+   ISearch server = JSPHelper.getQueryService(request);   
    RegistryHarvestService rhs = new RegistryHarvestService();
-   ArrayList al = server.getAstrogridVersions();
-      String version = request.getParameter("version");
-	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryDOMHelper.getDefaultVersionNumber();
-   	}
 %>
 
 <html>
 <head>
 <title>Harvest Resource</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 <!-- European format dd-mm-yyyy -->
 <script language="JavaScript" src="calendar1.js"></script><!-- Date only with year scrolling -->
@@ -34,39 +30,20 @@
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 <h1>Harvest Registry Resource</h1>
 
 <p>Harvest a particular Registry Resource.</p>
-
-<form method='get'>
-<p>
-Look for another version
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
-<input type="submit" name="button" value='List'/>
-</p>
-</form>
-
 <p>
 <%
-   //out.write("*"+ivornpart+"*:<br/");
-   
-   Document entries = null;
-	entries = server.getRegistriesQuery(version);
+	Document entries = server.getQueryHelper().getRegistriesQuery();
 	
 	String doHarvest = request.getParameter("doharvest");
 	if(doHarvest != null && doHarvest.trim().length() > 0) {
 		String ivornHarvest =  request.getParameter("ident");
-		System.out.println("inside doHarvest and ivorn = " + ivornHarvest);
 		if(ivornHarvest == null || ivornHarvest.trim().length() <= 0) {
 			out.write("<p><font color='red'>Error cannot find Ivorn on request</font></p>");
 		}
@@ -77,13 +54,10 @@ Look for another version
 			   dt = dt.trim();
 			   SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 				parsedDate = df.parse(dt);
-			//   System.out.println("the actual date = " + df.format(parsedDate));
-			//   SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-			//   System.out.println("the actual date sdf2 = " + sdf2.format(parsedDate));
 			}
 		   
-			Document harvestEntry = server.getResourcesByIdentifier(request.getParameter("ident").trim(),version);
-			rhs.beginHarvest(harvestEntry.getDocumentElement(),parsedDate,version);
+			Document harvestEntry = server.getQueryHelper().getResourceByIdentifier(request.getParameter("ident").trim());
+			rhs.beginHarvest(harvestEntry.getDocumentElement(),parsedDate,server.getResourceVersion());
 		}
 	}
    
@@ -103,7 +77,6 @@ Look for another version
       
       NodeList resources = entries.getElementsByTagNameNS("*","Resource");
 
-		out.write("<input type='hidden' name='version' value='" + version + "' />");
   	   out.write("<input type='hidden' name='doharvest' value='true' />");
       for (int n=0;n<resources.getLength();n++) {
       
@@ -131,15 +104,9 @@ Look for another version
          
          out.write("<tr bgcolor='"+bgColour+"'>\n");
 
-			if("0_10".equals(version)) {         
 	         out.write("<td>");
             out.write("<input type='radio' name='ident' value='" + ivoStr + "' />");
 	         out.write(" " + setFG+DomHelper.getValue(resourceElement, "title")+endFG+"</td>");
-	      }else {
-	         out.write("<td>");	      
-            out.write("<input type='radio' name='ident' value='" + ivoStr + "' />");
-	         out.write(" "+setFG+DomHelper.getValue(resourceElement, "Title")+endFG+"</td>");
-	      }
          
          //type
          out.write("<td>"+setFG+resourceElement.getAttribute("xsi:type")+endFG+"</td>");
@@ -149,7 +116,7 @@ Look for another version
             if (authority == null || authority.trim().length() <= 0) {
                out.write("<td>null?!</td>");
             } else {
-               out.write("<td><a href='browse.jsp?version="+version+"&IvornPart="+authority+"'>"+authority+"</a></td>\n");
+               out.write("<td><a href='browse.jsp?IvornPart="+authority+"'>"+authority+"</a></td>\n");
             }
    
             if (resource == null || resource.trim().length() <= 0) {
@@ -164,7 +131,7 @@ Look for another version
             
             out.write("<td>");
    
-            out.write("<a href=../viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">XML</a>,  ");
+            out.write("<a href=../viewResourceEntry.jsp?IVORN="+ivoStr+">XML</a>,  ");
             out.write("</td>");
          out.write("</font></tr>\n");
       }

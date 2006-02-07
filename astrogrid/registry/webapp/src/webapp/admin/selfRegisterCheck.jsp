@@ -7,14 +7,14 @@
 <head>
 <title>AstroGrid Registry Setup Pages</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </title>
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="../admin/navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
@@ -33,7 +33,7 @@
 <p>This is the generated Registry Resource:
 <p>
 
-<form action="../addResourceEntry.jsp" method="post">
+<form action="addResourceEntry.jsp" method="post">
 <p>
 <input type="checkbox" name="validate" value="true">Validate</input>
 <input type="hidden" name="addFromText" value="true" />

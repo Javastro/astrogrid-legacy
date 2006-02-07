@@ -3,7 +3,7 @@ package org.astrogrid.registry.webapp.junit;
 import java.io.InputStream;
 import java.io.File;
 import java.util.Iterator;
-import org.astrogrid.xmldb.client.XMLDBFactory;
+import org.astrogrid.xmldb.client.XMLDBManager;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -12,11 +12,10 @@ import org.apache.axis.AxisFault;
 import java.util.HashMap;
 
 import junit.framework.*;
-import org.astrogrid.registry.server.query.RegistryQueryService;
-import org.astrogrid.registry.server.RegistryServerHelper;
-import org.astrogrid.registry.common.RegistrySchemaMap;
+import org.astrogrid.registry.server.query.v0_1.RegistryQueryService;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Properties;
 import org.astrogrid.config.Config;
 //import org.astrogrid.config.FallbackConfig;
 
@@ -39,10 +38,13 @@ public class RegistryQueryTest extends TestCase {
     */ 
     public void setUp() throws Exception {
         super.setUp();
-      //  XMLDBFactory xdf = new XMLDBFactory();
-        File fi = new File("target/test-classes/exist.xml");
+        File fi = new File("target/test-classes/conf.xml");
+        Properties props = new Properties();
+        props.setProperty("create-database", "true");
+        props.setProperty("configuration",fi.getAbsolutePath());
+        
         if(fi != null) {
-          XMLDBFactory.registerDB(fi.getAbsolutePath());
+          XMLDBManager.registerDB(props);
         }
     }
     
@@ -56,8 +58,8 @@ public class RegistryQueryTest extends TestCase {
         Document adql = askQueryFromFile("QueryForIdentifier--adql-v0.7.4.xml");
         Document doc = rqs.Search(adql);
         assertNotNull(doc);
-        assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
         System.out.println("the doc in Search = " + DomHelper.DocumentToString(doc));
+        assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
     }
     
 
@@ -70,8 +72,9 @@ public class RegistryQueryTest extends TestCase {
     public void testKeywordQueryService() throws Exception {
         RegistryQueryService rqs = new RegistryQueryService();
         Document keywordDoc = DomHelper.newDocument("<KeywordSearch><keywords>Full</keywords></KeywordSearch>");
-        Document doc = rqs.KeywordSearch(keywordDoc);
+        Document doc = rqs.KeywordSearch(keywordDoc);        
         assertNotNull(doc);
+        System.out.println("the doc in Search = " + DomHelper.DocumentToString(doc));
         assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
     }
     
@@ -85,36 +88,75 @@ public class RegistryQueryTest extends TestCase {
         RegistryQueryService rqs = new RegistryQueryService();
         Document xqueryDoc = DomHelper.newDocument("<XQuerySearch><XQuery>declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.10\"; declare namespace vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\"; for $x in //vor:Resource where $x/vr:identifier = 'ivo://registry.test/org.astrogrid.registry.RegistryService' return $x</XQuery></XQuerySearch>");
         Document doc = rqs.XQuerySearch(xqueryDoc);
+        System.out.println("the results of a xquerysearch = " + DomHelper.DocumentToString(doc));
         assertNotNull(doc);
         assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
     }
     
     /**
+     * Method: testGetResourceByIdentifier
+     * Description: test to perform a query for one particular identifier in the registry not based on adql.
+     * @throws Exception standard junit exception to be thrown.
+     */    
+    public void testGetResourceByIdentifier() throws Exception {        
+         RegistryQueryService rqs = new RegistryQueryService();
+         Document doc = rqs.getQueryHelper().getResourceByIdentifier("ivo://registry.test/org.astrogrid.registry.RegistryService");
+         assertNotNull(doc);        
+         assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
+         System.out.println("the testgetresbyident = " + DomHelper.DocumentToString(doc));
+     }
+    
+    /**
+     * Method: testGetResourceByIdentifier
+     * Description: test to perform a query for one particular identifier in the registry not based on adql.
+     * @throws Exception standard junit exception to be thrown.
+     */    
+    public void testGetResourceByIdentifierNotFound() throws Exception {
+         System.out.println("begin testGetResourceByIdentifierNotFound");
+         RegistryQueryService rqs = new RegistryQueryService();
+         Document doc = rqs.getQueryHelper().getResourceByIdentifier("ivo://sometestnotfound");
+         assertNotNull(doc);
+         System.out.println("the testgetresbyident = " + DomHelper.DocumentToString(doc));
+     }
+    
+    /**
+     * Method: testGetResourceByIdentifier
+     * Description: test to perform a query for one particular identifier in the registry not based on adql.
+     * @throws Exception standard junit exception to be thrown.
+     */    
+    public void testGetResourcesByIdentifier() throws Exception {        
+         RegistryQueryService rqs = new RegistryQueryService();
+         Document doc = rqs.getQueryHelper().getResourcesByIdentifier("ivo://registry.test/org.astrogrid.registry.RegistryService");
+         assertNotNull(doc);        
+         assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
+     }    
+    
+    /**
+     * Method: testGetResourceByIdentifier
+     * Description: test to perform a query for one particular identifier in the registry not based on adql.
+     * @throws Exception standard junit exception to be thrown.
+     */    
+    public void testGetResourcesByIdentifierNotFound() throws Exception {
+         System.out.println("begin testGetResourceByIdentifierNotFound");
+         RegistryQueryService rqs = new RegistryQueryService();
+         Document doc = rqs.getQueryHelper().getResourcesByIdentifier("ivo://registry.test/someregtest");
+         assertNotNull(doc);        
+         assertTrue((doc.getElementsByTagNameNS("*","VOResources").getLength() > 0));
+     }          
+  
+    
+    /**
      * Method: testKeywordQuery
      * Description: test to perform a keyword search on the registry.
      * @throws Exception standard junit exception to be thrown.
-     */     
+       
     public void testKeywordQuery() throws Exception {
         RegistryQueryService rqs = new RegistryQueryService();
         Document doc = rqs.keywordQuery("Full",true,"0.10");
         assertNotNull(doc);        
         assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
-    }
-    
-      
-    /**
-     * Method: testGetResourceByIdentifier
-     * Description: test to perform a query for one particular identifier in the registry not based on adql.
-     * @throws Exception standard junit exception to be thrown.
-     */       
-    public void testGetResourceByIdentifier() throws Exception {
-        
-         RegistryQueryService rqs = new RegistryQueryService();
-         Document doc = rqs.getResourcesByIdentifier("ivo://registry.test/org.astrogrid.registry.RegistryService","0.10");
-         assertNotNull(doc);        
-         assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
-         System.out.println("the testgetresbyident = " + DomHelper.DocumentToString(doc));
-     }      
+    } 
+     */     
     
          
     /**

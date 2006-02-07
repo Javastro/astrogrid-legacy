@@ -13,21 +13,34 @@
 	<service name="RegistryQuery" provider="java:MSG" style="message" use="literal">
 		<parameter name="allowedMethods" value="*"/>
 		<parameter name="wsdlPortType" value="QueryRegistryPortType"/>
-		<parameter name="className" value="org.astrogrid.registry.server.query.RegistryQueryService"/>
+		<parameter name="className" value="org.astrogrid.registry.server.query.v0_1.RegistryQueryService"/>
 		<parameter name="wsdlServicePort" value="QueryRegistrySOAPPort"/>
 		<parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/registry/wsdl"/>
 		<parameter name="wsdlServiceElement" value="QueryRegistryService"/>  
-		<wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
+		<!--
+		<wsdlFile>/../../schema/registry/RegistrySearch/v0.1/RegistrySearch.wsdl</wsdlFile>
+		-->
+		<wsdlFile>/schema/registry/RegistrySearch/v0.1/RegistrySearch.wsdl</wsdlFile>
 	</service>
+	
+	<service name="RegistryQueryv1_0" provider="java:MSG" style="message" use="literal">
+		<parameter name="allowedMethods" value="*"/>
+		<parameter name="wsdlPortType" value="QueryRegistryPortType"/>
+		<parameter name="className" value="org.astrogrid.registry.server.query.v1_0.RegistryQueryService"/>
+		<parameter name="wsdlServicePort" value="QueryRegistrySOAPPort"/>
+		<parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/registry/wsdl"/>
+		<parameter name="wsdlServiceElement" value="QueryRegistryService"/>  
+		<wsdlFile>/../../schema/registry/RegistrySearch/v0.1/RegistrySearch.wsdl</wsdlFile>
+	</service>	
  
 	<service name="RegistryHarvest" provider="java:MSG" style="message" use="literal">
   		<parameter name="allowedMethods" value="*"/>
   		<parameter name="wsdlPortType" value="RegistryHarvestPortType"/>
-  		<parameter name="className" value="org.astrogrid.registry.server.query.OAIService"/>
+  		<parameter name="className" value="org.astrogrid.registry.server.query.v0_1.OAIService"/>
   		<parameter name="wsdlServicePort" value="RegistryHarvestPort"/>
   		<parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/registry/wsdl"/>
 	  	<parameter name="wsdlServiceElement" value="RegistryInterfaceService"/>
-  		<wsdlFile>/../../wsdl/publishingRegistry.wsdl</wsdlFile>
+		<wsdlFile>/../../schema/registry/RegistryPublish/v0.1/RegistryPublish.wsdl</wsdlFile>
 	</service>
   
 </deployment>

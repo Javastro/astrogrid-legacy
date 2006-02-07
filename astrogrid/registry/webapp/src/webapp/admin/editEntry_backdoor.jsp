@@ -2,6 +2,7 @@
                  org.w3c.dom.Document,
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.config.SimpleConfig,
+ 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -11,13 +12,13 @@
 <head>
 <title>Edit Registry Entry</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
@@ -26,9 +27,8 @@
    
    Document resourceDoc = null;
    if(request.getParameter("IVORN") != null && request.getParameter("IVORN").trim().length() > 0) {
-   	  RegistryQueryService server = new RegistryQueryService();
-	  resourceDoc = server.getResourcesByIdentifier(request.getParameter("IVORN"),
-                                                    request.getParameter("version"));
+        ISearch server = JSPHelper.getQueryService(request);
+	     resourceDoc = server.getQueryHelper().getResourcesByIdentifier(request.getParameter("IVORN"));
 	   if (resourceDoc != null) {
     	  resource = DomHelper.DocumentToString(resourceDoc);
 	   }
@@ -48,14 +48,14 @@ harvester grab resources, but it can be usefull to quickly get in a resource.
 </p>
 
 Upload from a local file:
-<form enctype="multipart/form-data" method="post" action="addResourceEntry.jsp">
+<form enctype="multipart/form-data" method="post" action="addResourceEntry_backdoor.jsp">
 <input type="file" name="docfile" />
 <input type="hidden" name="addFromFile" value="true" />
 <input type="submit" name="uploadFromFile" value="upload" />
 </form>
 <br />
 Upload from a url:
-<form method="post" action="addResourceEntry.jsp">
+<form method="post" action="addResourceEntry_backdoor.jsp">
 <input type="text" name="docurl" />
 <input type="hidden" name="addFromURL" value="true" />
 <input type="submit" name="uploadFromURL" value="upload" />
@@ -63,7 +63,7 @@ Upload from a url:
 </form>
 
 Upload from text:<br />
-<form action="addResourceEntry.jsp" method="post">
+<form action="addResourceEntry_backdoor.jsp" method="post">
 <input type="hidden" name="addFromText" value="true" />
 <p>
 <textarea name="Resource" rows="30" cols="90">

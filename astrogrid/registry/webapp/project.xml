@@ -103,7 +103,16 @@
              	<war.bundle>true</war.bundle>
              </properties>
         </dependency>
-    	
+        
+    		<dependency>
+      		<groupId>org.astrogrid</groupId>
+		      <artifactId>astrogrid-contracts</artifactId>
+      		<version>${astrogrid.contracts.version}</version>
+		      <type>jar</type>
+ 		   	<properties>
+            	<war.bundle>true</war.bundle>
+            </properties>      
+    		</dependency>
     	
         <dependency>
             <groupId>org.astrogrid</groupId>
@@ -124,6 +133,16 @@
             <war.bundle>true</war.bundle>
         </properties>       	
        </dependency>
+
+       <dependency>
+          <artifactId>astrogrid-slinger-api</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.slinger.version}</version>
+        <properties>
+            <war.bundle>true</war.bundle>
+        </properties>       	
+       </dependency>
+    	
     	
         <!--+
             | The Registry server components.
@@ -173,9 +192,9 @@
           <type>jar</type>
           <artifactId>astrogrid-community-common</artifactId>
           <version>${astrogrid.community.version}</version>
-            <properties>
-  	  	  	<war.bundle>true</war.bundle>
-            </properties>        	
+          <properties>
+  	  	    	<war.bundle>true</war.bundle>
+          </properties>        	
         </dependency>
 
         <dependency>
@@ -197,84 +216,23 @@
   	  	  	<war.bundle>true</war.bundle>
             </properties>        	
         </dependency>        	  
- 
-        <dependency>
-        	<id>excalibur-cli</id>
-            <version>1.0</version>
-            <properties>
-            	<war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-    	<!-- axis, and the jars it relies upon -->
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>axis</artifactId>
-    		<version>1.3</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>wsdl4j</artifactId>
-    		<version>1.5.1</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>axis-saaj</artifactId>
-    		<version>1.3</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>axis-jaxrpc</artifactId>
-    		<version>1.3</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>commons-logging</artifactId>
-    		<version>1.0.4</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-    		<groupId>axis</groupId>
-    		<type>jar</type>
-    		<artifactId>commons-discovery</artifactId>
-    		<version>0.2</version>
-    		<properties>
-    			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	
-         <dependency>
-           <artifactId>log4j</artifactId>
-           <groupId>log4j</groupId>
-           <version>1.2.8</version>
-         	 <properties>
-         		 <war.bundle>true</war.bundle>
-         	 </properties>
-         </dependency>
-
+                        
         <dependency>
             <artifactId>servletapi</artifactId>
             <groupId>servletapi</groupId>
             <version>2.3</version>
+        </dependency>
+
+    	<dependency>
+           <id>jaxrpc</id>
+           <version>unknown</version>
+           <jar>jaxrpc.jar</jar>
+        </dependency>
+
+        <dependency>
+           <id>saaj</id>
+           <version>unknown</version>
+           <jar>saaj.jar</jar>
         </dependency>
     	
         <dependency>
@@ -303,132 +261,223 @@
                	<war.bundle>true</war.bundle>
           	</properties>
         </dependency>
+        
+        <dependency>
+             <artifactId>commons-logging</artifactId>
+             <groupId>commons-logging</groupId>
+             <version>1.0.4</version>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>             
+         </dependency>
+    	
+                            	
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>0.2</version>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+        
+
+            <dependency>
+                 <artifactId>log4j</artifactId>
+                 <groupId>log4j</groupId>
+                 <version>1.2.9</version>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>                 
+             </dependency>
+    	
+  	  <dependency>
+  	      <groupId>xml-apis</groupId>
+  	      <type>jar</type>
+  	      <artifactId>xml-apis</artifactId>
+  	      <version>2.7.1</version>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>  	      
+  	    </dependency>    	
+    	    	
+        	<dependency>
+            	<groupId>xmldb-api</groupId>
+    	        <artifactId>xmldb</artifactId>
+    	        <type>jar</type>
+        		<version>20040708</version>
+            	<url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>            	
+    	    </dependency>   
+    	    
+    	<dependency>
+        	<groupId>xalan</groupId>
+	        <artifactId>xalan</artifactId>
+	        <type>jar</type>
+    		<version>2.7.0</version>
+        	<url>http://www.astrogrid.org/</url>
+        	   <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>  
+	    </dependency> 
+    	
+    	<dependency>
+        	<groupId>xalan</groupId>
+	        <artifactId>serializer</artifactId>
+	        <type>jar</type>
+    		<version>2.7.0</version>
+        	<url>http://www.astrogrid.org/</url>
+        	   <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>  
+	    </dependency>     	
+	    
+    	<dependency>
+        	<groupId>xacml</groupId>
+	        <artifactId>sunxacml</artifactId>
+	        <type>jar</type>
+    		<version>20060105</version>
+        	<url>http://www.astrogrid.org/</url>
+        	   <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>  
+	    </dependency>     	
+    	
+    	<dependency>
+        	<groupId>xercesImpl</groupId>
+	        <artifactId>xercesImpl</artifactId>
+	        <type>jar</type>
+    		<version>20050726</version>
+        	<url>http://www.astrogrid.org/</url>
+        	   <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>  
+	    </dependency>     	     	
     	
         <dependency>
             <groupId>exist</groupId>
             <artifactId>exist</artifactId>
-	        <version>1.0b2</version>
+	        <version>1.0b2-jan24</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>            	
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>            
         </dependency>
 	
     	<dependency>
         	<groupId>exist</groupId>
 	        <artifactId>exist-optional</artifactId>
-    	    <version>1.0b2</version>
+    	    <version>1.0b2-jan24</version>
         	<type>jar</type>
 	        <url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>	        	
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>	        
     	</dependency>
 
+    	<dependency>
+        	<groupId>exist</groupId>
+	        <artifactId>exist-modules</artifactId>
+    	    <version>1.0b2-jan24</version>
+        	<type>jar</type>
+	        <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>	        
+    	</dependency>
+    	
         	<dependency>
             	<groupId>exist</groupId>
-    	        <artifactId>libreadline-java</artifactId>
-        		<jar>libreadline-java.jar</jar>
+    	        <artifactId>libreadline</artifactId>
+        	    <version>java-20030725</version>
             	<type>jar</type>
     	        <url>http://www.astrogrid.org/</url>
-                    <properties>
-                       	<war.bundle>true</war.bundle>
-                  	</properties>	        	
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>    	        
         	</dependency>
-
+    	
+    	
     	<dependency>
-        	<groupId>exist</groupId>
-	        <artifactId>jEdit-syntax</artifactId>
-    		<jar>jEdit-syntax.jar</jar>
+        	<groupId>jedit</groupId>
+	        <artifactId>jedit-syntax</artifactId>
+    	    <version>0.1-20031129</version>
         	<type>jar</type>
 	        <url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>	        	
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>	        
     	</dependency>
-
     	
-	    <dependency>
-    	    <groupId>exist</groupId>
-        	<artifactId>jakarta-oro</artifactId>
-	        <version>2.0.8</version>
-    	    <type>jar</type>
-        	<url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>        		
-	    </dependency>
-	
-    	<dependency>
-        	<groupId>exist</groupId>
-	        <artifactId>xml-commons-resolver</artifactId>
-	        <version>1.1</version>
-    	    <type>jar</type>
-        	<url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>        		
-	    </dependency>
-	
+        	<dependency>
+            	<groupId>jgroups</groupId>
+    	        <artifactId>jgroups</artifactId>
+        	    <version>2.2.6</version>
+            	<type>jar</type>
+    	        <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>    	        
+        	</dependency>
+    		
         <dependency>
-            <groupId>exist</groupId>
+            <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
 	        <version>1.1</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>            	
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>            
         </dependency>
-		
+    	
+        <dependency>
+            <groupId>excalibur-cli</groupId>
+            <artifactId>excalibur-cli</artifactId>
+	        <version>1.0</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+
+        <dependency>
+            <groupId>resolver</groupId>
+            <artifactId>resolver</artifactId>
+	        <version>20031104</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+    	
     	<dependency>
-        	<groupId>exist</groupId>
+        	<groupId>antlr</groupId>
 	        <artifactId>antlr</artifactId>
+    		<version>20040509</version>
 	        <type>jar</type>
-    		<jar>antlr.jar</jar>
         	<url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>        		
+            <properties>
+               	<war.bundle>true</war.bundle>
+          	</properties>        	
 	    </dependency>
 	
         <dependency>
-            <groupId>exist</groupId>
+            <groupId>xmlrpc</groupId>
             <artifactId>xmlrpc</artifactId>
 	        <version>1.2-patched</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>            	
-        </dependency>
-	   	
-    	<dependency>
-        	<groupId>exist</groupId>
-	        <artifactId>xmldb</artifactId>
-	        <type>jar</type>
-    		<jar>xmldb.jar</jar>
-        	<url>http://www.astrogrid.org/</url>
-                <properties>
-                   	<war.bundle>true</war.bundle>
-              	</properties>        		
-	    </dependency>
-
-        <!--+
-            | Fixes error when running in JDK JDK 1.5.0_05 and JDK 1.5.0_06.
-            | javax.servlet.ServletException: Provider org.apache.xalan.processor.TransformerFactoryImpl not found
-            +-->
-    	<dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-	        <version>2.6.0</version>
-	        <type>jar</type>
-        	<url>http://xalan.apache.org/</url>
             <properties>
-                <war.bundle>true</war.bundle>
-            </properties>        		
-	    </dependency>
+               	<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+    	
 
     </dependencies>
 

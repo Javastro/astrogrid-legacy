@@ -1,5 +1,6 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
                  org.astrogrid.store.Ivorn,
+ 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
@@ -11,13 +12,13 @@
    contentType="text/xml"                 
    session="false" %>
 <%
-   RegistryQueryService server = new RegistryQueryService();
-   Document entry = server.getResourcesByIdentifier(request.getParameter("IVORN"), request.getParameter("version"));
+   ISearch server = JSPHelper.getQueryService(request);
+   Document entry = server.getQueryHelper().getResourceByIdentifier(request.getParameter("IVORN"));
+   
    if (entry == null) {
        out.write("<Error>No entry returned</Error>");
-   }
-   else {
-//    DomHelper.DocumentToWriter(entry, out);
+   } else {
       XMLUtils.ElementToWriter(entry.getDocumentElement(),out);
    }
+   
 %>

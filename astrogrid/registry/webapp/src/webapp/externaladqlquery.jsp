@@ -33,16 +33,6 @@
 
 <div id='bodyColumn'>
 
-<%
-   RegistryQueryService server = new RegistryQueryService();
-   ArrayList al = server.getAstrogridVersions();
-   String version = request.getParameter("version");
-   if(version == null || version.trim().length() <= 0) {
-      version = RegistryDOMHelper.getDefaultVersionNumber();
-   }
-
-%>
-
 <h1>Query Registry</h1>
 
 <p>
@@ -56,14 +46,6 @@
 <form enctype="multipart/form-data" method="post">
 <p>
 Upload adql xml file:<br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
 <br />Endpoint: <input type="text"   size="100" name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
 <input type="file"   size="100"  name="docfile" />
 <input type="hidden" name="addFromFile" value="true" />
@@ -76,14 +58,6 @@ Version:
 <form method="post">
 <p>
 URL to an adql xml file: <br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
 <br />Endpoint: <input type="text"  size="100" name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
 <input type="text"  size="100" name="docurl" />
 <input type="hidden" name="performquery" value="true" />
@@ -95,14 +69,6 @@ Version:
 <form method="post">
 <p>
 Paste ADQL xml version:<br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
 <br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
 <input type="hidden" name="performquery" value="true" />
 <input type="hidden" name="xadql" value="true" />
@@ -117,14 +83,6 @@ Version:
 <form method="post">
 <p>
 Enter SQL (actually adqls).  This will only send adql 0.7.4 at the moment use above approaches to send other versions:<br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
 <br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
 <input type="hidden" name="performquery" value="true" />
 <i>Only for ADQL 0.7.4</i><br />
@@ -168,10 +126,6 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
   System.out.println("okay lets do the translation");
    String resource = Sql2Adql.translateToAdql074(request.getParameter("Resource").trim());
    System.out.println("okay about to do vrNS");
-   String vrNS = "xmlns:vr=\"http://www.ivoa.net/xml/VOResource/v" + version + "\"";
-   System.out.println("finished with vrns = " + vrNS);
-   resource = resource.replaceFirst("Select",("Select " + vrNS));   
-   System.out.println("finished with Select replace the xml = " + resource);
    adql = DomHelper.newDocument(resource);
   }//elseif
   
@@ -182,7 +136,6 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
 <%
 
       RegistryService rs = RegistryDelegateFactory.createQuery(new URL(endpoint));
-      //Document entry = server.Search(adql);
       Document entry = rs.search(adql);
       out.write("<p>If entries are returned, then the xml will be validated, shown tabular, then full xml at the bottom.");
       if (entry == null) {
@@ -197,13 +150,7 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
             out.write("<p><font color='red'>Invalid xml (VOResources): " + afe.getMessage() + "</font></p>");
       }
       
-      
-      if(entry.getDocumentElement().hasChildNodes()) {
-          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
-      }else {
-          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement());
-      }
-      
+            
       out.write("<table border=1>");
       out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>View XML</td></tr>");
       NodeList resources = entry.getElementsByTagNameNS("*","Resource");
@@ -234,9 +181,7 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
          ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");
          endpoint = java.net.URLEncoder.encode(endpoint,"UTF-8");
 
-         out.write("<td><a href=externalResourceEntry.jsp?performquery=true&version="+version+"&IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");
-
-         
+         out.write("<td><a href=externalResourceEntry.jsp?performquery=true&IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");
          out.write("</tr>\n");
          
       }                  

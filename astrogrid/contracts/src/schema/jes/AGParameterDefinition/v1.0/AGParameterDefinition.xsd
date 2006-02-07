@@ -17,7 +17,7 @@
 			<xs:documentation>The list of possible parameter types</xs:documentation>
 			<xs:documentation>The enumeration values should have the namespace appended? I have removed them to make castor generate nicer objects</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:QName">
+		<xs:restriction base="xs:string">
 			<xs:enumeration value="integer">
 				<xs:annotation>
 					<xs:documentation>Integer</xs:documentation>

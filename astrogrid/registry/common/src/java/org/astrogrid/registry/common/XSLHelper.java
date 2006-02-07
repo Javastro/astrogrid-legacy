@@ -77,7 +77,6 @@ public class XSLHelper {
        
        ClassLoader loader = this.getClass().getClassLoader();
        InputStream is = null;
-       //System.out.println("the filename being loaded = " + XSL_DIRECTORY + fileName);
        is = loader.getResourceAsStream(XSL_DIRECTORY + fileName);
        Source xslSource = new StreamSource(is);
              
@@ -93,7 +92,6 @@ public class XSLHelper {
           Transformer transformer = transformerFactory.newTransformer(xslSource);
           
           transformer.transform(xmlSource,result);
-          //System.out.println("the resultwriter transform = " + sw.toString());
        }catch(ParserConfigurationException pce) {
          logger.error("transformResourceToResource(Node, String)", pce);
          pce.printStackTrace();

@@ -1,0 +1,48 @@
+<div id='leftColumn'>
+<div id='navcolumn'>
+   <div id='menuServer'>
+      <h5>Server</h5>
+      <ul>
+         <li><a href="<%=request.getContextPath()%>/index.jsp" >Home</a>
+         <li><a href="<%=request.getContextPath()%>/admin/index.jsp" >Admin Home</a>
+      </ul>
+   </div>
+   <div id='menuDocs'>
+      <h5>Documentation</h5>
+      <ul>
+         <li><a href="<%=request.getContextPath()%>/docs/index.html" >Docs</a>
+      </ul>
+   </div>
+   <div id='menuQuery'>
+      <h5>Investigate</h5>
+      <ul>
+         <li><a href="<%=request.getContextPath()%>/ivornLookupForm.jsp" >IVORN Lookup</a>
+         <li><a href="<%=request.getContextPath()%>/browse.jsp" >Browse</a>
+         <li><a href="<%=request.getContextPath()%>/sadqlquery.jsp" >Query</a>
+         <li><a href="<%=request.getContextPath()%>/keywordquery.jsp" >Keyword Query</a>
+         <li><a href="<%=request.getContextPath()%>/resourceHelp.jsp">Resource Help</a>
+      </ul>
+   </div>
+   <div id='menuRegister'>
+      <h5>Admin</h5>
+      <ul>
+         <li><a href="<%=request.getContextPath()%>/admin/editEntry.jsp">Enter Resource</a>
+         <li><a href="<%=request.getContextPath()%>/admin/editEntry_backdoor.jsp">Enter Resource (Back Door)</a>
+         <li><a href="<%=request.getContextPath()%>/admin/xforms/XFormsNew.jsp">XForms</a>
+         <li><a href="<%=request.getContextPath()%>/admin/harvestResource.jsp">Harvest</a>
+         <li><a href="<%=request.getContextPath()%>/admin/removeResource.jsp">Remove Resource</a>
+         <li><a href="<%=request.getContextPath()%>/admin/fingerprint.jsp">FingerPrint</a>
+         <li><a href="<%=request.getContextPath()%>/admin/index.jsp" >Admin Home (Other Tasks)</a>
+      </ul>
+   </div>
+   <div id='menuExternal'>
+      <h5>External Tests</h5>
+      <ul>
+         <li><a href="<%=request.getContextPath()%>/externaladqlquery.jsp">Query (ADQL)</a>
+         <li><a href="<%=request.getContextPath()%>/externalkeywordquery.jsp">Keyword Search</a>
+         <li><a href="<%=request.getContextPath()%>/externalResourceEntry.jsp">Ivorn Lookup</a>
+      </ul>
+   </div>
+</div>
+</div>
+

@@ -3,21 +3,21 @@ package org.astrogrid.registry.server;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.net.URL;
 import java.io.InputStream;
 
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 import java.io.*;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
-
 import javax.xml.parsers.DocumentBuilder; 
 import javax.xml.parsers.DocumentBuilderFactory; 
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.astrogrid.util.DomHelper;
+import org.astrogrid.contracts.http.filters.ContractsFilter;
+
 /** 
  * Class: XSLHelper
  * Description: A small XSL helper class that simply loads up xsl stylesheets and tranforms the XML. 
@@ -30,7 +30,23 @@ public class XSLHelper {
     private static final Log logger = LogFactory.getLog(XSLHelper.class);
     
     private static final String XSL_DIRECTORY = "xsl/";
-   
+    
+    private static final String ASTROGRID_SCHEMA_BASE = "http://software.astrogrid.org/schema/";
+    
+    private static String schemaLocationBase;
+
+    
+    /**
+     * Static to be used on the initiatian of this class for the config
+     */   
+    static {
+          if(schemaLocationBase == null) {              
+              schemaLocationBase = ContractsFilter.getContextURL() != null ? ContractsFilter.getContextURL() + "/schema/" :
+                                   ASTROGRID_SCHEMA_BASE;
+          }//if
+    }    
+    
+    
    
    
    /**
@@ -130,7 +146,6 @@ public class XSLHelper {
       Document resultDoc = null;
       
       try {
-          System.out.println("the filename = " + fileName);
           Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + fileName),"UTF-8"));            
           DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();          
          builderFactory.setNamespaceAware(true);
@@ -143,7 +158,6 @@ public class XSLHelper {
          Transformer transformer = transformerFactory.newTransformer(xslSource);
          
          transformer.transform(xmlSource,result);
-         //System.out.println("the resultwriter transform = " + sw.toString());
       }catch(ParserConfigurationException pce) {
         logger.error("transformToOAI(Node, String)", pce);
         pce.printStackTrace();
@@ -172,28 +186,29 @@ public class XSLHelper {
     * @param responseElement An optional string to wrap around another element for web service methods.
     * @return XML document to be returned.
     */
-   public Document transformExistResult(Node doc, String versionNumber) throws
+   public Document transformExistResult(Node doc, String contractVersion) throws
        ParserConfigurationException, TransformerConfigurationException, TransformerException, UnsupportedEncodingException  {
-       
-       if(doc != null && (doc.getNodeName().indexOf("Fault") != -1 ||
+      
+      if(doc != null && (doc.getNodeName().indexOf("Fault") != -1 ||
           (doc.hasChildNodes() && doc.getFirstChild().getNodeName().indexOf("Fault") != -1))) {
            //okay it is a fault don't bother transforming, just return it.
            //registry creates Faults with org.w3c.dom.Document so just typecast and return it.
            return (Document)doc;
-       }
+      }
       
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;
-      Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + "ExistRegistryResult" + versionNumber + ".xsl"),"UTF-8"));      
+      Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + "ExistRegistryResult" + contractVersion + ".xsl"),"UTF-8"));      
       DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();          
       builderFactory.setNamespaceAware(true);
       DocumentBuilder builder = builderFactory.newDocumentBuilder();
       resultDoc = builder.newDocument();
-      //DocumentFragment df = resultDoc.createDocumentFragment();
+
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
        
       DOMResult result = new DOMResult(resultDoc);
       Transformer transformer = transformerFactory.newTransformer(xslSource);
+      transformer.setParameter("schemaLocationBase", schemaLocationBase);
         
       transformer.transform(xmlSource,result);
       return resultDoc;
@@ -250,7 +265,7 @@ public class XSLHelper {
        }
     logger
             .debug("transformUpdate(Node, String) - THIS IS AFTER THE TRANSFORMUPDATE");
-       DomHelper.DocumentToStream(resultDoc,System.out);
+       //DomHelper.DocumentToStream(resultDoc,System.out);
        return resultDoc;
     }   
    

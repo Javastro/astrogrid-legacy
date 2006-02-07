@@ -82,11 +82,11 @@
                        xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"                
                        xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" 
                        xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
-                       xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
-                       xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" 
+                       xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
                        xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
                        xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" 
-                       xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7">
+                       xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+					   xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1">
          
             <xsl:call-template name="setResourceAttrs"/>
             <xsl:apply-templates select="@*|node()"/>   
@@ -145,6 +145,11 @@
       <xsl:if test="@status">
          <xsl:attribute name="status">
             <xsl:value-of select="@status"/>
+         </xsl:attribute>
+      </xsl:if>
+      <xsl:if test="not(@status)">
+         <xsl:attribute name="status">
+            <xsl:text>active</xsl:text>
          </xsl:attribute>
       </xsl:if>
    </xsl:template>

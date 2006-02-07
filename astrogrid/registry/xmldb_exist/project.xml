@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid registry server.
+    |
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the common project descriptor.
+
+    <extend>../maven/project.xml</extend>
+        +-->
+    <extend>${basedir}/../maven/project.xml</extend>
+
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-registry-xmldb_exist</id>
+
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid registry xmldb_exist</name>
+
+    <!--+
+        | The Java package name of the project.
+        | This value is used when generating JavaDoc.
+        +-->
+    <package>org.astrogrid.registry.xmldb_exist</package>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        Helpful Zip file repository location containing the eXist xmldb data and setup.
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+	<p>
+    	<b>Main use of this section is for servlet/j2ee containers that do not unpackage war files and need access to
+    	the default xmldb database (eXist) data.  This area will produce a zip file for that use.  It will also contain a 
+    	zip file in the repository for a full registry or possibly even small publishing registries.</b>
+		<br />
+	</p>
+		]]>        
+    </description>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry/server
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry/server
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+        <!--+
+            | The Registry common components.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry</artifactId>
+	        <version>${astrogrid.registry.version}</version>
+            <type>war</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+    	
+    	<!--
+        <resources>
+            <resource>
+           	   <directory>${basedir}/src</directory>
+		        <includes>
+		           	<include>xsl/*.xsl</include>
+		        	<include>wsdd/*</include>
+		        </includes>            	
+            </resource>
+        </resources>
+    	-->
+    	
+        <!--+
+            | The location of our JUnit source code.
+           
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+         +-->
+    </build>
+
+</project>

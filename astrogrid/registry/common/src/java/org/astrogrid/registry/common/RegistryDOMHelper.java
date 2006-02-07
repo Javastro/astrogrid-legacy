@@ -4,18 +4,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.LinkedHashMap;
-import java.text.DateFormat;
-import java.util.Calendar;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
 
 import org.astrogrid.config.Config;
 import org.astrogrid.util.DomHelper;
+
 import java.io.IOException;
-import java.net.MalformedURLException;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,6 +66,31 @@ public class RegistryDOMHelper {
        return versionNumber;
    }
    
+   public static String findADQLVersionFromNode(Node currentNode) {
+       String version = null;
+       switch(currentNode.getNodeType() ) {       
+           case Node.DOCUMENT_NODE :
+               return findADQLVersionFromNode(((Document)currentNode).getDocumentElement());
+           case Node.ELEMENT_NODE :
+               NamedNodeMap attributeNodes = currentNode.getAttributes();
+               for(int i = 0;i < attributeNodes.getLength();i++) {
+                   Attr attribute = (Attr) attributeNodes.item(i);
+                   if(attribute.getNodeValue() != null && attribute.getNodeValue().startsWith("http://www.ivoa.net/xml/ADQL")) {
+                       return attribute.getNodeValue().substring(attribute.getNodeValue().lastIndexOf("v") + 1);
+                   }//if
+               }//for
+               if(currentNode.getNamespaceURI() != null && currentNode.getNamespaceURI().startsWith("http://www.ivoa.net/xml/ADQL") ) {
+                   return currentNode.getNamespaceURI().substring(currentNode.getNamespaceURI().lastIndexOf("v") + 1);
+               }               
+               version =  processChildNodes(currentNode.getChildNodes(),ADQL_VERSION_SEARCHTYPE);
+               if(version != null) {
+                   return version;
+               }
+       }
+       return null;
+   }
+   
+   
    
    /**
     * Method: getAuthorityID
@@ -81,31 +101,25 @@ public class RegistryDOMHelper {
     * @return AuthorityID text
     */
    public static String getAuthorityID(Element doc) {
-       NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
+       NodeList nl = doc.getElementsByTagNameNS("*","identifier" );
        String val = null;
        if(nl.getLength() == 0) {
-           nl = doc.getElementsByTagNameNS("*","identifier" );
-           if(nl.getLength() == 0)
-               return null;
-       }
-     
-       NodeList authNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","AuthorityID");
+           return null;
+       }     
        
-       if(authNodeList.getLength() == 0) {
-           val = nl.item(0).getFirstChild().getNodeValue();
-           int index = val.indexOf("/",7);
-           if( index != -1 && index > 6) {
+       val = nl.item(0).getFirstChild().getNodeValue().trim();      
+       int index = val.indexOf("/",7);
+       if( index != -1 && index > 6) {
                return val.substring(6,index);
-           } else {
+       } else {
                //small hack for certain registries that are not putting ivo://
                //in the identifier. Currently only STSCI is doing this.
-               if(val.length() > 6)
+           if(val.length() > 6) {
                    return val.substring(6);
-               else
+           } else {
                    return val;
            }
-       }
-       return authNodeList.item(0).getFirstChild().getNodeValue();
+       }       
    }
 
    /**
@@ -118,23 +132,14 @@ public class RegistryDOMHelper {
     * @return ResourceKey text
     */  
    public static String getResourceKey(Element doc) {
-       NodeList nl = doc.getElementsByTagNameNS("*","Identifier" );
-       if(nl.getLength() == 0) {
-           nl = doc.getElementsByTagNameNS("*","identifier" );
-           if(nl.getLength() == 0)
-               return null;
-       }
-       NodeList resNodeList = ((Element)nl.item(0)).getElementsByTagNameNS("*","ResourceKey");
+       NodeList nl = doc.getElementsByTagNameNS("*","identifier" );
+       if(nl.getLength() == 0)
+           return null;
        String val = null;
-       if(resNodeList.getLength() == 0) {
-           val = nl.item(0).getFirstChild().getNodeValue();
-           int index = val.indexOf("/",7);
-           if(index != -1 && index > 6 &&  val.length() > (index+1)) 
-               return val.substring(index+1);
-       }else {
-           if(resNodeList.item(0).hasChildNodes())
-               return resNodeList.item(0).getFirstChild().getNodeValue();
-       }
+       val = nl.item(0).getFirstChild().getNodeValue().trim();
+       int index = val.indexOf("/",7);
+       if(index != -1 && index > 6 &&  val.length() > (index+1)) 
+           return val.substring(index+1);
        //it is just an empty ResourceKey which is okay.
        return "";
    }
@@ -152,12 +157,64 @@ public class RegistryDOMHelper {
     */
    public static String getIdentifier(Node nd) throws IOException {
       String ident = getAuthorityID((Element)nd);
+      if(ident == null || ident.trim().length() == 0) 
+          return null;
       String resKey = getResourceKey((Element)nd);
       if(resKey != null && resKey.trim().length() > 0) ident += "/" + resKey;
       return "ivo://" + ident;
    }
    
+   private static final int VORESOURCE_VERSION_SEARCHTYPE = 0;
+   private static final int ADQL_VERSION_SEARCHTYPE = 1;
+   private static final int CONTRACT_VERSION_SEARCHTYPE = 2;
+   
 
+   private static String processChildNodes(NodeList children,int searchType) {
+       String version = null;
+       for(int i = 0;i < children.getLength();i++) {
+           if(searchType == VORESOURCE_VERSION_SEARCHTYPE)
+               version = findVOResourceVersionFromNode(children.item(i));
+           if(searchType == ADQL_VERSION_SEARCHTYPE) 
+               version = findADQLVersionFromNode(children.item(i));           
+           if(version != null) {
+               return version;
+           }//if
+       }//for
+       return null;
+   }
+   
+   public static String findVOResourceVersionFromNode(Node currentNode) {
+       String version = null;
+       switch(currentNode.getNodeType() ) {       
+           case Node.DOCUMENT_NODE :
+               return findVOResourceVersionFromNode(((Document)currentNode).getDocumentElement());
+           case Node.ELEMENT_NODE :
+               NamedNodeMap attributeNodes = currentNode.getAttributes();
+               for(int i = 0;i < attributeNodes.getLength();i++) {
+                   Attr attribute = (Attr) attributeNodes.item(i);
+                   if(attribute.getNodeValue() != null && attribute.getNodeValue().startsWith("http://www.ivoa.net/xml/VOResource") ) {
+                       return attribute.getNodeValue().substring(attribute.getNodeValue().lastIndexOf("v") + 1);
+                   }//if
+               }//for
+               if(currentNode.getNamespaceURI() != null && currentNode.getNamespaceURI().startsWith("http://www.ivoa.net/xml/VOResource") ) {
+                   return currentNode.getNamespaceURI().substring(currentNode.getNamespaceURI().lastIndexOf("v") + 1);
+               }
+               if(currentNode.getNodeName().toLowerCase().indexOf("identifier") != -1) {
+                   return null;
+                   //log.error("Attempted to try and find version number from VOResoruce Namespace and it was not found.");
+                   //hmmmm remember queries call this to and they want have it on there except astrogrid registries.                   
+               }else {
+                   version =  processChildNodes(currentNode.getChildNodes(),VORESOURCE_VERSION_SEARCHTYPE);
+                   if(version != null) {
+                       return version;
+                   }
+               }       
+       }
+       return null;
+   }
+   
+   
+   
    /**
     * Method: getRegistryVersionFromNode
     * Description: Look through a Node and any of its parent nodes for a VOResource (vr) namespace, and

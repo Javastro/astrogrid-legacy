@@ -14,6 +14,7 @@
    	   <item name="External Testing" href="external_testing.html"/>    	
    	   <item name="Upgrading" href="upgrading.html"/>
    	   <item name="Uninstallation" href="uninstall.html"/>
+  	   <item name="Changes" href="changes.html"/>    	
 	</menu>
     <menu name="Administrator Reference">  	
     	   <item name="Registry Reference" href="registry_reference.html"/>    	

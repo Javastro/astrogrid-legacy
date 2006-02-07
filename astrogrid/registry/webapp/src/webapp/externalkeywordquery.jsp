@@ -33,16 +33,6 @@
 
 <div id='bodyColumn'>
 
-<%
-   RegistryQueryService server = new RegistryQueryService();
-   ArrayList al = server.getAstrogridVersions();
-   String version = request.getParameter("version");
-   if(version == null || version.trim().length() <= 0) {
-      version = RegistryDOMHelper.getDefaultVersionNumber();
-   }
-
-%>
-
 <h1>Query Registry</h1>
 
 <p>
@@ -58,15 +48,7 @@
 
 <form method="post">
 <p>
-Paste ADQL xml version:<br />
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
+Paste ADQL xml:<br />
 <br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
 <input type="hidden" name="performquery" value="true" />
 Keywords: <input type="text" name="keywords" /><br />
@@ -79,7 +61,6 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
 
 
 <%
-
 
   if(request.getParameter("performquery") != null && request.getParameter("performquery").trim().equals("true")) {
    System.out.println("performQuery true and endpoint = " + request.getParameter("endpoint"));
@@ -98,7 +79,6 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
 <%
       String keywords = request.getParameter("keywords");
       boolean orValue = new Boolean(request.getParameter("orValues")).booleanValue();
-
       RegistryService rs = RegistryDelegateFactory.createQuery(new URL(endpoint));
       Document entry = rs.keywordSearch(keywords,orValue);
       out.write("<p>If entries are returned, then the xml will be validated, shown tabular, then full xml at the bottom.");
@@ -113,14 +93,7 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
       }catch(AssertionFailedError afe) {
             out.write("<p><font color='red'>Invalid xml (VOResources): " + afe.getMessage() + "</font></p>");
       }
-      
-      
-      if(entry.getDocumentElement().hasChildNodes()) {
-          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
-      }else {
-          version = RegistryDOMHelper.getRegistryVersionFromNode(entry.getDocumentElement());
-      }
-      
+                  
       out.write("<table border=1>");
       out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>View XML</td></tr>");
       NodeList resources = entry.getElementsByTagNameNS("*","Resource");
@@ -128,8 +101,6 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
       for (int n=0; n < resources.getLength();n++) {
          out.write("<tr>\n");
          
-//         Element resource = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","ResourceKey").item(0);
-//         Element authority = (Element) ((Element) identifiers.item(n)).getElementsByTagNameNS("*","AuthorityID").item(0);
            String authority = RegistryDOMHelper.getAuthorityID((Element)resources.item(n));
            String resource = RegistryDOMHelper.getResourceKey((Element)resources.item(n));
 
@@ -150,7 +121,7 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
          ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");
          endpoint = java.net.URLEncoder.encode(endpoint,"UTF-8");
 
-         out.write("<td><a href=externalResourceEntry.jsp?performquery=true&version="+version+"&IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");
+         out.write("<td><a href=externalResourceEntry.jsp?performquery=true&IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");
          
          out.write("</tr>\n");
          

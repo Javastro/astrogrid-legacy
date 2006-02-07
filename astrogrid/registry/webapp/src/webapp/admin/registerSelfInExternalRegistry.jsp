@@ -1,5 +1,8 @@
-<%@ page import="org.astrogrid.registry.server.admin.*,
-				     org.astrogrid.registry.server.query.*,
+<%@ page import="org.astrogrid.registry.server.query.*,
+                 org.astrogrid.registry.client.query.*,
+                 org.astrogrid.registry.client.admin.*,
+ 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+                 org.astrogrid.registry.client.*,
 				     org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
                  org.astrogrid.registry.common.RegistryDOMHelper,
@@ -11,65 +14,42 @@
                   org.apache.axis.utils.XMLUtils,                 
                  java.io.*"
     session="false" %>
-<%
-      RegistryQueryService server = new RegistryQueryService();
-      ArrayList al = server.getAstrogridVersions();
-      String version = request.getParameter("version");
-	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryDOMHelper.getDefaultVersionNumber();
-   	}            
-%>
 
 <html>
 <head>
 <title>Adding External Registries</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
-
+<%
+  String regAddurl = request.getParameter("regaddurl");
+  if(regAddurl == null || regAddurl.trim().length() == 0) {
+  	regAddurl = "http://galahad.star.le.ac.uk:8081/astrogrid-registry";
+  }
+%>
 <form action="registerSelfInExternalRegistry.jsp" method="post">
   <p>In order to make another registry to mirror ("harvest") the contents of your registry, you must copy the <span style="font-style: italic;">registryType</span>
-registration from your registry into the other registry.
+registration from your registry into the other registry. This form
+copies that registration into a specific registry: that on AstroGrid's
+machine <span style="font-style: italic;">Galahad</span>.<br>
 </p>
 <input type="hidden" name="postrequest" value="true" />
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
-   <%}%>
-</select>
-<%
-    String prevurl = request.getParameter("regaddurl");
-    if (null == prevurl)
-        {
-        prevurl = "target registry url" ;
-        }
-%>
-<input name="regaddurl" size="40" type="text" value="<%= prevurl %>"/>
+<input name="regaddurl" type="text" value=<%=regAddurl%>   size="100" />
 <p><input name="postregsubmit" value="Set up harvesting" type="submit"></p>
 </form>
 
 
 <%
   String doRequest = request.getParameter("postrequest");
-  if(doRequest != null && doRequest.trim().equals("true")) {
-  
-	  String resource = request.getParameter("Resource");
-	  String postregsubmit = request.getParameter("postregsubmit");
-	  String getregsubmit= request.getParameter("getregsubmit");
-	  String getregs = request.getParameter("getregs");
-	  String regaddurl = request.getParameter("regaddurl");
-	  String fullRegistryAddURL = regaddurl + "/addResourceEntry.jsp";
-	  String regBas = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-      regBas += "/getRegistriesXML.jsp?version=" + version ;
+
+  if(doRequest != null && doRequest.trim().equals("true")) {  
 %>
 
 <h1>Adding Entry</h1>
@@ -78,16 +58,19 @@ registration from your registry into the other registry.
 
 <pre>
 <%
-String callURL = fullRegistryAddURL + "?addFromURL=true&docurl=" + regBas ;
-out.write("<p>Calling remote registry to initiate harvest from this registry</p>");
-URL url = new URL(callURL);
-HttpURLConnection huc = (HttpURLConnection)url.openConnection();
-out.write("<p>Connection opened to remote registry .... the response code = " 
-+ huc.getResponseCode() + "</p>");
+
+RegistryAdminService ras = RegistryDelegateFactory.createAdmin(new URL(regAddurl + "/services/RegistryUpdate"));
+ISearch server = JSPHelper.getQueryService(request);
+Document regDoc = server.getQueryHelper().loadMainRegistry();
+String regDocString = DomHelper.DocumentToString(regDoc);
+System.out.println("okay here is what should be sent = " + 
+regDocString.substring(regDocString.indexOf(">",regDocString.indexOf("SearchResponse"))+1,regDocString.indexOf("</SearchResponse")).trim());
+Document resultDoc = ras.updateFromString(regDocString.substring(regDocString.indexOf(">",regDocString.indexOf("SearchResponse"))+1,regDocString.indexOf("</SearchResponse")).trim());
+System.out.println("the resultDoc = " + DomHelper.DocumentToString(resultDoc));
 %>
+
 </pre>
 
 <% } %>
-
 </body>
 </html>

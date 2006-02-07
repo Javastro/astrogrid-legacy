@@ -255,16 +255,17 @@
             +-->
         <attainGoal name="init.paths"/>
     	
-        <core:set var="commonJarIdent" value="${pom.groupId}:astrogrid-registry-common"/>
+    	<!--
+        <core:set var="contractJarIdent" value="${pom.groupId}:astrogrid-contracts"/>
         <core:forEach var="artifact" items="${pom.getArtifacts()}">
-            <core:if test="${artifact.getDependency().getId().equals(commonJarIdent)}">
-                <ant:echo message="Found registry common jar"/>
+            <core:if test="${artifact.getDependency().getId().equals(contractJarIdent)}">
+                <ant:echo message="Found contracts jar"/>
                 <ant:echo message="Name     : ${artifact.getName()}"/>
                 <ant:echo message="Path     : ${artifact.getPath()}"/>
-                <core:set var="commonJarPath" value="${artifact.getPath()}"/>
+                <core:set var="contractJarPath" value="${artifact.getPath()}"/>
             </core:if>
         </core:forEach>
-    	
+    	-->
     	
         <!--+
             | Locate our registry server jar.
@@ -300,9 +301,9 @@
             </fileset>
         </ant:copy>
 
-    	
+	    <!--    	
         <ant:unzip
-            src="${commonJarPath}"
+            src="${contractJarPath}"
             dest="${tempDir}">
             <patternset>
                 <include name="schema/**"/>
@@ -313,6 +314,7 @@
         	<fileset dir="${tempDir}/schema">
             </fileset>
         </ant:copy>
+        -->
     	
         <ant:copy verbose="false" todir="${axisDir}/docs" overwrite="false">
         	<fileset dir="${webapp.docs}">
