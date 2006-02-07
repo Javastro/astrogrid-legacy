@@ -16,7 +16,8 @@
 	  <dependency><!-- look and feel -->
 		  <artifactId>looks</artifactId>
 		  <groupId>jgoodies</groupId>
-		  <version>1.3.1</version>
+		  <!-- NWW - upgraded to 1.3.2 - fixes macos bug -->
+		  <version>1.3.2</version>
 		  <properties>
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>
