@@ -7,43 +7,21 @@
 <web-app>
 
 
-    <!-- General description of your web application -->
+  <!-- General description of your web application -->
 
-    <display-name>My Web Application</display-name>
+  <display-name>Quaestor</display-name>
+  <description>Accepts ontologies and other sets of RDF data,
+  and allows SPARQL queries on them.  Norman Gray, norman@astro.gla.ac.uk
+  </description>
+
+  <context-param>
+    <param-name>webmaster</param-name>
+    <param-value>norman@astro.gla.ac.uk</param-value>
     <description>
-      This is version X.X of an application to perform
-      a wild and wonderful task, based on servlets and
-      JSP pages.  It was written by Dave Developer
-      (dave@mycompany.com), who should be contacted for
-      more information.
+      The EMAIL address of the administrator to whom questions
+      and comments about this application should be addressed.
     </description>
-
-
-    <!-- Context initialization parameters that define shared
-         String constants used within your application, which
-         can be customized by the system administrator who is
-         installing your application.  The values actually
-         assigned to these parameters can be retrieved in a
-         servlet or JSP page by calling:
-
-             String value =
-               getServletContext().getInitParameter("name");
-
-         where "name" matches the <param-name> element of
-         one of these initialization parameters.
-
-         You can define any number of context initialization
-         parameters, including zero.
-    -->
-
-    <context-param>
-      <param-name>webmaster</param-name>
-      <param-value>myaddress@mycompany.com</param-value>
-      <description>
-        The EMAIL address of the administrator to whom questions
-        and comments about this application should be addressed.
-      </description>
-    </context-param>
+  </context-param>
 
 
     <!-- Servlet definitions for the servlets that make up
@@ -72,6 +50,20 @@
     -->
 
     <servlet>
+      <servlet-name>quaestor</servlet-name>
+      <description>
+        This servlet plays the main role.  At present, it simply
+        reports parameters.
+      </description>
+      <servlet-class>org.eurovotech.quaestor.Quaestor</servlet-class>
+      <init-param>
+        <param-name>parameter1</param-name>
+        <param-value>value1</param-value>
+      </init-param>
+    </servlet>
+
+<!--
+    <servlet>
       <servlet-name>controller</servlet-name>
       <description>
         This servlet plays the "controller" role in the MVC architecture
@@ -94,7 +86,6 @@
         <param-name>saveCustomer</param-name>
         <param-value>com.mycompany.myactions.SaveCustomerAction</param-value>
       </init-param>
-      <!-- Load this servlet at server startup time -->
       <load-on-startup>5</load-on-startup>
     </servlet>
 
@@ -106,7 +97,7 @@
         It is generally mapped to a specific request URI like "/graph".
       </description>
     </servlet>
-
+-->
 
     <!-- Define mappings that are used by the servlet container to
          translate a particular request URI (context-relative) to a
@@ -127,6 +118,12 @@
     -->
 
     <servlet-mapping>
+      <servlet-name>quaestor</servlet-name>
+      <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <!--
+    <servlet-mapping>
       <servlet-name>controller</servlet-name>
       <url-pattern>*.do</url-pattern>
     </servlet-mapping>
@@ -135,6 +132,7 @@
       <servlet-name>graph</servlet-name>
       <url-pattern>/graph</url-pattern>
     </servlet-mapping>
+    -->
 
 
     <!-- Define the default session timeout for your application,

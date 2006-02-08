@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.1 2006/02/08 11:36:29 norman Exp $
+     $Id: build.xml,v 1.2 2006/02/08 22:43:46 norman Exp $
 -->
 
 
@@ -109,39 +109,23 @@
 
 -->
 
-  <property name="app.name"      value="myapp"/>
+  <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
   <property name="app.version"   value="0.1-dev"/>
   <property name="build.home"    value="${basedir}/build"/>
-  <property name="catalina.home" value="../../../.."/> <!-- UPDATE THIS! -->
+  <!-- catalina.home must be set in build.properties -->
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
   <property name="manager.url"   value="http://localhost:8080/manager"/>
   <property name="src.home"      value="${basedir}/src"/>
   <property name="web.home"      value="${basedir}/web"/>
 
+  <!-- sisc.lib must be set in build.properties -->
+  <property name="sisc.lib"      value=""/>
 
-<!-- ================== Custom Ant Task Definitions ======================= -->
 
-
-<!--
-
-  These properties define custom tasks for the Ant build tool that interact
-  with the "/manager" web application installed with Tomcat 5.  Before they
-  can be successfully utilized, you must perform the following steps:
-
-  - Copy the file "server/lib/catalina-ant.jar" from your Tomcat 5
-    installation into the "lib" directory of your Ant installation.
-
-  - Create a "build.properties" file in your application's top-level
-    source directory (or your user login home directory) that defines
-    appropriate values for the "manager.password", "manager.url", and
-    "manager.username" properties described above.
-
-  For more information about the Manager web application, and the functionality
-  of these tasks, see <http://localhost:8080/tomcat-docs/manager-howto.html>.
-
--->
+  <!-- ================= Custom Ant Task Definitions ====================== -->
+  <!-- See also <http://localhost:8080/tomcat-docs/manager-howto.html> -->
 
   <taskdef name="deploy"   classname="org.apache.catalina.ant.DeployTask"/>
   <taskdef name="list"     classname="org.apache.catalina.ant.ListTask"/>
@@ -149,9 +133,9 @@
   <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask"/>
 
 
-<!--  ==================== Compilation Control Options ==================== -->
+  <!-- =================== Compilation Control Options =================== -->
 
-<!--
+  <!--
 
   These properties control option settings on the Javac compiler when it
   is invoked using the <javac> task.
@@ -170,10 +154,10 @@
 
 
 
-<!-- ==================== External Dependencies =========================== -->
+  <!-- ==================== External Dependencies =========================== -->
 
 
-<!--
+  <!--
 
   Use property values to define the locations of external JAR files on which
   your application will depend.  In general, these values will be used for
@@ -187,13 +171,16 @@
   dependencies.  You only need to worry about external dependencies for JAR
   files that you are going to include inside your "/WEB-INF/lib" directory.
 
--->
+  -->
 
-<!-- Dummy external dependency -->
-<!--
-  <property name="foo.jar"
-           value="/path/to/foo.jar"/>
--->
+  <!--
+  <fileset dir="${sisc.lib}">
+    <patternset id="sisc.support">
+      <include name="*.jar"/>
+      <include name="sisc.shp"/>
+    </patternset>
+  </fileset>
+  -->
 
 
 <!-- ==================== Compilation Classpath =========================== -->
@@ -212,10 +199,11 @@
   <path id="compile.classpath">
 
     <!-- Include all JAR files that will be included in /WEB-INF/lib -->
-    <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
-<!--
-    <pathelement location="${foo.jar}"/>
--->
+    <!--<pathelement location="${sisc.lib}"/>-->
+    <!-- for the sisc.shp file -->
+    <fileset dir="${sisc.lib}">
+      <include name="*.jar"/>
+    </fileset>
 
     <!-- Include all elements that Tomcat exposes to applications -->
     <pathelement location="${catalina.home}/common/classes"/>
@@ -290,9 +278,11 @@
     </javac>
 
     <!-- Copy application resources -->
+    <!-- doesn't need done
     <copy  todir="${build.home}/WEB-INF/classes">
       <fileset dir="${src.home}" excludes="**/*.java"/>
     </copy>
+    -->
 
   </target>
 
@@ -412,9 +402,9 @@
   </target>
 
 
-<!-- ==================== Prepare Target ================================== -->
+  <!-- =================== Prepare Target ================================= -->
 
-<!--
+  <!--
 
   The "prepare" target is used to create the "build" destination directory,
   and copy the static contents of your web application to it.  If you need
@@ -423,7 +413,7 @@
 
   Normally, this task is executed indirectly when needed.
 
--->
+  -->
 
   <target name="prepare">
 
@@ -441,6 +431,19 @@
     <!-- Copy external dependencies as required -->
     <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
     <mkdir  dir="${build.home}/WEB-INF/lib"/>
+    <copy todir="${build.home}/WEB-INF/lib">
+      <fileset dir="${sisc.lib}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+    <!-- SISC heap file -->
+    <copy todir="${build.home}/WEB-INF/classes">
+      <fileset file="${sisc.lib}/sisc.shp"/>
+    </copy>
+    <copy todir="${build.home}/WEB-INF">
+      <fileset file="${src.home}/scm/quaestor.scm"/>
+    </copy>
+
 <!--
     <copy todir="${build.home}/WEB-INF/lib" file="${foo.jar}"/>
 -->
