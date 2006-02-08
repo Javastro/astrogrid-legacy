@@ -15,6 +15,7 @@
           <li>a user interface to <ul>
               <li>Browse, read and write MySpace</li>
               <li>Launch Parameterized Workflows</li>
+              <li>Build custom workflows</li>
               <li>Launch remote (CEA) applications</li>
               <li>Monitor and control workflows and applications</li>
               <li>View registry entries</li>
