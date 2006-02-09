@@ -13,7 +13,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-   <release version="-" date="-">
+   <release version="2.0-alpha-4" date="2006-02-09">
+      <action dev="nw" type="add">
+        Linked vospec into astroscope
+       </action>
+       <action dev="nw" type="fix">
+         Stopped tooltips from disappearing.
+       </action>
     <action dev="jdt" type="fix" issue="1527">
 		Some Plastic methods weren't visible from xml-rpc.
 	</action>
