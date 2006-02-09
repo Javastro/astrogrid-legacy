@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.28 2006/02/02 14:50:49 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.29 2006/02/09 15:40:01 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,8 +35,10 @@ import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
 import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
 import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
+import org.astrogrid.desktop.modules.ui.scope.SaveNodesAction;
 import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.VOSpecAction;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
 import org.astrogrid.desktop.modules.ui.scope.Vizualization;
 import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
@@ -46,6 +48,8 @@ import org.astrogrid.io.Piper;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.l2fprod.common.swing.JButtonBar;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
@@ -65,20 +69,26 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -89,7 +99,8 @@ import javax.swing.table.TableColumnModel;
 
 /** Implementation of the Datascipe launcher
  * 
- * @todo display thumbnails of images - urls are available under 'imgUrl' attribute - use ImageFactory to retrieve them, display in pane under search buttons.
+ * @todo tidy up scrappy get position code - in particular, report errors from simbad correctly - at moment,
+ * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
 public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, ActionListener {
@@ -99,40 +110,25 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
-    
-    protected final ResourceChooserInternal chooser;
-    
 
-    
-    //JButton saveImageButton;
-    JButton saveButton;
-    private final Community comm;
-
-    
-    //myspace for saving data into myspace.
-    private final MyspaceInternal myspace;
     //Various gui components.
-    private JTextField posText = null;           
-    private JButton reFocusTopButton;
-    
-  
-
-   
-    private JTextField regionText = null;
-    
-
-       
+    private JTextField posText;           
+    private JButton reFocusTopButton;        
+    private JTextField regionText;
+    private JButton submitButton;
+           
     //name resolver.
     private final Sesame ses;
 
-    private JButton submitButton = null;
-
+    // set of data retrieval components 
     private final DalProtocolManager protocols;
     
+    //shared data model, selections, etc.
     private final VizModel vizModel;
-
+    // set of vizualization components
     private final VizualizationManager vizualizations;
-    
+   // set of actions that process selected nodes.
+    private final List consumerActions;
     /**
      * 
      * @param ui
@@ -149,10 +145,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
                                   Siap siap, Cone cone, Ssap ssap,Sesame ses, Community comm) {
         super(conf,hs,ui);
-        this.myspace = myspace;
-        this.comm = comm;
         this.ses = ses;
-        this.chooser = chooser;
         
         // configure data protcols
         protocols = new DalProtocolManager();
@@ -166,6 +159,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         vizualizations.add( new WindowedRadialVizualization(vizualizations));
         vizualizations.add(new HyperbolicVizualization(vizualizations));
 
+        // create the consumer actions.
+        consumerActions = new ArrayList();
+        consumerActions.add(new SaveNodesAction(vizModel.getSelectionFocusSet(),this,comm,chooser,myspace));
+        consumerActions.add(new VOSpecAction(vizModel.getSelectionFocusSet(),this));
+        
+        
         // build the ui.
   
         this.setSize(1000,707); // same proportions as A4,    
@@ -192,12 +191,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         if(source == submitButton) {
             logger.debug("actionPerformed(ActionEvent) - submit button clicked");
             query();
-        }else if(source == saveButton) {
-            try {
-                saveData();
-            } catch (Exception ex) {
-                showError("Failed to save results",ex);
-            }
         }else if(source == reFocusTopButton) {
             vizualizations.refocusMainNodes();
             vizualizations.reDrawGraphs();
@@ -215,27 +208,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         setProgressValue(0);
   
     }
-
-    private String conformToMyspaceName(String name) {
-        name = name.replaceAll(" ", "_");
-        name = name.replaceAll(":", "_");
-        name = name.replaceAll(",", "_");
-        name = name.replaceAll("/", "_");
-        return name;
-    }
-    
-    
- 
-    
-    /**
-     * Returns the text in the region box as a double.
-     * @return
-     */
-    private double getConeRegion() {
-        return Double.parseDouble(regionText.getText().trim());
-    }
-
-    
+         
+        
     /**
      * Extracts out the dec of a particular position in the form of a ra,dec
      * @param position
@@ -254,12 +228,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
      */
     private String getPosition() {
         String pos = posText.getText().trim();       
-            String result =  getPosition(pos);
-            if (result == null) {
-                return getPosition(getPositionFromObject());
-            } else {
-                return result;
-            }
+        String result =  getPosition(pos);
+        if (result == null) {
+            return getPosition(getPositionFromObject(pos));
+        } else {
+            return result;
+        }
     }
     
     // better to return null if we're just going to catch it straght away.
@@ -281,14 +255,14 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
      * called if the user enters an invalid position then it will attempt a lookup.
      * @return position in the sky based on a object name.
      */
-    private String getPositionFromObject() {
+    private String getPositionFromObject(String inputPos) {
         String pos = null;  
         try {
-            String temp = ses.sesame(posText.getText().trim(),"x");
-            logger.debug("here is the xml response from sesame = " + temp);            
+            String temp = ses.sesame(inputPos,"x");
+            //logger.debug("here is the xml response from sesame = " + temp);            
             pos = temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>"));
             pos += "," + temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>"));
-            logger.debug("here is the position extracted from sesame = " + pos);
+            //logger.debug("here is the position extracted from sesame = " + pos);
         }catch(Exception e) {
             //hmmm I think glueservice is throwing an exception but things seem to be okay.
             //e.printStackTrace();
@@ -325,7 +299,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
             alternatives.addTab(v.getName(),v.getDisplay());
         }
         
-        alternatives.addTab("Services",getServicesPanel());
+        alternatives.addTab("Services",makeServicesPanel());
  
         JPanel wrapPanel = new JPanel();
         wrapPanel.setLayout(new BoxLayout(wrapPanel,BoxLayout.Y_AXIS));
@@ -334,11 +308,9 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         return wrapPanel;        
     }
     
-    private JPanel servicesPanel;
     /** panel containing summary of search results */
-    private JPanel getServicesPanel() {
-        if (servicesPanel == null) {
-            servicesPanel = new JPanel();
+    private JPanel makeServicesPanel() {
+            JPanel servicesPanel = new JPanel();
             final JTable table = new JTable(protocols.getQueryResultTable());
             JScrollPane scroll = new JScrollPane(table);
             table.setPreferredScrollableViewportSize(new Dimension(700,550));
@@ -357,6 +329,25 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
                     }
                     return c;
                 }
+                /** builds a tool tip from a resource information object 
+                 * @todo refactor so it works in a general way - not hardcoded.
+                 * */
+                 private String mkToolTip(ResourceInformation ri) {
+                     StringBuffer sb = new StringBuffer();
+                     sb.append("<html>");
+                     sb.append(ri.getId());      
+                     sb.append("<br>Service Type: ");
+                     if (ri instanceof SiapInformation) {  //nasty little hack for now. - later find a way of getting this info from the protocol object..
+                         sb.append("Image");
+                     } else if (ri instanceof ConeInformation) {
+                         sb.append("Catalog");
+                     } else { // no special type for ssap at the moment, and have to assume that any other ri is a ssap
+                         sb.append("Spectra");
+                     }
+                     sb.append("</html>");
+                     //@todo extend ResourceInformation to contain curation details, add these in here.
+                     return sb.toString();
+                 }                
             });            
             final TableColumn countColumn = tcm.getColumn(1);
             countColumn.setPreferredWidth(60);
@@ -385,28 +376,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
                    }
                    return c;
                }
-           });
-        }
+           });        
         return servicesPanel;
     }
     
-   /** builds a tool tip from a resource information object */
-    private String mkToolTip(ResourceInformation ri) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<html>");
-        sb.append(ri.getId());      
-        sb.append("<br>Service Type: ");
-        if (ri instanceof SiapInformation) {  //nasty little hack for now. - later find a way of getting this info from the protocol object..
-            sb.append("Image");
-        } else if (ri instanceof ConeInformation) {
-            sb.append("Catalog");
-        } else { // no special type for ssap at the moment, and have to assume that any other ri is a ssap
-            sb.append("Spectra");
-        }
-        sb.append("</html>");
-        //@todo extend ResourceInformation to contain curation details, add these in here.
-        return sb.toString();
-    }
+
     
     
     /**
@@ -414,22 +388,12 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
      * let the rest of the panel be a JTree for the selected data.
      * @return JPanel consisting of the query gui and custom controls typically placedo on the WEST side of the main panel.
      * @todo get this looking nice.
-     * @todo probably needs to use a gridbaglayout instead of all these other panels within panels.
      */
     private JPanel makeSearchPanel() {
         JPanel scopeMain = new JPanel();
         scopeMain.setLayout(new BoxLayout(scopeMain,BoxLayout.Y_AXIS));       
     
-        submitButton = new JButton("Submit");
-        submitButton.setToolTipText("Process Query");
-        submitButton.addActionListener(this);
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-        scopeMain.getInputMap(scopeMain.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
-        scopeMain.getActionMap().put("search",new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                AstroScopeLauncherImpl.this.actionPerformed(e);
-            }
-        });        
+
         posText = new JTextField();
         posText.setToolTipText("Place postion e.g. 120,0 or M11");
         posText.setAlignmentX(LEFT_ALIGNMENT);
@@ -441,25 +405,11 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         regionText.setToolTipText("Enter region size e.g. 0.1");
         regionText.setAlignmentX(LEFT_ALIGNMENT);
         regionText.setColumns(10);
-       // regionText.setAlignmentX(RIGHT_ALIGNMENT);
         regionText.setMaximumSize(regionText.getPreferredSize());
         
        
         Dimension dim2 = new Dimension(200,70);
-        //scopeMain.setMaximumSize(dim2);
-        //scopeMain.setPreferredSize(dim2); 
         
-        saveButton = new JButton("Save selected...");
-        saveButton.setEnabled(false);
-        saveButton.addActionListener(this);
-        saveButton.setToolTipText("Save the selected nodes to Myspace or local disk");
-        final FocusSet selectionFocusSet = vizModel.getSelectionFocusSet();
-        selectionFocusSet.addFocusListener(new FocusListener() {                
-            public void focusChanged(FocusEvent arg0) {                    
-                saveButton.setEnabled(selectionFocusSet.size() > 0);
-             }
-        });
-
         scopeMain.add(new JLabel("Position/Object: "));
         scopeMain.add(posText);
         scopeMain.add(new JLabel("Region: "));
@@ -468,16 +418,41 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
             DalProtocol p = (DalProtocol)i.next();
             scopeMain.add(p.getCheckBox());
         }
+        
+        submitButton = new JButton("Search");
+        submitButton.setToolTipText("Find resources for this position");
+        submitButton.addActionListener(this);
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+        scopeMain.getInputMap(scopeMain.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
+        scopeMain.getActionMap().put("search",new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                AstroScopeLauncherImpl.this.actionPerformed(e);
+            }
+        });                
         scopeMain.add(submitButton);
-        scopeMain.add(saveButton);
-
+        
+        // start of tree navigation buttons - maybe add more here later.
+        scopeMain.add(Box.createVerticalStrut(5));        
+        scopeMain.add(new JSeparator());
+        scopeMain.add(Box.createVerticalStrut(5));
+        
         reFocusTopButton = new JButton("Go to Top");
         reFocusTopButton.setToolTipText("Focus display to 'Search Results' ");
         reFocusTopButton.addActionListener(this);
-        reFocusTopButton.setEnabled(false);        
+        reFocusTopButton.setEnabled(false);             
         scopeMain.add(reFocusTopButton);
         
-
+        // start of consumer buttons.
+        scopeMain.add(Box.createVerticalStrut(5));
+        scopeMain.add(new JSeparator());
+        scopeMain.add(Box.createVerticalStrut(5));
+        
+        for (Iterator i = consumerActions.iterator(); i.hasNext(); ) {
+            Action a = (Action)i.next();
+            JButton b = new JButton(a);
+            scopeMain.add(b);
+        }
+        scopeMain.add(Box.createVerticalGlue());
         return scopeMain;
     }
     
@@ -548,147 +523,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         }).start();
     }    
     
-    /**
-     * method: saveData
-     * Description: Runs through the selected objects in the JTree and begins saving data
-     * to myspace or filesystem.  User MUST CHOOSE a directory node.  Does the work in a background
-     * thread.  Allows for selection of All or pieces such as only sia and/or cone (which looks at graph nodes).
-     * Called by the saveButton action.
-     * @throws InvalidArgumentException
-     * @throws SecurityException
-     * @throws NotFoundException
-     * @throws ServiceException
-     * @throws HeadlessException
-     *
-     */
-    private void saveData() throws HeadlessException, ServiceException, NotFoundException, SecurityException, InvalidArgumentException {
-        comm.getUserInformation();
-        //choose a uri to save the data to.             
-        final URI u = chooser.chooseResourceWithParent("Save Data",true,true,true,false,AstroScopeLauncherImpl.this);
-        if (u == null) {
-            return;
-        }
-        
-        logger.debug("the uri chosen = " + u.toString());
-        File file = null;
-        //make sure they chose a directory if not then return.
-        if("file".equals(u.getScheme())) {
-            file = new File(u);
-            if(!file.isDirectory()) {
-                JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
-                        "You can only save data to a folder or directory, nothing was saved.",
-                        "No Directory Selected", JOptionPane.OK_OPTION );
-                return;
-            }                             
-        }else {
-            if(!     myspace.getNodeInformation(u).isFolder()) {
-                JOptionPane.showMessageDialog(AstroScopeLauncherImpl.this, 
-                        "You can only save data to a folder or directory, nothing was saved",
-                        "No Directory Selected", JOptionPane.OK_OPTION );
-                return;
-            }                             
-        }//else        
-        (new BackgroundOperation("Saving Data") {
-            protected Object construct() throws Exception {
-             
-                
-                Set processedServices = new HashSet();
-                String []urls;
-                InputStream is = null;
-                OutputStream os = null;
-                for (Iterator i = vizModel.getSelectionFocusSet().iterator(); i.hasNext(); ) {
-                    final TreeNode tn = (TreeNode)i.next();
-                    // find each leaf node - these are the data points.
-                    if (tn.getChildCount() > 0) {
-                        continue;
-                    }
-                    TreeNode point = tn.getParent();      
-                    TreeNode catalog = point.getParent().getParent();
-                    try {
-                    // ok. got a bit of selected data. if it's an image, save it.
-                        if (tn.getAttribute("imgURL") != null) { // its siap - this is a reference to the image
-                            //@todo remove this - don't have multiple urls anymore.
-                            urls = new String[]{tn.getAttribute("imgURL")};// not clustering any more.tn.getAttribute("imgURL").split("\\|");
-                            for(int j = 0;j < urls.length;j++) {
-                                //System.out.println("the image urls = " + urls[j]);
-                                URL url = new URL(urls[j]); // url to the image.
-                                String name = conformToMyspaceName(catalog.getAttribute("label") + "_" + point.getAttribute("label") +"_" + tn.getAttribute("label") + "_" + System.currentTimeMillis() + "." + tn.getAttribute("type"));
-                                final String finalName = name;
-                                // @todo not sure whether the label of the image node is enough to uniquely identify it - maybe we should use the row number of it within the votable siap response,
-                                // and save the siap response too - as it's
-                                URI finalURI = new URI(u.toString() + "/" + name);
-                                
-                                SwingUtilities.invokeLater(
-                                        new Runnable() {
-                                            public void run() {
-                                                AstroScopeLauncherImpl.this.setStatusMessage("Saving Image: " + finalName);
-                                            }
-                                        }
-                                );                            
-                                if(finalURI.getScheme().startsWith("ivo")) {
-                                    myspace.copyURLToContent(url,finalURI);
-                                }else {
-                                    try {
-                                        is = url.openStream();
-                                        os = myspace.getOutputStream(finalURI);
-                                        Piper.pipe(is, os);
-                                    }finally {
-                                        if(is != null)
-                                            is.close();
-                                        if(os != null)
-                                            os.close();
-                                    }//try&finally
-                                }//else
-                            }//for
-                        } 
-                        
-                        // save the parent document - either a cone, or the siap response - which describes all the images.                        
-                        // parent holds the url for this catalog. - 
-                        // check we've not processed this catalog already - because the user has selected another child node..
-                        if (processedServices.contains(catalog)) {
-                            continue;
-                        }
-                        processedServices.add(catalog); // record that we've done this catalog now.
-                        URL url = new URL(catalog.getAttribute("url"));
-                        final String name = conformToMyspaceName(catalog.getAttribute("label") + ".vot");
-                        URI finalURI = new URI(u.toString() +"/" + name);
-                        SwingUtilities.invokeLater(
-                                new Runnable() {
-                                    public void run() {
-                                        AstroScopeLauncherImpl.this.setStatusMessage("Saving Table: " + name);
-                                    }
-                                }
-                        );                                 
-                        if(finalURI.getScheme().startsWith("ivo")) {
-                            myspace.copyURLToContent(url,finalURI);
-                        }else {
-                            try {
-                                is = url.openStream();
-                                os = myspace.getOutputStream(finalURI);
-                                Piper.pipe(url.openStream(), os);
-                            }finally {
-                                if(is != null)
-                                    is.close();
-                                if(os != null)
-                                    os.close();
-                            }//try&finally
-                        }//else
-                    } catch (final Exception e) {
-                        //e.printStackTrace();
-                        // @todo should it show an error, or just report??
-                        SwingUtilities.invokeLater(
-                                new Runnable() {
-                                    public void run() {
-                                        AstroScopeLauncherImpl.this.setStatusMessage("Failed to save " + tn.getAttribute("label") + " : " + e.getMessage());
-                                    }
-                                }
-                        );                                 
-                    }
-                }                
-                return null;
-            }
-        }).start();
-    }
+  
     
 
   
@@ -696,6 +531,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.29  2006/02/09 15:40:01  nw
+finished refactoring of astroscope.
+added vospec viewer
+
 Revision 1.28  2006/02/02 14:50:49  nw
 refactored into separate components.
 

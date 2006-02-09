@@ -128,7 +128,7 @@ public class WindowedRadialVizualization extends Vizualization {
            display.addControlListener(new DragControl(false,true));
            display.addControlListener(new PanControl(false));
            display.addControlListener(new ZoomControl(false));
-           display.addControlListener(new ToolTipControl("tooltip"));   
+           display.addControlListener(new ToolTipControl(Retriever.TOOLTIP_ATTRIBUTE));   
            display.addControlListener(new NeighborHighlightControl(update));
            display.addControlListener(new DoubleClickMultiSelectFocusControl(vizs));
            

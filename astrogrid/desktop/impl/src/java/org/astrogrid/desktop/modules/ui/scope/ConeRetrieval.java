@@ -42,5 +42,10 @@ public class ConeRetrieval extends Retriever {
         parseTable(source, th);
         return th;
     }
+    public String getServiceType() {
+        return CONE;
+    }
+    
+    public static final String CONE = "cone";
     
 }

@@ -5,6 +5,7 @@ import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -20,6 +21,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -35,7 +37,27 @@ import javax.xml.parsers.SAXParserFactory;
  *
  */
 public abstract class Retriever extends BackgroundWorker {
-    private static final int MAX_INLINE_IMAGE_SIZE = 100000;
+    /** attribute pointing to the logo image for this service */
+    public static final String SERVICE_LOGO_ATTRIBUTE = "img";
+    /** attribute containing the url used to query the service */
+    public static final String SERVICE_URL_ATTRIBUTE = "url";
+    /** attribute containing the id (ivorn) of the service */
+    public static final String SERVICE_ID_ATTRIBUTE = "id";
+    /** attribute describing the weight / width of edge links */
+    public static final String WEIGHT_ATTRIBUTE = "weight";
+    /** attribute describing what kind of service - provided by {@link #getServiceType()} in subclasses */
+    public static final String SERVICE_TYPE_ATTRIBUTE = "service-type";
+    /** attribute providing the text label to be displayed for this node */
+    public static final String LABEL_ATTRIBUTE = "label";   
+    /** attribute giving the ra of the result */ 
+    public static final String RA_ATTRIBUTE = "ra";
+    /** attribute giving the dec of the result */
+    public static final String DEC_ATTRIBUTE = "dec";
+    /** attribute giving the offset value for the result */
+    public static final String OFFSET_ATTRIBUTE = "offset";
+    /** attribute giving the tooltip for this node */
+    public static final String TOOLTIP_ATTRIBUTE = "tooltip";        
+  //  private static final int MAX_INLINE_IMAGE_SIZE = 100000;
     protected final double ra;
     protected final double dec;
     protected final ResourceInformation information;
@@ -50,8 +72,9 @@ public abstract class Retriever extends BackgroundWorker {
         this.model = model;
         this.primaryNode = primaryNode;
     }        
-    
-
+    /** return a string describing what kind of service this is */
+    public abstract String getServiceType();
+        
     
     /** helper method - called by subclasses to SAX-parse a votable, attaching results as nodes to the service node 
      * @param tableHandler handler to use on the votable.
@@ -77,13 +100,18 @@ public abstract class Retriever extends BackgroundWorker {
         /** return the service tree node with all the results attached to it */
         public TreeNode getServiceNode();
     }
-    
+
     /** sax-style parser for votables - these methods get called in callbacks, sax-style, as the document whizzes by, instead of having an in-memory model
      * maybe this will stop my laptop overheating whenever I do M54,1.0 - at the moment the overheating trip cuts in and shus the machine down. :)
      * @author Noel Winstanley nw@jb.man.ac.uk 02-Dec-2005
      */
    public class BasicTableHandler implements SummarizingTableHandler {
-       public BasicTableHandler(TreeNode serviceNode) {
+
+
+
+
+
+    public BasicTableHandler(TreeNode serviceNode) {
            this.serviceNode = serviceNode;
        }
        protected final TreeNode serviceNode;
@@ -113,9 +141,9 @@ public abstract class Retriever extends BackgroundWorker {
             ColumnInfo columnInfo = starTable.getColumnInfo(col);
             String ucd = columnInfo.getUCD();
             if (ucd != null) {
-                if (ucd.equals("POS_EQ_RA_MAIN")) {
+                if (ucd.equalsIgnoreCase("POS_EQ_RA_MAIN")) {
                     raCol = col;
-                } else if (ucd.equals("POS_EQ_DEC_MAIN")) {
+                } else if (ucd.equalsIgnoreCase("POS_EQ_DEC_MAIN")) {
                     decCol = col;
                 }
             }
@@ -186,10 +214,11 @@ public abstract class Retriever extends BackgroundWorker {
         String rowDec = row[decCol].toString();                                 
         DefaultTreeNode valNode = new DefaultTreeNode();
         String positionString = chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2) ;
-        valNode.setAttribute("label","*");
+        valNode.setAttribute(LABEL_ATTRIBUTE,"*");
+        valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
         // unused
-        //valNode.setAttribute("ra",rowRa); // these might come in handy for searching later.
-        //valNode.setAttribute("dec",rowDec);
+        valNode.setAttribute(RA_ATTRIBUTE,rowRa); // these might come in handy for searching later.
+        valNode.setAttribute(DEC_ATTRIBUTE,rowDec);
 
         // handle further parsing in subclasses.
         rowDataExtensionPoint(row,valNode);
@@ -197,22 +226,26 @@ public abstract class Retriever extends BackgroundWorker {
         StringBuffer tooltip = new StringBuffer();
         tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
         for (int v = 0; v < row.length; v++) {
+            Object o = row[v];
+            if (o == null) {
+                continue;
+            }
             tooltip.append("<br>")
             .append(titles[v])
             .append( ": ")
-            .append(row[v] == null ? "" : row[v].toString());
-        }
+            .append(o.getClass().isArray() ? ArrayUtils.toString(o) : o.toString());
+        }        
         tooltip.append("</p></html>");
-        valNode.setAttribute("tooltip",tooltip.toString());  
+        valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());  
         double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
         String offsetVal = chopValue(String.valueOf(offset),2);
         TreeNode offsetNode = model.findNode(offsetVal, serviceNode);
         String tempAttr;
         if(offsetNode == null) { // not found offset node.
             offsetNode = new DefaultTreeNode();
-            offsetNode.setAttribute("label",offsetVal);
-            offsetNode.setAttribute("offset",offsetVal);
-            offsetNode.setAttribute("tooltip",String.valueOf(offset));
+            offsetNode.setAttribute(LABEL_ATTRIBUTE,offsetVal);
+            offsetNode.setAttribute(OFFSET_ATTRIBUTE,offsetVal);
+            offsetNode.setAttribute(TOOLTIP_ATTRIBUTE,String.valueOf(offset));
             serviceNode.addChild(new DefaultEdge(serviceNode,offsetNode));
             model.getNodeSizingMap().addOffset(offsetVal);
         }
@@ -221,7 +254,7 @@ public abstract class Retriever extends BackgroundWorker {
         if (pointNode == null) {
             pointNode = new DefaultTreeNode();
             offsetNode.addChild(new DefaultEdge(offsetNode,pointNode));
-            pointNode.setAttribute("label",positionString);
+            pointNode.setAttribute(LABEL_ATTRIBUTE,positionString);
         }
         // now have found or created point node. add new result to this.
         
@@ -280,7 +313,7 @@ public abstract class Retriever extends BackgroundWorker {
         model.getProtocols().addQueryResult(information,th.getResultCount(),th.getMessage());
         if (th.getResultCount() > 0) {
             DefaultEdge edge = new DefaultEdge(primaryNode,serviceNode);
-            edge.setAttribute("weight","2");              
+            edge.setAttribute(WEIGHT_ATTRIBUTE,"2");              
             model.getTree().addChild(edge);   
         }                                       
     }
@@ -293,16 +326,13 @@ public abstract class Retriever extends BackgroundWorker {
      */
     protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
         TreeNode serviceNode = new DefaultTreeNode();
-        serviceNode.setAttribute("label",information.getTitle());
-        serviceNode.setAttribute("weight","2");
-        serviceNode.setAttribute("id", information.getId().toString());
-        serviceNode.setAttribute("url",serviceURL.toString());
-        serviceNode.setAttribute("tooltip",tooltip);        
-        // unused - remove for efficiencie's sake
-        //riNode.setAttribute("ra","0");
-        //riNode.setAttribute("dec","0");
+        serviceNode.setAttribute(LABEL_ATTRIBUTE,information.getTitle());
+        serviceNode.setAttribute(WEIGHT_ATTRIBUTE,"2");
+        serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE, information.getId().toString());
+        serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL.toString());
+        serviceNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip);        
         if (information.getLogoURL() != null) {
-            serviceNode.setAttribute("img",information.getLogoURL().toString());                    
+            serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,information.getLogoURL().toString());                    
         }
         return serviceNode;
     }

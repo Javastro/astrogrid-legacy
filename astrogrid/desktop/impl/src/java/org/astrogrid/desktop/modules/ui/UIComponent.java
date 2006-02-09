@@ -1,4 +1,4 @@
-/*$Id: UIComponent.java,v 1.11 2005/12/02 13:41:20 nw Exp $
+/*$Id: UIComponent.java,v 1.12 2006/02/09 15:40:01 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -191,6 +191,10 @@ public class UIComponent extends PositionRememberingJFrame {
     public UIComponent(Configuration conf,HelpServerInternal hs, UIInternal ui) throws HeadlessException {
         super(conf,hs, ui);
     }
+    
+    /** for gui builder use only
+    @deprecated - don't use in own code
+    */
     
     /** access the main panel, where other components can be added..
      * 
@@ -473,6 +477,10 @@ public class UIComponent extends PositionRememberingJFrame {
 
 /* 
 $Log: UIComponent.java,v $
+Revision 1.12  2006/02/09 15:40:01  nw
+finished refactoring of astroscope.
+added vospec viewer
+
 Revision 1.11  2005/12/02 13:41:20  nw
 improved task-reporting system
 

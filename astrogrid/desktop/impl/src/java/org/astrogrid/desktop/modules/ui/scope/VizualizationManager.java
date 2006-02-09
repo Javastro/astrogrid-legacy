@@ -1,4 +1,4 @@
-/*$Id: VizualizationManager.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+/*$Id: VizualizationManager.java,v 1.2 2006/02/09 15:40:01 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import java.util.Iterator;
 public class VizualizationManager {
     public VizualizationManager(VizModel model) {            
         this.model = model;
-        imageFactory = new ImageFactory(75,75); // small thumbnails.        
+        imageFactory = new ImageFactory(50,50); // small thumbnails.        
     
     }
     private final ImageFactory imageFactory;    
@@ -97,6 +97,10 @@ public class VizualizationManager {
 
 /* 
 $Log: VizualizationManager.java,v $
+Revision 1.2  2006/02/09 15:40:01  nw
+finished refactoring of astroscope.
+added vospec viewer
+
 Revision 1.1  2006/02/02 14:51:11  nw
 components of astroscope, plus new ssap component.
  

@@ -1,0 +1,124 @@
+/*$Id: VOSpecAction.java,v 1.1 2006/02/09 15:40:01 nw Exp $
+ * Created on 03-Feb-2006
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.desktop.modules.ui.scope;
+
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+
+import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.lang.StringUtils;
+
+import edu.berkeley.guir.prefuse.event.FocusEvent;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
+import esavo.vospec.spectrum.Spectrum;
+import esavo.vospec.spectrum.SpectrumSet;
+import esavo.vospec.spectrum.Unit;
+import esavo.vospec.standalone.VoSpec;
+
+import java.awt.event.ActionEvent;
+import java.util.Iterator;
+/**
+ * node consumer that displays selected spectra in vospec.
+ * @todo report following problems - if port 1099 isn't open, hangs indefinately. - need to recover from tis in some graceful way.
+ *    also, is data loading being done on event dispatch thread?
+ *    also, some services aren't returning the right types - need to check type cast to double[][ in SsapRetrieval.
+ * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
+ *
+ */
+public class VOSpecAction extends NodeConsumerAction {
+
+  
+    public VOSpecAction(FocusSet selectedNodes,UIComponent ui) {
+        super("View in VOSpec", "Launch VOSpec to display spectra", selectedNodes);
+        this.ui= ui;
+    }
+    private final UIComponent ui;
+
+    public void focusChanged(FocusEvent arg0) {
+        for (Iterator i = selectedNodes.iterator(); i.hasNext(); ) {
+            TreeNode tn = (TreeNode)i.next();
+            String type = tn.getAttribute(Retriever.SERVICE_TYPE_ATTRIBUTE);
+          if (type != null && type.equals( SsapRetrieval.SSAP)) {
+              setEnabled(true);
+              return;
+          }
+        }
+        setEnabled(false);
+    }
+    
+    private VoSpec vospec;
+    private synchronized VoSpec getVoSpecInstance() {
+        if (vospec == null){
+            vospec = new VoSpec();
+        }
+        return vospec;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        final VoSpec vospec = getVoSpecInstance();
+        vospec.show(); // jesus advises that it's best to show first, populate after.
+        
+        (new BackgroundWorker(ui,"Displaying Spectra") {
+            protected Object construct() throws Exception {
+                // know we've got some spectra selected, otherwise this button wouldn't be enabled.
+                SpectrumSet spectrumSet = new SpectrumSet();
+                int ix = 0;
+                for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
+                    final TreeNode tn = (TreeNode)i.next();
+                    // find leaf nodes that are spectrum..
+                    String type = tn.getAttribute(Retriever.SERVICE_TYPE_ATTRIBUTE);
+                    if (type == null || ! type.equals(SsapRetrieval.SSAP) ||tn.getChildCount() > 0 ) {
+                        continue;
+                    }
+                    Spectrum s = new Spectrum();
+                    s.setUrl(tn.getAttribute(SsapRetrieval.SPECTRA_URL_ATTRIBUTE));
+                    final String cols = tn.getAttribute(SsapRetrieval.SPECTRA_AXES_ATTRIBUTE).trim();
+                    if (cols != null) { // may not be there.
+                        String[] colNames = StringUtils.split(cols,' ');
+                        if (colNames.length > 0) {
+                            s.setWaveLengthColumnName(colNames[0]);
+                        }
+                        if (colNames.length > 1) {
+                            s.setFluxColumnName(colNames[1]);
+                        }
+                    }
+                    String dimeq = tn.getAttribute(SsapRetrieval.SPECTRA_DIMEQ_ATTRIBUTE).trim();
+                    String scaleq = tn.getAttribute(SsapRetrieval.SPECTRA_SCALEQ_ATTRIBUTE).trim();
+                    if (dimeq != null && scaleq != null) {
+                        String[] dims = StringUtils.split(dimeq,' ');
+                        String[] scales = StringUtils.split(scaleq,' ');
+                        s.setUnits(new Unit(dims[0],scales[0],dims[1],scales[1]));
+                    }
+                    s.setTitle(tn.getAttribute(SsapRetrieval.SPECTRA_TITLE_ATTRIBUTE).trim());
+                    s.setRa(tn.getAttribute(SsapRetrieval.RA_ATTRIBUTE).trim());
+                    s.setDec(tn.getAttribute(SsapRetrieval.DEC_ATTRIBUTE).trim());
+                    s.setFormat(tn.getAttribute(SsapRetrieval.SPECTRA_TYPE_ATTRIBUTE).trim());
+                    
+                    spectrumSet.addSpectrum(ix++,s);
+                }
+                vospec.loadSpectrumSet("",spectrumSet);
+                return null;
+            }          
+        }).start();
+
+    }
+
+}
+
+
+/* 
+$Log: VOSpecAction.java,v $
+Revision 1.1  2006/02/09 15:40:01  nw
+finished refactoring of astroscope.
+added vospec viewer
+ 
+*/

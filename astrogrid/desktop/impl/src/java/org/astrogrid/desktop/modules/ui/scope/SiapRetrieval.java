@@ -22,8 +22,7 @@ import java.net.URL;
 import java.util.Map;
 
 /** task that retrives, parses and adds to the display results of one siap service 
- * 
- * @todo refactor more of the commonality of Siap and Cone into the base class.*/
+ * */
 public class SiapRetrieval extends Retriever {
     /**
      * Logger for this class
@@ -56,8 +55,13 @@ public class SiapRetrieval extends Retriever {
             parseTable(source, th);
             return th;           
     }
-    
+    /** attribute containing type extension of the image */
+    public static final String IMAGE_TYPE_ATTRIBUTE = "type";
+    /** attribute containing reference url for this image */
+    public static final String IMAGE_URL_ATTRIBUTE = "imgURL";   
     public class SiapTableHandler extends BasicTableHandler {
+
+
         public SiapTableHandler(TreeNode serviceNode) {
             super(serviceNode);
         }
@@ -71,13 +75,13 @@ public class SiapRetrieval extends Retriever {
             if (ucd == null) {
                 return;
             }
-        if (ucd.equals("VOX:Image_AccessReference")) {
+        if (ucd.equalsIgnoreCase("VOX:Image_AccessReference")) {
             imgCol = col;
-        } else if (ucd.equals("VOX:Image_Format")) {
+        } else if (ucd.equalsIgnoreCase("VOX:Image_Format")) {
             formatCol = col;
-        } else if (ucd.equals("VOX:Image_FileSize")) {
+        } else if (ucd.equalsIgnoreCase("VOX:Image_FileSize")) {
             sizeCol = col;
-        } else if (ucd.equals("VOX:Image_Title")) {
+        } else if (ucd.equalsIgnoreCase("VOX:Image_Title")) {
             titleCol = col;
         }            
      }
@@ -95,16 +99,11 @@ protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
         } else {
             title  = "untitled";
         }
-        valNode.setAttribute("imgURL",imgURL);
-        String format = row[formatCol].toString();
-        String type =  StringUtils.substringAfterLast(format,"/");
-        valNode.setAttribute("type" ,type);
-        /* unused
-        if (size < MAX_INLINE_IMAGE_SIZE && (format.equals("image/gif") || format.equals("image/png") || format.equals("image/jpeg"))) {
-            valNode.setAttribute("preview",imgURL); // its a small image, of a suitable format for viewing.
-        }
-        */
-        valNode.setAttribute("label",title + ", " + type + ", " + size + "k");   
+        valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL);
+        String type = row[formatCol].toString();
+        valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type);
+
+        valNode.setAttribute(LABEL_ATTRIBUTE,title + ", " + StringUtils.substringAfterLast(type,"/") + ", " + size + "k");   
         }        
         
     protected boolean isWorthProceeding() {
@@ -121,4 +120,10 @@ protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
     }
         
     } // end table handler class.
+
+    public String getServiceType() {
+        return SIAP;
+    }
+    
+    public static final String SIAP = "SIAP";
 }

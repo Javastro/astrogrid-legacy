@@ -1,4 +1,4 @@
-/*$Id: Vizualization.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+/*$Id: Vizualization.java,v 1.2 2006/02/09 15:40:01 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,8 +41,8 @@ public abstract class Vizualization extends GraphEventAdapter {
             nodeRenderer = new TextImageItemSizeRenderer(vizs.getVizModel().getNodeSizingMap()) ;
             nodeRenderer.setMaxTextWidth(150);
             nodeRenderer.setRoundedCorner(8,8);
-            nodeRenderer.setTextAttributeName("label");
-            nodeRenderer.setImageAttributeName("img");
+            nodeRenderer.setTextAttributeName(Retriever.LABEL_ATTRIBUTE);
+            nodeRenderer.setImageAttributeName(Retriever.SERVICE_LOGO_ATTRIBUTE);
             nodeRenderer.setMaxImageDimensions(50,50);
             nodeRenderer.setAbbrevType(StringAbbreviator.TRUNCATE);
             nodeRenderer.setImageFactory(vizs.getImageFactory());
@@ -56,7 +56,7 @@ public abstract class Vizualization extends GraphEventAdapter {
             itemRegistry.getFocusManager().putFocusSet(FocusManager.SELECTION_KEY,vizs.getVizModel().getSelectionFocusSet());
             
             DefaultEdgeRenderer edgeRenderer = new DefaultEdgeRenderer();
-            edgeRenderer.setWeightAttributeName("weight");
+            edgeRenderer.setWeightAttributeName(Retriever.WEIGHT_ATTRIBUTE);
             edgeRenderer.setWeightType(DefaultEdgeRenderer.WEIGHT_TYPE_LINEAR);
             itemRegistry.setRendererFactory(new DefaultRendererFactory(getTextRenderer(), edgeRenderer));            
         }
@@ -72,6 +72,10 @@ public abstract class Vizualization extends GraphEventAdapter {
 
 /* 
 $Log: Vizualization.java,v $
+Revision 1.2  2006/02/09 15:40:01  nw
+finished refactoring of astroscope.
+added vospec viewer
+
 Revision 1.1  2006/02/02 14:51:11  nw
 components of astroscope, plus new ssap component.
  

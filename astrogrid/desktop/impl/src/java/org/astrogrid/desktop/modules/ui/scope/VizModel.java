@@ -35,19 +35,16 @@ public  class VizModel {
         this.nodeSizingMap = new NodeSizingMap();
         this.selectionFocusSet = new DefaultFocusSet();       
         rootNode = new DefaultTreeNode();
-        rootNode.setAttribute("label","Search Results");
-        rootNode.setAttribute("ra","0");
-        rootNode.setAttribute("dec","0");
+        rootNode.setAttribute(Retriever.LABEL_ATTRIBUTE,"Search Results");
         
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();
             p.setVizModel(this);
             TreeNode primary = p.getPrimaryNode();
-            primary.setAttribute("label",p.getName());
-            primary.setAttribute("ra","0");
-            primary.setAttribute("dec","0");            
+            primary.setAttribute(Retriever.LABEL_ATTRIBUTE,p.getName());
+           
             DefaultEdge primaryEdge = new DefaultEdge(rootNode,primary);
-            primaryEdge.setAttribute("weight","3");
+            primaryEdge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");
             rootNode.addChild(primaryEdge);            
         }
 
@@ -124,7 +121,7 @@ public  class VizModel {
         Iterator iter = startNode.getChildren();
         while(iter.hasNext()) {
             TreeNode n = (TreeNode)iter.next();
-            if(n.getAttribute("label").equals(label)) {
+            if(n.getAttribute(Retriever.LABEL_ATTRIBUTE).equals(label)) {
                 return n;
             }
         }
