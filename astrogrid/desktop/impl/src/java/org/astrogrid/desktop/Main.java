@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.3 2005/08/25 16:59:58 nw Exp $
+/*$Id: Main.java,v 1.4 2006/02/09 15:39:15 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,9 +23,11 @@ import org.picocontainer.Startable;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
 /** Main class when running workbench / ACR in standalone mode.
@@ -45,10 +47,15 @@ public class Main extends BuildInprocessACR implements Startable  {
         super();
         try {
             UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
-            UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY,    Boolean.TRUE);            
+            UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY,    Boolean.TRUE);          
          } catch (Exception e) {
              logger.warn("Failed to install plastic look and feel - oh well");
-             }        
+             }   
+         
+         // configure tooltip behaviour.
+         UIManager.put("ToolTip.background",Color.white);
+         ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
+         ToolTipManager.sharedInstance().setInitialDelay(500);
     }
 
     /**
@@ -94,6 +101,9 @@ public class Main extends BuildInprocessACR implements Startable  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.4  2006/02/09 15:39:15  nw
+tooltip improvements
+
 Revision 1.3  2005/08/25 16:59:58  nw
 1.1-beta-3
 
