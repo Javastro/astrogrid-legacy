@@ -36,6 +36,23 @@ nothing in pal uses xmldb.
 		
 		<release version="HEAD">
 			  
+		<action dev="kea" type="fix">
+               <em>Branch: KEA_PAL_1512</em><br/>
+               Placeholder branch for a number of bugzilla ticket fixes
+               on astrogrid/pal projects.
+               <ul>
+               <li>Bug 1508: reversed unit/ucd field order in registrations
+               to be schema-compliant</li>
+               <li>Bug 1479: VOTable "int" types should be "long"</li>
+               <li>Bug 1480 : Fixed and re-enabled conesearch
+               registration</li>
+               <li>Bug 1515 : Added logoURL to registration, and 
+               default logo to installations </li>
+               <li>Generally tidied registration data and added 
+               schemaLocation attributes for referenced schemata.</li>
+               </ul>
+     </action>
+
 			<action dev="dave" type="fix">
 				branch dave-dev-200512141139 contains 
 				1) Minor changes to JSP pages in registry webapp (which will mean new version of registry)  
