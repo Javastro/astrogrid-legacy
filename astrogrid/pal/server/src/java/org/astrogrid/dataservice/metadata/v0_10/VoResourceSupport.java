@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.12 2005/12/07 15:55:21 clq2 Exp $
+ * $Id: VoResourceSupport.java,v 1.13 2006/02/09 09:54:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,41 +44,68 @@ public class VoResourceSupport {
    public final static SimpleDateFormat REGISTRY_DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
    public static final String VORESOURCE_ELEMENT = "vor:Resource";
+
    public static final String VORESOURCE_ELEMENT_NAMESPACES = 
-     "xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" " + 
-     "xmlns=\"http://www.ivoa.net/xml/VOResource/v0.10\"";
-     
+     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + 
+     "xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" " +
+     "xmlns:vr=\"http://www.ivoa.net/xml/VOResource/v0.10\" " +
+     // This one is the default namespace
+     "xmlns=\"http://www.ivoa.net/xml/VOResource/v0.10\" ";
+
+   public static final String VORESOURCE_ELEMENT_SCHEMALOCATIONS = 
+      "http://www.ivoa.net/xml/VOResource/v0.10 http://www.ivoa.net/xml/VOResource/v0.10" + " " + 
+      "http://www.ivoa.net/xml/RegistryInterface/v0.1 http://www.ivoa.net/xml/RegistryInterface/v0.1"; 
+
    /** Constructs a miniumum set of core elements for a VOresource from the given
-    * strings */
+    * strings 
+    * @TOFIX : Add property for logo and proper creator name 
+    * */
    public String makeCore(String title, String id, String publisher, String contactName, String contactEmail, String description, String refUrl, String type) {
    
       String core =
-         "<title>"+title+"</title>"+
-         "<identifier>"+id+"</identifier>"+
-         "<curation>"+
-           "<publisher>"+publisher+"</publisher>"+
-           "<contact>"+
-             "<name>"+contactName+"</name>"+
-             "<email>"+contactEmail+"</email>"+
-           "</contact>"+
-         "</curation>"+
-         "<content>"+
-           "<description>"+description+"</description>"+
-           "<referenceURL>"+refUrl+"</referenceURL>"+
-           "<type>"+type+"</type>"+
-         "</content>";
+         "\n<title>"+title+"</title>\n"+
+         "<identifier>"+id+"</identifier>\n"+
+         "<curation>\n"+
+           "<publisher>"+publisher+"</publisher>\n"+
+           "<contact>\n"+
+             "<name>"+contactName+"</name>\n"+
+             "<email>"+contactEmail+"</email>\n"+
+           "</contact>\n"+
+           "<creator>\n"+
+           "<name>"+contactName+" (should really be dataset creator's name!)</name>\n" +
+           "<logo>" +refUrl + "/logo.gif</logo>\n" +
+           "</creator>\n"+
+         "</curation>\n"+
+         "<content>\n"+
+           "<description>"+description+"</description>\n"+
+           "<referenceURL>"+refUrl+"</referenceURL>\n"+
+           "<type>"+type+"</type>\n"+
+         "</content>\n";
+
          
       return core;
    }
 
    /** Constructs  a VoResource opening tag with the given resource type */
-   public String makeVoResourceElement(String vorType, String namespaces) {
-      return "<" + VORESOURCE_ELEMENT + " " + 
-         VORESOURCE_ELEMENT_NAMESPACES + " " + 
-         "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
-         //"xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' "+
-         //"xmlns='http://www.ivoa.net/xml/VOResource/v0.10' "+
-         namespaces+
+   public String makeVoResourceElement(String vorType, String namespaces, String schemaLocations) {
+     String nsSp, slSp;
+     if (namespaces.equals("")) {
+       nsSp = "";
+     } else {
+       nsSp = " ";
+     }
+     if (schemaLocations.equals("")) {
+       slSp = "";
+     } else {
+       slSp = " ";
+     }
+     return "<" + VORESOURCE_ELEMENT + " " + 
+         VORESOURCE_ELEMENT_NAMESPACES + nsSp + 
+         namespaces + " " +
+         "xsi:schemaLocation=\"" +
+         VORESOURCE_ELEMENT_SCHEMALOCATIONS + slSp +
+         schemaLocations + 
+         "\"" +
          " status='active' updated='"+toRegistryForm(new Date())+"' xsi:type='"+vorType+"'"+
          ">";
    }
@@ -92,6 +119,7 @@ public class VoResourceSupport {
       String coreFile = ConfigFactory.getCommonConfig().getString("dataserver.metadata.core", null);
       if ( coreFile != null) {
          //use an on-disk resource file
+         //schemaLocations + 
          try {
             Document coreDoc = DomHelper.newDocument(ConfigReader.resolveFilename(coreFile));//validate & load
 

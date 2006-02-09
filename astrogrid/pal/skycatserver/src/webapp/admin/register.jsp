@@ -54,7 +54,7 @@
       //I think the port gets shortcut because it's the same as the hosts....
       //URL indexUrl = new URL(registerUrl.getProtocol(), registerUrl.getHost(), registerUrl.getPort(), context);
       //URL entryFormUrl = new URL(registerUrl.getProtocol(), registerUrl.getHost(), registerUrl.getPort(), context+"/admin/entryForm.html");
-      String indexUrl = registerUrl.getProtocol()+"://"+registerUrl.getAuthority()+":"+registerUrl.getPort()+"/"+context;
+      String indexUrl = registerUrl.getProtocol()+"://"+registerUrl.getAuthority()+":"+registerUrl.getPort()+"/"+context+"/";
       String entryFormUrl = registerUrl.getProtocol()+"://"+registerUrl.getAuthority()+":"+registerUrl.getPort()+"/"+context+"/admin/entryForm.html";
       
       out.write("<p>Default Registry ");

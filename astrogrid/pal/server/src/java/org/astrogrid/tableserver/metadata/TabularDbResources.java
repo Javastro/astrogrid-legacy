@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.9 2005/06/09 08:53:58 clq2 Exp $
+ * $Id: TabularDbResources.java,v 1.10 2006/02/09 09:54:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,11 +32,15 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement(
              "tdb:TabularDB",
-             "xmlns:vod='http://www.ivoa.net/xml/VODataService/v0.5' "+
-             "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' "
+             // Namespaces
+             "xmlns:vod='http://www.ivoa.net/xml/VODataService/v0.5' " +
+             "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' ",
+             // Schema locations
+             "http://www.ivoa.net/xml/VODataService/v0.5 http://www.ivoa.net/xml/VODataService/v0.5" + " " + 
+             "urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3 http://software.astrogrid.org/schema/vo-resource-types/TabularDB/v0.3/TabularDB.xsd"
              ) +
          makeCore("TDB") +
-         "<tdb:db>"
+         "<tdb:db>\n"
       );
       
       //only one catalog in resource at the moment
@@ -45,25 +49,25 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
          throw new MetadataException("No Catalog found in metadoc");
       }
       tabularDb.append(
-         "<tdb:name>"+catalog+"</tdb:name>"+
-         "<tdb:description/>"
+         "<tdb:name>"+catalog+"</tdb:name>\n"+
+         "<tdb:description/>\n"
       );
       
       TableInfo[] tables = reader.getTables(catalog);
       for (int t = 0; t < tables.length; t++) {
          tabularDb.append(
-            "<tdb:table xmlns='http://www.ivoa.net/xml/VODataService/v0.5' >"+ //default namnespace for table descriptions
-               "<name>"+tables[t].getName()+"</name>"+
-               "<description>"+XmlPrinter.transformSpecials(tables[t].getDescription())+"</description>"
+            "<tdb:table xmlns='http://www.ivoa.net/xml/VODataService/v0.5' >\n"+ //default namnespace for table descriptions
+               "<name>"+tables[t].getName()+"</name>\n"+
+               "<description>"+XmlPrinter.transformSpecials(tables[t].getDescription())+"</description>\n"
          );
          
          ColumnInfo[] columns = reader.getColumns(catalog, tables[t].getName());
          
          for (int c = 0; c < columns.length; c++) {
             tabularDb.append(
-               "<column>"+
-                  "<name>"+columns[c].getName()+"</name>"+
-                  "<description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</description>"
+               "<column>\n"+
+                  "<name>"+columns[c].getName()+"</name>\n"+
+                  "<description>"+XmlPrinter.transformSpecials(columns[c].getDescription())+"</description>\n"
             );
 
          //
@@ -88,29 +92,29 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
             }
  *
  */         
-            if ((columns[c].getUcd("1") != null) && (columns[c].getUcd("1").trim().length()>0)) {
-               tabularDb.append(
-                  "<ucd>"+columns[c].getUcd("1")+"</ucd>"
-               );
-            }
             if ((columns[c].getUnits() != null) && (columns[c].getUnits().toString().trim().length()>0)) {
                tabularDb.append(
-                  "<unit>"+columns[c].getUnits()+"</unit>"
+                  "<unit>"+columns[c].getUnits()+"</unit>\n"
+               );
+            }
+            if ((columns[c].getUcd("1") != null) && (columns[c].getUcd("1").trim().length()>0)) {
+               tabularDb.append(
+                  "<ucd>"+columns[c].getUcd("1")+"</ucd>\n"
                );
             }
             tabularDb.append(
-               "</column>"
+               "</column>\n"
             );
          }
          
          tabularDb.append(
-            "</tdb:table>");
+            "</tdb:table>\n");
          
       }
 
       tabularDb.append(
-         "</tdb:db>"+
-         "</"+VORESOURCE_ELEMENT+">");
+         "</tdb:db>\n"+
+         "</"+VORESOURCE_ELEMENT+">\n");
       
       return tabularDb.toString();
    }

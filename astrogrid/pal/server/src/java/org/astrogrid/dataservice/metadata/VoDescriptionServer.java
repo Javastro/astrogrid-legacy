@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.12 2005/12/07 15:55:21 clq2 Exp $
+ * $Id: VoDescriptionServer.java,v 1.13 2006/02/09 09:54:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -54,10 +54,9 @@ public class VoDescriptionServer {
                    ">";
  */
    public final static String VODESCRIPTION_ELEMENT =
-         "<vor:VOResources xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\">";
+         "<vor:VOResources xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" xsi:schemaLocation=\"http://www.ivoa.net/xml/RegistryInterface/v0.1 http://www.ivoa.net/xml/RegistryInterface/v0.1\">\n";
 
    public final static String VODESCRIPTION_ELEMENT_END = "</vor:VOResources>";
-     
 
    /**
     * Returns the whole metadata file as a DOM document
@@ -260,9 +259,7 @@ public class VoDescriptionServer {
           {
           checkAndAppendResource(vod, new CeaResources());
           }
-//
-// Removed cone for now - XML syntax is wrong.
-//    checkAndAppendResource(vod, new ConeResources());
+      checkAndAppendResource(vod, new ConeResources());
 //    addResources(vod, new SkyNodeResourceServer());
       
       //finish vod element
@@ -277,6 +274,8 @@ public class VoDescriptionServer {
       String resources = plugin.getVoResource();
 
       try {
+        //System.out.println("Resource is:");
+        //System.out.println(VODESCRIPTION_ELEMENT+resources+VODESCRIPTION_ELEMENT_END);
          validateDescription(VODESCRIPTION_ELEMENT+resources+VODESCRIPTION_ELEMENT_END);
       
          vod.append(resources+"\n\n");
@@ -333,7 +332,7 @@ public class VoDescriptionServer {
    {
       SampleStarsPlugin.initConfig();
 //    ConfigFactory.getCommonConfig().setProperty("datacenter.url","http://localhost:8080");
-      VoDescriptionServer.pushToRegistry(new URL("http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/AdminService"));
+      VoDescriptionServer.pushToRegistry(new URL("http://galahad.star.le.ac.uk:8080/galahad-registry/services/AdminService"));
    }
 }
 

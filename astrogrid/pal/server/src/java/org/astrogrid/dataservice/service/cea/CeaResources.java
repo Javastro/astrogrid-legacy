@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.10 2005/12/07 15:55:21 clq2 Exp $
+ * $Id: CeaResources.java,v 1.11 2006/02/09 09:54:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,8 +33,12 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
       String ceaService =
          makeVoResourceElement(
              "cea:CeaServiceType",
+             // Namespaces
              "xmlns:vs='http://www.ivoa.net/xml/VODataService/v0.5' " +
-             "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' "
+             "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' ",
+             // Schema locations
+             "http://www.ivoa.net/xml/VODataService/v0.5 http://www.ivoa.net/xml/VODataService/v0.5" + " " +
+             "http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd"
              ) +
          makeCore("ceaService")+
          "<interface xsi:type='vs:WebService'>"+
@@ -54,72 +58,77 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
       String ceaApplication =
          makeVoResourceElement(
              "cea:CeaApplicationType",
+             // Namespaces
              "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' "   +
              "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' " +
-             "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' "
+             "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' ",
+             // Schema locations
+             "http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd" + " " +
+             "http://www.astrogrid.org/schema/AGParameterDefinition/v1 http://software.astrogrid.org/schema/jes/AGParameterDefinition/v1.0/AGParameterDefinition.xsd" + " " + 
+             "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1 http://software.astrogrid.org/schema/cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd"
              ) +
          makeCore("ceaApplication")+
-         "<cea:ApplicationDefinition>"+
-            "<cea:Parameters>"+
-               "<cea:ParameterDefinition name='Query' type='ADQL'>"+
-                  "<ceapd:UI_Name>Query</ceapd:UI_Name>"+
-                  "<ceapd:UI_Description>Astronomy Data Query Language that defines the search criteria</ceapd:UI_Description>"+
+         "<cea:ApplicationDefinition>\n"+
+            "<cea:Parameters>\n"+
+               "<cea:ParameterDefinition name='Query' type='ADQL'>\n"+
+                  "<ceapd:UI_Name>Query</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Astronomy Data Query Language that defines the search criteria</ceapd:UI_Description>\n"+
                   //"<ceapd:UCD/>
                   //"<ceapd:DefaultValue/>
                   //"<ceapd:Units/>
-               "</cea:ParameterDefinition>"+
-               "<cea:ParameterDefinition name='Result' type='text'>"+
-                  "<ceapd:UI_Name>Result</ceapd:UI_Name>"+
-                  "<ceapd:UI_Description>Query results</ceapd:UI_Description>"+
-               "</cea:ParameterDefinition>"+
-               "<cea:ParameterDefinition name='Format' type='text'>"+
-                  "<ceapd:UI_Name>Format</ceapd:UI_Name>"+
-                  "<ceapd:UI_Description>How the results are to be returned.  VOTABLE or CSV for now</ceapd:UI_Description>"+
-                  "<ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>"+
-               "</cea:ParameterDefinition>"+
-               "<cea:ParameterDefinition name='RA' type='double'>"+
-                  "<ceapd:UI_Name>RA</ceapd:UI_Name>"+
-                  "<ceapd:UI_Description>Right-Ascension of cone</ceapd:UI_Description>"+
-                  "<ceapd:UCD>POS_RA_MAIN</ceapd:UCD>"+
-                  "<ceapd:Units>deg</ceapd:Units>"+
-               "</cea:ParameterDefinition>"+
-               "<cea:ParameterDefinition name='DEC' type='double'>"+
-                  "<ceapd:UI_Name>DEC</ceapd:UI_Name>"+
-                  "<ceapd:UI_Description>Declination of cone</ceapd:UI_Description>"+
-                  "<ceapd:UCD>POS_DEC_MAIN</ceapd:UCD>"+
-                  "<ceapd:Units>deg</ceapd:Units>"+
-               "</cea:ParameterDefinition>"+
-               "<cea:ParameterDefinition name='Radius' type='double'>"+
-                  "<ceapd:UI_Name>Radius</ceapd:UI_Name>"+
-                  "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>"+
-                  "<ceapd:Units>deg</ceapd:Units>"+
-               "</cea:ParameterDefinition>"+
-            "</cea:Parameters>"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='Result' type='text'>\n"+
+                  "<ceapd:UI_Name>Result</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Query results</ceapd:UI_Description>\n"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='Format' type='text'>\n"+
+                  "<ceapd:UI_Name>Format</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>How the results are to be returned.  VOTABLE or CSV for now</ceapd:UI_Description>\n"+
+                  "<ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>\n"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='RA' type='double'>\n"+
+                  "<ceapd:UI_Name>RA</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Right-Ascension of cone</ceapd:UI_Description>\n"+
+                  "<ceapd:UCD>POS_RA_MAIN</ceapd:UCD>\n"+
+                  "<ceapd:Units>deg</ceapd:Units>\n"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='DEC' type='double'>\n"+
+                  "<ceapd:UI_Name>DEC</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Declination of cone</ceapd:UI_Description>\n"+
+                  "<ceapd:UCD>POS_DEC_MAIN</ceapd:UCD>\n"+
+                  "<ceapd:Units>deg</ceapd:Units>\n"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='Radius' type='double'>\n"+
+                  "<ceapd:UI_Name>Radius</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>\n"+
+                  "<ceapd:Units>deg</ceapd:Units>\n"+
+               "</cea:ParameterDefinition>\n"+
+            "</cea:Parameters>\n"+
             
-            "<cea:Interfaces>"+
-               "<ceab:Interface name='adql'>"+
-                  "<ceab:input>"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Query'/>"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>"+
-                  "</ceab:input>"+
-                  "<ceab:output>"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>"+
-                  "</ceab:output>"+
-               "</ceab:Interface>"+
-               "<ceab:Interface name='cone'>"+
-                  "<ceab:input>"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='RA'/>"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='DEC'/>"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>"+
-                  "</ceab:input>"+
-                  "<ceab:output>"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>"+
-                  "</ceab:output>"+
-               "</ceab:Interface>"+
-            "</cea:Interfaces>"+
-         "</cea:ApplicationDefinition>"+
-         "</"+VORESOURCE_ELEMENT+">";
+            "<cea:Interfaces>\n"+
+               "<ceab:Interface name='adql'>\n"+
+                  "<ceab:input>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Query'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>\n"+
+                  "</ceab:input>\n"+
+                  "<ceab:output>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
+                  "</ceab:output>\n"+
+               "</ceab:Interface>\n"+
+               "<ceab:Interface name='cone'>\n"+
+                  "<ceab:input>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='RA'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='DEC'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>\n"+
+                  "</ceab:input>\n"+
+                  "<ceab:output>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
+                  "</ceab:output>\n"+
+               "</ceab:Interface>\n"+
+            "</cea:Interfaces>\n"+
+         "</cea:ApplicationDefinition>\n"+
+         "</"+VORESOURCE_ELEMENT+">\n";
 
          
       System.out.println(ceaService+ceaApplication);

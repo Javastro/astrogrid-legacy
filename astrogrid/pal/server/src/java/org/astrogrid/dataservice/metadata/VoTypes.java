@@ -1,5 +1,5 @@
 /*
- * $Id: VoTypes.java,v 1.4 2005/06/09 08:53:58 clq2 Exp $
+ * $Id: VoTypes.java,v 1.5 2006/02/09 09:54:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,8 +29,10 @@ public class VoTypes  {
    public final static String FLOAT     = "float";
    public final static String DOUBLECOMPLEX = "doubleComplex";
    public final static String FLOATCOMPLEX  = "floatComplex";
-   public final static String INT       = "int";
    public final static String SHORT     = "short";
+   // Changed for bug #1479 - always use "long" to allow for big integers
+//   public final static String INT       = "int";
+   public final static String INT       = "long";
    
    public final static String[] TYPES = new String[] {
       LONG, BOOLEAN, BIT, UBYTE, CHAR, UNICHAR, DOUBLE, FLOAT, DOUBLECOMPLEX, FLOATCOMPLEX, INT, SHORT
@@ -48,9 +50,9 @@ public class VoTypes  {
       }
       else if (javatype == String.class)  {  return "<dataType arraysize='*'>" + CHAR    + "</dataType>"; }
       else if (javatype == Integer.class) {  return "<dataType>"               + INT     + "</dataType>"; }
-      else if (javatype == Long.class)    {  return "<dataType>"               + INT     + "</dataType>"; }
+      else if (javatype == Long.class)    {  return "<dataType>"               + LONG     + "</dataType>"; }
       else if (javatype == Float.class)   {  return "<dataType>"               + FLOAT   + "</dataType>"; }
-      else if (javatype == Double.class)  {  return "<dataType>"               + FLOAT   + "</dataType>"; }
+      else if (javatype == Double.class)  {  return "<dataType>"               + DOUBLE   + "</dataType>"; }
       else if (javatype == Boolean.class) {  return "<dataType>"               + BOOLEAN + "</dataType>"; }
       else if (javatype == Date.class)    {  return "<dataType arraysize='*'>" + CHAR    + "</dataType>"; }
       else {
@@ -69,7 +71,7 @@ public class VoTypes  {
       }
       else if (javatype == String.class)  {  return "datatype='"+CHAR+"' arraysize='*'";    }
       else if (javatype == Integer.class) {  return "datatype='"+INT+"'";     }
-      else if (javatype == Long.class)    {  return "datatype='"+INT+"'";    }
+      else if (javatype == Long.class)    {  return "datatype='"+LONG+"'";    }
       else if (javatype == Float.class)   {  return "datatype='"+FLOAT+"'";   }
       else if (javatype == Double.class) {   return "datatype='"+FLOAT+"'";  }
       else if (javatype == Boolean.class) {  return "datatype='"+BOOLEAN+"'";    }
@@ -88,7 +90,7 @@ public class VoTypes  {
       }
       else if (javatype == String.class)  {  return "datatype='"+CHAR+"' arraysize='*'";    }
       else if (javatype == Integer.class) {  return "datatype='"+INT+"'";     }
-      else if (javatype == Long.class)    {  return "datatype='"+INT+"'";    }
+      else if (javatype == Long.class)    {  return "datatype='"+LONG+"'";    }
       else if (javatype == Float.class)   {  return "datatype='"+FLOAT+"'";   }
       else if (javatype == Double.class) {   return "datatype='"+FLOAT+"'";  }
       else if (javatype == Boolean.class) {  return "datatype='"+BOOLEAN+"'";    }
@@ -124,6 +126,12 @@ public class VoTypes  {
 
 /*
  $Log: VoTypes.java,v $
+ Revision 1.5  2006/02/09 09:54:09  clq2
+ KEA_1521_pal
+
+ Revision 1.4.50.1  2006/01/30 14:10:50  kea
+ Fixes for bug 1479.
+
  Revision 1.4  2005/06/09 08:53:58  clq2
  200506081212
 

@@ -1,4 +1,4 @@
-/*$Id: SiapResources.java,v 1.4 2005/03/23 17:54:15 mch Exp $
+/*$Id: SiapResources.java,v 1.5 2006/02/09 09:54:09 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ public class SiapResources extends VoResourceSupport implements VoResourcePlugin
    public String getVoResource() throws IOException {
 
       String siap =
-         makeVoResourceElement("ServiceType", "")+
+         makeVoResourceElement("ServiceType", "", "")+
          makeCore("/siap")+
       
            //"<Subject>Stars</Subject>"+ //etc
@@ -65,6 +65,13 @@ public class SiapResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: SiapResources.java,v $
+ Revision 1.5  2006/02/09 09:54:09  clq2
+ KEA_1521_pal
+
+ Revision 1.4.74.1  2006/02/06 11:02:47  kea
+ Reinstated conesearch registration, added schemaLocations to
+ registrations and generally tidied.
+
  Revision 1.4  2005/03/23 17:54:15  mch
  removed rbmsresours
 

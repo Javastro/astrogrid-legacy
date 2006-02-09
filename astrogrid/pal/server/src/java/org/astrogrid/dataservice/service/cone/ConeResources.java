@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.8 2005/06/09 08:53:58 clq2 Exp $
+/*$Id: ConeResources.java,v 1.9 2006/02/09 09:54:09 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,23 +29,27 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
       String cone =
          makeVoResourceElement(
-             "ServiceType",
-             ""
-             )+
+             //"ServiceType",
+             "cs:ConeSearch",
+             // Namespaces
+             "xmlns:cs='http://www.ivoa.net/xml/ConeSearch/v0.3'",
+             // Schema locations
+            "http://www.ivoa.net/xml/ConeSearch/v0.3 http://www.ivoa.net/xml/ConeSearch/v0.3" 
+        )+
          makeCore("cone")+
       
         //"<Subject>Stars</Subject>"+ //etc
         //"<ContentLevel>Research</ContentLevel>"+ //etc
-         "<Capability xmlns:q1='http://www.ivoa.net/xml/ConeSearch/v0.2' xsi:type='q1:ConeSearchType'>"+
-         "  <q1:MaxSR>180</q1:MaxSR>"+ //to do
-         "  <q1:MaxRecords>"+ConfigFactory.getCommonConfig().getString(Query.MAX_RETURN_KEY,"0")+"</q1:MaxRecords>"+
-         "  <q1:Verbosity>false</q1:Verbosity>"+ //no idea
-         "</Capability>"+
-         "<Interface>"+
-         "  <Invocation>Custom</Invocation>"+
-         "  <AccessURL>"+ServletHelper.getUrlStem()+"cone/SubmitCone?</AccessURL>"+
-         "</Interface>"+
-         "</"+VORESOURCE_ELEMENT+">";
+         "<vr:interface qtype=\"GET\" xmlns:vs=\"http://www.ivoa.net/xml/VODataService/v0.5\" xsi:schemaLocation=\"http://www.ivoa.net/xml/VODataService/v0.5 http://www.ivoa.net/xml/VODataService/v0.5\" xsi:type=\"vs:ParamHTTP\">\n"+
+         "  <vr:accessURL use=\"base\">"+ServletHelper.getUrlStem()+"SubmitCone?</vr:accessURL>\n"+
+         "</vr:interface>\n"+
+         "<cs:capability>\n" +
+         "  <cs:maxSR>180</cs:maxSR>\n"+ //to do
+         "  <cs:maxRecords>"+ConfigFactory.getCommonConfig().getString(Query.MAX_RETURN_KEY,"0")+"</cs:maxRecords>\n"+
+         "  <cs:verbosity>false</cs:verbosity>\n"+ //no idea
+         "</cs:capability>\n"+
+
+         "</"+VORESOURCE_ELEMENT+">\n";
       
       return cone;
    }
@@ -56,6 +60,13 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.9  2006/02/09 09:54:09  clq2
+ KEA_1521_pal
+
+ Revision 1.8.50.1  2006/02/06 11:02:47  kea
+ Reinstated conesearch registration, added schemaLocations to
+ registrations and generally tidied.
+
  Revision 1.8  2005/06/09 08:53:58  clq2
  200506081212
 
