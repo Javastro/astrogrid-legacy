@@ -1,0 +1,21 @@
+# Template build.properties file for Quaestor.
+# Copy to build.properties, and substitute below the paths to Tomcat and SISC.
+
+# Context path
+app.path=/quaestor
+
+# Tomcat installation directory.
+# This is the directory which should be assigned to the environment
+# variable CATALINA_HOME, that is, the directory containing bin/, webapps
+# and so on.
+catalina.home=<CATALINA.HOME>
+
+# SISC binary and library directories.
+# The binary directory is the one which contains the sisc program.
+sisc.bin=<SISC.BIN>
+# This is the directory which contains sisc{,-opt,-lib}.jar and sisc.shp.
+sisc.lib=<SISC.LIB>
+
+# Manager username and password
+manager.username=manager
+manager.password=manager
