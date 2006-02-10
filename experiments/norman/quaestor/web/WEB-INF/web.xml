@@ -119,7 +119,7 @@
 
     <servlet-mapping>
       <servlet-name>quaestor</servlet-name>
-      <url-pattern>/*</url-pattern>
+      <url-pattern>/kb/*</url-pattern>
     </servlet-mapping>
 
     <!--
