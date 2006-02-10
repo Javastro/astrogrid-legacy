@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.4 2006/02/09 18:44:16 norman Exp $
+     $Id: build.xml,v 1.5 2006/02/10 10:19:37 norman Exp $
 -->
 
 
@@ -257,9 +257,6 @@
    description="Delete old build and dist directories">
     <delete dir="${build.home}"/>
     <delete dir="${dist.home}"/>
-    <delete>
-      <fileset dir="${scm.src.home}" includes="**/*.scc"/>
-    </delete>
   </target>
 
 
@@ -301,6 +298,7 @@
        putting them in a jar file in WEB-INF. -->
   <target name="compile-sisc" depends="prepare"
           description="Compile SISC library modules">
+    <mkdir dir="${build.home}/scc/quaestor"/>
     <java classname="sisc.REPL"
           fork="true"
           classpathref="sisc.classpath">
@@ -313,8 +311,9 @@
       <arg value="--no-repl"/>
       <arg value="--"/>
       <arg value="${scm.src.home}/quaestor"/>
+      <arg value="${build.home}/scc/quaestor"/>
     </java>
-    <jar basedir="${scm.src.home}"
+    <jar basedir="${build.home}/scc"
          destfile="${build.home}/WEB-INF/lib/quaestor.jar"
          includes="**/*.scc"/>
   </target>
