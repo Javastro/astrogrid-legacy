@@ -85,11 +85,13 @@ public class AdqlTransformer {
         
     }
     
-    public synchronized String transformToAdqls( String adqlx ) {
+    
+    public synchronized String transformToAdqls( String adqlx, String spaceCharacter ) {
         StreamSource source = new StreamSource( new StringReader( adqlx ) ) ;
         StreamResult result = new StreamResult( new StringWriter() ) ;
         String retVal = "" ;
         try {
+            textTransformer.setParameter( "spaceCharacter", spaceCharacter ) ;
             textTransformer.transform( source, result ) ;
             retVal = ((StringWriter)result.getWriter()).toString() ; 
         }
@@ -97,6 +99,10 @@ public class AdqlTransformer {
             log.error ( ex ) ;
         }
         return retVal ;
+    }
+    
+    public String transformToAdqls( String adqlx ) {
+        return transformToAdqls( adqlx, "&#160;" ) ;
     }
     
     //
@@ -180,6 +186,7 @@ public class AdqlTransformer {
             String textVal ;
             
             try {
+                textTransformer.setParameter( "spaceCharacter", "\u00A0" ) ;
                 textTransformer.transform( source, result ) ;
                 textVal = ((StringWriter)result.getWriter()).toString() ;    
                 //
@@ -233,6 +240,7 @@ public class AdqlTransformer {
             String textVal ;
             
             try {
+                textTransformer.setParameter( "spaceCharacter", "\u00A0" ) ;
                 textTransformer.transform( source, result ) ;
                 textVal = ((StringWriter)result.getWriter()).toString() ;    
                 //

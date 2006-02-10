@@ -22,6 +22,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.awt.Point;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -37,6 +40,9 @@ import javax.swing.table.* ;
 import javax.swing.tree.TreePath;
 import javax.swing.JLabel;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -127,7 +133,6 @@ public class TableMetadataPanel extends JPanel {
         displayTable = new JTable() ;
         displayTable.setAutoCreateColumnsFromModel( false ) ;
         displayTable.setModel( astroTableModel ) ;
-//        displayTable.addMouseListener( new ContextPopup() ) ;
         
         for( int i=0 ; i<astroTableModel.getColumnCount(); i++ ) {
             DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() ;
@@ -210,34 +215,87 @@ public class TableMetadataPanel extends JPanel {
         
     } // end of class AstroTableModel
     
-    private class ContextPopup extends MouseAdapter {
+    private class ContextPopup extends MouseAdapter implements PopupMenuListener {
+        
+        private JPopupMenu popup ;
+        private InsertAction insertAction ;
+        
+        public ContextPopup() {
+            popup = new JPopupMenu( "ColumnMetadataContextMenu" ) ;
+            popup.add( "Column References" ) ;
+            popup.addSeparator() ; 
+            insertAction = new InsertAction( "" ) ;
+            popup.add( insertAction ) ;
+            popup.addPopupMenuListener( this ) ;
+        }
+        
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+        
+        public void popupMenuCanceled(PopupMenuEvent e) {
+            adqlToolEditorPanel.unsetElastic() ;
+            adqlToolEditorPanel.updateDisplay() ;
+            
+        }
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            adqlToolEditorPanel.unsetElastic() ;
+            adqlToolEditorPanel.updateDisplay() ;
+        }
         
         public void mouseReleased( MouseEvent event ) {
             
-            if( event.isPopupTrigger() 
-                 ||
-                event.getButton() == MouseEvent.BUTTON3 ) {
+            if( 
+                ( event.isPopupTrigger() || event.getButton() == MouseEvent.BUTTON3 )
+                &&
+                adqlTree.isShowing()
+            ) {
     	        TreePath path = adqlTree.getSelectionPath() ;
     	        // If the path is null or there is no relevant parent
     	        // Then we cannot do anything with this entry...
     	        if( path == null || path.getPathCount() < 2 )
-    	            return ;
-                JPopupMenu popup = new JPopupMenu( "ColumnMetadataContextMenu" ) ;
-                popup.add( "Column References" ) ;
-                popup.addSeparator() ;            
-    	        popup.add( new InsertAction( "Insert " 
-    	                                   + displayTable.getSelectedRowCount()
-    	                                   + " reference(s) into \"" 
-    	                                   + ((AdqlEntry)path.getLastPathComponent()).getDisplayName() 
-    	                                   + "\"" ) ) ;
+    	            return ;  
+                int count = displayTable.getSelectedRowCount() ;
+                StringBuffer buffer = new StringBuffer( 36 ) ;
+                buffer
+                	.append( "Insert " )
+                	.append( count )
+                	.append( " reference" )
+                	.append( count>1 || count==0 ? "s" : "" )
+                	.append( " into \"" )
+                	.append( ((AdqlEntry)path.getLastPathComponent()).getDisplayName() )
+                	.append( "\"" ) ;
+    	        insertAction.putValue( AbstractAction.NAME, buffer.toString() ) ;
     	        //
     	        // The mouse position is shown relative to the JTable.
     	        // As this is in a JScrollPane, it requires adjustment
     	        // according to what position the JViewport has on the 
     	        // JTable...
 	            JViewport viewPort = displayTablerScrollPane.getViewport() ;
-	            Point viewPosition = viewPort.getViewPosition() ;            
-	            popup.show( viewPort, event.getX() - viewPosition.x, event.getY() - viewPosition.y ) ;
+    	        Point popupPosition =
+    	            SwingUtilities.convertPoint( displayTable, event.getPoint(), viewPort ) ;
+
+    	        Rectangle rect = adqlTree.getPathBounds( path ) ;   	  
+    	        Rectangle vr = adqlTree.getVisibleRect() ;
+    	        rect = SwingUtilities.computeIntersection( vr.x, vr.y, vr.width, vr.height, rect ) ;
+    	        if( rect.width == 0 ) {
+    	            adqlTree.scrollPathToVisible( path ) ;
+    	            adqlTree.setSelectionPath( path ) ;
+    	            rect = adqlTree.getPathBounds( path ) ;   	  
+        	        vr = adqlTree.getVisibleRect() ;
+        	        rect = SwingUtilities.computeIntersection( vr.x, vr.y, vr.width, vr.height, rect ) ;
+    	        }
+    	        Point rightSideOfPath = rect.getLocation() ;
+    	        rightSideOfPath.x += rect.width ;
+    	        rightSideOfPath.y += rect.height / 2 ;
+	            Point[] elastic = new Point[2] ;
+	            elastic[0] = SwingUtilities.convertPoint( displayTable
+	                                                    , event.getPoint()
+	                                                    , adqlToolEditorPanel ) ;
+	            elastic[1] = SwingUtilities.convertPoint( adqlTree
+	                                                    , rightSideOfPath
+	                                                    , adqlToolEditorPanel ) ;
+	            adqlToolEditorPanel.setElastic( elastic ) ;
+	            adqlToolEditorPanel.updateDisplay() ;
+	            popup.show( viewPort, popupPosition.x, popupPosition.y ) ;
             }
                      
         } // end of ContextPopup.mouseReleased( MouseEvent event )

@@ -13,6 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+   <release version="2.0-alpha-5" date="2006-02-10">
+     <action dev="jl" type="add">
+       Futher querybuilder improvements (jeff - care to add anthing else here?)
+     </action>
+   </release>
    <release version="2.0-alpha-4" date="2006-02-09">
       <action dev="nw" type="add">
         Linked vospec into astroscope
