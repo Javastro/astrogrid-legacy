@@ -317,8 +317,10 @@
         <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
         <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
 
-        <!--upload this one first - I don't know why (jdt)-->
+        <!--upload this one first - I don't know why (jdt)
+        No need I don't think (kmb)
         <ag:register file="${temporary.dir}/registry-entries/AuthorityTest.xml" />
+        -->
 						
 <!--
                 <waitfor maxwait="10" maxwaitunit="second" checkevery="500">

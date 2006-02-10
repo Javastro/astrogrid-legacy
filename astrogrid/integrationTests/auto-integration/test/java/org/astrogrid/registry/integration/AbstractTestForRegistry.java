@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForRegistry.java,v 1.7 2005/08/04 09:40:10 clq2 Exp $
+ * $Id: AbstractTestForRegistry.java,v 1.8 2006/02/10 11:16:16 clq2 Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -31,7 +31,7 @@ import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.test.schema.SchemaMap;
 
 import org.astrogrid.registry.common.RegistryValidator;
-import org.astrogrid.registry.common.RegistrySchemaMap;
+//import org.astrogrid.registry.common.RegistrySchemaMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientADQLTest.java,v 1.8 2005/09/08 07:30:54 clq2 Exp $
+/*$Id: QueryRegistryClientADQLTest.java,v 1.9 2006/02/10 11:16:16 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,23 +43,12 @@ public class QueryRegistryClientADQLTest extends AbstractTestForRegistry {
     }
             
     public void testSearch() throws Exception {
-       Document queryDoc = askQueryFromFile("GetLocalHostResourcesADQL.xml");
+       Document queryDoc = askQueryFromFile("QueryForIdentifier--adql-v0.7.4.xml");
        Document  result = rs.search(queryDoc);
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);
        assertVODescription(result);
-       //AstrogridAssert.assertXpathExists("/VOResources",result);
     }
-    
-   public void testSearch2() throws Exception {
-      Document queryDoc = askQueryFromFile("GetLocalHostResourcesADQL2.xml");
-      Document  result = rs.search(queryDoc);
-      assertNotNull(result);
-      DomHelper.DocumentToStream(result,System.out); 
-      assertVODescription(result);
-      //AstrogridAssert.assertXpathExists("/VOResources",result);      
-   }
-    
     
    protected Document askQueryFromFile(String queryFile) throws Exception {
       assertNotNull(queryFile);
@@ -67,7 +56,6 @@ public class QueryRegistryClientADQLTest extends AbstractTestForRegistry {
       
       assertNotNull("Could not open query file :" + queryFile,is);
       Document queryDoc = DomHelper.newDocument(is);
-      //Document queryDoc = DomHelper.newDocument(new File(queryFile));
       return queryDoc;
    }    
 
@@ -79,7 +67,3 @@ public class QueryRegistryClientADQLTest extends AbstractTestForRegistry {
    }
 
 }
-
-
-/* 
-*/

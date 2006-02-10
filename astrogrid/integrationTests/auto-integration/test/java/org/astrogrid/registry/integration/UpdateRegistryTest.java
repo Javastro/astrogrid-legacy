@@ -1,4 +1,4 @@
-/*$Id: UpdateRegistryTest.java,v 1.7 2005/08/04 09:40:11 clq2 Exp $
+/*$Id: UpdateRegistryTest.java,v 1.8 2006/02/10 11:16:16 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,8 @@ public class UpdateRegistryTest extends AbstractTestForRegistry {
     public UpdateRegistryTest(String arg0) {
         super(arg0);
     }
-            
+     
+    /*
     public void testUpdate() throws RegistryException, Exception
     {
         Document doc = askQueryFromFile("AuthorityTest.xml");
@@ -50,6 +51,7 @@ public class UpdateRegistryTest extends AbstractTestForRegistry {
         //System.out.println(DomHelper.DocumentToString(updateDoc));
         assertTrue("UpdateResponse".equals(updateDoc.getDocumentElement().getLocalName()));
     }
+    */
     
     public void testUpdate2() throws RegistryException, Exception
     {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.50 2005/11/04 17:31:05 clq2 Exp $ -->
+<!-- $Id: tests-project.xml,v 1.51 2006/02/10 11:16:16 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>${basedir}/../../maven-base/project.xml</extend>
@@ -75,6 +75,12 @@
 				<version>${astrogrid.scripting.version}</version>
 				<groupId>org.astrogrid</groupId>
 			</dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-contracts</artifactId>
+      <version>${astrogrid.contracts.version}</version>
+      <type>jar</type>
+    </dependency>			
 			<dependency>
 				<groupId>starlink</groupId>
 				<artifactId>stil</artifactId>
