@@ -13,6 +13,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+    <action dev="jl" type="add" issue="1525">
+	    QueryBuilder.
+	    Basic text editing views for adql/s and adql/x now functioning.
+	    There is some synchronization of updates between the views.
+	    Basic diagnostics pane added.
+	    When columns are included by using the metadata pane, tables are auto-included if required.
+	</action>
    <release version="2.0-alpha-5" date="2006-02-10">
      <action dev="jl" type="add">
        Futher querybuilder improvements (jeff - care to add anthing else here?)

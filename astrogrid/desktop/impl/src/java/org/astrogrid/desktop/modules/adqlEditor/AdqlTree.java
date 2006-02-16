@@ -126,6 +126,8 @@ public final class AdqlTree extends JTree
     public void setEditingActive(boolean editingActive) {
         this.editingActive = editingActive;
     }
+    
+    
     /**
      * Parses <em>xmlFile</em> into XMLBeans types (XmlObject instances),
      * returning the instance representing the root.

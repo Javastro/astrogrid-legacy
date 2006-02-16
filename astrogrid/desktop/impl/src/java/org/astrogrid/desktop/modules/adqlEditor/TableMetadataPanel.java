@@ -48,6 +48,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.* ;
 
+import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean ;
 import org.astrogrid.acr.astrogrid.ColumnBean ;
 import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
@@ -72,6 +73,8 @@ public class TableMetadataPanel extends JPanel {
     	DESCRIPTION = "Description" ;
     
     private TableBean astroTable ;
+    private DatabaseBean dbBean ;
+    private int tableIndex ;
     private JTable displayTable ;
     private JScrollPane displayTablerScrollPane ;
     private AdqlTree adqlTree ;
@@ -81,7 +84,18 @@ public class TableMetadataPanel extends JPanel {
     private SchemaType fromType ;
     private SchemaType joinTableType ;
     private SchemaType arrayOfFromTableType ;
+    private SchemaType tableType ;
 
+    public TableMetadataPanel( ADQLToolEditorPanel adqlToolEditorPanel
+                             , AdqlTree adqlTree
+                             , DatabaseBean dbBean
+                             , int tableIndex ) {
+        this( adqlToolEditorPanel, adqlTree, dbBean.getTables()[tableIndex] ) ;
+        this.dbBean = dbBean ;
+        this.tableIndex = tableIndex ;
+    }
+    
+    
     /**
      * 
      */
@@ -350,7 +364,7 @@ public class TableMetadataPanel extends JPanel {
 	            maintainArrayOfJoinTables() ;
 	        }
 	        else {
-	            maintainFromTables() ;
+	            maintainFromTables( path ) ;
 	        }
 	        //
 	        // At last we are in a position to include the user's chosen columns for this table...
@@ -394,8 +408,49 @@ public class TableMetadataPanel extends JPanel {
         
     }
     
-    private void maintainFromTables()  {
-        
+    private void maintainFromTables( TreePath path )  {
+        AdqlEntry fromEntry = findFromClause( path ) ;
+        AdqlEntry[] children = fromEntry.getChildren() ;
+        SchemaType tableType = getTableType() ;
+        AdqlEntry tableEntry = null ;
+        XmlString tableName = null ;
+        for( int i=0; i<children.length; i++ ) {
+            if( children[i].getSchemaType().getName().equals( tableType.getName() ) ) {
+                tableName = (XmlString)AdqlUtils.get( children[i].getXmlObject(), "name" ) ;
+                // NB: This does not currently cater for a table being quoted twice
+                // using a different alias. This is a viable situation...
+                if( tableName.getStringValue().equals( astroTable.getName() ) ) {
+                    tableEntry = children[i] ;
+                    break ;
+                }
+            }
+        }
+        //  
+        // If we haven't found an entry in the FROM clause that corresponds to
+        // the table from which the user wishes to include column references,
+        // Then we auto-include an appropriate entry in the FROM clause...
+        if( tableEntry == null ) {
+            // Build array of possible insert commands for target...
+	        ArrayList commands = AdqlCommand.buildCommands( fromEntry ) ; 
+	        
+	        // Attempt to find a suitable match of types...
+	        int result[] = AdqlCommand.findSuitableMatch( commands, getTableType() ) ;	        
+	        if( result[0] == -1 ) {
+	            log.debug( "could not find a suitable match." ) ;
+	            return ;
+	        }
+	        log.debug( "tableType suitable..." ) ;
+	        log.debug( "found: " 
+	                 + ((AdqlCommand)commands.get( result[0] )).getConcreteTypes()[ result[1] ].getName() ) ;	
+	        	        
+            ADQLToolEditorPanel.InsertTableAction insert = adqlToolEditorPanel.new
+               InsertTableAction( "dummy name"
+                                , (AdqlCommand)commands.get( result[0] )
+                                , result[1]
+                                , dbBean
+                                , tableIndex ) ;          
+            insert.actionPerformed( null ) ;
+        }
     }
     
    
@@ -532,6 +587,14 @@ public class TableMetadataPanel extends JPanel {
             joinTableType = getType( AdqlData.JOIN_TABLE_TYPE ) ;
         }
         return joinTableType ;
+    }
+    
+    
+    private SchemaType getTableType() {
+        if( tableType == null ) {
+            tableType = getType( AdqlData.TABLE_TYPE ) ;
+        }
+        return tableType ;
     }
     
 

@@ -85,6 +85,7 @@ import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlDecimal;
 import org.apache.xmlbeans.XmlDouble;
+import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlFloat;
 import org.apache.xmlbeans.XmlInt;
 import org.apache.xmlbeans.XmlInteger;
@@ -848,6 +849,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
     private void validateAdql() {
+        if( DEBUG_ENABLED ) log.debug( "ADQLToolEditorPanel.validateAdql() enter" ) ;
         // Create an XmlOptions instance and set the error listener.
         XmlOptions validateOptions = new XmlOptions();
         ArrayList errorList = new ArrayList();
@@ -1928,7 +1930,8 @@ public class InsertEnumeratedAction extends InsertAction {
 
                 final TableBean[] tables = dbs[0].getTables();
                 for( int j=0; j<tables.length; j++) {
-                    tabbedCatalogPane.addTab( tables[j].getName(), new TableMetadataPanel(  ADQLToolEditorPanel.this, adqlTree, tables[j]) ) ;
+                    tabbedCatalogPane.addTab( tables[j].getName()
+                                            , new TableMetadataPanel( ADQLToolEditorPanel.this, adqlTree, dbs[0], j ) ) ;
                 }
                 catalog1.setLayout( new GridBagLayout() ) ;
                 GridBagConstraints gbc = new GridBagConstraints();
@@ -2060,54 +2063,109 @@ public class InsertEnumeratedAction extends InsertAction {
         toolModel.fireParameterChanged( ADQLToolEditorPanel.this, queryParam ) ;                    
     }
     
-//    protected JButton getValidateButton() {
-//        if (validateButton == null) {
-//            validateButton = new JButton("Validate ADQL");
-//            validateButton.addActionListener(new ActionListener() {
-//                public void actionPerformed(ActionEvent e) {
-//                    
-//                    AdqlEntry rootEntry = ((AdqlEntry)adqlTree.getModel().getRoot()) ;
-//                    XmlObject xmlRoot =  (XmlObject)rootEntry.getUserObject() ;
-//                    // NOte. I'm not sure the following is adequate.
-//                    XmlOptions options = new XmlOptions() ;
-//                    options.setSaveOuter() ;
-//                    String adqlx = xmlRoot.xmlText( options ) ;
-//                    
-//                    String adqls = transformer.transformToAdqls( adqlx ) ;
-//
-//                    // validate sql string by trying to translate to xml - hopefully this will throw on error
-//                    try {
-//                        validator.s2x(adqls); // don't care about result.
-//                    	parent.setStatusMessage("<html><font color='green'>Sql is valid</font></html>");
-//                    } catch( Throwable sx ) {
-//                        Throwable th = sx.getCause() ;
-//                        String message = "No message available" ;
-//                        if( th != null ) {
-//                            message = th.getMessage() ;
-//                        }
-//                        parent.setStatusMessage("<html><font color='red'>INVALID - " + message + "</font></html>");
-//                    }
-//                }
-//            });
-//        }
-//        return validateButton;
-//    }
-    
-    
-    private class AdqlXmlView extends JPanel implements ChangeListener {
+
+    private abstract class AdqlView extends JPanel implements ChangeListener {
         
         JTabbedPane owner ;
-        JTextPane xmlTextPane ;
-        Controller controller ; 
+        Controller controller ;
+        boolean selected = false ;
         
-        public AdqlXmlView( JTabbedPane owner, Controller controller ) {
+        public AdqlView( JTabbedPane owner, Controller controller ) {
             super() ;
             this.owner = owner ;
             this.controller = controller ;
             this.controller.addChangeListener( this ) ;
+            this.initSelectedProcessing() ;
+        }
+        
+        protected void initKeyProcessing( JTextPane textPane ) {
+            if( textPane == null )
+                return ;
+            //
+            // First we need to find the default action for the Enter key and preserve this.
+            // We will use it to invoke the default action after having processed the Enter key.
+            Object key = textPane.getInputMap( JComponent.WHEN_FOCUSED ).get( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ) ) ;
+            final Action action = textPane.getActionMap().get( key ) ;
+            // Set up our own key for the Enter key...
+            textPane.getInputMap( JComponent.WHEN_FOCUSED )
+            .put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ; 
+            //            adqlText.getInputMap( JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT )
+            //        		.put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ;
+            
+            //
+            // Now our substitute action. Note how we invoke the default action at the end...
+            // (JL Note: not sure whether I should invoke the default process first!!!)
+            textPane.getActionMap().put( "ValidateAdqlString", new AbstractAction (){
+                public void actionPerformed(ActionEvent e) {
+                    validateAdql() ;
+                    action.actionPerformed( e ) ;
+                }
+            } );   
+        }
+        
+        abstract protected void validateAdql() ;
+       
+        protected void initSelectedProcessing() {
+            this.owner.addChangeListener( new ChangeListener() {
+                public void stateChanged( ChangeEvent e ) {
+                    Object selectedComponent = ((JTabbedPane)e.getSource()).getSelectedComponent() ;
+                    if( selectedComponent == ADQLToolEditorPanel.AdqlView.this 
+                        &&
+                        selected == false ) {
+                        selected = true ;
+                        selectionGained() ;
+                    }
+                    else if( selected == true ){
+                        selected = false ;
+                        selectionLost() ;
+                    }
+                }
+            }) ;
+        }
+        
+        abstract protected void selectionGained() ;
+        
+        abstract protected void selectionLost() ;
+        
+        public void stateChanged(ChangeEvent e) {
+            if( e != null && e.getSource() != this ) {
+                refreshFromModel() ;
+            }
+        }
+        
+        abstract protected void refreshFromModel() ;
+        
+        protected void processPotentialUpdates( XmlObject rootBefore, XmlObject rootAfter ) {
+            if( rootAfter != null && rootBefore != null ) {
+                XmlOptions options = new XmlOptions();
+                options.setSavePrettyPrint();
+                options.setSavePrettyPrintIndent(4);
+                XmlCursor nodeCursor = rootBefore.newCursor();               
+                String xmlStringBefore = nodeCursor.xmlText(options);
+                nodeCursor.dispose() ;
+                nodeCursor = rootAfter.newCursor();               
+                String xmlStringAfter = nodeCursor.xmlText(options);
+                nodeCursor.dispose() ;
+                if( xmlStringBefore.equals( xmlStringAfter ) == false )  {
+                    this.controller.updateModel( this, rootAfter ) ;
+                }
+            }
+        }
+        
+    }
+    
+    
+    private class AdqlXmlView extends AdqlView {
+        
+        JTextPane xmlTextPane ;
+        String xmlString ;
+        XmlObject rootOnGainingSelection ;
+        XmlObject processedRoot ;
+        
+        public AdqlXmlView( JTabbedPane owner, Controller controller ) {
+            super( owner, controller) ;
             JScrollPane xmlScrollContent = new JScrollPane();
             xmlTextPane = new JTextPane();
-            xmlTextPane.setEditable( false ) ;
             xmlScrollContent.setViewportView( xmlTextPane  );
             this.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
@@ -2117,62 +2175,64 @@ public class InsertEnumeratedAction extends InsertAction {
             gbc.weighty = 1;
             this.add( xmlScrollContent, gbc ) ;
             this.owner.addTab( "Adql/x", this ) ;
-            
             //
-            // Set up processing for when this tab is selected or de-selected...
-            // (This is complex so see other comments.)
-            initSelectedProcessing() ;
+            // Set up the Enter key as a processing key for Adql.
+            // ie: everytime the user presses the Enter key we
+            // validate and store the results...
+            initKeyProcessing( this.xmlTextPane ) ;
         }
         
-        private void initSelectedProcessing() {
-            this.owner.addChangeListener( new ChangeListener() {
-                public void stateChanged( ChangeEvent e ) {
-                    Object selectedComponent = ((JTabbedPane)e.getSource()).getSelectedComponent() ;
-                    if( selectedComponent == ADQLToolEditorPanel.AdqlXmlView.this ) {
-                        selectionGained() ;
-                    }
-                    else {
-                        selectionLost() ;
-                    }
-                }
-            }) ;
+        protected void selectionGained() {
+            log.debug( "AdqlXmlView.selectionGained() enter" ) ;
+            refreshFromModel() ;
+            validateAdql() ;
         }
         
-        private void selectionGained() {
-            XmlObject node = this.controller.getRootInstance() ;
-            XmlCursor nodeCursor = node.newCursor();
+        protected void selectionLost() {
+            log.debug( "AdqlXmlView.selectionLost() enter" ) ;
+            validateAdql() ;
+            processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
+        }
+        
+        protected void refreshFromModel() {
+            this.rootOnGainingSelection = this.controller.getRootInstance() ;
+            XmlCursor nodeCursor = rootOnGainingSelection.newCursor();
             XmlOptions options = new XmlOptions();
             options.setSavePrettyPrint();
             options.setSavePrettyPrintIndent(4);
-            String xmlString = nodeCursor.xmlText(options);
+            xmlTextPane.setText( nodeCursor.xmlText(options) ) ;
             nodeCursor.dispose() ;
-            this.xmlTextPane.setText( xmlString ) ;
         }
         
-        private void selectionLost() {
-            ;
-        }
-        
-        public void stateChanged(ChangeEvent e) {
-            if( e != null && e.getSource() != this ) {
-                ; 
+        protected void validateAdql() {
+            String text = xmlTextPane.getText().trim() ;
+            if( text.equals( xmlString ) == false ) {
+                try {
+                    xmlString = text ;
+                    processedRoot = SelectDocument.Factory.parse( xmlString ) ;
+                    diagnostics.setText( "" ) ; 
+                } 
+                catch( XmlException xmle ) {
+                    String message = xmle.getLocalizedMessage() ;
+                    if( message != null && message.length() > 0) {
+                        diagnostics.setText( message ) ;
+                    }
+                    else {
+                        diagnostics.setText( xmle.toString() ) ;
+                    }                 
+                }
             }
-
         }
+        
     }
 
-    private class AdqlTreeView extends JPanel implements ChangeListener {
-        
-        JTabbedPane owner ;
-        Controller controller ;
+    private class AdqlTreeView extends AdqlView {
         
         public AdqlTreeView( JTabbedPane owner, Controller controller ) {
-            super() ;
-            this.owner = owner ;
-            this.controller = controller ;
-            this.controller.addChangeListener( this ) ;
+            super( owner, controller ) ;
             JScrollPane scrTree = new JScrollPane();
             scrTree.setViewportView( setAdqlTree() ) ;
+            openBranches() ;
             this.controller.updateModel( this, ((AdqlEntry)adqlTree.getModel().getRoot()).getXmlObject() ) ;
             this.setLayout( new GridBagLayout() ) ;
             GridBagConstraints gbc = new GridBagConstraints() ;
@@ -2186,36 +2246,45 @@ public class InsertEnumeratedAction extends InsertAction {
             this.add(scrTree, gbc);
             this.owner.addTab( "Tree", this ) ; 
         }
-            
-        public void stateChanged( ChangeEvent e ) {
-            if( e != null && e.getSource() != this ) {
-                log.debug( "AdqlTreeView.stateChanged() is resetting adqlTree" ) ;
-                adqlTree.setTree( AdqlEntry.newInstance( this.controller.getRootInstance() )); 
-                if( catalogueResource != null ) {
-                    reestablishTablesCollection() ;
-                    writeResourceProcessingInstruction() ;
-                }
-            }
+        
+        protected void refreshFromModel() {         
+            log.debug( "AdqlTreeView.stateChanged() is resetting adqlTree" ) ;
+            adqlTree.setTree( AdqlEntry.newInstance( this.controller.getRootInstance() ));
+            adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
+            openBranches() ;
+            if( catalogueResource != null ) {
+                reestablishTablesCollection() ;
+                writeResourceProcessingInstruction() ;
+            }         
         }
+        
+        private void openBranches() {
+            Object[] obj = new Object[2] ;
+            obj[0] = adqlTree.getModel().getRoot() ;
+            AdqlEntry childEntries[] = ((AdqlEntry)obj[0]).getChildren() ;
+            for( int i=0; i<childEntries.length; i++ ) {
+                obj[1] = childEntries[i] ;
+                TreePath path = new TreePath( obj ) ;
+                adqlTree.expandPath( path ) ;
+            } 
+        }
+        
+        protected void selectionGained() {}
+        protected void selectionLost() {}
+        protected void validateAdql() {}
+        
     }
     
     
-    private class AdqlStringView extends JPanel implements ChangeListener {
+    private class AdqlStringView extends AdqlView {
         
         JTextPane adqlTextPane ;
-        Action action ;
         String adqlString ;
-        boolean valid ;
         XmlObject rootOnGainingSelection ;
         XmlObject processedRoot ;
-        JTabbedPane owner ;
-        Controller controller ;
         
         public AdqlStringView( JTabbedPane owner, Controller controller ) {
-            super() ;
-            this.owner = owner ;
-            this.controller = controller ;
-            this.controller.addChangeListener( this ) ;
+            super( owner, controller ) ;
             //
             // Set up the text pane in a scrolling panel etc...
             GridBagConstraints gbc = new GridBagConstraints() ;
@@ -2233,84 +2302,36 @@ public class InsertEnumeratedAction extends InsertAction {
             // Set up the Enter key as a processing key for Adql.
             // ie: everytime the user presses the Enter key we
             // validate and store the results...
-            initKeyProcessing() ;
+            initKeyProcessing( this.adqlTextPane ) ;
    
             this.owner.addTab( "Adql/s", this ) ;
-            //
-            // Set up processing for when this tab is selected or de-selected...
-            // (This is complex so see other comments.)
-            initSelectedProcessing() ;
         }
         
         
-        private void initKeyProcessing() {
-            //
-            // First we need to find the default action for the Enter key and preserve this.
-            // We will use it to invoke the default action after having processed the Enter key.
-            Object key = this.adqlTextPane.getInputMap( JComponent.WHEN_FOCUSED ).get( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ) ) ;
-            this.action = this.adqlTextPane.getActionMap().get( key ) ;
-            // Set up our own key for the Enter key...
-            this.adqlTextPane.getInputMap( JComponent.WHEN_FOCUSED )
-            .put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ; 
-            //            adqlText.getInputMap( JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT )
-            //        		.put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ;
-            
-            //
-            // Now our substitute action. Note how we invoke the default action at the end...
-            // (JL Note: not sure whether I should invoke the default process first!!!)
-            this.adqlTextPane.getActionMap().put( "ValidateAdqlString", new AbstractAction (){
-                public void actionPerformed(ActionEvent e) {
-                    AdqlStringView.this.validateAdql() ;
-                    AdqlStringView.this.action.actionPerformed( e ) ;
-                }
-            } );   
+        protected void selectionGained() {
+            log.debug( "AdqlStringView.selectionGained() enter" ) ;
+            refreshFromModel() ;
+            this.validateAdql() ;
         }
         
-        private void initSelectedProcessing() {
-            this.owner.addChangeListener( new ChangeListener() {
-                public void stateChanged( ChangeEvent e ) {
-                    Object selectedComponent = ((JTabbedPane)e.getSource()).getSelectedComponent() ;
-                    if( selectedComponent == ADQLToolEditorPanel.AdqlStringView.this ) {
-                        selectionGained() ;
-                    }
-                    else {
-                        selectionLost() ;
-                    }
-                }
-            }) ;
+        protected void selectionLost() {
+            log.debug( "AdqlStringView.selectionLost() enter" ) ;
+            validateAdql() ;
+            processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
         }
         
-        private void selectionGained() {
+        protected void refreshFromModel() {
             this.rootOnGainingSelection = this.controller.getRootInstance() ;
             XmlCursor nodeCursor = rootOnGainingSelection.newCursor();
             XmlOptions options = new XmlOptions();
             options.setSavePrettyPrint();
             options.setSavePrettyPrintIndent(4);
-            String xmlString = nodeCursor.xmlText(options);
+            String text = nodeCursor.xmlText(options);
             nodeCursor.dispose() ;
-            this.adqlTextPane.setText( transformer.transformToAdqls( xmlString, " " ).trim() ) ; 
-            this.validateAdql() ;
+            this.adqlTextPane.setText( transformer.transformToAdqls( text, " " ).trim() ) ; 
         }
         
-        private void selectionLost() {
-            this.validateAdql() ;
-            if( processedRoot != null && rootOnGainingSelection != null ) {
-                XmlOptions options = new XmlOptions();
-                options.setSavePrettyPrint();
-                options.setSavePrettyPrintIndent(4);
-                XmlCursor nodeCursor = rootOnGainingSelection.newCursor();               
-                String xmlStringBefore = nodeCursor.xmlText(options);
-                nodeCursor.dispose() ;
-                nodeCursor = processedRoot.newCursor();               
-                String xmlStringAfter = nodeCursor.xmlText(options);
-                nodeCursor.dispose() ;
-                if( xmlStringBefore.equals( xmlStringAfter ) == false )  {
-                    this.controller.updateModel( this, processedRoot ) ;
-                }
-            }
-        }
-        
-        private void validateAdql( ) {
+        protected void validateAdql() {
             String text = adqlTextPane.getText().trim() ;
             if( text.equals( this.adqlString ) == false ) {
                 try {  
@@ -2318,83 +2339,28 @@ public class InsertEnumeratedAction extends InsertAction {
                     Document doc = validator.s2x( text ); 
                     String xmlString = XMLUtils.DocumentToString( doc ) ;
                     this.processedRoot = SelectDocument.Factory.parse( adaptToVersion( xmlString ) ) ;
-                    this.valid = true ;
-                    diagnostics.setText( "Adql is valid" ) ;                  
-                } catch( Throwable sx ) {
-                    this.valid = false ;
-                    log.debug( sx ) ;
-                    Throwable th = sx.getCause() ;
-                    String message = "Adql invalid. No message available" ;
-                    if( th != null ) {
-                        message = th.getMessage() ;
+                    diagnostics.setText( "" ) ;                  
+                } 
+                catch( Throwable sx ) {
+//                    log.debug( sx ) ;
+//                    Throwable th = sx.getCause() ;
+//                    String message = "Adql invalid. No message available" ;
+//                    if( th != null ) {
+//                        message = th.getMessage() ;
+//                    }
+//                    diagnostics.setText( message ) ;
+                    String message = sx.getLocalizedMessage() ;
+                    if( message != null && message.length() > 0) {
+                        diagnostics.setText( message ) ;
                     }
-                    diagnostics.setText( message ) ;
+                    else {
+                        diagnostics.setText( sx.toString() ) ;
+                    }   
                 }
-            }
-        }
-        
-        public void stateChanged(ChangeEvent e) {
-            if( e != null && e.getSource() != this ) {
-                ; 
             }
         }
            
     } // end of class AdqlStringView
-    
-    
-//    public class ValidateAdqlStringAction extends AbstractAction implements FocusListener {
-//        
-//        JTextPane adqlText ;
-//        javax.swing.Action action ;
-//              
-//        public  ValidateAdqlStringAction( JTextPane adqlText ) {
-//            this.adqlText = adqlText ;
-//            Object key = this.adqlText.getInputMap( JComponent.WHEN_FOCUSED ).get( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ) ) ;
-//            action = this.adqlText.getActionMap().get( key ) ;
-//            this.adqlText.getActionMap().put( "ValidateAdqlString", this ) ;
-//            this.adqlText.getInputMap( JComponent.WHEN_FOCUSED )
-//            .put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ; 
-//            //            adqlText.getInputMap( JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT )
-//            //        		.put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ;
-//            this.adqlText.addFocusListener( this ) ;          
-//        }
-//        
-//        
-//        public void actionPerformed(ActionEvent e) {
-//            this.validate() ;
-//            this.action.actionPerformed( e ) ;
-//        }
-//        
-//        // Not interested in gaining focus...
-//        public void focusGained(FocusEvent e) {}
-//        
-//        // Interested in losing focus. Will do a pre-emptive validate of the Adql/s...
-//        public void focusLost(FocusEvent e) {
-//            this.validate() ;
-//        }
-//        
-//        private void validate( ) {
-//            diagnostics.setText( "" ) ; 
-//            byte[] byteArray = null ;   
-//            String text = null ;
-//            try {
-//                text = adqlText.getText() ;
-//                Document doc = validator.s2x( text ); // don't care about result.
-//                diagnostics.setText( "Adql is valid" ) ;
-//            } catch( Throwable sx ) {
-//                log.debug( sx ) ;
-//                Throwable th = sx.getCause() ;
-//                String message = "No message available" ;
-//                if( th != null ) {
-//                    message = th.getMessage() ;
-//                }
-//                diagnostics.setText( message ) ;
-//            }
-//        }
-//        
-//    } // end of class ValidateAdqlStringAction
-    
-    
     
     
     public class TableData {

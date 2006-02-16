@@ -227,9 +227,9 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         int childCount = getChildCount() ;
         AdqlEntry[] entryChildren = new AdqlEntry[childCount];
         if( childCount > 0 ) {
-            Enumeration enum = this.children.elements() ;
-            for( int i = 0; enum.hasMoreElements(); i++ ) {
-                entryChildren[i] =  (AdqlEntry)enum.nextElement() ;
+            Enumeration e = this.children.elements() ;
+            for( int i = 0; e.hasMoreElements(); i++ ) {
+                entryChildren[i] =  (AdqlEntry)e.nextElement() ;
             }
         }    
         return entryChildren;

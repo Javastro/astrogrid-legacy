@@ -160,7 +160,7 @@ public class AdqlData {
         UNSUPPORTED_TYPES.put( "xMatchType", TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES.put( "likePredType", TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES.put( "notLikePredType", TYPE_ENTRY ) ;
-//        UNSUPPORTED_TYPES.put( "regionSearchType", TYPE_ENTRY ) ;
+        UNSUPPORTED_TYPES.put( "regionSearchType", TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES.put( "closedSearchType", TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES.put( "betweenPredType", TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES.put( "notBetweenPredType", TYPE_ENTRY ) ;
