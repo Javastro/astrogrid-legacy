@@ -1,0 +1,3 @@
+check registration with invalid URI name
+check nocallback registration
+shouldn't register anything when it fails
