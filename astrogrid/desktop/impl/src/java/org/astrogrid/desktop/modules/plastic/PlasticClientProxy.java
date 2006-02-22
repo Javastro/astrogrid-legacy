@@ -1,6 +1,7 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -47,8 +48,11 @@ abstract class PlasticClientProxy {
 
     public PlasticClientProxy(NameGen gen, String name, List supportedMessages) {
         try {
-            this.id = new URI("plastic://acr/"+gen.next()+"#"+name); //todo reexamine this
-        } catch (Exception e) {
+            this.id = new URI("plastic://acr/"+gen.next()); 
+        } catch(URISyntaxException se) {
+        	logger.error("Unable to contruct URI for Id",se);
+        	throw new RuntimeException("Unable to create URI",se);
+        }  catch (Exception e) {
             logger.error("Exception in unique name generator ", e);
             // we're going to use the InMemoryNameGen
             // class, so this shouldn't happen.  

@@ -58,6 +58,27 @@
 				</property>
 			</return>
 		</method>
+		<method name="getMessageRegisteredIds">
+			<description>Get Ids of registered applications interested in a particular message</description>
+			<property>
+				<key>icon</key>
+				<value>properties.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Get apps by message id</value>
+			</property>
+			<parameter name="message">
+				<description>The message id</description>
+			</parameter>			
+			<return>
+				<description>Array of Ids</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</return>
+		</method>		
 		<method name="registerXMLRPC">
 			<description>Register an application that can be called back by
 				XMLRPC</description>
@@ -104,6 +125,53 @@
 				<description>id</description>
 			</return>
 		</method>
+		<!-- temporary?  Testing ideas out for Sorrento. -->
+		<method name="registerPolling">
+			<description>Register an application that wishes its messages to be stored pending later polling.</description>
+			<property>
+				<key>icon</key>
+				<value>frgmt_obj.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Register (Polling)</value>
+			</property>
+			<parameter name="name">
+				<description>Application's human-readable name</description>
+			</parameter>
+			<parameter name="messages">
+				<description>Understood messages (comma separated)</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</parameter>			
+			<return>
+				<description>id</description>
+			</return>
+		</method>	
+		<!-- temporary?  Testing ideas out for Sorrento. -->
+		<method name="pollForMessages">
+			<description>Request any messages that may have been stored.</description>
+			<property>
+				<key>icon</key>
+				<value>frgmt_obj.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Poll for messages</value>
+			</property>
+			<parameter name="id">
+				<description>Application's Plastic Id</description>
+			</parameter>			
+			<return>
+				<description>An array of stored messages, each message being (sender, messageId, args)</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</return>
+		</method>			
 		<method name="unregister">
 			<description>Unregister a PLASTIC-compliant app</description>
 			<property>

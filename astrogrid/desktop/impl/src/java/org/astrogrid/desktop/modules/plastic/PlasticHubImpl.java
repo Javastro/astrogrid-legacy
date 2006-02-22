@@ -90,11 +90,56 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         return register(client);
     }
 
-    // todo - think about synch issues
+	public URI registerPolling(String name, List supportedMessages) {
+		PlasticClientProxy client = new PollingPlasticClient(idGenerator, name);
+		return register(client);
+	}
+
+	/**
+	 * Returns empty list if the id isn't for a polling client.
+	 */
+	public List pollForMessages(URI id) {
+		PlasticClientProxy client = (PlasticClientProxy) clients.get(id);
+		if (client==null) return CommonMessageConstants.EMPTY;
+		if (!(client instanceof PollingPlasticClient)) return CommonMessageConstants.EMPTY; //always disliked instanceof, but it's that or maintain a separate list
+		List messages = ((PollingPlasticClient)client).getStoredMessages();
+		((PollingPlasticClient)client).flush();
+		return messages;
+	}
+	
+	Map messagesToListeners = new HashMap();
+	private void storeMessages(PlasticClientProxy client) {
+		// quick and dirty set up of the reverse look up
+		List clientsMessages = client.getMessages();
+		URI msg = null;
+		for (Iterator it = clientsMessages.iterator(); it.hasNext(); msg = (URI) it.next()) {
+			if (!(messagesToListeners.containsKey(msg))) {
+				messagesToListeners.put(msg, new ArrayList());
+			}
+			List interestedApps = (List) messagesToListeners.get(msg);
+			interestedApps.add(client.getId());
+		}
+	}
+	private void unstoreMessages(URI clientId) {
+		URI msg = null;
+		for (Iterator it = messagesToListeners.keySet().iterator(); it.hasNext(); msg  = (URI)it.next()) {
+			List interestedApps = (List) messagesToListeners.get(msg);
+			interestedApps.remove(clientId);
+			if (interestedApps.size()==0) {
+				//nobody loves me any more
+				messagesToListeners.remove(msg);
+			}
+		}
+	}
+	
+    // TODO - think about synch issues
     private synchronized URI register(PlasticClientProxy client) {
         URI id = client.getId();
 
         clients.put(id, client);
+        storeMessages(client); //TODO revisit this
+        
+        // Tell the world
         List args = new ArrayList();
         args.add(id.toString());
         logger.info(id + " has registered");
@@ -132,7 +177,10 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             return;
         }
         clients.remove(id);
-        Vector args = new Vector();
+        unstoreMessages(id);
+        
+        //Tell the world
+        Vector args = new Vector(); //TODO jdt why am I using vector?
         args.add(id.toString());
         requestAsynch(hubId, HubMessageConstants.APPLICATION_UNREGISTERED_EVENT, args);
         logger.info(id + " has unregistered");
@@ -354,4 +402,23 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         }
         return dead;
     }
+
+	public String getName(URI plid) {
+		PlasticClientProxy client = (PlasticClientProxy) clients.get(plid);
+		if (client==null) {
+			return CommonMessageConstants.RPCNULL; //TODO return null or empty string?
+		}
+		return client.getName(); 
+	}
+
+	/**
+	 * At the moment this only returns apps that have explicitly registered
+	 * for that message.  ie. apps that register without saying what they're
+	 * interested in (in the hope of receiving all messages) won't be returned.
+	 */
+	public List getMessageRegisteredIds(URI message) {
+		return (List) messagesToListeners.get(message);
+	}
+
+
 }
