@@ -406,7 +406,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	public String getName(URI plid) {
 		PlasticClientProxy client = (PlasticClientProxy) clients.get(plid);
 		if (client==null) {
-			return CommonMessageConstants.RPCNULL; //TODO return null or empty string?
+			return ""; //TODO CommonMessageConstants.RPCNULL; 
 		}
 		return client.getName(); 
 	}
