@@ -58,6 +58,7 @@ abstract class PlasticClientProxy {
             // class, so this shouldn't happen.  
         }
         this.supportedMessages = supportedMessages;
+        this.name = name;
     }
 
     public PlasticClientProxy(NameGen gen, String name) {
