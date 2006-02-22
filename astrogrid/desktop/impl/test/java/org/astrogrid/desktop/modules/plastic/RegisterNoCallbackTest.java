@@ -5,27 +5,11 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
-import org.picocontainer.Startable;
 import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.PlasticHubListener;
 
 
-public class RegisterNoCallbackTest  extends AbstractPlasticTestBase {
+public class RegisterNoCallbackTest  extends PresetupHub {
 
-	private PlasticHubListener hub;
-
-	public void setUp() {
-		super.setUp();
-		hub = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web);
-		((Startable)hub).start();	
-	}
-	
-	public void tearDown() throws Exception {
-		super.tearDown();
-		((Startable)hub).stop();
-		hub = null;
-	}
-	
 	public void testRegisterGoodNames() {
 		URI id = hub.registerNoCallBack("Application1");
 		assertNotNull(id);
