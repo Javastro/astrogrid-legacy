@@ -60,6 +60,20 @@ public interface PlasticHubListener {
      * @return see above
      */
     public URI getHubId();
+    
+    /**
+     * Get the name of this application, as used at registration.
+     * @param plid the plastic ID returned at registration
+     * @return The user friendly name
+     */
+    public String getName(URI plid);
+    
+    /**
+     * Get all the applications that support a particular message
+     * @param message the messageId you're interested in
+     * @return a list of plastic ids.
+     */
+    List getMessageRegisteredIds( URI message );
 
     /**
      * Register an application with the hub. Each application that wishes to use the hub should register with it - the
@@ -96,13 +110,30 @@ public interface PlasticHubListener {
 
     /**
      * Register this application with the hub, but don't send it any messages in return. This is to allow uncallable
-     * applications like scripting environments to register. Note: this method is currently not part of the Plastic
+     * applications like scripting environments to register. 
      * spec.
      * 
      * @see #registerXMLRPC(String, List, URL) for parameters
      */
     public URI registerNoCallBack(String name);
 
+    /**
+     * Register this application with the hub, but store messages for later recovery by polling.
+     * Note that this message is experimental and not part of the Plastic Spec.
+     * @see #registerXMLRPC(String, List, URL) for parameters
+     * @see #pollForMessages(URI)
+     */
+    public URI registerPolling(String name, List supportedMessages);
+
+    /**
+     * Poll for messages.  Returns a List of messages.  Each List is another
+     * List containing (sender, message, args).
+     * Note that this message is experimental and not part of the Plasti Spec.
+     * @xmlrpc for List, read Array
+     * @see #registerPolling(String, List)
+     */
+    public List pollForMessages(URI id);
+    
     /**
      * Unregister the application from the hub.
      * 
@@ -113,7 +144,8 @@ public interface PlasticHubListener {
     /**
      * Send a message to all registered Plastic applications.
      * 
-     * @param sender the id of the originating tool. Note that the hub is at liberty to refused to forward requests that
+     * @param sender the id of the originating tool - provided by the hub on 
+     * registration.  Note that the hub is at liberty to refused to forward requests that
      *            don't come from an ID that it has registered.
      * @param message the message to send.
      * @param args any arguments to pass with the message
