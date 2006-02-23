@@ -13,6 +13,21 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="pending" type="add">
+    <action dev="jdt">
+		Plastic: Implemented polling listeners for applications that can't directly
+		receive messages.
+	</action>
+    <action dev="jdt" type="fix">
+		Plastic: Removed the user-supplied name from the generated plastic hub id URI.
+		Although this was useful to identify apps from their id, it allowed possibility
+		of invalid URIs.
+	</action>
+    <action dev="jdt" type="add">
+		Plastic: Added new methods to allow clients to get information
+on what messages other clients support.
+	</action>		
+</release>
 <release version="2.0-beta-5" date="2006-02-17">
       <action dev="nw" type="add">
         Small changes to a couple of tooltips.

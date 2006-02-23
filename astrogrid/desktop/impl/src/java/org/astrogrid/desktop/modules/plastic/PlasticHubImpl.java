@@ -420,5 +420,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		return (List) messagesToListeners.get(message);
 	}
 
+	public List getMessages(URI plid) {
+		PlasticClientProxy client = (PlasticClientProxy) clients.get(plid);
+		if (client==null) {
+			return CommonMessageConstants.EMPTY; //TODO really must think about returning nulls and xml-rpc.  Returning the empty list is the same as saying "I understand every message"
+		}
+		return client.getMessages();
+	}
+
 
 }

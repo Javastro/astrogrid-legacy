@@ -69,11 +69,21 @@ public interface PlasticHubListener {
     public String getName(URI plid);
     
     /**
+     * Get the messages understood by this application.  As usual, an empty list means
+     * it will listen to all messages.  Note that just because an application declares itself
+     * to be interested in a message, it's no guarantee it will act on it.
+     * @param plid the plastic ID returned at registration
+     * @return A list of message URIs
+     * @xmlrpc returns an array of strings
+     */
+    public List getMessages(URI plid);    
+    
+    /**
      * Get all the applications that support a particular message
      * @param message the messageId you're interested in
      * @return a list of plastic ids.
      */
-    List getMessageRegisteredIds( URI message );
+    public List getMessageRegisteredIds( URI message );
 
     /**
      * Register an application with the hub. Each application that wishes to use the hub should register with it - the

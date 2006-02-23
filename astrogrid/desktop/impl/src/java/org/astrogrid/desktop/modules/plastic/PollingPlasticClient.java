@@ -59,7 +59,7 @@ public class PollingPlasticClient extends PlasticClientProxy {
 		List messageDetails = new ArrayList();
 		messageDetails.add(sender);
 		messageDetails.add(message);
-		messageDetails.add(args);
+		messageDetails.add(new ArrayList(args));
 		if (buffer.isFull()) {
 			List thrownAwayMessage = (List) buffer.remove();
 			URI tamSender = (URI) thrownAwayMessage.get(0);
