@@ -11,7 +11,7 @@ import java.util.Map;
  * 
  * @see <a href="http://plastic.sourceforge.net/">http://plastic.sourceforge.net</a>
  * @author jdt@roe.ac.uk
- * @version 0.2
+ * @version 0.3
  * @service plastic.hub
  * @since 1.3
  * @date 11-Oct-2005

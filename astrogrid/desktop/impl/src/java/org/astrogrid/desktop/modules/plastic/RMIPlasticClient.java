@@ -30,7 +30,18 @@ class RMIPlasticClient extends PlasticClientProxy {
         this.remoteClient = plastic;
     }
 
-    public Object perform(URI sender, URI message, List args) throws PlasticException {
+    /**
+     * Constructor assuming interested in all messages.
+     * @param gen
+     * @param name
+     * @param plastic
+     */
+	public RMIPlasticClient(NameGen gen, String name, PlasticListener plastic) {
+		super(gen, name);
+		this.remoteClient = plastic;
+	}
+
+	public Object perform(URI sender, URI message, List args) throws PlasticException {
         try {
             Object response = remoteClient.perform(sender, message, args);
             setResponding(true);
@@ -40,5 +51,9 @@ class RMIPlasticClient extends PlasticClientProxy {
             throw new PlasticException(e);
         }
     }
+
+	public boolean canRespond() {
+		return true;
+	}
 
 }

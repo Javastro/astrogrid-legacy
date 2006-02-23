@@ -58,4 +58,8 @@ class XMLRPCPlasticClient extends PlasticClientProxy {
         }
     }
 
+	public boolean canRespond() {
+		return true;
+	}
+
 }

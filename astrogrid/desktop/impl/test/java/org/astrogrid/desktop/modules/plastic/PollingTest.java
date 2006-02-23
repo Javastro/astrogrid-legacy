@@ -68,7 +68,7 @@ public class PollingTest extends PresetupHub {
 			URI message = URI.create("ivo://message"+m);
 			args.add("arg"+m);
 			Map results = (Map) hub.request(sender , message, args);
-			assertEquals(CommonMessageConstants.RPCNULL, results.get(id));
+			assertNull(results.get(id));
 		}
 	}
 

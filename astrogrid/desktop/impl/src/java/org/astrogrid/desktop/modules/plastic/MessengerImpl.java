@@ -116,6 +116,13 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
                 CommonMessageConstants.EMPTY);
         return results;
     }
+    
+    public Map getIconURLs() {
+        Map results = hub.request(this.id, CommonMessageConstants.GET_ICON,
+                CommonMessageConstants.EMPTY);
+        return results;
+    }
+    
 
     /*
      * (non-Javadoc)

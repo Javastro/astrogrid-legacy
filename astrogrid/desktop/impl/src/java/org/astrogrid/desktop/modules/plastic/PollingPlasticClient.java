@@ -83,4 +83,8 @@ public class PollingPlasticClient extends PlasticClientProxy {
 		buffer.clear();		
 	}
 
+	public boolean canRespond() {
+		return false;
+	}
+
 }

@@ -2,6 +2,7 @@ package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -57,7 +58,7 @@ abstract class PlasticClientProxy {
             // we're going to use the InMemoryNameGen
             // class, so this shouldn't happen.  
         }
-        this.supportedMessages = supportedMessages;
+        this.supportedMessages = new ArrayList(supportedMessages); //take a copy in case someone pulls the list from under our feet.
         this.name = name;
     }
 
@@ -69,10 +70,11 @@ abstract class PlasticClientProxy {
      * Does this client understand this message?
      * 
      * @param message
+     * @param implicitly if false, only respond true if the client explicitly lists the mssage
      * @return true if yes
      */
-    public boolean understands(URI message) {
-        if (supportedMessages.size() == 0 || supportedMessages.contains(message))
+    public boolean understands(URI message, boolean implicitly) {
+        if ((implicitly && supportedMessages.size() == 0) || supportedMessages.contains(message))
             return true;
         return false;
     }
@@ -90,4 +92,11 @@ abstract class PlasticClientProxy {
     protected void setResponding(boolean responding) {
         this.responding = responding;
     }
+
+    /**
+     * Return true if you're the sort of client that answers messages, e.g. rmi, and false
+     * if you're not, e.g. Polling.
+     * @return
+     */
+	public abstract boolean canRespond();
 }

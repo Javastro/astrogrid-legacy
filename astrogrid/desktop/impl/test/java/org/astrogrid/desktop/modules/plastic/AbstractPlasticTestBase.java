@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.plastic;
 
+import java.net.URI;
+
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
@@ -16,6 +18,8 @@ import junit.framework.TestCase;
  * @author jdt
  */
 public class AbstractPlasticTestBase extends TestCase {
+
+	protected static final URI SENDER_ID = URI.create("ivo://junit");
 
 	protected MessengerImpl messenger;
 

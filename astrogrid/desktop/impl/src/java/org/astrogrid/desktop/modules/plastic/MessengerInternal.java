@@ -29,6 +29,8 @@ public interface MessengerInternal {
     Map getNames();
 
     Map getIvorns();
+    
+    Map getIconURLs();
 
     Map echo(String greeting);
 

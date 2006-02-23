@@ -17,7 +17,7 @@ public interface PlasticListener {
     /**
      * The current version of Plastic defined by this interface.
      */
-    String CURRENT_VERSION = "0.2";
+    String CURRENT_VERSION = "0.3";
 
     /**
      * Request that the application perform an action based on a message.

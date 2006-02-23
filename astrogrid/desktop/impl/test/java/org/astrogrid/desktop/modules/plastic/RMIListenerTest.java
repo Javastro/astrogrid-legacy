@@ -137,5 +137,7 @@ public class RMIListenerTest extends PresetupHub {
 		assertEquals(id1.toString(), listener2.getArgs().get(0));
 		assertEquals(hub.getHubId(), listener2.getSender());
 	}
+	
+	
 
 }

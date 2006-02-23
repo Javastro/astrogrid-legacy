@@ -34,4 +34,8 @@ class DeafPlasticClient extends PlasticClientProxy {
         return CommonMessageConstants.RPCNULL;
     }
 
+	public boolean canRespond() {
+		return false;
+	}
+
 }

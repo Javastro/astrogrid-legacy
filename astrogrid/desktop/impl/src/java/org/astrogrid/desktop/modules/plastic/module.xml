@@ -58,6 +58,23 @@
 				</property>
 			</return>
 		</method>
+		<method name="getName">
+			<description>Get the name of a registered application</description>
+			<property>
+				<key>icon</key>
+				<value>info_obj.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Get registered application's name</value>
+			</property>
+			<parameter name="plid">
+				<description>The application's hub id</description>
+			</parameter>	
+			<return>
+				<description>Name</description>
+			</return>
+		</method>		
 		<method name="getUnderstoodMessages">
 			<description>Get the messages understood by this application</description>
 			<property>
@@ -176,7 +193,7 @@
 			<description>Request any messages that may have been stored.</description>
 			<property>
 				<key>icon</key>
-				<value>frgmt_obj.gif</value>
+				<value>demote.gif</value>
 			</property>
 			<property>
 				<key>system.ui.menu.entry</key>
@@ -449,6 +466,21 @@
 				</property>
 			</return>
 		</method>
+		<method name="getIconURLs">
+			<description>List registered application icons in the form id:
+				icon url</description>
+			<property>
+				<key>icon</key>
+				<value>properties.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>List Application Icon URLs</value>
+			</property>
+			<return>
+				<description>URL</description>
+			</return>
+		</method>		
 		<method name="echo">
 			<description>Send the ECHO message to registered
 				applications</description>

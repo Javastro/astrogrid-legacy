@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.system.RmiServer;
@@ -40,7 +42,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      */
     private static final Log logger = LogFactory.getLog(PlasticHubImpl.class);
 
-    private final Map clients = new HashMap();
+    private final ApplicationStore clients = new ApplicationStore();
 
     final NameGen idGenerator;
     private final SystemTray tray;
@@ -71,8 +73,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public List getRegisteredIds() {
-        Set ids = clients.keySet();
-        return new ArrayList(ids);
+        List ids = clients.getIds();
+        return ids;
     }
 
     public URI registerXMLRPC(String name, List supportedOperations, URL callBackURL) {
@@ -91,7 +93,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
 	public URI registerPolling(String name, List supportedMessages) {
-		PlasticClientProxy client = new PollingPlasticClient(idGenerator, name);
+		PlasticClientProxy client = new PollingPlasticClient(idGenerator, name, supportedMessages);
 		return register(client);
 	}
 
@@ -107,37 +109,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		return messages;
 	}
 	
-	Map messagesToListeners = new HashMap();
-	private void storeMessages(PlasticClientProxy client) {
-		// quick and dirty set up of the reverse look up
-		List clientsMessages = client.getMessages();
-		URI msg = null;
-		for (Iterator it = clientsMessages.iterator(); it.hasNext(); msg = (URI) it.next()) {
-			if (!(messagesToListeners.containsKey(msg))) {
-				messagesToListeners.put(msg, new ArrayList());
-			}
-			List interestedApps = (List) messagesToListeners.get(msg);
-			interestedApps.add(client.getId());
-		}
-	}
-	private void unstoreMessages(URI clientId) {
-		URI msg = null;
-		for (Iterator it = messagesToListeners.keySet().iterator(); it.hasNext(); msg  = (URI)it.next()) {
-			List interestedApps = (List) messagesToListeners.get(msg);
-			interestedApps.remove(clientId);
-			if (interestedApps.size()==0) {
-				//nobody loves me any more
-				messagesToListeners.remove(msg);
-			}
-		}
-	}
 	
     // TODO - think about synch issues
     private synchronized URI register(PlasticClientProxy client) {
         URI id = client.getId();
 
-        clients.put(id, client);
-        storeMessages(client); //TODO revisit this
+        clients.add(client);
         
         // Tell the world
         List args = new ArrayList();
@@ -177,7 +154,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             return;
         }
         clients.remove(id);
-        unstoreMessages(id);
         
         //Tell the world
         Vector args = new Vector(); //TODO jdt why am I using vector?
@@ -201,7 +177,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      */
     private Map send(final URI sender, final URI message, final List args, List recipients,
             boolean shouldWaitForResults) {
-    	//Gotcha.  The recipients in a List of URIs from Java, but a List of Strings from xml-rpc
+    	//Gotcha.  The recipients are in a List of URIs from Java, but a List of Strings from xml-rpc
     	if (recipients.size()!=0 && recipients.get(0).getClass()==String.class) {
     		List recipientURIs = new ArrayList();
     		for (Iterator it = recipients.iterator();it.hasNext();recipientURIs.add(URI.create((String) it.next())));
@@ -210,18 +186,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     	}
     	
         final Map returns = Collections.synchronizedMap(new HashMap());
-        Iterator it = clients.keySet().iterator();
-        List clientsToMessage = new ArrayList();
-        // We need to get the number of clients to wait for first
-        while (it.hasNext()) {
-            PlasticClientProxy client = (PlasticClientProxy) clients.get(it.next());
-            if (client.getId().equals(sender))
-                continue;
-            if (!client.understands(message))
-                continue;
-            if (recipients.size()==0 || recipients.contains(client.getId())) { 
-                clientsToMessage.add(client);
-            }
+        
+        List clientsSupportingMessage = clients.getClientIdsSupportingMessage(message, true, true);
+        Collection clientsToMessage;
+        if (recipients.size()==0) {
+        	clientsToMessage = clientsSupportingMessage; //send to everyone.  Ugly.
+        } else {
+        	clientsToMessage = CollectionUtils.intersection(clientsSupportingMessage, recipients);
         }
 
         final CountDown gate = new CountDown(clientsToMessage.size());
@@ -257,7 +228,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                     if (rv == null) {
                         rv = CommonMessageConstants.RPCNULL;
                     }
-                    returns.put(client.getId(), rv);
+                    if (client.canRespond()) returns.put(client.getId(), rv); //no point in storing nulls from apps that can't respond
                 } catch (PlasticException e) {
                     // Not much to do except log it...
                     // LOW consider sending a message, but beware we don't get
@@ -271,9 +242,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
         }// end of message class.
 
-        it = clientsToMessage.iterator();
+        Iterator it = clientsToMessage.iterator();
         while (it.hasNext()) {
-            PlasticClientProxy currentClient = (PlasticClientProxy) it.next();
+            PlasticClientProxy currentClient = clients.get((URI) it.next());
             try {
                 executor.execute(new Messager(currentClient));
             } catch (InterruptedException e) {
@@ -389,7 +360,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     private List getNonResponders() {
         List dead = new ArrayList();
-        Set appsIds = clients.keySet();
+        List appsIds = clients.getIds();
         Iterator it = appsIds.iterator();
         while (it.hasNext()) {
             URI proxyId = (URI) it.next();
@@ -417,7 +388,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	 * interested in (in the hope of receiving all messages) won't be returned.
 	 */
 	public List getMessageRegisteredIds(URI message) {
-		return (List) messagesToListeners.get(message);
+		return clients.getClientIdsSupportingMessage(message, false, true);
 	}
 
 	public List getUnderstoodMessages(URI plid) {
@@ -427,6 +398,5 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		}
 		return client.getMessages();
 	}
-
 
 }
