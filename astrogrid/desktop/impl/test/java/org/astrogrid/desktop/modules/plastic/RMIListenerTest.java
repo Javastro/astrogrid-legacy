@@ -26,7 +26,7 @@ public class RMIListenerTest extends PresetupHub {
 		assertEquals(result,"listener1"+test+message+"2");
 		
 		//test new getMessages method
-		assertEquals(CommonMessageConstants.EMPTY, hub.getMessages(listenerId));
+		assertEquals(CommonMessageConstants.EMPTY, hub.getUnderstoodMessages(listenerId));
 	}
 	
 	public void testSelectiveListeners() {
@@ -42,7 +42,7 @@ public class RMIListenerTest extends PresetupHub {
 		URI listenerId2 = hub.registerRMI("listener2", messages, listener2);		
 		
 		//test new getMessages method
-		assertEquals(messages, hub.getMessages(listenerId2));
+		assertEquals(messages, hub.getUnderstoodMessages(listenerId2));
 
 		Map results = (Map) hub.request(test, message1, sampleArgs);
 		assertEquals(2, results.size());
@@ -59,7 +59,7 @@ public class RMIListenerTest extends PresetupHub {
 	public void testGetMessagesForUnknownId() {
 		//Expect an empty list back if the app isn't registered
 		URI listenerId = URI.create("ivo://imadethisup");
-		assertEquals(CommonMessageConstants.EMPTY, hub.getMessages(listenerId ));
+		assertEquals(CommonMessageConstants.EMPTY, hub.getUnderstoodMessages(listenerId ));
 	}
 	
 	public void testSendToSubset() {

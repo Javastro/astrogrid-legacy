@@ -76,7 +76,7 @@ public interface PlasticHubListener {
      * @return A list of message URIs
      * @xmlrpc returns an array of strings
      */
-    public List getMessages(URI plid);    
+    public List getUnderstoodMessages(URI plid);    
     
     /**
      * Get all the applications that support a particular message
