@@ -20,7 +20,7 @@ import org.votech.plastic.outgoing.PlasticException;
  *
  */
 public class PollingPlasticClient extends PlasticClientProxy {
-	private static final int BUFFERSIZE = 10;
+	private static final int BUFFERSIZE = 1000;
 	/**
 	 * Logger for this class
 	 */
