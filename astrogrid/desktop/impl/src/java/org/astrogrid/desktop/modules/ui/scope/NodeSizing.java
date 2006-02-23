@@ -1,4 +1,4 @@
-/*$Id: NodeSizing.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+/*$Id: NodeSizing.java,v 1.2 2006/02/23 09:30:33 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,17 +30,17 @@ public class NodeSizing {
     private NodeSizing(int constraint) {
         switch(constraint) {
            case 1:
-               this.color = Color.RED;
+               this.color = Color.BLACK;
                font = new Font(null,Font.BOLD,16);
                extraSize = 0;
            break;
            case 2:
-               this.color = Color.GREEN;
+               this.color = Color.BLACK;
                this.font = new Font(null,Font.PLAIN, 12);
                this.extraSize = 0;
            break;
            case 3:
-               this.color = Color.BLUE;
+               this.color = Color.BLACK;
                this.font = new Font(null,Font.PLAIN, 10);
                this.extraSize = 0;
            break;
@@ -67,6 +67,10 @@ public class NodeSizing {
 
 /* 
 $Log: NodeSizing.java,v $
+Revision 1.2  2006/02/23 09:30:33  KevinBenson
+Added a small tablesortder for the JTable of servies and got rid of Color
+for the nodesizing distant nodes.
+
 Revision 1.1  2006/02/02 14:51:11  nw
 components of astroscope, plus new ssap component.
  

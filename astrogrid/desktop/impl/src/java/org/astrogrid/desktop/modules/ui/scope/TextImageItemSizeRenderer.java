@@ -1,4 +1,4 @@
-/*$Id: TextImageItemSizeRenderer.java,v 1.2 2006/02/09 15:40:01 nw Exp $
+/*$Id: TextImageItemSizeRenderer.java,v 1.3 2006/02/23 09:30:33 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
                 //Font currentFont = item.getFont();
                 //Font currentColor = item.getColor();                
                 item.setFont(nodeSizing.getFont());
-                item.setColor(nodeSizing.getColor());
+                //item.setColor(nodeSizing.getColor());
                 double extraSize = nodeSizing.getSize();
                 super.getRawShape(item);                    
                 if ( m_imageBox instanceof RoundRectangle2D ) {
@@ -58,6 +58,10 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
 
 /* 
 $Log: TextImageItemSizeRenderer.java,v $
+Revision 1.3  2006/02/23 09:30:33  KevinBenson
+Added a small tablesortder for the JTable of servies and got rid of Color
+for the nodesizing distant nodes.
+
 Revision 1.2  2006/02/09 15:40:01  nw
 finished refactoring of astroscope.
 added vospec viewer

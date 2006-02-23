@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.29 2006/02/09 15:40:01 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.30 2006/02/23 09:30:33 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -116,7 +116,7 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
     private JButton reFocusTopButton;        
     private JTextField regionText;
     private JButton submitButton;
-           
+
     //name resolver.
     private final Sesame ses;
 
@@ -310,8 +310,18 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
     
     /** panel containing summary of search results */
     private JPanel makeServicesPanel() {
+        
+        /*
+         * TableSorter sorter = new TableSorter(new MyTableModel()); //ADDED THIS
+JTable table = new JTable(sorter);             //NEW
+sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
+         */
+        
             JPanel servicesPanel = new JPanel();
-            final JTable table = new JTable(protocols.getQueryResultTable());
+            TableSorter sorter = new TableSorter(protocols.getQueryResultTable()); //ADDED THIS
+            //final JTable table = new JTable(protocols.getQueryResultTable());
+            final JTable table = new JTable(sorter);             //NEW
+            sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
             JScrollPane scroll = new JScrollPane(table);
             table.setPreferredScrollableViewportSize(new Dimension(700,550));
             TableColumnModel tcm = table.getColumnModel();
@@ -380,9 +390,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         return servicesPanel;
     }
     
-
-    
-    
     /**
      * Creates the left/WEST side of the GUI.  By creating a small search panel at the top(north-west).  Then
      * let the rest of the panel be a JTree for the selected data.
@@ -395,14 +402,14 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
     
 
         posText = new JTextField();
-        posText.setToolTipText("Place postion e.g. 120,0 or M11");
+        posText.setToolTipText("Place position or object name e.g. 120,0 (in decimal degrees and no spaces) or M11");
         posText.setAlignmentX(LEFT_ALIGNMENT);
         posText.setColumns(10);
        // posText.setAlignmentX(RIGHT_ALIGNMENT);
         posText.setMaximumSize(posText.getPreferredSize());
         
         regionText = new JTextField();
-        regionText.setToolTipText("Enter region size e.g. 0.1");
+        regionText.setToolTipText("Enter region size e.g. 0.1 in decimal degrees");
         regionText.setAlignmentX(LEFT_ALIGNMENT);
         regionText.setColumns(10);
         regionText.setMaximumSize(regionText.getPreferredSize());
@@ -452,6 +459,8 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
             JButton b = new JButton(a);
             scopeMain.add(b);
         }
+                
+        
         scopeMain.add(Box.createVerticalGlue());
         return scopeMain;
     }
@@ -531,6 +540,10 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.30  2006/02/23 09:30:33  KevinBenson
+Added a small tablesortder for the JTable of servies and got rid of Color
+for the nodesizing distant nodes.
+
 Revision 1.29  2006/02/09 15:40:01  nw
 finished refactoring of astroscope.
 added vospec viewer
