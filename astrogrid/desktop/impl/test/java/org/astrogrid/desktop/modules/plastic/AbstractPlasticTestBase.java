@@ -14,14 +14,17 @@ import junit.framework.TestCase;
 
 /**
  * @author jdt
- *
  */
-public class AbstractPlasticTestBase extends TestCase{
+public class AbstractPlasticTestBase extends TestCase {
 
 	protected MessengerImpl messenger;
+
 	protected Executor executor;
+
 	protected NameGen idGenerator;
+
 	protected WebServer web;
+
 	protected RmiServer rmi;
 
 	public void setUp() {
@@ -29,28 +32,28 @@ public class AbstractPlasticTestBase extends TestCase{
 		executor = new DirectExecutor();
 		idGenerator = new InMemoryNameGen();
 		web = new WebServer() {
-		
-					public String getUrlRoot() {
-						return "http://127.0.0.1:"+getPort()+"/"+getKey()+"/";
-					}
-		
-					public String getKey() {
-						return "foobar";
-					}
-		
-					public int getPort() {
-						return 8001;
-					}
-					
-				};
+
+			public String getUrlRoot() {
+				return "http://127.0.0.1:" + getPort() + "/" + getKey() + "/";
+			}
+
+			public String getKey() {
+				return "foobar";
+			}
+
+			public int getPort() {
+				return 8001;
+			}
+
+		};
 		rmi = new RmiServer() {
-		
-					public int getPort() {
-						return 1234;
-					}
-					
-				};
-		
+
+			public int getPort() {
+				return 1234;
+			}
+
+		};
+
 	}
 
 }
