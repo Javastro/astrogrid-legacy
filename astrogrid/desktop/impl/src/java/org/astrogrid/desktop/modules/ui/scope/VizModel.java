@@ -13,6 +13,7 @@ import edu.berkeley.guir.prefuse.render.ImageFactory;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.awt.Font;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -36,6 +37,8 @@ public  class VizModel {
         this.selectionFocusSet = new DefaultFocusSet();       
         rootNode = new DefaultTreeNode();
         rootNode.setAttribute(Retriever.LABEL_ATTRIBUTE,"Search Results");
+        Font ft = new Font(null,Font.BOLD,14);
+        rootNode.setAttribute(Retriever.FONT_ATTRIBUTE,ft.toString());
         
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();

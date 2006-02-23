@@ -44,7 +44,9 @@ public abstract class Retriever extends BackgroundWorker {
     /** attribute containing the id (ivorn) of the service */
     public static final String SERVICE_ID_ATTRIBUTE = "id";
     /** attribute describing the weight / width of edge links */
-    public static final String WEIGHT_ATTRIBUTE = "weight";
+    public static final String WEIGHT_ATTRIBUTE = "weight";    
+    /** attribute describing the font of a node */
+    public static final String FONT_ATTRIBUTE = "font";
     /** attribute describing what kind of service - provided by {@link #getServiceType()} in subclasses */
     public static final String SERVICE_TYPE_ATTRIBUTE = "service-type";
     /** attribute providing the text label to be displayed for this node */

@@ -27,6 +27,9 @@
 		Plastic: Added new methods to allow clients to get information
 on what messages other clients support.
 	</action>		
+    <action dev="kmb" type="add">
+		Astroscope: made Search Results bigger.
+	</action>
 </release>
 <release version="2.0-beta-5" date="2006-02-17">
       <action dev="nw" type="add">
