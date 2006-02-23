@@ -10,6 +10,9 @@ public class AllTests {
 				"Test for org.astrogrid.desktop.modules.plastic");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(RegisterNoCallbackTest.class);
+		suite.addTestSuite(RMIListenerTest.class);
+		suite.addTestSuite(PollingTest.class);
+		suite.addTestSuite(HubRegistrationTest.class);
 		suite.addTestSuite(BasicTest.class);
 		//$JUnit-END$
 		return suite;
