@@ -58,6 +58,27 @@
 				</property>
 			</return>
 		</method>
+		<method name="getUnderstoodMessages">
+			<description>Get the messages understood by this application</description>
+			<property>
+				<key>icon</key>
+				<value>properties.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Get understood messages</value>
+			</property>
+			<parameter name="plid">
+				<description>The application's hub id</description>
+			</parameter>				
+			<return>
+				<description>Array of messages</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</return>
+		</method>		
 		<method name="getMessageRegisteredIds">
 			<description>Get Ids of registered applications interested in a particular message</description>
 			<property>
@@ -66,10 +87,10 @@
 			</property>
 			<property>
 				<key>system.ui.menu.entry</key>
-				<value>Get apps by message id</value>
+				<value>Get application ids by message</value>
 			</property>
 			<parameter name="message">
-				<description>The message id</description>
+				<description>The message</description>
 			</parameter>			
 			<return>
 				<description>Array of Ids</description>
