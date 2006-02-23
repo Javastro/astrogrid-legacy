@@ -14,6 +14,11 @@
 	</head>
 <body>
 <release version="2.0-beta-5" date="2006-02-17">
+      <action dev="nw" type="add">
+        Small changes to a couple of tooltips.
+        Small TableSorter for services.
+	    Got rid of setting Color for distant nodes.
+       </action>
     <action dev="jl" type="add" issue="1525">
 	    QueryBuilder.
 	    Basic text editing views for adql/s and adql/x now functioning.
