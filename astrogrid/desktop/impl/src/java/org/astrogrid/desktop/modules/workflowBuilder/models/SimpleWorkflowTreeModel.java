@@ -1,4 +1,4 @@
-/*$Id: SimpleWorkflowTreeModel.java,v 1.6 2005/12/13 15:09:06 pjn3 Exp $
+/*$Id: SimpleWorkflowTreeModel.java,v 1.7 2006/02/24 13:23:43 pjn3 Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
@@ -57,9 +56,9 @@ public class SimpleWorkflowTreeModel extends DefaultTreeModel {
     }
 
 /** set the tree to display a new workflow */
-public void setWorkflow(Workflow wf) {
+public void setWorkflow(Workflow wf, boolean strip) {
     this.wf = wf;
-    this.setRoot(createTree(wf)); // assume this fires notifications of.
+    this.setRoot(createTree(wf, strip)); // assume this fires notifications of.
 }
 
 private Workflow wf;
@@ -68,12 +67,30 @@ public Workflow getWorkflow() {
     return wf;
 }
 
-private DefaultMutableTreeNode createTree(Workflow workflow) {
+public Workflow getStrippedWorkflow() {
+	return (Workflow)stripTree(wf).getUserObject();
+}
+
+private DefaultMutableTreeNode createTree(Workflow workflow, boolean strip) {
 	DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 	root.setUserObject(workflow);
-	if (workflow.getJobExecutionRecord() != null)
+	if (!strip && workflow.getJobExecutionRecord() != null) {
 		root.add(getJobExecutionRecord(workflow.getJobExecutionRecord()));
-	root.add(activityTree(workflow.getSequence()));
+	}
+	root.add(activityTree(workflow.getSequence(), strip));
+	root.setAllowsChildren(true);
+    return(root);
+}
+
+private DefaultMutableTreeNode stripTree(Workflow workflow) {
+	DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+	Workflow w = new Workflow();
+	w.setSequence((Sequence)activityTree(workflow.getSequence(), true).getUserObject());
+	w.setCredentials(workflow.getCredentials());
+	w.setName(workflow.getName());
+	w.setDescription(workflow.getDescription());
+	root.setUserObject(w);
+	root.add(activityTree(workflow.getSequence(), true));
 	root.setAllowsChildren(true);
     return(root);
 }
@@ -84,94 +101,130 @@ private DefaultMutableTreeNode activityTree(Tool t) {
     node.setAllowsChildren(false);
     return node;
 }
-private DefaultMutableTreeNode activityTree( AbstractActivity activity ) { 
+private DefaultMutableTreeNode activityTree( AbstractActivity activity, boolean strip) { 
 	DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-      if( activity instanceof Sequence ) {
-      	AbstractActivity[] activityArray = ((Sequence)activity).getActivity() ;
-      	node.setUserObject((Sequence)activity);
+      if( activity instanceof Sequence) {
+    	Sequence s = (Sequence)activity;
+      	AbstractActivity[] activityArray = s.getActivity() ;
+      	if (strip)
+      		s.setId(null);
+      	node.setUserObject(s);
       	node.setAllowsChildren(true);
         for( int i=0; i < activityArray.length; i++ ){
-            node.add(activityTree( activityArray[i] ));
+            node.add(activityTree( activityArray[i], strip));
         }
       }
-   	  else if( activity instanceof Flow ) {
-   	   	node.setUserObject((Flow)activity);
+   	  else if( activity instanceof Flow) {
+   		Flow f = (Flow)activity;
+      	if (strip)
+      		f.setId(null);
+   	   	node.setUserObject(f);
    	   	node.setAllowsChildren(true);
-    	AbstractActivity[] activityArray = ((Flow)activity).getActivity() ;
+    	AbstractActivity[] activityArray = f.getActivity() ;
         for( int i=0; i < activityArray.length; i++ ){
-            node.add(activityTree( activityArray[i] ));
+            node.add(activityTree( activityArray[i], strip));
         }
       }
-      else if( activity instanceof Step ) {
-        node.setUserObject((Step)activity);
+      else if( activity instanceof Step) {
+    	Step s = (Step)activity;
+      	if (strip) {
+      		s.setId(null);
+      		s.clearStepExecutionRecord();
+      	}
+        node.setUserObject(s);
         node.setAllowsChildren(true);
         Tool t= ((Step)activity).getTool();
         node.add(activityTree(t));
-        if (((Step)activity).getStepExecutionRecordCount() > 0) {        	
+        if (((Step)activity).getStepExecutionRecordCount() > 0 && !strip) {   
         	node.add(getExecutionRecord(((Step)activity).getStepExecutionRecord()));
         }
       }
-      else if( activity instanceof Script ) {
-        node.setUserObject((Script)activity);            
+      else if( activity instanceof Script) {
+    	Script s = (Script)activity;
+    	if (strip) {     		
+    		s.setId(null);
+    		s.clearStepExecutionRecord();
+    		}
+        node.setUserObject(s);            
         DefaultMutableTreeNode body = new DefaultMutableTreeNode();
-        body.setUserObject(((Script)activity).getBody());
+        body.setUserObject(s.getBody());
         body.setAllowsChildren(false);        
         node.add(body);
-        if (((Script)activity).getStepExecutionRecordCount() > 0) {
+        if (s.getStepExecutionRecordCount() > 0 && !strip) {
         	body.setAllowsChildren(true);
-        	node.add(getExecutionRecord(((Script)activity).getStepExecutionRecord()));
+        	node.add(getExecutionRecord(s.getStepExecutionRecord()));
         }
       }               
-      else if( activity instanceof For ) {
-         node.setUserObject((For)activity);
-         node.setAllowsChildren(true);
-         node.add(activityTree(((For)activity).getActivity()));
+      else if( activity instanceof For) {
+    	  For f = (For)activity;
+    	  if (strip)
+    		  f.setId(null);
+           node.setUserObject(f);
+           node.setAllowsChildren(true);
+           node.add(activityTree(f.getActivity(), strip));
       }
-      else if( activity instanceof If ) {
+      else if( activity instanceof If) {
       	If ifObj = (If)activity;
+      	if (strip)
+      		ifObj.setId(null);
       	node.setUserObject(ifObj);
       	node.setAllowsChildren(true);
     	if (ifObj.getThen() != null)
     	{
     		DefaultMutableTreeNode n = new DefaultMutableTreeNode();
     		n.setUserObject(ifObj.getThen());
-    		n.add(activityTree(ifObj.getThen().getActivity()));
+    		n.add(activityTree(ifObj.getThen().getActivity(), strip));
     		n.setAllowsChildren(true);
     		node.add(n);        		
     	}
     	if (ifObj.getElse() != null) {
     		DefaultMutableTreeNode n = new DefaultMutableTreeNode();
     		n.setUserObject(ifObj.getElse());
-    		n.add(activityTree(ifObj.getElse().getActivity()));
+    		n.add(activityTree(ifObj.getElse().getActivity(), strip));
     		n.setAllowsChildren(true);
     		node.add(n);        		
     	}
       } 
-      else if( activity instanceof Parfor ) {
-         node.setUserObject((Parfor)activity);
-         node.setAllowsChildren(true);
-         node.add(activityTree(((Parfor)activity).getActivity()));
-      }
-      else if( activity instanceof Scope ) {
-         node.setUserObject((Scope)activity);
-         node.setAllowsChildren(true);
-         node.add(activityTree(((Scope)activity).getActivity()));
-      }
-      else if( activity instanceof Set ) {
-      	  node.setAllowsChildren(false);
-          node.setUserObject((Set)activity);
-      }                    
-      else if( activity instanceof Unset ) {
-      	  node.setAllowsChildren(false);
-          node.setUserObject((Unset)activity);
-      }                        
-      else if( activity instanceof While ) {
-          node.setUserObject((While)activity);
+      else if( activity instanceof Parfor) {
+    	  Parfor p = (Parfor)activity;
+    	  if (strip)
+    		  p.setId(null);
+          node.setUserObject(p);
           node.setAllowsChildren(true);
-          node.add(activityTree(((While)activity).getActivity()));
+          node.add(activityTree(p.getActivity(), strip));
+      }
+      else if( activity instanceof Scope) {
+    	  Scope s = (Scope)activity;
+    	  if (strip)
+    		  s.setId(null);
+          node.setUserObject(s);
+          node.setAllowsChildren(true);
+          node.add(activityTree(s.getActivity(), strip));
+      }
+      else if( activity instanceof Set) {
+    	  Set s = (Set)activity;
+    	  if (strip)
+    		  s.setId(null);
+      	  node.setAllowsChildren(false);
+          node.setUserObject(s);
+      }                    
+      else if( activity instanceof Unset) {
+    	  Unset u = (Unset)activity;
+    	  if (strip) 
+    		  u.setId(null);
+      	  node.setAllowsChildren(false);
+          node.setUserObject(u);
+      }                        
+      else if( activity instanceof While) {
+    	  While w = (While)activity;
+    	  if (strip)
+    		  w.setId(null);
+          node.setUserObject(w);
+          node.setAllowsChildren(true);
+          node.add(activityTree(w.getActivity(), strip));
       }
       else {
-         logger.error( "unsupported Activity" ) ;
+         logger.error( "unsupported Activity: " + activity ) ;
       } 
       return node;
   }
@@ -186,7 +239,7 @@ private DefaultMutableTreeNode activityTree( AbstractActivity activity ) {
 		AbstractActivity aCopy = (AbstractActivity)Unmarshaller.unmarshal(a.getClass(),sr); // this should work whatever the subclass of AbstractActivity that a is.
 		//return deepClone(orig, aCopy);
 		// now use the cloned activity tree to create a new tree of mutable treenodes - handily we've already got code for this..
-		return activityTree(aCopy);
+		return activityTree(aCopy, false);
 	}
 
 	private DefaultMutableTreeNode getJobExecutionRecord(JobExecutionRecord jer) {
@@ -228,6 +281,18 @@ private DefaultMutableTreeNode activityTree( AbstractActivity activity ) {
 
 /* 
 $Log: SimpleWorkflowTreeModel.java,v $
+Revision 1.7  2006/02/24 13:23:43  pjn3
+Added ability to strip transcripts of execution info
+
+Revision 1.6.16.3  2006/02/20 13:27:28  pjn3
+corrected script/step
+
+Revision 1.6.16.2  2006/02/20 12:32:44  pjn3
+strip activity IDs
+
+Revision 1.6.16.1  2006/02/20 11:09:01  pjn3
+Strip added
+
 Revision 1.6  2005/12/13 15:09:06  pjn3
 Merge of pjn_workbench_8_12_05
 

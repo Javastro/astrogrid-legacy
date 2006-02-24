@@ -11,7 +11,9 @@
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
 import java.awt.Point;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDropEvent;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -23,13 +25,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.workflow.beans.v1.Else;
+import org.astrogrid.workflow.beans.v1.Flow;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.Parfor;
 import org.astrogrid.workflow.beans.v1.Scope;
+import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Set;
+import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Then;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Unset;
 import org.astrogrid.workflow.beans.v1.While;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
@@ -165,7 +172,8 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 			}
 		}
 	}
-
+		
+	
 	/* (non-Javadoc)
 	 * @see org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop.AbstractTreeTransferHandler#executeDrop(javax.swing.JTree, javax.swing.tree.DefaultMutableTreeNode, javax.swing.tree.DefaultMutableTreeNode, int, java.util.Vector, int)
 	 */
@@ -185,7 +193,7 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 			TreePath treePath = new TreePath(draggedNode.getFirstLeaf().getPath());
 			target.scrollPathToVisible(treePath);
 			target.setSelectionPath(treePath);
-			 if (tree.getWorkflowBuilderImpl().autoPopUp && (action == DnDConstants.ACTION_COPY))
+			if (tree.getWorkflowBuilderImpl().autoPopUp && (action == DnDConstants.ACTION_COPY))
 			 	tree.getWorkflowBuilderImpl().editNode(draggedNode, true);
 			return true;
 		}
@@ -212,5 +220,124 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 		}
 		return false;
 	}
+	
+    /*
+     * Return DefaultMutableTreeNode with user object set to relevant activity taken from transferable
+     * @param transferable
+     * @return DefaultMutableTreeNode
+     */
+    public DefaultMutableTreeNode getActivityNode(Transferable transferable, String s) {
+    	DefaultMutableTreeNode activityNode = new DefaultMutableTreeNode();
+    	try {
+    		String activityString = "";
+    		if (s != null) {
+    			activityString = s;
+    		} else {
+    			activityString = (String)transferable.getTransferData(TransferableNode.STRING_FLAVOR);
+    		}
+    		
+    		if (activityString == null) {
+    			activityNode = null;
+    		} else {
+				if (activityString.equalsIgnoreCase("SEQUENCE")) {
+					activityNode.setUserObject(new Sequence());
+					activityNode.setAllowsChildren(true);
+				}
+				else if (activityString.equalsIgnoreCase("FLOW")) {
+					activityNode.setUserObject(new Flow());
+					activityNode.setAllowsChildren(true);
+				}
+				else if (activityString.equalsIgnoreCase("STEP")) {
+					activityNode.setUserObject(new Step());
+					activityNode.setAllowsChildren(true);
+				}
+		        else if(activityString.equalsIgnoreCase("SCRIPT")) {
+		        	Script script = new Script();
+		        	script.setBody("");
+		        	activityNode.setUserObject(script);
+		            DefaultMutableTreeNode body = new DefaultMutableTreeNode();
+		            body.setUserObject(script.getBody());
+		            body.setAllowsChildren(false);		            
+		            activityNode.add(body);
+		          }
+				else if (activityString.equalsIgnoreCase("SET")) {
+					activityNode.setUserObject(new Set());
+					activityNode.setAllowsChildren(false);
+				}
+				else if (activityString.equalsIgnoreCase("UNSET")) {					
+					activityNode.setUserObject(new Unset());
+					activityNode.setAllowsChildren(false);
+				}
+				else if (activityString.equalsIgnoreCase("IF")) {
+					If newIf = new If();
+					Then newThen = new Then();					
+					newThen.setActivity(new Sequence());
+					newIf.setThen(newThen);
+					activityNode.setUserObject(newIf);
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();					
+					node.setUserObject(newIf.getThen());
+					node.setAllowsChildren(true);	
+					DefaultMutableTreeNode seq = new DefaultMutableTreeNode();
+					seq.setUserObject(newIf.getThen().getActivity());
+					seq.setAllowsChildren(true);
+					node.add(seq);
+					activityNode.add(node);					
+				}
+				else if (activityString.equalsIgnoreCase("ELSE")) {
+					Else newElse = new Else();
+					newElse.setActivity(new Sequence());
+					activityNode.setUserObject(newElse);
+					activityNode.setAllowsChildren(true);
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(newElse.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);					
+				}
+				else if (activityString.equalsIgnoreCase("FOR") || activityString.equalsIgnoreCase("FOR LOOP")) {
+					For f = new For();
+					f.setActivity(new Sequence());
+					activityNode.setUserObject(f);
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(f.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);
+				}				
+				else if (activityString.equalsIgnoreCase("PARFOR") || activityString.equalsIgnoreCase("PARALLEL LOOP")) {
+					Parfor newParfor = new Parfor();
+					activityNode.setUserObject(newParfor);
+					newParfor.setActivity(new Sequence());
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(newParfor.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);
+				}
+				else if (activityString.equalsIgnoreCase("SCOPE")) {
+					Scope newScope = new Scope();
+					newScope.setActivity(new Sequence());
+					activityNode.setUserObject(newScope);
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(newScope.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);
+				}
+				else if (activityString.equalsIgnoreCase("WHILE") || activityString.equalsIgnoreCase("WHILE LOOP")) {
+					While newWhile = new While();
+					activityNode.setUserObject(newWhile);
+					newWhile.setActivity(new Sequence());
+					DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+					node.setUserObject(newWhile.getActivity());
+					node.setAllowsChildren(true);
+					activityNode.add(node);
+				}
+				else {
+					logger.error("Unrecognised activity: " + activityString);
+				}
+    		}
+    	}
+    	catch (Exception ex) {
+    		logger.error("Exception creating ActivityNode: " + ex.getMessage());
+    	}
+    	return activityNode;
+    }
 	
 }

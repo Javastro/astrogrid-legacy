@@ -86,7 +86,6 @@ public class WorkflowDnDTree extends JTree {
     /** if expand is true, expand all nodes in the tree. otherwise collapse all nodes */
     public void expandAll(boolean expand) {
         TreeNode root = (TreeNode)getModel().getRoot();
-        TreeNode seq = root.getChildAt(0);
         expandAll(new TreePath(root),expand);
     }
     
