@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.23 2006/02/24 11:06:46 KevinBenson Exp $
+/*$Id: RegistryChooserPanel.java,v 1.24 2006/02/24 12:41:43 KevinBenson Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -499,7 +499,12 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
    private ResourceInformation[] exhaustiveQuery(String keywords)  throws NotFoundException, ServiceException {
        String sql = "Select * from Registry where ";
        String joinSQL = " or ";
+       boolean shallFilter = filter != null && filter.trim().length() > 0;
        String []keyword = keywords.split(" ");
+       if (keyword.length > 0 && shallFilter) {
+           sql += "("; //NWW  - added paren here - makes it easier to glue on filter if needed. or can just query on filter if keywords == ""
+       }
+       
        for(int j = 0;j < keyword.length;j++) {
            if(j != (keyword.length - 1) && keyword[(j+1)].trim().toLowerCase().equals("and")) {
                joinSQL = " and ";               
@@ -516,6 +521,12 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                joinSQL = null;
            }
        }//for
+       if (keyword.length > 0 && shallFilter) {
+           sql +=") and ";
+       }
+    if (shallFilter) {
+           sql += " (" + filter + ")";
+       }
        return reg.adqlSearchRI(sql);
    }
                     
@@ -569,6 +580,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.24  2006/02/24 12:41:43  KevinBenson
+added the filter on exhaustiveQuery
+
 Revision 1.23  2006/02/24 11:06:46  KevinBenson
 the joins were not working right for and's/or's
 
