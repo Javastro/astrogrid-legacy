@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.10 2006/02/02 14:50:23 nw Exp $
+/*$Id: LookoutImpl.java,v 1.11 2006/02/24 13:20:41 pjn3 Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -95,6 +96,8 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
@@ -123,6 +126,7 @@ import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.transformers.Votable2XhtmlTransformer;
 import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
+import org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl.CloseAction;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
 
@@ -262,6 +266,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         public DeleteAction() {
             super("Delete", IconHelper.loadIcon("delete_obj.gif"));
             this.putValue(SHORT_DESCRIPTION,"Delete a task record, or event message");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));
             this.setEnabled(false);            
         }
         
@@ -314,6 +319,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         public HaltAction() {
             super("Halt", IconHelper.loadIcon("stop.gif"));
             this.putValue(SHORT_DESCRIPTION,"Halt the execution of a task or job");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
             this.setEnabled(false);
         }
         
@@ -337,6 +343,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         public MarkAllReadAction() {
             super("Mark all Read", IconHelper.loadIcon("complete_status.gif"));
             this.putValue(SHORT_DESCRIPTION,"Mark all messages from this process as read");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_M));
             this.setEnabled(false);
         }
         public void actionPerformed(ActionEvent e) {
@@ -361,6 +368,20 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             //@todo - unsure whether it's safe to optimze this by calling 'getCurrentFolder()' - race condition..
             Folder f = (Folder)getFolderTree().getLastSelectedPathComponent();
             setEnabled(f != null && isTaskFolder(f.getInformation().getId()));
+        }
+    }
+    
+    /** close action */
+    protected final class CloseAction extends AbstractAction {
+
+        public CloseAction() {
+            super("Close",IconHelper.loadIcon("exit_small.png"));
+            this.putValue(SHORT_DESCRIPTION,"Close Lookout");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+        }
+        public void actionPerformed(ActionEvent e) {
+            hide();
+            dispose();
         }
     }
     
@@ -404,6 +425,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         public ParameterizedWorkflowAction() {
             super("Launch a canned workflow",IconHelper.loadIcon("run_tool.gif"));
             this.putValue(SHORT_DESCRIPTION,"Launch a parameterized workflow");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_L));
             this.setEnabled(true);
         }
         
@@ -415,7 +437,8 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private final class RefreshAction extends AbstractAction {
         public RefreshAction() {
             super("Refresh",IconHelper.loadIcon("update.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Check for new events and messages now");            
+            this.putValue(SHORT_DESCRIPTION,"Check for new events and messages now");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
         }
         public void actionPerformed(ActionEvent e) {
             jesStrategy.triggerUpdate();
@@ -428,7 +451,8 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private final class ViewTranscriptAction extends AbstractAction {
         public ViewTranscriptAction() {
             super("View",IconHelper.loadIcon("read_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"View transcript of selected workflow"); 
+            this.putValue(SHORT_DESCRIPTION,"View transcript of selected workflow");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_V));
             this.setEnabled(false);
         }
         public void actionPerformed(ActionEvent e) {
@@ -625,6 +649,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         public SubmitTaskAction() {
             super("Submit Task",IconHelper.loadIcon("file_obj.gif"));
             this.putValue(SHORT_DESCRIPTION,"Submit a saved task or workflow for execution");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
             this.setEnabled(true);
         }
         
@@ -650,6 +675,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         public TaskEditorAction() {
             super("Open task editor",IconHelper.loadIcon("thread_view.gif"));
             this.putValue(SHORT_DESCRIPTION,"Create and execute a stand-alone query or task");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
             this.setEnabled(true);
         }
         
@@ -662,6 +688,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         public WorkflowEditorAction() {
             super("Open workflow editor",IconHelper.loadIcon("tree.gif"));
             this.putValue(SHORT_DESCRIPTION,"Create and execute a workflow");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_W));
             this.setEnabled(true);
         }
         
@@ -709,6 +736,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     
     private Action submitTaskAction;
     private Action taskEditorAction;
+    private Action closeAction;
     
     private JToolBar toolbar;
     private Transformer votableTransformer;
@@ -943,10 +971,11 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         if (manageMenu == null) {
             manageMenu = new JMenu();
             manageMenu.setText("Manage");
+            manageMenu.setMnemonic(KeyEvent.VK_M);
             manageMenu.add(getRefreshAction());
             manageMenu.add(getHaltAction());
             manageMenu.add(getDeleteAction());   
-            newMenu.add(new JSeparator());                        
+            manageMenu.add(new JSeparator());                        
             manageMenu.add(getMarkAllReadAction());
             manageMenu.add(viewTranscriptAction);
     
@@ -1117,11 +1146,14 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         if (newMenu == null) {
             newMenu = new JMenu();
             newMenu.setText("New");
+            newMenu.setMnemonic(KeyEvent.VK_N);
             newMenu.add(getParameterizedWorkflowAction());
             newMenu.add(getWorkflowEditorAction());
             newMenu.add(getTaskEditorAction());            
             newMenu.add(new JSeparator());
             newMenu.add(getSubmitTaskAction());
+            newMenu.add(new JSeparator());
+            newMenu.add(getCloseAction());
         }
         return newMenu;
     }
@@ -1243,6 +1275,13 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             taskEditorAction = new TaskEditorAction();
         }
         return taskEditorAction;
+    }
+    
+    private Action getCloseAction() {
+        if (closeAction == null) {
+            closeAction = new CloseAction();
+        }
+        return closeAction;
     }
     
     ViewTranscriptAction viewTranscriptAction = new ViewTranscriptAction();
@@ -1370,6 +1409,9 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.11  2006/02/24 13:20:41  pjn3
+Menu changes
+
 Revision 1.10  2006/02/02 14:50:23  nw
 improved results viewing.
 
