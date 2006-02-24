@@ -1,10 +1,13 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ import java.util.Vector;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
@@ -54,17 +59,20 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     private File plasticPropertyFile;
 
+	private BrowserControl browser;
+
     /** constructor selected by pico when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app, RmiServer rmi, WebServer web) {
-        this(executor,idGenerator,app,rmi,web,null);
+            MessengerInternal app, RmiServer rmi, BrowserControl browser, WebServer web) {
+        this(executor,idGenerator,app,rmi,browser, web,null);
     }
     
     /** constructor selected by pico when systemtray is available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app,RmiServer rmi,WebServer web,SystemTray tray) {
+            MessengerInternal app,RmiServer rmi, BrowserControl browser, WebServer web,SystemTray tray) {
         this.tray = tray;
         this.rmiServer= rmi;
+        this.browser = browser;
         this.webServer= web;
         this.executor = executor;
         this.idGenerator = idGenerator;
@@ -397,6 +405,60 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			return CommonMessageConstants.EMPTY; //TODO really must think about returning nulls and xml-rpc.  Returning the empty list is the same as saying "I understand every message"
 		}
 		return client.getMessages();
+	}
+	
+	//TODO remove NULLS and broken images and consider linking to the ACR reg browser
+	public void prettyPrintRegisteredApps() throws IOException, ACRException {
+		File file = File.createTempFile("registeredapps",".html");
+		PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+		List apps = getRegisteredIds();
+		writer.println("<html><head><title>Plastic Registered Apps</title></head>");
+		writer.println("<body><h2>Plastic Registered Applications</h2>");
+		writer.println("This ACR\'s hub supports <a href='http://plastic.sourceforge.net'>plastic</a> version "+PlasticListener.CURRENT_VERSION);
+		writer.println("<table border='1'>");
+		writer.println("<tr><th>Icon</th><th>Name</th><th>Plastic Id</th><th>IVORN</th><th>Supported Messages</th><th>Plastic Version</th><th>Alive?</th></tr>");
+		Map ivorns = request(getHubId(), CommonMessageConstants.GET_IVORN, CommonMessageConstants.EMPTY);
+		Map icons = request(getHubId(), CommonMessageConstants.GET_ICON, CommonMessageConstants.EMPTY);
+		Map versions = request(getHubId(), CommonMessageConstants.GET_VERSION, CommonMessageConstants.EMPTY);
+		
+		Iterator it = apps.iterator();
+		while (it.hasNext()) {
+			URI plid = (URI) it.next();
+			String name = getName(plid);
+			List messages = getUnderstoodMessages(plid);
+			PlasticClientProxy client = clients.get(plid);
+			boolean alive = client.isResponding();
+			String version = (String) versions.get(plid);
+			String icon = (String) icons.get(plid);
+			String ivorn = (String) ivorns.get(plid);
+			
+			writer.println("<tr>");
+				writer.println("<td><img src='"+icon+"'/></td>");
+				writer.println("<td>"+name+"</td>");
+				writer.println("<td>"+plid+"</td>");
+				writer.println("<td>"+ivorn+"</td>");
+				writer.println("<td>");
+				if (CommonMessageConstants.EMPTY.equals(messages)) {
+					writer.write("All");
+				} else {
+					writer.write("<ul>");
+					Iterator mit = messages.iterator();
+					while (mit.hasNext()) {
+						URI msg = (URI) mit.next();
+						writer.write("<li>"+msg+"</li>");
+					}
+					writer.write("</ul>");
+				}
+				writer.println("</td>");
+				writer.println("<td>"+version+"</td>");
+				writer.println("<td>"+(alive ? "yes":"no")+"</td>");
+
+			writer.println("</tr>");
+			
+		}
+		writer.println("</table></body></html>");
+		writer.close();
+		browser.openURL(file.toURL());
 	}
 
 }

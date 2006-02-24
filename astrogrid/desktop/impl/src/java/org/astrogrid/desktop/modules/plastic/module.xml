@@ -26,6 +26,17 @@
 			<key>icon</key>
 			<value>plasticeye.gif</value>
 		</property>
+		<method name="prettyPrintRegisteredApps">
+			<description>List registered application details</description>
+			<property>
+				<key>icon</key>
+				<value>flatlayout.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>List registered application details</value>
+			</property>
+		</method>			
 		<method name="getHubId">
 			<description>Get the ID of this Hub</description>
 			<property>
@@ -480,7 +491,7 @@
 			<return>
 				<description>URL</description>
 			</return>
-		</method>		
+		</method>
 		<method name="echo">
 			<description>Send the ECHO message to registered
 				applications</description>

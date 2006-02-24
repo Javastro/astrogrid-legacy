@@ -13,8 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="pending" type="add">
-    <action dev="jdt">
+<release version="pending" >
+    <action dev="jdt" type="add">
+		Plastic: Added an option to display a prettyprinted table of all the registered apps.
+	</action>
+    <action dev="jdt" type="add">
 		Plastic: Implemented polling listeners for applications that can't directly
 		receive messages.
 	</action>

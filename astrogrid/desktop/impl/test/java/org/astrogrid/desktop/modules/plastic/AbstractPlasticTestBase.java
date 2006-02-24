@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
 
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
@@ -30,6 +31,8 @@ public class AbstractPlasticTestBase extends TestCase {
 	protected WebServer web;
 
 	protected RmiServer rmi;
+	
+	protected BrowserControl browser;
 
 	public void setUp() {
 		messenger = new MessengerImpl();
