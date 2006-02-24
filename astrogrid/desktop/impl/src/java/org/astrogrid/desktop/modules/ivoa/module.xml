@@ -21,7 +21,10 @@
 		<key>priority</key>
 		<value>70</value>
 	</property>	
-	
+	<component name="skynode"
+		implementationClass="org.astrogrid.desktop.modules.ivoa.SkyNodeImpl"
+		interfaceClass="org.astrogrid.acr.ivoa.SkyNode">
+	</component>
 	<component name="ssap"
 		implementationClass="org.astrogrid.desktop.modules.ivoa.SsapImpl"
 		interfaceClass="org.astrogrid.acr.ivoa.Ssap">
