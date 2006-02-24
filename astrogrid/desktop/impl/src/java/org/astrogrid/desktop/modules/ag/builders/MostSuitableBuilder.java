@@ -1,4 +1,4 @@
-/*$Id: MostSuitableBuilder.java,v 1.2 2005/10/18 16:53:34 nw Exp $
+/*$Id: MostSuitableBuilder.java,v 1.3 2006/02/24 15:22:29 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,6 +54,7 @@ public class MostSuitableBuilder implements InformationBuilder {
         builders.add(new ConeInformationBuilder());
         builders.add(new SiapInformationBuilder());
         builders.add(new ApplicationInformationBuilder());
+        builders.add(new SkyNodeInformationBuilder());
         builders.add(new ResourceInformationBuilder()); // fallback builder.
     }
     private final ApplicablePredicate test = new ApplicablePredicate();
@@ -76,6 +77,9 @@ public class MostSuitableBuilder implements InformationBuilder {
 
 /* 
 $Log: MostSuitableBuilder.java,v $
+Revision 1.3  2006/02/24 15:22:29  nw
+integration necessary for skynode
+
 Revision 1.2  2005/10/18 16:53:34  nw
 refactored common functionality.
 added builders for siap and cone.
