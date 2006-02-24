@@ -1,4 +1,4 @@
-/*$Id: SaveNodesAction.java,v 1.1 2006/02/09 15:40:01 nw Exp $
+/*$Id: SaveNodesButton.java,v 1.1 2006/02/24 15:26:53 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -51,13 +52,14 @@ import javax.swing.SwingUtilities;
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
  *
  */
-public class SaveNodesAction extends NodeConsumerAction {
+public class SaveNodesButton extends NodeConsumerButton {
     
     
-    private static final Log logger = LogFactory.getLog(SaveNodesAction.class);
+    private static final Log logger = LogFactory.getLog(SaveNodesButton.class);
     
-    public SaveNodesAction( FocusSet selection, UIComponent ui,Community comm, ResourceChooserInternal chooser, MyspaceInternal myspace ) {
+    public SaveNodesButton( FocusSet selection, UIComponent ui,Community comm, ResourceChooserInternal chooser, MyspaceInternal myspace ) {
         super("Save", "Save the selected nodes to Myspace or local disk",selection);
+        this.setIcon(IconHelper.loadIcon("filesave.png"));
         this.comm = comm;
         this.chooser = chooser;
         this.ui = ui;
@@ -275,7 +277,10 @@ public class SaveNodesAction extends NodeConsumerAction {
 
 
 /* 
- $Log: SaveNodesAction.java,v $
+ $Log: SaveNodesButton.java,v $
+ Revision 1.1  2006/02/24 15:26:53  nw
+ build framework for dynamically adding buttons
+
  Revision 1.1  2006/02/09 15:40:01  nw
  finished refactoring of astroscope.
  added vospec viewer

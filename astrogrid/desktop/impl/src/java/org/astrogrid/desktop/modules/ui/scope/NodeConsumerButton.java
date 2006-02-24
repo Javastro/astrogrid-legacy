@@ -1,4 +1,4 @@
-/*$Id: NodeConsumerAction.java,v 1.1 2006/02/09 15:40:01 nw Exp $
+/*$Id: NodeConsumerButton.java,v 1.1 2006/02/24 15:26:53 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.event.ActionListener;
+
 import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
 
 /** Something that consumes a set of selected nodes - used as a plugin for the astroscope ui,
  * 
@@ -24,14 +28,14 @@ import javax.swing.AbstractAction;
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
  *
  */
-public  abstract class  NodeConsumerAction extends AbstractAction implements FocusListener{
-        public NodeConsumerAction(String name,String description,FocusSet selectedNodes) {
-            putValue(NAME,name);
-            putValue(SHORT_DESCRIPTION,description);
-            putValue(LONG_DESCRIPTION,description);
+public  abstract class  NodeConsumerButton extends JButton implements FocusListener, ActionListener{
+        public NodeConsumerButton(String name,String description,FocusSet selectedNodes) {
+            this.setText(name);
+            this.setToolTipText(description);
             this.selectedNodes = selectedNodes;
             selectedNodes.addFocusListener(this);
             setEnabled(false); // to start with, disabled.
+            addActionListener(this);
         }
         
         protected final FocusSet selectedNodes;
@@ -46,7 +50,10 @@ public  abstract class  NodeConsumerAction extends AbstractAction implements Foc
 
 
 /* 
-$Log: NodeConsumerAction.java,v $
+$Log: NodeConsumerButton.java,v $
+Revision 1.1  2006/02/24 15:26:53  nw
+build framework for dynamically adding buttons
+
 Revision 1.1  2006/02/09 15:40:01  nw
 finished refactoring of astroscope.
 added vospec viewer
