@@ -33,4 +33,16 @@ public class HubRegistrationTest extends PresetupHub {
 		assertTrue("Hub not there! Shouldn't be able to deregister",hub.getRegisteredIds().contains(hubId)); 
 		
 	}
+	/**
+	 * The sender of a message should not receive it.
+	 *
+	 */
+	public void testSenderShouldNotReceive() {
+		TestListener2 listener = new TestListener2();
+		URI id = hub.registerRMI("test", CommonMessageConstants.EMPTY, listener);
+		URI m = URI.create("ivo://test");
+		hub.requestAsynch(id, m , CommonMessageConstants.EMPTY);
+		URI lastMessage = listener.getMessage();
+		assertNotSame(m,lastMessage);
+	}
 }
