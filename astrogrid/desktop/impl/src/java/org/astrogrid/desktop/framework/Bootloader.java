@@ -1,4 +1,4 @@
-/*$Id: Bootloader.java,v 1.7 2005/11/23 19:15:30 jdt Exp $
+/*$Id: Bootloader.java,v 1.8 2006/02/24 14:54:01 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,6 +48,7 @@ public class Bootloader implements Startable{
      */
     public void start() {
         registerModule("system","/org/astrogrid/desktop/modules/system/module.xml");
+        registerModule("plastic","/org/astrogrid/desktop/modules/plastic/module.xml");
         registerModule("astrogrid","/org/astrogrid/desktop/modules/ag/module.xml");
         registerModule("ivoa","/org/astrogrid/desktop/modules/ivoa/module.xml");        
         registerModule("cds","/org/astrogrid/desktop/modules/cds/module.xml");
@@ -57,7 +58,6 @@ public class Bootloader implements Startable{
         registerModule("ui","/org/astrogrid/desktop/modules/ui/module.xml");            
         registerModule("scripting","/org/astrogrid/desktop/modules/scripting/module.xml");
         registerModule("external","/org/astrogrid/desktop/modules/external/module.xml");  
-        registerModule("plastic","/org/astrogrid/desktop/modules/plastic/module.xml");
     }
     
 /**Parse and process a module descriptor
@@ -98,6 +98,9 @@ public class Bootloader implements Startable{
 
 /* 
 $Log: Bootloader.java,v $
+Revision 1.8  2006/02/24 14:54:01  nw
+adjusted to start up plastic earlier
+
 Revision 1.7  2005/11/23 19:15:30  jdt
 Extruded plastic.
 
