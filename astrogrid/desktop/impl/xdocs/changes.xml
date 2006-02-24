@@ -14,6 +14,15 @@
 	</head>
 <body>
 <release version="pending" >
+    <action dev="pjn" type="fix" issue="1522">
+		Added cut/copy/pase and import/export to script editor
+	</action>
+	<action dev="pjn" type="add">
+	    Transcript viewer now has stip transcript button - reopen in workflow builder with all execution info removed
+	</action>
+	<action dev="pjn" type="add">
+	    Workflow builder - added menu options for insert, for use with Macs
+	</action>
     <action dev="jdt" type="add">
 		Plastic: Added an option to display a prettyprinted table of all the registered apps.
 	</action>
