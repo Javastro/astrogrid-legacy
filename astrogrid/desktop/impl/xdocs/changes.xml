@@ -36,6 +36,10 @@ on what messages other clients support.  Refactored the main impl class at the s
     <action dev="kmb" type="add">
 		Astroscope: made Search Results bigger.
 	</action>
+    <action dev="kmb" type="fix">
+		RegistrySearch: RegistryChooserPanel component, was not construcing sql right for and's/or's type queries
+when the user put and/or in the keyword box.  Now fixed.
+	</action>
 </release>
 <release version="2.0-beta-5" date="2006-02-17">
       <action dev="nw" type="add">
