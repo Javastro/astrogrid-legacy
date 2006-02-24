@@ -73,13 +73,13 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
         toolPanel.setBackground(Color.WHITE);
         jta = new JTextArea();     
         jta.setColumns(60);
-        jta.setBorder(myBorder);
-        jta.setToolTipText("Double click to edit");
+        jta.setBorder(myBorder);         
     }
     private final ApplicationsInternal apps;
     private final JPanel rendererPanel;
     private final AbstractToolEditorPanel toolPanel;
     private final JTextArea jta; 
+    private boolean scriptTip = true;
     
 	public Component getTreeCellRendererComponent(JTree tree, 
             Object value,
@@ -282,6 +282,8 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
                     int lineCt = StringUtils.split(text,'\n').length ;
                     jta.setRows(lineCt);
 					jta.setText(text);
+					if (scriptTip)
+					jta.setToolTipText("Double click to edit");
 					return jta;
 				}
 				else if (value instanceof StepExecutionRecord) {
@@ -307,6 +309,7 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
 					label.setText(sb.toString());
 					label.setToolTipText(null);
 					label.setIcon(null);
+					scriptTip = false; 
 				}				
 				else if (value instanceof MessageType) {
 					MessageType o = (MessageType)value;
