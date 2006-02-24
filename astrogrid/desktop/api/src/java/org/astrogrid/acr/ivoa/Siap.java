@@ -1,4 +1,4 @@
-/*$Id: Siap.java,v 1.2 2006/02/02 14:19:47 nw Exp $
+/*$Id: Siap.java,v 1.3 2006/02/24 12:17:52 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 import java.net.URI;
 import java.net.URL;
 
-/**Queryi for Images from Simple Image Access Protocol (SIAP) services
+/**Query for Images from Simple Image Access Protocol (SIAP) services
  * @see http://www.ivoa.net/Documents/latest/SIA.html 
  * @service ivoa.siap
  * @since 1.3
@@ -118,6 +118,9 @@ void saveResults(URL siapQuery, URI saveLocation) throws SecurityException, Serv
 
 /* 
 $Log: Siap.java,v $
+Revision 1.3  2006/02/24 12:17:52  nw
+added interfaces for skynode
+
 Revision 1.2  2006/02/02 14:19:47  nw
 fixed up documentation.
 

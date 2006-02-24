@@ -1,4 +1,4 @@
-/*$Id: Ssap.java,v 1.1 2006/02/02 14:19:47 nw Exp $
+/*$Id: Ssap.java,v 1.2 2006/02/24 12:17:52 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,12 +91,15 @@ public interface Ssap {
      */
     String getRegistryQuery();
     
-    
+  
 }
 
 
 /* 
 $Log: Ssap.java,v $
+Revision 1.2  2006/02/24 12:17:52  nw
+added interfaces for skynode
+
 Revision 1.1  2006/02/02 14:19:47  nw
 fixed up documentation.
  

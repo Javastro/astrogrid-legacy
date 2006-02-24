@@ -1,4 +1,4 @@
-/*$Id: ColumnBean.java,v 1.2 2006/02/02 14:19:47 nw Exp $
+/*$Id: ColumnBean.java,v 1.3 2006/02/24 12:17:52 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public class ColumnBean implements Serializable{
     public String getUCD() {
         return this.UCD;
     }
-    /** description of the units of this column */
+    /** description of theunits of this column */
     public String getUnit() {
         return this.unit;
     }
@@ -66,6 +66,9 @@ public class ColumnBean implements Serializable{
 
 /* 
 $Log: ColumnBean.java,v $
+Revision 1.3  2006/02/24 12:17:52  nw
+added interfaces for skynode
+
 Revision 1.2  2006/02/02 14:19:47  nw
 fixed up documentation.
 
