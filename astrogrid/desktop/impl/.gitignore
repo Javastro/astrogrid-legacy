@@ -3,3 +3,4 @@
 junit*.properties
 build.properties
 target
+.byecycle
