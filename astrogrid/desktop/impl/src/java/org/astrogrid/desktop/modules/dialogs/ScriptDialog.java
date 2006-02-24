@@ -20,14 +20,25 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URI;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
@@ -35,20 +46,191 @@ import jedit.JEditTextArea;
 import jedit.JavaTokenMarker;
 import jedit.SyntaxDocument;
 
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.exolab.castor.xml.Unmarshaller;
 /**
  * Simple dialog that displays script activities
  * @author Phil Nicolson pjn3@star.le.ac.uk 12/8/05
  * 
  * @modified nww - display results in a jedit box - gives syntax coloring. rewrittn to use joptionpane.
  * @modified pjn - groovy validation added
+ * @modified pjn - Open/Save/Cut/Copy actions added
  */
-public class ScriptDialog extends BaseBeanEditorDialog implements ActionListener {
+public class ScriptDialog extends BaseBeanEditorDialog {
 	private JEditTextArea scriptField;
 	private JPanel displayPanel;
 	private JTextField descField;
-	private JButton validateButton;
+	private JMenu fileMenu, editMenu;
+	private JMenuBar jJMenuBar;
+	private JToolBar toolbar;
+	
+	protected Action openAction, saveAction, newAction, validateAction, 
+	                 pasteAction, copyAction, cutAction, selectAllAction;
+	
+	protected final ResourceChooserInternal chooser;
+    protected final MyspaceInternal myspace; 
+    
+    /** load a script */
+	protected final class OpenAction extends AbstractAction {
+	    public OpenAction() {
+	        super("Open", IconHelper.loadIcon("file_obj.gif"));
+	        this.putValue(SHORT_DESCRIPTION,"Load a script from storage");
+	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
+	        this.setEnabled(true);            
+	    }
+	    public void actionPerformed(ActionEvent e) {
+        	final URI u = chooser.chooseResource("Load workflow",true);
+            if (u == null) {
+                return;
+            }
+            try {
+                Reader reader = new InputStreamReader(myspace.getInputStream(u));		                		         
+                Script s = (Script)Unmarshaller.unmarshal(Script.class, reader);	                
+                descField.setText(s.getBody());
+                scriptField.setText(s.getBody());
+                reader.close();
+            } catch (Exception ex) {
+            	showError("An error occured loading script... ", ex);
+            }
+	    }
+	}	
+	
+	/** New script */
+    protected final class NewAction extends AbstractAction {
+        public NewAction() {
+            super("New",IconHelper.loadIcon("newfile_wiz.gif"));
+            this.putValue(SHORT_DESCRIPTION,"Create a new script");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
+            this.setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+            int code = JOptionPane.showConfirmDialog(null,"Discard current script?","Are you sure?",JOptionPane.OK_CANCEL_OPTION);
+            if (code == JOptionPane.OK_OPTION) {
+                scriptField.setText("");
+                descField.setText("");
+            }
+        }
+    }
+    
+    /** Save script */
+    protected final class SaveAction extends AbstractAction {   	 
+        public SaveAction() {
+            super("Save",IconHelper.loadIcon("fileexport.png"));
+            this.putValue(SHORT_DESCRIPTION,"Save script document");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+            this.setEnabled(false);        
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            final URI u = chooser.chooseResourceWithParent("Save Task Document",true,true, true,null);
+            if (u == null) {
+                return;
+            }
+            if (scriptField.getText().length() <= 0 && descField.getText().length() <= 0)
+            	return;
+            
+            try {
+                Writer w = new OutputStreamWriter(myspace.getOutputStream(u));
+                Script s = new Script();
+                s.setDescription(descField.getText());
+                s.setBody(scriptField.getText());
+                ((AbstractActivity)s).marshal(w);
+                w.close();
+            } catch (Exception ex) {
+            	showError("An error ocurred saving your script ", ex);
+            }
+        }
+    }
+    
+	/** Validate script */
+    protected final class ValidateAction extends AbstractAction {
+        public ValidateAction() {
+            super("Validate",IconHelper.loadIcon("icon_Set.gif"));
+            this.putValue(SHORT_DESCRIPTION,"<html>Check if script is valid groovy script. <br>(Scripts are validated in isolation to the workflow document)</html>");
+            this.setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+        	try{
+        		Binding binding = new Binding();
+        		GroovyShell shell = new GroovyShell(binding);
+        		Object value = shell.evaluate(getScriptField().getText());
+        		JOptionPane.showMessageDialog(null, 
+        				                      "Your script appears to be valid",
+    										  "Script appears valid", 
+    										  JOptionPane.INFORMATION_MESSAGE);
+            } 
+            catch (CompilationFailedException ex ) {
+            	showError("Your script may contain errors ",ex);
+            }
+        	catch (MissingMethodException ex)  {
+        		showError("Your script may contain errors ",ex);
+        	}
+        	catch (MissingPropertyException ex) {
+        		JOptionPane.showMessageDialog(null, 
+                                              "<html>Your script appears valid, assuming the following variable is set <br>elsewhere in your workflow document (if not please add a 'SET' activity..)<br><br>" +ex + "</html>" ,
+    					                      "Script appears valid", 
+    					                      JOptionPane.INFORMATION_MESSAGE);
+        	}
+        }
+    }
+    
+    protected final class PasteAction extends AbstractAction {
+    	public PasteAction() {
+    		super("Paste",IconHelper.loadIcon("paste_edit.gif"));
+    		this.putValue(SHORT_DESCRIPTION,"Paste");
+    		//this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_V).intValue(),InputEvent.CTRL_DOWN_MASK));
+    		this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
+    		this.putValue(Action.NAME, "Paste");     	
+    	}
+        public void actionPerformed(ActionEvent e) {
+        		scriptField.paste();
+        	}
+    }
+    
+    protected final class CopyAction extends AbstractAction {
+    	public CopyAction() {
+    		super("Copy",IconHelper.loadIcon("copy.gif"));
+    		this.putValue(SHORT_DESCRIPTION,"Copy");
+    		//this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_C).intValue(),InputEvent.CTRL_DOWN_MASK));
+    		this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+    		this.putValue(Action.NAME, "Copy"); 
+    	}
+        public void actionPerformed(ActionEvent e) {       	
+        		scriptField.copy();
+        	}
+    }
+    
+    protected final class CutAction extends AbstractAction {
+    	public CutAction() {
+    		super("Cut",IconHelper.loadIcon("cut_edit.gif"));
+    		this.putValue(SHORT_DESCRIPTION,"Cut");
+    		this.putValue(Action.NAME, "Cut"); 
+    		//this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_X).intValue(),InputEvent.CTRL_DOWN_MASK));
+    		this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
+    	}
+        public void actionPerformed(ActionEvent e) {       	
+        		scriptField.cut();
+        	}
+    }
+    
+    protected final class SelectAllAction extends AbstractAction {
+    	public SelectAllAction() {
+    		super("Select all",null);
+    		this.putValue(SHORT_DESCRIPTION,"Select all");
+    		this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
+    		//this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_A).intValue(),InputEvent.CTRL_DOWN_MASK));
+    		this.putValue(Action.NAME, "Select all");    		
+    	}
+        public void actionPerformed(ActionEvent e) {       	
+        		scriptField.selectAll();
+        	}
+    }
+
+	
 	
 	/**
 	 * This method initializes jTextArea	
@@ -64,9 +246,13 @@ public class ScriptDialog extends BaseBeanEditorDialog implements ActionListener
             scriptField.addCaretListener(new CaretListener(){
             	public void caretUpdate(CaretEvent e) {
             		if (scriptField.getDocumentLength() >0) {
-            		  validateButton.setEnabled(true);
+            		    validateAction.setEnabled(true);
+            		    saveAction.setEnabled(true);
+            		    newAction.setEnabled(true);
             		} else {
-            			validateButton.setEnabled(false);
+            			validateAction.setEnabled(false);
+            			saveAction.setEnabled(false);
+            			newAction.setEnabled(false);
             		}
             	}
             });
@@ -74,12 +260,51 @@ public class ScriptDialog extends BaseBeanEditorDialog implements ActionListener
 		return scriptField;
 	}
 	
+	private JToolBar getToolbar() {
+        if (toolbar == null) {
+    		toolbar = new JToolBar();
+    		toolbar.setRollover(true);
+    		toolbar.setFloatable(false);
+    		toolbar.add(newAction);
+    		toolbar.add(openAction);
+    		toolbar.add(saveAction);
+    		toolbar.add(validateAction);    		
+    		toolbar.add(cutAction);
+    		toolbar.add(copyAction);
+    		toolbar.add(pasteAction);    		    		
+    		toolbar.add(new JSeparator(SwingConstants.VERTICAL));
+    		toolbar.add(getDescriptionPanel());
+        }
+        return toolbar;
+	}
+	
 	public JPanel getDisplayPanel() {
 		if (displayPanel == null) {
 			displayPanel = new JPanel();
             displayPanel.setLayout(new BorderLayout());
-			displayPanel.add(getScriptField(), BorderLayout.CENTER);
-			displayPanel.add(getDescriptionPanel(), BorderLayout.NORTH);
+   
+            newAction = new NewAction();
+            openAction = new OpenAction();
+            saveAction = new SaveAction();
+            validateAction = new ValidateAction();
+            pasteAction = new PasteAction();
+            copyAction = new CopyAction();
+            cutAction = new CutAction();
+            selectAllAction = new SelectAllAction();
+            
+            this.setJMenuBar(getJJMenuBar());            
+            fileMenu.add(newAction);
+            fileMenu.add(openAction);
+            fileMenu.add(saveAction); 
+            
+            editMenu.add(cutAction);
+            editMenu.add(copyAction);
+            editMenu.add(pasteAction);
+            editMenu.add(selectAllAction);           
+
+            displayPanel.add(getToolbar(), BorderLayout.NORTH);
+            //displayPanel.add(getDescriptionPanel(), BorderLayout.CENTER);
+			displayPanel.add(getScriptField(), BorderLayout.SOUTH);		
 		}
 		return displayPanel;
 	}
@@ -88,26 +313,21 @@ public class ScriptDialog extends BaseBeanEditorDialog implements ActionListener
 		JPanel p = new JPanel(new FlowLayout());
 		JLabel label = new JLabel("Description:  ");
 		descField = new JTextField(30);
-		validateButton = new JButton();
-		validateButton.setText("Validate script");
-		validateButton.setToolTipText("<html>Check if script is valid groovy script. <br>(Scripts are validated in isolation to the workflow document)</html>");
-		validateButton.setEnabled(false);
-		validateButton.addActionListener(this);
 		p.add(label);
 		p.add(descField);
-		p.add(validateButton);
 		p.setBorder(BorderFactory.createEtchedBorder());
 		return p;
 	}	
 
 
     
-    public ScriptDialog(Component parentComponent) {
-        super(parentComponent);
+    public ScriptDialog(Component parentComponent, ResourceChooserInternal chooser, MyspaceInternal myspace) {
+        super(parentComponent);        
         this.setTitle("Edit Script");
         this.setSize(685,570);
         this.pack();
-        
+        this.chooser = chooser;
+        this.myspace = myspace;
     }
 
     
@@ -130,32 +350,6 @@ public class ScriptDialog extends BaseBeanEditorDialog implements ActionListener
         return (Script)getTheBean();
     }
 
-    /**
-     * 
-     */
-    public void actionPerformed(ActionEvent e) {
-    	try{
-    		Binding binding = new Binding();
-    		GroovyShell shell = new GroovyShell(binding);
-    		Object value = shell.evaluate(getScriptField().getText());
-    		JOptionPane.showMessageDialog(this, 
-    				                      "Your script appears to be valid",
-										  "Script appears valid", 
-										  JOptionPane.INFORMATION_MESSAGE);
-        } 
-        catch (CompilationFailedException ex ) {
-        	showError("Your script may contain errors",ex);
-        }
-    	catch (MissingMethodException ex)  {
-    		showError("Your script may contain errors",ex);
-    	}
-    	catch (MissingPropertyException ex) {
-    		JOptionPane.showMessageDialog(this, 
-                                          "<html>Your script appears valid, assuming the following variable is set <br>elsewhere in your workflow document (if not please add a 'SET' activity..)<br><br>" +ex + "</html>" ,
-					                      "Script appears valid", 
-					                      JOptionPane.INFORMATION_MESSAGE);
-    	}
-    }
     
     /**
      * @param s
@@ -164,4 +358,31 @@ public class ScriptDialog extends BaseBeanEditorDialog implements ActionListener
     protected void showError(String s, Exception ex) throws HeadlessException {
         JOptionPane.showMessageDialog(this,ex,s,JOptionPane.ERROR_MESSAGE);
     }
+       
+	private JMenuBar getJJMenuBar() {
+		if (jJMenuBar == null) {
+			jJMenuBar = new JMenuBar();
+			jJMenuBar.add(getFileMenu());
+			jJMenuBar.add(getEditMenu());
+		}
+		return jJMenuBar;
+	}
+   
+	private JMenu getFileMenu() {
+		if (fileMenu == null) {
+			fileMenu = new JMenu();
+			fileMenu.setText("File");
+			fileMenu.setMnemonic(KeyEvent.VK_F);
+		}
+		return fileMenu;
+	}
+	
+	private JMenu getEditMenu() {
+		if (editMenu == null) {
+			editMenu = new JMenu();
+			editMenu.setText("Edit");
+			editMenu.setMnemonic(KeyEvent.VK_E);
+			}
+		return editMenu;
+	}
 }
