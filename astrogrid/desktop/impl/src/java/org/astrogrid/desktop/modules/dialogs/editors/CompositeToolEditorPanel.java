@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.11 2005/12/16 09:42:47 jl99 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.12 2006/02/24 13:18:41 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -299,14 +299,15 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 //        AbstractToolEditorPanel datacenter =(AbstractToolEditorPanel)builder.getComponentInstance(DatacenterToolEditorPanel.class);
         AbstractToolEditorPanel adqlEditor =(AbstractToolEditorPanel)builder.getComponentInstance(ADQLToolEditorPanel.class);
 
-//        tabPane.addTab("Query",datacenter);   
+//        tabPane.addTab("Query",datacenter);
+        tabPane.addTab("Chooser",chooser);
         tabPane.addTab("Query",adqlEditor);   
         AbstractToolEditorPanel basic =(AbstractToolEditorPanel)builder.getComponentInstance(BasicToolEditorPanel.class);
         tabPane.addTab("Parameter",basic);       
         AbstractToolEditorPanel xml = (AbstractToolEditorPanel)builder.getComponentInstance(RawXMLToolEditorPanel.class);
         tabPane.addTab("XML",xml);
         tabPane.addTab("Info",information);        
-        tabPane.addTab("Chooser",chooser);
+//        tabPane.addTab("Chooser",chooser);
         hs.enableHelp(tabPane, "userInterface.workflowBuilder.taskEditor");
                 
         JToolBar tb = new JToolBar();
@@ -337,6 +338,12 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.12  2006/02/24 13:18:41  pjn3
+Re-ordered tabs
+
+Revision 1.11.14.1  2006/02/23 09:56:59  pjn3
+re-order tabs so chooser top
+
 Revision 1.11  2005/12/16 09:42:47  jl99
 Merge from branch desktop-querybuilder-jl-1404
 
