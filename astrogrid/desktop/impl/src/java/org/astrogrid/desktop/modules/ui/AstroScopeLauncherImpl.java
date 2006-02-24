@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.30 2006/02/23 09:30:33 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.31 2006/02/24 15:25:57 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
@@ -34,20 +30,28 @@ import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
 import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
+import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesAction;
+import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
 import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.VOSpecAction;
+import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
 import org.astrogrid.desktop.modules.ui.scope.Vizualization;
 import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
+import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
-import org.astrogrid.io.Piper;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.votech.plastic.CommonMessageConstants;
+import org.votech.plastic.HubMessageConstants;
+import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.PlasticListener;
+import org.votech.plastic.incoming.handlers.MessageHandler;
+import org.votech.plastic.incoming.handlers.StandardHandler;
 
 import com.l2fprod.common.swing.JButtonBar;
 
@@ -58,40 +62,29 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -103,20 +96,51 @@ import javax.swing.table.TableColumnModel;
  * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
-public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, ActionListener {
+public class AstroScopeLauncherImpl extends UIComponent 
+    implements AstroScope, ActionListener, PlasticListener, PlasticWrapper {
+   
+/** extends the plastic mesagehandler to display new buttons */
+    protected class AstroscopePlasticMessageHandler extends ApplicationRegisteredPlasticMessageHandler {
+
+        private AstroscopePlasticMessageHandler(UIComponent parent, PlasticWrapper wrapper, Container container) {
+            super(parent, wrapper, container);
+        }
+
+        // define this method to control what happens when a new application registers.
+        protected Component[] buildComponents(URI applicationId, String name, URL iconURL, URI[] messages) {
+            List results= new ArrayList();
+            if (ArrayUtils.contains(messages,CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
+                results.add(
+                        new VotableLoadPlasticButton(applicationId,name,iconURL,vizModel.getSelectionFocusSet(),
+                                AstroScopeLauncherImpl.this,AstroScopeLauncherImpl.this)                         
+                        );
+            }
+            if (ArrayUtils.contains(messages,IMAGES_LOAD_FROM_URL_MESSAGE)) {                    
+                results.add(
+                        new ImageLoadPlasticButton(applicationId,name,iconURL,vizModel.getSelectionFocusSet(),
+                                AstroScopeLauncherImpl.this,AstroScopeLauncherImpl.this)                           
+                        );
+            }                
+            return (Component[])results.toArray(new Component[results.size()]);
+            
+        }
+    }
+
+
     public static final int TOOLTIP_WRAP_LENGTH = 50;
     
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
+    static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
 
     //Various gui components.
     private JTextField posText;           
-    private JButton reFocusTopButton;        
+    private JButton reFocusTopButton;   
+    private JButton clearButton;
     private JTextField regionText;
     private JButton submitButton;
-
+           
     //name resolver.
     private final Sesame ses;
 
@@ -127,8 +151,27 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
     private final VizModel vizModel;
     // set of vizualization components
     private final VizualizationManager vizualizations;
-   // set of actions that process selected nodes.
-    private final List consumerActions;
+
+    // used to generate a new plastic id for each astroscope window
+    private static int UNQ_ID = 0;
+    private final URI myPlasticID;
+    // list of plastic messasges astroscope will accept.
+    private static List  acceptedMessages = new ArrayList() {
+        {//initializer block.
+        this.add(CommonMessageConstants.ECHO);
+        this.add(CommonMessageConstants.GET_IVORN);
+        this.add(CommonMessageConstants.GET_NAME);
+        this.add(CommonMessageConstants.GET_VERSION);
+        //this.add(CommonMessageConstants.GET_ICON); not yet.
+        this.add(HubMessageConstants.APPLICATION_REGISTERED_EVENT);
+        this.add(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT);
+        }
+    };
+           
+    
+    private JButtonBar dynamicButtons = new JButtonBar(JButtonBar.VERTICAL);
+    private final PlasticHubListener hub;
+    private final MessageHandler plasticHandler;// handles incoming plastic messages
     /**
      * 
      * @param ui
@@ -140,13 +183,14 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
      * @param rci
      * @param siap
      * @param cone
+     * @throws URISyntaxException 
      */
     public AstroScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, Community comm) {
+                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, Community comm, PlasticHubListener hub) throws URISyntaxException {
         super(conf,hs,ui);
-        this.ses = ses;
         
+        this.ses = ses;               
         // configure data protcols
         protocols = new DalProtocolManager();
         protocols.add(new SiapProtocol(this,reg,siap));
@@ -159,14 +203,32 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         vizualizations.add( new WindowedRadialVizualization(vizualizations));
         vizualizations.add(new HyperbolicVizualization(vizualizations));
 
-        // create the consumer actions.
-        consumerActions = new ArrayList();
-        consumerActions.add(new SaveNodesAction(vizModel.getSelectionFocusSet(),this,comm,chooser,myspace));
-        consumerActions.add(new VOSpecAction(vizModel.getSelectionFocusSet(),this));
+        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,comm,chooser,myspace));
+        dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
         
+        // plastic setup
+        IMAGES_LOAD_FROM_URL_MESSAGE = new URI("ivo://votech.org/fits/image/loadFromURL");
+        this.hub = hub;
+        // generates a new name each time.
+        String appName = "AstroScope-" + UNQ_ID++;
+       // standard message handler.
+        this.plasticHandler = new StandardHandler(appName,"ivo://org.astrogrid/astroscope", PlasticListener.CURRENT_VERSION);
+        // message handler for application add and  applcation remove messages.
+        ApplicationRegisteredPlasticMessageHandler dynamicButtonHandler = new AstroscopePlasticMessageHandler(this, this, dynamicButtons);
+        this.plasticHandler.setNextHandler(dynamicButtonHandler);
+        // register with the hub
+        myPlasticID = hub.registerRMI(appName, acceptedMessages,this );
+        // inspect what applications have already registered .
+        //get what's currently registered there.
+        List ids = hub.getRegisteredIds();
+        for (Iterator i = ids.iterator(); i.hasNext(); ) {
+            URI id = (URI)i.next();
+            if (! id.equals(myPlasticID) ) { // no point looking at my own navel,
+                dynamicButtonHandler.interrogatePlasticApp(id);
+            }
+        }
         
-        // build the ui.
-  
+        // build the ui.  
         this.setSize(1000,707); // same proportions as A4,    
                    
 //        this.setSize(700, 700);  
@@ -194,6 +256,15 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         }else if(source == reFocusTopButton) {
             vizualizations.refocusMainNodes();
             vizualizations.reDrawGraphs();
+        }else if (source == clearButton) {
+            FocusSet set = vizModel.getSelectionFocusSet();
+            for (Iterator i = set.iterator(); i.hasNext(); ) {
+                TreeNode n = (TreeNode)i.next();
+                //i.remove();
+                n.setAttribute("selected","false");
+            }
+            set.clear();
+            vizualizations.reDrawGraphs();
         }
 
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
@@ -206,7 +277,6 @@ public class AstroScopeLauncherImpl extends UIComponent implements AstroScope, A
         vizualizations.refocusMainNodes(); 
         setProgressMax(1);
         setProgressValue(0);
-  
     }
          
         
@@ -390,23 +460,27 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         return servicesPanel;
     }
     
+
+    
+    
     /**
      * Creates the left/WEST side of the GUI.  By creating a small search panel at the top(north-west).  Then
      * let the rest of the panel be a JTree for the selected data.
      * @return JPanel consisting of the query gui and custom controls typically placedo on the WEST side of the main panel.
-     * @todo get this looking nice.
      */
     private JPanel makeSearchPanel() {
         JPanel scopeMain = new JPanel();
-        scopeMain.setLayout(new BoxLayout(scopeMain,BoxLayout.Y_AXIS));       
+        scopeMain.setLayout(new BorderLayout());
     
-
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(new BoxLayout(searchPanel,BoxLayout.Y_AXIS));
+        searchPanel.setBorder(new TitledBorder("1. Search"));
+        
         posText = new JTextField();
         posText.setToolTipText("Place position or object name e.g. 120,0 (in decimal degrees and no spaces) or M11");
         posText.setAlignmentX(LEFT_ALIGNMENT);
         posText.setColumns(10);
-       // posText.setAlignmentX(RIGHT_ALIGNMENT);
-        posText.setMaximumSize(posText.getPreferredSize());
+        posText.setMaximumSize(posText.getPreferredSize());   
         
         regionText = new JTextField();
         regionText.setToolTipText("Enter region size e.g. 0.1 in decimal degrees");
@@ -414,19 +488,17 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         regionText.setColumns(10);
         regionText.setMaximumSize(regionText.getPreferredSize());
         
-       
-        Dimension dim2 = new Dimension(200,70);
-        
-        scopeMain.add(new JLabel("Position/Object: "));
-        scopeMain.add(posText);
-        scopeMain.add(new JLabel("Region: "));
-        scopeMain.add(regionText);
+        searchPanel.add(new JLabel("Position/Object: "));
+        searchPanel.add(posText);
+        searchPanel.add(new JLabel("Region: "));
+        searchPanel.add(regionText);
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();
-            scopeMain.add(p.getCheckBox());
+            searchPanel.add(p.getCheckBox());
         }
         
         submitButton = new JButton("Search");
+        submitButton.setIcon(IconHelper.loadIcon("find.png"));
         submitButton.setToolTipText("Find resources for this position");
         submitButton.addActionListener(this);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
@@ -436,32 +508,54 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                 AstroScopeLauncherImpl.this.actionPerformed(e);
             }
         });                
-        scopeMain.add(submitButton);
+        searchPanel.add(submitButton);      
         
         // start of tree navigation buttons - maybe add more here later.
-        scopeMain.add(Box.createVerticalStrut(5));        
-        scopeMain.add(new JSeparator());
-        scopeMain.add(Box.createVerticalStrut(5));
+        JPanel navPanel = new JPanel();      
+        navPanel.setLayout(new BoxLayout(navPanel,BoxLayout.Y_AXIS)); 
+        navPanel.setBorder(new TitledBorder("2. Navigate"));
         
         reFocusTopButton = new JButton("Go to Top");
+        reFocusTopButton.setIcon(IconHelper.loadIcon("top.png"));
         reFocusTopButton.setToolTipText("Focus display to 'Search Results' ");
         reFocusTopButton.addActionListener(this);
         reFocusTopButton.setEnabled(false);             
-        scopeMain.add(reFocusTopButton);
+        navPanel.add(reFocusTopButton);
+        
+        clearButton = new JButton("Clear Selection");
+        clearButton.setIcon(IconHelper.loadIcon("editclear.png"));
+        clearButton.setToolTipText("Clear selected nodes");
+        clearButton.setEnabled(false);
+        clearButton.addActionListener(this);
+        
+        final FocusSet sel = vizModel.getSelectionFocusSet();
+        sel.addFocusListener(new FocusListener() {
+            public void focusChanged(FocusEvent arg0) {
+                clearButton.setEnabled(sel.size() > 0);
+            }
+        });
+        navPanel.add(clearButton);
+        
+        // make these buttons all the same width - I know clear button is the biggest.
+        submitButton.setMaximumSize(clearButton.getPreferredSize());
+        reFocusTopButton.setMaximumSize(clearButton.getPreferredSize());
+        navPanel.setMinimumSize(navPanel.getPreferredSize());
+        navPanel.setMaximumSize(navPanel.getPreferredSize());
+        searchPanel.setMinimumSize(navPanel.getPreferredSize());
         
         // start of consumer buttons.
-        scopeMain.add(Box.createVerticalStrut(5));
-        scopeMain.add(new JSeparator());
-        scopeMain.add(Box.createVerticalStrut(5));
+        JScrollPane sp =new JScrollPane(dynamicButtons);
+        sp.setBorder(new TitledBorder("3. Process"));
         
-        for (Iterator i = consumerActions.iterator(); i.hasNext(); ) {
-            Action a = (Action)i.next();
-            JButton b = new JButton(a);
-            scopeMain.add(b);
-        }
-                
+        // assemble it all together.
+        JPanel bothTop = new JPanel();
+        bothTop.setLayout(new BoxLayout(bothTop,BoxLayout.Y_AXIS));
+        bothTop.add(searchPanel);
+        bothTop.add(navPanel);
+        scopeMain.add(bothTop,BorderLayout.NORTH);;
+        scopeMain.add(sp,BorderLayout.CENTER);   
         
-        scopeMain.add(Box.createVerticalGlue());
+        //scopeMain.setPreferredSize(new Dimension().
         return scopeMain;
     }
     
@@ -530,19 +624,34 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
             }
         }).start();
-    }    
-    
-  
-    
+    }
 
+    /// PLASTIC stuff below here 
+    // further message constants - assembled in constructor for convienience at the moment.
+    
+    private final URI IMAGES_LOAD_FROM_URL_MESSAGE;
+    
+    // implementation of the plastic listener interface
+    // callback when message is _received_ from plastic - delegates straight to handler.
+    public Object perform(URI sender, URI message, List args) {
+        return plasticHandler.handle(sender,message,args);
+    }
+
+    // implementation of te plastic wrapper interface;
+    public PlasticHubListener getHub() {
+        return hub;
+    }
+    public URI getPlasticId() {
+        return myPlasticID;
+    }    
+          
   
 }
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
-Revision 1.30  2006/02/23 09:30:33  KevinBenson
-Added a small tablesortder for the JTable of servies and got rid of Color
-for the nodesizing distant nodes.
+Revision 1.31  2006/02/24 15:25:57  nw
+plasticization of astroscope
 
 Revision 1.29  2006/02/09 15:40:01  nw
 finished refactoring of astroscope.
