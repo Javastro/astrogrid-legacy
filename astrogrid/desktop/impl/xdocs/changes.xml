@@ -13,7 +13,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="pending" >
+<release version="2.0-beta-6" date="2006-02-24" >
+    <action dev="nw" type="update">
+      updated to use all latest astrogrid delegates
+    </action>
     <action dev="pjn" type="fix" issue="1522">
 		Added cut/copy/pase and import/export to script editor
 	</action>
@@ -49,13 +52,19 @@ on what messages other clients support.  Refactored the main impl class at the s
 		RegistrySearch: RegistryChooserPanel component, was not construcing sql right for and's/or's type queries
 when the user put and/or in the keyword box.  Now fixed.
 	</action>
-</release>
-<release version="2.0-beta-5" date="2006-02-17">
-      <action dev="nw" type="add">
+      <action dev="kmb" type="add">
         Small changes to a couple of tooltips.
         Small TableSorter for services.
 	    Got rid of setting Color for distant nodes.
-       </action>
+       </action>	
+	<action dev="nw" type="fix">
+		Improved left hand side of astroscope UI
+	</action>
+	<action dev="nw" type="add">
+	 	Plasticized Astroscope
+	 </action>
+</release>
+<release version="2.0-beta-5" date="2006-02-17">
     <action dev="jl" type="add" issue="1525">
 	    QueryBuilder.
 	    Basic text editing views for adql/s and adql/x now functioning.
@@ -67,7 +76,7 @@ when the user put and/or in the keyword box.  Now fixed.
         Linked vospec into astroscope
        </action>
        <action dev="nw" type="fix">
-         Stopped tooltips from disappearing.
+         Stopped tooltips from disappearing - now stay as long as mouse hovers over it.
        </action>
     <action dev="jdt" type="fix" issue="1527">
 		Some Plastic methods weren't visible from xml-rpc.
