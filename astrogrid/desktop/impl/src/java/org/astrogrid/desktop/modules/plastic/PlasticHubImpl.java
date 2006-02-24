@@ -202,6 +202,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         } else {
         	clientsToMessage = CollectionUtils.intersection(clientsSupportingMessage, recipients);
         }
+        clientsToMessage.remove(sender); //don't return to sender
 
         final CountDown gate = new CountDown(clientsToMessage.size());
 
@@ -408,6 +409,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 	
 	//TODO remove NULLS and broken images and consider linking to the ACR reg browser
+	//TODO factor this out
 	public void prettyPrintRegisteredApps() throws IOException, ACRException {
 		File file = File.createTempFile("registeredapps",".html");
 		PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
