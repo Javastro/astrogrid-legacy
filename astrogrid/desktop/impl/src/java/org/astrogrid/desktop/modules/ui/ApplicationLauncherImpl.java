@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.8 2005/11/21 18:26:23 pjn3 Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.9 2006/02/24 15:25:34 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,7 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             this.setLocationRelativeTo(ui.getComponent());
             this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
             setIconImage(IconHelper.loadIcon("thread_view.gif").getImage());                
-            JPanel pane = getJContentPane();
+            JPanel pane = getMainPanel();
              pane.add(editor, java.awt.BorderLayout.CENTER);
             this.setContentPane(pane);
             this.setTitle("Application Launcher");
@@ -113,6 +113,9 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.9  2006/02/24 15:25:34  nw
+minor fix to remove use of deprecated method
+
 Revision 1.8  2005/11/21 18:26:23  pjn3
 basic task editor help added
 
