@@ -1,4 +1,4 @@
-/*$Id: PlasticButton.java,v 1.1 2006/02/24 15:26:53 nw Exp $
+/*$Id: PlasticButton.java,v 1.2 2006/02/24 16:27:40 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.PlasticWrapper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.io.Piper;
 
 import org.apache.commons.collections.ListUtils;
 import org.votech.plastic.PlasticHubListener;
@@ -22,6 +26,9 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,6 +42,11 @@ import javax.swing.ImageIcon;
  * */
 public abstract class PlasticButton extends NodeConsumerButton{
     /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(PlasticButton.class);
+
+    /**
      *  Construct a new PlasticButton
      * @param plasticID id of the remote plastic application to message
      * @param name name of this application
@@ -46,10 +58,20 @@ public abstract class PlasticButton extends NodeConsumerButton{
     public PlasticButton( URI plasticID, String name, URL iconURL,FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
         super(name,"Display data in a PLASTIC application",  selectedNodes);
         if (iconURL != null) {
-            ImageIcon orig = new ImageIcon(iconURL);
-            if (orig != null) {
-                ImageIcon scaled = new ImageIcon(orig.getImage().getScaledInstance(-1,50,Image.SCALE_SMOOTH));
-                setIcon(scaled);
+            try { //need to do this the long way, rather than just passing the url to ImageIcon, because that seems to 
+                // throw security exceptions when runnning under webstart.
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                InputStream is = iconURL.openStream();
+                Piper.pipe(is,bos);
+                is.close();
+                ImageIcon orig = new ImageIcon(bos.toByteArray());
+                if (orig != null) {
+                    ImageIcon scaled = new ImageIcon(orig.getImage().getScaledInstance(-1,50,Image.SCALE_SMOOTH));
+                    setIcon(scaled);
+                }
+            } catch (IOException e ) {
+                logger.warn("Failed to download icon " + iconURL);
+                
             }
         }
         this.ui = ui;
@@ -88,6 +110,9 @@ public abstract class PlasticButton extends NodeConsumerButton{
 
 /* 
 $Log: PlasticButton.java,v $
+Revision 1.2  2006/02/24 16:27:40  nw
+fix for loading rmeote icons - otherwise get a security exception in webstart
+
 Revision 1.1  2006/02/24 15:26:53  nw
 build framework for dynamically adding buttons
  
