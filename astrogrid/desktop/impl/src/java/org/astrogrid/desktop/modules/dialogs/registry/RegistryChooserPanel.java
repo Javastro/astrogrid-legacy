@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.22 2006/01/23 14:38:52 KevinBenson Exp $
+/*$Id: RegistryChooserPanel.java,v 1.23 2006/02/24 11:06:46 KevinBenson Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -465,12 +465,14 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
            sql += "("; //NWW  - added paren here - makes it easier to glue on filter if needed. or can just query on filter if keywords == ""
        }
        for(int j = 0;j < keyword.length;j++) { // NWW - this doesn't handle ( ), and operator precedence at the moment. needs a little syntax tree here eventually.
-           joinSQL = null;
-           if(keyword[j].trim().toLowerCase().equals("and")) {
-              joinSQL = " and "; 
-           }else if(keyword[j].trim().toLowerCase().equals("or")) {
+           //joinSQL = null;
+           if(j != (keyword.length - 1) && keyword[(j+1)].trim().toLowerCase().equals("and")) {
+               joinSQL = " and ";               
+           }else if(j != (keyword.length - 1) && keyword[(j+1)].trim().toLowerCase().equals("or")) {
                joinSQL = " or ";
-           }else {
+           }            
+           if(!keyword[j].trim().toLowerCase().equals("and") && 
+              !keyword[j].trim().toLowerCase().equals("or")) {
                if(joinSQL == null) joinSQL = " or ";
                
                     sql += "(vr:title like '" + keyword[j] + "'" + " or " +
@@ -479,8 +481,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                     "vr:shortName like '" + keyword[j] + "'" + " or " +
                     "vr:content/vr:subject like '" + keyword[j] + "')";
                     if(j != (keyword.length - 1)) {
-                   sql += joinSQL;
+                        sql += joinSQL;
                     }//if
+                    joinSQL = null;
            }
        }//for
        if (keyword.length > 0 && shallFilter) {
@@ -497,22 +500,24 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
        String sql = "Select * from Registry where ";
        String joinSQL = " or ";
        String []keyword = keywords.split(" ");
-                for(int j = 0;j < keyword.length;j++) {
-           joinSQL = null;
-           if(keyword[j].trim().toLowerCase().equals("and")) {
-              joinSQL = " and "; 
-           }else if(keyword[j].trim().toLowerCase().equals("or")) {
+       for(int j = 0;j < keyword.length;j++) {
+           if(j != (keyword.length - 1) && keyword[(j+1)].trim().toLowerCase().equals("and")) {
+               joinSQL = " and ";               
+           }else if(j != (keyword.length - 1) && keyword[(j+1)].trim().toLowerCase().equals("or")) {
                joinSQL = " or ";
-           }else {
+           }            
+           if(!keyword[j].trim().toLowerCase().equals("and") && 
+              !keyword[j].trim().toLowerCase().equals("or")) {
                if(joinSQL == null) joinSQL = " or ";
-                    sql += "(* like '" + keyword[j] + "')";
-                    if(j != (keyword.length - 1)) {
-                        sql += " " + joinSQL + " ";
-                    }//if
+               sql += "(* like '" + keyword[j] + "')";
+               if(j != (keyword.length - 1)) {
+                   sql += " " + joinSQL + " ";
+               }//if
+               joinSQL = null;
            }
-                  }//for
+       }//for
        return reg.adqlSearchRI(sql);
-                }
+   }
                     
    private String filter = null;
                     
@@ -564,6 +569,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.23  2006/02/24 11:06:46  KevinBenson
+the joins were not working right for and's/or's
+
 Revision 1.22  2006/01/23 14:38:52  KevinBenson
 reverting back to 1.20 version
 
