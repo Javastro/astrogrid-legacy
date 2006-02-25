@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Quaestor: generic SPARQL endpoint</title>
+<link rel="stylesheet"
+      type="text/css"
+      href="/base.css"/>
+</head>
+
+<body>
+
+<h1>Quaestor: generic SPARQL endpoint</h1>
+
+<dl>
+<dt><code>GET http://hostport/quaestor/kb/access-control?sparql=xxx</code></dt>
+<dd>The string <code>xxx</code> is a URLEncoded SPARQL query which is
+made against the <code>access-control</code> knowledgebase.</dd>
+
+<dt><code>GET http://hostport/quaestor/kb/access-control[/instances]</code></dt>
+<dd>Retrieve either the complete <code>access-control</code> model, or
+the <code>instances</code> submodel.  The format is obtained from the
+request headers.</dd>
+
+<dt><code>POST http://hostport/quaestor/kb/access-control?sparql</code></dt>
+<dd>Takes a SPARQL query as the request body</dd>
+
+<dt><code>PUT http://hostport/quaestor/kb/access-control</code></dt>
+<dd>Create a new knowledgebase named `access-control'.  There should
+be no content.</dd>
+
+<dt><code>PUT http://hostport/quaestor/kb/access-control/instances</code></dt>
+<dd>Upload the request body as the `instances' knowledgebase</dd>
+</dl>
+
+</body>
+</html>

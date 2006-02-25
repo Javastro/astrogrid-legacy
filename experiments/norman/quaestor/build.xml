@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.5 2006/02/10 10:19:37 norman Exp $
+     $Id: build.xml,v 1.6 2006/02/25 16:31:10 norman Exp $
 -->
 
 
@@ -113,16 +113,31 @@
   <property name="app.path"      value="/${app.name}"/>
   <property name="app.version"   value="0.1-dev"/>
   <property name="build.home"    value="${basedir}/build"/>
-  <!-- catalina.home must be set in build.properties -->
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
   <property name="manager.url"   value="http://localhost:8080/manager"/>
-  <property name="src.home"      value="${basedir}/src"/>
-  <property name="scm.src.home"  value="${basedir}/src/scm"/>
+  <property name="src.home"      value="${basedir}/src/main"/>
+  <property name="scm.src.home"  value="${basedir}/src/main/scm"/>
+  <property name="src.etc"       value="${basedir}/src/etc"/>
   <property name="web.home"      value="${basedir}/web"/>
 
-  <!-- sisc.lib must be set in build.properties -->
-  <property name="sisc.lib"      value=""/>
+  <!-- The following properties must be set in build.properties
+   !
+   !       catalina.home    : the directory which should be
+   !                          assigned to the environment variable
+   !                          CATALINA_HOME, that is, the directory
+   !                          containing bin/, webapps and so on.
+   !
+   !       jena.lib         : Jena library directory.  This is the
+   !                          directory which contains the jena.jar
+   !                          file and friends.
+   !
+   !       sisc.bin         : the binary directory is the one which
+   !                          contains the sisc program.
+   !
+   !       sisc.lib         : the directory which contains
+   !                          sisc{,-opt,-lib}.jar and sisc.shp.
+   ! -->
 
 
   <!-- ================= Custom Ant Task Definitions ====================== -->
@@ -147,11 +162,13 @@
 
   compile.optimize     Should compilation include the optimize option?
 
+  compile.source       Value of the -source command-line option.
 -->
 
   <property name="compile.debug"       value="true"/>
-  <property name="compile.deprecation" value="false"/>
+  <property name="compile.deprecation" value="true"/>
   <property name="compile.optimize"    value="true"/>
+  <property name="compile.source"      value="1.4"/>
 
 
 
@@ -174,14 +191,27 @@
 
   -->
 
-  <!--
-  <fileset dir="${sisc.lib}">
-    <patternset id="sisc.support">
-      <include name="*.jar"/>
-      <include name="sisc.shp"/>
-    </patternset>
+  <fileset dir="${sisc.lib}" id="sisc.support">
+    <include name="*.jar"/>
+    <include name="sisc.shp"/>
   </fileset>
-  -->
+
+  <!-- include Jena support -->
+  <fileset dir="${jena.lib}"
+           id="jena.support">
+    <!-- Jena jars... -->
+    <include name="antlr-2.7.5.jar"/>
+    <include name="commons-logging.jar"/>
+    <include name="icu4j_3_4.jar"/>
+    <include name="jakarta-oro-2.0.8.jar"/>
+    <include name="jena.jar"/>
+    <include name="xercesImpl.jar"/>
+    <include name="xml-apis.jar"/>
+
+    <!-- ...and ARQ jars -->
+    <include name="arq.jar"/>
+    <include name="concurrent.jar"/>
+  </fileset>
 
 
   <!-- =================== Compilation Classpath ========================== -->
@@ -198,10 +228,15 @@
   -->
 
   <path id="sisc.classpath">
+    <fileset refid="sisc.support"/>
+  </path>
+  <!--
+  <path id="sisc.classpath">
     <fileset dir="${sisc.lib}">
       <include name="*.jar"/>
     </fileset>
   </path>
+  -->
 
   <path id="compile.classpath">
 
@@ -225,7 +260,6 @@
     <fileset dir="${catalina.home}/shared/lib">
       <include name="*.jar"/>
     </fileset>
-
   </path>
 
 
@@ -272,7 +306,8 @@
 
   -->
 
-  <target name="compile" depends="prepare,compile-sisc"
+  <!--target name="compile" depends="prepare,quaestor.jar" -->
+  <target name="compile" depends="prepare"
    description="Compile Java sources">
 
     <!-- Compile Java classes as necessary -->
@@ -281,9 +316,42 @@
           destdir="${build.home}/WEB-INF/classes"
             debug="${compile.debug}"
       deprecation="${compile.deprecation}"
-         optimize="${compile.optimize}">
+         optimize="${compile.optimize}"
+           source="${compile.source}"
+         >
         <classpath refid="compile.classpath"/>
     </javac>
+
+    <!-- Copy Scheme utility scripts into the classpath.
+     !   Don't use a JAR: see the quaestor.jar target.
+     ! -->
+    <mkdir  dir="${build.home}/WEB-INF/classes/quaestor"/>
+    <copy todir="${build.home}/WEB-INF/classes/quaestor">
+      <fileset dir="${scm.src.home}/quaestor"
+               includes="*.scm"/>
+    </copy>
+
+    <!--
+     !   How about compiling them?
+     !   Shouldn't be hard, but it requires fiddling with the
+     !   classpath so that, eg, utils.scm can find and load other .scm files.
+    <mkdir dir="${build.home}/WEB-INF/classes/quaestor"/>
+    <java classname="sisc.REPL"
+          fork="true"
+          classpathref="sisc.classpath">
+      <sysproperty key="sisc.home" value="${sisc.lib}"/>
+      <arg value="-h"/>
+      <arg value="${sisc.lib}/sisc.shp"/>
+      <arg value="${src.etc}/compile-files.scm"/>
+      <arg value="-x-call-with-args"/>
+      <arg value="compile"/>
+      <arg value="-x-no-repl"/>
+      <arg value="-x-"/>
+      <arg value="${scm.src.home}/quaestor"/>
+      <arg value="${build.home}/WEB-INF/classes/quaestor"/>
+    </java>
+    -->
+
 
     <!-- Copy application resources -->
     <!-- doesn't need done
@@ -295,9 +363,16 @@
   </target>
 
   <!-- Compile the SISC .scm files under ${scm.src.home}/quaestor,
-       putting them in a jar file in WEB-INF. -->
-  <target name="compile-sisc" depends="prepare"
+   !   putting them in a jar file in WEB-INF.
+   !
+   !   Using this is a bad idea.  When undeploying, Tomcat 5.5 will
+   !   not release resources obtained from JAR files.  We therefore
+   !   must not distribute this extra code in a JAR file, at least
+   !   not at develoment time.
+   ! -->
+  <target name="quaestor.jar" depends="prepare"
           description="Compile SISC library modules">
+    <!--
     <mkdir dir="${build.home}/scc/quaestor"/>
     <java classname="sisc.REPL"
           fork="true"
@@ -306,16 +381,21 @@
       <arg value="-h"/>
       <arg value="${sisc.lib}/sisc.shp"/>
       <arg value="${scm.src.home}/etc/compile-files.scm"/>
-      <arg value="--call-with-args"/>
+      <arg value="-x-call-with-args"/>
       <arg value="compile"/>
-      <arg value="--no-repl"/>
-      <arg value="--"/>
+      <arg value="-x-no-repl"/>
+      <arg value="-x-"/>
       <arg value="${scm.src.home}/quaestor"/>
       <arg value="${build.home}/scc/quaestor"/>
     </java>
     <jar basedir="${build.home}/scc"
          destfile="${build.home}/WEB-INF/lib/quaestor.jar"
          includes="**/*.scc"/>
+    -->
+    <jar basedir="${scm.src.home}"
+         destfile="${build.home}/WEB-INF/lib/quaestor.jar"
+         includes="quaestor/*.scm"
+         />
   </target>
 
 
@@ -344,9 +424,9 @@
       <fileset dir="${docs.home}"/>
     </copy>
 
-    <!-- Create application JAR file -->
+    <!-- Create application WAR file -->
     <jar jarfile="${dist.home}/${app.name}-${app.version}.war"
-         basedir="${build.home}"/>
+         basedir="${build.home}"/> <!-- XXX: this scoops up .../scc/, too -->
 
     <!-- Copy additional files to ${dist.home} as necessary -->
 
@@ -405,7 +485,9 @@
     <javadoc sourcepath="${src.home}"
                 destdir="${dist.home}/docs/api"
            packagenames="*"
-               overview="${src.home}/org/eurovotech/quaestor/overview.html">
+               overview="${src.home}/org/eurovotech/quaestor/overview.html"
+                 source="${compile.source}"
+               >
       <classpath refid="compile.classpath"/>
     </javadoc>
 
@@ -460,18 +542,23 @@
       <fileset dir="${web.home}"/>
     </copy>
 
-    <!-- Copy external dependencies as required -->
-    <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
+    <!-- Copy in external dependencies -->
     <mkdir  dir="${build.home}/WEB-INF/lib"/>
+    <copy todir="${build.home}/WEB-INF/lib">
+      <fileset refid="sisc.support"/>
+      <fileset refid="jena.support"/>
+    </copy>
+<!--
     <copy todir="${build.home}/WEB-INF/lib">
       <fileset dir="${sisc.lib}">
         <include name="*.jar"/>
       </fileset>
     </copy>
-    <!-- SISC heap file -->
+    <!-x- SISC heap file -x->
     <copy todir="${build.home}/WEB-INF/classes">
       <fileset file="${sisc.lib}/sisc.shp"/>
     </copy>
+-->
     <copy todir="${build.home}/WEB-INF">
       <fileset file="${scm.src.home}/quaestor.scm"/>
     </copy>

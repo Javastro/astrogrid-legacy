@@ -1,0 +1,19 @@
+body {
+  color: rgb(0,0,6);
+  background: white;
+}
+
+a:link { color: rgb(43,43,175); }
+a:visited { color: rgb(43,43,175); }
+a[href]:hover { background: rgb(175,175,43); }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Optima, "Gill Sans", gill, sans-serif;
+}
+
+table {
+  background: yellow;
+}
+td {
+  padding: 0.5ex;
+}

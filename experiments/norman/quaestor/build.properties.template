@@ -10,6 +10,10 @@ app.path=/quaestor
 # and so on.
 catalina.home=<CATALINA.HOME>
 
+# Jena library directory.
+# This is the directory which contains the jena.jar file and friends.
+jena.lib=<JENA.LIB>
+
 # SISC binary and library directories.
 # The binary directory is the one which contains the sisc program.
 sisc.bin=<SISC.BIN>

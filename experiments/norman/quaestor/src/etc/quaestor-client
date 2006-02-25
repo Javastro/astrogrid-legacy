@@ -1,0 +1,164 @@
+#! /usr/bin/env scsh \
+-o srfi-37 -e main -s
+!#
+
+(define (main args)
+  (let ((inputs (args-fold (cdr args)
+                           (option-list)
+                           Usage
+                           operand-processor
+                           '())))
+
+    ;; all sane?
+    (if (< (length inputs) 1)
+        (Usage))
+
+    (let ((method (string->symbol (car inputs)))
+          (rest-of-args (cdr inputs)))
+
+      (cond ((assq method method-handlers)
+             => (lambda (spec) ; spec=('method nargs handler-procedure)
+                  (let ((nargs (cadr spec))
+                        (handler (caddr spec)))
+                    (if (or (not nargs)
+                            (= (length rest-of-args) nargs))
+                        (apply handler rest-of-args)
+                        (error (format #f "method ~a requires ~a args, got ~s"
+                                       method
+                                       nargs
+                                       rest-of-args))))))
+
+            (else
+             (error (format #f "Unrecognised method ~a: allowed are ~a"
+                            method
+                            (map car method-handlers))))))))
+
+;; (define (xmain args)
+;;   (let ((method (and (> (length args) 1) (string->symbol (cadr args))))
+;;         (path   (and (> (length args) 2) (caddr args)))
+;;         (rest   (and (> (length args) 3) (cdddr args))))
+;;     (cond ((not (and method path))
+;;            (Usage))
+
+;;           ((assq method method-handlers)
+;;            => (lambda (p)
+;;                 ((cdr p) path rest)))
+
+;;           (else
+;;            ))))
+
+(define (get-handler path)
+  (let ((full-url (string-append (base-url) path)))
+    (chatter "GET ~a" full-url)
+    (exec-epf (curl --include ,full-url))))
+
+(define (put-handler path file)
+  (define (verbose-option) (if (chatter) '("--verbose") '()))
+  (let ((full-url (string-append (base-url) path)))
+    (chatter "PUT file ~a to URL ~a" file full-url)
+    (exec-epf (curl ,@(verbose-option)
+                    --upload-file ,file
+                    ,full-url))))
+;; (define (put-handler path . args)
+;;   (define (verbose-option) (if (chatter) '("--verbose") '()))
+;;   (let ((full-url (string-append (base-url) path))
+;;         (file (and (not (null? args))
+;;                    (car args))))
+;;     (chatter "PUT ~a~a" full-url (if file (string-append "from file " file) ""))
+;;     (if file
+;;         (exec-epf (curl ,@(verbose-option)
+;;                         --upload-file ,file
+;;                         ,full-url))
+;;         (exec-epf (curl ,@(verbose-option)
+;;                         ,full-url)))))
+
+;; List of method handlers.  
+;; Each element is a ('method number-of-args handler)
+;; NUMBER-OF-ARGS may be #f to have any number of args
+(define method-handlers `((get 1 ,get-handler)
+                          (put 2 ,put-handler)))
+
+
+;; Given a list of argument strings, return an alist
+;;     ((type . 'get/'put/...)
+;;      (path . xxx))
+;; (define argument-handler
+;;   (let ((alist '())
+;;         (methods '(get put)))
+;;     (lambda (argument-list)
+;;       (if (null? argument-list)
+;;           alist
+;;           (begin (cond ((assq 'path alist)
+;;                         (Usage))
+;;                        ((assq 'type alist)
+;;                         (set! alist (cons `(path . ,(car argument-list))
+;;                                           alist)))
+;;                        (else
+;;                         (let ((method (string->symbol (car argument-list))))
+;;                           (if (memq method methods)
+;;                               (set! alist (cons `(type . ,method)
+;;                                                 alist))
+;;                               (error
+;;                                (format #f
+;;                                        "Unrecognised method ~a; allowed ~a"
+;;                                        method methods))))))
+;;                  (argument-handler (cdr argument-list)))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Options and args
+
+(define (create-option default)
+  (let ((v default))
+    (lambda o
+      (if (null? o)
+          v
+          (set! v (car o))))))
+
+(define base-url (create-option "http://localhost:8080/quaestor/kb/"))
+
+;; CHATTER controls verbosity.  Can be
+;;   (chatter) : report verbosity #t/#f
+;;   (chatter #t/#f) : set verbosity
+;;   (chatter "format" args ...) : print message if verbosity is #t
+(define chatter
+  (let ((chatter? #t))                  ;default verbosity
+    (lambda args
+      (cond ((null? args)
+             chatter?)
+            ((boolean? (car args))
+             (set! chatter? (car args)))
+            (chatter?
+             (apply format `(#t ,(string-append (car args) "~%") ,@(cdr args))))
+            (else
+             #f)))))
+
+(define (operand-processor operand op-list)
+  (append op-list (list operand)))
+
+(define option-list
+  (let ((l '()))
+    (lambda o
+      (if (null? o)
+          l
+          (set! l (cons (car o) l))))))
+
+(let-syntax ((declare-option
+              (syntax-rules ()
+                ((_ option-name option-func)
+                 (option-list (option '(option-name) #t #t
+                                      (lambda (option name arg seeds)
+                                        (option-func arg)
+                                        seeds))))
+                ((_ option-name has-arg? body ...)
+                 (option-list (option '(option-name) has-arg? has-arg?
+                                      (lambda (option name arg seeds)
+                                        body ...
+                                        seeds)))))))
+  (declare-option "verbose" #f (chatter #t))
+  (declare-option "quiet"   #f (chatter #f))
+  (declare-option "base-url" base-url))
+
+(define (Usage)
+  (error "Usage: quaestor-client method [path]"))
