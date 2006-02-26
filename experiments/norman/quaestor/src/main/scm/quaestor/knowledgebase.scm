@@ -5,8 +5,10 @@
 (require-library 'quaestor/jena)
 
 (module knowledgebase
-  (get-kb
-   new-kb)
+  (new-kb
+   get-kb
+   discard-kb
+   get-kb-list)
 
   (import jena)
 
@@ -17,6 +19,7 @@
   ;; The knowledgebase object that is returned is a function which takes
   ;; a number of subcommands.
 
+  ;; The model list is a list of pairs (name-symbol . knowledgebase-proc)
   (define _model-list '())
 
   ;; Given a string or symbol, return a symbol.  If it's neither a
@@ -36,8 +39,7 @@
       (or kb-name
           (error 'get-kb "bad call to get-kb with object ~s" kb-name-param))
       (let ((kbpair (assq kb-name _model-list)))
-        (and kbpair (cdr kbpair))))
-    )
+        (and kbpair (cdr kbpair)))))
 
   ;; Create a new knowledgebase from scratch.  It must not already exist.
   ;; Return the new knowledgebase.  Either succeeds or throws an error.
@@ -55,8 +57,30 @@
                     _model-list))
         kb)))
 
+  ;; Returns a list of symbols naming available knowledgebases
+  (define (get-kb-list)
+    (map car _model-list))
+
+  ;; Remove a given knowledgebase from the list.  Returns it, or
+  ;; returns #f if no such knowledgebase existed
+  (define (discard-kb kb-name-string)
+    (let ((kb-name (as-symbol kb-name-string))
+          (ret #f))
+      (let loop ((new-list '())
+                 (l _model-list))
+        (cond ((null? l)
+               (set! _model-list new-list))
+              ((eq? kb-name (caar l))   ;found it
+               (set! ret (cdar l))
+               (loop new-list (cdr l)))
+              (else
+               (loop (cons (car l) new-list)
+                     (cdr l))))
+        ret)))
+
   ;; Add a new submodel to the model.  Returns the original or an updated
-  ;; submodel list.
+  ;; submodel list, or #f on any errors (there's nothing which triggers #f
+  ;; at present, but it's documented to do this just in case)
   (define (add-submodel model
                         submodel-list
                         new-submodel-name
@@ -71,7 +95,7 @@
                new-submodel-name new-submodel-model))
     ;; The following should be a bit more sophisticated:
     ;; we should remove the previous submodel before adding
-    ;; the new one.
+    ;; the new one.  Can we detect any errors?
     (add model new-submodel-model)
     (let ((sm-pair (assq new-submodel-name submodel-list)))
       (if sm-pair
