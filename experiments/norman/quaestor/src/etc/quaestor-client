@@ -73,6 +73,11 @@
                                  ""))
            ,full-url))))
 
+(define (delete-handler kb-name)
+  (define (verbose-option) (if (chatter) '("--verbose") '()))
+  (let ((full-url (format #f "~a/kb/~a" (base-url) kb-name)))
+    (format #t "Delete is not handled by this client.~%You'll have to send the request 'DELETE ~a' to a HTTP server yourself~%" full-url)))
+
 ;; Upload code to the server.  The CODE-FILE names a file, or may be '-'
 ;; to indicate stdin
 (define (code-handler code-file)
@@ -87,7 +92,7 @@
 (define (Usage . args)
   (format #t "Usage: quaestor-client command [args]~%Allowed commands are:~%")
   (for-each (lambda (cmd-spec)
-              (format #t "    ~a -- ~a~%"
+              (format #t "  ~a -- ~a~%"
                       (car cmd-spec)
                       (cadddr cmd-spec)))
             command-handlers)
@@ -99,26 +104,30 @@
 ;; Each element is a ('command number-of-args handler doc-string)
 ;; NUMBER-OF-ARGS may be #f to have any number of args
 (define command-handlers
-  `((get
-     #f
-     ,get-handler
-     "get kb / get kb submodel: Get model or specific submodel")
-    (new-kb
-     2
-     ,new-kb-handler
-     "new-kb name metadata-file: Create a new knowledgebase")
-    (add-submodel
+  `((add-submodel
      3
      ,add-submodel-handler
      "add-submodel kb model-name rdf-file: Add a new submodel")
     (code
      1
      ,code-handler
-     "code scm-code-file: Upload code to runningn server; file may be '-'")
+     "code scm-code-file: Upload code to running server; file may be '-'")
+    (delete
+     1
+     ,delete-handler
+     "delete kb: delete the knowledgebase from the server")
     (help
      0
      ,Usage
-     "Show help")))
+     "Show help")
+    (get
+     #f
+     ,get-handler
+     "get kb / get kb submodel: Get model or specific submodel")
+    (new-kb
+     2
+     ,new-kb-handler
+     "new-kb name metadata-file: Create a new knowledgebase")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
