@@ -63,7 +63,7 @@
                         new-submodel-model)
     (define-generic-java-method
       add)
-    (if (not (and (symbol new-submodel-name)
+    (if (not (and (symbol? new-submodel-name)
                   (is-java-type?
                    new-submodel-model
                    '|com.hp.hpl.jena.rdf.model.Model|)))
