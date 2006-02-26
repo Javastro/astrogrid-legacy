@@ -53,6 +53,15 @@ public class SchemeWrapper {
     }
 
     /**
+     * Tests whether a given symbol is defined.
+     * @param name the symbol name to test
+     * @return true if the symbol is defined
+     */
+    public boolean symbolIsDefined(String name) {
+        return Symbol.get(name) != null;
+    }
+
+    /**
      * Evaluates the string, returning the value as a String.
      *
      * @param expr a scheme expression
