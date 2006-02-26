@@ -30,7 +30,7 @@
 ;; request, and works through a list of handlers.  It may return a
 ;; string, or #t on success; if it returns a string, it is to be
 ;; returned as the response by the caller.
-(define (get request response)
+(define (http-get request response)
   (with-failure-continuation
        (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
     (lambda ()
@@ -58,6 +58,15 @@
   (response-page "Quaestor"
                  `((p "Details of Quaestor request")
                    ,@(tabulate-request-information request))))
+
+;; Display an HTML page reporting on the knowledgebases available
+(define (get-knowledgebase-list path-info-list query-string request response)
+  (if (= (length path-info-list) 0)
+      (response-page "Quaestor: list of knowledgebases"
+                     `((p "Knowledgebases available:")
+                       (ul ,@(map (lambda (kb-name)
+                                   (list 'li (symbol->string kb-name)))
+                                 (get-kb-list)))))))
 
 ;; Retrieve the submodel named by the two-element path-info-list, and
 ;; write it to the response.  Return #t if successful, or set a
@@ -176,7 +185,8 @@
         (else
          #f)))
 
-(define get-handlers (list get-model
+(define get-handlers (list get-knowledgebase-list
+                           get-model
                            get-fallback))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -188,7 +198,7 @@
 ;; one element in the path), or creates or updates a submodel (if there
 ;; are two elements in the path).  It is an error to create a
 ;; knowledgebase where one of that name exists already.
-(define (put request response)
+(define (http-put request response)
 
   (with-failure-continuation
        (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
@@ -230,8 +240,7 @@
                 (string=? query "metadata")) ;update metadata
            (kb 'set-metadata
                (reader->jstring reader))
-           (set-http-response response '|SC_NO_CONTENT|)
-           #t)
+           (set-http-response response '|SC_NO_CONTENT|))
 
           ((and kb query)  ;unrecognised query
            (no-can-do response '|SC_BAD_REQUEST|
@@ -252,8 +261,7 @@
            (let ((nkb (new-kb kb-name))) ;normal case
              (nkb 'set-metadata
                   (reader->jstring reader))
-             (set-http-response response '|SC_NO_CONTENT|)
-             #t)))))
+             (set-http-response response '|SC_NO_CONTENT|))))))
 
 ;; Given a knowledgebase called KB-NAME, upload a RDF/XML submodel called
 ;; KB-NAME which is available from the given STREAM.  The CONTENT-HEADERS
@@ -285,11 +293,13 @@
                                  (cdr (assq 'type content-headers))))
                   (submodel (rdf-ingest-from-stream stream rdf-mime)))
              (if submodel
-                 (begin (kb 'add-submodel  ;normal case
-                            submodel-name
-                            submodel)
-                        (set-http-response response '|SC_NO_CONTENT|)
-                        #t)
+                 (if (kb 'add-submodel  ;normal case
+                         submodel-name
+                         submodel)
+                     (set-http-response response '|SC_NO_CONTENT|)
+                     (no-can-do response
+                                '|SC_INTERNAL_ERROR| ;correct?
+                                "Unable to update model!"))
                  (no-can-do response '|SC_BAD_REQUEST|
                             "Bad RDF MIME type! ~a" mime))))
 
@@ -298,13 +308,26 @@
                       (format #f "No such knowledgebase ~a"
                               kb-name))))))
 
-;; Given a RESPONSE, set the response status to the given RESPONSE-CODE,
-;; and produce a status page using the given format and arguments.
-(define (no-can-do response response-code fmt . args)
-  (let ((msg (apply format `(#f ,fmt ,@args))))
-    (set-http-response response response-code)
-    (response-page "Quaestor: no can do" `((p ,msg)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; DELETE support
 
+;; Handle DELETE requests.  Return #t on success, or a string response.
+(define (http-delete request response)
+  (with-failure-continuation
+       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
+     (lambda ()
+       (let ((path-list (request->path-list request)))
+         (if (= (length path-list) 1)
+             (if (discard-kb (car path-list))
+                 (set-http-response response '|SC_NO_CONTENT|)
+                 (no-can-do response
+                            '|SC_NOT_FOUND| ;correct?
+                            "There was no knowledgebase ~a to delete"
+                            (car path-list)))
+             (no-can-do response
+                        '|SC_BAD_REQUEST|
+                        "The request path has too many elements"))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -416,6 +439,13 @@
         (else
          (error "print-http-response: illegal argument ~s" response))))
 
+;; Given a RESPONSE, set the response status to the given RESPONSE-CODE,
+;; and produce a status page using the given format and arguments.
+(define (no-can-do response response-code fmt . args)
+  (let ((msg (apply format `(#f ,fmt ,@args))))
+    (set-http-response response response-code)
+    (response-page "Quaestor: no can do" `((p ,msg)))))
+
 ;; Make a SISC failure continuation.  Return a two-argument procedure
 ;; which can be used as the handler for with-failure-continuation.
 (define (make-fc request response status)
@@ -505,7 +535,9 @@
 
 ;; Set the HTTP response to the given value.  The RESPONSE-SYMBOL is
 ;; one of the SC_* fields in javax.servlet.http.HttpServletResponse.
-;; Eg: (http-response '|SC_OK|)
+;; Eg: (set-http-response response '|SC_OK|).
+;; Returns #t for convenience, so that the above SC_OK call may (but
+;; need not be) the final call in a handler function.
 (define set-http-response
   (let ((response-object #f))
     (define-generic-java-method
@@ -517,6 +549,7 @@
                                   '|javax.servlet.http.HttpServletResponse|))))
       (set-status response
                   ((generic-java-field-accessor response-symbol)
-                   response-object)))))
+                   response-object))
+      #t)))
 
 
