@@ -66,7 +66,7 @@
                      `((p "Knowledgebases available:")
                        (ul ,@(map (lambda (kb-name)
                                    (list 'li (symbol->string kb-name)))
-                                 (get-kb-list)))))))
+                                 (kb-get-names)))))))
 
 ;; Retrieve the submodel named by the two-element path-info-list, and
 ;; write it to the response.  Return #t if successful, or set a
@@ -116,7 +116,7 @@
 
   (cond ((= (length path-info-list) 1)
          (let ((kb-name (car path-info-list)))
-           (let ((kb (get-kb kb-name))
+           (let ((kb (kb-get kb-name))
                  (mime-and-lang (find-ok-language request))
                  (query (string->symbol (or query-string "model"))))
              (cond ((and kb
@@ -163,7 +163,7 @@
                     "Retrieval of submodel is disabled pending refactoring")
 ;;          (let ((kb-name (car path-info-list))
 ;;                (submodel-name (cadr path-info-list)))
-;;            (let ((kb (get-kb kb-name)))
+;;            (let ((kb (kb-get kb-name)))
 ;;              (if kb
 ;;                  (let ((submodel (kb 'get-model submodel-name))
 ;;                        (lang-pair (find-ok-language request)))
@@ -234,7 +234,7 @@
 ;; called kb-name (a symbol), and the content of the request is read
 ;; from the given reader.
 (define (manage-knowledgebase kb-name reader query response)
-  (let ((kb (get-kb kb-name)))
+  (let ((kb (kb-get kb-name)))
     (cond ((and kb
                 query
                 (string=? query "metadata")) ;update metadata
@@ -258,7 +258,7 @@
                       kb-name query))
 
           (else            ;normal case
-           (let ((nkb (new-kb kb-name))) ;normal case
+           (let ((nkb (kb-new kb-name))) ;normal case
              (nkb 'set-metadata
                   (reader->jstring reader))
              (set-http-response response '|SC_NO_CONTENT|))))))
@@ -278,7 +278,7 @@
             (check-cars (cdr alist) recognised)
             #f)))
 
-  (let ((kb (get-kb kb-name))
+  (let ((kb (kb-get kb-name))
         (ok-headers '(type length)))
     (cond ((not (check-cars content-headers ok-headers))
            (no-can-do response '|SC_NOT_IMPLEMENTED|
@@ -319,7 +319,7 @@
      (lambda ()
        (let ((path-list (request->path-list request)))
          (if (= (length path-list) 1)
-             (if (discard-kb (car path-list))
+             (if (kb-discard (car path-list))
                  (set-http-response response '|SC_NO_CONTENT|)
                  (no-can-do response
                             '|SC_NOT_FOUND| ;correct?

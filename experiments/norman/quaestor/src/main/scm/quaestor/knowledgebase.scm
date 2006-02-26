@@ -5,10 +5,10 @@
 (require-library 'quaestor/jena)
 
 (module knowledgebase
-  (new-kb
-   get-kb
-   discard-kb
-   get-kb-list)
+  (kb-new
+   kb-get
+   kb-discard
+   kb-get-names)
 
   (import jena)
 
@@ -34,22 +34,22 @@
 
   ;; Retrieve the knowledgebase with the given name, which is
   ;; a symbol or string.  Return #f if there is no KB with this name.
-  (define (get-kb kb-name-param)
+  (define (kb-get kb-name-param)
     (let ((kb-name (as-symbol kb-name-param)))
       (or kb-name
-          (error 'get-kb "bad call to get-kb with object ~s" kb-name-param))
+          (error 'kb-get "bad call to kb-get with object ~s" kb-name-param))
       (let ((kbpair (assq kb-name _model-list)))
         (and kbpair (cdr kbpair)))))
 
   ;; Create a new knowledgebase from scratch.  It must not already exist.
   ;; Return the new knowledgebase.  Either succeeds or throws an error.
-  (define (new-kb kb-name-param)
+  (define (kb-new kb-name-param)
     (let ((kb-name (as-symbol kb-name-param)))
       (or kb-name
-          (error 'new-kb "bad call to new-kb with object ~s" kb-name-param))
-      (if (get-kb kb-name)
-          (error 'new-kb
-                 "bad call to new-kb: knowledgebase ~a already exists"
+          (error 'kb-new "bad call to kb-new with object ~s" kb-name-param))
+      (if (kb-get kb-name)
+          (error 'kb-new
+                 "bad call to kb-new: knowledgebase ~a already exists"
                  kb-name))
       (let ((kb (make-kb kb-name)))
         (set! _model-list
@@ -58,12 +58,12 @@
         kb)))
 
   ;; Returns a list of symbols naming available knowledgebases
-  (define (get-kb-list)
+  (define (kb-get-names)
     (map car _model-list))
 
   ;; Remove a given knowledgebase from the list.  Returns it, or
   ;; returns #f if no such knowledgebase existed
-  (define (discard-kb kb-name-string)
+  (define (kb-discard kb-name-string)
     (let ((kb-name (as-symbol kb-name-string))
           (ret #f))
       (let loop ((new-list '())
