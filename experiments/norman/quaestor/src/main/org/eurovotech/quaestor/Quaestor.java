@@ -30,63 +30,63 @@ public class Quaestor extends HttpServlet {
                 throw new ServletException
                         ("Failed to load Quaestor from " + qt);
             }
-//             log("initialised wrapper " + wrapper + " in servlet " + this
-//                 + " in thread " + Thread.currentThread()
-//                 + " with quaestor from " + qt);
 
         } catch (SchemeException e) {
             throw new ServletException(e);
         }
     }
 
-//     public void destroy() {
-// //         log("destroying wrapper " + wrapper + " in servlet " + this
-// //             + " in thread " + Thread.currentThread());
-//         //wrapper = null;         // I don't know if this is necessary
-//     }
+    /**
+     * Service HTTP methods by handing them over to the corresponding
+     * Quaestor procedures.  That procedure is responsible for handling the
+     * request, examining the headers, and setting the response status.
+     */
+    private void callQuaestorHandler(String quaestorMethod,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response)
+            throws IOException, ServletException {
+        response.setContentType("text/html");
+        log("Quaestor calling " + quaestorMethod);
+        try {
+            Object val = SchemeWrapper
+                    .getInstance()
+                    .eval(quaestorMethod, new Object[] { request, response });
+            if (val instanceof String) {
+                PrintWriter out = response.getWriter();
+                out.println(val);
+            }
+        } catch (SchemeException e) {
+            throw new ServletException(e);
+        }
+    }
 
     /**
      * Handle a GET method by handing it over to the quaestor get
-     * procedure.  That procedure is responsible for handling the
-     * request, examining the headers, and setting the response status.
+     * procedure.
      */
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response)
             throws IOException, ServletException {
-        response.setContentType("text/html");
-//         log("GET in servlet " + this);
-        try {
-            Object val = SchemeWrapper
-                    .getInstance()
-                    .eval("get", new Object[] { request, response });
-            if (val instanceof String) {
-                PrintWriter out = response.getWriter();
-                out.println(val);
-            }
-        } catch (SchemeException e) {
-            throw new ServletException(e);
-        }
+        callQuaestorHandler("http-get", request, response);
     }
 
     /**
      * Handle a PUT method by handing it over to the quaestor put
-     * procedure.  That procedure is responsible for handling the
-     * request, examining the headers, and setting the response status.
+     * procedure.
      */
     public void doPut(HttpServletRequest request,
                       HttpServletResponse response)
             throws IOException, ServletException {
-        response.setContentType("text/html");
-        try {
-            Object val = SchemeWrapper
-                    .getInstance()
-                    .eval("put", new Object[] { request, response });
-            if (val instanceof String) {
-                PrintWriter out = response.getWriter();
-                out.println(val);
-            }
-        } catch (SchemeException e) {
-            throw new ServletException(e);
-        }
+        callQuaestorHandler("http-put", request, response);
+    }
+
+    /**
+     * Handle a DELETE method by handing it over to the quaestor put
+     * procedure.
+     */
+    public void doDelete(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws IOException, ServletException {
+        callQuaestorHandler("http-delete", request, response);
     }
 }
