@@ -13,13 +13,13 @@
 <h1>Quaestor: generic SPARQL endpoint</h1>
 
 <dl>
-<dt><code>GET http://hostport/quaestor/kb/access-control?sparql=xxx</code></dt>
+<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>?sparql=xxx</code></dt>
 <dd>The string <code>xxx</code> is a URLEncoded SPARQL query which is
-made against the <code>access-control</code> knowledgebase.</dd>
+made against the <code><em>kb-name</em></code> knowledgebase.</dd>
 
-<dt><code>GET http://hostport/quaestor/kb/access-control[/instances]</code></dt>
-<dd><p>Retrieve either the complete <code>access-control</code> model, or
-the <code>instances</code> submodel.  The format is obtained from the
+<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>[/<em>submodel</em>]</code></dt>
+<dd><p>Retrieve either the complete <code><em>kb-name</em></code> model, or
+the named <code><em>submodel</em></code>.  The format is obtained from the
 <code>Accept</code> header, which must contain one of the following
 MIME types:</p>
 <ul>
@@ -27,17 +27,21 @@ MIME types:</p>
   <li><code>application/rdf+xml</code> for RDF/XML</li>
   <li><code>text/plain</code> for N-Triples</li>
 </ul>
+<p>You can add an optional query <code>?model</code> or
+<code>?metadata</code> to retrieve the appropriate thing; the default
+is to retrieve the model.</p>
 </dd>
 
-<dt><code>POST http://hostport/quaestor/kb/access-control?sparql</code></dt>
+<dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em>?sparql</code></dt>
 <dd>Takes a SPARQL query as the request body</dd>
 
-<dt><code>PUT http://hostport/quaestor/kb/access-control</code></dt>
-<dd>Create a new knowledgebase named `access-control'.  The request content
+<dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
+<dd>Create a new knowledgebase named `<em>kb-name</em>'.  The request content
 contains the metadata for the knowledgebase, which is at present just
-a string.  It is an error if the knowledgebase already exists.</dd>
+a string, but will eventually be RDF.  It is an error if the
+knowledgebase already exists.</dd>
 
-<dt><code>PUT http://hostport/quaestor/kb/access-control/instances</code></dt>
+<dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em>/instances</code></dt>
 <dd>Upload the request body as the `instances' knowledgebase.  The
 request may have a <code>Content-Type</code> header indicating the
 format of the body, which, if it is present, <em>must</em> be one of
@@ -48,6 +52,9 @@ default.</dd>
 <dt><code>PUT http://hostport/quaestor/code</code></dt>
 <dd>Eval the request body as Scheme code.  This is only possible if
 the server has been configured to permit it.</dd>
+
+<dt><code>DELETE http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
+<dd>Remove the named knowledgebase.</dd>
 
 </dl>
 
