@@ -18,19 +18,37 @@
 made against the <code>access-control</code> knowledgebase.</dd>
 
 <dt><code>GET http://hostport/quaestor/kb/access-control[/instances]</code></dt>
-<dd>Retrieve either the complete <code>access-control</code> model, or
+<dd><p>Retrieve either the complete <code>access-control</code> model, or
 the <code>instances</code> submodel.  The format is obtained from the
-request headers.</dd>
+<code>Accept</code> header, which must contain one of the following
+MIME types:</p>
+<ul>
+  <li><code>application/n3</code> and <code>text/rdf+n3</code> for n3.</li>
+  <li><code>application/rdf+xml</code> for RDF/XML</li>
+  <li><code>text/plain</code> for N-Triples</li>
+</ul>
+</dd>
 
 <dt><code>POST http://hostport/quaestor/kb/access-control?sparql</code></dt>
 <dd>Takes a SPARQL query as the request body</dd>
 
 <dt><code>PUT http://hostport/quaestor/kb/access-control</code></dt>
-<dd>Create a new knowledgebase named `access-control'.  There should
-be no content.</dd>
+<dd>Create a new knowledgebase named `access-control'.  The request content
+contains the metadata for the knowledgebase, which is at present just
+a string.  It is an error if the knowledgebase already exists.</dd>
 
 <dt><code>PUT http://hostport/quaestor/kb/access-control/instances</code></dt>
-<dd>Upload the request body as the `instances' knowledgebase</dd>
+<dd>Upload the request body as the `instances' knowledgebase.  The
+request may have a <code>Content-Type</code> header indicating the
+format of the body, which, if it is present, <em>must</em> be one of
+<code>RDF/XML</code>, <code>RDF/XML-ABBREV</code>,
+<code>N-TRIPLE</code> or <code>N3</code>, with the first one being the
+default.</dd>
+
+<dt><code>PUT http://hostport/quaestor/code</code></dt>
+<dd>Eval the request body as Scheme code.  This is only possible if
+the server has been configured to permit it.</dd>
+
 </dl>
 
 </body>
