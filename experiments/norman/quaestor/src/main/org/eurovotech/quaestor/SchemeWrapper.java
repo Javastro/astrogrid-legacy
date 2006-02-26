@@ -9,67 +9,48 @@ import sisc.data.Value;
 import sisc.data.Procedure;
 import sisc.data.SchemeBoolean;
 import sisc.data.SchemeString;
+import sisc.data.SchemeVoid;
 import sisc.data.Symbol;
 import sisc.interpreter.Interpreter;
-import sisc.interpreter.AppContext;
 import sisc.interpreter.Context;
 import sisc.interpreter.SchemeException;
 import sisc.interpreter.SchemeCaller;
-import sisc.ser.MemoryRandomAccessInputStream;
-import sisc.ser.SeekableInputStream;
-import sisc.util.Util;
+import sisc.io.StreamInputPort;
 
 /**
  * Wrapper for SISC.
- *
- * <p>This follows the outline in <a href="http://www.lisperati.com/quick.html"
- * ><code>http://www.lisperati.com/quick.html</code></a>, though that
- * uses the simpler .enter/.exit mechanism described in the SISC docs,
- * which those docs warn has threading problems.  There are also
- * examples of use in the <code>contrib</code> section of the SISC CVS tree.
+ * 
+ * <p>There are examples of how to use SISC for a servlet
+ * in the <code>contrib</code> section of the SISC CVS tree.
  */
 public class SchemeWrapper {
 
-    //AppContext ctx;
+    static private SchemeWrapper instance;
 
     /**
-     * Constructs a new wrapper for SISC.
+     * Constructs a new wrapper for SISC.  Private constructor.
      * @throws SchemeException passed on from execute
      */
-    public SchemeWrapper()
-            throws ClassNotFoundException, IOException, SchemeException {
-        //ctx = new AppContext();
+    private SchemeWrapper()
+            throws SchemeException {
         Context.execute
-            (//ctx,
-             new SchemeCaller() {
+            (new SchemeCaller() {
                  public Object execute(Interpreter i) {
                      REPL.loadDefaultHeap(i);
                      return Boolean.TRUE;
                  }
              });
     }
-    
-                     
-//     public SchemeWrapper()
-//             throws ClassNotFoundException, IOException {
-//         InputStream shp = getClass().getResourceAsStream("/sisc.shp");
-//         if (shp == null)
-//             throw new IOException("scheme heap not found");
-//         final SeekableInputStream heap = new MemoryRandomAccessInputStream(shp);
 
-//         ctx = new AppContext();
-//         Context.execute
-//             (ctx,
-//              new SchemeCaller() {
-//                  public Object execute(Interpreter i) {
-//                      try {
-//                          return Boolean.valueOf(REPL.loadHeap(i, heap));
-//                      } catch (ClassNotFoundException e) {
-//                          return "SchemeWrapper: can't load heap: " + e;
-//                      }
-//                  }
-//              });
-//     }
+    /**
+     * Returns the single instance of the SchemeWrapper.
+     */
+    static public SchemeWrapper getInstance()
+            throws SchemeException {
+        if (instance == null)
+            instance = new SchemeWrapper();
+        return instance;
+    }
 
     /**
      * Evaluates the string, returning the value as a String.
@@ -81,8 +62,7 @@ public class SchemeWrapper {
     public Object eval(final String expr)
             throws IOException, SchemeException {
         Object o = Context.execute
-            (//ctx,
-             new SchemeCaller() {
+            (new SchemeCaller() {
                  public Object execute(Interpreter i) {
                      try {
                          return schemeToJava(i.eval(expr));
@@ -114,8 +94,7 @@ public class SchemeWrapper {
     public Object eval(final String proc, final Object[] args)
             throws IOException, SchemeException {
         Object o = Context.execute
-            (//ctx,
-             new SchemeCaller() {
+            (new SchemeCaller() {
                  public Object execute(Interpreter r) {
                      try {
                          Procedure p = (Procedure)r.eval(Symbol.get(proc));
@@ -139,6 +118,30 @@ public class SchemeWrapper {
     }
 
     /**
+     * Evals the given input stream.
+     */
+    public Object evalInput(final java.io.InputStream in)
+            throws SchemeException {
+        Object o = Context.execute
+            (new SchemeCaller() {
+                 public Object execute(Interpreter i) {
+                     try {
+                         return schemeToJava(i.evalInput
+                                             (new StreamInputPort(in)));
+                     } catch (Exception e) {
+                         return e;
+                     }
+                 }
+             });
+        if (o instanceof SchemeException)
+            throw (SchemeException)o;
+        else {
+            assert(!(o instanceof Exception));
+            return o;
+        }
+    }
+
+    /**
      * Loads the given source file into the interpreter.
      * @param loadFile the full path of a file to load
      * @return true if the load succeeded; false otherwise
@@ -147,8 +150,7 @@ public class SchemeWrapper {
     public boolean load(final String loadFile)
             throws SchemeException {
         Boolean stat = (Boolean)Context.execute
-            (//ctx,
-             new SchemeCaller() {
+            (new SchemeCaller() {
                  public Object execute(Interpreter r) {
                      return Boolean.valueOf(REPL.loadSourceFiles
                                             (r, new String[] { loadFile }));
@@ -158,12 +160,19 @@ public class SchemeWrapper {
     }
 
     /**
-     * Convert a SISC Value to a Java Object.  If the value is (scheme) boolean,
-     * then return a Java {@link Boolean}; otherwise, if it is a
-     * {@link SchemeString}, then convert it to a Java String using the
-     * {@link SchemeString#asString} method, which does
-     * suitable conversions of newlines; otherwise convert it to a
-     * String value in the usual way, with {@link java.lang.Object#toString}.
+     * Convert a SISC Value to a Java Object.  If the value is:
+     * <dl>
+     * <dt>(scheme) boolean</dt>
+     * <dd>return a Java {@link Boolean}</dd>
+     * <dt>{@link SchemeString}</dt>
+     * <dd>return a Java String using the {@link SchemeString#asString}
+     * method, which does suitable conversions of newlines</dd>
+     * <dt>scheme void</dt>
+     * <dd>return null</dd>
+     * <dt>otherwise</dt>
+     * <dd>convert it to a String value in the usual way,
+     * with {@link java.lang.Object#toString}.</dd>
+     * </dl>
      *
      * @param v a SISC Value, which may or may not be a SchemeString
      * @return a Java Object, which will be Boolean or String
@@ -177,6 +186,8 @@ public class SchemeWrapper {
         } else if (v instanceof SchemeBoolean) {
             SchemeBoolean sb = (SchemeBoolean)v;
             ret = Boolean.valueOf(sb.equals(sisc.data.SchemeBoolean.TRUE));
+        } else if (v instanceof SchemeVoid) {
+            ret = null;
         } else {
             ret = v.toString();
         }
