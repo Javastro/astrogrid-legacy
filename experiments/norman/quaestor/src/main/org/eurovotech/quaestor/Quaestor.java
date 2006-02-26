@@ -15,12 +15,10 @@ import sisc.interpreter.SchemeException;
  * The main servlet for the Quaestor application
  */
 public class Quaestor extends HttpServlet {
-    SchemeWrapper wrapper;
     
     public void init()
             throws ServletException {
         try {
-            wrapper = new SchemeWrapper();
             String qt = getServletContext().getRealPath("WEB-INF/quaestor.scm");
 //             Object o = wrapper.eval("(with-failure-continuation (lambda (err cont) (format #f \"Error at ~a: ~a\" (error-location err) (error-message err))) (lambda () (load \"" + qt + "\") #t))");
 //             if (o instanceof String) {
@@ -28,29 +26,24 @@ public class Quaestor extends HttpServlet {
 //                         ("Failed to load quaestor from " + qt
 //                          + ": "+ o);
 //             }
-            if (!wrapper.load(qt)) {
+            if (!SchemeWrapper.getInstance().load(qt)) {
                 throw new ServletException
                         ("Failed to load Quaestor from " + qt);
             }
-            log("initialised wrapper " + wrapper + " in servlet " + this
-                + " in thread " + Thread.currentThread()
-                + " with quaestor from " + qt);
+//             log("initialised wrapper " + wrapper + " in servlet " + this
+//                 + " in thread " + Thread.currentThread()
+//                 + " with quaestor from " + qt);
+
         } catch (SchemeException e) {
             throw new ServletException(e);
-        } catch (java.lang.ClassNotFoundException e) {
-            throw new ServletException("Failed to initialise SISC (classpath): "
-                                       + e);
-        } catch (IOException e) {
-            throw new ServletException("Failed to initialise SISC (i/o error): "
-                                       + e);
         }
     }
 
-    public void destroy() {
-        log("destroying wrapper " + wrapper + " in servlet " + this
-            + " in thread " + Thread.currentThread());
-        wrapper = null;         // I don't know if this is necessary
-    }
+//     public void destroy() {
+// //         log("destroying wrapper " + wrapper + " in servlet " + this
+// //             + " in thread " + Thread.currentThread());
+//         //wrapper = null;         // I don't know if this is necessary
+//     }
 
     /**
      * Handle a GET method by handing it over to the quaestor get
@@ -61,10 +54,11 @@ public class Quaestor extends HttpServlet {
                       HttpServletResponse response)
             throws IOException, ServletException {
         response.setContentType("text/html");
-        log("GET in servlet " + this);
+//         log("GET in servlet " + this);
         try {
-            Object val = wrapper.eval("get",
-                                      new Object[] { request, response });
+            Object val = SchemeWrapper
+                    .getInstance()
+                    .eval("get", new Object[] { request, response });
             if (val instanceof String) {
                 PrintWriter out = response.getWriter();
                 out.println(val);
@@ -84,8 +78,9 @@ public class Quaestor extends HttpServlet {
             throws IOException, ServletException {
         response.setContentType("text/html");
         try {
-            Object val = wrapper.eval("put",
-                                      new Object[] { request, response });
+            Object val = SchemeWrapper
+                    .getInstance()
+                    .eval("put", new Object[] { request, response });
             if (val instanceof String) {
                 PrintWriter out = response.getWriter();
                 out.println(val);
