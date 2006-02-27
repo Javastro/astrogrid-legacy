@@ -89,4 +89,14 @@ public class Quaestor extends HttpServlet {
             throws IOException, ServletException {
         callQuaestorHandler("http-delete", request, response);
     }
+
+    /**
+     * Handle a POST method by handing it over to the quaestor put
+     * procedure.
+     */
+    public void doPost(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws IOException, ServletException {
+        callQuaestorHandler("http-post", request, response);
+    }
 }
