@@ -13,14 +13,15 @@
 ;; Is this right...?
 (eval-when-compile (require 'url))
 
-(defvar quaestor-update-url "http://localhost:8080/quaestor/code")
+(defvar quaestor-update-url "http://localhost:8080/quaestor/code"
+  "*The URL for the code-upload service of Quaestor")
 
 (defmacro quaestor-http-success-p (status)
-  "Return whether PROPERTIES was the result of a successful PUT request"
+  "Return t if STATUS is a 2xx HTTP status code"
   `(= (/ (or ,status 500) 100) 2))
 
 (defun quaestor-upload-code (url content)
-  "HTTP-PUT the given CONTENT to the URL.  Return true if successful."
+  "HTTP-PUT the given CONTENT (string) to the URL.  Return true if successful."
   (let ((buffer nil)
         (result nil)
         (url-request-method "PUT")
@@ -34,9 +35,8 @@
         (kill-buffer buffer)))
     result))
 
-(defun current-function-as-string ()
-  "Return the contents of the current function as a string."
-  ;(interactive)
+(defun quaestor-current-function-as-string ()
+  "Return the contents of the current defun as a string."
   (save-excursion
     (mark-defun)
     (buffer-substring (point) (mark))))
@@ -45,7 +45,7 @@
   "Upload the current defun to Quaestor"
   (interactive)
   (let ((is-ok (quaestor-upload-code quaestor-update-url
-                                     (current-function-as-string))))
+                                     (quaestor-current-function-as-string))))
       (message (if is-ok "defun uploaded" "error uploading defun"))))
 
 ;(define-key lisp-mode-shared-map [(meta control x)] 'quaestor-eval-defun)
