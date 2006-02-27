@@ -1,4 +1,4 @@
-/*$Id: ImageLoadPlasticButton.java,v 1.1 2006/02/24 15:26:53 nw Exp $
+/*$Id: ImageLoadPlasticButton.java,v 1.2 2006/02/27 12:20:50 nw Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.PlasticWrapper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -56,36 +58,38 @@ public class ImageLoadPlasticButton extends PlasticButton {
     }
 
     public void actionPerformed(ActionEvent e) {
-        final Set processedServices = new HashSet();
-        for (Iterator i = selectedNodes.iterator(); i.hasNext(); ) {
-            final TreeNode tn = (TreeNode)i.next();
-            // find each leaf node
-            if (tn.getChildCount() > 0 ) {
-                continue;
+        (new BackgroundWorker(ui,super.getText()) {        
+            protected Object construct() throws Exception {        
+                for (Iterator i = selectedNodes.iterator(); i.hasNext(); ) {
+                    final TreeNode tn = (TreeNode)i.next();
+                    // find each leaf node
+                    if (tn.getChildCount() > 0 ) {
+                        continue;
+                    }
+                        URL url = new URL(tn.getAttribute(SiapRetrieval.IMAGE_URL_ATTRIBUTE));
+                        List args = new ArrayList();
+                        args.add(url.toString()); // plastic expects a string, but we first construct a url to ensure it's valid.
+                        // image load message isn't a constant yet - so refer to the one in astroscope for now.
+                        wrapper.getHub().requestToSubset(
+                                wrapper.getPlasticId()
+                                ,((AstroScopeLauncherImpl)ui).IMAGES_LOAD_FROM_URL_MESSAGE
+                                ,args,target);
+                        //@todo next send plastic messages to select correct position in image.                    
+                }// end for each child node.
+                return null;
             }
-            TreeNode catalog = tn.getParent().getParent().getParent();
-            if (! processedServices.contains(catalog)) {
-                processedServices.add(catalog);
-                try {
-                    URL url = new URL(catalog.getAttribute(Retriever.SERVICE_URL_ATTRIBUTE));
-                    List args = new ArrayList();
-                    args.add(url);
-                    wrapper.getHub().requestToSubset(wrapper.getPlasticId(),CommonMessageConstants.VOTABLE_LOAD_FROM_URL,args,target);
-                } catch (MalformedURLException ex) {
-                    logger.warn("Failed to plasticize",ex);
-                    //@todo report errors better
-                }
-                //@todo next send plastic messages to select correct position in image.
-            }
-                
-        }        
-    }
+        }).start();
+    }        
+    
 
 }
 
 
 /* 
 $Log: ImageLoadPlasticButton.java,v $
+Revision 1.2  2006/02/27 12:20:50  nw
+improved plastic integration
+
 Revision 1.1  2006/02/24 15:26:53  nw
 build framework for dynamically adding buttons
  

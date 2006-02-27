@@ -1,4 +1,4 @@
-/*$Id: VotableLoadPlasticButton.java,v 1.1 2006/02/24 15:26:53 nw Exp $
+/*$Id: VotableLoadPlasticButton.java,v 1.2 2006/02/27 12:20:50 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.PlasticWrapper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -47,7 +48,7 @@ public class VotableLoadPlasticButton extends PlasticButton {
 
   
     public VotableLoadPlasticButton(URI plasticID, String name, URL iconURL, FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
-        super(plasticID, "View tables in " + StringUtils.capitalize( name ), iconURL, selectedNodes, ui, wrapper);
+        super(plasticID, "View tables in " + StringUtils.capitalize( name ), iconURL, selectedNodes, ui, wrapper);        
     }
     
     public void focusChanged(FocusEvent arg0) {
@@ -55,29 +56,29 @@ public class VotableLoadPlasticButton extends PlasticButton {
     }
 
     public void actionPerformed(ActionEvent e) {
-        final Set processedServices = new HashSet();
-        for (Iterator i = selectedNodes.iterator(); i.hasNext(); ) {
-            final TreeNode tn = (TreeNode)i.next();
-            // find each leaf node
-            if (tn.getChildCount() > 0 ) {
-                continue;
+        (new BackgroundWorker(ui,super.getText()) {
+            private Set processedServices = new HashSet();
+            protected Object construct() throws Exception {
+                for (Iterator i = selectedNodes.iterator(); i.hasNext(); ) {
+                    final TreeNode tn = (TreeNode)i.next();
+                    // find each leaf node
+                    if (tn.getChildCount() > 0 ) {
+                        continue;
+                    }
+                    TreeNode service = tn.getParent().getParent().getParent();
+                    if (! processedServices.contains(service)) {
+                        processedServices.add(service);                       
+                        URL url = new URL(service.getAttribute(Retriever.SERVICE_URL_ATTRIBUTE));
+                        List args = new ArrayList();  
+                        args.add(url.toString()); // plastic spec expects parameter types that are strings - but still parse into a url first, to check it's valid.
+                        wrapper.getHub().requestToSubset(wrapper.getPlasticId(),CommonMessageConstants.VOTABLE_LOAD_FROM_URL,args,target);
+                        //@todo next send plastic messages to highlight selected rows.
+                    }// end if new catalog
+                    
+                }// end for each child node
+                return null;
             }
-            TreeNode catalog = tn.getParent().getParent().getParent();
-            if (! processedServices.contains(catalog)) {
-                processedServices.add(catalog);
-                try {
-                    URL url = new URL(catalog.getAttribute(Retriever.SERVICE_URL_ATTRIBUTE));
-                    List args = new ArrayList();
-                    args.add(url);
-                    wrapper.getHub().requestToSubset(wrapper.getPlasticId(),CommonMessageConstants.VOTABLE_LOAD_FROM_URL,args,target);
-                } catch (MalformedURLException ex) {
-                    logger.warn("Failed to plasticize",ex);
-                    //@todo report errors correctly.
-                }
-                //@todo next send plastic messages to highlight selected rows.
-            }
-                
-        }
+        }).start();
     }
 
 }
@@ -85,6 +86,9 @@ public class VotableLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: VotableLoadPlasticButton.java,v $
+Revision 1.2  2006/02/27 12:20:50  nw
+improved plastic integration
+
 Revision 1.1  2006/02/24 15:26:53  nw
 build framework for dynamically adding buttons
  

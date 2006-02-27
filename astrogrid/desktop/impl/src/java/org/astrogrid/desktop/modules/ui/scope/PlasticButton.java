@@ -1,4 +1,4 @@
-/*$Id: PlasticButton.java,v 1.2 2006/02/24 16:27:40 nw Exp $
+/*$Id: PlasticButton.java,v 1.3 2006/02/27 12:20:50 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,6 +73,8 @@ public abstract class PlasticButton extends NodeConsumerButton{
                 logger.warn("Failed to download icon " + iconURL);
                 
             }
+            // run rule to enable / disable this button.
+            this.focusChanged(null);
         }
         this.ui = ui;
         this.plasticId = plasticID;
@@ -86,21 +88,7 @@ public abstract class PlasticButton extends NodeConsumerButton{
     protected final List target;
     /** id of the plastic application to message */
     protected final URI plasticId;
-    
-    /** loose implementation of equals - will accept  another PlasticButton, or a URI.
-     * matches on value of {@link #plasticId} */
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj instanceof PlasticButton) {      
-            return ((PlasticButton)obj).plasticId.equals(this.plasticId);
-        } 
-        if (obj instanceof URI) {
-            return ((URI)obj).equals(this.plasticId);
-        }
-        return false;
-    }
+  
     
     
 
@@ -110,6 +98,9 @@ public abstract class PlasticButton extends NodeConsumerButton{
 
 /* 
 $Log: PlasticButton.java,v $
+Revision 1.3  2006/02/27 12:20:50  nw
+improved plastic integration
+
 Revision 1.2  2006/02/24 16:27:40  nw
 fix for loading rmeote icons - otherwise get a security exception in webstart
 

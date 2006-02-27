@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.31 2006/02/24 15:25:57 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.32 2006/02/27 12:20:50 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -629,7 +629,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
     /// PLASTIC stuff below here 
     // further message constants - assembled in constructor for convienience at the moment.
     
-    private final URI IMAGES_LOAD_FROM_URL_MESSAGE;
+    public final URI IMAGES_LOAD_FROM_URL_MESSAGE;
     
     // implementation of the plastic listener interface
     // callback when message is _received_ from plastic - delegates straight to handler.
@@ -650,6 +650,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.32  2006/02/27 12:20:50  nw
+improved plastic integration
+
 Revision 1.31  2006/02/24 15:25:57  nw
 plasticization of astroscope
 
