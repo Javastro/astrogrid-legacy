@@ -168,6 +168,19 @@ public class AdqlCommand {
         }
     }
     
+    public boolean isInsertableIntoArray( int noElementsToInsert ) {
+        if( isArray() == false )
+            return false ;
+        XmlObject o = entry.getXmlObject() ;
+        String e = getElementName() ;
+        if( this.maxOccurs == null 
+                ||
+            AdqlUtils.sizeOfArray( o, e ) <= this.maxOccurs.intValue() - noElementsToInsert ) {
+            return true ;
+        }
+        return false ;
+    }
+    
     public boolean isConcreteTypeCascadeable( int index ) {
         boolean answer = false ;
         String name = null ;

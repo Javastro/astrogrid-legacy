@@ -37,6 +37,7 @@ import javax.swing.JTextPane;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.* ;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.JLabel;
 import javax.swing.JViewport;
@@ -62,8 +63,8 @@ import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel.TableDa
 public class TableMetadataPanel extends JPanel {
     
     private static final Log log = LogFactory.getLog( TableMetadataPanel.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
+    private static final boolean DEBUG_ENABLED = false ;
+    private static final boolean TRACE_ENABLED = false ;
     
     private final static String 
     	NAME 		= "Name",
@@ -298,7 +299,7 @@ public class TableMetadataPanel extends JPanel {
         	        rect = SwingUtilities.computeIntersection( vr.x, vr.y, vr.width, vr.height, rect ) ;
     	        }
     	        Point rightSideOfPath = rect.getLocation() ;
-    	        rightSideOfPath.x += rect.width ;
+    	        rightSideOfPath.x += (rect.width + 1) ;
     	        rightSideOfPath.y += rect.height / 2 ;
 	            Point[] elastic = new Point[2] ;
 	            elastic[0] = SwingUtilities.convertPoint( displayTable
@@ -309,6 +310,7 @@ public class TableMetadataPanel extends JPanel {
 	                                                    , adqlToolEditorPanel ) ;
 	            adqlToolEditorPanel.setElastic( elastic ) ;
 	            adqlToolEditorPanel.updateDisplay() ;
+		        insertAction.setEnabled( insertAction.testAndBuildSuitability() ) ;
 	            popup.show( viewPort, popupPosition.x, popupPosition.y ) ;
             }
                      
@@ -317,10 +319,51 @@ public class TableMetadataPanel extends JPanel {
     } // end of class ContextPopup
     
     private class InsertAction extends AbstractAction {
+        ArrayList commands ; 
+        AdqlCommand suitableCommand ;
+        int concreteType ;
 	   
 	    public InsertAction( String contextInstruction ) {
 	        super( contextInstruction ) ;
 	    }
+	    
+	    private boolean testAndBuildSuitability() {
+	        TreePath path = adqlTree.getSelectionPath() ;
+	        // If the path is null or there is no parent
+	        // Then we cannot paste into this entry...
+	        if( path == null || path.getPathCount() < 2 )
+	            return false ;
+	        // If the target allows for no children, then we dont paste into it.
+	        AdqlEntry entry = (AdqlEntry)path.getLastPathComponent() ;
+	        SchemaProperty[] elements = entry.getElementProperties() ;
+	        if( elements == null || elements.length == 0 ) 
+	        	return false ;  
+	        //  Check that it is OK to create a column reference into the target...
+	        if( AdqlCommand.isSuitablePasteTarget( entry, getColumnReferenceType() ) == false ) 
+	            return false ;
+	        //  Build array of possible insert commands for target...
+	        commands = AdqlCommand.buildCommands( entry ) ; 
+	        
+	        //  Find a suitable match of types...
+	        int result[] = AdqlCommand.findSuitableMatch( commands, getColumnReferenceType() ) ;
+	        if( result[0] == -1 )
+	            return false ;
+	        suitableCommand = (AdqlCommand)commands.get( result[0] ) ;
+	        concreteType = result[1] ;
+	        
+	        // Now for the specific testing of arrays ...
+	        int count = displayTable.getSelectedRowCount() ;
+	        if( suitableCommand.isArray() ) {
+	            if( suitableCommand.isInsertableIntoArray( count ) )
+	                return true ;
+	            else
+	                return false ;
+	        }
+	       
+	        return true ;
+	        
+	    }
+	    
 	    
 	    public void actionPerformed( ActionEvent e ) {
 	        //
@@ -339,7 +382,7 @@ public class TableMetadataPanel extends JPanel {
 	        	return ;        
 	        // Check that it is OK to create a column reference into the target...
 	        if( AdqlCommand.isSuitablePasteTarget( entry, getColumnReferenceType() ) == false ) {
-	            log.debug( "columnReferenceType unsuitable" ) ;
+	            if( DEBUG_ENABLED ) log.debug( "columnReferenceType unsuitable" ) ;
 	            return ;
 	        }
 	  
@@ -349,11 +392,11 @@ public class TableMetadataPanel extends JPanel {
 	        // Attempt to find a suitable match of types...
 	        int result[] = AdqlCommand.findSuitableMatch( commands, getColumnReferenceType() ) ;	        
 	        if( result[0] == -1 ) {
-	            log.debug( "could not find a suitable match." ) ;
+	            if( DEBUG_ENABLED ) log.debug( "could not find a suitable match." ) ;
 	            return ;
 	        }
-	        log.debug( "columnReferenceType suitable..." ) ;
-	        log.debug( "found: " 
+	        if( DEBUG_ENABLED ) log.debug( "columnReferenceType suitable..." ) ;
+	        if( DEBUG_ENABLED ) log.debug( "found: " 
 	                 + ((AdqlCommand)commands.get( result[0] )).getConcreteTypes()[ result[1] ].getName() ) ;	
 	        
 	        //
@@ -374,6 +417,105 @@ public class TableMetadataPanel extends JPanel {
 	    }
 	        
     }
+    
+ 
+    
+    
+    
+//	private class PasteIntoAction extends AbstractAction {
+//	    private AdqlEntry entry ;
+//	    private XmlObject pasteObject;
+//	    private AdqlCommand suitableCommand ;
+//	    private int validType ;
+//	       
+//	    public PasteIntoAction( AdqlEntry entry ) {
+//	        super( "Paste into" ) ;
+//	        this.entry = entry ;
+//	        setEnabled( testAndBuildSuitability() ) ;
+//	    }
+//	    
+//	    private boolean testAndBuildSuitability() {
+//	        TreePath path = adqlTree.getSelectionPath() ;
+//	        // If the path is null or there is no parent
+//	        // Then we cannot paste into this entry...
+//	        if( path == null || path.getPathCount() < 2 )
+//	            return false ;
+//	        // If the clipboard is empty then there is nothing to paste...
+//	        if( clipBoard.isEmpty() )
+//	            return false ;
+//	        // If the target allows for no children, then we dont paste into it.
+//	        SchemaProperty[] elements = entry.getElementProperties() ;
+//	        if( elements == null || elements.length == 0 ) 
+//	        	return false ;        
+//	        // Check that the last clipboard object is suitable to paste into the target...
+//	        pasteObject = (XmlObject)clipBoard.get( clipBoard.size() - 1 ) ;
+//	        if( AdqlCommand.isSuitablePasteTarget( entry, pasteObject ) == false )
+//	            return false ;
+//	        
+//	        // Build array of possible insert commands for target...
+//	        ArrayList commands = AdqlCommand.buildCommands( entry ) ; 
+//	        
+//	        // Attempt to find a suitable match of types...
+//	        int result[] = AdqlCommand.findSuitableMatch( commands, pasteObject ) ;	        
+//	        if( result[0] == -1 )
+//	            return false ;
+//	        this.suitableCommand = (AdqlCommand)commands.get( result[0] ) ;
+//	        this.validType = result[1] ;
+//	        return true ;
+//	    }
+//	    
+//	    public void actionPerformed( ActionEvent e ) {
+//	        // Now do the business.
+//	        // Insert a basic object...
+//	        XmlObject newObject1 = insertObject( suitableCommand, validType ) ;
+//	        // Copy contents of paste object into it...
+//	        XmlObject newObject2 = newObject1.set( pasteObject ) ;
+//
+//            // Create the new tree node instance (and pray it works)...
+//        	AdqlEntry.newInstance( entry, newObject2 ) ;  
+//        	
+//        	// Refresh tree...
+//	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( entry ) ;
+//	        adqlTree.repaint() ;
+//	        
+//	    }
+//	  
+//	        
+//	    private XmlObject insertObject( AdqlCommand commandBean, int subType ) {
+//            AdqlEntry parent = commandBean.getEntry() ;
+//            XmlObject parentObject = parent.getXmlObject() ;
+//            SchemaType schemaType = commandBean.getConcreteTypes()[subType] ;
+//            XmlObject newObject = null ; 
+//            if( commandBean.isArray() ) {                
+//                newObject = AdqlUtils.addNewToEndOfArray( parentObject, commandBean.getElementName() ) ;
+//                newObject = newObject.changeType( schemaType ) ;
+//            }
+//            else {
+//                if( schemaType.isBuiltinType() ) {
+//                    newObject = XmlObject.Factory.newInstance().changeType( schemaType ) ;
+//                    newObject = setDefaultValue( newObject ) ;
+//                }
+//                else {            
+//                    newObject = AdqlUtils.addNew( parentObject, commandBean.getElementName() ) ;
+//                    if( newObject != null ) {
+//                        newObject = newObject.changeType( schemaType ) ;
+//                    }
+//                    else {
+//                        newObject = XmlObject.Factory.newInstance().changeType( commandBean.getElement().javaBasedOnType() ) ;
+//                        newObject = newObject.changeType( schemaType ) ;
+//                        newObject = setDefaultValue( newObject ) ;
+//                        AdqlUtils.set( parentObject, commandBean.getElementName(), newObject ) ; 
+//                    }
+//                }
+//            } 
+//            return newObject ;
+//        }
+//	    
+//	}    
+    
+    
+    
+    
     
     
     private void addSelectedColumns( AdqlCommand command, int concreteSubtype ) {
@@ -397,6 +539,9 @@ public class TableMetadataPanel extends JPanel {
                                                                , concreteSubtype
                                                                , tableData
                                                                , columnBean ) ;
+            ActionEvent e = null ;
+            if( i == selectedColumnBeans.length-1 )
+                e = new ActionEvent( this, 1, "Repaint" ) ;
             insert.actionPerformed( null ) ;
         }
         
@@ -436,11 +581,11 @@ public class TableMetadataPanel extends JPanel {
 	        // Attempt to find a suitable match of types...
 	        int result[] = AdqlCommand.findSuitableMatch( commands, getTableType() ) ;	        
 	        if( result[0] == -1 ) {
-	            log.debug( "could not find a suitable match." ) ;
+	            if( DEBUG_ENABLED ) log.debug( "could not find a suitable match." ) ;
 	            return ;
 	        }
-	        log.debug( "tableType suitable..." ) ;
-	        log.debug( "found: " 
+	        if( DEBUG_ENABLED ) log.debug( "tableType suitable..." ) ;
+	        if( DEBUG_ENABLED ) log.debug( "found: " 
 	                 + ((AdqlCommand)commands.get( result[0] )).getConcreteTypes()[ result[1] ].getName() ) ;	
 	        	        
             ADQLToolEditorPanel.InsertTableAction insert = adqlToolEditorPanel.new

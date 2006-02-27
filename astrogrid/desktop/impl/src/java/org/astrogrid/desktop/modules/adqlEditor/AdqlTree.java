@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.EventObject;
 import java.util.Vector;
 
+import javax.swing.plaf.basic.BasicTreeUI ;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -32,6 +33,8 @@ import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SimpleValue;
@@ -40,6 +43,7 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
+import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 /**
  * A tree view on XML, with nodes representing both elements and attributes. See
  * {@link XmlEntry}and {@link XmlModel}for information on how information
@@ -48,15 +52,21 @@ import org.astrogrid.adql.v1_0.beans.SelectDocument;
  */
 public final class AdqlTree extends JTree
 {
-    
+    private static final boolean DEBUG_ENABLED = false ;
+    private static final boolean TRACE_ENABLED = false ;
+    private static final Log log = LogFactory.getLog( AdqlTree.class ) ;
     private static final String EDIT_PROMPT_NAME = "Ctrl+Space" ;
     private static final String POPUP_PROMPT_NAME = "Ctrl+M/m" ;
     
     private boolean editingActive = false ;
     private LowLevelEditor llEditor ;
     
+    private boolean DEBUG = false ;
+    
     //  Not absolutely sure this field is thread safe
-    private Rectangle treeVisibleRect ;
+    // private Rectangle treeVisibleRect ;
+    
+    private int availableWidth ;
     
     /**
      * Constructs the tree using <em>xmlFile</em> as an original source of
@@ -111,15 +121,27 @@ public final class AdqlTree extends JTree
                                     , int row
                                     , boolean hasFocus) {
         if( value != null && value instanceof AdqlEntry ) {
+            if( DEBUG ) 
+                return "abcdefghijklmnopqrstuvwxyz" ;
+            Boolean multiLined = new Boolean( false ) ;
+
             String html = ((AdqlEntry)value).toHtml( expanded, leaf, this ) ;
+            //
+            // The following code ensures we draw a tasteful border around any displays
+            // which are multi-lined. Dont like the way it is done, but hopefully this
+            // will be a short-term measure.
+            if( html.indexOf( "<br>") != -1 ) {
+                ((JLabel)getCellRenderer()).setBorder( BorderFactory.createEtchedBorder() ) ;
+            }
+            else {
+               ((JLabel)getCellRenderer()).setBorder( BorderFactory.createEmptyBorder() ) ;
+            }          
             return super.convertValueToText( html, sel, expanded, leaf, row, hasFocus ) ;       
         }
         return super.convertValueToText( value, sel, expanded, leaf, row, hasFocus ) ;
     }
     
-    
  
-
     public boolean isEditingActive() {
         return editingActive;
     }
@@ -200,6 +222,7 @@ public final class AdqlTree extends JTree
         //        renderer.setClosedIcon(createImageIcon("images/plus.gif"));
         // DefaultTreeCellEditor editor = new DefaultTreeCellEditor( this, renderer ) ;
         DefaultTreeCellRenderer renderer = new AdqlTreeCellRenderer() ;
+//        DefaultTreeCellRenderer renderer = new DebugTreeCellRenderer() ;
         setCellRenderer( renderer ) ;
         this.llEditor = new LowLevelEditor() ;
         setCellEditor( new AdqlTreeCellEditor2( this, renderer, new DefaultCellEditor( this.llEditor ) ) ) ;
@@ -220,26 +243,69 @@ public final class AdqlTree extends JTree
         
     }
     
+    
+    public class DebugTreeCellRenderer extends DefaultTreeCellRenderer {
+        
+        
+        public Component getTreeCellRendererComponent( JTree tree
+                , Object value
+                , boolean sel
+                , boolean expanded
+                , boolean leaf
+                , int row
+                , boolean hasFocus) {
+            
+            return super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus ) ;
+        }
+        
+        public Dimension getPreferredSize() {
+//          if( TRACE_ENABLED ) log.debug( "AdqlTreeCellRenderer.getPreferredSize()" ) ; 
+//          int displacement = level * 20 ;  // rough and ready guess for the moment.
+//          int width = treeVisibleRect.width - displacement ;
+//          if( width < 250 )
+//              width = 250 ;
+          Dimension d = super.getPreferredSize() ;
+          d.width = d.width / 2 ;
+          d.height = d.height * 2 ;
+//          d.width = this.useableWidth ;
+//          if( d.width < 250 )
+//              d.width = 250 ;
+//          if( !expanded )
+//              d.height = d.height * 2 ;      
+//          if( DEBUG_ENABLED ) log.debug( "d.width: " + d.width ) ;
+          return d ;
+      }
+        
+        public void setIcon( javax.swing.Icon icon ) { }
+    }
+    
+    
  
     public class AdqlTreeCellRenderer extends DefaultTreeCellRenderer {
         
         
-        
+        private volatile int useableWidth ;
         private boolean expanded ;
         private boolean useOppositeExpansionState = false ;
         
         public AdqlTreeCellRenderer() {
-            super.setIcon( null ) ;
-            super.setLeafIcon( null ) ;
-            super.setOpenIcon( null ) ;
-            super.setClosedIcon( null ) ;
-            AdqlTree.this.addComponentListener ( 
-                new ComponentAdapter() {
-                    public void componentResized( ComponentEvent e ) {
-                        treeVisibleRect = AdqlTree.this.getVisibleRect() ;
-                    }
-                } 
-            ) ;
+            setIcon( null ) ;
+            setLeafIcon( null ) ;
+            setOpenIcon( null ) ;
+            setClosedIcon( null ) ;
+            setHorizontalAlignment( LEFT ) ;
+            setVerticalAlignment( TOP ) ;
+            // Experment to see what a border would look like
+            // Over the top, probably. But it would be good to 
+            // draw feintly around any mult-line labels
+            setBorder( BorderFactory.createEtchedBorder() ) ;
+//            AdqlTree.this.addComponentListener ( 
+//                new ComponentAdapter() {
+//                    public void componentResized( ComponentEvent e ) {
+//                        treeVisibleRect = AdqlTree.this.getVisibleRect() ;
+//                    }
+//                } 
+//            ) ;
         }
         
         public void setIcon( javax.swing.Icon icon ) { }
@@ -254,15 +320,16 @@ public final class AdqlTree extends JTree
                                                      , boolean hasFocus) {
             
             AdqlEntry entry = (AdqlEntry)value ;
-            int level = ((AdqlEntry)value).getLevel() ;           
-            int displacement = ( level + 1 ) * 50 ;  // rough and ready; guess for the moment.
-            treeVisibleRect = AdqlTree.this.getVisibleRect() ;
-            int width = treeVisibleRect.width - displacement ;
+            int level = ((AdqlEntry)value).getLevel() ; 
+            // The following 20 pixels is a guess at what a one level displacement
+            // should be. Seems to be pretty accurate.
+            int displacement = ( level + 1 ) * 20 ;  
+            this.useableWidth = getAvailableWidth() - displacement ;
             // We cannot let things get rediculously small ...
-            if( width < 250 )
-                width = 250 ;
-            entry.setUseableWidth( width ) ;
-            return (JLabel)super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus) ;
+            if( this.useableWidth  < 200 )
+                this.useableWidth  = 200 ;
+            entry.setUseableWidth( this.useableWidth ) ;
+            return super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus) ;
         }
         
         public void setUseOppositeExpansionState() {
@@ -270,13 +337,18 @@ public final class AdqlTree extends JTree
         }
         
         public Dimension getPreferredSize() {
+//            if( TRACE_ENABLED ) log.debug( "AdqlTreeCellRenderer.getPreferredSize()" ) ; 
 //            int displacement = level * 20 ;  // rough and ready guess for the moment.
 //            int width = treeVisibleRect.width - displacement ;
 //            if( width < 250 )
 //                width = 250 ;
             Dimension d = super.getPreferredSize() ;
+            d.width = this.useableWidth ;
+//            if( d.width < 250 )
+//                d.width = 250 ;
 //            if( !expanded )
-//                d.height = d.height * 2 ;         
+//                d.height = d.height * 2 ;      
+//            if( DEBUG_ENABLED ) log.debug( "d.width: " + d.width ) ;
             return d ;
         }
        
@@ -448,7 +520,7 @@ public final class AdqlTree extends JTree
               this.xmlValueObject = null ;
               // At a guess this needs to set the value within the xmlValueObject using the String value
               // from the editor text box. 
-              System.out.println( "getCellEditorValue(): " + llEditor.getText() ) ;
+//              System.out.println( "getCellEditorValue(): " + llEditor.getText() ) ;
               // Then reset the low level editor.
               llEditor.setValue( null ) ;
               ((DefaultTreeModel)AdqlTree.this.getModel()).nodeChanged( this.entry ) ;       
@@ -512,7 +584,7 @@ public final class AdqlTree extends JTree
         public void setText( String string ) {
             String value ;
             if( this.xmlObject == null ) {
-                System.out.println( "xmlObject was null" ) ;
+//                System.out.println( "xmlObject was null" ) ;
                 return ;
             }
             try {
@@ -523,7 +595,7 @@ public final class AdqlTree extends JTree
                     value = ((SimpleValue)this.xmlObject).getStringValue() ;
                 }
  
-                System.out.println( "getStringValue(): " + value ) ;
+//                System.out.println( "getStringValue(): " + value ) ;
             }
             catch( Exception ex ) {
                 value = "Invalid value returned from getStringValue()" ;
@@ -590,5 +662,17 @@ public final class AdqlTree extends JTree
         }
         
     } // end of class EditPromptAction
+    
+    public int getAvailableWidth() {
+        return availableWidth;
+    }
+    public void setAvailableWidth(int availableWidth) {
+        this.availableWidth = availableWidth ;
+        //
+        // The next two lines are a workaround to ensure the
+        // BasicTreeUI resets its cache of node sizes...
+        BasicTreeUI ui = (BasicTreeUI)getUI() ;
+       	ui.setRightChildIndent( ui.getRightChildIndent() ) ;
+    }
     
 } // end of class AdqlTree

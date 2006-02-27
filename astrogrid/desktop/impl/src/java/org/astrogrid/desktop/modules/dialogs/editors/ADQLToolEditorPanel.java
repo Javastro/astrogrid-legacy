@@ -13,9 +13,15 @@ package org.astrogrid.desktop.modules.dialogs.editors;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter ;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowEvent;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
@@ -126,6 +132,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.system.transformers.AdqlTransformer;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.w3c.dom.Document;
@@ -139,8 +146,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     
 
     private static final Log log = LogFactory.getLog( ADQLToolEditorPanel.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
+    private static final boolean DEBUG_ENABLED = false ;
+    private static final boolean TRACE_ENABLED = false ;
     private static final char[] ALIAS_NAMES = "abcdefghijklmnopqrstuvwxyz".toCharArray();
     private static final String PI_QB_REGISTRY_RESOURCES = "qb-registry-resources" ;
     
@@ -184,7 +191,11 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     // private JMenu columnMenu;
     // private Hashtable tableMenus = new Hashtable() ; 
     // private String nameSpace = AdqlData.NAMESPACE_1_0 ; 
-    private ArrayList clipBoard = new ArrayList() ;
+    
+    //
+    // This is a limited adhoc approach to clipboard and editing.
+    // Needs to be rewritten to fit into undoable framework...
+    private XmlObject clipBoard = null ;
     private AliasStack aliasStack ;
     private TabularDatabaseInformation catalogueResource = null ;
     private HashMap fromTables = new HashMap() ;
@@ -261,6 +272,10 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         String[] toks = listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
         if (toks.length > 0) {
             setEnabled(true);
+            catalogueResource = null ;
+            if( fromTables != null )
+                fromTables.clear() ;
+            aliasStack = new AliasStack() ;
             queryParam = (ParameterValue)toolModel.getTool().findXPathValue("input/parameter[name='" + toks[0] +"']");
             this.removeAll() ;
             this.init() ;
@@ -283,7 +298,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         // However, I will test for the presence of the indirection flag AND
         // whether it is set to true....
         else if( queryParam.hasIndirect() == true  && queryParam.getIndirect() == true ) {
-            log.debug( "Query is a remote reference." ) ;
+            if( DEBUG_ENABLED ) log.debug( "Query is a remote reference." ) ;
             query = readQuery() ;
             if( query == null || query.length() < 5 ) {
                 this.adqlTree = new AdqlTree() ;
@@ -297,7 +312,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                     this.adqlTree = new AdqlTree() ;
                 }
             }  
-            log.debug( "...setting indirect to false" ) ;
+            if( DEBUG_ENABLED ) log.debug( "...setting indirect to false" ) ;
             queryParam.setIndirect( false ) ;
 //            try {
 //                URI fileLocation = new URI( queryParam.getValue().trim() ) ;               
@@ -317,7 +332,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
               
         }
         else {          
-           log.debug( "Query is inline..." ) ;
+            if( DEBUG_ENABLED ) log.debug( "Query is inline..." ) ;
            query = queryParam.getValue() ;
            if( query == null || query.length() < 5 ) {
                this.adqlTree = new AdqlTree() ;
@@ -378,7 +393,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         StringBuffer buffer = new StringBuffer( returnQuery ) ;
         int index = buffer.indexOf( AdqlData.NAMESPACE_0_74 ) ;
         if( index != -1 ) {
-            log.debug( "Namespace replaced" ) ;
+            if( DEBUG_ENABLED ) log.debug( "Namespace replaced" ) ;
             buffer.replace( index
                           , index + AdqlData.NAMESPACE_0_74.length()
                           , AdqlData.NAMESPACE_1_0 ) ;
@@ -405,7 +420,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             retQuery = buffer.toString() ;           
         }
         catch( Exception exception ) {
-            log.debug( "Failed to read adql file" ) ;
+            if( DEBUG_ENABLED ) log.debug( "Failed to read adql file" ) ;
         }
         finally {
             try{ bis.close(); } catch( Exception ex ) {;}
@@ -420,12 +435,12 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         String piValue = null ;
         this.catalogueResource = null ;
         XmlCursor cursor = getRoot().newCursor() ;
-        log.debug( "Searching for PI's..." ) ;
+        if( DEBUG_ENABLED ) log.debug( "Searching for PI's..." ) ;
         while( !cursor.toNextToken().isNone() ) {
             if( cursor.isProcinst() ) {
                 piName = cursor.getName().getLocalPart() ;
-                log.debug( "PI name: " + cursor.getName() ) ;
-            	log.debug( "PI text: " + cursor.getTextValue() ) ;
+                if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
+                if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
             	if( piName.equals ( PI_QB_REGISTRY_RESOURCES ) )  {
             	    piValue = cursor.getTextValue().trim() ;
             	    if( piValue.equals( "none" ) )
@@ -434,12 +449,30 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             	               + formatCatalogueId( piValue )
             	               + "'" ; 
                     queryRegistry( sql ) ;
-                    log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;
+                    if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;
                     break ;
             	}
             }
         } // end while
         cursor.dispose();
+        //
+        // Here I am trying to second-guess the appropriate database for this dsa tool.
+        // Cannot see any harm to this. If it fails, the user still has the option of
+        // choosing for him/herself.
+        if( catalogueResource == null ) {
+            String ivorn = toolModel.getInfo().getId().toString() ;
+            int index = ivorn.lastIndexOf( "ceaApplication" ) ;
+            if( index != -1 ) {
+                StringBuffer buffer = new StringBuffer( ivorn.length() ) ;
+                buffer
+                	.append( "Select * from Registry where vr:identifier = '" )
+                	.append( ivorn.substring( 0, index ) )
+                	.append( "TDB" )
+                	.append( "'" ) ;
+                queryRegistry( buffer.toString() ) ;
+                if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;              
+            }
+        }
     }
     
     private String formatCatalogueId ( String piValue ) {
@@ -449,7 +482,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    // Note: The portal QB allows only one table (no joins) so the metadata
 	    // reflects the one table. But we need the whole catalogue/database.
         String ivornString = "ivo://" + piValue.substring( 0, piValue.lastIndexOf( '!' ) ).replace( '!', '/' ) ;
-        log.debug( "catalogue ivorn: " + ivornString ) ;
+        if( DEBUG_ENABLED ) log.debug( "catalogue ivorn: " + ivornString ) ;
         return ivornString ;
     }
     
@@ -462,7 +495,31 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
     }
     
+//    private void queryRegistry( final String searchString ) {
+//        
+//        (new BackgroundWorker(parent,"Querying registry"){
+//
+//            protected Object construct()  {
+//                try {
+//                    return (registry.adqlSearchRI( searchString )[0]) ;
+//                } catch (Exception e) {
+//                    return e.getMessage();
+//                }
+//            }
+//            
+//            protected void doFinished( Object result ) {
+//                if( result instanceof String ) {
+//                    log.error( "Failed to find catalogue entry using: \n" + searchString ) ;
+//                }
+//                else {
+//                    catalogueResource = (TabularDatabaseInformation)result ;
+//                }
+//            }
+//        }).start();
+//   
+//    }
     
+
     private void init() {
         setLayout( new GridBagLayout() ) ;       
         GridBagConstraints gbc ;
@@ -475,7 +532,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         splAdqlToolEditor.setBottomComponent( initBottomView() ) ;
 
         // Set the rest of the split pane's properties,
-        splAdqlToolEditor.setDividerLocation(300);
+        splAdqlToolEditor.setDividerLocation( 0.80 );
+        splAdqlToolEditor.setResizeWeight( 0.80 ) ;
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -498,7 +556,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         topView.setRightComponent( initRightHandView() ) ;
 
         // Set the rest of the split pane's properties,
-        topView.setDividerLocation(300);
+        topView.setDividerLocation( 0.60 );
+        topView.setResizeWeight( 0.60 ) ;
         return topView ;
     }
     
@@ -650,7 +709,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                 xTableName = (XmlString)AdqlUtils.get( cursor.getObject(), "name" ) ;
                 xAlias = (XmlString)AdqlUtils.get( cursor.getObject(), "alias" ) ;
                 alias = (xAlias == null ? null : xAlias.getStringValue())  ; 
-                log.debug( "table name: " 
+                if( DEBUG_ENABLED ) log.debug( "table name: " 
                          + xTableName.getStringValue() 
                          + " with alias: "
                          + (xAlias==null ? "null" : xAlias.getStringValue()) ) ;  
@@ -1013,7 +1072,10 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        }
 	        popup.add( new CutAction( entry ) ) ;
 	        popup.add( new CopyAction( entry ) ) ;
-	        popup.add( new PasteAction( entry ) ) ;
+	        popup.add( new PasteIntoAction( entry ) ) ;
+	        popup.add( new PasteOverAction( entry ) ) ;
+	        popup.add( new  PasteNextToAction( entry, true ) ) ; // Before
+	        popup.add( new  PasteNextToAction( entry, false ) ) ; // After
 	        
 	        ArrayList commands = AdqlCommand.buildCommands( entry ) ; 
 	        SchemaType[] concreteTypes ;
@@ -1177,19 +1239,23 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    public CutAction( AdqlEntry entry ) {
 	        super( "Cut" ) ;
 	        this.entry = entry ;
+	        TreePath path = adqlTree.getSelectionPath() ;
+	        // If the path is null or there is no parent
+	        // Then we cannot cut...
+	        if( path == null || path.getPathCount() < 2 ){
+	            setEnabled( false ) ;
+	            return ;
+	        }     
+	        // Get the select element path which we will also not allow to be removed
+	        // (This is one below the document root)...
+	        TreePath selectRoot = new TreePath( new Object[] { path.getPathComponent(0), path.getPathComponent(1) } ) ;
+	        if( path.equals( selectRoot ) ) {
+	            setEnabled( false ) ;
+	        }
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
 	        TreePath path = adqlTree.getSelectionPath() ;
-	        // If the path is null or there is no parent
-	        // Then we cannot delete this entry...
-	        if( path == null || path.getPathCount() < 2 )
-	            return ;
-	        // Get the select element path which we will also not allow to be removed
-	        // (This is one below the document root)...
-	        TreePath selectRoot = new TreePath( new Object[] { path.getPathComponent(0), path.getPathComponent(1) } ) ;
-	        if( path.equals( selectRoot ) ) 
-	            return ;
 	        //
 	        // This bit ensures we can "ungrey" (ie enable) the table choice that we have just
 	        // cut from a particular selection. Note this is probably weak, as I am assuming you
@@ -1207,7 +1273,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	            ; ex.printStackTrace() ;
 	        } 
 	        // Now do the business...
-	        clipBoard.add( entry.getXmlObject().copy() ) ;
+	        clipBoard = entry.getXmlObject().copy() ;
 	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent()  ;
 	        AdqlEntry.removeInstance( parent, entry ) ;
 	   
@@ -1231,38 +1297,229 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        // Then we cannot copy this entry...
 	        if( path == null || path.getPathCount() < 2 )
 	            return ;
-	        clipBoard.add( entry.getXmlObject() ) ;
+	        clipBoard = entry.getXmlObject().copy() ;
 	    }
 	}
 	
-	
-	private class PasteAction extends AbstractAction {
+	private class PasteOverAction extends AbstractAction {
 	    private AdqlEntry entry ;
-	       
-	    public PasteAction( AdqlEntry entry ) {
-	        super( "Paste" ) ;
+	    private XmlObject pasteObject;
+	    
+	    public PasteOverAction( AdqlEntry entry ) {
+	        super( "Paste over" ) ;
 	        this.entry = entry ;
+	        setEnabled( testAndBuildSuitability() ) ;
 	    }
 	    
-	    
-	    public void actionPerformed( ActionEvent e ) {
+	    private boolean testAndBuildSuitability() {
 	        TreePath path = adqlTree.getSelectionPath() ;
 	        // If the path is null or there is no parent
 	        // Then we cannot paste into this entry...
 	        if( path == null || path.getPathCount() < 2 )
-	            return ;
+	            return false ;
 	        // If the clipboard is empty then there is nothing to paste...
-	        if( clipBoard.isEmpty() )
-	            return ;
+	        if( clipBoard == null )
+	            return false ;
+	        // Check whether the last clipboard object is a very good match...
+	        pasteObject = clipBoard ;
+	        if( entry.getSchemaType().isAssignableFrom( pasteObject.schemaType() ) )
+	            return true ; 	 
+	        
+	        // Build array of possible insert commands for target's parent...
+	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent() ;
+	        ArrayList commands = AdqlCommand.buildCommands( parent ) ;  
+	        
+	        // Now check to see whether the pasteObject and the target Object
+	        // share a suitable base object type ...
+	        // (eg: a column reference and a literal would equate!!!)...
+	        SchemaType[] targetTypes = null ;
+	        ListIterator iterator = commands.listIterator() ;
+	        boolean pasteTypeFound = false ;
+	        boolean targetTypeFound = false ;
+	        while( iterator.hasNext() && targetTypeFound!=true && pasteTypeFound!=true ) {
+	            AdqlCommand c = (AdqlCommand)iterator.next() ;
+	            targetTypes = c.getConcreteTypes() ;
+	            for( int i=0; i<targetTypes.length; i++ ) {
+	                if( targetTypes[i].getName().equals( pasteObject.schemaType().getName() ) ) {
+	                    pasteTypeFound = true ;
+	                }
+	                else if( targetTypes[i].getName().equals( entry.getSchemaType().getName() ) ) {
+	                    targetTypeFound = true ;
+                    }
+	            }
+	            if( pasteTypeFound && targetTypeFound ) {
+	                return true ;
+	            }
+	                
+	        } // end while
+	        return false ;
+	    }
+	    
+	    public void actionPerformed( ActionEvent e ) {
+	        TreePath path = adqlTree.getSelectionPath() ;
+	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent() ;
+	        XmlObject targetObject = this.entry.getXmlObject() ;
+	        AdqlEntry.disconnectInstance( parent, entry ) ;	        
+	        targetObject = targetObject.set( pasteObject ) ;        
+            // Create the new tree node instance (and pray it works)...
+        	AdqlEntry.newInstance( parent, targetObject ) ;  
+        	
+        	// Refresh tree...
+	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( parent ) ;
+	        adqlTree.repaint() ;
+	    }
+	    
+	}
+	
+	
+	
+	private class PasteNextToAction extends AbstractAction {
+	    private AdqlEntry entry ;
+	    private AdqlCommand command ;
+	    private boolean before ;
+	    
+	    public PasteNextToAction( AdqlEntry entry, boolean before ) {
+	        super() ;
+	        this.before = before ;
+	        if( before ) {
+	            super.putValue( Action.NAME, "Paste before" ) ;
+	        }
+	        else {
+	            super.putValue( Action.NAME, "Paste after" ) ;
+	        }
+	        this.entry = entry ;
+	        setEnabled( testAndBuildSuitability() ) ;
+	    }
+	    
+	    private boolean testAndBuildSuitability() {
+	        TreePath path = adqlTree.getSelectionPath() ;
+	        // If the path is null or there is no parent
+	        // Then we cannot paste into this entry...
+	        if( path == null || path.getPathCount() < 2 )
+	            return false ;
+	        // If the clipboard is empty then there is nothing to paste...
+	        if( clipBoard == null )
+	            return false ;
+	        //	Build array of possible insert commands for target's parent...
+	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent() ;
+	        ArrayList commands = AdqlCommand.buildCommands( parent ) ;  
+	        
+	        XmlObject pasteObject = clipBoard ;
+	        
+	        // Now check to see whether the pasteObject and the target Object
+	        // share a suitable base object type ...
+	        // (eg: a column reference and a literal would equate!!!)...
+	        // Or they may even be of the same type!
+	        SchemaType[] targetTypes = null ;
+	        ListIterator iterator = commands.listIterator() ;
+	        boolean pasteTypeFound = false ;
+	        boolean targetTypeFound = false ;
+	        while( iterator.hasNext() && targetTypeFound!=true && pasteTypeFound!=true ) {
+	            AdqlCommand c = (AdqlCommand)iterator.next() ;
+	            // The following is a check on cardinality...
+	            if( c.isEnabled() == false )
+	                continue ;
+	            targetTypes = c.getConcreteTypes() ;
+	            for( int i=0; i<targetTypes.length; i++ ) {
+	                if( targetTypes[i].getName().equals( pasteObject.schemaType().getName() ) ) {
+	                    pasteTypeFound = true ;
+	                }
+	                if( targetTypes[i].getName().equals( entry.getSchemaType().getName() ) ) {
+	                    targetTypeFound = true ;
+                    }
+	            }
+	            if( pasteTypeFound && targetTypeFound ) {
+	                command = c ; // Save the appropriate command
+	                return true ;
+	            }
+	                
+	        } // end while
+	        return false ;
+	    }
+	    
+	    public void actionPerformed( ActionEvent e ) {
+	        TreePath path = adqlTree.getSelectionPath() ;
+	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent() ;	  
+	        //
+	        // ASSUMPTION. The parent is composed solely of an array of elements/types!
+	        
+	        XmlObject targetObject = null ;	        
+	        if( command.isArray() ) {   
+	            // First identify where in the array the selected entry is....
+	            Object selectedObject = entry.getXmlObject() ;
+	            Object[] objects = AdqlUtils.getArray( parent.getXmlObject(), command.getElementName() ) ;
+	            int offset = -1 ;
+	            for( int i=0; i<objects.length; i++ ) {
+	                if( selectedObject == objects[i] ) {
+	                    offset = i ;
+	                    break ;
+	                }
+	            }
+	            if( offset != -1 ) {
+	                if( before ) {
+	                    targetObject = AdqlUtils.insertNewInArray( parent.getXmlObject(), command.getElementName(), offset ) ;
+	                }
+	                // If not before, everything else must be after...
+	                else if( objects.length == offset+1 ) {
+	                    // Simply add to the end of the array...
+	                    targetObject = AdqlUtils.addNewToEndOfArray( parent.getXmlObject(), command.getElementName() ) ;
+	                }
+	                else {
+	                    targetObject = AdqlUtils.insertNewInArray( parent.getXmlObject(), command.getElementName(), offset+1 ) ;
+	                }
+	                
+	            }
+	            else {
+	                log.error( "Serious error in array structure with Paste before/after!" ) ;
+	            }
+            }
+	        else {
+	            log.error( "Paste before/after invoked on an element whose parent is NOT COMPOSED solely of an array of elements/types!" ) ;
+	        }
+	       	   
+	        // Paste the contents of the "copied" object into the newly created object...
+	        XmlObject pasteObject = clipBoard ;
+	        targetObject = targetObject.set( pasteObject ) ;        
+            // Create the new tree node instance (and pray it works)...
+        	AdqlEntry.newInstance( parent, targetObject ) ;  
+        	
+        	// Refresh tree...
+	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( parent ) ;
+	        adqlTree.repaint() ;
+	    }
+	    
+	}
+	
+
+	private class PasteIntoAction extends AbstractAction {
+	    private AdqlEntry entry ;
+	    private XmlObject pasteObject;
+	    private AdqlCommand suitableCommand ;
+	    private int validType ;
+	       
+	    public PasteIntoAction( AdqlEntry entry ) {
+	        super( "Paste into" ) ;
+	        this.entry = entry ;
+	        setEnabled( testAndBuildSuitability() ) ;
+	    }
+	    
+	    private boolean testAndBuildSuitability() {
+	        TreePath path = adqlTree.getSelectionPath() ;
+	        // If the path is null or there is no parent
+	        // Then we cannot paste into this entry...
+	        if( path == null || path.getPathCount() < 2 )
+	            return false ;
+	        // If the clipboard is empty then there is nothing to paste...
+	        if( clipBoard == null )
+	            return false ;
 	        // If the target allows for no children, then we dont paste into it.
-	        // (This is weak. We should allow pasting over bottom leaves)
 	        SchemaProperty[] elements = entry.getElementProperties() ;
 	        if( elements == null || elements.length == 0 ) 
-	        	return ;        
+	        	return false ;        
 	        // Check that the last clipboard object is suitable to paste into the target...
-	        XmlObject pasteObject = (XmlObject)clipBoard.get( clipBoard.size() - 1 ) ;
+	        pasteObject = clipBoard ;
 	        if( AdqlCommand.isSuitablePasteTarget( entry, pasteObject ) == false )
-	            return ;
+	            return false ;
 	        
 	        // Build array of possible insert commands for target...
 	        ArrayList commands = AdqlCommand.buildCommands( entry ) ; 
@@ -1270,22 +1527,18 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        // Attempt to find a suitable match of types...
 	        int result[] = AdqlCommand.findSuitableMatch( commands, pasteObject ) ;	        
 	        if( result[0] == -1 )
-	            return ;
-	        
+	            return false ;
+	        this.suitableCommand = (AdqlCommand)commands.get( result[0] ) ;
+	        this.validType = result[1] ;
+	        return true ;
+	    }
+	    
+	    public void actionPerformed( ActionEvent e ) {
 	        // Now do the business.
 	        // Insert a basic object...
-	        XmlObject newObject1 = insertObject( (AdqlCommand)commands.get(result[0]), result[1] ) ;
+	        XmlObject newObject1 = insertObject( suitableCommand, validType ) ;
 	        // Copy contents of paste object into it...
 	        XmlObject newObject2 = newObject1.set( pasteObject ) ;
-	        
-	        // Show a pretty print (for my sanity)
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode)entry.getRoot();
-            XmlObject xmlRoot = (XmlObject)root.getUserObject() ;
-            System.out.println( "===== pretty print of root... =====" ) ;
-            XmlOptions opts = new XmlOptions();
-            opts.setSavePrettyPrint();
-            opts.setSavePrettyPrintIndent(4);
-            System.out.println( xmlRoot );	                
 
             // Create the new tree node instance (and pray it works)...
         	AdqlEntry.newInstance( entry, newObject2 ) ;  
@@ -1294,71 +1547,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( entry ) ;
 	        adqlTree.repaint() ;
 	        
-//	        SchemaType pasteType = pasteObject.schemaType() ;
-//	        SchemaType childType = null ;
-//	        SchemaProperty[] elementProperties = this.entry.getElementProperties() ;
-//	        for ( int i = 0 ; i < elementProperties.length ; i++ ) {
-//	            childType = elementProperties[i].getType() ;
-//	            if( childType.isAssignableFrom( pasteType ) ) { 
-//	                CommandBean command = new CommandBean( entry, entry.getDisplayName(), elements[0] ) ;
-//	                XmlObject newObject1 = AdqlUtils.addNew( entry.getXmlObject(), command.getElementName() ) ;
-//
-//	                XmlObject newObject2 = newObject1.set( pasteObject ) ;
-//	          
-//	                DefaultMutableTreeNode root = (DefaultMutableTreeNode)entry.getRoot();
-//	                XmlObject xmlRoot = (XmlObject)root.getUserObject() ;
-//	                System.out.println( "===== pretty print of root... =====" ) ;
-//	                XmlOptions opts = new XmlOptions();
-//	                opts.setSavePrettyPrint();
-//	                opts.setSavePrettyPrintIndent(4);
-//	                System.out.println( xmlRoot );	                
-//
-//	            	AdqlEntry.newInstance( entry, newObject2 ) ;
-//	         
-//	    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( entry ) ;
-//	    	        adqlTree.repaint() ;
-//	    	        break ;
-//	            }	                
-//	        }
 	    }
 	  
-	    
-//	    private boolean isSuitablePasteTarget( XmlObject clipboardObject ) {
-//	        boolean result = false ;
-//	        SchemaProperty[] elementProperties = this.entry.getElementProperties() ;
-//	        SchemaType clipboardType = clipboardObject.schemaType() ;
-//	        SchemaType childType = null ;
-//	        for ( int i = 0 ; i < elementProperties.length ; i++ ) {
-//	            childType = elementProperties[i].getType() ;
-//	            if( childType.isAssignableFrom( clipboardType ) ) { 
-//	                result = true ;
-//	                break ;
-//	            }
-//	        }
-//	        return result ;
-//	    }
-//	    
-//	    private int[] findSuitableMatch( ArrayList commands, XmlObject pasteObject ) {
-//	        int[] match = new int[] { -1, -1 } ;
-//	        SchemaType pasteType = pasteObject.schemaType() ;
-//	        SchemaType[] targetTypes = null ;
-//	        ListIterator iterator = commands.listIterator() ;
-//            checkCommands: while( iterator.hasNext() ) {
-//                AdqlCommand c = (AdqlCommand)iterator.next() ;
-//                if( c.isEnabled() == false )
-//                    continue ;
-//                targetTypes = c.getConcreteTypes() ;
-//                for( int i=0; i<targetTypes.length; i++ ) {
-//                    if( targetTypes[i].getName().equals( pasteType.getName() ) ) {
-//                        match[0] = iterator.nextIndex()-1 ;
-//                        match[1] = i ;
-//                        break checkCommands ;
-//                    }
-//                }
-//            } // end while
-//	        return match ;
-//	    }
-	    
+	        
 	    private XmlObject insertObject( AdqlCommand commandBean, int subType ) {
             AdqlEntry parent = commandBean.getEntry() ;
             XmlObject parentObject = parent.getXmlObject() ;
@@ -1389,99 +1580,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             return newObject ;
         }
 	    
-//	    public void _actionPerformed2( ActionEvent e ) {
-//	        TreePath path = adqlTree.getSelectionPath() ;
-//	        // If the path is null or there is no parent
-//	        // Then we cannot paste into this entry...
-//	        if( path == null || path.getPathCount() < 2 )
-//	            return ;
-//	        // If the clipboard is empty then there is nothing to paste...
-//	        if( clipBoard.isEmpty() )
-//	            return ;
-//	        AdqlEntry pasteEntry = (AdqlEntry)clipBoard.get( clipBoard.size() - 1 ) ;
-//	        SchemaType pasteType = pasteEntry.getSchemaType() ;
-//	        SchemaType childType = null ;
-//	        SchemaProperty[] elementProperties = this.entry.getElementProperties() ;
-//	        for ( int i = 0 ; i < elementProperties.length ; i++ ) {
-//	            childType = elementProperties[i].getType() ;
-//	            if( childType.isAssignableFrom( pasteType ) ) { 
-//	                XmlObject pasteObj = pasteEntry.getXmlObject() ;
-//	                XmlObject parentObj = entry.getXmlObject() ;
-//	                XmlCursor parentCursor = entry.getXmlObject().newCursor() ;
-//	                
-//	                //parentCursor.toParent() ; // Move backwards to the parent's parent!
-//	                // Now search forward until we have the correct element in sight...
-//	                //System.out.println( "===== searching forward... =====" ) ;
-////	                while ( !parentCursor.toNextToken().isEnd() )
-////	                {
-//////	                    if( parentCursor.getObject() == parentObj ) {
-//////	                        // System.out.println( "parentCursor.currentTokenType(): " + parentCursor.currentTokenType() );
-//////	                        System.out.println( "parent object found." );
-//////	                        parentCursor.toNextToken() ;
-//////	                        break ;
-//////	                    }
-////	                    break ;                    
-////	                }
-//	                
-//	               
-//	                
-//	                // boolean bParentFirstChild = parentCursor.toFirstChild() ; // There has to be a first child!
-//	                XmlCursor childCursor = pasteObj.newCursor() ;
-//	                parentCursor.beginElement( pasteObj.schemaType().getName() ) ;
-//	                // boolean bPasteFirstChild = childCursor.toFirstChild() ;
-//	                // boolean copied = childCursor.copyXml( parentCursor ) ;
-//	                // System.out.println( "copied: " + copied ) ;
-//	                DefaultMutableTreeNode root = (DefaultMutableTreeNode)entry.getRoot();
-//	                XmlObject xmlRoot = (XmlObject)root.getUserObject() ;
-//	                System.out.println( "===== pretty print of root... =====" ) ;
-//	                XmlOptions opts = new XmlOptions();
-//	                opts.setSavePrettyPrint();
-//	                opts.setSavePrettyPrintIndent(4);
-//	                System.out.println( xmlRoot );	                
-//
-//	            
-//	                // parentCursor.toNextSibling() ;
-//	            	// AdqlEntry.newInstance( entry, parentCursor.getObject() ) ;
-//	                parentCursor.dispose() ;
-//	                childCursor.dispose() ;
-//	    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( entry ) ;
-//	    	        adqlTree.repaint() ;
-//	    	        break ;
-//	            }	                
-//	        }
-//	    } 
-	    
-//	    public void _actionPerformed( ActionEvent e ) {
-//	        TreePath path = adqlTree.getSelectionPath() ;
-//	        // If the path is null or there is no parent
-//	        // Then we cannot paste into this entry...
-//	        if( path == null || path.getPathCount() < 2 )
-//	            return ;
-//	        // If the clipboard is empty then there is nothing to paste...
-//	        if( clipBoard.isEmpty() )
-//	            return ;
-//	        AdqlEntry pasteEntry = (AdqlEntry)clipBoard.get( clipBoard.size() - 1 ) ;
-//	        SchemaType pasteType = pasteEntry.getSchemaType() ;
-//	        SchemaType childType = null ;
-//	        SchemaProperty[] elementProperties = this.entry.getElementProperties() ;
-//	        for ( int i = 0 ; i < elementProperties.length ; i++ ) {
-//	            childType = elementProperties[i].getType() ;
-//	            if( childType.isAssignableFrom( pasteType ) ) { 
-//	                XmlObject xObj = pasteEntry.getXmlObject().copy() ;
-//	            	AdqlEntry.newInstance( entry, xObj ) ;
-//	    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( entry ) ;
-//	    	        adqlTree.repaint() ;
-//	    	        break ;
-//	            }	                
-//	        }
-//	    }
-	    
 	}
-	
-	
-	
-	
-	
+		
 	
 	private class EditAction extends AbstractAction {
 	    private AdqlEntry entry ;
@@ -1522,7 +1622,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        this.commandBean = commandBean ;
 	        indexOfConcreteSubtype = -1 ;   
 	        if( name.length() == 0 )
-	           log.debug( "Empty name for " + commandBean.getElementName() ) ;
+	            if( DEBUG_ENABLED ) log.debug( "Empty name for " + commandBean.getElementName() ) ;
 	    }
 	    
 	    public InsertAction( String name, AdqlCommand commandBean, int indexOfConcreteSubtype ) {
@@ -1530,16 +1630,16 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        this.commandBean = commandBean ;
 	        this.indexOfConcreteSubtype = indexOfConcreteSubtype ;
 	        if( name.length() == 0 ) {
-	            log.debug( "Empty name for " + commandBean.getElementName() ) ;
+	            if( DEBUG_ENABLED ) log.debug( "Empty name for " + commandBean.getElementName() ) ;
 	            if( indexOfConcreteSubtype == -1 )
-	                log.debug( "with no concrete subtypes." ) ;
+	                if( DEBUG_ENABLED ) log.debug( "with no concrete subtypes." ) ;
 	            else 
-	                log.debug( "... " + commandBean.getConcreteTypes()[indexOfConcreteSubtype].toString() ) ;
+	                if( DEBUG_ENABLED ) log.debug( "... " + commandBean.getConcreteTypes()[indexOfConcreteSubtype].toString() ) ;
 	        }
 	    }
 	    
 	    
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed( ActionEvent e ) {
             TreePath path = adqlTree.getSelectionPath() ;
             if( path == null )
                 return ;
@@ -1563,6 +1663,13 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 //                }           
 //            }
             
+            if( e != null ) {
+                DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+    	        model.nodeStructureChanged( parent ) ;
+    	        path = path.pathByAddingChild( newEntry ) ;
+    	        adqlTree.scrollPathToVisible( path ) ;
+                adqlTree.repaint() ;
+            }
 	        DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
 	        model.nodeStructureChanged( parent ) ;
 	        path = path.pathByAddingChild( newEntry ) ;
@@ -1583,7 +1690,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         } // end of actionPerformed() 
         
         protected void insertType() {
-            log.debug( "insertType() just adding " + commandBean.getElementName() ) ;
+            if( DEBUG_ENABLED ) log.debug( "insertType() just adding " + commandBean.getElementName() ) ;
             AdqlEntry parent = commandBean.getEntry() ;
             XmlObject o = parent.getXmlObject() ;
             XmlObject newObject = AdqlUtils.addNew( o, commandBean.getElementName() ) ;
@@ -1594,7 +1701,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             AdqlEntry parent = commandBean.getEntry() ;
             XmlObject parentObject = parent.getXmlObject() ;
             SchemaType schemaType = commandBean.getConcreteTypes()[indexOfConcreteSubtype] ;
-            log.debug( "insertConcreteSubtype() just adding " + schemaType.getName().getLocalPart() ) ;
+            if( DEBUG_ENABLED ) log.debug( "insertConcreteSubtype() just adding " + schemaType.getName().getLocalPart() ) ;
             XmlObject newObject = null ; 
             this.newEntry = null ;
             if( commandBean.isArray() ) {                
@@ -1844,7 +1951,7 @@ public class InsertEnumeratedAction extends InsertAction {
     }   
     
     protected void insertConcreteSubtype() {
-        log.debug( "InsertEnumeratedAction" ) ;
+        if( DEBUG_ENABLED ) log.debug( "InsertEnumeratedAction" ) ;
         super.insertConcreteSubtype() ;
         XmlObject obj = newEntry.getXmlObject() ;
         SchemaType schemaType = obj.schemaType() ;
@@ -1881,9 +1988,9 @@ public class InsertEnumeratedAction extends InsertAction {
                 public void actionPerformed(ActionEvent e) {
                    Object obj = regChooser.chooseResourceWithFilter( "Select Catalogue description for " 
                                                                    + toolModel.getInfo().getName()
-                                                                   , "(@xsi:type like 'TabularDB')") ;
+                                                                   , "(@xsi:type like '%TabularDB')") ;
                    if( obj != null )
-                       log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + obj.getClass().getName() ) ; {
+                       if( DEBUG_ENABLED ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + obj.getClass().getName() ) ; {
                        catalogueResource = (TabularDatabaseInformation)obj ;
                    }        
                    if( catalogueResource != null ) {
@@ -1950,12 +2057,12 @@ public class InsertEnumeratedAction extends InsertAction {
         String piName = null ;
         String piValue = null ;
         XmlCursor cursor = getRoot().newCursor() ;
-        log.debug( "Searching for PI's..." ) ;
+        if( DEBUG_ENABLED ) log.debug( "Searching for PI's..." ) ;
         while( !cursor.toNextToken().isNone() ) {
             if( cursor.isProcinst() ) {
                 piName = cursor.getName().getLocalPart() ;
-                log.debug( "PI name: " + cursor.getName() ) ;
-            	log.debug( "PI text: " + cursor.getTextValue() ) ;
+                if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
+                if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
             	if( piName.equals ( PI_QB_REGISTRY_RESOURCES ) )  {
             	   // OK. There's already one here.
             	   // But does it say "none"?...
@@ -1976,7 +2083,7 @@ public class InsertEnumeratedAction extends InsertAction {
                 piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
                         + '!' 
                         + catalogueResource.getDatabases()[0].getTables()[0].getName() ;
-                log.debug( "new PI Text: " +piValue ) ;
+                if( DEBUG_ENABLED ) log.debug( "new PI Text: " +piValue ) ;
                 cursor.insertProcInst( PI_QB_REGISTRY_RESOURCES, piValue ) ;
                 break ;               
             }
@@ -2004,7 +2111,7 @@ public class InsertEnumeratedAction extends InsertAction {
             JMenu tableMenu = new JMenu( table.getName(),true ) ;
 //            dbMenu.add( tableMenu );
             columnMenu.add( tableMenu );
-            tableMenu.setToolTipText( table.getDescription() ) ;          
+//            tableMenu.setToolTipText( table.getDescription() ) ;          
             tableMenu.addSeparator();
             final ColumnBean[] cols = table.getColumns();
             for (int k = 0; k < cols.length; k++) {
@@ -2068,15 +2175,18 @@ public class InsertEnumeratedAction extends InsertAction {
         
         JTabbedPane owner ;
         Controller controller ;
+        protected JComponent component ;
         boolean selected = false ;
         
-        public AdqlView( JTabbedPane owner, Controller controller ) {
+        public AdqlView( JTabbedPane owner, Controller controller, JComponent component ) {
             super() ;
             this.owner = owner ;
             this.controller = controller ;
+            this.component = component ;
             this.controller.addChangeListener( this ) ;
             this.initSelectedProcessing() ;
         }
+        
         
         protected void initKeyProcessing( JTextPane textPane ) {
             if( textPane == null )
@@ -2123,7 +2233,9 @@ public class InsertEnumeratedAction extends InsertAction {
             }) ;
         }
         
-        abstract protected void selectionGained() ;
+        protected void selectionGained() {
+            AdqlView.this.component.requestFocus() ;
+        }
         
         abstract protected void selectionLost() ;
         
@@ -2157,39 +2269,36 @@ public class InsertEnumeratedAction extends InsertAction {
     
     private class AdqlXmlView extends AdqlView {
         
-        JTextPane xmlTextPane ;
+        //JTextPane xmlTextPane ;
         String xmlString ;
         XmlObject rootOnGainingSelection ;
         XmlObject processedRoot ;
         
         public AdqlXmlView( JTabbedPane owner, Controller controller ) {
-            super( owner, controller) ;
+            super( owner, controller, new JTextPane() ) ;
             JScrollPane xmlScrollContent = new JScrollPane();
-            xmlTextPane = new JTextPane();
-            xmlScrollContent.setViewportView( xmlTextPane  );
-            this.setLayout(new GridBagLayout());
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.fill = GridBagConstraints.BOTH;
-            gbc.anchor = GridBagConstraints.NORTHWEST;
-            gbc.weightx = 1;
-            gbc.weighty = 1;
-            this.add( xmlScrollContent, gbc ) ;
+            xmlScrollContent.setViewportView( getXmlTextPane() );
+            this.setLayout( new BorderLayout() ) ;
+            this.add(xmlScrollContent, BorderLayout.CENTER );
             this.owner.addTab( "Adql/x", this ) ;
             //
             // Set up the Enter key as a processing key for Adql.
             // ie: everytime the user presses the Enter key we
             // validate and store the results...
-            initKeyProcessing( this.xmlTextPane ) ;
+            initKeyProcessing( getXmlTextPane() ) ;
+        }
+        
+        private JTextPane getXmlTextPane() {
+            return (JTextPane)component ;
         }
         
         protected void selectionGained() {
-            log.debug( "AdqlXmlView.selectionGained() enter" ) ;
+            super.selectionGained() ;
             refreshFromModel() ;
             validateAdql() ;
         }
         
         protected void selectionLost() {
-            log.debug( "AdqlXmlView.selectionLost() enter" ) ;
             validateAdql() ;
             processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
         }
@@ -2200,12 +2309,12 @@ public class InsertEnumeratedAction extends InsertAction {
             XmlOptions options = new XmlOptions();
             options.setSavePrettyPrint();
             options.setSavePrettyPrintIndent(4);
-            xmlTextPane.setText( nodeCursor.xmlText(options) ) ;
+            getXmlTextPane().setText( nodeCursor.xmlText(options) ) ;
             nodeCursor.dispose() ;
         }
         
         protected void validateAdql() {
-            String text = xmlTextPane.getText().trim() ;
+            String text = getXmlTextPane().getText().trim() ;
             if( text.equals( xmlString ) == false ) {
                 try {
                     xmlString = text ;
@@ -2229,28 +2338,30 @@ public class InsertEnumeratedAction extends InsertAction {
     private class AdqlTreeView extends AdqlView {
         
         public AdqlTreeView( JTabbedPane owner, Controller controller ) {
-            super( owner, controller ) ;
-            JScrollPane scrTree = new JScrollPane();
-            scrTree.setViewportView( setAdqlTree() ) ;
+            super( owner, controller, setAdqlTree() ) ;
+            final JScrollPane scrTree = new JScrollPane();
+            
+            scrTree.addComponentListener ( 
+                    new ComponentAdapter() {
+                        public void componentResized( ComponentEvent e ) {
+                            adqlTree.setAvailableWidth( scrTree.getWidth() ) ;
+                        }
+                    } 
+            ) ;
+                       
+            scrTree.setViewportView( component ) ;
             openBranches() ;
             this.controller.updateModel( this, ((AdqlEntry)adqlTree.getModel().getRoot()).getXmlObject() ) ;
-            this.setLayout( new GridBagLayout() ) ;
-            GridBagConstraints gbc = new GridBagConstraints() ;
-            gbc.weightx = 1.0;
-            gbc.weighty = 1.0;
-            gbc.gridheight = 1 ;
-            gbc.gridwidth = 1 ;
-            gbc.gridx = 0 ;
-            gbc.gridy = 0 ;   
-            gbc.fill = GridBagConstraints.BOTH ;
-            this.add(scrTree, gbc);
+            this.setLayout( new BorderLayout() ) ;
+            this.add(scrTree, BorderLayout.CENTER );
             this.owner.addTab( "Tree", this ) ; 
         }
         
         protected void refreshFromModel() {         
-            log.debug( "AdqlTreeView.stateChanged() is resetting adqlTree" ) ;
+            if( DEBUG_ENABLED ) log.debug( "AdqlTreeView.stateChanged() is resetting adqlTree" ) ;
             adqlTree.setTree( AdqlEntry.newInstance( this.controller.getRootInstance() ));
             adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
+            setAdqlParameter() ;
             openBranches() ;
             if( catalogueResource != null ) {
                 reestablishTablesCollection() ;
@@ -2269,7 +2380,6 @@ public class InsertEnumeratedAction extends InsertAction {
             } 
         }
         
-        protected void selectionGained() {}
         protected void selectionLost() {}
         protected void validateAdql() {}
         
@@ -2278,44 +2388,39 @@ public class InsertEnumeratedAction extends InsertAction {
     
     private class AdqlStringView extends AdqlView {
         
-        JTextPane adqlTextPane ;
+        //JTextPane adqlTextPane ;
         String adqlString ;
         XmlObject rootOnGainingSelection ;
         XmlObject processedRoot ;
         
         public AdqlStringView( JTabbedPane owner, Controller controller ) {
-            super( owner, controller ) ;
+            super( owner, controller, new JTextPane() ) ;
             //
             // Set up the text pane in a scrolling panel etc...
-            GridBagConstraints gbc = new GridBagConstraints() ;
             JScrollPane textScrollContent = new JScrollPane();
-            this.adqlTextPane = new JTextPane();
-            textScrollContent.setViewportView( adqlTextPane );
-            this.setLayout(new GridBagLayout());
-            gbc = new GridBagConstraints();
-            gbc.fill = GridBagConstraints.BOTH;
-            gbc.anchor = GridBagConstraints.NORTHWEST;
-            gbc.weightx = 1;
-            gbc.weighty = 1;
-            this.add( textScrollContent, gbc ); 
+            textScrollContent.setViewportView( getAdqlTextPane() );
+            this.setLayout( new BorderLayout() ) ;
+            this.add(textScrollContent, BorderLayout.CENTER );
             //
             // Set up the Enter key as a processing key for Adql.
             // ie: everytime the user presses the Enter key we
             // validate and store the results...
-            initKeyProcessing( this.adqlTextPane ) ;
+            initKeyProcessing( getAdqlTextPane() ) ;
    
             this.owner.addTab( "Adql/s", this ) ;
         }
         
+        private JTextPane getAdqlTextPane() {
+            return (JTextPane)component ;
+        }
         
         protected void selectionGained() {
-            log.debug( "AdqlStringView.selectionGained() enter" ) ;
+            super.selectionGained() ;
             refreshFromModel() ;
             this.validateAdql() ;
         }
         
         protected void selectionLost() {
-            log.debug( "AdqlStringView.selectionLost() enter" ) ;
             validateAdql() ;
             processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
         }
@@ -2328,11 +2433,16 @@ public class InsertEnumeratedAction extends InsertAction {
             options.setSavePrettyPrintIndent(4);
             String text = nodeCursor.xmlText(options);
             nodeCursor.dispose() ;
-            this.adqlTextPane.setText( transformer.transformToAdqls( text, " " ).trim() ) ; 
+            getAdqlTextPane().setText( transformer.transformToAdqls( text, " " ).trim() ) ; 
         }
         
         protected void validateAdql() {
-            String text = adqlTextPane.getText().trim() ;
+            //
+            // Kludge to replace some form of white space that is screwing up the adql/s
+            // parser. This is the simplest solution. And the parser looks like it might
+            // have a short-term life in comparison.
+            String text = getAdqlTextPane().getText().trim().replaceAll( "\\s", " " ) ;
+            
             if( text.equals( this.adqlString ) == false ) {
                 try {  
                     this.adqlString = text ;

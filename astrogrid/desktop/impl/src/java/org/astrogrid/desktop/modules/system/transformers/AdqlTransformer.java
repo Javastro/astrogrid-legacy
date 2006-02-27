@@ -53,7 +53,7 @@ public class AdqlTransformer {
     
     protected static final Log log = LogFactory.getLog( AdqlTransformer.class ) ;
     
-    private static final boolean DEBUG_ENABLED = true ;
+    private static final boolean DEBUG_ENABLED = false ;
     private static final boolean TRACE_ENABLED = false ;
     
     private Transformer textTransformer ;
@@ -125,7 +125,7 @@ public class AdqlTransformer {
         
         //
         // First pass estimates line breaks required...
-        ArrayList breakPoints = this.getBreakPoints2( entry, tree, xmlString ) ;
+        ArrayList breakPoints = this.getBreakPoints( entry, tree, xmlString ) ;
             
         StreamSource source = new StreamSource( new StringReader( xmlString ) ) ;
         StreamResult result = new StreamResult( new StringWriter() ) ;
@@ -154,7 +154,7 @@ public class AdqlTransformer {
                 while( m.find() ) {
                     foundCount++ ;
                     if( replaceRankOrder == foundCount ) {
-                        m.appendReplacement( sb, "<br>" ) ;
+                        m.appendReplacement( sb, "<br></br>" ) ;
                         if( iterator.hasNext() ) {
                             replaceRankOrder = ((Integer)iterator.next()).intValue() ;
                         }
@@ -163,7 +163,8 @@ public class AdqlTransformer {
                         }
                     } 
                     else {
-                        m.appendReplacement( sb, nbsString ) ;
+                        m.appendReplacement( sb, " " ) ;
+                        // m.appendReplacement( sb, nbsString ) ;
                     }
                 }
                 m.appendTail(sb);

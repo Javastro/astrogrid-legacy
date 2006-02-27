@@ -30,6 +30,13 @@ public class AdqlData {
     public static final String ARRAY_OF_FROM_TABLE_TYPE = "ArrayOfFromTableType" ;
     public static final String TABLE_TYPE = "tableType" ;
     public static final String ARCHIVE_TABLE_TYPE = "archiveTableType" ;
+    public static final String BINARY_EXPRESSION_TYPE = "binaryExprType" ;
+    public static final String UNARY_EXPRESSION_TYPE = "unaryExprType" ;
+    public static final String TRIG_FUNCTION_TYPE = "trigonometricFunctionType" ;
+    public static final String MATH_FUNCTION_TYPE = "mathFunctionType" ;
+    public static final String AGGREGATE_FUNCTION_TYPE = "aggregateFunctionType" ;
+    public static final String COMPARISON_TYPE = "comparisonType" ;
+    public static final String COMPARISON_PRED_TYPE = "comparisonPredType" ;
     
     public static final String TYPE_ENTRY = "TYPE".intern() ;
     public static final String ELEMENT_ENTRY = "ELEMENT".intern() ;

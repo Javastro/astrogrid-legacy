@@ -33,8 +33,8 @@ import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 public final class AdqlUtils {
     
     private static final Log logger = LogFactory.getLog( AdqlUtils.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
+    private static final boolean DEBUG_ENABLED = false ;
+    private static final boolean TRACE_ENABLED = false ;
     
     private static final String EMPTY_STRING = "".intern() ;
     
@@ -281,7 +281,7 @@ public final class AdqlUtils {
     
     
     static public String normalizeName( String name ) {
-        System.out.println( "normalizeName" ) ;
+//        System.out.println( "normalizeName" ) ;
         //
         // Removes the redundant "Type" word from the end...
         int index = name.lastIndexOf( "Type" ) ;
@@ -311,77 +311,87 @@ public final class AdqlUtils {
     
     static public XmlObject get( XmlObject o, String elementName ) {
         String methodName = "get" + capitalize( elementName ) ;
-        return (XmlObject)invoke( o, methodName, null ) ;
-//        if( obj != null  &&  (obj instanceof XmlObject == false) ) { 
-//              methodName = "xget" + capitalize( elementName ) ; 
-//              obj = invoke( o, methodName, null ) ;
-//        }
+        return (XmlObject)invoke( o, methodName, null, null ) ;
     }
     
     static public void set( XmlObject o, String elementName, XmlObject param ) {
         String methodName = "set" + capitalize( elementName ) ;
-        invoke( o, methodName, new Object[]{ param } ) ;
+        invoke( o, methodName, new Object[] { param }, new Class[] { getInterface( param ) } ) ;
     }
     
     static public boolean isSet( XmlObject o, String elementName ) {
         String methodName = "isSet" + capitalize( elementName ) ;
-        return ((Boolean)invoke( o, methodName, null )).booleanValue() ;
+        return ((Boolean)invoke( o, methodName, null, null )).booleanValue() ;
     }
     
     static public void unset( XmlObject o, String elementName ) {
         String methodName = "unset" + capitalize( elementName ) ;
-        invoke( o, methodName, null ) ;
+        invoke( o, methodName, null, null ) ;
     }
     
     static public XmlObject addNew( XmlObject o, String elementName ) {
         String methodName = "addNew" + capitalize( elementName ) ;
-        return (XmlObject)invoke( o, methodName, null ) ;
+        return (XmlObject)invoke( o, methodName, null, null ) ;
     }
     
     static public Object[] getArray( XmlObject o, String elementName ) {
         String methodName = "get" + capitalize( elementName ) + "Array" ;
-        return (Object[])invoke( o, methodName, null ) ;
+        return (Object[])invoke( o, methodName, null, null ) ;
     }
     
     static public Object getArray( XmlObject o, String elementName, int param ) {
         String methodName = "get" + capitalize( elementName ) + "Array" ;
-        return invoke( o, methodName, new Integer[]{new Integer(param)} ) ;
+        return invoke( o, methodName, new Object[]{new Integer(param)}, new Class[]{ Integer.TYPE } ) ;
     }  
     
     static public int sizeOfArray( XmlObject o, String elementName ) {
         String methodName = "sizeOf" +capitalize( elementName ) + "Array" ;
-        return ((Integer)invoke( o, methodName, null )).intValue() ;
+        return ((Integer)invoke( o, methodName, null, null )).intValue() ;
     }
     
     
     static public void setArray( XmlObject o, String elementName, XmlObject[] array ) {
         String methodName = "set" + capitalize( elementName ) + "Array" ;
-        invoke( o, methodName, new Object[]{ array } ) ;
+        //
+        // This may well not work because of the difficulty of setting the correct
+        // interface within the call for the array object.
+        // In fact the array argument may require reformatting in order to work.
+        // Requires experimentation!!!
+        invoke( o, methodName, new Object[]{ array }, new Class[] { array.getClass() } ) ;
     }
     
     // void setItemArray(int i, net.ivoa.xml.adql.v10.SelectionItemType item);
     static public Object setArray( XmlObject o, String elementName, int param1, XmlObject param2 ) {
         String methodName = "set" + capitalize( elementName ) + "Array" ;
-        return invoke( o, methodName, new Object[]{new Integer(param1), param2} ) ;
+        return invoke( o
+                     , methodName
+                     , new Object[]{ new Integer(param1), param2 }
+                     , new Class[] { Integer.TYPE, getInterface( param2 ) } ) ;
     } 
     
     // net.ivoa.xml.adql.v10.SelectionItemType insertNewItem(int i);
     static public XmlObject insertNewInArray( XmlObject o, String elementName, int param ) {
         String methodName = "insertNew" + capitalize( elementName ) ;
-        return (XmlObject)invoke( o, methodName, new Integer[]{new Integer(param)} ) ;
+        return (XmlObject)invoke( o
+                                , methodName
+                                , new Object[]{ new Integer(param) }
+                                , new Class[] { Integer.TYPE } ) ;
     }
     
     // net.ivoa.xml.adql.v10.SelectionItemType addNewItem();
     static public XmlObject addNewToEndOfArray( XmlObject o, String elementName ) {
         String methodName = "addNew" + capitalize( elementName ) ;
-        System.out.println( "methodName: " + methodName ) ;
-        return (XmlObject)invoke( o, methodName, null ) ;
+//        System.out.println( "methodName: " + methodName ) ;
+        return (XmlObject)invoke( o, methodName, null, null ) ;
     }
     
     // void removeItem(int i);
     static public void removeFromArray( XmlObject o, String elementName, int param ) {
         String methodName = "remove" ;
-        invoke( o, methodName, new Integer[]{new Integer(param)} ) ;
+        invoke( o
+              , methodName
+              , new Integer[]{ new Integer(param) }
+              , new Class[] { Integer.TYPE } ) ;
     }
     
     static public XmlObject newInstance( SchemaType st ) {
@@ -427,25 +437,25 @@ public final class AdqlUtils {
     }
     
     
-    static private Object invoke( Object o, String methodName, Object[] params ) {
+    static private Class getInterface( XmlObject obj ) {
+        // Beware!
+        // This will be weak if xmlBeans sprouts more than one interface
+        // per implementation. Not sure what to do about arrays passed in.
+        Class[] interfaces = obj.getClass().getInterfaces() ;
+        if( interfaces.length > 0 )
+            return interfaces[0] ;
+        return obj.getClass() ;
+    }
+    
+    
+    static private Object invoke( Object o, String methodName, Object[] params, Class[] paramTypes ) {
         Object retObj = null ;
         Method method = null ;
-        Class[] parameterTypes = null ;
-        if( params != null ) {
-            Class[] interfaces ;
-            parameterTypes = new Class[ params.length ] ;
-            for( int i=0; i<params.length; i++ ) {
-                parameterTypes[i] = params[i].getClass() ;
-                // Experiment. If the class implements an interface, we use the interface...
-                interfaces = parameterTypes[i].getInterfaces() ;
-                if( interfaces.length != 0 )  // this is weak, but is unlikely to be wrong with xmlbeans.
-                    parameterTypes[i] = interfaces[0] ;
-            }
-        }
+
         if( methodName.startsWith( "set" ) || methodName.startsWith( "get" ) ) {
             String altName = 'x' + methodName ;
             try {
-                method = o.getClass().getMethod( altName, parameterTypes ) ;
+                method = o.getClass().getMethod( altName, paramTypes ) ;
             }
             catch( NoSuchMethodException ex1 ) {
                 ;
@@ -453,10 +463,10 @@ public final class AdqlUtils {
         }
         if( method == null ) {
             try {
-                method = o.getClass().getMethod( methodName, parameterTypes ) ;
+                method = o.getClass().getMethod( methodName, paramTypes ) ;
             }
             catch( NoSuchMethodException ex1 ) {
-                ;
+                logger.error( ex1 );
             }
         }
         if( method == null )
@@ -466,10 +476,10 @@ public final class AdqlUtils {
             retObj = method.invoke( o, params ) ;
         }
         catch( java.lang.reflect.InvocationTargetException itx ) {
-            itx.getCause().printStackTrace() ;
+            logger.error( itx.getCause() ) ;
         }
         catch( Exception ex2 ) {
-            ex2.printStackTrace() ;
+            logger.error( ex2 );
         }
         return retObj ;
     }

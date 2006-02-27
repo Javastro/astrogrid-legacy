@@ -1,10 +1,9 @@
 
 package org.astrogrid.desktop.modules.adqlEditor ;
 
-import java.math.*;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
 
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
@@ -14,9 +13,7 @@ import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SimpleValue; 
 import org.apache.xmlbeans.XmlString;
 
-import javax.xml.namespace.QName;
 import javax.swing.tree.DefaultMutableTreeNode ;
-import javax.swing.tree.TreeNode;
 
 import org.astrogrid.desktop.modules.system.transformers.AdqlTransformer ;
 
@@ -24,8 +21,7 @@ import org.astrogrid.desktop.modules.system.transformers.AdqlTransformer ;
  * Represents the data for a single node in the XmlTree. This class (known as a
  * "user object" from the JTree perspective) provides a way to get information
  * about the node by essentially wrapping the XmlObject instance that the node
- * represents. The {@link XmlModel}class represents the XML data model to the
- * tree by calling methods of this object.
+ * represents. 
  */
 public final class AdqlEntry extends DefaultMutableTreeNode {
     
@@ -49,10 +45,10 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
     
     private XmlObject[] hiddenChildren = null ;
     
-    private static XmlObject root = null ;
+//    private static XmlObject root = null ;
     
     public static AdqlEntry newInstance( XmlObject rootObject ) {
-        root = rootObject ;
+//        root = rootObject ;
         AdqlEntry rootEntry = newInstance( null, rootObject ) ;
         return rootEntry ;
     }
@@ -86,12 +82,17 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         do {
             if( co == cursor.getObject() ) {
                 retValue = cursor.removeXml() ;
-//                System.out.println( "cursor.removeXml(): " + retValue ) ;
                 break ;
             }
         } while( cursor.toNextSibling() ) ;
         cursor.dispose() ;       
         return retValue ;
+    }
+    
+    
+    public static boolean disconnectInstance( AdqlEntry parent, AdqlEntry child ) {
+        parent.remove( child ) ;
+        return true ;
     }
     
     
@@ -235,7 +236,7 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         return entryChildren;
     }
 
-    public String toHtml( boolean expanded, boolean leaf, AdqlTree tree ) {
+    public String toHtml( boolean expanded, boolean leaf, AdqlTree tree ) { 
         String displayName = null;
         try {
             displayName = AdqlUtils.extractDisplayName( getXmlObject() ) ;
@@ -246,12 +247,25 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         }
         String displayInfo = null ;
         if( expanded ) {
+            String shortName = getShortTypeName() ;
             displayInfo = displayName ;
-            if( displayName.equals( "Comparison") ) {
+            if( shortName.equals( AdqlData.COMPARISON_PRED_TYPE ) ) {
+                // "Comparison" here is the name of an xml attribute. Sorry. Not very generic.
                 displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Comparison" )).getStringValue() ) ;
-//                displayInfo += " java etc" ; 
-                String value = ((SimpleValue)AdqlUtils.get( getXmlObject(), "Comparison" )).getStringValue() ;
-//                System.out.println( "Comparison value: " + value ) ;
+            }
+            else if( shortName.equals( AdqlData.BINARY_EXPRESSION_TYPE ) 
+                     ||
+                     shortName.equals( AdqlData.UNARY_EXPRESSION_TYPE ) ) {
+                // "Oper" here is the name of an xml attribute. Sorry. Not very generic.
+                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Oper" )).getStringValue() ) ;
+            }
+            else if( shortName.equals( AdqlData.AGGREGATE_FUNCTION_TYPE ) 
+                     ||
+                     shortName.equals( AdqlData.MATH_FUNCTION_TYPE )
+                     ||
+                     shortName.equals( AdqlData.TRIG_FUNCTION_TYPE ) ) {
+                // "Name" here is the name of an xml attribute. Sorry. Not very generic.
+                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Name" )).getStringValue() ) ;
             }
             else if( hiddenChildren != null ) {
                 displayInfo = extractValue( displayName, getXmlObject() ) ;
@@ -277,11 +291,11 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
             } 
         }
         else {
-            System.out.println( "hiddenChildren! ..." ) ;
+            //System.out.println( "hiddenChildren! ..." ) ;
             String hcName = AdqlUtils.extractDisplayName( hiddenChildren[0] ) ;
-            System.out.println( "hcName: " + hcName ) ;
+            //System.out.println( "hcName: " + hcName ) ;
             String hcValue = extractValue( hcName, getXmlObject() ) ;
-            System.out.println( "hcValue: " + hcValue ) ;
+            //System.out.println( "hcValue: " + hcValue ) ;
             displayInfo = hcValue  ;
         }
         
@@ -292,60 +306,72 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         return displayInfo ;
     }
     
-    public String toText( boolean expanded, AdqlTree tree ) {
-        return toString( expanded, tree ) ;
-    } 
+//    public String toText( boolean expanded, AdqlTree tree ) {
+//        return toString( expanded, tree ) ;
+//    } 
     /**
      * Returns a name that can be used as a tree node label.
      * 
      * @return The name of the element or attribute this entry represents.
      */
-    private String toString( boolean expansionState, AdqlTree tree ) {
-        String displayName = null;
-        try {
-            displayName = AdqlUtils.extractDisplayName( getXmlObject() ) ;
-        }
-        catch( Exception ex ) {
-            System.out.println( "\nException thrown in toString().\nException stack trace follows... " ) ;
-            System.out.println( "===== pretty print after exception in toString()... =====" ) ;
-            XmlOptions opts = new XmlOptions();
-            opts.setSavePrettyPrint();
-            opts.setSavePrettyPrintIndent(4);
-            System.out.println( root );
-            ex.printStackTrace() ;
-        }
-        String displayInfo = null ;
-        if( expansionState ) {
-            displayInfo = displayName ;
-            if( displayName.equals( "Comparison") ) {
-                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Comparison" )).getStringValue() ) ;
-            }
-            else if( hiddenChildren != null ) {
-                displayInfo = extractValue( displayName, getXmlObject() ) ;
-            }
-            else {
-                displayInfo = extractValue( displayName, getXmlObject() ) ;
-            }
-        }
-        else if( hiddenChildren == null ) {
-            String xml = getXmlObject().newCursor().xmlText() ;
-            // Get the ADQL/s representation of this element ...
-//            displayInfo = transformer.transform( xml ) ;
-            if( displayInfo.startsWith( "<html") ) {            
-                int fromIndex = displayInfo.indexOf( "<font" ) ;
-                fromIndex = displayInfo.indexOf( '>', fromIndex ) ;
-                int index = displayInfo.indexOf( displayName, fromIndex ) ;
-                if( index == -1 || index > displayName.length() + 9 + fromIndex ) {
-                    displayInfo = displayName + ' ' + displayInfo ;
-                }
-            }
-        }
-        else {
-            displayInfo = AdqlUtils.extractDisplayName( hiddenChildren[0] ) ;
-            displayInfo = extractValue( displayInfo, getXmlObject() ) ;
-        }
-        return  displayInfo.trim() ;
-    }
+//    private String toString( boolean expansionState, AdqlTree tree ) {
+//        String displayName = null;
+//        try {
+//            displayName = AdqlUtils.extractDisplayName( getXmlObject() ) ;
+//        }
+//        catch( Exception ex ) {
+////            System.out.println( "\nException thrown in toString().\nException stack trace follows... " ) ;
+////            System.out.println( "===== pretty print after exception in toString()... =====" ) ;
+////            XmlOptions opts = new XmlOptions();
+////            opts.setSavePrettyPrint();
+////            opts.setSavePrettyPrintIndent(4);
+////            System.out.println( root );
+//            ex.printStackTrace() ;
+//        }
+//        String displayInfo = null ;
+//        if( expansionState ) {
+//            String shortName = getShortTypeName() ;
+//            displayInfo = displayName ;
+////            if( displayName.equals( "Comparison") ) {
+//            if( shortName.equals( AdqlData.COMPARISON_TYPE ) ) {
+//                // "Comparison" here is the name of an xml attribute. Sorry. Not very generic.
+//                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Comparison" )).getStringValue() ) ;
+//            }
+//            else if( shortName.equals( AdqlData.BINARY_EXPRESSION_TYPE ) ) {
+//                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Oper" )).getStringValue() ) ;
+//            }
+//            else if( shortName.equals( AdqlData.UNARY_EXPRESSION_TYPE ) ) {
+//                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Oper" )).getStringValue() ) ;
+//            }
+//            else if( shortName.equals( AdqlData.AGGREGATE_FUNCTION_TYPE ) ) {
+//                
+//            }
+//            else if( hiddenChildren != null ) {
+//                displayInfo = extractValue( displayName, getXmlObject() ) ;
+//            }
+//            else {
+//                displayInfo = extractValue( displayName, getXmlObject() ) ;
+//            }
+//        }
+//        else if( hiddenChildren == null ) {
+//            String xml = getXmlObject().newCursor().xmlText() ;
+//            // Get the ADQL/s representation of this element ...
+////            displayInfo = transformer.transform( xml ) ;
+//            if( displayInfo.startsWith( "<html") ) {            
+//                int fromIndex = displayInfo.indexOf( "<font" ) ;
+//                fromIndex = displayInfo.indexOf( '>', fromIndex ) ;
+//                int index = displayInfo.indexOf( displayName, fromIndex ) ;
+//                if( index == -1 || index > displayName.length() + 9 + fromIndex ) {
+//                    displayInfo = displayName + ' ' + displayInfo ;
+//                }
+//            }
+//        }
+//        else {
+//            displayInfo = AdqlUtils.extractDisplayName( hiddenChildren[0] ) ;
+//            displayInfo = extractValue( displayInfo, getXmlObject() ) ;
+//        }
+//        return  displayInfo.trim() ;
+//    }
     
     public String toString() {
         String retVal = null ;
@@ -395,6 +421,15 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
     
     public SchemaType getSchemaType() {
         return getXmlObject().schemaType() ;
+    }
+    
+    public String getShortTypeName() {
+        String retValue = "" ;
+        SchemaType type = this.getXmlObject().schemaType() ;
+        if( type.isAnonymousType() == false ) {
+            retValue = type.getName().getLocalPart() ;
+        }
+        return retValue ;
     }
     
     

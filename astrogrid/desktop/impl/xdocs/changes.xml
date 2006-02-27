@@ -13,6 +13,12 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="1536">
+	    QueryBuilder.
+	    Editing enhancements for tree view.
+	    Editing enhancements for metadata pane.
+	    Auto-chooses dataset if possible.
+</action>
 <release version="2.0-beta-6" date="2006-02-24" >
     <action dev="nw" type="update">
       updated to use all latest astrogrid delegates
