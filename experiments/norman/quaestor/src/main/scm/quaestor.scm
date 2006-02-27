@@ -61,12 +61,33 @@
 
 ;; Display an HTML page reporting on the knowledgebases available
 (define (get-knowledgebase-list path-info-list query-string request response)
-  (if (= (length path-info-list) 0)
+  (define (display-kb-info kb-name)
+    (let* ((info ((kb-get kb-name) 'info))
+           (submodel-pair (assq 'submodels info))) ;cdr is list of alists
+      `(li "Knowledgebase "
+           (strong ,kb-name)
+           ", submodels:"
+           (ul ,@(map (lambda (sm-alist)
+                        (let ((name-pair (assq 'name sm-alist))
+                              (tbox-pair (assq 'tbox sm-alist)))
+                          (list 'li
+                                (format #f "~a (~a)"
+                                        (if name-pair (cdr name-pair) "???")
+                                        (cond ((not tbox-pair)
+                                               "???")
+                                              ((cdr tbox-pair)
+                                               "tbox")
+                                              (else
+                                               "abox"))))))
+                      (cdr submodel-pair))))))
+  (if (= (length path-info-list) 0)     ;we handle this one
       (response-page "Quaestor: list of knowledgebases"
                      `((p "Knowledgebases available:")
                        (ul ,@(map (lambda (kb-name)
-                                   (list 'li (symbol->string kb-name)))
-                                 (kb-get-names)))))))
+                                    (display-kb-info kb-name))
+                                  (kb-get-names)))
+                       ))
+      #f))
 
 ;; Retrieve the submodel named by the two-element path-info-list, and
 ;; write it to the response.  Return #t if successful, or set a
@@ -79,27 +100,17 @@
     set-status
     set-content-type
     get-writer
-    get-headers
     println)
   (define-java-classes
     <java.lang.string>)
-
-  (define msgs
-    (let ((msglist '()))
-      (lambda msg
-        (if (null? msg)
-            (apply string-append (reverse msglist))
-            (set! msglist (cons msg msglist))))))
 
   ;; Examine any Accept headers in the request.  Return #f if there were
   ;; Accept headers and we can't satisfy them;
   ;; return (mime-string . rdf-language) if we can satisfy a request;
   ;; return (mime-string . "RDF/XML") if there were no Accept headers.
   (define (find-ok-language rq)
-    (let ((lang-mime-list
-           (map ->string
-                (enumeration->list (get-headers rq (->jstring "accept"))))))
-      (msgs (format #f "lang-mime-list=~s~%" lang-mime-list))
+    (let ((lang-mime-list (request->accept-mime-types rq)))
+      (msglist (format #f "lang-mime-list=~s" lang-mime-list))
       (if (null? lang-mime-list)
           (cons (rdf-language->mime-type "RDF/XML")
                 "RDF/XML")              ;explicit default language
@@ -107,8 +118,8 @@
             (if (null? ml)
                 #f                      ;ooops
                 (let ((lang-string (mime-type->rdf-language (car ml))))
-                  (msgs (format #f "mime-type->rdf-language: ~s -> ~s"
-                                (car ml) lang-string))
+                  (msglist "mime-type->rdf-language: ~s -> ~s"
+                           (car ml) lang-string)
                   (if lang-string
                       (cons (car ml)
                             lang-string)
@@ -123,19 +134,28 @@
                          (eq? query 'model)
                          mime-and-lang) ;normal case
                     (set-http-response response '|SC_OK|)
+
+;;                     (set-content-type response (->jstring "text/html"))
+;;                     (response-page "GET debugging"
+;;                                    `((p "kb-name=" kb-name)
+;;                                      (p ,(format #f "mime-and-lang=~s, query=~a"
+;;                                                  mime-and-lang query))
+;;                                      (p ,(format #f "messages: ~a"
+;;                                                  (msglist)))))
                     (set-content-type response
                                       (->jstring (car mime-and-lang)))
                     (write (kb 'get-model)
                            (get-output-stream response)
                            (->jstring (cdr mime-and-lang)))
-                    #t)
+                    #t
+                    )
 
                    ((and kb
                          (eq? query 'model))
                     (no-can-do response
                                '|SC_NOT_ACCEPTABLE|
                                "Cannot generate requested content-type:~%~a"
-                               (msgs)))
+                               (msglist)))
 
                    ((and kb
                          (eq? query 'metadata))
@@ -146,6 +166,12 @@
                              (or (kb 'get-metadata-as-jstring)
                                  (->jstring "")))
                     #t)
+
+                   ((and kb
+                         (eq? query 'sparql))
+                    (no-can-do response
+                               '|SC_NOT_IMPLEMENTED|
+                               "GET with query is not yet implemented"))
 
                    (kb
                     (no-can-do response
@@ -206,7 +232,8 @@
       (define-generic-java-methods
         get-reader
         get-input-stream)
-      (let ((path-list (request->path-list request)))
+      (let ((path-list (request->path-list request))
+            (query-string (request->query-string request)))
         (cond ((= (length path-list) 1)
                (manage-knowledgebase (car path-list)
                                      (get-reader request)
@@ -216,6 +243,8 @@
               ((= (length path-list) 2)
                (update-submodel (car path-list)
                                 (cadr path-list)
+                                (or (not query-string)
+                                    (string=? query-string "tbox"))
                                 (request->content-header-strings request)
                                 (get-input-stream request)
                                 response))
@@ -267,7 +296,13 @@
 ;; KB-NAME which is available from the given STREAM.  The CONTENT-HEADERS
 ;; are an alist (symbol . string), where the symbol is 'type, 'length, and
 ;; so on.
-(define (update-submodel kb-name submodel-name content-headers stream response)
+(define (update-submodel kb-name
+                         submodel-name
+                         tbox?
+                         content-headers
+                         stream
+                         response)
+
   ;; Given an alist ALIST of (key . value) pairs, and a list
   ;; RECOGNISED of recognised symbols, return true if each of the alist
   ;; keys, which are all symbols, is a member of the list RECOGNISED.
@@ -291,9 +326,14 @@
           (kb                         ;normal case
            (let* ((rdf-mime (and (assq 'type content-headers)
                                  (cdr (assq 'type content-headers))))
-                  (submodel (rdf-ingest-from-stream stream rdf-mime)))
+                  (submodel (rdf-ingest-from-stream
+                             stream
+                             rdf-mime)))
+             (msglist "content-headers=~s~%  rdf-mime=~s => lang=~s"
+                      content-headers rdf-mime
+                      (mime-type->rdf-language rdf-mime))
              (if submodel
-                 (if (kb 'add-submodel  ;normal case
+                 (if (kb (if tbox? 'add-tbox 'add-abox)  ;normal case
                          submodel-name
                          submodel)
                      (set-http-response response '|SC_NO_CONTENT|)
@@ -301,12 +341,247 @@
                                 '|SC_INTERNAL_ERROR| ;correct?
                                 "Unable to update model!"))
                  (no-can-do response '|SC_BAD_REQUEST|
-                            "Bad RDF MIME type! ~a" mime))))
+                            "Bad RDF MIME type! ~a~%~a"
+                            rdf-mime (msglist)))))
 
           (else
            (no-can-do response '|SC_BAD_REQUEST|
                       (format #f "No such knowledgebase ~a"
                               kb-name))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; POST support
+
+;; Handle POST requests.  Return #t on success, or a string response
+(define (http-post request response)
+  (with-failure-continuation
+       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
+     (lambda ()
+       (define-generic-java-methods
+         get-reader
+         set-content-type)
+       (let ((path-list (request->path-list request))
+             (query-string (request->query-string request)))
+         ;; First, insist that there's just one element in the path-list,
+         ;; and that the query string is 'sparql'.  We should possibly check
+         ;; that the content-type of the incoming SPARQL query is
+         ;; application/sparql-query (http://www.w3.org/TR/rdf-sparql-query/)
+         (if (and (= (length path-list) 1)
+                  query-string
+                  (string=? query-string "sparql"))
+             (begin (set-http-response response '|SC_OK|)
+                    (set-content-type response ;correct content type?
+                                      (->jstring "application/xml"))
+                    (or (with-failure-continuation
+                             (make-fc request response '|SC_BAD_REQUEST|)
+                           (lambda ()
+                             (perform-sparql-query
+                              (car path-list)
+                              (reader->jstring (get-reader request))
+                              (get-output-stream-lazily response)
+                              (request->accept-mime-types request))
+                             #t))
+                        (no-can-do response
+                                   '|SC_BAD_REQUEST|
+                                   "Error performing SPARQL query")))
+             (no-can-do response
+                        '|SC_BAD_REQUEST|
+                        "POST SPARQL request must have one path element, and query=sparql"))))))
+
+;; Return a function which, when called, will return the response output stream.
+;; This extracts the output stream lazily, so that we don't call
+;; GET-OUTPUT-STREAM on the underlying response unless and until we need to,
+;; thus leaving any error handler free to do so instead.
+(define (get-output-stream-lazily original-response)
+  (define-generic-java-method
+    get-output-stream)
+  (let ((response original-response))
+    (lambda ()
+      (get-output-stream response))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SPARQL stuff -- possibly move to another module?
+
+;; Perform the SPARQL query in QUERY-JSTRING on the knowledgebase KB-NAME.
+;; Send the XML results to the output stream returned by procedure
+;; GET-OUTPUT-STREAM (which should not be called before we know we can
+;; write to it), and return #t on success.  MIME-TYPE-LIST is a list of 
+;; acceptable MIME types as strings.
+;;
+;; The procedure is called in a context such that it may call ERROR
+;; at any point prior to sending stuff to the output stream.
+(define (perform-sparql-query kb-name
+                              query-jstring
+                              get-output-stream
+                              mime-type-list)
+  (define-java-classes
+    (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|)
+    (<result-set-formatter> |com.hp.hpl.jena.query.ResultSetFormatter|))
+  (define-generic-java-methods
+    create-inf-model)
+
+  (define (xml-result-set-handler result-set)
+    (define-generic-java-methods
+      (output-as-xml |outputAsXML|))
+    (output-as-xml (java-null <result-set-formatter>)
+                   (get-output-stream)
+                   result-set))
+  (define (table-result-set-handler result-set)
+    (define-generic-java-method
+      out)
+    (out (java-null <result-set-formatter>)
+         (get-output-stream)
+         result-set))
+
+  (let ((kb (kb-get kb-name))
+        (handler (if (null? mime-type-list)
+                     xml-result-set-handler ;default
+                     (let loop ((l mime-type-list))
+                       (if (null? l)
+                           #f
+                           (cond ((or (string=? (car l) "application/xml")
+                                      (string=? (car l) "*/*"))
+                                  xml-result-set-handler)
+                                 ((string=? (car l) "text/plain")
+                                  table-result-set-handler)
+                                 (else
+                                  (loop (cdr l)))))))))
+
+    (or kb                              ;check we've found a KB
+        (error 'perform-sparql-query
+               "Don't know anything about knowledgebase ~a" kb-name))
+    (or handler                         ;check we can handle requested MIME type
+        (error-with-status 'perform-sparql-query
+                           '|SC_NOT_ACCEPTABLE|
+                           "can't handle any of the MIME types ~a"
+                           mime-type-list))
+
+    (let ((tbox (kb 'get-model-tbox))
+          (abox (kb 'get-model-abox)))
+      (or tbox
+          (error 'perform-sparql-query
+                 "Model ~a has no TBOX -- can't query" kb-name))
+      (run-sparql-query query-jstring
+                        (if abox
+                            (create-inf-model (java-null <factory>)
+                                              (get-reasoner)
+                                              tbox
+                                              abox)
+                            (create-inf-model (java-null <factory>)
+                                              (get-reasoner)
+                                              tbox))
+                        handler))))
+
+;; Given a SPARQL query as a jstring, and an inferencing model, run
+;; the query and pass the results to procedure RESULT-SET-HANDLER.
+(define (run-sparql-query query-jstring
+                          infmodel
+                          result-set-handler)
+  (define-java-classes
+    (<query-factory> |com.hp.hpl.jena.query.QueryFactory|)
+    (<query-execution-factory> |com.hp.hpl.jena.query.QueryExecutionFactory|))
+  (define-generic-java-methods
+    create)
+  (let* ((query (create (java-null <query-factory>) query-jstring))
+         (qexec (create (java-null <query-execution-factory>)
+                        query
+                        infmodel))
+         (exec-it (find-query-executor query)))
+    (if exec-it
+        (let ((result-set (exec-it qexec)))
+          (result-set-handler result-set)
+          (close qexec))
+        (let ((msg (format #f "Query <~a>... unrecognised query type"
+                           (->string query-jstring))))
+          (close qexec)
+          (error 'run-sparql-query msg)))
+    ))
+
+;; Return a new Reasoner object
+(define (get-reasoner)
+
+  (define (get-dig-reasoner)
+    (define-java-classes
+      ;;(<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|)
+      <com.hp.hpl.jena.reasoner.reasoner-registry>
+      <com.hp.hpl.jena.rdf.model.model-factory>
+      ;;(<factory> |com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory|)
+      ;;<com.hp.hpl.jena.rdf.model.resource>
+      )
+    (define-generic-java-methods
+      the-registry
+      (create-with-owl-axioms |createWithOWLAxioms|)
+      get-factory
+      create-resource
+      create-default-model
+      add-property)
+
+    (let* ((config-model (create-default-model
+                          (java-null <com.hp.hpl.jena.rdf.model.model-factory>)))
+           (conf (create-resource config-model)))
+      (add-property conf
+                    (java-retrieve-static-object
+                     '|com.hp.hpl.jena.vocabulary.ReasonerVocabulary.EXT_REASONER_URL|)
+                    (create-resource config-model
+                                     (->jstring (dig-uri))))
+      ;(chatter "Connecting to DIG reasoner at ~a" (dig-uri))
+      (create-with-owl-axioms
+       (get-factory
+        (the-registry (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>))
+        (java-retrieve-static-object
+         '|com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory.URI|))
+       conf)))
+
+  (define (get-owl-reasoner)
+    (define-java-classes
+      (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
+    (define-generic-java-methods
+      (get-owl-reasoner |getOWLReasoner|))
+    ;(chatter "Creating OWL reasoner")
+    (get-owl-reasoner (java-null <registry>)))
+
+  (define (get-rdfs-reasoner)
+    (define-java-class
+      <com.hp.hpl.jena.reasoner.reasoner-registry>)
+    (define-generic-java-methods
+      (get-rdfs-reasoner |getRDFSReasoner|))
+    ;(chatter "Creating RDFS reasoner")
+    (get-rdfs-reasoner (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>)))
+
+  (get-owl-reasoner))
+
+;; Given a QUERY, return one of the set QueryExecution.execSelect,
+;; QueryExecution.execAsk, ..., based on the type of query returned by
+;; Query.getQueryType.  If none of them match for some reason, return #f.
+(define find-query-executor
+  (let ((alist #f))
+    (lambda (query)
+      (define-generic-java-method get-query-type)
+      (if (not alist)
+          (let ()
+            (define-generic-java-methods
+              exec-ask
+              exec-construct
+              exec-describe
+              exec-select)
+            (define-generic-java-field-accessors
+              (query-ask |QueryTypeAsk|)
+              (query-construct |QueryTypeConstruct|)
+              (query-describe |QueryTypeDescribe|)
+              (query-select |QueryTypeSelect|))
+            (set! alist
+                  `((,(->number (query-select    query)) . ,exec-select)
+                    (,(->number (query-ask       query)) . ,exec-ask)
+                    (,(->number (query-construct query)) . ,exec-construct)
+                    (,(->number (query-describe  query)) . ,exec-describe)))))
+
+      (let ((result-pair (assv (->number (get-query-type query))
+                               alist)))
+        (and result-pair (cdr result-pair))))))
+
+;; End SPARQL stuff
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -335,7 +610,8 @@
 ;; Support functions for the HTTP transaction
 
 ;; Extract the path-list from the request, splitting it at '/', and
-;; returning the result as a list of strings.
+;; returning the result as a list of strings.  If there was no path-info,
+;; return an empty list.
 ;; Any zero-length strings are removed (thus "/one//two/" is returned as
 ;; a two-element list).
 (define (request->path-list request)
@@ -344,11 +620,14 @@
     split
     (java-string-length |length|))
   (let ((path-string (get-path-info request)))
-    (if (= (->number (java-string-length path-string)) 0)
-        '()
-        (remove (lambda (str) (= (string-length str) 0))
+    (cond ((java-null? path-string)
+           '())
+          ((= (->number (java-string-length path-string)) 0)
+           '())
+          (else
+           (remove (lambda (str) (= (string-length str) 0))
                 (map ->string
-                     (->list (split path-string (->jstring "/"))))))))
+                     (->list (split path-string (->jstring "/")))))))))
 ;; The same, except that the path-list components are URL-decoded
 ;; (which I don't now think is necessary)
 ;; (define (request->path-list-decoded request)
@@ -392,55 +671,80 @@
 
 ;; Return the set of request headers as an alist, each element of which is
 ;; of the form (header-string . value-string) (both scheme strings)
-(define request->header-alist
-  (let ((alist #f))
-    (lambda (request)
-      (define-generic-java-methods
-        get-header-names
-        get-header)
-      (or alist
-          (set! alist
-                (map (lambda (header-jname)
-                       (cons (->string header-jname)
-                             (->string (get-header request header-jname))))
-                     (enumeration->list (get-header-names request)))))
-      alist)))
+(define (request->header-alist request)
+  (define-generic-java-methods
+    get-header-names
+    get-header)
+  (map (lambda (header-jname)
+         (cons (->string header-jname)
+               (->string (get-header request header-jname))))
+       (enumeration->list (get-header-names request))))
+;; (define request->header-alist
+;;   (let ((alist #f))
+;;     (lambda (request)
+;;       (define-generic-java-methods
+;;         get-header-names
+;;         get-header)
+;;       (or alist
+;;           (set! alist
+;;                 (map (lambda (header-jname)
+;;                        (cons (->string header-jname)
+;;                              (->string (get-header request header-jname))))
+;;                      (enumeration->list (get-header-names request)))))
+;;       (msglist "request->header-alist")
+;;       alist)))
+
+;; Return the contents of the Accept header as a list of scheme strings.
+;; Each one is a MIME type.
+(define (request->accept-mime-types request)
+  (define-generic-java-method
+    get-headers)
+  (map ->string
+       (enumeration->list (get-headers request (->jstring "accept")))))
 
 ;; Given a READER, return a Java string containing the contents of the stream.
 (define (reader->jstring reader)
   (define-java-classes
     <java.io.buffered-reader>
-    (<stringbuffer> |java.lang.StringBuffer|))
+    <java.lang.string-buffer>)
   (define-generic-java-methods
-    read-line
+    read
     append
     to-string)
-  (let ((buffered-reader (java-new <java.io.buffered-reader> reader)))
-    (let loop ((sb (java-new <stringbuffer>)))
-      (let ((line (read-line buffered-reader)))
-        (if (java-null? line)
+  (let ((buffered-reader (java-new <java.io.buffered-reader> reader))
+        (carr (java-array-new <jchar> 512))
+        (zo (->jint 0)))
+    (let loop ((sb (java-new <java.lang.string-buffer>)))
+      (let ((rlen (read buffered-reader carr zo (->jint 512))))
+        (if (< (->number rlen) 0)
             (to-string sb)
-            (loop (append sb line)))))))
+            (loop (append sb carr zo rlen))))
+;;       (let ((line (read-line buffered-reader)))
+;;         (if (java-null? line)
+;;             (to-string sb)
+;;             (loop (append (append sb "\n") line))))
+      )))
 
 ;; Print the given response.  RESPONSE may be
 ;;     a string (it is to be printed; return #t)
 ;;     #t/#f    (print nothing; return #t/#f)
 ;; The SERVLET-RESPONSE is where the response is to go.
-(define (print-http-response response servlet-response)
-  (define-generic-java-methods
-    println
-    get-writer)
-  (cond ((string? response)
-         (println (get-writer servlet-response)
-                  (->jstring response))
-         #t)
-        ((boolean? response)
-         response)
-        (else
-         (error "print-http-response: illegal argument ~s" response))))
+;; (define (print-http-response response servlet-response)
+;;   (define-generic-java-methods
+;;     println
+;;     get-writer)
+;;   (cond ((string? response)
+;;          (println (get-writer servlet-response)
+;;                   (->jstring response))
+;;          #t)
+;;         ((boolean? response)
+;;          response)
+;;         (else
+;;          (error "print-http-response: illegal argument ~s" response))))
 
 ;; Given a RESPONSE, set the response status to the given RESPONSE-CODE,
 ;; and produce a status page using the given format and arguments.
+;; This expects to be called before there has been any other output.
 (define (no-can-do response response-code fmt . args)
   (let ((msg (apply format `(#f ,fmt ,@args))))
     (set-http-response response response-code)
@@ -448,13 +752,18 @@
 
 ;; Make a SISC failure continuation.  Return a two-argument procedure
 ;; which can be used as the handler for with-failure-continuation.
+;; See ERROR-WITH-STATUS for an error procedure which allows you to override
+;; the status given here.
 (define (make-fc request response status)
   (define-generic-java-methods
     set-content-type
     println
     get-writer)
   (lambda (error-record cont)
-    (set-http-response response status)
+    (let ((msg-or-pair (error-message error-record)))
+      (set-http-response response (if (pair? msg-or-pair)
+                                      (car msg-or-pair)
+                                      status))
 
 ;;     (set-content-type response (->jstring "text/html"))
 ;;     (response-page "Internal server error"
@@ -466,21 +775,21 @@
 ;;                      ,@(tabulate-request-information request)))
     (set-content-type response (->jstring "text/plain"))
     (format #f "Internal server error~%~%Error: ~a~%~%Stack trace:~%~a~%"
-            (error-message error-record)
+            (if (pair? msg-or-pair)
+                (cdr msg-or-pair)
+                msg-or-pair)
             (with-output-to-string
               (lambda () (print-stack-trace cont))))
+    )))
 
-;;     (set-content-type response (->jstring "text/plain"))
-;;     (let ((w (get-writer response)))
-;;       (println w
-;;                (->jstring
-;;                 (format #f "Internal server error~%Error: ~a~%~%Stack trace:~%~a~%"
-;;                         (error-message error-record)
-;;                         (with-output-to-string
-;;                           (lambda ()
-;;                             (print-stack-trace cont)))))))
-
-    ))
+;; Variant of ERROR, which can be called in a region handled by the failure
+;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
+;; with a message formatted with the given FMT and ARGS.  However instead
+;; of exiting with the status code defaulted when the fc was created
+;; by MAKE-FC, use the given NEW-STATUS.
+(define (error-with-status location new-status fmt . args)
+  (let ((msg (apply format `(#f ,fmt ,@args))))
+    (error location (cons new-status msg))))
 
 ;; For debugging and error reporting.  Given a request, produce a list
 ;; of sexps describing the content of the request.
@@ -551,5 +860,20 @@
                   ((generic-java-field-accessor response-symbol)
                    response-object))
       #t)))
+
+;; Mostly for debugging.
+;; Accumulate remarks, to supply later.
+(define msglist
+  (let ((l '()))
+    (lambda msg
+      (if (null? msg)
+          (let ((r (reverse l)))
+            (set! l '())
+            (apply string-append r))
+          (set! l
+                (cons (apply format `(#f
+                                      ,(string-append (car msg) "~%")
+                                      ,@(cdr msg)))
+                      l))))))
 
 
