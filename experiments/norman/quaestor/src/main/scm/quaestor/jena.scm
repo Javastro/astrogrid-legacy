@@ -3,9 +3,14 @@
 
 (import s2j)
 
+(require-library 'sisc/libs/srfi/srfi-1)
+(import* srfi-1
+         reduce)
+
 (module jena
  (new-empty-model
   rdf-ingest-from-stream
+  rdf-merge-models
   rdf-language-ok?
   mime-type->rdf-language
   rdf-language->mime-type)
@@ -37,6 +42,14 @@
                (java-null <java.lang.string>)))
      model))
 
+ ;; Given a list of RDF models, merge them into a single one, and return it
+ (define (rdf-merge-models models)
+   (define (model-union m1 m2)           ; union of two models
+     ((generic-java-method 'union) m1 m2))
+   (reduce model-union
+           (new-empty-model)
+           models))
+
  ;; Given a language LANG, which may be a Jstring, scheme string or #f,
  ;; return true if it is one of the allowed RDF languages, "RDF/XML[-ABBREV]",
  ;; "N-TRIPLE" and "N3".  Returns #f if it is not a legal language.
@@ -48,7 +61,8 @@
  ;; The set of mappings from MIME types to RDF languages.
  ;; Used in both directions.
  (define mime-lang-mappings
-   '(("application/n3"      . "N3")
+   '(("*/*"                 . "RDF/XML")
+     ("application/n3"      . "N3")
      ;; http://infomesh.net/2002/notation3/#mimetype
      ("text/rdf+n3"         . "N3")
      ;; http://www.w3.org/DesignIssues/Notation3.html
