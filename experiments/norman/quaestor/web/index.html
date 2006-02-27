@@ -13,13 +13,9 @@
 <h1>Quaestor: generic SPARQL endpoint</h1>
 
 <dl>
-<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>?sparql=xxx</code></dt>
-<dd>The string <code>xxx</code> is a URLEncoded SPARQL query which is
-made against the <code><em>kb-name</em></code> knowledgebase.</dd>
-
-<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>[/<em>submodel</em>]</code></dt>
+<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>[/<em>sm-name</em>]</code></dt>
 <dd><p>Retrieve either the complete <code><em>kb-name</em></code> model, or
-the named <code><em>submodel</em></code>.  The format is obtained from the
+the named <code><em>sm-name</em></code>.  The format is obtained from the
 <code>Accept</code> header, which must contain one of the following
 MIME types:</p>
 <ul>
@@ -30,10 +26,18 @@ MIME types:</p>
 <p>You can add an optional query <code>?model</code> or
 <code>?metadata</code> to retrieve the appropriate thing; the default
 is to retrieve the model.</p>
+
+<p>You <em>will</em> be able to add a URL-encoded SPARQL query with
+the query <code><em>?sparql=xxx</em></code>, but that's not currently
+implemented.</p>
 </dd>
 
 <dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em>?sparql</code></dt>
-<dd>Takes a SPARQL query as the request body</dd>
+<dd>Takes a SPARQL query as the request body.  By default, this
+produces a response in XML, using the SPARQL response DTD (XXX
+reference), but the request may be accompanied by an
+<code>Accept</code> header containing <code>application/xml</code> or
+<code>text/plain</code> to select the corresponding format.</dd>
 
 <dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
 <dd>Create a new knowledgebase named `<em>kb-name</em>'.  The request content
@@ -41,13 +45,20 @@ contains the metadata for the knowledgebase, which is at present just
 a string, but will eventually be RDF.  It is an error if the
 knowledgebase already exists.</dd>
 
-<dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em>/instances</code></dt>
-<dd>Upload the request body as the `instances' knowledgebase.  The
+<dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em>/<em>sm-name</em></code></dt>
+<dd><p>Upload the request body as the content of the submodel named
+<em>sm-name</em>.  The
 request may have a <code>Content-Type</code> header indicating the
 format of the body, which, if it is present, <em>must</em> be one of
 <code>RDF/XML</code>, <code>RDF/XML-ABBREV</code>,
 <code>N-TRIPLE</code> or <code>N3</code>, with the first one being the
-default.</dd>
+default.</p>
+<p>The request may have a <em>query</em> attached, which may be
+<code>abox</code>, <code>instances</code> (which is equivalent to
+<code>abox</code>) or <code>tbox</code>.  This indicates the type of
+the corresponding model.  The default, if no such query is given, is
+<code>tbox</code> (I'm not sure how legit this use of query is -- this
+might change).</p></dd>
 
 <dt><code>PUT http://hostport/quaestor/code</code></dt>
 <dd>Eval the request body as Scheme code.  This is only possible if

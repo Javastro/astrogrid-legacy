@@ -47,10 +47,14 @@
                         (else
                          (error "Bad call to get: too many arguments")))))
     (chatter "GET ~a" full-url)
-    (exec-epf (curl ,@(verbose-option)
-                    --header ,(format #f "Accept:~a"
-                                      (or (preferred-language) "RDF/XML"))
-                    ,full-url))))
+    (exec-epf
+     (curl ,@(verbose-option)
+           ,@(make-header "Accept"
+                          (or (acceptable-mime-types)
+                              (preferred-language)))
+;;            --header ,(format #f "Accept:~a"
+;;                              (or (preferred-language) "RDF/XML"))
+           ,full-url))))
 
 (define (new-kb-handler kb-name metadata-file)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
@@ -60,17 +64,30 @@
                     --upload-file ,metadata-file
                     ,full-url))))
 
+;; Generate a curl header option, representing the given HEADER and VALUE.
+;; Return either a list of two elements, or an empty list, if value is #f.
+(define (make-header header value)
+  (if value
+      `("--header" ,(format #f "~a: ~a" header value))
+      '()))
+
 (define (add-submodel-handler model-name submodel-name submodel-file)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
-  (let ((full-url (format #f "~a/kb/~a/~a" (base-url) model-name submodel-name)))
+  (let ((full-url (format #f "~a/kb/~a/~a~a"
+                          (base-url) model-name submodel-name
+                          (if (model-is-tbox?) "?tbox" "?abox"))))
     (chatter "PUT file ~a to URL ~a" submodel-file full-url)
     (exec-epf
      (curl ,@(verbose-option)
            --upload-file ,submodel-file
-           --header ,(format #f "Content-Type: ~a"
-                             (or (get-language-from-extension submodel-file)
-                                 (preferred-language)
-                                 ""))
+           ,@(make-header "Content-Type"
+                          (or (get-language-from-extension submodel-file)
+                              (preferred-language)
+                              #f))
+;;            --header ,(format #f "Content-Type: ~a"
+;;                              (or (get-language-from-extension submodel-file)
+;;                                  (preferred-language)
+;;                                  ""))
            ,full-url))))
 
 (define (delete-handler kb-name)
@@ -89,13 +106,32 @@
            --upload-file ,code-file
            ,full-url))))
 
+;; POST the contents of the given file (which may be '-') to the
+;; given model
+(define (query-handler kb-name query-file)
+  (define (verbose-option) (if (chatter) '("--verbose") '()))
+  (let ((full-url (format #f "~a/kb/~a?sparql" (base-url) kb-name)))
+    (chatter "POST query in ~a to URL ~a" query-file full-url)
+    (exec-epf
+     (curl ,@(verbose-option)
+           ,@(make-header "Accept" (acceptable-mime-types))
+           --data-binary ,(string-append "@" query-file)
+           ,full-url))))
+
 (define (Usage . args)
-  (format #t "Usage: quaestor-client command [args]~%Allowed commands are:~%")
+  (format #t "Usage: quaestor-client command [args and options]~%Allowed commands are:~%")
   (for-each (lambda (cmd-spec)
-              (format #t "  ~a -- ~a~%"
+              (format #t "  ~a~%    ~a~%"
                       (car cmd-spec)
                       (cadddr cmd-spec)))
             command-handlers)
+  (format #t "Options:~%")
+  (for-each (lambda (optdoc)
+              (format #t "  --~a~a : ~a~%"
+                      (car optdoc)
+                      (if (cadr optdoc) "=arg" "")
+                      (caddr optdoc)))
+            (option-docs))
   (if (and (not (null? args))
            (car args))
       (error "Bad call")))
@@ -127,7 +163,11 @@
     (new-kb
      2
      ,new-kb-handler
-     "new-kb name metadata-file: Create a new knowledgebase")))
+     "new-kb name metadata-file: Create a new knowledgebase")
+    (query
+     2
+     ,query-handler
+     "query kb query-file: make a SPARQL query of the given model")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -161,6 +201,13 @@
 ;; Preferred language for receiving responses.  Fallback language for uploading.
 (define preferred-language (create-option #f))
 
+;; Is the uploaded model TBOX, as opposed to ABOX.  Only matters when
+;; uploading submodels.
+(define model-is-tbox? (create-option #t))
+
+;; Comma-separated list of Accept mime-types.
+(define acceptable-mime-types (create-option #f))
+
 ;; CHATTER controls verbosity.  Can be
 ;;   (chatter) : report verbosity #t/#f
 ;;   (chatter #t/#f) : set verbosity
@@ -186,26 +233,57 @@
       (if (null? o)
           l
           (set! l (cons (car o) l))))))
+(define option-docs
+  (let ((l '()))
+    (lambda o                           ;must be a three-element list
+      (if (null? o)
+          l
+          (set! l (cons o l))))))
 
 (let-syntax ((declare-option
               (syntax-rules ()
-                ((_ option-name option-func)
-                 (option-list (option '(option-name) #t #t
-                                      (lambda (option name arg seeds)
-                                        (option-func arg)
-                                        seeds))))
-                ((_ option-name has-arg? body ...)
-                 (option-list (option '(option-name) has-arg? has-arg?
-                                      (lambda (option name arg seeds)
-                                        body ...
-                                        seeds)))))))
-  (declare-option "verbose" #f (chatter #t))
-  (declare-option "quiet"   #f (chatter #f))
-  (declare-option "rdf"     #f (preferred-language
-                                (get-language-from-extension "x.rdf")))
-  (declare-option "n3"      #f (preferred-language
-                                (get-language-from-extension "x.n3")))
-  (declare-option "base-url" base-url))
+                ((_ option-name docstring option-func)
+                 (begin
+                   (option-docs option-name
+                                #t
+                                docstring)
+                   (option-list (option '(option-name) #t #t
+                                        (lambda (option name arg seeds)
+                                          (option-func arg)
+                                          seeds)))))
+                ((_ option-name docstring has-arg? body ...)
+                 (begin
+                   (option-docs option-name
+                                has-arg?
+                                docstring)
+                   (option-list (option '(option-name) has-arg? has-arg?
+                                        (lambda (option name arg seeds)
+                                          body ...
+                                          seeds))))))))
+  (declare-option "verbose"
+                  "chatter"
+                  #f (chatter #t))
+  (declare-option "quiet"
+                  "be quiet"
+                  #f (chatter #f))
+  (declare-option "rdf"
+                  "set preferred language to RDF/XML for upload and download"
+                  #f (preferred-language (get-language-from-extension "x.rdf")))
+  (declare-option "n3"
+                  "set preferred language to N3 for upload and download"
+                  #f (preferred-language (get-language-from-extension "x.n3")))
+  (declare-option "base-url"
+                  "set context URL to arg for Quaestor service"
+                  base-url)
+  (declare-option "tbox"
+                  "uploaded RDF represents a TBOX"
+                  #f (model-is-tbox? #t))
+  (declare-option "abox"
+                  "uploaded RDF represents an ABOX/instances"
+                  #f (model-is-tbox? #f))
+  (declare-option "accept"
+                  "set comma-separated list of MIME types in arg"
+                  acceptable-mime-types))
 
 (define (unrecognised-option)
   (Usage)
