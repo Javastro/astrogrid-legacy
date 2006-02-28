@@ -524,8 +524,7 @@
 	<dependency>
 		<groupId>esavo</groupId>
 		<artifactId>vospec</artifactId>
-		<version>1.0</version>
-		<jar>vospec.jar</jar>
+		<version>1.1</version>
 		  <properties>
 	 <properties>
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
