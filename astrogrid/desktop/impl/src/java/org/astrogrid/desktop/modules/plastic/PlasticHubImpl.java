@@ -1,13 +1,10 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,7 +23,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
@@ -47,9 +44,11 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      */
     private static final Log logger = LogFactory.getLog(PlasticHubImpl.class);
 
+	static final String PLASTIC_NOTIFICATIONS_ENABLED = "org.votech.plastic.notificationsenabled";
+
     private final ApplicationStore clients = new ApplicationStore();
 
-    final NameGen idGenerator;
+    private final NameGen idGenerator;
     private final SystemTray tray;
     private final RmiServer rmiServer;
     private final WebServer webServer;
@@ -59,23 +58,27 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     private File plasticPropertyFile;
 
-	private BrowserControl browser;
+	private PrettyPrinterInternal prettyPrinter;
+
+	private Configuration config;
 
     /** constructor selected by pico when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app, RmiServer rmi, BrowserControl browser, WebServer web) {
-        this(executor,idGenerator,app,rmi,browser, web,null);
+            MessengerInternal app, RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config) {
+        this(executor,idGenerator,app,rmi, web,null, prettyPrinter, config);
     }
     
-    /** constructor selected by pico when systemtray is available */
+    /** constructor selected by pico when systemtray is available 
+     * @param prettyPrinter */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app,RmiServer rmi, BrowserControl browser, WebServer web,SystemTray tray) {
+            MessengerInternal app,RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config) {
         this.tray = tray;
         this.rmiServer= rmi;
-        this.browser = browser;
         this.webServer= web;
         this.executor = executor;
         this.idGenerator = idGenerator;
+        this.prettyPrinter = prettyPrinter;
+        this.config = config;
         logger.info("Constructing a PlasticHubImpl");
         hubId = app.registerWith(this); 
     }
@@ -134,7 +137,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // todo this is a bit of a hack...relies on the hubId not having been
         // set yet.
         if (hubId != null) {
-            displayInfoMessage("Plastic", id + " has registered.");
+            displayInfoMessage("Plastic", client.getName()+" has registered with Id " +id);
         }
 
         return id;
@@ -148,7 +151,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * @param message 
      */
     private void displayInfoMessage(String caption, String message) {
-        if (tray != null) {
+    	//If the config is not set, then assume we will show popups
+        if (tray != null && !("false".equalsIgnoreCase(config.getKey(PLASTIC_NOTIFICATIONS_ENABLED)))) {
             tray.displayInfoMessage(caption, message);
         } else {
             logger.info(caption + " : " + message);
@@ -161,6 +165,11 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             logger.warn("A client is attempting to unregister the hub itself - not allowed");
             return;
         }
+        PlasticClientProxy client = (PlasticClientProxy) clients.get(id); 
+        if (client==null) {
+        	//No such client, so return and do nothing.
+        	return;
+        }
         clients.remove(id);
         
         //Tell the world
@@ -169,9 +178,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         requestAsynch(hubId, HubMessageConstants.APPLICATION_UNREGISTERED_EVENT, args);
         logger.info(id + " has unregistered");
 
-        if (tray != null) {
-            tray.displayInfoMessage("Plastic", "The application with id " + id + " has unregistered.");
-        }
+        displayInfoMessage("Plastic", client.getName()+" has unregistered.");
     }
 
     /**
@@ -408,20 +415,15 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		return client.getMessages();
 	}
 	
-	//TODO remove NULLS and broken images and consider linking to the ACR reg browser
-	//TODO factor this out
 	public void prettyPrintRegisteredApps() throws IOException, ACRException {
-		File file = File.createTempFile("registeredapps",".html");
-		PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+		List applicationDescriptions = new ArrayList();
 		List apps = getRegisteredIds();
-		writer.println("<html><head><title>Plastic Registered Apps</title></head>");
-		writer.println("<body><h2>Plastic Registered Applications</h2>");
-		writer.println("This ACR\'s hub supports <a href='http://plastic.sourceforge.net'>plastic</a> version "+PlasticListener.CURRENT_VERSION);
-		writer.println("<table border='1'>");
-		writer.println("<tr><th>Icon</th><th>Name</th><th>Plastic Id</th><th>IVORN</th><th>Supported Messages</th><th>Plastic Version</th><th>Alive?</th></tr>");
-		Map ivorns = request(getHubId(), CommonMessageConstants.GET_IVORN, CommonMessageConstants.EMPTY);
-		Map icons = request(getHubId(), CommonMessageConstants.GET_ICON, CommonMessageConstants.EMPTY);
-		Map versions = request(getHubId(), CommonMessageConstants.GET_VERSION, CommonMessageConstants.EMPTY);
+		URI hubId2 = getHubId();
+		apps.remove(hubId2);
+
+		Map ivorns = request(hubId2, CommonMessageConstants.GET_IVORN, CommonMessageConstants.EMPTY);
+		Map icons = request(hubId2, CommonMessageConstants.GET_ICON, CommonMessageConstants.EMPTY);
+		Map versions = request(hubId2, CommonMessageConstants.GET_VERSION, CommonMessageConstants.EMPTY);
 		
 		Iterator it = apps.iterator();
 		while (it.hasNext()) {
@@ -434,33 +436,16 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			String icon = (String) icons.get(plid);
 			String ivorn = (String) ivorns.get(plid);
 			
-			writer.println("<tr>");
-				writer.println("<td><img src='"+icon+"'/></td>");
-				writer.println("<td>"+name+"</td>");
-				writer.println("<td>"+plid+"</td>");
-				writer.println("<td>"+ivorn+"</td>");
-				writer.println("<td>");
-				if (CommonMessageConstants.EMPTY.equals(messages)) {
-					writer.write("All");
-				} else {
-					writer.write("<ul>");
-					Iterator mit = messages.iterator();
-					while (mit.hasNext()) {
-						URI msg = (URI) mit.next();
-						writer.write("<li>"+msg+"</li>");
-					}
-					writer.write("</ul>");
-				}
-				writer.println("</td>");
-				writer.println("<td>"+version+"</td>");
-				writer.println("<td>"+(alive ? "yes":"no")+"</td>");
-
-			writer.println("</tr>");
-			
+			ApplicationDescription desc = new ApplicationDescription(plid.toString(),name,messages,version,icon,ivorn,alive);
+			applicationDescriptions.add(desc);
 		}
-		writer.println("</table></body></html>");
-		writer.close();
-		browser.openURL(file.toURL());
+		
+		prettyPrinter.show(applicationDescriptions);
+
+	}
+	
+	public void setNotificationsEnabled(boolean enable) {
+		config.setKey(PLASTIC_NOTIFICATIONS_ENABLED, Boolean.toString(enable));
 	}
 
 }

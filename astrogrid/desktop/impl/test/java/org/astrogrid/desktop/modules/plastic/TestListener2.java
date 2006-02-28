@@ -8,6 +8,11 @@ import java.util.List;
 
 import org.votech.plastic.PlasticListener;
 
+/**
+ * A test listener that stores the last message it was sent.
+ * @author jdt
+ *
+ */
 class TestListener2 implements PlasticListener {
 	URI message = null;
 	List args;

@@ -35,4 +35,9 @@ public interface PlasticHubListenerInternal {
      *
      */
     void prettyPrintRegisteredApps() throws IOException, ACRException;
+    /**
+     * Switch off registration/unregistration notifications via jdic
+     * @param enable true to enable, falst to disable
+     */
+    void setNotificationsEnabled(boolean enable);
 }

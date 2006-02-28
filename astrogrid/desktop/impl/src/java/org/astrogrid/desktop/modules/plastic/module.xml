@@ -30,7 +30,7 @@
 			<description>List registered application details</description>
 			<property>
 				<key>icon</key>
-				<value>flatlayout.gif</value>
+				<value>view_detailed.png</value>
 			</property>
 			<property>
 				<key>system.ui.menu.entry</key>
@@ -365,6 +365,24 @@
 				</property>
 			</return>
 		</method>
+		<method name="setNotificationsEnabled">
+			<description>Enable/Disable Registration notification popups</description>
+			<property>
+				<key>icon</key>
+				<value>icon_Set.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Enable/disable registration popups</value>
+			</property>
+			<parameter name="enabled">
+				<description>Enter true to enable, false to disable</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+			</parameter>
+		</method>
 	</component>
 	<component name="messenger"
 		implementationClass="org.astrogrid.desktop.modules.plastic.MessengerImpl"
@@ -606,6 +624,14 @@
 		</method-->
 	</component>
 	
+	<component name="prettyPrinter"
+		implementationClass="org.astrogrid.desktop.modules.plastic.PrettyPrinterImpl"
+		interfaceClass="org.astrogrid.desktop.modules.plastic.PrettyPrinterInternal">
+			<property>
+				<key>hidden.component</key>
+				<value>true</value>								
+			</property>					
+	</component>
 	
 	<component name="namegen"
 		implementationClass="org.astrogrid.common.namegen.InMemoryNameGen"

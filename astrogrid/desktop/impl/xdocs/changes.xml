@@ -13,13 +13,18 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<action dev="jl" type="fix" issue="1536">
-	    QueryBuilder.
-	    Editing enhancements for tree view.
-	    Editing enhancements for metadata pane.
-	    Auto-chooses dataset if possible.
-</action>
-<release version="2.0-beta-6" date="2006-02-24" >
+	<release version="pending">
+		<action dev="jl" type="fix" issue="1536">
+			QueryBuilder. Editing enhancements for tree view. Editing
+			enhancements for metadata pane. Auto-chooses dataset if
+			possible.
+		</action>
+		<action dev="jdt" type="add">
+			Plastic: Added an option to switch off registration
+			notifications.
+		</action>
+	</release>
+	<release version="2.0-beta-6" date="2006-02-24" >
     <action dev="nw" type="update">
       updated to use all latest astrogrid delegates
     </action>
@@ -62,7 +67,7 @@ when the user put and/or in the keyword box.  Now fixed.
         Small changes to a couple of tooltips.
         Small TableSorter for services.
 	    Got rid of setting Color for distant nodes.
-       </action>	
+       </action>
 	<action dev="nw" type="fix">
 		Improved left hand side of astroscope UI
 	</action>

@@ -11,6 +11,7 @@ public class AllTests {
 		suite.addTestSuite(ApplicationStoreTest.class);
 		suite.addTestSuite(RMIListenerTest.class);
 		suite.addTestSuite(HubRegistrationTest.class);
+		suite.addTestSuite(SysTrayTest.class);
 		suite.addTestSuite(RegisterNoCallbackTest.class);
 		suite.addTestSuite(PollingTest.class);
 		suite.addTestSuite(AdvancedTest.class);
