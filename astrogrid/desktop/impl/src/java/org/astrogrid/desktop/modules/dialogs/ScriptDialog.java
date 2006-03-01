@@ -198,6 +198,7 @@ public class ScriptDialog extends BaseBeanEditorDialog {
     		//this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_C).intValue(),InputEvent.CTRL_DOWN_MASK));
     		this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
     		this.putValue(Action.NAME, "Copy"); 
+    		this.setEnabled(false);
     	}
         public void actionPerformed(ActionEvent e) {       	
         		scriptField.copy();
@@ -211,6 +212,7 @@ public class ScriptDialog extends BaseBeanEditorDialog {
     		this.putValue(Action.NAME, "Cut"); 
     		//this.putValue(ACCELERATOR_KEY, KeyStroke.getAWTKeyStroke(new Integer(KeyEvent.VK_X).intValue(),InputEvent.CTRL_DOWN_MASK));
     		this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
+    		this.setEnabled(false);
     	}
         public void actionPerformed(ActionEvent e) {       	
         		scriptField.cut();
@@ -249,10 +251,14 @@ public class ScriptDialog extends BaseBeanEditorDialog {
             		    validateAction.setEnabled(true);
             		    saveAction.setEnabled(true);
             		    newAction.setEnabled(true);
+            		    cutAction.setEnabled(true);
+            		    copyAction.setEnabled(true);
             		} else {
             			validateAction.setEnabled(false);
             			saveAction.setEnabled(false);
             			newAction.setEnabled(false);
+            			cutAction.setEnabled(false);
+            			copyAction.setEnabled(false);
             		}
             	}
             });
