@@ -2417,7 +2417,7 @@ public class InsertEnumeratedAction extends InsertAction {
         protected void selectionGained() {
             super.selectionGained() ;
             refreshFromModel() ;
-            this.validateAdql() ;
+//            this.validateAdql() ;
         }
         
         protected void selectionLost() {
@@ -2441,7 +2441,7 @@ public class InsertEnumeratedAction extends InsertAction {
             // Kludge to replace some form of white space that is screwing up the adql/s
             // parser. This is the simplest solution. And the parser looks like it might
             // have a short-term life in comparison.
-            String text = getAdqlTextPane().getText().trim().replaceAll( "\\s", " " ) ;
+            String text = getAdqlTextPane().getText().trim(); //.replaceAll( "\\s", " " ) ;
             
             if( text.equals( this.adqlString ) == false ) {
                 try {  

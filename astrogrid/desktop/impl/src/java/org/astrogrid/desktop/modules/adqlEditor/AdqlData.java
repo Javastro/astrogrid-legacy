@@ -298,8 +298,6 @@ public class AdqlData {
         "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
         "        xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"" +
         "        xsi:type=\"selectType\"> " +
-        "    <Allow xsi:type=\"selectionOptionType\" Option=\"DISTINCT\" /> " +
-        "    <Restrict xsi:type=\"selectionLimitType\" Top=\"100\" /> " +
         "    <SelectionList xsi:type=\"selectionListType\"> " +
         "        <Item xsi:type=\"allSelectionItemType\"/> " +
         "    </SelectionList> " +
