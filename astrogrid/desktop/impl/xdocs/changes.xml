@@ -13,118 +13,49 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-	<release version="pending">
-		<action dev="jl" type="fix" issue="1536">
-			QueryBuilder. Editing enhancements for tree view. Editing
-			enhancements for metadata pane. Auto-chooses dataset if
-			possible.
-		</action>
-		<action dev="jdt" type="add">
-			Plastic: Added an option to switch off registration
-			notifications.
-		</action>
-	</release>
-	<release version="2.0-beta-6" date="2006-02-24" >
-    <action dev="nw" type="update">
-      updated to use all latest astrogrid delegates
-    </action>
-    <action dev="pjn" type="fix" issue="1522">
-		Added cut/copy/pase and import/export to script editor
+
+
+<release version="1.4-pre-1" date="2006-03-01">
+
+ 	<action dev="jl" type="add">
+	    Query Builder: structured adql added. Metadata pane displays table structure.
+	    Synchronized editing of adql/s and adql/x; Auto-chooses dataset if possible.
+	</action>
+    	<action dev="pjn" type="add">
+	   Workflow Transcript Viewer added. Integrated with Lookout; can strip transcript and re-open
+	   in workflow editor
 	</action>
 	<action dev="pjn" type="add">
-	    Transcript viewer now has stip transcript button - reopen in workflow builder with all execution info removed
+		Workflow Editor: Added script validation; Added cut/copy/pase and import/export to script editor; added menu options for insert, for use with Macs
+	</action> 
+	<action dev="nw" type="add">
+		Astroscope: summarizes services called; displays spectra; 
+		integration with ESA VoSpec; 
+		datatips remain visible as long as mouse hovers over;
+		plasticized
 	</action>
-	<action dev="pjn" type="add">
-	    Workflow builder - added menu options for insert, for use with Macs
-	</action>
-    <action dev="jdt" type="add">
-		Plastic: Added an option to display a prettyprinted table of all the registered apps.
-	</action>
-    <action dev="jdt" type="add">
-		Plastic: Implemented polling listeners for applications that can't directly
-		receive messages.
-	</action>
-    <action dev="jdt" type="fix" issue="1539">
-		Plastic: Removed the user-supplied name from the generated plastic hub id URI.
-		Although this was useful to identify apps from their id, it allowed possibility
-		of invalid URIs.
-	</action>
-    <action dev="jdt" type="add">
-		Plastic: Added new methods to allow clients to get information
-on what messages other clients support.  Refactored the main impl class at the same time.
+	<action dev="kmb" type="fix">
+		Astroscope: Improved tooltips; made table of services sortable; improved node display
 	</action>	
-    <action dev="jdt" type="add">
-		Lots of unit tests.
-	</action>				
-    <action dev="kmb" type="add">
-		Astroscope: made Search Results bigger.
+	
+	<action dev="kmb" type="add">
+	    Registry Search: enabled use of AND / OR in searches; enabled filters in full-text search.
 	</action>
-    <action dev="kmb" type="fix">
-		RegistrySearch: RegistryChooserPanel component, was not construcing sql right for and's/or's type queries
-when the user put and/or in the keyword box.  Now fixed.
+    	<action dev="pjn" type="fix">
+	    Registry Search: Improved display
 	</action>
-      <action dev="kmb" type="add">
-        Small changes to a couple of tooltips.
-        Small TableSorter for services.
-	    Got rid of setting Color for distant nodes.
-       </action>
-	<action dev="nw" type="fix">
-		Improved left hand side of astroscope UI
+	<action dev="jdt" type="add">
+		Plastic: Implemented polling listeners for applications that can't directly
+		receive messages; added methods to allow clients to get information about each other.
+	</action>	
+	<action dev="jdt" type="fix">
+		Plastic: bug fixing; lots of unit tests; consistency between RMI and XMLRPC; 
 	</action>
 	<action dev="nw" type="add">
-	 	Plasticized Astroscope
-	 </action>
-</release>
-<release version="2.0-beta-5" date="2006-02-17">
-    <action dev="jl" type="add" issue="1525">
-	    QueryBuilder.
-	    Basic text editing views for adql/s and adql/x now functioning.
-	    There is some synchronization of updates between the views.
-	    Basic diagnostics pane added.
-	    When columns are included by using the metadata pane, tables are auto-included if required.
-	</action>
-      <action dev="nw" type="add">
-        Linked vospec into astroscope
-       </action>
-       <action dev="nw" type="fix">
-         Stopped tooltips from disappearing - now stay as long as mouse hovers over it.
-       </action>
-    <action dev="jdt" type="fix" issue="1527">
-		Some Plastic methods weren't visible from xml-rpc.
-	</action>
-   </release>
-   <release version="2.0-beta-3" date="2006-02-02">
-    <action dev="jl" type="add" issue="1495">
-	    Enhancements to Adql editing; ie: to the Query Builder.
-	    Principle visual enhancement is the addition of a metadata pane.
-	</action>
-   </release>
-	<release version="2.0-beta-2" date="2006-01-27">
-		<action dev="nw" type="add">
-		astroscope summarizes services called, number of results returned, any errors.
-		</action>
-		<action dev="nw" type="add">
-		  added ssa component, and display of spectra in astroscope.
-		</action>
-	 	<action dev="jdt" type="fix" issue="1519">
-			Make robust to failure to load HelpSet.	
-		</action>
+		ACR: SSAP component
+	</action>	
 	</release>
-	<release version="2.0-beta-1" date="2005-12-19">
- 	<action dev="jl" type="add">
-	    Adql Editor added.
-	    The previous datacenter editor is still there but unused; it will be cannibalized in the next release.
-	</action>
-    <action dev="pjn" type="add">
-	    New workflow transcript viewer added - integrated with Lookout
-	</action>
-    <action dev="jdt" type="fix">
-	    Fixed bug in the xmlrpc plastic client that was trying to send non-xmlrpc compatible objects.
-	</action>
-    <action dev="pjn" type="fix">
-	    Improved registry browser, added script validation
-	</action>
-	</release>
+	
 	<release version="1.3-1" date="2005-12-02">
 		<action dev="nw" type="update">
 			updated to latest version of stil (2.3-1)
