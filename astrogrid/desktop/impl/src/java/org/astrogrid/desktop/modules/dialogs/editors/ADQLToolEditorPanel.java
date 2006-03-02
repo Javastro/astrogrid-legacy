@@ -2107,7 +2107,12 @@ public class InsertEnumeratedAction extends InsertAction {
         // Also, the tables and columns will eventually need sorting!
         while( it.hasNext() ) {
             tableData = (TableData)((java.util.Map.Entry)it.next()).getValue() ;
-            table = tableData.database.getTables()[ tableData.tableIndex ] ;
+            try {
+                table = tableData.database.getTables()[ tableData.tableIndex ] ;
+            }
+            catch( ArrayIndexOutOfBoundsException ex ) {
+                continue ;
+            } 
             JMenu tableMenu = new JMenu( table.getName(),true ) ;
 //            dbMenu.add( tableMenu );
             columnMenu.add( tableMenu );
@@ -2515,8 +2520,13 @@ public class InsertEnumeratedAction extends InsertAction {
         Iterator it = set.iterator() ;
         while( it.hasNext() ) {
             tableData = (TableData)((java.util.Map.Entry)it.next()).getValue() ;
-            if( tableData.database.getTables()[ tableData.tableIndex ].getName().equals( tableName ) )
-                break ;
+            try {
+                if( tableData.database.getTables()[ tableData.tableIndex ].getName().equals( tableName ) )
+                    break ;
+            }
+            catch( ArrayIndexOutOfBoundsException ex ) {
+                ;
+            }
             tableData = null ;
         }
         return tableData ;
