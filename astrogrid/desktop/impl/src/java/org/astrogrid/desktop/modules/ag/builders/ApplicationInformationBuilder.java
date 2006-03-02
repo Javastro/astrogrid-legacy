@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformationBuilder.java,v 1.6 2005/12/02 13:40:32 nw Exp $
+/*$Id: ApplicationInformationBuilder.java,v 1.7 2006/03/02 11:32:28 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,7 +86,7 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
     
     private  ParameterBean buildBeanFromParameterElement(CachedXPathAPI xpath,Element element)  throws TransformerException{
         String[] options = null;
-        NodeList l = xpath.selectNodeList(element,"ceapd:OptionVal",nsNode);
+        NodeList l = xpath.selectNodeList(element,"ceapd:OptionList/ceapd:OptionVal",nsNode);
         if (l.getLength() > 0) { //otherwise leave as null
             options = new String[l.getLength()];
             for (int i = 0; i < options.length; i++) {
@@ -150,6 +150,9 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ApplicationInformationBuilder.java,v $
+Revision 1.7  2006/03/02 11:32:28  nw
+fixed parsing of option lists -- sorry phil!
+
 Revision 1.6  2005/12/02 13:40:32  nw
 optimized, and made more error-tolerant
 
