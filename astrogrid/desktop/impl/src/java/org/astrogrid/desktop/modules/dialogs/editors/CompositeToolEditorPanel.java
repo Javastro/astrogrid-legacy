@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.12 2006/02/24 13:18:41 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.13 2006/03/02 17:42:35 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -326,7 +326,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 //        views = new AbstractToolEditorPanel[] {datacenter,basic,xml,information,chooser};
         views = new AbstractToolEditorPanel[] { adqlEditor, basic, xml, information, chooser } ;
         this.getToolModel().addToolEditListener(new Controller());
-        this.setPreferredSize(new Dimension(600,425));
+        //this.setPreferredSize(new Dimension(600,425));
     }
 
     /** able to handle everything */
@@ -338,6 +338,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.13  2006/03/02 17:42:35  pjn3
+#1505 quick fix
+
 Revision 1.12  2006/02/24 13:18:41  pjn3
 Re-ordered tabs
 
