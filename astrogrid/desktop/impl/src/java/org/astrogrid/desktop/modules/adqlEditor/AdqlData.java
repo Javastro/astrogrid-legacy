@@ -302,9 +302,10 @@ public class AdqlData {
         "        <Item xsi:type=\"allSelectionItemType\"/> " +
         "    </SelectionList> " +
         "    <From xsi:type=\"fromType\"> " +
+        "        <Table Name=\"Replace_with_correct_table_name\" xsi:type=\"tableType\"/> " +
         "    </From> " +
-        "    <Where xsi:type=\"whereType\"> " +
-        "    </Where> " +
+//        "    <Where xsi:type=\"whereType\"> " +
+//        "    </Where> " +
         "</Select>" ;
 
 }
