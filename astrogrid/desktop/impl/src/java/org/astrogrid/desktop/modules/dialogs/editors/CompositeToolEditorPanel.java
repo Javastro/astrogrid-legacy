@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.13 2006/03/02 17:42:35 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.14 2006/03/03 10:10:12 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -282,6 +282,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         tabPane = new JTabbedPane();
         tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabPane.setTabPlacement(SwingConstants.LEFT);
+        tabPane.setPreferredSize(new Dimension(600,475));
         
         MutablePicoContainer builder = new DefaultPicoContainer(pico);
         builder.registerComponentInstance(this.getToolModel());
@@ -338,6 +339,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.14  2006/03/03 10:10:12  pjn3
+#1505
+
 Revision 1.13  2006/03/02 17:42:35  pjn3
 #1505 quick fix
 
