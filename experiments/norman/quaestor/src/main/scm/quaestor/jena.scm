@@ -13,7 +13,8 @@
   rdf-merge-models
   rdf-language-ok?
   mime-type->rdf-language
-  rdf-language->mime-type)
+  rdf-language->mime-type
+  rdf-mime-type-list)
 
  ;; Return a new empty model
  (define (new-empty-model)
@@ -61,7 +62,8 @@
  ;; The set of mappings from MIME types to RDF languages.
  ;; Used in both directions.
  (define mime-lang-mappings
-   '(("*/*"                 . "RDF/XML")
+   '(;; default type -- leave this first, so rdf-mime-type-list can strip it
+     ("*/*"                 . "RDF/XML")
      ("application/n3"      . "N3")
      ;; http://infomesh.net/2002/notation3/#mimetype
      ("text/rdf+n3"         . "N3")
@@ -89,6 +91,10 @@
             (caar l))
            (else
             (loop (cdr l))))))
+
+ ;; Return a list of allowed mime-types
+ (define (rdf-mime-type-list)
+   (map car (cdr mime-lang-mappings)))
 
 
  ;; Given a Java STREAM, this reads in the RDF within it, and returns
