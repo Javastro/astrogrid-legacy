@@ -47,6 +47,7 @@ public class Quaestor extends HttpServlet {
             throws IOException, ServletException {
         response.setContentType("text/html");
         log("Quaestor calling " + quaestorMethod);
+        assert request != null && response != null;
         try {
             Object val = SchemeWrapper
                     .getInstance()
@@ -95,7 +96,7 @@ public class Quaestor extends HttpServlet {
      * procedure.
      */
     public void doPost(HttpServletRequest request,
-                         HttpServletResponse response)
+                       HttpServletResponse response)
             throws IOException, ServletException {
         callQuaestorHandler("http-post", request, response);
     }
