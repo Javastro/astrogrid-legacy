@@ -59,6 +59,7 @@
 (define (new-kb-handler kb-name metadata-file)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
   (let ((full-url (format #f "~a/kb/~a" (base-url) kb-name)))
+    (check-file-exists metadata-file)
     (chatter "PUT file ~a to URL ~a" metadata-file full-url)
     (exec-epf (curl ,@(verbose-option)
                     --upload-file ,metadata-file
@@ -76,6 +77,7 @@
   (let ((full-url (format #f "~a/kb/~a/~a~a"
                           (base-url) model-name submodel-name
                           (if (model-is-tbox?) "?tbox" "?abox"))))
+    (check-file-exists submodel-file)
     (chatter "PUT file ~a to URL ~a" submodel-file full-url)
     (exec-epf
      (curl ,@(verbose-option)
@@ -84,10 +86,6 @@
                           (or (get-language-from-extension submodel-file)
                               (preferred-language)
                               #f))
-;;            --header ,(format #f "Content-Type: ~a"
-;;                              (or (get-language-from-extension submodel-file)
-;;                                  (preferred-language)
-;;                                  ""))
            ,full-url))))
 
 (define (delete-handler kb-name)
@@ -100,6 +98,7 @@
 (define (code-handler code-file)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
   (let ((full-url (format #f "~a/code" (base-url))))
+    (check-file-exists code-file)
     (chatter "PUT code in ~a to URL ~a" code-file full-url)
     (exec-epf
      (curl ,@(verbose-option)
@@ -111,10 +110,14 @@
 (define (query-handler kb-name query-file)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
   (let ((full-url (format #f "~a/kb/~a?sparql" (base-url) kb-name)))
+    (check-file-exists query-file)
     (chatter "POST query in ~a to URL ~a" query-file full-url)
     (exec-epf
      (curl ,@(verbose-option)
            ,@(make-header "Accept" (acceptable-mime-types))
+           ;; proposed but non-standard MIME type
+           ;; see http://www.w3.org/TR/rdf-sparql-query/#mediaType
+           ,@(make-header "Content-Type" "application/sparql-query")
            --data-binary ,(string-append "@" query-file)
            ,full-url))))
 
@@ -183,6 +186,17 @@
     (if (assoc ext ext-map)
         (cdr (assoc ext ext-map))
         #f)))
+
+;; Call error with implicit formatting
+(define (formatted-error . fmt-and-args)
+  (error (apply format (cons #f fmt-and-args))))
+
+;; Given a file name FN, check that it is either "-", or that the file exists.
+;; If the file does not exist, then exit with an error.
+(define (check-file-exists fn)
+  (if (and (not (string=? fn "-"))
+           (file-not-readable? fn))
+      (formatted-error "Can't find file ~a" fn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
