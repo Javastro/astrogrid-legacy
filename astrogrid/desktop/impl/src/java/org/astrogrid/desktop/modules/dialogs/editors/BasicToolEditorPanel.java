@@ -415,9 +415,15 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         protected String[] columnToolTips = {
         		"Parameter name",
 				"Parameter value",
-				"Reference to remote file",
-				"Is this a repeating parameter?",
-				"Delete this optional parameter?"
+				"<html> <b>Reference</b> to remote file: " +
+				"<br> If a checkbox is visible then the value of this parameter may be a reference to a remote file. " +
+				"<br> Checking the box will open a dialog to allow you to locate the file you wish to use. </html>",
+				"<html> <b>Repeating</b> parameter: " +
+				"<br> If a checkbox is visible then this task will accept more than entry for the particular parameter. " +
+				"<br> Checking the box will open another row in the table and allow you to enter another value. </html>",
+				"<html> <b>Delete</b> this optional parameter? " +
+				"<br> If a checkbox is visible then this parameter is optional for the chosen task. " +
+				"<br> Checking the box will delete the parameter, and remove it's row from the display. </html>"
         };
         
         // Implement column header tool tips
@@ -808,6 +814,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.15  2006/03/06 15:45:51  pjn3
+improved column headings to make 'less criptic'
+
 Revision 1.14  2005/12/16 09:42:47  jl99
 Merge from branch desktop-querybuilder-jl-1404
 
