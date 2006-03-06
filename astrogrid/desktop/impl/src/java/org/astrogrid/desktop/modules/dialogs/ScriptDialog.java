@@ -74,6 +74,7 @@ public class ScriptDialog extends BaseBeanEditorDialog {
 	protected final ResourceChooserInternal chooser;
     protected final MyspaceInternal myspace; 
     
+    
     /** load a script */
 	protected final class OpenAction extends AbstractAction {
 	    public OpenAction() {
@@ -331,6 +332,7 @@ public class ScriptDialog extends BaseBeanEditorDialog {
         super(parentComponent);        
         this.setTitle("Edit Script");
         this.setSize(685,570);
+        this.setLocationRelativeTo(parentComponent);
         this.pack();
         this.chooser = chooser;
         this.myspace = myspace;
