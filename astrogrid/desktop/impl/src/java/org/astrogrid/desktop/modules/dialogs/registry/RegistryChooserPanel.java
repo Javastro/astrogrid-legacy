@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.24 2006/02/24 12:41:43 KevinBenson Exp $
+/*$Id: RegistryChooserPanel.java,v 1.25 2006/03/06 17:05:50 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -138,6 +138,10 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
             ri = new ResourceInformation[]{};
             selectionModel.clearSelection();
             listModel.clear();
+            detailsPane.setText("<html><body><font size='-1'>No entry selected</font></body></html>");
+            xmlPane.setText("No entry selected");
+            tabPane.setSelectedIndex(0);
+            keywordField.setText("");
             fireTableDataChanged();
         }
 
@@ -208,6 +212,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
    
     private JTextField keywordField = null;
     private JButton goButton = null;
+    private JTabbedPane tabPane;
     
     /** assemble the ui */
     private void initialize() {    	
@@ -222,7 +227,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         jp.setPreferredSize(new Dimension(300,200));
         bottomComp.setPreferredSize(new Dimension(300,200)); 
         
-        JTabbedPane tabPane = new JTabbedPane();
+        tabPane = new JTabbedPane();
         
         tabPane.add(new JScrollPane(detailsPane), "Details");
         tabPane.add(bottomComp, "Registry entry");
@@ -580,6 +585,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.25  2006/03/06 17:05:50  pjn3
+Correctly clear selection
+
 Revision 1.24  2006/02/24 12:41:43  KevinBenson
 added the filter on exhaustiveQuery
 
