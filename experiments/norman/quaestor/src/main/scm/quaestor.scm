@@ -327,55 +327,61 @@
 
 ;; Handle POST requests.  Return #t on success, or a string response
 (define (http-post request response)
-  (with-failure-continuation
-       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
-     (lambda ()
-       (define-generic-java-methods
-         get-reader
-         set-content-type)
-       (if (java-null? response)        ;eh??!
-           (no-can-do response
-                      '|SC_BAD_REQUEST|
-                      "null response!"))
-       (let ((path-list (request->path-list request))
-             (query-string (request->query-string request)))
-         ;; First, insist that there's just one element in the path-list,
-         ;; and that the query string is 'sparql'.  We should possibly check
-         ;; that the content-type of the incoming SPARQL query is
-         ;; application/sparql-query (http://www.w3.org/TR/rdf-sparql-query/)
-         (if (and (= (length path-list) 1)
-                  query-string
-                  (string=? query-string "sparql"))
-             (begin (set-http-response response '|SC_OK|)
-                    (or (with-failure-continuation
-                             (make-fc request response '|SC_BAD_REQUEST|)
-                           (lambda ()
-                             (perform-sparql-query
-                              (car path-list)
-                              (reader->jstring (get-reader request))
-                              (get-output-stream-lazily response)
-                              (request->accept-mime-types request)
-                              (lambda (mimetype)
-                                (set-content-type response
-                                                  (->jstring mimetype))))
-                             #t))
-                        (no-can-do response
-                                   '|SC_BAD_REQUEST|
-                                   "Error performing SPARQL query")))
-             (no-can-do response
-                        '|SC_BAD_REQUEST|
-                        "POST SPARQL request must have one path element, and query=sparql"))))))
+  (let ((get-lazy-output-stream (make-lazy-output-stream response)))
+    (with-failure-continuation
+        (make-fc request response '|SC_INTERNAL_SERVER_ERROR|
+                 get-lazy-output-stream)
+      (lambda ()
+        (define-generic-java-methods
+          get-reader
+          set-content-type)
+        (if (java-null? response)        ;eh??!
+            (no-can-do response
+                       '|SC_BAD_REQUEST|
+                       "null response!"))
+        (let ((path-list (request->path-list request))
+              (query-string (request->query-string request)))
+          ;; First, insist that there's just one element in the path-list,
+          ;; and that the query string is 'sparql'.  We should possibly check
+          ;; that the content-type of the incoming SPARQL query is
+          ;; application/sparql-query (http://www.w3.org/TR/rdf-sparql-query/)
+          (if (and (= (length path-list) 1)
+                   query-string
+                   (string=? query-string "sparql"))
+              (begin (set-http-response response '|SC_OK|)
+                     (or (with-failure-continuation
+                          (make-fc request response '|SC_BAD_REQUEST|)
+                          (lambda ()
+                            (perform-sparql-query
+                             (car path-list)
+                             (reader->jstring (get-reader request))
+                             get-lazy-output-stream
+                             (request->accept-mime-types request)
+                             (lambda (mimetype)
+                               (set-content-type response
+                                                 (->jstring mimetype))))
+                            #t))
+                         (no-can-do response
+                                    '|SC_BAD_REQUEST|
+                                    "Error performing SPARQL query")))
+              (no-can-do response
+                         '|SC_BAD_REQUEST|
+                         "POST SPARQL request must have one path element, and query=sparql")))))))
 
 ;; Return a function which, when called, will return the response output stream.
 ;; This extracts the output stream lazily, so that we don't call
 ;; GET-OUTPUT-STREAM on the underlying response unless and until we need to,
 ;; thus leaving any error handler free to do so instead.
-(define (get-output-stream-lazily original-response)
+;; May be called multiple times (unlike GET-OUTPUT-STREAM).
+(define (make-lazy-output-stream original-response)
   (define-generic-java-method
     get-output-stream)
-  (let ((response original-response))
+  (let ((response original-response)
+        (stream #f))
     (lambda ()
-      (get-output-stream response))))
+      (if (not stream)
+          (set! stream (get-output-stream response)))
+      stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SPARQL stuff -- possibly move to another module?
@@ -444,7 +450,7 @@
   (define-generic-java-methods
     out
     (output-as-xml |outputAsXML|)
-    (output-as-rdf |outputAsRDF|)
+    write
     println)
   (define-java-classes
     <java.io.print-stream>
@@ -502,14 +508,14 @@
                                    mime-types)))))
 
       ((construct describe)
-       (let ((best-type (find-in-list rdf-mime-type-list mime-types)))
+       ;; QUERY-RESULT is a Model 
+       (let ((best-type (find-in-list (rdf-mime-type-list) mime-types)))
          (if best-type
              (let ((lang (mime-type->rdf-language best-type)))
                (set-response-content-type best-type)
-               (output-as-rdf (java-null <result-set-formatter>)
-                              (get-output-stream)
-                              lang
-                              query-result))
+               (write query-result
+                      (get-output-stream)
+                      (->jstring lang)))
              (error-with-status caller-name
                                 '|SC_NOT_ACCEPTABLE|
                                 "can't handle any of the MIME types ~a"
@@ -807,28 +813,17 @@
 ;; Make a SISC failure continuation.  Return a two-argument procedure
 ;; which can be used as the handler for with-failure-continuation.
 ;; See ERROR-WITH-STATUS for an error procedure which allows you to override
-;; the status given here.
-(define (make-fc request response status)
+;; the status given here.  If GET-OUTPUT-STREAM is given, then the car of
+;; it is a function which should be called to get the output stream, rather
+;; than getting it from the RESPONSE.
+(define (make-fc request response status . dummy)
   (define-generic-java-methods
-    set-content-type
-    println
-    get-writer)
+    set-content-type)
   (lambda (error-record cont)
     (let ((msg-or-pair (error-message error-record)))
-      (if (java-null? response)
-          (error 'make-fc "Arghhhh, response is null"))
       (set-http-response response (if (pair? msg-or-pair)
                                       (car msg-or-pair)
                                       status))
-
-      ;;     (set-content-type response (->jstring "text/html"))
-      ;;     (response-page "Internal server error"
-      ;;                    `((p (strong "Error: " ,(error-message error-record)))
-      ;;                      (h2 "Stack trace:")
-      ;;                      (pre ,(with-output-to-string
-      ;;                              (lambda ()
-      ;;                                (print-stack-trace cont))))
-      ;;                      ,@(tabulate-request-information request)))
       (set-content-type response (->jstring "text/plain"))
       (format #f "Internal server error~%~%Error: ~a~%~%Stack trace:~%~a~%"
               (if (pair? msg-or-pair)
@@ -836,6 +831,49 @@
                   msg-or-pair)
               (with-output-to-string
                 (lambda () (print-stack-trace cont)))))))
+;; Following is better, because it uses the lazy output stream (like the
+;; comments say).  But it doesn't appear to work.
+(define (not-make-fc request response status . get-output-stream)
+  (define-generic-java-methods
+    set-content-type
+    println
+    get-writer)
+  (define-java-class
+    <java.io.print-writer>)
+  (let ((get-output-writer (if (null? get-output-stream)
+                               (lambda ()
+                                 (get-writer response))
+                               (lambda ()
+                                 (java-new <java.io.print-writer>
+                                           ((car get-output-stream)))))))
+    (lambda (error-record cont)
+      (let ((msg-or-pair (error-message error-record)))
+        (if (java-null? response)
+            (error 'make-fc "Arghhhh, response is null"))
+        (set-http-response response (if (pair? msg-or-pair)
+                                        (car msg-or-pair)
+                                        status))
+
+        (if #f
+            (begin (set-content-type response (->jstring "text/html"))
+                   (response-page "Internal server error"
+                                  `((p (strong "Error: " ,(error-message error-record)))
+                                    (h2 "Stack trace:")
+                                    (pre ,(with-output-to-string
+                                            (lambda ()
+                                              (print-stack-trace cont))))
+                                    ,@(tabulate-request-information request))))
+            (let ((writer (get-output-writer)))
+              (set-content-type response (->jstring "text/plain"))
+              (println writer
+                       (->jstring
+                        (format #f "Internal server error~%~%Error: ~a~%~%Stack trace:~%~a~%"
+                                (if (pair? msg-or-pair)
+                                    (cdr msg-or-pair)
+                                    msg-or-pair)
+                                (with-output-to-string
+                                  (lambda () (print-stack-trace cont))))))
+              #f))))))
 
 ;; Variant of ERROR, which can be called in a region handled by the failure
 ;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
