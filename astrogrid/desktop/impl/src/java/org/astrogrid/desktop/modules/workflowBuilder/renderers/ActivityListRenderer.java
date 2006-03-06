@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.ToolTipManager;
 
 /**
  * @author pjn3
@@ -48,6 +49,10 @@ public class ActivityListRenderer extends DefaultListCellRenderer {
 																  index,
 																  isSelected,
 																  hasFocus);
+		// Keep tooltip visible for longer
+		ToolTipManager ttm = ToolTipManager.sharedInstance();
+		ttm.setDismissDelay(99999);
+		
 		if (value.equals("Sequence")){ 
 			label.setIcon(IconHelper.loadIcon("icon_Sequence.gif"));
 			label.setText("Sequence");
