@@ -20,13 +20,13 @@
              => (lambda (spec) ; spec=('command nargs handler-procedure)
                   (let ((nargs (cadr spec))
                         (handler (caddr spec)))
-                    (if (or (not nargs)
-                            (= (length rest-of-args) nargs))
-                        (apply handler rest-of-args)
+                    (if (and nargs
+                             (not (= (length rest-of-args) nargs)))
                         (error (format #f "command ~a requires ~a args, got ~s"
                                        command
                                        nargs
-                                       rest-of-args))))))
+                                       rest-of-args)))
+                    (apply handler rest-of-args))))
 
             (else
              (error (format #f "Unrecognised command ~a: allowed are ~a"
@@ -114,7 +114,9 @@
     (chatter "POST query in ~a to URL ~a" query-file full-url)
     (exec-epf
      (curl ,@(verbose-option)
-           ,@(make-header "Accept" (acceptable-mime-types))
+           ,@(make-header "Accept" 
+                          (or (acceptable-mime-types)
+                              (preferred-language)))
            ;; proposed but non-standard MIME type
            ;; see http://www.w3.org/TR/rdf-sparql-query/#mediaType
            ,@(make-header "Content-Type" "application/sparql-query")
