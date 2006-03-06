@@ -815,7 +815,6 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         this.setStatusMessage("Drag activities from the list and drop them into the Tree View to build a Workflow");
         // set tree focus to root sequence
 		TreePath treePath = new TreePath(getModel().getChild(getModel().getRoot(), 0));
-		logger.error("treePath: " + treePath.toString());
 		tree.scrollPathToVisible(treePath);
 		tree.setSelectionPath(treePath);
 	}
