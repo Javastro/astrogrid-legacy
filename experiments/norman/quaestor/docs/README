@@ -1,0 +1,5 @@
+No docs to speak of as yet.
+
+Build with 'ant build'
+Make a .war file with 'ant dist'
+Drop it in a Tomcat webapps dir...
