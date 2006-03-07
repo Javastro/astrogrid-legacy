@@ -52,8 +52,6 @@
            ,@(make-header "Accept"
                           (or (acceptable-mime-types)
                               (preferred-language)))
-;;            --header ,(format #f "Accept:~a"
-;;                              (or (preferred-language) "RDF/XML"))
            ,full-url))))
 
 (define (new-kb-handler kb-name metadata-file)
@@ -123,6 +121,22 @@
            --data-binary ,(string-append "@" query-file)
            ,full-url))))
 
+;; As with query-handler, but using the GET interface
+(define (query-get-handler kb-name query-file)
+  (define (verbose-option) (if (chatter) '("--verbose") '()))
+  (check-file-exists query-file)
+  (let ((full-url (format #f "~a/kb/~a?sparql=~a"
+                          (base-url)
+                          kb-name
+                          (url-encode (read-file-into-string query-file)))))
+    (chatter "GET query in ~a to URL ~a" query-file full-url)
+    (exec-epf
+     (curl ,@(verbose-option)
+           ,@(make-header "Accept" 
+                          (or (acceptable-mime-types)
+                              (preferred-language)))
+           ,full-url))))
+
 (define (Usage . args)
   (format #t "Usage: quaestor-client command [args and options]~%Allowed commands are:~%")
   (for-each (lambda (cmd-spec)
@@ -172,7 +186,11 @@
     (query
      2
      ,query-handler
-     "query kb query-file: make a SPARQL query of the given model")))
+     "query kb query-file: make a SPARQL query of the given model")
+    (query-get
+     2
+     ,query-get-handler
+     "query-get kb query-file: as with 'query', but using the GET interface")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -199,6 +217,48 @@
   (if (and (not (string=? fn "-"))
            (file-not-readable? fn))
       (formatted-error "Can't find file ~a" fn)))
+
+;; Given a filename or "-", read the corresponding file into a single string
+(define (read-file-into-string fn)
+  (define (gobble-port p)
+    (let ((r (read-string/partial 256 p)))
+      (if r
+          (string-append r (gobble-port p))
+          "")))
+  (if (string=? fn "-")
+      (gobble-port (current-input-port))
+      (call-with-input-file fn
+        gobble-port)))
+
+;; Given a string U, return the string URL-encoded.
+;; Cf the javadocs for java.net.URLEncoder.
+(define (url-encode u)
+  (define (escape-char c) ; why is this so hard...?
+    (let ((ci (char->ascii c))
+          (v '#(#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7
+                #\8 #\9 #\a #\b #\c #\d #\e #\f)))
+      (list #\%
+            (vector-ref v (quotient ci 16))
+            (vector-ref v (remainder ci 16)))))
+  (define (escape-string s)
+    (list->string (apply append
+                         (map escape-char
+                              (string->list s)))))
+  (regexp-substitute/global
+   #f
+   (rx (+ whitespace))
+   (apply string-append
+          (regexp-fold-right
+           (rx (+ (or alphanumeric (".-_*") whitespace)))
+           (lambda (m i lis)
+             (cons (match:substring m)
+                   (cons (escape-string (substring u (match:end m) i))
+                         lis)))
+           '()
+           u
+           (lambda (q lis)
+             (cons (escape-string (substring u 0 q)) lis))))
+   'pre "+" 'post))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
