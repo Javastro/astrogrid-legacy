@@ -89,6 +89,29 @@
                        ))
       #f))
 
+;; If path-info-list has one element, and the query-string starts with "sparql",
+;; then it's a SPARQL query to make of the model named in (car path-info-list).
+(define (get-model-query path-info-list query-string request response)
+  (define (sparql-encoded-query model-name q)
+    (with-failure-continuation
+       (make-fc request response '|SC_BAD_REQUEST|)
+     (lambda ()
+       (define-generic-java-method set-content-type)
+       (perform-sparql-query model-name
+                             (url-decode-to-jstring q)
+                             (make-lazy-output-stream response)
+                             (request->accept-mime-types request)
+                             (lambda (mimetype)
+                               (set-content-type response
+                                                 (->jstring mimetype))))
+       #t)))
+  (if (and (= (length path-info-list) 1)
+           (string=? (substring query-string 0 6) "sparql"))
+      (sparql-encoded-query
+       (car path-info-list)
+       (substring query-string 7 (string-length query-string)))
+      #f))
+
 ;; Retrieve the submodel named by the two-element path-info-list, and
 ;; write it to the response.  Return #t if successful, or set a
 ;; suitable response code and return a string representing an HTTP
@@ -184,6 +207,7 @@
          #f)))
 
 (define get-handlers (list get-knowledgebase-list
+                           get-model-query
                            get-model
                            get-fallback))
 
@@ -350,7 +374,7 @@
                    (string=? query-string "sparql"))
               (begin (set-http-response response '|SC_OK|)
                      (or (with-failure-continuation
-                          (make-fc request response '|SC_BAD_REQUEST|)
+                            (make-fc request response '|SC_BAD_REQUEST|)
                           (lambda ()
                             (perform-sparql-query
                              (car path-list)
@@ -443,6 +467,10 @@
 ;; returned by DETERMINE-QUERY-TYPE.  The results should be written to the
 ;; stream returned by the procedure GET-OUTPUT-STREAM, which should not be
 ;; called before it is required.
+;;
+;; Results should have the MIME type application/xml.
+;; See <http://www.w3.org/2001/sw/DataAccess/prot26>, which refers to schema
+;; spec at <http://www.w3.org/TR/rdf-sparql-XMLres/>
 (define (make-result-set-handler mime-types
                                  caller-name
                                  set-response-content-type
