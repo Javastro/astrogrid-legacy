@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.12 2006/01/10 11:26:52 clq2 Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.13 2006/03/07 21:45:26 clq2 Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,14 +36,6 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      */
     private static final Log logger = LogFactory.getLog(BaseApplicationDescriptionLibrary.class);
     
-    /** configuration interface - defines the name of the authority the applications will be added to.
-     * @deprecated use @link org.astrogrid.applications.manager.MetadataService#getAuthorityID() instead. 
-     */
-    public interface AppAuthorityIDResolver {
-        String getAuthorityID();
-    }
-
-
     /**Construct a new BaseApplicationDescriptionLibrary
     * @param env2
     */
@@ -137,8 +129,11 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
-Revision 1.12  2006/01/10 11:26:52  clq2
-rolling back to before gtr_1489
+Revision 1.13  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.10.38.1  2005/12/18 14:48:24  gtr
+Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
 
 Revision 1.10  2005/07/05 08:27:02  clq2
 paul's 559b and 559c for wo/apps and jes

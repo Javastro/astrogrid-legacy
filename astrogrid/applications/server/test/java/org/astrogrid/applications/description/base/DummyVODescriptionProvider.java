@@ -1,5 +1,5 @@
 /*
- * $Id: DummyVODescriptionProvider.java,v 1.6 2006/01/10 11:26:52 clq2 Exp $
+ * $Id: DummyVODescriptionProvider.java,v 1.7 2006/03/07 21:45:27 clq2 Exp $
  * Created on 02-Jun-2004
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
  *  
  */
 package org.astrogrid.applications.description.base;
+
+import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -87,6 +89,10 @@ public class DummyVODescriptionProvider implements MetadataService {
       assert desc.isValid() : "Dummy VODescription is not valid";
       return desc;
    }
+   
+   public URL getRegistrationTemplate() {
+     return null;
+   }
 
    /*
     * (non-Javadoc)
@@ -127,8 +133,11 @@ public class DummyVODescriptionProvider implements MetadataService {
 
 /*
  * $Log: DummyVODescriptionProvider.java,v $
- * Revision 1.6  2006/01/10 11:26:52  clq2
- * rolling back to before gtr_1489
+ * Revision 1.7  2006/03/07 21:45:27  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.4.38.1  2005/12/21 14:44:35  gtr
+ * Changed to make the registration template available through the InitServlet.
  *
  * Revision 1.4  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes

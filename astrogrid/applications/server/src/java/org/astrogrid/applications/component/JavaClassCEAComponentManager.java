@@ -1,4 +1,5 @@
-/*$Id: JavaClassCEAComponentManager.java,v 1.9 2006/01/10 14:10:45 nw Exp $
+/*
+ * $Id: JavaClassCEAComponentManager.java,v 1.10 2006/03/07 21:45:26 clq2 Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,77 +8,80 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
-**/
+ */
 package org.astrogrid.applications.component;
-
-import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
-import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
+import org.astrogrid.applications.javaclass.BaseJavaClassConfiguration;
+import org.astrogrid.applications.javaclass.JavaClassConfiguration;
+import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
 import org.picocontainer.MutablePicoContainer;
 
-/** Simple component manager that defines a  standalone JavaClass CEA server
+/** 
+ * Simple component manager that defines a  standalone JavaClass CEA server
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Jun-2004
- *@see org.astrogrid.applications.javaclass
- *@todo factor into the javaclass package?
+ * @see org.astrogrid.applications.javaclass
+ * @todo factor into the javaclass package?
  */
 public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(JavaClassCEAComponentManager.class);
-    /** key to look in config under for the name of the java class to expose as cea applications (optional, defaulrs to {@link SampleJavaClassApplications})
-     * @see #registerJavaClassProvider(MutablePicoContainer, Config)*/
-    public final static String SERVER_CLASS_NAME = "cea.javaclass.server.class";
-    /** Construct a new JavaClassCEAComponentManger, with all necessary components registered
-     * <p />
-     * registers the java class provider, plus all the standard services defined in {@link EmptyCEAComponentManager}
-     */
-    public JavaClassCEAComponentManager() {
-        super();
-        final Config config = SimpleConfig.getSingleton();
-        // controller & queriers        
-        registerDefaultServices(pico);
-        //NWW - added to provide missing service.
-        registerDummyControlService();
-        // store
-        EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
-        // metadata
-        EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
-        //registry uploader
-        EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
-        // now hook in out own implementation
-        registerJavaClassProvider(pico,config);
-    }
-    /** just register the components specific to the java-class provider, but none of the generic components 
-     * @see {@link #SERVER_CLASS_NAME}
-     * @see {@link #COMMUNITY_KEY} */       
-    public static final void registerJavaClassProvider(MutablePicoContainer pico, final Config config){    
-        pico.registerComponentImplementation(JavaClassApplicationDescriptionLibrary.class,JavaClassApplicationDescriptionLibrary.class);
+  
+  private static final Log logger
+      = LogFactory.getLog(JavaClassCEAComponentManager.class);
+    
 
-        // implementation class for the java cea server
-        final String classname = config.getString(SERVER_CLASS_NAME,SampleJavaClassApplications.class.getName());
-        Class serverClass = SampleJavaClassApplications.class;
-        try {
-            serverClass = Class.forName(classname);
-        } catch (Exception e) {
-            logger.fatal("Could not instantiate required server class '" + classname + "' falling back to sample java applications");
-        }
-        pico.registerComponentInstance(Class.class,serverClass);
-    }
+   /** 
+    * Constructs a new JavaClassCEAComponentManger, 
+    * with all necessary components registered.
+    */
+   public JavaClassCEAComponentManager() {
+     super();
+     registerDefaultServices(pico);
+     EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
+     registerJavaClassProvider(pico);
+   }
+    
+   /**
+    * Registers components peculiar to the JC-CEC.
+    */
+   public static final void registerJavaClassProvider(MutablePicoContainer pico){
+      
+     // The configuration has two interfaces, one generic and one specific
+     // to the JC-CEC so it has to be registered twice.
+     pico.registerComponentImplementation(Configuration.class, 
+                                          BaseJavaClassConfiguration.class);
+     pico.registerComponentImplementation(JavaClassConfiguration.class, 
+                                          BaseJavaClassConfiguration.class);
+      
+     // This component will instantiate the class implementing the
+     // application and will derive from it, by reflection, the
+     // application description.
+     pico.registerComponentImplementation(JavaClassApplicationDescriptionLibrary.class,
+                                          JavaClassApplicationDescriptionLibrary.class);
+
+     // The class implementing the application isn't registered with 
+     // Picocontainer. Instead, the Class object is made available to
+     // the JavaclassApplicationDescriptionLibrary by the 
+     // JavaClassConfiguration.assApplications.class.getName());
+   }
 }
 
 
 /* 
 $Log: JavaClassCEAComponentManager.java,v $
-Revision 1.9  2006/01/10 14:10:45  nw
-added method to register default implementation of ControlService
+Revision 1.10  2006/03/07 21:45:26  clq2
+gtr_1489_cea
 
-Revision 1.8  2006/01/10 11:26:52  clq2
-rolling back to before gtr_1489
+Revision 1.6.20.3  2006/02/01 12:09:54  gtr
+Refactored and fixed to allow the tests to work with the new configuration.
+
+Revision 1.6.20.2  2006/01/31 21:39:07  gtr
+Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
+
+Revision 1.6.20.1  2005/12/18 14:48:24  gtr
+Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
 
 Revision 1.6  2005/08/10 14:45:37  clq2
 cea_pah_1317

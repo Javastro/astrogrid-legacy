@@ -1,4 +1,4 @@
-/*$Id: InProcessCeaComponentManager.java,v 1.4 2005/07/05 08:27:01 clq2 Exp $
+/*$Id: InProcessCeaComponentManager.java,v 1.5 2006/03/07 21:45:26 clq2 Exp $
  * Created on 07-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ public class InProcessCeaComponentManager extends EmptyCEAComponentManager imple
         // store
         EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
         // metadata
-        EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
+        EmptyCEAComponentManager.registerDefaultVOProvider(pico);
         // the protocol lib
         EmptyCEAComponentManager.registerProtocolLibrary(pico);
         EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
@@ -90,6 +90,12 @@ public class InProcessCeaComponentManager extends EmptyCEAComponentManager imple
 
 /* 
 $Log: InProcessCeaComponentManager.java,v $
+Revision 1.5  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.4.38.1  2006/01/30 12:05:54  gtr
+I changed the call to registerDefaultServices()  to the modern form (doesn't take an org.astrogrid.config.Config argument).
+
 Revision 1.4  2005/07/05 08:27:01  clq2
 paul's 559b and 559c for wo/apps and jes
 

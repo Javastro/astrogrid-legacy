@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.5 2005/07/05 08:26:56 clq2 Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.6 2006/03/07 21:45:26 clq2 Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -77,12 +77,13 @@ public class DescriptionBaseTestCase extends TestCase {
    protected void setUp() throws Exception {
       super.setUp();      
       inputFile = this.getClass().getResource(appInfo.getConfigFileName());
+      System.out.println("Application description is " + inputFile.toString());
       assertNotNull("application config file not found:", inputFile);
       {
          TESTAPPNAME = appInfo.getAppName();
       }
       //have to set this here becasue the CommandLineAppliction now tries to write a message about how to get the log files - but ugly really
-      SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, "http://dummy.endpoint/");
+      SimpleConfig.getSingleton().setProperty("cea.webapp.url", "http://dummy.endpoint/");
    }
 
 

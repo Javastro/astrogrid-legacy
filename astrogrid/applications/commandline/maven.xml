@@ -10,7 +10,6 @@
   -->
   <goal name="package-war">
         <attainGoal name="merge-common-webapp" />
-        <attainGoal name="configure-webapp" />
         <attainGoal name="copy-resources" />
         <!-- defined in parent maven.xml - just adjust where things are going to go.. -->
         <property name="webapp.docs" value="${maven.war.webapp.dir}/provider" />
@@ -23,31 +22,12 @@
                 <include name="astrogrid-cea-server-*.war" />
         </fileset>
         <patternset><!-- what to unzip -->
-                <exclude name="WEB-INF/classes/*/**" /> <!-- keep resources in root... -->
-                <exclude name="WEB-INF/lib/**" />
-                <exclude name="provider/**" />
+        	<exclude name="WEB-INF/web.xml"/>  <!-- CL-CEC has its own web.xml -->
+          <exclude name="WEB-INF/classes/*/**" /> <!-- keep resources in root... -->
+          <exclude name="WEB-INF/lib/**" />
+          <exclude name="provider/**" />
         </patternset>
      </unwar>
-  </goal>
-
-    <goal name="configure-webapp" description="patch jndi key in web.xml to point to commandline implementation of component manager">
- <!-- setting which transformer to use -->
-   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <!-- tailor the deployment descriptor to our system -->
-        <xslt in="${maven.war.webapp.dir}/WEB-INF/web.xml"
-         out="${maven.war.webapp.dir}/WEB-INF/web1.xml"
-         extension=".xml"
-         style="${basedir}/build/adjust-war-descriptor.xsl"
-        />
-        <!-- move it back -->
-        <move file="${maven.war.webapp.dir}/WEB-INF/web1.xml"
-                tofile="${maven.war.webapp.dir}/WEB-INF/web.xml"
-        />
-        <!-- also want to patch the log4j.properties - so it logs to a different file.-->
-        <replace file="${maven.war.webapp.dir}/WEB-INF/classes/log4j.properties">
-                <replacefilter token="cea" value="cea-commandline" />
-                <replacefilter token="CEA" value="CEA_COMMANDLINE" />
-        </replace>
   </goal>
 
   <goal name="copy-resources" description="add other stuff to webapp" >

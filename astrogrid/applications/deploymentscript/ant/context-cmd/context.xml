@@ -1,21 +1,27 @@
 <Context path="@CEA_WEBAPP@">
-    <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@CEA_WORKING@/store" />
-    <!--optional - picks up a default template from the classpath - can override to set up personalised values in template -->
-    <Environment name="cea.registry.template.url" decription="The template registry entry" type="java.lang.String" 
-        value="file:///@CEARegistryTemplate@" />
- 	  <Environment name="cea.job.temp.files" description="The working directory where execution environments are created" type="java.lang.String" 
-        value="@CEA_WORKING@/run" />
-	  <Environment name="cea.local.apps.config" description="The configuration file for applications" type="java.lang.String" 
-        value="file:///@CEACMDCONFIG@" override="true"/>
+
+    <Environment name="cea.base.dir" 
+                 override="false" 
+                 type="java.lang.String" 
+                 value="@CEA_WORKING@" />
+                 
     <!-- registry endpoints - these are essential for the proper working of CEA - 
 	it needs to be able to query the registry to do myspace operations and can update the registry with its own configuration 
 	I suspect that most of the components will need the query endpoint-->
-    <Environment name="org.astrogrid.registry.admin.endpoint" description="registry update service endpoint URL" type="java.lang.String" 
-        value="@REG_UPDATE@" />
-    <Environment name="org.astrogrid.registry.query.endpoint" description="registry query service endpoint URL" type="java.lang.String" 
-        value="@REG_QUERY@" />
+    <Environment name="org.astrogrid.registry.admin.endpoint" 
+                 description="registry update service endpoint URL" 
+                 type="java.lang.String" 
+                 value="@REG_UPDATE@" />
+                 
+    <Environment name="org.astrogrid.registry.query.endpoint" 
+                 description="registry query service endpoint URL" 
+                 type="java.lang.String" 
+                 value="@REG_QUERY@" />
+                 
     <!-- service endpoint as seen by the outside world - here because of possible NAT firewall issues-->
-    <Environment name="cea.service.endpoint.url" type="java.lang.String" 
-        value="@CEA_SERVICE_URL@" 
-        description="service end point as seen by outside world"/>
+    <Environment name="cea.webapp.url" 
+                 type="java.lang.String" 
+                 value="@CEA_SERVICE_URL@" 
+                 description="web-application URL as seen by outside world"/>
+                 
 </Context>

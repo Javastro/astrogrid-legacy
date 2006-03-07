@@ -1,4 +1,4 @@
-/*$Id: FileStoreExecutionHistory.java,v 1.4 2004/09/17 10:17:09 nw Exp $
+/*$Id: FileStoreExecutionHistory.java,v 1.5 2006/03/07 21:45:26 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.applications.manager.persist;
 
+import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 
 import org.apache.commons.logging.Log;
@@ -38,31 +39,12 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
      */
     private static final Log logger = LogFactory.getLog(FileStoreExecutionHistory.class);
 
-    /** configuration interface for this component */
-    public interface StoreDir { 
-        /** base directory to store records in */
-        File getDir();
-    }
-    
-    /** implementation for testing of stoe dir that creates a temporary scratch space - deleted on exit */
-    public static class TemporaryStoreDir implements StoreDir {
-        public TemporaryStoreDir() throws IOException {
-            dir = File.createTempFile("temporary-file-store-execution-history",null);
-            dir.delete();    // its created as a file, and don't want that!         
-            dir.deleteOnExit();
-        }
-        protected final File dir;
-        public File getDir() {
-            return dir;
-        }
-    }
     /** Construct a new FileStoreExecutionHistory
      * 
      */
-    public FileStoreExecutionHistory(final StoreDir dir) {
+    public FileStoreExecutionHistory(Configuration configuration) {
         super();
-        this.baseDir = dir.getDir();
-        this.baseDir.mkdirs();        
+        this.baseDir = configuration.getRecordsDirectory();
         archive = new XMLFileMap();
     }
     private final File baseDir;
@@ -78,7 +60,7 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
          */
 
         public XMLFileMap() {
-            logger.info("BaseDir set to " + baseDir.getAbsolutePath()); 
+            logger.info("BaseDir set to " + baseDir.getAbsolutePath());
         }
         /**
          * @see org.astrogrid.applications.manager.persist.InMemoryExecutionHistory.SimpleMap#put(java.lang.Object, java.lang.Object)
@@ -174,6 +156,12 @@ public class FileStoreExecutionHistory extends InMemoryExecutionHistory {
 
 /* 
 $Log: FileStoreExecutionHistory.java,v $
+Revision 1.5  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.4.148.1  2006/01/25 17:04:32  gtr
+Refactored: the configuration is now a fixed structure based at the configurable location cea.base.dir.
+
 Revision 1.4  2004/09/17 10:17:09  nw
 made sure streams are closed
 

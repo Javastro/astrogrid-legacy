@@ -1,4 +1,4 @@
-/*$Id: FileStoreExecutionHistoryTest.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: FileStoreExecutionHistoryTest.java,v 1.3 2006/03/07 21:45:26 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.applications.manager.persist;
+
+import org.astrogrid.applications.manager.BaseConfiguration;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
@@ -26,7 +28,7 @@ public class FileStoreExecutionHistoryTest extends InMemoryExecutionHistoryTest 
      */
     protected void setUp() throws Exception {
         super.setUp();
-        this.eh = new FileStoreExecutionHistory(new FileStoreExecutionHistory.TemporaryStoreDir());
+        this.eh = new FileStoreExecutionHistory(new BaseConfiguration());
     }
 
 }
@@ -34,6 +36,12 @@ public class FileStoreExecutionHistoryTest extends InMemoryExecutionHistoryTest 
 
 /* 
 $Log: FileStoreExecutionHistoryTest.java,v $
+Revision 1.3  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.2.222.1  2006/01/26 11:05:19  gtr
+The new configuration service is used instead of the separate configuration interfaces.
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

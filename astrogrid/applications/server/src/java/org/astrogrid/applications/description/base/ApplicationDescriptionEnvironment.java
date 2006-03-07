@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironment.java,v 1.8 2006/01/10 11:26:52 clq2 Exp $
+/*$Id: ApplicationDescriptionEnvironment.java,v 1.9 2006/03/07 21:45:25 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,7 @@
 **/
 package org.astrogrid.applications.description.base;
 
-
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -31,15 +30,17 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
     /** Construct a new ApplicationDescriptionEnvironment
      * 
      */
-    public ApplicationDescriptionEnvironment(IdGen id,ProtocolLibrary lib, BaseApplicationDescriptionLibrary.AppAuthorityIDResolver appAuthorityIDResolver) {        
+    public ApplicationDescriptionEnvironment(IdGen id,
+                                             ProtocolLibrary lib, 
+                                             AppAuthorityIDResolver resolver) {        
         super();
         this.id =id;
         this.lib = lib;
-        this.authIDresolver = appAuthorityIDResolver;
+        this.authIDresolver = resolver;
     }
     protected final IdGen id;
     protected final ProtocolLibrary lib;
-    protected final BaseApplicationDescriptionLibrary.AppAuthorityIDResolver authIDresolver;
+    protected final AppAuthorityIDResolver authIDresolver;
    
     
     /**Access the unique id generator
@@ -61,7 +62,7 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
     /**Access the resolver that will return the appropriate authorityID that applications can be registered under.
     * @return the resolver
     */
-   public BaseApplicationDescriptionLibrary.AppAuthorityIDResolver getAuthIDResolver()
+   public AppAuthorityIDResolver getAuthIDResolver()
     {
        return this.authIDresolver;
     }
@@ -94,8 +95,17 @@ public class ApplicationDescriptionEnvironment implements ComponentDescriptor {
 
 /* 
 $Log: ApplicationDescriptionEnvironment.java,v $
-Revision 1.8  2006/01/10 11:26:52  clq2
-rolling back to before gtr_1489
+Revision 1.9  2006/03/07 21:45:25  clq2
+gtr_1489_cea
+
+Revision 1.6.38.3  2005/12/22 13:58:27  gtr
+*** empty log message ***
+
+Revision 1.6.38.2  2005/12/19 18:12:30  gtr
+Refactored: changes in support of the fix for 1492.
+
+Revision 1.6.38.1  2005/12/18 14:48:24  gtr
+Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
 
 Revision 1.6  2005/07/05 08:27:01  clq2
 paul's 559b and 559c for wo/apps and jes

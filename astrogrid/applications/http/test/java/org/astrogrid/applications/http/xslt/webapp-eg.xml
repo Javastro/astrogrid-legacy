@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
-        <Identifier>
-            <AuthorityID>org.astrogrid.jdt.test</AuthorityID>
-            <ResourceKey>Adder</ResourceKey>
-        </Identifier>
+        <Identifier>ivo://org.astrogrid.jdt.test/Adder</Identifier>
         <Title>An http-get HelloWorld App</Title>
         <ShortName>Adder</ShortName>
         <Summary>

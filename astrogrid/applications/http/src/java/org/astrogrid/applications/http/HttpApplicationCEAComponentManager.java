@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAComponentManager.java,v 1.6 2006/01/10 11:26:52 clq2 Exp $
+/*$Id: HttpApplicationCEAComponentManager.java,v 1.7 2006/03/07 21:45:26 clq2 Exp $
  * Created on Jul 24, 2004 or thereabouts
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,12 +15,14 @@ package org.astrogrid.applications.http;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
+import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.registry.RegistryAdminLocator;
 import org.astrogrid.applications.description.registry.RegistryQueryLocator;
 import org.astrogrid.applications.http.HttpApplicationDescriptionLibrary;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.applications.http.registry.RegistryQuerierImpl;
+import org.astrogrid.applications.manager.BaseConfiguration;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -53,54 +55,65 @@ public class HttpApplicationCEAComponentManager extends EmptyCEAComponentManager
     public HttpApplicationCEAComponentManager() {
     	super();
     	logger.info("HttpApplicationCEAComponentManager() - registering components");
-       
-        final Config config = SimpleConfig.getSingleton();
-        // controller & queriers
-        registerDefaultServices(pico);
-        // store
-        EmptyCEAComponentManager.registerDefaultPersistence(pico, config);
-        // metadata - note that his is not the default provider
-        EmptyCEAComponentManager.registerVOProvider(pico, config, HttpMetadataService.class);
-        
-        //registry uploader
-        EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
+      
+      // These components are common to all CECs.
+      this.registerDefaultServices(pico);
+      this.registerDefaultRegistryUploader(pico);
 
-        // now hook in our own implementation
-        registerHttpApplicationProvider(pico, config);
-        logger.info("HttpApplicationCEAComponentManager() - done");
+      // now hook in our own implementation
+      this.registerHttpApplicationProvider(pico);
+      logger.info("HttpApplicationCEAComponentManager() - done");
     }
 
     /**
-     * just register the components specific to the HttpApplications provider,
-     * but none of the generic components
-     * 
-     * @see {@link #COMMUNITY_KEY}
+     * Registers the components specific to the HttpApplications provider.
      */
-    public static final void registerHttpApplicationProvider(MutablePicoContainer pico, final Config config) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("registerHttpApplicationProvider(MutablePicoContainer, Config) - start");
-		}
+    public static final void registerHttpApplicationProvider(MutablePicoContainer pico) {
+		  if (logger.isDebugEnabled()) {
+			  logger.debug("registerHttpApplicationProvider(MutablePicoContainer) - start");
+		  }
+      
+      // Use the generic kind of configuration.
+      pico.registerComponentImplementation(Configuration.class, 
+                                           BaseConfiguration.class);
 
-        pico.registerComponentImplementation(HttpApplicationDescriptionLibrary.class,
-                HttpApplicationDescriptionLibrary.class);
-        pico.registerComponentImplementation(RegistryQuerier.class, RegistryQuerierImpl.class);
-        pico.registerComponentInstance(RegistryQueryLocator.class,new RegistryQueryLocator() {
-
+      // Use a metadata service peculiar to the HTTP-CEC.
+      EmptyCEAComponentManager.registerVOProvider(pico,
+                                                  HttpMetadataService.class);
+      
+      // The application-description library for the HTTP-CEC is a special one
+      // that initializes itself from the registry.
+      pico.registerComponentImplementation(HttpApplicationDescriptionLibrary.class,
+                                           HttpApplicationDescriptionLibrary.class);
+      
+      // In order to use the special application-description library,
+      // we need components to read the registry.
+      pico.registerComponentImplementation(RegistryQuerier.class, RegistryQuerierImpl.class);
+      pico.registerComponentInstance(RegistryQueryLocator.class,new RegistryQueryLocator() {
            public RegistryService getClient() {                
                return RegistryDelegateFactory.createQuery();
            }
-       });        
+       });
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("registerHttpApplicationProvider(MutablePicoContainer, Config) - end");
-		}
-    }
+      logger.info("Components for an HTTP-CEC have been registered.");
+
+		  if (logger.isDebugEnabled()) {
+			  logger.debug("registerHttpApplicationProvider(MutablePicoContainer) - end");
+		  }
+   }
+    
 }
 
 /*
  * $Log: HttpApplicationCEAComponentManager.java,v $
- * Revision 1.6  2006/01/10 11:26:52  clq2
- * rolling back to before gtr_1489
+ * Revision 1.7  2006/03/07 21:45:26  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.4.20.2  2006/01/31 21:39:07  gtr
+ * Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
+ *
+ * Revision 1.4.20.1  2005/12/22 13:56:03  gtr
+ * Refactored to match the other kinds of CEC.
  *
  * Revision 1.4  2005/08/10 14:45:37  clq2
  * cea_pah_1317

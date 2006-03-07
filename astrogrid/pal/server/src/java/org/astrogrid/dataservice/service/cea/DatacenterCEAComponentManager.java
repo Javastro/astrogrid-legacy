@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.5 2006/01/10 14:13:13 nw Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.6 2006/03/07 21:45:27 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,14 +45,16 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         //CLQ bug 1359 relace the following line with registerDefaultServices(pico); to accomodate changed cea class.
         //EmptyCEAComponentManager.registerDefaultServices(pico);
         registerDefaultServices(pico);
-        //NWW - fix missing dependency by just using dummy implemntation. later pal may want a custom implementation of this component.
-        registerDummyControlService();
-        // store - force in-memory
+        
+        // Force the CEC to keep its job receords in memory. This replaces
+        // the more-common call to registerDefaultPersistence() which sets
+        // file-based persistence of records. Given the recent rearrangement
+        // of confiiguration in the base CEC, it may now be reasonable to go
+        // back to file-based persistence. -- GTR 2006-01-30
         pico.registerComponentImplementation(ExecutionHistory.class,InMemoryExecutionHistory.class);
         pico.registerComponentImplementation(IdGen.class,GloballyUniqueIdGen.class);
-//        EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
-        // metadata
-        EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
+        
+        EmptyCEAComponentManager.registerDefaultVOProvider(pico);
 
         // the protocol lib
         // KEA NOTE : These are now registered in 
@@ -101,6 +103,12 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.6  2006/03/07 21:45:27  clq2
+gtr_1489_cea
+
+Revision 1.5.10.1  2006/01/30 11:25:18  gtr
+I changed the call to registerDefaultServices()  to the modern form (doesn't take an org.astrogrid.config.Config argument) and removed Noel's fix of registerDummyControlService() which isn't needed with the revised CEA.
+
 Revision 1.5  2006/01/10 14:13:13  nw
 added dumy implementation of missinig service
 

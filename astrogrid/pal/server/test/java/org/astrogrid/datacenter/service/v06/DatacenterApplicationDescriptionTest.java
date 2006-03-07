@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.3 2005/05/27 16:21:03 clq2 Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.4 2006/03/07 21:45:26 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.dataservice.service.DataServer;
@@ -43,7 +44,7 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
         env = new ApplicationDescriptionEnvironment(
            new InMemoryIdGen(),
            new DefaultProtocolLibrary(),
-           new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver() {
+           new AppAuthorityIDResolver() {
                      public String getAuthorityID() {
                         return "org.astrogrid.test";
                      }
@@ -75,6 +76,12 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 
 /*
 $Log: DatacenterApplicationDescriptionTest.java,v $
+Revision 1.4  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.3.58.1  2006/01/30 11:39:22  gtr
+I corrected the use of the AppAuthorityResolver interface to match the new CEA code.
+
 Revision 1.3  2005/05/27 16:21:03  clq2
 mchv_1
 

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.20 2005/08/10 14:45:37 clq2 Exp $
+ * $Id: CommandLineApplication.java,v 1.21 2006/03/07 21:45:25 clq2 Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -293,26 +293,17 @@ private final void endApplication()  {
       //report how to get hold of the log
       StringBuffer sb = new StringBuffer("standard out at ");
       //FIXME - very ugly to use the Simpleconfig here - endpoint url needs to be better encapsulated
-      String urlend = (String) SimpleConfig.getSingleton().getProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL);
-      int ii;
-      if((ii = urlend.indexOf("services/CommonExecutionConnectorService"))!= -1)
-      {
-         sb.append(urlend.substring(0,ii));
-      
-      sb.append("cec-http?method=getexecutionlog&type=out&id=");
+      sb.append(SimpleConfig.getSingleton().getProperty("cea.webapp.url"));
+      sb.append("/cec-http?method=getexecutionlog&type=out&id=");
       try {
          sb.append(URLEncoder.encode(applicationEnvironment.getExecutionId(), "UTF-8"));
       } catch (UnsupportedEncodingException e) {
          logger.error("internal error - encoding for log access url bad - need to fix code", e);
       }
       reportMessage(sb.toString());
-      }
-      else{
-         logger.warn("could not write message about log file location because serice endpoint was not of expected form");
-      }
+
       if (exitStatus != 0) {
          reportStandardError(true);// send the stderr output as well
-//         setStatus(Status.ERROR); the reporting will automatically do this....TODO need to refactor how the writing to permanent store is signaled....
       } else {
          // clean up the input files if the command was successful
           cleanInputFiles();

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineCECControl.java,v 1.4 2006/01/10 11:26:52 clq2 Exp $
+ * $Id: CommandLineCECControl.java,v 1.5 2006/03/07 21:45:26 clq2 Exp $
  * 
  * Created on 19-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -21,6 +21,7 @@ import java.util.GregorianCalendar;
 
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment.WorkingDir;
+import org.astrogrid.applications.commandline.CommandLineConfiguration;
 import org.astrogrid.applications.manager.ControlService;
 
 /**
@@ -35,27 +36,32 @@ public class CommandLineCECControl implements ControlService {
    /**
     * Logger for this class
     */
-   private static final Log logger = LogFactory
-         .getLog(CommandLineCECControl.class);
-   private WorkingDir wd;
-
+   private static final Log logger 
+       = LogFactory.getLog(CommandLineCECControl.class);
+   
+   /**
+    * The directory where files for jobs will be kept.
+    */
+   private File workingDirectory;
  
-   //FIXME just need the working directory for this....
-   public CommandLineCECControl(CommandLineApplicationEnvironment.WorkingDir wd) {
-      logger.info("Creating commandline control with working directory="+wd.getDir().getAbsolutePath());
-      this.wd = wd;
+   /**
+    * Constructs a new CommandLineCECControl with a given working directory.
+    */
+   public CommandLineCECControl(CommandLineConfiguration config) {
+     this.workingDirectory = config.getWorkingDirectory();
    }
 
    /**
-    * Deletes any temporary files associated with execution of applications. The time before which files should be deleted is 
-    * expressed as a delta time from the current time.
+    * Deletes any temporary files associated with execution of applications. 
+    * The time before which files should be deleted is expressed as a delta time 
+    * from the current time.
     * @param days The delta time in days before which the files should be deleted. Should be positive, e.g. a value of 2 means delete files which are nore than 3 days old.
     * @return
     */
    public String deleteOldRuntimeWorkFiles(int days) {
       StringBuffer result = new StringBuffer();
       int delcount = 0, failedcount = 0, bytesdeleted = 0;
-      File baseDir = wd.getDir();
+      File baseDir = this.workingDirectory;
       Calendar cal = new GregorianCalendar();
       cal.add(Calendar.DATE, -days);
       long moddate = cal.getTimeInMillis();
@@ -127,8 +133,11 @@ public class CommandLineCECControl implements ControlService {
 
 /*
  * $Log: CommandLineCECControl.java,v $
- * Revision 1.4  2006/01/10 11:26:52  clq2
- * rolling back to before gtr_1489
+ * Revision 1.5  2006/03/07 21:45:26  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.2.20.1  2005/12/19 18:12:30  gtr
+ * Refactored: changes in support of the fix for 1492.
  *
  * Revision 1.2  2005/08/10 14:45:37  clq2
  * cea_pah_1317

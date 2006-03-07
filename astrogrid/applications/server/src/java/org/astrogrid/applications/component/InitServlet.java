@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.16 2006/01/10 11:26:52 clq2 Exp $
+ * $Id: InitServlet.java,v 1.17 2006/03/07 21:45:26 clq2 Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
@@ -113,6 +114,11 @@ public class InitServlet extends HttpServlet {
          }
 
       }
+      
+      else if (method.trim().toLowerCase().equals("getregistrationtemplate")) {
+        resp.setContentType("application/xml");
+        this.getRegistrationTemplate(resp.getWriter());
+      }
 
       else if (method.trim().toLowerCase().equals("startup")) {
          logger.info("Starting CEA server");
@@ -208,6 +214,25 @@ public class InitServlet extends HttpServlet {
       } catch (Exception e) {
          throw new ServletException(e);
       }
+   }
+   
+   protected void getRegistrationTemplate(PrintWriter writer) 
+       throws ServletException {
+     try {
+       CEAComponentManager m = CEAComponentManagerFactory.getInstance();
+       URL url = m.getMetadataService().getRegistrationTemplate();
+       BufferedReader reader 
+           = new BufferedReader(new InputStreamReader(url.openStream()));
+       while(true) {
+         String line = reader.readLine();
+         if (line == null) {
+           break;
+         }
+         writer.print(line + "\n");
+       }
+     } catch (Exception e) {
+       throw new ServletException(e);
+     }
    }
 
    protected void usage(PrintWriter pw) {

@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.10 2004/11/27 13:20:02 pah Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.11 2006/03/07 21:45:26 clq2 Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,11 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;
-
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -95,39 +97,118 @@ public class DefaultParameterAdapter extends AbstractParameterAdapter {
         }
     }
 
-    /** stores the value for this parameter back again
-     * <p />
-     * if the parameter is direct, stores the result directly in the parameter value
-     * if the parameter is indirect, writes the result out to the remote resouce
-     * @param o result object (will be stringified using {@link String#toString()}
-     * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
-     */
-    public void writeBack(Object o) throws CeaException {
-        //don't trust it...
-        String value;        
-        if (o == null) {
-            value = "<null>";
-        } else {
-            value = o.toString();
-        }
-        if (externalVal == null) {
-            val.setValue(value);
-        } else {
-            PrintWriter pw = null;
-            try {
-                pw = new PrintWriter(new OutputStreamWriter( externalVal.write() ));
-                pw.println(value);
-            } finally {
-                if (pw != null) {
-                    pw.close();
-                }
-            }
-        }
+  /** 
+   * Writes the value of an output parameter back to the parameter storage.
+   * That storage may be an internal buffer (a "direct" parameter) or 
+   * an external location (an "indirect" parameter). 
+   * Various forms of the value are supported: null object reference;
+   * byte array; InputStream; any other object. Binary values, such
+   * as the contents of FITS files, should be given as byte arrays or
+   * streams. Other values can be given as any object for which the
+   * toString() method produces a valid copy of the value. Note that
+   * the bit pattern of binary values is only sure to be preserved
+   * for an indirect parameter. In a direct parameter, the value is
+   * forced into a String object and may be corrupted in the process.
+   */
+  public void writeBack(Object o) throws CeaException {
+    if (this.externalVal == null) {
+      this.writeBackToParameterValue(o);
     }
+    else {
+      this.writeBackToExternalValue(o);
+    }
+  }
+    
+  /**
+   * Writes a parameter value to a local ParameterValue object.  The value
+   * is always sent as a String, since ParameterValue requires this.
+   * Binary values (e.g. FITS files) are expected to arrive as byte arrays;
+   * these don't have an effective toString() method and are treated specially.
+   *
+   * @param o The object to be written out.
+   */
+  private void writeBackToParameterValue(Object o) throws CeaException {
+    try {
+      if (o == null) {
+        this.val.setValue("<null>");
+      }
+      else if (o instanceof byte[]) {
+        this.val.setValue(new String((byte[])o));
+      }
+      else if (o instanceof InputStream) {
+        InputStream is = (InputStream)o;
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        this.pipe(is, os);
+        this.val.setValue(new String(os.toByteArray()));
+      }
+      else {
+        this.val.setValue(o.toString());
+      }
+    }
+    catch (Exception e) {
+      throw new CeaException("Failed to write back a value to a direct parameter.", e);
+    }
+  }
+   
+  /**
+   * Writes a parameter value to an ExternalValue object. 
+   *
+   * @param o The object to be written out.
+   */
+  private void writeBackToExternalValue(Object o) throws CeaException {
+    try {
+      if (o == null) {
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(externalVal.write()));
+        pw.println("<null>");
+        pw.close();
+      }
+      else if (o instanceof byte[]) {
+        OutputStream os = this.externalVal.write();
+        os.write((byte[])o);
+        os.close();
+      }
+      else if (o instanceof InputStream) {
+        InputStream is = (InputStream)o;
+        OutputStream os = this.externalVal.write();
+        this.pipe(is, os);
+        os.close();
+      }
+      else {
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(externalVal.write()));
+        pw.print(o);
+        pw.close();
+      }
+    }
+    catch (Exception e) {
+      throw new CeaException("Failed to write back a value to an indirect parameter.", e);
+    }
+    
+  }
+  
+  /**
+   * Copies an input stream onto an output stream.
+   */
+  private void pipe(InputStream is, OutputStream os) throws IOException {
+    byte[] block = new byte[65536];
+    int read = is.read(block);
+    while (read > -1) {
+      os.write(block, 0, read);
+      read = is.read(block);
+    }
+  }
 }
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.11  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.10.118.2  2006/02/07 18:45:06  gtr
+This class now support parameter values written back via InputStreams. This allows some major optimizations.
+
+Revision 1.10.118.1  2006/02/07 16:34:22  gtr
+Binary output parameters are now delivered to the ParameterAdapter as byte[] and treated accordingly.
+
 Revision 1.10  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

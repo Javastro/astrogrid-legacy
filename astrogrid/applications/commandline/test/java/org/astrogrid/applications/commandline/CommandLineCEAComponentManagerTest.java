@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManagerTest.java,v 1.5 2006/01/10 11:26:52 clq2 Exp $
+/*$Id: CommandLineCEAComponentManagerTest.java,v 1.6 2006/03/07 21:45:26 clq2 Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
-
 import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader;
 import org.astrogrid.applications.component.AbstractComponentManagerTestCase;
 import org.astrogrid.applications.component.CEAComponentManager;
@@ -29,7 +28,8 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * @author pharriso@eso.org 03-Jun-2005 - make it do a "semi-live" test
  *
  */
-public class CommandLineCEAComponentManagerTest extends AbstractComponentManagerTestCase {
+public class CommandLineCEAComponentManagerTest 
+    extends AbstractComponentManagerTestCase {
     /**
      * Constructor for CommandLineCEAComponentManagerTest.
      * @param arg0
@@ -44,24 +44,48 @@ public class CommandLineCEAComponentManagerTest extends AbstractComponentManager
     protected CEAComponentManager createManager() {
         return new CommandLineCEAComponentManager();
     }
-  
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.component.AbstractComponentManagerTestCase#setupConfigComponentManager()
-    */
-   protected void setupConfigComponentManager() {
-      basicConfig();
-      URL cmdlinesetup = this.getClass().getResource("/TestApplicationConfig.xml");
-      assertNotNull(cmdlinesetup);
-      SimpleConfig.getSingleton().setProperty(CommandLineCEAComponentManager.DESCRIPTION_URL, cmdlinesetup);
+    
+    protected void configureManager() throws Exception {
+      BasicCommandLineConfiguration configuration
+         = new BasicCommandLineConfiguration();
       
+      // Impose a registry template; use one bundled in the jar.
+      try {
+        URL source = this.getClass().getResource("/CEARegistryTemplate.xml"); 
+        assertNotNull(source);
+        configuration.setRegistrationTemplate(source); 
+      }
+      catch (Exception e) {
+        fail("Can't set the registry template for the test. " + e);
+      }
+      
+      // Impose an application description file; use one bundled in the jar.
+      try { 
+        URL source = this.getClass().getResource("/TestApplicationConfig.xml"); 
+        assertNotNull(source);
+        configuration.setApplicationDescription(source);
+      }
+      catch (Exception e) {
+        fail("Can't set the application description for the test. " + e);
+      }
+      
+      // Impose this configuration on the manager.
+      CommandLineCEAComponentManager manager 
+          = (CommandLineCEAComponentManager)(this.manager);
+      manager.setCommandLineConfigurationInstance(configuration);
+    }
+   
+   public void testIsValid() {
+     super.testIsValid();
    }
    
    public void testUse () throws Exception
    {
       // TODO This is only a very basic stab at a test - main intention was to be able to run the querier test.
       CommandLineDescriptionsLoader dl = (CommandLineDescriptionsLoader) manager.getContainer().getComponentInstanceOfType(CommandLineDescriptionsLoader.class);
+      assertNotNull("CommandLineDescriptionLoader was instantiated", dl);
       CommandLineApplicationDescription desc = (CommandLineApplicationDescription) dl.getDescription(TestAppConst.TESTAPP_NAME);
-      assertNotNull("could not get the application description",desc);
+      assertNotNull("Application description was obtained", desc);
       Toolbuilder.fixupExecutionPath(desc);
       ExecutionController cec = manager.getExecutionController();
       Tool tool = Toolbuilder.buildTool("0", desc);
@@ -91,8 +115,20 @@ public class CommandLineCEAComponentManagerTest extends AbstractComponentManager
 
 /* 
 $Log: CommandLineCEAComponentManagerTest.java,v $
-Revision 1.5  2006/01/10 11:26:52  clq2
-rolling back to before gtr_1489
+Revision 1.6  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.3.34.4  2006/01/31 21:39:06  gtr
+Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
+
+Revision 1.3.34.3  2006/01/26 13:16:34  gtr
+BasicCommandLineConfiguration has absorbed the functions of TestCommandLineConfiguration.
+
+Revision 1.3.34.2  2005/12/19 18:51:03  gtr
+New class, generated in the refactoring for BZ1492.
+
+Revision 1.3.34.1  2005/12/19 18:12:30  gtr
+Refactored: changes in support of the fix for 1492.
 
 Revision 1.3  2005/07/05 08:26:56  clq2
 paul's 559b and 559c for wo/apps and jes

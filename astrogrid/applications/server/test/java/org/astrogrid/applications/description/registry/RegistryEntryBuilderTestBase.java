@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTestBase.java,v 1.2 2005/07/05 08:27:00 clq2 Exp $
+ * $Id: RegistryEntryBuilderTestBase.java,v 1.3 2006/03/07 21:45:26 clq2 Exp $
  * 
  * Created on 02-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -17,23 +17,31 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
-
+import junit.framework.TestCase;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.w3c.dom.Document;
-
+import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.TestApplicationDescriptionLibrary;
+import org.astrogrid.applications.manager.BaseConfiguration;
 import org.astrogrid.applications.manager.DefaultMetadataService;
 import org.astrogrid.common.bean.v1.Namespaces;
 import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.test.schema.SchemaMap;
-
-import junit.framework.TestCase;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.base.TestApplicationDescriptionLibrary;
+import org.astrogrid.applications.manager.BaseConfiguration;
+import org.astrogrid.applications.manager.DefaultMetadataService;
+import org.astrogrid.common.bean.v1.Namespaces;
+import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.test.schema.SchemaMap;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Document;
 
 /**
  * Encapuslates the common parts of a registry entry builder test case.
@@ -62,27 +70,18 @@ public abstract class RegistryEntryBuilderTestBase extends TestCase {
    /**
     * Logger for this class
     */
-   private static final Log logger = LogFactory
-            .getLog(RegistryEntryBuilderTest.class);
-   protected void setUp() throws Exception {
-        super.setUp();
-        ApplicationDescriptionLibrary lib = createDesciptionLibrary();
-        DefaultMetadataService.URLs urls = new DefaultMetadataService.URLs() {
-            URL serviceURL =  new URL("http://locahost:8080/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService");                
-           
-            public URL getRegistryTemplate() {
-                URL template = this.getClass().getResource("/CEARegistryTemplate.xml");
-                assertNotNull(template);
-                return template;        
-             }
+   private static final Log logger 
+       = LogFactory.getLog(RegistryEntryBuilderTest.class);
    
-            public URL getServiceEndpoint() {
-                return serviceURL;
-                 }
-        };
-        builder = new DefaultMetadataService(lib,urls);
-    }
+   protected void setUp() throws Exception {
+     super.setUp();
+     ApplicationDescriptionLibrary lib = createDesciptionLibrary();
+     Configuration configuration = new BaseConfiguration();
+     builder = new DefaultMetadataService(lib,configuration);
+   }
+   
    protected DefaultMetadataService builder;
+   
    /** test to see if get description as objects and if castor thinks that they are valid.*/
    public void testGetDescription() throws Exception {
         VOResources desc =  builder.getVODescription();
@@ -90,6 +89,7 @@ public abstract class RegistryEntryBuilderTestBase extends TestCase {
         // this tests castor's idea of validity
         assertTrue(desc.isValid());  
     }
+   
    /** test to see if get description as DOM and if XML valid from schema directly */
    public void testDescriptionValidity() throws Exception {
        Document desc =  builder.returnRegistryEntry();
@@ -134,6 +134,12 @@ public abstract class RegistryEntryBuilderTestBase extends TestCase {
 
 /*
  * $Log: RegistryEntryBuilderTestBase.java,v $
+ * Revision 1.3  2006/03/07 21:45:26  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.2.38.1  2006/01/26 13:18:42  gtr
+ * Refactored.
+ *
  * Revision 1.2  2005/07/05 08:27:00  clq2
  * paul's 559b and 559c for wo/apps and jes
  *

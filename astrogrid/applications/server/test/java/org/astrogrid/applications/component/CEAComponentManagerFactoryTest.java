@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManagerFactoryTest.java,v 1.6 2006/01/10 11:26:52 clq2 Exp $
+/*$Id: CEAComponentManagerFactoryTest.java,v 1.7 2006/03/07 21:45:26 clq2 Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,12 +33,13 @@ public class CEAComponentManagerFactoryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         CEAComponentManagerFactory.clearInstance();
-        JavaClassCEAComponentManagerTest.basicConfig();
     }
     public void testDefaulttGetInstance() {
         CEAComponentManager man = CEAComponentManagerFactory.getInstance();
         assertNotNull(man);
         assertTrue(man instanceof JavaClassCEAComponentManager);
+        man.getContainer().verify();
+        man.informationHTML();
         // would be nice to test that the picocontainer has been started too, but no method on the container for this.
     }
     
@@ -65,8 +66,14 @@ public class CEAComponentManagerFactoryTest extends TestCase {
 
 /* 
 $Log: CEAComponentManagerFactoryTest.java,v $
-Revision 1.6  2006/01/10 11:26:52  clq2
-rolling back to before gtr_1489
+Revision 1.7  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.4.20.2  2006/01/31 21:39:07  gtr
+Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
+
+Revision 1.4.20.1  2005/12/18 14:48:25  gtr
+Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
 
 Revision 1.4  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests

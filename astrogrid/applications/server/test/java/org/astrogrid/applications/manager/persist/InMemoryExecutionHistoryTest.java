@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistoryTest.java,v 1.3 2004/11/27 13:20:02 pah Exp $
+/*$Id: InMemoryExecutionHistoryTest.java,v 1.4 2006/03/07 21:45:26 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
+import org.astrogrid.applications.javaclass.BaseJavaClassConfiguration;
 import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
 import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
@@ -44,7 +45,7 @@ public class InMemoryExecutionHistoryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),null, new TestAuthorityResolver());
-        lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,env);
+        lib = new JavaClassApplicationDescriptionLibrary(new BaseJavaClassConfiguration(), env);
         appDesc = lib.getDescription(lib.getApplicationNames()[0]);
         assertNotNull(appDesc);
         Tool tool = new Tool();
@@ -98,6 +99,12 @@ public class InMemoryExecutionHistoryTest extends TestCase {
 
 /* 
 $Log: InMemoryExecutionHistoryTest.java,v $
+Revision 1.4  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.3.118.1  2006/02/01 12:09:54  gtr
+Refactored and fixed to allow the tests to work with the new configuration.
+
 Revision 1.3  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch
 

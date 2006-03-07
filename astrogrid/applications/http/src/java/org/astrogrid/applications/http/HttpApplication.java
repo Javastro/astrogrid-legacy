@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.11 2006/01/10 11:26:52 clq2 Exp $
+/* $Id: HttpApplication.java,v 1.12 2006/03/07 21:45:26 clq2 Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -175,30 +175,29 @@ public boolean execute() throws CeaException {
                 reportError("Unknown http method requested"); //this really shouldn't happen, given the constraints in the schema
                 return;
             }            
-            final Enumeration enum = httpCall.enumerateSimpleParameter();
+            final Enumeration en = httpCall.enumerateSimpleParameter();
             Map inputArguments = new HashMap();
-            while (enum.hasMoreElements()) {
-                final SimpleParameter parameter = (SimpleParameter) enum.nextElement();
+            while (en.hasMoreElements()) {
+                final SimpleParameter parameter = (SimpleParameter) en.nextElement();
                 assert parameter!=null;
                 assert parameter.getName()!=null;
                 assert parameter.getValue()!=null;
                 inputArguments.put(parameter.getName(), parameter.getValue());
             }
                     
+            // Call the target service and store the returned data in a buffer. 
             setStatus(Status.RUNNING);
-            log.info("calling url="+url);
+            log.info("Calling " + url);
             HttpServiceClient client = new HttpServiceClient(url, method);
-            final String resultText = client.call(inputArguments);
-            log.debug("run() - unprocessed result:  : resultText = " + resultText);
-            
-            final String processedResult = postProcess(resultText);
+            final Object resultData = client.call(inputArguments);
+            log.info("Call to " + url + " has completed."); 
             
             // we can do this, as we know there's only ever going to be one output parameter.
             setStatus(Status.WRITINGBACK);
             Iterator outputParamsIt = outputParameterAdapters();
             ParameterAdapter result = (ParameterAdapter) outputParamsIt.next();
             assert !outputParamsIt.hasNext() : "Expect there to be only one output parameter for an HttpApplication";
-            result.writeBack(processedResult);
+            result.writeBack(resultData);
             log.info("completed call successfully");
             setStatus(Status.COMPLETED);
         } catch (CeaException e) {
@@ -244,8 +243,17 @@ public boolean execute() throws CeaException {
 
 /*
  * $Log: HttpApplication.java,v $
- * Revision 1.11  2006/01/10 11:26:52  clq2
- * rolling back to before gtr_1489
+ * Revision 1.12  2006/03/07 21:45:26  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.9.34.3  2006/01/30 19:16:15  gtr
+ * I adjusted the HTTP code to return the response body either as a String or as byte[] depending on whether the response appears to be binary.
+ *
+ * Revision 1.9.34.2  2006/01/26 13:17:31  gtr
+ * *** empty log message ***
+ *
+ * Revision 1.9.34.1  2005/12/22 11:46:14  gtr
+ * I eliminated enum as a variable name so that the code can be compiled with Java 5.
  *
  * Revision 1.9  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes

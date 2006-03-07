@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.5 2005/05/27 16:21:04 clq2 Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.6 2006/03/07 21:45:26 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.manager.observer.AbstractProgressListener;
 import org.astrogrid.applications.manager.observer.AbstractResultsListener;
@@ -83,7 +84,7 @@ public class DatacenterApplicationTest extends TestCase {
       env = new ApplicationDescriptionEnvironment(
                        new InMemoryIdGen(),
                        new DefaultProtocolLibrary(),
-                       new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver() {
+                       new AppAuthorityIDResolver() {
                                  public String getAuthorityID() {
                                     return "org.astrogrid.test";
                                  }
@@ -253,6 +254,12 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.6  2006/03/07 21:45:26  clq2
+ gtr_1489_cea
+
+ Revision 1.5.58.1  2006/01/30 11:39:22  gtr
+ I corrected the use of the AppAuthorityResolver interface to match the new CEA code.
+
  Revision 1.5  2005/05/27 16:21:04  clq2
  mchv_1
 

@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAServerTest.java,v 1.10 2006/01/10 11:26:52 clq2 Exp $
+/*$Id: HttpApplicationCEAServerTest.java,v 1.11 2006/03/07 21:45:26 clq2 Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,10 +45,6 @@ public class HttpApplicationCEAServerTest extends TestCase {
         manager.getContainer().verify();
     }
     
-    // another validity test - should always be true, but we'll test it anyhow.
-    public void testVerifyRequiredComponents() {
-        assertNotNull(manager.getContainer().getComponentInstanceOfType(EmptyCEAComponentManager.VerifyRequiredComponents.class));
-    }
     public void testGetController() {
         assertNotNull(manager.getExecutionController());
     }
@@ -66,8 +62,11 @@ public class HttpApplicationCEAServerTest extends TestCase {
 
 /* 
 $Log: HttpApplicationCEAServerTest.java,v $
-Revision 1.10  2006/01/10 11:26:52  clq2
-rolling back to before gtr_1489
+Revision 1.11  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.8.34.1  2005/12/22 13:56:03  gtr
+Refactored to match the other kinds of CEC.
 
 Revision 1.8  2005/07/05 08:26:56  clq2
 paul's 559b and 559c for wo/apps and jes

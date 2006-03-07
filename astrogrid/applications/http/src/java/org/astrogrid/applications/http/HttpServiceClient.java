@@ -1,4 +1,4 @@
-/* $Id: HttpServiceClient.java,v 1.5 2004/09/14 16:26:26 jdt Exp $
+/* $Id: HttpServiceClient.java,v 1.6 2006/03/07 21:45:26 clq2 Exp $
  * Created on Jul 24, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
@@ -121,14 +122,15 @@ public class HttpServiceClient {
 
     /**
      * Call the web server and return stuff.
-     * @return
+     * @return The data-set returned by the HTTP service.
      * @throws HttpApplicationNetworkException
      * @throws URIException
      * @throws HttpApplicationWebServiceURLException
      * @throws IOException
      * @throws HttpException
      */
-    public String call(final Map args) throws HttpApplicationNetworkException, HttpApplicationWebServiceURLException {
+    public Object call(final Map args) 
+        throws HttpApplicationNetworkException, HttpApplicationWebServiceURLException {
         if (log.isTraceEnabled()) {
             log.trace("call(Map args = " + args + ") - start");
         }
@@ -148,18 +150,18 @@ public class HttpServiceClient {
         if (method instanceof PostMethod) {
         	((PostMethod)method).setRequestBody(argsArray);
         } else {
-        	method.setQueryString(argsArray);
+          this.setHttpGetQueryString(method, argsArray);
         }
         
         int statusCode = -1;
         // We will retry up to MAX_ATTEMPTS times.
-        String results = null;
+        Object results = null;
         for (int attempt = 0; statusCode == -1 && attempt < MAX_ATTEMPTS; attempt++) {
             try {
                 // execute the method.
             	log.debug("Executing method: "+method);
                 statusCode = client.executeMethod(method);
-                results = method.getResponseBodyAsString();
+                results = this.getResponseBody(method);
                 log.debug("Method returned with results: "+results);
             } catch (HttpRecoverableException e) {
                 log.warn("A recoverable error occured, retrying..."+attempt,e);
@@ -198,11 +200,108 @@ public class HttpServiceClient {
         }
         return results;
     }
+    
+    /**
+     * Obtains the response body for an HTTP method that has completed
+     * its call.
+     * Depending on what is being returned, the body can be got either
+     * as a Java string or as an array of bytes. Getting a string implies
+     * letting the HTTPMethod deal with the perceived character encoding
+     * the response: this typically changes the bit pattern. Hence, this
+     * method has to apply sme intelligence to the response headers to
+     * figure out whether the response body really is character data.
+     * If the body is got as a byte array, it can then be packed into
+     * a String for transport, preserving the bit pattern.
+     *
+     * @param method The object representing the HTTP call.
+     * @return The response body, either as a String or as a byte array.
+     */
+    private Object getResponseBody(HttpMethod method) {
+      Header contentType = method.getResponseHeader("Content-Type");
+      Header contentEncoding = method.getResponseHeader("Content-Encoding");
+      
+      // If the response is encoded (e.g. gzip'd) return it as a byte array
+      // whatever its type.
+      if (contentEncoding != null && contentEncoding.toString() != "") {
+        return method.getResponseBody();
+      }
+      
+      // If the response is not encoded and is text, or is XML,
+      // return it as a string.
+      if (contentType != null && 
+          (contentType.toString().indexOf("text/") != -1 ||
+           contentType.toString().indexOf("xml") != -1)) {
+        return method.getResponseBodyAsString();
+      }
+      
+      // Otherwise, return the body as a byte array.
+      else {
+        return method.getResponseBody();
+      }
+    }
+    
+    
+    /**
+     * Set the query part of the URL in an HTTP-get method.
+     * Typically, but not in every case, there are query parameters that
+     * are given as an array of name-value pairs. There may also be defaulted
+     * query parameters already coded into the URL; these need to be recovered
+     * and merged with the former set of parameters.
+     *
+     * @param method The object aggregating the URL and query parameters.
+     * @param params The non-defaulted query-parameters.
+     */
+    private void setHttpGetQueryString(HttpMethod method, 
+                                       NameValuePair[] argsArray) {
+      
+      // Preserve the query string that came with the URL.
+      // This comes out null if the given URL has no query parameters.
+      String fixedQueryString = method.getQueryString();
+      
+      // Combine the other parameters into a query string.
+      // This will also come out null if there are no parameters.
+      method.setQueryString(argsArray);
+      String variableQueryString = method.getQueryString();
+      
+      // Combine the two query Strings, allowing that either or
+      // both may be null.
+      String queryString;
+      if (fixedQueryString == null && variableQueryString == null) {
+        queryString = null;
+      }
+      else if (fixedQueryString == null) {
+        queryString = variableQueryString;
+      }
+      else if (variableQueryString == null) {
+        queryString = fixedQueryString;
+      }
+      else {
+        queryString = fixedQueryString + "&" + variableQueryString;
+      }
+      
+      // Store the final query-string.
+      method.setQueryString(queryString);      
+    }
 
 }
 
 /*
  * $Log: HttpServiceClient.java,v $
+ * Revision 1.6  2006/03/07 21:45:26  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.5.142.4  2006/02/07 16:34:22  gtr
+ * Binary output parameters are now delivered to the ParameterAdapter as byte[] and treated accordingly.
+ *
+ * Revision 1.5.142.3  2006/01/30 19:16:15  gtr
+ * I adjusted the HTTP code to return the response body either as a String or as byte[] depending on whether the response appears to be binary.
+ *
+ * Revision 1.5.142.2  2006/01/26 13:17:31  gtr
+ * *** empty log message ***
+ *
+ * Revision 1.5.142.1  2006/01/12 17:58:18  gtr
+ * I fixed the handling of the HTTP query string in the URL for HTTP-get methods. URLs may now be configured that have parameters embedded: these are defaulted parameters that are never visible or mutable in the UI. The defaulted parameters are merged with the regular parameters when the HTTP method is executed.
+ *
  * Revision 1.5  2004/09/14 16:26:26  jdt
  * Attempt to get the http-post working.  Upgraded http-client, to no avail.  Either http client
  * or the embedded test webserver isn't handling post correctly.  Flagged tests
