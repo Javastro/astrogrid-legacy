@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+
+<web-app>
+  <display-name>Astrogrid Solar Search</display-name>
+
+    <context-param>
+      <param-name>properties</param-name>
+      <param-value>astrogrid.properties</param-value>
+      <description>
+        The astrogrid.properties file containing
+        datapairs used to initialize the OAI repository software.
+      </description>
+    </context-param>
+
+    <servlet>
+        <servlet-name>SolarSearch</servlet-name>
+        <servlet-class>org.astrogrid.solarsearch.http.servlets.SolarSearch</servlet-class>
+    </servlet>
+
+	<servlet-mapping>
+   		<servlet-name>SolarSearch</servlet-name>
+   		<url-pattern>/SolarSearch</url-pattern>
+	</servlet-mapping>
+</web-app>
