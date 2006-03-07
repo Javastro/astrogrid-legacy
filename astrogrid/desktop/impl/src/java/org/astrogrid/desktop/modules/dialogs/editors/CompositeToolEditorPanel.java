@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.14 2006/03/03 10:10:12 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.15 2006/03/07 16:50:36 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,32 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import org.astrogrid.acr.ACRException;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URI;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.dialogs.RegistryChooser;
-import org.astrogrid.acr.dialogs.ResourceChooser;
-import org.astrogrid.acr.ivoa.Adql074;
-import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
@@ -30,37 +45,14 @@ import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.Marshaller;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.PicoContainer;
 import org.picocontainer.defaults.DefaultPicoContainer;
 import org.w3c.dom.Document;
-
-//import sun.security.krb5.internal.p;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.net.URI;
-
-import javax.swing.AbstractAction;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 
 /** Tool Editor Panel that composites together a bunch of other ones, and determines which
  * to show.
@@ -74,6 +66,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         public ExecuteAction() {
             super("Execute !", IconHelper.loadIcon("run_tool.gif"));
             this.putValue(SHORT_DESCRIPTION,"Execute this application");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
             this.setEnabled(toolModel.getTool() != null);
             toolModel.addToolEditListener(new ToolEditAdapter() {
                 public void toolSet(ToolEditEvent te) {
@@ -129,6 +122,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         public NewAction() {
             super("New",IconHelper.loadIcon("newfile_wiz.gif"));
             this.putValue(SHORT_DESCRIPTION,"Create a new task");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
             this.setEnabled(true);
         }
         public void actionPerformed(ActionEvent e) {
@@ -143,6 +137,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         public OpenAction() {
             super("Open",IconHelper.loadIcon("file_obj.gif"));
             this.putValue(SHORT_DESCRIPTION,"Load task document from storage");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
         }        
 
         public void actionPerformed(ActionEvent e) {
@@ -185,6 +180,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         public SaveAction() {
             super("Save",IconHelper.loadIcon("fileexport.png"));
             this.putValue(SHORT_DESCRIPTION,"Save task document");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
             this.setEnabled(toolModel.getTool() != null);
             toolModel.addToolEditListener(new ToolEditAdapter() {
                 public void toolSet(ToolEditEvent te) {
@@ -212,6 +208,20 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                     }
                 }).start();            
             
+        }
+    }
+    
+    /** close action */
+    protected final class CloseAction extends AbstractAction {
+        public CloseAction() {
+            super("Close",IconHelper.loadIcon("exit_small.png"));
+            this.putValue(SHORT_DESCRIPTION,"Close the Workflow Builder");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            parent.hide();
+            parent.dispose();
         }
     }
   
@@ -266,6 +276,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected final UIComponent parent;
     protected final  JTabbedPane tabPane;
     protected final AbstractToolEditorPanel[] views;
+    protected Action newAction, saveAction, openAction, executeAction, closeAction;
    
 
     public CompositeToolEditorPanel(UIComponent parent, PicoContainer pico, HelpServerInternal hs) {
@@ -282,7 +293,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         tabPane = new JTabbedPane();
         tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabPane.setTabPlacement(SwingConstants.LEFT);
-        tabPane.setPreferredSize(new Dimension(600,475));
+        tabPane.setPreferredSize(new Dimension(600,495));
+        parent.setJMenuBar(getJJMenuBar());
         
         MutablePicoContainer builder = new DefaultPicoContainer(pico);
         builder.registerComponentInstance(this.getToolModel());
@@ -310,16 +322,30 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         tabPane.addTab("Info",information);        
 //        tabPane.addTab("Chooser",chooser);
         hs.enableHelp(tabPane, "userInterface.workflowBuilder.taskEditor");
-                
+           
+        newAction = new NewAction();
+        openAction = new OpenAction();
+        saveAction = new SaveAction();
+        executeAction = new ExecuteAction();
+        closeAction = new CloseAction();
+        
         JToolBar tb = new JToolBar();
         tb.setRollover(true);
         tb.setFloatable(false);
-        tb.add(new NewAction());
-        tb.add(new OpenAction());
-        tb.add(new SaveAction());
+        tb.add(newAction);
+        tb.add(openAction);
+        tb.add(saveAction);
         if (lookout != null) {
-            tb.add(new ExecuteAction());
+            tb.add(executeAction);
         }
+        fileMenu.add(newAction);
+        fileMenu.add(openAction);
+        fileMenu.add(saveAction);
+        if (lookout != null) {
+            fileMenu.add(executeAction);
+        }
+        fileMenu.add(new JSeparator());
+        fileMenu.add(closeAction);
         this.setLayout(new BorderLayout());
         this.add(tb,BorderLayout.NORTH);
         this.add(tabPane,BorderLayout.CENTER);
@@ -334,11 +360,35 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     public boolean isApplicable(Tool t, ApplicationInformation info) {
         return true;
     }
+    
+    private JMenuBar jJMenuBar;
+    private JMenu fileMenu;
+    
+	private JMenuBar getJJMenuBar() {
+		if (jJMenuBar == null) {
+			jJMenuBar = new JMenuBar();
+			jJMenuBar.add(getFileMenu());
+		}
+		return jJMenuBar;
+	}
+   
+	private JMenu getFileMenu() {
+		if (fileMenu == null) {
+			fileMenu = new JMenu();
+			fileMenu.setText("File");
+			fileMenu.setMnemonic(KeyEvent.VK_F);
+		}
+		return fileMenu;
+	}
+    
 }
 
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.15  2006/03/07 16:50:36  pjn3
+Menu added, accelerators added
+
 Revision 1.14  2006/03/03 10:10:12  pjn3
 #1505
 
