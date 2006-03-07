@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.6 2006/02/25 16:31:10 norman Exp $
+     $Id: build.xml,v 1.7 2006/03/07 17:40:12 norman Exp $
 -->
 
 
@@ -119,6 +119,7 @@
   <property name="src.home"      value="${basedir}/src/main"/>
   <property name="scm.src.home"  value="${basedir}/src/main/scm"/>
   <property name="src.etc"       value="${basedir}/src/etc"/>
+  <property name="scm.test.home" value="${basedir}/src/test/scm"/>
   <property name="web.home"      value="${basedir}/web"/>
 
   <!-- The following properties must be set in build.properties
@@ -570,6 +571,32 @@
     <!-- Copy static files from external dependencies as needed -->
     <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
 
+  </target>
+
+  <!-- ========= Test target ========= -->
+  <!-- Run regression tests -->
+  <path id="sisc.test.classpath">
+    <pathelement location="${scm.test.home}"/>
+    <pathelement location="${scm.src.home}"/>
+    <fileset refid="sisc.support"/>
+  </path>
+  <target name="test"
+          depends="compile"
+          description="Run regression tests">
+    <java classname="sisc.REPL"
+          fork="true"
+          classpathref="sisc.test.classpath"
+          failonerror="true">
+      <sysproperty key="sisc.home" value="${sisc.lib}"/>
+      <arg value="-h"/>
+      <arg value="${sisc.lib}/sisc.shp"/>
+      <arg value="${scm.test.home}/run-tests.scm"/>
+      <arg value="--no-repl"/>
+      <arg value="--call-with-args"/>
+      <arg value="main"/>
+      <arg value="--"/>
+      <!-- add further arguments? -->
+    </java>
   </target>
 
 
