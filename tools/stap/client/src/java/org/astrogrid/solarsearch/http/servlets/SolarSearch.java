@@ -18,7 +18,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: SolarSearch.java,v 1.1 2006/03/07 16:21:41 KevinBenson Exp $
+ *  $Id: SolarSearch.java,v 1.2 2006/03/07 16:26:15 KevinBenson Exp $
  */
 
 package org.astrogrid.solarsearch.http.servlets;
@@ -87,8 +87,8 @@ public class SolarSearch extends HttpServlet {
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
 
         try {
-            Date startTime = dateFormat.parse(req.getParameter("startTime"));
-            Date endTime = dateFormat.parse(req.getParameter("endTime"));
+            Date startTime = dateFormat.parse(req.getParameter("START"));
+            Date endTime = dateFormat.parse(req.getParameter("END"));
             Calendar startTimeCal = Calendar.getInstance();
             Calendar endTimeCal = Calendar.getInstance();
             startTimeCal.setTime(startTime);
