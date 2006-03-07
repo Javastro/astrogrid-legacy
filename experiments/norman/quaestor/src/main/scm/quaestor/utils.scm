@@ -11,6 +11,7 @@
   enumeration->list
   java-retrieve-static-object
   is-java-type?
+  url-decode-to-jstring
   )
 
  (import* srfi-13
@@ -178,5 +179,15 @@
                                        class)))
                    jobject))
        #f))
+
+ ;; Given a string S, return the URL-decoded string as a jstring
+ (define (url-decode-to-jstring s)
+   (define-java-classes
+     (<url-decoder> |java.net.URLDecoder|))
+   (define-generic-java-method
+     decode)
+   (decode (java-null <url-decoder>)
+           (->jstring s)
+           (->jstring "UTF-8")))
 
 )
