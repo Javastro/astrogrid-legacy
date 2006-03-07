@@ -85,26 +85,20 @@
   ;; Add a new submodel to the model.  Returns the original or an updated
   ;; submodel list, or #f on any errors (there's nothing which triggers #f
   ;; at present, but it's documented to do this just in case)
-  (define (add-submodel ;model
-                        submodel-list
+  (define (add-submodel submodel-list
                         new-submodel-name
                         new-submodel-model
                         tbox?)
-;;     (define-generic-java-method
-;;       add)
     (if (not (and (symbol? new-submodel-name)
                   (is-java-type?
                    new-submodel-model
                    '|com.hp.hpl.jena.rdf.model.Model|)))
         (error 'make-kb "Bad call (add ~s ~s)"
                new-submodel-name new-submodel-model))
-;;     ;; The following should be a bit more sophisticated:
-;;     ;; we should remove the previous submodel before adding
-;;     ;; the new one.  Can we detect any errors?
-;;     (add model new-submodel-model)
     (let ((sm-list (assq new-submodel-name submodel-list)))
       (if sm-list
-          (begin (set-cdr! (cdr sm-list) submodel)        ;already exists
+          (begin (set-cdr! sm-list      ;already exists
+                           (cons tbox? new-submodel-model))
                  submodel-list)
           (cons `(,new-submodel-name ,tbox? . ,new-submodel-model) ;new
                 submodel-list))))
@@ -131,8 +125,7 @@
   ;;    (kb 'info)
   ;;        Return alist with info
   (define (make-kb kb-name)
-    (let (;(model (new-empty-model)) ;overall model for the KB
-          (submodels '())     ;a list of (name tbox? . submodel) pseudo-lists
+    (let ((submodels '())     ;a list of (name tbox? . submodel) pseudo-lists
           (metadata #f))
 
       (lambda (cmd . args)
@@ -152,12 +145,10 @@
 
           ((get-model)
            ;; (kb 'get-model [SUBMODEL-NAME])
-           ;; Return model or #f
+           ;; Return newly-merged model or #f
            (case (length args)
              ((0)
-              ;model
-              (rdf-merge-models (map cddr submodels))
-              )
+              (rdf-merge-models (map cddr submodels)))
              ((1)
               (let ((sm (assq (as-symbol (car args))
                               submodels)))
