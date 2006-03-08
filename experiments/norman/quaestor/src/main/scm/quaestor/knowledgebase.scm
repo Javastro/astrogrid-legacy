@@ -118,6 +118,8 @@
   ;;    (kb 'get-metadata-as-string)
   ;;    (kb 'get-metadata-as-jstring)
   ;;        Return the model's metadata, if any, as a Scheme or Java string
+  ;;    (kb 'get-name)
+  ;;        Return the knowledgebase's name
   ;;    (kb 'get SUBMODEL-NAME)
   ;;        Return the named submodel, or #f if none exists.
   ;;    (kb 'set-metadata INFO)
@@ -126,6 +128,7 @@
   ;;        Return alist with info
   (define (make-kb kb-name)
     (let ((submodels '())     ;a list of (name tbox? . submodel) pseudo-lists
+          (myname kb-name)
           (metadata #f))
 
       (lambda (cmd . args)

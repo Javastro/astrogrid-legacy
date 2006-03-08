@@ -1,0 +1,10 @@
+#! /bin/sh -
+QC='../../../etc/quaestor-client --quiet'
+$QC new-kb access access-control-metadata.txt
+echo "...kb"
+$QC add-submodel access ontology access-control2.owl
+echo "...ontology"
+$QC add-submodel access instances --abox instances.n3
+echo "...instances"
+$QC add-submodel access identities --abox identity.n3
+echo "...identities"

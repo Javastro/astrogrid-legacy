@@ -369,22 +369,25 @@
           ;; Check also that the content-type of the incoming SPARQL query is
           ;; application/sparql-query (http://www.w3.org/TR/rdf-sparql-query/)
           (if (= (length path-list) 1)
-              (begin (set-http-response response '|SC_OK|)
-                     (or (with-failure-continuation
-                            (make-fc request response '|SC_BAD_REQUEST|)
-                          (lambda ()
-                            (sparql-perform-query
-                             (car path-list)
-                             (reader->jstring (get-reader request))
-                             get-lazy-output-stream
-                             (request->accept-mime-types request)
-                             (lambda (mimetype)
-                               (set-content-type response
-                                                 (->jstring mimetype))))
-                            #t))
-                         (no-can-do response
-                                    '|SC_BAD_REQUEST|
-                                    "Error performing SPARQL query")))
+              (let ((kb (kb-get (car path-list))))
+                (or kb
+                    (error "Don't know about knowledgebase ~a" (car path-list)))
+                (set-http-response response '|SC_OK|)
+                (or (with-failure-continuation
+                     (make-fc request response '|SC_BAD_REQUEST|)
+                     (lambda ()
+                       (sparql-perform-query
+                        kb
+                        (reader->jstring (get-reader request))
+                        get-lazy-output-stream
+                        (request->accept-mime-types request)
+                        (lambda (mimetype)
+                          (set-content-type response
+                                            (->jstring mimetype))))
+                       #t))
+                    (no-can-do response
+                               '|SC_BAD_REQUEST|
+                               "Error performing SPARQL query")))
               (no-can-do response
                          '|SC_BAD_REQUEST|
                          "POST SPARQL request must have one path element, and query=sparql")))))))

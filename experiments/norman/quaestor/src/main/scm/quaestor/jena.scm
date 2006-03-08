@@ -8,10 +8,6 @@
          reduce)
 
 (require-library 'quaestor/utils)
-(import* utils error-with-status)
-
-(require-library 'quaestor/knowledgebase)
-(import* knowledgebase kb-get)
 
 (module jena
 ( new-empty-model
@@ -22,6 +18,8 @@
   rdf-language->mime-type
   rdf-mime-type-list
   sparql-perform-query)
+
+(import* utils error-with-status)
 
  ;; Return a new empty model
  (define (new-empty-model)
@@ -141,7 +139,7 @@
 ;;
 ;; SPARQL stuff
 
-;; Perform the SPARQL query in QUERY-JSTRING on the knowledgebase KB-NAME.
+;; Perform the SPARQL query in QUERY-JSTRING on the knowledgebase KB.
 ;; Send the XML results to the output stream returned by procedure
 ;; GET-OUTPUT-STREAM (which should not be called before we know we can
 ;; write to it), and return #t on success.  MIME-TYPE-LIST is a list of 
@@ -151,7 +149,7 @@
 ;;
 ;; The procedure is called in a context such that it may call ERROR
 ;; at any point prior to sending stuff to the output stream.
-(define (sparql-perform-query kb-name
+(define (sparql-perform-query kb
                               query-jstring
                               get-output-stream
                               mime-type-list
@@ -161,15 +159,14 @@
   (define-generic-java-methods
     create-inf-model)
 
-  (let ((kb (kb-get kb-name))
-        (handler (make-result-set-handler mime-type-list
+  (let ((handler (make-result-set-handler mime-type-list
                                           'perform-sparql-query
                                           set-response-content-type
                                           get-output-stream)))
 
     (or kb                              ;check we've found a KB
         (error 'perform-sparql-query
-               "Don't know anything about knowledgebase ~a" kb-name))
+               "Request to perform-sparql-query on null knowledgebase"))
     (or handler                         ;check we can handle requested MIME type
         (error-with-status 'perform-sparql-query
                            '|SC_NOT_ACCEPTABLE|
@@ -180,7 +177,7 @@
           (abox (kb 'get-model-abox)))
       (or tbox
           (error 'perform-sparql-query
-                 "Model ~a has no TBOX -- can't query" kb-name))
+                 "Model ~a has no TBOX -- can't query" (kb 'get-name)))
       (run-sparql-query query-jstring
                         (if abox
                             (create-inf-model (java-null <factory>)

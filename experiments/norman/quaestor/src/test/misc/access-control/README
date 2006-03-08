@@ -1,0 +1,4 @@
+Test by hand
+
+Run ./re-upload to upload all of the ontologies and assertions to the
+knowledgebase, then run each of the .rq queries.
