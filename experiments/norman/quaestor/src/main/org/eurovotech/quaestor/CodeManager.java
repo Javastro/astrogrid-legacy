@@ -1,6 +1,7 @@
 package org.eurovotech.quaestor;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -46,7 +47,9 @@ public class CodeManager extends HttpServlet {
                     response.getWriter().println(val);
                 } else {
                     response.setStatus(response.SC_BAD_REQUEST); // ???
-                    response.getWriter().println("Bad request");
+                    PrintWriter p = response.getWriter();
+                    p.println("Bad request?");
+                    p.println(val.toString());
                 }
             } else if (codeStatus.equals("disabled")) {
                 response.setStatus(response.SC_FORBIDDEN);
