@@ -12,6 +12,7 @@
   java-retrieve-static-object
   is-java-type?
   url-decode-to-jstring
+  error-with-status
   )
 
  (import* srfi-13
@@ -189,5 +190,14 @@
    (decode (java-null <url-decoder>)
            (->jstring s)
            (->jstring "UTF-8")))
+
+ ;; Variant of ERROR, which can be called in a region handled by the failure
+ ;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
+ ;; with a message formatted with the given FMT and ARGS.  However instead
+ ;; of exiting with the status code defaulted when the fc was created
+ ;; by MAKE-FC, use the given NEW-STATUS.
+ (define (error-with-status location new-status fmt . args)
+   (let ((msg (apply format `(#f ,fmt ,@args))))
+     (error location (cons new-status msg))))
 
 )
