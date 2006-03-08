@@ -13,7 +13,14 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-
+	<release version="pending">
+		<action dev="pjn" type="add" issue="1234">
+			WorkflowBuilder: details of any workflows loaded from storage now displayed - was a request for portal, but added to workbench.
+		</action>
+	    <action dev="pjn" type="add">
+			Various useability improvements: Menubar on application launcher, dialog sizing issue, parameter editor column headings less criptic
+		</action>
+	</release>
 
 <release version="1.4" date="2006-03-06">
 
