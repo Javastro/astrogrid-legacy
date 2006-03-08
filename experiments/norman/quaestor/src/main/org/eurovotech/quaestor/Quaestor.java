@@ -57,6 +57,7 @@ public class Quaestor extends HttpServlet {
                 out.println(val);
             }
         } catch (SchemeException e) {
+            log("Scheme exception: " + e);
             throw new ServletException(e);
         }
     }
