@@ -18,7 +18,8 @@
 			WorkflowBuilder: details of any workflows loaded from storage now displayed - was a request for portal, but added to workbench.
 		</action>
 	    <action dev="pjn" type="add">
-			Various useability improvements: Menubar on application launcher, dialog sizing issue, parameter editor column headings less criptic
+			Various useability improvements: Menubar on application launcher and new tool clears old info, 
+			dialog sizing issue, parameter editor column headings less criptic
 		</action>
 	</release>
 
