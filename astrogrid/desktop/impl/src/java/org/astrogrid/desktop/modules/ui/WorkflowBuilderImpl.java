@@ -32,6 +32,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,6 +55,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -68,14 +71,13 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
@@ -158,8 +160,11 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	                    writer.close();     	             
                         return null;
                      }
+                    protected void doFinished(Object o) {
+                        locationField.setText(u.toString());
+                        locationPanel.setVisible(true);
+                    }
                 }).start();	            
-    
 	    }
 	}
     /** load a workflow */
@@ -177,8 +182,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                             return;
                         }
 	                (new BackgroundOperation("Loading Workflow") {
-	                    protected Object construct() throws Exception {	       // do all long-runing tasks in this method, as runs in background thread
-	                    	
+	                    protected Object construct() throws Exception {	       // do all long-runing tasks in this method, as runs in background thread	                    	
 		                    Reader reader = new InputStreamReader(vos.getInputStream(u));		                		         
 		                    Workflow wf = (Workflow)Unmarshaller.unmarshal(Workflow.class, reader);	                
 		                    reader.close();
@@ -199,6 +203,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                             getTree().expandAll(true);
                             tabbedPaneWF.setSelectedIndex(0);
                     	    activateMenus();
+		                    locationField.setText(u.toString());
+		                    locationPanel.setVisible(true);
                     		validateWorkflow();
 	                    }
 	                }).start();	                	    
@@ -273,17 +279,14 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         			showError("Failed to create workflow",ex);
         		}
         	}
+        	locationField.setText(null);
+            locationPanel.setVisible(false);
     		tabbedPaneWF.setSelectedIndex(0);
         	activateMenus();
         }
     }    
     /** close action */
     protected final class CloseAction extends AbstractAction {
-        /**
-         * Commons Logger for this class
-         */
-        private final Log logger = LogFactory.getLog(CloseAction.class);
-
         public CloseAction() {
             super("Close",IconHelper.loadIcon("exit_small.png"));
             this.putValue(SHORT_DESCRIPTION,"Close the Workflow Builder");
@@ -646,15 +649,15 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     private JButton  findButton = null;
     private JEditorPane docTextArea;
     private JList list;
-    private JLabel statusLabel, workflowStatusLabel, wastebinLabel = null;
-    private JPanel pane;
+    private JLabel statusLabel, workflowStatusLabel, wastebinLabel, locationLabel = null;
+    private JPanel pane, locationPanel;
     private JMenuBar jJMenuBar = null;
     private JMenu fileMenu, editMenu, insertMenu = null;
     private JToolBar toolbar = null;    
     private DefaultListModel activityListModel= null;
     private WorkflowDnDTree tree = null;
     private JTabbedPane tabbedPaneWF;
-    private JTextField  wfDocFindField;   
+    private JTextField  wfDocFindField, locationField;   
     private JScrollPane listView = null;
     private URL helpUrl;
     private int caretPos = 0;
@@ -662,7 +665,7 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     private DefaultMutableTreeNode copiedNode; // used for cut and copy
     private WastebinDropListener w;
     public boolean autoPopUp = true;  
-    private boolean workflowTranscript = false; // Indicate whether we are viewing a transcript
+    private boolean workflowTranscript = false; // Indicate whether we are viewing a transcript    
     
     ActivityListRenderer activityListRenderer = new ActivityListRenderer();
 	
@@ -746,6 +749,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         toolbar.add(printAction);
         toolbar.add(stripAction);
         toolbar.setRollover(true);
+        toolbar.add(new JSeparator(SwingConstants.VERTICAL));
+
+        toolbar.add(getLocationPanel());
         
         fileMenu.add(createAction);
         fileMenu.add(loadAction);
@@ -817,6 +823,14 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		TreePath treePath = new TreePath(getModel().getChild(getModel().getRoot(), 0));
 		tree.scrollPathToVisible(treePath);
 		tree.setSelectionPath(treePath);
+		this.addWindowFocusListener( new WindowFocusListener(){
+            public void windowGainedFocus(WindowEvent e) {
+                if(getDialogRef() != null){
+                }
+            } 
+            public void windowLostFocus(WindowEvent e) {           	
+            }            
+        });
 	}
 	
 	/**
@@ -1485,6 +1499,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			model.setWorkflow(workflow, false);
 			reader.close();
 			activateMenus();
+			locationField.setText(null);
+			locationPanel.setVisible(false);
 			show();
 			tree.expandAll(true);
 		} catch(ValidationException ve) {
@@ -1662,5 +1678,31 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 			setStatusMessage("Unable to delete this activity");
 			return false;
 		}
+	}
+	
+	private JPanel getLocationPanel() {
+        locationPanel = new JPanel(new FlowLayout());
+        locationLabel = new JLabel("Location: ");
+        locationField = new JTextField(30);
+        locationField.setEditable(false);  
+        locationField.setToolTipText("Details where this workflow was loaded from");
+        locationPanel.setToolTipText("Details where this workflow was loaded from");
+        locationPanel.add(locationLabel);
+        locationPanel.add(locationField);
+        locationPanel.setVisible(false);
+        return locationPanel;
+	}
+	
+	private JDialog focusDialog = null;
+	public void setDialogRef(JDialog c) {
+		focusDialog = c;
+	}
+	
+	private JDialog getDialogRef() {
+		return focusDialog;
+	}
+	
+	public void removeDialogRef() {
+		focusDialog = null;
 	}
 } 
