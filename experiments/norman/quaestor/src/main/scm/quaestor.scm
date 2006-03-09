@@ -12,6 +12,8 @@
 (import knowledgebase)
 (require-library 'quaestor/jena)
 (import jena)
+(require-library 'quaestor/sparql)
+(import sparql)
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
@@ -97,7 +99,7 @@
        (make-fc request response '|SC_BAD_REQUEST|)
      (lambda ()
        (define-generic-java-method set-content-type)
-       (perform-sparql-query model-name
+       (sparql:perform-query model-name
                              (url-decode-to-jstring q)
                              (make-lazy-output-stream response)
                              (request->accept-mime-types request)
@@ -135,13 +137,13 @@
     (let ((lang-mime-list (request->accept-mime-types rq)))
       (msglist (format #f "lang-mime-list=~s" lang-mime-list))
       (if (null? lang-mime-list)
-          (cons (rdf-language->mime-type "RDF/XML")
+          (cons (rdf:language->mime-type "RDF/XML")
                 "RDF/XML")              ;explicit default language
           (let loop ((ml lang-mime-list))
             (if (null? ml)
                 #f                      ;ooops
-                (let ((lang-string (mime-type->rdf-language (car ml))))
-                  (msglist "mime-type->rdf-language: ~s -> ~s"
+                (let ((lang-string (rdf:mime-type->language (car ml))))
+                  (msglist "rdf:mime-type->language: ~s -> ~s"
                            (car ml) lang-string)
                   (if lang-string
                       (cons (car ml)
@@ -259,7 +261,7 @@
 ;; called kb-name (a symbol), and the content of the request is read
 ;; from the given reader.
 (define (manage-knowledgebase kb-name reader query response)
-  (let ((kb (kb-get kb-name)))
+  (let ((kb (kb:get kb-name)))
     (cond ((and kb
                 query
                 (string=? query "metadata")) ;update metadata
@@ -283,7 +285,7 @@
                       kb-name query))
 
           (else            ;normal case
-           (let ((nkb (kb-new kb-name))) ;normal case
+           (let ((nkb (kb:new kb-name))) ;normal case
              (nkb 'set-metadata
                   (reader->jstring reader))
              (set-http-response response '|SC_NO_CONTENT|))))))
@@ -309,7 +311,7 @@
             (check-cars (cdr alist) recognised)
             #f)))
 
-  (let ((kb (kb-get kb-name))
+  (let ((kb (kb:get kb-name))
         (ok-headers '(type length)))
     (cond ((not (check-cars content-headers ok-headers))
            (no-can-do response '|SC_NOT_IMPLEMENTED|
@@ -322,12 +324,12 @@
           (kb                         ;normal case
            (let* ((rdf-mime (and (assq 'type content-headers)
                                  (cdr (assq 'type content-headers))))
-                  (submodel (rdf-ingest-from-stream
+                  (submodel (rdf:ingest-from-stream
                              stream
                              rdf-mime)))
              (msglist "content-headers=~s~%  rdf-mime=~s => lang=~s"
                       content-headers rdf-mime
-                      (mime-type->rdf-language rdf-mime))
+                      (rdf:mime-type->language rdf-mime))
              (if submodel
                  (if (kb (if tbox? 'add-tbox 'add-abox)  ;normal case
                          submodel-name
@@ -369,14 +371,14 @@
           ;; Check also that the content-type of the incoming SPARQL query is
           ;; application/sparql-query (http://www.w3.org/TR/rdf-sparql-query/)
           (if (= (length path-list) 1)
-              (let ((kb (kb-get (car path-list))))
+              (let ((kb (kb:get (car path-list))))
                 (or kb
                     (error "Don't know about knowledgebase ~a" (car path-list)))
                 (set-http-response response '|SC_OK|)
                 (or (with-failure-continuation
                      (make-fc request response '|SC_BAD_REQUEST|)
                      (lambda ()
-                       (sparql-perform-query
+                       (sparql:perform-query
                         kb
                         (reader->jstring (get-reader request))
                         get-lazy-output-stream
@@ -419,7 +421,7 @@
      (lambda ()
        (let ((path-list (request->path-list request)))
          (if (= (length path-list) 1)
-             (if (kb-discard (car path-list))
+             (if (kb:discard (car path-list))
                  (set-http-response response '|SC_NO_CONTENT|)
                  (no-can-do response
                             '|SC_NOT_FOUND| ;correct?

@@ -9,10 +9,10 @@
          filter)
 
 (module knowledgebase
-  (kb-new
-   kb-get
-   kb-discard
-   kb-get-names)
+  (kb:new
+   kb:get
+   kb:discard
+   kb:get-names)
 
   (import jena)
 
@@ -38,22 +38,22 @@
 
   ;; Retrieve the knowledgebase with the given name, which is
   ;; a symbol or string.  Return #f if there is no KB with this name.
-  (define (kb-get kb-name-param)
+  (define (kb:get kb-name-param)
     (let ((kb-name (as-symbol kb-name-param)))
       (or kb-name
-          (error 'kb-get "bad call to kb-get with object ~s" kb-name-param))
+          (error 'kb:get "bad call to kb:get with object ~s" kb-name-param))
       (let ((kbpair (assq kb-name _model-list)))
         (and kbpair (cdr kbpair)))))
 
   ;; Create a new knowledgebase from scratch.  It must not already exist.
   ;; Return the new knowledgebase.  Either succeeds or throws an error.
-  (define (kb-new kb-name-param)
+  (define (kb:new kb-name-param)
     (let ((kb-name (as-symbol kb-name-param)))
       (or kb-name
-          (error 'kb-new "bad call to kb-new with object ~s" kb-name-param))
-      (if (kb-get kb-name)
-          (error 'kb-new
-                 "bad call to kb-new: knowledgebase ~a already exists"
+          (error 'kb:new "bad call to kb:new with object ~s" kb-name-param))
+      (if (kb:get kb-name)
+          (error 'kb:new
+                 "bad call to kb:new: knowledgebase ~a already exists"
                  kb-name))
       (let ((kb (make-kb kb-name)))
         (set! _model-list
@@ -62,12 +62,12 @@
         kb)))
 
   ;; Returns a list of available knowledgebases.
-  (define (kb-get-names)
+  (define (kb:get-names)
     (map car _model-list))
 
   ;; Remove a given knowledgebase from the list.  Returns it, or
   ;; returns #f if no such knowledgebase existed
-  (define (kb-discard kb-name-string)
+  (define (kb:discard kb-name-string)
     (let ((kb-name (as-symbol kb-name-string))
           (ret #f))
       (let loop ((new-list '())
@@ -151,7 +151,7 @@
            ;; Return newly-merged model or #f
            (case (length args)
              ((0)
-              (rdf-merge-models (map cddr submodels)))
+              (rdf:merge-models (map cddr submodels)))
              ((1)
               (let ((sm (assq (as-symbol (car args))
                               submodels)))
@@ -173,7 +173,7 @@
                                  submodels)))
              (if (null? models)
                  #f
-                 (rdf-merge-models (map cddr models)))))
+                 (rdf:merge-models (map cddr models)))))
 
           ((get-metadata-as-string)
            (cond ((is-java-type? metadata '|java.lang.String|)
