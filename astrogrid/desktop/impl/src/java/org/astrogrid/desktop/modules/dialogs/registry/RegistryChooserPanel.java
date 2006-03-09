@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.25 2006/03/06 17:05:50 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.26 2006/03/09 14:48:33 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,6 +34,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -52,12 +53,16 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.ParameterizedWorkflowLauncherImpl;
 import org.astrogrid.desktop.modules.ui.RegistryBrowserImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.w3c.dom.Document;
@@ -71,6 +76,11 @@ import org.w3c.dom.Document;
 public class RegistryChooserPanel extends JPanel implements ActionListener {
     
     private static final int TOOLTIP_WRAP_LENGTH = 50;
+    
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(RegistryChooserPanel.class);
     
     
     /** model that maintains resource information objects - rather than deconstructing them and then rebuilding them afterwards
@@ -213,6 +223,15 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     private JTextField keywordField = null;
     private JButton goButton = null;
     private JTabbedPane tabPane;
+    private JEditorPane detailsPane = new JEditorPane("text/html","<html><body><font size='-1'>No entry selected</font></body></html>");
+    private JTextArea xmlPane = new JTextArea();
+    private ResourceInformationTableModel selectTableModel= new ResourceInformationTableModel();
+    private JTable selectTable = null;
+    private String filter = null;
+    private JSplitPane split = null;
+    private JLabel noResultsLabel = new JLabel("No Results Found");
+    private JCheckBox exhaustiveCheck = new JCheckBox("Full-text Search");
+    private JTree tree = null;
     
     /** assemble the ui */
     private void initialize() {    	
@@ -220,30 +239,19 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         
         setLayout(new BorderLayout());
         add(getTopPanel(),BorderLayout.NORTH);
-
-        JScrollPane jp = new JScrollPane(getCenterPanel());
         
-        JComponent bottomComp = getBottomPanel();
-        jp.setPreferredSize(new Dimension(300,200));
-        bottomComp.setPreferredSize(new Dimension(300,200)); 
+        tabPane = new JTabbedPane();        
+        tabPane.addTab("Details", null, new JScrollPane(detailsPane), "Details of chosen entry");        
+        tabPane.addTab("Tree View", IconHelper.loadIcon("tree.gif"), getTreePanel(), "Display results in tree form");
+        tabPane.addTab("XML entry", IconHelper.loadIcon("document.gif"), getBottomPanel(), "View the XML as entered in the registry");       
         
-        tabPane = new JTabbedPane();
-        
-        tabPane.add(new JScrollPane(detailsPane), "Details");
-        tabPane.add(bottomComp, "Registry entry");
-        tabPane.setToolTipTextAt(0,"Details");
-        tabPane.setToolTipTextAt(1,"View the XML as entered in the registry");
-        
-        split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,jp,tabPane);
+        split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,getCenterPanel(),tabPane);
         split.setPreferredSize(new Dimension(300,200));
         split.setSize(new Dimension(300,200));
         split.setDividerSize(5);
         split.setDividerLocation(70);       
         add(split,BorderLayout.CENTER);
     }
-    JSplitPane split = null;
-    JLabel noResultsLabel = new JLabel("No Results Found");
-    JCheckBox exhaustiveCheck = new JCheckBox("Full-text Search");
     
     private JPanel getTopPanel() {
         JPanel topPanel = new JPanel();
@@ -255,12 +263,6 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         topPanel.add(exhaustiveCheck,null);
         return topPanel;
     }
-
-
-
-    ResourceInformationTableModel selectTableModel= new ResourceInformationTableModel();
-    JTable selectTable = null;
-
     
     private JPanel getCenterPanel() {         
          JPanel centerPanel = new JPanel();
@@ -318,13 +320,19 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                         	detailsPane.setCaretPosition(0);
                             xmlPane.setText(XMLUtils.DocumentToString((Document)o));
                             xmlPane.setCaretPosition(0);
+                            try {
+                            JTree xtree = new RegistryTree(XMLUtils.DocumentToString((Document)o));
+                            tree.setModel(xtree.getModel());
+                            } catch (Exception e) {logger.error("ERROR: " + e.getMessage());}
+                            
                         }
                      }).start();                     
 
                  }
              }
          });        
-         centerPanel.add(selectTable);         
+         centerPanel.add(selectTable);
+         centerPanel.setPreferredSize(new Dimension(300,200));
          return centerPanel;
     }
     
@@ -346,10 +354,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
             return XMLUtils.DocumentToString((Document)arg0);
         }
     }
-
     
-    JEditorPane detailsPane = new JEditorPane("text/html","<html><body><font size='-1'>No entry selected</font></body></html>");
-    JTextArea xmlPane = new JTextArea();
     private JComponent getBottomPanel() {
         xmlPane.setEditable(false);
         xmlPane.setText("No entry selected");
@@ -357,9 +362,25 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         JScrollPane editorScrollPane = new JScrollPane(xmlPane);
         editorScrollPane.setVerticalScrollBarPolicy(
                         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        editorScrollPane.setPreferredSize(new Dimension(300,200));
         return editorScrollPane;
     }
-               
+
+	private JPanel getTreePanel() {
+		JPanel panel = new JPanel(new BorderLayout());
+		JScrollPane scrollPane = new JScrollPane(getTree());
+		panel.add(scrollPane);
+		panel.setPreferredSize(new Dimension(300,200));
+		return panel;
+	}
+	
+    /** build / access the tree */
+    private JTree getTree() {
+        if (tree == null) {
+        	tree = new JTree();
+        }
+        return tree;
+    }
     
     /**
      * This method initializes jTextField   
@@ -535,8 +556,6 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
        return reg.adqlSearchRI(sql);
    }
                     
-   private String filter = null;
-                    
     /** set an additional result filter
      * @param filter an adql-like where clause, null indicates 'no filter'
      */
@@ -585,6 +604,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.26  2006/03/09 14:48:33  pjn3
+Initial work to add JTree to registry browser
+
 Revision 1.25  2006/03/06 17:05:50  pjn3
 Correctly clear selection
 
