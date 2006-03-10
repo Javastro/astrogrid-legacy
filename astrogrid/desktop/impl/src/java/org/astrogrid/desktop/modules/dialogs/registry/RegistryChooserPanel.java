@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.26 2006/03/09 14:48:33 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.27 2006/03/10 17:33:19 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,7 +62,6 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.ParameterizedWorkflowLauncherImpl;
 import org.astrogrid.desktop.modules.ui.RegistryBrowserImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.w3c.dom.Document;
@@ -81,8 +80,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(RegistryChooserPanel.class);
-    
-    
+      
     /** model that maintains resource information objects - rather than deconstructing them and then rebuilding them afterwards
      * 
      * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
@@ -152,6 +150,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
             xmlPane.setText("No entry selected");
             tabPane.setSelectedIndex(0);
             keywordField.setText("");
+            tree.setModel(null);
             fireTableDataChanged();
         }
 
@@ -320,10 +319,13 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                         	detailsPane.setCaretPosition(0);
                             xmlPane.setText(XMLUtils.DocumentToString((Document)o));
                             xmlPane.setCaretPosition(0);
-                            try {
-                            JTree xtree = new RegistryTree(XMLUtils.DocumentToString((Document)o));
-                            tree.setModel(xtree.getModel());
-                            } catch (Exception e) {logger.error("ERROR: " + e.getMessage());}
+                            try {                            
+                            	RegistryTree xmltree = new RegistryTree((Document)o);
+                            	tree.setModel(xmltree.getModel());                            	
+                            } catch (Exception e) {
+                            	logger.error("Problem creating registry browser tree: " + e.getMessage());
+                            	tree.setModel(null);
+                            }
                             
                         }
                      }).start();                     
@@ -378,6 +380,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     private JTree getTree() {
         if (tree == null) {
         	tree = new JTree();
+        	tree.setModel(null);
         }
         return tree;
     }
@@ -604,6 +607,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.27  2006/03/10 17:33:19  pjn3
+set tree model to null when no entry available to prevent default 'color' tree appearing
+
 Revision 1.26  2006/03/09 14:48:33  pjn3
 Initial work to add JTree to registry browser
 
