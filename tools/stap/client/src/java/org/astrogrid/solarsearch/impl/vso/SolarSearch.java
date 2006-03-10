@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Set;
 
 import org.astrogrid.tools.votable.stap.v0_1.STAPMaker;
+import org.astrogrid.config.Config;
 
 import org.astrogrid.solarsearch.ws.vso.Data;
 import org.astrogrid.solarsearch.ws.vso.DataRequest;
@@ -33,6 +34,22 @@ import java.io.InputStream;
 import java.io.IOException;
 
 public class SolarSearch implements ISolarSearch {
+    
+    /**
+     * conf - Config variable to access the configuration for the server normally
+     * jndi to a config file.
+     * @see org.astrogrid.config.Config
+     */   
+    public static Config conf = null;
+    
+    /**
+     * Static to be used on the initiatian of this class for the config
+     */   
+    static {
+       if(conf == null) {
+          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+       }
+    }   
     
     public SolarSearch() {
         System.out.println("instantiated");
@@ -124,11 +141,19 @@ public class SolarSearch implements ISolarSearch {
         String dataFetchURL = null;
         
         String []instrumentName = new String[1];
-        printMap(info);
-        if(!info.containsKey("instr")) {
+        //printMap(info);
+        if(!info.containsKey("INSTRUMENT_ID")) {
             output.print("could not find instrument for query");
         }
-        instrumentName[0] = ((String [])info.get("instr"))[0];
+        
+        
+        String formatReq = null;
+        if(info.containsKey("FORMAT")) {
+            formatReq = (String)info.get("FORMAT");
+        }
+        
+        
+        instrumentName[0] = ((String [])info.get("INSTRUMENT_ID"))[0];
         Calendar startTimeCal = Calendar.getInstance();
         Calendar endTimeCal = Calendar.getInstance();
         
@@ -180,6 +205,7 @@ public class SolarSearch implements ISolarSearch {
             e2.printStackTrace();
         }
         System.out.println("version number being used = " + versionNumber.toString());
+        String serviceURL = conf.getString("service.url","http://localhost:8080/");
         
         System.out.println("making query on instrument = " + instrumentName[0] + " time start = " + queryTime.getStart() + " end time = " + queryTime.getEnd());
         value = binding.query(new org.astrogrid.solarsearch.ws.vso.QueryRequest(versionNumber,qrb));
@@ -191,83 +217,111 @@ public class SolarSearch implements ISolarSearch {
         
         for(int j = 0;j < value.length;j++) {
             QueryResponseBlock []qrbResults = value[j].getRecord();
-            System.out.println("results of providerqueryresponse: version = " + value[j].getVersion() + " provider = " + value[j].getProvider() + " number of rec found = " + value[j].getNo_of_records_found());
+            //System.out.println("results of providerqueryresponse: version = " + value[j].getVersion() + " provider = " + value[j].getProvider() + " number of rec found = " + value[j].getNo_of_records_found());
             if(qrbResults != null && qrbResults.length > 0) {
-                System.out.println("numuber of query response blocks = " + qrbResults.length);
+                //System.out.println("numuber of query response blocks = " + qrbResults.length);
                 for(int k = 0;k < qrbResults.length;k++) {
-                    Extent tempExtent = new Extent();
-                    if(qrbResults[k].getExtent() != null) {
-                        tempExtent.setX(qrbResults[k].getExtent().getX());
-                        tempExtent.setY(qrbResults[k].getExtent().getY());
-                        tempExtent.setWidth(qrbResults[k].getExtent().getWidth());
-                        tempExtent.setLength(qrbResults[k].getExtent().getLength());
-                        tempExtent.setType(qrbResults[k].getExtent().getType());
-                    }
-                    Time tempTime = new Time();
-                    if(qrbResults[k].getTime() != null) {
-                        tempTime.setStart(qrbResults[k].getTime().getStart());
-                        tempTime.setEnd(qrbResults[k].getTime().getEnd());
-                    }
-                    Wave tempWave = new Wave();
-                    tempWave.setWavemin(Float.NaN);
-                    tempWave.setWavemax(Float.NaN);
-                    if(qrbResults[k].getWave() != null) {
-                        tempWave.setWavemin(qrbResults[k].getWave().getWavemin());
-                        tempWave.setWavemax(qrbResults[k].getWave().getWavemax());
-                        tempWave.setWaveunit(qrbResults[k].getWave().getWaveunit());
-                        tempWave.setWavetype(qrbResults[k].getWave().getWavetype());
-                    }
-                    stapMaker.setDataID(qrbResults[k].getPhysobs());
-                    stapMaker.setTimeStart(dateFormatResponse.format(tempTime.getStart()));
-                    stapMaker.setTimeEnd(dateFormatResponse.format(tempTime.getEnd()));
-                    dataFetchURL = (String)info.get("service.url") + "?service=" + (String)info.get("service"); 
-                    dataFetchURL += "&START=" + dateFormatResponse.format(startTime.getTime());
-                    dataFetchURL += "&END=" + dateFormatResponse.format(endTime.getTime());
-                    dataFetchURL += "&provider=" + qrbResults[k].getProvider();
-                    dataFetchURL += "&version=" + versionNumber.toString();
-                    dataFetchURL += "&fileid=" + qrbResults[k].getFileid();
-                    stapMaker.setAccessReference(URLEncoder.encode(dataFetchURL,"UTF-8"));                    
-                    stapMaker.setProvider("VSO - " + value[j].getProvider());
-                    stapMaker.setDescription("Physical Object = " + qrbResults[k].getPhysobs() + "-- Source = " + qrbResults[k].getSource() +
-                            " Wave: min = " + tempWave.getWavemin() + " max = " + tempWave.getWavemax() + " unit = " + tempWave.getWaveunit() +
-                            " type = " + tempWave.getWavetype()); 
-                    stapMaker.setInstrumentID(qrbResults[k].getInstrument());
-                    /*
-                    astro.addRow( new Object[] { 
-                            new Float(value[j].getVersion())
-                            value[j].getProvider(),
-                            value[j].getNo_of_records_found(),
-                            value[j].getNo_of_records_returned(),
-                            value[j].getError(),
-                            value[j].getStatus(),                                                
-                            qrbResults[k].getProvider(),
-                            qrbResults[k].getSource(),
-                            qrbResults[k].getInstrument(),
-                            qrbResults[k].getPhysobs(),
-                            tempTime.getStart(),
-                            tempTime.getEnd(),
-                            new Float(tempWave.getWavemin()),
-                            new Float(tempWave.getWavemax()),
-                            tempWave.getWaveunit(),
-                            tempWave.getWavetype(),
-                            tempExtent.getX(),
-                            tempExtent.getY(),
-                            tempExtent.getWidth(),
-                            tempExtent.getLength(),
-                            tempExtent.getType(),
-                            qrbResults[k].getFileid(),
-                            qrbResults[k].getSize(),
-                            qrbResults[k].getInfo()} );                    
-               
-                */
+                    if(correctFormat(formatReq,qrbResults[k].getFileid().substring(qrbResults[k].getFileid().lastIndexOf('.')))) {                    
+                        Extent tempExtent = new Extent();
+                        if(qrbResults[k].getExtent() != null) {
+                            tempExtent.setX(qrbResults[k].getExtent().getX());
+                            tempExtent.setY(qrbResults[k].getExtent().getY());
+                            tempExtent.setWidth(qrbResults[k].getExtent().getWidth());
+                            tempExtent.setLength(qrbResults[k].getExtent().getLength());
+                            tempExtent.setType(qrbResults[k].getExtent().getType());
+                        }
+                        Time tempTime = new Time();
+                        if(qrbResults[k].getTime() != null) {
+                            tempTime.setStart(qrbResults[k].getTime().getStart());
+                            tempTime.setEnd(qrbResults[k].getTime().getEnd());
+                        }
+                        Wave tempWave = new Wave();
+                        tempWave.setWavemin(Float.NaN);
+                        tempWave.setWavemax(Float.NaN);
+                        if(qrbResults[k].getWave() != null) {
+                            tempWave.setWavemin(qrbResults[k].getWave().getWavemin());
+                            tempWave.setWavemax(qrbResults[k].getWave().getWavemax());
+                            tempWave.setWaveunit(qrbResults[k].getWave().getWaveunit());
+                            tempWave.setWavetype(qrbResults[k].getWave().getWavetype());
+                        }
+                        stapMaker.setDataID(qrbResults[k].getPhysobs());                        
+                        try {
+                        stapMaker.setTimeStart(dateFormatResponse.format(dateFormat.parse(tempTime.getStart())));                        
+                        stapMaker.setTimeEnd(dateFormatResponse.format(dateFormat.parse(tempTime.getEnd())));
+                        }catch(Exception e2) {
+                            e2.printStackTrace();
+                        }
+                        dataFetchURL = serviceURL + "?service=vso"; 
+                        dataFetchURL += "&START=" + dateFormatResponse.format(startTime.getTime());
+                        dataFetchURL += "&END=" + dateFormatResponse.format(endTime.getTime());
+                        dataFetchURL += "&provider=" + qrbResults[k].getProvider();
+                        dataFetchURL += "&version=" + versionNumber.toString();
+                        dataFetchURL += "&fileid=" + qrbResults[k].getFileid();
+                        stapMaker.setAccessReference(dataFetchURL);//URLEncoder.encode(dataFetchURL,"UTF-8"));                    
+                        stapMaker.setProvider("VSO - " + value[j].getProvider());
+                        stapMaker.setDescription("Physical Object = " + qrbResults[k].getPhysobs() + "-- Source = " + qrbResults[k].getSource() +
+                                " Wave: min = " + tempWave.getWavemin() + " max = " + tempWave.getWavemax() + " unit = " + tempWave.getWaveunit() +
+                                " type = " + tempWave.getWavetype()); 
+                        stapMaker.setInstrumentID(qrbResults[k].getInstrument());
+                        stapMaker.setFormat(
+                                (String)info.get("format.ending." + qrbResults[k].getFileid().substring(qrbResults[k].getFileid().lastIndexOf('.'))) != null ?
+                                (String)info.get("format.ending." + qrbResults[k].getFileid().substring(qrbResults[k].getFileid().lastIndexOf('.'))) :
+                                (String)info.get("format.default"));                    
+                        /*
+                        astro.addRow( new Object[] { 
+                                new Float(value[j].getVersion())
+                                value[j].getProvider(),
+                                value[j].getNo_of_records_found(),
+                                value[j].getNo_of_records_returned(),
+                                value[j].getError(),
+                                value[j].getStatus(),                                                
+                                qrbResults[k].getProvider(),
+                                qrbResults[k].getSource(),
+                                qrbResults[k].getInstrument(),
+                                qrbResults[k].getPhysobs(),
+                                tempTime.getStart(),
+                                tempTime.getEnd(),
+                                new Float(tempWave.getWavemin()),
+                                new Float(tempWave.getWavemax()),
+                                tempWave.getWaveunit(),
+                                tempWave.getWavetype(),
+                                tempExtent.getX(),
+                                tempExtent.getY(),
+                                tempExtent.getWidth(),
+                                tempExtent.getLength(),
+                                tempExtent.getType(),
+                                qrbResults[k].getFileid(),
+                                qrbResults[k].getSize(),
+                                qrbResults[k].getInfo()} );                    
+                   
+                    */
                     stapMaker.addRow();
+                    }//if
                 }//for
-              
-                stapMaker.writeTable(out);               
+                if(stapMaker.getRowCount() > 0)
+                    stapMaker.writeTable(out);
             }//if            
         }//for        
         stapMaker.writeEndVOTable(out);
     }
+    
+    private boolean correctFormat(String format, String accessRefExtension) {
+        if(format == null || format.trim().length() == 0) {
+            return true;
+        }        
+        if(format.equals("Graphic") && 
+           (accessRefExtension.equalsIgnoreCase("fits") || accessRefExtension.equalsIgnoreCase("jpg") ||
+            accessRefExtension.equalsIgnoreCase("gif"))) {
+            return true;
+        }
+        if(format.equals("TIME_SERIES") && 
+                (accessRefExtension.equalsIgnoreCase("cdf") || accessRefExtension.equalsIgnoreCase("txt") ||
+                 accessRefExtension.equalsIgnoreCase("vot"))) {
+                 return true;
+        }
+        return false;
+    }
+
         
 }
 

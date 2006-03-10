@@ -18,7 +18,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: SolarSearch.java,v 1.2 2006/03/07 16:26:15 KevinBenson Exp $
+ *  $Id: SolarSearch.java,v 1.3 2006/03/10 13:09:07 KevinBenson Exp $
  */
 
 package org.astrogrid.solarsearch.http.servlets;
@@ -33,6 +33,7 @@ import org.astrogrid.solarsearch.ISolarSearch;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.text.SimpleDateFormat;
 import java.io.PrintWriter;
 import java.io.IOException;
@@ -107,7 +108,6 @@ public class SolarSearch extends HttpServlet {
                 PrintWriter output = res.getWriter();        
                 try {
                     Class cl = Class.forName(className);
-                    req.getParameterMap().put("service.url",req.getRequestURL().toString());
                     ISolarSearch ss = (ISolarSearch)cl.newInstance();
                     ss.execute(startTimeCal, endTimeCal, req.getParameterMap(), output);
                 }catch(ClassNotFoundException cfe) {

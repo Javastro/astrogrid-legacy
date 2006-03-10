@@ -49,6 +49,11 @@ public class SolarSearch implements ISolarSearch {
         if(!info.containsKey("mission")) {
             output.print("could not find mission");
         }
+        String formatReq = null;
+        if(info.containsKey("FORMAT")) {
+            formatReq = (String)info.get("FORMAT");
+        }
+        
         System.out.println("the info.get(mission) = " + info.get("mission"));
         missionName[0] = ((String [])info.get("mission"))[0];
         Calendar startTimeCal = Calendar.getInstance();
@@ -79,7 +84,7 @@ public class SolarSearch implements ISolarSearch {
         
         for(int i = 0;i < views.length;i++) {
             if(views[i].isPublicAccess()) {
-               System.out.println("getting mission groups from view = " + views[i].getTitle());
+               //System.out.println("getting mission groups from view = " + views[i].getTitle());
                try {
                    binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
                                  new org.astrogrid.solarsearch.ws.cdaw.CDASWSLocator().getCoordinatedDataAnalysisSystemPort(new URL(views[i].getEndpointAddress()));
@@ -92,6 +97,7 @@ public class SolarSearch implements ISolarSearch {
                
                String []missionGroups = binding.getAllMissionGroups();
                String [][]instruments = binding.getAllInstruments();
+               /*
                System.out.println("instruments length = " + instruments.length);
                for(int r = 0;r < instruments.length;r++) {
                    System.out.println("short name = " + instruments[r][0] + " long name = " + instruments[r][1]);                   
@@ -101,9 +107,10 @@ public class SolarSearch implements ISolarSearch {
                System.out.println("instrument types length = " + instrumentType.length);
                for(int r = 0;r < instrumentType.length;r++) {
                    System.out.println("instrument type = " + instrumentType[r]);                   
-               }               
+               } 
+               */              
                for(int j = 0;j < missionGroups.length;j++) {
-                  System.out.println("comparing " + missionName[0].toUpperCase() + " with " + missionGroups[j].toUpperCase());
+                  //System.out.println("comparing " + missionName[0].toUpperCase() + " with " + missionGroups[j].toUpperCase());
                   if(missionName[0].toUpperCase().equals(missionGroups[j].toUpperCase())) {
                      DatasetDescription []dsd = binding.getDatasets(missionName, new String[0]);
                      for(int k = 0;k < dsd.length;k++) {
@@ -116,21 +123,28 @@ public class SolarSearch implements ISolarSearch {
                            endTemp = dsd[k].getEndTime();
                         }
                         String []dsURLS = binding.getDataUrls(dsd[k].getId(),startTemp,endTemp);
-                        System.out.println("urls found for the dataset");
                         if(dsURLS != null && dsURLS.length > 0) {
+                           
                            for(int m = 0;m < dsURLS.length;m++) {
-                              stapMaker.setDataID(dsd[k].getLabel());
-                              stapMaker.setTimeStart(dateFormat.format(dsd[k].getStartTime().getTime()));
-                              stapMaker.setTimeEnd(dateFormat.format(dsd[k].getEndTime().getTime()));
-                              stapMaker.setAccessReference(dsURLS[m]);
-                              stapMaker.setProvider("CDAW");
-                              stapMaker.setDescription(dsd[k].getLabel());
-                              if(dsd[k].getNotesUrl() != null && dsd[k].getNotesUrl().trim().length() > 0) {
-                                  stapMaker.setDescriptionURL(dsd[k].getNotesUrl());
-                              }//if
-                              stapMaker.addRow();
+                              if(correctFormat(formatReq,dsURLS[m].substring(dsURLS[m].lastIndexOf('.')))) {
+                                  stapMaker.setDataID(dsd[k].getLabel());
+                                  stapMaker.setTimeStart(dateFormat.format(dsd[k].getStartTime().getTime()));
+                                  stapMaker.setTimeEnd(dateFormat.format(dsd[k].getEndTime().getTime()));
+                                  stapMaker.setAccessReference(dsURLS[m]);
+                                  stapMaker.setProvider("CDAW");
+                                  stapMaker.setDescription(dsd[k].getLabel());
+                                  if(dsd[k].getNotesUrl() != null && dsd[k].getNotesUrl().trim().length() > 0) {
+                                      stapMaker.setDescriptionURL(dsd[k].getNotesUrl());
+                                  }//if                              
+                                  stapMaker.setFormat(
+                                  (String)info.get("format.ending." + dsURLS[m].substring(dsURLS[m].lastIndexOf('.'))) != null ?
+                                  (String)info.get("format.ending." + dsURLS[m].substring(dsURLS[m].lastIndexOf('.'))) :
+                                  (String)info.get("format.default"));
+                                  stapMaker.addRow();
+                              }
                            }
-                           stapMaker.writeTable(out);
+                           if(stapMaker.getRowCount() > 0)
+                               stapMaker.writeTable(out);
                         }
                      }//for
                   }//if
@@ -141,6 +155,24 @@ public class SolarSearch implements ISolarSearch {
         }//for        
         stapMaker.writeEndVOTable(out);
     }
+    
+    private boolean correctFormat(String format, String accessRefExtension) {
+        if(format == null || format.trim().length() == 0) {
+            return true;
+        }        
+        if(format.equals("Graphic") && 
+           (accessRefExtension.equalsIgnoreCase("fits") || accessRefExtension.equalsIgnoreCase("jpg") ||
+            accessRefExtension.equalsIgnoreCase("gif"))) {
+            return true;
+        }
+        if(format.equals("TIME_SERIES") && 
+                (accessRefExtension.equalsIgnoreCase("cdf") || accessRefExtension.equalsIgnoreCase("txt") ||
+                 accessRefExtension.equalsIgnoreCase("vot"))) {
+                 return true;
+        }
+        return false;
+    }
+    
     
     private static void printDataSet(DatasetDescription dsd) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

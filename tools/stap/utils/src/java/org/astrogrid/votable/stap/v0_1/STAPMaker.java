@@ -18,7 +18,7 @@ public class STAPMaker {
     
     public STAPMaker() {
         ColumnInfo []defValues;
-        defValues = new ColumnInfo[8];
+        defValues = new ColumnInfo[9];
         defValues[0] = new ColumnInfo("ACCESS_URL",String.class,"Url pointing to data file");
         defValues[0].setUCD("VOX:AccessReference");
         defValues[1] = new ColumnInfo("PROVIDER",String.class,"The archive (STAP service) providing the data");
@@ -35,8 +35,10 @@ public class STAPMaker {
         defValues[6].setUCD("meta");
         defValues[7] = new ColumnInfo("DESCRIPTION_URL",String.class,"A URL pointing to information on the data product");
         defValues[7].setUCD("meta.ref.url");
+        defValues[8] = new ColumnInfo("FORMAT",String.class,"Format");
+        defValues[8].setUCD("VOX:Format");        
         astro = new RowListStarTable( defValues );
-        values = new Object[8];
+        values = new Object[9];
     }
     
     public void setAccessReference(String accessReference) {
@@ -71,8 +73,17 @@ public class STAPMaker {
         values[7] = descriptionURL;
     }
     
+    public void setFormat(String format) {
+        values[8] = format;
+    }
+    
+    
     public void addRow() {
         astro.addRow( values );
+    }
+    
+    public long getRowCount() {
+        return astro.getRowCount();
     }
     
     public void writeBeginVOTable(BufferedWriter out, String description) throws IOException {
