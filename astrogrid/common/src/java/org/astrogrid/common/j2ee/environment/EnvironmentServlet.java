@@ -40,12 +40,6 @@ public class EnvironmentServlet extends HttpServlet {
    * The purpose of the servlet is to maintain this bean.
    */
   private Environment environment;
-  
-  /**
-   * The web resource to which control is transfered after this
-   * servlet finishes processing a request.
-   */
-  private String nextResource;
 
   /** Creates a new instance of EnvironmentServlet */
   public EnvironmentServlet() {
@@ -55,11 +49,6 @@ public class EnvironmentServlet extends HttpServlet {
   public void init() throws ServletException {
     ServletContext context = this.getServletContext();
     try {
-      this.nextResource = this.getInitParameter("next.resource");
-      if (this.nextResource == null) {
-        this.nextResource = "/admin/environment-main.jsp";
-      }
-      
       URL webDotXmlUrl = context.getResource("/WEB-INF/web.xml");
       this.environment.setDeploymentDescriptor(webDotXmlUrl.toString());
       context.setAttribute("environment", this.environment);
@@ -91,7 +80,7 @@ public class EnvironmentServlet extends HttpServlet {
       }
 
       // Hand off to a JSP to render the next page.
-      RequestDispatcher dispatcher = request.getRequestDispatcher(this.nextResource);
+      RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/environment-main.jsp");
       dispatcher.forward(request, response);
     }
     catch (Exception e) {
