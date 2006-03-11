@@ -1,5 +1,5 @@
 /*
- * $Id: HttpMetadataServiceTest.java,v 1.5 2006/03/07 21:45:26 clq2 Exp $
+ * $Id: HttpMetadataServiceTest.java,v 1.6 2006/03/11 05:57:54 clq2 Exp $
  * 
  * Created on 14-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -19,12 +19,11 @@ import java.net.URL;
 import org.exolab.castor.xml.CastorException;
 
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
-import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
-import org.astrogrid.applications.manager.BaseConfiguration;
 import org.astrogrid.applications.manager.DefaultMetadataService;
+import org.astrogrid.applications.manager.DefaultMetadataService.URLs;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
@@ -54,7 +53,23 @@ public class HttpMetadataServiceTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
-      Configuration configuration = new BaseConfiguration();
+      URLs urls = new DefaultMetadataService.URLs() {
+
+         public URL getRegistryTemplate() {
+            return EmptyCEAComponentManager.class
+                  .getResource("/CEARegistryTemplate.xml");
+         }
+
+         public URL getServiceEndpoint() {
+            try {
+               return new URL("http://locahost/metadatatest");
+            } catch (MalformedURLException e) {
+               fail("test endpoint for service not specified properly");
+
+            }
+            return null;
+         }
+      };
       IdGen id = new InMemoryIdGen();
       DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
       TestAuthority resol = new TestAuthority();
@@ -64,12 +79,11 @@ public class HttpMetadataServiceTest extends TestCase {
             new TestRegistryQuerier(null), env);
 
       metadataService = new HttpMetadataService(
-          httpApplicationDescriptionLibrary, 
-          configuration
-      );
+            httpApplicationDescriptionLibrary, urls);
    }
    
-   public void testGetMetadata() throws Exception {
+   public void testGetMetadata() throws ApplicationDescriptionNotFoundException, CastorException, IOException
+   {
       VOResources desc = metadataService.getVODescription();
       assertNotNull("metadata is null", desc);
       assertEquals("should only be one resource",1, desc.getResourceCount());
@@ -77,20 +91,18 @@ public class HttpMetadataServiceTest extends TestCase {
       assertTrue("resource should be CeaService" ,resource instanceof CeaServiceType);
       CeaServiceType ceaservice = (CeaServiceType) resource;
       assertTrue("should manage at least one application", ceaservice.getManagedApplications().getApplicationReferenceCount() > 0);
+      
    }
 
 }
 
 /*
  * $Log: HttpMetadataServiceTest.java,v $
- * Revision 1.5  2006/03/07 21:45:26  clq2
- * gtr_1489_cea
+ * Revision 1.6  2006/03/11 05:57:54  clq2
+ * roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
  *
- * Revision 1.2.34.2  2006/01/26 13:18:42  gtr
- * Refactored.
- *
- * Revision 1.2.34.1  2005/12/22 13:56:03  gtr
- * Refactored to match the other kinds of CEC.
+ * Revision 1.4  2006/01/10 11:26:52  clq2
+ * rolling back to before gtr_1489
  *
  * Revision 1.2  2005/07/05 08:26:56  clq2
  * paul's 559b and 559c for wo/apps and jes

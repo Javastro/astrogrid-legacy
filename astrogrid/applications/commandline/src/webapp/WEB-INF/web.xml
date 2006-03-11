@@ -3,15 +3,22 @@
     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
     "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
 <web-app>
-	
   <display-name>Common Execution Connector for command-line applications</display-name>
- 
-	<servlet>
+  <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
     <servlet-class>
         org.apache.axis.transport.http.AxisServlet
     </servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AdminServlet</servlet-name>
+    <display-name>Axis Admin Servlet</display-name>
+    <servlet-class>
+        org.apache.axis.transport.http.AdminServlet
+    </servlet-class>
+    <load-on-startup>100</load-on-startup>
   </servlet>
   
  <servlet>
@@ -32,35 +39,15 @@
     </init-param>
     <load-on-startup>100</load-on-startup>
   </servlet>
-	
   <!-- a small servlet that will invoke the CommonExecutionController to make sure that it registers itself on statup -->
   <servlet>
       <servlet-name>CommonExecutionControllerInitializer</servlet-name>
       <servlet-class>org.astrogrid.applications.component.InitServlet</servlet-class>
-      <load-on-startup>200</load-on-startup>	
+      <load-on-startup>200</load-on-startup>
+	  
+  	
   </servlet>
 
-	<servlet>
-		<servlet-name>EnvironmentServlet</servlet-name>
-		<display-name>Environment control servlet</display-name>
-		<servlet-class>org.astrogrid.applications.component.CeaEnvironmentServlet</servlet-class>
-		<init-param>
-			<param-name>next.resource</param-name>
-			<param-value>/admin/environment-save.jsp</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>	
-
-	<servlet-mapping>
-		<servlet-name>CommonExecutionControllerInitializer</servlet-name>
-		<url-pattern>/cec-http</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>EnvironmentServlet</servlet-name>
-		<url-pattern>/admin/EnvironmentServlet</url-pattern>
-	</servlet-mapping>
-	
  <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <url-pattern>/TestServlet/*</url-pattern>
@@ -86,11 +73,23 @@
     <url-pattern>/SOAPMonitor</url-pattern>
   </servlet-mapping>
 
+ <!-- uncomment this if you want the admin servlet -->
+ <!--
+  <servlet-mapping>
+    <servlet-name>AdminServlet</servlet-name>
+    <url-pattern>/servlet/AdminServlet</url-pattern>
+  </servlet-mapping>
+ -->
+
+    <!-- currently the W3C havent settled on a media type for WSDL;
+    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
+    for now we go with the basic 'it's XML' response -->
   <mime-mapping>
     <extension>wsdl</extension>
      <mime-type>text/xml</mime-type>
   </mime-mapping>
   
+
   <mime-mapping>
     <extension>xsd</extension>
     <mime-type>text/xml</mime-type>
@@ -101,37 +100,63 @@
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>index.jws</welcome-file>
   </welcome-file-list>
+
 	
+	<!-- The installer must set this to identify the local configuration of the application.
+	     This only applies to the CL-CEC, not to the HTTP-CEC. -->
 	<env-entry>
-		<description>The full path to a directory where the CEC may build its configuration structure.</description>
-		<env-entry-name>cea.base.dir</env-entry-name>
+		<description>The URL for an XML document descripting the applications to be run by a CL-CEC.</description>
+		<env-entry-name>cea.local.apps.config</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 	
+	<!-- The installer must set this to identify the directory where the CEC keeps its job records. -->
 	<env-entry>
-		<description>The URL for this web-application; e.g. http://x.y.z:8080/astrogrid-cea-server.</description>
-		<env-entry-name>cea.webapp.url</env-entry-name>
+		<description>The full path to a directory where the CEC may write job-record files.</description>
+		<env-entry-name>cea.job.records</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 	
+	<!-- The installer must set this to identify the directory where the CEC may write files 
+	     holding the input and output parameters of a job. -->
 	<env-entry>
-		<description>The web-service URL for querying the reference resource-registry.</description>
-		<env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
-		<env-entry-value>http://galahad.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
+		<description>The full path to a directory where the CEC may write temporary files for jobs.</description>
+		<env-entry-name>cea.job.temp.files</env-entry-name>
+		<env-entry-type>java.lang.string</env-entry-type>
 	</env-entry>
 	
-	<env-entry>
-		<description>The web-service URL for the publishing resource-registry.</description>
-		<env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
-		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
- 
+	<!-- This defines the component-manager class for the CL-CEC. Deployers should not change this. -->
 	<env-entry>
 		<description>Class name of the component manager implementation to use. Don't change this during deployment!</description>
 		<env-entry-name>cea.component.manager.class</env-entry-name>
 		<env-entry-value>org.astrogrid.applications.commandline.CommandLineCEAComponentManager</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
+	
+	<!-- Nominate a full, searchable registry from which to read by this web-application's details.
+	     The given value is AstroGrid's central registry which will be OK for most cases. --> 
+	<env-entry>
+		<description>The service endpoint for querying the resource registry.</description>
+		<env-entry-name>registry.query.endpoint</env-entry-name>
+		<env-entry-value>http://galahad.star.le.ac.uk:8081/astrogrid-registry/services/RegistryQuery</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<!-- Nominate a registry where the web-application can publish itself.
+	     No value is given as we don't recommend self-publishing at present. -->
+	<env-entry>
+		<description>The service endpoint for updating the resource registry.</description>
+		<env-entry-name>registry.admin.endpoint</env-entry-name>
+		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+	
+	<!-- At present this MUST be set to 0.9 otherwise the component fails. -->
+	<env-entry>
+		<description>The version of the schema for resource documents: 0.9 or 0.10."</description>
+		<env-entry-name>org.astrogrid.registry.result.version</env-entry-name>
+		<env-entry-value>0.9</env-entry-value>
+		<env-entry-type>java.lang.String</env-entry-type>
+	</env-entry>
+  
 </web-app>

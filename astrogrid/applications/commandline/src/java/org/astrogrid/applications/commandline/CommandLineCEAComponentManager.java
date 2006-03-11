@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManager.java,v 1.13 2006/03/07 21:45:25 clq2 Exp $
+/*$Id: CommandLineCEAComponentManager.java,v 1.14 2006/03/11 05:57:53 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,12 +15,11 @@ import org.astrogrid.applications.commandline.digester.CommandLineApplicationDes
 import org.astrogrid.applications.commandline.digester.CommandLineDescriptionsLoader;
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
-import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
 
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
@@ -37,104 +36,102 @@ import java.net.URL;
  *
  */
 public class CommandLineCEAComponentManager extends EmptyCEAComponentManager  {
+    /** configuration keys looked for. */
+    /** key to look in config for location of configuration file (required) */
+    public static final String DESCRIPTION_URL ="cea.local.apps.config";
+    /** key to look in config for location of working dir (optional, defaults to /tmp) */
+    public static final String WORKING_DIR = "cea.job.temp.files";
 
     /**
-     * construct a component manager configured with a working cea server with 
-     * the commandline application provider.
+     * construct a component manager configured with a working cea server with the commandline application provider.
      */
     public CommandLineCEAComponentManager() {
-      super();
-      
-      registerDefaultServices(pico);
-      EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
-      
-      // now the provider
-      registerCommandLineProvider(pico);
+        super();
+        final Config config =   SimpleConfig.getSingleton();
+
+        // base cea server also needs a provider for vodescription - registry entry builder does the job.
+        EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
+        //auto-registration with registry -- appropriate for this cea server.
+        /* temporarily commented out - kevin suspects this causes problems in auto-integration
+         * when server is restarted, as cea-commandline comes up before registry - so can't register.
+         * which sounds fair enought, but kevin thinks this is causing the whole system to hang.
+         * @todo - investigate
+         * reinstated but the start method is disabled.
+         */
+        EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
+
+        // now need the other side - the cec manager itself.
+        registerDefaultServices(pico);
+        EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
+
+
+        // now the provider
+        registerCommandLineProvider(pico,config);
     }
-    
+    public void registerEnvironmentRetriever(final MutablePicoContainer pico)
+    {
+       logger.info("registering Commandline Environment Retriever");
+       pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class,
+                                            CommandLineExecutionEnvRetriever.class);
+    }
 
     /** register just the components for the commandline provider - none of the generic components */
-    public static final void registerCommandLineProvider(MutablePicoContainer pico) {
+    public static final void registerCommandLineProvider(MutablePicoContainer pico, final Config config) {
+         log.info("registering commandline description loader");
+       // stuff required for application descriptions
+         pico.registerComponentImplementation(CommandLineDescriptionsLoader.class);
+         // configuration for the loader
+         pico.registerComponentInstance(CommandLineDescriptionsLoader.DescriptionURL.class,
+                                        new CommandLineDescriptionsLoader.DescriptionURL() {
+             private final URL url = config.getUrl(DESCRIPTION_URL);
+             public URL getURL() {
+                     return url;
+             }
+         });
+         log.info("registering the commandline application description factory");
+         // factory for appDescs - necessary to register parameter to this by hand -
+         // as latest version of pico is a bit funny about references to the container itself.
+         pico.registerComponentImplementation(CommandLineApplicationDescriptionFactory.class
+                 ,CommandLineApplicationDescriptionFactory.class
+                 , new Parameter[]{new ConstantParameter(pico)}
+                 );
+         // 'factory' for environments
+         log.info("registering the commandline application environment factory");
+         pico.registerComponent( // create a new instance each time.
+             new ConstructorInjectionComponentAdapter(CommandLineApplicationEnvironment.class,
+                                                      CommandLineApplicationEnvironment.class));
+         // configuration for environments
+         pico.registerComponentInstance(CommandLineApplicationEnvironment.WorkingDir.class,new CommandLineApplicationEnvironment.
+         WorkingDir() {
+             private final File file = new File(config.getString(WORKING_DIR,System.getProperty("java.io.tmpdir")));
+             public File getDir() {
+                 return file;
+             }
+         });
 
-      // The CEC configuration, in its type-safe form. The configuration
-      // has two interfaces, one generic and one specific to the CL-CEC.
-      logger.debug("Registering the CEC configuration.");
-      pico.registerComponentImplementation(Configuration.class, 
-                                           BasicCommandLineConfiguration.class);
-      pico.registerComponentImplementation(CommandLineConfiguration.class, 
-                                           BasicCommandLineConfiguration.class);
-      
-      // The carrier for the application environment. The "default services"
-      // include one of these in order to be self consistent, but we need to
-      // replace that with a specialized one.
-      logger.debug("registering Commandline Environment Retriever");
-      pico.unregisterComponent(ApplicationEnvironmentRetriver.class);
-      pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class,
-                                           CommandLineExecutionEnvRetriever.class);
-      
-      // stuff required for application descriptions
-      log.debug("registering commandline description loader");
-      pico.registerComponentImplementation(CommandLineDescriptionsLoader.class);
-
-      // factory for appDescs - necessary to register parameter to this by hand -
-      // as latest version of pico is a bit funny about references to the container itself.
-      log.debug("registering the commandline application description factory");
-      pico.registerComponentImplementation(CommandLineApplicationDescriptionFactory.class,
-                                           CommandLineApplicationDescriptionFactory.class, 
-                                           new Parameter[]{new ConstantParameter(pico)});
-
-      // 'factory' for environments
-      log.debug("registering the commandline application environment factory");
-      pico.registerComponent( // create a new instance each time.
-        new ConstructorInjectionComponentAdapter(CommandLineApplicationEnvironment.class,
-                                                 CommandLineApplicationEnvironment.class));
-
-     // again, create a new one at each call. again, need to pass in pico parameter separately.
-     pico.registerComponent(
-       new ConstructorInjectionComponentAdapter(CommandLineApplicationDescription.class,
-                                                CommandLineApplicationDescription.class, 
-                                                new Parameter[]{new ComponentParameter(ApplicationDescriptionEnvironment.class),
-                                                new ConstantParameter(pico)}
+         // again, create a new one at each call. again, need to pass in pico parameter separately.
+         pico.registerComponent(
+             new ConstructorInjectionComponentAdapter(CommandLineApplicationDescription.class
+                     ,CommandLineApplicationDescription.class
+                     , new Parameter[]{new ComponentParameter(ApplicationDescriptionEnvironment.class)
+                             ,new ConstantParameter(pico)
+                     }
              ));
 
-    pico.registerComponentImplementation(CommandLineCECControl.class);
-    
-    logger.info("Components for the CL-CEC have been registered.");
-  }
-    
-   /**
-    * Sets a specific instance of the CEC-configuration object.
-    * This is useful for testing with an environment set in the
-    * the test-code. Calling this method circumvents the usual
-    * process of finding the configuration from JNDI etc. and
-    * is typically inappropriate for a CEC in actual service.
-    */
-   public void setCommandLineConfigurationInstance(CommandLineConfiguration c) {
-     this.pico.unregisterComponent(CommandLineConfiguration.class);
-     this.pico.registerComponentInstance(CommandLineConfiguration.class, c);
-     this.pico.unregisterComponent(Configuration.class);
-     this.pico.registerComponentInstance(Configuration.class, c);
-   }  
+         pico.registerComponentImplementation(CommandLineCECControl.class);
+    }
+
 
  }
 
 
 /*
 $Log: CommandLineCEAComponentManager.java,v $
-Revision 1.13  2006/03/07 21:45:25  clq2
-gtr_1489_cea
+Revision 1.14  2006/03/11 05:57:53  clq2
+roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
 
-Revision 1.10.12.4  2006/01/31 21:39:06  gtr
-Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
-
-Revision 1.10.12.3  2006/01/25 17:02:49  gtr
-Refactored: the configuration is now a fixed structure based at the configurable location cea.base.dir.
-
-Revision 1.10.12.2  2005/12/19 18:44:46  gtr
-Fixed: the "command-line provider" is now registered (previously it had been left commented out).
-
-Revision 1.10.12.1  2005/12/19 18:12:30  gtr
-Refactored: changes in support of the fix for 1492.
+Revision 1.12  2006/01/10 11:26:51  clq2
+rolling back to before gtr_1489
 
 Revision 1.10  2005/09/01 16:08:46  clq2
 gtr_1230_2

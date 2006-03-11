@@ -55,36 +55,35 @@
    * configure axis service - i.e. create server-config.wsdd
    * generate war 'site' and include this
    -->
-  <preGoal name="war:war">
-    <attainGoal name="package-war" />
-  </preGoal>
-	
-	
-  <goal name="package-war" description="Top-level goal for war packaging">
-   	
-   	<!-- Extract parts from the jar dependencies that are needed for the build. -->
-   	<echo>Grabbing resources from jars...</echo>
-   	<mkdir dir="${working.dir}" />
-   	<deploy:copy-deps todir="${working.dir}" />
-   	<unjar dest="${working.dir}" overwrite="true">
-   		<fileset dir="${working.dir}">
-   			<include name="astrogrid-workflow-objects-*.jar" />
-   		</fileset>
-   		<patternset>
-   			<include name="wsdd/**" />
-   			<include name="schema/**" />
-   			<include name="wsdl/**" />
-   		</patternset>
-   	</unjar>
-  	
-  	<!-- Do the packaging. These operations are written as separate goals
-  		   so that they can be overridden in sub-projects. -->
-    <attainGoal name="configure-webapp" />
-    <property name="webapp.docs" value="${maven.war.webapp.dir}" />
-    <attainGoal name="webapp-docs" />
-  </goal>
+   <preGoal name="war:war">
+        <attainGoal name="package-war" />
+   </preGoal>
+   <goal name="package-war"
+     description="top-level goal for war packaging">
+        <attainGoal name="grab-resources" />
+        <attainGoal name="configure-webapp" />
+        <property name="webapp.docs" value="${maven.war.webapp.dir}" />
+        <attainGoal name="webapp-docs" />
+   </goal>
 
-   <goal name="configure-webapp">
+   <goal name="grab-resources">
+        <echo>Grabbing resources from jars</echo>
+        <mkdir dir="${working.dir}" />
+        <deploy:copy-deps todir="${working.dir}" />
+        <unjar dest="${working.dir}" overwrite="true">
+                <fileset dir="${working.dir}">
+                        <include name="astrogrid-workflow-objects-*.jar" />
+                </fileset>
+                <patternset>
+                        <include name="wsdd/**" />
+                        <include name="schema/**" />
+                        <include name="wsdl/**" />
+                </patternset>
+        </unjar>
+
+   </goal>
+
+   <goal name="configure-webapp" prereqs="grab-resources" >
    <!-- setting which transformer to use -->
    ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
         <!-- tailor the deployment descriptor to our system -->
@@ -103,49 +102,37 @@
         </java>
    </goal>
 
-   <goal name="webapp-docs">
-   	 <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}"/>
-     <echo>Generating web-app's internal documentation into ${maven.docs.dest}</echo>
-   	 <mkdir dir="${maven.docs.dest}"/>
-   	
-   	 <!-- Create the directory in which the document sources are accumulated. -->
-     <property name="tmp.docs" location="${working.dir}/webapp-docs" />
-     <mkdir dir="${tmp.docs}" />
-   	
-   	 <!-- Copy the xdocs for the static web pages. These pages are the same as 
-   	 	    those made by the site goal, but the static index page isn't used
-   	 	    inside the web application.  This goal work differently depending
-   	      on whether it is run directly or as a pre/post goal of war:war.
-   	      In the latter case, the property maven.war.webapp.dir is set and the
-   	      documents go into the nascent web application. In the former case,
-   	      the property isn't set and Maven generates the documents into the
-   	      default directory for the site documentation, not into the web app. -->
-     <copy todir="${tmp.docs}" overwrite="false">
-       <fileset dir="${working.dir}">
-         <include name="wsdl/**" />
-         <include name="schema/**" />
-       </fileset>
-       <fileset dir="${basedir}/xdocs" >
-				 <exclude name="**/navigation.xml"/>
-			 </fileset>			 
-     </copy>
-   	
-   	 <!-- Copy the xdocs that are provided specifically for the web application. -->
-   	 <copy todir="${tmp.docs}" >
-   		 <fileset dir="${basedir}/war-xdocs" />
-   	 </copy>
-   	
-     <!-- set up properties -->
-     <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}" />
-     <j:set var="maven.docs.src" value="${tmp.docs}" />
-     <j:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
-     <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
-     <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
-     <j:set var="maven.xdoc.includeProjectDocumentation" value="no" />
-     <attainGoal name="xdoc:generate-from-pom" />
-     <attainGoal name="javadoc:generate" />
-     <attainGoal name="maven-jxr-plugin:report" />
-     <attainGoal name="xdoc" />
+   <goal name="webapp-docs" prereqs="grab-resources">
+        <echo>generating webapp site into ${webapp.docs}</echo>
+        <mkdir dir="${webapp.docs}" />
+        <property name="tmp.docs" location="${working.dir}/webapp-docs" />
+        <mkdir dir="${tmp.docs}" />
+        <copy todir="${tmp.docs}" >
+                <fileset dir="${basedir}/war-xdocs" />
+        </copy>
+        <!-- merge in anything else from site xdocs, and
+         the resources we grabbed previously. -->
+        <copy todir="${tmp.docs}" overwrite="false">
+                <fileset dir="${working.dir}">
+                        <include name="wsdl/**" />
+                        <include name="schema/**" />
+                </fileset>
+                <fileset dir="${basedir}/../xdocs" >
+					<exclude name="**/navigation.xml"/>
+			    </fileset>			 
+        </copy>
+         <!-- set up properties -->
+        <j:set var="maven.docs.dest" value="${webapp.docs}" />
+        <j:set var="maven.docs.src" value="${tmp.docs}" />
+        <j:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
+        <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
+        <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
+        <j:set var="maven.xdoc.includeProjectDocumentation" value="no" />
+        <attainGoal name="xdoc:generate-from-pom" />
+        <attainGoal name="javadoc:generate" />
+        <attainGoal name="maven-jxr-plugin:report" />
+        <attainGoal name="xdoc" />
+        <!-- now copy generated docs into webapp -->
    </goal>
 
 <!-- boilerplate below here -->
@@ -168,27 +155,5 @@
   <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
   <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
 </goal>
-	
-	<!-- After building the web-site with the documentation, the download document needs to be
-		updated with the version and build numbers. This is done in the XHTML output, instead
-		of in the xdoc input, so as to keep the build idempotent. Note that the links built
-		in the download document will be broken until this build is loaded onto the AstroGrid
-		software site. -->
-	<postGoal name="xdoc">
-		<!-- Use an ant filter to replace the version-number token with its value. Use the 
-			ant move task, "moving" the file to its current location, to activate the filter. -->
-		<move file="${maven.docs.dest}/DOWNLOAD.html" 
-			tofile="${maven.docs.dest}/DOWNLOAD-versioned.html" 
-			filtering="true"
-			failonerror="false">
-			<filterset>
-				<filter token="astrogrid.applications.version" value="${astrogrid.applications.version}"/>
-			</filterset>
-		</move>
-		<move file="${maven.docs.dest}/DOWNLOAD-versioned.html" 
-			tofile="${maven.docs.dest}/DOWNLOAD.html" 
-			filtering="false"
-			failonerror="false"/>
-	</postGoal>
 
 </project>

@@ -1,4 +1,4 @@
-/* $Id: HttpServiceClientTest.java,v 1.6 2006/03/07 21:45:26 clq2 Exp $
+/* $Id: HttpServiceClientTest.java,v 1.7 2006/03/11 05:57:54 clq2 Exp $
  * Created on Jul 26, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -55,15 +55,39 @@ public class HttpServiceClientTest extends TestCase {
      * @throws HttpException on test failure
      *  
      */
-    public void testCall() throws Exception {
+    public void testCall() throws HttpException, IOException {
         final HttpServiceClient client = new HttpServiceClient(LOCALHOST + TestWebServer.ECHO_PARAMS_URI,
                 HttpServiceClient.HttpServiceType.GET);
         final Properties params = new Properties();
         params.put("George", "Bush");
         params.put("Genocidal", "Maniac");
-        final String response = this.callAndStringify(client, params);
+        final String response = client.call(params);
         //@TODO...careful...what if they're not in the same order?
         assertEquals("Returned parameters not correct", response, params.toString());
+    }
+
+    /**
+     * Post is not supported just yet...check that.
+     * 
+     * @throws IOException
+     * @throws HttpException
+     *  
+     */
+    public void testPostIsDuff() throws HttpException, IOException {
+    	fail("This test is not ready yet, since the in-process webserver doesn't seem very happy with post");
+        try {
+            final HttpServiceClient client = new HttpServiceClient(LOCALHOST + TestWebServer.ECHO_PARAMS_URI,
+                    HttpServiceClient.HttpServiceType.POST);
+            final Properties params = new Properties();
+            params.put("George", "Bush");
+            params.put("Genocidal", "Maniac");
+
+            final String response = client.call(params);
+        } catch (UnsupportedOperationException e) {
+            //good
+            return;
+        }
+        fail("Expected an UnsupportedOperationException here");
     }
 
     /**
@@ -72,13 +96,13 @@ public class HttpServiceClientTest extends TestCase {
      * @throws HttpApplicationNetworkException
      *  
      */
-    public void testCallWithXML() throws Exception {
+    public void testCallWithXML() throws HttpApplicationNetworkException, HttpApplicationWebServiceURLException {
         final HttpServiceClient client = new HttpServiceClient(LOCALHOST + TestWebServer.ADDER_URI_XML,
                 HttpServiceClient.HttpServiceType.GET);
         final Properties params = new Properties();
         params.put("x", "4");
         params.put("y", "5");
-        final String response = this.callAndStringify(client, params);
+        final String response = client.call(params);
         assertEquals("Returned result not correct", "<result>9</result>", response);
     }
 
@@ -86,14 +110,14 @@ public class HttpServiceClientTest extends TestCase {
      * Should fail nicely if we provide a stupid URL
      *  
      */
-    public void testDuffURL1() throws Exception {
+    public void testDuffURL1() throws HttpApplicationNetworkException {
         final HttpServiceClient client = new HttpServiceClient(LOCALHOST + "/somewherestupid",
                 HttpServiceClient.HttpServiceType.GET);
         final Properties params = new Properties();
 
         final String response;
         try {
-            response = this.callAndStringify(client, params);
+            response = client.call(params);
         } catch (HttpApplicationWebServiceURLException e) {
             // expected
             return;
@@ -105,14 +129,14 @@ public class HttpServiceClientTest extends TestCase {
      * Should fail nicely if we provide a malformed URL
      *  
      */
-    public void testDuffURL2() throws Exception   {
+    public void testDuffURL2() throws HttpApplicationWebServiceException   {
         try {
         final HttpServiceClient client = new HttpServiceClient("blah:ceci n'est pas un URL",
                 HttpServiceClient.HttpServiceType.GET);
         final Properties params = new Properties();
 
 
-            final String response = this.callAndStringify(client, params);
+            final String response = client.call(params);
         } catch (IllegalArgumentException e) {
             //good
             return;
@@ -131,7 +155,7 @@ public class HttpServiceClientTest extends TestCase {
      * @throws HttpException
      *  
      */
-    public void testDuffURL3() throws Exception  {
+    public void testDuffURL3() throws HttpApplicationWebServiceURLException  {
         //hope this port isn't in use
         final HttpServiceClient client = new HttpServiceClient("http://127.0.0.1:2304/somewherestupid",
                 HttpServiceClient.HttpServiceType.GET);
@@ -140,7 +164,7 @@ public class HttpServiceClientTest extends TestCase {
         params.put("Genocidal", "Maniac");
         final String response;
         try {
-            response = this.callAndStringify(client, params);
+            response = client.call(params);
         } catch (HttpApplicationNetworkException e) {
             // expected
             return;
@@ -152,32 +176,12 @@ public class HttpServiceClientTest extends TestCase {
         HttpServiceClient.HttpServiceType type = HttpServiceClient.HttpServiceType.GET;
         assertEquals("get", type.toString());
     }
-    
-    /**
-     * Calls the HTTP service and converts the results from Byte[] to string.
-     * @param client The HTTP client to make the call.
-     * @param params Parameters of the HTTP call.
-     * @return The result of the HTTP call.
-     */
-    public String callAndStringify(HttpServiceClient client, 
-                                   Properties        params) throws Exception {
-      return client.call(params).toString();
-    }
 }
 
 /*
  * $Log: HttpServiceClientTest.java,v $
- * Revision 1.6  2006/03/07 21:45:26  clq2
- * gtr_1489_cea
- *
- * Revision 1.5.142.3  2006/01/31 21:39:07  gtr
- * Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
- *
- * Revision 1.5.142.2  2006/01/30 19:28:18  gtr
- * I fixed the test to accomodate response bodies that are delivered as byte[].
- *
- * Revision 1.5.142.1  2006/01/26 13:19:04  gtr
- * Refactored.
+ * Revision 1.7  2006/03/11 05:57:54  clq2
+ * roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
  *
  * Revision 1.5  2004/09/14 16:26:26  jdt
  * Attempt to get the http-post working.  Upgraded http-client, to no avail.  Either http client

@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManagerTest.java,v 1.4 2006/03/07 21:45:26 clq2 Exp $
+/*$Id: JavaClassCEAComponentManagerTest.java,v 1.5 2006/03/11 05:57:54 clq2 Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,11 +41,12 @@ public class JavaClassCEAComponentManagerTest extends AbstractComponentManagerTe
     protected CEAComponentManager createManager() {
         return new JavaClassCEAComponentManager();
     }
-        
-    protected void configureManager() {
-      // Nothing to do here.
-    }
-        
+
+
+    public  void setupConfigComponentManager() {
+        basicConfig();
+                
+    }    
     public void testUseQuerier() {
        QueryService queryService = manager.getQueryService();
       assertNotNull(queryService);
@@ -69,11 +70,8 @@ public class JavaClassCEAComponentManagerTest extends AbstractComponentManagerTe
 
 /* 
 $Log: JavaClassCEAComponentManagerTest.java,v $
-Revision 1.4  2006/03/07 21:45:26  clq2
-gtr_1489_cea
-
-Revision 1.3.38.1  2006/01/31 21:39:07  gtr
-Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
+Revision 1.5  2006/03/11 05:57:54  clq2
+roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
 
 Revision 1.3  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes

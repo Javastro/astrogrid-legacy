@@ -1,4 +1,4 @@
-/*$Id: SystemTest.java,v 1.9 2006/03/07 21:45:26 clq2 Exp $
+/*$Id: SystemTest.java,v 1.10 2006/03/11 05:57:54 clq2 Exp $
  * Created on 09-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
-import org.astrogrid.applications.javaclass.BaseJavaClassConfiguration;
 import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
 import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
 import org.astrogrid.applications.manager.idgen.IdGen;
@@ -68,7 +67,7 @@ public class SystemTest extends TestCase {
         protocolLib.addProtocol(new FileProtocol());
         assertTrue(protocolLib.isProtocolSupported("file"));
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib,new TestAuthorityResolver());
-        lib = new JavaClassApplicationDescriptionLibrary(new BaseJavaClassConfiguration(), env);
+        lib = new JavaClassApplicationDescriptionLibrary(SampleJavaClassApplications.class,env);
         controller = new DefaultExecutionController(lib,history);
       ApplicationEnvironmentRetriver executionRetriever = new DefaultApplicationEnvironmentRetriever(history);
       querier = new DefaultQueryService(history, executionRetriever);
@@ -173,11 +172,8 @@ public class SystemTest extends TestCase {
 
 /* 
 $Log: SystemTest.java,v $
-Revision 1.9  2006/03/07 21:45:26  clq2
-gtr_1489_cea
-
-Revision 1.8.20.1  2006/02/01 12:09:54  gtr
-Refactored and fixed to allow the tests to work with the new configuration.
+Revision 1.10  2006/03/11 05:57:54  clq2
+roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
 
 Revision 1.8  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests

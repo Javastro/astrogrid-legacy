@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.14 2006/03/07 21:45:26 clq2 Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.15 2006/03/11 05:57:54 clq2 Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,6 @@ import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.applications.http.test.FileUnmarshaller;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
 import org.astrogrid.applications.http.test.TestWebServer;
-import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
@@ -69,7 +68,7 @@ public class HttpApplicationProviderTest extends TestCase {
         DefaultProtocolLibrary protocolLib = new DefaultProtocolLibrary();
         protocolLib.addProtocol(new FileProtocol()); //this is done by the component manager normally
         monitor = new MockMonitor();
-        AppAuthorityIDResolver aresolver = new TestAuthority();
+        HttpApplicationDescriptionLibrary.AppAuthorityIDResolver aresolver = new TestAuthority();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(idgen,protocolLib, aresolver);
         RegistryQuerier querier = new TestRegistryQuerier(null);
         numberOfApps = querier.getHttpApplications().size();
@@ -272,6 +271,23 @@ public class HttpApplicationProviderTest extends TestCase {
     }
     
     /**
+     * Post isn't supported yet
+     * @throws Exception
+     */
+    public void testPost() throws Exception {
+    		fail("This test is not ready yet, since the in-process webserver doesn't seem very happy with post");
+            ApplicationDescription hw = getApplicationDescription("/AdderPost");
+            
+            Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-Adder1.xml");
+            
+            Application app = hw.initializeApplication("testrun",user,tool);
+            assertNotNull(app);
+            app.addObserver(monitor);
+            app.execute();
+            monitor.waitFor(30);
+            assertTrue(monitor.sawExit);
+    }
+    /**
      * What happens if the URL returns a 404?
      * @throws Exception
      */
@@ -355,14 +371,11 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
-Revision 1.14  2006/03/07 21:45:26  clq2
-gtr_1489_cea
+Revision 1.15  2006/03/11 05:57:54  clq2
+roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
 
-Revision 1.11.34.2  2006/01/31 21:39:07  gtr
-Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
-
-Revision 1.11.34.1  2005/12/22 13:56:03  gtr
-Refactored to match the other kinds of CEC.
+Revision 1.13  2006/01/10 11:26:52  clq2
+rolling back to before gtr_1489
 
 Revision 1.11  2005/07/05 08:26:56  clq2
 paul's 559b and 559c for wo/apps and jes

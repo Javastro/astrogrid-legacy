@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessorTest.java,v 1.4 2006/03/07 21:45:27 clq2 Exp $
+/* $Id: IdentityPreprocessorTest.java,v 1.5 2006/03/11 05:57:54 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -47,8 +47,7 @@ public class IdentityPreprocessorTest extends TestCase {
 
     public final void testProcess() throws MarshalException, ValidationException {
         TestRegistryQuerier querier = new TestRegistryQuerier(null);
-        CeaHttpApplicationType app 
-            = querier.getHttpApplication("org.astrogrid.test/Adder");
+        CeaHttpApplicationType app = querier.getHttpApplication("Adder-app.xml");
         Tool tool = (Tool) new FileUnmarshaller(Tool.class).unmarshallFromFile("tool-eg.xml");
         assertNotNull(app);
         assertNotNull(tool);

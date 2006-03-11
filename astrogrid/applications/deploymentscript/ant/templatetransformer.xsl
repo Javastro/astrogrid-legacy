@@ -16,25 +16,15 @@
 <xsl:param name="REGAUTHORITY">org.astrogrid.localhost</xsl:param>
 <xsl:param name="CECNAME">defaultCEC</xsl:param>
 <xsl:output method="xml" indent="yes" />
-
-	<xsl:template match="/">
-  <xsl:apply-templates />
+<xsl:template match="/">
+<xsl:apply-templates />
 </xsl:template>
-
-<!-- Change the identifier in the service registration 
-	   to the given authority ID and resource key. -->
-<xsl:template match="//vor:Resource[@xsi:type='cea:CeaServiceType']/vr:identifier/text()">
-	<xsl:text>ivo://</xsl:text>
-	<xsl:value-of select="$REGAUTHORITY"/>
-	<xsl:text>/</xsl:text>
-	<xsl:value-of select="$CECNAME"/>
-</xsl:template>
-
+<xsl:template match="//vor:Resource[@xsi:type='cea:CeaServiceType']/vr:identifier/text()">ivo://<xsl:value-of select="$REGAUTHORITY"/>/<xsl:value-of select="$CECNAME"/></xsl:template>
 <!-- copy everything else -->
 <xsl:template match="node()|@*" >
-   <xsl:copy> 
-     <xsl:apply-templates select="@* | node()"/>
-   </xsl:copy>
+        <xsl:copy> 
+                <xsl:apply-templates select="@* | node()"/>
+        </xsl:copy>
 </xsl:template>
 
 </xsl:stylesheet>

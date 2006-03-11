@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.10 2006/03/07 21:45:26 clq2 Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.11 2006/03/11 05:57:54 clq2 Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -119,8 +119,8 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
             assertTrue("P1 description missing", clpd.getDisplayDescription()
                     .length() > 0);
             assertEquals("ucd", "UCD", clpd.getUcd());
-            assertEquals("default value", "0", clpd.getDefaultValue());
-            assertEquals("UNITS value", "seconds", clpd.getUnits());
+            assertEquals("default value", "Default",clpd.getDefaultValue());
+            assertEquals("UNITS value", "UNITS",clpd.getUnits());
             System.out.println("name:" + p1.getName());
             System.out.println("desc:" + p1.getDisplayDescription());
             

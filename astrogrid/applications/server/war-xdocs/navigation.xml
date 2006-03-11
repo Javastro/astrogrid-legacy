@@ -1,34 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <project name="AstroGrid">
-
-  <title>CEC</title>
-
   <body>
-      
-     <menu name="Administrator documents">
-       <item name="Overview" href="index.html"/>
-       <item name="Download" href="DOWNLOAD.html"/>
-       <item name="Installation" href="INSTALL.html"/>
-       <item name="Configuration" href="CONFIGURE.html"/>
-       <item name="Self-testing" href="SELF-TEST.html"/>
-       <item name="Registration" href="REGISTER.html"/>
-       <item name="External testing" href="EXTTEST.html"/>
-       <item name="Upgrading" href="UPGRADE.html"/>
-       <item name="Uninstallation" href="UNINSTALL.html"/>
-	     <item name="Reference manual" href="REFERENCE.html"/>
+    <title>AstroGrid Project - Generic CEA Framework</title>
+    <menu name="Installation">
+      <item name="Install doc" href="provider/INSTALL.html" />
+      <item name="Release doc" href="RELEASE.html" />
+      <item name="Axis Check" href="happyaxis.jsp" />
+      <item name="Fingerprint" href="fingerprint.jsp" />
+      <item name="Installation Tests" href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" />
+      <item name="View web services" href="servlet/AxisServlet" />
+      <item name="View VODescription" href="cec-http?method=returnRegistryEntry" />
+	  <item name="Register" href="cec-http?method=register" />
+      <item name="Test run" href="chooseapp.jsp" />
+	 <item name="Clean up" href="admin/clean.jsp" />
     </menu>
-  	
-  	<menu name="Local controls for CEC">
-  		<item name="Axis test" href="happyaxis.jsp"/>
-  		<item name="Installation test" href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory"/>
-  		<item name="Fingerprint" href="fingerprint.jsp"/>
-  		<item name="Show registration document" href="cec-http?method=returnRegistryEntry"/>
-  		<item name="Register" href="cec-http?method=register"/>
-  		<item name="Show current configuration" href="admin/configuration-describe.jsp"/>
-  		<item name="Environment editor" href="admin/environment-edit.jsp"/>
-  		<item name="Reload saved environment" href="admin/environment-apply.jsp"/>
-  		<item name="Test run of application" href="chooseapp.jsp"/>
-  	</menu>
-
+    <menu name="Resources">
+      <item name="WSDL" href="wsdl" />
+      <item name="Schema" href="schema" />
+      <item name="client lib" href="client" />
+    </menu>
+	<menu name="CEC Specific">
+	  <item name="documentation" href="provider" />
+	  <item name="adding an application" href="provider/ApplicationConfiguration.html"/>
+      <item name="CEC javadoc" href="provider/apidocs" />
+      <item name="CEC formatted Source" href="provider/xref" />
+ 		
+	</menu>
+    <menu name="Development Documentation">
+      <item name="CEA Design" href="design/"/>
+      <item name="programmers guide" href="programmers_guide.html"/>
+      <item name="Framework javadoc" href="apidocs" />
+      <item name="Framework formatted Source" href="xref" />
+      <item name="Formatted Test Source" href="xref-test" />
+	  
+    </menu>
+    <links>
+      <item name="AstroGrid" href="http://www.astrogrid.org" />
+      <item name="Projects" href="http://www.astrogrid.org/maven/build/index.html" />
+      <item name="CEA maven" href="http://www.astrogrid.org/maven/docs/snapshot/applications/index.html" />
+    </links>
   </body>
 </project>

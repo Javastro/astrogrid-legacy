@@ -1,4 +1,4 @@
-/*$Id: TestAuthorityResolver.java,v 1.5 2006/03/07 21:45:27 clq2 Exp $
+/*$Id: TestAuthorityResolver.java,v 1.6 2006/03/11 05:57:54 clq2 Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,11 @@
 **/
 package org.astrogrid.applications.description.base;
 
-import org.astrogrid.applications.manager.AppAuthorityIDResolver;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 
 
 
-public class TestAuthorityResolver implements AppAuthorityIDResolver {
+public class TestAuthorityResolver implements BaseApplicationDescriptionLibrary.AppAuthorityIDResolver {
     public String getAuthorityID() {
         return "org.astrogrid.test";
     }
@@ -22,11 +22,11 @@ public class TestAuthorityResolver implements AppAuthorityIDResolver {
 
 /* 
 $Log: TestAuthorityResolver.java,v $
-Revision 1.5  2006/03/07 21:45:27  clq2
-gtr_1489_cea
+Revision 1.6  2006/03/11 05:57:54  clq2
+roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
 
-Revision 1.2.118.1  2005/12/18 14:48:25  gtr
-Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
+Revision 1.4  2006/01/10 11:26:52  clq2
+rolling back to before gtr_1489
 
 Revision 1.2  2004/11/27 13:20:02  pah
 result of merge of pah_cea_bz561 branch

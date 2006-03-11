@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.18 2006/03/07 21:45:26 clq2 Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.19 2006/03/11 05:57:54 clq2 Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,17 @@
 **/
 package org.astrogrid.applications.component;
 
-import org.astrogrid.applications.contracts.Configuration;
-import org.astrogrid.applications.manager.AppAuthorityIDResolver;
+
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.CompositeApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.registry.RegistryAdminLocator;
-import org.astrogrid.applications.description.registry.RegistryAdminLocatorImpl;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
-import org.astrogrid.applications.manager.BaseConfiguration;
 import org.astrogrid.applications.manager.CeaThreadPool;
 import org.astrogrid.applications.manager.ControlService;
-import org.astrogrid.applications.manager.DefaultAppAuthorityIDResolver;
 import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
 import org.astrogrid.applications.manager.DefaultMetadataService;
 import org.astrogrid.applications.manager.DefaultQueryService;
@@ -46,7 +42,6 @@ import org.astrogrid.applications.parameter.protocol.Protocol;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.component.EmptyComponentManager;
 import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 
@@ -66,6 +61,10 @@ import java.util.Iterator;
 /** empty implementation of {@link org.astrogrid.applications.component.CEAComponentManager}
  * provides implementations of the accessor methods, but no componets are registered with the container. (this should be done in subclasses).
  * <p>
+ * Registers a single validity-checking component, that depends on all the publicaly-accessible compoennts (i.e.QueryService, MetaData, etc).
+ * As picontainer checks that all dependencies can be resolved on startup, this component enforces the requirement that all component managers will have 
+ * instances of the publically-accesible components. How thiese components are built up and registered is left free to the subclasses.
+ * <p/>
  * This class also provides a set of static helper method that register 'clusters' of commonly-used components. These
  * can be called from implementations of component manager to quickly set up the basic parts of the system
  * @author Noel Winstanley nw@jb.man.ac.uk 04-May-2004
@@ -73,9 +72,7 @@ import java.util.Iterator;
  * @see org.astrogrid.applications.component.JavaClassCEAComponentManager for example of how to assemble a server using this class.
  *
  */
-public abstract class EmptyCEAComponentManager 
-    extends EmptyComponentManager 
-    implements CEAComponentManager{
+public abstract class EmptyCEAComponentManager extends EmptyComponentManager implements CEAComponentManager{
     /**
      * Commons Logger for this class
      */
@@ -86,7 +83,8 @@ public abstract class EmptyCEAComponentManager
      * 
      */
     public EmptyCEAComponentManager() {
-      super();
+        super();
+        pico.registerComponentImplementation(VerifyRequiredComponents.class);
     }
 
     /**
@@ -114,10 +112,34 @@ public abstract class EmptyCEAComponentManager
     public final ControlService getControlService() {
        return (ControlService) this.pico.getComponentInstanceOfType(ControlService.class);
     }
-    
-    public final Configuration getConfiguration() {
-      return (Configuration)this.pico.getComponentInstanceOfType(Configuration.class);
+    /** dummy component that ensures required componets are registered with the container
+     * not interesting, but needs to be publc so that picocontainer can instantiate it */ 
+    public static final class VerifyRequiredComponents {
+        /**
+         * Commons Logger for this class
+         */
+        private static final Log logger = LogFactory
+                .getLog(VerifyRequiredComponents.class);
+
+        public VerifyRequiredComponents(ExecutionController ignored,MetadataService ignoredToo, QueryService dontcare, ControlService notused) {
+        }
     }
+
+    /** register a dummy implementatioin of the controlService introduced by paul.
+     * @todo see whether the control service should really be part of the core cea server
+     * - unsure whether it is required in other configurations of the cea system apart from applications
+     *
+     */
+    protected final void registerDummyControlService() {
+        log.info("Registering a dummy implementaton of the control service");
+        pico.registerComponentInstance(ControlService.class, new ControlService() {
+
+            public String deleteOldRuntimeWorkFiles(int days) {
+                return "not implemented";
+            }
+        });
+    }
+ 
 
     // convenience methods for regostering commnly used sets of components
     /** register the default top-level services core of CEA 
@@ -128,28 +150,23 @@ public abstract class EmptyCEAComponentManager
      * @see #registerContainerApplicationDescriptionLibrary(MutablePicoContainer)
      * */
     protected  final void registerDefaultServices(MutablePicoContainer pico) {
-       log.debug("Registering default services");
-        
-       pico.registerComponentImplementation(ApplicationDescriptionEnvironment.class,ApplicationDescriptionEnvironment.class);
-       pico.registerComponentImplementation(ExecutionController.class,ThreadPoolExecutionController.class);
-       pico.registerComponentImplementation(PooledExecutor.class,CeaThreadPool.class);
+        log.info("Registering default services");
+        pico.registerComponentImplementation(ApplicationDescriptionEnvironment.class,ApplicationDescriptionEnvironment.class);
+        // trying something a little more intelligent.. pico.registerComponentImplementation(ExecutionController.class, DefaultExecutionController.class);
+        pico.registerComponentImplementation(ExecutionController.class,ThreadPoolExecutionController.class);
+        pico.registerComponentImplementation(PooledExecutor.class,CeaThreadPool.class);
        pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);   
        registerCompositeApplicationDescriptionLibrary(pico);
+       // not added by default - stiches up cea-commandline.
+        //registerContainerApplicationDescriptionLibrary(pico);
        registerEnvironmentRetriever(pico);
        
        // the protocol lib
        EmptyCEAComponentManager.registerProtocolLibrary(pico);
        EmptyCEAComponentManager.registerStandardIndirectionProtocols(pico);
        EmptyCEAComponentManager.registerAstrogridIndirectionProtocols(pico);
-       
-       // The persistence mechanism. This is needed to make the QueryService work.
-       this.registerDefaultPersistence(pico, SimpleConfig.getSingleton());
-       
-       // This seems to be necessary to get the ApplicationDescriptionEnvironment to work.
-       this.registerDefaultVOProvider(pico);
-       
-       log.info("Components for a generic CEC have been registered.");
-    }
+
+        }
     
     /** registers the default implementaiton of the indirection protocol library 
      * NB: does not register any protocols with the library. These must be added to the container separately
@@ -157,7 +174,7 @@ public abstract class EmptyCEAComponentManager
      * @see #registerStandardIndirectionProtocols(MutablePicoContainer)
      * @see #registerAstrogridIndirectionProtocols(MutablePicoContainer)*/
     protected static final void registerProtocolLibrary(final MutablePicoContainer pico) {
-        log.debug("Registering default indirection protocol library");
+        log.info("Registering default indirection protocol library");
         pico.registerComponentImplementation(ProtocolLibrary.class,DefaultProtocolLibrary.class);
         // on startup (i.e. after everythinig has been registered, this throwaway component will add all known indirection protocols to the library).
         pico.registerComponentInstance(new Startable() {
@@ -211,9 +228,23 @@ public abstract class EmptyCEAComponentManager
             }
             log.info("Registering file-based persistence system");
             pico.registerComponentImplementation(ExecutionHistory.class,FileStoreExecutionHistory.class);
+            pico.registerComponentInstance(FileStoreExecutionHistory.StoreDir.class, new FileStoreExecutionHistory.StoreDir(){
+                private final File dir= new File(config.getString(FILESTORE_BASEDIR,System.getProperty("java.io.tmpdir")));
+                public File getDir() {
+                    return dir;
+                }
+            });
         } 
         pico.registerComponentImplementation(IdGen.class,GloballyUniqueIdGen.class);        
     }
+
+    
+    /** key to query config for the url of the registry template to use (optional, default='/CEARegistryTemplate.xml' on classpath) 
+     * @see #registerDefaultVOProvider(MutablePicoContainer, Config)*/
+    public static final String REGISTRY_TEMPLATE_URL  ="cea.registry.template.url";
+    /** key to query config for the url of this services endpoint (optional, recommended, otherwise makes a best guess)
+     * @see #registerDefaultVOProvider(MutablePicoContainer, Config)*/
+    public static final String SERVICE_ENDPOINT_URL = "cea.service.endpoint.url";
     
     /**
      * key to look in config under for the authorityid to add provided
@@ -225,33 +256,57 @@ public abstract class EmptyCEAComponentManager
 
     /** register the standard VO Provider - the component that generates the registry entry.
      *  standard provider operates by constructing VODecription from applicationDescriptions in library
+     * @param pico
+     * @param config
+     * @see #REGISTRY_TEMPLATE_URL
+     * @see #SERVICE_ENDPOINT_URL
      */
-    protected static final void registerDefaultVOProvider(MutablePicoContainer pico) {
+    protected static final void registerDefaultVOProvider(MutablePicoContainer pico, final Config config) {
         log.info("Registering default vo provider - note that this is now the MetadataService");
-        registerVOProvider(pico, DefaultMetadataService.class);        
+        registerVOProvider(pico, config, DefaultMetadataService.class);        
   
     }    
     /**
     * @param pico
+    * @param config
     */
-   protected static void registerVOProvider(MutablePicoContainer pico,
-                                            final Class MetadataServ) {
-     // This method can get called twice for some variants, so allow
-     // overriding of the registrations.
-     pico.unregisterComponent(MetadataService.class);
-     pico.unregisterComponent(AppAuthorityIDResolver.class);
-     pico.registerComponentImplementation(MetadataService.class,
-                                          MetadataServ);
-     pico.registerComponentImplementation(AppAuthorityIDResolver.class, 
-                                          DefaultAppAuthorityIDResolver.class); 
+   protected static void registerVOProvider(MutablePicoContainer pico, final Config config, final Class MetadataServ) {
+      try {
+        pico.registerComponentImplementation(MetadataService.class, MetadataServ);
+        pico.registerComponentInstance(DefaultMetadataService.URLs.class, new DefaultMetadataService.URLs() {
+            private final URL registryTemplate = config.getUrl(REGISTRY_TEMPLATE_URL,EmptyCEAComponentManager.class.getResource("/CEARegistryTemplate.xml"));         
+            private final URL serviceEndpoint = config.getUrl(SERVICE_ENDPOINT_URL,new URL("http://localhost:8080/astrogrid-cea-server/services/CommonExecutionConnectorService"));
+            public URL getRegistryTemplate() {
+                return registryTemplate;
+            }
+            public URL getServiceEndpoint() {
+                return serviceEndpoint;
+            }
+        });
+        pico.registerComponentInstance(new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver() {
+           protected final String auth = config.getString(AUTHORITY_NAME, "org.astrogrid.localhost");
+
+           public String getAuthorityID() {
+               return auth;
+           }
+       });
+
+        } catch (MalformedURLException e) {
+            // unlikely this will happen
+            log.fatal("Could could not register the vo provider " + e);
+        }
    }
 
    /** register optional component that uploads vodescription to registry on startup.  */
     protected static final void registerDefaultRegistryUploader(MutablePicoContainer pico) {
         log.info("Registering default registry uploader");
         pico.registerComponentImplementation(RegistryUploader.class);    
-        pico.registerComponentImplementation(RegistryAdminLocator.class,
-                                             RegistryAdminLocatorImpl.class);
+        pico.registerComponentInstance(RegistryAdminLocator.class,new RegistryAdminLocator() {
+
+            public RegistryAdminService getClient() {                
+                return RegistryDelegateFactory.createAdmin();
+            }
+        });        
     }
     
     /** register the {@link CompositeApplicationDescriptionLibrary} - this will assemble other implementations of {@link ApplicationDescriptionLibrary}
@@ -312,35 +367,20 @@ public abstract class EmptyCEAComponentManager
       pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, DefaultApplicationEnvironmentRetriever.class);
    }
    
-
+   
 }
 
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
-Revision 1.18  2006/03/07 21:45:26  clq2
-gtr_1489_cea
+Revision 1.19  2006/03/11 05:57:54  clq2
+roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
 
-Revision 1.14.20.7  2006/01/31 21:39:07  gtr
-Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
+Revision 1.17  2006/01/10 14:10:45  nw
+added method to register default implementation of ControlService
 
-Revision 1.14.20.6  2006/01/26 13:19:04  gtr
-Refactored.
-
-Revision 1.14.20.5  2006/01/26 11:05:19  gtr
-The new configuration service is used instead of the separate configuration interfaces.
-
-Revision 1.14.20.4  2006/01/25 17:04:32  gtr
-Refactored: the configuration is now a fixed structure based at the configurable location cea.base.dir.
-
-Revision 1.14.20.3  2005/12/22 13:57:56  gtr
-registerVOProvider() can now be called more than once; it deregisters and reregisters components as necessary,
-
-Revision 1.14.20.2  2005/12/19 18:12:30  gtr
-Refactored: changes in support of the fix for 1492.
-
-Revision 1.14.20.1  2005/12/18 14:48:24  gtr
-Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
+Revision 1.16  2006/01/10 11:26:52  clq2
+rolling back to before gtr_1489
 
 Revision 1.14  2005/08/10 14:45:37  clq2
 cea_pah_1317
