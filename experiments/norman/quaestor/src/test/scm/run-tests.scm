@@ -8,9 +8,11 @@
   (syntax-rules ()
     ((_ id expected body ...)
      (with/fc (lambda (m e)
-                (format #t "Test ~a~%    produced error in ~a: ~a~%    expected ~s~%"
+                (format #t "Test ~a~%    produced error~a: ~a~%    expected ~s~%"
                           (quote id)
-                          (error-location m)
+                          (if (error-location m)
+                              (format #f " in ~a" (error-location m))
+                              "")
                           (error-message m)
                           expected)
                 (set! nfails (+ nfails 1)))
@@ -35,6 +37,7 @@
 
 (define files-to-test '("quaestor/utils.scm"
                         "util/sisc-xml.scm"
+                        "util/xmlrpc.scm"
                         ))
 
 (define (main . args)
