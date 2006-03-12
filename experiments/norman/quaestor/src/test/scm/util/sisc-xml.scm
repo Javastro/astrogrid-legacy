@@ -33,12 +33,36 @@
         (sisc-xml:xml->sexp/string "<doc><p class='simple'  >content1</p>  <p class='complicated' att1=\"value1\"/> <p>content2</p></doc>"))
 
 (expect xml->sexp-namespacing
-        '(*TOP* (doc (p (@ ((urn:example . a1) "v1")
+        '(*TOP* (doc (p (@ (("urn:example" . a1) "v1")
                            (a2 "v2"))
                         "c1")
-                     ((urn:example . q)
+                     (("urn:example" . q)
                       "c2")
-                     ((urn:example2 . r)
+                     (("urn:example2" . r)
                       "c3")))
         (sisc-xml:xml->sexp/string
          "<doc xmlns:x='urn:example'><p x:a1='v1' a2='v2'>c1</p><x:q>c2</x:q><r xmlns='urn:example2'>c3</r></doc>"))
+
+(expect xml->sexp-reader
+        '(*TOP* (doc (p (@ (class "simple")
+                           (("urn:example" . a1) "v1")))))
+        (define-java-class <java.io.string-reader>)
+        (sisc-xml:xml->sexp/reader
+         (java-new <java.io.string-reader>
+                   (->jstring
+                    "<doc>  <p class='simple' x:a1='v1' xmlns:x='urn:example'/></doc>"))))
+
+(expect xml->sexp-qname-cases
+        '(*TOP* (doc (p (@ (class "SimPle")
+                           (("urn:Example1" . a1) "v1")))
+                     (p "CONTENT1")))
+        (sisc-xml:xml->sexp/string
+         "<Doc><P Class='SimPle' xmlns:x='urn:Example1' x:a1='v1'/><p>CONTENT1</p></Doc>"))
+
+(expect xml->sexp-qname-cases2
+        '(*TOP* ("Doc" ("P" (@ ("Class" "SimPle")
+                               (("urn:Example1" . "a1") "v1")))
+                 ("p" "CONTENT1")))
+        (parameterize ((sisc-xml:localnames-into-symbols? #f))
+          (sisc-xml:xml->sexp/string
+           "<Doc><P Class='SimPle' xmlns:x='urn:Example1' x:a1='v1'/><p>CONTENT1</p></Doc>")))
