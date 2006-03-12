@@ -7,12 +7,20 @@
 (define-syntax expect
   (syntax-rules ()
     ((_ id expected body ...)
-     (let ((test ((lambda ()
-                    body ...))))
-       (if (not (equal? expected test))
-           (begin (format #t "Test ~a~%    produced ~s~%    expected ~s~%"
-                          (quote id) test expected)
-                  (set! nfails (+ nfails 1))))))))
+     (with/fc (lambda (m e)
+                (format #t "Test ~a~%    produced error in ~a: ~a~%    expected ~s~%"
+                          (quote id)
+                          (error-location m)
+                          (error-message m)
+                          expected)
+                (set! nfails (+ nfails 1)))
+       (lambda ()
+         (let ((test ((lambda ()
+                        body ...))))
+           (if (not (equal? expected test))
+               (begin (format #t "Test ~a~%    produced ~s~%    expected ~s~%"
+                              (quote id) test expected)
+                      (set! nfails (+ nfails 1))))))))))
 (define-syntax expect-failure
   (syntax-rules ()
     ((_ id body ...)
