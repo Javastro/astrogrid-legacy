@@ -1,3 +1,6 @@
+;; Test harness.
+;; The first argument to MAIN should be the full path to this script.
+
 (import s2j)
 
 (define nfails 0)
@@ -10,21 +13,36 @@
            (begin (format #t "Test ~a~%    produced ~s~%    expected ~s~%"
                           (quote id) test expected)
                   (set! nfails (+ nfails 1))))))))
+(define-syntax expect-failure
+  (syntax-rules ()
+    ((_ id body ...)
+     (with/fc (lambda (m e)
+                ;;failed -- OK
+                #t)
+        (lambda ()
+          (let ((test ((lambda () body ...))))
+            (format #t "Test ~a~%    produced ~s~%    expected ERROR~%"
+                    (quote id) test)
+            (set! nfails (+ nfails 1))))))))
 
-(define files-to-test '("utils.scm"))
+(define files-to-test '("quaestor/utils.scm"
+                        "util/sisc-xml.scm"
+                        ))
 
 (define (main . args)
   (define-generic-java-method
     exit)
   (define-java-class <java.lang.system>)
-  (for-each run-test-file
-            files-to-test)
+  (with-current-url (car args)
+     (lambda ()
+       (for-each run-test-file
+                 files-to-test)))
   (if (> nfails 0)
       (format #t "Number of fails=~a~%" nfails))
   (exit (java-null <java.lang.system>) (->jint nfails)))
 
 (define (run-test-file file-name)
-  (let ((url (find-resource file-name)))
+  (let ((url (normalize-url (current-url) file-name)))
     (or url
         (error (format #f "Can't find resource ~a" file-name)))
     (chatter "Running tests in ~a..." url)

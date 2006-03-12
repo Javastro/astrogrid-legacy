@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.7 2006/03/07 17:40:12 norman Exp $
+     $Id: build.xml,v 1.8 2006/03/12 00:32:53 norman Exp $
 -->
 
 
@@ -331,6 +331,11 @@
       <fileset dir="${scm.src.home}/quaestor"
                includes="*.scm"/>
     </copy>
+    <mkdir  dir="${build.home}/WEB-INF/classes/util"/>
+    <copy todir="${build.home}/WEB-INF/classes/util">
+      <fileset dir="${scm.src.home}/util"
+               includes="*.scm"/>
+    </copy>
 
     <!--
      !   How about compiling them?
@@ -576,7 +581,7 @@
   <!-- ========= Test target ========= -->
   <!-- Run regression tests -->
   <path id="sisc.test.classpath">
-    <pathelement location="${scm.test.home}"/>
+    <!--pathelement location="${scm.test.home}/run-tests.scm"/-->
     <pathelement location="${scm.src.home}"/>
     <fileset refid="sisc.support"/>
   </path>
@@ -595,6 +600,8 @@
       <arg value="--call-with-args"/>
       <arg value="main"/>
       <arg value="--"/>
+      <!-- First argument must be location of the test script -->
+      <arg value="${scm.test.home}/run-tests.scm"/>
       <!-- add further arguments? -->
     </java>
   </target>
