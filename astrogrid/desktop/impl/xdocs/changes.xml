@@ -24,6 +24,9 @@
 			Various useability improvements: Menubar on application launcher and new tool clears old info, 
 			dialog sizing issue, parameter editor column headings less criptic
 		</action>
+    <action dev="kmb" type="add" issue=1542>
+		Helioscope: Rough draft of the first helioscope.
+	</action>
 	</release>
 
 <release version="1.4" date="2006-03-06">
