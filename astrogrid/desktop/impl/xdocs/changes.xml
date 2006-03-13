@@ -13,21 +13,26 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-    <action dev="jl" type="add" issue=1542>
+
+<release version="1.5-alpha-1" date="2006-03-13">
+	<action dev="nw" type="add">
+	Added ability to access VizieR tables as Cone Search. Appears in Application
+	Launcher. Not yet in astroscope - needs a stream-reading soap client for registry entries.
+	</action>
+ <action dev="jl" type="add" issue="1542">
 	    Query Builder: Improvements to low level editing of tree view.
 	</action>
-	<release version="pending">
-		<action dev="pjn" type="add" issue="1234">
+<action dev="pjn" type="add" issue="1234">
 			WorkflowBuilder: details of any workflows loaded from storage now displayed - was a request for portal, but added to workbench.
 		</action>
 	    <action dev="pjn" type="add">
 			Various useability improvements: Menubar on application launcher and new tool clears old info, 
 			dialog sizing issue, parameter editor column headings less criptic
 		</action>
-    <action dev="kmb" type="add" issue=1542>
+    <action dev="kmb" type="add" issue="1542">
 		Helioscope: Rough draft of the first helioscope.
 	</action>
-	</release>
+</release>
 
 <release version="1.4" date="2006-03-06">
 
