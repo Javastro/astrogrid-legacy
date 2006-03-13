@@ -43,18 +43,25 @@
 ;;
 ;; Parsing of requests
 
-(expect xmlrpc-simple-test
+(expect xmlrpc-simple-test              ;check predicate
         #t
         (xmlrpc:call? simple-call))
-(expect xmlrpc-simple-name
+(expect xmlrpc-simple-notest            ;should return #f without error
+        #f
+        (xmlrpc:call? "not a call"))
+(expect xmlrpc-simple-name              ;extract method name
         'examples.getStateName
         (xmlrpc:method-name simple-call))
+(expect xmlrpc-simple-length            ;extract number of parameters
+        10
+        (xmlrpc:number-of-params simple-call))
 (let-syntax
     ((ptest (syntax-rules ()
               ((_ n exp)
                (expect ("xmlrpc-simple-arg" n)
                        exp
                        (xmlrpc:method-param simple-call n))))))
+  (ptest 1 "string")
   (ptest 2 "s2")
   (ptest 3 10)
   (ptest 4 20)
@@ -79,6 +86,9 @@
                 (make-with-param-value "<boolean>2</boolean>"))
 (expect-failure xmlrpc-fail-badname     ;struct member name must be a string
                 (make-with-param-value "<struct><member><name><int>1</int></name><value>v</value></member></struct>"))
+
+(expect-failure xmlrpc-malformed        ;malformed input
+                (make-with-param-value "<wibble/>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
