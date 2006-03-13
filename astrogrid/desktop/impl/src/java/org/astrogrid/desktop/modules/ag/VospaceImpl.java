@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.8 2005/11/04 10:14:26 nw Exp $
+/*$Id: VospaceImpl.java,v 1.9 2006/03/13 18:27:34 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -811,11 +811,6 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
         throw new ServiceException(e);
     }
 
-               /*
-               "select * from Registry where @status='active' "
-               +" and vr:content/vr:relationship/vr:relationshipType = 'derived-from' "               
-               + " and vr:content/vr:relationship/vr:relatedResource/@ivo-id = 'FileStore' "
-               ); */           
   }
     
     
@@ -918,6 +913,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.9  2006/03/13 18:27:34  nw
+fixed queries to not restrict to @status='active'
+
 Revision 1.8  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present

@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.1 2005/10/17 16:02:45 nw Exp $
+/*$Id: SiapImpl.java,v 1.2 2006/03/13 18:29:32 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -117,8 +117,8 @@ public class SiapImpl extends DALImpl implements Siap {
      */
     public String getRegistryQuery() {
         return "Select * from Registry where " +
-        " @xsi:type like '%SimpleImageAccess'  " +
-        " and @status = 'active'";
+        " @xsi:type like '%SimpleImageAccess'  " ;
+//@todo        " and ( not (@status = 'inactive' or @status='deleted') )";
     }
 
 }
@@ -126,6 +126,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.2  2006/03/13 18:29:32  nw
+fixed queries to not restrict to @status='active'
+
 Revision 1.1  2005/10/17 16:02:45  nw
 added siap and cone interfaces
  

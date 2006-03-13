@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.5 2006/03/13 18:29:56 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,12 +46,15 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
        final RegistryChooserPanel rcp = new RegistryChooserPanel( parent,reg) ;
         rcp.setMultipleResources(false);
 
-        rcp.setFilter(" ((@xsi:type like '%CeaApplicationType' " +
+        rcp.setFilter(" (@xsi:type like '%CeaApplicationType' " +
                 " or @xsi:type like '%CeaHttpApplicationType' " + 
                 ( allApps.booleanValue() ? " or @xsi:type like '%ConeSearch' " + 
-                        " or @xsi:type like '%SimpleImageAccess' " 
-                        : "") + 
-                " ) and @status = 'active')");
+                        " or @xsi:type like '%SimpleImageAccess' "  + 
+			" or @xsi:type like '%SimpleSpectrumAccess' "+ 
+            " or (@xsi:type like '%TabularSkyService' and vr:identifier like 'ivo://CDS/%'" +
+            "   and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN') "
+                        : "")  + ")"); //+ 
+//@todo                " ) and ( not (@status = 'inactive' or @status = 'deleted') )");
         toolModel.addToolEditListener(new ToolEditAdapter() {
             public void toolCleared(ToolEditEvent te) {
                 rcp.clear();
@@ -110,6 +113,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.5  2006/03/13 18:29:56  nw
+fixed queries to not restrict to @status='active'
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.1 2005/10/17 16:02:44 nw Exp $
+/*$Id: ConeImpl.java,v 1.2 2006/03/13 18:29:17 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,10 +70,9 @@ public class ConeImpl extends DALImpl implements Cone {
             }
         } else if (arg0.getScheme().equals("ivo")) {
                 try {
-                    endpoint = reg.resolveIdentifier(arg0);
+                    //endpoint = reg.resolveIdentifier(arg0); NWW - gets incorrect endpoint sometimes.
+                    endpoint = reg.getResourceInformation(arg0).getAccessURL();
                 } catch (ServiceException e) {
-                    throw new NotFoundException(e);
-                } catch (NotApplicableException e) {
                     throw new NotFoundException(e);
                 }
         } else {
@@ -98,13 +97,17 @@ public class ConeImpl extends DALImpl implements Cone {
     }
 
 
-    /*
+    /* 
      * @see org.astrogrid.acr.nvo.Cone#getRegistryQueryToListCone()
      */
     public String getRegistryQuery() {
-        return "Select * from Registry where " +
+        return "Select * from Registry where ( " +
         " @xsi:type like '%ConeSearch'  " +
-        " and @status = 'active'";
+        " or ( @xsi:type like '%TabularSkyService' " + 
+		" and vr:identifier like 'ivo://CDS/%' " + 
+		" and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN'  ) " + 
+        " )  ";
+        //@todo and (not ( @status = 'inactive' or @status='deleted') )";
     }
 
 }
@@ -112,6 +115,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.2  2006/03/13 18:29:17  nw
+fixed queries to not restrict to @status='active'
+
 Revision 1.1  2005/10/17 16:02:44  nw
 added siap and cone interfaces
  

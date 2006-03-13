@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.1 2006/02/02 14:49:49 nw Exp $
+/*$Id: SsapImpl.java,v 1.2 2006/03/13 18:29:32 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,8 +41,8 @@ public class SsapImpl extends DALImpl implements Ssap {
      */
     public String getRegistryQuery() {
         return "Select * from Registry where " +
-        " @xsi:type like '%SimpleSpectrumAccess'  " +
-        " and @status = 'active'";
+        " @xsi:type like '%SimpleSpectrumAccess'  " ;
+        //@todo        " and (not (@status = 'inactive' or @status='deleted') )";
     }
 
     private URL constructQueryPrim(URI arg0, double ra,double dec) throws InvalidArgumentException, NotFoundException {
@@ -99,6 +99,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.2  2006/03/13 18:29:32  nw
+fixed queries to not restrict to @status='active'
+
 Revision 1.1  2006/02/02 14:49:49  nw
 added starter implementation of ssap.
  

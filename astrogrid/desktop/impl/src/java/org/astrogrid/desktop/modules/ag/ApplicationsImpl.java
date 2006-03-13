@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.8 2005/11/11 17:53:27 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.9 2006/03/13 18:27:34 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.SsapInformation;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
@@ -122,8 +123,8 @@ public class ApplicationsImpl implements ApplicationsInternal {
     public String getRegistryQuery() {
         return "Select * from Registry where " +
     " (@xsi:type like '%CeaApplicationType' or " +
-    " @xsi:type like '%CeaHttpApplicationType')" +
-    " and @status = 'active'";
+    " @xsi:type like '%CeaHttpApplicationType')" ; //+
+    //@todo" and ( not( @status = 'inactive' or @status = 'deleted') )";
     }
     
 
@@ -471,7 +472,7 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
    
     public ResourceInformation[] listProvidersOf(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
            ResourceInformation ri = reg.getResourceInformation(applicationName); // verify the application exists.
-           if (ri instanceof SiapInformation || ri instanceof ConeInformation) {
+           if (ri instanceof SiapInformation || ri instanceof ConeInformation || ri instanceof SsapInformation) {
                return new ResourceInformation[]{ri}; // in these protocols, the application and provider are the same
            } else {
         String query = "Select * from Registry where @status = 'active' and cea:ManagedApplications/cea:ApplicationReference='"
@@ -544,6 +545,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.9  2006/03/13 18:27:34  nw
+fixed queries to not restrict to @status='active'
+
 Revision 1.8  2005/11/11 17:53:27  nw
 added cea polling to lookout.
 
