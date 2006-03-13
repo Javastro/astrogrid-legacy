@@ -14,6 +14,8 @@
 (import jena)
 (require-library 'quaestor/sparql)
 (import sparql)
+(require-library 'util/xmlrpc)
+(import xmlrpc)
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
@@ -58,7 +60,8 @@
 ;; Fallback get handler.  Matches everything, and returns a string.
 (define (get-fallback path-info-list query-string request response)
   (response-page "Quaestor"
-                 `((p "Details of Quaestor request")
+                 `((p "I don't recognise that URL.")
+                   (p "The details of the request follow:")
                    ,@(tabulate-request-information request))))
 
 ;; Display an HTML page reporting on the knowledgebases available
@@ -431,6 +434,30 @@
                         '|SC_BAD_REQUEST|
                         "The request path has too many elements"))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; XML-RPC support
+
+;; Handle a single XML-RPC request.  The procedure may read the body of the 
+;; request from the given READER.  It should return a response as a string
+;; containing XML, success or failure, but if anything unexpected happens,
+;; it can throw an error.
+(define (handle-xmlrpc reader)
+  (sexp->xml
+   (with/fc
+      (lambda (m e)
+        (xmlrpc:create-fault 0 "Malformed request: ~a" (error-message m)))
+    (lambda ()
+      (let ((call (xmlrpc:new-call reader)))
+        (if (= (xmlrpc:number-of-params call) 1)
+            (xmlrpc:create-response (format #f
+                                            "Response: method name is ~a; param 1 is ~a"
+                                            (xmlrpc:method-name call)
+                                            (xmlrpc:method-param call 1)))
+            (xmlrpc:create-fault 99 "Wrong number of parameters: ~a"
+                                 (xmlrpc:number-of-params call))))))
+   '(|methodResponse| fault params struct) ;make it look pretty
+   '(param member)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
