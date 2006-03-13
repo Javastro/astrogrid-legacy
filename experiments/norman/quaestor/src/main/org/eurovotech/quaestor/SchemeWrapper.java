@@ -26,6 +26,7 @@ import sisc.io.StreamInputPort;
 public class SchemeWrapper {
 
     static private SchemeWrapper instance;
+    static private java.util.Set loadedOnce;
 
     /**
      * Constructs a new wrapper for SISC.  Private constructor.
@@ -33,13 +34,7 @@ public class SchemeWrapper {
      */
     private SchemeWrapper()
             throws SchemeException {
-        Context.execute
-            (new SchemeCaller() {
-                 public Object execute(Interpreter i) {
-                     REPL.loadDefaultHeap(i);
-                     return Boolean.TRUE;
-                 }
-             });
+        // nothing to do
     }
 
     /**
@@ -161,11 +156,35 @@ public class SchemeWrapper {
         Boolean stat = (Boolean)Context.execute
             (new SchemeCaller() {
                  public Object execute(Interpreter r) {
-                     return Boolean.valueOf(REPL.loadSourceFiles
-                                            (r, new String[] { loadFile }));
+                     return Boolean.valueOf
+                             (r.loadSourceFiles(new String[] { loadFile }));
                  }
              });
         return stat.booleanValue();
+    }
+
+    /**
+     * Loads the given source file at least once.  This works like
+     * {@link #load}, except that if it is called a second time with
+     * the same <code>loadFile</code>, it will do nothing and return
+     * true.
+     * @param loadFile the full path of a file to load
+     * @return true if the load succeeded, or if the load previously
+     * succeeded with this filename; false otherwise
+     * @throws SchemeException passed on from execute
+     */
+    public boolean loadOnce(final String loadFile)
+            throws SchemeException {
+        if (loadedOnce == null)
+            loadedOnce = new java.util.HashSet();
+        if (loadedOnce.contains(loadFile)) {
+            return true;
+        } else if (load(loadFile)) {
+            loadedOnce.add(loadFile);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
