@@ -45,7 +45,8 @@
       (let ((kbpair (assq kb-name _model-list)))
         (and kbpair (cdr kbpair)))))
 
-  ;; Create a new knowledgebase from scratch.  It must not already exist.
+  ;; Create a new knowledgebase from scratch, registering it with the given
+  ;; KB-NAME-PARAM (a string).  It must not already exist.
   ;; Return the new knowledgebase.  Either succeeds or throws an error.
   (define (kb:new kb-name-param)
     (let ((kb-name (as-symbol kb-name-param)))
@@ -61,7 +62,8 @@
                     _model-list))
         kb)))
 
-  ;; Returns a list of available knowledgebases.
+  ;; Returns a list of available knowledgebases.  Returns the names
+  ;; as symbols, or a null list if there are none.
   (define (kb:get-names)
     (map car _model-list))
 
@@ -113,6 +115,9 @@
   ;;        SUBMODEL-NAME may be a string or a symbol.
   ;;    (kb 'get-model)
   ;;        Return the model, or #f if none exists.
+  ;;    (kb 'get-model SUBMODEL-NAME)
+  ;;        Return the named submodel, or #f if none exists.
+  ;;        SUBMODEL-NAME may be a symbol or a string.
   ;;    (kb 'get-model-abox/tbox)
   ;;        Return the merged abox/tbox submodels, or #f if there are none.
   ;;    (kb 'get-metadata-as-string)
@@ -120,8 +125,9 @@
   ;;        Return the model's metadata, if any, as a Scheme or Java string
   ;;    (kb 'get-name)
   ;;        Return the knowledgebase's name
-  ;;    (kb 'get SUBMODEL-NAME)
-  ;;        Return the named submodel, or #f if none exists.
+  ;;    (kb 'has-model [SUBMODEL-NAME])
+  ;;        Return true if the named (sub)model exists, that is, if
+  ;;        (kb 'get-model [SUBMODEL-NAME]) would succeed.  Return #f otherwise.
   ;;    (kb 'set-metadata INFO)
   ;;        Set the metadata to the arbitrary string INFO.
   ;;    (kb 'info)
@@ -148,10 +154,12 @@
 
           ((get-model)
            ;; (kb 'get-model [SUBMODEL-NAME])
-           ;; Return newly-merged model or #f
+           ;; Return newly-merged model or #f if no models exist
            (case (length args)
              ((0)
-              (rdf:merge-models (map cddr submodels)))
+              (if (null? submodels)
+                  #f
+                  (rdf:merge-models (map cddr submodels))))
              ((1)
               (let ((sm (assq (as-symbol (car args))
                               submodels)))
@@ -160,6 +168,20 @@
               (error 'make-kb
                      "Bad call to get: wrong number of args in ~a"
                      args))))
+
+          ((has-model)
+           ;; (kb 'has-model [SUBMODEL-NAME])
+           ;; With an argument, this is redundant with
+           ;; (kb 'get-model SUBMODEL-NAME), but without, it saves the
+           ;; redundant merging of the models, as well as being more
+           ;; intelligible
+           (cond ((= (length args) 0)
+                  (not (null? submodels)))
+                 ((= (length args) 1)
+                  (assq (as-symbol (car args)) submodels))
+                 (else
+                  (error 'make-kb
+                         "Bad call to has-model: wrong no. args ~s" args))))
 
           ((get-model-tbox get-model-abox)
            ;; (kb 'get-model-tbox/abox)
