@@ -20,13 +20,7 @@ public class Quaestor extends HttpServlet {
             throws ServletException {
         try {
             String qt = getServletContext().getRealPath("WEB-INF/quaestor.scm");
-//             Object o = wrapper.eval("(with-failure-continuation (lambda (err cont) (format #f \"Error at ~a: ~a\" (error-location err) (error-message err))) (lambda () (load \"" + qt + "\") #t))");
-//             if (o instanceof String) {
-//                 throw new ServletException
-//                         ("Failed to load quaestor from " + qt
-//                          + ": "+ o);
-//             }
-            if (!SchemeWrapper.getInstance().load(qt)) {
+            if (!SchemeWrapper.getInstance().loadOnce(qt)) {
                 throw new ServletException
                         ("Failed to load Quaestor from " + qt);
             }
