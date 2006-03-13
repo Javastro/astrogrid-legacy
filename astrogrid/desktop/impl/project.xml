@@ -106,7 +106,17 @@
 		</properties>
 	</dependency>	
               	
-		
+<!-- temporary deps -->
+<!-- special calendar lib component for ui/gui -->
+<dependency>
+	<artifactId>jcalendar</artifactId>
+	<groupId>flib</groupId>
+	<version>1.1.1</version>
+	<properties>		
+		<jnlp.jar>true</jnlp.jar>          
+		<dist.bundle>true</dist.bundle>           
+	</properties>
+</dependency>  
 		
 <!-- following libs are packaged up as separate jnlp extensions - so reference here,
       for build time, but don't package in desktop jnlp -->
