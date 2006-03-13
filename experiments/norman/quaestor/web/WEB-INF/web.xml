@@ -30,6 +30,16 @@
   </servlet>
 
   <servlet>
+    <servlet-name>xmlrpc-server</servlet-name>
+    <description>Implements an XML-RPC server</description>
+    <servlet-class>org.eurovotech.quaestor.XmlRpcServer</servlet-class>
+    <init-param>
+      <param-name>rpc-handler-procedure</param-name>
+      <param-value>handle-xmlrpc</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
     <servlet-name>codemanager</servlet-name>
     <description>Allows direct interaction with the SISC REPL</description>
     <servlet-class>org.eurovotech.quaestor.CodeManager</servlet-class>
@@ -42,6 +52,11 @@
   <servlet-mapping>
     <servlet-name>quaestor</servlet-name>
     <url-pattern>/kb/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>xmlrpc-server</servlet-name>
+    <url-pattern>/xmlrpc</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
