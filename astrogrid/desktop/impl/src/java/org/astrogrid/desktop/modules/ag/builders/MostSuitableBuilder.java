@@ -1,4 +1,4 @@
-/*$Id: MostSuitableBuilder.java,v 1.3 2006/02/24 15:22:29 nw Exp $
+/*$Id: MostSuitableBuilder.java,v 1.4 2006/03/13 18:28:08 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,6 +52,7 @@ public class MostSuitableBuilder implements InformationBuilder {
         super();
         builders.add(new TabularDatabaseInformationBuilder());
         builders.add(new ConeInformationBuilder());
+        builders.add(new VizierConeInformationBuilder());
         builders.add(new SiapInformationBuilder());
         builders.add(new ApplicationInformationBuilder());
         builders.add(new SkyNodeInformationBuilder());
@@ -77,6 +78,9 @@ public class MostSuitableBuilder implements InformationBuilder {
 
 /* 
 $Log: MostSuitableBuilder.java,v $
+Revision 1.4  2006/03/13 18:28:08  nw
+special case of a cone builder from vizier reg entries.
+
 Revision 1.3  2006/02/24 15:22:29  nw
 integration necessary for skynode
 
