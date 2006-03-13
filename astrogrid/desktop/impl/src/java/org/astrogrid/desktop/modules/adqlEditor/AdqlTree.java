@@ -9,22 +9,40 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.URI;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
+import java.util.ArrayList; 
+import java.util.ListIterator;
+import javax.swing.event.ChangeEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
+import java.util.Stack;
+
+import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ComboBoxModel;
 import javax.swing.plaf.basic.BasicTreeUI ;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JPanel ;
 import javax.swing.JTree;
+import javax.swing.JComboBox ;
 import javax.swing.KeyStroke;
+import javax.swing.CellEditor;
 import javax.swing.event.CellEditorListener;
 import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -42,6 +60,11 @@ import org.apache.xmlbeans.XmlAnySimpleType;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlCursor;
+import org.astrogrid.acr.astrogrid.TableBean;
+import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 /**
@@ -57,15 +80,18 @@ public final class AdqlTree extends JTree
     private static final Log log = LogFactory.getLog( AdqlTree.class ) ;
     private static final String EDIT_PROMPT_NAME = "Ctrl+Space" ;
     private static final String POPUP_PROMPT_NAME = "Ctrl+M/m" ;
+    private static final char[] ALIAS_NAMES = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+    
+    private boolean debug = false ;
+    
+    private Registry registry ;
+    private URI toolIvorn ;
+    private AliasStack aliasStack ;
+    private TabularDatabaseInformation catalogueResource = null ;
+    private HashMap fromTables = new HashMap() ;
+    private XmlObject xmlFrom ;
     
     private boolean editingActive = false ;
-    private LowLevelEditor llEditor ;
-    
-    private boolean DEBUG = false ;
-    
-    //  Not absolutely sure this field is thread safe
-    // private Rectangle treeVisibleRect ;
-    
     private int availableWidth ;
     
     /**
@@ -74,29 +100,29 @@ public final class AdqlTree extends JTree
      * 
      * @param xmlFile The XML file the new tree should represent.
      */
-    public AdqlTree( File xmlFile ) {
-        initComponents( AdqlTree.parseXml( xmlFile ) ) ;
+    public AdqlTree( File xmlFile, Registry registry, URI toolIvorn ) {
+        initialize( AdqlTree.parseXml( xmlFile ), registry, toolIvorn ) ;
     }
     
     
-    public AdqlTree( InputStream xmlStream ) {
-        initComponents( AdqlTree.parseXml( xmlStream ) ) ;
+    public AdqlTree( InputStream xmlStream, Registry registry, URI toolIvorn ) {
+        initialize( AdqlTree.parseXml( xmlStream ), registry, toolIvorn ) ;
     }
     
-    public AdqlTree() {
-        initComponents( AdqlTree.parseXml( AdqlData.NEW_QUERY ) ) ;
+    public AdqlTree(  Registry registry, URI toolIvorn ) {
+        initialize( AdqlTree.parseXml( AdqlData.NEW_QUERY ), registry, toolIvorn ) ;
     }
     
-    public AdqlTree( String xmlString ) {
-        initComponents( AdqlTree.parseXml( xmlString ) ) ;
+    public AdqlTree( String xmlString, Registry registry, URI toolIvorn ) {
+        initialize( AdqlTree.parseXml( xmlString ), registry, toolIvorn ) ;
     }
     
-    public AdqlTree( org.w3c.dom.Node node ) {
-        initComponents( AdqlTree.parseXml( node ) ) ;
+    public AdqlTree( org.w3c.dom.Node node, Registry registry, URI toolIvorn ) {
+        initialize( AdqlTree.parseXml( node ), registry, toolIvorn ) ;
     }
     
-    public void setTree( AdqlEntry rootEntry ) {
-        this.initComponents( rootEntry ) ;
+    public void setTree( AdqlEntry rootEntry, Registry registry, URI toolIvorn ) {
+        this.initialize( rootEntry, registry, toolIvorn ) ;
     }
     
     public AdqlTreeCellRenderer getTreeCellRenderer() {
@@ -121,11 +147,19 @@ public final class AdqlTree extends JTree
                                     , int row
                                     , boolean hasFocus) {
         if( value != null && value instanceof AdqlEntry ) {
-            if( DEBUG ) 
-                return "abcdefghijklmnopqrstuvwxyz" ;
-            Boolean multiLined = new Boolean( false ) ;
-
-            String html = ((AdqlEntry)value).toHtml( expanded, leaf, this ) ;
+            
+            if( debug == true ) {
+                debug = false ;
+            }
+            
+            String html = null ;
+            try {
+                 html = ((AdqlEntry)value).toHtml( expanded, leaf, this ) ;
+            }
+            catch( Exception ex ) {
+                log.debug( "Why?" );
+            }
+            
             //
             // The following code ensures we draw a tasteful border around any displays
             // which are multi-lined. Dont like the way it is done, but hopefully this
@@ -211,21 +245,20 @@ public final class AdqlTree extends JTree
      * Sets up the components that make up this tree.
      * 
      */
-    private void initComponents( AdqlEntry rootEntry ) {
+    private void initialize( AdqlEntry rootEntry, Registry registry, URI toolIvorn ) {
    
         setModel( new DefaultTreeModel( rootEntry ) );
         getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION ) ;
-        // Uncomment these lines to provide your own GIF files for
-        // tree icons.
-        //        renderer.setLeafIcon(createImageIcon("images/leaf.gif"));
-        //        renderer.setOpenIcon(createImageIcon("images/minus.gif"));
-        //        renderer.setClosedIcon(createImageIcon("images/plus.gif"));
-        // DefaultTreeCellEditor editor = new DefaultTreeCellEditor( this, renderer ) ;
-        DefaultTreeCellRenderer renderer = new AdqlTreeCellRenderer() ;
-//        DefaultTreeCellRenderer renderer = new DebugTreeCellRenderer() ;
+        this.registry = registry ;
+        this.toolIvorn = toolIvorn ;
+        this.resetCatalogueData() ;
+        if( catalogueResource != null ){
+            reestablishTablesCollection() ;
+        }
+      
+        AdqlTreeCellRenderer renderer = new AdqlTreeCellRenderer() ;
         setCellRenderer( renderer ) ;
-        this.llEditor = new LowLevelEditor() ;
-        setCellEditor( new AdqlTreeCellEditor2( this, renderer, new DefaultCellEditor( this.llEditor ) ) ) ;
+        setCellEditor( new AdqlTreeCellEditor( renderer ) ) ;
         setRootVisible( false ) ;
         setShowsRootHandles( true ) ;
         setAutoscrolls( false ) ;
@@ -243,392 +276,239 @@ public final class AdqlTree extends JTree
         
     }
     
-    
-    public class DebugTreeCellRenderer extends DefaultTreeCellRenderer {
-        
-        
-        public Component getTreeCellRendererComponent( JTree tree
-                , Object value
-                , boolean sel
-                , boolean expanded
-                , boolean leaf
-                , int row
-                , boolean hasFocus) {
-            
-            return super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus ) ;
+    private void resetCatalogueData() {
+        String piName = null ;
+        String piValue = null ;
+        this.catalogueResource = null ;
+        XmlCursor cursor = getRoot().newCursor() ;
+        if( DEBUG_ENABLED ) log.debug( "Searching for PI's..." ) ;
+        while( !cursor.toNextToken().isNone() ) {
+            if( cursor.isProcinst() ) {
+                piName = cursor.getName().getLocalPart() ;
+                if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
+                if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
+            	if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
+            	    piValue = cursor.getTextValue().trim() ;
+            	    if( piValue.equals( "none" ) )
+            	        break ;
+            	    String sql = "Select * from Registry where vr:identifier = '" 
+            	               + formatCatalogueId( piValue )
+            	               + "'" ; 
+                    queryRegistry( sql ) ;
+                    if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;
+                    break ;
+            	}
+            }
+        } // end while
+        cursor.dispose();
+        //
+        // Here I am trying to second-guess the appropriate database for this dsa tool.
+        // Cannot see any harm to this. If it fails, the user still has the option of
+        // choosing for him/herself.
+        if( catalogueResource == null ) {
+            String ivorn = toolIvorn.toString() ;
+            int index = ivorn.lastIndexOf( "ceaApplication" ) ;
+            if( index != -1 ) {
+                StringBuffer buffer = new StringBuffer( ivorn.length() ) ;
+                buffer
+                	.append( "Select * from Registry where vr:identifier = '" )
+                	.append( ivorn.substring( 0, index ) )
+                	.append( "TDB" )
+                	.append( "'" ) ;
+                queryRegistry( buffer.toString() ) ;
+                if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;              
+            }
         }
-        
-        public Dimension getPreferredSize() {
-//          if( TRACE_ENABLED ) log.debug( "AdqlTreeCellRenderer.getPreferredSize()" ) ; 
-//          int displacement = level * 20 ;  // rough and ready guess for the moment.
-//          int width = treeVisibleRect.width - displacement ;
-//          if( width < 250 )
-//              width = 250 ;
-          Dimension d = super.getPreferredSize() ;
-          d.width = d.width / 2 ;
-          d.height = d.height * 2 ;
-//          d.width = this.useableWidth ;
-//          if( d.width < 250 )
-//              d.width = 250 ;
-//          if( !expanded )
-//              d.height = d.height * 2 ;      
-//          if( DEBUG_ENABLED ) log.debug( "d.width: " + d.width ) ;
-          return d ;
-      }
-        
-        public void setIcon( javax.swing.Icon icon ) { }
+    }
+    
+    private String formatCatalogueId ( String piValue ) {
+        // This value follows a standard set up in the portal prior to
+	    // the establishment of ivorns and overcomes some of the problems
+	    // of special characters within table names. 
+	    // Note: The portal QB allows only one table (no joins) so the metadata
+	    // reflects the one table. But we need the whole catalogue/database.
+        String ivornString = "ivo://" + piValue.substring( 0, piValue.lastIndexOf( '!' ) ).replace( '!', '/' ) ;
+        if( DEBUG_ENABLED ) log.debug( "catalogue ivorn: " + ivornString ) ;
+        return ivornString ;
+    }
+    
+    private void queryRegistry( String searchString ) {
+        try {
+            catalogueResource = (TabularDatabaseInformation)registry.adqlSearchRI( searchString )[0] ;
+        }
+        catch ( Exception ex )  {
+            log.error( "Failed to find catalogue entry using: \n" + searchString ) ;
+        }
+    }
+    
+    private void writeResourceProcessingInstruction() {
+        String piName = null ;
+        String piValue = null ;
+        XmlCursor cursor = getRoot().newCursor() ;
+        if( DEBUG_ENABLED ) log.debug( "Searching for PI's..." ) ;
+        while( !cursor.toNextToken().isNone() ) {
+            if( cursor.isProcinst() ) {
+                piName = cursor.getName().getLocalPart() ;
+                if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
+                if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
+            	if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
+            	   // OK. There's already one here.
+            	   // But does it say "none"?...
+            	    if( cursor.getTextValue().trim().equals( "none") ) {
+            	        piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
+                        + '!' 
+                        + catalogueResource.getDatabases()[0].getTables()[0].getName() ;
+            	        cursor.setTextValue( piValue ) ;
+            	    }
+            	   break ;
+            	}
+            }
+            else if( cursor.isStart()
+                     &&
+                     cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
+                // We need to create the required PI...
+                // (I've simply chosen the first table to align it with the portal)
+                piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
+                        + '!' 
+                        + catalogueResource.getDatabases()[0].getTables()[0].getName() ;
+                if( DEBUG_ENABLED ) log.debug( "new PI Text: " +piValue ) ;
+                cursor.insertProcInst( AdqlData.PI_QB_REGISTRY_RESOURCES, piValue ) ;
+                break ;               
+            }
+        } // end while
+        cursor.dispose();
     }
     
     
- 
-    public class AdqlTreeCellRenderer extends DefaultTreeCellRenderer {
-        
-        
-        private volatile int useableWidth ;
-        private boolean expanded ;
-        private boolean useOppositeExpansionState = false ;
-        
-        public AdqlTreeCellRenderer() {
-            setIcon( null ) ;
-            setLeafIcon( null ) ;
-            setOpenIcon( null ) ;
-            setClosedIcon( null ) ;
-            setHorizontalAlignment( LEFT ) ;
-            setVerticalAlignment( TOP ) ;
-            // Experment to see what a border would look like
-            // Over the top, probably. But it would be good to 
-            // draw feintly around any mult-line labels
-            setBorder( BorderFactory.createEtchedBorder() ) ;
-//            AdqlTree.this.addComponentListener ( 
-//                new ComponentAdapter() {
-//                    public void componentResized( ComponentEvent e ) {
-//                        treeVisibleRect = AdqlTree.this.getVisibleRect() ;
-//                    }
-//                } 
-//            ) ;
-        }
-        
-        public void setIcon( javax.swing.Icon icon ) { }
-        
-        
-        public Component getTreeCellRendererComponent( JTree tree
-                                                     , Object value
-                                                     , boolean sel
-                                                     , boolean expanded
-                                                     , boolean leaf
-                                                     , int row
-                                                     , boolean hasFocus) {
-            
-            AdqlEntry entry = (AdqlEntry)value ;
-            int level = ((AdqlEntry)value).getLevel() ; 
-            // The following 20 pixels is a guess at what a one level displacement
-            // should be. Seems to be pretty accurate.
-            int displacement = ( level + 1 ) * 20 ;  
-            this.useableWidth = getAvailableWidth() - displacement ;
-            // We cannot let things get rediculously small ...
-            if( this.useableWidth  < 200 )
-                this.useableWidth  = 200 ;
-            entry.setUseableWidth( this.useableWidth ) ;
-            return super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus) ;
-        }
-        
-        public void setUseOppositeExpansionState() {
-            useOppositeExpansionState = true ;
-        }
-        
-        public Dimension getPreferredSize() {
-//            if( TRACE_ENABLED ) log.debug( "AdqlTreeCellRenderer.getPreferredSize()" ) ; 
-//            int displacement = level * 20 ;  // rough and ready guess for the moment.
-//            int width = treeVisibleRect.width - displacement ;
-//            if( width < 250 )
-//                width = 250 ;
-            Dimension d = super.getPreferredSize() ;
-            d.width = this.useableWidth ;
-//            if( d.width < 250 )
-//                d.width = 250 ;
-//            if( !expanded )
-//                d.height = d.height * 2 ;      
-//            if( DEBUG_ENABLED ) log.debug( "d.width: " + d.width ) ;
-            return d ;
-        }
-       
-    } // end of class AdqlTreeCellRenderer
+    private void reestablishTablesCollection() {
+        aliasStack = new AliasStack() ;
+        XmlString xTableName = null ;
+        XmlString xAlias = null ;
+        String alias = null ;
+//        String greatestAlias = null ;
+        DatabaseBean db = catalogueResource.getDatabases()[0] ;
+        //
+        // Loop through the whole of the query looking for table types....
+        // (JL: This is somewhat weak. I think there may be complications
+        //      with join tables )
+        XmlCursor cursor = getRoot().newCursor() ;
+        while( !cursor.toNextToken().isNone() ) {
+            if( cursor.isStart()  
+                && 
+                ( cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.TABLE_TYPE ) 
+                  ||
+                  cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.ARCHIVE_TABLE_TYPE ) )                       
+            ) {
+                xTableName = (XmlString)AdqlUtils.get( cursor.getObject(), "name" ) ;
+                xAlias = (XmlString)AdqlUtils.get( cursor.getObject(), "alias" ) ;
+                alias = (xAlias == null ? null : xAlias.getStringValue())  ; 
+                if( DEBUG_ENABLED ) log.debug( "table name: " 
+                         + xTableName.getStringValue() 
+                         + " with alias: "
+                         + (xAlias==null ? "null" : xAlias.getStringValue()) ) ;  
+                fromTables.put( xTableName.getStringValue()
+                              , new TableData( db, findTableIndex( db, xTableName.getStringValue()), alias ) ) ;
+//                if( alias != null && (greatestAlias == null || greatestAlias.compareTo(alias) < 0) ) {
+//                        greatestAlias = alias ;
+//                }
+            }
+        } // end while
+        cursor.dispose();
+        // Reset the alias stack to the "largest" previously used value... 
+//        if( greatestAlias != null ) {
+//            // This is potentially dangerous. So until I have time to work out a better way,
+//            // I'm assuming no more then 100 tables will ever be tried...
+//            for( int i=0; i<100; i++ ) {
+//                if( aliasStack.pop().equals( greatestAlias ) ) 
+//                    break ;
+//            }    
+//        }
+    }
     
+    private int findTableIndex( DatabaseBean db, String tableName ) {
+        TableBean[] tables = db.getTables() ;
+        for( int i=0; i<tables.length; i++ ) {
+            if( tables[i].getName().equals( tableName ) ) {
+                return i ;
+            }
+        }
+        return -1;
+    }
 
     
-    public class AdqlTreeCellEditor extends JTextArea implements TreeCellEditor {
-        
-        java.util.Vector listeners = new Vector() ;
-        Object value ;
-        JTree tree ;
-        
-        public AdqlTreeCellEditor() {
-        }
-        
-        
-        public Component getTreeCellEditorComponent( JTree tree
-                								   , Object value
-                								   , boolean sel
-                								   , boolean expanded
-                								   , boolean leaf
-                								   , int row ) {
-//            System.out.println( "AdqlTreeCellEditor.getTreeCellEditorComponent" ) ;
-//            System.out.println( "value.getClass().getName(): " + value.getClass().getName() ) ;
-            this.value = value ;
-            setLineWrap( true ) ;
-            setWrapStyleWord( true ) ;
-            this.setBorder( BorderFactory.createLineBorder( Color.black, 1 ) ) ;
-            this.tree = tree ;
-            if( value != null )
-                ; // setText( ((AdqlEntry)value).toText( expanded, AdqlTree.this ) ) ;
-            return this ;
-        }
-        
-        public Dimension getPreferredSize() {
-            Dimension d = super.getPreferredSize() ;          
-            if( d.width < 500 ) {
-                d.width = 500 ;
-            }
-            return d ;
-        }
-        
-            
-        /* (non-Javadoc)
-         * @see javax.swing.CellEditor#addCellEditorListener(javax.swing.event.CellEditorListener)
-         */
-        public void addCellEditorListener(CellEditorListener l) {
-            listeners.add( l ) ;
-
-        }
-        /* (non-Javadoc)
-         * @see javax.swing.CellEditor#cancelCellEditing()
-         */
-        public void cancelCellEditing() {
-            this.setText( this.value.toString() ) ;
-        }
-        /* (non-Javadoc)
-         * @see javax.swing.CellEditor#getCellEditorValue()
-         */
-        public Object getCellEditorValue() {
-//            System.out.println( "getCellEditorValue()..." ) ;
-            if( this.value == null )  {
-//                System.out.println( "value is null" ) ;
-                return null ;
-            }
-            else {
-//                System.out.println( "value.getClass().getName(): " + this.value.getClass().getName() ) ;
-                return ((AdqlEntry)this.value).getUserObject() ;
-            }
-        }
-        /* 
-         * This is controlled elsewhere; viz: in the EditPromptAction and elsewhere.
-         * There should be no need to return anything other than true.
-         */
-        public boolean isCellEditable( EventObject anEvent ) {
-           return true;
-        }
-        
-        /*
-         * @see javax.swing.CellEditor#removeCellEditorListener(javax.swing.event.CellEditorListener)
-         */
-        public void removeCellEditorListener(CellEditorListener l) {
-            listeners.removeElement( l ) ;
-        }
-        /* (non-Javadoc)
-         * @see javax.swing.CellEditor#shouldSelectCell(java.util.EventObject)
-         */
-        public boolean shouldSelectCell(EventObject anEvent) {
-            return true;
-        }
-        /* (non-Javadoc)
-         * @see javax.swing.CellEditor#stopCellEditing()
-         */
-        public boolean stopCellEditing() {
-//            System.out.println( "stopCellEditing: \n" + this.getText() ) ;
-            return true;
-        }
-       
-        
-    } // end of class AdqlTreeCellEditor
-    
-    
-    public class AdqlTreeCellEditor2 extends DefaultTreeCellEditor {
-        // TODO Validation of basic values required.
-        
-        public void cancelCellEditing() {
-            super.cancelCellEditing();
-        }
-        protected void prepareForEditing() {
-            super.prepareForEditing();
-        }
-        public boolean stopCellEditing() {
-            return super.stopCellEditing();
-        }
-        private AdqlEntry entry ;
-        private XmlObject xmlValueObject ;
-        private DefaultCellEditor editor ;
-        
-        public AdqlTreeCellEditor2( JTree tree, DefaultTreeCellRenderer renderer, DefaultCellEditor editor ) {
-            super( tree, renderer, editor ) ;  
-            editor.setClickCountToStart( -1 ) ;
-        }
-        
-        public Component getTreeCellEditorComponent( JTree tree
-                								   , Object value
-									               , boolean sel
-									               , boolean expanded
-									               , boolean leaf
-									               , int row ) {
-            if( value != null ) {
-                this.entry = (AdqlEntry)value ;
-                this.xmlValueObject = ((AdqlEntry)value).getXmlObject() ;
-                if( this.xmlValueObject != null ) 
-                    AdqlTree.this.llEditor.setValue( this.xmlValueObject ) ;
-            }      
-            Component c = super.getTreeCellEditorComponent( tree, value, sel, expanded, leaf, row ) ;
-            //System.out.println( "AdqlTreeCellEditor.getTreeCellEditorComponent" ) ;
-            //System.out.println( "value.getClass().getName(): " + value.getClass().getName() ) ;
-//            this.value = value ;
-//            if( value != null )
-//               setText( ((AdqlEntry)value).toText( expanded, AdqlTree.this ) ) ;
-            return c ;
-        }
-        
-        public boolean isCellEditable(EventObject event) {
-            return super.isCellEditable(event);
-        }
-        protected boolean shouldStartEditingTimer(EventObject event) {
-            return false;
-        }
-        protected void startEditingTimer() {
-            // super.startEditingTimer();
-        }
-        
-        public Object getCellEditorValue() {
-            XmlObject retVal = null ;
-//          System.out.println( "getCellEditorValue()..." ) ;
-          if( this.xmlValueObject != null )  {
-              SchemaType type = xmlValueObject.schemaType() ;
-              if( isAttributeDriven( type ) ) {
-                  setAttributeValue( llEditor.getText() ) ;
-              }
-              else {
-                  setElementValue( llEditor.getText() ) ;
-              }
-              
-              retVal = this.xmlValueObject ;
-              this.xmlValueObject = null ;
-              // At a guess this needs to set the value within the xmlValueObject using the String value
-              // from the editor text box. 
-//              System.out.println( "getCellEditorValue(): " + llEditor.getText() ) ;
-              // Then reset the low level editor.
-              llEditor.setValue( null ) ;
-              ((DefaultTreeModel)AdqlTree.this.getModel()).nodeChanged( this.entry ) ;       
-              
-          }
-          return retVal ;
-      }
-        
-      private void setAttributeValue( String value ) {
-          SchemaType type = xmlValueObject.schemaType() ;
-          String attributeName = (String)AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-          XmlString tempObject = XmlString.Factory.newInstance() ;
-          tempObject.setStringValue( value ) ; 
-          
-          //
-          // There is a better way to do this provided I can get at the fully qualified name
-          // of the attribute. Needs thinking about.
-          // Another point. The schema may itself define a default value. This too can be picked up.
-          SchemaType attrType = null ;
-          SchemaProperty[] attrProperties = type.getAttributeProperties() ;
-          for( int i=0; i<attrProperties.length; i++ ) {
-              if( attrProperties[i].getJavaPropertyName().equals( attributeName ) ) {
-                  attrType = attrProperties[i].getType();
-                  break ;
-              }
-          }
-          XmlObject valueObject = tempObject.changeType( attrType ) ;        
-          AdqlUtils.set( xmlValueObject, attributeName, valueObject ) ; 
-      }
-      
-      private void setElementValue( String value ) {
-          SchemaType type = xmlValueObject.schemaType() ;
-          SchemaType listType = type.getListItemType() ;
-          if( listType == null ) {
-              ((XmlAnySimpleType)xmlValueObject).setStringValue( value )  ;
-          }
-          else {
-              // This surprisingly works...
-              ((XmlAnySimpleType)xmlValueObject).setStringValue( value )  ;
-          }
-      }
-                
+    public int getAvailableWidth() {
+        return availableWidth;
+    }
+    public void setAvailableWidth(int availableWidth) {
+        this.availableWidth = availableWidth ;
+        //
+        // The next two lines are a workaround to ensure the
+        // BasicTreeUI resets its cache of node sizes...
+        BasicTreeUI ui = (BasicTreeUI)getUI() ;
+       	ui.setRightChildIndent( ui.getRightChildIndent() ) ;
+    }
+   
+    public XmlObject getRoot() {
+        return ((AdqlEntry)(getModel().getRoot())).getXmlObject() ;
     }
     
-    public class LowLevelEditor extends JTextField {
-        
-        private XmlObject xmlObject ;
-        
-        public LowLevelEditor() {
-            super() ;
-        }
-        
-        public void setValue( XmlObject xmlObject ) {
-            this.xmlObject = xmlObject ;
-        }
-        
-        public XmlObject getValue() {
-            return this.xmlObject ;
-        }
-        
-        public void setText( String string ) {
-            String value ;
-            if( this.xmlObject == null ) {
-//                System.out.println( "xmlObject was null" ) ;
-                return ;
-            }
-            try {
-                if( isAttributeDriven( this.xmlObject.schemaType() ) ) {
-                    value = extractAttributeValue( xmlObject ) ;
-                }
-                else {
-                    value = ((SimpleValue)this.xmlObject).getStringValue() ;
-                }
- 
-//                System.out.println( "getStringValue(): " + value ) ;
-            }
-            catch( Exception ex ) {
-                value = "Invalid value returned from getStringValue()" ;
-                ex.printStackTrace() ;
-            }
-            if( value != null )
-                super.setText( value ) ;
- //           super.setText( string ) ;
-        }
-        
-  
-        
-    }
-    
-    
-    // NOte this is duplicated in the ADQLToolEditorPanel
+//  NOte this is duplicated in the ADQLToolEditorPanel
     private boolean isAttributeDriven( SchemaType type ) {
-        String name = (String)AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-        return ( name != null && name.length() > 0 ) ;
+        String[] name = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+        return ( name != null && name.length == 1 ) ;
     }
     
     private String extractAttributeValue( XmlObject xmlObject ) {
         String retVal = null ;
         XmlObject intermediateObject ;         
         SchemaType type = xmlObject.schemaType() ;
-        String attributeName = (String)AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-        intermediateObject = AdqlUtils.get( xmlObject, attributeName ) ;
-        retVal = ((SimpleValue)(intermediateObject)).getStringValue() ;
+        String[] attributeName = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+        intermediateObject = AdqlUtils.get( xmlObject, attributeName[0] ) ;
+        if( intermediateObject != null )
+            retVal = ((SimpleValue)(intermediateObject)).getStringValue() ;
         return retVal ;
     }
     
     
-      
+    public TableData getTableData( String tableName ) {
+        TableData tableData = null ;
+        java.util.Set set = fromTables.entrySet() ;
+        Iterator it = set.iterator() ;
+        while( it.hasNext() ) {
+            tableData = (TableData)((java.util.Map.Entry)it.next()).getValue() ;
+            try {
+                if( tableData.database.getTables()[ tableData.tableIndex ].getName().equals( tableName ) )
+                    break ;
+            }
+            catch( ArrayIndexOutOfBoundsException ex ) {
+                ;
+            }
+            tableData = null ;
+        }
+        return tableData ;
+    }
+    
+    public TabularDatabaseInformation getCatalogueResource() {
+        return catalogueResource;
+    }
+    
+    public void setCatalogueResource( TabularDatabaseInformation tdbInfo ) {
+        this.catalogueResource = tdbInfo ;
+        this.writeResourceProcessingInstruction() ;
+    }
+    
+    public boolean isCatalogueResourceSet() {
+        return catalogueResource != null ;
+    }
+    
+    public HashMap getFromTables() {
+        return fromTables;
+    }
+    
+    public String popAliasStack() {
+        return aliasStack.pop() ;
+    }
+    
     //
     // Amazingly, this works for controlling editing.
     public class EditPromptAction extends AbstractAction {
@@ -663,16 +543,770 @@ public final class AdqlTree extends JTree
         
     } // end of class EditPromptAction
     
-    public int getAvailableWidth() {
-        return availableWidth;
-    }
-    public void setAvailableWidth(int availableWidth) {
-        this.availableWidth = availableWidth ;
-        //
-        // The next two lines are a workaround to ensure the
-        // BasicTreeUI resets its cache of node sizes...
-        BasicTreeUI ui = (BasicTreeUI)getUI() ;
-       	ui.setRightChildIndent( ui.getRightChildIndent() ) ;
+    
+    public class AdqlTreeCellRenderer extends DefaultTreeCellRenderer {
+        
+        
+        private volatile int useableWidth ;
+        private boolean expanded ;
+        private boolean useOppositeExpansionState = false ;
+        
+        public AdqlTreeCellRenderer() {
+            setIcon( null ) ;
+            setLeafIcon( null ) ;
+            setOpenIcon( null ) ;
+            setClosedIcon( null ) ;
+            setHorizontalAlignment( LEFT ) ;
+            setVerticalAlignment( TOP ) ;
+            setBorder( BorderFactory.createEtchedBorder() ) ;
+        }
+        
+        public void setIcon( javax.swing.Icon icon ) { }
+        
+        
+        public Component getTreeCellRendererComponent( JTree tree
+                                                     , Object value
+                                                     , boolean sel
+                                                     , boolean expanded
+                                                     , boolean leaf
+                                                     , int row
+                                                     , boolean hasFocus) {
+            
+            AdqlEntry entry = (AdqlEntry)value ;
+            int level = ((AdqlEntry)value).getLevel() ; 
+            // The following 20 pixels is a guess at what a one level displacement
+            // should be. Seems to be pretty accurate.
+            int displacement = ( level + 1 ) * 20 ;  
+            this.useableWidth = getAvailableWidth() - displacement ;
+            // We cannot let things get rediculously small ...
+            if( this.useableWidth  < 200 )
+                this.useableWidth  = 200 ;
+            entry.setUseableWidth( this.useableWidth ) ;
+            return super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus) ;
+        }
+        
+        public void setUseOppositeExpansionState() {
+            useOppositeExpansionState = true ;
+        }
+        
+        public Dimension getPreferredSize() {
+            Dimension d = super.getPreferredSize() ;
+            d.width = this.useableWidth ;
+            return d ;
+        }
+       
+    } // end of class AdqlTreeCellRenderer
+    
+
+    
+    public class AdqlTreeCellEditor implements TreeCellEditor, ActionListener {
+        
+        private static final int MINIMUM_WIDTH = 100 ;
+        Vector listeners = new Vector() ;
+        AdqlEntry adqlEntry ;
+        EnumeratedEditor enumeratedEditor ;
+        SingletonTextEditor singletonTextEditor ;
+        TupleTextEditor tupleTextEditor ;
+        CellEditor currentEditor ;
+        AdqlTreeCellRenderer renderer ;
+        
+        public AdqlTreeCellEditor( AdqlTreeCellRenderer renderer ) {
+            this.renderer = renderer ;
+            enumeratedEditor = new EnumeratedEditor() ;
+            enumeratedEditor.setFont( AdqlTree.this.getFont() ) ;
+            enumeratedEditor.addActionListener( this ) ;
+            singletonTextEditor = new SingletonTextEditor() ;
+            singletonTextEditor.setFont( AdqlTree.this.getFont() ) ;
+            singletonTextEditor.addActionListener( this ) ;
+            tupleTextEditor = new TupleTextEditor() ;
+            tupleTextEditor.setFont( AdqlTree.this.getFont() ) ;
+           // tupleTextEditor.addActionListener( this ) ;
+        }
+        
+        public Component getTreeCellEditorComponent( JTree tree
+                                                   , Object value
+                                                   , boolean isSelected
+                                                   , boolean expanded
+                                                   , boolean leaf
+                                                   , int row ) {
+            this.adqlEntry = (AdqlEntry)value ;
+            if( AdqlUtils.isEnumerated( adqlEntry.getSchemaType() ) ) {
+                currentEditor = enumeratedEditor ;
+                enumeratedEditor.setValue() ;
+            }
+            else if( isTupleEditorRequired( this.adqlEntry ) ) {
+                currentEditor = tupleTextEditor ;
+                tupleTextEditor.setValue() ;
+            }
+            else {
+                currentEditor = singletonTextEditor ;
+                singletonTextEditor.setValue() ;
+            }
+            return (Component)currentEditor ;
+        }
+        public void addCellEditorListener( CellEditorListener l ) {
+            listeners.addElement( l ) ;
+        }
+        public void cancelCellEditing() {
+            currentEditor.cancelCellEditing() ;
+        }
+        public Object getCellEditorValue() {
+            debug = true ;
+            return currentEditor.getCellEditorValue() ; 
+        }
+        public boolean isCellEditable( EventObject anEvent ) {
+            if( anEvent instanceof MouseEvent ) { 
+                return false ;
+            }
+            return true ;
+//            if( currentEditor == null )
+//                return true ;
+//            return currentEditor.isCellEditable( anEvent ) ;
+        }
+        public void removeCellEditorListener( CellEditorListener l ) {
+            listeners.removeElement( l ) ;
+        }
+        public boolean shouldSelectCell( EventObject anEvent ) {
+            return currentEditor.shouldSelectCell( anEvent ) ;
+        }
+        public boolean stopCellEditing() {
+            return currentEditor.stopCellEditing() ;
+        }
+        
+        protected void fireEditingStopped() {
+            if( listeners.size() > 0 ) {
+                ChangeEvent changeEvent = new ChangeEvent( this ) ;
+                for( int i=listeners.size()-1; i>=0; i-- ) {
+                    ( (CellEditorListener)listeners.elementAt(i) ).editingStopped( changeEvent ) ;
+                }
+            }
+        }
+                  
+        public void actionPerformed( ActionEvent e ) {
+            if( stopCellEditing() ) {
+                fireEditingStopped() ;
+            }
+        }
+        
+        public Rectangle setBounds( Rectangle rectangle ) {
+            rectangle.width = Math.max( MINIMUM_WIDTH, rectangle.width ) ;
+            return rectangle ;
+        }
+       
+        public Rectangle setBounds( int x, int y, int w, int h ) {
+            Rectangle r = new Rectangle( x, y, w, h ) ;
+            return setBounds( r ) ;
+        }
+        
+        private boolean isTupleEditorRequired( AdqlEntry entry ) {
+            String[] names = (String[])AdqlData.EDITABLE.get( entry.getXmlObject().schemaType().getName().getLocalPart() ) ;
+            return ( names != null && names.length > 1 ) ;
+        }
+        
+        
+        public class EnumeratedEditor extends JComboBox implements CellEditor {
+            
+            XmlObject attribObj ;
+                    
+            public EnumeratedEditor() {
+                super() ;
+           //     setKeySelectionManager( new EnumeratedEditor.KeySelectionManager() ) ;
+                setPrototypeDisplayValue( new String( "mmmmmmmmmmmmmmmm" ) ) ;
+                setEditable( true ) ; 
+            }
+            
+            public void addCellEditorListener( CellEditorListener l ) {
+                AdqlTreeCellEditor.this.addCellEditorListener( l ) ;
+            }
+            public void cancelCellEditing() {}
+            
+            public Object getCellEditorValue() {
+                setAttributeValue( (String)getSelectedItem() ) ;
+                return adqlEntry.getXmlObject();
+            }
+            public boolean isCellEditable(EventObject anEvent) {
+              return true ;
+            }
+            public void removeCellEditorListener(CellEditorListener l) {
+                AdqlTreeCellEditor.this.removeCellEditorListener( l ) ;
+            }
+            public boolean shouldSelectCell(EventObject anEvent) {
+                return true ;
+            }
+            public boolean stopCellEditing() {
+                try {
+                    if( getSelectedItem() == null )
+                        getItemAt( 0 ) ;
+                    return true ;
+                }
+                catch( Exception ex ) {
+                    ;
+                }
+                return false;
+            }
+            
+            public void setValue() {              
+                DefaultComboBoxModel model = (DefaultComboBoxModel)getModel();
+                model.removeAllElements() ;
+                SchemaType type = adqlEntry.getSchemaType() ;
+                String attributeTypeName = (String)AdqlData.ENUMERATED_ATTRIBUTES.get( type.getName().getLocalPart() ) ;
+                SchemaProperty[] properties = type.getAttributeProperties() ;
+                XmlAnySimpleType[] enumeratedValues = null ;
+                for( int i=0; i<properties.length; i++ ) {
+                    if( attributeTypeName.equals( properties[i].getType().getName().getLocalPart() ) ) {
+                        enumeratedValues = properties[i].getType().getEnumerationValues() ;
+                        break ;
+                    }
+                }
+                
+                String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+                // Retrieve and remember the attribute object.
+                // This is used when the user has finished editing to set the new value...
+                this.attribObj = AdqlUtils.get( adqlEntry.getXmlObject(), attributeNames[0] ) ;
+                String currentValue = ((SimpleValue)(this.attribObj)).getStringValue() ;
+                String comboValue = null ;
+                for( int i=0; i<enumeratedValues.length; i++ ) {
+                    comboValue = enumeratedValues[i].getStringValue() ;
+                    addItem( comboValue ) ;
+                    if( currentValue.equals( comboValue ) ) {
+                        setSelectedIndex( i ) ;
+                    }
+                }
+                
+            }
+            
+            public void setBounds( Rectangle rectangle ) {
+                super.setBounds( AdqlTreeCellEditor.this.setBounds( rectangle ) ) ;
+            }
+            
+            public void setBounds( int x, int y, int w, int h ) {
+                Rectangle r = AdqlTreeCellEditor.this.setBounds( x, y, w, h ) ;
+                super.setBounds( r.x, r.y, r.width, r.height ) ;
+            }
+            
+            private void setAttributeValue( String value ) {
+                try {
+                    ((SimpleValue)this.attribObj).setStringValue( value ) ;
+                }
+                catch( Exception ex ) {
+                    log.warn( "Failure to set attribut value:", ex ) ;
+                }
+  
+            }
+
+            public class KeySelectionManager implements JComboBox.KeySelectionManager {
+                
+                public int selectionForKey( char aKey, ComboBoxModel aModel ) {
+                    int index = -1 ;
+                    int move = 0 ;
+                    if( aKey == KeyEvent.VK_UP || aKey == KeyEvent.VK_KP_UP ) {
+                        move = -1 ;
+                    }
+                    else if( aKey == KeyEvent.VK_DOWN || aKey == KeyEvent.VK_KP_DOWN ) {
+                        move = +1 ;
+                    }
+                    else {
+                        return index ;
+                    } 
+                    DefaultComboBoxModel model = (DefaultComboBoxModel)aModel ;
+                    int listSize = model.getSize() ;
+                    index = model.getIndexOf( model.getSelectedItem() ) + move ;
+                    if( index >= listSize )
+                        index = -1 ;
+                    
+                    return index ;
+                }
+                        
+            }
+                
+        } // end of class EnumeratedEditor
+        
+        public class SingletonTextEditor extends JTextField implements CellEditor {
+            
+            public SingletonTextEditor() {
+                super() ;
+            }
+            
+            public void addCellEditorListener(CellEditorListener l) {
+                AdqlTreeCellEditor.this.addCellEditorListener( l ) ;
+            }
+            public void cancelCellEditing() {}
+            
+            public Object getCellEditorValue() {
+                setElementValue( getText() ) ;
+                return adqlEntry.getXmlObject() ;
+            }
+            public boolean isCellEditable(EventObject anEvent) {
+                return true ;
+            }
+            public void removeCellEditorListener(CellEditorListener l) {
+                AdqlTreeCellEditor.this.removeCellEditorListener( l ) ;
+            }
+            public boolean shouldSelectCell(EventObject anEvent) {
+                return true ;
+            }
+            public boolean stopCellEditing() {
+                return true ;
+            }
+            
+            public void setValue() {
+                String value = null ;
+                XmlObject xmlObject = adqlEntry.getXmlObject() ;
+                try {
+                    if( AdqlUtils.localNameEquals( xmlObject, "atomType") ) {
+                        value = (new AdqlEntry.Atom( xmlObject )).formatDisplay() ;
+                    }
+                    else if( isAttributeDriven( xmlObject.schemaType() ) ) {
+                        String[] attributeNames = (String[])AdqlData.EDITABLE.get( xmlObject.schemaType().getName().getLocalPart() ) ;
+                        XmlObject attribObj = AdqlUtils.get( adqlEntry.getXmlObject(), attributeNames[0] ) ;
+                        value = ((SimpleValue)(attribObj)).getStringValue() ;
+                    }
+                    else {
+                        value = ((SimpleValue)xmlObject).getStringValue() ;
+                    }
+
+                }
+                catch( Exception ex ) {
+                    value = "" ;
+                    log.error( ex ) ;
+                }
+                setText( value ) ;
+            }
+            
+            public void setBounds( Rectangle rectangle ) {
+                super.setBounds( AdqlTreeCellEditor.this.setBounds( rectangle ) ) ;
+            }
+            
+            public void setBounds( int x, int y, int w, int h ) {
+                Rectangle r = AdqlTreeCellEditor.this.setBounds( x, y, w, h ) ;
+                super.setBounds( r.x, r.y, r.width, r.height ) ;
+            }
+            
+            private void setElementValue( String value ) {
+                try {
+                    XmlObject xmlObject = adqlEntry.getXmlObject() ;
+                    SchemaType type = xmlObject.schemaType() ;
+                    SchemaType listType = type.getListItemType() ;
+                    if( listType != null ) {
+                        // This surprisingly works for a list...
+                        ((XmlAnySimpleType)xmlObject).setStringValue( value )  ;
+                    }
+                    else if( AdqlUtils.localNameEquals( xmlObject, "atomType") ) {
+                        (new AdqlEntry.Atom( xmlObject )).setValue( value ) ;
+                    }
+                    else if( isAttributeDriven( type ) ) {
+                        String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+                        XmlObject attr = AdqlUtils.get( xmlObject, attributeNames[0] ) ;
+                        if( value == null || value.trim().length() == 0 ) {
+                           // I cannot see any reason for the attribute be optional
+                           // and not existing, but for safety's sake...
+                           if( AdqlUtils.isOptionalAttribute( xmlObject, attributeNames[0] ) ) {
+                               AdqlUtils.unset( xmlObject, attributeNames[0] ) ;
+                           }
+                           else {
+                               ;  // we do nothing, ignoring any changes.
+                           }
+                        }
+                        else {
+                            ((XmlAnySimpleType)attr).setStringValue( value ) ;
+                        }                  
+                    }
+                    else {
+                        ((XmlAnySimpleType)xmlObject).setStringValue( value )  ;
+                    }
+                }
+                catch( Exception ex ) {
+                    log.warn( "Failure to set element values: ", ex ) ;
+                }              
+            }
+            
+        }
+        
+        public class TupleTextEditor extends Box implements CellEditor {
+            
+            private JTextField[] fields = new JTextField[2] ;
+            
+            public TupleTextEditor() {
+                super( BoxLayout.X_AXIS ) ;
+                fields[0] = new JTextField() ;
+                add( fields[0] ) ;
+                fields[1] = new JTextField() ;
+                add( fields[1] ) ;
+                
+            }
+            
+            public void addCellEditorListener(CellEditorListener l) {
+                AdqlTreeCellEditor.this.addCellEditorListener( l ) ;
+            }
+            public void cancelCellEditing() {}
+            
+            public Object getCellEditorValue() {
+                setElementValue() ;
+                return adqlEntry.getXmlObject() ;
+            }
+            public boolean isCellEditable(EventObject anEvent) {
+                return true ;
+            }
+            public void removeCellEditorListener(CellEditorListener l) {
+                AdqlTreeCellEditor.this.removeCellEditorListener( l ) ;
+            }
+            public boolean shouldSelectCell(EventObject anEvent) {
+                return true ;
+            }
+            public boolean stopCellEditing() {
+                return true ;
+            }
+            
+            public void setValue() {
+                XmlObject xmlObject = adqlEntry.getXmlObject() ;
+                XmlObject attribute = null ;
+                try {
+                    String[] attrNames = (String[])AdqlData.EDITABLE.get( xmlObject.schemaType().getName().getLocalPart() ) ;
+                    for( int i=0; i<attrNames.length; i++ ) {
+                        attribute = AdqlUtils.get( xmlObject, attrNames[i] ) ;
+                        if( attribute == null ) {
+                            fields[i].setText( "" ) ;
+                        }
+                        else {
+                            fields[i].setText( ((SimpleValue)attribute).getStringValue() ) ;
+                        }                       
+                    }
+                }
+                catch( Exception ex ) {
+                    log.error( ex ) ;
+                }
+            }
+            
+            public void setBounds( Rectangle rectangle ) {
+                super.setBounds( AdqlTreeCellEditor.this.setBounds( rectangle ) ) ;
+            }
+            
+            public void setBounds( int x, int y, int w, int h ) {
+                Rectangle r = AdqlTreeCellEditor.this.setBounds( x, y, w, h ) ;
+                super.setBounds( r.x, r.y, r.width, r.height ) ;
+            }
+            
+            private void setElementValue() {
+                try {
+                    String newValue = null ;
+                    String oldValue = null ;
+                    XmlObject element = adqlEntry.getXmlObject() ;
+                    XmlObject attribute = null ;
+                    String[] attributeNames = (String[])AdqlData.EDITABLE.get( AdqlUtils.getLocalName( element ) ) ;
+                    
+                    for( int i=0; i<attributeNames.length; i++ ) {                        
+                        boolean bOptional = AdqlUtils.isOptionalAttribute( element, attributeNames[i] ) ;
+                        oldValue = getOldValue( element, attributeNames[i], bOptional ) ;
+                        newValue = getNewValue( fields[i] ) ;
+                        if( newValue == null ) {
+                           if( bOptional
+                               &&
+                               AdqlUtils.isSet( element, attributeNames[i] ) 
+                               && 
+                               preValidateOK( element, attributeNames[i], bOptional, oldValue, newValue ) ) {
+                               AdqlUtils.unset( element, attributeNames[i] ) ;
+                               crossValidateDelete( element, attributeNames[i], oldValue, newValue ) ;
+                           }
+                           else {
+                               ;  // Cannot delete a non-optional attribute. We do nothing, ignoring any changes.
+                           }
+                        }
+                        else if( oldValue == null 
+                                 && 
+                                 preValidateOK( element, attributeNames[i], bOptional, oldValue, newValue ) ) {                          
+                            AdqlUtils.set( element, attributeNames[i], XmlString.Factory.newValue( newValue ) ) ;
+                            crossValidateCreate(element, attributeNames[i], oldValue, newValue ) ;                                 
+                        }
+                        else if( !areEqual( oldValue, newValue )
+                                 && 
+                                 preValidateOK( element, attributeNames[i], bOptional, oldValue, newValue ) ) {              
+                            AdqlUtils.set( element, attributeNames[i], XmlString.Factory.newValue( newValue ) ) ;
+                            crossValidateUpdate(element, attributeNames[i], oldValue, newValue ) ;                         
+                        }                  
+                    }
+                }
+                catch( Exception ex ) {      
+                    log.warn( "Failure to set element values: ", ex ) ;
+                }
+            } // end of setElementValue()
+            
+            private String getOldValue( XmlObject element, String attributeName, boolean bOptional ) {
+                String oldValue = null ;
+                if( !bOptional || AdqlUtils.isSet( element, attributeName ) ) {
+                    oldValue = ((SimpleValue)AdqlUtils.get( element, attributeName )).getStringValue() ;           
+                }
+                return oldValue ;
+            }
+            
+            private String getNewValue( JTextField field ) {
+                String newValue = field.getText() ;
+                if( newValue != null ) {
+                    newValue = newValue.trim() ;
+                    if( newValue.length() == 0 )
+                        newValue = null ;
+                }
+                return newValue ;
+            }
+            
+            private boolean areEqual( String oldValue, String newValue ) {
+                if( oldValue == null & newValue == null )
+                    return true ;
+                return String.valueOf( oldValue ).equals( newValue ) ;
+            }
+            
+            private boolean preValidateOK( XmlObject element
+                                         , String attributeName
+                                         , boolean attributeOptional
+                                         , String oldValue
+                                         , String newValue ) {
+                if( isTableValidationRequired( element, attributeName ) )
+                    return preValidateTable( element, attributeName, attributeOptional, oldValue, newValue ) ;
+                return true ;
+            }
+            
+            private void crossValidateDelete( XmlObject element
+                                            , String attributeName
+                                            , String oldValue
+                                            , String newValue ) {
+                if( isTableValidationRequired( element, attributeName ) )
+                    crossValidateTableDelete( element, attributeName, oldValue, newValue ) ;
+            }
+            
+            private void crossValidateUpdate( XmlObject element
+                                            , String attributeName
+                                            , String oldValue
+                                            , String newValue ) {
+                if( isTableValidationRequired( element, attributeName ) )
+                    crossValidateTableUpdate( element, attributeName, oldValue, newValue ) ;
+            }
+            
+            private void crossValidateCreate( XmlObject element
+                                            , String attributeName
+                                            , String oldValue
+                                            , String newValue ) {
+                if( isTableValidationRequired( element, attributeName ) )
+                    crossValidateTableCreate( element, attributeName, oldValue, newValue ) ;
+            }
+            
+            private boolean isTableValidationRequired( XmlObject element, String attributeName ) {
+                String elementTypeName = AdqlUtils.getLocalName( element ) ;
+                if( AdqlData.METADATA_LINK_TABLE.containsKey( elementTypeName ) ) {
+                    String[] attrNames = (String[])AdqlData.CROSS_VALIDATION.get( elementTypeName ) ;
+                    for( int i=0; i<attrNames.length; i++ ) {
+                        if( attrNames[i].equals( attributeName ) )
+                            return true ;
+                    }
+                }
+                return false ;
+            }
+            
+            // As currently defined this is the deletion of the alias for a table.
+            // We go through the query, changing every reference to this table back
+            // to its full name rather than the alias.
+            // eg: from a.ra to hipass.ra
+            private void crossValidateTableDelete( XmlObject tableElement
+                                                 , String attributeName
+                                                 , String oldValue
+                                                 , String newValue  ) {
+                XmlCursor cursor = tableElement.newCursor() ;
+                String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
+                XmlObject xmlTableName = XmlString.Factory.newValue( tableName ) ;
+                XmlObject element ;
+                cursor.toStartDoc() ;
+                cursor.toFirstChild() ; // There has to be a first child!
+                do {
+                    if( cursor.isStart() ) {
+                        element = cursor.getObject() ;
+                        // 
+                        // If this is a column reference AND its table name is set to the old alias
+                        // Then we set the table name to the original table name...
+                        if( AdqlUtils.getLocalName( element ).equals( AdqlData.COLUMN_REFERENCE_TYPE ) 
+                            &&
+                            ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( oldValue ) ) {
+                                AdqlUtils.set( element, "table", xmlTableName ) ;
+                        }                       
+                    }                 
+                } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
+                cursor.dispose() ;
+                
+                ((TableData)fromTables.get( tableName )).alias = null ;
+            }
+            
+            
+            private void crossValidateTableUpdate( XmlObject tableElement
+                                                 , String attributeName
+                                                 , String oldAliasValue
+                                                 , String newAliasValue  ) {
+                XmlCursor cursor = tableElement.newCursor() ;
+                String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
+                XmlObject xmlNewAlias = XmlString.Factory.newValue( newAliasValue ) ;
+                XmlObject element ;
+                cursor.toStartDoc() ;
+                cursor.toFirstChild() ; // There has to be a first child!
+                do {
+                    if( cursor.isStart() ) {
+                        element = cursor.getObject() ;
+                        if( AdqlUtils.getLocalName( element ).equals( AdqlData.COLUMN_REFERENCE_TYPE ) 
+                            &&
+                            ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( oldAliasValue ) ) {
+                            AdqlUtils.set( element, "table", xmlNewAlias ) ;
+                        }                       
+                    }                 
+                } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
+                cursor.dispose() ;
+                ((TableData)fromTables.get( tableName )).alias = newAliasValue ;
+            }
+            
+            
+            private void crossValidateTableCreate( XmlObject tableElement
+                                                 , String attributeName
+                                                 , String oldAliasValue
+                                                 , String newAliasValue  ) {
+                XmlCursor cursor = tableElement.newCursor() ;
+                String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
+                XmlObject xmlAliasName = XmlString.Factory.newValue( newAliasValue ) ;
+                XmlObject element ;
+                cursor.toStartDoc() ;
+                cursor.toFirstChild() ; // There has to be a first child!
+                do {
+                    if( cursor.isStart() ) {
+                        element = cursor.getObject() ;
+                        // 
+                        // If this is a column reference AND its table name is the correct one
+                        // Then we set the alias name ...
+                        if( AdqlUtils.getLocalName( element ).equals( AdqlData.COLUMN_REFERENCE_TYPE ) 
+                                &&
+                            ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( tableName ) ) {
+                            AdqlUtils.set( element, "table", xmlAliasName ) ;
+                        }                       
+                    }                 
+                } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
+                cursor.dispose() ;
+                ((TableData)fromTables.get( tableName )).alias = newAliasValue ;
+            }
+            
+            
+            // Changing a table alias to one already in use will corrupt the query!
+            private boolean preValidateTable( XmlObject tableElement
+                                            , String attributeName
+                                            , boolean attributeOptional
+                                            , String oldAliasValue
+                                            , String newAliasValue  ) {
+                if( newAliasValue == null )
+                    return true ;
+                boolean retValue = true ;
+                ArrayList tableList = new ArrayList(); 
+                XmlObject xmlAliasName = null ;
+                XmlObject element = null ;
+                XmlCursor cursor = tableElement.newCursor() ;               
+                cursor.toStartDoc() ;   // Reposition on the top of the document
+                cursor.toFirstChild() ; // And then to the first child!
+                do {
+                    // Only deal with elements...
+                    if( cursor.isStart() ) {
+                        element = cursor.getObject() ;
+                        // We make a collection of all the table elements in a query...
+                        if( AdqlUtils.getLocalName( element ).equals( AdqlData.TABLE_TYPE ) ) {
+                            tableList.add( element ) ;
+                        }                       
+                    }                 
+                } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
+                cursor.dispose() ;
+                ListIterator iterator = tableList.listIterator() ;
+                while( iterator.hasNext() ) {
+                    element = (XmlObject)iterator.next() ;
+                    if( element == tableElement )
+                        continue ;
+                    xmlAliasName = AdqlUtils.get( element, attributeName ) ;
+                    if( xmlAliasName != null && ((SimpleValue)xmlAliasName).getStringValue().equals( newAliasValue ) ) {
+                        retValue = false ;
+                        break ;
+                    }
+                }              
+                return retValue ;
+            }
+            
+        } // end of class TupleTextEditor
+        
+    } // end of class AdqlTreeCellEditor
+    
+    public class TableData {
+        
+        public DatabaseBean database ;
+        public int tableIndex ;
+        public String alias ;
+        
+        public TableData( DatabaseBean database, int tableIndex, String alias ) {
+            this.database = database ;
+            this.tableIndex = tableIndex ;
+            this.alias = alias ;
+        }   
+        
     }
     
+    private class AliasStack {
+        
+       
+        private Stack autoStack ;
+        private int suffix = 0 ;
+        
+        public AliasStack() {
+            autoStack = new Stack() ;
+            for( int i=ALIAS_NAMES.length-1; i>-1; i-- ) {
+                autoStack.push( Character.toString( ALIAS_NAMES[i] ) ) ;
+            }
+        }
+        
+        public String pop() {            
+            String newAlias = null ;
+            int guard = 0 ;
+            final int MAX = 1000 ;
+            do {
+                newAlias = _pop() ;
+                guard++ ;
+            } while ( this.isAlreadyInUse( newAlias ) == true && guard < MAX ) ;        
+            return newAlias ;
+        }
+        
+        private String _pop() {
+            if( autoStack.empty() ) {
+                suffix++ ;
+                for( int i=ALIAS_NAMES.length-1; i>-1; i-- ) {
+                    autoStack.push( Character.toString( ALIAS_NAMES[i] ) + Integer.toString( suffix ) ) ;
+                }
+            }
+            return (String)autoStack.pop() ;
+        }
+        
+        private boolean isAlreadyInUse( String newAlias ) {
+            boolean retValue = false ;
+            XmlObject element = null ;
+            XmlObject xmlAlias = null ;
+            XmlCursor cursor = getRoot().newCursor() ;               
+            cursor.toStartDoc() ;   // Reposition on the top of the document
+            cursor.toFirstChild() ; // And then to the first child!
+            do {
+                // Only deal with elements...
+                if( cursor.isStart() ) {
+                    element = cursor.getObject() ;
+                    // We check each alias for having the same value as the proposed alias...
+                    if( AdqlUtils.getLocalName( element ).equals( AdqlData.TABLE_TYPE ) ) {
+                        xmlAlias = (XmlObject)AdqlUtils.get( element, "Alias" ) ;
+                        if( xmlAlias != null 
+                            && 
+                            ((SimpleValue)xmlAlias).getStringValue().equals( newAlias ) ) {
+                            retValue = true ;
+                            break ;
+                        }                           
+                    }                       
+                }                 
+            } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
+            cursor.dispose() ;
+            return retValue ;
+        }
+
+    } // end of class AliasStack
+    
+    
 } // end of class AdqlTree
+

@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor ;
 import org.apache.xmlbeans.* ;
+
 import java.util.Hashtable ;
 import org.apache.xmlbeans.SchemaType;
 
@@ -149,6 +150,66 @@ public final class AdqlUtils {
         return retArray ;
     }
     
+    public static boolean isEnumerated( SchemaType type ) {
+        if( isDrivenByEnumeratedAttribute( type )
+            ||
+            isEnumeratedElement( type ) ) {
+            return true ;
+        }
+        return false ;
+    }
+    
+    public static boolean isEnumerated( XmlObject xmlObject ) {
+        return isEnumerated( xmlObject.schemaType() ) ;
+    }
+    
+    public static boolean isDrivenByEnumeratedAttribute( SchemaType type ) {
+        try {
+            return AdqlData.ENUMERATED_ATTRIBUTES.containsKey( type.getName().getLocalPart() ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }          
+        return false ;
+    }
+    
+    public static boolean isDrivenByEnumeratedAttribute( XmlObject xmlObject ) {    
+        return isDrivenByEnumeratedAttribute( xmlObject.schemaType() ) ;
+    }
+    
+    
+    // Use org.apache.xmlbeans.SchemaLocalAttribute to test the return value:
+    // OPTIONAL, PROHIBITED or REQUIRED 
+    public static int getAttributeUsage( XmlObject element, String attributeName ) {
+        QName qName = new QName( attributeName ) ;
+        return element.schemaType().getAttributeModel().getAttribute( qName  ).getUse() ;
+    }
+    
+    public static boolean isOptionalAttribute( XmlObject element, String attributeName ) {
+        return ( getAttributeUsage( element, attributeName ) == SchemaLocalAttribute.OPTIONAL ) ;
+    }
+    
+    public static boolean isRequiredAttribute( XmlObject element, String attributeName  ) {
+        return ( getAttributeUsage( element, attributeName ) == SchemaLocalAttribute.REQUIRED ) ;
+    }
+    
+    
+    
+    public static boolean isEnumeratedElement( SchemaType type ) {
+        try {
+            return AdqlData.ENUMERATED_ATTRIBUTES.containsKey( type.getName().getLocalPart() ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }          
+        return false ;
+    }
+    
+    public static boolean isEnumeratedElement( XmlObject xmlObject ) {    
+        return isEnumeratedElement( xmlObject.schemaType() ) ;
+    }
+    
+    
     static public String extractDisplayName( String name ) {
         String retValue = null ;
         retValue = (String)AdqlData.T2D_NAMES.get( name ) ;
@@ -280,6 +341,33 @@ public final class AdqlUtils {
     }
     
     
+    static public boolean localNameEquals( XmlObject o, String name ) {
+        SchemaType type = o.schemaType() ;
+        if( type.isBuiltinType() || type.isAnonymousType() )
+            return false ;
+        if( type.getName().getLocalPart().equals( name ) ) 
+            return true ;
+        return false ;
+    }
+    
+    static public String getLocalName( XmlObject object ) {
+        return object.schemaType().getName().getLocalPart(); 
+    }
+    
+    
+    static public SchemaType getType( XmlObject object, String localName ) {
+        SchemaType target = null ;
+        SchemaType[] globalTypes = object.schemaType().getTypeSystem().globalTypes() ;
+        for( int i=0; i<globalTypes.length; i++ ) {
+            if( globalTypes[i].getName().getLocalPart().equals( localName ) ) {
+                target = globalTypes[i] ;
+                break ;
+            }
+        }
+        return target ;
+    }
+    
+    
     static public String normalizeName( String name ) {
 //        System.out.println( "normalizeName" ) ;
         //
@@ -387,7 +475,7 @@ public final class AdqlUtils {
     
     // void removeItem(int i);
     static public void removeFromArray( XmlObject o, String elementName, int param ) {
-        String methodName = "remove" ;
+        String methodName = "remove" + capitalize( elementName ) ;
         invoke( o
               , methodName
               , new Integer[]{ new Integer(param) }
@@ -396,7 +484,7 @@ public final class AdqlUtils {
     
     static public XmlObject newInstance( SchemaType st ) {
         XmlObject o = XmlObject.Factory.newInstance() ;
-        o.changeType( st ) ;
+        o = o.changeType( st ) ;
         return o ;
     }
     

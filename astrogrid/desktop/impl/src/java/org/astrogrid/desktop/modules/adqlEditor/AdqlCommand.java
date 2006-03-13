@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlCursor;
 
 
 public class AdqlCommand {      
@@ -30,11 +31,13 @@ public class AdqlCommand {
     
     public static ArrayList buildCommands( AdqlEntry entry ) {
         ArrayList commands = new ArrayList() ;
-        SchemaProperty[] elements = entry.getElementProperties() ;
-        if( elements != null ) {
-            for( int i=0; i<elements.length; i++ ) {
-                commands.add( new AdqlCommand( entry
-                                             , elements[i] ) ) ;
+        if( entry.isChildHidingRequired() == false ) {
+            SchemaProperty[] elements = entry.getElementProperties() ;
+            if( elements != null ) {
+                for( int i=0; i<elements.length; i++ ) {
+                    commands.add( new AdqlCommand( entry
+                                                 , elements[i] ) ) ;
+                }
             }
         }
         return commands ;
@@ -84,7 +87,6 @@ public class AdqlCommand {
         } // end while
         return match ;
     }
-    
     
     
     public AdqlCommand( AdqlEntry entry, SchemaProperty element ) {
@@ -280,12 +282,36 @@ public class AdqlCommand {
         if( (concreteTypes.length > 0) 
             &&
             (concreteTypes[ indexOfType ].isBuiltinType() == false) ) {
-            name = AdqlUtils.extractDisplayName( concreteTypes[ indexOfType ] ) ;
+            if( this.isPatternContext() ) 
+                name = AdqlUtils.extractDisplayName( "Pattern" ) ;
+            else
+                name = AdqlUtils.extractDisplayName( concreteTypes[ indexOfType ] ) ;
         }
         if( name == null || name.length() == 0 ) {
-            name = AdqlUtils.extractDisplayName( element.getName().getLocalPart() ) ;
+            name = AdqlUtils.extractDisplayName( this.getElementName() ) ;
         }
         return name ;
+    }
+    
+    private boolean isPatternContext() {
+        String elementName = null ;
+        if( this.getElementName().equals( "Pattern" ) ) 
+            return true ;
+        if( this.getElementName().equals( "Literal" ) ) {
+            XmlCursor cursor = this.entry.getXmlObject().newCursor() ;
+            if( !cursor.currentTokenType().isStart() ) 
+                cursor.toFirstChild(); 
+            try {
+                elementName = cursor.getName().getLocalPart() ;
+            }
+            catch ( Exception ex ) {
+                ;
+            }
+            cursor.dispose() ;
+            if( elementName.equals( "Pattern" ) ) 
+                return true ; 
+        }
+        return false ; 
     }
             
 }

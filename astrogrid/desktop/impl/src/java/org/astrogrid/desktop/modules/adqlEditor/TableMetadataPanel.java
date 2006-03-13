@@ -53,7 +53,7 @@ import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean ;
 import org.astrogrid.acr.astrogrid.ColumnBean ;
 import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel.TableData;
+
 /**
  * @author jl99
  *
@@ -526,7 +526,7 @@ public class TableMetadataPanel extends JPanel {
         AstroTableModel model = (AstroTableModel)displayTable.getModel() ;
         ColumnBean columnBean = null ;
         ADQLToolEditorPanel.InsertColumnAction insert = null ;
-        TableData tableData = adqlToolEditorPanel.getTableData( astroTable.getName() ) ;
+        AdqlTree.TableData tableData = adqlTree.getTableData( astroTable.getName() ) ;
         // Following getout is a temporary kludge
         if( tableData == null )
             return ;

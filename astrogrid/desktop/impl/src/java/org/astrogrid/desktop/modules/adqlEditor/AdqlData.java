@@ -21,6 +21,7 @@ public class AdqlData {
     
     public static String NAMESPACE_0_74 = "http://www.ivoa.net/xml/ADQL/v0.7.4" ;
     public static String NAMESPACE_1_0 = "http://www.ivoa.net/xml/ADQL/v1.0" ;
+    public static final String PI_QB_REGISTRY_RESOURCES = "qb-registry-resources" ;
     
     public static final String DUMMY_ENTRY = "".intern() ;
     public static final String COLUMN_REFERENCE_TYPE = "columnReferenceType" ;
@@ -37,6 +38,14 @@ public class AdqlData {
     public static final String AGGREGATE_FUNCTION_TYPE = "aggregateFunctionType" ;
     public static final String COMPARISON_TYPE = "comparisonType" ;
     public static final String COMPARISON_PRED_TYPE = "comparisonPredType" ;
+    public static final String REAL_TYPE = "realType" ;
+    public static final String INTEGER_TYPE = "integerType" ;
+    public static final String STRING_TYPE = "stringType" ;
+    public static final String LITERAL_TYPE = "literalType" ;
+    public static final String PATTERN_ELEMENT_NAME = "Pattern" ;
+    public static final String ATOM_TYPE = "atomType" ;
+    public static final String ALL_SELECTION_ITEM_TYPE = "allSelectionItemType" ;
+    
     
     public static final String TYPE_ENTRY = "TYPE".intern() ;
     public static final String ELEMENT_ENTRY = "ELEMENT".intern() ;
@@ -49,10 +58,16 @@ public class AdqlData {
         T2D_NAMES.put( "binaryOperatorType", "+ - * /" ) ;
         T2D_NAMES.put( "unaryExprType", "Unary expression" ) ;
         T2D_NAMES.put( "columnReferenceType", "Column" ) ;
-//        T2D_NAMES.put( "atomType", "Literal" ) ;
-        T2D_NAMES.put( "realType", "Real" ) ;
-        T2D_NAMES.put( "integerType", "Integer" ) ;
-        T2D_NAMES.put( "stringType", "String" ) ;
+        // Experiment
+        T2D_NAMES.put( "atomType", "Literal" ) ;
+        T2D_NAMES.put( "realType", "Literal" ) ;
+        T2D_NAMES.put( "integerType", "Literal" ) ;
+        T2D_NAMES.put( "stringType", "Literal" ) ;
+//        T2D_NAMES.put( "realType", "Real" ) ;
+//        T2D_NAMES.put( "integerType", "Integer" ) ;
+//        T2D_NAMES.put( "stringType", "String" ) ;
+        // End of experiment
+        
         T2D_NAMES.put( "selectionOptionType", "Allow" ) ;
         T2D_NAMES.put( "trigonometricFunctionType", "Trig Function" ) ;
         T2D_NAMES.put( "mathFunctionType", "Maths Function" ) ;
@@ -264,13 +279,32 @@ public class AdqlData {
     public static final Hashtable EDITABLE ;
     static {
         EDITABLE = new Hashtable() ;
-        EDITABLE.put( "selectionLimitType", "Top" ) ;
-        EDITABLE.put( "realType", "Value" ) ;
-        EDITABLE.put( "integerType", "Value" ) ;
-        EDITABLE.put( "stringType", "Value" ) ;
+        EDITABLE.put( "selectionLimitType", new String[] { "Top" } ) ;
+        EDITABLE.put( "realType", new String[] { "Value" } ) ;
+        EDITABLE.put( "integerType", new String[] { "Value" } ) ;
+        EDITABLE.put( "stringType", new String[] { "Value" } ) ;
+        EDITABLE.put( "comparisonPredType", new String[] { "Comparison" } ) ;    
+        EDITABLE.put( "aggregateFunctionType", new String[] { "Name" } ) ;
+        EDITABLE.put( "trigonometricFunctionType", new String[] { "Name" } ) ;
+        EDITABLE.put( "mathFunctionType", new String[] { "Name" } ) ;
+        EDITABLE.put( "binaryExprType", new String[] { "Oper" } ) ;
+        EDITABLE.put( "unaryExprType", new String[] { "Oper" } ) ;
+        EDITABLE.put( "selectionOptionType", new String[] { "Option" } ) ;
+        EDITABLE.put( "orderOptionType", new String[] { "Direction" } ) ; 
+        EDITABLE.put( "columnReferenceType", new String[] { "Table", "Name"  } ) ;
+        EDITABLE.put( "tableType", new String[] { "Name", "Alias"  } ) ;
+//        EDITABLE.put( "atomType", DUMMY_ENTRY ) ;  // experiment     
         EDITABLE.put( "string", DUMMY_ENTRY ) ; // this is the built in type
         EDITABLE.put( "double", DUMMY_ENTRY ) ; // this is the built in type
     }
+    
+    public static final Hashtable CROSS_VALIDATION ;
+    static {
+        CROSS_VALIDATION = new Hashtable() ;
+        CROSS_VALIDATION.put( "tableType" , new String[] { "Alias" } ) ;
+    }
+    
+    
     
     public static final Hashtable ATTRIBUTE_DEFAULTS ;
     static {
@@ -293,6 +327,24 @@ public class AdqlData {
         DERIVED_DEFAULTS.put( "double8Type", "0 0 0 0 0 0 0 0" ) ;
         DERIVED_DEFAULTS.put( "double9Type", "0 0 0 0 0 0 0 0 0" ) ;
     }
+//    public static final String NEW_QUERY =
+//        "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
+//        "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+//        "        xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"" +
+//        "        xsi:type=\"selectType\"> " +
+//        "    <Allow xsi:type=\"selectionOptionType\" Option=\"DISTINCT\" /> " +
+//        "    <Restrict xsi:type=\"selectionLimitType\" Top=\"100\" /> " +
+//        "    <SelectionList xsi:type=\"selectionListType\"> " +
+//        "        <Item xsi:type=\"allSelectionItemType\"/> " +
+//        "    </SelectionList> " +
+//        "    <From xsi:type=\"fromType\"> " +
+//        "    </From> " +
+//        "    <Where xsi:type=\"whereType\"> " +
+//        "    </Where> " +
+//        "</Select>" ;
+    
+    public static final String DUMMY_TABLE_NAME = "Replace_with_correct_table_name" ;
+    
     public static final String NEW_QUERY =
         "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
         "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
@@ -302,7 +354,7 @@ public class AdqlData {
         "        <Item xsi:type=\"allSelectionItemType\"/> " +
         "    </SelectionList> " +
         "    <From xsi:type=\"fromType\"> " +
-        "        <Table Name=\"Replace_with_correct_table_name\" xsi:type=\"tableType\"/> " +
+        "        <Table Name=\"" + DUMMY_TABLE_NAME + "\" xsi:type=\"tableType\"/> " +
         "    </From> " +
 //        "    <Where xsi:type=\"whereType\"> " +
 //        "    </Where> " +

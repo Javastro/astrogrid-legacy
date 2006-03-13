@@ -5,6 +5,8 @@ package org.astrogrid.desktop.modules.adqlEditor ;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
@@ -12,6 +14,10 @@ import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType; 
 import org.apache.xmlbeans.SimpleValue; 
 import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlLong ;
+import org.apache.xmlbeans.XmlDouble ;
+
+import org.astrogrid.adql.v1_0.beans.*;
 
 import javax.swing.tree.DefaultMutableTreeNode ;
 
@@ -25,10 +31,14 @@ import org.astrogrid.desktop.modules.system.transformers.AdqlTransformer ;
  */
 public final class AdqlEntry extends DefaultMutableTreeNode {
     
+    private static final boolean DEBUG_ENABLED = false ;
+    private static final boolean TRACE_ENABLED = false ;
+    private static final Log log = LogFactory.getLog( AdqlEntry.class ) ;
+    
     public static final Hashtable HIDE_CHILDREN ; 
     static {
         HIDE_CHILDREN = new Hashtable() ;
-        HIDE_CHILDREN.put( "Atom", "Atom" ) ;
+        HIDE_CHILDREN.put( "atomType", "atomType" ) ;
     }
     
     public static final String MISSING_VALUE = "{ missing }" ;
@@ -45,17 +55,15 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
     
     private XmlObject[] hiddenChildren = null ;
     
-//    private static XmlObject root = null ;
-    
     public static AdqlEntry newInstance( XmlObject rootObject ) {
-//        root = rootObject ;
+
         AdqlEntry rootEntry = newInstance( null, rootObject ) ;
         return rootEntry ;
     }
      
     public static AdqlEntry newInstance( AdqlEntry parent, XmlObject xmlObject ) {
         AdqlEntry entry = buildInstance( xmlObject ) ;    
-        if( parent != null ) {
+        if( parent != null && !parent.isChildHidingRequired() ) {
             // Time to check where the position within the xml tree so we
             // can keep the display and the tree in line...
             int index = findRequiredChildIndex( parent.getXmlObject(), xmlObject ) ;
@@ -94,17 +102,21 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         parent.remove( child ) ;
         return true ;
     }
-    
-    
+      
+
     public static boolean isChildHidingRequired( XmlObject xmlbean ) {
         boolean retValue = false ;
-        if(  ( xmlbean.schemaType().isBuiltinType() == false )
+        SchemaType type = xmlbean.schemaType() ;
+        if(  ( type.isBuiltinType() == false )
              &&
-             ( HIDE_CHILDREN.containsKey( AdqlUtils.extractDisplayName( xmlbean ) ) )  ) {
+             ( type.isAnonymousType() == false )
+             &&
+             ( HIDE_CHILDREN.containsKey( type.getName().getLocalPart() ) ) ) {
             retValue = true ;
         }
         return retValue ;
     }
+    
       
     private static int findRequiredChildIndex( XmlObject parent, XmlObject child ) {
         int index = 0 ;
@@ -121,6 +133,7 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         cursor.dispose() ;
         return index ;
     }
+    
     
     private static AdqlEntry buildInstance( XmlObject xmlObject ) {
         AdqlEntry entry = null ;
@@ -167,8 +180,7 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         if( this.getXmlObject().schemaType().isAnonymousType() )
             return false ;
         String name = this.getXmlObject().schemaType().getName().getLocalPart() ;
-        // Child hiding may give me problems here.
-        // But I dont think it is yet been activated. (Yet!).
+       
         if( this.getXmlObject().schemaType().isSimpleType() 
             ||
             this.isChildHidingRequired() ) {
@@ -180,7 +192,6 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
     }
     
     public String getDisplayName() {
-        //return AdqlUtils.extractDisplayName( this.getXmlObject(), ADQLUtils.DISPLAY_NAME_FILTER )
         return AdqlUtils.extractDisplayName( this.getXmlObject() ) ;
     }
     
@@ -240,7 +251,9 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         String displayName = null;
         try {
             displayName = AdqlUtils.extractDisplayName( getXmlObject() ) ;
-//            System.out.println( "displayName: " + displayName ) ;
+            if( AdqlUtils.localNameEquals( getXmlObject(), AdqlData.ATOM_TYPE ) ) {
+                displayName = dealWithPatternContext( displayName ) ;
+            }
         }
         catch( Exception ex ) {
             ex.printStackTrace() ;
@@ -373,6 +386,24 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
 //        return  displayInfo.trim() ;
 //    }
     
+    private String dealWithPatternContext( String displayName ) {
+        String elementName = null ;
+        XmlCursor cursor = this.getXmlObject().newCursor() ;
+        if( !cursor.currentTokenType().isStart() ) 
+            cursor.toFirstChild(); 
+        try {
+            elementName = cursor.getName().getLocalPart() ;
+        }
+        catch ( Exception ex ) {
+            ;
+        }
+        cursor.dispose() ;
+        if( AdqlData.PATTERN_ELEMENT_NAME.equals( elementName ) ) 
+             return elementName ;
+        return displayName ;
+    
+    }
+    
     public String toString() {
         String retVal = null ;
         if( isBottomLeafEditable() ) {
@@ -382,7 +413,13 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
     }
     
     private String extractValue( String displayName, XmlObject o ) {
-        if( VALUE_GETTERS.containsKey( displayName.toUpperCase() ) ) {
+//        if( VALUE_GETTERS.containsKey( displayName.toUpperCase() ) ) {
+        SchemaType type = o.schemaType() ;
+        if(  ( type.isBuiltinType() == false )
+                &&
+             ( type.isAnonymousType() == false )
+                &&
+             ( type.getName().getLocalPart().equals( "atomType" ) ) ) {
             return displayName + ' ' + (new Atom( o )).formatDisplay() ;
         }
         return displayName ;
@@ -390,26 +427,24 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
 
    
     public XmlObject getXmlObject() {
-//        System.out.println( "getXmlObject..." ) ;
         XmlObject xmlObject = null ;
         Object obj = getUserObject() ;
         if( obj == null ) {
-//            System.out.println( "user object is null" ) ;
+            log.debug( "user object is null" ) ;
         }
         else if( obj instanceof XmlObject ) {
             xmlObject = (XmlObject)obj ;
-//            System.out.println( "OK" ) ;
         }
         else if( obj instanceof String ) {
             xmlObject = XmlString.Factory.newInstance() ;
             ((XmlString)xmlObject).setStringValue( (String)obj ) ;
-//            System.out.println( "Just created transient XmlString object" ) ;
+            log.debug( "Just created transient XmlString object" ) ;
+        }
+        else if( obj instanceof AdqlEntry ) {
+            log.debug( "user object is an AdqlEntry" ) ;
         }
         else {
-//            System.out.println( "Unknown: " + obj.getClass().getName() )  ;
-            if( obj instanceof AdqlEntry ) {
-//                System.out.println( "whoops" ) ;
-            }
+            log.debug( "unknown user object" ) ;
         }
         return xmlObject ;
     }
@@ -437,7 +472,7 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         this.expanded = expanded ;
     }
     
-    public class Atom {
+    static public class Atom {
         private XmlObject atomType ;
          
         public Atom( XmlObject atomType ) {
@@ -460,21 +495,109 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         
         public String getValue()  {
             XmlObject retValObj = null ;
-            String retVal = MISSING_VALUE ; // default to missing
+            String retVal = "" ; // default to missing
             XmlObject o = AdqlUtils.get( this.atomType, "Literal" ) ;
             if( o != null ) {
                 retValObj = AdqlUtils.get( o, "Value" ) ;
-                if( retValObj != null )
-                    retVal = ((SimpleValue)retValObj).getStringValue() ;
+                if( retValObj != null ) {
+                    // This is a guard against using the Adql/x pane to mangle 
+                    // some value unacceptable to the specified type.
+                    // I'm surprized, but it is possible to get this far
+                    // into the Tree pane before detecting it...
+                    try {
+                        retVal = ((SimpleValue)retValObj).getStringValue() ;
+                    }
+                    catch( Exception ex ) {
+                        retVal = "" ;
+                    }                   
+                }              
                 if( retVal != null )
                     retVal = retVal.trim() ;
+                if( AdqlUtils.localNameEquals( o, AdqlData.STRING_TYPE ) ) {
+                    retVal = unstripQuotes( retVal ) ;
+                }
                 if( retVal == null || retVal.length() == 0 )
-                    retVal =  MISSING_VALUE ;
+                    retVal =  "" ;
             } 
             return retVal ;
         }
         
-        public String formatDisplay() {
+//        public void setValue( String newValue ) {
+//            String v = newValue.trim() ;           
+//            XmlObject literal = null ;
+//            XmlObject value = null ;
+//            Success: {
+//                // First try setting a IntegerType....
+//                try {
+//                    Long lv = new Long( v ) ;
+//                    literal = AdqlUtils.newInstance( AdqlUtils.getType( atomType, AdqlData.INTEGER_TYPE ) ) ;
+//                    value = AdqlUtils.newInstance( XmlLong.type ) ;        
+//                    break Success;
+//                }
+//                // If we fail try setting a RealType....
+//                catch( NumberFormatException nfex ) { ; }
+//                try {
+//                    Double dv = new Double( v ) ;
+//                    literal = AdqlUtils.newInstance( AdqlUtils.getType( atomType, AdqlData.REAL_TYPE ) ) ;
+//                    value = AdqlUtils.newInstance( XmlDouble.type ) ;
+//                    break Success;
+//                }
+//                catch( NumberFormatException nfex ) { ; }
+//                // If we get this far we default to a String...
+//                literal = AdqlUtils.newInstance( AdqlUtils.getType( atomType, AdqlData.STRING_TYPE ) ) ;
+//                value = AdqlUtils.newInstance( XmlString.type ) ;
+//                if( literal != null && value != null ) {
+//                    ((org.apache.xmlbeans.XmlAnySimpleType)value).setStringValue( v ) ;
+//                    AdqlUtils.set( literal, "Value", value ) ;
+//                    literal = literal.changeType( AdqlUtils.getType( literal, AdqlData.LITERAL_TYPE ) ) ;
+//                    AdqlUtils.set( atomType, "Literal", literal ) ;
+//                    literal = literal.changeType( AdqlUtils.getType( literal, AdqlData.STRING_TYPE ) ) ;
+//                }
+//            }
+////            if( literal != null && value != null ) {
+////                ((org.apache.xmlbeans.XmlAnySimpleType)value).setStringValue( v ) ;
+////                AdqlUtils.set( literal, "Value", value ) ;
+////                literal = literal.changeType( AdqlUtils.getType( literal, AdqlData.LITERAL_TYPE ) ) ;
+////                AdqlUtils.set( atomType, "Literal", literal ) ;
+////            }
+//                
+//        }
+   
+        
+        public void setValue( String newValue ) {
+            String v = newValue.trim() ;           
+            XmlObject literal = AdqlUtils.get( atomType, "Literal" ) ;
+            if( literal == null ) {
+                literal = AdqlUtils.addNew( atomType, "Literal" ) ;
+            }         
+            XmlObject value = null ;
+            Success: {
+                // First try setting an IntegerType....
+                try {
+                    Long lv = new Long( v ) ;
+                    literal = literal.changeType( AdqlUtils.getType( atomType, AdqlData.INTEGER_TYPE ) ) ;
+                    value = AdqlUtils.newInstance( XmlLong.type ) ;        
+                    break Success;
+                }
+                catch( NumberFormatException nfex ) { ; }
+                // If we fail try setting a RealType....
+                try {
+                    Double dv = new Double( v ) ;
+                    literal = literal.changeType( AdqlUtils.getType( atomType, AdqlData.REAL_TYPE ) ) ;
+                    value = AdqlUtils.newInstance( XmlDouble.type ) ;
+                    break Success;
+                }
+                catch( NumberFormatException nfex ) { ; }
+                // If we get this far we default to a String...  
+                literal = literal.changeType( AdqlUtils.getType( literal, AdqlData.STRING_TYPE ) ) ;
+                value = AdqlUtils.newInstance( XmlString.type ) ;  
+                v = stripQuotes( v ) ;
+            }
+            ((org.apache.xmlbeans.XmlAnySimpleType)value).setStringValue( v ) ;
+            AdqlUtils.set( literal, "Value", value ) ;                
+        }
+        
+        public String _formatDisplay() {
             StringBuffer buffer = new StringBuffer() ;
             String 
             	units = this.getUnits(),
@@ -485,6 +608,45 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
             buffer.append( "Value: " ).append( value ) ;
             return buffer.toString() ;
         }
+        public String formatDisplay() {
+            return this.getValue() ;          
+        }
+        
+        private String stripQuotes( String value ) {
+            String retValue = value ;
+            if( value == null || value.length() < 2 )
+                return value ;
+            if( ( value.startsWith( "'" ) && value.endsWith( "'") )
+                 ||
+                ( value.startsWith( "\"" ) && value.endsWith( "\"") ) ) {
+                retValue = value.substring(1,value.length()-1) ;
+            }
+            return retValue ;
+        }
+        
+        private String unstripQuotes( String value ) {
+            String retValue = value ;
+            if( value == null )
+                return value ;
+            Success: {
+                // First see whether this string could be construed as an IntegerType....
+                try {
+                    Long lv = new Long( value ) ;
+                    retValue = (new StringBuffer()).append('\'').append( value ).append('\'').toString() ;
+                    break Success;
+                }
+                catch( NumberFormatException nfex ) { ; }
+                // If not, could it be construed as a RealType....
+                try {
+                    Double dv = new Double( value ) ;
+                    retValue = (new StringBuffer()).append('\'').append( value ).append('\'').toString() ;
+                    break Success;
+                }
+                catch( NumberFormatException nfex ) { ; }          
+            }
+            return retValue ;
+        }
+        
     }
   
     /**

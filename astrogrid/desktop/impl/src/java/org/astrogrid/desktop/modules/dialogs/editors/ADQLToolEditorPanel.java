@@ -42,7 +42,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Stack;
+
 
 import javax.swing.event.EventListenerList ;
 import javax.swing.AbstractAction;
@@ -148,8 +148,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     private static final Log log = LogFactory.getLog( ADQLToolEditorPanel.class ) ;
     private static final boolean DEBUG_ENABLED = false ;
     private static final boolean TRACE_ENABLED = false ;
-    private static final char[] ALIAS_NAMES = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-    private static final String PI_QB_REGISTRY_RESOURCES = "qb-registry-resources" ;
+   
+
     
     private ParameterValue queryParam = null ;
     
@@ -159,6 +159,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     protected final Adql074 validator;
     protected final ResourceChooserInternal resourceChooser;
     protected final Registry registry ;
+    
+    private boolean checkedForDummyTable = false ;
+    private boolean checkedForAllColumnsOption = false ;
     
     // LHS Editor tabs...
     private JTabbedPane tabbedEditorPane ;
@@ -187,7 +190,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     //private static XmlObject root ;
     
     private JButton chooseResourceButton ;
-    private JButton validateButton ;
+    //private JButton validateButton ;
     // private JMenu columnMenu;
     // private Hashtable tableMenus = new Hashtable() ; 
     // private String nameSpace = AdqlData.NAMESPACE_1_0 ; 
@@ -196,9 +199,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     // This is a limited adhoc approach to clipboard and editing.
     // Needs to be rewritten to fit into undoable framework...
     private XmlObject clipBoard = null ;
-    private AliasStack aliasStack ;
-    private TabularDatabaseInformation catalogueResource = null ;
-    private HashMap fromTables = new HashMap() ;
+//    private AliasStack aliasStack ;
+//    private TabularDatabaseInformation catalogueResource = null ;
+//    private HashMap fromTables = new HashMap() ;
     private Popup popup = null ;
     private BranchExpansionListener branchExpansionListener = null ;
     private AdqlTransformer transformer ;
@@ -259,10 +262,10 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     public void toolCleared(ToolEditEvent te) {
         if( TRACE_ENABLED ) log.debug( "toolCleared(ToolEditEvent te)"  ) ;
         queryParam = null;
-        catalogueResource = null ;
-        if( fromTables != null )
-            fromTables.clear() ;
-        aliasStack = new AliasStack() ;
+//        catalogueResource = null ;
+//        if( fromTables != null )
+//            fromTables.clear() ;
+//        aliasStack = new AliasStack() ;
         setEnabled(false);
         this.removeAll() ;
     }
@@ -272,10 +275,10 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         String[] toks = listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
         if (toks.length > 0) {
             setEnabled(true);
-            catalogueResource = null ;
-            if( fromTables != null )
-                fromTables.clear() ;
-            aliasStack = new AliasStack() ;
+//            catalogueResource = null ;
+//            if( fromTables != null )
+//                fromTables.clear() ;
+//            aliasStack = new AliasStack() ;
             queryParam = (ParameterValue)toolModel.getTool().findXPathValue("input/parameter[name='" + toks[0] +"']");
             this.removeAll() ;
             this.init() ;
@@ -285,12 +288,15 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
    
     private AdqlTree setAdqlTree() { 
         if( TRACE_ENABLED ) log.debug( "setAdqlTree"  ) ;
+        checkedForDummyTable = false ;
+        checkedForAllColumnsOption = false ;
+        URI toolIvorn = toolModel.getInfo().getId() ;
         String query = null ;
         this.adqlTree = null ;
-        aliasStack = new AliasStack() ;
+//        aliasStack = new AliasStack() ;
         if( queryParam == null ) {
             if( this.adqlTree == null ) {
-                this.adqlTree = new AdqlTree() ;
+                this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
             }
         }
         //
@@ -301,15 +307,15 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             if( DEBUG_ENABLED ) log.debug( "Query is a remote reference." ) ;
             query = readQuery() ;
             if( query == null || query.length() < 5 ) {
-                this.adqlTree = new AdqlTree() ;
+                this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
             }
             else if( query.startsWith( "<" ) ) {
                 query = adaptToVersion( query ) ;
                 try {          
-                    this.adqlTree = new AdqlTree( query ) ;
+                    this.adqlTree = new AdqlTree( query, registry, toolIvorn ) ;
                 }
                 catch ( Exception ex ) {
-                    this.adqlTree = new AdqlTree() ;
+                    this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
                 }
             }  
             if( DEBUG_ENABLED ) log.debug( "...setting indirect to false" ) ;
@@ -335,19 +341,19 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             if( DEBUG_ENABLED ) log.debug( "Query is inline..." ) ;
            query = queryParam.getValue() ;
            if( query == null || query.length() < 5 ) {
-               this.adqlTree = new AdqlTree() ;
+               this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
            }
            else if( query.startsWith( "<" ) ) {
                // Assume this is an instream adql/x query...
                query = adaptToVersion( query ) ;
                try {          
-                   this.adqlTree = new AdqlTree( query ) ;
+                   this.adqlTree = new AdqlTree( query, registry, toolIvorn ) ;
                }
                catch ( Exception ex ) {
-                   this.adqlTree = new AdqlTree() ;
+                   this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
                }
            }
-           else {
+           else { 
                // Assume this is an instream adql/s query...  
                
                // JL Note. I'm not supporting this for the moment
@@ -355,7 +361,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                // can be recovered from the adql/s in a simple way
                // (maybe some specialized comment?)
                // So for the moment...
-               this.adqlTree = new AdqlTree() ;
+               this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
 //                      
 //               Document doc = null ;
 //               try {          
@@ -380,10 +386,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             opts.setSavePrettyPrintIndent(4);
             log.debug( getRoot().toString() ) ;
         }
-        this.resetCatalogueData() ;
         this.setAdqlParameter() ;
         this.adqlTree.getModel().addTreeModelListener( this );
-//        this.setXmlAndStringContent() ;
         return this.adqlTree ;
     }
     
@@ -430,70 +434,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     
     
     
-    private void resetCatalogueData() {
-        String piName = null ;
-        String piValue = null ;
-        this.catalogueResource = null ;
-        XmlCursor cursor = getRoot().newCursor() ;
-        if( DEBUG_ENABLED ) log.debug( "Searching for PI's..." ) ;
-        while( !cursor.toNextToken().isNone() ) {
-            if( cursor.isProcinst() ) {
-                piName = cursor.getName().getLocalPart() ;
-                if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
-                if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
-            	if( piName.equals ( PI_QB_REGISTRY_RESOURCES ) )  {
-            	    piValue = cursor.getTextValue().trim() ;
-            	    if( piValue.equals( "none" ) )
-            	        break ;
-            	    String sql = "Select * from Registry where vr:identifier = '" 
-            	               + formatCatalogueId( piValue )
-            	               + "'" ; 
-                    queryRegistry( sql ) ;
-                    if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;
-                    break ;
-            	}
-            }
-        } // end while
-        cursor.dispose();
-        //
-        // Here I am trying to second-guess the appropriate database for this dsa tool.
-        // Cannot see any harm to this. If it fails, the user still has the option of
-        // choosing for him/herself.
-        if( catalogueResource == null ) {
-            String ivorn = toolModel.getInfo().getId().toString() ;
-            int index = ivorn.lastIndexOf( "ceaApplication" ) ;
-            if( index != -1 ) {
-                StringBuffer buffer = new StringBuffer( ivorn.length() ) ;
-                buffer
-                	.append( "Select * from Registry where vr:identifier = '" )
-                	.append( ivorn.substring( 0, index ) )
-                	.append( "TDB" )
-                	.append( "'" ) ;
-                queryRegistry( buffer.toString() ) ;
-                if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;              
-            }
-        }
-    }
-    
-    private String formatCatalogueId ( String piValue ) {
-        // This value follows a standard set up in the portal prior to
-	    // the establishment of ivorns and overcomes some of the problems
-	    // of special characters within table names. 
-	    // Note: The portal QB allows only one table (no joins) so the metadata
-	    // reflects the one table. But we need the whole catalogue/database.
-        String ivornString = "ivo://" + piValue.substring( 0, piValue.lastIndexOf( '!' ) ).replace( '!', '/' ) ;
-        if( DEBUG_ENABLED ) log.debug( "catalogue ivorn: " + ivornString ) ;
-        return ivornString ;
-    }
-    
-    private void queryRegistry( String searchString ) {
-        try {
-            catalogueResource = (TabularDatabaseInformation)registry.adqlSearchRI( searchString )[0] ;
-        }
-        catch ( Exception ex )  {
-            log.error( "Failed to find catalogue entry using: \n" + searchString ) ;
-        }
-    }
+   
     
 //    private void queryRegistry( final String searchString ) {
 //        
@@ -558,6 +499,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         // Set the rest of the split pane's properties,
         topView.setDividerLocation( 0.60 );
         topView.setResizeWeight( 0.60 ) ;
+        topView.setOneTouchExpandable( true ) ;
         return topView ;
     }
     
@@ -577,7 +519,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
      
         // Adql/x panel...
         adqlXmlView = new AdqlXmlView( tabbedEditorPane, controller ) ;
-//        setXmlAndStringContent() ;
         
         adqlTree.addTreeSelectionListener( new TreeSelectionListener() {
             public void valueChanged( TreeSelectionEvent e ) {
@@ -675,72 +616,16 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         //
         // If we are reloading a previous adql query, then we first load
         // the catalogue data, then prime the tables collection...
-        if( catalogueResource != null ) {
+        if( adqlTree.isCatalogueResourceSet() ) {
             chooseResourceButton.setEnabled( false ) ;
             formatCatalogTab() ;
-            reestablishTablesCollection() ;
         }
         else {
             chooseResourceButton.setEnabled( true ) ;
-        }
-              
+        }             
         return rhsPanel ;
     }
     
-    private void reestablishTablesCollection() {
-        aliasStack = new AliasStack() ;
-        XmlString xTableName = null ;
-        XmlString xAlias = null ;
-        String alias = null ;
-        String greatestAlias = null ;
-        DatabaseBean db = catalogueResource.getDatabases()[0] ;
-        //
-        // Loop through the whole of the query looking for table types....
-        // (JL: This is somewhat weak. I think there may be complications
-        //      with join tables )
-        XmlCursor cursor = getRoot().newCursor() ;
-        while( !cursor.toNextToken().isNone() ) {
-            if( cursor.isStart()  
-                && 
-                ( cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.TABLE_TYPE ) 
-                  ||
-                  cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.ARCHIVE_TABLE_TYPE ) )                       
-            ) {
-                xTableName = (XmlString)AdqlUtils.get( cursor.getObject(), "name" ) ;
-                xAlias = (XmlString)AdqlUtils.get( cursor.getObject(), "alias" ) ;
-                alias = (xAlias == null ? null : xAlias.getStringValue())  ; 
-                if( DEBUG_ENABLED ) log.debug( "table name: " 
-                         + xTableName.getStringValue() 
-                         + " with alias: "
-                         + (xAlias==null ? "null" : xAlias.getStringValue()) ) ;  
-                fromTables.put( xTableName.getStringValue()
-                              , new TableData( db, findTableIndex( db, xTableName.getStringValue()), alias ) ) ;
-                if( alias != null && (greatestAlias == null || greatestAlias.compareTo(alias) < 0) ) {
-                        greatestAlias = alias ;
-                }
-            }
-        } // end while
-        cursor.dispose();
-        // Reset the alias stack to the "largest" previously used value... 
-        if( greatestAlias != null ) {
-            // This is potentially dangerous. So until I have time to work out a better way,
-            // I'm assuming no more then 100 tables will ever be tried...
-            for( int i=0; i<100; i++ ) {
-                if( aliasStack.pop().equals( greatestAlias ) ) 
-                    break ;
-            }    
-        }
-    }
-    
-    private int findTableIndex( DatabaseBean db, String tableName ) {
-        TableBean[] tables = db.getTables() ;
-        for( int i=0; i<tables.length; i++ ) {
-            if( tables[i].getName().equals( tableName ) ) {
-                return i ;
-            }
-        }
-        return -1;
-    }
         
     private static XmlObject setDefaultValue( XmlObject xmlObject ) {
         XmlObject retVal = xmlObject ;     
@@ -801,14 +686,14 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
     private static boolean isAttributeDriven( SchemaType type ) {
-        String name = (String)AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-        return ( name != null && name.length() > 0 ) ;
+        String[] name = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+        return ( name != null && name.length == 1 ) ;
     }
     
     private static XmlObject setAttributeDrivenDefaults( XmlObject xmlObject ) {
         XmlObject retVal = xmlObject ;
         SchemaType type = xmlObject.schemaType() ;
-        String attributeName = (String)AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+        String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
         XmlString tempObject = XmlString.Factory.newInstance() ;
         tempObject.setStringValue( (String)AdqlData.ATTRIBUTE_DEFAULTS.get( type.getName().getLocalPart() ) ) ; 
         
@@ -819,13 +704,13 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         SchemaType attrType = null ;
         SchemaProperty[] attrProperties = type.getAttributeProperties() ;
         for( int i=0; i<attrProperties.length; i++ ) {
-            if( attrProperties[i].getJavaPropertyName().equals( attributeName ) ) {
+            if( attrProperties[i].getJavaPropertyName().equals( attributeNames[0] ) ) {
                 attrType = attrProperties[i].getType();
                 break ;
             }
         }
         XmlObject valueObject = tempObject.changeType( attrType ) ;        
-        AdqlUtils.set( xmlObject, attributeName, valueObject ) ; 
+        AdqlUtils.set( xmlObject, attributeNames[0], valueObject ) ; 
         return xmlObject ;
     }
     
@@ -1066,6 +951,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        // This is purely cosmetic. It does nothing.
 	        // Can remove later if redundant / not liked.
 	        popup.add( entry.getDisplayName() ) ;
+	        if( entry.getDisplayName().equals("Literal") ) {
+	            log.debug( "Literal" );
+	        }
 	        popup.addSeparator() ;
 	        if( entry.isBottomLeafEditable() ) {
 //	            popup.add( new EditAction( entry ) ) ;
@@ -1160,7 +1048,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        JMenu menu = new JMenu( name ) ;
 	    
 	        if( commandBean.isConcreteTypeColumnLinked( concreteTypeIndex ) ) {
-	            if( fromTables.isEmpty() == false ) {
+	            if( adqlTree.getFromTables().isEmpty() == false ) {
 	                menu = getInsertColumnMenu( name, commandBean, concreteTypeIndex ) ;
 		            menu.setText( name ) ;
 		            menu.setEnabled( commandBean.isEnabled() ) ;
@@ -1171,7 +1059,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	
 	        }
 	        else if( commandBean.isConcreteTypeTableLinked( concreteTypeIndex ) ) {
-	            if( catalogueResource != null ) { 
+	            if( adqlTree.isCatalogueResourceSet() ) { 
 	                menu = getInsertTableMenu( name, commandBean, concreteTypeIndex ) ;
 	                menu.setText( name ) ;
 	                menu.setEnabled( commandBean.isEnabled() ) ;
@@ -1265,8 +1153,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	            String typeName = entry.getXmlObject().schemaType().getName().getLocalPart() ;
 	            if( typeName.equals( "tableType" ) || typeName.equals( "archiveTableType" ) ) {
 	                String name = ((XmlString)AdqlUtils.get( entry.getXmlObject(), "name " )).getStringValue() ;
-	                if( name != null && fromTables.containsKey( name ) ) 
-	                    fromTables.remove( name ) ;
+	                if( name != null && adqlTree.getFromTables().containsKey( name ) ) 
+	                    adqlTree.getFromTables().remove( name ) ;
 	            }
 	        }
 	        catch( Exception ex ){
@@ -1677,12 +1565,13 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             adqlTree.repaint() ;
             
             // Switch to edit for a newly created bottom leaf...
-            if( newEntry.isBottomLeafEditable() ) {
-                adqlTree.setEditingActive( true );  // is this required?
-                adqlTree.startEditingAtPath( path ) ;
-                adqlTree.setEditingActive( false );  // is this required?
-                model.nodeChanged( newEntry ) ;
-            }
+            // This needs reviewing where multiple inserts are required...
+//            if( newEntry.isBottomLeafEditable() ) {
+//                adqlTree.setEditingActive( true );  // is this required?
+//                adqlTree.startEditingAtPath( path ) ;
+//                adqlTree.setEditingActive( false );  // is this required?
+//                model.nodeChanged( newEntry ) ;
+//            }
             
 
 //            setAdqlParameter() ;
@@ -1812,14 +1701,14 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
         
         private boolean isAttributeDriven( SchemaType type ) {
-            String name = (String)AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-            return ( name != null && name.length() > 0 ) ;
+            String[] name = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+            return ( name != null && name.length == 1 ) ;
         }
         
         private XmlObject setAttributeDrivenDefaults( XmlObject xmlObject ) {
             XmlObject retVal = xmlObject ;
             SchemaType type = xmlObject.schemaType() ;
-            String attributeName = (String)AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+            String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
             XmlString tempObject = XmlString.Factory.newInstance() ;
             tempObject.setStringValue( (String)AdqlData.ATTRIBUTE_DEFAULTS.get( type.getName().getLocalPart() ) ) ; 
             
@@ -1830,13 +1719,13 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             SchemaType attrType = null ;
             SchemaProperty[] attrProperties = type.getAttributeProperties() ;
             for( int i=0; i<attrProperties.length; i++ ) {
-                if( attrProperties[i].getJavaPropertyName().equals( attributeName ) ) {
+                if( attrProperties[i].getJavaPropertyName().equals( attributeNames[0] ) ) {
                     attrType = attrProperties[i].getType();
                     break ;
                 }
             }
             XmlObject valueObject = tempObject.changeType( attrType ) ;        
-            AdqlUtils.set( xmlObject, attributeName, valueObject ) ; 
+            AdqlUtils.set( xmlObject, attributeNames[0], valueObject ) ; 
             return xmlObject ;
         }
         
@@ -1868,9 +1757,31 @@ public class InsertTableAction extends InsertAction {
         this.indexOfTable = indexOfTable ;
     }   
     
+    
+    private void removeDummyTable() { 
+        // This processing attempts the automatic removal of the dummy table 
+        // which is included in the initial template for a new query...
+        // (Bit of a bind I'm afraid)
+        AdqlEntry parent = commandBean.getEntry() ;
+        XmlObject o = parent.getXmlObject() ;
+        int arraySize = AdqlUtils.sizeOfArray( o, commandBean.getElementName() ) ;
+        if( arraySize == 1 ) {
+            Object table = AdqlUtils.getArray( o, commandBean.getElementName(), 0 ) ;
+            String name = ((XmlString)AdqlUtils.get( (XmlObject)table, "name" )).getStringValue() ;
+            if( name.equals( AdqlData.DUMMY_TABLE_NAME ) ) {
+                AdqlEntry entry = parent.getChild( 0 ) ;           
+    	        AdqlEntry.removeInstance( parent, entry ) ;
+            }
+        }
+        checkedForDummyTable = true ;
+    }
+    
     protected void insertConcreteSubtype() {
+        if( checkedForDummyTable == false ) {
+            removeDummyTable() ;
+        }
         super.insertConcreteSubtype() ;
-        String alias = aliasStack.pop() ;
+        String alias = adqlTree.popAliasStack() ;
         AdqlUtils.set( newEntry.getXmlObject()
                      , "alias"
                      , XmlString.Factory.newValue( alias ) ) ;
@@ -1883,7 +1794,7 @@ public class InsertTableAction extends InsertAction {
                          , "archive"
                          , XmlString.Factory.newValue( db.getName() ) ) ;
         }
-        fromTables.put( db.getTables()[indexOfTable].getName(), new TableData( db, indexOfTable, alias ) ) ;
+        adqlTree.getFromTables().put( db.getTables()[indexOfTable].getName(), adqlTree.new TableData( db, indexOfTable, alias ) ) ;
     }
    
 } // end of class InsertTableAction
@@ -1891,13 +1802,14 @@ public class InsertTableAction extends InsertAction {
 
 
 public class InsertColumnAction extends InsertAction {  
-    protected TableData tableData ;
+    protected AdqlTree.TableData tableData ;
+    protected XmlObject xmlTable ;
     protected ColumnBean column ;
     
     public InsertColumnAction( String name
                              , AdqlCommand commandBean
                              , int indexOfConcreteSubtype
-                             , TableData tableData
+                             , AdqlTree.TableData tableData
                              , ColumnBean column ) {
         super( name, commandBean, indexOfConcreteSubtype ) ;
         this.tableData = tableData ;
@@ -1906,6 +1818,9 @@ public class InsertColumnAction extends InsertAction {
     }   
     
     protected void insertConcreteSubtype() {
+        if( checkedForAllColumnsOption == false ) {
+            removeAllColumnsOption() ;
+        }
         super.insertConcreteSubtype() ;
         // Somehow there should be some choice here regarding whether the table name or alias is used.
         // And also somewhere a place the user can choose the alias rather than  have it automatically
@@ -1937,6 +1852,24 @@ public class InsertColumnAction extends InsertAction {
         sb.append("<b>Unit</b>:").append(c.getUnit()).append("<br>");                            
         sb.append("</html>");
         return sb.toString();
+    }
+    
+    private void removeAllColumnsOption() { 
+        // This processing attempts the automatic removal of the all-
+        // columns option which is included in the initial template 
+        // for a new query...
+        AdqlEntry parent = commandBean.getEntry() ;
+        XmlObject o = parent.getXmlObject() ;
+        int arraySize = AdqlUtils.sizeOfArray( o, "Item" ) ;
+        if( arraySize == 1 ) {
+            XmlObject item = (XmlObject)AdqlUtils.getArray( o, commandBean.getElementName(), 0 ) ;
+            String name = item.schemaType().getName().getLocalPart() ;
+            if( name.equals( AdqlData.ALL_SELECTION_ITEM_TYPE ) ) {
+                AdqlEntry entry = parent.getChild( 0 ) ;           
+    	        AdqlEntry.removeInstance( parent, entry ) ;
+            }
+        }
+        checkedForAllColumnsOption = true ;
     }
    
 } // end of class InsertColumnAction
@@ -1989,14 +1922,11 @@ public class InsertEnumeratedAction extends InsertAction {
                    Object obj = regChooser.chooseResourceWithFilter( "Select Catalogue description for " 
                                                                    + toolModel.getInfo().getName()
                                                                    , "(@xsi:type like '%TabularDB')") ;
-                   if( obj != null )
-                       if( DEBUG_ENABLED ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + obj.getClass().getName() ) ; {
-                       catalogueResource = (TabularDatabaseInformation)obj ;
-                   }        
-                   if( catalogueResource != null ) {
+                   if( obj != null ) {
+                       if( DEBUG_ENABLED ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + obj.getClass().getName() ) ; 
+                       adqlTree.setCatalogueResource( (TabularDatabaseInformation)obj ) ;
                        chooseResourceButton.setEnabled( false ) ;
                        formatCatalogTab() ;
-                       writeResourceProcessingInstruction() ;
                    }
                 }
             });
@@ -2005,6 +1935,7 @@ public class InsertEnumeratedAction extends InsertAction {
     }
     
     private void formatCatalogTab() {
+        TabularDatabaseInformation catalogueResource = adqlTree.getCatalogueResource() ;
         String title = null ;
         String description = null ;
         if( tabbedMetadataPane.getTabCount() == 1 ) {
@@ -2053,51 +1984,15 @@ public class InsertEnumeratedAction extends InsertAction {
     }
     
     
-    private void writeResourceProcessingInstruction() {
-        String piName = null ;
-        String piValue = null ;
-        XmlCursor cursor = getRoot().newCursor() ;
-        if( DEBUG_ENABLED ) log.debug( "Searching for PI's..." ) ;
-        while( !cursor.toNextToken().isNone() ) {
-            if( cursor.isProcinst() ) {
-                piName = cursor.getName().getLocalPart() ;
-                if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
-                if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
-            	if( piName.equals ( PI_QB_REGISTRY_RESOURCES ) )  {
-            	   // OK. There's already one here.
-            	   // But does it say "none"?...
-            	    if( cursor.getTextValue().trim().equals( "none") ) {
-            	        piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
-                        + '!' 
-                        + catalogueResource.getDatabases()[0].getTables()[0].getName() ;
-            	        cursor.setTextValue( piValue ) ;
-            	    }
-            	   break ;
-            	}
-            }
-            else if( cursor.isStart()
-                     &&
-                     cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
-                // We need to create the required PI...
-                // (I've simply chosen the first table to align it with the portal)
-                piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
-                        + '!' 
-                        + catalogueResource.getDatabases()[0].getTables()[0].getName() ;
-                if( DEBUG_ENABLED ) log.debug( "new PI Text: " +piValue ) ;
-                cursor.insertProcInst( PI_QB_REGISTRY_RESOURCES, piValue ) ;
-                break ;               
-            }
-        } // end while
-        cursor.dispose();
-    }
+    
     
     
     
     private JMenu getInsertColumnMenu( String name, AdqlCommand command, int typeIndex ) {
         JMenu columnMenu = new JMenu( name ) ;
-        java.util.Set set = fromTables.entrySet() ;
+        java.util.Set set = adqlTree.getFromTables().entrySet() ;
         Iterator it = set.iterator() ;
-        TableData tableData = null ;
+        AdqlTree.TableData tableData = null ;
         TableBean table = null ;
 //        JMenu dbMenu = new JMenu( "", true ) ;
 //        columnMenu.add( dbMenu );
@@ -2106,13 +2001,13 @@ public class InsertEnumeratedAction extends InsertAction {
         // so the database menu part is something of a cheat.
         // Also, the tables and columns will eventually need sorting!
         while( it.hasNext() ) {
-            tableData = (TableData)((java.util.Map.Entry)it.next()).getValue() ;
+             tableData = (AdqlTree.TableData)((java.util.Map.Entry)it.next()).getValue() ;
             try {
                 table = tableData.database.getTables()[ tableData.tableIndex ] ;
             }
             catch( ArrayIndexOutOfBoundsException ex ) {
                 continue ;
-            } 
+            }       
             JMenu tableMenu = new JMenu( table.getName(),true ) ;
 //            dbMenu.add( tableMenu );
             columnMenu.add( tableMenu );
@@ -2131,7 +2026,7 @@ public class InsertEnumeratedAction extends InsertAction {
     
     private JMenu getInsertTableMenu( String name, AdqlCommand command, int typeIndex ) {
         JMenu insertMenu = new JMenu( name ) ;
-        DatabaseBean[] dbs = catalogueResource.getDatabases();
+        DatabaseBean[] dbs = adqlTree.getCatalogueResource().getDatabases();
         for( int i = 0; i < dbs.length; i++ ) {
 //            JMenu dbMenu = new JMenu( dbs[i].getName(), true );
 //            dbMenu.setToolTipText( dbs[i].getDescription() );
@@ -2148,9 +2043,9 @@ public class InsertEnumeratedAction extends InsertAction {
                 JMenuItem menuItem = insertMenu.add( action ) ;
 //                menuItem.setToolTipText( tables[j].getDescription() );
                 // Grey out those already chosen...
-                if( fromTables.containsKey( tables[j].getName() ) ) {
-//                   menuItem.setEnabled( false ) ;
-                }
+//                if( fromTables.containsKey( tables[j].getName() ) ) {
+////                   menuItem.setEnabled( false ) ;
+//                }
             }
         }
         return insertMenu;
@@ -2364,14 +2259,10 @@ public class InsertEnumeratedAction extends InsertAction {
         
         protected void refreshFromModel() {         
             if( DEBUG_ENABLED ) log.debug( "AdqlTreeView.stateChanged() is resetting adqlTree" ) ;
-            adqlTree.setTree( AdqlEntry.newInstance( this.controller.getRootInstance() ));
+            adqlTree.setTree( AdqlEntry.newInstance( this.controller.getRootInstance() ), registry, toolModel.getInfo().getId() );
             adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
             setAdqlParameter() ;
             openBranches() ;
-            if( catalogueResource != null ) {
-                reestablishTablesCollection() ;
-                writeResourceProcessingInstruction() ;
-            }         
         }
         
         private void openBranches() {
@@ -2397,6 +2288,7 @@ public class InsertEnumeratedAction extends InsertAction {
         String adqlString ;
         XmlObject rootOnGainingSelection ;
         XmlObject processedRoot ;
+        boolean dirtyFlag = false ;
         
         public AdqlStringView( JTabbedPane owner, Controller controller ) {
             super( owner, controller, new JTextPane() ) ;
@@ -2476,61 +2368,7 @@ public class InsertEnumeratedAction extends InsertAction {
         }
            
     } // end of class AdqlStringView
-    
-    
-    public class TableData {
-        public DatabaseBean database ;
-        public int tableIndex ;
-        public String alias ;
-        
-        public TableData( DatabaseBean database, int tableIndex, String alias ) {
-            this.database = database ;
-            this.tableIndex = tableIndex ;
-            this.alias = alias ;
-        }      
-    }
-    
-    private class AliasStack {
-        
-        private Stack autoStack ;
-        private int suffix = 0 ;
-        
-        public AliasStack() {
-            autoStack = new Stack() ;
-            for( int i=ALIAS_NAMES.length-1; i>-1; i-- ) {
-                autoStack.push( Character.toString( ALIAS_NAMES[i] ) ) ;
-            }
-        }
-        
-        public String pop() {
-            if( autoStack.empty() ) {
-                suffix++ ;
-                for( int i=ALIAS_NAMES.length-1; i>-1; i-- ) {
-                    autoStack.push( Character.toString( ALIAS_NAMES[i] ) + Integer.toString( suffix ) ) ;
-                }
-            }
-            return (String)autoStack.pop() ;
-        }
 
-    } // end of class AliasStack
-    
-    public TableData getTableData( String tableName ) {
-        TableData tableData = null ;
-        java.util.Set set = fromTables.entrySet() ;
-        Iterator it = set.iterator() ;
-        while( it.hasNext() ) {
-            tableData = (TableData)((java.util.Map.Entry)it.next()).getValue() ;
-            try {
-                if( tableData.database.getTables()[ tableData.tableIndex ].getName().equals( tableName ) )
-                    break ;
-            }
-            catch( ArrayIndexOutOfBoundsException ex ) {
-                ;
-            }
-            tableData = null ;
-        }
-        return tableData ;
-    }
     
     private Point[]	elastic ;
     
@@ -2545,19 +2383,20 @@ public class InsertEnumeratedAction extends InsertAction {
         repaint() ;
     }
     
-    
     protected Point[] getElastic() {
         return elastic;
     }
+    
     public void setElastic(Point[] elastic) {
         this.elastic = elastic;
     }
+    
     public void unsetElastic() {
         this.elastic = null ;
     }
     
     private XmlObject getRoot() {
-        return ((AdqlEntry)(this.adqlTree.getModel().getRoot())).getXmlObject() ;
+        return adqlTree.getRoot() ;
     }
     
 } // end of ADQLToolEditor

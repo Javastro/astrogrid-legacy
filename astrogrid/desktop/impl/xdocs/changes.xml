@@ -13,6 +13,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+    <action dev="jl" type="add" issue=1542>
+	    Query Builder: Improvements to low level editing of tree view.
+	</action>
 	<release version="pending">
 		<action dev="pjn" type="add" issue="1234">
 			WorkflowBuilder: details of any workflows loaded from storage now displayed - was a request for portal, but added to workbench.
