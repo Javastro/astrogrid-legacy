@@ -82,8 +82,7 @@ public class XmlRpcServer extends HttpServlet {
         try {
             Object val = SchemeWrapper
                     .getInstance()
-                    .eval(handlerProcedure,
-                          new Object[] { request.getReader() });
+                    .eval(handlerProcedure, new Object[] { request });
             if (val instanceof String) {
                 response.setContentType("text/html");
                 response.setStatus
