@@ -159,7 +159,7 @@
            (submodel-name (if (null? (cdr path-info-list))
                                #f       ;no submodel
                                (cadr path-info-list))))
-       (let ((kb (kb-get kb-name))
+       (let ((kb (kb:get kb-name))
              (mime-and-lang (find-ok-language request))
              (query (string->symbol (or query-string "model"))))
          (cond ((and kb
@@ -438,24 +438,64 @@
 ;;
 ;; XML-RPC support
 
+(define (xmlrpc-get-model quaestor-url . args)
+  (cond ((= (length args) 1)
+         (let ((kb (kb:get (car args))))
+           (if kb
+               (xmlrpc:create-response "~a/kb/~a" quaestor-url (car args))
+               (xmlrpc:create-fault "no such knowledgebase ~a" (car args)))))
+        ((= (length args) 2)
+         (let ((kb (kb:get (car args))))
+           (if (and kb (kb 'has-model (cadr args)))
+               (xmlrpc:create-response "~a/kb/~a/~a"
+                                       quaestor-url
+                                       (car args)
+                                       (cadr args))
+               (xmlrpc:create-fault 1
+                                    "no such model ~a/~a"
+                                    (car args) (cadr args)))))
+        (else
+         (xmlrpc:create-fault "method get-model requires 1 or 2 args, got ~a"
+                              (length args)))))
+
+(define xmlrpc-handlers
+  `((get-model #f . ,xmlrpc-get-model)))
+
 ;; Handle a single XML-RPC request.  The procedure may read the body of the 
 ;; request from the given READER.  It should return a response as a string
 ;; containing XML, success or failure, but if anything unexpected happens,
 ;; it can throw an error.
-(define (handle-xmlrpc reader)
+(define (handle-xmlrpc request)
+  (define-generic-java-methods
+    get-reader
+    get-context-path
+    get-local-name
+    get-local-port)
   (sexp->xml
    (with/fc
       (lambda (m e)
         (xmlrpc:create-fault 0 "Malformed request: ~a" (error-message m)))
     (lambda ()
-      (let ((call (xmlrpc:new-call reader)))
-        (if (= (xmlrpc:number-of-params call) 1)
-            (xmlrpc:create-response (format #f
-                                            "Response: method name is ~a; param 1 is ~a"
-                                            (xmlrpc:method-name call)
-                                            (xmlrpc:method-param call 1)))
-            (xmlrpc:create-fault 99 "Wrong number of parameters: ~a"
-                                 (xmlrpc:number-of-params call))))))
+      (let ((call (xmlrpc:new-call (get-reader request)))
+            (quaestor-url (format #f "http://~a:~a~a"
+                                  (->string (get-local-name request))
+                                  (->number (get-local-port request))
+                                  (->string (get-context-path request)))))
+        (let ((method-rec (assq (xmlrpc:method-name call) xmlrpc-handlers)))
+          (let ((nargs (cadr method-rec))
+                (h (cddr method-rec)))
+            (cond ((and method-rec nargs)
+                 (if (= nargs (xmlrpc:number-of-params call))
+                     (apply h
+                            (cons quaestor-url
+                                  (xmlrpc:method-param-list call)))
+                     (xmlrpc:create-fault "method ~a expected ~a params, got ~a"
+                                          (xmlrpc:method-name call)
+                                          nargs
+                                          (xmlrpc:number-of-params call))))
+                (method-rec
+                 (apply h (cons quaestor-url
+                                (xmlrpc:method-param-list call))))))))))
    '(|methodResponse| fault params struct) ;make it look pretty
    '(param member)))
 
