@@ -56,6 +56,36 @@
 		</method>
 	</component>	
 
+		<component name="helioscope" 
+		implementationClass="org.astrogrid.desktop.modules.ui.HelioScopeLauncherImpl" 
+		interfaceClass="org.astrogrid.acr.ui.HelioScope" 
+		singleton="false"
+		>
+		<description>Launch HelioScope</description>	
+		<property>
+			<key>system.ui.menu.links</key>
+			<value>		
+				<helpLink id="userInterface.helioscopeLauncher" />									
+			</value>
+		</property>			
+		<property>
+			<key>icon</key>
+			<value>search.gif</value>
+		</property>				
+		<method name="show">
+			<description>Run HelioScope</description>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Run..</value>
+				<property>
+					<key>icon</key>
+					<value>run_tool.gif</value>
+				</property>					
+			</property>
+		</method>
+	</component>	
+
+
 
 	<component name="lookout"
 		implementationClass="org.astrogrid.desktop.modules.ui.LookoutImpl"

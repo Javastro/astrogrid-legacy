@@ -343,6 +343,270 @@
 			</parameter>			
 		</method>				
 	</component>
+
+	<component name="stap" 
+		implementationClass="org.astrogrid.desktop.modules.ag.StapImpl"
+		interfaceClass="org.astrogrid.acr.astrogrid.Stap">
+		<description>Interface to Simple Image Access (SIAP) Servers</description>
+		<property>
+			<key>icon</key>
+			<value>search.gif</value>
+		</property>
+		<property>
+		<key>system.ui.menu.links</key>
+		<value>
+			<link text="STAP Specification"
+				icon="ivoa.gif"
+				toolTipText="Latest version of the STAP Spec"
+				url="http://www.ivoa.net/Documents/latest/SIA.htm" />
+		</value>
+		</property>		
+
+		<method name="constructQuery">
+			<description>Construct a query URL</description>
+		<property>
+			<key>system.ui.menu.entry</key>
+			<value>Construct a SIAP Search</value>
+		</property>		
+	<property>
+		<key>icon</key>
+		<value>newfile_wiz.gif</value>
+	</property>					
+			<parameter name="service">
+				<description>url of service endpoint, or ivorn of the service description</description>
+			</parameter>
+			<parameter name="start">
+				<description>calendar start time</description>
+			</parameter>
+			<parameter name="end">
+				<description>calendar end time</description>
+			</parameter>
+			<return>
+				<description>query URL that can be fetched to execute this query</description>
+			</return>
+		</method>
+
+
+		<method name="constructQuery">
+			<description>Construct a query URL</description>
+		<property>
+			<key>system.ui.menu.entry</key>
+			<value>Construct a SIAP Search</value>
+		</property>		
+	<property>
+		<key>icon</key>
+		<value>newfile_wiz.gif</value>
+	</property>					
+			<parameter name="service">
+				<description>url of service endpoint, or ivorn of the service description</description>
+			</parameter>
+			<parameter name="start">
+				<description>calendar start time</description>
+			</parameter>
+			<parameter name="end">
+				<description>calendar end time</description>
+			</parameter>
+			<parameter name="ra">
+				<description>right ascension (double)</description>
+			</parameter>
+			<parameter name="dec">
+				<description>declination (double)</description>
+			</parameter>
+			<parameter name="rad">
+				<description>search radius (double)</description>
+			</parameter>
+			<return>
+				<description>query URL that can be fetched to execute this query</description>
+			</return>
+		</method>
+
+		<method name="constructQueryF">
+			<description>Construct a query URL, specifying format</description>	
+			<parameter name="service">
+				<description>url of service endpoint, or ivorn of the service description</description>
+			</parameter>
+			<parameter name="start">
+				<description>calendar start time</description>
+			</parameter>
+			<parameter name="end">
+				<description>calendar end time</description>
+			</parameter>
+			<parameter name="ra">
+				<description>right ascension (double)</description>
+			</parameter>
+			<parameter name="dec">
+				<description>declination (double)</description>
+			</parameter>
+			<parameter name="rad">
+				<description>search radius (double)</description>
+			</parameter>
+			<parameter name="format">
+				<description>format of images</description>
+			</parameter>
+			<return>
+				<description>query URL that can be fetched to execute this query</description>
+			</return>
+		</method>		
+
+		
+		<method name="constructQueryF">
+			<description>Construct a query URL, specifying format</description>	
+			<parameter name="service">
+				<description>url of service endpoint, or ivorn of the service description</description>
+			</parameter>
+			<parameter name="start">
+				<description>calendar start time</description>
+			</parameter>
+			<parameter name="end">
+				<description>calendar end time</description>
+			</parameter>
+			<parameter name="ra">
+				<description>right ascension (double)</description>
+			</parameter>
+			<parameter name="dec">
+				<description>declination (double)</description>
+			</parameter>
+			<parameter name="rad">
+				<description>search radius (double)</description>
+			</parameter>
+			<parameter name="format">
+				<description>format of images</description>
+			</parameter>
+			<return>
+				<description>query URL that can be fetched to execute this query</description>
+			</return>
+		</method>		
+
+		<method name="constructQueryS">
+			<description>Construct a query URL, specifying different sizes for ra and dec</description>	
+			<parameter name="service">
+				<description>url of service endpoint, or ivorn of the service description</description>
+			</parameter>
+			<parameter name="start">
+				<description>calendar start time</description>
+			</parameter>
+			<parameter name="end">
+				<description>calendar end time</description>
+			</parameter>
+			<parameter name="ra">
+				<description>right ascension (double)</description>
+			</parameter>
+			<parameter name="dec">
+				<description>declination (double)</description>
+			</parameter>
+			<parameter name="ra_size">
+				<description>size of ra (double)</description>
+			</parameter>
+			<parameter name="dec_size">
+				<description>size of dec</description>
+			</parameter>
+			<return>
+				<description>query URL that can be fetched to execute this query</description>
+			</return>
+		</method>		
+		
+		<method name="constructQuerySF">
+			<description>Construct a query URL, specifying format, ra_size, dec_size</description>	
+			<parameter name="service">
+				<description>url of service endpoint, or ivorn of the service description</description>
+			</parameter>
+			<parameter name="start">
+				<description>calendar start time</description>
+			</parameter>
+			<parameter name="end">
+				<description>calendar end time</description>
+			</parameter>
+			<parameter name="ra">
+				<description>right ascension (double)</description>
+			</parameter>
+			<parameter name="dec">
+				<description>declination (double)</description>
+			</parameter>
+			<parameter name="ra_size">
+				<description>size of ra (double)</description>
+			</parameter>
+			<parameter name="dec_size">
+				<description>size of dec</description>
+			</parameter>
+			<parameter name="format">
+				<description>format of images</description>
+			</parameter>
+			<return>
+				<description>query URL that can be fetched to execute this query</description>
+			</return>
+		</method>						
+		
+		<method name="addOption">
+			<description>Add an option to a query url</description>
+			<parameter name="stapQuery">
+				<description>the query url</description>
+			</parameter>
+			<parameter name="optionName">
+				<description>the name of the option to add</description>
+			</parameter>
+			<parameter name="optionValue">
+				<description>the value for the new option</description>
+			</parameter>
+			<return>
+				<description>the query url with the new option appended</description>
+			</return>
+		</method>		
+		
+		<method name="getResults">
+			<description>Execute a stap query</description>
+			<property>
+			<key>icon</key>
+			<value>run_tool.gif</value>
+		</property>				
+	<property>
+		<key>system.ui.result.browser</key>
+		<value>true</value>
+	</property>		
+		<property>
+			<key>system.ui.menu.entry</key>
+			<value>Execute a Siap Search</value>
+		</property>			
+			<parameter name="stapQuery">
+				<description>A query URL</description>
+			</parameter>
+			<return>
+				<description>A votable document</description>
+				<property>
+					<key>system.result.transformer</key>
+					<value>org.astrogrid.desktop.modules.system.transformers.VotableResultTransformerSet</value>
+				</property>				
+			</return>
+		</method>
+		
+		<method name="saveResults">
+			<description>Execute a stap query and save results</description>
+			<property>
+			<key>icon</key>
+			<value>run_tool.gif</value>
+		</property>				
+		<property>
+			<key>system.ui.menu.entry</key>
+			<value>Execute a Siap Search and save results</value>
+		</property>			
+			<parameter name="siapQuery">
+				<description>A query URL</description>
+			</parameter>
+			<parameter name="saveLocation">
+				<description>A ftp://, file:// or ivo:// (mspace) save location</description>
+			</parameter>
+			<return>
+				<description>nothing</description>
+			</return>			
+		</method>
+
+	<method name="getRegistryQuery">
+		<description>returns an adql query that will list all cone services</description>
+		<return>
+			<description>an adql query</description>
+		</return>
+	</method>			
+	</component>	
+
 	
 	
 	<component name="myspace" 

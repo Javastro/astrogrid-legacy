@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+/*$Id: SsapProtocol.java,v 1.2 2006/03/13 14:55:09 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,8 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
+import java.util.Calendar;
+
 public class SsapProtocol extends DalProtocol {
 
     public SsapProtocol(UIComponent parent,Registry reg, Ssap ssap) {
@@ -29,7 +31,7 @@ public class SsapProtocol extends DalProtocol {
         return reg.adqlSearchRI(ssap.getRegistryQuery());
     }
 
-    public Retriever createRetriever(ResourceInformation i, double ra, double dec, double raSize, double decSize) {
+    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
         return new SsapRetrieval(parent,i,getPrimaryNode(),getVizModel(),ssap,ra,dec,raSize,decSize);
     }
 
@@ -38,6 +40,9 @@ public class SsapProtocol extends DalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.2  2006/03/13 14:55:09  KevinBenson
+New first draft of helioscope and the stap spec protocol
+
 Revision 1.1  2006/02/02 14:51:11  nw
 components of astroscope, plus new ssap component.
  

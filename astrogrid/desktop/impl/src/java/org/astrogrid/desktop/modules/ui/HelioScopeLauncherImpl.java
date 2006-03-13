@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.33 2006/03/13 14:55:09 KevinBenson Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.1 2006/03/13 14:55:09 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,13 +14,10 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.acr.nvo.Cone;
-import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.acr.astrogrid.StapInformation;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.AstroScope;
+import org.astrogrid.acr.ui.HelioScope;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -33,7 +30,7 @@ import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
 import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
 import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
-import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
@@ -70,6 +67,7 @@ import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -89,6 +87,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.freixas.jcalendar.JCalendarCombo;
+import java.util.Calendar;
+
 
 /** Implementation of the Datascipe launcher
  * 
@@ -96,13 +97,13 @@ import javax.swing.table.TableColumnModel;
  * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
-public class AstroScopeLauncherImpl extends UIComponent 
-    implements AstroScope, ActionListener, PlasticListener, PlasticWrapper {
+public class HelioScopeLauncherImpl extends UIComponent 
+    implements HelioScope, ActionListener, PlasticListener, PlasticWrapper {
    
 /** extends the plastic mesagehandler to display new buttons */
-    protected class AstroscopePlasticMessageHandler extends ApplicationRegisteredPlasticMessageHandler {
+    protected class HelioscopePlasticMessageHandler extends ApplicationRegisteredPlasticMessageHandler {
 
-        private AstroscopePlasticMessageHandler(UIComponent parent, PlasticWrapper wrapper, Container container) {
+        private HelioscopePlasticMessageHandler(UIComponent parent, PlasticWrapper wrapper, Container container) {
             super(parent, wrapper, container);
         }
 
@@ -112,13 +113,13 @@ public class AstroScopeLauncherImpl extends UIComponent
             if (ArrayUtils.contains(messages,CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
                 results.add(
                         new VotableLoadPlasticButton(applicationId,name,iconURL,vizModel.getSelectionFocusSet(),
-                                AstroScopeLauncherImpl.this,AstroScopeLauncherImpl.this)                         
+                                HelioScopeLauncherImpl.this,HelioScopeLauncherImpl.this)                         
                         );
             }
             if (ArrayUtils.contains(messages,IMAGES_LOAD_FROM_URL_MESSAGE)) {                    
                 results.add(
                         new ImageLoadPlasticButton(applicationId,name,iconURL,vizModel.getSelectionFocusSet(),
-                                AstroScopeLauncherImpl.this,AstroScopeLauncherImpl.this)                           
+                                HelioScopeLauncherImpl.this,HelioScopeLauncherImpl.this)                           
                         );
             }                
             return (Component[])results.toArray(new Component[results.size()]);
@@ -132,7 +133,7 @@ public class AstroScopeLauncherImpl extends UIComponent
     /**
      * Commons Logger for this class
      */
-    static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
+    static final Log logger = LogFactory.getLog(HelioScopeLauncherImpl.class);
 
     //Various gui components.
     private JTextField posText;           
@@ -140,9 +141,8 @@ public class AstroScopeLauncherImpl extends UIComponent
     private JButton clearButton;
     private JTextField regionText;
     private JButton submitButton;
-           
-    //name resolver.
-    private final Sesame ses;
+    private JCalendarCombo startCal;
+    private JCalendarCombo endCal;
 
     // set of data retrieval components 
     private final DalProtocolManager protocols;
@@ -152,10 +152,10 @@ public class AstroScopeLauncherImpl extends UIComponent
     // set of vizualization components
     private final VizualizationManager vizualizations;
 
-    // used to generate a new plastic id for each astroscope window
+    // used to generate a new plastic id for each HelioScope window
     private static int UNQ_ID = 0;
     private final URI myPlasticID;
-    // list of plastic messasges astroscope will accept.
+    // list of plastic messasges HelioScope will accept.
     private static List  acceptedMessages = new ArrayList() {
         {//initializer block.
         this.add(CommonMessageConstants.ECHO);
@@ -172,6 +172,9 @@ public class AstroScopeLauncherImpl extends UIComponent
     private JButtonBar dynamicButtons = new JButtonBar(JButtonBar.VERTICAL);
     private final PlasticHubListener hub;
     private final MessageHandler plasticHandler;// handles incoming plastic messages
+    
+    private final Sesame ses;
+    
     /**
      * 
      * @param ui
@@ -185,17 +188,15 @@ public class AstroScopeLauncherImpl extends UIComponent
      * @param cone
      * @throws URISyntaxException 
      */
-    public AstroScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
+    public HelioScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, Community comm, PlasticHubListener hub) throws URISyntaxException {
+                                  Stap stap,Sesame ses, Community comm, PlasticHubListener hub) throws URISyntaxException {
         super(conf,hs,ui);
         
         this.ses = ses;               
         // configure data protcols
         protocols = new DalProtocolManager();
-        protocols.add(new SiapProtocol(this,reg,siap));
-        protocols.add(new SsapProtocol(this,reg,ssap));
-        protocols.add(new ConeProtocol(this,reg,cone));
+        protocols.add(new StapProtocol(this,reg,stap));
         // create the shared model
         vizModel = new VizModel(protocols);
         // create the vizualizations
@@ -204,17 +205,17 @@ public class AstroScopeLauncherImpl extends UIComponent
         vizualizations.add(new HyperbolicVizualization(vizualizations));
 
         dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,comm,chooser,myspace));
-        dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
+        //dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
         
         // plastic setup
         IMAGES_LOAD_FROM_URL_MESSAGE = new URI("ivo://votech.org/fits/image/loadFromURL");
         this.hub = hub;
         // generates a new name each time.
-        String appName = "AstroScope-" + UNQ_ID++;
+        String appName = "HelioScope-" + UNQ_ID++;
        // standard message handler.
-        this.plasticHandler = new StandardHandler(appName,"ivo://org.astrogrid/astroscope", PlasticListener.CURRENT_VERSION);
+        this.plasticHandler = new StandardHandler(appName,"ivo://org.astrogrid/helioscope", PlasticListener.CURRENT_VERSION);
         // message handler for application add and  applcation remove messages.
-        ApplicationRegisteredPlasticMessageHandler dynamicButtonHandler = new AstroscopePlasticMessageHandler(this, this, dynamicButtons);
+        ApplicationRegisteredPlasticMessageHandler dynamicButtonHandler = new HelioscopePlasticMessageHandler(this, this, dynamicButtons);
         this.plasticHandler.setNextHandler(dynamicButtonHandler);
         // register with the hub
         myPlasticID = hub.registerRMI(appName, acceptedMessages,this );
@@ -238,8 +239,8 @@ public class AstroScopeLauncherImpl extends UIComponent
         pane.add(searchPanel,BorderLayout.WEST);
         pane.add(makeCenterPanel(),BorderLayout.CENTER);
         this.setContentPane(pane);
-        this.setTitle("AstroScope");
-        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
+        this.setTitle("HelioScope");
+        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
         setIconImage(IconHelper.loadIcon("search.gif").getImage());
     }
     
@@ -285,73 +286,18 @@ public class AstroScopeLauncherImpl extends UIComponent
      * @param position
      * @return
      */    
-    private double getDEC(String position) {
-        String []val = position.split(",");
-        if(val.length != 2) {
-            throw new IllegalArgumentException("Invalid position was given for determinging 'dec', position: " + position);
-        }
-        return Double.parseDouble(val[1]);
+    private double getDEC() {
+        return Double.NaN;
     }
-    /**
-     * Verify the entry in the position text box is a position.  If not it should try to look it up. 
-     * @return
-     */
-    private String getPosition() {
-        String pos = posText.getText().trim();       
-        String result =  getPosition(pos);
-        if (result == null) {
-            return getPosition(getPositionFromObject(pos));
-        } else {
-            return result;
-        }
-    }
-    
-    // better to return null if we're just going to catch it straght away.
-    private String getPosition(String pos)  {
-        if(pos == null || pos.trim().length() == 0) {
-            return null;
-        }
-        String expression = "\\+?-?\\d+\\.?\\d*,\\+?-?\\d+\\.?\\d*";
-        if(pos.matches(expression)) {            
-            return pos;            
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * method: getPositionFromObject
-     * Description: Queries CDS-Simbad service for a position in the sky based on a object name.  This is typically 
-     * called if the user enters an invalid position then it will attempt a lookup.
-     * @return position in the sky based on a object name.
-     */
-    private String getPositionFromObject(String inputPos) {
-        String pos = null;  
-        try {
-            String temp = ses.sesame(inputPos,"x");
-            //logger.debug("here is the xml response from sesame = " + temp);            
-            pos = temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>"));
-            pos += "," + temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>"));
-            //logger.debug("here is the position extracted from sesame = " + pos);
-        }catch(Exception e) {
-            //hmmm I think glueservice is throwing an exception but things seem to be okay.
-            //e.printStackTrace();
-				logger.debug("error from sesame - ho hum",e);
-        }
-        return pos;
-    }
+
     /**
      * Extracts out the ra of a particular position in the form of a ra,dec
      * @param position
      * @return
      * @todo refactor -report error to user - or prevent invalid input in the first place.
      */
-    private double getRA(String position) {
-        String []val = position.split(",");
-        if(val.length != 2) {
-            throw new IllegalArgumentException("Invalid position was given for determinging 'ra', position: " + position);
-        }
-        return Double.parseDouble(val[0]);        
+    private double getRA() {
+        return Double.NaN;
     }
     /**
      * Makes the Center Panel for the GUI.  The main look is is the display graph which is the 
@@ -417,12 +363,8 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                      sb.append("<html>");
                      sb.append(ri.getId());      
                      sb.append("<br>Service Type: ");
-                     if (ri instanceof SiapInformation) {  //nasty little hack for now. - later find a way of getting this info from the protocol object..
-                         sb.append("Image");
-                     } else if (ri instanceof ConeInformation) {
-                         sb.append("Catalog");
-                     } else { // no special type for ssap at the moment, and have to assume that any other ri is a ssap
-                         sb.append("Spectra");
+                     if (ri instanceof StapInformation) {  //nasty little hack for now. - later find a way of getting this info from the protocol object..
+                         sb.append("Stap");
                      }
                      sb.append("</html>");
                      //@todo extend ResourceInformation to contain curation details, add these in here.
@@ -476,36 +418,58 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         searchPanel.setLayout(new BoxLayout(searchPanel,BoxLayout.Y_AXIS));
         searchPanel.setBorder(new TitledBorder("1. Search"));
         
+        startCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
+        startCal.setNullAllowed(false);
+        startCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+
+        endCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
+        endCal.setNullAllowed(false);
+        endCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+        
+        
         posText = new JTextField();
+        /*
         posText.setToolTipText("Place position or object name e.g. 120,0 (in decimal degrees and no spaces) or M11");
         posText.setAlignmentX(LEFT_ALIGNMENT);
         posText.setColumns(10);
         posText.setMaximumSize(posText.getPreferredSize());   
-        
+        */
         regionText = new JTextField();
+        /*
         regionText.setToolTipText("Enter region size e.g. 0.1 in decimal degrees");
         regionText.setAlignmentX(LEFT_ALIGNMENT);
         regionText.setColumns(10);
         regionText.setMaximumSize(regionText.getPreferredSize());
+        */
+        searchPanel.add(new JLabel("Start Date&Time: "));
+        searchPanel.add(startCal);
+
+        searchPanel.add(new JLabel("Start Date&Time: "));
+        searchPanel.add(endCal);
         
+        /*
+        searchPanel.add(new JLabel("----Optional----"));
         searchPanel.add(new JLabel("Position/Object: "));
         searchPanel.add(posText);
         searchPanel.add(new JLabel("Region: "));
         searchPanel.add(regionText);
+        */
+        /*
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();
             searchPanel.add(p.getCheckBox());
         }
+        */
         
         submitButton = new JButton("Search");
         submitButton.setIcon(IconHelper.loadIcon("find.png"));
-        submitButton.setToolTipText("Find resources for this position");
+        submitButton.setToolTipText("Find resources for this time");
         submitButton.addActionListener(this);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
         scopeMain.getInputMap(scopeMain.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
         scopeMain.getActionMap().put("search",new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                AstroScopeLauncherImpl.this.actionPerformed(e);
+                HelioScopeLauncherImpl.this.actionPerformed(e);
             }
         });                
         searchPanel.add(submitButton);      
@@ -539,8 +503,8 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         // make these buttons all the same width - I know clear button is the biggest.
         submitButton.setMaximumSize(clearButton.getPreferredSize());
         reFocusTopButton.setMaximumSize(clearButton.getPreferredSize());
-        navPanel.setMinimumSize(navPanel.getPreferredSize());
-        navPanel.setMaximumSize(navPanel.getPreferredSize());
+        //navPanel.setMinimumSize(navPanel.getPreferredSize());
+        //navPanel.setMaximumSize(navPanel.getPreferredSize());
         searchPanel.setMinimumSize(navPanel.getPreferredSize());
         
         // start of consumer buttons.
@@ -580,29 +544,30 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         logger.debug("query() - inside query method)");
         (new BackgroundOperation("Checking Position") {
             protected Object construct() throws Exception {
-                return getPosition();
+                return null;//getPosition();
             }
             protected void doFinished(Object o) {
-                String position = (String)o;
-                if (position == null) {
-                    showError("Could not parse position\nYou must enter RA,DEC or name of object known to SIMBAD");
+                //String position = (String)o;
+                final Calendar startStapCal = startCal.getCalendar();
+                final Calendar endStapCal = endCal.getCalendar();
+                
+                if (startStapCal.after(endStapCal)) {
+                    showError("Your Start date/time must be before the end date/time");
                     return;
                 }
-                setStatusMessage(position);
+                //setStatusMessage(position);
                 clearTree();
                 reFocusTopButton.setEnabled(true);
                 
                 //  @todo refactor this string-munging methods.                
-                final double ra = getRA(position);
-                final double dec = getDEC(position);
+                final double ra = getRA();
+                final double dec = getDEC();
                 final String region = regionText.getText().trim();
-//                final double size = needsParsedRegion() ? getRA(region) : getConeRegion();
-                final double raSize = needsParsedRegion() ?  getRA(region) : Double.parseDouble(region);
-                final double decSize= needsParsedRegion() ? getDEC(region) : raSize;
-                
+                final double raSize = Double.NaN; //needsParsedRegion() ?  getRA(region) : Double.parseDouble(region);
+                final double decSize = Double.NaN;  //needsParsedRegion() ? getDEC(region) : raSize;
                 for (Iterator i = protocols.iterator(); i.hasNext(); ) {
                     final DalProtocol p =(DalProtocol)i.next();
-                    if (p.getCheckBox().isSelected()) {
+//                    if (p.getCheckBox().isSelected()) {
                         (new BackgroundOperation("Searching for " + p.getName() + " Services") {
                             protected Object construct() throws Exception {
                                 return p.listServices();
@@ -613,13 +578,13 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                                 for (int i = 0; i < services.length; i++) {
                                     if (services[i].getAccessURL() != null) {
                                         setProgressMax(getProgressMax()+1); // should give a nice visual effect.
-                                        p.createRetriever(services[i],null,null, ra,dec,raSize,decSize).start();
-                                       // (new SiapRetrieval(AstroScopeLauncherImpl.this,siaps[i],vizModel,nodeSizingMap,siap,ra,dec,raSize,decSize)).start();
+                                        p.createRetriever(services[i],startStapCal,endStapCal, ra,dec,raSize,decSize).start();
+                                       // (new SiapRetrieval(HelioScopeLauncherImpl.this,siaps[i],vizModel,nodeSizingMap,siap,ra,dec,raSize,decSize)).start();
                                     }
                                 }                            
                             }                            
                         }).start();
-                    }
+  //                  }
                 }
 
             }
@@ -649,8 +614,8 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 }
 
 /* 
-$Log: AstroScopeLauncherImpl.java,v $
-Revision 1.33  2006/03/13 14:55:09  KevinBenson
+$Log: HelioScopeLauncherImpl.java,v $
+Revision 1.1  2006/03/13 14:55:09  KevinBenson
 New first draft of helioscope and the stap spec protocol
 
 Revision 1.32  2006/02/27 12:20:50  nw
