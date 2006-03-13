@@ -6,7 +6,8 @@
 ;;   xmlrpc:new-call READER
 ;;       Returns a call object by parsing the XML read from the given
 ;;       READER.  This object may be tested and queried by the
-;;       following procedures.
+;;       following procedures.  If the request is malformed in some way,
+;;       we throw an (ERROR).
 ;;
 ;;   xmlrpc:call? CALL
 ;;       Returns #t if the object is one of the objects returned by
@@ -23,6 +24,9 @@
 ;;       returned as an alist (("member-name" <member-value>) ...),
 ;;       and <array> elements as a vector #(<value> ...).
 ;;
+;;   xmlrpc:number-of-params CALL
+;;       Return the number of parameters in the given CALL.
+;;
 ;;   xmlrpc:create-response VALUE
 ;;       Create an XML-RPC response wrapping the VALUE.  Returns a
 ;;       sexp ready to be converted to XML.
@@ -38,6 +42,7 @@
 (xmlrpc:new-call
  xmlrpc:method-name
  xmlrpc:method-param
+ xmlrpc:number-of-params
  xmlrpc:call?
  xmlrpc:create-response
  xmlrpc:create-fault)
@@ -65,12 +70,16 @@
 ;; Return parameter number IDX from the given CALL.  The indexing is one-based.
 (define (xmlrpc:method-param call idx)
   (check-is-call-or-error 'xmlrpc:method-param call)
-  (let ((p (cddr call)))
-    (if (or (< idx 1) (> idx (vector-length p)))
+  (let ((param-vec (cddr call)))
+    (if (or (< idx 1) (> idx (vector-length param-vec)))
         (error 'xmlrpc:method-param
                "Bad index ~a: should be 1..~a"
-               idx (vector-length p)))
-    (vector-ref p (- idx 1))))
+               idx (vector-length param-vec)))
+    (vector-ref param-vec (- idx 1))))
+
+(define (xmlrpc:number-of-params call)
+  (check-is-call-or-error 'xmlrpc:number-of-params call)
+  (vector-length (cddr call)))
 
 (define (xmlrpc:create-response value)
   ;; Eg:
