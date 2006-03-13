@@ -1,35 +1,146 @@
 ;; Functions to handle XML-RPC
-;; See spec at <http://www.xmlrpc.com/>
+;; See spec at <http://www.xmlrpc.com/spec>
+;;
+;; Procedures defined:
+;;
+;;   xmlrpc:new-call READER
+;;       Returns a call object by parsing the XML read from the given
+;;       READER.  This object may be tested and queried by the
+;;       following procedures.
+;;
+;;   xmlrpc:call? CALL
+;;       Returns #t if the object is one of the objects returned by
+;;       XMLRPC:NEW-CALL, and #f otherwise.
+;;
+;;   xmlrpc:method-name CALL
+;;       Returns the method name in the given CALL, as a Scheme symbol.
+;;
+;;   xmlrpc:method-param CALL INDEX
+;;       Returns the INDEX'th parameter in the given CALL (1-based).
+;;       Throws an error if the INDEX is not in the range
+;;       [1..nparams].  The parameter values are returned as the
+;;       corresponding Scheme types, with <struct> elements being
+;;       returned as an alist (("member-name" <member-value>) ...),
+;;       and <array> elements as a vector #(<value> ...).
+;;
+;;   xmlrpc:create-response VALUE
+;;       Create an XML-RPC response wrapping the VALUE.  Returns a
+;;       sexp ready to be converted to XML.
+;;
+;;   xmlrpc:create-fault FAULT-CODE ERROR-MESSAGE-FORMAT ARGUMENTS ...
+;;       Create an XML-RPC fault response by applying the given format to
+;;       the arguments.  Returns a sexp ready to be converted to XML.
 
 (require-library 'util/sisc-xml)
 (require-library 'sisc/libs/srfi/srfi-13) ;string libraries
 
 (module xmlrpc
-(xmlrpc:new-call)
+(xmlrpc:new-call
+ xmlrpc:method-name
+ xmlrpc:method-param
+ xmlrpc:call?
+ xmlrpc:create-response
+ xmlrpc:create-fault)
 
 (import sisc-xml)
 (import* srfi-13 string-downcase)
 
 (define (xmlrpc:new-call reader)
   (let ((call-sexp (sisc-xml:xml->sexp/reader reader)))
-    (format #t "call-sexp=~s~%" call-sexp)
     (or (and call-sexp
              (eq? (car call-sexp) '*TOP*))
         (error 'xmlrpc:new-call "Malformed request: ~s" call-sexp))
-    (let ((call (evaluate-call-sexp (cadr call-sexp))))
-      (lambda (op . args)
-        (cond ((eq? op 'get)
-               call)
-              (else
-               (error 'xmlrpc:new-call "Unrecognised operation ~s" op)))))))
+    (cons '*XMLRPC* (evaluate-call-sexp (cadr call-sexp)))))
+
+(define (xmlrpc:call? object)
+  (and (pair? object)
+       (eq? (car object) '*XMLRPC*)
+       (pair? (cdr object))))
+
+;; Return the name of the given CALL.
+(define (xmlrpc:method-name call)
+  (check-is-call-or-error 'xmlrpc:method-name call)
+  (cadr call))
+
+;; Return parameter number IDX from the given CALL.  The indexing is one-based.
+(define (xmlrpc:method-param call idx)
+  (check-is-call-or-error 'xmlrpc:method-param call)
+  (let ((p (cddr call)))
+    (if (or (< idx 1) (> idx (vector-length p)))
+        (error 'xmlrpc:method-param
+               "Bad index ~a: should be 1..~a"
+               idx (vector-length p)))
+    (vector-ref p (- idx 1))))
+
+(define (xmlrpc:create-response value)
+  ;; Eg:
+  ;; <methodResponse>
+  ;;   <params>
+  ;;     <param><value><string>South Dakota</string></value></param>
+  ;;  </params>
+  ;; </methodResponse>
+  (let ((v (cond ((string? value)       ;currently handles dates and base64, too
+                  `(string ,value))
+                 ((integer? value)
+                  `(int ,(number->string value)))
+                 ((number? value)
+                  `(double ,(number->string value)))
+                 ((boolean? value)
+                  `(boolean ,(if value "1" "0")))
+                 (else
+                  (error 'xmlrpc:create-response
+                         "Unexpected type: ~s" value)))))
+    `(|methodResponse| (params (param (value ,v))))))
+
+(define (xmlrpc:create-fault fault-code message-format . args)
+  ;; Eg:
+  ;; <methodResponse>
+  ;;   <fault><value><struct>
+  ;;     <member>
+  ;;       <name>faultCode</name>
+  ;;       <value><int>4</int></value>
+  ;;     </member>
+  ;;     <member>
+  ;;       <name>faultString</name>
+  ;;       <value><string>Too many parameters.</string></value>
+  ;;     </member>
+  ;;   </struct></value></fault>
+  ;; </methodResponse>
+  (let ((msg (apply format `(#f ,message-format ,@args))))
+    `(|methodResponse|
+      (fault
+       (value
+        (struct
+         (member
+          (name "faultCode")
+          (value (int ,(number->string fault-code))))
+         (member
+          (name "faultString")
+          (value (string ,msg)))))))))
+
+(define (check-is-call-or-error procname obj)
+  (or (xmlrpc:call? obj)
+      (error procname "Object ~s is not an xmlrpc call" obj)))
 
 (define (evaluate-call-sexp sexp)
-  (format #t "Evaluating: ~s~%" sexp)
   ((eval `(lambda (methodCall
                    methodName
                    params
                    param
-                   value)
+                   value
+                   i4
+                   int
+                   boolean
+                   string
+                   double
+                   dateTime.iso8601
+                   base64
+                   struct
+                   member
+                   name
+                   array
+                   data                   
+                   )
             ,sexp)
          (scheme-report-environment 5)
          )
@@ -37,7 +148,21 @@
    do-method-name
    do-params
    do-param
-   do-value))
+   do-value
+   do-i4
+   do-int
+   do-boolean
+   do-string
+   do-double
+   do-dateTime.iso8601
+   do-base64
+   do-struct
+   do-member
+   do-name
+   do-array
+   do-data
+   ))
+  
 
 ;; <?xml version="1.0"?>
 ;; <methodCall>
@@ -49,16 +174,71 @@
 ;;       </params>
 ;;    </methodCall>
 (define (do-method-call name params)
-  (format #t "method-call: name=~s  params=~s~%" name params)
   (cons (string->symbol (string-downcase name))
         params))
 (define (do-method-name content)
   content)
 (define (do-params . content)
-  content)
+  (list->vector content))
 (define (do-param value)
   value)
 (define (do-value content)
+  content)
+                                        ;note that i4/int/double are all parsed
+                                        ;to type <number>, without any checking
+(define (do-i4 content)
+  (string->number content))
+(define (do-int content)
+  (string->number content))
+(define (do-double content)
+  (string->number content))
+(define (do-boolean content)            ;0->#f, 1->#t
+  (let ((n (string->number content)))
+    (cond ((not n)
+           (error "<boolean>~a</boolean> is not a valid boolean" content))
+          ((= n 0)
+           #f)
+          ((= n 1)
+           #t)
+          (else
+           (error "<boolean>~a</boolean> is not a valid boolean" content)))))
+(define (do-string content)
+  content)
+(define (do-dateTime.iso8601 content)   ;For now, just return the string.
+  content)                              ;SISC has no date type: see srfi-19
+(define (do-base64 content)             ;For now, just return the string.
+  content)                              ;Decoders?
+
+;; <struct>
+;;   <member>
+;;     <name>lowerBound</name>
+;;     <value><i4>18</i4></value>
+;;     </member>
+;;   <member>
+;;     <name>upperBound</name>
+;;     <value><i4>139</i4></value>
+;;   </member>
+;; </struct>
+(define (do-struct . content)
+  content)
+(define (do-member name value)
+  (cons name value))
+(define (do-name name)
+  (if (string? name)
+      name
+      (error "<name>~a</name> does not have a string-valued name" name)))
+
+;; <array>
+;;   <data>
+;;     <value><i4>12</i4></value>
+;;     <value><string>Egypt</string></value>
+;;     <value><boolean>0</boolean></value>
+;;     <value><i4>-31</i4></value>
+;;     </data>
+;; </array>
+(define (do-array content)
+  (list->vector content))
+(define (do-data . content)
   content)
 
 )
