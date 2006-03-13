@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.8 2006/03/12 00:32:53 norman Exp $
+     $Id: build.xml,v 1.9 2006/03/13 23:44:46 norman Exp $
 -->
 
 
@@ -584,6 +584,7 @@
     <!--pathelement location="${scm.test.home}/run-tests.scm"/-->
     <pathelement location="${scm.src.home}"/>
     <fileset refid="sisc.support"/>
+    <fileset refid="jena.support"/>
   </path>
   <target name="test"
           depends="compile"
