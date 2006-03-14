@@ -83,8 +83,18 @@
              (set! stack `((,(reverse (car stack)) . ,(cadr stack))
                            . ,(cddr stack))))
             ((eq? op 'characters)
-             (set-car! stack
-                       (cons (car args) (car stack))))
+             ;; append characters to the top of the stack.  The 'normal' case
+             ;; is to just  cons the new string to the list that is the car
+             ;; of the stack.  If, however, the car of that list is a string,
+             ;; and it's a 2+ element list (so that the string is not the
+             ;; element name in localnames-into-symbols mode), then
+             ;; string-append the new string onto the end of the existing one.
+             (let ((newstring (car args)))
+               (if (and (string? (caar stack))
+                        (> (length (car stack)) 1))
+                   (set-car! (car stack) (string-append (caar stack) newstring))
+                   (set-car! stack
+                             (cons newstring (car stack))))))
             ((eq? op 'processing-instruction)
              (set-car! stack
                        `((*PI* ,(car args) ,(cadr args)) . ,(car stack))))
@@ -208,59 +218,41 @@
          (xml-reader (get-xml-reader-with-proxy
                       (make-content-handler-proxy sa))))
     ;; Complicated call to (parse xml-reader input-source), to unpack and
-    ;; rethrow any errors.  I think there are circumstances where the
-    ;; proxy can throw java.lang.reflect.UndeclaredThrowableException, which
-    ;; needs special handling, but I can't reproduce this right now, nor
-    ;; find the details in the SISC docs.  I think that appears (only?)
-    ;; when there's a Scheme error (such as undefined symbols) in the
-    ;; handlers for the proxy, but there seems no way at all to get more
-    ;; information out of the (error-message m) which the failure continuation
-    ;; gets.
+    ;; rethrow any errors.  A Scheme error (such as undefined symbols
+    ;; or the wrong number of arguments) seems to cause the proxy to throw
+    ;; java.lang.reflect.UndeclaredThrowableException, which
+    ;; needs special handling.  I think I've done this correctly by
+    ;; checking that SAX-EXCEPTION, below, is a SAXException in fact,
+    ;; and handling it using just Exception methods if not, but I'm
+    ;; still not positive I've got this right.
     (with/fc (lambda (m e)
                (define-generic-java-methods
                  get-message
                  get-system-id
                  get-line-number
-                 get-column-number)
+                 get-column-number
+                 is-instance)
+               (define-java-classes
+                 (<sax-exception> |org.xml.sax.SAXException|))
                (let ((sax-exception (error-message m)))
-                 (let ((sysid   (get-system-id sax-exception))
-                       (line-no (->number (get-line-number sax-exception)))
-                       (col-no  (->number (get-column-number sax-exception))))
-;;                    (define-generic-java-methods
-;;                      get-exception
-;;                      get-message
-;;                      to-string)
-;;                    (format #t "XXX error...~%")
-;;                    (print-exception (make-exception m e))
-;;                    (format #t "sysid=~s line-no=~s col-no=~s~%  exception=~s~%  message=~s~%  string=~s~%"
-;;                            sysid line-no col-no
-;;                            (get-exception sax-exception)
-;;                            (get-message sax-exception)
-;;                            (to-string sax-exception))
-                   (let ((msg (->string (get-message sax-exception))))
-                     (if (string=? msg
-                                   "java.lang.reflect.UndeclaredThrowableException")
-                         (begin (print-exception (make-exception m e))
-                                (error 'xml->sexp/input-source
-                                       "UndeclaredThrowableException"))
-                   (error 'xml->sexp/input-source
-                          "parse error:~a:~a:~a: ~a"
-                          (if (java-null? sysid)
-                              "?"
-                              (->string (get-system-id sax-exception)))
-                          (if (< line-no 0) "?" line-no)
-                          (if (< col-no 0)  "?" col-no)
-                          msg
-                          ;; (->string (get-message sax-exception))
-;;                           sax-exception
-;;                           (get-message sax-exception)
-;;                           (get-cause sax-exception)
-                          ;; (let ()
-;;                             (define-generic-java-method
-;;                               get-class)
-;;                             (get-class sax-exception))
-                          )))
-                   )))
+                 (if (->boolean (is-instance <sax-exception> sax-exception))
+                     (let ((sysid   (get-system-id sax-exception))
+                           (line-no (->number (get-line-number sax-exception)))
+                           (col-no  (->number
+                                     (get-column-number
+                                      sax-exception)))
+                           (msg (->string (get-message sax-exception))))
+                       (error 'xml->sexp/input-source
+                              "parse error:~a:~a:~a: ~a"
+                              (if (java-null? sysid) "?" sysid)
+                              (if (< line-no 0) "?" line-no)
+                              (if (< col-no 0)  "?" col-no)
+                              msg))
+                     (let ()
+                       (define-generic-java-methods get-cause)
+                       (error 'xml->sexp/input-source
+                              "Scheme? error: ~a"
+                              (->string (get-cause sax-exception)))))))
        (lambda () (parse xml-reader input-source)))
     (sa '*TOP*)))
 
