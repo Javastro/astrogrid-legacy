@@ -36,6 +36,7 @@
             (set! nfails (+ nfails 1))))))))
 
 (define files-to-test '("quaestor/utils.scm"
+                        "quaestor/knowledgebase.scm"
                         "util/sisc-xml.scm"
                         "util/xmlrpc.scm"
                         ))
