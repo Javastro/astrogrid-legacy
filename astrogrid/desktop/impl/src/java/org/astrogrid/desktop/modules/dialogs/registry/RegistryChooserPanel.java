@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.28 2006/03/14 13:58:46 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.29 2006/03/14 15:06:40 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,7 +76,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     
     private static final int TOOLTIP_WRAP_LENGTH = 50;
     private static final int CELL_WRAP_LENGTH = 100; 
-    private static final int WRAP_LENGTH = 75;
+    private static final int WRAP_LENGTH = 70;
     
     /**
      * Commons Logger for this class
@@ -644,6 +644,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.29  2006/03/14 15:06:40  pjn3
+reduced WRAP_LENGTH slightly
+
 Revision 1.28  2006/03/14 13:58:46  pjn3
 Added basic cell renderer to wrap cell text e.g. descriptions
 
