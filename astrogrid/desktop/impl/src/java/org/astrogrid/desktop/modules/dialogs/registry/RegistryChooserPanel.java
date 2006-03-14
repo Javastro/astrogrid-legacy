@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.27 2006/03/10 17:33:19 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.28 2006/03/14 13:58:46 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.dialogs.registry;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +43,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -66,8 +68,6 @@ import org.astrogrid.desktop.modules.ui.RegistryBrowserImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.w3c.dom.Document;
 
-
-
 /**
  * Implementation of the registry-google chooser.
  *@todo later add bookmark component. - won't affect public inteface, just implementation
@@ -75,6 +75,8 @@ import org.w3c.dom.Document;
 public class RegistryChooserPanel extends JPanel implements ActionListener {
     
     private static final int TOOLTIP_WRAP_LENGTH = 50;
+    private static final int CELL_WRAP_LENGTH = 100; 
+    private static final int WRAP_LENGTH = 75;
     
     /**
      * Commons Logger for this class
@@ -150,7 +152,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
             xmlPane.setText("No entry selected");
             tabPane.setSelectedIndex(0);
             keywordField.setText("");
-            tree.setModel(null);
+            tree.setModel(null);            
             fireTableDataChanged();
         }
 
@@ -320,6 +322,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                             xmlPane.setText(XMLUtils.DocumentToString((Document)o));
                             xmlPane.setCaretPosition(0);
                             try {                            
+                            	//RegistryTree xmltree = new RegistryTree((Document)o);
                             	RegistryTree xmltree = new RegistryTree((Document)o);
                             	tree.setModel(xmltree.getModel());                            	
                             } catch (Exception e) {
@@ -381,6 +384,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         if (tree == null) {
         	tree = new JTree();
         	tree.setModel(null);
+        	tree.setCellRenderer(new RegistryTreeRenderer());
         }
         return tree;
     }
@@ -601,12 +605,48 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
            results[i] = (ResourceInformation)m.getElementAt(i);
        }
        return results;                
-   }     
+   } 
+   
+    /**
+     * Simple cell renderer used to wrap cell contents to 
+     * sensible length (WRAP_LENGTH)
+     */
+    private class RegistryTreeRenderer extends DefaultTreeCellRenderer {
+		public Component getTreeCellRendererComponent(JTree tree, 
+	            Object value,
+				  boolean isSelected,
+				  boolean expanded, 
+				  boolean leaf, 
+				  int row, 
+				  boolean hasFocus) {
+			tree.setRowHeight(0);
+			JLabel label = (JLabel)super.getTreeCellRendererComponent(tree, 
+                        											  value, 
+																	  isSelected, 
+																	  expanded, 
+																	  leaf, 
+																	  row, 
+																	  hasFocus);
+			if (value.toString().length() > CELL_WRAP_LENGTH) {
+				StringBuffer sb = new StringBuffer();
+				sb.append("<html>");
+				sb.append(value.toString() != null ?   WordUtils.wrap(value.toString(),WRAP_LENGTH,"<br>",false) : "");
+				sb.append("</html>");
+				label.setText(sb.toString());
+			} else {
+				label.setText("" + value);
+			}			
+			return(label);
+		}
+	}
 }
 
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.28  2006/03/14 13:58:46  pjn3
+Added basic cell renderer to wrap cell text e.g. descriptions
+
 Revision 1.27  2006/03/10 17:33:19  pjn3
 set tree model to null when no entry available to prevent default 'color' tree appearing
 
