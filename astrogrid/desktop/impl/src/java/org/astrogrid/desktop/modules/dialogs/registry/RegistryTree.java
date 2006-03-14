@@ -1,110 +1,124 @@
 package org.astrogrid.desktop.modules.dialogs.registry;
 
+import java.awt.Component;
+
+import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 public class RegistryTree extends JTree {
 
-	  public RegistryTree(Document doc) {
-	    super(makeRootNode(doc));
-	  }
-	  
-	  /**
-	   * Commons Logger for this class
-	   */
-	  private static final Log logger = LogFactory.getLog(RegistryChooserPanel.class);
-	  
-	  // This method needs to be static so that it can be called
-	  // from the call to the parent constructor (super), which
-	  // occurs before the object is really built.
-	  
-	  private static DefaultMutableTreeNode makeRootNode(Document document) {
-	    try {
-	      // Use JAXP's DocumentBuilderFactory so that there
-	      // is no code here that is dependent on a particular
-	      // DOM parser. Use the system property
-	      // javax.xml.parsers.DocumentBuilderFactory (set either
-	      // from Java code or by using the -D option to "java").
-	      // or jre_dir/lib/jaxp.properties to specify this.
-	      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-	      DocumentBuilder builder = builderFactory.newDocumentBuilder();
-	      document.getDocumentElement().normalize();
-	      Element rootElement = document.getDocumentElement();
-	      DefaultMutableTreeNode rootTreeNode = buildTree(rootElement);
-	      return(rootTreeNode);
-	    } catch(Exception e) {
-	      String errorMessage = "Error making root node: " + e;
-	      logger.error("Error making root node: " + e);
-	      return(new DefaultMutableTreeNode(errorMessage));
-	    }
-	  }
+	private DefaultMutableTreeNode  treeNode;
 
-	  /*
-	   * Make a JTree node for the root, then make JTree nodes for each child 
-	   * and add them to the root node. The addChildren method is recursive.
-	   */
-	  private static DefaultMutableTreeNode buildTree(Element rootElement) {
-	    DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode(treeNodeLabel(rootElement));
-	    addChildren(rootTreeNode, rootElement);
-	    return(rootTreeNode);
-	  }
-	  
-	  /*
-	   * Recursive method that finds all the child elements 
-	   * and adds them to the parent node.
-	   */
-	  private static void addChildren(DefaultMutableTreeNode parentTreeNode,
-	                        		  Node parentXMLElement) {
-	    
-	    NodeList childElements = parentXMLElement.getChildNodes();
-	    for(int i=0; i<childElements.getLength(); i++) {
-	      Node childElement = childElements.item(i);
-	      if (!(childElement instanceof Text || childElement instanceof Comment)) {
-	        DefaultMutableTreeNode childTreeNode = new DefaultMutableTreeNode(treeNodeLabel(childElement));
-	        parentTreeNode.add(childTreeNode);
-	        addChildren(childTreeNode, childElement);
-	      }
-	    }
-	  }
+	/**
+	* This single constructor builds an RegistryTree object using the XML document
+	* passed in through the constructor.
+	*
+	* @param document XML Document
+	*
+	* @exception ParserConfigurationException  This exception is potentially thrown if
+	* the constructor configures the parser improperly.  It won't.
+	*/
+	public RegistryTree(Document document) throws ParserConfigurationException
+	{
+		super();
+		// Set basic properties for the Tree rendering
+		getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
+		setShowsRootHandles( true );
+		setEditable( false );
 
-	  // If the XML element has no attributes, the JTree node
-	  // will just have the name of the XML element. If the
-	  // XML element has attributes, the names and values of the
-	  // attributes will be listed in parens after the XML
-	  // element name. For example:
-	  // XML Element: <blah>
-	  // JTree Node:  blah
-	  // XML Element: <blah foo="bar" baz="quux">
-	  // JTree Node:  blah (foo=bar, baz=quux)
+	    DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder builder = builderFactory.newDocumentBuilder();
+	    document.getDocumentElement().normalize();
 
-	  private static String treeNodeLabel(Node childElement) {
-	    NamedNodeMap elementAttributes = childElement.getAttributes();
-	    String treeNodeLabel = childElement.getNodeName();
-	    if (elementAttributes != null && elementAttributes.getLength() > 0) {
-	      treeNodeLabel = treeNodeLabel + " (";
-	      int numAttributes = elementAttributes.getLength();
-	      for(int i=0; i<numAttributes; i++) {
-	        Node attribute = elementAttributes.item(i);
-	        if (i > 0) {
-	          treeNodeLabel = treeNodeLabel + ", ";
-	        }
-	        treeNodeLabel = treeNodeLabel + attribute.getNodeName() +
-	          "=" + attribute.getNodeValue();
-	      }
-	      treeNodeLabel = treeNodeLabel + ")";
-	    }
-	    return(treeNodeLabel);
-	  }
+		// Take the DOM root node and convert it to a Tree model for the JTree
+		treeNode = createTreeNode( (Node)document.getDocumentElement() );
+		setModel( new DefaultTreeModel( treeNode ) );		
+	} //end RegistryTree()
+
+	/**
+	* This takes a DOM Node and recurses through the children until each one is added
+	* to a DefaultMutableTreeNode. The JTree then uses this object as a tree model.
+	*
+	* @param root org.w3c.Node.Node
+	* @return Returns a DefaultMutableTreeNode object based on the root Node passed in
+	*/
+	private DefaultMutableTreeNode createTreeNode( Node root )
+	{
+		DefaultMutableTreeNode treeNode = null;
+
+		if (root.getNodeType() == Node.TEXT_NODE) {		
+		    treeNode = new DefaultMutableTreeNode(root.getNodeValue());
+		} else {
+			treeNode = new DefaultMutableTreeNode(treeNodeLabel(root));
+		}
+
+		if( root.hasChildNodes() )
+		{
+		    NodeList children = root.getChildNodes();
+		    // Only recurse if Child Nodes are non-null
+		    if( children != null )
+		    {
+		        int numChildren = children.getLength();
+		        for (int i=0; i < numChildren; i++)
+		        {
+		            Node node = children.item(i);
+		            if( node != null )
+		            {
+		                // A special case could be made for each Node type.
+		                if( node.getNodeType() == Node.ELEMENT_NODE )
+		                {
+		                   treeNode.add( createTreeNode(node) );
+		                } //end if( node.getNodeType() == Node.ELEMENT_NODE )
+		                String data = node.getNodeValue();
+		                if( data != null )
+		                {
+		                    data = data.trim();
+		                    if ( !data.equals("\n") && !data.equals("\r\n") && data.length() > 0 )
+		                    {
+		                        treeNode.add(createTreeNode(node));
+		                    } //end if ( !data.equals("\n") && !data.equals("\r\n") && data.length() > 0 )
+		                } //end if( data != null )
+		            } //end if( node != null )
+		        } //end for (int i=0; i < numChildren; i++)
+		     } //end if( children != null )
+		  } //end if( root.hasChildNodes() )
+		  return treeNode;
+	} //end createTreeNode( Node root )
+	
+
+	private static String treeNodeLabel(Node childElement) {
+		NamedNodeMap elementAttributes = childElement.getAttributes();
+		String treeNodeLabel = childElement.getNodeName();
+		if (elementAttributes != null && elementAttributes.getLength() > 0) {
+		    treeNodeLabel = treeNodeLabel + " (";
+		    int numAttributes = elementAttributes.getLength();
+		    for(int i=0; i<numAttributes; i++) {
+		        Node attribute = elementAttributes.item(i);
+		        if (i > 0 && !attribute.getNodeName().startsWith("xmlns") && !attribute.getNodeName().startsWith("xsi")) {
+		            treeNodeLabel = treeNodeLabel + ", ";
+		        }
+		        if (!(attribute.getNodeName().startsWith("xmlns") || attribute.getNodeName().startsWith("xsi"))) {
+		        treeNodeLabel = treeNodeLabel + attribute.getNodeName() +
+		          "=" + attribute.getNodeValue();
+		        }
+		    }
+		    treeNodeLabel = treeNodeLabel + ")";
+		    // Tidy label
+		    if (treeNodeLabel.trim().endsWith("()")) 
+		    	treeNodeLabel = treeNodeLabel.substring(0, treeNodeLabel.length() - 2);
+		}
+		return(treeNodeLabel);
 	}
+}
