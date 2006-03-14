@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.15 2006/03/07 16:50:36 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.16 2006/03/14 15:07:35 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -215,7 +215,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected final class CloseAction extends AbstractAction {
         public CloseAction() {
             super("Close",IconHelper.loadIcon("exit_small.png"));
-            this.putValue(SHORT_DESCRIPTION,"Close the Workflow Builder");
+            this.putValue(SHORT_DESCRIPTION,"Close");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
         }
 
@@ -386,6 +386,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.16  2006/03/14 15:07:35  pjn3
+Typo
+
 Revision 1.15  2006/03/07 16:50:36  pjn3
 Menu added, accelerators added
 
