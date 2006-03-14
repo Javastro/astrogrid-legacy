@@ -84,6 +84,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.Lookout;
+import org.astrogrid.acr.ui.WorkflowBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.JobsInternal;
@@ -144,16 +145,16 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	protected final class SaveAction extends AbstractAction {
 	    public SaveAction() {
 	        super("Save", IconHelper.loadIcon("fileexport.png"));
-	        this.putValue(SHORT_DESCRIPTION,"Save this workflow");
+	        this.putValue(SHORT_DESCRIPTION,"Save this workflow or transcript");
 	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
 	        this.setEnabled(true); 
 	    }
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResource("Save Workflow",true);
+            final URI u = chooser.chooseResource("Save workflow or transcript",true);
             if (u == null) {
                 return;
             }
-            (new BackgroundOperation("Saving Workflow") {
+            (new BackgroundOperation("Saving") {
                     protected Object construct() throws Exception {        		
 	                    Writer writer = new OutputStreamWriter(vos.getOutputStream(u));	          
                         getModel().getWorkflow().marshal(writer); 
@@ -171,17 +172,17 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	protected final class LoadAction extends AbstractAction {
 	    public LoadAction() {
 	        super("Open", IconHelper.loadIcon("file_obj.gif"));
-	        this.putValue(SHORT_DESCRIPTION,"Load a workflow from storage");
+	        this.putValue(SHORT_DESCRIPTION,"Load a workflow or transcript from storage");
 	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
 	        this.setEnabled(true);            
 	    }
 
 	        public void actionPerformed(ActionEvent e) {
-		        	    final URI u = chooser.chooseResource("Load workflow",true);
+		        	    final URI u = chooser.chooseResource("Load workflow or transcript",true);
                         if (u == null) {
                             return;
                         }
-	                (new BackgroundOperation("Loading Workflow") {
+	                (new BackgroundOperation("Loading") {
 	                    protected Object construct() throws Exception {	       // do all long-runing tasks in this method, as runs in background thread	                    	
 		                    Reader reader = new InputStreamReader(vos.getInputStream(u));		                		         
 		                    Workflow wf = (Workflow)Unmarshaller.unmarshal(Workflow.class, reader);	                
@@ -520,14 +521,17 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
             (new BackgroundOperation("Stripping execution information....") {
                     protected Object construct() throws Exception {
                     	Workflow wf = getModel().getStrippedWorkflow();
-                    	model.setWorkflow(wf, true);
+                    	//model.setWorkflow(wf, true);
+                    	WorkflowBuilderImpl wbi = new WorkflowBuilderImpl(apps,jobs,lookout,vos,browser,
+                                toolEditor,chooser,ui,hs,conf);
+                    	wbi.displayWorkflow(wf, this.parent);
                         return null;
             }
             protected void doFinished(Object o) { // do all updating of ui in this method, as runs on swing thread
-                getTree().expandAll(true);
-        	    activateMenus();
-        	    populateTextArea();
-        		validateWorkflow();
+                //getTree().expandAll(true);
+        	    //activateMenus();
+        	    //populateTextArea();
+        		//validateWorkflow();
             }
             }).start();	   
 	    }
@@ -627,6 +631,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
     protected final Lookout lookout;
     private final ApplicationsInternal apps;
     private final JobsInternal jobs;
+    protected final UIInternal ui;
+    protected final HelpServerInternal hs;
+    protected final Configuration conf;
     
     // actions
     protected Action saveAction;
@@ -674,9 +681,10 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
      * @throws Exception
      * 
      * */
-    public WorkflowBuilderImpl(ApplicationsInternal apps, JobsInternal jobs,Lookout monitor,  MyspaceInternal vos, BrowserControl browser,
-            ToolEditorInternal toolEditor,ResourceChooserInternal chooser
-             ,UIInternal ui, HelpServerInternal hs, Configuration conf) throws Exception {
+    public WorkflowBuilderImpl(ApplicationsInternal apps, JobsInternal jobs,
+    						   Lookout monitor, MyspaceInternal vos, BrowserControl browser,
+                               ToolEditorInternal toolEditor,ResourceChooserInternal chooser,
+                               UIInternal ui, HelpServerInternal hs, Configuration conf) throws Exception {
         super(conf,hs,ui);
         this.browser = browser;
         this.vos = vos;
@@ -685,6 +693,9 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
         this.jobs = jobs;
         this.chooser = chooser;
         this.toolEditor = toolEditor;
+        this.ui = ui;
+        this.hs = hs;
+        this.conf = conf;
         initialize();
         
     }   
@@ -1704,5 +1715,14 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 	
 	public void removeDialogRef() {
 		focusDialog = null;
+	}
+	
+	public void displayWorkflow(Workflow wf, Component parent) {
+        getModel().setWorkflow(wf, false);   
+        getTree().expandAll(true);
+        tabbedPaneWF.setSelectedIndex(0);
+	    activateMenus();
+	    setLocationRelativeTo(parent);
+	    show();
 	}
 } 
