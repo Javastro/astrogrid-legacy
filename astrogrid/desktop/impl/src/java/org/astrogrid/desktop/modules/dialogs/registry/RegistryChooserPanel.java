@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.29 2006/03/14 15:06:40 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.30 2006/03/14 15:46:21 pjn3 Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -195,7 +195,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         
         public String getColumnName(int column) {
             switch(column) {
-                case 0: return "Selected";
+                case 0: return "Select";
                 case 1: return "Title";
                 default: return "";
             }
@@ -335,8 +335,8 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
                  }
              }
-         });        
-         centerPanel.add(selectTable);
+         });
+         centerPanel.add(new JScrollPane(selectTable));
          centerPanel.setPreferredSize(new Dimension(300,200));
          return centerPanel;
     }
@@ -644,6 +644,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.30  2006/03/14 15:46:21  pjn3
+Scrollpane replaced
+
 Revision 1.29  2006/03/14 15:06:40  pjn3
 reduced WRAP_LENGTH slightly
 
