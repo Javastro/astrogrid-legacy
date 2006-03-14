@@ -72,6 +72,13 @@
   (ptest 9 '(("n1" . "v1") ("n2" . #f) ("n3" . 99.9)))
   (ptest 10 '#(12 "Egypt" #f -31)))
 
+(expect xmlrpc-simple-paramlist-1
+        10
+        (length (xmlrpc:method-param-list simple-call)))
+(expect xmlrpc-simple-paramlist-2
+        "string"
+        (car (xmlrpc:method-param-list simple-call)))
+
 (expect-failure xmlrpc-simple-fail0     ;index out of range
                 (xmlrpc:method-param simple-call 0))
 (expect-failure xmlrpc-simple-fail11    ;index out of range
@@ -97,6 +104,9 @@
 (expect xmlrpc-response-string          ;response with string argument
         '(|methodResponse| (params (param (value (string "South Dakota")))))
         (xmlrpc:create-response "South Dakota"))
+(expect xmlrpc-response-format          ;response with formatted string
+        '(|methodResponse| (params (param (value (string "number 1")))))
+        (xmlrpc:create-response "number ~a" 1))
 (expect xmlrpc-response-int             ;...int argument
         '(|methodResponse| (params (param (value (int "99")))))
         (xmlrpc:create-response 99))
