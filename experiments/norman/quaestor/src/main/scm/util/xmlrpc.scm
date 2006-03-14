@@ -24,11 +24,17 @@
 ;;       returned as an alist (("member-name" <member-value>) ...),
 ;;       and <array> elements as a vector #(<value> ...).
 ;;
+;;   xmlrpc:method-param-list CALL
+;;       Returns the complete set of parameters as a list.
+;;
 ;;   xmlrpc:number-of-params CALL
 ;;       Return the number of parameters in the given CALL.
 ;;
 ;;   xmlrpc:create-response VALUE
-;;       Create an XML-RPC response wrapping the VALUE.  Returns a
+;;       Create an XML-RPC response wrapping the VALUE.  The response
+;;       is of a type appropriate to the VALUE.  If the VALUE is a
+;;       string, then it's interpreted as a format string, and the
+;;       trailing arguments are formatted into it.  Returns a
 ;;       sexp ready to be converted to XML.
 ;;
 ;;   xmlrpc:create-fault FAULT-CODE ERROR-MESSAGE-FORMAT ARGUMENTS ...
@@ -42,6 +48,7 @@
 (xmlrpc:new-call
  xmlrpc:method-name
  xmlrpc:method-param
+ xmlrpc:method-param-list
  xmlrpc:number-of-params
  xmlrpc:call?
  xmlrpc:create-response
@@ -77,11 +84,18 @@
                idx (vector-length param-vec)))
     (vector-ref param-vec (- idx 1))))
 
+(define (xmlrpc:method-param-list call)
+  (check-is-call-or-error 'xmlrpc:method-param-list call)
+  (vector->list (cddr call)))
+
 (define (xmlrpc:number-of-params call)
   (check-is-call-or-error 'xmlrpc:number-of-params call)
   (vector-length (cddr call)))
 
-(define (xmlrpc:create-response value)
+;; Create a response sexp of the appropriate type for the VALUE.  If
+;; the VALUE is a string, then it's interpreted as a format string,
+;; and the trailing arguments are formatted into it.
+(define (xmlrpc:create-response value . args)
   ;; Eg:
   ;; <methodResponse>
   ;;   <params>
@@ -89,7 +103,7 @@
   ;;  </params>
   ;; </methodResponse>
   (let ((v (cond ((string? value)       ;currently handles dates and base64, too
-                  `(string ,value))
+                  `(string ,(apply format (cons #f (cons value args)))))
                  ((integer? value)
                   `(int ,(number->string value)))
                  ((number? value)
