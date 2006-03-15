@@ -13,6 +13,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="pjn" type="add">
+	    Workflow builder: Feedback from Silvia - stripping transcripts opens new builder window, and tooltips altered.
+	    Registry browser: Basic ree view panel onto returned data added
+</action>
 <action dev="jl" type="fix" issue="1606">
 	    Query Builder: Problem inserting column references with new template query.
 </action>
