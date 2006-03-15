@@ -367,6 +367,10 @@ public final class AdqlUtils {
         return target ;
     }
     
+    static public boolean areTypesEqual( SchemaType typeOne, SchemaType typeTwo ) {
+        return typeOne.getName().equals( typeTwo.getName() ) ;
+    }
+    
     
     static public String normalizeName( String name ) {
 //        System.out.println( "normalizeName" ) ;

@@ -1858,8 +1858,22 @@ public class InsertColumnAction extends InsertAction {
         // This processing attempts the automatic removal of the all-
         // columns option which is included in the initial template 
         // for a new query...
+        
+        // JL: I now think it is an open question whether this should be
+        // removed automatically or left up to the user to do so.
+        // When I first tried this out, I was far too severe on removing 
+        // the all columns option, which meant in effect the removal did
+        // not work most of the time. For the time being I have reset the
+        // algorithm to check that the background insertion is in the 
+        // selectionListType ("Items" in the display). If this condition
+        // is not met, then the all-columns option will be left in place.
+        // (ie: if you are inserting a column reference into a comparison,
+        // then the all-columns option will not be affected).
+        
         AdqlEntry parent = commandBean.getEntry() ;
         XmlObject o = parent.getXmlObject() ;
+        if( !AdqlUtils.areTypesEqual( o.schemaType(), AdqlUtils.getType( o, AdqlData.SELECTION_LIST_TYPE ) ) ) 
+           return ;
         int arraySize = AdqlUtils.sizeOfArray( o, "Item" ) ;
         if( arraySize == 1 ) {
             XmlObject item = (XmlObject)AdqlUtils.getArray( o, commandBean.getElementName(), 0 ) ;

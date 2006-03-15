@@ -13,7 +13,9 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-
+<action dev="jl" type="fix" issue="1606">
+	    Query Builder: Problem inserting column references with new template query.
+</action>
 <release version="1.5-alpha-1" date="2006-03-13">
 	<action dev="nw" type="add">
 	Added ability to access VizieR tables as Cone Search. Appears in Application

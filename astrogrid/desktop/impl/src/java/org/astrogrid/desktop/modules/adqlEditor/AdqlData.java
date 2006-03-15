@@ -45,6 +45,7 @@ public class AdqlData {
     public static final String PATTERN_ELEMENT_NAME = "Pattern" ;
     public static final String ATOM_TYPE = "atomType" ;
     public static final String ALL_SELECTION_ITEM_TYPE = "allSelectionItemType" ;
+    public static final String SELECTION_LIST_TYPE = "selectionListType" ;
     
     
     public static final String TYPE_ENTRY = "TYPE".intern() ;

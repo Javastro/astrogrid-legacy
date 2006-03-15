@@ -185,10 +185,10 @@ public class TableMetadataPanel extends JPanel {
     class AstroTableModel extends AbstractTableModel {
         
         final public DisplayColumnData displayColumnData[] = {
-                new DisplayColumnData( TableMetadataPanel.NAME, 100, JLabel.LEFT ) ,
-                new DisplayColumnData( TableMetadataPanel.UCD, 100, JLabel.LEFT ) ,
-                new DisplayColumnData( TableMetadataPanel.UNITS, 100, JLabel.LEFT ) ,
-                new DisplayColumnData( TableMetadataPanel.TYPE, 100, JLabel.LEFT ) ,
+                new DisplayColumnData( TableMetadataPanel.NAME, 200, JLabel.LEFT ) ,
+                new DisplayColumnData( TableMetadataPanel.UCD, 75, JLabel.LEFT ) ,
+                new DisplayColumnData( TableMetadataPanel.UNITS, 75, JLabel.LEFT ) ,
+                new DisplayColumnData( TableMetadataPanel.TYPE, 75, JLabel.LEFT ) ,
                 new DisplayColumnData( TableMetadataPanel.DESCRIPTION, 200, JLabel.LEFT ) ,
         } ;
         
@@ -744,16 +744,7 @@ public class TableMetadataPanel extends JPanel {
     
 
     private SchemaType getType( String localName ) {
-        SchemaType target = null ;
-        XmlObject root = ((AdqlEntry)(adqlTree.getModel().getRoot())).getXmlObject() ;
-        SchemaType[] globalTypes = root.schemaType().getTypeSystem().globalTypes() ;
-        for( int i=0; i<globalTypes.length; i++ ) {
-            if( globalTypes[i].getName().getLocalPart().equals( localName ) ) {
-                target = globalTypes[i] ;
-                break ;
-            }
-        }
-        return target ;
+        return AdqlUtils.getType( adqlTree.getRoot(), localName ) ;
     }
     
 } // end of class TableMetadataPanel
