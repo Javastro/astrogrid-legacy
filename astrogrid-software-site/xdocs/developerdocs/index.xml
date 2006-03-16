@@ -42,7 +42,7 @@
     	<section name="Architecture">
     		<p>
     		An introduction to the 
-    		<a href="astrogrid-v1.1-architecture.htm">software architecture of the v1.3 system</a> 
+    		<a href="astrogrid-v1.1-architecture.htm">software architecture of the 2006.1 system</a> 
     	  was prepared for the AstroGrid Oversight Committee of September 2005. A
     	  <a href="astrogrid-v1.1-architecture.doc">MS-Word version of the architecture document</a> 
     	  is also available.
@@ -50,7 +50,7 @@
     	  of the system are omitted or simplified.
     	  </p>
 			<p>
-				Note that AG v1.1 and AG1.3 share the same Architecture documentation.
+				Note that AG v1.1 and AG 2006.1 share the same Architecture documentation.
 			</p>
     	</section>
 		

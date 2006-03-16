@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <document>
     <properties>
-        <title>AstroGrid Release 1.3</title>
-        <author email="jdt@roe.ac.uk">John Taylor</author>
+        <title>AstroGrid Release 2006.1</title>
+        <author email="clq2@star.le.ac.uk">Catherine Qin</author>
         <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
     </properties>
     <body>
-		<section name="AstroGrid Release 1.3">
+		<section name="AstroGrid Release 2006.1">
 			<p>
-				Astrogrid is pleased to announce software release 1.3. The only change in this release is workbench, tagged as workbench-1-3, no user upgrade is required. See
+				Astrogrid is pleased to announce software release 2006.1. The main change in this release is workbench, no user upgrade is required. See
 				<a href="userdocs/workbench.html">Workbench</a>
 			</p>	
 			<p>
