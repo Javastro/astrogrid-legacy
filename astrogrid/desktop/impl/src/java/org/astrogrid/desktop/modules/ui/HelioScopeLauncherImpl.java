@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.1 2006/03/13 14:55:09 KevinBenson Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.2 2006/03/16 09:16:00 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,7 @@ import org.freixas.jcalendar.JCalendarCombo;
 import java.util.Calendar;
 
 
-/** Implementation of the Datascipe launcher
+/** Implementation of the HelioScope launcher
  * 
  * @todo tidy up scrappy get position code - in particular, report errors from simbad correctly - at moment,
  * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
@@ -421,10 +421,16 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         startCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
         startCal.setNullAllowed(false);
         startCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+        Calendar setStartCal = startCal.getCalendar();
+        setStartCal.set(2000,0,1,0,0,0);
+        startCal.setDate(setStartCal.getTime());
 
         endCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
         endCal.setNullAllowed(false);
         endCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+        Calendar setEndCal = endCal.getCalendar();
+        setEndCal.set(2000,0,2,0,0,0);
+        endCal.setDate(setEndCal.getTime());
         
         
         posText = new JTextField();
@@ -476,7 +482,10 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         
         // start of tree navigation buttons - maybe add more here later.
         JPanel navPanel = new JPanel();      
-        navPanel.setLayout(new BoxLayout(navPanel,BoxLayout.Y_AXIS)); 
+        navPanel.setLayout(new BoxLayout(navPanel,BoxLayout.Y_AXIS));
+        navPanel.setMinimumSize(searchPanel.getMinimumSize());
+        navPanel.setMaximumSize(searchPanel.getMaximumSize());        
+        navPanel.setPreferredSize(searchPanel.getPreferredSize());
         navPanel.setBorder(new TitledBorder("2. Navigate"));
         
         reFocusTopButton = new JButton("Go to Top");
@@ -503,22 +512,19 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         // make these buttons all the same width - I know clear button is the biggest.
         submitButton.setMaximumSize(clearButton.getPreferredSize());
         reFocusTopButton.setMaximumSize(clearButton.getPreferredSize());
-        //navPanel.setMinimumSize(navPanel.getPreferredSize());
-        //navPanel.setMaximumSize(navPanel.getPreferredSize());
-        searchPanel.setMinimumSize(navPanel.getPreferredSize());
         
         // start of consumer buttons.
         JScrollPane sp =new JScrollPane(dynamicButtons);
         sp.setBorder(new TitledBorder("3. Process"));
-        
+                
         // assemble it all together.
         JPanel bothTop = new JPanel();
         bothTop.setLayout(new BoxLayout(bothTop,BoxLayout.Y_AXIS));
-        bothTop.add(searchPanel);
+        bothTop.add(searchPanel);        
         bothTop.add(navPanel);
         scopeMain.add(bothTop,BorderLayout.NORTH);;
         scopeMain.add(sp,BorderLayout.CENTER);   
-        
+
         //scopeMain.setPreferredSize(new Dimension().
         return scopeMain;
     }
@@ -615,147 +621,12 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.2  2006/03/16 09:16:00  KevinBenson
+usually comment/clean up type changes such as siap to stap. Plus setting date&time values
+to a previous date
+
 Revision 1.1  2006/03/13 14:55:09  KevinBenson
 New first draft of helioscope and the stap spec protocol
 
-Revision 1.32  2006/02/27 12:20:50  nw
-improved plastic integration
-
-Revision 1.31  2006/02/24 15:25:57  nw
-plasticization of astroscope
-
-Revision 1.29  2006/02/09 15:40:01  nw
-finished refactoring of astroscope.
-added vospec viewer
-
-Revision 1.28  2006/02/02 14:50:49  nw
-refactored into separate components.
-
-Revision 1.27  2005/12/02 17:05:08  nw
-replaced dom-style parsing of votables with sax-style. faster, better for memory
-
-Revision 1.26  2005/12/02 13:42:48  nw
-changed to use system pooled executor, re-worked background processes
-
-Revision 1.25  2005/11/24 01:13:24  nw
-merged in final changes from release branch.
-
-Revision 1.24  2005/11/15 19:39:07  nw
-merged in improvements from release branch.
-
-Revision 1.23.2.2  2005/11/15 19:34:19  nw
-improvements to saving, threading, clustering.
-
-Revision 1.23.2.1  2005/11/15 13:26:23  nw
-fixed astroscope.
-worked on javahelp
-
-Revision 1.23  2005/11/11 10:27:41  nw
-minor changes.
-
-Revision 1.22  2005/11/11 10:08:18  nw
-cosmetic fixes
-
-Revision 1.21  2005/11/10 14:55:15  KevinBenson
-minor tweaks plus javahelp is there now
-
-Revision 1.20  2005/11/10 14:18:52  KevinBenson
-minor fixes to highlight other displays on selects. and fous on nodes
-
-Revision 1.19  2005/11/10 12:18:27  KevinBenson
-small tweaks
-
-Revision 1.18  2005/11/10 10:43:13  KevinBenson
-minor change on the haversine formula
-
-Revision 1.17  2005/11/09 16:05:55  KevinBenson
-minor change to add a "Go to Top" button.
-
-Revision 1.16  2005/11/09 14:10:44  KevinBenson
-removed some statemetns that were not needed
-
-Revision 1.15  2005/11/09 14:06:52  KevinBenson
-minor changes for clearTree to refocus in the center.  And fix an expression on the position
-
-Revision 1.14  2005/11/08 15:03:56  KevinBenson
-minor changes on sizing
-
-Revision 1.13  2005/11/07 16:25:05  KevinBenson
-added some clustering to it. so there is an offset and some clustered child nodes as well.
-
-Revision 1.12  2005/11/04 17:49:52  nw
-reworked selection and save datastructures.
-
-Revision 1.11  2005/11/04 14:09:12  nw
-improved error handling in getPosition,
-started looking at image preview.
-
-Revision 1.10  2005/11/04 10:14:26  nw
-added 'logo' attribute to registry beans.
-added to astroscope so that logo is displayed if present
-
-Revision 1.9  2005/11/03 11:56:49  KevinBenson
-added a new astroscope cluster
-
-Revision 1.8  2005/11/02 17:29:56  KevinBenson
-fixed scrollpane
-
-Revision 1.7  2005/11/02 09:50:11  KevinBenson
-should have Noel's 2 minor fixes.  Plus a couple of additions for buttons and node selections
-
-Revision 1.5  2005/11/01 14:40:20  KevinBenson
-Some small changes to have hyperbolic working with selections and saving to myspace
-
-Revision 1.3  2005/10/31 16:13:51  KevinBenson
-added hyperbolic in there, plus the saving to myspace area.
-
-Revision 1.2  2005/10/31 12:49:38  nw
-rehashed downloading mechanism,
-put in a bunch of sample vizualizations.
-
-Revision 1.1  2005/10/26 15:53:15  KevinBenson
-new astroscope being added into the workbench.
-
-Revision 1.3  2005/10/12 13:30:10  nw
-merged in fixes for 1_2_4_beta_1
-
-Revision 1.2.2.2  2005/10/10 18:12:36  nw
-merged kev's datascope lite.
-
-Revision 1.2  2005/10/10 12:09:45  KevinBenson
-small change to the astroscope to show browser and vospace when the user hits okay
-
-Revision 1.1  2005/10/04 20:46:48  KevinBenson
-new datascope launcher and change to module.xml for it.  Vospacebrowserimpl changes to handle file copies to directories on import and export
-
-Revision 1.4  2005/09/12 15:21:16  nw
-reworked application launcher. starting on workflow builder
-
-Revision 1.3  2005/09/02 14:03:34  nw
-javadocs for impl
-
-Revision 1.2  2005/08/25 16:59:58  nw
-1.1-beta-3
-
-Revision 1.1  2005/08/11 10:15:00  nw
-finished split
-
-Revision 1.6  2005/08/09 17:33:07  nw
-finished system tests for ag components.
-
-Revision 1.5  2005/08/05 11:46:55  nw
-reimplemented acr interfaces, added system tests.
-
-Revision 1.4  2005/07/08 11:08:01  nw
-bug fixes and polishing for the workshop
-
-Revision 1.3  2005/06/22 08:48:52  nw
-latest changes - for 1.0.3-beta-1
-
-Revision 1.2  2005/06/08 14:51:59  clq2
-1111
-
-Revision 1.1.2.1  2005/06/02 14:34:33  nw
-first release of application launcher
  
 */
