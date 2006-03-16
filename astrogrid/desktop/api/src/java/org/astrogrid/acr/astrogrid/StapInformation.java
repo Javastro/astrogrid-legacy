@@ -1,4 +1,4 @@
-/*$Id: StapInformation.java,v 1.1 2006/03/13 14:47:21 KevinBenson Exp $
+/*$Id: StapInformation.java,v 1.2 2006/03/16 09:14:21 KevinBenson Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,17 +21,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Description of  a registered cone-search service.
+/** Description of a registered stap service "Simple Time Access Protocol".
  * 
- * Adds fields for the extra service information provided by a cone search registry entry. 
- * @see http://www.ivoa.net/xml/ConeSearch/v0.3 for definition of this information
+ * Adds fields for the extra service information provided by a stap registry entry. 
+ * @see http://software.astrogrid.org/schema/vo-resource-types/Stap/v0.1/Stap.xsd for definition of this information
  * @xmlrpc returned as a struct, with keys corresponding to bean names.
- * @author Noel Winstanley nw@jb.man.ac.uk 18-Oct-2005
+ * @author Kevin Benson
  *
  */
 public class StapInformation extends ApplicationInformation {
 
-    /** Construct a new ConeInformation
+    /** Construct a new StapInformation
      * @param ivorn
      * @param title
      * @param description
@@ -95,19 +95,11 @@ public class StapInformation extends ApplicationInformation {
 
 /* 
 $Log: StapInformation.java,v $
+Revision 1.2  2006/03/16 09:14:21  KevinBenson
+usually comment/clean up type changes such as siap to stap
+
 Revision 1.1  2006/03/13 14:47:21  KevinBenson
 This is the first rough draft of Helioscope which deals with the STAP spec.
 
-Revision 1.4  2006/02/02 14:19:48  nw
-fixed up documentation.
-
-Revision 1.3  2005/11/04 14:38:58  nw
-added logo field
-
-Revision 1.2  2005/10/19 18:07:06  nw
-changed inheritance hierarchy - now is a kind of application
-
-Revision 1.1  2005/10/18 16:51:41  nw
-added information beans for siap and cone registry entries.
  
 */

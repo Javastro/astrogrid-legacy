@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.1 2006/03/13 14:55:09 KevinBenson Exp $
+/*$Id: StapProtocol.java,v 1.2 2006/03/16 09:16:20 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,16 +18,16 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import java.util.Calendar;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Kevin Benson
  *
  */
 public class StapProtocol extends DalProtocol {
 
-    /** Construct a new SiapProtocol
+    /** Construct a new StapProtocol
      * @param name
      */
     public StapProtocol(UIComponent parent,Registry reg,Stap stap) {
-        super("Images",parent);
+        super("Stap",parent);
         this.reg =  reg;
         this.stap = stap;
     }
@@ -53,10 +53,11 @@ public class StapProtocol extends DalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.2  2006/03/16 09:16:20  KevinBenson
+usually comment/clean up type changes such as siap to stap
+
 Revision 1.1  2006/03/13 14:55:09  KevinBenson
 New first draft of helioscope and the stap spec protocol
 
-Revision 1.1  2006/02/02 14:51:11  nw
-components of astroscope, plus new ssap component.
  
 */

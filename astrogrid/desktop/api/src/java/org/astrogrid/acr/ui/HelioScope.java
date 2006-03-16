@@ -1,4 +1,4 @@
-/*$Id: HelioScope.java,v 1.1 2006/03/13 14:47:21 KevinBenson Exp $
+/*$Id: HelioScope.java,v 1.2 2006/03/16 09:14:21 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,48 +13,22 @@ package org.astrogrid.acr.ui;
 /**Control  AstroScope.
  * 
  * <img src="doc-files/astroscope.png"/>
- * @service userInterface.astroscope
+ * @service userInterface.helioscope
  * @author Kevin Benson
  */
 public interface HelioScope {
-    /** display a new instance of astroscope */
+    /** display a new instance of helioscope */
     public void show() ;
 }
 
 
 /* 
 $Log: HelioScope.java,v $
+Revision 1.2  2006/03/16 09:14:21  KevinBenson
+usually comment/clean up type changes such as siap to stap
+
 Revision 1.1  2006/03/13 14:47:21  KevinBenson
 This is the first rough draft of Helioscope which deals with the STAP spec.
 
-Revision 1.3  2006/02/02 14:19:48  nw
-fixed up documentation.
-
-Revision 1.2  2005/11/24 01:18:42  nw
-merged in final changes from release branch.
-
-Revision 1.1.2.2  2005/11/23 18:07:22  nw
-improved docs.
-
-Revision 1.1.2.1  2005/11/23 04:32:54  nw
-tidied up
-
-Revision 1.1  2005/10/26 15:52:28  KevinBenson
-new app for astroscope
-
-Revision 1.1  2005/10/04 20:36:30  KevinBenson
-new small app for datascope.
-
-Revision 1.2  2005/08/12 08:45:15  nw
-souped up the javadocs
-
-Revision 1.1  2005/08/11 10:15:01  nw
-finished split
-
-Revision 1.2  2005/06/08 14:51:59  clq2
-1111
-
-Revision 1.1.2.1  2005/06/02 14:34:32  nw
-first release of application launcher
  
 */

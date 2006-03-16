@@ -28,7 +28,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 
-/** task that retrives, parses and adds to the display results of one siap service 
+/** 
+ * task that retrives, parses and adds to the display results of one siap service 
  * */
 public class StapRetrieval extends Retriever {
     /**
@@ -54,6 +55,7 @@ public class StapRetrieval extends Retriever {
     private final Stap stap;
     protected Object construct() throws Exception{
             URL stapURL = null;
+            //check if there is a ra,dec and construct a stap query accordingly.
             if(Double.isNaN(ra) || Double.isNaN(dec)) {
                 stapURL = stap.constructQuery(new URI(information.getAccessURL().toString()),start, end);
             }
@@ -151,10 +153,10 @@ public class StapRetrieval extends Retriever {
                 .append(titles[v])
                 .append( ": ")
                 .append(o.getClass().isArray() ? ArrayUtils.toString(o) : o.toString());
-            }        
+            }
             tooltip.append("</p></html>");
             valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());
-            String instrumentID =  row[instCol].toString();
+            String instrumentID = row[instCol].toString();
             TreeNode instrNode = model.findNode(instrumentID, getServiceNode());
             if(instrNode == null) {
                 instrNode = new DefaultTreeNode();
@@ -168,34 +170,35 @@ public class StapRetrieval extends Retriever {
         
         
    protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
-        String imgURL = row[accessCol].toString();
-        long size;
-        /*
-        try {
-            size = Long.parseLong(row[sizeCol].toString()) / 1024; // kb.
-        } catch (Throwable t) { // not found, or can't parse
-            size = Long.MAX_VALUE; // assume the worse
+        String imgURL = "";
+        if(row[accessCol] != null) {
+            imgURL = row[accessCol].toString();
         }
-        */
+
         String details; 
-        if (timeStart > -1) {
+        if (timeStart > -1 && row[timeStart] != null) {
             details = row[timeStart].toString();
         } else {
             details  = "No Start Time";
         }
 
-        if (timeEnd > -1) {
+        if (timeEnd > -1 && row[timeEnd] != null) {
             details += "-" + row[timeEnd].toString();
         } else {
-            details  = " - No End Time";
+            details  += " - No End Time";
         }
         valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL);
         if(formatCol > -1 && row[formatCol] != null) {
             String type = row[formatCol].toString();
-            valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type);
+            if(type.indexOf('-') > -1) {
+                valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type.substring(type.indexOf('-')+1));
+            }else {
+                valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type);
+            }
+            
         }
         valNode.setAttribute(LABEL_ATTRIBUTE,details);
-    }        
+    }
         
     protected boolean isWorthProceeding() {
         return accessCol >= 0;
