@@ -1,4 +1,4 @@
-/*$Id: ImageLoadPlasticButton.java,v 1.2 2006/02/27 12:20:50 nw Exp $
+/*$Id: ImageLoadPlasticButton.java,v 1.3 2006/03/16 18:12:56 jdt Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,8 +42,8 @@ public class ImageLoadPlasticButton extends PlasticButton {
      */
     private static final Log logger = LogFactory.getLog(ImageLoadPlasticButton.class);
 
-    public ImageLoadPlasticButton(URI plasticID, String name, URL iconURL, FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
-        super(plasticID,"View images in "  +  StringUtils.capitalize( name )+ "", iconURL, selectedNodes, ui, wrapper);
+    public ImageLoadPlasticButton(URI plasticID, String name, String description, URL iconURL, FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
+        super(plasticID,"View images in "  +  StringUtils.capitalize( name )+ "", description, iconURL, selectedNodes, ui, wrapper);
     }
 
     public void focusChanged(FocusEvent arg0) {
@@ -87,6 +87,9 @@ public class ImageLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: ImageLoadPlasticButton.java,v $
+Revision 1.3  2006/03/16 18:12:56  jdt
+Some bug fixes, and the next version of the plastic library.
+
 Revision 1.2  2006/02/27 12:20:50  nw
 improved plastic integration
 

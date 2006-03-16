@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.3 2006/03/16 10:02:34 KevinBenson Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.4 2006/03/16 18:12:56 jdt Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -108,17 +108,17 @@ public class HelioScopeLauncherImpl extends UIComponent
         }
 
         // define this method to control what happens when a new application registers.
-        protected Component[] buildComponents(URI applicationId, String name, URL iconURL, URI[] messages) {
+        protected Component[] buildComponents(URI applicationId, String name, String description, URL iconURL, URI[] messages) {
             List results= new ArrayList();
             if (ArrayUtils.contains(messages,CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
                 results.add(
-                        new VotableLoadPlasticButton(applicationId,name,iconURL,vizModel.getSelectionFocusSet(),
+                        new VotableLoadPlasticButton(applicationId,name,description,iconURL,vizModel.getSelectionFocusSet(),
                                 HelioScopeLauncherImpl.this,HelioScopeLauncherImpl.this)                         
                         );
             }
             if (ArrayUtils.contains(messages,IMAGES_LOAD_FROM_URL_MESSAGE)) {                    
                 results.add(
-                        new ImageLoadPlasticButton(applicationId,name,iconURL,vizModel.getSelectionFocusSet(),
+                        new ImageLoadPlasticButton(applicationId,name,description, iconURL,vizModel.getSelectionFocusSet(),
                                 HelioScopeLauncherImpl.this,HelioScopeLauncherImpl.this)                           
                         );
             }                
@@ -213,7 +213,9 @@ public class HelioScopeLauncherImpl extends UIComponent
         // generates a new name each time.
         String appName = "HelioScope-" + UNQ_ID++;
        // standard message handler.
-        this.plasticHandler = new StandardHandler(appName,"ivo://org.astrogrid/helioscope", PlasticListener.CURRENT_VERSION);
+        String logoUrl = "";
+		String description = logoUrl;
+		this.plasticHandler = new StandardHandler(appName,description,"ivo://org.astrogrid/helioscope", logoUrl, PlasticListener.CURRENT_VERSION);
         // message handler for application add and  applcation remove messages.
         ApplicationRegisteredPlasticMessageHandler dynamicButtonHandler = new HelioscopePlasticMessageHandler(this, this, dynamicButtons);
         this.plasticHandler.setNextHandler(dynamicButtonHandler);
@@ -605,7 +607,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
     // implementation of the plastic listener interface
     // callback when message is _received_ from plastic - delegates straight to handler.
     public Object perform(URI sender, URI message, List args) {
-        return plasticHandler.handle(sender,message,args);
+        return plasticHandler.perform(sender,message,args);
     }
 
     // implementation of te plastic wrapper interface;
@@ -621,6 +623,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.4  2006/03/16 18:12:56  jdt
+Some bug fixes, and the next version of the plastic library.
+
 Revision 1.3  2006/03/16 10:02:34  KevinBenson
 small label changed
 

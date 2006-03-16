@@ -10,6 +10,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
@@ -40,6 +42,8 @@ public class AbstractPlasticTestBase extends TestCase {
 	protected BrowserControl browser;
 	
 	protected Configuration config;
+	
+	protected Shutdown shutdown;
 
 	public void setUp() {
 		messenger = new MessengerImpl();
@@ -89,6 +93,30 @@ public class AbstractPlasticTestBase extends TestCase {
 
 			public void removeKey(String arg0) {
 				store.remove(arg0);
+			}
+			
+		};
+		
+		shutdown = new Shutdown() {
+
+			public void halt() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void reallyHalt() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void addShutdownListener(ShutdownListener arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void removeShutdownListener(ShutdownListener arg0) {
+				// TODO Auto-generated method stub
+				
 			}
 			
 		};

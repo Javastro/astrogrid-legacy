@@ -1,12 +1,5 @@
 package org.astrogrid.desktop.modules.ui;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.HubMessageConstants;
-import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
-
 import java.awt.Component;
 import java.awt.Container;
 import java.net.MalformedURLException;
@@ -19,6 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.SwingUtilities;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.votech.plastic.CommonMessageConstants;
+import org.votech.plastic.HubMessageConstants;
+import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
 
 /**
  * class that listens for new PLASTIC application registrations, and adds buttons / components to a component
@@ -54,7 +54,7 @@ public abstract class ApplicationRegisteredPlasticMessageHandler extends Abstrac
         return dynamicButtonMessages;
     }
    /** called to handle messages */
-    public Object handle(URI sender, URI message, List args) {
+    public Object perform(URI sender, URI message, List args) {
         try {
         if (message.equals(HubMessageConstants.APPLICATION_REGISTERED_EVENT)) {
             interrogatePlasticApp(new URI(args.get(0).toString())); //redundant, but reliable.
@@ -76,14 +76,14 @@ public abstract class ApplicationRegisteredPlasticMessageHandler extends Abstrac
      * @param messages plastic messages this app claims to support.
      * @return array of new components 
      */
-    protected abstract Component[] buildComponents(URI applicationId,String name,URL iconURL, URI[] messages) ; 
+    protected abstract Component[] buildComponents(URI applicationId,String name,String description, URL iconURL, URI[] messages) ; 
     
-private final static List dynamicButtonMessages = new ArrayList() {
-    {// init
-        this.add(HubMessageConstants.APPLICATION_REGISTERED_EVENT);
-        this.add(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT);
-    }
-};
+	private final static List dynamicButtonMessages = new ArrayList() {
+	    {// init
+	        this.add(HubMessageConstants.APPLICATION_REGISTERED_EVENT);
+	        this.add(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT);
+	    }
+	};
 
 /**
  * inspect a plastic application, and create a button for it if it's suitable
@@ -93,7 +93,8 @@ public void interrogatePlasticApp(final URI id) {
     (new BackgroundWorker(parent,"Inspecting Plastic Application " + id) {                     
         protected Object construct() throws Exception {
             List noArgs = new ArrayList();
-            String name = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_NAME,noArgs,id);               
+            String name = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_NAME,noArgs,id);
+            String description = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,id);
             URL iconURL;
             try {
                 Object o = singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,id);
@@ -107,7 +108,7 @@ public void interrogatePlasticApp(final URI id) {
             } 
             List appMsgList = wrapper.getHub().getUnderstoodMessages(id);
             URI[] appMessages = (URI[])appMsgList.toArray(new URI[appMsgList.size()]);
-            return buildComponents(id,name,iconURL,appMessages);
+            return buildComponents(id,name,description, iconURL,appMessages);
       
         }
                 

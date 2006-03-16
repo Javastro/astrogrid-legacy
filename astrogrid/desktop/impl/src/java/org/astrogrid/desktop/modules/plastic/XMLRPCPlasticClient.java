@@ -19,7 +19,7 @@ class XMLRPCPlasticClient extends PlasticClientProxy {
     /**
      *  The xml-rpc method name that a Plastic app offers
      */
-    private static final String PLASTIC_CLIENT_PERFORM = "plastic.client.perform";
+    private static final String PLASTIC_CLIENT_PERFORM = "perform";
 
     /**
      * Logger for this class
@@ -31,7 +31,7 @@ class XMLRPCPlasticClient extends PlasticClientProxy {
     private boolean validURL;
 
     public XMLRPCPlasticClient(NameGen gen, String name, List supportedMessages, URL callbackURL) {
-        super(gen, name, supportedMessages);
+        super(gen, name, supportedMessages); //TODO this is not working.
 
         logger.info("Ctor: XMLRPCPlasticClient with callBackURL " + callbackURL + " and supports messages: "
                 + supportedMessages);

@@ -1,4 +1,4 @@
-/*$Id: VotableLoadPlasticButton.java,v 1.2 2006/02/27 12:20:50 nw Exp $
+/*$Id: VotableLoadPlasticButton.java,v 1.3 2006/03/16 18:12:56 jdt Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.PlasticWrapper;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-
-import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.PlasticHubListener;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
-
 import java.awt.event.ActionEvent;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,6 +18,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.PlasticWrapper;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.votech.plastic.CommonMessageConstants;
+
+import edu.berkeley.guir.prefuse.event.FocusEvent;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** button that loads a votable over plastic.
  * 
@@ -47,8 +43,8 @@ public class VotableLoadPlasticButton extends PlasticButton {
     private static final Log logger = LogFactory.getLog(VotableLoadPlasticButton.class);
 
   
-    public VotableLoadPlasticButton(URI plasticID, String name, URL iconURL, FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
-        super(plasticID, "View tables in " + StringUtils.capitalize( name ), iconURL, selectedNodes, ui, wrapper);        
+    public VotableLoadPlasticButton(URI plasticID, String name, String description, URL iconURL, FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
+        super(plasticID, "View tables in " + StringUtils.capitalize( name ), description, iconURL, selectedNodes, ui, wrapper);        
     }
     
     public void focusChanged(FocusEvent arg0) {
@@ -86,6 +82,9 @@ public class VotableLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: VotableLoadPlasticButton.java,v $
+Revision 1.3  2006/03/16 18:12:56  jdt
+Some bug fixes, and the next version of the plastic library.
+
 Revision 1.2  2006/02/27 12:20:50  nw
 improved plastic integration
 

@@ -23,6 +23,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
@@ -38,7 +40,7 @@ import org.votech.plastic.outgoing.PlasticException;
 import EDU.oswego.cs.dl.util.concurrent.CountDown;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 
-public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInternal, Startable {
+public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInternal, Startable, ShutdownListener {
     /**
      * Logger for this class
      */
@@ -62,16 +64,18 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	private Configuration config;
 
+
+
     /** constructor selected by pico when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app, RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config) {
-        this(executor,idGenerator,app,rmi, web,null, prettyPrinter, config);
+            MessengerInternal app, RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config, Shutdown shutdown) {
+        this(executor,idGenerator,app,rmi, web,null, prettyPrinter, config, shutdown);
     }
     
     /** constructor selected by pico when systemtray is available 
      * @param prettyPrinter */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app,RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config) {
+            MessengerInternal app,RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config, Shutdown shutdown) {
         this.tray = tray;
         this.rmiServer= rmi;
         this.webServer= web;
@@ -79,6 +83,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.idGenerator = idGenerator;
         this.prettyPrinter = prettyPrinter;
         this.config = config;
+        shutdown.addShutdownListener(this);
         logger.info("Constructing a PlasticHubImpl");
         hubId = app.registerWith(this); 
     }
@@ -234,8 +239,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
              */
             public void run() {
                 try {
+                	logger.debug(sender+" sending message "+message+" to "+client.getId());
                     Object rv = client.perform(sender, message, args);
-
+                    logger.debug("Client "+client.getId()+" returned "+rv);
                     // A return value really shouldn't be null, as xml-rpc
                     // doesn't
                     // support it...but insulate ourselves in case java-rmi
@@ -337,9 +343,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public void stop() {
-        requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
         if (plasticPropertyFile != null) {
-            logger.debug("Deleting Plastic Property File");
+            logger.debug("Deleting Plastic Property File"); //TODO - check it's ours
             plasticPropertyFile.delete();
         }
     }
@@ -424,6 +429,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		Map ivorns = request(hubId2, CommonMessageConstants.GET_IVORN, CommonMessageConstants.EMPTY);
 		Map icons = request(hubId2, CommonMessageConstants.GET_ICON, CommonMessageConstants.EMPTY);
 		Map versions = request(hubId2, CommonMessageConstants.GET_VERSION, CommonMessageConstants.EMPTY);
+		Map descriptions = request(hubId2, CommonMessageConstants.GET_DESCRIPTION, CommonMessageConstants.EMPTY);
 		
 		Iterator it = apps.iterator();
 		while (it.hasNext()) {
@@ -432,20 +438,35 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			List messages = getUnderstoodMessages(plid);
 			PlasticClientProxy client = clients.get(plid);
 			boolean alive = client.isResponding();
-			String version = (String) versions.get(plid);
-			String icon = (String) icons.get(plid);
-			String ivorn = (String) ivorns.get(plid);
+			String version = safeStringCast(versions, plid); //avoid casting in case the client's been naughty
+			String icon = safeStringCast(icons, plid);
+			String ivorn = safeStringCast(ivorns, plid);
+			String description = safeStringCast(descriptions, plid);
 			
-			ApplicationDescription desc = new ApplicationDescription(plid.toString(),name,messages,version,icon,ivorn,alive);
+			ApplicationDescription desc = new ApplicationDescription(plid.toString(),name,description,messages,version,icon,ivorn,alive);
 			applicationDescriptions.add(desc);
 		}
 		
 		prettyPrinter.show(applicationDescriptions);
 
 	}
+
+	private String safeStringCast(Map map, URI key) {
+		Object mapo = map.get(key);
+		return mapo!=null ? mapo.toString() : "";
+	}
 	
 	public void setNotificationsEnabled(boolean enable) {
 		config.setKey(PLASTIC_NOTIFICATIONS_ENABLED, Boolean.toString(enable));
+	}
+
+	public void halting() {
+		// too bad
+	}
+
+	public String lastChance() {
+		requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
+		return null; //returning null indicates we don't care.
 	}
 
 }

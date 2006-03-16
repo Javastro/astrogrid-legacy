@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.33 2006/03/13 14:55:09 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.34 2006/03/16 18:12:56 jdt Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -107,17 +107,17 @@ public class AstroScopeLauncherImpl extends UIComponent
         }
 
         // define this method to control what happens when a new application registers.
-        protected Component[] buildComponents(URI applicationId, String name, URL iconURL, URI[] messages) {
+        protected Component[] buildComponents(URI applicationId, String name, String description, URL iconURL, URI[] messages) {
             List results= new ArrayList();
             if (ArrayUtils.contains(messages,CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
                 results.add(
-                        new VotableLoadPlasticButton(applicationId,name,iconURL,vizModel.getSelectionFocusSet(),
+                        new VotableLoadPlasticButton(applicationId,name,description, iconURL,vizModel.getSelectionFocusSet(),
                                 AstroScopeLauncherImpl.this,AstroScopeLauncherImpl.this)                         
                         );
             }
             if (ArrayUtils.contains(messages,IMAGES_LOAD_FROM_URL_MESSAGE)) {                    
                 results.add(
-                        new ImageLoadPlasticButton(applicationId,name,iconURL,vizModel.getSelectionFocusSet(),
+                        new ImageLoadPlasticButton(applicationId,name,description,iconURL,vizModel.getSelectionFocusSet(),
                                 AstroScopeLauncherImpl.this,AstroScopeLauncherImpl.this)                           
                         );
             }                
@@ -212,7 +212,7 @@ public class AstroScopeLauncherImpl extends UIComponent
         // generates a new name each time.
         String appName = "AstroScope-" + UNQ_ID++;
        // standard message handler.
-        this.plasticHandler = new StandardHandler(appName,"ivo://org.astrogrid/astroscope", PlasticListener.CURRENT_VERSION);
+        this.plasticHandler = new StandardHandler(appName,"","ivo://org.astrogrid/astroscope",null, PlasticListener.CURRENT_VERSION); //JDT TODO add a logo
         // message handler for application add and  applcation remove messages.
         ApplicationRegisteredPlasticMessageHandler dynamicButtonHandler = new AstroscopePlasticMessageHandler(this, this, dynamicButtons);
         this.plasticHandler.setNextHandler(dynamicButtonHandler);
@@ -613,7 +613,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                                 for (int i = 0; i < services.length; i++) {
                                     if (services[i].getAccessURL() != null) {
                                         setProgressMax(getProgressMax()+1); // should give a nice visual effect.
-                                        p.createRetriever(services[i],null,null, ra,dec,raSize,decSize).start();
+                                        p.createRetriever(services[i], null,null,ra,dec,raSize,decSize).start();
                                        // (new SiapRetrieval(AstroScopeLauncherImpl.this,siaps[i],vizModel,nodeSizingMap,siap,ra,dec,raSize,decSize)).start();
                                     }
                                 }                            
@@ -634,7 +634,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
     // implementation of the plastic listener interface
     // callback when message is _received_ from plastic - delegates straight to handler.
     public Object perform(URI sender, URI message, List args) {
-        return plasticHandler.handle(sender,message,args);
+        return plasticHandler.perform(sender,message,args);
     }
 
     // implementation of te plastic wrapper interface;
@@ -650,8 +650,8 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
-Revision 1.33  2006/03/13 14:55:09  KevinBenson
-New first draft of helioscope and the stap spec protocol
+Revision 1.34  2006/03/16 18:12:56  jdt
+Some bug fixes, and the next version of the plastic library.
 
 Revision 1.32  2006/02/27 12:20:50  nw
 improved plastic integration

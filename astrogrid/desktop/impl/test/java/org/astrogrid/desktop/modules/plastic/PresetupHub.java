@@ -16,7 +16,7 @@ public class PresetupHub extends AbstractPlasticTestBase {
 
 	public void setUp() {
 		super.setUp();
-		hub = new PlasticHubImpl(executor , idGenerator, messenger,  rmi, web, new PrettyPrinterImpl(browser), config);
+		hub = new PlasticHubImpl(executor , idGenerator, messenger,  rmi, web, new PrettyPrinterImpl(browser), config, shutdown);
 		((Startable)hub).start();	
 	}
 

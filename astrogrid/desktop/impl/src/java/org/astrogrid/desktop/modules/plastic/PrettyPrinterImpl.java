@@ -43,7 +43,7 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 		writer.println("<body><h2>Plastic-Registered Applications</h2>");
 		writer.println("This ACR\'s hub supports <a href='http://plastic.sourceforge.net'>plastic</a> version "+PlasticListener.CURRENT_VERSION);
 		writer.println("<table border='1'>");
-		writer.println("<tr><th>Icon</th><th>Name</th><th>Plastic Id</th><th>IVORN</th><th>Supported Messages</th><th>Plastic Version</th><th>Alive?</th></tr>");
+		writer.println("<tr><th>Icon</th><th>Name</th><th>Description</th><th>Plastic Id</th><th>IVORN</th><th>Supported Messages</th><th>Plastic Version</th><th>Alive?</th></tr>");
 
 		
 		Iterator it = nonHubApplications.iterator();
@@ -51,6 +51,7 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 			ApplicationDescription app = (ApplicationDescription) it.next();
 			String plid = app.getId();
 			String name = app.getName();
+			String description = app.getDescription();
 			List messages = app.getUnderstoodMessages();
 			boolean alive = app.isResponding();
 			String version = app.getVersion();
@@ -60,6 +61,7 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 			writer.println("<tr>");
 				writeImgIfNonNull(writer, icon);
 				writeIfNonNull(writer, name);
+				writeIfNonNull(writer, description);
 				writeIfNonNull(writer, plid);
 				writeIfNonNull(writer, ivorn);
 				writer.println("<td>");
@@ -69,7 +71,7 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 					writer.write("<ul>");
 					Iterator mit = messages.iterator();
 					while (mit.hasNext()) {
-						URI msg = (URI) mit.next();
+						URI msg = (URI) mit.next();  //TODO
 						writer.write("<li>"+msg+"</li>");
 					}
 					writer.write("</ul>");

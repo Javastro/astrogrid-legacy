@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,9 @@ import org.votech.plastic.incoming.handlers.StandardHandler;
  * @date 02-Nov-2005
  */
 public class MessengerImpl implements MessengerInternal, PlasticListener {
-    private static final String IVORN = "ivo://org.astrogrid/acr";
+    private static final String DESCRIPTION = "This is the ACR Plastic Hub.\nThe ACR (Astro Client Runtime) provides the reference implementation of a Plastic Hub, together with easy access to numerous AstroGrid and VO Services.";
+
+	private static final String IVORN = "ivo://org.astrogrid/acr"; //TODO this should be determined properly
 
     private static final String NAME = "ACR-Plastic-Hub";
 
@@ -40,10 +43,11 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
     public MessengerImpl() {
         logger.trace("Constructing HubApplicationImpl");
         handler = new LoggingHandler(logger);
-        handler.setNextHandler(new StandardHandler(NAME, IVORN,
-                PlasticListener.CURRENT_VERSION));
+        handler.setNextHandler(new StandardHandler(NAME, DESCRIPTION,
+        		IVORN, null, 
+                PlasticListener.CURRENT_VERSION)); //TODO ACR logo?
 
-        logger.info("Hub self-registered with ID " + id);
+        
     }
 
     /*
@@ -52,13 +56,13 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @see org.votech.plastic.PlasticListener#receive(java.lang.String, java.lang.String, java.util.Vector)
      */
     public Object perform(URI sender, URI message, List args) {
-        return handler.handle(sender, message, args);
+        return handler.perform(sender, message, args);
     }
 
     /**
      * @return
      */
-    public List getSupportedMessages() {
+    public Collection getSupportedMessages() {
         return handler.getHandledMessages();
     }
 
@@ -68,9 +72,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @see org.astrogrid.acr.plastic.HubApplication#getHubPlasticVersion()
      */
     public String getHubPlasticVersion() {
-        return (String) handler.handle(this.id,
+        return  handler.perform(this.id,
                 CommonMessageConstants.GET_VERSION,
-                CommonMessageConstants.EMPTY);
+                CommonMessageConstants.EMPTY).toString();
     }
 
     /*
@@ -79,9 +83,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @see org.astrogrid.acr.plastic.HubApplication#getHubName()
      */
     public String getHubName() {
-        return (String) handler.handle(this.id,
+        return handler.perform(this.id,
                 CommonMessageConstants.GET_NAME,
-                CommonMessageConstants.EMPTY);
+                CommonMessageConstants.EMPTY).toString();
     }
 
     /*
@@ -90,9 +94,9 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @see org.astrogrid.acr.plastic.HubApplication#getHubIvorn()
      */
     public String getHubIvorn() {
-        return (String) handler.handle(this.id,
+        return handler.perform(this.id,
                 CommonMessageConstants.GET_IVORN,
-                CommonMessageConstants.EMPTY);
+                CommonMessageConstants.EMPTY).toString();
     }
 
     /*
@@ -161,7 +165,8 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      */
     public URI registerWith(PlasticHubListener hub) {
         this.hub = hub;
-        this.id = hub.registerRMI(NAME, this.getSupportedMessages(), this);
+        this.id = hub.registerRMI(NAME, new ArrayList(this.getSupportedMessages()), this);
+        logger.info("Hub self-registered with ID " + id);
         return id;
     }
 

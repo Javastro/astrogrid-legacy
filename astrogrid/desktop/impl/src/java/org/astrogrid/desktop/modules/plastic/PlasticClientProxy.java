@@ -3,6 +3,7 @@ package org.astrogrid.desktop.modules.plastic;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -49,16 +50,28 @@ abstract class PlasticClientProxy {
 
     public PlasticClientProxy(NameGen gen, String name, List supportedMessages) {
         try {
-            this.id = new URI("plastic://acr/"+gen.next()); 
-        } catch(URISyntaxException se) {
-        	logger.error("Unable to contruct URI for Id",se);
-        	throw new RuntimeException("Unable to create URI",se);
+            this.id = URI.create("plastic://acr/"+gen.next()); 
         }  catch (Exception e) {
             logger.error("Exception in unique name generator ", e);
             // we're going to use the InMemoryNameGen
             // class, so this shouldn't happen.  
         }
-        this.supportedMessages = new ArrayList(supportedMessages); //take a copy in case someone pulls the list from under our feet.
+    	//Gotcha.  The supportedMessages are in a List of URIs from Java, but a List of Strings from xml-rpc
+        //Hopefully will go away in java1.5 when we have generics and can type the lists
+    	if (supportedMessages.size()!=0 && supportedMessages.get(0).getClass()==String.class) {
+    		this.supportedMessages = new ArrayList();
+    		for (Iterator it = supportedMessages.iterator();it.hasNext();) {
+    			String m = (String) it.next();
+    			try {
+					this.supportedMessages.add(new URI(m));
+				} catch (URISyntaxException e) {
+					logger.warn("Message "+m+" was not a valid URI, so is not being added to the list of supported messages for "+name);
+				}
+    		}
+    		//Now we can carry on with our List of URIs....
+    	} else {       
+    		this.supportedMessages = new ArrayList(supportedMessages); //take a copy in case someone pulls the list from under our feet.
+    	}
         this.name = name;
     }
 
