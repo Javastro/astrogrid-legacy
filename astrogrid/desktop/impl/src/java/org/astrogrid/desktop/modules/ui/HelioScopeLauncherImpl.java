@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.2 2006/03/16 09:16:00 KevinBenson Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.3 2006/03/16 10:02:34 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -450,7 +450,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         searchPanel.add(new JLabel("Start Date&Time: "));
         searchPanel.add(startCal);
 
-        searchPanel.add(new JLabel("Start Date&Time: "));
+        searchPanel.add(new JLabel("End Date&Time: "));
         searchPanel.add(endCal);
         
         /*
@@ -621,6 +621,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.3  2006/03/16 10:02:34  KevinBenson
+small label changed
+
 Revision 1.2  2006/03/16 09:16:00  KevinBenson
 usually comment/clean up type changes such as siap to stap. Plus setting date&time values
 to a previous date
