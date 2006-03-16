@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.1 2006/03/13 14:55:09 KevinBenson Exp $
+/*$Id: StapImpl.java,v 1.2 2006/03/16 14:03:57 KevinBenson Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,7 +66,6 @@ public class StapImpl extends DALImpl implements Stap {
     } else {
         throw new InvalidArgumentException("Don't know what to do with this: " + arg0);
         }
-        System.out.println("endpoint = " + endpoint.toString());
         // ok. one way or another, we've got an endpoint. now add parameters onto it.
         String url = endpoint.toString();
         StringBuffer urlSB = new StringBuffer(url);
@@ -74,12 +73,8 @@ public class StapImpl extends DALImpl implements Stap {
         char lastch = url.charAt(url.length() - 1);
         if (lastch != '?' && lastch != '&')
             urlSB.append((url.indexOf('?') > 0) ? '&' : '?');
-        System.out.println("the urlsb = " + urlSB);
-        System.out.println("start getTime formatted = " + dateFormat.format(start.getTime()));
-        System.out.println("end getTime formatted = " + dateFormat.format(end.getTime()));
         urlSB.append("START=").append(dateFormat.format(start.getTime()))
         .append("&END=").append(dateFormat.format(end.getTime()));
-        System.out.println("about to return now here is urlsb one more time = " + urlSB);
         try {
             return new URL(urlSB.toString());
         } catch (MalformedURLException e) {
@@ -97,7 +92,6 @@ public class StapImpl extends DALImpl implements Stap {
      */
     public URL constructQuery(URI service, Calendar start, Calendar end)
             throws InvalidArgumentException, NotFoundException {
-        System.out.println("constructQuery(start,end) called in stapimpl");
         return constructQueryPrim(service,start,end);
     }
     
@@ -132,7 +126,6 @@ public class StapImpl extends DALImpl implements Stap {
      */
     public URL constructQueryS(URI service, Calendar start, Calendar end, double ra, double dec, double ra_size, double dec_size)
             throws InvalidArgumentException, NotFoundException {
-        System.out.println("constructquerys called");
         if (ra_size == dec_size) {
             return constructQuery(service, start, end, ra, dec,ra_size);
         } else {
@@ -163,6 +156,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.2  2006/03/16 14:03:57  KevinBenson
+I had a bunch of printlns in this file for some reason
+
 Revision 1.1  2006/03/13 14:55:09  KevinBenson
 New first draft of helioscope and the stap spec protocol
 
