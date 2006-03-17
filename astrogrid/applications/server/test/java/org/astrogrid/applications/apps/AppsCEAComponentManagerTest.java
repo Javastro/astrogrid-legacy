@@ -1,4 +1,4 @@
-/*$Id: AppsCEAComponentManagerTest.java,v 1.4 2006/03/11 05:57:54 clq2 Exp $
+/*$Id: AppsCEAComponentManagerTest.java,v 1.5 2006/03/17 17:50:58 clq2 Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,8 @@ import org.astrogrid.applications.component.CEAComponentManager;
  *@todo @TODO add tests specific to Apps CEA component manager - at the moment is 
  *just relying on tests in base class.
  */
-public class AppsCEAComponentManagerTest extends AbstractComponentManagerTestCase {
+public class AppsCEAComponentManagerTest 
+    extends AbstractComponentManagerTestCase {
 
     /** Construct a new AppsCEAComponentManagerTest
      * 
@@ -34,19 +35,15 @@ public class AppsCEAComponentManagerTest extends AbstractComponentManagerTestCas
     public AppsCEAComponentManagerTest(String arg0) {
         super(arg0);
     }
-
-    /**
-     * @see org.astrogrid.applications.component.AbstractComponentManagerTestCase#setupConfigComponentManager()
-     */
-    protected void setupConfigComponentManager() {
-        basicConfig();
-    }
-
     /**
      * @see org.astrogrid.applications.component.AbstractComponentManagerTestCase#createManager()
      */
     protected CEAComponentManager createManager() {
         return new AppsCEAComponentManager();
+    }
+    
+    protected void configureManager() {
+      // Nothing to do here.
     }
 
 }
@@ -54,8 +51,14 @@ public class AppsCEAComponentManagerTest extends AbstractComponentManagerTestCas
 
 /* 
 $Log: AppsCEAComponentManagerTest.java,v $
-Revision 1.4  2006/03/11 05:57:54  clq2
-roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
+Revision 1.5  2006/03/17 17:50:58  clq2
+gtr_1489_cea correted version
+
+Revision 1.3  2006/03/07 21:45:26  clq2
+gtr_1489_cea
+
+Revision 1.2.20.1  2006/01/31 21:39:07  gtr
+Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
 
 Revision 1.2  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests

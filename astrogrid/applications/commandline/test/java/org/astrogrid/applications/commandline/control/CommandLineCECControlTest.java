@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineCECControlTest.java,v 1.6 2006/03/11 05:57:54 clq2 Exp $
+ * $Id: CommandLineCECControlTest.java,v 1.7 2006/03/17 17:50:58 clq2 Exp $
  * 
  * Created on 20-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -49,17 +49,16 @@ public class CommandLineCECControlTest extends AbstractCommandLineEnvironmentTes
     */
    protected void setUp() throws Exception {
       super.setUp();
-      cs = new CommandLineCECControl(new CommandLineApplicationEnvironment.WorkingDir() {
-         
-         public File getDir() {
-             return workingDir;
-         }
-       });
       
-      logger.info(workingDir.getAbsolutePath());
-      testdir = new File(workingDir, "dir");
-      assertTrue("test directory could not be created",testdir.mkdir());
-      File contentFile = new File(testdir, "afile");
+      cs = new CommandLineCECControl(this.configuration);
+      
+      // Create a file in the CEC's temporary-files directory.
+      // This simulates what the CEC would do for itself when
+      // running an application. The point is to test that the
+      // SUT can delete its working files.
+      File tfd = this.configuration.getTemporaryFilesDirectory();
+      logger.info(tfd.getAbsolutePath());
+      File contentFile = new File(tfd, "afile");
       PrintWriter pw = new PrintWriter(new FileOutputStream(contentFile));
       pw.println("some test content");
       pw.close();
@@ -79,11 +78,17 @@ public class CommandLineCECControlTest extends AbstractCommandLineEnvironmentTes
 
 /*
  * $Log: CommandLineCECControlTest.java,v $
- * Revision 1.6  2006/03/11 05:57:54  clq2
- * roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
+ * Revision 1.7  2006/03/17 17:50:58  clq2
+ * gtr_1489_cea correted version
  *
- * Revision 1.4  2006/01/10 11:26:52  clq2
- * rolling back to before gtr_1489
+ * Revision 1.5  2006/03/07 21:45:27  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.2.20.2  2006/01/31 21:39:07  gtr
+ * Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
+ *
+ * Revision 1.2.20.1  2005/12/19 18:12:30  gtr
+ * Refactored: changes in support of the fix for 1492.
  *
  * Revision 1.2  2005/08/10 14:45:37  clq2
  * cea_pah_1317

@@ -1,4 +1,4 @@
-/* $Id: TestRegistryQuerier.java,v 1.9 2006/03/11 05:57:54 clq2 Exp $
+/* $Id: TestRegistryQuerier.java,v 1.10 2006/03/17 17:50:58 clq2 Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,11 +77,11 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
    }
 
    /**
-    * Get a specific application by its filename Useful additional method for
-    * testing purposes You need to check that you don't get a null
+    * Get a specific application by its name. The name needed as an argument
+    * is the IVOID of the application with the ivo:// prefix removed.
     *
     * @param name
-    *           filename of xml describing application
+    *           Name of application
     * @return the unmarshalled CeaHttpApplicationType
     */
    public CeaHttpApplicationType getHttpApplication(final String name) {
@@ -108,6 +108,7 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
       String ivorn = testApplication.getIdentifier();
       String name = IvornUtil.removeProtocol(ivorn);
       testApplication.setIdentifier(name);
+      logger.debug("Loaded " + name);
       applications.put(name, testApplication);
    }
 

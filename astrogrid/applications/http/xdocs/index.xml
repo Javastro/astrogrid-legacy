@@ -7,7 +7,7 @@
 	<body>
 		<section name="Overview">
 			<p> This component provides a Common Execution Connector web-service for HTTP
-				applications (CL-HTTP for short). The CL-CEC makes astronomy applications available to the
+				applications (HTTP-CEC for short). The HTTP-CEC makes astronomy applications available to the
 				virtual observatory; notably, it makes them visible to AstroGrid's web portal, desktop UI
 				and workflow system.</p>
 			<p> Suitable applications for this kind of CEC (there are other kinds) run on external web-servers
@@ -39,6 +39,23 @@
 				should look first at the Data Set Access (DSA) component of AstroGrid. It is possible to use
 				the HTTP-CEC as an archive interface, but the DSA component provides better support
 				for archive queries. </p>
+			<subsection name="Internal web-pages and local controls">
+				<p>
+					The CEC web-application contains a copy of these web-pages. If you install the web
+					application as, say, <i>CEC-1</i> on server <i>my.cea.server</i> on port <i>8081</i>,
+					then the internal web pages are at
+				</p>
+				<pre>
+					http://my.cea.server:8081/CEC-1/
+				</pre>
+				<p>	
+					The internal copy of the pages
+					has, in its sidebar, extra links leading to local controls for configuration, testing and
+					registration. Therefore, while setting up the CEC, you should look at the internal pages.
+					If you can't find the controls, you're probably reading the web pages on 
+					<i>software.astrogrid.org</i> instead.
+				</p>
+			</subsection>
 		</section>
 	</body>
 </document>

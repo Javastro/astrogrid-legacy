@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.12 2006/03/11 05:57:54 clq2 Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.13 2006/03/17 17:50:58 clq2 Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.apache.commons.digester.NodeCreateRule;
 import org.apache.commons.digester.RegexRules;
 import org.apache.commons.digester.SimpleRegexMatcher;
 import org.astrogrid.applications.beans.v1.ParameterRef;
+import org.astrogrid.applications.commandline.CommandLineConfiguration;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
@@ -53,20 +54,22 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
     }
 
 
-   public CommandLineDescriptionsLoader(DescriptionURL finder, CommandLineApplicationDescriptionFactory appDescFactory, ApplicationDescriptionEnvironment envin) 
+   public CommandLineDescriptionsLoader(CommandLineConfiguration configuration, 
+                                        CommandLineApplicationDescriptionFactory appDescFactory, 
+                                        ApplicationDescriptionEnvironment envin) 
    {
-          super(envin);
-          this.configFile = finder.getURL();
-          this.appDescFactory = appDescFactory;
-          try {
-            loadDescription();
-         } catch (ApplicationDescriptionNotLoadedException e) {
-            logger.warn("problem loading commandline application definitions", e);
-            waserror = e;
-         }
+     super(envin);
+     try {
+       this.configFile = configuration.getApplicationDescriptionUrl();
+       this.appDescFactory = appDescFactory;
+       this.loadDescription();
+     } catch (Exception e) {
+       logger.warn("Can't load the command-line application-description file.", e);
+       waserror = e;
+     }
    }
-   protected final URL configFile;
-   protected final CommandLineApplicationDescriptionFactory appDescFactory; 
+   protected URL configFile;
+   protected CommandLineApplicationDescriptionFactory appDescFactory; 
    
    public final void loadDescription() throws ApplicationDescriptionNotLoadedException {
       logger.info( "loading application descriptions from " + configFile.toString());

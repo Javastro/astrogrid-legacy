@@ -1,27 +1,13 @@
-/*
- * $Id: HttpMetadataService.java,v 1.6 2006/03/11 05:57:54 clq2 Exp $
- * 
- * Created on 13-Jun-2005 by Paul Harrison (pharriso@eso.org)
- * Copyright 2005 ESO. All rights reserved.
- *
- * This software is published under the terms of the ESO 
- * Software License, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
- *
- */ 
-
 package org.astrogrid.applications.http;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import java.io.IOException;
 import java.util.Iterator;
-
 import org.exolab.castor.xml.CastorException;
 import org.w3c.dom.Document;
-
 import org.astrogrid.applications.CeaException;
+import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.DefaultMetadataService;
@@ -30,7 +16,10 @@ import org.astrogrid.registry.beans.v10.resource.Resource;
 import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
 
 /**
- * Specization of the metadata service for a HTTP CEC. Will only provide registry entry about itself - does not try to rewrite applicaton entries.
+ * Specialzation of the metadata service for a HTTP CEC. 
+ * Will only provide registry entry about the service;
+ * does not try to rewrite application entries.
+ *
  * @author Paul Harrison (pharriso@eso.org) 13-Jun-2005
  * @version $Name:  $
  * @since initial Coding
@@ -46,9 +35,9 @@ public class HttpMetadataService extends DefaultMetadataService {
     * @param lib
     * @param urls
     */
-   public HttpMetadataService(ApplicationDescriptionLibrary lib, URLs urls) {
-      super(lib, urls);
-      // TODO Auto-generated constructor stub
+   public HttpMetadataService(ApplicationDescriptionLibrary lib, 
+                              Configuration configuration) {
+      super(lib, configuration);
    }
    
    
@@ -58,9 +47,7 @@ public class HttpMetadataService extends DefaultMetadataService {
     * Specialization of the getVODescription that
     * @see org.astrogrid.applications.manager.MetadataService#getVODescription()
     */
-   public VOResources getVODescription() throws CastorException,
-         ApplicationDescriptionNotFoundException, IOException {
-      
+   public VOResources getVODescription() throws Exception {
       VOResources desc = super.getVODescription();
       VOResources newdesc = new VOResources();
       for (int i = 0; i < desc.getResourceCount(); i++) {
@@ -68,7 +55,9 @@ public class HttpMetadataService extends DefaultMetadataService {
           if(theresource instanceof CeaServiceType)
           {
              newdesc.addResource(theresource);
-             logger.info("adding CEA service " + theresource.getIdentifier());
+             logger.info("CEA service " + 
+                         theresource.getIdentifier() +
+                         " is added to the registration metadata.");
           }
       }
       assert newdesc.getResourceCount() > 0: "there were no services found";
@@ -79,11 +68,17 @@ public class HttpMetadataService extends DefaultMetadataService {
 
 /*
  * $Log: HttpMetadataService.java,v $
- * Revision 1.6  2006/03/11 05:57:54  clq2
- * roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
+ * Revision 1.7  2006/03/17 17:50:58  clq2
+ * gtr_1489_cea correted version
  *
- * Revision 1.4  2006/01/10 11:26:52  clq2
- * rolling back to before gtr_1489
+ * Revision 1.5  2006/03/07 21:45:26  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.2.34.2  2006/01/26 13:17:16  gtr
+ * The new Configuration interface is used.
+ *
+ * Revision 1.2.34.1  2005/12/22 13:56:03  gtr
+ * Refactored to match the other kinds of CEC.
  *
  * Revision 1.2  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes

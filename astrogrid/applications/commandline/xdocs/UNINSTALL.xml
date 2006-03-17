@@ -10,11 +10,11 @@
 <section name="Deregistration">
 	<p>
 		You should deregister any resource for which you intend to cease service.
-		For the CL-CEC you should
+		For the CEC you should
 	</p>
 	<ol>
 		<li><em>definitely</em> deregister the service;</li>
-		<li><em>possibly</em>deregister the applications.</li>
+		<li><em>possibly</em> deregister the applications.</li>
 	</ol>
 	<p>
 		You should only deregister the applications if you originally registered them and if
@@ -23,7 +23,7 @@
 	<p>
 		In each case, deregistration means that you edit a resource document in the registry, changing
 		its status to "deleted". Please refer to the 
-		<a href="REGISTER.html#deregister">registration guide</a> for instructions.
+		<a href="REGISTER.html">registration guide</a> for instructions.
 	</p>
 </section>
 

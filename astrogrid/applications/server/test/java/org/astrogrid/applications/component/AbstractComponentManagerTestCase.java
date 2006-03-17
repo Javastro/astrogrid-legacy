@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractComponentManagerTestCase.java,v 1.7 2006/03/11 05:57:54 clq2 Exp $
+ * $Id: AbstractComponentManagerTestCase.java,v 1.8 2006/03/17 17:50:58 clq2 Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -20,9 +20,9 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.component.EmptyCEAComponentManager.VerifyRequiredComponents;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
+import org.astrogrid.applications.manager.BaseConfiguration;
 import org.astrogrid.applications.manager.MetadataService;
 import org.astrogrid.applications.manager.QueryService;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver.StdIOType;
@@ -63,10 +63,9 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
             .getLog(AbstractComponentManagerTestCase.class);
 
    protected void setUp() throws Exception {
-       setupConfigComponentManager();
-       manager = createManager();
+       manager = this.createManager();
+       this.configureManager();
        manager.start();
-         
     }
 
     protected void tearDown() throws Exception {
@@ -77,10 +76,6 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
 
    public void testIsValid() {
         manager.getContainer().verify();
-    }
-
-   public void testVerifyRequiredComponents() {
-        assertNotNull(manager.getContainer().getComponentInstanceOfType(EmptyCEAComponentManager.VerifyRequiredComponents.class));
     }
 
    public void testGetController() {
@@ -101,8 +96,9 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
        RegistryUploader serv =  manager.getRegistryUploaderService();
        assertNotNull(serv);
    }
-   abstract protected void setupConfigComponentManager() ;
    abstract protected CEAComponentManager createManager();
+   abstract protected void configureManager() throws Exception;
+   
    public void testInformation() {
         System.out.println(manager.information());
     }
@@ -112,26 +108,22 @@ public abstract class AbstractComponentManagerTestCase extends TestCase {
        assertNotNull(ts);
    }
 
-   /**
-    * 
-    */
-   public static void basicConfig() {
-      URL registryURL = JavaClassCEAComponentManagerTest.class.getResource("/CEARegistryTemplate.xml");
-         assertNotNull(registryURL);
-        SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.REGISTRY_TEMPLATE_URL,registryURL.toString());
-         SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,"http://astrogrid.unit.test");
-   }
-
 }
 
 
 /*
  * $Log: AbstractComponentManagerTestCase.java,v $
- * Revision 1.7  2006/03/11 05:57:54  clq2
- * roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
+ * Revision 1.8  2006/03/17 17:50:58  clq2
+ * gtr_1489_cea correted version
  *
- * Revision 1.5  2006/01/10 11:26:52  clq2
- * rolling back to before gtr_1489
+ * Revision 1.6  2006/03/07 21:45:26  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.3.20.2  2006/01/31 21:39:07  gtr
+ * Refactored. I have altered the configuration code slightly so that the JUnit tests can impose a Configuration instance to configure the tests. I have also fixed up almost all the bad tests for commandline and http.
+ *
+ * Revision 1.3.20.1  2005/12/18 14:48:25  gtr
+ * Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
  *
  * Revision 1.3  2005/08/10 17:45:10  clq2
  * cea-server-nww-improve-tests

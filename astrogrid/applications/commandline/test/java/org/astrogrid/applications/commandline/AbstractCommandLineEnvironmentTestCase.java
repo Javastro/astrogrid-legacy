@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.6 2006/03/11 05:57:54 clq2 Exp $
+ * $Id: AbstractCommandLineEnvironmentTestCase.java,v 1.7 2006/03/17 17:50:58 clq2 Exp $
  * 
  * Created on 20-Jul-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -13,10 +13,8 @@
 package org.astrogrid.applications.commandline;
 
 import java.io.File;
-
-import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-
 import junit.framework.TestCase;
+import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 
 /**
  * @author Paul Harrison (pharriso@eso.org) 20-Jul-2005
@@ -27,6 +25,7 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 
    protected CommandLineApplicationEnvironment env;
    protected File workingDir;
+   protected BasicCommandLineConfiguration configuration;
 
    /**
     * 
@@ -46,17 +45,8 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 
    protected void setUp() throws Exception {
       super.setUp();
-      workingDir = File.createTempFile("CmdLineApplicationEnvironmentTest",null);
-      workingDir.delete();
-      workingDir.mkdir();
-      assertTrue(workingDir.exists());
-      workingDir.deleteOnExit();
-      env = new CommandLineApplicationEnvironment(new InMemoryIdGen(),new CommandLineApplicationEnvironment.WorkingDir() {
-   
-        public File getDir() {
-            return workingDir;
-        }
-      });
+      this.configuration = new BasicCommandLineConfiguration();
+      env = new CommandLineApplicationEnvironment(new InMemoryIdGen(), this.configuration);
       assertNotNull(env);
       
       
@@ -67,11 +57,17 @@ public abstract class AbstractCommandLineEnvironmentTestCase extends TestCase {
 
 /*
  * $Log: AbstractCommandLineEnvironmentTestCase.java,v $
- * Revision 1.6  2006/03/11 05:57:54  clq2
- * roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
+ * Revision 1.7  2006/03/17 17:50:58  clq2
+ * gtr_1489_cea correted version
  *
- * Revision 1.4  2006/01/10 11:26:52  clq2
- * rolling back to before gtr_1489
+ * Revision 1.5  2006/03/07 21:45:26  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.2.20.2  2006/01/26 13:16:34  gtr
+ * BasicCommandLineConfiguration has absorbed the functions of TestCommandLineConfiguration.
+ *
+ * Revision 1.2.20.1  2005/12/19 18:12:30  gtr
+ * Refactored: changes in support of the fix for 1492.
  *
  * Revision 1.2  2005/08/10 14:45:37  clq2
  * cea_pah_1317

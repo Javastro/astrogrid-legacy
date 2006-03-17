@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineExecutionEnvRetriever.java,v 1.6 2006/03/11 05:57:53 clq2 Exp $
+ * $Id: CommandLineExecutionEnvRetriever.java,v 1.7 2006/03/17 17:50:58 clq2 Exp $
  * 
  * Created on 03-Jun-2005 by Paul Harrison (pharriso@eso.org)
  * Copyright 2005 ESO. All rights reserved.
@@ -26,7 +26,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
-import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment.WorkingDir;
+import org.astrogrid.applications.commandline.CommandLineConfiguration;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.ExecutionIDNotFoundException;
@@ -45,16 +45,17 @@ public class CommandLineExecutionEnvRetriever implements
    private static final Log logger = LogFactory
          .getLog(CommandLineExecutionEnvRetriever.class);
    private final ExecutionHistory executionHistory;
-   private final WorkingDir working;
+   private final File workingDirectory;
    
    
    /**
     * 
     */
-   public CommandLineExecutionEnvRetriever(ExecutionHistory eh, CommandLineApplicationEnvironment.WorkingDir wd) {
+   public CommandLineExecutionEnvRetriever(ExecutionHistory eh, 
+                                           CommandLineConfiguration config) {
 
       executionHistory = eh;
-      working = wd;
+      this.workingDirectory = config.getWorkingDirectory();
    }
 
    /* (non-Javadoc)
@@ -78,7 +79,7 @@ public class CommandLineExecutionEnvRetriever implements
          Application app = executionHistory.getApplicationFromCurrentSet(executionId);
          if(isFinished(app.getStatus()))
          {
-            retval = CommandLineApplicationEnvironment.createExecutionDirectoryName(executionId, working);
+            retval = CommandLineApplicationEnvironment.createExecutionDirectoryName(executionId, workingDirectory);
          }
          else
          {
@@ -90,7 +91,7 @@ public class CommandLineExecutionEnvRetriever implements
       {
          
          ExecutionSummaryType summary = executionHistory.getApplicationFromArchive(executionId);
-         retval = CommandLineApplicationEnvironment.createExecutionDirectoryName(executionId, working);
+         retval = CommandLineApplicationEnvironment.createExecutionDirectoryName(executionId, workingDirectory);
       }
       if(retval != null && !retval.exists())
       {
@@ -121,11 +122,14 @@ public class CommandLineExecutionEnvRetriever implements
 
 /*
  * $Log: CommandLineExecutionEnvRetriever.java,v $
- * Revision 1.6  2006/03/11 05:57:53  clq2
- * roll back to before merged apps_gtr_1489, tagged as rolback_gtr_1489
+ * Revision 1.7  2006/03/17 17:50:58  clq2
+ * gtr_1489_cea correted version
  *
- * Revision 1.4  2006/01/10 11:26:51  clq2
- * rolling back to before gtr_1489
+ * Revision 1.5  2006/03/07 21:45:25  clq2
+ * gtr_1489_cea
+ *
+ * Revision 1.2.34.1  2005/12/19 18:12:30  gtr
+ * Refactored: changes in support of the fix for 1492.
  *
  * Revision 1.2  2005/07/05 08:27:01  clq2
  * paul's 559b and 559c for wo/apps and jes

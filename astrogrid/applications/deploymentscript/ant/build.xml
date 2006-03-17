@@ -1,5 +1,8 @@
 <project name="install" default="info" basedir=".">
 	<property file="default.properties"/>
+
+	<!-- This is the directory in which the WAR is unpacked to get at files such as 
+		   the registration template. The directory is not used after the installation. -->
 	<property name="cea.temporary.dir" value="cea-tmp"/>
 	
 	<property name="local.cea.war" value="${basedir}/cea.war"/>
@@ -17,7 +20,7 @@
     	<property file="${input.loadProperties.file}"/>
     </target>
 
-	<target name="install" description="Install cea" depends="deploy, copy-java-app, copy-registry-template, setup-working">
+	<target name="install" description="Install cea" depends="deploy, copy-java-app, set-registration-template, set-application-description, setup-working">
 	        <echo>***The cea has been successfully installed***</echo>
 	    	<property name="cea.installed" value="true"/>	
     </target>		
@@ -48,10 +51,13 @@
 		<echo>   Java (manages applications written in Java)</echo>
 		<echo>   commandline (manages command-line applications)</echo>
 		<echo>   http (delegates to http services such as SIAP servers)</echo>		
-		<input addproperty="input.cea.flavour" validargs="commandline,http,Java" defaultvalue="commandline">Which flavour of CEA do you wish to (un)install?</input>
+		<input addproperty="input.cea.flavour" 
+			validargs="commandline,http,Java" 
+			defaultvalue="commandline">Which flavour of CEA do you wish to (un)install?</input>
 	</target>
 	
-	<target name="set-flavour-dependent-properties" depends="load-flavour-dependent-properties, choose-flavour, get-vanilla-inputs, get-commandline-inputs, get-http-inputs"/>
+	<target name="set-flavour-dependent-properties" 
+		depends="load-flavour-dependent-properties, choose-flavour, get-vanilla-inputs, get-commandline-inputs, get-http-inputs"/>
 	
 	<target name="load-flavour-dependent-properties" depends="choose-flavour">
 		<condition property="cea.flavourdependentpropertiesfile" value="vanilla.properties">
@@ -64,6 +70,7 @@
 			<equals arg1="${input.cea.flavour}" arg2="http"/>
 		</condition>		
 		<property file="${cea.flavourdependentpropertiesfile}"/>
+		<echo message="cea.flavour.iscommandline = ${cea.flavour.iscommandline}"/>
 	</target>
 	
 	<!--anything vanilla specific-->
@@ -92,17 +99,22 @@
 	</target>
 	<!--anything cmdline specific-->
 	<target name="get-commandline-inputs" depends="load-flavour-dependent-properties" if="cea.flavour.iscommandline">
-		<input addproperty="input.cea.config.file" defaultvalue="${antigen.home}">Please locate the commandline config file for this cea</input>		
+		<input addproperty="input.cea.config.file" 
+			defaultvalue="${antigen.home}">Please give the location of the application-description file.</input>
+		<property name="cea.has.app.description" value="true"/>
 	</target>	
 	
-	<target name="setup-working" description="Initialise the cea working dir" depends="get-working-dir" if="cea.flavour.iscommandline">
+	
+	
+	<target name="setup-working" description="Initialise the cea working dir" depends="get-working-dir">
 		<echo>setting up working directory</echo>
-		<mkdir dir="${input.cea.working.dir}/run"/>		
-		<mkdir dir="${input.cea.working.dir}/store"/>
-        <chmod dir="${input.cea.working.dir}" perm="a+x">
-                <include name="*.sh" />
-        	    <include name="*.bat"/>
-        </chmod>		
+		<mkdir dir="${input.cea.working.dir}/config"/>	
+		<mkdir dir="${input.cea.working.dir}/temp"/>		
+		<mkdir dir="${input.cea.working.dir}/records"/>
+    <chmod dir="${input.cea.working.dir}" perm="a+x">
+      <include name="*.sh" />
+      <include name="*.bat"/>
+    </chmod>		
 	</target>
 			
 	<target name="info">
@@ -174,7 +186,8 @@
             path="${input.cea.contextpath}"  />
     </target>   
 
-    <target name="update-war" depends="set-war-location,download, get-input-properties, set-flavour-dependent-properties, set-context-path, get-working-dir,checkRegistry,copy-registry-template">
+    <target name="update-war" 
+    	depends="set-war-location,download, get-input-properties, set-flavour-dependent-properties, set-context-path, get-working-dir,checkRegistry,set-registration-template">
         <filterset id="myfilter">
 
           <filter token="CEA_WEBAPP" value="${input.cea.contextpath}"/>
@@ -182,14 +195,12 @@
         	<!--Registry template file?-->
         	<filter token="REG_UPDATE" value="${astrogrid.registry.update.endpoint}"/>
         	<filter token="REG_QUERY" value="${astrogrid.registry.query.endpoint}"/>        
-        	<filter token="CEACMDCONFIG" value="${input.cea.config.file}"/> 
+        	<filter token="CEACMDCONFIG" value="${input.cea.config.file}"/> <!-- Obsolete -->
         	<filter token="REGAUTHORITY" value="${input.cea.regauthority}"/>  
         	
-        	<filter token="CEA_SERVICE_URL" value="${cea.service.endpoint.url}"/>
+        	<filter token="CEA_SERVICE_URL" value="${cea.service.endpoint.url}"/> <!-- Should refer to web-app URL -->
         	<filter token="MAILHOST" value="${input.cea.mailserver}"/> 
         	<filter token="JAVACLASS" value="${input.cea.javaclass.server.class}"/> 
-        	
-        	<filter token="CEARegistryTemplate" value="${cea.registry.template.file}"/>
         	
         </filterset>
         <copy todir="${cea.temporary.dir}/cea" overwrite="true">
@@ -225,37 +236,52 @@
         <mkdir dir="${cea.temporary.dir}"/>
     </target>
 	
-	<target name="copy-registry-template" depends="set-war-location,download,get-working-dir,createTmpDir,get-registry-key" unless="cea.registry.template.file">	
-		<property name="cea.registry.conf.dir" value="${input.cea.working.dir}/conf"/>
-		<mkdir dir="${cea.registry.conf.dir}"/>
-		<echo>Extracting registry template file ${cea.registry.template} from </echo>
-		<unwar src="${cea.war}"  dest="${cea.temporary.dir}" overwrite="true">
-		    <patternset>
-		        <include name="${cea.registry.template}"/>
-		    </patternset>
-		</unwar>	
+	<target name="set-registration-template" 
+		depends="set-war-location,download,get-working-dir,createTmpDir,get-registry-key">
+		
+		<echo>Extracting registration-template file from ${cea.war} to ${cea.temporary.dir}...</echo>
+		<unwar src="${cea.war}" dest="${cea.temporary.dir}" overwrite="true">
+		  <patternset>
+		    <include name="registration-template.xml"/>
+		  </patternset>
+		</unwar>
+		
 		<input addproperty="input.cea.username" defaultvalue="John Taylor">Please enter the contact name you wish to put in the registry</input>
 		<input addproperty="input.cea.useremail" defaultvalue="jdt@roe.ac.uk">Please enter the contact email you wish to put in the registry</input>		
 		<tstamp>
 			<format property="installation.time" pattern="yyyy-MM-dd"/>
 		</tstamp>
-		<!--Now apply filters to that file-->
+		
+		<!-- AFAIK, this filterset is not used - GTR
         <filterset id="regfilter">
-            <filter token="REGAUTHORITY" value="${input.cea.regauthority}"/>
-            <filter token="DefaultCEC" value="${input.cea.regkey}"/>  
-            <filter token="CONTACT_NAME" value="${input.cea.username}"/>
-            <filter token="CONTACT_EMAIL" value="${input.cea.useremail}"/> 
+          <filter token="REGAUTHORITY" value="${input.cea.regauthority}"/>
+          <filter token="DefaultCEC" value="${input.cea.regkey}"/>  
+          <filter token="CONTACT_NAME" value="${input.cea.username}"/>
+          <filter token="CONTACT_EMAIL" value="${input.cea.useremail}"/> 
         	<filter token="TODAY" value="${installation.time}"/> 
-        </filterset>	
-		<property name="cea.registry.template.file" value="${cea.registry.conf.dir}/CeaRegistryTemplate.xml"/>		
+        </filterset>
+		-->
 
-		<xslt style="templatetransformer.xsl" in="${cea.temporary.dir}/${cea.registry.template}" out="${cea.registry.template.file}">
+		<!-- Transform the temporary copy of the registration template into the working copy,
+			   setting the important parameters. Some of the parameters from the dead filterset
+		     above should be added to the XSL stylesheet. -->
+		<xslt style="templatetransformer.xsl" 
+			    in="${cea.temporary.dir}/registration-template.xml" 
+			    out="${input.cea.working.dir}/config/registration-template.xml">
 		   <param name="REGAUTHORITY" expression="${input.cea.regauthority}"/>
-	       <param name="CECNAME" expression="${input.cea.regkey}"/>
+	     <param name="CECNAME" expression="${input.cea.regkey}"/>
 		</xslt>
-		<echo>Registry Template File copied to ${cea.registry.template.file}</echo>
+		<echo>Registration template has been installed at ${input.cea.working.dir}/config/registration-template.xml</echo>
 	</target>
 
+	<target name="set-application-description"
+		      description="Copies the user-supplied application-description file to the standard location where the CEC expectes it."
+		      if="cea.flavour.iscommandline"
+		      depends="get-working-dir,setup-working,get-commandline-inputs">
+		<copy file="${input.cea.config.file}" 
+			tofile="${input.cea.working.dir}/config/app-description.xml"
+			overwrite="true"/>
+	</target>
 
 	
 	<!-- The reason for making these optional is that they might be already
