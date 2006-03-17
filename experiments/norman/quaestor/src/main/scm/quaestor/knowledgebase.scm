@@ -2,6 +2,8 @@
 ;;
 ;; Support for the `knowledgebase' for Quaestor
 
+(import s2j)
+
 (require-library 'quaestor/jena)
 
 (require-library 'sisc/libs/srfi/srfi-1)
@@ -112,7 +114,10 @@
   ;;
   ;;    (kb 'add-abox/tbox SUBMODEL-NAME SUBMODEL)
   ;;        Add or update a abox/tbox with the given name.
-  ;;        SUBMODEL-NAME may be a string or a symbol.
+  ;;        SUBMODEL-NAME may be a string or a symbol.  Return #t on success
+  ;;    (kb 'get-inferencing-model)
+  ;;        As with GET-MODEL, except that it is an inferencing model.
+  ;;        Return #f on error (doesn't actually happen)
   ;;    (kb 'get-model)
   ;;        Return the model, or #f if none exists.
   ;;    (kb 'get-model SUBMODEL-NAME)
@@ -135,7 +140,17 @@
   (define (make-kb kb-name)
     (let ((submodels '())     ;a list of (name tbox? . submodel) pseudo-lists
           (myname kb-name)
-          (metadata #f))
+          (metadata #f)
+          (merged-model #f)
+          (inferencing-model #f))
+      (define (get-abox-or-tbox tbox?)
+        (let ((models (filter (if tbox?
+                                  (lambda (x) (cadr x))
+                                  (lambda (x) (not (cadr x))))
+                              submodels)))
+          (if (null? models)            ;XXX MEMOIZE THIS
+              #f
+              (rdf:merge-models (map cddr models)))))
 
       (lambda (cmd . args)
         (case cmd
@@ -150,16 +165,27 @@
                                submodels
                                (as-symbol (car args))
                                (cadr args)
-                               (eq? cmd 'add-tbox))))
+                               (eq? cmd 'add-tbox)))
+           (set! merged-model #f)
+           (set! inferencing-model #f)
+           #t)
 
           ((get-model)
            ;; (kb 'get-model [SUBMODEL-NAME])
            ;; Return newly-merged model or #f if no models exist
            (case (length args)
              ((0)
-              (if (null? submodels)
-                  #f
-                  (rdf:merge-models (map cddr submodels))))
+              (cond ((null? submodels)
+                     #f)
+                    (merged-model)
+                    (else
+                     (set! merged-model
+                           (rdf:merge-models (map cddr submodels)))
+                     merged-model))
+;;               (if (null? submodels)
+;;                   #f
+;;                   (rdf:merge-models (map cddr submodels)))
+              )
              ((1)
               (let ((sm (assq (as-symbol (car args))
                               submodels)))
@@ -168,6 +194,26 @@
               (error 'make-kb
                      "Bad call to get: wrong number of args in ~a"
                      args))))
+
+          ((get-inferencing-model)
+           ;; return #f on error (doesn't actually happen)
+           (if (not inferencing-model)
+               (let ((tbox (get-abox-or-tbox #t))
+                     (abox (get-abox-or-tbox #f)))
+                 (define-java-classes
+                   (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
+                 (define-generic-java-methods
+                   create-inf-model)
+                 (set! inferencing-model
+                       (if abox
+                           (create-inf-model (java-null <factory>)
+                                             (rdf:get-reasoner)
+                                             tbox
+                                             abox)
+                           (create-inf-model (java-null <factory>)
+                                             (rdf:get-reasoner)
+                                             tbox)))))
+           inferencing-model)
 
           ((has-model)
            ;; (kb 'has-model [SUBMODEL-NAME])
@@ -189,13 +235,15 @@
            (or (null? args)
                (error 'make-kb
                       "Bad call to get-model-tbox/abox: wrong no args ~s" args))
-           (let ((models (filter (if (eq? cmd 'get-model-tbox)
-                                     (lambda (x) (cadr x))
-                                     (lambda (x) (not (cadr x))))
-                                 submodels)))
-             (if (null? models)
-                 #f
-                 (rdf:merge-models (map cddr models)))))
+           (get-abox-or-tbox (eq? cmd 'get-model-tbox))
+;;            (let ((models (filter (if (eq? cmd 'get-model-tbox)
+;;                                      (lambda (x) (cadr x))
+;;                                      (lambda (x) (not (cadr x))))
+;;                                  submodels)))
+;;              (if (null? models)
+;;                  #f
+;;                  (rdf:merge-models (map cddr models))))
+           )
 
           ((get-metadata-as-string)
            (cond ((is-java-type? metadata '|java.lang.String|)

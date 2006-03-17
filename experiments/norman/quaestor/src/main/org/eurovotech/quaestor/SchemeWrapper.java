@@ -60,29 +60,30 @@ public class SchemeWrapper {
      * Evaluates the string, returning the value as a String.
      *
      * @param expr a scheme expression
-     * @return a Java Object (String or Boolean) representing the
-     * value of the expression
+     * @return a Java Object (String, Boolean or null
+     * (see {@link #schemeToJava}) representing the value of the expression
+     * @throws IOException if there was a problem parsing the expression
+     * @throws SchemeException if one there was a problem executing
+     * the expression
      */
     public Object eval(final String expr)
             throws IOException, SchemeException {
         Object o = Context.execute
             (new SchemeCaller() {
-                 public Object execute(Interpreter i) {
+                 public Object execute(Interpreter i)
+                         throws SchemeException {
                      try {
                          return schemeToJava(i.eval(expr));
-                     } catch (Exception e) {
+                     } catch (IOException e) {
                          return e;
                      }
                  }
              });
-        if (o instanceof IOException)
+        if (o instanceof Exception) {
+            assert(o instanceof IOException);
             throw (IOException)o;
-        else if (o instanceof SchemeException)
-            throw (SchemeException)o;
-        else {
-            assert(!(o instanceof Exception));
-            return o;
         }
+        return o;
     }
 
     /**
@@ -91,78 +92,91 @@ public class SchemeWrapper {
      *
      * @param proc the name of a Scheme procedure defined in the top level
      * @param args an array of Java objects
-     * @return a Java Object (String or Boolean) representing the
-     * value of the expression
-     * @throws SchemeException passed on from execute
+     * @return a Java Object (String, Boolean or null
+     * (see {@link #schemeToJava}) representing the value of the expression
+     * @throws IOException if there was a problem parsing the expression
+     * @throws SchemeException if one there was a problem executing
+     * the expression
      */
     public Object eval(final String proc, final Object[] args)
             throws IOException, SchemeException {
         Object o = Context.execute
             (new SchemeCaller() {
-                 public Object execute(Interpreter r) {
-                     try {
-                         Procedure p = (Procedure)r.eval(Symbol.get(proc));
-                         Value[] v = r.createValues(args.length);
-                         for (int i=0; i<args.length; i++)
-                             v[i] = new sisc.modules.s2j.JavaObject(args[i]);
-                         return schemeToJava(r.eval(p, v));
-                     } catch (Exception e) {
-                         return e;
-                     }
+                 public Object execute(Interpreter r)
+                         throws SchemeException {
+                     Procedure p = (Procedure)r.eval(Symbol.get(proc));
+                     Value[] v = r.createValues(args.length);
+                     for (int i=0; i<args.length; i++)
+                         v[i] = new sisc.modules.s2j.JavaObject(args[i]);
+                     return schemeToJava(r.eval(p, v));
                  }
              });
-        if (o instanceof IOException)
+        if (o instanceof Exception) {
+            assert(o instanceof IOException);
             throw (IOException)o;
-        else if (o instanceof SchemeException)
-            throw (SchemeException)o;
-        else {
-            assert(!(o instanceof Exception));
-            return o;
         }
+        return o;
     }
 
     /**
      * Evals the given input stream.
+     * @return a Java Object (String, Boolean or null
+     * (see {@link #schemeToJava}) representing the value of the expression
+     * @throws IOException if the input stream cannot be parsed
+     * @throws SchemeException if there is a syntax error reading the 
+     * Scheme input
      */
     public Object evalInput(final java.io.InputStream in)
-            throws SchemeException {
+            throws IOException, SchemeException {
         Object o = Context.execute
             (new SchemeCaller() {
-                 public Object execute(Interpreter i) {
+                 public Object execute(Interpreter i)
+                         throws SchemeException {
                      try {
                          return schemeToJava(i.evalInput
                                              (new StreamInputPort(in)));
-                     } catch (Exception e) {
+                     } catch (IOException e) {
                          return e;
                      }
                  }
              });
-        if (o instanceof SchemeException)
-            throw (SchemeException)o;
-        else {
-            assert(!(o instanceof Exception));
-            return o;
+        if (o instanceof Exception) {
+            assert(o instanceof IOException);
+            throw (IOException)o;
         }
+        return o;
     }
-
+    
     /**
      * Loads the given source file into the interpreter.
      * @param loadFile the full path of a file to load
-     * @return true if the load succeeded; false otherwise
-     * @throws SchemeException passed on from execute
+     * @return true if the load succeeded; throws descriptive exception
+     * if there are errors reading the file
+     * @throws IOException if the file cannot be parsed, or if there is a
+     * scheme error when reading the file
      */
     public boolean load(final String loadFile)
-            throws SchemeException {
-        Boolean stat = (Boolean)Context.execute
-            (new SchemeCaller() {
-                 public Object execute(Interpreter r) {
-                     return Boolean.valueOf
-                             (r.loadSourceFiles(new String[] { loadFile }));
-                 }
-             });
-        return stat.booleanValue();
-    }
+            throws IOException, SchemeException {
+        // Load the file using the LOAD procedure.  This is different from
+        // Interpreter.loadSourceFiles since that just returns true or false,
+        // whereas this will throw a SchemeException if there's a problem
+        // loading the file.  It's also different from just "(load loadFile)",
+        // since that displays the error-record structure, which takes
+        // some parsing by eye.  The following expression evaluates to
+        // either #t on success, or a string on error.
+        Object o = eval("(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a (~a)\" (error-location r) (error-message r) (if parent (show-err parent) \"thatsall\")))) (show-err m)) (lambda () (load \"" + loadFile + "\") #t))");
+        if (o instanceof String) {
+            // Contains an error message from the failure-continuation.
+            // We can't create SchemeExceptions (no useful constructor),
+            // so hijack the IOException instead.  Ought this to be a
+            // ServletException?
+            throw new IOException("Error reading file " + loadFile
+                                  + ": " + o);
+        }
 
+        return true;
+    }
+    
     /**
      * Loads the given source file at least once.  This works like
      * {@link #load}, except that if it is called a second time with

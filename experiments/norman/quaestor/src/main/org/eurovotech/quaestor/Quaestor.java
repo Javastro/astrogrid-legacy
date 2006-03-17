@@ -15,18 +15,38 @@ import sisc.interpreter.SchemeException;
  * The main servlet for the Quaestor application
  */
 public class Quaestor extends HttpServlet {
+
+    private java.util.Map requestHandlerMap;
     
     public void init()
             throws ServletException {
+        String qt = null;
         try {
-            String qt = getServletContext().getRealPath("WEB-INF/quaestor.scm");
+            qt = getServletContext().getRealPath("WEB-INF/quaestor.scm");
             if (!SchemeWrapper.getInstance().loadOnce(qt)) {
+                // shouldn't happen -- load returns true or throws exception
                 throw new ServletException
-                        ("Failed to load Quaestor from " + qt);
+                        ("Unexpected return from Quaestor load: " + qt);
             }
-
+            log("Successfully(?) loaded quaestor.scm from " + qt);
+            
+            String kbContext = getInitParameter("kb-context");
+            String xmlrpcContext = getInitParameter("xmlrpc-context");
+            requestHandlerMap = new java.util.HashMap();
+            requestHandlerMap.put("GET" + kbContext,
+                                  "http-get");
+            requestHandlerMap.put("PUT" + kbContext,
+                                  "http-put");
+            requestHandlerMap.put("DELETE" + kbContext,
+                                  "http-delete");
+            requestHandlerMap.put("POST" + kbContext,
+                                  "http-post");
+            requestHandlerMap.put("POST" + xmlrpcContext,
+                                  "xmlrpc-handler");
+        } catch (IOException e) {
+            throw new ServletException("Couldn't parse load file " + qt, e);
         } catch (SchemeException e) {
-            throw new ServletException(e);
+            throw new ServletException("Error reading file " + qt, e);
         }
     }
 
@@ -35,7 +55,46 @@ public class Quaestor extends HttpServlet {
      * Quaestor procedures.  That procedure is responsible for handling the
      * request, examining the headers, and setting the response status.
      */
-    private void callQuaestorHandler(String quaestorMethod,
+    private void callQuaestorHandler(String httpMethod,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response)
+            throws IOException, ServletException {
+        String context = request.getServletPath();
+        String quaestorMethod
+                = (String)requestHandlerMap.get(httpMethod+context);
+        if (quaestorMethod == null) {
+            response.setContentType("text/plain");
+            response.setStatus(response.SC_NOT_IMPLEMENTED);
+
+            StringBuffer mapkeys = new StringBuffer();
+            for (java.util.Iterator i=requestHandlerMap.keySet().iterator();
+                 i.hasNext(); ) {
+                mapkeys.append((String)i.next()).append(", ");
+            }
+            
+            response.getWriter().println
+                    ("Method " + httpMethod + " not implemented for context "
+                     + context
+                     + " (can have" + mapkeys.toString() + ")");
+        } else {
+            log(httpMethod + context + ": calling procedure " + quaestorMethod);
+            try {
+                Object val = SchemeWrapper
+                        .getInstance()
+                        .eval(quaestorMethod,
+                              new Object[] { request, response });
+                if (val instanceof String) {
+                    PrintWriter out = response.getWriter();
+                    out.println(val);
+                }
+            } catch (SchemeException e) {
+                log("Scheme exception: " + e);
+                throw new ServletException(e);
+            }
+        }
+    }
+                
+    private void xXcallQuaestorHandler(String quaestorMethod,
                                      HttpServletRequest request,
                                      HttpServletResponse response)
             throws IOException, ServletException {
@@ -63,7 +122,7 @@ public class Quaestor extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response)
             throws IOException, ServletException {
-        callQuaestorHandler("http-get", request, response);
+        callQuaestorHandler("GET", request, response);
     }
 
     /**
@@ -73,7 +132,7 @@ public class Quaestor extends HttpServlet {
     public void doPut(HttpServletRequest request,
                       HttpServletResponse response)
             throws IOException, ServletException {
-        callQuaestorHandler("http-put", request, response);
+        callQuaestorHandler("PUT", request, response);
     }
 
     /**
@@ -83,7 +142,7 @@ public class Quaestor extends HttpServlet {
     public void doDelete(HttpServletRequest request,
                          HttpServletResponse response)
             throws IOException, ServletException {
-        callQuaestorHandler("http-delete", request, response);
+        callQuaestorHandler("DELETE", request, response);
     }
 
     /**
@@ -93,6 +152,6 @@ public class Quaestor extends HttpServlet {
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response)
             throws IOException, ServletException {
-        callQuaestorHandler("http-post", request, response);
+        callQuaestorHandler("POST", request, response);
     }
 }

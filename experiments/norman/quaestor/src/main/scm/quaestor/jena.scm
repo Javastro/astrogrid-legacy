@@ -15,7 +15,8 @@
   rdf:language-ok?
   rdf:mime-type->language
   rdf:language->mime-type
-  rdf:mime-type-list)
+  rdf:mime-type-list
+  rdf:get-reasoner)
 
  ;; Return a new empty model
  (define (rdf:new-empty-model)
@@ -130,5 +131,58 @@
           (->string s))
          (else
           #f)))
+
+;; Return a new Reasoner object
+(define (rdf:get-reasoner)
+
+  (define (get-dig-reasoner)
+    (define-java-classes
+      ;;(<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|)
+      <com.hp.hpl.jena.reasoner.reasoner-registry>
+      <com.hp.hpl.jena.rdf.model.model-factory>
+      ;;(<factory> |com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory|)
+      ;;<com.hp.hpl.jena.rdf.model.resource>
+      )
+    (define-generic-java-methods
+      the-registry
+      (create-with-owl-axioms |createWithOWLAxioms|)
+      get-factory
+      create-resource
+      create-default-model
+      add-property)
+
+    (let* ((config-model (create-default-model
+                          (java-null <com.hp.hpl.jena.rdf.model.model-factory>)))
+           (conf (create-resource config-model)))
+      (add-property conf
+                    (java-retrieve-static-object
+                     '|com.hp.hpl.jena.vocabulary.ReasonerVocabulary.EXT_REASONER_URL|)
+                    (create-resource config-model
+                                     (->jstring (dig-uri))))
+      ;(chatter "Connecting to DIG reasoner at ~a" (dig-uri))
+      (create-with-owl-axioms
+       (get-factory
+        (the-registry (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>))
+        (java-retrieve-static-object
+         '|com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory.URI|))
+       conf)))
+
+  (define (get-owl-reasoner)
+    (define-java-classes
+      (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
+    (define-generic-java-methods
+      (get-owl-reasoner |getOWLReasoner|))
+    ;(chatter "Creating OWL reasoner")
+    (get-owl-reasoner (java-null <registry>)))
+
+  (define (get-rdfs-reasoner)
+    (define-java-class
+      <com.hp.hpl.jena.reasoner.reasoner-registry>)
+    (define-generic-java-methods
+      (get-rdfs-reasoner |getRDFSReasoner|))
+    ;(chatter "Creating RDFS reasoner")
+    (get-rdfs-reasoner (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>)))
+
+  (get-owl-reasoner))
 
 )

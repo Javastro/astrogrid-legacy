@@ -27,17 +27,27 @@
       reports parameters.
     </description>
     <servlet-class>org.eurovotech.quaestor.Quaestor</servlet-class>
+    <init-param>
+      <param-name>kb-context</param-name>
+      <param-value>/kb</param-value>
+    </init-param>
+    <init-param>
+      <param-name>xmlrpc-context</param-name>
+      <param-value>/xmlrpc</param-value>
+    </init-param>
   </servlet>
 
+  <!--
   <servlet>
     <servlet-name>xmlrpc-server</servlet-name>
     <description>Implements an XML-RPC server</description>
     <servlet-class>org.eurovotech.quaestor.XmlRpcServer</servlet-class>
     <init-param>
       <param-name>rpc-handler-procedure</param-name>
-      <param-value>handle-xmlrpc</param-value>
+      <param-value>xmlrpc-handler</param-value>
     </init-param>
   </servlet>
+  -->
 
   <servlet>
     <servlet-name>codemanager</servlet-name>
@@ -52,10 +62,12 @@
   <servlet-mapping>
     <servlet-name>quaestor</servlet-name>
     <url-pattern>/kb/*</url-pattern>
+    <!-- If this is changed, there must be corresponding changes to
+         quaestor.scm, which relies on this URL. -->
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>xmlrpc-server</servlet-name>
+    <servlet-name>quaestor</servlet-name>
     <url-pattern>/xmlrpc</url-pattern>
   </servlet-mapping>
 

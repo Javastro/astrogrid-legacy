@@ -74,10 +74,29 @@ the server has been configured to permit it.</dd>
 <h2>XML-RPC interface</h2>
 
 <dl>
-<dt><code>get-model(<em>knowledgebase:string</em> [,
-<em>submodel:string</em>])</code> : <em>URI</em></dt>
-<dd>Retrieve a URI from which the client can obtain the full
-knowledgebase, or just a submodel.</dd>
+<dt><code>get-model(<em>knowledgebase:string</em> 
+[,<em>submodel:string</em>])</code> : <em>URI</em></dt>
+<dd>Retrieve a URL from which the client can obtain the full
+knowledgebase, or just a submodel.  This is just a convenience method,
+since the URL returned is just the one described in the HTTP-interface
+above.</dd>
+</dl>
+
+<h3>Fault codes</h3>
+<dl>
+<dt>0</dt>
+<dd>Seriously malformed request, such as mangled XML, or invalid
+request headers</dd>
+
+<dt>1</dt>
+<dd>Unrecognised method</dd>
+
+<dt>2</dt>
+<dd>Malformed request: the method was syntactically valid and
+intelligible, but had the wrong number or type of arguments</dd>
+
+<dt>10</dt>
+<dd>Unknown object requested, either an invalid knowledgebase or submodel</dd>
 </dl>
 
 </body>
