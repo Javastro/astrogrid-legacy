@@ -181,12 +181,14 @@ public class StapRetrieval extends Retriever {
         } else {
             details  = "No Start Time";
         }
-
+        /*
         if (timeEnd > -1 && row[timeEnd] != null) {
             details += "-" + row[timeEnd].toString();
         } else {
             details  += " - No End Time";
         }
+        */
+        
         valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL);
         if(formatCol > -1 && row[formatCol] != null) {
             String type = row[formatCol].toString();

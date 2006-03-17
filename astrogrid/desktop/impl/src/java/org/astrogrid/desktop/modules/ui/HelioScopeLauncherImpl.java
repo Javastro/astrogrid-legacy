@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.4 2006/03/16 18:12:56 jdt Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.5 2006/03/17 09:15:42 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -423,6 +423,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         startCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
         startCal.setNullAllowed(false);
         startCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+        startCal.setEditable(true);
         Calendar setStartCal = startCal.getCalendar();
         setStartCal.set(2000,0,1,0,0,0);
         startCal.setDate(setStartCal.getTime());
@@ -430,6 +431,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         endCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
         endCal.setNullAllowed(false);
         endCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+        endCal.setEditable(true);
         Calendar setEndCal = endCal.getCalendar();
         setEndCal.set(2000,0,2,0,0,0);
         endCal.setDate(setEndCal.getTime());
@@ -623,6 +625,10 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.5  2006/03/17 09:15:42  KevinBenson
+minor change on stapretrieval to show only the startdate for the valNode and for
+helioscope to make the combobox editable
+
 Revision 1.4  2006/03/16 18:12:56  jdt
 Some bug fixes, and the next version of the plastic library.
 
