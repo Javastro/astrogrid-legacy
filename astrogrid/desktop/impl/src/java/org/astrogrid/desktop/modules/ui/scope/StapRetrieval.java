@@ -192,10 +192,11 @@ public class StapRetrieval extends Retriever {
         valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL);
         if(formatCol > -1 && row[formatCol] != null) {
             String type = row[formatCol].toString();
+            //@todo Should fix this more correctly on the retriever or check about stap doing a real mime type on the return.
             if(type.indexOf('-') > -1) {
-                valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type.substring(type.indexOf('-')+1));
+                valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,"/" + type.substring(type.indexOf('-')+1).toLowerCase());
             }else {
-                valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type);
+                valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,"/" + type.toLowerCase());
             }
             
         }
