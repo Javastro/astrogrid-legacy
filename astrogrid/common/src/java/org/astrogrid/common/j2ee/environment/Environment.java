@@ -1,10 +1,15 @@
 package org.astrogrid.common.j2ee.environment;
 
 import java.net.URL;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 
 /**
  * A Java bean representing the environment of a web application
@@ -40,6 +45,7 @@ import org.w3c.dom.NodeList;
  * @author Guy Rixon
  */
 public class Environment {
+  private static Log log = LogFactory.getLog(Environment.class);
 
   /** Creates a new instance of Environment */
   public Environment() {}
@@ -102,21 +108,19 @@ public class Environment {
    * to extract the environment entries.
    */
   public void setDeploymentDescriptor(String webDotXmlUri) throws Exception {
-    this.parse(webDotXmlUri);
-  }
-
-  /**
-   * Parses a given file and returns the environment entries.
-   */
-  private void parse(String webDotXmlUri) throws Exception {
-
-    // Parse web.xml into a DOM tree. Validate the input; this is important
-    // as the transcription from DOM to Java beans is simplistic and
-    // requires schema correctness.
+    log.debug("Parsing the deployment descriptor at " + webDotXmlUri);
+    
+    // Parse web.xml into a DOM tree.
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    factory.setValidating(true);  // web.xml should be validated as it is read.
-    Document webDotXmlDoc = factory.newDocumentBuilder().parse(webDotXmlUri);
-
+    factory.setValidating(false);
+    factory.setCoalescing(true);
+    factory.setExpandEntityReferences(false);
+    factory.setNamespaceAware(false);
+    DocumentBuilder domParser = factory.newDocumentBuilder();
+    domParser.setEntityResolver(new DtdResolver());
+    Document webDotXmlDoc = domParser.parse(webDotXmlUri);
+    log.debug("Now we have a DOM for the deployment descriptor.");
+    
     // Isolate the environment entries, count them and set up their beans.
     NodeList envEntryNodes = webDotXmlDoc.getElementsByTagName("env-entry");
     int nBeans = envEntryNodes.getLength();
@@ -193,5 +197,44 @@ public class Environment {
       return null;
     }
   }
+  
+
+  /**
+   * A resolver for the DTDs governing the deployment descriptor.
+   * This resolver forces the parser to use local copies of the DTDs.
+   * It stops the parser crashing due to lack of DTDs when the copies on
+   * the web are not available.
+   */
+  protected class DtdResolver implements EntityResolver {
+ 
+    /**
+     * Locates the DTD for the deployment descriptor.
+     * The given public-ID of the DTD is resolved to a local copy
+     * of the DTD text. The given system-ID is not used. This class
+     * can only resolve the DTDs for the servlet 2.2 and 2.3 specifications.
+     *
+     * @param publicId The public id of the DTD in the instance document.
+     * @param systemId The system ID for the DTD in the instance document.
+     * @return A source based on the local copy of the DTD.
+     */
+    public InputSource resolveEntity(String publicId, String systemId) {
+      log.debug("Resolving " + publicId);
+      if (publicId.equals("-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN")) {
+        URL u = this.getClass().getResource("web-app_2_2.dtd");
+        log.debug("Resolved to " + u);
+        return new InputSource(u.toString());
+      }
+      else if (publicId.equals("-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN")) {
+        URL u = this.getClass().getResource("web-app_2_3.dtd");
+        log.debug("Resolved to " + u);
+        return new InputSource(u.toString());
+      }
+      else {
+        log.debug("Not resolved.");
+        return null;
+      }
+    }
+  }
+  
 
 }

@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A servlet to support configuration of a web application's environment.
@@ -34,12 +36,20 @@ import javax.servlet.http.HttpServletResponse;
  * @author Guy Rixon
  */
 public class EnvironmentServlet extends HttpServlet {
-
+  
+  private static Log log = LogFactory.getLog(EnvironmentServlet.class);
+  
   /**
    * The bean representing the overall environment.
    * The purpose of the servlet is to maintain this bean.
    */
   private Environment environment;
+  
+  /**
+   * The web resource to which control is transfered after this
+   * servlet finishes processing a request.
+   */
+  private String nextResource;
 
   /** Creates a new instance of EnvironmentServlet */
   public EnvironmentServlet() {
@@ -47,8 +57,15 @@ public class EnvironmentServlet extends HttpServlet {
   }
 
   public void init() throws ServletException {
+    log.debug("Initializing the EnvironmentServlet...");
     ServletContext context = this.getServletContext();
     try {
+      this.nextResource = this.getInitParameter("next.resource");
+      if (this.nextResource == null) {
+        this.nextResource = "/admin/environment-main.jsp";
+      }
+      log.debug("The EnvironmentServlet redirects to " + this.nextResource);
+      
       URL webDotXmlUrl = context.getResource("/WEB-INF/web.xml");
       this.environment.setDeploymentDescriptor(webDotXmlUrl.toString());
       context.setAttribute("environment", this.environment);
@@ -59,6 +76,7 @@ public class EnvironmentServlet extends HttpServlet {
       this.environment.setContextPath(rootUri2.substring(slashIndex));
     }
     catch (Exception e) {
+      log.warn("The EnvironmentServlet failed during initialization: " + e);
       throw new ServletException(e);
     }
   }
@@ -80,7 +98,7 @@ public class EnvironmentServlet extends HttpServlet {
       }
 
       // Hand off to a JSP to render the next page.
-      RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/environment-main.jsp");
+      RequestDispatcher dispatcher = request.getRequestDispatcher(this.nextResource);
       dispatcher.forward(request, response);
     }
     catch (Exception e) {
