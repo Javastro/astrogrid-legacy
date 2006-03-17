@@ -15,6 +15,9 @@
 <body>
 
 	<release version="pending" date="">
+		<action dev="kmb" type="add">
+			Helioscope: minor changes to make the combo box editable and val node to show only the startdate as the label.
+		</action>
 		<action dev="jdt" type="fix">
 			Fixed Plastic hub shutdown message, that wasn't always
 			getting sent.
