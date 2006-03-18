@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.9 2006/03/13 23:44:46 norman Exp $
+     $Id: build.xml,v 1.10 2006/03/18 10:38:52 norman Exp $
 -->
 
 
@@ -113,13 +113,16 @@
   <property name="app.path"      value="/${app.name}"/>
   <property name="app.version"   value="0.1-dev"/>
   <property name="build.home"    value="${basedir}/build"/>
+  <property name="build.classes" value="${build.home}/WEB-INF/classes"/>
+  <property name="build.tests"   value="${build.home}/tests"/>
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
   <property name="manager.url"   value="http://localhost:8080/manager"/>
   <property name="src.home"      value="${basedir}/src/main"/>
   <property name="scm.src.home"  value="${basedir}/src/main/scm"/>
   <property name="src.etc"       value="${basedir}/src/etc"/>
-  <property name="scm.test.home" value="${basedir}/src/test/scm"/>
+  <property name="src.tests"     value="${basedir}/src/test"/>
+  <property name="scm.test.home" value="${src.tests}/scm"/>
   <property name="web.home"      value="${basedir}/web"/>
 
   <!-- The following properties must be set in build.properties
@@ -171,6 +174,10 @@
   <property name="compile.optimize"    value="true"/>
   <property name="compile.source"      value="1.4"/>
 
+  <!-- JUnit test options -->
+  <property name="junit.fork" value="true"/>
+  <property name="junit.filtertrace" value="on"/>
+  <property name="junit.summary" value="withOutAndErr"/>
 
 
   <!-- ==================== External Dependencies =========================== -->
@@ -214,6 +221,25 @@
     <include name="concurrent.jar"/>
   </fileset>
 
+  <!-- check availability of dependencies -->
+  <target name="check-packages"
+          unless="runonly.install"
+          >
+    <!-- the two following tests don't seem to work, but since I don't
+         use the named properties, I might as well ignore them for now
+    <available property="sisc.present"
+               classpathref="sisc.classpath"
+               file="sisc.shp"/>
+
+    <available property="jena.present"
+               classpathref="compile.classpath"
+               classname="com.hp.hpl.jena.rdf.model.ModelFactory"/>
+    -->
+
+    <!-- Need JUnit for the src/test/org/... testcases: not essential -->
+    <available property="junit.present"
+               classname="junit.framework.TestCase"/>
+  </target>
 
   <!-- =================== Compilation Classpath ========================== -->
 
@@ -263,6 +289,13 @@
     </fileset>
   </path>
 
+  <path id="tests.classpath">
+    <!-- At present, the JUnit regression tests test only the HTTP interface
+         to the functionality, so they don't need access to the classpath of
+         the main built code -->
+    <pathelement location="${build.tests}"/>
+  </path>
+
 
 
 <!-- ==================== All Target ====================================== -->
@@ -308,13 +341,13 @@
   -->
 
   <!--target name="compile" depends="prepare,quaestor.jar" -->
-  <target name="compile" depends="prepare"
+  <target name="compile" depends="prepare, check-packages"
    description="Compile Java sources">
 
     <!-- Compile Java classes as necessary -->
-    <mkdir    dir="${build.home}/WEB-INF/classes"/>
+    <mkdir    dir="${build.classes}"/>
     <javac srcdir="${src.home}"
-          destdir="${build.home}/WEB-INF/classes"
+          destdir="${build.classes}"
             debug="${compile.debug}"
       deprecation="${compile.deprecation}"
          optimize="${compile.optimize}"
@@ -326,13 +359,13 @@
     <!-- Copy Scheme utility scripts into the classpath.
      !   Don't use a JAR: see the quaestor.jar target.
      ! -->
-    <mkdir  dir="${build.home}/WEB-INF/classes/quaestor"/>
-    <copy todir="${build.home}/WEB-INF/classes/quaestor">
+    <mkdir  dir="${build.classes}/quaestor"/>
+    <copy todir="${build.classes}/quaestor">
       <fileset dir="${scm.src.home}/quaestor"
                includes="*.scm"/>
     </copy>
-    <mkdir  dir="${build.home}/WEB-INF/classes/util"/>
-    <copy todir="${build.home}/WEB-INF/classes/util">
+    <mkdir  dir="${build.classes}/util"/>
+    <copy todir="${build.classes}/util">
       <fileset dir="${scm.src.home}/util"
                includes="*.scm"/>
     </copy>
@@ -341,7 +374,7 @@
      !   How about compiling them?
      !   Shouldn't be hard, but it requires fiddling with the
      !   classpath so that, eg, utils.scm can find and load other .scm files.
-    <mkdir dir="${build.home}/WEB-INF/classes/quaestor"/>
+    <mkdir dir="${build.classes}/quaestor"/>
     <java classname="sisc.REPL"
           fork="true"
           classpathref="sisc.classpath">
@@ -354,14 +387,14 @@
       <arg value="-x-no-repl"/>
       <arg value="-x-"/>
       <arg value="${scm.src.home}/quaestor"/>
-      <arg value="${build.home}/WEB-INF/classes/quaestor"/>
+      <arg value="${build.classes}/quaestor"/>
     </java>
     -->
 
 
     <!-- Copy application resources -->
     <!-- doesn't need done
-    <copy  todir="${build.home}/WEB-INF/classes">
+    <copy  todir="${build.classes}">
       <fileset dir="${src.home}" excludes="**/*.java"/>
     </copy>
     -->
@@ -540,7 +573,7 @@
     <!-- Create build directories as needed -->
     <mkdir  dir="${build.home}"/>
     <mkdir  dir="${build.home}/WEB-INF"/>
-    <mkdir  dir="${build.home}/WEB-INF/classes"/>
+    <mkdir  dir="${build.classes}"/>
 
 
     <!-- Copy static content of this web application -->
@@ -561,7 +594,7 @@
       </fileset>
     </copy>
     <!-x- SISC heap file -x->
-    <copy todir="${build.home}/WEB-INF/classes">
+    <copy todir="${build.classes}">
       <fileset file="${sisc.lib}/sisc.shp"/>
     </copy>
 -->
@@ -578,15 +611,20 @@
 
   </target>
 
-  <!-- ========= Test target ========= -->
+  <!-- ========= Test targets ========= -->
   <!-- Run regression tests -->
+
+  <target name="test"
+          depends="scm-tests, junit-tests"
+          description="Run all tests"/>
+
   <path id="sisc.test.classpath">
     <!--pathelement location="${scm.test.home}/run-tests.scm"/-->
     <pathelement location="${scm.src.home}"/>
     <fileset refid="sisc.support"/>
     <fileset refid="jena.support"/>
   </path>
-  <target name="test"
+  <target name="scm-tests"
           depends="compile"
           description="Run regression tests">
     <java classname="sisc.REPL"
@@ -607,6 +645,47 @@
     </java>
   </target>
 
+  
+  <target name="compile-junit-tests"
+          depends="compile"
+          if="junit.present">
+    <mkdir dir="${build.tests}"/>
+    <javac srcdir="${src.tests}"
+           destdir="${build.tests}"
+           deprecation="${compile.deprecation}"
+           debug="${compile.debug}"
+           source="${compile.source}"
+           >
+      <classpath refid="tests.classpath"/>
+    </javac>
+  </target>
+
+  <target name="junit-tests"
+          depends="compile-junit-tests"
+          if="junit.present">
+
+    <junit printsummary="${junit.summary}"
+           haltonfailure="yes"
+           filtertrace="${junit.filtertrace}"
+           fork="${junit.fork}">
+
+      <jvmarg value="-enableassertions"/>
+      <classpath refid="tests.classpath"/>
+
+      <sysproperty key="build.tests" value="${build.tests}"/>
+
+      <!--formatter type="plain" usefile="true"/-->
+      <formatter type="brief" usefile="false"/>
+
+      <batchtest>
+        <fileset dir="${src.tests}">
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+
+    </junit>
+    
+  </target>
 
 <!-- ==================== Reload Target =================================== -->
 
