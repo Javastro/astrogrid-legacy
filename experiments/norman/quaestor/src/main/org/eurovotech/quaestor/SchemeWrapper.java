@@ -152,8 +152,8 @@ public class SchemeWrapper {
      * @param loadFile the full path of a file to load
      * @return true if the load succeeded; throws descriptive exception
      * if there are errors reading the file
-     * @throws IOException if the file cannot be parsed, or if there is a
-     * scheme error when reading the file
+     * @throws IOException if the file cannot be parsed
+     * @throws SchemeException if there is a scheme error when reading the file
      */
     public boolean load(final String loadFile)
             throws IOException, SchemeException {
@@ -185,10 +185,12 @@ public class SchemeWrapper {
      * @param loadFile the full path of a file to load
      * @return true if the load succeeded, or if the load previously
      * succeeded with this filename; false otherwise
-     * @throws SchemeException passed on from execute
+     * @throws IOException if the file cannot be parsed
+     * @throws SchemeException if there is a scheme error when reading the file
+     * scheme error when reading the file
      */
     public boolean loadOnce(final String loadFile)
-            throws SchemeException {
+            throws IOException, SchemeException {
         if (loadedOnce == null)
             loadedOnce = new java.util.HashSet();
         if (loadedOnce.contains(loadFile)) {
