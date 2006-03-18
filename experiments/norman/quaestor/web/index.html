@@ -45,7 +45,9 @@ but the request may be accompanied by an
 <dd>Create a new knowledgebase named `<em>kb-name</em>'.  The request content
 contains the metadata for the knowledgebase, which is at present just
 a string, but will eventually be RDF.  It is an error if the
-knowledgebase already exists.</dd>
+knowledgebase already exists.  Returns status 204 (No Content) on success,
+and a 4xx error message if the knowledgebase already exists or if
+there is some other error.</dd>
 
 <dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em>/<em>sm-name</em></code></dt>
 <dd><p>Upload the request body as the content of the submodel named
@@ -67,7 +69,9 @@ might change).</p></dd>
 the server has been configured to permit it.</dd>
 
 <dt><code>DELETE http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
-<dd>Remove the named knowledgebase.</dd>
+<dd>Remove the named knowledgebase.  Returns status 204 (No Content)
+if it successfully removed the knowledgebase, or a 4xx response if
+there was no such knowledgebase to remove.</dd>
 
 </dl>
 
