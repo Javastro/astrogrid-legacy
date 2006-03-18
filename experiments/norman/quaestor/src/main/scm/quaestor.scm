@@ -128,7 +128,7 @@
 ;;                                 (set-content-type response
 ;;                                                   (->jstring mimetype))))
 ;;        #t
-)))
+        )))
   (if (and (= (length path-info-list) 1)
            (string=? (substring query-string 0 6) "sparql"))
       (sparql-encoded-query
@@ -204,18 +204,12 @@
                ((and kb
                      (eq? query 'metadata))
                 (set-http-response response '|SC_OK|)
-                (set-content-type response ;currently wrong: md is text
-                                  (->jstring (car mime-and-lang)))
+                (set-content-type response
+                                  (->jstring "text/plain"))
                 (println (get-writer response)
                          (or (kb 'get-metadata-as-jstring)
                              (->jstring "")))
                 #t)
-
-               ((and kb
-                     (eq? query 'sparql))
-                (no-can-do response
-                           '|SC_NOT_IMPLEMENTED|
-                           "GET with query is not yet implemented"))
 
                (kb
                 (no-can-do response
