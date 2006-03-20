@@ -19,13 +19,13 @@
 			Helioscope: minor changes to make the combo box editable and val node to show only the startdate as the label.
 		</action>
 		<action dev="jdt" type="fix">
-			Fixed Plastic hub shutdown message, that wasn't always
+			Fixed Plastic hub shutdown message, which wasn't always
 			getting sent.
 		</action>
 		<action dev="jdt" type="add">
 			Upgraded the Plastic Library.
 		</action>
-		<action dev="jdt" type="fix">
+		<action dev="jdt" type="fix" issue="1610">
 			Fixed problem with xml-rpc apps not receiving messages when they register for specific messages.
 		</action>				
 		<action dev="pjn" type="add">
