@@ -9,7 +9,7 @@
 (;sparql:perform-query
  sparql:make-query-runner)
 
-(import* utils error-with-status)
+(import* utils error-with-status chatter jlist->list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,6 +118,7 @@
   ;; in WANT, or #f if there are none.  If one of the entries in POSSIBILITIES
   ;; is */*, return the first element of WANT.
   (define (find-in-list want possibilities)
+    (chatter "find-in-list: want=~s poss=~s" want possibilities)
     (cond ((null? possibilities)
            #f)
           ((string=? (car possibilities) "*/*")
@@ -127,12 +128,23 @@
           (else
            (find-in-list want (cdr possibilities)))))
 
+  (chatter)                             ;clear
+  (chatter "make-result-set-handler: caller-name=~s mime-types=~s query-type=~s"
+           caller-name mime-types query-type)
+
   (case query-type
     ((select)
-     (let ((best-type (find-in-list '("application/xml" "text/plain")
+     (let ((best-type (find-in-list '("application/xml"
+                                      "text/plain"
+                                      "text/csv")
                                     mime-types)))
 
-       (cond ((string=? best-type "application/xml")
+       (cond ((not best-type)           ;none found
+              (error-with-status caller-name
+                                 '|SC_NOT_ACCEPTABLE|
+                                 "can't handle any of the MIME types ~a"
+                                 mime-types))
+             ((string=? best-type "application/xml")
               (lambda (result stream set-type)
                 (set-type "application/xml")
                 (output-as-xml (java-null <result-set-formatter>)
@@ -142,11 +154,16 @@
               (lambda (result stream set-type)
                 (set-type "text/plain")
                 (out (java-null <result-set-formatter>) stream result)))
+             ((string=? best-type "text/csv")
+              (lambda (result stream set-type)
+                (set-type "text/csv;header=present")
+                (output-as-csv stream result)))
              (else
+              ;; this shouldn't happen
               (error-with-status caller-name
-                                 '|SC_NOT_ACCEPTABLE|
-                                 "can't handle any of the MIME types ~a"
-                                 mime-types)))))
+                                 '|SC_INTERNAL_SERVER_ERROR|
+                                 "this can't happen: mime-types ~s -> unrecognised best-type=~s"
+                                 mime-types best-type)))))
 
       ((ask)
        (let ((best-type (find-in-list '("application/xml" "text/plain")
@@ -185,6 +202,49 @@
 
       (else
        (error caller-name "Unrecognised query type ~a" query-type))))
+
+;; Given a ResultSet and an output stream, write the result as CSV, following
+;; the spec in RFC 4180.  Include a header.
+(define (output-as-csv stream result)
+  (define-generic-java-methods
+    get-result-vars
+    has-next
+    next-solution
+    get
+    to-string
+    print
+    flush)
+  (define-java-classes
+    <java.io.print-writer>
+    <java.io.output-stream-writer>)
+  (define (write-list-with-commas print-list pw)
+    (let ((jcomma (->jstring ","))
+          (jcrlf (->jstring (list->string (list (integer->char 13)
+                                                (integer->char 10))))))
+      (if (null? print-list)
+          (error 'output-as-csv "asked to output null list"))
+      (let loop ((l print-list))
+        (print pw (car l))
+        (let ((next (cdr l)))
+          (if (null? next)
+              (print pw jcrlf)
+              (begin (print pw jcomma)
+                     (loop next)))))))
+  (let ((result-vars (jlist->list (get-result-vars result)))
+        (pw (java-new <java.io.print-writer>
+                      (java-new <java.io.output-stream-writer>
+                                stream
+                                (->jstring "UTF-8")))))
+    (write-list-with-commas result-vars pw)
+    (let loop ()
+      (if (->boolean (has-next result))
+          (let ((qs (next-solution result)))
+            (write-list-with-commas (map (lambda (var)
+                                           (to-string (get qs var)))
+                                         result-vars)
+                                    pw)
+            (loop))))
+    (flush pw)))                        ;flush is necessary
 
 ;; Perform the SPARQL query in QUERY-JSTRING on the knowledgebase KB.
 ;; Send the XML results to the output stream returned by procedure
