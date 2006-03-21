@@ -17,6 +17,11 @@ public class QuaestorTest
     private URL baseURL;
     private String testKB;
 
+    private static final int METHOD_GET    = 111;
+    private static final int METHOD_POST   = 222;
+    private static final int METHOD_PUT    = 333;
+    private static final int METHOD_DELETE = 444;
+
     public QuaestorTest(String name)
             throws Exception {
         super(name);
@@ -39,7 +44,7 @@ public class QuaestorTest
 
     public void testCreateKnowledgebase()
             throws Exception {
-        URL kbURL = new URL(baseURL, "kb/"+testKB);
+        URL kbURL = makeURL();
 
         // Attempt to delete the knowledgebase, whether or not it's there.
         // Don't care about the return value.
@@ -48,12 +53,12 @@ public class QuaestorTest
         // create the new knowledgebase
         r = httpPut(kbURL, "My test knowledgebase");
         assertEquals(HttpURLConnection.HTTP_NO_CONTENT, r.getStatus());
-        assertEquals("", r.getContent());
+        assertNull(r.getContent());
 
         // Does ?metadata work?
         // (don't test the content type here, it's currently wrong)
-        kbURL = new URL(baseURL, "kb/"+testKB+"?metadata");
-        System.out.println("retrieving metadata url: " + kbURL);
+        // XXX fixme
+        kbURL = makeURL("?metadata");
         r = httpGet(kbURL);
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         // content-type may be followed by charset info
@@ -65,48 +70,159 @@ public class QuaestorTest
     // the knowledgebase twice
     public void testCreateKnowledgebaseAgain()
             throws Exception {
-        HttpResult r = httpPut(new URL(baseURL, "kb/"+testKB),
+        HttpResult r = httpPut(makeURL(),
                                "My test knowledgebase");
         assertEquals(4, r.getStatus()/100);
     }
 
-    // Other test methods    
-        
+    /* ******************** Other test methods ******************** */
+
+    public void testAddOntology()
+            throws Exception {
+        HttpResult r = httpTransaction
+                (METHOD_PUT,
+                 makeURL("ontology"),
+                 "<?xml version='1.0'?><rdf:RDF xmlns='urn:example#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:owl='http://www.w3.org/2002/07/owl#' xml:base='urn:example'><owl:Ontology rdf:about=''/><owl:Class rdf:ID='c1'/></rdf:RDF>",
+                 new String[] { "Content-Type", "application/rdf+xml" });
+        assertEquals(HttpURLConnection.HTTP_NO_CONTENT, r.getStatus());
+        assertNull(r.getContent());
+    }
+
+    public void testGetOntology ()
+            throws Exception {
+        HttpResult r = httpGet(makeURL("ontology"),
+                               new String[] {"Accept", "*/*"});
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("application/rdf+xml", r.getContentType());
+        // the actual content is a bit of a fuss to check
+
+        r = httpGet(makeURL("ontology"),
+                    new String[] {"Accept", "application/n3"});
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("application/n3", r.getContentType());
+        // the actual content is a bit of a fuss to check
+    }
+    
+    public void testAddInstances ()
+            throws Exception {
+        HttpResult r = httpTransaction
+                (METHOD_PUT,
+                 makeURL("instances"),
+                 "<urn:example#i1> a <urn:example#c1>.",
+                 new String[] { "Content-Type", "application/n3" });
+        assertEquals(HttpURLConnection.HTTP_NO_CONTENT, r.getStatus());
+        assertNull(r.getContent());
+    }
+
+    public void testSparqlQueries() 
+            throws Exception {
+        String query = "SELECT ?i where { ?i a <urn:example#c1>}";
+        HttpResult r;
+        r = httpPost(makeURL("ontology"), query);
+        assertEquals(4, r.getStatus()/100);
+
+        // check XML response
+        r = httpPost(makeURL(), query);
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("application/xml", r.getContentType());
+        // don't check actual content string
+
+        // check n-triple response
+        r = httpTransaction(METHOD_POST, makeURL(), query,
+                            new String[] {"Accept", "text/plain"});
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("text/plain", r.getContentType());
+        // don't check actual content
+
+        String encodedQuery = java.net.URLEncoder.encode(query, "UTF-8");
+        r = httpGet(makeURL("?sparql="+encodedQuery));
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("application/xml", r.getContentType());
+
+        // the same, requesting text/plain
+        r = httpGet(makeURL("?sparql="+encodedQuery),
+                    new String[] {"Accept", "text/plain"});
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("text/plain", r.getContentType());
+
+        // ...and requesting CSV
+        r = httpGet(makeURL("?sparql="+encodedQuery),
+                    new String[] {"Accept", "text/csv"});
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("text/csv;header=present", r.getContentType());
+    }
+                            
+    /* ******************** deletion of knowledgebases ******************** */
+
     public void testDeleteKnowledgebase()
             throws Exception {
-        HttpResult r = httpDelete(new URL(baseURL, "kb/"+testKB));
+        HttpResult r = httpDelete(makeURL());
         assertEquals(HttpURLConnection.HTTP_NO_CONTENT, r.getStatus());
-        assertEquals("", r.getContent());
+        assertNull(r.getContent());
     }
 
     // should fail when done a second time
     public void testDeleteKnowledgebaseAgain()
             throws Exception {
-        HttpResult r = httpDelete(new URL(baseURL, "kb/"+testKB));
+        HttpResult r = httpDelete(makeURL());
         assertEquals(4, r.getStatus()/100);
         //assertEquals("", r.getContent());
     }
 
     /* ********** Helper methods ********** */
 
+    private URL makeURL() 
+            throws java.net.MalformedURLException {
+        return makeURL(null);
+    }
+    private URL makeURL(String submodel) 
+            throws java.net.MalformedURLException {
+        if (submodel == null)
+            return new URL(baseURL, "kb/"+testKB);
+        else if (submodel.startsWith("?"))
+            return new URL(baseURL, "kb/"+testKB+submodel);
+        else
+            return new URL(baseURL, "kb/"+testKB+"/"+submodel);
+    }
+
     private HttpResult httpGet(URL url) 
             throws Exception {
-        return httpTransaction("GET", url, null);
+        return httpTransaction(METHOD_GET, url, null);
+    }
+
+    private HttpResult httpGet(URL url, String[] headers)
+            throws Exception {
+        return httpTransaction(METHOD_GET, url, null, headers);
     }
 
     private HttpResult httpPost(URL url, String content)
             throws Exception {
-        return httpTransaction("POST", url, content);
+        return httpTransaction(METHOD_POST, url, content);
     }
 
     private HttpResult httpPut(URL url, String content)
             throws Exception {
-        return httpTransaction("PUT", url, content);
+        return httpTransaction(METHOD_PUT, url, content);
     }
 
     private HttpResult httpDelete(URL url)
             throws Exception {
-        return httpTransaction("DELETE", url, null);
+        return httpTransaction(METHOD_DELETE, url, null);
+    }
+
+    /**
+     * Generic HTTP transaction handler.
+     * @param method one of METHOD_GET, METHOD_POST, etc...
+     * @param url the URL to interact with
+     * @param content the content to be sent to the server, or null if 
+     * none is to be sent
+     * @return an instance of {@link HttpResult}, with the results of
+     * the transaction; the content is returned a a trimmed String, or as
+     * null if that trimmed string would be of zero length
+     */
+    private HttpResult httpTransaction(int method, URL url, String content)
+            throws Exception {
+        return httpTransaction(method, url, content, null);
     }
 
     /**
@@ -115,14 +231,42 @@ public class QuaestorTest
      * @param url the URL to interact with
      * @param content the content to be sent to the server, or null if 
      * none is to be sent
+     * @param headers a list of Strings which are interpreted in
+     * pairs, as (header-name, header-value)
+     * @return an instance of {@link HttpResult}, with the results of
+     * the transaction; the content is returned a a trimmed String, or as
+     * null if that trimmed string would be of zero length
      */
-    private HttpResult httpTransaction(String method, URL url, String content)
+    private HttpResult httpTransaction(int method,
+                                       URL url,
+                                       String content,
+                                       String[] headers)
             throws Exception {
         assert url.getProtocol().equals("http");
+        String methodString = null;
+        switch (method) {
+          case METHOD_GET:    methodString = "GET";    break;
+          case METHOD_PUT:    methodString = "PUT";    break;
+          case METHOD_POST:   methodString = "POST";   break;
+          case METHOD_DELETE: methodString = "DELETE"; break;
+          default: throw new IllegalArgumentException
+                    ("Unrecognised method " + method);
+        }
+        
         HttpURLConnection c = (HttpURLConnection)url.openConnection();
         try {
-            c.setRequestMethod(method);
+            c.setRequestMethod(methodString);
             c.setDoInput(true);
+
+            if (headers != null) {
+                if (headers.length%2 != 0)
+                    throw new IllegalArgumentException
+                            ("Odd number of headers in httpTransaction");
+                for (int i=0; i<headers.length; i+=2) {
+                    assert i+1 < headers.length;
+                    c.setRequestProperty(headers[i], headers[i+1]);
+                }
+            }
 
             if (content == null) {
                 c.setDoOutput(false);
@@ -145,16 +289,20 @@ public class QuaestorTest
                 sb.append(line);
             r.close();
 
+            String res = sb.toString().trim();
+            if (res.length() == 0)
+                res = null;
+
             return new HttpResult(c.getResponseCode(),
                                   c.getContentType(),
-                                  sb.toString());
+                                  res);
         } catch (java.io.IOException e) {
             if (c.getResponseCode() >= 400) {
                 // fake error generated by getInputStream (grrr)
                 java.io.InputStream is = c.getErrorStream();
                 String contentString;
                 if (is == null) {
-                    contentString = "";
+                    contentString = null;
                 } else {
                     StringBuffer sb = new StringBuffer();
                     BufferedReader r
@@ -163,7 +311,9 @@ public class QuaestorTest
                     while ((line = r.readLine()) != null)
                         sb.append(line);
                     r.close();
-                    contentString = sb.toString();
+                    contentString = sb.toString().trim();
+                    if (contentString.length() == 0)
+                        contentString = null;
                 }
                 return new HttpResult(c.getResponseCode(),
                                       c.getContentType(),
@@ -193,6 +343,11 @@ public class QuaestorTest
         }
         public String getContent() {
             return responseContent;
+        }
+        public String toString() {
+            return "Status=" + status
+                    + ", content-type=" + responseContentType
+                    + ", content=" + responseContent;
         }
     }
 }
