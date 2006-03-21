@@ -37,6 +37,7 @@
 
 (define files-to-test '("quaestor/utils.scm"
                         "quaestor/knowledgebase.scm"
+                        "quaestor/jena.scm"
                         "util/sisc-xml.scm"
                         "util/xmlrpc.scm"
                         ))
