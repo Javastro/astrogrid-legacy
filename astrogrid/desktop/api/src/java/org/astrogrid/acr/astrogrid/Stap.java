@@ -1,4 +1,4 @@
-/*$Id: Stap.java,v 1.2 2006/03/16 09:14:21 KevinBenson Exp $
+/*$Id: Stap.java,v 1.3 2006/03/21 10:49:33 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,8 +32,8 @@ public interface Stap {
     
     /** construct query on START, END 
      * @param service URL of the service endpoint, or ivorn of the service description
-     * @param start start date&time
-     * @param end end date&time
+     * @param start start date and time
+     * @param end end date and time
      * @return query URL that can be fetched using a HTTP GET to execute query
      * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// reference.
      * @throws NotFoundException if the service does not exist (i.e. cannot be resolved in registry)
@@ -42,8 +42,8 @@ public interface Stap {
 
     /** construct query on START, DATE, FORMAT 
      * @param service URL of the service endpoint, or ivorn of the service description
-     * @param start start date&time
-     * @param end end date&time
+     * @param start start date and time
+     * @param end end date and time
      * @param format format of images or time series data (as described in stap spec)     * 
      * @return query URL that can be fetched using a HTTP GET to execute query
      * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// reference.
@@ -53,8 +53,8 @@ public interface Stap {
     
     /** construct query on START, END RA, DEC, SIZE 
      * @param service URL of the service endpoint, or ivorn of the service description
-     * @param start start date&time
-     * @param end end date&time 
+     * @param start start date and time
+     * @param end end date and time 
      * @param ra right ascension (as described in siap spec)
      * @param dec declination (as described in siap spec)
      * @param size radius of cone ( as described in siap spec)
@@ -65,8 +65,8 @@ public interface Stap {
    
     /** construct query on START, END, RA, DEC, SIZE, FORMAT 
      * @param service URL of the service endpoint, or ivorn of the service description
-     * @param start start date&time
-     * @param end end date&time
+     * @param start start date and time
+     * @param end end date and time
      * @param ra right ascension (as described in siap spec)
      * @param dec declination (as described in siap spec)
      * @param size radius of cone ( as described in siap spec)
@@ -78,8 +78,8 @@ public interface Stap {
    
    /** construct query on START, END, RA, DEC, RA_SIZE, DEC_SIZE
     * @param service URL of the service endpoint, or ivorn of the service description
-    * @param start start date&time
-    * @param end end date&time 
+    * @param start start date and time
+    * @param end end date and time 
     * @param ra right ascension (as described in siap spec)
     * @param dec declination (as described in siap spec)
     * @param ra_size size of ra ( as described in siap spec)
@@ -91,8 +91,8 @@ public interface Stap {
    
    /** construct query on START, END, RA, DEC, RA_SIZE, DEC_SIZE, FORMAT
     * @param service URL of the service endpoint, or ivorn of the service description
-    * @param start start date&time
-    * @param end end date&time  
+    * @param start start date and time
+    * @param end end date and time  
     * @param ra right ascension (as described in siap spec)
     * @param dec declination (as described in siap spec)
     * @param ra_size size of ra ( as described in siap spec)
@@ -148,6 +148,9 @@ public interface Stap {
 
 /* 
 $Log: Stap.java,v $
+Revision 1.3  2006/03/21 10:49:33  nw
+replaced & with 'and' - xml gets generated from the javadoc, and loose '&' make the build break
+
 Revision 1.2  2006/03/16 09:14:21  KevinBenson
 usually comment/clean up type changes such as siap to stap
 
