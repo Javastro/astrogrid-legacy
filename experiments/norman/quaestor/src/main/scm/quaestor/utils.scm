@@ -1,20 +1,25 @@
 ;; SISC library module for Quaestor
 
 (import s2j)
+(require-library 'sisc/libs/srfi/srfi-1)
 (require-library 'sisc/libs/srfi/srfi-13)
 
 
 (module utils
  (sexp->xml
   iterator->list
-  ;jlist->list
+  jlist->list
   enumeration->list
   java-retrieve-static-object
   is-java-type?
   url-decode-to-jstring
   error-with-status
+  chatter
+  parse-http-accept-header
   )
 
+ (import* srfi-1
+          remove)
  (import* srfi-13
           string-index-right)
 
@@ -135,10 +140,9 @@
          (reverse l))))
 
  ;; The same, but taking a Java List as input
- ;; No, just use built-in ->list
-;;  (define (jlist->list jlist)
-;;    (define-generic-java-method iterator)
-;;    (iterator->list (iterator jlist)))
+ (define (jlist->list jlist)
+   (define-generic-java-method iterator)
+   (iterator->list (iterator jlist)))
 
  ;; The same, but taking a Java Enumeration as input
  (define (enumeration->list enum)
@@ -199,5 +203,124 @@
  (define (error-with-status location new-status fmt . args)
    (let ((msg (apply format `(#f ,fmt ,@args))))
      (error location (cons new-status msg))))
+
+
+ ;; Mostly for debugging.
+ ;; Accumulate remarks, to supply later.
+ ;;     (chatter fmt . args)  ; Format a message.
+ ;;     (chatter)             ; return list of messages, or #f if none,
+ ;;                           ; and clear list
+ (define chatter
+   (let ((l '()))
+     (lambda msg
+       (cond ((and (null? msg)
+                   (null? l))
+              #f)
+             ((null? msg)
+              (let ((r (reverse l)))
+                (set! l '())
+                (apply string-append r)))
+             (else
+              (set! l
+                    (cons (apply format `(#f
+                                          ,(string-append (car msg) "~%")
+                                          ,@(cdr msg)))
+                          l)))))))
+
+
+ ;; Parse an HTTP Accept header into a list of acceptable MIME types.
+ ;; The JHEADER is a Java string in the format required by RFC 2616, that is,
+ ;; as a comma-separated list of media-type tokens:
+ ;;   media-type     = type "/" subtype *( ";" parameter )
+ ;;   parameter      = attribute "=" value
+ ;;   attribute      = token
+ ;;   value          = token | quoted-string
+ ;; There's a good discussion, albeit in a Python context, at
+ ;; <http://www.xml.com/pub/a/2005/06/08/restful.html>
+ ;; The result is sorted in order of descending weight parameter, though
+ ;; the sort isn't stable, so order of equally-weighted types isn't preserved.
+ (define parse-http-accept-header
+   (let ((commas #f)
+         (parameters #f))
+     (define-generic-java-methods
+       split
+       compile
+       matcher
+       matches
+       group
+       parse-float)
+     (define-java-classes
+       <java.util.regex.pattern>
+       <java.lang.float>)
+     (lambda (jheader)
+       (if (not commas)
+           (begin (set! commas
+                        (compile (java-null <java.util.regex.pattern>)
+                                 (->jstring " *, *")))
+                  (set! parameters
+                        (compile (java-null <java.util.regex.pattern>)
+                                 (->jstring "\([^;]*\); *q=\([0-9.]+\).*")))))
+       (let ((pairs (map (lambda (js)
+                           (let ((js-matcher (matcher parameters js)))
+                             (if (->boolean (matches js-matcher))
+                                 (cons (->string
+                                        (group js-matcher (->jint 1)))
+                                       (string->number
+                                        (->string
+                                         (group js-matcher (->jint 2)))))
+                                 (cons (->string js) 1))))
+                         (->list (split commas jheader)))))
+         (remove (lambda (s) (= (string-length s) 0))
+                 (map car
+                      (sort-list pairs
+                                 (lambda (a b)
+                                   (> (cdr a) (cdr b))))))))))
+
+ ;; Simple implementation of heapsort (?).  Probably not massively efficient
+ ;; but there isn't a SRFI for sorting yet.  Sort the given list L with
+ ;; respect to the given sorting function, <=.
+ ;;
+ ;; NOTE: this isn't a stable sort.
+ (define (sort-list l <=)
+   (define (merge-lists ina inb)
+     (let loop ((res '())
+                (a ina)
+                (b inb))
+       (cond
+        ((null? a)
+         (append (reverse res) b))
+        ((null? b)
+         (append (reverse res) a))
+        (else
+         (if (<= (car a) (car b))
+             (loop (cons (car a) res)
+                   (cdr a)
+                   b)
+             (loop (cons (car b) res)
+                   a
+                   (cdr b)))))))
+
+   (define (partition-list pe inl)
+     (let loop ((pa '())
+                (pb '())
+                (l inl))
+       (if (null? l)
+           (values pa pb)
+           (if (<= (car l) pe)
+               (loop (cons (car l) pa) pb (cdr l))
+               (loop pa (cons (car l) pb) (cdr l))))))
+
+   (case (length l)
+     ((0 1) l)
+     ((2) (if (<= (car l) (cadr l))
+              l
+              (list (cadr l) (car l))))
+     (else
+      (let ((pe (car l)))
+        (call-with-values
+            (lambda () (partition-list pe (cdr l)))
+          (lambda (left right)
+            (merge-lists (sort-list left <=)
+                         (cons pe (sort-list right <=)))))))))
 
 )
