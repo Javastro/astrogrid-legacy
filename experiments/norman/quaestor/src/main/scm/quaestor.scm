@@ -114,7 +114,8 @@
                 model
                 (url-decode-to-jstring q)
                 (request->accept-mime-types request))))
-          (runner (get-output-stream response) ;(make-lazy-output-stream response)
+          (runner ;(get-output-stream response)
+                  ((make-lazy-output-stream response))
                   (lambda (mimetype)
                     (set-content-type response
                                       (->jstring mimetype))))
@@ -157,7 +158,7 @@
   ;; return (mime-string . "RDF/XML") if there were no Accept headers.
   (define (find-ok-language rq)
     (let ((lang-mime-list (request->accept-mime-types rq)))
-      (msglist (format #f "lang-mime-list=~s" lang-mime-list))
+      (chatter (format #f "lang-mime-list=~s" lang-mime-list))
       (if (null? lang-mime-list)
           (cons (rdf:language->mime-type "RDF/XML")
                 "RDF/XML")              ;explicit default language
@@ -165,10 +166,12 @@
             (if (null? ml)
                 #f                      ;ooops
                 (let ((lang-string (rdf:mime-type->language (car ml))))
-                  (msglist "rdf:mime-type->language: ~s -> ~s"
+                  (chatter "rdf:mime-type->language: ~s -> ~s"
                            (car ml) lang-string)
                   (if lang-string
-                      (cons (car ml)
+                      ;; convert lang back to mime-type: don't use (car ml)
+                      ;; in case it was */*; also this uses a canonical language
+                      (cons (rdf:language->mime-type lang-string)
                             lang-string)
                       (loop (cdr ml)))))))))
 
@@ -199,7 +202,7 @@
                 (no-can-do response
                            '|SC_NOT_ACCEPTABLE|
                            "Cannot generate requested content-type:~%~a"
-                           (msglist)))
+                           (chatter)))
 
                ((and kb
                      (eq? query 'metadata))
@@ -333,7 +336,7 @@
         (let ((submodel (rdf:ingest-from-stream
                          stream
                          rdf-mime)))
-          (msglist "rdf-mime=~s => lang=~s"
+          (chatter "rdf-mime=~s => lang=~s"
                    rdf-mime (rdf:mime-type->language rdf-mime))
           (if submodel
               (if (kb (if tbox? 'add-tbox 'add-abox)  ;normal case
@@ -345,7 +348,7 @@
                              "Unable to update model!"))
               (no-can-do response '|SC_BAD_REQUEST|
                          "Bad RDF MIME type! ~a~%~a"
-                         rdf-mime (msglist))))
+                         rdf-mime (chatter))))
         (no-can-do response '|SC_BAD_REQUEST|
                       (format #f "No such knowledgebase ~a"
                               kb-name)))))
@@ -431,9 +434,10 @@
                 (or kb
                     (error 'http-post
                            "don't know about knowledgebase ~a" (car path-list)))
-                (with/fc
-                    (make-fc request response '|SC_BAD_REQUEST|)
-                  (lambda ()
+;;                 (with/fc
+;;                     (make-fc request response '|SC_BAD_REQUEST|
+;;                              get-lazy-output-stream)
+                  ;;(lambda ()
                     (let ((runner
                            (sparql:make-query-runner
                             kb
@@ -443,7 +447,9 @@
                               (lambda (mimetype)
                                 (set-content-type response
                                                   (->jstring mimetype))))
-                      #t))))
+                      #t)
+                    ;;))
+              )
 ;;              (let ((kb (kb:get (car path-list))))
 ;;                 (or kb
 ;;                     (error "Don't know about knowledgebase ~a" (car path-list)))
@@ -472,14 +478,14 @@
 ;; GET-OUTPUT-STREAM on the underlying response unless and until we need to,
 ;; thus leaving any error handler free to do so instead.
 ;; May be called multiple times (unlike GET-OUTPUT-STREAM).
-(define (make-lazy-output-stream original-response)
+(define (make-lazy-output-stream response)
   (define-generic-java-method
     get-output-stream)
-  (let ((response original-response)
+  (let ((original-response response)
         (stream #f))
     (lambda ()
       (if (not stream)
-          (set! stream (get-output-stream response)))
+          (set! stream (get-output-stream original-response)))
       stream)))
 
 
@@ -826,12 +832,23 @@
        (enumeration->list (get-header-names request))))
 
 ;; Return the contents of the Accept header as a list of scheme strings.
-;; Each one is a MIME type.
+;; Each one is a MIME type.  If there are no Accept headers, return #f.
 (define (request->accept-mime-types request)
-  (define-generic-java-method
-    get-headers)
-  (map ->string
-       (enumeration->list (get-headers request (->jstring "accept")))))
+  (define-generic-java-methods
+    get-headers
+    append)
+  (parse-http-accept-header
+   ;; merge all the "accept" headers into a single comma-separated Java string
+   (let loop ((headers
+               (enumeration->list (get-headers request (->jstring "accept"))))
+              (res #f))
+     (if (null? headers)
+         res
+         (loop (cdr headers)
+               (if res
+                   (append (append res (->jstring ", "))
+                           (car headers))
+                   (car headers)))))))
 
 ;; Given a READER, return a Java string containing the contents of the stream.
 (define (reader->jstring reader)
@@ -884,19 +901,27 @@
 ;; than getting it from the RESPONSE.
 (define (make-fc request response status . dummy)
   (define-generic-java-methods
-    set-content-type)
+    set-content-type
+    log get-session get-servlet-context)
   (lambda (error-record cont)
     (let ((msg-or-pair (error-message error-record)))
-      (set-http-response response (if (pair? msg-or-pair)
-                                      (car msg-or-pair)
-                                      status))
-      (set-content-type response (->jstring "text/plain"))
-      (format #f "~%Error: ~a~%~%Stack trace:~%~a~%"
+      ;; (set-http-response response (if (pair? msg-or-pair)
+;;                                       (car msg-or-pair)
+;;                                       status))
+;;       (set-content-type response (->jstring "text/plain"))
+      (log (get-servlet-context (get-session request))
+           (->jstring
+            (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
               (if (pair? msg-or-pair)
                   (cdr msg-or-pair)
                   msg-or-pair)
+              (let ((c (chatter)))
+                (if c
+                    (format #f "[chatter: ~a]" c)
+                    ""))
               (with-output-to-string
-                (lambda () (print-stack-trace cont)))))))
+                (lambda () (print-stack-trace cont))))))
+      #f)))
 ;; Following is better, because it uses the lazy output stream (like the
 ;; comments say).  But it doesn't appear to work.
 (define (not-make-fc request response status . get-output-stream)
@@ -906,19 +931,23 @@
     get-writer)
   (define-java-class
     <java.io.print-writer>)
-  (let ((get-output-writer (if (null? get-output-stream)
-                               (lambda ()
-                                 (get-writer response))
-                               (lambda ()
-                                 (java-new <java.io.print-writer>
-                                           ((car get-output-stream)))))))
+  (let (;; (get-output-writer (if (null? get-output-stream)
+;;                                (lambda ()
+;;                                  (get-writer response))
+;;                                (lambda ()
+;;                                  (java-new <java.io.print-writer>
+;;                                            ((car get-output-stream))))))
+        (writer (if (null? get-output-stream)
+                    (get-writer response)
+                    (java-new <java.io.print-writer>
+                              ((car get-output-stream))))))
     (lambda (error-record cont)
       (let ((msg-or-pair (error-message error-record)))
         (if (java-null? response)
             (error 'make-fc "Arghhhh, response is null"))
-        (set-http-response response (if (pair? msg-or-pair)
-                                        (car msg-or-pair)
-                                        status))
+;;         (set-http-response response (if (pair? msg-or-pair)
+;;                                         (car msg-or-pair)
+;;                                         status))
 
         (if #f
             (begin (set-content-type response (->jstring "text/html"))
@@ -929,14 +958,19 @@
                                             (lambda ()
                                               (print-stack-trace cont))))
                                     ,@(tabulate-request-information request))))
-            (let ((writer (get-output-writer)))
-              (set-content-type response (->jstring "text/plain"))
+            (let (;; (writer (get-output-writer))
+                  )
+              ;(set-content-type response (->jstring "text/plain"))
               (println writer
                        (->jstring
-                        (format #f "Internal server error~%~%Error: ~a~%~%Stack trace:~%~a~%"
+                        (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
                                 (if (pair? msg-or-pair)
                                     (cdr msg-or-pair)
                                     msg-or-pair)
+                                (let ((c (chatter)))
+                                  (if c
+                                      (format #f "[chatter: ~a]" c)
+                                      ""))
                                 (with-output-to-string
                                   (lambda () (print-stack-trace cont))))))
               #f))))))
@@ -1013,15 +1047,15 @@
 
 ;; Mostly for debugging.
 ;; Accumulate remarks, to supply later.
-(define msglist
-  (let ((l '()))
-    (lambda msg
-      (if (null? msg)
-          (let ((r (reverse l)))
-            (set! l '())
-            (apply string-append r))
-          (set! l
-                (cons (apply format `(#f
-                                      ,(string-append (car msg) "~%")
-                                      ,@(cdr msg)))
-                      l))))))
+;; (define msglist
+;;   (let ((l '()))
+;;     (lambda msg
+;;       (if (null? msg)
+;;           (let ((r (reverse l)))
+;;             (set! l '())
+;;             (apply string-append r))
+;;           (set! l
+;;                 (cons (apply format `(#f
+;;                                       ,(string-append (car msg) "~%")
+;;                                       ,@(cdr msg)))
+;;                       l))))))
