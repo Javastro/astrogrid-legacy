@@ -12,7 +12,7 @@
 ( rdf:new-empty-model
   rdf:ingest-from-stream
   rdf:merge-models
-  rdf:language-ok?
+  ;rdf:language-ok?
   rdf:mime-type->language
   rdf:language->mime-type
   rdf:mime-type-list
@@ -56,10 +56,10 @@
  ;; Given a language LANG, which may be a Jstring, scheme string or #f,
  ;; return true if it is one of the allowed RDF languages, "RDF/XML[-ABBREV]",
  ;; "N-TRIPLE" and "N3".  Returns #f if it is not a legal language.
- (define (rdf:language-ok? lang)
-   (or (not lang)
-       (member (as-scheme-string lang)
-               '("RDF/XML" "RDF/XML-ABBREV" "N-TRIPLE" "N3"))))
+;;  (define (rdf:language-ok? lang)
+;;    (or (not lang)
+;;        (member (as-scheme-string lang)
+;;                '("RDF/XML" "RDF/XML-ABBREV" "N-TRIPLE" "N3"))))
 
  ;; The set of mappings from MIME types to RDF languages.
  ;; Used in both directions.
@@ -84,17 +84,19 @@
      (and p (cdr p))))
 
  ;; Map RDF language to MIME type.  This is the inverse of
- ;; RDF:MIME-TYPE->LANGUAGE.
+ ;; RDF:MIME-TYPE->LANGUAGE.  Return #f if LANG is not a legal language.
  (define (rdf:language->mime-type lang)
-   (let loop ((l mime-lang-mappings))
+   (let loop ((l (cdr mime-lang-mappings))) ;strip initial "*/*"
      (cond ((null? l)
+            #f)
+           ((not (string? lang))        ;non-string languages are not allowed!
             #f)
            ((string=? lang (cdar l))
             (caar l))
            (else
             (loop (cdr l))))))
 
- ;; Return a list of allowed mime-types
+ ;; Return a list of allowed mime-types.  This does not include "*/*".
  (define (rdf:mime-type-list)
    (map car (cdr mime-lang-mappings)))
 
