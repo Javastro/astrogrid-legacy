@@ -24,22 +24,43 @@ MIME types:</p>
   <li><code>application/n3</code> and <code>text/rdf+n3</code> for n3.</li>
   <li><code>application/rdf+xml</code> for RDF/XML</li>
   <li><code>text/plain</code> for N-Triples</li>
+  <li><code>*/*</code> to accept any format (the default is currently
+  RDF/XML)</li>
 </ul>
 <p>You can add an optional query <code>?model</code> or
 <code>?metadata</code> to retrieve the appropriate thing; the default
-is to retrieve the model.</p></dd>
+is to retrieve the model.</p>
+<p>This method returns status 200 (OK) on success, or a 4xx code on
+error.</p></dd>
 
 <dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>?sparql=<em>query</em></code></dt>
 <dd>Perform the SPARQL query which is URL-encoded in the string
-<em>query</em>.</dd>
+<em>query</em>.  This has the same response codes and
+<code>accept</code> headers as the <code>POST</code> method below.</dd>
 
 <dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
-<dd>Takes a SPARQL query as the request body.  By default, this
-produces a response in XML, using the SPARQL
-<a href="http://www.w3.org/TR/rdf-sparql-XMLres/" >response XML schema</a>,
-but the request may be accompanied by an
-<code>Accept</code> header containing <code>application/xml</code> or
-<code>text/plain</code> to select the corresponding format.</dd>
+<dd><p>Takes a SPARQL query as the request body.  The request may be
+accompanied by an <code>Accept</code> header to control the format of
+the returned data.  The following formats are recognised:</p>
+<dl>
+<dt><code>application/xml</code></dt>
+<dd>This produces a response in XML, using the SPARQL
+<a href="http://www.w3.org/TR/rdf-sparql-XMLres/" >response XML
+schema</a>.  This is the default.</dd>
+<dt><code>text/plain</code></dt>
+<dd>A human-readable format, intended to look roughly like the usual
+result of a SQL query.  It is not intended to be
+machine-parseable.</dd>
+<dt><code>text/csv</code></dt>
+<dd>Comma-separated-value output, conforming to RFC 4180.  The
+<code>Content-Type</code> of the response is
+<code>text/csv;header=present</code>, indicating that the first line
+of the response consists of 'column headings', consisting of the
+substitution variables in the input query.  These are not guaranteed
+to be in the same order as they were listed in the input query.</dd>
+</dl>
+<p>Returns status 200 (OK) on success, and 4xx otherwise.</p>
+</dd>
 
 <dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
 <dd>Create a new knowledgebase named `<em>kb-name</em>'.  The request content
@@ -54,9 +75,13 @@ there is some other error.</dd>
 <em>sm-name</em>.  The
 request may have a <code>Content-Type</code> header indicating the
 format of the body, which, if it is present, <em>must</em> be one of
-<code>RDF/XML</code>, <code>RDF/XML-ABBREV</code>,
-<code>N-TRIPLE</code> or <code>N3</code>, with the first one being the
-default.</p>
+the following MIME types:</p>
+<ul>
+  <li><code>application/n3</code> and <code>text/rdf+n3</code> for n3.</li>
+  <li><code>application/rdf+xml</code> for RDF/XML</li>
+  <li><code>text/plain</code> for N-Triples</li>
+</ul>
+<!-- defaults -->
 <p>The request may have a <em>query</em> attached, which may be
 <code>abox</code>, <code>instances</code> (which is equivalent to
 <code>abox</code>) or <code>tbox</code>.  This indicates the type of
