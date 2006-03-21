@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.8 2006/03/17 17:56:58 clq2 Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.9 2006/03/21 17:20:37 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
+import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.manager.BaseConfiguration;
 import org.astrogrid.applications.manager.idgen.GloballyUniqueIdGen;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
@@ -95,19 +97,18 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         pico.registerComponentImplementation(DatacenterApplicationDescriptionLibrary.class,DatacenterApplicationDescriptionLibrary.class);
         pico.registerComponentImplementation(DataServer.class,DataServer.class);
         pico.registerComponentImplementation(QueuedExecutor.class,CeaQueuedExecutor.class);
-        
-        
+        pico.registerComponentImplementation(Configuration.class, BaseConfiguration.class);
     }
 }
 
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
-Revision 1.8  2006/03/17 17:56:58  clq2
-gtr_1489_cea correted version
+Revision 1.9  2006/03/21 17:20:37  clq2
+missed out bits
 
-Revision 1.6  2006/03/07 21:45:27  clq2
-gtr_1489_cea
+Revision 1.5.10.2  2006/03/21 16:43:20  gtr
+*** empty log message ***
 
 Revision 1.5.10.1  2006/01/30 11:25:18  gtr
 I changed the call to registerDefaultServices()  to the modern form (doesn't take an org.astrogrid.config.Config argument) and removed Noel's fix of registerDummyControlService() which isn't needed with the revised CEA.
