@@ -55,3 +55,22 @@
                   (apply ERROR-WITH-STATUS l))))
              '((t1 1 "hello")
                (t2 "x" "hello ~a" "there"))))
+
+(expect parse-http-accept-header
+        '(("text/plain")
+          ("*/*")
+          ;("text/plain" "application/xml")
+          ("text/plain" "text/xml")
+          ("text/plain" "text/xml" "*/*")
+          ("application/xml" "text/plain")
+          ("a/a" "b/b" "c/c"))
+        (map (lambda (ss)
+               (parse-http-accept-header (->jstring ss)))
+             '("text/plain"
+               "*/*"
+               ;"text/plain, application/xml" ;omit this -- sort isn't stable
+               "text/plain, text/xml; q=0.2"            ;simple
+               "text/plain, text/xml;q=.5, */*;q=.2"    ;no leading 0 on numbers
+               "text/plain; q=0.5 , , application/xml," ; empty elements
+               "c/c;q=0.2,b/b;q=0.5,a/a,,,"             ;list is reversed
+               )))
