@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.10 2006/03/18 10:38:52 norman Exp $
+     $Id: build.xml,v 1.11 2006/03/21 20:55:00 norman Exp $
 -->
 
 
@@ -615,7 +615,7 @@
   <!-- Run regression tests -->
 
   <target name="test"
-          depends="scm-tests, junit-tests"
+          depends="scm-tests, protocol-tests"
           description="Run all tests"/>
 
   <path id="sisc.test.classpath">
@@ -660,7 +660,7 @@
     </javac>
   </target>
 
-  <target name="junit-tests"
+  <target name="protocol-tests"
           depends="compile-junit-tests"
           if="junit.present">
 
