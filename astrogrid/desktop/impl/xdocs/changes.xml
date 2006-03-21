@@ -14,7 +14,7 @@
 	</head>
 <body>
 
-	<release version="pending" date="">
+<release version="1.5-alpha-2" date="2006-03-21">
 		<action dev="kmb" type="add">
 			Helioscope: minor changes to make the combo box editable and val node to show only the startdate as the label.
 		</action>
@@ -22,7 +22,7 @@
 			Fixed Plastic hub shutdown message, which wasn't always
 			getting sent.
 		</action>
-		<action dev="jdt" type="add">
+		<action dev="jdt" type="update">
 			Upgraded the Plastic Library.
 		</action>
 		<action dev="jdt" type="fix" issue="1610">
@@ -31,7 +31,7 @@
 		<action dev="pjn" type="add">
 			Workflow builder: Feedback from Silvia - stripping
 			transcripts opens new builder window, and tooltips altered.
-			Registry browser: Basic ree view panel onto returned data
+			Registry browser: Basic tree view panel onto returned data
 			added
 		</action>
 		<action dev="kmb" type="fix">
@@ -43,8 +43,9 @@
 			Query Builder: Problem inserting column references with new
 			template query.
 		</action>
-	</release>
-	<release version="1.5-alpha-1" date="2006-03-13">
+</release>
+
+<release version="1.5-alpha-1" date="2006-03-13">
 	<action dev="nw" type="add">
 	Added ability to access VizieR tables as Cone Search. Appears in Application
 	Launcher. Not yet in astroscope - needs a stream-reading soap client for registry entries.
