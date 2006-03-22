@@ -119,17 +119,7 @@
                   (lambda (mimetype)
                     (set-content-type response
                                       (->jstring mimetype))))
-          #t))
-
-;;         (sparql:perform-query model-name
-;;                               (url-decode-to-jstring q)
-;;                               (make-lazy-output-stream response)
-;;                               (request->accept-mime-types request)
-;;                               (lambda (mimetype)
-;;                                 (set-content-type response
-;;                                                   (->jstring mimetype))))
-;;        #t
-        )))
+          #t)))))
   (if (and (= (length path-info-list) 1)
            (string=? (substring query-string 0 6) "sparql"))
       (sparql-encoded-query
@@ -278,15 +268,7 @@
                  (define-generic-java-method get-path-info)
                  (no-can-do response '|SC_BAD_REQUEST|
                             "The request path ~a has the wrong number of elements (1 or 2)"
-                            (->string (get-path-info request))
-)
-;;                  (set-http-response response '|SC_BAD_REQUEST|)
-;;                  (response-page
-;;                   "Quaestor: bad request"
-;;                   `((p "The request path "
-;;                        (code ,(->string (get-path-info request)))
-;;                        " has the wrong number of elements (1 or 2)")))
-                 )))))))
+                            (->string (get-path-info request))))))))))
 
 ;; Create a new KB, or manage an existing one.  The knowledgebase is
 ;; called kb-name (a symbol), and the content of the request is read
@@ -353,59 +335,6 @@
                       (format #f "No such knowledgebase ~a"
                               kb-name)))))
 
-;; (define (not-update-submodel kb-name
-;;                          submodel-name
-;;                          tbox?
-;;                          content-headers
-;;                          stream
-;;                          response)
-
-;;   ;; Given an alist ALIST of (key . value) pairs, and a list
-;;   ;; RECOGNISED of recognised symbols, return true if each of the alist
-;;   ;; keys, which are all symbols, is a member of the list RECOGNISED.
-;;   (define (check-cars alist recognised)
-;;     (if (null? alist)
-;;         #t
-;;         (if (memq (caar alist) recognised)
-;;             (check-cars (cdr alist) recognised)
-;;             #f)))
-
-;;   (let ((kb (kb:get kb-name))
-;;         (ok-headers '(type length)))
-;;     (cond ((not (check-cars content-headers ok-headers))
-;;            (no-can-do response '|SC_NOT_IMPLEMENTED|
-;;                       "PUT found content headers (~a), can only handle (~a)"
-;;                       (map (lambda (h) (string-append "content-" (car h)))
-;;                            content-headers)
-;;                       (map (lambda (h) (string-append "content-" h))
-;;                            ok-headers)))
-
-;;           (kb                         ;normal case
-;;            (let* ((rdf-mime (and (assq 'type content-headers)
-;;                                  (cdr (assq 'type content-headers))))
-;;                   (submodel (rdf:ingest-from-stream
-;;                              stream
-;;                              rdf-mime)))
-;;              (msglist "content-headers=~s~%  rdf-mime=~s => lang=~s"
-;;                       content-headers rdf-mime
-;;                       (rdf:mime-type->language rdf-mime))
-;;              (if submodel
-;;                  (if (kb (if tbox? 'add-tbox 'add-abox)  ;normal case
-;;                          submodel-name
-;;                          submodel)
-;;                      (set-http-response response '|SC_NO_CONTENT|)
-;;                      (no-can-do response
-;;                                 '|SC_INTERNAL_ERROR| ;correct?
-;;                                 "Unable to update model!"))
-;;                  (no-can-do response '|SC_BAD_REQUEST|
-;;                             "Bad RDF MIME type! ~a~%~a"
-;;                             rdf-mime (msglist)))))
-
-;;           (else
-;;            (no-can-do response '|SC_BAD_REQUEST|
-;;                       (format #f "No such knowledgebase ~a"
-;;                               kb-name))))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; POST support
@@ -414,64 +343,39 @@
 (define (http-post request response)
   (let ((get-lazy-output-stream (make-lazy-output-stream response)))
     (with-failure-continuation
-        (make-fc request response '|SC_INTERNAL_SERVER_ERROR|
-                 get-lazy-output-stream)
-      (lambda ()
-        (define-generic-java-methods
-          get-reader
-          set-content-type)
-        (if (java-null? response)        ;eh??!
-            (no-can-do response
-                       '|SC_BAD_REQUEST|
-                       "null response!"))
-        (let ((path-list (request->path-list request))
-              (query-string (request->query-string request)))
-          ;; First, insist that there's just one element in the path-list.
-          ;; Check also that the content-type of the incoming SPARQL query is
-          ;; application/sparql-query (http://www.w3.org/TR/rdf-sparql-query/)
-          (if (= (length path-list) 1)
-              (let ((kb (kb:get (car path-list))))
-                (or kb
-                    (error 'http-post
-                           "don't know about knowledgebase ~a" (car path-list)))
-;;                 (with/fc
-;;                     (make-fc request response '|SC_BAD_REQUEST|
-;;                              get-lazy-output-stream)
-                  ;;(lambda ()
-                    (let ((runner
-                           (sparql:make-query-runner
-                            kb
-                            (reader->jstring (get-reader request))
-                            (request->accept-mime-types request))))
-                      (runner (get-lazy-output-stream)
-                              (lambda (mimetype)
-                                (set-content-type response
-                                                  (->jstring mimetype))))
-                      #t)
-                    ;;))
-              )
-;;              (let ((kb (kb:get (car path-list))))
-;;                 (or kb
-;;                     (error "Don't know about knowledgebase ~a" (car path-list)))
-;;                 (set-http-response response '|SC_OK|)
-;;                 (or (with/fc
-;;                         (make-fc request response '|SC_BAD_REQUEST|)
-;;                       (lambda ()
-;;                        (sparql:perform-query
-;;                         kb
-;;                         (reader->jstring (get-reader request))
-;;                         get-lazy-output-stream
-;;                         (request->accept-mime-types request)
-;;                         (lambda (mimetype)
-;;                           (set-content-type response
-;;                                             (->jstring mimetype))))
-;;                        #t))
-;;                     (no-can-do response
-;;                                '|SC_BAD_REQUEST|
-;;                                "Error performing SPARQL query")))
-              (no-can-do response
-                         '|SC_BAD_REQUEST|
-                         "POST SPARQL request must have one path element, and query=sparql")))))))
+     (make-fc request response '|SC_INTERNAL_SERVER_ERROR|
+              get-lazy-output-stream)
+     (lambda ()
+       (define-generic-java-methods
+         get-reader
+         set-content-type)
+       (if (java-null? response)        ;eh??!
+           (no-can-do response
+                      '|SC_BAD_REQUEST|
+                      "null response!"))
+       (let ((path-list (request->path-list request))
+             (query-string (request->query-string request)))
+         ;; First, insist that there's just one element in the path-list.
+         ;; Check also that the content-type of the incoming SPARQL query is
+         ;; application/sparql-query (http://www.w3.org/TR/rdf-sparql-query/)
+         (if (= (length path-list) 1)
+             (let ((kb (kb:get (car path-list))))
+               (or kb
+                   (error 'http-post
+                          "don't know about knowledgebase ~a" (car path-list)))
+               (let ((runner
+                      (sparql:make-query-runner
+                       kb
+                       (reader->jstring (get-reader request))
+                       (request->accept-mime-types request))))
+                 (runner (get-lazy-output-stream)
+                         (lambda (mimetype)
+                           (set-content-type response
+                                             (->jstring mimetype))))
+                 #t))
+             (no-can-do response
+                        '|SC_BAD_REQUEST|
+                        "POST SPARQL request must have one path element, and query=sparql")))))))
 
 ;; Return a function which, when called, will return the response output stream.
 ;; This extracts the output stream lazily, so that we don't call
@@ -540,8 +444,8 @@
 ;;
 ;; XML-RPC support
 
-(module xmlrpc-support
-    (xmlrpc-handler)
+(define xmlrpc-handler)
+(let ()
 
   ;; Wrapper for xmlrpc:create-fault.
   ;; Given a fault code as a symbol, turn it into an integer using the
@@ -588,53 +492,66 @@
                   "method get-model requires 1 or 2 args, got ~a"
                   (length args)))))
 
-
-
 ;;   (define (xmlrpc-do-query quaestor-url query-string)
 ;;     XXX)
 
-  ;; A list of handlers for XML-RPC methods.  Each element in
-  ;; the list is an improper list of three elements (method-name
-  ;; num-args . handler).  Each handler takes a base URI plus
-  ;; NUM-ARGS other arguments (NUM-ARGS => #f means a variable
-  ;; number of arguments.  Each must return a sexp, which is
-  ;; most conveniently generated by XMLRPC:CREATE-RESPONSE or
-  ;; XMLRPC:CREATE-FAULT (wrapped in FAULT), which will be
-  ;; turned into XML.
-  (define xmlrpc-handlers
-    `((get-model #f . ,xmlrpc-get-model)
-      ;; (query 1 . ,xmlrpc-do-query)
-      ))
+  ;; Map method names to procedures.
+  ;;    (method-name->handler 'NAME) => NARGS, HANDLER
+  ;; Given a method NAME as a symbol, return a pair of values giving
+  ;; the number of arguments that method expects (or #f if it can
+  ;; handle a variable number), and a procedure which will do the
+  ;; work.  The handler must match the signature
+  ;;    (handler BASE-URI ARG ...) => XML-SEXP
+  ;; The handler is passed the BASE-URI of this service and the
+  ;; requisite number of arguments extracted from the XML-RPC call,
+  ;; and returns a sexp which is to be converted to XML as a
+  ;; response.  This may most conveniently be generated by
+  ;; XMLRPC:CREATE-RESPONSE or XMLRPC:CREATE-FAULT (wrapped in FAULT).
+  (define method-name->handler
+    (let ((mappings #f))
+      (lambda (name)
+        (or mappings
+            (set! mappings
+                  `((get-model #f ,xmlrpc-get-model))))
+        (cond ((not name)
+               (values #f #f))
+              ((assq name mappings)
+               => (lambda (l)
+                    (apply values (cdr l))))
+              (else
+               (values #f #f))))))
 
   ;; Do the actual XML-RPC call, given a READER from which to read the 
   ;; XML, and a URL, which is the base URI of the service.  Return a sexp
   ;; which is to be turned into XML.
   (define (do-xmlrpc-call my-url reader)
     (let ((call (xmlrpc:new-call reader)))
-      (let* ((method-rec (assq (xmlrpc:method-name call) xmlrpc-handlers))
-             (h (cddr method-rec))            ;handler
-             (nargs (cadr method-rec))) ;expected number of arguments
-        (cond ((and method-rec nargs)
-               (if (= nargs (xmlrpc:number-of-params call))
-                   (apply h
-                          (cons quaestor-url
-                                (xmlrpc:method-param-list call)))
-                   (fault 'malformed-request
-                          "method ~a expected ~a params, got ~a"
-                          (xmlrpc:method-name call)
-                          nargs
-                          (xmlrpc:number-of-params call))))
-              (method-rec
-               (apply h (cons my-url
-                              (xmlrpc:method-param-list call))))
-              (else
-               (fault 'unrecognised-method
-                      "unrecognised method: ~a"
-                      (xmlrpc:method-name call)))))))
+      (call-with-values (lambda ()
+                          (method-name->handler (xmlrpc:method-name call)))
+        (lambda (nargs h)
+          (cond ((not h)
+                 (fault 'unrecognised-method
+                        "unrecognised method: ~a" (xmlrpc:method-name call)))
+                ((not (procedure? h))
+                 (error 'do-xmlrpc-call
+                        "handler was not procedure! ~a -> ~s"
+                        (xmlrpc:method-name call) h))
+                (nargs
+                 (if (= nargs (xmlrpc:number-of-params call))
+                     (apply h         ;normal case 1 -- fixed no. args
+                            (cons my-url (xmlrpc:method-param-list call)))
+                     (fault 'malformed-request
+                            "method ~a expected ~a params, got ~a"
+                            (xmlrpc:method-name call)
+                            nargs
+                            (xmlrpc:number-of-params call))))
+                (else              ;normal case 2 -- variable no. args
+                 (apply h
+                        (cons my-url (xmlrpc:method-param-list call)))))))))
 
   ;; Handle a single XML-RPC request.  Return a response as a string
   ;; containing XML, success or failure.
-  (define (xmlrpc-handler request response)
+  (define (_xmlrpc-handler request response)
     (define-generic-java-methods
       get-reader
       get-local-name
@@ -650,7 +567,10 @@
      (with/fc 
          (lambda (m e)
            (fault 'seriously-malformed-request
-                  "Malformed request: ~a" (error-message m)))
+                  "Malformed request: ~a~%~a"
+                  (error-message m)
+                  (with-output-to-string
+                    (lambda () (print-stack-trace e)))))
        (lambda ()
          (cond  ((not (content-headers-ok? request))
                  ;; Unexpected Content-* header found
@@ -669,8 +589,8 @@
                  ;; Good -- normal case
                  (set-http-response response '|SC_OK|)
                  (set-content-type response (->jstring "text/xml"))
-                 ;; now do the actual work of reading the method
-                 ;; call from the 
+                 ;; Now do the actual work of reading the method
+                 ;; call from the input reader.
                  (do-xmlrpc-call
                   (format #f "http://~a:~a~a"
                           (->string (get-local-name request))
@@ -687,47 +607,8 @@
      '(|methodResponse| fault params struct) ;make it look pretty
      '(param member)))
 
-  (define (xxx-handle-xmlrpc request)
-    (define-generic-java-methods
-      get-reader
-      get-context-path
-      get-local-name
-      get-local-port)
-    (sexp->xml
-     (with/fc
-         (lambda (m e)
-           (fault 'seriously-malformed-request
-                  "Malformed request: ~a" (error-message m)))
-       (lambda ()
-         (let ((call (xmlrpc:new-call (get-reader request)))
-               (quaestor-url (format #f "http://~a:~a~a"
-                                     (->string (get-local-name request))
-                                     (->number (get-local-port request))
-                                     (->string (get-context-path request)))))
-           (let* ((method-rec (assq (xmlrpc:method-name call) xmlrpc-handlers))
-                  (nargs (cadr method-rec))
-                  (h (cddr method-rec)))
-             (cond ((and method-rec nargs)
-                    (if (= nargs (xmlrpc:number-of-params call))
-                        (apply h
-                               (cons quaestor-url
-                                     (xmlrpc:method-param-list call)))
-                        (fault 'malformed-request
-                               "method ~a expected ~a params, got ~a"
-                               (xmlrpc:method-name call)
-                               nargs
-                               (xmlrpc:number-of-params call))))
-                   (method-rec
-                    (apply h (cons quaestor-url
-                                   (xmlrpc:method-param-list call))))
-                   (else
-                    (fault 'unrecognised-method
-                           "unrecognised method: ~a"
-                           (xmlrpc:method-name call))))))))
-     '(|methodResponse| fault params struct) ;make it look pretty
-     '(param member)))
-
-  )                                     ;end of module xmlrpc-support
+  (set! xmlrpc-handler _xmlrpc-handler)
+)                                     ;end of module xmlrpc-support
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -805,18 +686,6 @@
                     (loop (cdr header-list))))
               (else
                (loop (cdr header-list)))))))
-
-;; Extract the content-* headers from the REQUEST, and return them as an alist:
-;; (name . value), where 'name' is the header name with 'content-' removed,
-;; and 'value' is the value as a Scheme string.
-;; (define (request->content-header-strings request)
-;;   (filter (lambda (x) x)
-;;           (map (lambda (p)
-;;                  (let ((h (car p)))
-;;                    (and (string-prefix? "content-" h)
-;;                         (cons (string->symbol (substring h 8 (string-length h)))
-;;                               (cdr p)))))
-;;                (request->header-alist request))))
 
 ;; Return the set of request headers as an alist, each element of which is
 ;; of the form (header-string . value-string): both are scheme strings,
@@ -1044,18 +913,3 @@
                   ((generic-java-field-accessor response-symbol)
                    response-object))
       #t)))
-
-;; Mostly for debugging.
-;; Accumulate remarks, to supply later.
-;; (define msglist
-;;   (let ((l '()))
-;;     (lambda msg
-;;       (if (null? msg)
-;;           (let ((r (reverse l)))
-;;             (set! l '())
-;;             (apply string-append r))
-;;           (set! l
-;;                 (cons (apply format `(#f
-;;                                       ,(string-append (car msg) "~%")
-;;                                       ,@(cdr msg)))
-;;                       l))))))
