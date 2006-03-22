@@ -171,11 +171,32 @@ public class QuaestorTest
 
     public void testRpcGetSimple()
             throws Exception {
-        String call = makeXmlRpcCall("get-model",
-                                     new Object[] {testKB});
+        String call = makeXmlRpcCall
+                ("get-model",
+                 new Object[] {testKB},
+                 new String[] {
+                     "omit-xml-declaration", "yes",
+                     "indent", "yes",
+                     "standalone", "yes",
+                     "encoding", "UTF-8",
+                 });
         ParsedRpcResponse rpc;
         rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
-        assertNotNull(rpc);
+        assertTrue(rpc.isValid() && !rpc.isFault());
+        assertEquals(String.class, rpc.getResponseClass());
+        assertEquals(makeKbUrl().toString(),
+                     rpc.getResponseString());
+
+        // Exactly the same, but with different properties
+        call = makeXmlRpcCall("get-model",
+                              new Object[] {testKB},
+                              new String[] {
+                                  "omit-xml-declaration", "no",
+                                  "indent", "no",
+                                  "standalone", "no",
+                                  "encoding", "ISO-8859-1",
+                              });
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
         assertEquals(makeKbUrl().toString(),
@@ -188,15 +209,21 @@ public class QuaestorTest
         //HttpResult r;
         ParsedRpcResponse rpc;
 
-        // malformed input
-        call = "<junk><but>well-formed</but></junk>";
+        // malformed input: ill-formed XML
         // I'm taking it that a proper response to malformed input is still
         // a 200 response with the correct fault-code, even though the `spec'
         // is hopelessly vague about this.
+        call = "<junk";
         rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(0, rpc.getFaultCode());
         // don't bother testing fault message
+
+        // malformed input (2): well-formed but non-conforming XML
+        call = "<junk><but>well-formed</but></junk>";
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(0, rpc.getFaultCode());
 
         // invalid method
         call = makeXmlRpcCall("wibble-woot", null);
@@ -436,6 +463,23 @@ public class QuaestorTest
      */
     private String makeXmlRpcCall(String method, Object[] args) 
             throws Exception {
+        return makeXmlRpcCall(method, args, null);
+    }
+
+    /**
+     * Create an RPC call from a method and arguments.  Returns a valid
+     * XML-RPC call element as XML in a string.
+     * @param method the method name
+     * @param args an array of objects, each one of which will be turned into
+     * a method argument.  This may be null to indicate no arguments
+     * @param transformerProperties a list of pairs of strings representing
+     * options to be set on the transformer
+     * @see javax.xml.transform.OutputKeys
+     */
+    private String makeXmlRpcCall(String method,
+                                  Object[] args,
+                                  String[] transformerProperties)
+            throws Exception {
         Document dom = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                 .newDocument();
         Element methodCall = dom.createElement("methodCall");
@@ -477,6 +521,13 @@ public class QuaestorTest
             }
         }
         Transformer t = TransformerFactory.newInstance().newTransformer();
+        if (transformerProperties != null) {
+            assert transformerProperties.length%2 == 0;
+            for (int i=0; i<transformerProperties.length; i+=2) 
+                t.setOutputProperty
+                        (transformerProperties[i],
+                         transformerProperties[i+1]);
+        }
         java.io.ByteArrayOutputStream baos
                 = new java.io.ByteArrayOutputStream();
         t.transform(new javax.xml.transform.dom.DOMSource(methodCall),
