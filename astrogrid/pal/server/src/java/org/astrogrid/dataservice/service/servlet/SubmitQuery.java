@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitQuery.java,v 1.2 2005/05/27 16:20:54 clq2 Exp $
+ * $Id: SubmitQuery.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -88,7 +88,8 @@ public class SubmitQuery extends DefaultServlet {
       }
       
       if (!ServletHelper.isCountReq(request)) {
-         ServletHelper.fillReturnSpec( query.getResultsDef(), request);
+         ServletHelper.fillReturnSpec( query.getResultsDef(), request, 
+             query.getConstraintSpec());
       }
       
       return query;

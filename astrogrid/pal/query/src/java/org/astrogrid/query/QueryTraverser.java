@@ -1,5 +1,5 @@
 /*
- * $Id: QueryTraverser.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: QueryTraverser.java,v 1.2 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,7 +32,9 @@ public abstract class QueryTraverser implements QueryVisitor {
       
       //-- from --
       if (query.getScope() != null) {
-         visitScope(query.getScope());
+        // Have to pass in query to get at table aliases
+         //visitScope(query.getScope());
+         visitScope(query.getScope(), query);
       }
       
       //-- WHERE --
@@ -85,8 +87,23 @@ public abstract class QueryTraverser implements QueryVisitor {
 
 /*
  $Log: QueryTraverser.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.1.1.1.90.1  2006/02/16 17:13:04  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:23  mch
  Initial checkin

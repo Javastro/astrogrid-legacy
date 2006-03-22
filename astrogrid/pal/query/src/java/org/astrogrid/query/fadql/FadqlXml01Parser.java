@@ -1,5 +1,5 @@
 /*
- * $Id: FadqlXml01Parser.java,v 1.1 2005/03/21 18:31:51 mch Exp $
+ * $Id: FadqlXml01Parser.java,v 1.2 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -71,12 +71,19 @@ public class FadqlXml01Parser  {
    /** Constructs a Query from the given ADQL 0.7.4 Select element */
    public Query parseSelect(Element select) {
 
+      String selectString;
       if (select == null) {
          throw new IllegalArgumentException("No Select Element given to parse");
       }
-      
+      try {
+         selectString = DomHelper.ElementToString(select);
+      }
+      catch (IOException e) {
+         throw new QueryException("Problems parsing select element: "
+               + e.getMessage());
+      }
       if (!select.getLocalName().equals("Select")) {
-         throw new QueryException("ADQL/Select root element is '"+select.getLocalName()+"', not 'Select': "+DomHelper.ElementToString(select));
+         throw new QueryException("ADQL/Select root element is '"+select.getLocalName()+"', not 'Select': "+selectString);
       }
       
       //do froms first so we build alias list
@@ -88,7 +95,7 @@ public class FadqlXml01Parser  {
       //select list - cols to return
       Element selectList = DomHelper.getSingleChildByTagName(select, "SelectionList");
       if (selectList == null) {
-         throw new QueryException("No SelectionList element in Select: "+DomHelper.ElementToString(select));
+         throw new QueryException("No SelectionList element in Select: "+selectString);
       }
       parseSelectionList( selectList );
       
@@ -98,8 +105,9 @@ public class FadqlXml01Parser  {
       if (where != null) {
          Element rootCondition = DomHelper.getSingleChildByTagName(where, "Condition");
          if (rootCondition == null) {
+
             //there should be at least one in a where
-            throw new QueryException("No root Condition element in Where: "+DomHelper.ElementToString(select));
+            throw new QueryException("No root Condition element in Where: "+selectString);
          }
          condition = parseCondition( rootCondition);
       }
@@ -208,7 +216,15 @@ public class FadqlXml01Parser  {
          String op = conditionElement.getAttribute("Comparison");
          Element[] args = DomHelper.getChildrenByTagName(conditionElement, "Arg");
          if (args.length != 2) {
-            throw new QueryException("Comparison element <"+conditionElement.getNodeName()+"> has "+args.length+" <Arg> elements - it should have two: "+DomHelper.ElementToString(conditionElement));
+           String conditionString;
+           try {
+             conditionString = DomHelper.ElementToString(conditionElement);
+           }
+           catch (IOException e) {
+             throw new QueryException("Problems parsing condition element: "
+                                     + e.getMessage());
+           }
+           throw new QueryException("Comparison element <"+conditionElement.getNodeName()+"> has "+args.length+" <Arg> elements - it should have two: "+conditionString);
          }
          return makeComparison( args[0], op, args[1] );
       }
@@ -364,11 +380,19 @@ public class FadqlXml01Parser  {
       Element[] args = DomHelper.getChildrenByTagName(arg, "Arg");
       String operator = arg.getAttribute("Oper");
 
+      String operString;
+      try {
+         operString = DomHelper.ElementToString(arg);
+      }
+      catch (IOException e) {
+         throw new QueryException("Problems parsing expression element: "
+            + e.getMessage());
+      }
       if (operator==null) {
-         throw new IllegalArgumentException(MATHEXPTYPE+" has no 'oper' attribute in "+DomHelper.ElementToString(arg));
+         throw new IllegalArgumentException(MATHEXPTYPE+" has no 'oper' attribute in "+operString);
       }
       if ((args == null) || (args.length != 2)) {
-         throw new IllegalArgumentException(MATHEXPTYPE+" should have two arguments in "+DomHelper.ElementToString(arg));
+         throw new IllegalArgumentException(MATHEXPTYPE+" should have two arguments in "+operString);
       }
       
       MathExpression exp = new MathExpression(parseNumExpression(args[0]), operator, parseNumExpression(args[1]));
@@ -427,6 +451,21 @@ public class FadqlXml01Parser  {
 }
 /*
  $Log: FadqlXml01Parser.java,v $
+ Revision 1.2  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.1.82.1  2006/02/16 17:13:04  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.1  2005/03/21 18:31:51  mch
  Included dates; made function types more explicit
 

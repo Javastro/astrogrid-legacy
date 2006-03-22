@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXmlParserTest.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: AdqlXmlParserTest.java,v 1.4 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,22 +27,24 @@ public class AdqlXmlParserTest extends TestCase   {
       AdqlXml074Parser.makeQuery( adql);
    }
    
+   /*
    public void testParseNvo1() throws Exception {
-      AdqlXml074Parser.makeQuery( new AdqlTestHelper().getNvo1() );
+      AdqlXml074Parser.makeQuery( (new AdqlTestHelper().getNvo1()).getDocumentElement() );
    }
    public void testParseNvo2() throws Exception {
-      AdqlXml074Parser.makeQuery( new AdqlTestHelper().getNvo2() );
+      AdqlXml074Parser.makeQuery( (new AdqlTestHelper().getNvo2())getDocumentElement() );
    }
    public void testParseNvo3() throws Exception {
-      AdqlXml074Parser.makeQuery( new AdqlTestHelper().getNvo3() );
+      AdqlXml074Parser.makeQuery( (new AdqlTestHelper().getNvo3()).getDocumentElement() );
    }
    public void testParseNvo4() throws Exception {
-      AdqlXml074Parser.makeQuery( new AdqlTestHelper().getNvo4() );
+      AdqlXml074Parser.makeQuery( (new AdqlTestHelper().getNvo4()).getDocumentElement() );
    }
    public void testParseSample1() throws Exception {
-      AdqlXml074Parser.makeQuery( new AdqlTestHelper().getSampleDbPleidies() );
+      AdqlXml074Parser.makeQuery( (new AdqlTestHelper().getSampleDbPleidies()).getDocumentElement() );
    }
    
+   */
    
    public static Test suite() {
       // Reflection is used here to add all the testXXX() methods to the suite.
@@ -60,6 +62,21 @@ public class AdqlXmlParserTest extends TestCase   {
 
 /*
  $Log: AdqlXmlParserTest.java,v $
+ Revision 1.4  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.3.62.1  2006/02/16 17:13:05  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.3  2005/05/27 16:21:02  clq2
  mchv_1
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXml074Parser.java,v 1.2 2005/03/21 18:31:50 mch Exp $
+ * $Id: AdqlXml074Parser.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.constraint.ConstraintSpec;
+import org.astrogrid.query.refine.RefineSpec;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,6 +37,9 @@ public class AdqlXml074Parser  {
    Hashtable alias = new Hashtable();
    Vector scope = new Vector();
    Vector returnCols = null; //must be a list of NumericExpressions
+   Vector groupByCols = null; // A list of column names
+
+   RefineSpec refineSpec = null;
    
    public static final String MATHEXPTYPE = "binaryExprType";
    
@@ -71,12 +76,20 @@ public class AdqlXml074Parser  {
    /** Constructs a Query from the given ADQL 0.7.4 Select element */
    public Query parseSelect(Element select) {
 
+      String selectString;
+
       if (select == null) {
          throw new IllegalArgumentException("No Select Element given to parse");
       }
-      
+      try {
+        selectString = DomHelper.ElementToString(select);
+      }
+      catch (IOException e) {
+         throw new QueryException("Problems parsing select element: " 
+             + e.getMessage());
+      }
       if (!select.getLocalName().equals("Select")) {
-         throw new QueryException("ADQL/Select root element is '"+select.getLocalName()+"', not 'Select': "+DomHelper.ElementToString(select));
+         throw new QueryException("ADQL/Select root element is '"+select.getLocalName()+"', not 'Select': " + selectString);
       }
       
       //do froms first so we build alias list
@@ -88,7 +101,7 @@ public class AdqlXml074Parser  {
       //select list - cols to return
       Element selectList = DomHelper.getSingleChildByTagName(select, "SelectionList");
       if (selectList == null) {
-         throw new QueryException("No SelectionList element in Select: "+DomHelper.ElementToString(select));
+         throw new QueryException("No SelectionList element in Select: "+selectString);
       }
       parseSelectionList( selectList );
       
@@ -99,7 +112,7 @@ public class AdqlXml074Parser  {
          Element rootCondition = DomHelper.getSingleChildByTagName(where, "Condition");
          if (rootCondition == null) {
             //there should be at least one in a where
-            throw new QueryException("No root Condition element in Where: "+DomHelper.ElementToString(select));
+            throw new QueryException("No root Condition element in Where: "+ selectString);
          }
          condition = parseCondition( rootCondition);
       }
@@ -109,12 +122,51 @@ public class AdqlXml074Parser  {
       if (returnCols != null) {
          returnSpec.setColDefs( (Expression[]) returnCols.toArray(new Expression[] {}) );
       }
-      
+
+      ConstraintSpec constraintSpec = new ConstraintSpec();
+
+      //limit
+      Element restrict = DomHelper.getSingleChildByTagName(select, "Restrict");
+      if (restrict != null) {
+         constraintSpec.setLimit(Long.parseLong(restrict.getAttribute("Top")));
+      }
+      //Allow 
+      Element allow = DomHelper.getSingleChildByTagName(select, "Allow");
+      if (allow != null) {
+        // Attribute "Option" is "DISTINCT" or "All" 
+         String allowVal = allow.getAttribute("Option"); 
+         if ( !(allowVal.equals("All")) && !(allowVal.equals("DISTINCT")) ) {
+            throw new QueryException (
+               "Allow must have 'Option' attribute of 'All' or 'DISTINCT'");
+         }
+         constraintSpec.setAllow(allowVal);
+      }
+
+      // NB This one is a class member
+      refineSpec = new RefineSpec();
+
+      // Group By - which takes column names
+      Element groupBy = DomHelper.getSingleChildByTagName(select, "GroupBy");
+      if (groupBy != null) {
+        parseGroupBy(groupBy);
+      }
+
+      /*
+      // OrderBy 
+      Element orderBy = DomHelper.getSingleChildByTagName(select, "OrderBy");
+      if (orderBy != null) {
+        System.out.println("Got here!!");
+        parseOrderBy(orderBy);
+      }
+      */
+
       //construct query
       Query query = new Query(
               (String[]) scope.toArray(new String[] {}),
                condition,
-               returnSpec
+               returnSpec,
+               constraintSpec,
+               refineSpec
               );
       Enumeration keys = alias.keys();
       while (keys.hasMoreElements()) {
@@ -123,11 +175,6 @@ public class AdqlXml074Parser  {
          query.addAlias(t, a);
       }
 
-      //limit
-      Element restrict = DomHelper.getSingleChildByTagName(select, "Restrict");
-      if (restrict != null) {
-         query.setLimit(Long.parseLong(restrict.getAttribute("Top")));
-      }
 
       return query;
    }
@@ -148,8 +195,13 @@ public class AdqlXml074Parser  {
          if (getXsiType(selectItem).equals("columnReferenceType")) {
             String table = selectItem.getAttribute("Table");
             //check to see if it is in fact a table alias not a table
-            if (alias.get(table) != null) { table = (String) alias.get(table); }
-            returnCols.add(new ColumnReference(table, selectItem.getAttribute("Name")));
+            if (alias.get(table) != null) { 
+              String realTable = (String) alias.get(table); 
+               returnCols.add(new ColumnReference(realTable, selectItem.getAttribute("Name"), table));
+            }
+            else { // No alias in this case - had a table name
+               returnCols.add(new ColumnReference(table, selectItem.getAttribute("Name")));
+            }
          }
          else {
             throw new UnsupportedOperationException("Can't cope with ADQL 0.7.4 select list type '"+getXsiType(selectItem)+"'");
@@ -177,6 +229,69 @@ public class AdqlXml074Parser  {
          throw new UnsupportedOperationException("Don't know table type "+getXsiType(fromTableElement));
       }
    }
+
+
+   public void parseGroupBy(Element groupByListElement) {
+      //return columns (group by)
+      Element[] columns = DomHelper.getChildrenByTagName(groupByListElement, "Column");
+      returnCols = new Vector();
+      for (int i = 0; i < columns.length; i++) {
+         Element groupByCol = columns[i];
+         
+         if (
+             getXsiType(groupByCol).equals("columnReferenceType") ||
+             getXsiType(groupByCol).equals("")  /* Allow empty xsi-type */
+         ) {
+            String table = groupByCol.getAttribute("Table");
+            //check to see if it is in fact a table alias not a table
+            if (alias.get(table) != null) { 
+               String realTable = (String) alias.get(table); 
+               refineSpec.addGroupByColumn(
+                    new ColumnReference(
+                      realTable, groupByCol.getAttribute("Name"), table));
+            }
+            else {
+               refineSpec.addGroupByColumn(
+                  new ColumnReference(table, groupByCol.getAttribute("Name")));
+            }
+         }
+         else {
+            throw new UnsupportedOperationException("Can't cope with ADQL 0.7.4 group-by column type '"+getXsiType(groupByCol)+"'");
+         }
+      }
+   }
+   /*
+    // NOT FINISHED YET!! 
+   public void parseOrderBy(Element orderBy) {
+      //return columns (orderBy items
+      Element[] items = DomHelper.getChildrenByTagName(orderBy, "Item");
+      returnCols = new Vector();
+      for (int i = 0; i < items.length; i++) {
+         Element item = items[i];
+         if (
+             getXsiType(item).equals("columnReferenceType") ||
+             getXsiType(item).equals("")  // Allow empty xsi-type
+         ) {
+            String table = item.getAttribute("Table");
+            System.out.println("Found a column reference");
+            //check to see if it is in fact a table alias not a table
+            if (alias.get(table) != null) { 
+               String realTable = (String) alias.get(table); 
+               refineSpec.addGroupByColumn(
+                    new ColumnReference(
+                      realTable, item.getAttribute("Name"), table));
+            }
+            else {
+               refineSpec.addGroupByColumn(
+                  new ColumnReference(table, item.getAttribute("Name")));
+            }
+         }
+         else {
+            throw new UnsupportedOperationException("Can't cope with ADQL 0.7.4 order-by column type '"+getXsiType(item)+"'");
+         }
+      }
+   }
+*/
    
    /** Constructs a Query OM condition from the given ADQL 0.7.4 condition */
    protected Condition parseCondition(Element conditionElement) {
@@ -208,7 +323,16 @@ public class AdqlXml074Parser  {
          String op = conditionElement.getAttribute("Comparison");
          Element[] args = DomHelper.getChildrenByTagName(conditionElement, "Arg");
          if (args.length != 2) {
-            throw new QueryException("Comparison element <"+conditionElement.getNodeName()+"> has "+args.length+" <Arg> elements - it should have two: "+DomHelper.ElementToString(conditionElement));
+           String conditionString;
+           try {
+             conditionString = DomHelper.ElementToString(conditionElement);
+            }
+            catch (IOException e) {
+               throw new QueryException("Problems parsing condition element: " 
+                    + e.getMessage());
+            }
+
+            throw new QueryException("Comparison element <"+conditionElement.getNodeName()+"> has "+args.length+" <Arg> elements - it should have two: "+conditionString);
          }
          return makeComparison( args[0], op, args[1] );
       }
@@ -273,10 +397,11 @@ public class AdqlXml074Parser  {
       }
       
       if (alias.get(tableName) != null) {
-            return new ColumnReference( (String) alias.get(tableName), colName);
+         String realTableName = (String)alias.get(tableName);
+         return new ColumnReference(realTableName, colName, tableName);
       }
       else {
-            return new ColumnReference( tableName, colName);
+            return new ColumnReference(tableName, colName);
       }
    }
    
@@ -364,11 +489,19 @@ public class AdqlXml074Parser  {
       Element[] args = DomHelper.getChildrenByTagName(arg, "Arg");
       String operator = arg.getAttribute("Oper");
 
+      String operString;
+      try {
+        operString = DomHelper.ElementToString(arg);
+      }
+      catch (IOException e) {
+         throw new QueryException("Problems parsing expression element: " 
+              + e.getMessage());
+      }
       if (operator==null) {
-         throw new IllegalArgumentException(MATHEXPTYPE+" has no 'oper' attribute in "+DomHelper.ElementToString(arg));
+          throw new IllegalArgumentException(MATHEXPTYPE+" has no 'oper' attribute in "+operString);
       }
       if ((args == null) || (args.length != 2)) {
-         throw new IllegalArgumentException(MATHEXPTYPE+" should have two arguments in "+DomHelper.ElementToString(arg));
+         throw new IllegalArgumentException(MATHEXPTYPE+" should have two arguments in "+operString);
       }
       
       MathExpression exp = new MathExpression(parseNumExpression(args[0]), operator, parseNumExpression(args[1]));
@@ -427,6 +560,31 @@ public class AdqlXml074Parser  {
 }
 /*
  $Log: AdqlXml074Parser.java,v $
+ Revision 1.3  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.2.82.3  2006/03/21 11:26:58  kea
+ Tweaks to switch off broken unit tests prior to radical revision
+ of internal query model.
+
+ Revision 1.2.82.2  2006/02/20 19:42:08  kea
+ Changes to add GROUP-BY support.  Required adding table alias field
+ to ColumnReferences, because otherwise the whole Visitor pattern
+ falls apart horribly - no way to get at the table aliases which
+ are defined in a separate node.
+
+ Revision 1.2.82.1  2006/02/16 17:13:04  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.2  2005/03/21 18:31:50  mch
  Included dates; made function types more explicit
 

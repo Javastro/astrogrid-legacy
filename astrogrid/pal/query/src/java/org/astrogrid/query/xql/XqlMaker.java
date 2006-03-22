@@ -61,7 +61,8 @@ public class XqlMaker {
             namespaceURI = adql.getAttribute("xmlns");
         }
         if (namespaceURI == null) {
-            DomHelper.PrettyElementToStream(adql,System.out);
+           //DomHelper.PrettyElementToStream(adql,System.out);
+           DomHelper.ElementToStream(adql,System.out);
             throw new IllegalArgumentException("Query body has no namespace - cannot determine language");
         }
         
@@ -179,6 +180,21 @@ public class XqlMaker {
 
 /*
 $Log$
+Revision 1.8  2006/03/22 15:10:13  clq2
+KEA_PAL-1534
+
+Revision 1.7.24.1  2006/02/16 17:13:05  kea
+Various ADQL/XML parsing-related fixes, including:
+ - adding xsi:type attributes to various tags
+ - repairing/adding proper column alias support (aliases compulsory
+    in adql 0.7.4)
+ - started adding missing bits (like "Allow") - not finished yet
+ - added some extra ADQL sample queries - more to come
+ - added proper testing of ADQL round-trip conversions using xmlunit
+   (existing test was not checking whole DOM tree, only topmost node)
+ - tweaked test queries to include xsi:type attributes to help with
+   unit-testing checks
+
 Revision 1.7  2005/11/21 12:54:18  clq2
 DSA_KEA_1451
 

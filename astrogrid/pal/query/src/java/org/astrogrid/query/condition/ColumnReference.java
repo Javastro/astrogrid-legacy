@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnReference.java,v 1.2 2005/03/21 18:31:50 mch Exp $
+ * $Id: ColumnReference.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,38 +21,72 @@ import org.astrogrid.units.Units;
 
 public class ColumnReference extends SearchFieldReference {
   
+   public static final String NO_ALIAS = "";
+
    //searchfield already has datasetName
    String tableName = null;
    String colName = null;
-   
+   /** It's a bit nasty to store the table alias here (since ideally
+    * we only need to store it once for a given table, not in every
+    * column reference).  Unfortunately, if we don't do this, the 
+    * Visitor model has major headaches handling aliases (previously 
+    * they were stored up in the Query, but thus weren't available 
+    * everywhere they were needed).
+    */
+   String tableAlias = NO_ALIAS;
 
-   /**  Creates a reference to a column in a table. */
+
+   /**  Creates a reference to a column in a table. 
+    * NOTE: aTableAlias may be set to "" (no alias) */
    public ColumnReference(String aTableName, String aColName) {
 
       if (aTableName.indexOf(' ') != -1) { throw new QueryException("Table name '"+aTableName+"' contains a space"); }
-      if (aColName.indexOf(' ') != -1) { throw new QueryException("Column name '"+aColName+"' contains a space"); }
-      
       this.tableName = aTableName;
+
+      if (aColName.indexOf(' ') != -1) { throw new QueryException("Column name '"+aColName+"' contains a space"); }
       this.colName = aColName;
    }
 
-   /**  Creates a reference to a column in a table in the given dataset. */
-   public ColumnReference(String dataset, String aTableName, String aColName) {
+   /**  Creates a reference to a column in a table, including an alias.
+    */
+   public ColumnReference(String aTableName, String aColName, 
+       String aTableAlias) {
 
       this(aTableName, aColName);
+      if (aTableAlias.indexOf(' ') != -1) { 
+        throw new QueryException(
+            "Table alias '"+aTableAlias+"' contains a space"); 
+      }
+      this.tableAlias = aTableAlias;
+   }
+
+   /**  Creates a reference to a column in a table in the given dataset, 
+    * including an alias.  Note that null dataset names are sometimes
+    * passed in, so we're not assuming dataset is non-null here.
+    */
+   public ColumnReference(String dataset, String aTableName, 
+          String aColName, String aTableAlias) {
+      this(aTableName, aColName, aTableAlias);
       this.datasetName = dataset;
    }
 
    public String getTableName() { return tableName; }
    public String getColName() { return colName; }
+   public String getTableAlias() { return tableAlias; }
    
+   public void setTableAlias(String aTableAlias)
+   {
+      if (aTableAlias.indexOf(' ') != -1) { throw new QueryException("Table alias '"+aTableAlias+"' contains a space"); }
+     this.tableAlias = aTableAlias;
+   }
+
    /** For human debugging */
    public String toString() {
       if (datasetName != null) {
-         return "[ColRef "+datasetName+":"+tableName+"."+colName+"]";
+         return "[ColRef "+datasetName+":"+tableName+"(alias '" + tableAlias + "')."+colName+"]";
       }
       else {
-         return "[ColRef "+tableName+"."+colName+"]";
+         return "[ColRef "+tableName+"(alias '" + tableAlias + "')."+colName+"]";
       }
    }
    
@@ -75,6 +109,15 @@ public class ColumnReference extends SearchFieldReference {
 
 /*
 $Log: ColumnReference.java,v $
+Revision 1.3  2006/03/22 15:10:13  clq2
+KEA_PAL-1534
+
+Revision 1.2.82.1  2006/02/20 19:42:08  kea
+Changes to add GROUP-BY support.  Required adding table alias field
+to ColumnReferences, because otherwise the whole Visitor pattern
+falls apart horribly - no way to get at the table aliases which
+are defined in a separate node.
+
 Revision 1.2  2005/03/21 18:31:50  mch
 Included dates; made function types more explicit
 

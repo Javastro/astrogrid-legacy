@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTestHelper.java,v 1.2 2005/03/21 18:31:51 mch Exp $
+ * $Id: AdqlTestHelper.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,6 +24,17 @@ import org.xml.sax.SAXException;
 
 public class AdqlTestHelper    {
    
+   public Document getTestAdql(String queryFile) throws ParserConfigurationException, SAXException, IOException  {
+      assert (queryFile != null);
+      InputStream is = this.getClass().getResourceAsStream(queryFile);
+      assert (is != null) : "Could not open query file: " + queryFile;
+
+      Document adqlDom = DomHelper.newDocument(is);
+      adqlDom.normalize(); //so we can compare Adql DOMs
+      //return adqlDom.getDocumentElement();
+      return adqlDom;
+   }
+  /*
    public Element getTestAdql(String queryFile) throws ParserConfigurationException, SAXException, IOException  {
       assert (queryFile != null);
       InputStream is = this.getClass().getResourceAsStream(queryFile);
@@ -33,6 +44,8 @@ public class AdqlTestHelper    {
       adqlDom.normalize(); //so we can compare Adql DOMs
       return adqlDom.getDocumentElement();
    }
+   */
+
 
    /** Returns true if each element has the same attributes with the same values,
     * the same children elements and each child element is also equal using this
@@ -40,7 +53,7 @@ public class AdqlTestHelper    {
     * Can be used to compare docs to see if they are effectively equal.
     * Throws an assertion exception with some indication of where the difference lies
     */
-   public void assertElementsEqual(Element e1, Element e2) {
+   public void assertElementsEqualOUTOFDATE(Element e1, Element e2) {
       e1.normalize();
       e2.normalize();
       
@@ -62,53 +75,78 @@ public class AdqlTestHelper    {
          assert e1AttValue.equals(e2Att.getNodeValue()) : "Attribute "+e2Att.getNodeName()+" has different values "+e2Att.getNodeValue()+" and "+e1AttValue+" in "+e1.getTagName();
       }
 
+      /*
+       * KEA COMMENT: This won't work because some nodes may have multiple
+       * children with the same name.  We need to find the actual matching 
+       * nodes!
       //check children *elements*
       //this includes attributes
       NodeList e1children = e1.getChildNodes();
-//      NodeList e2children = e2.getChildNodes();
-//      assert e1children.getLength() == e2children.getLength() : "Different number of children in "+e1.getTagName();
+      NodeList e2children = e2.getChildNodes();
+      assert e1children.getLength() == e2children.getLength() : "Different number of children in "+e1.getTagName();
 
-      /* this isn't right
       for (int i = 0; i < e1children.getLength(); i++) {
          if (e1children.item(i) instanceof Element) {
             //get equivelent e2 child
-            Element e2child = AdqlXml074Parser.getSingleChildByTagName( e2, e1children.item(i).getNodeName());
+            Element e2child = AdqlXml074Parser.getSingleChildByTagName(e2, e1children.item(i).getNodeName());
             //this might not be quite right...
             assertElementsEqual( (Element) e1children.item(i), e2child);
          }
       }
-       */
+      */
    }
    
    /* Returns the 'current' adql version of the 'standard test example' NVO queries
     generated on the page
    at http://openskyquery.net/AdqlTranslator/Convertor.aspx */
-   public Element getNvo1() throws IOException, SAXException, ParserConfigurationException {
+   public Document getNvo1() throws IOException, SAXException, ParserConfigurationException {
       return getTestAdql("v074/nvoexample-1-adql0.7.4.xml");
    }
 
-   public Element getNvo2() throws IOException, SAXException, ParserConfigurationException {
+   public Document getNvo2() throws IOException, SAXException, ParserConfigurationException {
       return getTestAdql("v074/nvoexample-2-adql0.7.4.xml");
    }
    
-   public Element getNvo3() throws IOException, SAXException, ParserConfigurationException {
+   public Document getNvo3() throws IOException, SAXException, ParserConfigurationException {
       return getTestAdql("v074/nvoexample-3-adql0.7.4.xml");
    }
    
-   public Element getNvo4() throws IOException, SAXException, ParserConfigurationException {
+   public Document getNvo4() throws IOException, SAXException, ParserConfigurationException {
       return getTestAdql("v074/nvoexample-4-adql0.7.4.xml");
    }
 
    /** Returns the 'current' adql verison of some tests that can be run against the
     * sample stars database */
-   public Element getSampleDbPleidies() throws IOException, SAXException, ParserConfigurationException {
+   public Document getSampleDbPleidies() throws IOException, SAXException, ParserConfigurationException {
       return getTestAdql("v074/SampleStars-pleidies-adql.xml");
    }
    
+   public Document getSuiteAdql(String name) throws IOException, SAXException, ParserConfigurationException {
+     if ((name == null) || (name.equals("")) ) {
+       throw new IOException("Please supply test name!\n");
+     }
+     String fullPath = "v074/fullsuite/" + name + ".xml";
+     return getTestAdql(fullPath);
+   }
 }
 
 /*
  $Log: AdqlTestHelper.java,v $
+ Revision 1.3  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.2.82.1  2006/02/16 17:13:05  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.2  2005/03/21 18:31:51  mch
  Included dates; made function types more explicit
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Fadql01Writer.java,v 1.1 2005/03/21 18:31:51 mch Exp $
+ * $Id: Fadql01Writer.java,v 1.2 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,11 +22,15 @@ import org.astrogrid.query.QueryVisitor;
 import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.constraint.ConstraintSpec;
+import org.astrogrid.query.refine.RefineSpec;
 import org.xml.sax.SAXException;
 
 
 /**
  * Writes out a Query in ADQL 0.7.4
+ * IMPORTANT NOTE:  THIS IS CURRENTLY JUST A CLONE OF THE NORMAL
+ * ADQL 0.7.4 WRITER!!!!!!  IT IS ALSO GETTING OUT OF DATE!!!
  */
 
 public class Fadql01Writer implements QueryVisitor {
@@ -80,7 +84,7 @@ public class Fadql01Writer implements QueryVisitor {
       
       //-- FROM ---
       if (query.getScope() != null) {
-         visitScope(query.getScope());
+         visitScope(query.getScope(),query);
       }
       
       //-- WHERE --
@@ -99,7 +103,7 @@ public class Fadql01Writer implements QueryVisitor {
       currentTag.writeTag("Top", ""+limit);
    }
    
-   public void visitScope(String[] scope) throws IOException {
+   public void visitScope(String[] scope, Query query) throws IOException {
       // we just duplicate alias names as table names for now
       XmlPrinter fromTag = currentTag.newTag("From");
 
@@ -297,6 +301,18 @@ public class Fadql01Writer implements QueryVisitor {
       currentTag = save;
    }
    
+   /** @TOFIX-KEA ADD THIS ONE!! */
+   public void visitRefineSpec(RefineSpec refineSpec) throws IOException
+   {
+     log.warn("visitRefineSpec not implemented yet!");
+   }
+
+   /** @TOFIX-KEA ADD THIS ONE!! */
+   public void visitConstraintSpec(ConstraintSpec constraintSpec) throws IOException
+   {
+     log.warn("VisitConstraintSpec not implemented yet!");
+   }
+
    
    /**
     * Easy test/debug

@@ -1,5 +1,5 @@
 /*
-   $Id: XmlPrinter.java,v 1.1 2005/03/22 13:03:34 mch Exp $
+   $Id: XmlPrinter.java,v 1.2 2006/03/22 15:14:47 clq2 Exp $
 
    (c) Copyright...
 */
@@ -8,6 +8,7 @@ package org.astrogrid.io.xml;
 import java.io.IOException;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
+import javax.xml.transform.TransformerException;
 
 /**
  * Class used to write to an Xml Element.  The element is always created within
@@ -57,9 +58,10 @@ public class XmlPrinter
    /** Concatinates the given array of strings into one string separated by spaces */
    protected String concatAttrs(String[] attrs) {
       StringBuffer all = new StringBuffer();
-      for (int i = 0; i < attrs.length; i++) {
+      for (int i = 0; i < (attrs.length-1); i++) {
          all.append(attrs[i]+" ");
       }
+      all.append(attrs[attrs.length-1]);   /* No trailing space */
       return all.toString();
    }
    
@@ -257,6 +259,12 @@ public class XmlPrinter
 
 /*
  $Log: XmlPrinter.java,v $
+ Revision 1.2  2006/03/22 15:14:47  clq2
+ KEA_PAL-1534
+
+ Revision 1.1.58.1  2006/03/21 11:28:52  kea
+ Fixes to help with better xml parsing and new unit tests.
+
  Revision 1.1  2005/03/22 13:03:34  mch
  Separated xml from slinger (circular dependency with config)
 

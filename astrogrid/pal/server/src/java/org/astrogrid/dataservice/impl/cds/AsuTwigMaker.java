@@ -1,4 +1,4 @@
-/*$Id: AsuTwigMaker.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
+/*$Id: AsuTwigMaker.java,v 1.4 2006/03/22 15:10:13 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,8 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryTraverser;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.refine.RefineSpec;
+import org.astrogrid.query.constraint.ConstraintSpec;
 import org.astrogrid.query.sql.SqlParser;
 
 /** Makes an ASU URL 'twig' that can be attached to a URL stem to query
@@ -148,7 +150,7 @@ public class AsuTwigMaker extends QueryTraverser  {
       comparison.getRHS().acceptVisitor(this);
    }
    
-   public void visitScope(String[] scope) {
+   public void visitScope(String[] scope, Query query) {
       if ((scope ==null) || (scope.length==0)) {
          return;
       }
@@ -157,6 +159,15 @@ public class AsuTwigMaker extends QueryTraverser  {
       {
          asuTwig.append(","+scope[i]);
       }
+   }
+
+   /** @TOFIX-KEA ADD THIS ONE!! */
+   public void visitRefineSpec(RefineSpec refineSpec)
+   {
+   }
+   /** @TOFIX-KEA ADD THIS ONE!! */
+   public void visitConstraintSpec(ConstraintSpec constraintSpec)
+   {
    }
    
    /** returns twig, prepending ? and removing initial & and  */
@@ -194,6 +205,27 @@ public class AsuTwigMaker extends QueryTraverser  {
 
 /*
  $Log: AsuTwigMaker.java,v $
+ Revision 1.4  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.3.62.2  2006/02/20 19:42:08  kea
+ Changes to add GROUP-BY support.  Required adding table alias field
+ to ColumnReferences, because otherwise the whole Visitor pattern
+ falls apart horribly - no way to get at the table aliases which
+ are defined in a separate node.
+
+ Revision 1.3.62.1  2006/02/16 17:13:05  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.3  2005/05/27 16:21:02  clq2
  mchv_1
 

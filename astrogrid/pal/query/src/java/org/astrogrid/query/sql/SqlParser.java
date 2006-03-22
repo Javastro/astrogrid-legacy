@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.2 2005/03/21 18:31:51 mch Exp $
+ * $Id: SqlParser.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import org.astrogrid.query.condition.*;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,6 +18,7 @@ import org.astrogrid.query.FunctionDefinition;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.constraint.ConstraintSpec;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.xml.sax.SAXException;
 
@@ -32,12 +34,16 @@ import org.xml.sax.SAXException;
 
 public class SqlParser  {
    
+   // Note - this treats the alias as the key and the table name as 
+   // the stored value
    Hashtable colAlias = new Hashtable();
    
    Condition whereClause = null;
    
    ReturnTable resultsDef = new ReturnTable(null);
    
+   ConstraintSpec constraintSpec = new ConstraintSpec();
+
    Hashtable funcsAvailable = new Hashtable();
    
    // the 'from' cluase - theupper list of tables to search
@@ -128,7 +134,15 @@ public class SqlParser  {
 //   public String[] getScope() { return (String[]) scope.toArray( new String[] {} ); }
 
    public Query getQuery() {
-      return new Query((String[]) scope.toArray( new String[] {} ), whereClause, resultsDef);
+      //return new Query((String[]) scope.toArray( new String[] {} ), whereClause, resultsDef);
+      Query query = new Query((String[]) scope.toArray( new String[] {} ), whereClause, resultsDef);
+      // Set aliases from colAlias
+      Iterator it = colAlias.keySet().iterator();
+      while (it.hasNext()) {
+         String alias = (String)it.next();
+         query.addAlias((String)colAlias.get(alias), alias);
+      }
+      return query;
    }
 
    /** Static method for convenience */
@@ -410,9 +424,15 @@ public class SqlParser  {
       }
       String colName = colRef.substring(stop+1);
       if (colAlias.get(tableName) != null) {
-         tableName = (String) colAlias.get(tableName);
+         String realTableName = (String) colAlias.get(tableName);
+         return new ColumnReference(
+             datasetName, realTableName, colName, tableName);
       }
-      return new ColumnReference(datasetName, tableName, colName);
+      else {
+        // No alias in this case
+         return new ColumnReference(
+             datasetName, tableName, colName, ColumnReference.NO_ALIAS);
+      }
    }
 
    /**
@@ -647,13 +667,18 @@ public class SqlParser  {
             }
             addAlias(tableName, tableAlias);
          }
-         else
-         if (token.trim().length() >0) {
-            throw new IllegalArgumentException(
-               "FROM statement should consist of comma separated <table>[ as <alias], " +
-               "Invalid comma-separated token '"+origToken+"' in '"+from+"'");
-         }
-            
+         else {
+            // Add a "default" alias that's the same as the table name;
+            // this is useful when the constructed query is used for 
+            // building valid ADQL/xml, which requires an alias attribute 
+            // for each table tag.
+           addAlias(tableName, tableName);
+           if (token.trim().length() >0) {
+              throw new IllegalArgumentException(
+                 "FROM statement should consist of comma separated <table>[ as <alias], " +
+                 "Invalid comma-separated token '"+origToken+"' in '"+from+"'");
+           }
+        }
       }
    }
    
@@ -680,7 +705,7 @@ public class SqlParser  {
    public void parseLimit(String limit) {
          //find first token after LIMIT keyword as the number limit
          StringTokenizer tokenizer = new StringTokenizer(limit.trim()," ");
-         resultsDef.setLimit(Integer.parseInt(tokenizer.nextToken()));
+         constraintSpec.setLimit(Integer.parseInt(tokenizer.nextToken()));
    }
       
    /**
@@ -793,6 +818,27 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.3  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.2.82.2  2006/02/20 19:42:08  kea
+ Changes to add GROUP-BY support.  Required adding table alias field
+ to ColumnReferences, because otherwise the whole Visitor pattern
+ falls apart horribly - no way to get at the table aliases which
+ are defined in a separate node.
+
+ Revision 1.2.82.1  2006/02/16 17:13:05  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.2  2005/03/21 18:31:51  mch
  Included dates; made function types more explicit
 

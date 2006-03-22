@@ -1,5 +1,5 @@
 /*
- * $Id: StdSqlWriter.java,v 1.8 2005/05/27 16:21:04 clq2 Exp $
+ * $Id: StdSqlWriter.java,v 1.9 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,6 +24,8 @@ import org.astrogrid.query.adql.Adql074Writer;
 import org.astrogrid.query.adql.AdqlXml074Parser;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.constraint.ConstraintSpec;
+import org.astrogrid.query.refine.RefineSpec;
 import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
@@ -67,7 +69,7 @@ public class StdSqlWriter implements QueryVisitor {
       visitLimit(query.getLocalLimit());
       
       //-- FROM ---
-      visitScope(query.getScope());
+      visitScope(query.getScope(), query);
 
       //-- WHERE --
       if (query.getCriteria() != null) {
@@ -89,7 +91,7 @@ public class StdSqlWriter implements QueryVisitor {
       return sql;
    }
    
-   public void visitScope(String[] scope) {
+   public void visitScope(String[] scope, Query query) {
 
       current = from;
 
@@ -265,6 +267,16 @@ public class StdSqlWriter implements QueryVisitor {
       }
 
       current.append(colRef.getColName()+" ");
+   }
+
+   /** @TOFIX-KEA ADD CONTENTS HERE! */
+   public void visitRefineSpec(RefineSpec refineSpec)
+   {
+   }
+
+   /** @TOFIX-KEA ADD CONTENTS HERE! */
+   public void visitConstraintSpec(ConstraintSpec constraintSpec)
+   {
    }
    
    /** might be overridden? **/
@@ -484,6 +496,27 @@ public class StdSqlWriter implements QueryVisitor {
 
 /*
  $Log: StdSqlWriter.java,v $
+ Revision 1.9  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.8.62.2  2006/02/20 19:42:08  kea
+ Changes to add GROUP-BY support.  Required adding table alias field
+ to ColumnReferences, because otherwise the whole Visitor pattern
+ falls apart horribly - no way to get at the table aliases which
+ are defined in a separate node.
+
+ Revision 1.8.62.1  2006/02/16 17:13:05  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.8  2005/05/27 16:21:04  clq2
  mchv_1
 

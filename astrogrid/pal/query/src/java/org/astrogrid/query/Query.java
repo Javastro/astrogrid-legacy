@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.2 2005/03/21 18:31:50 mch Exp $
+ * $Id: Query.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,8 @@ import java.util.Hashtable;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.condition.Condition;
 import org.astrogrid.query.returns.ReturnSpec;
+import org.astrogrid.query.constraint.ConstraintSpec;
+import org.astrogrid.query.refine.RefineSpec;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 
 
@@ -18,7 +20,20 @@ import org.astrogrid.slinger.targets.TargetIdentifier;
  * A full in-memory 'modelled' representation of a query.  Consists of a 'scope',
  * indicating what will be searched, a description of where the results
  * will go, and a 'Condition' which describes the search criteria to be used.
- * <p>
+ * 
+ * Notes: 
+ *
+ * ADQL 0.7.4 NOTES: These are the toplevel elements allowed in a Select :
+ *  <xs:element name="Allow" type="tns:selectionOptionType" minOccurs="0"/>
+ *  <xs:element name="Restrict" type="tns:selectionLimitType" minOccurs="0"/>
+ *  <xs:element name="SelectionList" type="tns:selectionListType"/>
+ *  <xs:element name="From" type="tns:fromType" minOccurs="0"/>
+ *  <xs:element name="Where" type="tns:whereType" minOccurs="0"/>
+ *  <xs:element name="GroupBy" type="tns:groupByType" minOccurs="0"/>
+ *  <xs:element name="Having" type="tns:havingType" minOccurs="0"/>
+ *  <xs:element name="OrderBy" type="tns:orderExpressionType" minOccurs="0"/>
+ *
+ *
  */
 
 public class Query  {
@@ -32,8 +47,11 @@ public class Query  {
    /** Not quite sure how this should be described properly */
    String[] scope = null;
 
-   /** maximum number of results. -1 = unlimited */
-   long limit = -1;
+   /** Stores toplevel constrainsts such as row limits, DISTINCT filters etc */
+   ConstraintSpec constraintSpec = null;
+
+   /** Stores toplevel refinements such as GROUP BY, ORDER BY, HAVING */
+   RefineSpec refineSpec = null;
 
    /** lookup of aliases *by table* if any are given.  This might only be used for human-readable
     * queries or where we want the exact same output as was input.  */
@@ -46,23 +64,27 @@ public class Query  {
       this.scope = givenScope;
       this.criteria = someCriteria;
       this.results = aResultsDef;
+      this.constraintSpec = new ConstraintSpec();  /* Empty by default */
+      this.refineSpec = new RefineSpec();  /* Empty by default */
+   }
+
+   public Query(String[] givenScope, Condition someCriteria, ReturnSpec aResultsDef, ConstraintSpec constraintSpec, RefineSpec refineSpec) {
+      this.scope = givenScope;
+      this.criteria = someCriteria;
+      this.results = aResultsDef;
+      this.constraintSpec = constraintSpec;  
+      this.refineSpec = refineSpec;  
    }
    
    public Query(Condition someCriteria, ReturnSpec aResultsDef) {
       this.criteria = someCriteria;
       this.results = aResultsDef;
+      this.constraintSpec = new ConstraintSpec();  /* Empty by default */
    }
    
    public void setScope(String[] givenScope) {
       this.scope = givenScope;
    }
-   
-   /** Sets maximum number of results   */
-   public void setLimit(long limit) {     this.limit = limit;  }
-   
-   /**
-    * Returns maximum number of results */
-   public long getLimit() {      return limit; }
    
    public Condition getCriteria()      { return criteria; }
 
@@ -71,21 +93,57 @@ public class Query  {
    public String[] getScope()          { return scope; }
 
    public ReturnSpec getResultsDef() { return results; }
+
+   public ConstraintSpec getConstraintSpec() { return constraintSpec; }
+
+   public RefineSpec getRefineSpec() { return refineSpec; }
    
    public void setResultsDef(ReturnSpec spec) {
       this.results = spec;
    }
 
-   /** Returns the lowest of the query or local limit */
+   /**
+    * Returns maximum number of results */
+   public long getLimit() 
+   {      
+     if (constraintSpec != null) {
+       return constraintSpec.getLimit(); 
+     }
+     return ConstraintSpec.LIMIT_NOLIMIT;
+   }
+
+   /** Sets the row limit constraint */
+   public void setLimit(long limit) 
+   {      
+      if (constraintSpec == null) {
+         constraintSpec = new ConstraintSpec();
+      }
+      constraintSpec.setLimit(limit);
+   }
+   
+   /** Returns the lowest of the query limit (stored in ConstraintSpec) 
+    *  or local limit (configured in DSA setup) */
    public long getLocalLimit() {
+      long queryLimit = ConstraintSpec.LIMIT_NOLIMIT;  
       long localLimit = ConfigFactory.getCommonConfig().getInt(MAX_RETURN_KEY, 0);
-      long queryLimit = getLimit();
-      if ((queryLimit <= 0) || ((queryLimit > localLimit) && (localLimit > 0))) {
+      if (constraintSpec != null) {
+        queryLimit = constraintSpec.getLimit();
+      }
+      if ((queryLimit == ConstraintSpec.LIMIT_NOLIMIT) || 
+             ((queryLimit > localLimit) && (localLimit > 0))) {
          queryLimit = localLimit;
       }
       return queryLimit;
    }
    
+   /** Sets the allow constraint */
+   public void setAllow(String allowVal) 
+   {      
+      if (constraintSpec == null) {
+         constraintSpec = new ConstraintSpec();
+      }
+      constraintSpec.setAllow(allowVal);
+   }
 
    
    public void addAlias(String table, String alias)
@@ -128,6 +186,27 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
+ Revision 1.3  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.2.82.2  2006/02/20 19:42:08  kea
+ Changes to add GROUP-BY support.  Required adding table alias field
+ to ColumnReferences, because otherwise the whole Visitor pattern
+ falls apart horribly - no way to get at the table aliases which
+ are defined in a separate node.
+
+ Revision 1.2.82.1  2006/02/16 17:13:04  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.2  2005/03/21 18:31:50  mch
  Included dates; made function types more explicit
 

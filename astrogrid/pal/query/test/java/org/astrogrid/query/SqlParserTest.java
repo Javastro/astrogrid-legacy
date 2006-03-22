@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParserTest.java,v 1.3 2005/05/27 16:21:18 clq2 Exp $
+ * $Id: SqlParserTest.java,v 1.4 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -51,6 +51,7 @@ public class SqlParserTest extends TestCase   {
    }
    public void testConditions2() throws IOException, ParserConfigurationException {
       String s = "SELECT t.a, g.d FROM Tab as a, Tab as d WHERE a.d < d.e AND a.f < d.f";
+      //String s = "SELECT a.x, b.y FROM Tab1 as a, Tab2 as b WHERE a.d < b.e AND a.f < b.f";
       assertValidXml(translate(s));
    }
    
@@ -233,7 +234,14 @@ public class SqlParserTest extends TestCase   {
    
    
    public String translate(String sql) throws IOException {
-       return Adql074Writer.makeAdql(SqlParser.makeQuery(sql), "from SQL "+sql);
+     //System.out.println("****Translating string " + sql);
+     //Query query = SqlParser.makeQuery(sql);
+     //System.out.println("****Made query successfully ");
+     //String adql = Adql074Writer.makeAdql(query);
+     //System.out.println("****Made ADQL successfully ");
+     //System.out.println("****ADQL IS " + adql);
+     //return adql;
+      return Adql074Writer.makeAdql(SqlParser.makeQuery(sql), "from SQL "+sql);
    }
    
    

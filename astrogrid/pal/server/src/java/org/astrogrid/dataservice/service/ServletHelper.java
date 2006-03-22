@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: ServletHelper.java,v 1.4 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,6 +23,7 @@ import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.constraint.ConstraintSpec;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 
 /**
@@ -110,7 +111,9 @@ public class ServletHelper
    /**
     * Convenience routine for JSPs; decides where target should be from
     * the parameters in the given request.  The parameter names should match
-    * those assigned in resultsForm.xml */
+    * those assigned in resultsForm.xml 
+    * NOTE:  This CAN'T set the limit on the number of results, which now
+    * happens in ConstraintSpec, not ReturnSpec! */
    public static ReturnSpec makeReturnSpec(HttpServletRequest request)  {
       
       ReturnSpec returnSpec = null;
@@ -126,7 +129,9 @@ public class ServletHelper
          returnSpec = new ReturnTable(null);
       }
 
-      fillReturnSpec(returnSpec, request);
+      // This is a dummy placeholder
+      ConstraintSpec constraintSpec = new ConstraintSpec();
+      fillReturnSpec(returnSpec, request, constraintSpec);
       
       return returnSpec;
    }
@@ -148,7 +153,7 @@ public class ServletHelper
     * Convenience routine for JSPs; decides where target should be from
     * the parameters in the given request.  The parameter names should match
     * those assigned in resultsForm.xml */
-   public static void fillReturnSpec(ReturnSpec returnSpec, HttpServletRequest request)  {
+   public static void fillReturnSpec(ReturnSpec returnSpec, HttpServletRequest request, ConstraintSpec constraintSpec)  {
 
       String targetResponse = request.getParameter("TargetResponse");
       if ((targetResponse != null) && targetResponse.trim().toLowerCase().equals("true")) {
@@ -188,7 +193,7 @@ public class ServletHelper
 
       String limit = request.getParameter("Limit");
       if ( (limit != null) && (limit.trim().length()>0)) {
-         returnSpec.setLimit(Integer.parseInt(limit));
+         constraintSpec.setLimit(Integer.parseInt(limit));
       }
 
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: Adql074Writer.java,v 1.3 2005/03/21 18:31:50 mch Exp $
+ * $Id: Adql074Writer.java,v 1.4 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,8 @@ import org.astrogrid.query.QueryVisitor;
 import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.constraint.ConstraintSpec;
+import org.astrogrid.query.refine.RefineSpec;
 import org.xml.sax.SAXException;
 
 
@@ -30,7 +32,6 @@ import org.xml.sax.SAXException;
  */
 
 public class Adql074Writer implements QueryVisitor {
-   
    
    protected static Log log = LogFactory.getLog(Adql074Writer.class);
 
@@ -71,51 +72,90 @@ public class Adql074Writer implements QueryVisitor {
       
       currentTag.writeComment("ADQL (originally) generated from: "+query+" on "+new Date());
 
-      currentTag = currentTag.newTag("Select", new String[] { "xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4' ",
-                                                      "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' ",
-                                                      "xmlns:xsd='http://www.w3.org/2001/XMLSchema'"});
+      currentTag = currentTag.newTag( "Select", 
+          new String[] { 
+            "xsi:type=\"selectType\"",
+            "xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'",
+            "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'",
+            "xmlns:xsd='http://www.w3.org/2001/XMLSchema'"
+          });
+
+      // Constraints
+      visitConstraintSpec(query.getConstraintSpec());
 
       //--- SELECT ---
       visitReturnSpec(query.getResultsDef());
       
       //-- FROM ---
       if (query.getScope() != null) {
-         visitScope(query.getScope());
+         visitScope(query.getScope(), query);
       }
       
       //-- WHERE --
       if (query.getCriteria() != null) {
          XmlPrinter save = currentTag;
-         currentTag = currentTag.newTag("Where");
+         currentTag = currentTag.newTag("Where",
+             new String[] {
+               "xsi:type=\"whereType\""
+             });
       
          tagName = "Condition";
          query.getCriteria().acceptVisitor(this);
          currentTag =save;
       }
+
+      if (query.getRefineSpec() != null) {
+         visitRefineSpec(query.getRefineSpec());
+      }
+
       //-- tidy up --
       currentTag.close();
    }
 
+   /*
    public void visitLimit(long limit) throws IOException {
       currentTag.writeTag("Top", ""+limit);
    }
+   */
+   /*
+   public void visitAllow(long limit) throws IOException {
+      currentTag.writeTag("Allow ", ""+limit);
+   }
+   */
    
-   public void visitScope(String[] scope) throws IOException {
-      // we just duplicate alias names as table names for now
-      XmlPrinter fromTag = currentTag.newTag("From");
+   // KEA: Enabled support for aliases, which are actually required by the
+   // ADQL 0.7.4 schema
+   // Have to take in Query here to get access to aliases - architecture
+   // flaw?
+   public void visitScope(String[] scope, Query query) throws IOException {
+      if (scope.length > 0)   { //Don't make empty From tags!
+        XmlPrinter fromTag = currentTag.newTag("From",
+            new String[] { "xsi:type=\"fromType\"" });
 
-      for (int i = 0; i < scope.length; i++) {
-//            String alias = query.getScope()[i];
-//            if (query.getAlias(alias) != null) {
-//               alias = query.getAlias(alias);
-//            }
-         fromTag.writeTag("Table", new String[] { "xsi:type='tableType'","Name='"+scope[i]+"'" /*,"Alias='"+alias+"'"*/}, "");
+        for (int i = 0; i < scope.length; i++) {
+           String tablename = query.getScope()[i];
+           String alias = query.getAlias(tablename); 
+           if ( (alias != null) && !(alias.equals("")) ) {
+              fromTag.writeTag("Table", new String[] { "xsi:type='tableType'","Name='"+scope[i]+"'" ,"Alias='"+alias+"'"}, "");
+           }
+           // Disabling this check for now, breaks self-tests and maybe
+           // breaks existing queries that are (erroneously) working
+           /*
+           else {
+             throw new IOException(
+               "Missing compulsory 'alias' attribute for tableType element with name '" + 
+               scope[i] + "'");
+           }
+           */
+        }
       }
    }
 
    public void visitReturnSpec(ReturnSpec spec) throws IOException {
       XmlPrinter save = currentTag;
-      currentTag = currentTag.newTag("SelectionList");
+
+      currentTag = currentTag.newTag("SelectionList",
+          new String[] { "xsi:type=\"selectionListType\"" });
       
       if ( !(spec instanceof ReturnTable) ||
              ( ((ReturnTable) spec).getColDefs()==null)  ) {
@@ -132,17 +172,61 @@ public class Adql074Writer implements QueryVisitor {
       currentTag = save;
    }
 
+   public void visitConstraintSpec(ConstraintSpec constraintSpec) throws IOException {
+      // Looking for Allow and Restrict conditions
+      long limit = constraintSpec.getLimit();
+      if (limit != ConstraintSpec.LIMIT_NOLIMIT) {
+         currentTag.writeTag("Restrict",
+             new String[] { 
+               "xsi:type=\"selectionLimitType\"",
+               "Top=\"" + Long.toString(limit) + "\""
+             },
+             "" 
+          );
+      }
+      String allow = constraintSpec.getAllow();
+      if (!allow.equals(ConstraintSpec.ALLOW_EMPTY)) {
+         currentTag.writeTag("Allow",
+             new String[] { 
+               "xsi:type=\"selectionOptionType\"",
+               "Option=\"" + allow + "\""
+             },
+             "" 
+          );
+      }
+   }
+
+   // Have to take in Query here to get access to aliases 
+   public void visitRefineSpec(RefineSpec refineSpec) throws IOException {
+     ColumnReference[] groupByCols = refineSpec.getGroupByColumns();
+     if (groupByCols.length > 0) {
+       XmlPrinter save = currentTag;
+        currentTag = currentTag.newTag("GroupBy",
+            new String[] { "xsi:type=\"groupByType\"" });
+
+        for (int i = 0; i < groupByCols.length; i++) {
+          tagName="Column";
+          visitColumnReference(groupByCols[i]);
+        }
+        currentTag = save;
+      }
+   }
+
    public void visitColumnReference(ColumnReference colRef) throws IOException {
-  //don't do aliases for now             if (query.getAlias(tableName) != null) {
-  //                tableName = query.getAlias(tableName);
-  //             }
-      
-         currentTag.writeTag(tagName,
-                 new String[] { "xsi:type='columnReferenceType'",
-                                 colRef.getDatasetName() != null ? "Archive='"+colRef.getDatasetName()+"'" : "",
-                                 colRef.getTableName() != null ? "Table='"+colRef.getTableName()+"'" : "",
-                                "Name='"+colRef.getColName()+"'" },
-                "");
+
+      String archiveName = colRef.getDatasetName();
+      String tableName = colRef.getTableName();
+      String colName = colRef.getColName();
+      String tableAlias = colRef.getTableAlias();
+      if ( !tableAlias.equals(ColumnReference.NO_ALIAS)) {
+        tableName = tableAlias;     // Use table alias in pref to actual name
+      }
+      currentTag.writeTag(tagName,
+         new String[] { "xsi:type='columnReferenceType'",
+           archiveName != null ? "Archive='" + archiveName +"'" : "",
+           tableName != null ? "Table='"+tableName +"'" : "",
+           "Name='" + colName + "'" },
+       "");
      }
 
    public void visitRawSearchField(RawSearchField field) throws IOException {

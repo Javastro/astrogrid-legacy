@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnSpec.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: ReturnSpec.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,12 +8,25 @@ package org.astrogrid.query.returns;
 
 import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.slinger.targets.TargetIdentifier;
-
+import org.astrogrid.query.QueryException;
 
 /**
  * Specifies what will be returned from a query; subclasses implement
  * different return types.
  *
+ * KEA: As at 17.02.06, both this class and the Query class provide a 
+ * "limit" variable.  Other features needed by ADQL (such as an "Allow" 
+ * variable) are missing from the query model.  
+ *
+ * I feel that this class ought only to store information relating
+ * to the formatting and destination of the return data, rather than
+ * things which might be required in constructing the actual native
+ * (SQL or whatever) query.
+ *
+ * Therefore, am setting up a new ConstraintSpec class to hold limit,
+ * allow variables and other query constraints as required.
+ *
+ * @author K Andrews
  * @author M Hill
  */
 
@@ -21,7 +34,6 @@ public abstract class ReturnSpec  {
 
    TargetIdentifier target = null;
    String compression = NONE;
-   long limit = -1;
    
 //   String[] formats = new String[] { DEFAULT }; //list of requested formats
    String format = DEFAULT; //single result format
@@ -50,19 +62,14 @@ public abstract class ReturnSpec  {
          compression = ZIP;
       }
       else {
-         throw new IllegalArgumentException("Unknown compression type '"+aCompression+"'");
+         //throw new IllegalArgumentException("Unknown compression type '"+aCompression+"'");
+         throw new QueryException("Unknown compression type '"+aCompression+"'");
       }
    }
    
    /** See class constants for standard compressions, but bear in mind there may
     * be other ones supported by individual services */
    public String getCompression()                  { return compression; }
-   
-   /** Sets Limit to number of result items to be returned */
-   public void setLimit(long limit) {  this.limit = limit; }
-   
-   /** Returns Limit to number of result items to be returned */
-   public long getLimit() {      return limit;  }
    
 //   public void setFormats(String[] someFormats)  {  this.formats = someFormats; }
 
@@ -94,9 +101,6 @@ public abstract class ReturnSpec  {
 //      for (int i = 0; i < formats.length; i++) {
 //         s = s +formats[i]+", ";
 //      }
-      if (limit>0) {
-         s = s +" limit "+limit+", ";
-      }
       if (compression != NONE) {
          s = s + compression;
       }
@@ -105,6 +109,27 @@ public abstract class ReturnSpec  {
 }
 /*
  $Log: ReturnSpec.java,v $
+ Revision 1.3  2006/03/22 15:10:13  clq2
+ KEA_PAL-1534
+
+ Revision 1.2.62.2  2006/02/20 19:42:08  kea
+ Changes to add GROUP-BY support.  Required adding table alias field
+ to ColumnReferences, because otherwise the whole Visitor pattern
+ falls apart horribly - no way to get at the table aliases which
+ are defined in a separate node.
+
+ Revision 1.2.62.1  2006/02/16 17:13:04  kea
+ Various ADQL/XML parsing-related fixes, including:
+  - adding xsi:type attributes to various tags
+  - repairing/adding proper column alias support (aliases compulsory
+     in adql 0.7.4)
+  - started adding missing bits (like "Allow") - not finished yet
+  - added some extra ADQL sample queries - more to come
+  - added proper testing of ADQL round-trip conversions using xmlunit
+    (existing test was not checking whole DOM tree, only topmost node)
+  - tweaked test queries to include xsi:type attributes to help with
+    unit-testing checks
+
  Revision 1.2  2005/05/27 16:21:02  clq2
  mchv_1
 

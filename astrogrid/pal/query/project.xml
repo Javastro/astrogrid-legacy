@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.9 2005/11/22 12:13:31 kea Exp $ -->
+<!-- $Id: project.xml,v 1.10 2006/03/22 15:10:13 clq2 Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -27,6 +27,12 @@
          <groupId>org.astrogrid</groupId>
          <version>${astrogrid.pal.latest}</version>
       </dependency>
+
+      <dependency>
+        <id>xmlunit</id>
+        <version>1.0</version>
+      </dependency>
+
 <!--
       <dependency>
          <artifactId>astrogrid-common</artifactId>

@@ -1,5 +1,5 @@
 /*
- * $Id: ConditionVisitor.java,v 1.1 2005/03/21 18:31:50 mch Exp $
+ * $Id: ConditionVisitor.java,v 1.2 2006/03/22 15:10:13 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,6 +20,7 @@ import org.astrogrid.query.returns.ReturnSpec;
  * See QueryTraverser for an example.
  *
  * These methods throw IOException because some visitors write out to streams/writers
+ *
  */
 
 public interface ConditionVisitor {
@@ -48,6 +49,15 @@ public interface ConditionVisitor {
 
 /*
 $Log: ConditionVisitor.java,v $
+Revision 1.2  2006/03/22 15:10:13  clq2
+KEA_PAL-1534
+
+Revision 1.1.82.1  2006/02/20 19:42:08  kea
+Changes to add GROUP-BY support.  Required adding table alias field
+to ColumnReferences, because otherwise the whole Visitor pattern
+falls apart horribly - no way to get at the table aliases which
+are defined in a separate node.
+
 Revision 1.1  2005/03/21 18:31:50  mch
 Included dates; made function types more explicit
 

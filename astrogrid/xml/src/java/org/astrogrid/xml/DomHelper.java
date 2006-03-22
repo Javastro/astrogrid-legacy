@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.1 2005/03/22 13:03:34 mch Exp $
+   $Id: DomHelper.java,v 1.2 2006/03/22 15:14:47 clq2 Exp $
 
    (c) Copyright...
 */
@@ -11,10 +11,17 @@ import java.io.*;
 
 import java.net.URL;
 import java.util.Vector;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.axis.utils.XMLUtils;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,20 +34,23 @@ import org.xml.sax.SAXException;
  * An implementation-neutral class for loading Xml documents from files into
  * a DOM or vice versa; or rather, a facade around whatever does the actual work.
  * <P>
- * The problem with using Apache's XMLUtils or similar is that it requires a particular
- * DOM implementation installed that matches what it was compiled against, and
- * changing implementation can result in a lot of required code change.s
- * <p>
- * Most of the methods here are 'convenience' methods using the standard Java 1.4
- * xml API classes.  However the ones serialising DOMs to strings depend on Axis'
- * XMLUtils; it may be that we can include in this package axis' Dom2Writer
- * and its dependent classes to make it properly independent.
+ * Early versions of this class used Apache's XMLUtils to serialize 
+ * DOMs to strings;  however, from original comments, 
+ *
+ *   "The problem with using Apache's XMLUtils or similar is that it 
+ *    requires a particular DOM implementation installed that matches 
+ *    what it was compiled against, and changing implementation can 
+ *    result in a lot of required code change."
+ *
+ * I have eliminated the use of XMLUtils in favour of standard Java 1.4 xml 
+ * API classes; the price is that we no longer supply "pretty-printing" for
+ * DOM objects (which was provided by XMLUtils).
  *
  * @author M Hill
+ * @author K Andrews
  */
 public class DomHelper
 {
-
     /** Convenience routine for returning the value of an element of the given
     * name that is a *direct* child of the given parent Element.  Returns empty string
     * if child can't be found.
@@ -157,56 +167,80 @@ public class DomHelper
    /**
     * Writes document to stream
     */
-   public static void DocumentToStream(Document doc, OutputStream out) {
-      //naughtily implemented as an XMLUtil call until I work out how to do it independently
-      XMLUtils.DocumentToStream(doc, out);
+   public static void DocumentToStream(Document doc, OutputStream out) throws IOException {
+     try {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer();
+        trans.transform(new DOMSource(doc), new StreamResult(out));
+      }
+      catch (TransformerException e) {
+         throw new IOException(e.getMessage());
+      }
    }
    
    /**
     * Writes document to writer
     */
-   public static void DocumentToWriter(Document doc, Writer out) {
-      //naughtily implemented as an XMLUtil call until I work out how to do it independently
-      XMLUtils.DocumentToWriter(doc, out);
+   public static void DocumentToWriter(Document doc, Writer out) throws IOException {
+     try {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer();
+        trans.transform(new DOMSource(doc), new StreamResult(out));
+     }
+     catch (TransformerException e) {
+        throw new IOException(e.getMessage());
+     }
    }
    
    /**
     * Writes document to string
     */
-   public static String DocumentToString(Document doc) {
-      //naughtily implemented as an XMLUtil call until I work out how to do it independently
-      return XMLUtils.DocumentToString(doc);
+   public static String DocumentToString(Document doc) throws IOException {
+     try {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer();
+        StringWriter sw = new StringWriter();
+        trans.transform(new DOMSource(doc), new StreamResult(sw));
+        return sw.toString();
+      }
+      catch (TransformerException e) {
+         throw new IOException(e.getMessage());
+      }
    }
    
    /**
     * Writes document to string
     */
-   public static void ElementToStream(Element body,OutputStream out) {
-      //naughtily implemented as an XMLUtil call until I work out how to do it independently
-      XMLUtils.ElementToStream(body,out);
+   public static void ElementToStream(Element body,OutputStream out) throws IOException {
+     try {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer();
+        trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        trans.setOutputProperty(OutputKeys.STANDALONE, "yes");
+        trans.transform(new DOMSource(body), new StreamResult(out));
+      }
+      catch (TransformerException e) {
+         throw new IOException(e.getMessage());
+      }
    }
    
    
    /**
     * Writes document to string
     */
-   public static String ElementToString(Element body) {
-      //naughtily implemented as an XMLUtil call until I work out how to do it independently
-      return XMLUtils.ElementToString(body);
-   }
-   
-   /**
-    * Writes document to string in nice indented format, etc
-    */
-   public static void PrettyElementToStream(Element body, OutputStream out) {
-      XMLUtils.PrettyElementToStream(body, out);
-   }
-   
-   /**
-    * Writes document to string in nice indented format, etc
-    */
-   public static void PrettyDocumentToStream(Document body, OutputStream out) {
-      XMLUtils.PrettyDocumentToStream(body, out);
+   public static String ElementToString(Element body) throws IOException {
+       try {
+           TransformerFactory tf = TransformerFactory.newInstance();
+           Transformer trans = tf.newTransformer();
+           trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+           trans.setOutputProperty(OutputKeys.STANDALONE, "yes");
+           StringWriter sw = new StringWriter();
+           trans.transform(new DOMSource(body), new StreamResult(sw));
+           return sw.toString();
+       }
+       catch (TransformerException e) {
+         throw new IOException(e.getMessage());
+       }
    }
    
    public static String getNodeAttrValue(Element elem,String tagName) {
@@ -254,6 +288,7 @@ public class DomHelper
    {
       return getNodeListTags(nd,tagName,null);
    }
+
 
    /**
     * Finds a NodeList based on a tagname and/or it's prefix/namespace
