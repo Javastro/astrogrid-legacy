@@ -118,7 +118,7 @@ above.</dd>
 <h3>XML-RPC fault codes</h3>
 <dl>
 <dt>0</dt>
-<dd>Seriously malformed request, such as mangled XML, or invalid
+<dd>Protocol error, such as mangled XML, or invalid
 request headers</dd>
 
 <dt>1</dt>
@@ -129,7 +129,8 @@ request headers</dd>
 intelligible, but had the wrong number or type of arguments</dd>
 
 <dt>10</dt>
-<dd>Unknown object requested, either an invalid knowledgebase or submodel</dd>
+<dd>get-model: Unknown object requested, either an invalid
+knowledgebase or submodel</dd>
 </dl>
 
 </body>
