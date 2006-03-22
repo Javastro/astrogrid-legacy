@@ -39,7 +39,9 @@ error.</p></dd>
 <code>accept</code> headers as the <code>POST</code> method below.</dd>
 
 <dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
-<dd><p>Takes a SPARQL query as the request body.  The request may be
+<dd><p>Takes a SPARQL query as the request body, which should be
+posted with the <code>Content-Type</code> set to
+<code>application/sparql-query</code>.  The request may be
 accompanied by an <code>Accept</code> header to control the format of
 the returned data.  The following formats are recognised:</p>
 <dl>
@@ -102,6 +104,8 @@ there was no such knowledgebase to remove.</dd>
 
 <h2>XML-RPC interface</h2>
 
+<p>The XML-RPC endpoint is <code>http://hostport/quaestor/xmlrpc</code></p>
+
 <dl>
 <dt><code>get-model(<em>knowledgebase:string</em> 
 [,<em>submodel:string</em>])</code> : <em>URI</em></dt>
@@ -111,7 +115,7 @@ since the URL returned is just the one described in the HTTP-interface
 above.</dd>
 </dl>
 
-<h3>Fault codes</h3>
+<h3>XML-RPC fault codes</h3>
 <dl>
 <dt>0</dt>
 <dd>Seriously malformed request, such as mangled XML, or invalid
