@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.9 2006/03/21 17:20:37 clq2 Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.10 2006/03/22 09:56:14 kea Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,9 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         // file-based persistence of records. Given the recent rearrangement
         // of confiiguration in the base CEC, it may now be reasonable to go
         // back to file-based persistence. -- GTR 2006-01-30
+        pico.unregisterComponent(ExecutionHistory.class);
         pico.registerComponentImplementation(ExecutionHistory.class,InMemoryExecutionHistory.class);
+        pico.unregisterComponent(IdGen.class);
         pico.registerComponentImplementation(IdGen.class,GloballyUniqueIdGen.class);
         
         EmptyCEAComponentManager.registerDefaultVOProvider(pico);
@@ -104,6 +106,9 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.10  2006/03/22 09:56:14  kea
+Bugfix.
+
 Revision 1.9  2006/03/21 17:20:37  clq2
 missed out bits
 
