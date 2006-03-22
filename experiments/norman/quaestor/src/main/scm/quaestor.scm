@@ -452,7 +452,7 @@
   ;; contained alist, and produce an error message using the given format
   ;; and arguments.
   (define (fault code fmt . args)
-    (let ((fault-list '((seriously-malformed-request 0)
+    (let ((fault-list '((protocol-error 0)
                         (unrecognised-method 1)
                         (malformed-request 2)
                         (unknown-object 10))))
@@ -470,14 +470,17 @@
   ;; Get a single model.  The response contains a URL which points
   ;; to one of the HTTP GET methods.
   (define (xmlrpc-get-model quaestor-url . args)
-    (cond ((= (length args) 1)
+    (cond ((and (= (length args) 1)
+                (string? (car args)))
            (let ((kb (kb:get (car args))))
              (if kb
                  (xmlrpc:create-response "~a/kb/~a"
                                          quaestor-url (car args))
                  (fault 'unknown-object
                         "no such knowledgebase ~a" (car args)))))
-          ((= (length args) 2)
+          ((and (= (length args) 2)
+                (string? (car args))
+                (string? (cadr args)))
            (let ((kb (kb:get (car args))))
              (if (and kb (kb 'has-model (cadr args)))
                  (xmlrpc:create-response "~a/kb/~a/~a"
@@ -489,8 +492,8 @@
                         (car args) (cadr args)))))
           (else
            (fault 'malformed-request
-                  "method get-model requires 1 or 2 args, got ~a"
-                  (length args)))))
+                  "get-model requires 1 or 2 string args, got ~a ~s"
+                  (length args) args))))
 
 ;;   (define (xmlrpc-do-query quaestor-url query-string)
 ;;     XXX)
@@ -563,14 +566,24 @@
       (if (java-null? jstring)
           #f
           (->string jstring)))
+
+    ;; pre-emptively set the response status and content-type
+    ;; (error handlers may change this)
+    (set-http-response response '|SC_OK|)
+    (set-content-type response (->jstring "text/xml"))
     (sexp->xml
      (with/fc 
          (lambda (m e)
-           (fault 'seriously-malformed-request
-                  "Malformed request: ~a~%~a"
-                  (error-message m)
-                  (with-output-to-string
-                    (lambda () (print-stack-trace e)))))
+           (if #t
+               ;; don't print the stack trace except when debugging:
+               ;; angle brackets result in malformed XML
+               (fault 'protocol-error
+                      "Malformed request: ~a" (error-message m))
+               (fault 'protocol-error
+                      "Malformed request: ~a~%~a"
+                      (error-message m)
+                      (with-output-to-string
+                        (lambda () (print-stack-trace e))))))
        (lambda ()
          (cond  ((not (content-headers-ok? request))
                  ;; Unexpected Content-* header found
@@ -587,8 +600,6 @@
                                  ;; but allow application/xml, too
                                  (string=? type "application/xml"))))
                  ;; Good -- normal case
-                 (set-http-response response '|SC_OK|)
-                 (set-content-type response (->jstring "text/xml"))
                  ;; Now do the actual work of reading the method
                  ;; call from the input reader.
                  (do-xmlrpc-call
@@ -600,7 +611,7 @@
 
                 (else
                  ;; bad Content-Type
-                 (fault 'malformed-request
+                 (fault 'protocol-error
                         "Request content-type must be text/xml, not ~a"
                         (or (sstring-or-false (get-content-type request))
                             "<null>"))))))
