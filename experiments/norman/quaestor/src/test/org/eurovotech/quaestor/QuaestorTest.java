@@ -22,6 +22,7 @@ public class QuaestorTest
         extends TestCase {
 
     private URL baseURL;
+    private URL xmlrpcEndpoint;
     private String testKB;
 
     private static final int METHOD_GET    = 111;
@@ -37,7 +38,7 @@ public class QuaestorTest
 
         // Generalise this URL with a property
         baseURL = new URL("http://localhost:8080/quaestor/.");
-
+        xmlrpcEndpoint = new URL(baseURL, "xmlrpc");
         testKB = "testing";
     }
 
@@ -51,7 +52,7 @@ public class QuaestorTest
 
     public void testCreateKnowledgebase()
             throws Exception {
-        URL kbURL = makeURL();
+        URL kbURL = makeKbUrl();
 
         // Attempt to delete the knowledgebase, whether or not it's there.
         // Don't care about the return value.
@@ -65,11 +66,11 @@ public class QuaestorTest
         // Does ?metadata work?
         // (don't test the content type here, it's currently wrong)
         // XXX fixme
-        kbURL = makeURL("?metadata");
+        kbURL = makeKbUrl("?metadata");
         r = httpGet(kbURL);
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         // content-type may be followed by charset info
-        assertTrue(r.getContentType().startsWith("text/plain"));
+        assertEquals("text/plain", r.getContentType());
         assertEquals("My test knowledgebase\r\n", r.getContent());
     }
 
@@ -77,7 +78,7 @@ public class QuaestorTest
     // the knowledgebase twice
     public void testCreateKnowledgebaseAgain()
             throws Exception {
-        HttpResult r = httpPut(makeURL(),
+        HttpResult r = httpPut(makeKbUrl(),
                                "My test knowledgebase",
                                "text/plain");
         assertEquals(4, r.getStatus()/100);
@@ -89,7 +90,7 @@ public class QuaestorTest
             throws Exception {
         HttpResult r = httpTransaction
                 (METHOD_PUT,
-                 makeURL("ontology"),
+                 makeKbUrl("ontology"),
                  "<?xml version='1.0'?><rdf:RDF xmlns='urn:example#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:owl='http://www.w3.org/2002/07/owl#' xml:base='urn:example'><owl:Ontology rdf:about=''/><owl:Class rdf:ID='c1'/></rdf:RDF>",
                  new String[] { "Content-Type", "application/rdf+xml" });
         assertEquals(HttpURLConnection.HTTP_NO_CONTENT, r.getStatus());
@@ -98,13 +99,13 @@ public class QuaestorTest
 
     public void testGetOntology ()
             throws Exception {
-        HttpResult r = httpGet(makeURL("ontology"),
+        HttpResult r = httpGet(makeKbUrl("ontology"),
                                new String[] {"Accept", "*/*"});
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("application/rdf+xml", r.getContentType());
         // the actual content is a bit of a fuss to check
 
-        r = httpGet(makeURL("ontology"),
+        r = httpGet(makeKbUrl("ontology"),
                     new String[] {"Accept", "application/n3"});
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("application/n3", r.getContentType());
@@ -115,7 +116,7 @@ public class QuaestorTest
             throws Exception {
         HttpResult r = httpTransaction
                 (METHOD_PUT,
-                 makeURL("instances"),
+                 makeKbUrl("instances"),
                  "<urn:example#i1> a <urn:example#c1>.",
                  new String[] { "Content-Type", "application/n3" });
         assertEquals(HttpURLConnection.HTTP_NO_CONTENT, r.getStatus());
@@ -127,11 +128,11 @@ public class QuaestorTest
         String query = "SELECT ?i where { ?i a <urn:example#c1>}";
         HttpResult r;
         // try making a query against a submodel -- should fail
-        r = httpPost(makeURL("ontology"), query, "application/sparql-query");
+        r = httpPost(makeKbUrl("ontology"), query, "application/sparql-query");
         assertEquals(4, r.getStatus()/100);
 
         // Make a successful query. and check XML response
-        r = httpPost(makeURL(), query, "application/sparql-query");
+        r = httpPost(makeKbUrl(), query, "application/sparql-query");
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("application/xml", r.getContentType());
         // don't check actual content string
@@ -140,28 +141,29 @@ public class QuaestorTest
         // the wrong content-type.  Perhaps we should.
 
         // check n-triple response
-        r = httpTransaction(METHOD_POST, makeURL(), query,
+        r = httpTransaction(METHOD_POST, makeKbUrl(), query,
                             new String[] {"Accept", "text/plain"});
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("text/plain", r.getContentType());
         // don't check actual content
 
         String encodedQuery = java.net.URLEncoder.encode(query, "UTF-8");
-        r = httpGet(makeURL("?sparql="+encodedQuery));
+        r = httpGet(makeKbUrl("?sparql="+encodedQuery));
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("application/xml", r.getContentType());
 
         // the same, requesting text/plain
-        r = httpGet(makeURL("?sparql="+encodedQuery),
+        r = httpGet(makeKbUrl("?sparql="+encodedQuery),
                     new String[] {"Accept", "text/plain"});
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("text/plain", r.getContentType());
 
         // ...and requesting CSV
-        r = httpGet(makeURL("?sparql="+encodedQuery),
+        r = httpGet(makeKbUrl("?sparql="+encodedQuery),
                     new String[] {"Accept", "text/csv"});
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
-        assertEquals("text/csv;header=present", r.getContentType());
+        assertEquals("text/csv", r.getContentType());
+        assertEquals("header=present", r.getContentTypeParameters());
         assertEquals("i\r\nurn:example#i1\r\n", r.getContent());
     }
 
@@ -171,28 +173,84 @@ public class QuaestorTest
             throws Exception {
         String call = makeXmlRpcCall("get-model",
                                      new Object[] {testKB});
-        //System.err.println("call=" + call);
-        HttpResult r = httpPost(new URL(baseURL, "xmlrpc"),
-                                call,
-                                "text/xml");
-        //System.err.println(r.toString());
-        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
-        assertTrue(r.getContentType().startsWith("text/xml"));
-        // Better?: assertEquals("text/xml", r.getContentType());
-        ParsedRpcResponse rpc = parseXmlRpcResponse(r.getContent());
-        //System.err.println(rpc.toString());
+        ParsedRpcResponse rpc;
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertNotNull(rpc);
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
-        assertEquals(new URL(baseURL, "kb/"+testKB).toString(),
+        assertEquals(makeKbUrl().toString(),
                      rpc.getResponseString());
     }
                             
+    public void testRpcInvalidCalls ()
+            throws Exception {
+        String call;
+        //HttpResult r;
+        ParsedRpcResponse rpc;
+
+        // malformed input
+        call = "<junk><but>well-formed</but></junk>";
+        // I'm taking it that a proper response to malformed input is still
+        // a 200 response with the correct fault-code, even though the `spec'
+        // is hopelessly vague about this.
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(0, rpc.getFaultCode());
+        // don't bother testing fault message
+
+        // invalid method
+        call = makeXmlRpcCall("wibble-woot", null);
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(1, rpc.getFaultCode());
+
+        // OK method, but wrong content-type and wrong number of args
+        call = makeXmlRpcCall("get-model",
+                              new Object[] {"one", "two", "three"});
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/plain"));
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(0, rpc.getFaultCode());
+
+        // ...wrong number of arguments
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(2, rpc.getFaultCode());
+
+        // good method and number of arguments, but wrong type
+        call = makeXmlRpcCall("get-model",
+                              new Object[] {Boolean.TRUE});
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(2, rpc.getFaultCode());
+
+        // good method and arguments, but non-existent knowledgebase
+        call = makeXmlRpcCall("get-model",
+                              new Object[] {"wibble"});
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(10, rpc.getFaultCode());
+    }
+
+    /** 
+     * Helper method to check that the result of the XML-RPC call is correct.
+     * Returns the parsed RPC response, after checking with assertions that
+     * the HttpResult was indeed status 200 and text/xml.
+     * @param r the response from the HTTP interaction
+     * @return a parsed RPC response
+     */
+    public ParsedRpcResponse getRpcResponse(HttpResult r) 
+            throws Exception {
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        //System.err.println("getRpcResponse r=" + r);
+        assertEquals("text/xml", r.getContentType());
+        return parseXmlRpcResponse(r.getContent());
+    }
+    
     /* ******************** deletion of knowledgebases ******************** */
 
     public void testDeleteKnowledgebase()
             throws Exception {
-        HttpResult r = httpDelete(makeURL());
+        HttpResult r = httpDelete(makeKbUrl());
         assertEquals(HttpURLConnection.HTTP_NO_CONTENT, r.getStatus());
         assertNull(r.getContent());
     }
@@ -200,18 +258,18 @@ public class QuaestorTest
     // should fail when done a second time
     public void testDeleteKnowledgebaseAgain()
             throws Exception {
-        HttpResult r = httpDelete(makeURL());
+        HttpResult r = httpDelete(makeKbUrl());
         assertEquals(4, r.getStatus()/100);
         //assertEquals("", r.getContent());
     }
 
     /* ********** Helper methods ********** */
 
-    private URL makeURL() 
+    private URL makeKbUrl() 
             throws java.net.MalformedURLException {
-        return makeURL(null);
+        return makeKbUrl(null);
     }
-    private URL makeURL(String submodel) 
+    private URL makeKbUrl(String submodel) 
             throws java.net.MalformedURLException {
         if (submodel == null)
             return new URL(baseURL, "kb/"+testKB);
@@ -369,6 +427,13 @@ public class QuaestorTest
         }
     }
 
+    /**
+     * Create an RPC call from a method and arguments.  Returns a valid
+     * XML-RPC call element as XML in a string.
+     * @param method the method name
+     * @param args an array of objects, each one of which will be turned into
+     * a method argument.  This may be null to indicate no arguments
+     */
     private String makeXmlRpcCall(String method, Object[] args) 
             throws Exception {
         Document dom = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -380,34 +445,36 @@ public class QuaestorTest
         methodCall.appendChild(methodName);
         Element params = dom.createElement("params");
         methodCall.appendChild(params);
-        for (int i=0; i<args.length; i++) {
-            Element param = dom.createElement("param");
-            Element value = dom.createElement("value");
-            String valueType;
-            boolean isBoolean = false;
-            if (args[i] instanceof String)
-                valueType = "string";
-            else if (args[i] instanceof Boolean) {
-                valueType = "boolean";
-                isBoolean = true;
-            } else if (args[i] instanceof Integer)
-                valueType = "int";
-            else if (args[i] instanceof Double)
-                valueType = "double";
-            else
-                throw new IllegalArgumentException
-                        ("Don't yet support XML-RPC with objects like "
-                         + args[i]);
-            Element theValue = dom.createElement(valueType);
-            if (isBoolean)
-                theValue.appendChild(dom.createTextNode
-                                     (((Boolean)args[i]).booleanValue()
-                                      ? "1" : "0"));
-            else
-                theValue.appendChild(dom.createTextNode(args[i].toString()));
-            value.appendChild(theValue);
-            param.appendChild(value);
-            params.appendChild(param);
+        if (args != null) {
+            for (int i=0; i<args.length; i++) {
+                Element param = dom.createElement("param");
+                Element value = dom.createElement("value");
+                String valueType;
+                boolean isBoolean = false;
+                if (args[i] instanceof String)
+                    valueType = "string";
+                else if (args[i] instanceof Boolean) {
+                    valueType = "boolean";
+                    isBoolean = true;
+                } else if (args[i] instanceof Integer)
+                    valueType = "int";
+                else if (args[i] instanceof Double)
+                    valueType = "double";
+                else
+                    throw new IllegalArgumentException
+                            ("Don't yet support XML-RPC with objects like "
+                             + args[i]);
+                Element theValue = dom.createElement(valueType);
+                if (isBoolean)
+                    theValue.appendChild(dom.createTextNode
+                                         (((Boolean)args[i]).booleanValue()
+                                          ? "1" : "0"));
+                else
+                    theValue.appendChild(dom.createTextNode(args[i].toString()));
+                value.appendChild(theValue);
+                param.appendChild(value);
+                params.appendChild(param);
+            }
         }
         Transformer t = TransformerFactory.newInstance().newTransformer();
         java.io.ByteArrayOutputStream baos
@@ -427,20 +494,24 @@ public class QuaestorTest
             Element top = dom.getDocumentElement();
             NodeList faults = top.getElementsByTagName("fault");
             if (faults.getLength() != 0) {
-                NodeList values = ((Element)faults.item(0))
-                        .getElementsByTagName("value");
-                if (values.getLength() != 2) {
+                NodeList members = ((Element)faults.item(0))
+                        .getElementsByTagName("member");
+                if (members.getLength() != 2) {
                     return new ParsedRpcResponse("Invalid fault structure",
                                                  xmlResponse);
                 } else {
-                    Object faultCode = valueToObject(values.item(0)
-                                                     .getFirstChild());
+                    Object faultCode
+                            = valueToObject(((Element)members.item(0))
+                                            .getElementsByTagName("value")
+                                            .item(0));
                     if (! (faultCode instanceof Integer))
                         return new ParsedRpcResponse
                                 ("Invalid fault structure: not int code",
                                  xmlResponse);
-                    Object faultString = valueToObject(values.item(1)
-                                                       .getFirstChild());
+                    Object faultString
+                            = valueToObject(((Element)members.item(1))
+                                            .getElementsByTagName("value")
+                                            .item(0));
                     if (! (faultString instanceof String))
                         return new ParsedRpcResponse
                                 ("Invalid fault structure: not string msg",
@@ -622,18 +693,40 @@ public class QuaestorTest
     public static class HttpResult {
         private int status;
         private String responseContentType;
+        private String responseContentTypeParameters;
         private String responseContent;
 
+        private static java.util.regex.Pattern parameters;
+        static {
+            parameters = java.util.regex.Pattern.compile("([^;]*)(; *(.*))?");
+        }
+        
         public HttpResult(int status, String contentType, String content) {
             this.status = status;
-            this.responseContentType = contentType;
+
+            if (contentType == null) {
+                this.responseContentType = null;
+                this.responseContentTypeParameters = null;
+            } else {
+                java.util.regex.Matcher m = parameters.matcher(contentType);
+                if (m.matches()) {
+                    this.responseContentType = m.group(1);
+                    this.responseContentTypeParameters = 
+                            (m.group(3) == null ? "" : m.group(3));
+                } else {
+                    assert false;
+                }
+            }
             this.responseContent = content;
         }
         public int getStatus() {
             return status;
         }
         public String getContentType() {
-            return responseContentType;
+            return (responseContentType == null ? "" : responseContentType);
+        }
+        public String getContentTypeParameters() {
+            return responseContentTypeParameters;
         }
         public String getContent() {
             return responseContent;
@@ -641,7 +734,8 @@ public class QuaestorTest
         public String toString() {
             return "Status=" + status
                     + ", content-type=" + responseContentType
-                    + ", content=" + responseContent;
+                    + "(" + responseContentTypeParameters
+                    + "), content=" + responseContent;
         }
     }
 }
