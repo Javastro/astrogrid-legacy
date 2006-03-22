@@ -1,4 +1,4 @@
-/*$Id: WorkbenchCeaComponentManager.java,v 1.5 2005/12/02 13:43:41 nw Exp $
+/*$Id: WorkbenchCeaComponentManager.java,v 1.6 2006/03/22 17:24:39 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.manager.AppAuthorityIDResolver;
 import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
 import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
 import org.astrogrid.applications.manager.DefaultQueryService;
@@ -37,6 +38,7 @@ import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
 import EDU.oswego.cs.dl.util.concurrent.ThreadFactoryUser;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Iterator;
 
 /** Custom cea component manager - just the things needed for an in-process cea server.
@@ -62,15 +64,34 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
 
         // persistence
         pico.registerComponentImplementation(ExecutionHistory.class,ManagingFileStoreExecutionHistory.class);
-        pico.registerComponentInstance(FileStoreExecutionHistory.StoreDir.class, new ManagingFileStoreExecutionHistory.StoreDir(){
+        // configuration for the managing file store history.
+        pico.registerComponentInstance(org.astrogrid.applications.contracts.Configuration.class,new org.astrogrid.applications.contracts.Configuration() {
+
+            public File getBaseDirectory() {
+                return null;
+            }
             private final File dir= new File(new File(configuration.getKey(ConfigurationKeys.WORK_DIR_KEY)),"cea");
-            public File getDir() {
+            // only need to implement this one.
+            public File getRecordsDirectory() {
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
                 return dir;
             }
-        });    
+
+            public File getTemporaryFilesDirectory() {
+                return null;
+            }
+
+            public URL getRegistryTemplate() {
+                return null;
+            }
+
+            public URL getServiceEndpoint() {
+                return null;
+            }
+        });
+
 
         pico.registerComponentInstance(new IdGen(){
             public String getNewID() {
@@ -79,7 +100,7 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
         });
         
         pico.registerComponentImplementation(BestMatchApplicationDescriptionLibrary.class);
-        pico.registerComponentInstance(new BaseApplicationDescriptionLibrary.AppAuthorityIDResolver() {
+        pico.registerComponentInstance(new AppAuthorityIDResolver() {
             public String getAuthorityID() {
                 return "in-process";
             }
@@ -131,6 +152,9 @@ public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
 
 /* 
 $Log: WorkbenchCeaComponentManager.java,v $
+Revision 1.6  2006/03/22 17:24:39  nw
+fixes necessary for upgrade to 2006.1 libs
+
 Revision 1.5  2005/12/02 13:43:41  nw
 linked internal cea into new thread-pool system.
 

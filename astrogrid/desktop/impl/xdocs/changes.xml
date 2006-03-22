@@ -13,7 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-
+<release version="1.5-alpha-3" date="2006-03-22">
+	<action dev="nw" type="update">
+	Updated to use AstroGrid release 2006.1
+	</action>
+</release>
 <release version="1.5-alpha-2" date="2006-03-21">
 		<action dev="kmb" type="add">
 			Helioscope: minor changes to make the combo box editable and val node to show only the startdate as the label.

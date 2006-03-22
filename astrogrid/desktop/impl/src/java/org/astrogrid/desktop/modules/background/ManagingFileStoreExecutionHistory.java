@@ -1,4 +1,4 @@
-/*$Id: ManagingFileStoreExecutionHistory.java,v 1.1 2005/11/11 17:53:27 nw Exp $
+/*$Id: ManagingFileStoreExecutionHistory.java,v 1.2 2006/03/22 17:24:39 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
+import org.astrogrid.applications.contracts.Configuration;
 import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
 
 import java.io.File;
@@ -29,9 +30,9 @@ public class ManagingFileStoreExecutionHistory extends FileStoreExecutionHistory
     /** Construct a new ManagingFileStoreExecutionHistory
      * @param arg0
      */
-    public ManagingFileStoreExecutionHistory(StoreDir arg0) {
-        super(arg0);
-        root = arg0.getDir();
+    public ManagingFileStoreExecutionHistory(Configuration conf) {
+        super(conf);
+        root = conf.getRecordsDirectory();
     }
     private File root;
     
@@ -48,6 +49,9 @@ public class ManagingFileStoreExecutionHistory extends FileStoreExecutionHistory
 
 /* 
 $Log: ManagingFileStoreExecutionHistory.java,v $
+Revision 1.2  2006/03/22 17:24:39  nw
+fixes necessary for upgrade to 2006.1 libs
+
 Revision 1.1  2005/11/11 17:53:27  nw
 added cea polling to lookout.
  
