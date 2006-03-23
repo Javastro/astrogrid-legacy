@@ -2,6 +2,7 @@ package org.astrogrid.solarsearch.impl.cdaw;
 
 import org.astrogrid.solarsearch.ISolarSearch;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.io.PrintWriter;
 import java.util.TimeZone;
@@ -13,6 +14,7 @@ import java.util.Calendar;
 import java.util.Set;
 
 import org.astrogrid.tools.votable.stap.v0_1.STAPMaker;
+import org.astrogrid.config.Config;
 
 import org.astrogrid.solarsearch.ws.cdaw.ViewDescription;
 import org.astrogrid.solarsearch.ws.cdaw.DatasetDescription;
@@ -24,8 +26,26 @@ import java.io.IOException;
 
 public class SolarSearch implements ISolarSearch {
     
+    /**
+     * conf - Config variable to access the configuration for the server normally
+     * jndi to a config file.
+     * @see org.astrogrid.config.Config
+     */   
+    public static Config conf = null;
+    
+    private HashMap noDuplMap = null;
+    
+    /**
+     * Static to be used on the initiatian of this class for the config
+     */   
+    static {
+       if(conf == null) {
+          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+       }
+    }       
+    
     public SolarSearch() {
-        System.out.println("instantiated");
+        noDuplMap = new HashMap();
     }
     
     private void printMap(Map info) {
@@ -38,24 +58,30 @@ public class SolarSearch implements ISolarSearch {
     
     
     public void execute(Calendar startTime, Calendar endTime, Map info, PrintWriter output) throws IOException {
-        System.out.println("enter execute");
-        
         SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd'T'HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
         
         String []missionName = new String[1];
-        printMap(info);
+        //printMap(info);
         if(!info.containsKey("mission")) {
             output.print("could not find mission");
         }
         String formatReq = null;
         if(info.containsKey("FORMAT")) {
-            formatReq = (String)info.get("FORMAT");
+            formatReq = ((String [])info.get("FORMAT"))[0];
         }
         
-        System.out.println("the info.get(mission) = " + info.get("mission"));
         missionName[0] = ((String [])info.get("mission"))[0];
+        
+        STAPMaker stapMaker = new STAPMaker();
+        BufferedWriter out =
+            new BufferedWriter( output );
+
+        try {
+        stapMaker.writeBeginVOTable(out,missionName[0]);
+        
+        
         Calendar startTimeCal = Calendar.getInstance();
         Calendar endTimeCal = Calendar.getInstance();
         
@@ -73,15 +99,9 @@ public class SolarSearch implements ISolarSearch {
         ViewDescription[] value = null;        
         ViewDescription[] views = binding.getAllViewDescriptions();
 
-        STAPMaker stapMaker = new STAPMaker();
-
-        BufferedWriter out =
-           new BufferedWriter( output );
-        stapMaker.writeBeginVOTable(out,missionName[0]);
-
         Calendar startTemp = Calendar.getInstance();
         Calendar endTemp = Calendar.getInstance();
-        
+        String tempFormat = null;
         for(int i = 0;i < views.length;i++) {
             if(views[i].isPublicAccess()) {
                //System.out.println("getting mission groups from view = " + views[i].getTitle());
@@ -113,66 +133,98 @@ public class SolarSearch implements ISolarSearch {
                   //System.out.println("comparing " + missionName[0].toUpperCase() + " with " + missionGroups[j].toUpperCase());
                   if(missionName[0].toUpperCase().equals(missionGroups[j].toUpperCase())) {
                      DatasetDescription []dsd = binding.getDatasets(missionName, new String[0]);
+                     //noDuplMap.clear();
                      for(int k = 0;k < dsd.length;k++) {
-                        if(startTime.before(dsd[k].getStartTime())) {
-                           System.out.println("WARNING: Your given start time is before the dataset end time; using dataset start time");
-                           startTemp = dsd[k].getStartTime();
-                        }
-                        if(endTime.after(dsd[k].getEndTime())) {
-                           System.out.println("WARNING: Your given end time is after the datasets end time; using the dataset end time");
-                           endTemp = dsd[k].getEndTime();
-                        }
-                        String []dsURLS = binding.getDataUrls(dsd[k].getId(),startTemp,endTemp);
-                        if(dsURLS != null && dsURLS.length > 0) {
-                           
-                           for(int m = 0;m < dsURLS.length;m++) {
-                              if(correctFormat(formatReq,dsURLS[m].substring(dsURLS[m].lastIndexOf('.')))) {
-                                  stapMaker.setDataID(dsd[k].getLabel());
-                                  stapMaker.setTimeStart(dateFormat.format(dsd[k].getStartTime().getTime()));
-                                  stapMaker.setTimeEnd(dateFormat.format(dsd[k].getEndTime().getTime()));
-                                  stapMaker.setAccessReference(dsURLS[m]);
-                                  stapMaker.setProvider("CDAW");
-                                  stapMaker.setDescription(dsd[k].getLabel());
-                                  if(dsd[k].getNotesUrl() != null && dsd[k].getNotesUrl().trim().length() > 0) {
-                                      stapMaker.setDescriptionURL(dsd[k].getNotesUrl());
-                                  }//if                              
-                                  stapMaker.setFormat(
-                                  (String)info.get("format.ending." + dsURLS[m].substring(dsURLS[m].lastIndexOf('.'))) != null ?
-                                  (String)info.get("format.ending." + dsURLS[m].substring(dsURLS[m].lastIndexOf('.'))) :
-                                  (String)info.get("format.default"));
-                                  stapMaker.addRow();
-                              }
-                           }
-                           if(stapMaker.getRowCount() > 0)
-                               stapMaker.writeTable(out);
-                        }
-                     }//for
+                         if(!noDuplMap.containsKey(dsd[k].getId())) {
+                             noDuplMap.put(dsd[k].getId(),null);
+                                        if(startTime.before(dsd[k].getStartTime())) {
+                                           System.out.println("WARNING: Your given start time is before the dataset end time; using dataset start time");
+                                           startTemp = dsd[k].getStartTime();
+                                        }else {
+                                            startTemp = startTime;
+                                        }
+                                        if(endTime.after(dsd[k].getEndTime())) {
+                                           System.out.println("WARNING: Your given end time is after the datasets end time; using the dataset end time");
+                                           endTemp = dsd[k].getEndTime();
+                                        }else {
+                                            endTemp = endTime;
+                                        }
+                                        //System.out.println("startTemp = " + dateFormat.format(startTemp.getTime()) + " and endtemp = " + dateFormat.format(endTemp.getTime()));
+                                        String []dsURLS = binding.getDataUrls(dsd[k].getId(),startTemp,endTemp);
+                                        if(dsURLS != null && dsURLS.length > 0) {
+                                           //System.out.println("got this many dsURLS = " + dsURLS.length + " dsd k = " + k + " and label = " + dsd[k].getLabel());
+                                           for(int m = 0;m < dsURLS.length;m++) {
+                                              //System.out.println("the url2 = " + dsURLS[m]);
+                                              if(correctFormat(formatReq,dsURLS[m]) && !noDuplMap.containsKey(dsURLS[m] + dsd[k].getId() )) {
+                                                  noDuplMap.put(dsURLS[m] + dsd[k].getId(),null);
+                                                  stapMaker.setDataID(dsd[k].getLabel());
+                                                  stapMaker.setTimeStart(dateFormat.format(dsd[k].getStartTime().getTime()));
+                                                  stapMaker.setTimeEnd(dateFormat.format(dsd[k].getEndTime().getTime()));
+                                                  stapMaker.setAccessReference(dsURLS[m]);
+                                                  stapMaker.setProvider("CDAW");
+                                                  stapMaker.setDescription(dsd[k].getLabel());
+                                                  stapMaker.setInstrumentID(dsd[k].getLabel());
+                                                  if(dsd[k].getNotesUrl() != null && dsd[k].getNotesUrl().trim().length() > 0) {
+                                                      stapMaker.setDescriptionURL(dsd[k].getNotesUrl());
+                                                  }//if  
+                
+                                                  tempFormat = conf.getString("format.default", null);
+                                                  if(dsURLS[m].lastIndexOf('.') != -1) {
+                                                      //System.out.println(" prop name = " + "format.ending." + dsURLS[m].substring(dsURLS[m].lastIndexOf('.')+1) );
+                                                      tempFormat = conf.getString("format.ending." + dsURLS[m].substring(dsURLS[m].lastIndexOf('.')+1), tempFormat);
+                                                      //System.out.println(" val from config = " + tempFormat);
+                                                  }
+                                                  stapMaker.setFormat(tempFormat);                                  
+                                                  stapMaker.addRow();
+                                              }
+                                           }
+                                           if(stapMaker.getRowCount() > 0) {
+                                               stapMaker.writeTable(out);
+                                               output.flush();
+                                           }
+                                        }//if
+                                     }//for
+                                  }//if
                   }//if
                }//for
             }else {
-               System.out.println("Skipping analyzing missions from this view, no public access title = " + views[i].getTitle());
+               //System.out.println("Skipping analyzing missions from this view, no public access title = " + views[i].getTitle());
             }
-        }//for        
-        stapMaker.writeEndVOTable(out);
+        }//for
+        }finally {
+            stapMaker.writeEndVOTable(out);
+        }
     }
+    
+    private static final String DEFAULT_FORMAT = "TIME_SERIES";
     
     private boolean correctFormat(String format, String accessRefExtension) {
+        boolean timeSeries = false;
+        boolean graphics = false;
         if(format == null || format.trim().length() == 0) {
             return true;
-        }        
-        if(format.equals("Graphic") && 
-           (accessRefExtension.equalsIgnoreCase("fits") || accessRefExtension.equalsIgnoreCase("jpg") ||
-            accessRefExtension.equalsIgnoreCase("gif"))) {
-            return true;
         }
-        if(format.equals("TIME_SERIES") && 
-                (accessRefExtension.equalsIgnoreCase("cdf") || accessRefExtension.equalsIgnoreCase("txt") ||
+        if(accessRefExtension.lastIndexOf('.') != -1)
+            accessRefExtension = accessRefExtension.substring(accessRefExtension.lastIndexOf('.')+1);
+        
+        if((accessRefExtension.equalsIgnoreCase("fits") || accessRefExtension.equalsIgnoreCase("jpg") ||
+            accessRefExtension.equalsIgnoreCase("gif") || accessRefExtension.equalsIgnoreCase("fts"))) {
+            graphics = true;
+        }
+        
+        if((accessRefExtension.equalsIgnoreCase("cdf") || accessRefExtension.equalsIgnoreCase("txt") ||
                  accessRefExtension.equalsIgnoreCase("vot"))) {
-                 return true;
+            timeSeries = true;
         }
+        if(format.equalsIgnoreCase("TIME_SERIES") && timeSeries)
+            return true;
+        else if(format.equalsIgnoreCase("GRAPHICS") && graphics)
+            return true;
+        else if(!timeSeries && !graphics && format.equalsIgnoreCase(DEFAULT_FORMAT))
+            return true;
+
         return false;
     }
-    
     
     private static void printDataSet(DatasetDescription dsd) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

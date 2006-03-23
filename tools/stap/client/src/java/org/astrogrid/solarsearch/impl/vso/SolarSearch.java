@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Set;
+import java.util.HashMap;
 
 import org.astrogrid.tools.votable.stap.v0_1.STAPMaker;
 import org.astrogrid.config.Config;
@@ -42,6 +43,8 @@ public class SolarSearch implements ISolarSearch {
      */   
     public static Config conf = null;
     
+    private HashMap noDuplMap = null;
+    
     /**
      * Static to be used on the initiatian of this class for the config
      */   
@@ -52,7 +55,8 @@ public class SolarSearch implements ISolarSearch {
     }   
     
     public SolarSearch() {
-        System.out.println("instantiated");
+        //System.out.println("instantiated");
+        noDuplMap = new HashMap();
     }
     
     private void printMap(Map info) {
@@ -64,9 +68,7 @@ public class SolarSearch implements ISolarSearch {
     }
     
     
-    public void execute(Calendar startTime, Calendar endTime, Map info, PrintWriter output) throws IOException {
-        System.out.println("enter execute");
-        
+    public void execute(Calendar startTime, Calendar endTime, Map info, PrintWriter output) throws IOException {        
         
         VSOiBindingStub binding;
         try {
@@ -148,11 +150,11 @@ public class SolarSearch implements ISolarSearch {
         
         
         String formatReq = null;
+        
         if(info.containsKey("FORMAT")) {
-            formatReq = (String)info.get("FORMAT");
+            formatReq = ((String [])info.get("FORMAT"))[0];
         }
-        
-        
+
         instrumentName[0] = ((String [])info.get("INSTRUMENT_ID"))[0];
         Calendar startTimeCal = Calendar.getInstance();
         Calendar endTimeCal = Calendar.getInstance();
@@ -186,7 +188,10 @@ public class SolarSearch implements ISolarSearch {
         */
         
         STAPMaker stapMaker = new STAPMaker();
-        
+        BufferedWriter out =
+            new BufferedWriter( output );
+        stapMaker.writeBeginVOTable(out,instrumentName[0]);        
+        try {
         ProviderQueryResponse[] value = null;
         
         Time queryTime = new Time(dateFormat.format(startTime.getTime()), dateFormat.format(endTime.getTime()));
@@ -204,24 +209,23 @@ public class SolarSearch implements ISolarSearch {
             System.out.println("could not parse version");
             e2.printStackTrace();
         }
-        System.out.println("version number being used = " + versionNumber.toString());
+        //System.out.println("version number being used = " + versionNumber.toString());
         String serviceURL = conf.getString("service.url","http://localhost:8080/");
         
-        System.out.println("making query on instrument = " + instrumentName[0] + " time start = " + queryTime.getStart() + " end time = " + queryTime.getEnd());
+        //System.out.println("making query on instrument = " + instrumentName[0] + " time start = " + queryTime.getStart() + " end time = " + queryTime.getEnd());
         value = binding.query(new org.astrogrid.solarsearch.ws.vso.QueryRequest(versionNumber,qrb));
         
-        System.out.println("numbers of actual providerqueryresponse = "  + value.length);
-        BufferedWriter out =
-            new BufferedWriter( output );
-        stapMaker.writeBeginVOTable(out,instrumentName[0]);
-        
+        //System.out.println("numbers of actual providerqueryresponse = "  + value.length);
+        String tempFormat = null;
         for(int j = 0;j < value.length;j++) {
             QueryResponseBlock []qrbResults = value[j].getRecord();
+            noDuplMap.clear();
             //System.out.println("results of providerqueryresponse: version = " + value[j].getVersion() + " provider = " + value[j].getProvider() + " number of rec found = " + value[j].getNo_of_records_found());
             if(qrbResults != null && qrbResults.length > 0) {
                 //System.out.println("numuber of query response blocks = " + qrbResults.length);
                 for(int k = 0;k < qrbResults.length;k++) {
-                    if(correctFormat(formatReq,qrbResults[k].getFileid().substring(qrbResults[k].getFileid().lastIndexOf('.')))) {                    
+                    if(correctFormat(formatReq,qrbResults[k].getFileid()) && !noDuplMap.containsKey(qrbResults[k].getFileid())) {
+                        noDuplMap.put(qrbResults[k].getFileid(),null);
                         Extent tempExtent = new Extent();
                         if(qrbResults[k].getExtent() != null) {
                             tempExtent.setX(qrbResults[k].getExtent().getX());
@@ -263,10 +267,12 @@ public class SolarSearch implements ISolarSearch {
                                 " Wave: min = " + tempWave.getWavemin() + " max = " + tempWave.getWavemax() + " unit = " + tempWave.getWaveunit() +
                                 " type = " + tempWave.getWavetype()); 
                         stapMaker.setInstrumentID(qrbResults[k].getInstrument());
-                        stapMaker.setFormat(
-                                (String)info.get("format.ending." + qrbResults[k].getFileid().substring(qrbResults[k].getFileid().lastIndexOf('.'))) != null ?
-                                (String)info.get("format.ending." + qrbResults[k].getFileid().substring(qrbResults[k].getFileid().lastIndexOf('.'))) :
-                                (String)info.get("format.default"));                    
+                        
+                        tempFormat = conf.getString("format.default", null);
+                        if(qrbResults[k].getFileid().lastIndexOf('.') != -1) {
+                            tempFormat = conf.getString("format.ending." + qrbResults[k].getFileid().substring(qrbResults[k].getFileid().lastIndexOf('.')+1), tempFormat);
+                        }
+                        stapMaker.setFormat(tempFormat);
                         /*
                         astro.addRow( new Object[] { 
                                 new Float(value[j].getVersion())
@@ -301,24 +307,39 @@ public class SolarSearch implements ISolarSearch {
                 if(stapMaker.getRowCount() > 0)
                     stapMaker.writeTable(out);
             }//if            
-        }//for        
-        stapMaker.writeEndVOTable(out);
+        }//for
+        }finally {
+            stapMaker.writeEndVOTable(out);
+        }
     }
     
+    private static final String DEFAULT_FORMAT = "GRAPHICS";
+    
     private boolean correctFormat(String format, String accessRefExtension) {
+        boolean timeSeries = false;
+        boolean graphics = false;
         if(format == null || format.trim().length() == 0) {
             return true;
-        }        
-        if(format.equals("Graphic") && 
-           (accessRefExtension.equalsIgnoreCase("fits") || accessRefExtension.equalsIgnoreCase("jpg") ||
-            accessRefExtension.equalsIgnoreCase("gif"))) {
-            return true;
         }
-        if(format.equals("TIME_SERIES") && 
-                (accessRefExtension.equalsIgnoreCase("cdf") || accessRefExtension.equalsIgnoreCase("txt") ||
+        if(accessRefExtension.lastIndexOf('.') != -1)
+            accessRefExtension = accessRefExtension.substring(accessRefExtension.lastIndexOf('.')+1);
+        
+        if((accessRefExtension.equalsIgnoreCase("fits") || accessRefExtension.equalsIgnoreCase("jpg") ||
+            accessRefExtension.equalsIgnoreCase("gif") || accessRefExtension.equalsIgnoreCase("fts"))) {
+            graphics = true;
+        }
+        
+        if((accessRefExtension.equalsIgnoreCase("cdf") || accessRefExtension.equalsIgnoreCase("txt") ||
                  accessRefExtension.equalsIgnoreCase("vot"))) {
-                 return true;
+            timeSeries = true;
         }
+        if(format.equalsIgnoreCase("TIME_SERIES") && timeSeries)
+            return true;
+        else if(format.equalsIgnoreCase("GRAPHICS") && graphics)
+            return true;
+        else if(!timeSeries && !graphics && format.equalsIgnoreCase(DEFAULT_FORMAT))
+            return true;
+        
         return false;
     }
 

@@ -18,7 +18,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: SolarSearch.java,v 1.3 2006/03/10 13:09:07 KevinBenson Exp $
+ *  $Id: SolarSearch.java,v 1.4 2006/03/23 15:52:36 KevinBenson Exp $
  */
 
 package org.astrogrid.solarsearch.http.servlets;
@@ -81,7 +81,7 @@ public class SolarSearch extends HttpServlet {
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) {
         
-           
+        System.setProperty("http.agent","astrogrid-stap-" + req.getServerName());
         res.setContentType("text/xml;charset=UTF-8");
         SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd'T'HH:mm:ss");

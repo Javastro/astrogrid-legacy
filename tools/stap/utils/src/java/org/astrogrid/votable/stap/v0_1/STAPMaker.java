@@ -80,6 +80,7 @@ public class STAPMaker {
     
     public void addRow() {
         astro.addRow( values );
+        values = new Object[9];
     }
     
     public long getRowCount() {
@@ -95,8 +96,17 @@ public class STAPMaker {
     public void writeTable(BufferedWriter out) throws IOException {
         VOSerializer vos = VOSerializer.makeSerializer( DataFormat.TABLEDATA, astro );
         vos.writeInlineTableElement(out);
+        out.flush();
         astro.clearRows();
         vos = null;
+        values = null;
+        values = new Object[9];
+    }
+    
+    private void clearValues() {
+        for(int i = 0;i < values.length;i++) {
+            values[i] = null;
+        }
     }
     
     public void writeEndVOTable(BufferedWriter out) throws IOException {
