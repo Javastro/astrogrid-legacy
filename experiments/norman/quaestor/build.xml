@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.11 2006/03/21 20:55:00 norman Exp $
+     $Id: build.xml,v 1.12 2006/03/24 14:05:16 norman Exp $
 -->
 
 
@@ -226,19 +226,24 @@
           unless="runonly.install"
           >
     <!-- the two following tests don't seem to work, but since I don't
-         use the named properties, I might as well ignore them for now
+         use the named properties, I might as well ignore them for now-->
     <available property="sisc.present"
-               classpathref="sisc.classpath"
+               filepath="${sisc.lib}"
                file="sisc.shp"/>
+    <fail unless="sisc.present"
+          message="Must have SISC to build: see sisc.sourceforge.net"/>
 
     <available property="jena.present"
-               classpathref="compile.classpath"
-               classname="com.hp.hpl.jena.rdf.model.ModelFactory"/>
-    -->
+               filepath="${jena.lib}"
+               file="jena.jar"/>
+    <fail unless="jena.present"
+          message="Must have Jena to build: see jena.sourceforge.net"/>
 
     <!-- Need JUnit for the src/test/org/... testcases: not essential -->
     <available property="junit.present"
                classname="junit.framework.TestCase"/>
+
+
   </target>
 
   <!-- =================== Compilation Classpath ========================== -->
