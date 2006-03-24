@@ -19,7 +19,7 @@ public class HubRegistrationTest extends PresetupHub {
 		
 		
 		assertEquals(nameMap.get(hubId), name);
-		assertEquals("ivo://org.astrogrid/acr", ivornMap.get(hubId));
+		assertEquals("ivo://org.astrogrid/acr/fixme", ivornMap.get(hubId));
 		assertEquals(PlasticListener.CURRENT_VERSION, versionMap.get(hubId));
 		assertNull(expectNothingMap.get(hubId));
 		
