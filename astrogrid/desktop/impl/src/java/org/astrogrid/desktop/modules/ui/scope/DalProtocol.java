@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.2 2006/03/13 14:55:09 KevinBenson Exp $
+/*$Id: DalProtocol.java,v 1.3 2006/03/24 10:30:15 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,10 @@ public abstract class DalProtocol {
     public String getName() {
         return name;
     }
-        
+    
+    public void setPrimaryNodeLabel(String name) {
+        this.primaryNode.setAttribute(Retriever.LABEL_ATTRIBUTE,name);
+    }
     
     /** access the primary node - from where all other results from this protocol
      * will be rooted
@@ -88,12 +91,27 @@ public abstract class DalProtocol {
      * @return an initialized, unstarted retriever.
      */
     public abstract Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize);
+    
+    /** create a retriever to query one service of this protocol
+     * 
+     * @param i the resource information describing this protocol
+     * @param ra right ascension search position
+     * @param dec declination of search position
+     * @param raSize ra size of search
+     * @param decSize dec size of search
+     * @return an initialized, unstarted retriever.
+     */
+    public abstract Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format);    
 
 }
 
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.3  2006/03/24 10:30:15  KevinBenson
+new checkboxes on heliosope for the Format, and the ability to query by Format
+for stap services on helioscope
+
 Revision 1.2  2006/03/13 14:55:09  KevinBenson
 New first draft of helioscope and the stap spec protocol
 

@@ -39,6 +39,7 @@ public class StapRetrieval extends Retriever {
     
     private final Calendar start;
     private final Calendar end;
+    private final String format;
 
     public StapRetrieval(UIComponent comp,ResourceInformation information,TreeNode primaryNode,VizModel model, 
                          Stap stap, Calendar start, Calendar end, double ra, double dec, double raSize,double decSize)  {
@@ -48,7 +49,20 @@ public class StapRetrieval extends Retriever {
         this.stap = stap;
         this.start = start;
         this.end = end;
+        this.format = null;
     }
+    
+    public StapRetrieval(UIComponent comp,ResourceInformation information,TreeNode primaryNode,VizModel model, 
+            Stap stap, Calendar start, Calendar end, double ra, double dec, double raSize,double decSize, String format)  {
+        super(comp,information,primaryNode,model,ra,dec);
+        this.raSize = raSize;
+        this.decSize = decSize;
+        this.stap = stap;
+        this.start = start;
+        this.end = end;        
+        this.format = format;
+    }
+    
     
     private final double raSize;
     private final double decSize;
@@ -57,10 +71,16 @@ public class StapRetrieval extends Retriever {
             URL stapURL = null;
             //check if there is a ra,dec and construct a stap query accordingly.
             if(Double.isNaN(ra) || Double.isNaN(dec)) {
-                stapURL = stap.constructQuery(new URI(information.getAccessURL().toString()),start, end);
+                if(format != null)
+                    stapURL = stap.constructQueryF(new URI(information.getAccessURL().toString()),start, end, format);
+                else
+                    stapURL = stap.constructQuery(new URI(information.getAccessURL().toString()),start, end);
             }
             else {
-                stapURL = stap.constructQueryS(new URI(information.getAccessURL().toString()),start, end, ra, dec, raSize, decSize);
+                if(format != null)
+                    stapURL = stap.constructQuerySF(new URI(information.getAccessURL().toString()),start, end, ra, dec, raSize, decSize, format);
+                else
+                    stapURL = stap.constructQueryS(new URI(information.getAccessURL().toString()),start, end, ra, dec, raSize, decSize);
             }
             
             StringBuffer sb = new StringBuffer();

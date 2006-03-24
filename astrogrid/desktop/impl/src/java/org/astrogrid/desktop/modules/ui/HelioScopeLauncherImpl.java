@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.5 2006/03/17 09:15:42 KevinBenson Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.6 2006/03/24 10:30:15 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,6 +80,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
@@ -214,8 +215,8 @@ public class HelioScopeLauncherImpl extends UIComponent
         String appName = "HelioScope-" + UNQ_ID++;
        // standard message handler.
         String logoUrl = "";
-		String description = logoUrl;
-		this.plasticHandler = new StandardHandler(appName,description,"ivo://org.astrogrid/helioscope", logoUrl, PlasticListener.CURRENT_VERSION);
+        String description = logoUrl;
+		  this.plasticHandler = new StandardHandler(appName,description,"ivo://org.astrogrid/helioscope", logoUrl, PlasticListener.CURRENT_VERSION);
         // message handler for application add and  applcation remove messages.
         ApplicationRegisteredPlasticMessageHandler dynamicButtonHandler = new HelioscopePlasticMessageHandler(this, this, dynamicButtons);
         this.plasticHandler.setNextHandler(dynamicButtonHandler);
@@ -325,6 +326,9 @@ public class HelioScopeLauncherImpl extends UIComponent
         //wrapPanel.add(southCenterPanel);
         return wrapPanel;        
     }
+    
+    private JCheckBox formatTimeSeriesCheck;
+    private JCheckBox formatGraphicCheck;
     
     /** panel containing summary of search results */
     private JPanel makeServicesPanel() {
@@ -471,6 +475,14 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         }
         */
         
+        formatTimeSeriesCheck = new JCheckBox("Time Series");
+        formatGraphicCheck = new JCheckBox("Graphic");
+        formatTimeSeriesCheck.setSelected(true);
+        formatGraphicCheck.setSelected(true);
+        JPanel checkPanel = new JPanel();
+        checkPanel.add(formatTimeSeriesCheck);
+        checkPanel.add(formatGraphicCheck);
+        searchPanel.add(checkPanel);
         submitButton = new JButton("Search");
         submitButton.setIcon(IconHelper.loadIcon("find.png"));
         submitButton.setToolTipText("Find resources for this time");
@@ -565,6 +577,12 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                     showError("Your Start date/time must be before the end date/time");
                     return;
                 }
+                
+                if(!formatTimeSeriesCheck.isSelected() && !formatGraphicCheck.isSelected()) {
+                    showError("You much have Time Series and/or Graphics checked when doing a search");
+                    return;
+                }
+                    
                 //setStatusMessage(position);
                 clearTree();
                 reFocusTopButton.setEnabled(true);
@@ -585,10 +603,28 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                             protected void doFinished(Object result) {
                                 ResourceInformation[] services = (ResourceInformation[])result;
                                 logger.info(services.length + " " + p.getName() + " services found");
+                                
+                                if(formatTimeSeriesCheck.isSelected() && formatGraphicCheck.isSelected()) {
+                                    p.setPrimaryNodeLabel("Time Series/Images");
+                                }
+                                else if(formatTimeSeriesCheck.isSelected()) {
+                                    p.setPrimaryNodeLabel("Time Series");
+                                }
+                                else if(formatGraphicCheck.isSelected()) {
+                                    p.setPrimaryNodeLabel("Images");
+                                }                                
                                 for (int i = 0; i < services.length; i++) {
                                     if (services[i].getAccessURL() != null) {
                                         setProgressMax(getProgressMax()+1); // should give a nice visual effect.
-                                        p.createRetriever(services[i],startStapCal,endStapCal, ra,dec,raSize,decSize).start();
+                                        if(formatTimeSeriesCheck.isSelected() && formatGraphicCheck.isSelected()) {
+                                            p.createRetriever(services[i],startStapCal,endStapCal, ra,dec,raSize,decSize).start();
+                                        }
+                                        else if(formatTimeSeriesCheck.isSelected()) {
+                                            p.createRetriever(services[i],startStapCal,endStapCal, ra,dec,raSize,decSize,"TIME_SERIES").start();
+                                        }
+                                        else if(formatGraphicCheck.isSelected()) {
+                                            p.createRetriever(services[i],startStapCal,endStapCal, ra,dec,raSize,decSize,"GRAPHICS").start();
+                                        }
                                        // (new SiapRetrieval(HelioScopeLauncherImpl.this,siaps[i],vizModel,nodeSizingMap,siap,ra,dec,raSize,decSize)).start();
                                     }
                                 }                            
@@ -625,6 +661,10 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.6  2006/03/24 10:30:15  KevinBenson
+new checkboxes on heliosope for the Format, and the ability to query by Format
+for stap services on helioscope
+
 Revision 1.5  2006/03/17 09:15:42  KevinBenson
 minor change on stapretrieval to show only the startdate for the valNode and for
 helioscope to make the combobox editable

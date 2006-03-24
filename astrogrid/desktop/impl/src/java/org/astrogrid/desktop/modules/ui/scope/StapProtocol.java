@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.2 2006/03/16 09:16:20 KevinBenson Exp $
+/*$Id: StapProtocol.java,v 1.3 2006/03/24 10:30:15 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,12 +47,24 @@ public class StapProtocol extends DalProtocol {
     public Retriever createRetriever(ResourceInformation i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
         return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end, ra,dec, raSize, decSize);
     }
+    
+    /**
+     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
+     */
+    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
+        return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end, ra,dec, raSize, decSize, format);
+    }
+    
 
 }
 
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.3  2006/03/24 10:30:15  KevinBenson
+new checkboxes on heliosope for the Format, and the ability to query by Format
+for stap services on helioscope
+
 Revision 1.2  2006/03/16 09:16:20  KevinBenson
 usually comment/clean up type changes such as siap to stap
 

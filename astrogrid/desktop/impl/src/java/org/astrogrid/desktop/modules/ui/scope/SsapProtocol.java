@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.2 2006/03/13 14:55:09 KevinBenson Exp $
+/*$Id: SsapProtocol.java,v 1.3 2006/03/24 10:30:15 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,12 +34,24 @@ public class SsapProtocol extends DalProtocol {
     public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
         return new SsapRetrieval(parent,i,getPrimaryNode(),getVizModel(),ssap,ra,dec,raSize,decSize);
     }
+    
+    /**
+     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
+     */
+    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
+        return createRetriever(i,start, end, ra,dec,raSize, decSize);
+    }
+    
 
 }
 
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.3  2006/03/24 10:30:15  KevinBenson
+new checkboxes on heliosope for the Format, and the ability to query by Format
+for stap services on helioscope
+
 Revision 1.2  2006/03/13 14:55:09  KevinBenson
 New first draft of helioscope and the stap spec protocol
 

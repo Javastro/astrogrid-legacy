@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.3 2006/03/13 18:29:08 nw Exp $
+/*$Id: ConeProtocol.java,v 1.4 2006/03/24 10:30:15 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,12 +67,24 @@ public class ConeProtocol extends DalProtocol {
     public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
         return new ConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
     }
+    
+    /**
+     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
+     */
+    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
+        return createRetriever(i,start, end, ra,dec,raSize, decSize);
+    }
+    
 
 }
 
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.4  2006/03/24 10:30:15  KevinBenson
+new checkboxes on heliosope for the Format, and the ability to query by Format
+for stap services on helioscope
+
 Revision 1.3  2006/03/13 18:29:08  nw
 temporarily adjusted to avoid out-of-memory error caused by huge swathe of vizier records.
 
