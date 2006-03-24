@@ -11,6 +11,7 @@ import net.ladypleaser.rmilite.RemoteInvocationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.common.namegen.NameGen;
+import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.PlasticListener;
 import org.votech.plastic.outgoing.PlasticException;
 
@@ -49,6 +50,12 @@ class RMIPlasticClient extends PlasticClientProxy {
         } catch (RemoteInvocationException e) {
             setResponding(false);
             throw new PlasticException(e);
+        } catch (RuntimeException re) {
+        	//the client application didn't behave properly, but that's not our fault.  Report the error and
+        	//continue
+        	setResponding(true); //it's alive, even if buggy
+        	logger.error("Application "+sender+" responded with a RuntimeException to message "+message,re);
+        	return CommonMessageConstants.RPCNULL;
         }
     }
 

@@ -23,11 +23,11 @@ import org.votech.plastic.incoming.handlers.StandardHandler;
  * @date 02-Nov-2005
  */
 public class MessengerImpl implements MessengerInternal, PlasticListener {
-    private static final String DESCRIPTION = "This is the ACR Plastic Hub.\nThe ACR (Astro Client Runtime) provides the reference implementation of a Plastic Hub, together with easy access to numerous AstroGrid and VO Services.";
+	public static final String DESCRIPTION = "This is the ACR Plastic Hub.\nThe ACR (Astro Client Runtime) provides the reference implementation of a Plastic Hub, together with easy access to numerous AstroGrid and VO Services.";
 
-	private static final String IVORN = "ivo://org.astrogrid/acr"; //TODO this should be determined properly
+	public static final String IVORN = "ivo://org.astrogrid/acr/fixme"; //TODO this should be determined properly
 
-    private static final String NAME = "ACR-Plastic-Hub";
+	public static final String NAME = "ACR-Plastic-Hub";
 
     /**
      * Logger for this class

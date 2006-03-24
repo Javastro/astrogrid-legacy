@@ -1,9 +1,13 @@
 package org.astrogrid.desktop.modules.plastic;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
@@ -63,6 +67,15 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	private PrettyPrinterInternal prettyPrinter;
 
 	private Configuration config;
+
+
+
+	/**
+	 * The keys used to identify this hub
+	 * @see PlasticHubListener#PLASTIC_CONFIG_FILENAME
+	 */
+	public static final String ACR_VERSION = "acr.version";
+	//public static final String HUB_IMPL = "acr.hub.impl";	
 
 
 
@@ -314,10 +327,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // Write out connection properties in a non-astrogriddy way
         // see the Plastic spec http://plastic.sourceforge.net and
         // discussions on the DS6 forum about debranding.
-        // todo To allow concurrent use of the ACR and alterative
-        // platic hubs (if there should ever be one),
-        // we'll need a mechanism to disable PLASTIC
-        // and prevent this file being written.
         try {
             int rmiPort = rmiServer.getPort();
             String xmlServer = webServer.getUrlRoot() + "xmlrpc";
@@ -325,28 +334,44 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             props.put(PlasticHubListener.PLASTIC_RMI_PORT_KEY, new Integer(rmiPort).toString());
             props.put(PlasticHubListener.PLASTIC_XMLRPC_URL_KEY, xmlServer);
             props.put(PlasticHubListener.PLASTIC_VERSION_KEY, PlasticListener.CURRENT_VERSION);
+            String version = System.getProperty("workbench.version","Unknown");
+            props.put(PlasticHubImpl.ACR_VERSION, version);
+            //props.put(PlasticHubImpl.HUB_IMPL, this.toString());
             File homeDir = new File(System.getProperty("user.home"));
             plasticPropertyFile = new File(homeDir, PlasticHubListener.PLASTIC_CONFIG_FILENAME);
             if (plasticPropertyFile.exists()) {
-                // If there are competing versions of Plastic we'll have to
-                // change this behaviour.
-                logger.warn("Plastic config file was already present - deleting");
-                plasticPropertyFile.delete();
+                logger.info("Plastic config file was already present");
+                Properties alreadyPresent = loadExistingDotPlastic();
+                String whoisit = alreadyPresent.getProperty(PlasticHubImpl.ACR_VERSION);
+                
+                if (version.equals(whoisit)) {
+                	logger.warn("An ACR hub of version "+version+" left this file - probably orphaned...deleting");
+                	plasticPropertyFile.delete();
+                } else {
+                	logger.warn("A Plastic hub " + whoisit==null ? " of unknown origin " :" (ACR version +"+whoisit+") " + "is already running.  Plastic features will NOT be available through this ACR");
+                	return; //TODO disable hub
+                }
+                
             }
             plasticPropertyFile.deleteOnExit();
             OutputStream os = new BufferedOutputStream(new FileOutputStream(plasticPropertyFile));
             props.store(os, "Plastic Hub Properties.  See http://plastic.sourceforge.net");
             os.close();
         } catch (IOException e) {
-            logger.error("There was a problem creating the Plastic config file .plastic");
+            logger.error("There was a problem creating the Plastic config file .plastic",e);
         }
     }
 
+	private Properties loadExistingDotPlastic() throws FileNotFoundException, IOException {
+		Properties alreadyPresent = new Properties();
+		InputStream is = new BufferedInputStream(new FileInputStream(plasticPropertyFile));
+		alreadyPresent.load(is);
+		is.close();
+		return alreadyPresent;
+	}
+
     public void stop() {
-        if (plasticPropertyFile != null) {
-            logger.debug("Deleting Plastic Property File"); //TODO - check it's ours
-            plasticPropertyFile.delete();
-        }
+        // Plastic properties file should already be deleted automatically on exit
     }
 
     /*
@@ -461,11 +486,11 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 
 	public void halting() {
-		// too bad
+		//Message should be sent _after_ apps have been given a chance to stop it.
+		requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
 	}
 
 	public String lastChance() {
-		requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
 		return null; //returning null indicates we don't care.
 	}
 

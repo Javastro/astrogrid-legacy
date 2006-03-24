@@ -13,6 +13,19 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="pending" date="">
+	<action dev="jdt" type="update">
+	Updated Plastic version to 0.4
+	</action>
+	<action dev="jdt" type="add">
+	Hub now writes out its ivorn into the .plastic file
+	and only overwrites this file (if found) if it belongs to the
+	ACR.  Polite behaviour in case other hubs are running.
+	</action>
+	<action dev="jdt" type="add">
+	Hub is now protected against Exceptions thrown by RMI clients.
+	</action>	
+</release>
 <release version="1.5-alpha-3" date="2006-03-22">
 	<action dev="nw" type="update">
 	Updated to use AstroGrid release 2006.1
