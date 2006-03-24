@@ -13,7 +13,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="pending" date="">
+<release version="1.5-beta-1" date="2006-03-24">
 	<action dev="jdt" type="update">
 	Updated Plastic version to 0.4
 	</action>
@@ -25,59 +25,52 @@
 	<action dev="jdt" type="add">
 	Hub is now protected against Exceptions thrown by RMI clients.
 	</action>	
-</release>
-<release version="1.5-alpha-3" date="2006-03-22">
 	<action dev="nw" type="update">
-	Updated to use AstroGrid release 2006.1
+	Updated to use AstroGrid release 2006.2
 	</action>
-</release>
-<release version="1.5-alpha-2" date="2006-03-21">
-		<action dev="kmb" type="add">
+	<action dev="kmb" type="add">
 			Helioscope: minor changes to make the combo box editable and val node to show only the startdate as the label.
-		</action>
-		<action dev="jdt" type="fix">
+	</action>
+	<action dev="jdt" type="fix">
 			Fixed Plastic hub shutdown message, which wasn't always
 			getting sent.
-		</action>
-		<action dev="jdt" type="update">
+	</action>
+	<action dev="jdt" type="update">
 			Upgraded the Plastic Library.
-		</action>
-		<action dev="jdt" type="fix" issue="1610">
+	</action>
+	<action dev="jdt" type="fix" issue="1610">
 			Fixed problem with xml-rpc apps not receiving messages when they register for specific messages.
-		</action>				
-		<action dev="pjn" type="add">
+	</action>				
+	<action dev="pjn" type="add">
 			Workflow builder: Feedback from Silvia - stripping
 			transcripts opens new builder window, and tooltips altered.
 			Registry browser: Basic tree view panel onto returned data
 			added
-		</action>
-		<action dev="kmb" type="fix">
+	</action>
+	<action dev="kmb" type="fix">
 			Helioscope/Stap: Just small clean up areas really. such as
 			siap->stap in comments. Changed helioscope date to back date
 			such as year 2000-1-1T00:00:00.
-		</action>
-		<action dev="jl" type="fix" issue="1606">
+	</action>
+	<action dev="jl" type="fix" issue="1606">
 			Query Builder: Problem inserting column references with new
 			template query.
-		</action>
-</release>
-
-<release version="1.5-alpha-1" date="2006-03-13">
+	</action>
 	<action dev="nw" type="add">
 	Added ability to access VizieR tables as Cone Search. Appears in Application
 	Launcher. Not yet in astroscope - needs a stream-reading soap client for registry entries.
 	</action>
- <action dev="jl" type="add" issue="1542">
+ 	<action dev="jl" type="add" issue="1542">
 	    Query Builder: Improvements to low level editing of tree view.
 	</action>
-<action dev="pjn" type="add" issue="1234">
+	<action dev="pjn" type="add" issue="1234">
 			WorkflowBuilder: details of any workflows loaded from storage now displayed - was a request for portal, but added to workbench.
 		</action>
 	    <action dev="pjn" type="add">
 			Various useability improvements: Menubar on application launcher and new tool clears old info, 
 			dialog sizing issue, parameter editor column headings less criptic
 		</action>
-    <action dev="kmb" type="add" issue="1542">
+    	<action dev="kmb" type="add" issue="1542">
 		Helioscope: Rough draft of the first helioscope.
 	</action>
 </release>
