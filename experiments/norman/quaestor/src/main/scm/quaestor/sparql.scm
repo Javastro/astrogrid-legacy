@@ -4,27 +4,42 @@
 (import s2j)
 
 (require-library 'quaestor/utils)
+(require-library 'quaestor/knowledgebase)
+(require-library 'quaestor/jena)
 
 (module sparql
 (;sparql:perform-query
  sparql:make-query-runner)
 
-(import* utils error-with-status chatter jlist->list)
+(import* utils
+         report-exception
+         chatter
+         jlist->list)
+(import* knowledgebase
+         kb:knowledgebase?)
+(import* jena
+         rdf:mime-type-list
+         rdf:mime-type->language)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; SPARQL stuff
 
-(define-syntax fail-if-procedure-name
-  (syntax-rules ()
-    ((_ procname)
-     (define :fail-if-procedure-name (quote procname)))))
-(define-syntax fail-if
+;; Following doesn't work, for reasons that I don't completely follow.  See 
+;; http://sourceforge.net/mailarchive/forum.php?forum_id=7422&max_rows=25&style=nested&viewmonth=200412
+;; for discussion and a workaround I definitely don't follow.
+;; (define-syntax check-set-name!
+;;   (syntax-rules ()
+;;     ((_ procname)
+;;      (define :check-procedure-name (quote procname)))))
+(define-syntax check
   (syntax-rules ()
     ((_ test message ...)
-     (if test
-         (error :fail-if-procedure-name message ...)))))
+     (if (not test)
+         (error 'sparql:make-query-runner message ...)))))
 
+;; sparql:make-query-runner knowledgebase jstring list-of-strings -> procedure
+;;
 ;; Given a knowledgebase KB, a SPARQL query QUERY-JSTRING, and a list
 ;; of acceptable MIME types, return a procedure which has the signature
 ;;
@@ -47,22 +62,40 @@
     create
     close)
 
-  (fail-if-procedure-name sparql:make-query-runner)
-
-  (fail-if (not kb)
-           "cannot query null knowledgebase")
-  (fail-if (java-null? query-jstring)
-           "received null query")
-  (fail-if (null? mime-type-list)
-           "received null mime-type-list")
+  (check kb
+         "cannot query null knowledgebase")
+  (check (kb:knowledgebase? kb)
+         "kb argument is not a knowledgebase!")
+  (check (not (java-null? query-jstring))
+         "received null query")
+  (check (not (null? mime-type-list))
+         "received null mime-type-list")
 
   (let ((infmodel (kb 'get-inferencing-model)))
-    (fail-if (not infmodel)
-             "failed to get inferencing model from knowledgebase ~a"
-             (kb 'get-name))
+    (check infmodel
+           "failed to get inferencing model from knowledgebase ~a"
+           (kb 'get-name))
 
-    (let ((query (create (java-null <query-factory>) query-jstring)))
-      (fail-if (java-null? query) "can't parse query")
+    (let ((query (with/fc
+                     (lambda (m e)
+                       ;; (print-exception (make-exception m e)) seems not to
+                       ;; work here.  No matter: (error-message m) is the
+                       ;; exception.
+                       (define-generic-java-method get-message)
+                       (report-exception 'sparql:make-query-runner
+                                          '|SC_BAD_REQUEST|
+                                          "SPARQL parse error: ~a"
+                                          (->string
+                                           (get-message (error-message m)))
+;;                                           (with-output-to-string
+;;                                             (lambda ()
+;;                                               (print-exception
+;;                                                (make-exception m e))))
+                                          ))
+                   (lambda ()
+                     (create (java-null <query-factory>) query-jstring)))))
+      (or query
+          (error "can't happen: null query in sparql:make-query-runner"))
       (let ((executable-query (create (java-null <query-execution-factory>)
                                       query
                                       infmodel))
@@ -70,8 +103,8 @@
             (handler (make-result-set-handler 'sparql:make-query-runner
                                               mime-type-list
                                               (determine-query-type query))))
-        (fail-if (java-null? executable-query)
-                 "can't make executable query from ~a" (->string query-jstring))
+        (check (not (java-null? executable-query))
+               "can't make executable query from ~a" (->string query-jstring))
         (if (not (and query-executor executable-query))
             (begin (or (java-null? executable-query)
                        (close executable-query))
@@ -85,11 +118,14 @@
             (handler query-result output-stream content-type-setter)
             (close executable-query)))))))
 
+;; make-result-set-handler symbol list symbol -> procedure
+;;
 ;; Return a procedure which will handle output of query results.
-;; Given: CALLER-NAME: a symbol giving the location errors should be reported as,
-;;        MIME-TYPES: a list of acceptable MIME-types
-;;        QUERY-TYPE: one of the four symbols returned by DETERMINE-QUERY-TYPE,
-;; return a procedure.
+;; Given:  CALLER-NAME: a symbol giving the location errors should
+;              be reported as coming from,
+;;         MIME-TYPES: a list of acceptable MIME-types,
+;;         QUERY-TYPE: one of the four symbols returned by DETERMINE-QUERY-TYPE,
+;; Return: a procedure.
 ;;
 ;; The returned procedure has the following signature:
 ;;
@@ -140,7 +176,7 @@
                                     mime-types)))
 
        (cond ((not best-type)           ;none found
-              (error-with-status caller-name
+              (report-exception caller-name
                                  '|SC_NOT_ACCEPTABLE|
                                  "can't handle any of the MIME types ~a"
                                  mime-types))
@@ -160,7 +196,7 @@
                 (output-as-csv stream result)))
              (else
               ;; this shouldn't happen
-              (error-with-status caller-name
+              (report-exception caller-name
                                  '|SC_INTERNAL_SERVER_ERROR|
                                  "this can't happen: mime-types ~s -> unrecognised best-type=~s"
                                  mime-types best-type)))))
@@ -169,7 +205,12 @@
        (let ((best-type (find-in-list '("application/xml" "text/plain")
                                       mime-types)))
 
-         (cond ((string=? best-type "application/xml")
+         (cond ((not best-type)
+                (report-exception caller-name
+                                   '|SC_NOT_ACCEPTABLE|
+                                   "can't handle any of the MIME types ~a"
+                                   mime-types))
+               ((string=? best-type "application/xml")
                 (lambda (result stream set-type)
                   (set-type "application/xml")
                   (output-as-xml (java-null <result-set-formatter>)
@@ -177,13 +218,15 @@
                                  result)))
                ((string=? best-type "text/plain")
                 (lambda (result stream set-type)
+                  (set-type "text/plain")
                   (println (java-new <java.io.print-stream> stream)
                            (->jstring (if (->boolean result) "yes" "no")))))
                (else
-                (error-with-status caller-name
-                                   '|SC_NOT_ACCEPTABLE|
-                                   "can't handle any of the MIME types ~a"
-                                   mime-types)))))
+                ;; this shouldn't happen
+                (report-exception caller-name
+                                   '|SC_INTERNAL_SERVER_ERROR|
+                                   "this can't happen: mime-types ~s -> unrecognised best-type=~s"
+                                   mime-types best-type)))))
 
       ((construct describe)
        ;; QUERY-RESULT is a Model 
@@ -195,7 +238,7 @@
                  (write result
                         stream
                         (->jstring lang))))
-             (error-with-status caller-name
+             (report-exception caller-name
                                 '|SC_NOT_ACCEPTABLE|
                                 "can't handle any of the MIME types ~a"
                                 mime-types))))
@@ -203,6 +246,9 @@
       (else
        (error caller-name "Unrecognised query type ~a" query-type))))
 
+;; output-as-csv java-stream java-resultset -> void
+;; side-effect: write resultset to stream
+;;
 ;; Given a ResultSet and an output stream, write the result as CSV, following
 ;; the spec in RFC 4180.  Include a header.
 (define (output-as-csv stream result)
@@ -275,7 +321,7 @@
 ;;         (error 'perform-sparql-query
 ;;                "Request to perform-sparql-query on null knowledgebase"))
 ;;     (or handler                         ;check we can handle requested MIME type
-;;         (error-with-status 'perform-sparql-query
+;;         (report-exception 'perform-sparql-query
 ;;                            '|SC_NOT_ACCEPTABLE|
 ;;                            "can't handle any of the MIME types ~a"
 ;;                            mime-type-list))
@@ -347,7 +393,7 @@
                      (get-output-stream)
                      query-result))
                (else
-                (error-with-status caller-name
+                (report-exception caller-name
                                    '|SC_NOT_ACCEPTABLE|
                                    "can't handle any of the MIME types ~a"
                                    mime-types)))))
@@ -365,7 +411,7 @@
                 (println (java-new <java.io.print-stream> (get-output-stream))
                          (->jstring (if (->boolean query-result) "yes" "no"))))
                (else
-                (error-with-status caller-name
+                (report-exception caller-name
                                    '|SC_NOT_ACCEPTABLE|
                                    "can't handle any of the MIME types ~a"
                                    mime-types)))))
@@ -379,7 +425,7 @@
                (write query-result
                       (get-output-stream)
                       (->jstring lang)))
-             (error-with-status caller-name
+             (report-exception caller-name
                                 '|SC_NOT_ACCEPTABLE|
                                 "can't handle any of the MIME types ~a"
                                 mime-types))))
@@ -424,8 +470,8 @@
                         query-jstring query qexec)
                  )))))
 
-
-
+;; find-query-executor java-string -> java-method
+;;
 ;; Given a QUERY, return one of the set QueryExecution.execSelect,
 ;; QueryExecution.execAsk, ..., based on the type of query returned by
 ;; Query.getQueryType.  If none of them match for some reason, return #f.
@@ -447,6 +493,8 @@
       (let ((result-pair (assq (determine-query-type query) alist)))
         (and result-pair (cdr result-pair))))))
 
+;; determine-query-type java-string -> symbol
+;;
 ;; Given a query, return one of the symbols 'ask, 'select, 'construct or
 ;; 'describe depending on what type of query it is.
 ;; Return #f if none match (which shouldn't happen).

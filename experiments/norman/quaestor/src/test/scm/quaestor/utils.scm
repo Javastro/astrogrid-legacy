@@ -42,7 +42,7 @@
                "one%24two"
                "%2520")))
 
-(expect error-with-status-1
+(expect report-exception-1
         '((t1 1 "hello")
           (t2 "x" "hello there"))
         (map (lambda (l)
@@ -52,7 +52,7 @@
                         (car (error-message m))
                         (cdr (error-message m))))
                 (lambda ()
-                  (apply ERROR-WITH-STATUS l))))
+                  (apply REPORT-EXCEPTION l))))
              '((t1 1 "hello")
                (t2 "x" "hello ~a" "there"))))
 
@@ -65,7 +65,7 @@
           ("application/xml" "text/plain")
           ("a/a" "b/b" "c/c"))
         (map (lambda (ss)
-               (parse-http-accept-header (->jstring ss)))
+               (PARSE-HTTP-ACCEPT-HEADER (->jstring ss)))
              '("text/plain"
                "*/*"
                ;"text/plain, application/xml" ;omit this -- sort isn't stable
@@ -74,3 +74,22 @@
                "text/plain; q=0.5 , , application/xml," ; empty elements
                "c/c;q=0.2,b/b;q=0.5,a/a,,,"             ;list is reversed
                )))
+
+(expect parse-query-string
+        '((#f . #f)
+          (#f . #f)
+          (#f . #f)
+          (#f . "value")
+          ("query" . #f)
+          ("query" . #f)
+          ("query" . "value")
+          ("query" . "value=another"))
+        (map PARSE-QUERY-STRING
+             '(#f
+               ""
+               "="
+               "=value"
+               "query"
+               "query="
+               "query=value"
+               "query=value=another")))

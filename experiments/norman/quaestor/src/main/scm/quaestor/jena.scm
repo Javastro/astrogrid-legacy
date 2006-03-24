@@ -100,8 +100,12 @@
  (define (rdf:mime-type-list)
    (map car (cdr mime-lang-mappings)))
 
- ;; Given a Java STREAM, this reads in the RDF within it, and returns
- ;; the resulting model.  MIME-TYPE may be #f, in which case we use the
+ ;; rdf:ingest-from-stream java-stream string -> java-model
+ ;; rdf:ingest-from-stream java-reader string -> java-model
+ ;;
+ ;; Given a Java STREAM or Java Reader, this reads in the RDF within it,
+ ;; and returns the resulting model.
+ ;; MIME-TYPE may be #f, in which case we use the
  ;; default language for the Model read function.  If it is given, it
  ;; must be one of the mime-types which is handled by RDF:MIME-TYPE->LANGUAGE.
  ;; 

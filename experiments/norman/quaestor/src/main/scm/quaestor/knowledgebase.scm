@@ -5,6 +5,7 @@
 (import s2j)
 
 (require-library 'quaestor/jena)
+(require-library 'quaestor/utils)
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
@@ -14,9 +15,14 @@
   (kb:new
    kb:get
    kb:discard
-   kb:get-names)
+   kb:get-names
+   kb:knowledgebase?)
 
-  (import jena)
+  (import* jena
+           rdf:ingest-from-stream
+           rdf:get-reasoner
+           rdf:merge-models)
+  (import* utils is-java-type?)
 
   ;; A `knowledgebase' is a named model, consisting of a number of named
   ;; `submodels'.  When any of these are updated, the new submodel is
@@ -47,6 +53,8 @@
       (let ((kbpair (assq kb-name _model-list)))
         (and kbpair (cdr kbpair)))))
 
+  ;; kb:new string -> knowledgebase
+  ;;
   ;; Create a new knowledgebase from scratch, registering it with the given
   ;; KB-NAME-PARAM (a string).  It must not already exist.
   ;; Return the new knowledgebase.  Either succeeds or throws an error.
@@ -64,11 +72,15 @@
                     _model-list))
         kb)))
 
+  ;; kb:get-names -> list
+  ;;
   ;; Returns a list of available knowledgebases.  Returns the names
   ;; as symbols, or a null list if there are none.
   (define (kb:get-names)
     (map car _model-list))
 
+  ;; kb:discard knowledgebase -> knowledgebase/#f
+  ;;
   ;; Remove a given knowledgebase from the list.  Returns it, or
   ;; returns #f if no such knowledgebase existed
   (define (kb:discard kb-name-string)
@@ -108,6 +120,8 @@
                 submodel-list))))
   
 
+  ;; make-kb symbol -> knowledgebase
+  ;;
   ;; Create a new knowledgebase.  The knowledgebase is a procedure.
   ;; The model and submodels may be retrieved, and new ones added, by
   ;; calling the procedure with a command as the second argument.
@@ -117,7 +131,7 @@
   ;;        SUBMODEL-NAME may be a string or a symbol.  Return #t on success
   ;;    (kb 'get-inferencing-model)
   ;;        As with GET-MODEL, except that it is an inferencing model.
-  ;;        Return #f on error (doesn't actually happen)
+  ;;        Return #f on error.
   ;;    (kb 'get-model)
   ;;        Return the model, or #f if none exists.
   ;;    (kb 'get-model SUBMODEL-NAME)
@@ -129,7 +143,7 @@
   ;;    (kb 'get-metadata-as-jstring)
   ;;        Return the model's metadata, if any, as a Scheme or Java string
   ;;    (kb 'get-name)
-  ;;        Return the knowledgebase's name
+  ;;        Return the knowledgebase's name, as a symbol
   ;;    (kb 'has-model [SUBMODEL-NAME])
   ;;        Return true if the named (sub)model exists, that is, if
   ;;        (kb 'get-model [SUBMODEL-NAME]) would succeed.  Return #f otherwise.
@@ -142,18 +156,41 @@
           (myname kb-name)
           (metadata #f)
           (merged-model #f)
+          (merged-tbox #f)
+          (merged-abox #f)
           (inferencing-model #f))
+
+      (define (clear-memos)
+        (set! merged-model #f)
+        (set! merged-abox #f)
+        (set! merged-tbox #f)
+        (set! inferencing-model #f))
+
+      ;; Return the abox or tbox.  Caches result in merged-abox/tbox.
       (define (get-abox-or-tbox tbox?)
         (let ((models (filter (if tbox?
                                   (lambda (x) (cadr x))
                                   (lambda (x) (not (cadr x))))
                               submodels)))
-          (if (null? models)            ;XXX MEMOIZE THIS
-              #f
-              (rdf:merge-models (map cddr models)))))
+          (cond ((null? models)
+                 #f)
+                ((and tbox? merged-tbox))
+                ((and (not tbox?) merged-abox))
+                (tbox?
+                 (set! merged-tbox
+                       (rdf:merge-models (map cddr models)))
+                 merged-tbox)
+                (else
+                 (set! merged-abox
+                       (rdf:merge-models (map cddr models)))
+                 merged-abox))))
 
       (lambda (cmd . args)
         (case cmd
+
+          ;;;;;;;;;;
+          ;; Commands which explicitly mutate the knowledgebase
+          
           ((add-abox add-tbox)
            ;; (kb 'add-abox/tbox SUBMODEL-NAME SUBMODEL)
            (if (not (= (length args) 2))
@@ -166,9 +203,20 @@
                                (as-symbol (car args))
                                (cadr args)
                                (eq? cmd 'add-tbox)))
-           (set! merged-model #f)
-           (set! inferencing-model #f)
+           (clear-memos)
            #t)
+
+          ((set-metadata)
+           ;; (kb 'set-metadata INFO)
+           ;; Set model metadata to INFO
+           (if (not (= (length args) 1))
+               (error 'make-kb
+                      "bad call to set-metadata: wrong number of args in ~s"
+                      args))
+           (set! metadata (car args)))
+
+          ;;;;;;;;;;
+          ;; Commands which implicitly mutate the knowledgebase, via memoisation
 
           ((get-model)
            ;; (kb 'get-model [SUBMODEL-NAME])
@@ -181,11 +229,7 @@
                     (else
                      (set! merged-model
                            (rdf:merge-models (map cddr submodels)))
-                     merged-model))
-;;               (if (null? submodels)
-;;                   #f
-;;                   (rdf:merge-models (map cddr submodels)))
-              )
+                     merged-model)))
              ((1)
               (let ((sm (assq (as-symbol (car args))
                               submodels)))
@@ -196,24 +240,38 @@
                      args))))
 
           ((get-inferencing-model)
-           ;; return #f on error (doesn't actually happen)
+           ;; return #f on error
            (if (not inferencing-model)
                (let ((tbox (get-abox-or-tbox #t))
                      (abox (get-abox-or-tbox #f)))
                  (define-java-classes
                    (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
-                 (define-generic-java-methods
+                 (define-generic-java-method
                    create-inf-model)
                  (set! inferencing-model
-                       (if abox
-                           (create-inf-model (java-null <factory>)
-                                             (rdf:get-reasoner)
-                                             tbox
-                                             abox)
-                           (create-inf-model (java-null <factory>)
-                                             (rdf:get-reasoner)
-                                             tbox)))))
+                       (cond ((and tbox abox)
+                              (create-inf-model (java-null <factory>)
+                                                (rdf:get-reasoner)
+                                                tbox
+                                                abox))
+                             (tbox
+                              (create-inf-model (java-null <factory>)
+                                                (rdf:get-reasoner)
+                                                tbox))
+                             (else
+                              #f)))))
            inferencing-model)
+
+          ((get-model-tbox get-model-abox)
+           ;; (kb 'get-model-tbox/abox)
+           ;; return merged models or #f if none
+           (or (null? args)
+               (error 'make-kb
+                      "Bad call to get-model-tbox/abox: wrong no args ~s" args))
+           (get-abox-or-tbox (eq? cmd 'get-model-tbox)))
+
+          ;;;;;;;;;;
+          ;; Commands which do not mutate the knowledgebase
 
           ((has-model)
            ;; (kb 'has-model [SUBMODEL-NAME])
@@ -228,22 +286,6 @@
                  (else
                   (error 'make-kb
                          "Bad call to has-model: wrong no. args ~s" args))))
-
-          ((get-model-tbox get-model-abox)
-           ;; (kb 'get-model-tbox/abox)
-           ;; return merged models or #f if none
-           (or (null? args)
-               (error 'make-kb
-                      "Bad call to get-model-tbox/abox: wrong no args ~s" args))
-           (get-abox-or-tbox (eq? cmd 'get-model-tbox))
-;;            (let ((models (filter (if (eq? cmd 'get-model-tbox)
-;;                                      (lambda (x) (cadr x))
-;;                                      (lambda (x) (not (cadr x))))
-;;                                  submodels)))
-;;              (if (null? models)
-;;                  #f
-;;                  (rdf:merge-models (map cddr models))))
-           )
 
           ((get-metadata-as-string)
            (cond ((is-java-type? metadata '|java.lang.String|)
@@ -261,14 +303,8 @@
                  (else
                   (error "Impossible -- kb metadata isn't a string"))))
 
-          ((set-metadata)
-           ;; (kb 'set-metadata INFO)
-           ;; Set model metadata to INFO
-           (if (not (= (length args) 1))
-               (error 'make-kb
-                      "bad call to set-metadata: wrong number of args in ~s"
-                      args))
-           (set! metadata (car args)))
+          ((get-name)
+           myname)
 
           ((info)
            (list (cons 'submodels (map (lambda (sm)
@@ -278,5 +314,16 @@
 
           (else
            (error 'make-kb "impossible command for knowledgebase: ~s" cmd))))))
+
+  ;; kb:knowledgebase? object -> boolean
+  ;;
+  ;; Returns true if the object is a knowledgebase
+  (define (kb:knowledgebase? object)
+    (and (procedure? object)
+         (with/fc
+             (lambda (m e) #f)
+           (lambda ()
+             (let ((name (object 'get-name)))
+               (symbol? name))))))
 
   )

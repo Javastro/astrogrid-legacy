@@ -64,12 +64,9 @@ public class QuaestorTest
         assertNull(r.getContent());
 
         // Does ?metadata work?
-        // (don't test the content type here, it's currently wrong)
-        // XXX fixme
         kbURL = makeKbUrl("?metadata");
         r = httpGet(kbURL);
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
-        // content-type may be followed by charset info
         assertEquals("text/plain", r.getContentType());
         assertEquals("My test knowledgebase\r\n", r.getContent());
     }
@@ -103,12 +100,14 @@ public class QuaestorTest
                                new String[] {"Accept", "*/*"});
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("application/rdf+xml", r.getContentType());
+        assertNotNull(r.getContent());
         // the actual content is a bit of a fuss to check
 
         r = httpGet(makeKbUrl("ontology"),
                     new String[] {"Accept", "application/n3"});
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("application/n3", r.getContentType());
+        assertNotNull(r.getContent());
         // the actual content is a bit of a fuss to check
     }
     
@@ -123,40 +122,53 @@ public class QuaestorTest
         assertNull(r.getContent());
     }
 
-    public void testSparqlQueries() 
+    public void testSparqlQueriesSelect() 
             throws Exception {
         String query = "SELECT ?i where { ?i a <urn:example#c1>}";
         HttpResult r;
-        // try making a query against a submodel -- should fail
-        r = httpPost(makeKbUrl("ontology"), query, "application/sparql-query");
-        assertEquals(4, r.getStatus()/100);
 
         // Make a successful query. and check XML response
         r = httpPost(makeKbUrl(), query, "application/sparql-query");
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("application/xml", r.getContentType());
+        assertNotNull(r.getContent());
         // don't check actual content string
+
+        // try making a query against a submodel -- should fail
+        r = httpPost(makeKbUrl("ontology"),
+                     query,
+                     "application/sparql-query");
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, r.getStatus());
+        assertNotNull(r.getContent()); // error message
 
         // Note we don't check whether the query fails if it's given with
         // the wrong content-type.  Perhaps we should.
 
         // check n-triple response
+        // XXX this isn't actually correct yet, in that this still
+        // returns a tabular-style query rather than n-triples.
         r = httpTransaction(METHOD_POST, makeKbUrl(), query,
-                            new String[] {"Accept", "text/plain"});
+                            new String[] {
+                                "Accept", "text/plain",
+                                "Content-Type", "application/sparql-query",
+                            });
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("text/plain", r.getContentType());
+        assertNotNull(r.getContent());
         // don't check actual content
 
         String encodedQuery = java.net.URLEncoder.encode(query, "UTF-8");
         r = httpGet(makeKbUrl("?sparql="+encodedQuery));
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("application/xml", r.getContentType());
+        assertNotNull(r.getContent());
 
         // the same, requesting text/plain
         r = httpGet(makeKbUrl("?sparql="+encodedQuery),
                     new String[] {"Accept", "text/plain"});
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals("text/plain", r.getContentType());
+        assertNotNull(r.getContent());
 
         // ...and requesting CSV
         r = httpGet(makeKbUrl("?sparql="+encodedQuery),
@@ -165,6 +177,70 @@ public class QuaestorTest
         assertEquals("text/csv", r.getContentType());
         assertEquals("header=present", r.getContentTypeParameters());
         assertEquals("i\r\nurn:example#i1\r\n", r.getContent());
+    }
+
+    public void testSparqlQueriesAsk()
+            throws Exception {
+        String query = "ASK { <urn:example#i1> a <urn:example#c1> }";
+        HttpResult r;
+        URL url = makeKbUrl();
+
+        r = httpPost(url, query, "application/sparql-query");
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("application/xml", r.getContentType());
+        assertNotNull(r.getContent());
+        // don't check actual content
+
+        // Request plain text -- should return yes/no
+        r = httpTransaction(METHOD_POST, url, query,
+                            new String[] {
+                                "Content-Type", "application/sparql-query",
+                                "Accept", "text/plain",
+                            });
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("text/plain", r.getContentType());
+        // if I test the content for equality with "yes\r\n" it fails -- why?
+        assertEquals("yes", r.getContent().substring(0,3));
+
+        // Request CSV -- should fail
+        r = httpTransaction(METHOD_POST, url, query,
+                            new String[] {
+                                "Content-Type", "application/sparql-query",
+                                "Accept", "text/csv",
+                            });
+        assertEquals(4, r.getStatus()/100);
+        assertNotNull(r.getContent()); // error message
+    }
+
+    public void testSparqlQueriesMalformed()
+            throws Exception {
+        // good query
+        String goodQuery = "ASK { <urn:example#i1> a <urn:example#c1> }";
+        // following query has a missing '>'
+        String badQuery =  "ASK { <urn:example#i1 a <urn:example#c1> }";
+        HttpResult r;
+        URL url = makeKbUrl();
+
+        // good query with (otherwise plausible) post query part
+        r = httpPost(makeKbUrl("?sparql"),
+                     goodQuery,
+                     "application/sparql-query");
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, r.getStatus());
+        assertNotNull(r.getContent());
+
+        r = httpPost(url, badQuery, "application/sparql-query");
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, r.getStatus());
+        assertNotNull(r.getContent());
+
+        // GET with unrecognised query string
+        r = httpGet(makeKbUrl("?wibble"));
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, r.getStatus());
+        assertNotNull(r.getContent());
+
+        // GET with correct query string, but no argument
+        r = httpGet(makeKbUrl("?sparql="));
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, r.getStatus());
+        assertNotNull(r.getContent());
     }
 
     /* ******************** XML-RPC tests ******************** */

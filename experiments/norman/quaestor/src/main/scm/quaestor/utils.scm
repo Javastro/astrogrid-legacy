@@ -13,14 +13,16 @@
   java-retrieve-static-object
   is-java-type?
   url-decode-to-jstring
-  error-with-status
+  report-exception
   chatter
   parse-http-accept-header
+  parse-query-string
   )
 
  (import* srfi-1
           remove)
  (import* srfi-13
+          string-index
           string-index-right)
 
 
@@ -199,8 +201,10 @@
  ;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
  ;; with a message formatted with the given FMT and ARGS.  However instead
  ;; of exiting with the status code defaulted when the fc was created
- ;; by MAKE-FC, use the given NEW-STATUS.
- (define (error-with-status location new-status fmt . args)
+ ;; by MAKE-FC, use the given NEW-STATUS.  When the MAKE-FC handler
+ ;; processes this, it will _not_ output debugging information.  That is,
+ ;; this is for throwing `normal' errors.
+ (define (report-exception location new-status fmt . args)
    (let ((msg (apply format `(#f ,fmt ,@args))))
      (error location (cons new-status msg))))
 
@@ -322,5 +326,32 @@
           (lambda (left right)
             (merge-lists (sort-list left <=)
                          (cons pe (sort-list right <=)))))))))
+
+;; parse-query-string string -> pair-of-strings
+;;
+;; Given a query string "keyword=value", parse it into a pair of strings
+;; representing the text before and after the equals sign.  If either
+;; is missing, replace it with #f.
+;;
+;; Very simple-minded.  Query strings can be more generic than this,
+;; but they're not, in this application.
+(define (parse-query-string qs)
+  (cond ((not qs)
+         '(#f . #f))
+        ((string-index qs #\=)
+         => (lambda (index)
+              (let ((k (substring qs 0 index))
+                    (v (substring qs (+ index 1) (string-length qs))))
+                (cons (if (> (string-length k) 0)
+                          k
+                          #f)
+                      (if (> (string-length v) 0)
+                          v
+                          #f)))))
+        ((= (string-length qs) 0)
+         '(#f . #f))
+        (else
+         (cons qs #f))))
+
 
 )

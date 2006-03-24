@@ -15,6 +15,14 @@
 (expect-failure kb-create-duplicate     ;can't create duplicates
                 (kb:new "try1"))
 
+(expect kb-predicate
+        '(#t #f #f #f)
+        (map kb:knowledgebase?
+             `(,(kb:get "try1")
+               "hello"
+               ,(lambda () "hello")
+               ,(lambda (arg) "hello"))))
+
 (expect kb-names
         '(try2 try1)                    ;order isn't significant
         (kb:get-names))
@@ -29,7 +37,9 @@
         #f
         (kb:get "try3"))
 
-(kb:discard "try2")
+(expect kb-discard
+        #t
+        (kb:knowledgebase? (kb:discard "try2")))
 (expect kb-reget-1
         #t
         (not (not (kb:get "try1"))))

@@ -24,7 +24,8 @@
 (require-library 'sisc/libs/srfi/srfi-13)
 (import* srfi-13
          string-prefix?
-         string-downcase)
+         string-downcase
+         string-index)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -98,34 +99,40 @@
 ;; then the query is a URL-encoded SPARQL query to make of the model
 ;; named in (car path-info-list).
 (define (get-model-query path-info-list query-string request response)
-  (define (sparql-encoded-query model-name q)
-    (with/fc
-        (make-fc request response '|SC_BAD_REQUEST|)
-      (lambda ()
-        (define-generic-java-methods
-          set-content-type
-          get-output-stream)
-        (let ((model (kb:get model-name)))
-          (or model
-              (error 'get-model-query
-                     "unknown knowledgebase ~a" model-name))
-          (let ((runner
-               (sparql:make-query-runner
-                model
-                (url-decode-to-jstring q)
-                (request->accept-mime-types request))))
-          (runner ;(get-output-stream response)
-                  ((make-lazy-output-stream response))
-                  (lambda (mimetype)
-                    (set-content-type response
-                                      (->jstring mimetype))))
-          #t)))))
-  (if (and (= (length path-info-list) 1)
-           (string=? (substring query-string 0 6) "sparql"))
-      (sparql-encoded-query
-       (car path-info-list)
-       (substring query-string 7 (string-length query-string)))
-      #f))
+  (define (sparql-encoded-query model-name encoded-query)
+    (let ((lazy-output-stream (make-lazy-output-stream response)))
+      (with/fc
+          (make-fc request response '|SC_BAD_REQUEST| lazy-output-stream)
+        (lambda ()
+          (define-generic-java-methods
+            set-content-type
+            get-output-stream)
+          (let ((model (kb:get model-name)))
+            (or model
+                (error 'get-model-query
+                       "unknown knowledgebase ~a" model-name))
+            (let ((runner
+                   (sparql:make-query-runner
+                    model
+                    (url-decode-to-jstring encoded-query)
+                    (request->accept-mime-types request))))
+              (runner                   ;(get-output-stream response)
+               (lazy-output-stream) ;((make-lazy-output-stream response))
+               (lambda (mimetype)
+                 (set-content-type response
+                                   (->jstring mimetype))))
+              #t))))))
+  (let ((qp (parse-query-string query-string)))
+    (and (= (length path-info-list) 1)
+         (car qp)
+         (string=? (car qp) "sparql")
+         ;; the world is calling...
+         (if (cdr qp)
+             (sparql-encoded-query (car path-info-list)
+                                   (cdr qp))
+             (no-can-do response
+                        '|SC_BAD_REQUEST|
+                        "found empty SPARQL query in GET request")))))
 
 ;; Retrieve the submodel named by the two-element path-info-list, and
 ;; write it to the response.  Return #t if successful, or set a
@@ -238,8 +245,7 @@
     (lambda ()
       (define-generic-java-methods
         get-reader
-        get-input-stream
-        get-content-type)
+        get-input-stream)
       (let ((path-list (request->path-list request))
             (query-string (request->query-string request)))
         (cond ((not (content-headers-ok? request))
@@ -259,7 +265,7 @@
                                 (cadr path-list)
                                 (or (not query-string)
                                     (string=? query-string "tbox"))
-                                (->string (get-content-type request))
+                                (request->content-type request)
                                 (get-input-stream request)
                                 response))
 
@@ -341,10 +347,10 @@
 
 ;; Handle POST requests.  Return #t on success, or a string response
 (define (http-post request response)
-  (let ((get-lazy-output-stream (make-lazy-output-stream response)))
-    (with-failure-continuation
-     (make-fc request response '|SC_INTERNAL_SERVER_ERROR|
-              get-lazy-output-stream)
+  (let ((lazy-output-stream (make-lazy-output-stream response)))
+    (with/fc
+        (make-fc request response '|SC_INTERNAL_SERVER_ERROR|
+                 lazy-output-stream)
      (lambda ()
        (define-generic-java-methods
          get-reader
@@ -354,11 +360,16 @@
                       '|SC_BAD_REQUEST|
                       "null response!"))
        (let ((path-list (request->path-list request))
-             (query-string (request->query-string request)))
+             (query-string (request->query-string request))
+             (content-type (request->content-type request)))
          ;; First, insist that there's just one element in the path-list.
-         ;; Check also that the content-type of the incoming SPARQL query is
-         ;; application/sparql-query (http://www.w3.org/TR/rdf-sparql-query/)
-         (if (= (length path-list) 1)
+         ;; We should check also that the content-type of the incoming
+         ;; SPARQL query is application/sparql-query
+         ;; (see <http://www.w3.org/TR/rdf-sparql-query/>)
+         (if (and (= (length path-list) 1)
+                  (not query-string)
+                  content-type
+                  (string=? content-type "application/sparql-query"))
              (let ((kb (kb:get (car path-list))))
                (or kb
                    (error 'http-post
@@ -368,14 +379,16 @@
                        kb
                        (reader->jstring (get-reader request))
                        (request->accept-mime-types request))))
-                 (runner (get-lazy-output-stream)
+                 (runner (lazy-output-stream)
                          (lambda (mimetype)
                            (set-content-type response
                                              (->jstring mimetype))))
                  #t))
              (no-can-do response
                         '|SC_BAD_REQUEST|
-                        "POST SPARQL request must have one path element, and query=sparql")))))))
+                        "POST SPARQL request must have one path element, no query, and content-type application/sparql-query~%(path=~s, query=~a, content-type=~a)"
+                        path-list query-string content-type))
+         )))))
 
 ;; Return a function which, when called, will return the response output stream.
 ;; This extracts the output stream lazily, so that we don't call
@@ -399,20 +412,20 @@
 
 ;; Handle DELETE requests.  Return #t on success, or a string response.
 (define (http-delete request response)
-  (with-failure-continuation
-       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
-     (lambda ()
-       (let ((path-list (request->path-list request)))
-         (if (= (length path-list) 1)
-             (if (kb:discard (car path-list))
-                 (set-http-response response '|SC_NO_CONTENT|)
-                 (no-can-do response
-                            '|SC_NOT_FOUND| ;correct?
-                            "There was no knowledgebase ~a to delete"
-                            (car path-list)))
-             (no-can-do response
-                        '|SC_BAD_REQUEST|
-                        "The request path has too many elements"))))))
+  (with/fc
+      (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
+    (lambda ()
+      (let ((path-list (request->path-list request)))
+        (if (= (length path-list) 1)
+            (if (kb:discard (car path-list))
+                (set-http-response response '|SC_NO_CONTENT|)
+                (no-can-do response
+                           '|SC_NOT_FOUND| ;correct?
+                           "There was no knowledgebase ~a to delete"
+                           (car path-list)))
+            (no-can-do response
+                       '|SC_BAD_REQUEST|
+                       "The request path has too many elements"))))))
 
 ;; Small module to wrap a hashtable, which stores functions
 ;; (and possibly later continuations in exchange for a token)
@@ -560,12 +573,7 @@
       get-local-name
       get-local-port
       get-context-path
-      get-content-type
       set-content-type)
-    (define (sstring-or-false jstring)
-      (if (java-null? jstring)
-          #f
-          (->string jstring)))
 
     ;; pre-emptively set the response status and content-type
     ;; (error handlers may change this)
@@ -592,8 +600,7 @@
                   "Found unexpected content-* header; allowed ones are ~a"
                   (content-headers-ok?)))
 
-                ((let ((type (sstring-or-false
-                              (get-content-type request))))
+                ((let ((type (request->content-type request)))
                    (and type (or (string=? type "text/xml")
                                  ;; http://www.xmlrpc.com/spec
                                  ;; says text/xml only
@@ -613,7 +620,7 @@
                  ;; bad Content-Type
                  (fault 'protocol-error
                         "Request content-type must be text/xml, not ~a"
-                        (or (sstring-or-false (get-content-type request))
+                        (or (request->content-type request)
                             "<null>"))))))
      '(|methodResponse| fault params struct) ;make it look pretty
      '(param member)))
@@ -672,6 +679,17 @@
     (if (java-null? qs)
         #f
         (->string qs))))
+
+;; request->content-type java-request -> string-or-false
+;;
+;; Given a Java REQUEST, return the request content type as a scheme string,
+;; or #f if it is not available
+(define (request->content-type request)
+  (define-generic-java-method get-content-type)
+  (let ((content-jstring (get-content-type request)))
+    (if (java-null? content-jstring)
+        #f
+        (->string content-jstring))))
 
 ;; Called with one argument, verify that the "Content-*" headers are
 ;; all in the allowed set, returning #t if so.  Otherwise, return #f.
@@ -773,34 +791,55 @@
     (set-http-response response response-code)
     (response-page "Quaestor: no can do" `((p ,msg)))))
 
+;; make-fc java-request java-response symbol -> procedure
+;;
 ;; Make a SISC failure continuation.  Return a two-argument procedure
 ;; which can be used as the handler for with-failure-continuation.
 ;; See ERROR-WITH-STATUS for an error procedure which allows you to override
-;; the status given here.  If GET-OUTPUT-STREAM is given, then the car of
+;; the status given here.  If LAZY-OUTPUT-STREAM is given, then the car of
 ;; it is a function which should be called to get the output stream, rather
 ;; than getting it from the RESPONSE.
-(define (make-fc request response status . dummy)
+(define (make-fc request response status . lazy-output-stream)
   (define-generic-java-methods
     set-content-type
-    log get-session get-servlet-context)
+    log get-session get-servlet-context
+    println get-output-stream)
+  (define-java-class <java.io.print-stream>)
+  (or (and (java-object? request)
+           (java-object? response)
+           (symbol? status)
+           (or (null? lazy-output-stream)
+               (procedure? (car lazy-output-stream))))
+      (error 'make-fc
+             "Bad call: request=~s response=~s status=~s lazy-output-stream=~s"
+             request response status lazy-output-stream))
   (lambda (error-record cont)
-    (let ((msg-or-pair (error-message error-record)))
-      ;; (set-http-response response (if (pair? msg-or-pair)
-;;                                       (car msg-or-pair)
-;;                                       status))
-;;       (set-content-type response (->jstring "text/plain"))
-      (log (get-servlet-context (get-session request))
-           (->jstring
-            (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
-              (if (pair? msg-or-pair)
-                  (cdr msg-or-pair)
-                  msg-or-pair)
-              (let ((c (chatter)))
-                (if c
-                    (format #f "[chatter: ~a]" c)
-                    ""))
-              (with-output-to-string
-                (lambda () (print-stack-trace cont))))))
+    (let* ((msg-or-pair (error-message error-record))
+           (show-debugging? (not (pair? msg-or-pair))))
+      (set-http-response response (if (pair? msg-or-pair)
+                                      (car msg-or-pair)
+                                      status))
+      (set-content-type response (->jstring "text/plain"))
+      (let ((errmsg (->jstring
+                     (if show-debugging?
+                         (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
+                                 msg-or-pair ;show-debugging? => msg
+                                 ;; (if (pair? msg-or-pair)
+                                 ;;                                  (cdr msg-or-pair)
+                                 ;;                                  msg-or-pair)
+                                 (let ((c (chatter)))
+                                   (if c
+                                       (format #f "[chatter: ~a]" c)
+                                       ""))
+                                 (with-output-to-string
+                                   (lambda () (print-stack-trace cont))))
+                         (format #f "~%Error: ~a~%" (cdr msg-or-pair)))))
+            (output-print-stream (java-new <java.io.print-stream>
+                                           (if (null? lazy-output-stream)
+                                               (get-output-stream response)
+                                               ((car lazy-output-stream))))))
+        (log (get-servlet-context (get-session request)) errmsg)
+        (println output-print-stream errmsg))
       #f)))
 ;; Following is better, because it uses the lazy output stream (like the
 ;; comments say).  But it doesn't appear to work.
