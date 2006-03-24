@@ -107,7 +107,7 @@
 ;; given model
 (define (query-handler kb-name query-file)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
-  (let ((full-url (format #f "~a/kb/~a?sparql" (base-url) kb-name)))
+  (let ((full-url (format #f "~a/kb/~a" (base-url) kb-name)))
     (check-file-exists query-file)
     (chatter "POST query in ~a to URL ~a" query-file full-url)
     (exec-epf
