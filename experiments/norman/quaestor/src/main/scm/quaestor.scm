@@ -16,6 +16,9 @@
 (import sparql)
 (require-library 'util/xmlrpc)
 (import xmlrpc)
+(require-library 'util/sisc-xml)
+(import* sisc-xml
+         sisc-xml:sexp->xml)
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
@@ -116,8 +119,8 @@
                     model
                     (url-decode-to-jstring encoded-query)
                     (request->accept-mime-types request))))
-              (runner                   ;(get-output-stream response)
-               (lazy-output-stream) ;((make-lazy-output-stream response))
+              (runner
+               (lazy-output-stream)
                (lambda (mimetype)
                  (set-content-type response
                                    (->jstring mimetype))))
@@ -240,106 +243,106 @@
 ;; knowledgebase where one of that name exists already.
 (define (http-put request response)
 
-  (with-failure-continuation
-       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
-    (lambda ()
-      (define-generic-java-methods
-        get-reader
-        get-input-stream)
-      (let ((path-list (request->path-list request))
-            (query-string (request->query-string request)))
-        (cond ((not (content-headers-ok? request))
-               (no-can-do
-                response '|SC_NOT_IMPLEMENTED|
-                "Found unexpected content-* header; allowed ones are ~a"
-                (content-headers-ok?)))
+  ;; Create a new KB, or manage an existing one.  The knowledgebase is
+  ;; called kb-name (a symbol), and the content of the request is read
+  ;; from the given reader.
+  (define (manage-knowledgebase kb-name reader query response)
+    (let ((kb (kb:get kb-name)))
+      (cond ((and kb
+                  query
+                  (string=? query "metadata")) ;update metadata
+             (kb 'set-metadata
+                 (reader->jstring reader))
+             (set-http-response response '|SC_NO_CONTENT|))
 
-              ((= (length path-list) 1)
-               (manage-knowledgebase (car path-list)
-                                     (get-reader request)
-                                     (request->query-string request)
-                                     response))
+            ((and kb query)             ;unrecognised query
+             (no-can-do response '|SC_BAD_REQUEST|
+                        "Unrecognised query ~a?~a"
+                        kb-name query))
 
-              ((= (length path-list) 2)
-               (update-submodel (car path-list)
-                                (cadr path-list)
-                                (or (not query-string)
-                                    (string=? query-string "tbox"))
-                                (request->content-type request)
-                                (get-input-stream request)
-                                response))
+            (kb                                ;already exists
+             (no-can-do response '|SC_FORBIDDEN| ;correct? or SC_CONFLICT?
+                        "Knowledgebase ~a already exists"
+                        kb-name))
 
-              (else                     ;ooops
-               (let ()
-                 (define-generic-java-method get-path-info)
-                 (no-can-do response '|SC_BAD_REQUEST|
-                            "The request path ~a has the wrong number of elements (1 or 2)"
-                            (->string (get-path-info request))))))))))
+            (query             ;no knowledgebase, but there is a query
+             (no-can-do response '|SC_BAD_REQUEST|
+                        "Knowledgebase ~a does not exist, so query ~a is not allowed"
+                        kb-name query))
 
-;; Create a new KB, or manage an existing one.  The knowledgebase is
-;; called kb-name (a symbol), and the content of the request is read
-;; from the given reader.
-(define (manage-knowledgebase kb-name reader query response)
-  (let ((kb (kb:get kb-name)))
-    (cond ((and kb
-                query
-                (string=? query "metadata")) ;update metadata
-           (kb 'set-metadata
-               (reader->jstring reader))
-           (set-http-response response '|SC_NO_CONTENT|))
+            (else                        ;normal case
+             (let ((nkb (kb:new kb-name))) ;normal case
+               (nkb 'set-metadata
+                    (reader->jstring reader))
+               (set-http-response response '|SC_NO_CONTENT|))))))
 
-          ((and kb query)  ;unrecognised query
-           (no-can-do response '|SC_BAD_REQUEST|
-                      "Unrecognised query ~a?~a"
-                      kb-name query))
+  ;; Given a knowledgebase called KB-NAME, upload a RDF/XML submodel called
+  ;; KB-NAME which is available from the given STREAM.  The RDF-MIME is
+  ;; the MIME type of the incoming stream.
+  (define (update-submodel kb-name
+                           submodel-name
+                           tbox?
+                           rdf-mime
+                           stream
+                           response)
+    (let ((kb (kb:get kb-name))
+          (ok-headers '(type length)))
+      (if kb                            ;normal case
+          (let ((submodel (rdf:ingest-from-stream
+                           stream
+                           rdf-mime)))
+            (chatter "rdf-mime=~s => lang=~s"
+                     rdf-mime (rdf:mime-type->language rdf-mime))
+            (if submodel
+                (if (kb (if tbox? 'add-tbox 'add-abox) ;normal case
+                        submodel-name
+                        submodel)
+                    (set-http-response response '|SC_NO_CONTENT|)
+                    (no-can-do response
+                               '|SC_INTERNAL_SERVER_ERROR| ;correct?
+                               "Unable to update model!"))
+                (no-can-do response '|SC_BAD_REQUEST|
+                           "Bad RDF MIME type! ~a~%~a"
+                           rdf-mime (chatter))))
+          (no-can-do response '|SC_BAD_REQUEST|
+                     (format #f "No such knowledgebase ~a"
+                             kb-name)))))
 
-          (kb              ;already exists
-           (no-can-do response '|SC_FORBIDDEN| ;correct? or SC_CONFLICT?
-                      "Knowledgebase ~a already exists"
-                      kb-name))
+  (with/fc
+      (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
+   (lambda ()
+     (define-generic-java-methods
+       get-reader
+       get-input-stream)
+     (let ((path-list (request->path-list request))
+           (query-string (request->query-string request)))
+       (cond ((not (content-headers-ok? request))
+              (no-can-do
+               response '|SC_NOT_IMPLEMENTED|
+               "Found unexpected content-* header; allowed ones are ~a"
+               (content-headers-ok?)))
 
-          (query           ;no knowledgebase, but there is a query
-           (no-can-do response '|SC_BAD_REQUEST|
-                      "Knowledgebase ~a does not exist, so query ~a is not allowed"
-                      kb-name query))
+             ((= (length path-list) 1)
+              (manage-knowledgebase (car path-list)
+                                    (get-reader request)
+                                    (request->query-string request)
+                                    response))
 
-          (else            ;normal case
-           (let ((nkb (kb:new kb-name))) ;normal case
-             (nkb 'set-metadata
-                  (reader->jstring reader))
-             (set-http-response response '|SC_NO_CONTENT|))))))
+             ((= (length path-list) 2)
+              (update-submodel (car path-list)
+                               (cadr path-list)
+                               (or (not query-string)
+                                   (string=? query-string "tbox"))
+                               (request->content-type request)
+                               (get-input-stream request)
+                               response))
 
-;; Given a knowledgebase called KB-NAME, upload a RDF/XML submodel called
-;; KB-NAME which is available from the given STREAM.  The RDF-MIME is
-;; the MIME type of the incoming stream.
-(define (update-submodel kb-name
-                         submodel-name
-                         tbox?
-                         rdf-mime
-                         stream
-                         response)
-  (let ((kb (kb:get kb-name))
-        (ok-headers '(type length)))
-    (if kb                         ;normal case
-        (let ((submodel (rdf:ingest-from-stream
-                         stream
-                         rdf-mime)))
-          (chatter "rdf-mime=~s => lang=~s"
-                   rdf-mime (rdf:mime-type->language rdf-mime))
-          (if submodel
-              (if (kb (if tbox? 'add-tbox 'add-abox)  ;normal case
-                      submodel-name
-                      submodel)
-                  (set-http-response response '|SC_NO_CONTENT|)
-                  (no-can-do response
-                             '|SC_INTERNAL_SERVER_ERROR| ;correct?
-                             "Unable to update model!"))
-              (no-can-do response '|SC_BAD_REQUEST|
-                         "Bad RDF MIME type! ~a~%~a"
-                         rdf-mime (chatter))))
-        (no-can-do response '|SC_BAD_REQUEST|
-                      (format #f "No such knowledgebase ~a"
-                              kb-name)))))
+             (else                      ;ooops
+              (let ()
+                (define-generic-java-method get-path-info)
+                (no-can-do response '|SC_BAD_REQUEST|
+                           "The request path ~a has the wrong number of elements (1 or 2)"
+                           (->string (get-path-info request))))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -390,21 +393,6 @@
                         path-list query-string content-type))
          )))))
 
-;; Return a function which, when called, will return the response output stream.
-;; This extracts the output stream lazily, so that we don't call
-;; GET-OUTPUT-STREAM on the underlying response unless and until we need to,
-;; thus leaving any error handler free to do so instead.
-;; May be called multiple times (unlike GET-OUTPUT-STREAM).
-(define (make-lazy-output-stream response)
-  (define-generic-java-method
-    get-output-stream)
-  (let ((original-response response)
-        (stream #f))
-    (lambda ()
-      (if (not stream)
-          (set! stream (get-output-stream original-response)))
-      stream)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -428,7 +416,7 @@
                        "The request path has too many elements"))))))
 
 ;; Small module to wrap a hashtable, which stores functions
-;; (and possibly later continuations in exchange for a token)
+;; (and possibly, later, continuations) in exchange for a token
 (module f-store
     (f->ftoken ftoken->f)
 
@@ -457,8 +445,12 @@
 ;;
 ;; XML-RPC support
 
-(define xmlrpc-handler)
+(define xmlrpc-handler #f)
+;; (module xmlrpc-support
+;;     (xmlrpc-handler)
 (let ()
+
+  (import f-store)
 
   ;; Wrapper for xmlrpc:create-fault.
   ;; Given a fault code as a symbol, turn it into an integer using the
@@ -468,7 +460,8 @@
     (let ((fault-list '((protocol-error 0)
                         (unrecognised-method 1)
                         (malformed-request 2)
-                        (unknown-object 10))))
+                        (unknown-object 10)
+                        (unparseable-query 20))))
       (let ((l (assq code fault-list)))
         (if l
             (xmlrpc:create-fault
@@ -508,9 +501,35 @@
                   "get-model requires 1 or 2 string args, got ~a ~s"
                   (length args) args))))
 
-;;   (define (xmlrpc-do-query quaestor-url query-string)
-;;     XXX)
+  ;; xmlrpc-query-model string string string -> sexp
+  ;;
+  ;; Do a query against the given model.
+  (define (xmlrpc-query-model quaestor-url model-name query-string . mime-type)
+    (let ((kb (kb:get model-name)))
+      (if kb
+          (with/fc
+              (lambda (m e)
+                (fault 'unparseable-query
+                       "can't process SPARQL query: ~a"
+                       (let ((msg (error-message m)))
+                         (if (pair? msg)
+                             (cdr msg)  ;from utils::report-exception
+                             msg))))
+            (lambda ()
+              (let ((runner
+                     (sparql:make-query-runner kb
+                                               query-string
+                                               (if (null? mime-type)
+                                                   '("*/*")
+                                                   `(,(car mime-type))))))
+                (xmlrpc:create-response "~a/pickup/~a"
+                                        quaestor-url
+                                        (f->ftoken runner)))))
+          (fault 'unknown-object
+                 "don't know about knowledgebase ~a" model-name))))
 
+  ;; method-name->handler symbol -> integer, procedure
+  ;;
   ;; Map method names to procedures.
   ;;    (method-name->handler 'NAME) => NARGS, HANDLER
   ;; Given a method NAME as a symbol, return a pair of values giving
@@ -528,7 +547,8 @@
       (lambda (name)
         (or mappings
             (set! mappings
-                  `((get-model #f ,xmlrpc-get-model))))
+                  `((get-model #f ,xmlrpc-get-model)
+                    (query-model #f ,xmlrpc-query-model))))
         (cond ((not name)
                (values #f #f))
               ((assq name mappings)
@@ -579,7 +599,7 @@
     ;; (error handlers may change this)
     (set-http-response response '|SC_OK|)
     (set-content-type response (->jstring "text/xml"))
-    (sexp->xml
+    (sisc-xml:sexp->xml
      (with/fc 
          (lambda (m e)
            (if #t
@@ -624,9 +644,51 @@
                             "<null>"))))))
      '(|methodResponse| fault params struct) ;make it look pretty
      '(param member)))
-
   (set! xmlrpc-handler _xmlrpc-handler)
 )                                     ;end of module xmlrpc-support
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Pickup
+;;
+;; We get tokens which were created by f->ftoken, turn them back into
+;; functions, and call them.  There's only one type of function signature
+;; at present, namely those created by xmlrpc-query-runner above, which takes
+;; an output stream and a function to set a response MIME type.  More
+;; are clearly possible in future.
+
+;; pickup-dispatcher java-request java-response -> object
+;; side-effect: dereference the ftoken in the request, and call the function,
+;;   which will send output to the response output stream.
+;;
+;; Handle the pickup functions.  Return whatever the stored function returns.
+(define (pickup-dispatcher request response)
+  (import f-store)
+  (define-generic-java-method
+    set-content-type)
+  (let ((lazy-output-stream (make-lazy-output-stream response)))
+    (with/fc
+        ;; Since all the error-handling was supposed to be done before
+        ;; the callback functions were stored, any errors other than
+        ;; malformed calls are our fault.
+        (make-fc request response '|SC_INTERNAL_SERVER_ERROR|
+                 lazy-output-stream)
+      (lambda ()
+        (let ((path-list (request->path-list request)))
+          (if (= (length path-list) 1)
+              (let ((callback (ftoken->f (car path-list))))
+                (if callback
+                    (callback (lazy-output-stream)
+                              (lambda (mimetype)
+                                (set-content-type response
+                                                   (->jstring mimetype))))
+                    (no-can-do response
+                               '|SC_BAD_REQUEST|
+                               "can't find callback for token ~a (have you called this more than once?)" (car path-list))))
+              (no-can-do response
+                         '|SC_BAD_REQUEST|
+                         "found multiple path elements in pickup URL: ~s"
+                         path-list)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -766,6 +828,23 @@
             (to-string sb)
             (loop (append sb carr zo rlen)))))))
 
+;; make-lazy-output-stream java-reader -> procedure
+;;
+;; Return a function which, when called, will return the response output stream.
+;; This extracts the output stream lazily, so that we don't call
+;; GET-OUTPUT-STREAM on the underlying response unless and until we need to,
+;; thus leaving any error handler free to do so instead.
+;; May be called multiple times (unlike GET-OUTPUT-STREAM).
+(define (make-lazy-output-stream response)
+  (define-generic-java-method
+    get-output-stream)
+  (let ((original-response response)
+        (stream #f))
+    (lambda ()
+      (if (not stream)
+          (set! stream (get-output-stream original-response)))
+      stream)))
+
 ;; Print the given response.  RESPONSE may be
 ;;     a string (it is to be printed; return #t)
 ;;     #t/#f    (print nothing; return #t/#f)
@@ -823,10 +902,7 @@
       (let ((errmsg (->jstring
                      (if show-debugging?
                          (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
-                                 msg-or-pair ;show-debugging? => msg
-                                 ;; (if (pair? msg-or-pair)
-                                 ;;                                  (cdr msg-or-pair)
-                                 ;;                                  msg-or-pair)
+                                 msg-or-pair ;show-debugging? => this is msg
                                  (let ((c (chatter)))
                                    (if c
                                        (format #f "[chatter: ~a]" c)
@@ -841,58 +917,6 @@
         (log (get-servlet-context (get-session request)) errmsg)
         (println output-print-stream errmsg))
       #f)))
-;; Following is better, because it uses the lazy output stream (like the
-;; comments say).  But it doesn't appear to work.
-(define (not-make-fc request response status . get-output-stream)
-  (define-generic-java-methods
-    set-content-type
-    println
-    get-writer)
-  (define-java-class
-    <java.io.print-writer>)
-  (let (;; (get-output-writer (if (null? get-output-stream)
-;;                                (lambda ()
-;;                                  (get-writer response))
-;;                                (lambda ()
-;;                                  (java-new <java.io.print-writer>
-;;                                            ((car get-output-stream))))))
-        (writer (if (null? get-output-stream)
-                    (get-writer response)
-                    (java-new <java.io.print-writer>
-                              ((car get-output-stream))))))
-    (lambda (error-record cont)
-      (let ((msg-or-pair (error-message error-record)))
-        (if (java-null? response)
-            (error 'make-fc "Arghhhh, response is null"))
-;;         (set-http-response response (if (pair? msg-or-pair)
-;;                                         (car msg-or-pair)
-;;                                         status))
-
-        (if #f
-            (begin (set-content-type response (->jstring "text/html"))
-                   (response-page "Internal server error"
-                                  `((p (strong "Error: " ,(error-message error-record)))
-                                    (h2 "Stack trace:")
-                                    (pre ,(with-output-to-string
-                                            (lambda ()
-                                              (print-stack-trace cont))))
-                                    ,@(tabulate-request-information request))))
-            (let (;; (writer (get-output-writer))
-                  )
-              ;(set-content-type response (->jstring "text/plain"))
-              (println writer
-                       (->jstring
-                        (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
-                                (if (pair? msg-or-pair)
-                                    (cdr msg-or-pair)
-                                    msg-or-pair)
-                                (let ((c (chatter)))
-                                  (if c
-                                      (format #f "[chatter: ~a]" c)
-                                      ""))
-                                (with-output-to-string
-                                  (lambda () (print-stack-trace cont))))))
-              #f))))))
 
 ;; For debugging and error reporting.  Given a request, produce a list
 ;; of sexps describing the content of the request.
@@ -943,7 +967,7 @@
                                    (href /quaestor/base.css))))
                     (body (h1 ,title-string)
                           ,@body-sexp))))
-    (sexp->xml s)))
+    (sisc-xml:sexp->xml s)))
 
 ;; Set the HTTP response to the given value.  The RESPONSE-SYMBOL is
 ;; one of the SC_* fields in javax.servlet.http.HttpServletResponse.
