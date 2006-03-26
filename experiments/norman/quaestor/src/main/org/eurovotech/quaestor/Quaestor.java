@@ -32,9 +32,12 @@ public class Quaestor extends HttpServlet {
             
             String kbContext = getInitParameter("kb-context");
             String xmlrpcContext = getInitParameter("xmlrpc-context");
+            String pickupContext = getInitParameter("pickup-context");
             requestHandlerMap = new java.util.HashMap();
             requestHandlerMap.put("GET" + kbContext,
                                   "http-get");
+            requestHandlerMap.put("GET" + pickupContext,
+                                  "pickup-dispatcher");
             requestHandlerMap.put("PUT" + kbContext,
                                   "http-put");
             requestHandlerMap.put("DELETE" + kbContext,
