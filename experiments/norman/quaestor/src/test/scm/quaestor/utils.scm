@@ -4,9 +4,9 @@
 (import utils)
 
 
-(expect sexp->xml-1
-        "<p>hello <em>there</em></p>\n"
-        (sexp->xml '(p "hello " (em there))))
+;; (expect sexp->xml-1
+;;         "<p>hello <em>there</em></p>\n"
+;;         (sexp->xml '(p "hello " (em there))))
 
 (expect iterator->list-1
         '(()
