@@ -1,0 +1,11 @@
+changequote([[,]])dnl
+define(TEXT, [[black]])dnl
+define(COL1, [[#FFB600]])dnl light,  monochromatic, angle=43deg
+define(COL2, [[#7F5B00]])dnl dark
+define(COL3, [[#FFDA7F]])dnl pale
+define(BACKGROUND, [[COL3]])dnl
+define(LINK, [[COL2]])dnl
+define(LINKBACKGROUND, [[COL1]])dnl
+define(HEADINGBACKGROUND, [[COL1]])dnl
+define(HEADINGFOREGROUND, [[black]])dnl
+define(TABLEBACKGROUND, [[COL1]])dnl

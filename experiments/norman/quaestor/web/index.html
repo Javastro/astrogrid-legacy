@@ -5,7 +5,7 @@
 <title>Quaestor: generic SPARQL endpoint</title>
 <link rel="stylesheet"
       type="text/css"
-      href="/base.css"/>
+      href="base.css"/>
 </head>
 
 <body>
@@ -53,7 +53,7 @@ schema</a>.  This is the default.</dd>
 <dd>A human-readable format, intended to look roughly like the usual
 result of a SQL query.  It is not intended to be
 machine-parseable.</dd>
-<dt><code>text/csv</code></dt>
+<dt><code>text/csv</code> (SELECT queries only)</dt>
 <dd>Comma-separated-value output, conforming to RFC 4180.  The
 <code>Content-Type</code> of the response is
 <code>text/csv;header=present</code>, indicating that the first line
@@ -107,12 +107,18 @@ there was no such knowledgebase to remove.</dd>
 <p>The XML-RPC endpoint is <code>http://hostport/quaestor/xmlrpc</code></p>
 
 <dl>
-<dt><code>get-model(<em>knowledgebase:string</em> 
-[,<em>submodel:string</em>])</code> : <em>URI</em></dt>
+<dt><code>get-model(<em>knowledgebase</em>:string 
+[,<em>submodel</em>:string])</code> : <em>URI</em></dt>
 <dd>Retrieve a URL from which the client can obtain the full
 knowledgebase, or just a submodel.  This is just a convenience method,
 since the URL returned is just the one described in the HTTP-interface
 above.</dd>
+
+<dt><code>query-model(<em>knowledgebase</em>:string,
+<em>sparql-query</em>:string
+[,<em>mime-type</em>:string])</code> : <em>URI</em></dt>
+<dd>Sends a SPARQL query to the server, and return a URI from which
+the results can be retrieved.</dd>
 </dl>
 
 <h3>XML-RPC fault codes</h3>
@@ -129,9 +135,29 @@ request headers</dd>
 intelligible, but had the wrong number or type of arguments</dd>
 
 <dt>10</dt>
-<dd>get-model: Unknown object requested, either an invalid
+<dd>get-model, query-model: Unknown object requested, either an invalid
 knowledgebase or submodel</dd>
+
+<dt>20</dt>
+<dd>query-model: bad query, either unparseable SPARQL or an
+unsupported MIME type</dd>
 </dl>
+
+<h2>Links</h2>
+
+<p>References to specifications and further information.</p>
+
+<ul>
+  <li><a href="http://www.w3.org/TR/rdf-sparql-query/" >SPARQL query
+  spec</a></li>
+  <li>The SPARQL XML response is described at <a
+  href="http://www.w3.org/TR/rdf-sparql-XMLres/"
+  ><code>http://www.w3.org/TR/rdf-sparql-XMLres/</code></a>, with
+  fuller notes on the <a
+  href="http://www.w3.org/2001/sw/DataAccess/prot26" >SPARQL service
+  interface</a> elsewhere.</li>
+  <li>XML-RPC <a href="http://www.xmlrpc.com/">home</a></li>
+</ul>
 
 </body>
 </html>

@@ -1,21 +1,21 @@
 body {
-  color: black;
-  background: #FFDA7F;
+  color: TEXT;
+  background: BACKGROUND;
   margin-left: +10%;
   margin-right: +10%;
 }
 
-a:link { color: #7F5B00; }
-a:visited { color: #7F5B00; }
+a:link { color: LINK; }
+a:visited { color: LINK; }
 a[href]:hover {
-  background: #FFB600;
+  background: LINKBACKGROUND;
   font-style: oblique;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: Optima, "Gill Sans", gill, sans-serif;
-  background: #FFB600;
-  color: black;
+  background: HEADINGBACKGROUND;
+  color: HEADINGFOREGROUND;
   text-align: right;
 }
 h1 {
@@ -30,7 +30,7 @@ h2 {
 }
 
 table {
-  background: #FFB600;
+  background: TABLEBACKGROUND;
 }
 td {
   padding: 0.5ex;
