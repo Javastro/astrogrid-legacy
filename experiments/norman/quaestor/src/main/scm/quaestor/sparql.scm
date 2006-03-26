@@ -14,7 +14,8 @@
 (import* utils
          report-exception
          chatter
-         jlist->list)
+         jlist->list
+         is-java-type?)
 (import* knowledgebase
          kb:knowledgebase?)
 (import* jena
@@ -38,22 +39,24 @@
      (if (not test)
          (error 'sparql:make-query-runner message ...)))))
 
-;; sparql:make-query-runner knowledgebase jstring list-of-strings -> procedure
+;; sparql:make-query-runner knowledgebase string-or-jstring list-of-strings -> procedure
 ;;
-;; Given a knowledgebase KB, a SPARQL query QUERY-JSTRING, and a list
+;; Given a knowledgebase KB, a SPARQL QUERY, and a MIME-TYPE-LIST
 ;; of acceptable MIME types, return a procedure which has the signature
 ;;
 ;;     (query-runner output-stream content-type-setter)
 ;;
 ;; where CONTENT-TYPE-SETTER is a procedure which takes a mime-type and
-;; sets that as the content-type of the given OUTPUT-STREAM.
+;; sets that as the content-type of the given OUTPUT-STREAM.  This returned
+;; procedure is all side-effect, and returns #f.
+;;
 ;; All parsing and verification should be done before the procedure is returned,
 ;; so that when the procedure is finally called, it should run
 ;; successfully, barring unforseen changes in the environment.
 ;;
 ;; The procedure will either succeed or throw an error.
 (define (sparql:make-query-runner kb
-                                  query-jstring
+                                  query
                                   mime-type-list)
   (define-java-classes
     (<query-factory> |com.hp.hpl.jena.query.QueryFactory|)
@@ -66,12 +69,19 @@
          "cannot query null knowledgebase")
   (check (kb:knowledgebase? kb)
          "kb argument is not a knowledgebase!")
-  (check (not (java-null? query-jstring))
-         "received null query")
   (check (not (null? mime-type-list))
          "received null mime-type-list")
 
-  (let ((infmodel (kb 'get-inferencing-model)))
+  (let ((infmodel (kb 'get-inferencing-model))
+        (query-jstring (cond ((and (is-java-type? query '|java.lang.String|)
+                                   (not (java-null? query)))
+                              query)
+                             ((string? query)
+                              (->jstring query))
+                             (else
+                              (error 'sparql:make-query-runner
+                                     "bad call: got query ~s, not string"
+                                     query)))))
     (check infmodel
            "failed to get inferencing model from knowledgebase ~a"
            (kb 'get-name))
@@ -86,12 +96,7 @@
                                           '|SC_BAD_REQUEST|
                                           "SPARQL parse error: ~a"
                                           (->string
-                                           (get-message (error-message m)))
-;;                                           (with-output-to-string
-;;                                             (lambda ()
-;;                                               (print-exception
-;;                                                (make-exception m e))))
-                                          ))
+                                           (get-message (error-message m)))))
                    (lambda ()
                      (create (java-null <query-factory>) query-jstring)))))
       (or query
@@ -116,9 +121,11 @@
         (lambda (output-stream content-type-setter)
           (let ((query-result (query-executor executable-query)))
             (handler query-result output-stream content-type-setter)
-            (close executable-query)))))))
+            (close executable-query)
+            #f))))))
 
 ;; make-result-set-handler symbol list symbol -> procedure
+;; error: if none of the listed MIME types can be handled
 ;;
 ;; Return a procedure which will handle output of query results.
 ;; Given:  CALLER-NAME: a symbol giving the location errors should
@@ -170,63 +177,67 @@
 
   (case query-type
     ((select)
-     (let ((best-type (find-in-list '("application/xml"
-                                      "text/plain"
-                                      "text/csv")
-                                    mime-types)))
-
-       (cond ((not best-type)           ;none found
-              (report-exception caller-name
-                                 '|SC_NOT_ACCEPTABLE|
-                                 "can't handle any of the MIME types ~a"
-                                 mime-types))
-             ((string=? best-type "application/xml")
-              (lambda (result stream set-type)
-                (set-type "application/xml")
-                (output-as-xml (java-null <result-set-formatter>)
-                               stream
-                               result)))
-             ((string=? best-type "text/plain")
-              (lambda (result stream set-type)
-                (set-type "text/plain")
-                (out (java-null <result-set-formatter>) stream result)))
-             ((string=? best-type "text/csv")
-              (lambda (result stream set-type)
-                (set-type "text/csv;header=present")
-                (output-as-csv stream result)))
-             (else
-              ;; this shouldn't happen
-              (report-exception caller-name
-                                 '|SC_INTERNAL_SERVER_ERROR|
-                                 "this can't happen: mime-types ~s -> unrecognised best-type=~s"
-                                 mime-types best-type)))))
-
-      ((ask)
-       (let ((best-type (find-in-list '("application/xml" "text/plain")
+     (let ((handlers `(("application/xml" .
+                        ,(lambda (result stream set-type)
+                           (set-type "application/xml")
+                           (output-as-xml (java-null <result-set-formatter>)
+                                          stream
+                                          result)))
+                       ("text/plain" .
+                        ,(lambda (result stream set-type)
+                           (set-type "text/plain")
+                           (out (java-null <result-set-formatter>)
+                                stream result)))
+                       ("text/csv" .
+                        ,(lambda (result stream set-type)
+                           (set-type "text/csv;header=present")
+                           (output-as-csv stream result))))))
+       (let ((best-type (find-in-list (map car handlers)
                                       mime-types)))
-
          (cond ((not best-type)
                 (report-exception caller-name
-                                   '|SC_NOT_ACCEPTABLE|
-                                   "can't handle any of the MIME types ~a"
-                                   mime-types))
-               ((string=? best-type "application/xml")
-                (lambda (result stream set-type)
-                  (set-type "application/xml")
-                  (output-as-xml (java-null <result-set-formatter>)
-                                 stream
-                                 result)))
-               ((string=? best-type "text/plain")
-                (lambda (result stream set-type)
-                  (set-type "text/plain")
-                  (println (java-new <java.io.print-stream> stream)
-                           (->jstring (if (->boolean result) "yes" "no")))))
+                                  '|SC_NOT_ACCEPTABLE|
+                                  "can't handle any of the MIME types ~a for SELECT queries (only ~a)"
+                                  mime-types (map car handlers)))
+               ((assoc best-type handlers)
+                => (lambda (p)
+                     (cdr p)))
                (else
                 ;; this shouldn't happen
                 (report-exception caller-name
-                                   '|SC_INTERNAL_SERVER_ERROR|
-                                   "this can't happen: mime-types ~s -> unrecognised best-type=~s"
-                                   mime-types best-type)))))
+                                  '|SC_INTERNAL_SERVER_ERROR|
+                                  "this can't happen: mime-types ~s -> unrecognised best-type=~s"
+                                  mime-types best-type))))))
+
+    ((ask)
+     (let ((handlers `(("application/xml" .
+                        ,(lambda (result stream set-type)
+                           (set-type "application/xml")
+                           (output-as-xml (java-null <result-set-formatter>)
+                                          stream
+                                          result)))
+                       ("text/plain" .
+                        ,(lambda (result stream set-type)
+                           (set-type "text/plain")
+                           (println (java-new <java.io.print-stream> stream)
+                                    (->jstring (if (->boolean result)
+                                                   "yes" "no"))))))))
+       (let ((best-type (find-in-list (map car handlers)
+                                      mime-types)))
+         (cond ((not best-type)
+                (report-exception caller-name
+                                  '|SC_NOT_ACCEPTABLE|
+                                  "can't handle any of the MIME types ~a for ASK queries (only ~a)"
+                                  mime-types (map car handlers)))
+               ((assoc best-type handlers)
+                => (lambda (p)
+                     (cdr p)))
+               (else
+                ;; this shouldn't happen
+                (report-exception caller-name
+                                  '|SC_INTERNAL_SERVER_ERROR|
+                                  "this can't happen: mime-types ~s -> unrecognised best-type=~s"
+                                  mime-types best-type))))))
 
       ((construct describe)
        ;; QUERY-RESULT is a Model 
@@ -240,8 +251,8 @@
                         (->jstring lang))))
              (report-exception caller-name
                                 '|SC_NOT_ACCEPTABLE|
-                                "can't handle any of the MIME types ~a"
-                                mime-types))))
+                                "can't handle any of the MIME types ~a for ~a queries"
+                                mime-types query-type))))
 
       (else
        (error caller-name "Unrecognised query type ~a" query-type))))
@@ -291,184 +302,6 @@
                                     pw)
             (loop))))
     (flush pw)))                        ;flush is necessary
-
-;; Perform the SPARQL query in QUERY-JSTRING on the knowledgebase KB.
-;; Send the XML results to the output stream returned by procedure
-;; GET-OUTPUT-STREAM (which should not be called before we know we can
-;; write to it), and return #t on success.  MIME-TYPE-LIST is a list of 
-;; acceptable MIME types as strings.  SET-RESPONSE-CONTENT-TYPE is a
-;; function which should be called with the content type (as a scheme string)
-;; which is about to be written to the output stream.
-;;
-;; The procedure is called in a context such that it may call ERROR
-;; at any point prior to sending stuff to the output stream.
-;; (define (xx-sparql:perform-query kb
-;;                               query-jstring
-;;                               get-output-stream
-;;                               mime-type-list
-;;                               set-response-content-type)
-;;   (define-java-classes
-;;     (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
-;;   (define-generic-java-methods
-;;     create-inf-model)
-
-;;   (let ((handler (make-result-set-handler mime-type-list
-;;                                           'perform-sparql-query
-;;                                           set-response-content-type
-;;                                           get-output-stream)))
-
-;;     (or kb                              ;check we've found a KB
-;;         (error 'perform-sparql-query
-;;                "Request to perform-sparql-query on null knowledgebase"))
-;;     (or handler                         ;check we can handle requested MIME type
-;;         (report-exception 'perform-sparql-query
-;;                            '|SC_NOT_ACCEPTABLE|
-;;                            "can't handle any of the MIME types ~a"
-;;                            mime-type-list))
-
-;;     (let ((tbox (kb 'get-model-tbox))
-;;           (abox (kb 'get-model-abox)))
-;;       (or tbox
-;;           (error 'perform-sparql-query
-;;                  "Model ~a has no TBOX -- can't query" (kb 'get-name)))
-;;       (run-sparql-query query-jstring
-;;                         (if abox
-;;                             (create-inf-model (java-null <factory>)
-;;                                               (jena:get-reasoner)
-;;                                               tbox
-;;                                               abox)
-;;                             (create-inf-model (java-null <factory>)
-;;                                               (jena:get-reasoner)
-;;                                               tbox))
-;;                         handler))))
-
-;; Return a procedure which will handle output of results.
-;; The returned procedure takes two arguments, a QUERY-RESULT
-;; (ResultSet or other) and a QUERY-TYPE symbol, which is one of those
-;; returned by DETERMINE-QUERY-TYPE.  The results should be written to the
-;; stream returned by the procedure GET-OUTPUT-STREAM, which should not be
-;; called before it is required.
-;;
-;; Results should have the MIME type application/xml.
-;; See <http://www.w3.org/2001/sw/DataAccess/prot26>, which refers to schema
-;; spec at <http://www.w3.org/TR/rdf-sparql-XMLres/>
-(define (xx-make-result-set-handler mime-types
-                                 caller-name
-                                 set-response-content-type
-                                 get-output-stream)
-  (define-generic-java-methods
-    out
-    (output-as-xml |outputAsXML|)
-    write
-    println)
-  (define-java-classes
-    <java.io.print-stream>
-    (<result-set-formatter> |com.hp.hpl.jena.query.ResultSetFormatter|))
-  (lambda (query-result query-type)
-    ;; Returns the first string in POSSIBILITIES which is one of the strings
-    ;; in WANT, or #f if there are none.  If one of the entries in POSSIBILITIES
-    ;; is */*, return the first element of FIND-IN-LIST.
-    (define (find-in-list want possibilities)
-      (cond ((null? possibilities)
-             #f)
-            ((string=? (car possibilities) "*/*")
-             (car want))
-            ((member (car possibilities) want)
-             (car possibilities))       ;success!
-            (else
-             (find-in-list want (cdr possibilities)))))
-
-    (case query-type
-      ((select)
-       (let ((best-type (find-in-list '("application/xml" "text/plain")
-                                      mime-types)))
-         (if best-type
-             (set-response-content-type best-type))
-         (cond ((string=? best-type "application/xml")
-                (output-as-xml (java-null <result-set-formatter>)
-                               (get-output-stream)
-                               query-result))
-               ((string=? best-type "text/plain")
-                (out (java-null <result-set-formatter>)
-                     (get-output-stream)
-                     query-result))
-               (else
-                (report-exception caller-name
-                                   '|SC_NOT_ACCEPTABLE|
-                                   "can't handle any of the MIME types ~a"
-                                   mime-types)))))
-
-      ((ask)
-       (let ((best-type (find-in-list '("application/xml" "text/plain")
-                                      mime-types)))
-         (if best-type
-             (set-response-content-type best-type))
-         (cond ((string=? best-type "application/xml")
-                (output-as-xml (java-null <result-set-formatter>)
-                               (get-output-stream)
-                               query-result))
-               ((string=? best-type "text/plain")
-                (println (java-new <java.io.print-stream> (get-output-stream))
-                         (->jstring (if (->boolean query-result) "yes" "no"))))
-               (else
-                (report-exception caller-name
-                                   '|SC_NOT_ACCEPTABLE|
-                                   "can't handle any of the MIME types ~a"
-                                   mime-types)))))
-
-      ((construct describe)
-       ;; QUERY-RESULT is a Model 
-       (let ((best-type (find-in-list (rdf:mime-type-list) mime-types)))
-         (if best-type
-             (let ((lang (rdf:mime-type->language best-type)))
-               (set-response-content-type best-type)
-               (write query-result
-                      (get-output-stream)
-                      (->jstring lang)))
-             (report-exception caller-name
-                                '|SC_NOT_ACCEPTABLE|
-                                "can't handle any of the MIME types ~a"
-                                mime-types))))
-
-      (else
-       (error caller-name "Unrecognised query type ~a" query-type)))))
-
-;; Given a SPARQL query as a jstring, and an inferencing model, run
-;; the query and pass the results to procedure RESULT-SET-HANDLER.
-(define (xx-run-sparql-query query-jstring
-                          infmodel
-                          result-set-handler)
-  (define-java-classes
-    (<query-factory> |com.hp.hpl.jena.query.QueryFactory|)
-    (<query-execution-factory> |com.hp.hpl.jena.query.QueryExecutionFactory|))
-  (define-generic-java-methods
-    create
-    close)
-  (if (or (java-null? query-jstring)    ;these shouldn't happen
-          (java-null? infmodel)
-          (java-null? result-set-handler))
-      (error 'run-sparql-query "received null arguments!"))
-
-  (let ((query (create (java-null <query-factory>) query-jstring)))
-    (if (java-null? query)              ;ooops
-        (error 'run-sparql-query "created query is null"))
-    (let ((qexec (create (java-null <query-execution-factory>)
-                         query
-                         infmodel))
-          (exec-it (find-query-executor query)))
-      (if (java-null? qexec)
-          (error 'run-sparql-query "Ooops: couldn't create executable query"))
-      (if exec-it
-          (let ((query-result (exec-it qexec)))
-            (result-set-handler query-result (determine-query-type query))
-            (close qexec))
-          (begin (or (java-null? qexec)
-                     (close qexec))
-                 (error 'run-sparql-query ;is this message describing the only cause?
-                        "Query <~a>... unrecognised query type: query-jstring=~a query=~a  qexec=~a"
-                        (->string query-jstring)
-                        query-jstring query qexec)
-                 )))))
 
 ;; find-query-executor java-string -> java-method
 ;;
