@@ -66,3 +66,18 @@
         (parameterize ((sisc-xml:localnames-into-symbols? #f))
           (sisc-xml:xml->sexp/string
            "<Doc><P Class='SimPle' xmlns:x='urn:Example1' x:a1='v1'/><p>CONTENT1</p></Doc>")))
+
+(expect sexp->xml-simple
+        "<p>hello <em>there</em></p>\n"
+        (sisc-xml:sexp->xml '(p "hello " (em there))))
+
+(expect sexp->xml-pi
+        "<p>hello<?xml version='1.0'?></p>\n"
+        (sisc-xml:sexp->xml '(p "hello" (*PI* "xml version='1.0'"))))
+(expect sexp->xml-cdata
+        "<p>hello <![CDATA[ping<&and stuff]]></p>\n"
+        (sisc-xml:sexp->xml '(p "hello " (*CDATA* "ping<&" "and stuff"))))
+
+(expect escape-string-for-xml
+        "hello&lt;there&amp;again&gt;"
+        (sisc-xml:escape-string-for-xml "hello<there&again>"))
