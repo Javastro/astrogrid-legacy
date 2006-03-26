@@ -1,0 +1,2 @@
+prefix : <http://eurovotech.org/access-control2.owl#>
+ask { <mailto:norman@astro.gla.ac.uk a :CanSeeAllData }
