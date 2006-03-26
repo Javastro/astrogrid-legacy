@@ -35,6 +35,10 @@
       <param-name>xmlrpc-context</param-name>
       <param-value>/xmlrpc</param-value>
     </init-param>
+    <init-param>
+      <param-name>pickup-context</param-name>
+      <param-value>/pickup</param-value>
+    </init-param>
   </servlet>
 
   <servlet>
@@ -57,6 +61,12 @@
     <servlet-name>quaestor</servlet-name>
     <!-- this must match the quaestor servlet parameters, above -->
     <url-pattern>/xmlrpc</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>quaestor</servlet-name>
+    <!-- this must match the quaestor servlet parameters, above -->
+    <url-pattern>/pickup/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
