@@ -25,16 +25,19 @@
 ;; (case-insensitively); if false, as strings.
 
 (import s2j)
+(import string-io)                      ;for with-output-to-string
 
 (require-library 'sisc/libs/srfi/srfi-39) ;parameter objects
 
 (module sisc-xml
-(sisc-xml:xml->sexp/file
- sisc-xml:xml->sexp/string
- sisc-xml:xml->sexp/reader
- sisc-xml:skip-whitespace?
- sisc-xml:localnames-into-symbols?)
-
+    (sisc-xml:xml->sexp/file
+     sisc-xml:xml->sexp/string
+     sisc-xml:xml->sexp/reader
+     sisc-xml:skip-whitespace?
+     sisc-xml:localnames-into-symbols?
+     sisc-xml:sexp->xml
+     sisc-xml:escape-string-for-xml)
+  
 (import srfi-39)
 
 (define-java-classes
@@ -291,4 +294,130 @@
 (define sisc-xml:localnames-into-symbols?
   (make-parameter #t))
 
+;; Given a list of SExps, SEXP-LIST, return this translated into a string
+;; Takes two optional arguments: the first specifies a list of
+;; elements which are to be formatted (ie, have linebreaks inserted)
+;; as `block' elements (like <div> in HTML), and the second a list
+;; which should be formatted as `para' elements (like HTML <p>).
+;; Either may be given as 'ALL to format all like this.
+;;
+;; If the second element of the list is of the form (@ LIST ...), then the
+;; LIST is a two-element list of (ATTRIBUTE VALUE)
+(define (sisc-xml:sexp->xml s . opts)
+  (let ((block-elems (and (> (length opts) 0)
+                          (car opts)))
+        (para-elems  (and (> (length opts) 1)
+                          (cadr opts))))
+    (cond
+     ((string? s)
+      s)
+
+     ((symbol? s)
+      (symbol->string s))
+
+     ((number? s)
+      (format #f "~a" s))
+
+     ((list? s)
+      (if (and (> (length s) 1)
+               (list? (cadr s))
+               (eq? (caadr s) '@))
+          (sexp->xml-write* (car s)
+                            (cdadr s)
+                            (cddr s)
+                            block-elems
+                            para-elems)
+          (sexp->xml-write* (car s)
+                            #f
+                            (cdr s)
+                            block-elems
+                            para-elems)))
+     (else
+      (error 'sisc-xml:sexp->xml
+             (format #f
+                     "Unrecognised type of object (~s) in sisc-xml:sexp->xml"
+                     s))))))
+
+;; Write out an element with attributes, and formatting depending on the
+;; element `type'.
+;; GI: a symbol containing the name of the element to be written
+;; ATTLIST: a list of two-element lists, each containing (attribute value),
+;;     as either symbols or strings
+;; CONTENT: a sexp representing the element content
+;; BLOCK-ELEMENT-LIST and PARA-ELEMENT-LIST: either a list of symbols
+;;     or the symbol 'ALL.  If the GI is found in one of the lists, or the
+;;     relevant variable has the value 'ALL, then the element is formatted
+;;     as a block element, a paragraph element, or an inline element if it
+;;     is in neither list.
+;; Internal function
+(define (sexp->xml-write* gi attlist content
+                          block-element-list para-element-list)
+  (define block-elements
+    (or block-element-list
+        '(html head body div ul ol)))
+  (define para-style
+    (or para-element-list
+        '(p title link h1 h2 h3 h4 h5 h6 li)))
+  (cond ((eq? gi '*PI*)
+         (format #f "<?~a?>" (apply string-append content)))
+        ((eq? gi '*CDATA*)
+         (format #f "<![CDATA[~a]]>" (apply string-append content)))
+        ((null? content)
+         (format #f
+                 (cond ((or (eq? block-elements 'ALL)
+                            (memq gi block-elements)
+                            (eq? para-style 'ALL)
+                            (memq gi para-style))
+                        "<~a~a/>~%")
+                       (else
+                        "<~a~a/>"))
+                 gi
+                 (if attlist
+                     (apply string-append
+                            (map (lambda (p)
+                                   (format #f " ~a='~a'" (car p) (cadr p)))
+                                 attlist))
+                     "")))
+        (else
+         (format #f
+                 (cond ((or (eq? block-elements 'ALL)
+                            (memq gi block-elements))
+                        "<~a~a>~%~a</~a>~%~%")
+                       ((or (eq? para-style 'ALL)
+                            (memq gi para-style))
+                        "<~a~a>~a</~a>~%")
+                       (else
+                        "<~a~a>~a</~a>"))
+                 gi
+                 (if attlist
+                     (apply string-append
+                            (map (lambda (p)
+                                   (format #f " ~a='~a'" (car p) (cadr p)))
+                                 attlist))
+                     "")
+                 (apply string-append
+                        (map (lambda (x)
+                               (sisc-xml:sexp->xml x block-elements para-style))
+                             content))
+                 gi))))
+
+;; sisc-xml:escape-string-for-xml string -> string
+;;
+;; Given a string, return the string with < and & characters escaped.
+(define (sisc-xml:escape-string-for-xml s)
+  (with-output-to-string
+    (lambda ()
+      (let loop ((l (string->list s)))
+        (if (not (null? l))
+            (begin (cond ((char=? (car l) #\<)
+                          (display "&lt;"))
+                         ((char=? (car l) #\&)
+                          (display "&amp;"))
+                         ((char=? (car l) #\>)
+                          (display "&gt;")) ;for symmetry
+                         (else
+                          (display (car l))))
+                   (loop (cdr l))))))))
+
 )
+
