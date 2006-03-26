@@ -278,8 +278,69 @@ public class QuaestorTest
         assertEquals(makeKbUrl().toString(),
                      rpc.getResponseString());
     }
-                            
-    public void testRpcInvalidCalls ()
+
+    public void testRpcQuery()
+            throws Exception {
+        String query = "SELECT ?i where { ?i a <urn:example#c1>}";
+        String askQuery = "ASK { <urn:example#i1> a <urn:example#c1>}";
+        String call = makeXmlRpcCall("query-model",
+                                     new Object[] {testKB, query});
+        ParsedRpcResponse rpc
+                = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        assertTrue(rpc.isValid() && !rpc.isFault());
+        assertEquals(String.class, rpc.getResponseClass());
+        assertNotNull(rpc.getResponseString());
+
+        URL pickup = new URL(rpc.getResponseString());
+        HttpResult r = httpGet(pickup);
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("application/xml", r.getContentType());
+        assertNotNull(r.getContent());
+
+        // getting it a second time should fail
+        r = httpGet(pickup);
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, r.getStatus());
+
+        // test requesting different MIME type
+        rpc = performXmlRpcCall("query-model",
+                                new Object[] {testKB, query, "text/plain"});
+        assertTrue(rpc.isValid() && !rpc.isFault());
+        assertEquals(String.class, rpc.getResponseClass());
+        assertNotNull(rpc.getResponseString());
+        pickup = new URL(rpc.getResponseString());
+        r = httpGet(pickup);
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("text/plain", r.getContentType());
+        assertNotNull(r.getContent());
+
+        // test requesting bad MIME type
+        rpc = performXmlRpcCall("query-model",
+                                new Object[] {testKB, query, "wibble/woot"});
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(20, rpc.getFaultCode());
+
+        // request OK mime type for SELECT, bad for ASK
+        rpc = performXmlRpcCall("query-model",
+                                new Object[] {testKB, query, "text/csv"});
+        assertTrue(rpc.isValid() && !rpc.isFault());
+        assertEquals(String.class, rpc.getResponseClass());
+        assertNotNull(rpc.getResponseString());
+        pickup = new URL(rpc.getResponseString());
+        r = httpGet(pickup);
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals("text/csv", r.getContentType());
+        assertNotNull(r.getContent());
+
+        // ...but bad for ASK
+        rpc = performXmlRpcCall("query-model",
+                                new Object[] {testKB, askQuery, "text/csv"});
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(20, rpc.getFaultCode());
+    }
+
+    // test a miscellaneous variety of bad calls (various specific
+    // bad calls are tested above)
+    public void testRpcInvalidCalls()
             throws Exception {
         String call;
         //HttpResult r;
@@ -302,8 +363,7 @@ public class QuaestorTest
         assertEquals(0, rpc.getFaultCode());
 
         // invalid method
-        call = makeXmlRpcCall("wibble-woot", null);
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        rpc = performXmlRpcCall("wibble-woot", null);
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(1, rpc.getFaultCode());
 
@@ -314,24 +374,46 @@ public class QuaestorTest
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(0, rpc.getFaultCode());
 
-        // ...wrong number of arguments
+        // ...wrong number of arguments (same call)
         rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(2, rpc.getFaultCode());
 
         // good method and number of arguments, but wrong type
-        call = makeXmlRpcCall("get-model",
-                              new Object[] {Boolean.TRUE});
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        rpc = performXmlRpcCall("get-model",
+                                new Object[] {Boolean.TRUE});
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(2, rpc.getFaultCode());
 
         // good method and arguments, but non-existent knowledgebase
-        call = makeXmlRpcCall("get-model",
-                              new Object[] {"wibble"});
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        rpc = performXmlRpcCall("get-model",
+                                new Object[] {"wibble"});
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(10, rpc.getFaultCode());
+
+        /* doesn't work: query-model accepts a variable arglist
+        // good method, but wrong number of arguments (this one is checked
+        // by the xmlrpc-handler harness, rather than the handler itself, so
+        // is not redundant with the test above).
+        call = makeXmlRpcCall("query-model",
+                              new Object[] {"wibble"}); // should be two args
+        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(2, rpc.getFaultCode());
+        */
+
+        // query non-existent knowledgebase
+        rpc = performXmlRpcCall("query-model",
+                                new Object[] {"wibble", "dummy-query"});
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(10, rpc.getFaultCode());
+
+        // query knowledgebase with bad query
+        String badQuery = "SELECT ?i where { ?i a <urn:example#c1}";
+        rpc = performXmlRpcCall("query-model",
+                                new Object[] {testKB, badQuery});
+        assertTrue(rpc.isValid() && rpc.isFault());
+        assertEquals(20, rpc.getFaultCode());
     }
 
     /** 
@@ -609,6 +691,21 @@ public class QuaestorTest
         t.transform(new javax.xml.transform.dom.DOMSource(methodCall),
                     new javax.xml.transform.stream.StreamResult(baos));
         return baos.toString();
+    }
+
+    /**
+     * Make an RPC call.  This is just a convenience method,
+     * wrapping {@link #getRpcResponse}, {@link #makeXmlRpcResponse}
+     * and {@link #httpPost}. 
+     * @param method the method name
+     * @param args the list of object arguments
+     * @return the result of making the call
+     */
+    public ParsedRpcResponse performXmlRpcCall(String method, Object[] args) 
+            throws Exception {
+        return getRpcResponse(httpPost(xmlrpcEndpoint,
+                                       makeXmlRpcCall(method, args),
+                                       "text/xml"));
     }
 
     private ParsedRpcResponse parseXmlRpcResponse(String xmlResponse)
