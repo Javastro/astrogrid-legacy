@@ -59,7 +59,7 @@
   (let ((url (normalize-url (current-url) file-name)))
     (or url
         (error (format #f "Can't find resource ~a" file-name)))
-    (chatter "Running tests in ~a..." url)
+    (chatter "Running tests in ~a..." file-name)
     (load url)))
 
 (define chatter
