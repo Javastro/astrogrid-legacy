@@ -103,7 +103,8 @@
   ;;  </params>
   ;; </methodResponse>
   (let ((v (cond ((string? value)       ;currently handles dates and base64, too
-                  `(string ,(apply format (cons #f (cons value args)))))
+                  `(string ,(sisc-xml:escape-string-for-xml
+                             (apply format (cons #f (cons value args))))))
                  ((integer? value)
                   `(int ,(number->string value)))
                  ((number? value)
@@ -129,7 +130,8 @@
   ;;     </member>
   ;;   </struct></value></fault>
   ;; </methodResponse>
-  (let ((msg (apply format `(#f ,message-format ,@args))))
+  (let ((msg (sisc-xml:escape-string-for-xml
+              (apply format `(#f ,message-format ,@args)))))
     `(|methodResponse|
       (fault
        (value
