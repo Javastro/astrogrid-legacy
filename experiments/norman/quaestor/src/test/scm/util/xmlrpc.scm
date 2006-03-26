@@ -104,6 +104,9 @@
 (expect xmlrpc-response-string          ;response with string argument
         '(|methodResponse| (params (param (value (string "South Dakota")))))
         (xmlrpc:create-response "South Dakota"))
+(expect xmlrpc-response-escapable-string ;string argument with XML chars
+        '(|methodResponse| (params (param (value (string "1 &lt; 2 &amp; 3")))))
+        (xmlrpc:create-response "1 < 2 & 3"))
 (expect xmlrpc-response-format          ;response with formatted string
         '(|methodResponse| (params (param (value (string "number 1")))))
         (xmlrpc:create-response "number ~a" 1))
@@ -127,8 +130,8 @@
              (member (name "faultCode")
                      (value (int "0")))
              (member (name "faultString")
-                     (value (string "error1")))))))
-        (xmlrpc:create-fault 0 "error1")) ;simple format string -- no args
+                     (value (string "error1&amp;more")))))))
+        (xmlrpc:create-fault 0 "error1&more")) ;simple format string -- no args
 (expect xmlrpc-response-fault2
         '(|methodResponse|
           (fault
