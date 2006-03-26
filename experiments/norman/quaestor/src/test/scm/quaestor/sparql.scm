@@ -13,7 +13,8 @@
 
 (import s2j)
 
-(define good-query (->jstring "ask { <urn:example#i1> a <urn:example#c1> }"))
+(define select-query (->jstring "select ?i where { ?i a <urn:example#c1> }"))
+(define ask-query (->jstring "ask { <urn:example#i1> a <urn:example#c1> }"))
 (define bad-query  (->jstring "ask { <urn:example#i1 a <urn:example#c1> }"))
 
 (define-java-classes
@@ -38,7 +39,7 @@
 
 (expect-failure sparql-error-just-abox
                 (sparql:make-query-runner test-kb
-                                          good-query
+                                          ask-query
                                           '("text/plain")))
 
 (test-kb 'add-tbox
@@ -50,19 +51,51 @@
                       (->jstring "<urn:example#c1> a <http://www.w3.org/2002/07/owl#Class>."))
             "application/n3")))
 
-(expect sparql-good-query
+(expect sparql-good-query-select-1
         #t
         (procedure? (sparql:make-query-runner test-kb
-                                              good-query
+                                              select-query
                                               '("text/plain"))))
+(expect sparql-good-query-select-2
+        #t
+        (procedure? (sparql:make-query-runner test-kb
+                                              select-query
+                                              '("wibble/woot"
+                                                "application/xml"))))
+(expect sparql-good-query-select-3
+        #t
+        (procedure? (sparql:make-query-runner test-kb
+                                              select-query
+                                              '("fandango" "*/*"))))
+(expect sparql-good-query-select-4
+        #t
+        (procedure? (sparql:make-query-runner test-kb
+                                              select-query
+                                              '("fandango" "x" "text/csv"))))
+(expect sparql-good-query-ask-1
+        #t
+        (procedure? (sparql:make-query-runner test-kb
+                                              ask-query
+                                              '("text/plain"))))
+(expect sparql-good-query-ask-2
+        #t
+        (procedure? (sparql:make-query-runner test-kb
+                                              ask-query
+                                              '("wibble/woot"
+                                                "application/xml"))))
+(expect sparql-good-query-ask-3
+        #t
+        (procedure? (sparql:make-query-runner test-kb
+                                              ask-query
+                                              '("fandango" "*/*"))))
 
 (expect-failure sparql-error-null-kb
                 (sparql:make-query-runner #f ;boolean argument
-                                          good-query
+                                          ask-query
                                           '("text/plain")))
 (expect-failure sparql-error-null-kb
                 (sparql:make-query-runner "hello" ;string argument
-                                          good-query
+                                          ask-query
                                           '("text/plain")))
 (expect-failure sparql-error-null-query
                 (sparql:make-query-runner test-kb
@@ -70,8 +103,14 @@
                                           '("text/plain")))
 (expect-failure sparql-error-null-mime-types
                 (sparql:make-query-runner test-kb
-                                          good-query
+                                          ask-query
                                           '())) ;no MIME types
+(expect-failure sparql-error-bad-mime-types
+                (sparql:make-query-runner test-kb
+                                          ask-query
+                                          '("wibble" ;bad
+                                            "text/csv" ;good only for SELECT
+                                            )))
 (expect-failure sparql-error-bad-query
                 (sparql:make-query-runner test-kb
                                           bad-query ;malformed query
