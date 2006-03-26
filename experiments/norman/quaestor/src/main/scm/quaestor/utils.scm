@@ -6,7 +6,7 @@
 
 
 (module utils
- (sexp->xml
+ (;sexp->xml
   iterator->list
   jlist->list
   enumeration->list
@@ -35,7 +35,7 @@
  ;;
  ;; If the second element of the list is of the form (@ LIST ...), then the
  ;; LIST is a two-element list of (ATTRIBUTE VALUE)
- (define (sexp->xml s . opts)
+ (define (not-sexp->xml s . opts)
    (let ((block-elems (and (> (length opts) 0)
                            (car opts)))
          (para-elems  (and (> (length opts) 1)
