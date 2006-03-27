@@ -12,9 +12,13 @@ public interface CoordinatedDataAnalysisSystem extends java.rmi.Remote {
     public java.lang.String[][] getAllInstruments() throws java.rmi.RemoteException;
     public java.lang.String[] getAllMissionGroups() throws java.rmi.RemoteException;
     public org.astrogrid.solarsearch.ws.cdaw.ViewDescription[] getAllViewDescriptions() throws java.rmi.RemoteException;
+    public org.astrogrid.solarsearch.ws.cdaw.FileDescription[] getCdfmlDataFiles(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3, java.lang.String[] arrayOfString_4, int int_5) throws java.rmi.RemoteException;
+    public org.astrogrid.solarsearch.ws.cdaw.FileDescription[] getCdfmlDataFiles2(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3, int int_4) throws java.rmi.RemoteException;
     public java.lang.String[] getCdfmlDataUrls(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3, java.lang.String[] arrayOfString_4, int int_5) throws java.rmi.RemoteException;
     public java.lang.String[] getCdfmlDataUrls2(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3, int int_4) throws java.rmi.RemoteException;
     public org.astrogrid.solarsearch.ws.cdaw.ResultDescription getDataAsText(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3, java.lang.String[] arrayOfString_4) throws java.rmi.RemoteException;
+    public org.astrogrid.solarsearch.ws.cdaw.FileDescription[] getDataFiles(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3) throws java.rmi.RemoteException;
+    public org.astrogrid.solarsearch.ws.cdaw.FileDescription[] getDataFiles2(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3, java.lang.String[] arrayOfString_4) throws java.rmi.RemoteException;
     public org.astrogrid.solarsearch.ws.cdaw.ResultDescription getDataGraph(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3, java.lang.String[] arrayOfString_4) throws java.rmi.RemoteException;
     public org.astrogrid.solarsearch.ws.cdaw.ResultDescription getDataGraph2(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3, java.lang.String[] arrayOfString_4, long long_5) throws java.rmi.RemoteException;
     public java.lang.String[] getDataUrls(java.lang.String string_1, java.util.Calendar date_2, java.util.Calendar date_3) throws java.rmi.RemoteException;

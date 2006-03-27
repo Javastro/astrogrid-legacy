@@ -107,7 +107,51 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test5CoordinatedDataAnalysisSystemPortGetCdfmlDataUrls() throws Exception {
+    public void test5CoordinatedDataAnalysisSystemPortGetCdfmlDataFiles() throws Exception {
+        org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
+        try {
+            binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
+                          new org.astrogrid.solarsearch.ws.cdaw.CDASWSLocator().getCoordinatedDataAnalysisSystemPort();
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+            throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
+        }
+        assertNotNull("binding is null", binding);
+
+        // Time out after a minute
+        binding.setTimeout(60000);
+
+        // Test operation
+        org.astrogrid.solarsearch.ws.cdaw.FileDescription[] value = null;
+        value = binding.getCdfmlDataFiles(new java.lang.String(), java.util.Calendar.getInstance(), java.util.Calendar.getInstance(), new java.lang.String[0], 0);
+        // TBD - validate results
+    }
+
+    public void test6CoordinatedDataAnalysisSystemPortGetCdfmlDataFiles2() throws Exception {
+        org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
+        try {
+            binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
+                          new org.astrogrid.solarsearch.ws.cdaw.CDASWSLocator().getCoordinatedDataAnalysisSystemPort();
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+            throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
+        }
+        assertNotNull("binding is null", binding);
+
+        // Time out after a minute
+        binding.setTimeout(60000);
+
+        // Test operation
+        org.astrogrid.solarsearch.ws.cdaw.FileDescription[] value = null;
+        value = binding.getCdfmlDataFiles2(new java.lang.String(), java.util.Calendar.getInstance(), java.util.Calendar.getInstance(), 0);
+        // TBD - validate results
+    }
+
+    public void test7CoordinatedDataAnalysisSystemPortGetCdfmlDataUrls() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -129,7 +173,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test6CoordinatedDataAnalysisSystemPortGetCdfmlDataUrls2() throws Exception {
+    public void test8CoordinatedDataAnalysisSystemPortGetCdfmlDataUrls2() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -151,7 +195,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test7CoordinatedDataAnalysisSystemPortGetDataAsText() throws Exception {
+    public void test9CoordinatedDataAnalysisSystemPortGetDataAsText() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -173,7 +217,51 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test8CoordinatedDataAnalysisSystemPortGetDataGraph() throws Exception {
+    public void test10CoordinatedDataAnalysisSystemPortGetDataFiles() throws Exception {
+        org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
+        try {
+            binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
+                          new org.astrogrid.solarsearch.ws.cdaw.CDASWSLocator().getCoordinatedDataAnalysisSystemPort();
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+            throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
+        }
+        assertNotNull("binding is null", binding);
+
+        // Time out after a minute
+        binding.setTimeout(60000);
+
+        // Test operation
+        org.astrogrid.solarsearch.ws.cdaw.FileDescription[] value = null;
+        value = binding.getDataFiles(new java.lang.String(), java.util.Calendar.getInstance(), java.util.Calendar.getInstance());
+        // TBD - validate results
+    }
+
+    public void test11CoordinatedDataAnalysisSystemPortGetDataFiles2() throws Exception {
+        org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
+        try {
+            binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
+                          new org.astrogrid.solarsearch.ws.cdaw.CDASWSLocator().getCoordinatedDataAnalysisSystemPort();
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+            throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
+        }
+        assertNotNull("binding is null", binding);
+
+        // Time out after a minute
+        binding.setTimeout(60000);
+
+        // Test operation
+        org.astrogrid.solarsearch.ws.cdaw.FileDescription[] value = null;
+        value = binding.getDataFiles2(new java.lang.String(), java.util.Calendar.getInstance(), java.util.Calendar.getInstance(), new java.lang.String[0]);
+        // TBD - validate results
+    }
+
+    public void test12CoordinatedDataAnalysisSystemPortGetDataGraph() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -195,7 +283,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test9CoordinatedDataAnalysisSystemPortGetDataGraph2() throws Exception {
+    public void test13CoordinatedDataAnalysisSystemPortGetDataGraph2() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -217,7 +305,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test10CoordinatedDataAnalysisSystemPortGetDataUrls() throws Exception {
+    public void test14CoordinatedDataAnalysisSystemPortGetDataUrls() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -239,7 +327,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test11CoordinatedDataAnalysisSystemPortGetDataUrls2() throws Exception {
+    public void test15CoordinatedDataAnalysisSystemPortGetDataUrls2() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -261,7 +349,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test12CoordinatedDataAnalysisSystemPortGetDatasetVariables() throws Exception {
+    public void test16CoordinatedDataAnalysisSystemPortGetDatasetVariables() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -283,7 +371,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test13CoordinatedDataAnalysisSystemPortGetDatasets() throws Exception {
+    public void test17CoordinatedDataAnalysisSystemPortGetDatasets() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -305,7 +393,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test14CoordinatedDataAnalysisSystemPortGetDatasetsByInstrument() throws Exception {
+    public void test18CoordinatedDataAnalysisSystemPortGetDatasetsByInstrument() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -327,7 +415,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test15CoordinatedDataAnalysisSystemPortGetDatasetsBySource() throws Exception {
+    public void test19CoordinatedDataAnalysisSystemPortGetDatasetsBySource() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -349,7 +437,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test16CoordinatedDataAnalysisSystemPortGetInstrumentTypes() throws Exception {
+    public void test20CoordinatedDataAnalysisSystemPortGetInstrumentTypes() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -371,7 +459,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test17CoordinatedDataAnalysisSystemPortGetInstruments() throws Exception {
+    public void test21CoordinatedDataAnalysisSystemPortGetInstruments() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -393,7 +481,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test18CoordinatedDataAnalysisSystemPortGetSources() throws Exception {
+    public void test22CoordinatedDataAnalysisSystemPortGetSources() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -415,7 +503,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test19CoordinatedDataAnalysisSystemPortGetSourcesByInstrument() throws Exception {
+    public void test23CoordinatedDataAnalysisSystemPortGetSourcesByInstrument() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -437,7 +525,7 @@ public class CDASWSTestCase extends junit.framework.TestCase {
         // TBD - validate results
     }
 
-    public void test20CoordinatedDataAnalysisSystemPortGetThumbnailExpansion() throws Exception {
+    public void test24CoordinatedDataAnalysisSystemPortGetThumbnailExpansion() throws Exception {
         org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub binding;
         try {
             binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)

@@ -98,8 +98,10 @@ public class SolarSearch implements ISolarSearch {
             System.out.println("could not parse version");
             e2.printStackTrace();
         }
-        String []fileID = {(String)info.get("fileid")};
-        String provider = (String)info.get("provider");
+        String []fileID = new String[1];
+        fileID[0] = ((String [])info.get("fileid"))[0];
+        String provider = ((String [])info.get("provider"))[0];
+        System.out.println("the fileid for this request = " + fileID[0]);
         GetDataRequest gdr = new GetDataRequest();
         String []methods = {"URL"};
         gdr.setMethod(methods);
@@ -118,6 +120,7 @@ public class SolarSearch implements ISolarSearch {
             data = pdr[j].getData();
             for(int i = 0;i < data.length;i++) {
                 urlString = data[i].getUrl();
+                System.out.println("here is the urlString = " + urlString);
                 url = new URL(urlString);            
                 is = url.openStream();
                 temp = 0;
@@ -213,7 +216,9 @@ public class SolarSearch implements ISolarSearch {
         String serviceURL = conf.getString("service.url","http://localhost:8080/");
         
         //System.out.println("making query on instrument = " + instrumentName[0] + " time start = " + queryTime.getStart() + " end time = " + queryTime.getEnd());
+        System.out.println("doing query now");
         value = binding.query(new org.astrogrid.solarsearch.ws.vso.QueryRequest(versionNumber,qrb));
+        System.out.println("done with query");
         
         //System.out.println("numbers of actual providerqueryresponse = "  + value.length);
         String tempFormat = null;
@@ -268,7 +273,7 @@ public class SolarSearch implements ISolarSearch {
                                 " type = " + tempWave.getWavetype()); 
                         stapMaker.setInstrumentID(qrbResults[k].getInstrument());
                         
-                        tempFormat = conf.getString("format.default", null);
+                        tempFormat = DEFAULT_FORMAT;
                         if(qrbResults[k].getFileid().lastIndexOf('.') != -1) {
                             tempFormat = conf.getString("format.ending." + qrbResults[k].getFileid().substring(qrbResults[k].getFileid().lastIndexOf('.')+1), tempFormat);
                         }

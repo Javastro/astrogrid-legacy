@@ -19,6 +19,7 @@ import org.astrogrid.config.Config;
 import org.astrogrid.solarsearch.ws.cdaw.ViewDescription;
 import org.astrogrid.solarsearch.ws.cdaw.DatasetDescription;
 import org.astrogrid.solarsearch.ws.cdaw.ResultDescription;
+import org.astrogrid.solarsearch.ws.cdaw.FileDescription;
 
 
 
@@ -103,7 +104,8 @@ public class SolarSearch implements ISolarSearch {
         Calendar endTemp = Calendar.getInstance();
         String tempFormat = null;
         for(int i = 0;i < views.length;i++) {
-            if(views[i].isPublicAccess()) {
+            //System.out.println("the title = " + views[i].getTitle() + " id = " + views[i].getId());
+            if(views[i].isPublicAccess() && views[i].getId().equals("sp_phys")) {
                //System.out.println("getting mission groups from view = " + views[i].getTitle());
                try {
                    binding = (org.astrogrid.solarsearch.ws.cdaw.CoordinatedDataAnalysisSystemBindingStub)
@@ -138,7 +140,7 @@ public class SolarSearch implements ISolarSearch {
                          if(!noDuplMap.containsKey(dsd[k].getId())) {
                              noDuplMap.put(dsd[k].getId(),null);
                                         if(startTime.before(dsd[k].getStartTime())) {
-                                           System.out.println("WARNING: Your given start time is before the dataset end time; using dataset start time");
+                                           System.out.println("WARNING: Your given start time is before the dataset start time; using dataset start time");
                                            startTemp = dsd[k].getStartTime();
                                         }else {
                                             startTemp = startTime;
@@ -150,17 +152,20 @@ public class SolarSearch implements ISolarSearch {
                                             endTemp = endTime;
                                         }
                                         //System.out.println("startTemp = " + dateFormat.format(startTemp.getTime()) + " and endtemp = " + dateFormat.format(endTemp.getTime()));
-                                        String []dsURLS = binding.getDataUrls(dsd[k].getId(),startTemp,endTemp);
-                                        if(dsURLS != null && dsURLS.length > 0) {
+                                        //String []dsURLS = binding.getDataUrls(dsd[k].getId(),startTemp,endTemp);
+                                        //printDataSet(dsd[k]);
+                                        FileDescription []fds = binding.getDataFiles(dsd[k].getId(),startTemp,endTemp);
+                                        //printFileDescriptions(fds);
+                                        if(fds != null && fds.length > 0) {
                                            //System.out.println("got this many dsURLS = " + dsURLS.length + " dsd k = " + k + " and label = " + dsd[k].getLabel());
-                                           for(int m = 0;m < dsURLS.length;m++) {
+                                           for(int m = 0;m < fds.length;m++) {
                                               //System.out.println("the url2 = " + dsURLS[m]);
-                                              if(correctFormat(formatReq,dsURLS[m]) && !noDuplMap.containsKey(dsURLS[m] + dsd[k].getId() )) {
-                                                  noDuplMap.put(dsURLS[m] + dsd[k].getId(),null);
+                                              if(correctFormat(formatReq,fds[m].getName()) && !noDuplMap.containsKey(fds[m].getName() + dsd[k].getId() )) {
+                                                  noDuplMap.put(fds[m].getName() + dsd[k].getId(),null);
                                                   stapMaker.setDataID(dsd[k].getLabel());
-                                                  stapMaker.setTimeStart(dateFormat.format(dsd[k].getStartTime().getTime()));
-                                                  stapMaker.setTimeEnd(dateFormat.format(dsd[k].getEndTime().getTime()));
-                                                  stapMaker.setAccessReference(dsURLS[m]);
+                                                  stapMaker.setTimeStart(dateFormat.format(fds[m].getStartTime().getTime()));
+                                                  stapMaker.setTimeEnd(dateFormat.format(fds[m].getEndTime().getTime()));
+                                                  stapMaker.setAccessReference(fds[m].getName());
                                                   stapMaker.setProvider("CDAW");
                                                   stapMaker.setDescription(dsd[k].getLabel());
                                                   stapMaker.setInstrumentID(dsd[k].getLabel());
@@ -168,10 +173,10 @@ public class SolarSearch implements ISolarSearch {
                                                       stapMaker.setDescriptionURL(dsd[k].getNotesUrl());
                                                   }//if  
                 
-                                                  tempFormat = conf.getString("format.default", null);
-                                                  if(dsURLS[m].lastIndexOf('.') != -1) {
+                                                  tempFormat = DEFAULT_FORMAT;
+                                                  if(fds[m].getName().lastIndexOf('.') != -1) {
                                                       //System.out.println(" prop name = " + "format.ending." + dsURLS[m].substring(dsURLS[m].lastIndexOf('.')+1) );
-                                                      tempFormat = conf.getString("format.ending." + dsURLS[m].substring(dsURLS[m].lastIndexOf('.')+1), tempFormat);
+                                                      tempFormat = conf.getString("format.ending." + fds[m].getName().substring(fds[m].getName().lastIndexOf('.')+1), tempFormat);
                                                       //System.out.println(" val from config = " + tempFormat);
                                                   }
                                                   stapMaker.setFormat(tempFormat);                                  
@@ -193,6 +198,16 @@ public class SolarSearch implements ISolarSearch {
         }//for
         }finally {
             stapMaker.writeEndVOTable(out);
+        }
+    }
+    
+    private void printFileDescriptions(FileDescription []fds) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));        
+        for(int j = 0;j < fds.length;j++) {
+            System.out.println(" j = " + j + " name = " + fds[j].getName() + " Start Time = " + 
+                    dateFormat.format(fds[j].getStartTime().getTime()) + " end time = " + dateFormat.format(fds[j].getEndTime().getTime()) + " mime type = " + fds[j].getMimeType() + " mod time = " +  dateFormat.format(fds[j].getLastModified().getTime()) + " and length = " + fds[j].getLength());
         }
     }
     

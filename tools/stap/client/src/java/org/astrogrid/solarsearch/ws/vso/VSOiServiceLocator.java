@@ -23,6 +23,8 @@ public class VSOiServiceLocator extends org.apache.axis.client.Service implement
 
     // Use to get a proxy class for sdacVSOi
     private java.lang.String sdacVSOi_address = "http://vso.nascom.nasa.gov/cgi/VSOi_strict";
+    
+    //private java.lang.String sdacVSOi_address = "http://localhost:1234/cgi/VSOi_strict";
 
     public java.lang.String getsdacVSOiAddress() {
         return sdacVSOi_address;
