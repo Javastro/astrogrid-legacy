@@ -30,6 +30,9 @@
          string-downcase
          string-index)
 
+;; (set! this to #t to produce more verbose (but XML ill-formed) error messages
+(define *debugging* #f)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; GET support
@@ -422,22 +425,27 @@
 
   (import hashtable)
   (define fmap #f)
+  (define fmap-sync-object (->jstring ""))
 
   (define (f->ftoken f)
     (define-java-class <java.lang.system>)
     (define-generic-java-methods
       current-time-millis)
     (or fmap (set! fmap (make-hashtable)))
-    (let ((tok (format #f "f~a"
-                       (->number (current-time-millis
-                                  (java-null <java.lang.system>))))))
-      (hashtable/put! fmap tok f)
-      tok))
+    (java-synchronized fmap-sync-object
+      (lambda ()
+        (let ((tok (format #f "f~a"
+                           (->number (current-time-millis
+                                      (java-null <java.lang.system>))))))
+          (hashtable/put! fmap tok f)
+          tok))))
 
   (define (ftoken->f ftoken)
     (if fmap
         (let ((f (hashtable/get fmap ftoken)))
-          (and f (hashtable/remove! fmap ftoken))
+          (java-synchronized fmap-sync-object
+            (lambda ()
+              (and f (hashtable/remove! fmap ftoken))))
           f)
         #f)))
 
@@ -472,6 +480,27 @@
                       ,code
                       ,@args)))
             (error 'fault "Ooops: unrecognised fault code ~s" code)))))
+
+  ;; make-fc-xmlrpc symbol string -> procedure
+  ;;
+  ;; Make a failure-continuation suitable for XML-RPC errors.  Given a
+  ;; MESSAGE-CODE symbol acceptable to FAULT, and a MESSAGE-TEXT string,
+  ;; return a procedure suitable for use as a failure-continuation.
+  (define (make-fc-xmlrpc message-code message-text)
+    (lambda (m e)
+      ;; don't print the stack trace except when debugging:
+      ;; angle brackets result in malformed XML
+      (if *debugging*
+          (fault message-code
+                 "~a (~a)~%~a"
+                 message-text
+                 (error-message m)
+                 (with-output-to-string
+                   (lambda () (print-stack-trace e))))
+          (fault message-code
+                 "~a (~a)"
+                 message-text
+                 (error-message m)))))
 
   ;; Get a single model.  The response contains a URL which points
   ;; to one of the HTTP GET methods.
@@ -508,13 +537,7 @@
     (let ((kb (kb:get model-name)))
       (if kb
           (with/fc
-              (lambda (m e)
-                (fault 'unparseable-query
-                       "can't process SPARQL query: ~a"
-                       (let ((msg (error-message m)))
-                         (if (pair? msg)
-                             (cdr msg)  ;from utils::report-exception
-                             msg))))
+              (make-fc-xmlrpc 'unparseable-query "can't process SPARQL query")
             (lambda ()
               (let ((runner
                      (sparql:make-query-runner kb
@@ -601,17 +624,7 @@
     (set-content-type response (->jstring "text/xml"))
     (sisc-xml:sexp->xml
      (with/fc 
-         (lambda (m e)
-           (if #t
-               ;; don't print the stack trace except when debugging:
-               ;; angle brackets result in malformed XML
-               (fault 'protocol-error
-                      "Malformed request: ~a" (error-message m))
-               (fault 'protocol-error
-                      "Malformed request: ~a~%~a"
-                      (error-message m)
-                      (with-output-to-string
-                        (lambda () (print-stack-trace e))))))
+         (make-fc-xmlrpc 'protocol-error "malformed request")
        (lambda ()
          (cond  ((not (content-headers-ok? request))
                  ;; Unexpected Content-* header found
