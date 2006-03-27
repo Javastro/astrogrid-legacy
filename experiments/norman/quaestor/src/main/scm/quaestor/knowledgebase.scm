@@ -34,6 +34,11 @@
   ;; The model list is a list of pairs (name-symbol . knowledgebase-proc)
   (define _model-list '())
 
+  ;; We'd like to synchronize, below, on _model-list, but we can't
+  ;; because it's not a Java object, so create a dummy Java object as
+  ;; a lock.
+  (define _model-list-lock-object (->jstring ""))
+
   ;; Given a string or symbol, return a symbol.  If it's neither a
   ;; string nor a symbol, return #f
   (define (as-symbol s)
@@ -67,9 +72,11 @@
                  "bad call to kb:new: knowledgebase ~a already exists"
                  kb-name))
       (let ((kb (make-kb kb-name)))
-        (set! _model-list
-              (cons (cons kb-name kb)
-                    _model-list))
+        (java-synchronized _model-list-lock-object
+          (lambda ()
+            (set! _model-list
+                  (cons (cons kb-name kb)
+                        _model-list))))
         kb)))
 
   ;; kb:get-names -> list
@@ -86,17 +93,19 @@
   (define (kb:discard kb-name-string)
     (let ((kb-name (as-symbol kb-name-string))
           (ret #f))
-      (let loop ((new-list '())
-                 (l _model-list))
-        (cond ((null? l)
-               (set! _model-list new-list))
-              ((eq? kb-name (caar l))   ;found it
-               (set! ret (cdar l))
-               (loop new-list (cdr l)))
-              (else
-               (loop (cons (car l) new-list)
-                     (cdr l))))
-        ret)))
+      (java-synchronized _model-list-lock-object
+        (lambda ()
+          (let loop ((new-list '())
+                     (l _model-list))
+            (cond ((null? l)
+                   (set! _model-list new-list))
+                  ((eq? kb-name (caar l)) ;found it
+                   (set! ret (cdar l))
+                   (loop new-list (cdr l)))
+                  (else
+                   (loop (cons (car l) new-list)
+                         (cdr l))))
+            ret)))))
 
   ;; Add a new submodel to the model.  Returns the original or an updated
   ;; submodel list, or #f on any errors (there's nothing which triggers #f
@@ -158,7 +167,8 @@
           (merged-model #f)
           (merged-tbox #f)
           (merged-abox #f)
-          (inferencing-model #f))
+          (inferencing-model #f)
+          (sync-object (->jstring "")))
 
       (define (clear-memos)
         (set! merged-model #f)
@@ -168,22 +178,24 @@
 
       ;; Return the abox or tbox.  Caches result in merged-abox/tbox.
       (define (get-abox-or-tbox tbox?)
-        (let ((models (filter (if tbox?
-                                  (lambda (x) (cadr x))
-                                  (lambda (x) (not (cadr x))))
-                              submodels)))
-          (cond ((null? models)
-                 #f)
-                ((and tbox? merged-tbox))
-                ((and (not tbox?) merged-abox))
-                (tbox?
-                 (set! merged-tbox
-                       (rdf:merge-models (map cddr models)))
-                 merged-tbox)
-                (else
-                 (set! merged-abox
-                       (rdf:merge-models (map cddr models)))
-                 merged-abox))))
+        (java-synchronized sync-object
+          (lambda ()
+            (let ((models (filter (if tbox?
+                                      (lambda (x) (cadr x))
+                                      (lambda (x) (not (cadr x))))
+                                  submodels)))
+              (cond ((null? models)
+                     #f)
+                    ((and tbox? merged-tbox))
+                    ((and (not tbox?) merged-abox))
+                    (tbox?
+                     (set! merged-tbox
+                           (rdf:merge-models (map cddr models)))
+                     merged-tbox)
+                    (else
+                     (set! merged-abox
+                           (rdf:merge-models (map cddr models)))
+                     merged-abox))))))
 
       (lambda (cmd . args)
         (case cmd
@@ -197,13 +209,15 @@
                (error 'make-kb
                       "Bad call to add-abox/tbox: wrong number of args in ~s"
                       args))
-           (set! submodels
-                 (add-submodel ;model
-                               submodels
-                               (as-symbol (car args))
-                               (cadr args)
-                               (eq? cmd 'add-tbox)))
-           (clear-memos)
+           (java-synchronized sync-object
+             (lambda ()
+               (set! submodels
+                     (add-submodel      ;model
+                      submodels
+                      (as-symbol (car args))
+                      (cadr args)
+                      (eq? cmd 'add-tbox)))
+               (clear-memos)))
            #t)
 
           ((set-metadata)
@@ -213,7 +227,9 @@
                (error 'make-kb
                       "bad call to set-metadata: wrong number of args in ~s"
                       args))
-           (set! metadata (car args)))
+           (java-synchronized sync-object
+             (lambda ()
+               (set! metadata (car args)))))
 
           ;;;;;;;;;;
           ;; Commands which implicitly mutate the knowledgebase, via memoisation
@@ -227,9 +243,11 @@
                      #f)
                     (merged-model)
                     (else
-                     (set! merged-model
-                           (rdf:merge-models (map cddr submodels)))
-                     merged-model)))
+                     (java-synchronized sync-object
+                       (lambda ()
+                         (set! merged-model
+                               (rdf:merge-models (map cddr submodels)))
+                         merged-model)))))
              ((1)
               (let ((sm (assq (as-symbol (car args))
                               submodels)))
@@ -241,25 +259,27 @@
 
           ((get-inferencing-model)
            ;; return #f on error
-           (if (not inferencing-model)
-               (let ((tbox (get-abox-or-tbox #t))
-                     (abox (get-abox-or-tbox #f)))
-                 (define-java-classes
-                   (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
-                 (define-generic-java-method
-                   create-inf-model)
-                 (set! inferencing-model
-                       (cond ((and tbox abox)
-                              (create-inf-model (java-null <factory>)
-                                                (rdf:get-reasoner)
-                                                tbox
-                                                abox))
-                             (tbox
-                              (create-inf-model (java-null <factory>)
-                                                (rdf:get-reasoner)
-                                                tbox))
-                             (else
-                              #f)))))
+           (java-synchronized sync-object
+             (lambda ()
+               (if (not inferencing-model)
+                   (let ((tbox (get-abox-or-tbox #t))
+                         (abox (get-abox-or-tbox #f)))
+                     (define-java-classes
+                       (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
+                     (define-generic-java-method
+                       create-inf-model)
+                     (set! inferencing-model
+                           (cond ((and tbox abox)
+                                  (create-inf-model (java-null <factory>)
+                                                    (rdf:get-reasoner)
+                                                    tbox
+                                                    abox))
+                                 (tbox
+                                  (create-inf-model (java-null <factory>)
+                                                    (rdf:get-reasoner)
+                                                    tbox))
+                                 (else
+                                  #f)))))))
            inferencing-model)
 
           ((get-model-tbox get-model-abox)
