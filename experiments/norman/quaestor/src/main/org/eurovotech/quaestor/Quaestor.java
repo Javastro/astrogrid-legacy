@@ -75,20 +75,33 @@ public class Quaestor extends HttpServlet {
                 mapkeys.append((String)i.next()).append(", ");
             }
             
-            response.getWriter().println
+            PrintWriter out = LazyOutputStream.getLazyOutputStream(response)
+                    .getWriter();
+            out.println
                     ("Method " + httpMethod + " not implemented for context "
                      + context
                      + " (can have" + mapkeys.toString() + ")");
+            out.flush();
         } else {
             log(httpMethod + context + ": calling procedure " + quaestorMethod);
+
+            // following statuses will very probably be overridden within the
+            // quaestorMethod procedure, but they're here in order to provide
+            // sane defaults.
+            response.setContentType("text/plain");
+            response.setStatus(response.SC_OK);
+
             try {
                 Object val = SchemeWrapper
                         .getInstance()
                         .eval(quaestorMethod,
                               new Object[] { request, response });
                 if (val instanceof String) {
-                    PrintWriter out = response.getWriter();
+                    PrintWriter out =
+                            LazyOutputStream.getLazyOutputStream(response)
+                            .getWriter();
                     out.println(val);
+                    out.flush();
                 }
             } catch (SchemeException e) {
                 log("Scheme exception: " + e);
@@ -97,26 +110,26 @@ public class Quaestor extends HttpServlet {
         }
     }
                 
-    private void xXcallQuaestorHandler(String quaestorMethod,
-                                     HttpServletRequest request,
-                                     HttpServletResponse response)
-            throws IOException, ServletException {
-        response.setContentType("text/html");
-        log("Quaestor calling " + quaestorMethod);
-        assert request != null && response != null;
-        try {
-            Object val = SchemeWrapper
-                    .getInstance()
-                    .eval(quaestorMethod, new Object[] { request, response });
-            if (val instanceof String) {
-                PrintWriter out = response.getWriter();
-                out.println(val);
-            }
-        } catch (SchemeException e) {
-            log("Scheme exception: " + e);
-            throw new ServletException(e);
-        }
-    }
+//     private void xXcallQuaestorHandler(String quaestorMethod,
+//                                      HttpServletRequest request,
+//                                      HttpServletResponse response)
+//             throws IOException, ServletException {
+//         response.setContentType("text/html");
+//         log("Quaestor calling " + quaestorMethod);
+//         assert request != null && response != null;
+//         try {
+//             Object val = SchemeWrapper
+//                     .getInstance()
+//                     .eval(quaestorMethod, new Object[] { request, response });
+//             if (val instanceof String) {
+//                 PrintWriter out = response.getWriter();
+//                 out.println(val);
+//             }
+//         } catch (SchemeException e) {
+//             log("Scheme exception: " + e);
+//             throw new ServletException(e);
+//         }
+//     }
 
     /**
      * Handle a GET method by handing it over to the quaestor get
