@@ -77,7 +77,7 @@
 ;; Display an HTML page reporting on the knowledgebases available
 (define (get-knowledgebase-list path-info-list query-string request response)
   (define (display-kb-info kb-name)
-    (let* ((info ((kb-get kb-name) 'info))
+    (let* ((info ((kb:get kb-name) 'info))
            (submodel-pair (assq 'submodels info))) ;cdr is list of alists
       `(li "Knowledgebase "
            (strong ,kb-name)
@@ -96,12 +96,16 @@
                                                "abox"))))))
                       (cdr submodel-pair))))))
   (if (= (length path-info-list) 0)     ;we handle this one
-      (response-page "Quaestor: list of knowledgebases"
-                     `((p "Knowledgebases available:")
-                       (ul ,@(map (lambda (kb-name)
-                                    (display-kb-info kb-name))
-                                  (kb-get-names)))
-                       ))
+      (let ((namelist (kb:get-names)))
+        (set-http-response response '|SC_OK| "text/html")
+        (response-page "Quaestor: list of knowledgebases"
+                       (if (null? namelist)
+                           `((p "No knowledgebases available"))
+
+                           `((p "Knowledgebases available:")
+                             (ul ,@(map (lambda (kb-name)
+                                          (display-kb-info kb-name))
+                                        (kb:get-names)))))))
       #f))
 
 ;; If path-info-list has one element, and the query-string starts with "sparql",
@@ -151,7 +155,6 @@
     write
     get-output-stream
     set-status
-    set-content-type
     get-writer
     println)
   (define-java-classes
@@ -192,9 +195,7 @@
          (cond ((and kb
                      (eq? query 'model)
                      mime-and-lang) ;normal case
-                (set-http-response response '|SC_OK|)
-                (set-content-type response
-                                  (->jstring (car mime-and-lang)))
+                (set-http-response response '|SC_OK| (car mime-and-lang))
                 (write (if submodel-name
                            (kb 'get-model submodel-name)
                            (kb 'get-model))
@@ -211,9 +212,7 @@
 
                ((and kb
                      (eq? query 'metadata))
-                (set-http-response response '|SC_OK|)
-                (set-content-type response
-                                  (->jstring "text/plain"))
+                (set-http-response response '|SC_OK| "text/plain")
                 (println (get-writer response)
                          (or (kb 'get-metadata-as-jstring)
                              (->jstring "")))
@@ -615,13 +614,11 @@
       get-reader
       get-local-name
       get-local-port
-      get-context-path
-      set-content-type)
+      get-context-path)
 
     ;; pre-emptively set the response status and content-type
     ;; (error handlers may change this)
-    (set-http-response response '|SC_OK|)
-    (set-content-type response (->jstring "text/xml"))
+    (set-http-response response '|SC_OK| "text/xml")
     (sisc-xml:sexp->xml
      (with/fc 
          (make-fc-xmlrpc 'protocol-error "malformed request")
@@ -860,7 +857,7 @@
 ;; This expects to be called before there has been any other output.
 (define (no-can-do response response-code fmt . args)
   (let ((msg (apply format `(#f ,fmt ,@args))))
-    (set-http-response response response-code)
+    (set-http-response response response-code "text/html")
     (response-page "Quaestor: no can do" `((p ,msg)))))
 
 ;; make-fc java-request java-response symbol -> procedure
@@ -870,8 +867,6 @@
 ;; See REPORT-EXCEPTION for an error procedure which allows you to override
 ;; the status given here.
 (define (make-fc request response status)
-  (define-generic-java-methods
-    set-content-type)
   (or (and (java-object? request)
            (java-object? response)
            (symbol? status))
@@ -881,10 +876,11 @@
   (lambda (error-record cont)
     (let* ((msg-or-pair (error-message error-record))
            (show-debugging? (not (pair? msg-or-pair))))
-      (set-http-response response (if (pair? msg-or-pair)
-                                      (car msg-or-pair)
-                                      status))
-      (set-content-type response (->jstring "text/plain"))
+      (set-http-response response
+                         (if (pair? msg-or-pair)
+                             (car msg-or-pair)
+                             status)
+                         "text/plain")
       (if show-debugging?
           (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
                   msg-or-pair          ;show-debugging? => this is msg-string
@@ -947,16 +943,23 @@
                           ,@body-sexp))))
     (sisc-xml:sexp->xml s)))
 
+;; set-http-response java-response symbol -> #t
+;; set-http-response java-response symbol string -> #t
+;; side-effect: set the java-response's status and optionally MIME type
+;;
 ;; Set the HTTP response to the given value.  The RESPONSE-SYMBOL is
 ;; one of the SC_* fields in javax.servlet.http.HttpServletResponse.
 ;; Eg: (set-http-response response '|SC_OK|).
-;; Returns #t for convenience, so that the above SC_OK call may (but
+;; If MIME-TYPE-L is non-null, then its car is a Scheme string representing
+;; the MIME type which should be set on the response.
+;; Returns #t for convenience, so that the call to this procedure may (but
 ;; need not be) the final call in a handler function.
 (define set-http-response
   (let ((response-object #f))
-    (define-generic-java-method
-      set-status)
-    (lambda (response response-symbol)
+    (define-generic-java-methods
+      set-status
+      set-content-type)
+    (lambda (response response-symbol . mime-type-l)
       (if (not response-object)         ;first time
           (set! response-object (java-null
                                  (java-class
@@ -964,4 +967,6 @@
       (set-status response
                   ((generic-java-field-accessor response-symbol)
                    response-object))
+      (or (null? mime-type-l)
+          (set-content-type response (->jstring (car mime-type-l))))
       #t)))
