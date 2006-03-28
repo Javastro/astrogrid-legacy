@@ -1,6 +1,7 @@
 package org.astrogrid.solarsearch.impl.vso;
 
 import org.astrogrid.solarsearch.ISolarSearch;
+import org.astrogrid.solarsearch.ISolarFetch;
 import java.util.Date;
 import java.util.Map;
 import java.io.PrintWriter;
@@ -34,7 +35,7 @@ import org.astrogrid.solarsearch.ws.vso.VSOiBindingStub;
 import java.io.InputStream;
 import java.io.IOException;
 
-public class SolarSearch implements ISolarSearch {
+public class SolarSearch implements ISolarSearch, ISolarFetch {
     
     /**
      * conf - Config variable to access the configuration for the server normally
@@ -67,6 +68,25 @@ public class SolarSearch implements ISolarSearch {
         }//for
     }
     
+    public void fetch(Map info, PrintWriter output) throws IOException {
+        VSOiBindingStub binding;
+        try {
+            binding = (VSOiBindingStub)
+                          new org.astrogrid.solarsearch.ws.vso.VSOiServiceLocator().getsdacVSOi();
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+            throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
+        }
+        
+        if(info.containsKey("fileid")) {
+            getData(binding,info,output);
+        }else {
+            output.write("Required parameters like fileid are not here for obtainging data");
+        }
+        output.close();
+    }
     
     public void execute(Calendar startTime, Calendar endTime, Map info, PrintWriter output) throws IOException {        
         
@@ -80,11 +100,7 @@ public class SolarSearch implements ISolarSearch {
                 jre.getLinkedCause().printStackTrace();
             throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
         }
-        if(info.containsKey("fileid")) {
-            getData(binding,info,output);
-        }else {
-            query(binding,startTime, endTime, info, output);
-        }        
+        query(binding,startTime, endTime, info, output);
         output.close();
     }
     
@@ -103,7 +119,7 @@ public class SolarSearch implements ISolarSearch {
         String provider = ((String [])info.get("provider"))[0];
         System.out.println("the fileid for this request = " + fileID[0]);
         GetDataRequest gdr = new GetDataRequest();
-        String []methods = {"URL"};
+        String []methods = {"URL-FILE", "URL-TAR", "URL-TAR_GZ", "URL-ZIP", "URL"};
         gdr.setMethod(methods);
         DataRequest []dr = new DataRequest[1];
         dr[0] = new DataRequest(provider,fileID);
@@ -118,6 +134,7 @@ public class SolarSearch implements ISolarSearch {
 
         for(int j = 0;j < pdr.length;j++) {
             data = pdr[j].getData();
+            printProviderResponse(pdr[j]);
             for(int i = 0;i < data.length;i++) {
                 urlString = data[i].getUrl();
                 System.out.println("here is the urlString = " + urlString);
@@ -130,7 +147,32 @@ public class SolarSearch implements ISolarSearch {
                     output.write(new String(resultData));
                 }//while
             }//for
+            output.flush();
         }//for
+    }
+    
+    private void printProviderResponse(ProviderGetDataResponse pdr) {
+        System.out.println("from Providergetdataresponse.. status = " + pdr.getStatus() + " provider = " + pdr.getProvider() + " version = " + pdr.getVersion() + " debug = " + pdr.getDebug());
+        if(pdr.getMethod() != null)
+            for(int i = 0;i < pdr.getMethod().length;i++) {
+                System.out.println(" method i = " + i + " val = " + pdr.getMethod()[i]);
+            }
+        if(pdr.getInfo() != null)
+            for(int i = 0;i < pdr.getInfo().length;i++) {
+                System.out.println(" info i = " + i + " val = " + pdr.getInfo()[i]);
+            }
+        if(pdr.getData() != null) {
+            Data []data = pdr.getData();
+            for(int i = 0;i < data.length;i++) {
+                System.out.println(" data  i = " + i + " url = " + data[i].getStatus() + " provider = " + data[i].getProvider() + " url = " + data[i].getUrl() + " content = " + data[i].getContent() + " status = " + data[i].getStatus() + " details = " + data[i].getDetails());
+                if(data[i].getFileid() != null) 
+                    for(int j = 0;j < data[i].getFileid().length;j++) {
+                        System.out.println(" file id j = " + j + " val = " + data[i].getFileid()[j]);
+                    }
+            }
+        }
+            
+
     }
     
     private void query(VSOiBindingStub binding, Calendar startTime, Calendar endTime, Map info, PrintWriter output) throws IOException {
@@ -213,7 +255,7 @@ public class SolarSearch implements ISolarSearch {
             e2.printStackTrace();
         }
         //System.out.println("version number being used = " + versionNumber.toString());
-        String serviceURL = conf.getString("service.url","http://localhost:8080/");
+        String serviceURL = conf.getString("service.fetch.url","http://localhost:8080/");
         
         //System.out.println("making query on instrument = " + instrumentName[0] + " time start = " + queryTime.getStart() + " end time = " + queryTime.getEnd());
         System.out.println("doing query now");
@@ -261,8 +303,8 @@ public class SolarSearch implements ISolarSearch {
                             e2.printStackTrace();
                         }
                         dataFetchURL = serviceURL + "?service=vso"; 
-                        dataFetchURL += "&START=" + dateFormatResponse.format(startTime.getTime());
-                        dataFetchURL += "&END=" + dateFormatResponse.format(endTime.getTime());
+                        //dataFetchURL += "&START=" + dateFormatResponse.format(startTime.getTime());
+                        //dataFetchURL += "&END=" + dateFormatResponse.format(endTime.getTime());
                         dataFetchURL += "&provider=" + qrbResults[k].getProvider();
                         dataFetchURL += "&version=" + versionNumber.toString();
                         dataFetchURL += "&fileid=" + qrbResults[k].getFileid();
