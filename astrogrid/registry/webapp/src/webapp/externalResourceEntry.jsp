@@ -20,7 +20,7 @@
    isThreadSafe="false"
    session="false" %>
    
-html>
+<html>
 <head>
 <title>Advanced Query of Registry for any Registry</title>
 <style type="text/css" media="all">
@@ -103,7 +103,7 @@ Identifier: <input type="text" name="IVORN" value="ivo://" /><br />
          ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");
          endpoint = java.net.URLEncoder.encode(endpoint,"UTF-8");
 
-         out.write("<td><a href=externalResourceEntry.jsp?"IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");         
+         out.write("<td><a href=externalResourceEntry.jsp?IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");         
          out.write("</tr>\n");
       }                  
          out.write("</table> <hr />");

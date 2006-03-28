@@ -7,7 +7,8 @@
     <section name="Upgrading">
       <p>
          This page deals with upgrading your registry.
-		 <strong>If your upgrading from 1.1 to 1.2 and your using the standard embedded eXist, read the below section "Upgrade to 1.2" first before following these steps.</strong>
+		 <strong>If your upgrading from 1.1 to 1.2 (or higher ex 2006.2) and your using the standard embedded eXist, read the below section 'Upgrading from 1.1 for embedded eXist' first before following these steps.</strong><br /><br />
+         <strong>If you are a Full Registry (meaning you hold contents from all registries) and expect to have the Astrogrid Workbench connected please read section below 'External eXist for 2006.2 For Workbench'</strong><br /><br /><br />
          <strong>
           By default registry uses an xml database known as eXist embedded into its webapp and data is stored in the webapp.  
           If you have not done so already it is STRONGLY RECOMMENDED to read the <a href='exist_reference.html'>eXist Reference Guide</a> 
@@ -24,7 +25,7 @@
          </ul>       
       </p>
    </section>
-	<section name="Upgrading to 1.2 for embedded eXist">
+	<section name="Upgrading from 1.1 for embedded eXist">
 	  <p>
 		Version 1.2 of the registry comes with a new fault tolerant eXist xml database along with other fixes to the eXist xml database.  
         See <a href='featues.html'>features</a> for more info.  Because of this new eXist the binaries ofr the database storage 
@@ -80,8 +81,25 @@
 				Your done.
 			</li>
 		</ul>
-
 	  </p>
 	</section>
+	<section name="External eXist for 2006.2 For Workbench">
+	  <p>
+		A bug is being investigated where by the 'App Launcher' query from the workbench which is a more complext type query to the
+        registry with several constraints is causing time-outs to occur and causing the query to take way to long both on embedded db's and several external
+        eXist instances.  This happens to <strong>Full</strong> Registries only.  For this it is best to download one of the known eXist instances that responds 
+        at a reasonable quick time for this query.  This bug is currently being worked on and hopes to be resolved in the next release of the registry.
+<br />  Follow these steps:<br />
+        <ul>
+		  <li>Download an external eXist here: <a href='http://www.astrogrid.org/maven/org.astrogrid/zips/exist-full.zip'>eXist-Full</a>.</li>
+          <li>Unzip it into a directory of your choosing.</li>
+          <li>Start by running going to the unzipped directory and running "./bin/existstartup.sh" (Unix) or ".\bin/existstartup.bat".</li>
+          <li>After upgrading the registry component. In your configuration for the registry change the property xmldb.uri to be "xmldb:exist://localhost:9088/exist/xmlrpc" (if it is on localhost or change to the proper hostname).</li>
+		  <li>You should now be connected to an external eXist, and go to your regular jsp pages like browse to confirm</li>
+          <li>There is a local9088_shutdown.sh availabe, which simply calls shutdown.sh --uri=xmldb:exist://localhost:9088/exist/xmlrpc for shutting down the database.</li>
+        </ul>
+	  </p>
+    </section>
+
    </body>
 </document>

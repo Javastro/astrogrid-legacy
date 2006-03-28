@@ -77,5 +77,8 @@ are available.
       }
    }
 %>
+	<br /><br /><br />
+	  <i>If this registry is going to be a 'Full' Registry and is expected to have the Astrogrid workbench connected to it, please read the
+	  <a href='docs\upgrading.html'>upgrading</a> documentation</i>
 </body>
 </html>
