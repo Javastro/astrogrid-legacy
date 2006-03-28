@@ -45,9 +45,16 @@ public class QuaestorTest
     public void testGetTopPage()
             throws Exception {
         HttpResult r = httpGet(new URL(baseURL, "."));
-        assertEquals(HttpURLConnection.HTTP_OK,
-                     r.getStatus());
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
         assertEquals(r.getContentType(), "text/html");
+    }
+
+    public void testGetKnowledgebaseList()
+            throws Exception {
+        HttpResult r = httpGet(new URL(baseURL, "kb"));
+        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
+        assertEquals(r.getContentType(), "text/html");
+        assertNotNull(r.getContent());
     }
 
     public void testCreateKnowledgebase()
@@ -426,7 +433,6 @@ public class QuaestorTest
     public ParsedRpcResponse getRpcResponse(HttpResult r) 
             throws Exception {
         assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
-        //System.err.println("getRpcResponse r=" + r);
         assertEquals("text/xml", r.getContentType());
         return parseXmlRpcResponse(r.getContent());
     }
