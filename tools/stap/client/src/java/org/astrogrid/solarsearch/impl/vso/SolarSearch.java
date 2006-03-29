@@ -5,6 +5,7 @@ import org.astrogrid.solarsearch.ISolarFetch;
 import java.util.Date;
 import java.util.Map;
 import java.io.PrintWriter;
+import java.io.BufferedInputStream;
 import java.util.TimeZone;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
@@ -34,6 +35,7 @@ import org.astrogrid.solarsearch.ws.vso.VSOiBindingStub;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class SolarSearch implements ISolarSearch, ISolarFetch {
     
@@ -68,7 +70,7 @@ public class SolarSearch implements ISolarSearch, ISolarFetch {
         }//for
     }
     
-    public void fetch(Map info, PrintWriter output) throws IOException {
+    public void fetch(Map info, OutputStream output) throws IOException {
         VSOiBindingStub binding;
         try {
             binding = (VSOiBindingStub)
@@ -83,7 +85,7 @@ public class SolarSearch implements ISolarSearch, ISolarFetch {
         if(info.containsKey("fileid")) {
             getData(binding,info,output);
         }else {
-            output.write("Required parameters like fileid are not here for obtainging data");
+            output.write("Required parameters like fileid are not here for obtainging data".getBytes());
         }
         output.close();
     }
@@ -104,7 +106,7 @@ public class SolarSearch implements ISolarSearch, ISolarFetch {
         output.close();
     }
     
-    private void getData(VSOiBindingStub binding,Map info, PrintWriter output) throws IOException {
+    private void getData(VSOiBindingStub binding,Map info, OutputStream output) throws IOException {
         Float versionNumber = new Float(1.0);
         try {
             if(info.containsKey("version")) {
@@ -131,23 +133,37 @@ public class SolarSearch implements ISolarSearch, ISolarFetch {
         URL url;
         int temp = 0;
         InputStream is;
-
+        //BufferedInputStream is;
+        String resultString = null;
         for(int j = 0;j < pdr.length;j++) {
             data = pdr[j].getData();
             printProviderResponse(pdr[j]);
             for(int i = 0;i < data.length;i++) {
                 urlString = data[i].getUrl();
                 System.out.println("here is the urlString = " + urlString);
-                url = new URL(urlString);            
+                url = new URL(urlString);
                 is = url.openStream();
+                //is = new BufferedInputStream(url.openStream());
                 temp = 0;
+                while( (temp = is.read()) >= 0) {
+//                    System.out.println("here is the temp byte = " + temp);
+                    output.write(temp);
+                }
+                output.flush();
+                
+                /*
                 while( (temp = is.available()) > 0) {
+                    System.out.println("the available = " + temp);
                     byte []resultData = new byte[temp];
                     is.read(resultData);
-                    output.write(new String(resultData));
+                    output.write(resultData);
+                    //resultString = new String(resultData);
+                    //System.out.println("the resultString = " + resultString);
+                    //output.write(resultString);
+                    System.out.println("the is.avail after = " + is.available());
                 }//while
-            }//for
-            output.flush();
+                */
+            }//for            
         }//for
     }
     

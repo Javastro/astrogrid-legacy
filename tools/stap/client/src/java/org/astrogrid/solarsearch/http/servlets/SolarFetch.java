@@ -18,7 +18,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: SolarFetch.java,v 1.1 2006/03/28 12:54:56 KevinBenson Exp $
+ *  $Id: SolarFetch.java,v 1.2 2006/03/29 14:46:06 KevinBenson Exp $
  */
 
 package org.astrogrid.solarsearch.http.servlets;
@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.Map;
 import java.text.SimpleDateFormat;
 import java.io.PrintWriter;
+import java.io.OutputStream;
+
 import java.io.IOException;
 import java.util.TimeZone;
 import org.astrogrid.config.Config;
@@ -93,17 +95,18 @@ public class SolarFetch extends HttpServlet {
             String className = conf.getString("solarsearch.service." + service);
             System.out.println("classname found = " + className );            
             try {
-                PrintWriter output = res.getWriter();        
+                //PrintWriter output = res.getWriter();
+                OutputStream output = res.getOutputStream();
                 try {
                     Class cl = Class.forName(className);
                     ISolarFetch ss = (ISolarFetch)cl.newInstance();
                     ss.fetch(req.getParameterMap(), output);
                 }catch(ClassNotFoundException cfe) {
-                    output.print("Cannot Find class to implement service = " + service);
+                    output.write(("Cannot Find class to implement service = " + service).getBytes());
                 }catch(InstantiationException ie) {
-                    output.print("Cannot instantiate the service = " + service);
+                    output.write(("Cannot instantiate the service = " + service).getBytes());
                 }catch(IllegalAccessException iae) {
-                    output.print("Illegal access to instantiate service = "  + service);
+                    output.write(("Illegal access to instantiate service = "  + service).getBytes());
                 }
                 output.close();
             }catch(IOException ioe) {
