@@ -5,15 +5,7 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-			<action dev="kea" type="fix">
-           <em>Branch PAL_KEA_1534 in BOTH astrogrid/pal and astrogrid/xml</em>  Preliminary work fixing adql parser and adding unit tests.  Have decided to move to xmlbeans-based parsing, so terminating this branch early.  Unit tests added/extended will be incorporated in new work. 
-    		</action>
-    		<action dev="gtr" type="fix">
-    			<em>Branch apps-gtr-1489:</em> General tidying up of the deployment controls, which has involved
-    			some heavy refactoring to work round Picocontainer problems. The deployer documentation is much
-    			better now (IMHO), and the chance of getting duff registrations is less.
-				Merged but jes and pal are not compiling see bug 1500, Rolled back for now until problem solved - CLQ
-    		</action>
+			
     		<action dev="kmb" type="fix">
     			<em>Branch Reg_KMB_ErrorMessages in astrogrid/registry:</em>  This is only server side stuff no need to make new
  compiles for other components.  General tidy up with some error messages and a fix on the OAI
@@ -29,16 +21,25 @@ will try to use this for awhile, I will try to add the docs at some other time.
         </release>
 
         <release version="(Undertest)">
+				   
+        </release>
+		
+		<release version="HEAD">
+			<action dev="kea" type="fix">
+           <em>Branch PAL_KEA_1534 in BOTH astrogrid/pal and astrogrid/xml</em>  Preliminary work fixing adql parser and adding unit tests.  Have decided to move to xmlbeans-based parsing, so terminating this branch early.  Unit tests added/extended will be incorporated in new work. 
+    		</action>
+    		<action dev="gtr" type="fix">
+    			<em>Branch apps-gtr-1489:</em> General tidying up of the deployment controls, which has involved
+    			some heavy refactoring to work round Picocontainer problems. The deployer documentation is much
+    			better now (IMHO), and the chance of getting duff registrations is less.
+				Merged but jes and pal are not compiling see bug 1500, Rolled back for now until problem solved - CLQ
+    		</action>
 			<action dev="dave" type="fix">
 				branch <em>dave-dev-200601051057</em> contains Multiple changes to the workshop code, Plus changes to JSP pages in :
                     <li>Community</li>
                     <li>FileManager</li>
                     <li>FileStore</li>
-		    </action>	   
-        </release>
-		
-		<release version="HEAD">
-			
+		    </action>
 		<action dev="kmb" type="add, fix">
     			<em>Branch Reg_KMB_WSDLS (in astrogrid/registry):</em>  *Note: it should be okay to overwrite Dave's jsp's if you see a merge conflict there, notice his fix below* 
                  Now works with contracts for obtaining wsdls, along with other bug fixes for XQuery Search and when there 
