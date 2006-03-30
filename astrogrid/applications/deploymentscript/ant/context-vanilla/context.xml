@@ -3,7 +3,7 @@
     <Environment name="cea.base.dir" 
                  override="false" 
                  type="java.lang.String" 
-                 value="@CEA_WORKING" />
+                 value="@CEA_WORKING@" />
                  
     <Environment name="org.astrogrid.registry.admin.endpoint" 
                  description="registry update service endpoint URL" 
