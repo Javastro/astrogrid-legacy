@@ -42,7 +42,7 @@
     	<section name="Architecture">
     		<p>
     		An introduction to the 
-    		<a href="astrogrid-v1.1-architecture.htm">software architecture of the 2006.1 system</a> 
+    		<a href="astrogrid-v1.1-architecture.htm">software architecture of the Astrogrid v1.1 system</a> 
     	  was prepared for the AstroGrid Oversight Committee of September 2005. A
     	  <a href="astrogrid-v1.1-architecture.doc">MS-Word version of the architecture document</a> 
     	  is also available.
@@ -50,12 +50,12 @@
     	  of the system are omitted or simplified.
     	  </p>
 			<p>
-				Note that AG v1.1 and AG 2006.1 share the same Architecture documentation.
+				Note that AG v1.1 and AG 2006.2 share the same Architecture documentation.
 			</p>
     	</section>
 		
 		<section name="Using or Contributing to AstroGrid Source Code"><p>	
-			See <a href="source.html">Working with AstroGrid Source</a>
+			See <a href="source.html">Working with AstroGrid Source</a> For AG2006.2 source code quick download, download from  <a href="http://www.astrogrid.org/maven/org.astrogrid/source/astrogrid.source.2006.2.tar.gz"> here </a>
                         </p></section>
     </body>
 </document>

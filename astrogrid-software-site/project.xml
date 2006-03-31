@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid-software-site/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2006/03/16 17:43:31 $</cvs:date>
-    | <cvs:version>$Revision: 1.24 $</cvs:version>
+    | <cvs:date>$Date: 2006/03/31 12:04:44 $</cvs:date>
+    | <cvs:version>$Revision: 1.25 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.25  2006/03/31 12:04:44  clq2
+    |   tidy up for release 2006.2
+    |
     |   Revision 1.24  2006/03/16 17:43:31  clq2
     |   for 2006.1 release which has only workbench changes (workbench 1.4)
     |
@@ -40,7 +43,7 @@
     <name>AstroGrid</name>
     <shortDescription>AstroGrid Software Site</shortDescription>
     <logo>
-    /images/glossy-release-2006-1.png
+    /images/glossy-release-2006-2.png
     </logo>
     <siteAddress>www.astrogrid.org</siteAddress>
     <!-- CLQ old software release is at: http://software.astrogrid.org/old/

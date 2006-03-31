@@ -15,7 +15,7 @@
         -->
 
     <menu name="About Astrogrid">
-      <item name="Announcing Astrogrid 2006.1" href="/index.html" />
+      <item name="Announcing Astrogrid 2006.2" href="/index.html" />
       <item name="What is Astrogrid?" href="/what-is-ag.html" />
       <!--item name="Feature Summary" href="/feature-summary.html" /-->
       <item name="FAQ" href="/faq.html" />
@@ -319,7 +319,7 @@
         -->
 
     <menu name="Other Formats">
-      <item name="PDF" href="/astrogrid-release-2006-1.pdf" />
+      <item name="PDF" href="/astrogrid-release-2006-2.pdf" />
     </menu>
 
     <menu name="Previous Releases">
