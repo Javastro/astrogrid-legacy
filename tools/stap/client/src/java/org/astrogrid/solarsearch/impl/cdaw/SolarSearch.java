@@ -185,7 +185,7 @@ public class SolarSearch implements ISolarSearch {
                                            }
                                            if(stapMaker.getRowCount() > 0) {
                                                stapMaker.writeTable(out);
-                                               output.flush();
+                                               //output.flush();
                                            }
                                         }//if
                                      }//for
