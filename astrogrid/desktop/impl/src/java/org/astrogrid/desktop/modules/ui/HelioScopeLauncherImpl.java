@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.6 2006/03/24 10:30:15 KevinBenson Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.7 2006/03/31 15:20:56 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -117,7 +117,7 @@ public class HelioScopeLauncherImpl extends UIComponent
                                 HelioScopeLauncherImpl.this,HelioScopeLauncherImpl.this)                         
                         );
             }
-            if (ArrayUtils.contains(messages,IMAGES_LOAD_FROM_URL_MESSAGE)) {                    
+            if (ArrayUtils.contains(messages,CommonMessageConstants.FITS_LOAD_FROM_URL)) {                    
                 results.add(
                         new ImageLoadPlasticButton(applicationId,name,description, iconURL,vizModel.getSelectionFocusSet(),
                                 HelioScopeLauncherImpl.this,HelioScopeLauncherImpl.this)                           
@@ -209,7 +209,6 @@ public class HelioScopeLauncherImpl extends UIComponent
         //dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
         
         // plastic setup
-        IMAGES_LOAD_FROM_URL_MESSAGE = new URI("ivo://votech.org/fits/image/loadFromURL");
         this.hub = hub;
         // generates a new name each time.
         String appName = "HelioScope-" + UNQ_ID++;
@@ -638,9 +637,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
     }
 
     /// PLASTIC stuff below here 
-    // further message constants - assembled in constructor for convienience at the moment.
-    
-    public final URI IMAGES_LOAD_FROM_URL_MESSAGE;
+
     
     // implementation of the plastic listener interface
     // callback when message is _received_ from plastic - delegates straight to handler.
@@ -661,6 +658,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.7  2006/03/31 15:20:56  nw
+removed work-around, due to new version of plastic library
+
 Revision 1.6  2006/03/24 10:30:15  KevinBenson
 new checkboxes on heliosope for the Format, and the ability to query by Format
 for stap services on helioscope

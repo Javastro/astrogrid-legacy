@@ -1,4 +1,4 @@
-/*$Id: ImageLoadPlasticButton.java,v 1.3 2006/03/16 18:12:56 jdt Exp $
+/*$Id: ImageLoadPlasticButton.java,v 1.4 2006/03/31 15:20:56 nw Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,10 +69,9 @@ public class ImageLoadPlasticButton extends PlasticButton {
                         URL url = new URL(tn.getAttribute(SiapRetrieval.IMAGE_URL_ATTRIBUTE));
                         List args = new ArrayList();
                         args.add(url.toString()); // plastic expects a string, but we first construct a url to ensure it's valid.
-                        // image load message isn't a constant yet - so refer to the one in astroscope for now.
                         wrapper.getHub().requestToSubset(
                                 wrapper.getPlasticId()
-                                ,((AstroScopeLauncherImpl)ui).IMAGES_LOAD_FROM_URL_MESSAGE
+                                ,CommonMessageConstants.FITS_LOAD_FROM_URL
                                 ,args,target);
                         //@todo next send plastic messages to select correct position in image.                    
                 }// end for each child node.
@@ -87,6 +86,9 @@ public class ImageLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: ImageLoadPlasticButton.java,v $
+Revision 1.4  2006/03/31 15:20:56  nw
+removed work-around, due to new version of plastic library
+
 Revision 1.3  2006/03/16 18:12:56  jdt
 Some bug fixes, and the next version of the plastic library.
 

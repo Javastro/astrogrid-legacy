@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.34 2006/03/16 18:12:56 jdt Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.35 2006/03/31 15:20:56 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -115,7 +115,7 @@ public class AstroScopeLauncherImpl extends UIComponent
                                 AstroScopeLauncherImpl.this,AstroScopeLauncherImpl.this)                         
                         );
             }
-            if (ArrayUtils.contains(messages,IMAGES_LOAD_FROM_URL_MESSAGE)) {                    
+            if (ArrayUtils.contains(messages,CommonMessageConstants.FITS_LOAD_FROM_URL)) {                    
                 results.add(
                         new ImageLoadPlasticButton(applicationId,name,description,iconURL,vizModel.getSelectionFocusSet(),
                                 AstroScopeLauncherImpl.this,AstroScopeLauncherImpl.this)                           
@@ -207,7 +207,6 @@ public class AstroScopeLauncherImpl extends UIComponent
         dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
         
         // plastic setup
-        IMAGES_LOAD_FROM_URL_MESSAGE = new URI("ivo://votech.org/fits/image/loadFromURL");
         this.hub = hub;
         // generates a new name each time.
         String appName = "AstroScope-" + UNQ_ID++;
@@ -627,9 +626,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
     }
 
     /// PLASTIC stuff below here 
-    // further message constants - assembled in constructor for convienience at the moment.
-    
-    public final URI IMAGES_LOAD_FROM_URL_MESSAGE;
+
     
     // implementation of the plastic listener interface
     // callback when message is _received_ from plastic - delegates straight to handler.
@@ -650,6 +647,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.35  2006/03/31 15:20:56  nw
+removed work-around, due to new version of plastic library
+
 Revision 1.34  2006/03/16 18:12:56  jdt
 Some bug fixes, and the next version of the plastic library.
 
