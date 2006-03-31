@@ -187,7 +187,8 @@ public abstract class Retriever extends BackgroundWorker {
            //System.out.println("about to run haversine formula with " + queryra + ", " + querydec + ", " + objectra + ", " + objectdec);
            double result = ahav( hav(objectdec-querydec) + Math.cos(objectdec)*Math.cos(querydec)*hav(objectra-queryra) );
            //System.out.println("the haversine result = " + result + " throwing it toDegrees = " + Math.toDegrees(result));
-           return Math.toDegrees(result);
+           //return Math.toDegrees(result); NWW: fix accordng to kev.
+           return result;
        }  
        
        protected String chopValue(String doubleValue, int scale) {

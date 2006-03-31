@@ -13,6 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="1.5-beta-2" date="2006-03-31">
+	<action dev="kmb" type="fix">
+		Corrected astroscope to show offset in arcseconds (previously was in decimal degrees)
+	</action>
+</release>
 <release version="1.5-beta-1" date="2006-03-24">
 	<action dev="jdt" type="update">
 	Updated Plastic version to 0.4
