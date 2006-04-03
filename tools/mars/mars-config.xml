@@ -109,6 +109,10 @@
         <mars:parameter name="host" />
         <mars:parameter name="url">/pal-ssa/index.jsp</mars:parameter>
       </mars:service>
+      <mars:service name="DSA:SSS" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/pal-sss/index.jsp</mars:parameter>
+      </mars:service>      
       <mars:service name="DSA:USNO-B" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
         <mars:parameter name="host" />
         <mars:parameter name="url">/pal-usnob/index.jsp</mars:parameter>
@@ -170,12 +174,40 @@
         <mars:parameter name="url">/astrogrid-filestore</mars:parameter>
       </mars:service-->
     </mars:host>
-    <mars:host name="RAL" address="ukssdc-ag1.stp.rl.ac.uk">
+    <mars:host name="Portsmouth (vela)" address="vela.icg.port.ac.uk">
+      <mars:service name="CEA" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-cea-commandline</mars:parameter>
+      </mars:service>
+    </mars:host>    
+    <mars:host name="RAL1" address="ukssdc-ag1.stp.rl.ac.uk">
       <mars:service name="FileStore" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
         <mars:parameter name="host" />
         <mars:parameter name="url">/astrogrid-filestore</mars:parameter>
       </mars:service>
     </mars:host>
+    <mars:host name="RAL2" address="ukssdc-ag2.stp.rl.ac.uk">
+      <mars:service name="UKSSDC-TRACE" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/UKSSDC-TRACE/</mars:parameter>
+      </mars:service>
+      <mars:service name="UKSSDC-wdcdata" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/UKSSDC-wdcdata/</mars:parameter>
+      </mars:service>      
+    </mars:host>
+    <mars:host name="RAL3" address="ukssdc-ag3.stp.rl.ac.uk">
+      <mars:service name="CEC" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-cea-commandline/services/CommonExecutionConnectorService</mars:parameter>
+      </mars:service>     
+    </mars:host>    
+    <mars:host name="Lancaster" address="dcs-astrogrid0.lancs.ac.uk">
+      <mars:service name="SAMNET" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/SAMNET/</mars:parameter>
+      </mars:service>     
+    </mars:host>    
   </mars:hostlist>
   <mars:clientdebug enabled="false" horizon="20" />
   <mars:csvlog enabled="false" logfile="" />
