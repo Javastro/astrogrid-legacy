@@ -165,10 +165,10 @@
         <mars:parameter name="host" />
         <mars:parameter name="url">/astrogrid-cea-commandline</mars:parameter>
       </mars:service>
-      <mars:service name="FileStore" port="8090" svctype="http" timeout="5000" period="60000" notac="1">
+      <!-- mars:service name="FileStore" port="8090" svctype="http" timeout="5000" period="60000" notac="1">
         <mars:parameter name="host" />
         <mars:parameter name="url">/astrogrid-filestore</mars:parameter>
-      </mars:service>
+      </mars:service-->
     </mars:host>
     <mars:host name="RAL" address="ukssdc-ag1.stp.rl.ac.uk">
       <mars:service name="FileStore" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
