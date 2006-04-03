@@ -151,7 +151,7 @@
       </mars:service>
     </mars:host-->
     <mars:host name="MSSL" address="msslxv.mssl.ucl.ac.uk">
-      <mars:service name="Apps:Solar Movie Maker" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+      <mars:service name="Apps:Solar Movie Maker, Generic Movie Maker, Solar Overlay, Solar Data Reductor, CTipMovie, WDCDataGet, PlotSTP, GNUPlot, ACE" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
         <mars:parameter name="host" />
         <mars:parameter name="url">/astrogrid-cea-MSSL</mars:parameter>
       </mars:service>
@@ -160,7 +160,7 @@
         <mars:parameter name="url">/astrogrid-dsa-solarimg</mars:parameter>
       </mars:service>
     </mars:host>
-    <mars:host name="Portsmouth" address="holly.dsg.port.ac.uk">
+    <mars:host name="Portsmouth (Holly)" address="holly.dsg.port.ac.uk">
       <mars:service name="CEA" port="8094" svctype="http" timeout="5000" period="60000" notac="1">
         <mars:parameter name="host" />
         <mars:parameter name="url">/astrogrid-cea-commandline</mars:parameter>
