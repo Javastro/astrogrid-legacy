@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mars:model xmlns:mars="http://www.altara.org/mars/xmlns/model/">
+  <mars:hostlist>
+    <mars:host name="Leicester-Galahad [Proxy]" address="galahad.star.le.ac.uk">
+      <mars:service name="proxy" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url" />
+      </mars:service>
+    </mars:host>  
+    <mars:host name="AstroGrid" address="www.astrogrid.org">
+      <mars:service name="Software site" port="80" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host">software.astrogrid.org</mars:parameter>
+        <mars:parameter name="url" />
+      </mars:service>
+      <mars:service name="Web Site" port="80" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url" />
+      </mars:service>
+      <mars:service name="ssh" port="22" svctype="ssh" timeout="5000" period="60000" notac="3" />
+    </mars:host>    
+    <mars:host name="Cambridge-astrogrid" address="astrogrid.ast.cam.ac.uk">
+      <mars:service name="DSA: WFS" port="8081" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/INT-WFS-observation-catalogue</mars:parameter>
+      </mars:service>
+      <mars:service name="DSA: WFS Cat" port="8082" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/INT-WFS-merged-object-catalogue</mars:parameter>
+      </mars:service>
+    </mars:host>
+    <mars:host name="Cambridge-ag03" address="ag03.ast.cam.ac.uk">
+       <mars:service name="portal" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+         <mars:parameter name="host"/>
+         <mars:parameter name="url">/astrogrid-portal/</mars:parameter>
+       </mars:service>
+       <mars:service name="community" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+         <mars:parameter name="host"/>
+         <mars:parameter name="url">/astrogrid-community-cam/</mars:parameter>
+       </mars:service>
+       <mars:service name="filemanager" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+         <mars:parameter name="host"/>
+         <mars:parameter name="url">/astrogrid-filemanager/</mars:parameter>
+       </mars:service>
+    </mars:host>
+    <mars:host name="Cambridge-cass123" address="cass123.ast.cam.ac.uk">
+      <mars:service name="Registry (harvesting)" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-registry</mars:parameter>
+      </mars:service>
+      <mars:service name="Registry (publishing)" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/CASU-registry</mars:parameter>
+      </mars:service>
+      <mars:service name="Skycatserver" port="8086" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-pal-skycatserver-1.0.1-b006pl</mars:parameter>
+      </mars:service>
+      <mars:service name="SWIRE" port="8086" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/SWIRE-object-catalogue</mars:parameter>
+      </mars:service>
+    </mars:host>
+   <mars:host name="Edinburgh-Lomond (EPCC Supercomputer)" address="lomond.epcc.ed.ac.uk">
+      <mars:service name="Tomcat" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url" />
+      </mars:service>
+      <mars:service name="Fly" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/fly-cea-old</mars:parameter>
+      </mars:service>
+    </mars:host>
+    <mars:host name="Edinburgh-Grendel02" address="grendel02.roe.ac.uk">
+      <mars:service name="Tomcat" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url" />
+      </mars:service>
+    </mars:host>
+    <mars:host name="Edinburgh-Grendel03" address="grendel03.roe.ac.uk">
+      <mars:service name="Tomcat" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url" />
+      </mars:service>
+    </mars:host>
+    <mars:host name="Edinburgh-Grendel04" address="grendel04.roe.ac.uk">
+      <mars:service name="Tomcat" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url" />
+      </mars:service>
+    </mars:host>
+    <mars:host name="Edinburgh-Hempriggs" address="vo.roe.ac.uk">
+	<mars:service name="Portal" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+	   <mars:parameter name="host"/>
+	   <mars:parameter name="url">/astrogrid-portal</mars:parameter>
+        </mars:service>
+    </mars:host>
+    <mars:host name="Edinburgh-Grendel12" address="grendel12.roe.ac.uk">
+	<mars:service name="6df" port="8080" svctype="http" timeout="5000" period="60000" notac="3">
+	   <mars:parameter name="host"/>
+	   <mars:parameter name="url">/pal-6df</mars:parameter>
+        </mars:service>
+    </mars:host>
+    <mars:host name="Edinburgh-astrogrid" address="astrogrid.roe.ac.uk">
+      <mars:service name="DSA:2MASS" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/pal-twomass/index.jsp</mars:parameter>
+      </mars:service>
+      <mars:service name="DSA:SSA" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/pal-ssa/index.jsp</mars:parameter>
+      </mars:service>
+      <mars:service name="DSA:USNO-B" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/pal-usnob/index.jsp</mars:parameter>
+      </mars:service>
+    </mars:host>
+    <mars:host name="Jodrell" address="astrogrid.jb.man.ac.uk">
+      <mars:service name="CEA" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-cea-commandline</mars:parameter>
+      </mars:service>
+    </mars:host>
+    <mars:host name="Leicester-Cadairidris" address="cadairidris.star.le.ac.uk">
+      <mars:service name="Portal" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-portal/</mars:parameter>
+      </mars:service>
+    </mars:host>
+    <mars:host name="Leicester-Galahad" address="galahad.star.le.ac.uk">
+      <mars:service name="FileStore" port="8082" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-filestore</mars:parameter>
+      </mars:service>
+      <mars:service name="JES" port="8083" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-jes</mars:parameter>
+      </mars:service>
+      <mars:service name="Registry 2" port="8081" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-registry</mars:parameter>
+      </mars:service>
+    </mars:host>
+    <!--mars:host name="Leicester-Twmbarlwm" address="twmbarlwm.star.le.ac.uk">
+      <mars:service name="Test Tomcat" port="8888" svctype="http" timeout="5000" period="3600000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url" />
+      </mars:service>
+      <mars:service name="intnewtom Tomcat" port="7070" svctype="http" timeout="5000" period="60000" notac="3">
+        <mars:parameter name="host" />
+        <mars:parameter name="url" />
+      </mars:service>
+    </mars:host-->
+    <mars:host name="MSSL" address="msslxv.mssl.ucl.ac.uk">
+      <mars:service name="Apps:Solar Movie Maker" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-cea-MSSL</mars:parameter>
+      </mars:service>
+      <mars:service name="DSA:SEC" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-dsa-solarimg</mars:parameter>
+      </mars:service>
+    </mars:host>
+    <mars:host name="Portsmouth" address="holly.dsg.port.ac.uk">
+      <mars:service name="CEA" port="8094" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-cea-commandline</mars:parameter>
+      </mars:service>
+      <mars:service name="FileStore" port="8090" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-filestore</mars:parameter>
+      </mars:service>
+    </mars:host>
+    <mars:host name="RAL" address="ukssdc-ag1.stp.rl.ac.uk">
+      <mars:service name="FileStore" port="8080" svctype="http" timeout="5000" period="60000" notac="1">
+        <mars:parameter name="host" />
+        <mars:parameter name="url">/astrogrid-filestore</mars:parameter>
+      </mars:service>
+    </mars:host>
+  </mars:hostlist>
+  <mars:clientdebug enabled="false" horizon="20" />
+  <mars:csvlog enabled="false" logfile="" />
+  <mars:swingnotify enabled="false" notifyBackUp="true" beep="true" />
+  <mars:xmlsnap enabled="false" xmlfile="C:\Java\ApacheSoftwareFoundation\Tomcat5.0\webapps\ROOT\mars.xml" period="60000" />
+  <mars:xmlxsltsnap enabled="true" xmlfile="/var/www/software/monitor/status.xml" period="60000" xslthref="mars.xsl" />
+  <!--mars:xmppnotify enabled="true" notifyBackUp="true" server="jabber.astrogrid.org" port="5222" address="Monitor@jabber.astrogrid.org" username="Mars" password="Mars" msgPrefix="Alert" /--> 
+  <!--mars:xmppnotify enabled="true" notifyBackUp="true" server="jabber.astrogrid.org" port="5222" address="KonaAndrews@jabber.astrogrid.org" username="Mars" password="Mars" msgPrefix="Alert" /-->
+</mars:model>
