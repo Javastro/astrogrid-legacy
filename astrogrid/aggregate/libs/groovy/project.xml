@@ -4,33 +4,27 @@
 
   <currentVersion>${astrogrid.aggregate.version}</currentVersion>
 
-  <id>file</id>
+  <id>scripting-groovy</id>
 
-  <name>File-based Libraries</name>
+  <name>Groovy Script Interpreter</name>
 
-  <description>Hodepodge of libraries that work with files bundled as a JNLP Extension</description>
+  <description>Groovy Script Interpreter as a JNLP Extension</description>
 
-  <shortDescription>FileLibraries</shortDescription>
+  <shortDescription>Groovy</shortDescription>
 
   <dependencies>
-	  <!--
-	  <dependency>
-		  <artifactId>tar</artifactId>
-		  <groupId>ice-tar</groupId>
-		  <version>2.5</version>
-		  <properties>
-			  <jnlp.jar>true</jnlp.jar>			
-		  </properties>
-	  </dependency>
-	  -->
-	  <dependency>
-		  <artifactId>jdbm</artifactId>
-		  <groupId>jdbm</groupId>
-		  <version>1.0</version>
-		  <properties>
-			  <jnlp.jar>true</jnlp.jar>	
-		  </properties>
-</dependency>
+  
+	<dependency>
+	 <groupId>groovy</groupId>
+	 <artifactId>groovy-all</artifactId>
+<!--	<artifactId>groovy</artifactId> - missing deps in this one -->
+	 <version>1.0-jsr-04</version>
+	 <type>jar</type>
+	 <properties>		
+		<jnlp.jar>true</jnlp.jar>
+	 </properties>
+    </dependency>
+	
 
 <!-- stuff required in maven build -->
     <dependency>

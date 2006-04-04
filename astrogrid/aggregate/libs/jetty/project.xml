@@ -22,16 +22,6 @@
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>
 	  </dependency>
-	  <dependency>
-		  <!-- need to test whether this one is really used -->
-		  <groupId>jetty</groupId>
-		  <artifactId>org.mortbay.jmx</artifactId>
-		  <version>5.1.2</version>
-		  <type>jar</type>
-		  <properties>
-			  <jnlp.jar>true</jnlp.jar>
-		  </properties>
-        </dependency>
 	<dependency>
 		<artifactId>servletapi</artifactId>
 		<groupId>servletapi</groupId>
