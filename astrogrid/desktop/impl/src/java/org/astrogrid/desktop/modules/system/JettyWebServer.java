@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: JettyWebServer.java,v 1.2 2006/04/05 23:21:01 jdt Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,7 +81,7 @@ public class JettyWebServer implements Startable, WebServer, NewModuleListener{
     }
     
     public void start() {
-        logger.info("Strarting webserver");
+        logger.info("Starting webserver");
         try {
             server.start();        
         } catch (Exception e) {
@@ -195,6 +195,9 @@ public class JettyWebServer implements Startable, WebServer, NewModuleListener{
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.2  2006/04/05 23:21:01  jdt
+typo
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 
