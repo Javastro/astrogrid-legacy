@@ -623,6 +623,33 @@
 		</return>
 		</method-->
 	</component>
+	<component name="Plastlets"
+		implementationClass="org.astrogrid.desktop.modules.plastic.PlastletsImpl"
+		interfaceClass="org.astrogrid.desktop.modules.plastic.PlastletsInternal">
+		<description>Mini-Plastic Applictions</description>
+		<property>
+			<key>icon</key>
+			<value>hammer.gif</value>
+		</property>
+		<method name="setAllEnabled">
+			<description>Enable/Disable All Plastlets</description>
+			<property>
+				<key>icon</key>
+				<value>icon_Set.gif</value>
+			</property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Enable/Disable ALL Plastlets</value>
+			</property>
+			<parameter name="enabled">
+				<description>Enter true to enable, false to disable</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>boolean</value>
+				</property>
+			</parameter>
+		</method>
+	</component>
 	
 	<component name="prettyPrinter"
 		implementationClass="org.astrogrid.desktop.modules.plastic.PrettyPrinterImpl"
@@ -641,4 +668,6 @@
 				<value>true</value>								
 			</property>					
 	</component>
+
+
 </module>
