@@ -21,6 +21,11 @@ import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlCursor;
 
 
+/**
+ * @author jl99
+ *
+ * @deprecated
+ */
 public class AdqlCommand {      
     private SchemaProperty element ;
     private AdqlEntry entry ;

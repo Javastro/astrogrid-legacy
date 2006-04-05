@@ -76,10 +76,12 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent; 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.undo.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -119,13 +121,13 @@ import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlCommand;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.TableMetadataPanel ;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree.EditPromptAction;
+import org.astrogrid.desktop.modules.adqlEditor.commands.*;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
@@ -160,9 +162,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     protected final ResourceChooserInternal resourceChooser;
     protected final Registry registry ;
     
-    private boolean checkedForDummyTable = false ;
-    private boolean checkedForAllColumnsOption = false ;
-    
     // LHS Editor tabs...
     private JTabbedPane tabbedEditorPane ;
     // This is the tree tab...
@@ -171,12 +170,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     private ControllerImpl controller ;
     
     // This is the text tab...
-    // private JTextPane adqlText ;
     private AdqlStringView adqlStringView ;
     
-    
     // This is the adql/x tab...
-    //private JTextPane adqlXml ;
     private AdqlXmlView adqlXmlView ;
     
     //RHS Metadata tabs...
@@ -190,18 +186,12 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     //private static XmlObject root ;
     
     private JButton chooseResourceButton ;
-    //private JButton validateButton ;
-    // private JMenu columnMenu;
-    // private Hashtable tableMenus = new Hashtable() ; 
-    // private String nameSpace = AdqlData.NAMESPACE_1_0 ; 
     
     //
     // This is a limited adhoc approach to clipboard and editing.
     // Needs to be rewritten to fit into undoable framework...
     private XmlObject clipBoard = null ;
-//    private AliasStack aliasStack ;
-//    private TabularDatabaseInformation catalogueResource = null ;
-//    private HashMap fromTables = new HashMap() ;
+
     private Popup popup = null ;
     private BranchExpansionListener branchExpansionListener = null ;
     private AdqlTransformer transformer ;
@@ -262,10 +252,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     public void toolCleared(ToolEditEvent te) {
         if( TRACE_ENABLED ) log.debug( "toolCleared(ToolEditEvent te)"  ) ;
         queryParam = null;
-//        catalogueResource = null ;
-//        if( fromTables != null )
-//            fromTables.clear() ;
-//        aliasStack = new AliasStack() ;
         setEnabled(false);
         this.removeAll() ;
     }
@@ -275,10 +261,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         String[] toks = listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
         if (toks.length > 0) {
             setEnabled(true);
-//            catalogueResource = null ;
-//            if( fromTables != null )
-//                fromTables.clear() ;
-//            aliasStack = new AliasStack() ;
             queryParam = (ParameterValue)toolModel.getTool().findXPathValue("input/parameter[name='" + toks[0] +"']");
             this.removeAll() ;
             this.init() ;
@@ -288,12 +270,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
    
     private AdqlTree setAdqlTree() { 
         if( TRACE_ENABLED ) log.debug( "setAdqlTree"  ) ;
-        checkedForDummyTable = false ;
-        checkedForAllColumnsOption = false ;
         URI toolIvorn = toolModel.getInfo().getId() ;
         String query = null ;
         this.adqlTree = null ;
-//        aliasStack = new AliasStack() ;
         if( queryParam == null ) {
             if( this.adqlTree == null ) {
                 this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
@@ -529,23 +508,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         return tabbedEditorPane ;    
     }
     
-//    private void setXmlAndStringContent() {
-//        if( adqlXml == null )
-//            return ;
-//        AdqlEntry rootEntry = (AdqlEntry) adqlTree.getModel().getRoot();
-//        XmlObject node = rootEntry.getXmlObject();
-//        XmlCursor nodeCursor = node.newCursor();
-//        XmlOptions options = new XmlOptions();
-//        options.setSavePrettyPrint();
-//        options.setSavePrettyPrintIndent(4);
-//        String xmlString = nodeCursor.xmlText(options);
-//        nodeCursor.dispose() ;
-//        String adqlString = transformer.transformToAdqls( xmlString, " " ) ;
-//        // adqlStringView.setText( adqlString ) ;
-//        adqlXml.setText( xmlString ) ;
-//    }
-    
-    
     private JTabbedPane initBottomView() {
         // Create the components for the bottom view:
         // Idea is for this to contain diagnostics
@@ -583,17 +545,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         
         // First catalogue panel...
         JPanel catalog1 = new JPanel();
-//        JScrollPane scrollCatalog = new JScrollPane();
-//        JTextPane catalogTextPane = new JTextPane();
-//        scrollCatalog.setViewportView( catalogTextPane ) ;
-//        catalog1.setLayout( new GridBagLayout() ) ;
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.fill = GridBagConstraints.BOTH;
-//        gbc.anchor = GridBagConstraints.NORTHWEST;
-//        gbc.weightx = 1;
-//        gbc.weighty = 1;
-//        catalog1.add( scrollCatalog, gbc )  ;
-        tabbedMetadataPane.addTab( "Catalog", catalog1 ) ;
+        tabbedMetadataPane.addTab( "Archive", catalog1 ) ;
         
         GridBagConstraints gbc = new GridBagConstraints() ;
         gbc.weightx = 1.0;
@@ -627,108 +579,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
         
-    private static XmlObject setDefaultValue( XmlObject xmlObject ) {
-        XmlObject retVal = xmlObject ;     
-        if( xmlObject != null ) {
-            SchemaType type = xmlObject.schemaType() ;
-            if( type.isBuiltinType() ){
-                retVal = setBuiltInDefaults( xmlObject ) ;
-            }
-            else if( isAttributeDriven( type ) ) {
-                retVal = setAttributeDrivenDefaults( xmlObject ) ;
-            }
-            else if( type.isSimpleType() ) {
-                retVal = setDerivedSimpleDefaults( xmlObject ) ;
-            }
-        }
-        return retVal ;
-    }
-    
-    private static XmlObject setBuiltInDefaults( XmlObject xmlObject ) {
-        int typeCode = xmlObject.schemaType().getBuiltinTypeCode() ;
-        switch( typeCode ) {              
-        	case SchemaType.BTC_STRING: 
-        	    ((XmlString)xmlObject).setStringValue( "" ) ;
-        		break ;
-        	case SchemaType.BTC_DECIMAL:
-        	    ((XmlDecimal)xmlObject).setBigDecimalValue( new BigDecimal(0) ) ;
-        		break ;
-        	case SchemaType.BTC_FLOAT:
-        	    ((XmlFloat)xmlObject).setFloatValue( 0 ) ;
-        		break ;
-        	case SchemaType.BTC_INT:
-        	    ((XmlInt)xmlObject).setIntValue( 0 ) ;
-        		break ;
-           	case SchemaType.BTC_INTEGER:
-        	    ((XmlInteger)xmlObject).setBigIntegerValue( new BigInteger("0") ) ;
-        		break ;
-        	case SchemaType.BTC_DOUBLE:
-        	    ((XmlDouble)xmlObject).setDoubleValue( 0 ) ;
-    			break ;
-           	case SchemaType.BTC_LONG:
-        	    ((XmlLong)xmlObject).setLongValue( 0 ) ;
-          	case SchemaType.BTC_UNSIGNED_LONG:
-        	    ((XmlUnsignedLong)xmlObject).setBigDecimalValue( new BigDecimal(0) ) ;
-    			break ;
-          	case SchemaType.BTC_POSITIVE_INTEGER:
-        	    ((XmlPositiveInteger)xmlObject).setBigDecimalValue( new BigDecimal(1) ) ;
-    			break ;
-          	case SchemaType.BTC_UNSIGNED_SHORT:
-        	    ((XmlUnsignedShort)xmlObject).setIntValue( 0 ) ;
-    			break ;
-          	case SchemaType.BTC_UNSIGNED_INT:
-        	    ((XmlUnsignedInt)xmlObject).setLongValue( 0 ) ;
-    			break ;
-        	default:
-        	    ; // and for the rest do nothing (for the moment)                 
-        }   
-        return xmlObject ;
-    }
-    
-    private static boolean isAttributeDriven( SchemaType type ) {
-        String[] name = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-        return ( name != null && name.length == 1 ) ;
-    }
-    
-    private static XmlObject setAttributeDrivenDefaults( XmlObject xmlObject ) {
-        XmlObject retVal = xmlObject ;
-        SchemaType type = xmlObject.schemaType() ;
-        String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-        XmlString tempObject = XmlString.Factory.newInstance() ;
-        tempObject.setStringValue( (String)AdqlData.ATTRIBUTE_DEFAULTS.get( type.getName().getLocalPart() ) ) ; 
-        
-        //
-        // There is a better way to do this provided I can get at the fully qualified name
-        // of the attribute. Needs thinking about.
-        // Another point. The schema may itself define a default value. This too can be picked up.
-        SchemaType attrType = null ;
-        SchemaProperty[] attrProperties = type.getAttributeProperties() ;
-        for( int i=0; i<attrProperties.length; i++ ) {
-            if( attrProperties[i].getJavaPropertyName().equals( attributeNames[0] ) ) {
-                attrType = attrProperties[i].getType();
-                break ;
-            }
-        }
-        XmlObject valueObject = tempObject.changeType( attrType ) ;        
-        AdqlUtils.set( xmlObject, attributeNames[0], valueObject ) ; 
-        return xmlObject ;
-    }
-    
-    private static XmlObject setDerivedSimpleDefaults( XmlObject xmlObject ) {
-        XmlObject retVal = xmlObject ;
-        SchemaType type = xmlObject.schemaType() ;
-        // Cooerce the empty element into an XmlString...
-        XmlString tempObject = (XmlString)xmlObject.changeType( XmlString.type ) ;
-        tempObject.setStringValue( (String)AdqlData.DERIVED_DEFAULTS.get( type.getName().getLocalPart() ) ) ;
-        // Cooerce back to original type...
-        retVal = tempObject.changeType( type ) ;
-        return retVal ;
-    }       
-        
-      
-    
-    
-    
     /** returns true if this app has an adql parameter */
     public static String[] listADQLParameters(String interfaceName,ApplicationInformation info) {
         InterfaceBean ib = null;
@@ -767,7 +617,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     public void treeNodesChanged(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.setAdqlParameter() ;
-//            this.setXmlAndStringContent() ;
         }
     }
     public void treeNodesInserted(TreeModelEvent e) {
@@ -788,7 +637,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     
     private void update() {
         this.setAdqlParameter() ;
-//        this.setXmlAndStringContent() ;
         this.validateAdql() ;
     }
     
@@ -934,26 +782,16 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    }
 	    
 	    private JPopupMenu getPopupMenu( AdqlEntry entry ) {
-//	        JPopupMenu popup = (JPopupMenu)popupMenus.get( displayName ) ;
-//	        if( true ) {
-////	        if( popup == null ) {
-//	            popup = buildPopup( entry, displayName ) ;
-//	        }
 	        return buildPopup( entry ) ;
 	    }
 	    
 	    
-	    // 
-	    // This is far too large! Refactor.
 	    private JPopupMenu buildPopup( AdqlEntry entry ) {
 	        JPopupMenu popup = new JPopupMenu( "AdqlTreeContextMenu" ) ;
 	        // Place a name tag at the top with a separator.
 	        // This is purely cosmetic. It does nothing.
 	        // Can remove later if redundant / not liked.
-	        popup.add( entry.getDisplayName() ) ;
-	        if( entry.getDisplayName().equals("Literal") ) {
-	            log.debug( "Literal" );
-	        }
+	        popup.add( "Insert into " + entry.getDisplayName() ) ;
 	        popup.addSeparator() ;
 	        if( entry.isBottomLeafEditable() ) {
 //	            popup.add( new EditAction( entry ) ) ;
@@ -963,170 +801,68 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        popup.add( new PasteIntoAction( entry ) ) ;
 	        popup.add( new PasteOverAction( entry ) ) ;
 	        popup.add( new  PasteNextToAction( entry, true ) ) ; // Before
-	        popup.add( new  PasteNextToAction( entry, false ) ) ; // After
-	        
-	        ArrayList commands = AdqlCommand.buildCommands( entry ) ; 
-	        SchemaType[] concreteTypes ;
-	        if( commands.isEmpty() == false ) {
-	            InsertAction insertAction ;
-	            if( commands.size() == 1 ) {
-	                AdqlCommand c = (AdqlCommand)commands.get(0) ;
-	                concreteTypes = c.getConcreteTypes() ;
-	                if( concreteTypes.length == 1 ) {
-	                    if( c.isSupportedType( 0 ) ) {
-		                    popup.addSeparator() ;
-		                    if( c.isConcreteTypeCascadeable( 0 ) ) {
-		                        JMenu columnMenu = getCascadeableMenu( "Insert " + c.extractDisplayNameForType(0), c, 0 );
-		                        popup.add( columnMenu ) ;
-		                    }
-		                    else {
-//		                        insertAction = new InsertAction( "Insert-2 " + AdqlUtils.extractDisplayName( concreteTypes[0] ), c, 0 ) ;
-		                        insertAction = new InsertAction( "Insert " + c.extractDisplayNameForType(0), c, 0 ) ;
-			                    popup.add( insertAction ).setEnabled( c.isEnabled()) ;	
-		                    }         
-	                    }
+	        popup.add( new  PasteNextToAction( entry, false ) ) ; // After	        
+	        popup.addSeparator() ;
+	        popup.add( new UndoAction() ) ;
+	        popup.add( new RedoAction() ) ;
+     
+	        List commandArray = adqlTree.getCommandFactory().newInsertCommands( entry ) ;
+	        if( commandArray != null ) {
+		        popup.addSeparator() ;
+	            ListIterator iterator = commandArray.listIterator() ;	            
+	            while( iterator.hasNext() ) {
+	                StandardInsertCommand command = (StandardInsertCommand)iterator.next() ;
+	                if( !command.isChildSupportedType() )
+	                    continue ;
+	                if( command.isChildCascadeable() ) {
+	                    popup.add( getCascadeableMenu( command ) ) ;
 	                }
 	                else {
-	                    JMenu insertMenu = new JMenu( "Insert" ) ;
-			            popup.addSeparator() ;
-			            popup.add( insertMenu ) ;
-	                    for( int i=0; i<concreteTypes.length; i++ ) {
-	                        if( c.isSupportedType( i ) ) {
-		                        if( c.isConcreteTypeCascadeable( i ) ) {
-//			                        JMenu columnMenu = getCascadeableMenu( AdqlUtils.extractDisplayName( concreteTypes[i] ), c, i );
-		                            JMenu columnMenu = getCascadeableMenu( c.extractDisplayNameForType(i), c, i );
-			                        insertMenu.add( columnMenu ) ;
-			                    }
-			                    else {
-//			                        insertAction = new InsertAction( AdqlUtils.extractDisplayName( concreteTypes[i] ), c, i ) ;
-			                        insertAction = new InsertAction( c.extractDisplayNameForType(i), c, i ) ;
-			                        insertMenu.add( insertAction ).setEnabled( c.isEnabled() );
-			                    }       
-	                        }
-	                    }
+	                    popup.add( new InsertAction( command.getChildDisplayName(), command ) ) ;
 	                }
 	            }
-	            else {
-	                JMenu insertMenu = new JMenu( "Insert" ) ;
-		            ListIterator iterator ;
-		            popup.addSeparator() ;
-		            popup.add( insertMenu ) ;
-		            iterator = commands.listIterator() ;
-		            while( iterator.hasNext() ) {
-		                AdqlCommand c = (AdqlCommand)iterator.next() ;
-		                concreteTypes = c.getConcreteTypes() ;
-		                if( concreteTypes.length == 0 ) {
-//		                    insertAction = new InsertAction( AdqlUtils.extractDisplayName( c.getElement().getName().getLocalPart() ), c, -1 ) ;
-		                    insertAction = new InsertAction( c.extractDisplayNameForType(-1), c, -1 ) ;
-		                    insertMenu.add( insertAction ).setEnabled( c.isEnabled() ) ;
-		                }
-		                else {
-		                    for( int i=0; i<concreteTypes.length; i++ ) {
-		                        if( c.isSupportedType( 0 ) ) {
-		                            if( c.isConcreteTypeCascadeable( i ) ) {
-//		                                JMenu columnMenu = getCascadeableMenu( AdqlUtils.extractDisplayName( concreteTypes[i] ), c, i );
-		                                JMenu columnMenu = getCascadeableMenu( c.extractDisplayNameForType(i), c, i );
-				                        insertMenu.add( columnMenu ) ;
-				                    }
-				                    else {
-//				                        insertAction = new InsertAction( AdqlUtils.extractDisplayName( concreteTypes[i] ), c, i );
-				                        insertAction = new InsertAction( c.extractDisplayNameForType(i), c, i );
-				                        insertMenu.add( insertAction ).setEnabled( c.isEnabled() );
-				                    }        
-		                        }         
-		                    }
-		                }
-		            }
-	            }
-	        }       
+	        }      
 	        adqlTree.add( popup ) ;
 	        return popup ;
 	    }
 	    
 	    
-	    private JMenu getCascadeableMenu( String name, AdqlCommand commandBean, int concreteTypeIndex ) {
-	        JMenu menu = new JMenu( name ) ;
+	    private JMenu getCascadeableMenu( StandardInsertCommand command ) {
+	        JMenu menu = new JMenu( command.getChildDisplayName() ) ;
 	    
-	        if( commandBean.isConcreteTypeColumnLinked( concreteTypeIndex ) ) {
+	        if( command.isChildColumnLinked() ) {
 	            if( adqlTree.getFromTables().isEmpty() == false ) {
-	                menu = getInsertColumnMenu( name, commandBean, concreteTypeIndex ) ;
-		            menu.setText( name ) ;
-		            menu.setEnabled( commandBean.isEnabled() ) ;
+	                menu = getInsertColumnMenu( command ) ;
+		            menu.setEnabled( command.isChildEnabled() ) ;
 	            }
 	            else {
 	                menu.setEnabled( false ) ;
 	            }
 	
 	        }
-	        else if( commandBean.isConcreteTypeTableLinked( concreteTypeIndex ) ) {
+	        else if( command.isChildTableLinked() ) {
 	            if( adqlTree.isCatalogueResourceSet() ) { 
-	                menu = getInsertTableMenu( name, commandBean, concreteTypeIndex ) ;
-	                menu.setText( name ) ;
-	                menu.setEnabled( commandBean.isEnabled() ) ;
+	                menu = getInsertTableMenu( command ) ;
+	                menu.setEnabled( command.isChildEnabled() ) ;
 	            }
 	            else {
 	                menu.setEnabled( false ) ;
 	            }
 	        }
-	        else if( commandBean.isConcreteTypeDrivenByEnumeratedAttribute( concreteTypeIndex ) ) {
-	            JMenuItem[] menuItems = getEnumeratedMenus( commandBean, concreteTypeIndex ) ;
-	            for( int i=0; i<menuItems.length; i++ ) {
-	                menu.add( menuItems[i] ) ;
-	            } 
-	            menu.setEnabled( commandBean.isEnabled() ) ;
+	        else if( command.isChildDrivenByEnumeratedAttribute() ) {
+	            menu = getEnumeratedMenus( command ) ;
+	            menu.setEnabled( command.isChildEnabled() ) ;
 	        }        
 	        return menu;
 	    }
-	    
-	    
-	    private JMenuItem[] getEnumeratedMenus( AdqlCommand commandBean, int typeIndex  ) {
-	        JMenuItem[] menus = null ;
-	        SchemaType schemaType = null ; // Take care! This is used in two contexts.
-	        SchemaStringEnumEntry[] stringEnumEntries = null ;
-	        String parentTypeName = null ;
-	        String attributeTypeName = null ; // ie: a type used by attributes.
-	        String name = null ;
-	        try {
-	            schemaType = commandBean.getConcreteTypes()[typeIndex];
-	            parentTypeName = schemaType.getName().getLocalPart() ;
-	            attributeTypeName = (String)AdqlData.ENUMERATED_ATTRIBUTES.get( parentTypeName ) ;
-	            schemaType = getAttributeType( attributeTypeName, schemaType.getTypeSystem() ) ;
-	            stringEnumEntries = schemaType.getStringEnumEntries() ;
-	            menus = new JMenuItem[ stringEnumEntries.length ] ;
-		        for( int i=0; i<stringEnumEntries.length; i++ ) {
-		            name = stringEnumEntries[i].getString() ;
-		            if( name != null ) {
-		                menus[i] = new JMenuItem( new InsertEnumeratedAction( name, commandBean, typeIndex ) ) ;
-		            }
-		        }
-	        }
-	        catch( Exception ex ) {
-	            menus = new JMenuItem[]{ new JMenuItem( "whoops" ) } ;
-	            ex.printStackTrace() ;
-	        }
-	        return menus ;
-	    }
-	    
-	    private SchemaType getAttributeType( String unqualifiedName, SchemaTypeSystem typeSystem ) {
-	        SchemaType schemaType = null ;
-	        SchemaType[] sgTypes = typeSystem.globalTypes() ;
-	        for( int i=0; i<sgTypes.length; i++ ) {
-	            if( sgTypes[i].getName().getLocalPart().equals( unqualifiedName ) ) {
-	                schemaType = sgTypes[i] ;
-	                break ;
-	            }
-	        }
-	        return schemaType ;
-	    }
-	    
+	       
 	} // end of class PopupMenu
 	
 	private class CutAction extends AbstractAction {
-	    private AdqlEntry entry ;
+	    private CutCommand command ;
 	       
 	    public CutAction( AdqlEntry entry ) {
 	        super( "Cut" ) ;
-	        this.entry = entry ;
 	        TreePath path = adqlTree.getSelectionPath() ;
 	        // If the path is null or there is no parent
 	        // Then we cannot cut...
@@ -1139,37 +875,41 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        TreePath selectRoot = new TreePath( new Object[] { path.getPathComponent(0), path.getPathComponent(1) } ) ;
 	        if( path.equals( selectRoot ) ) {
 	            setEnabled( false ) ;
+	            return ;
 	        }
+	        this.command = adqlTree.getCommandFactory().newCutCommand( adqlTree
+	                                                                 , adqlTree.getCommandFactory().getUndoManager()
+	                                                                 , (AdqlEntry)path.getLastPathComponent() ) ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-	        TreePath path = adqlTree.getSelectionPath() ;
+//	        TreePath path = adqlTree.getSelectionPath() ;
 	        //
 	        // This bit ensures we can "ungrey" (ie enable) the table choice that we have just
 	        // cut from a particular selection. Note this is probably weak, as I am assuming you
 	        // can only choose a table once. This is probably not the case when we take joinTableType
 	        // into account!!!
-	        try {
-	            String typeName = entry.getXmlObject().schemaType().getName().getLocalPart() ;
-	            if( typeName.equals( "tableType" ) || typeName.equals( "archiveTableType" ) ) {
-	                String name = ((XmlString)AdqlUtils.get( entry.getXmlObject(), "name " )).getStringValue() ;
-	                if( name != null && adqlTree.getFromTables().containsKey( name ) ) 
-	                    adqlTree.getFromTables().remove( name ) ;
-	            }
-	        }
-	        catch( Exception ex ){
-	            ; ex.printStackTrace() ;
-	        } 
+//	        try {
+//	            String typeName = entry.getXmlObject().schemaType().getName().getLocalPart() ;
+//	            if( typeName.equals( "tableType" ) || typeName.equals( "archiveTableType" ) ) {
+//	                String name = ((XmlString)AdqlUtils.get( entry.getXmlObject(), "name " )).getStringValue() ;
+//	                if( name != null && adqlTree.getFromTables().containsKey( name ) ) 
+//	                    adqlTree.getFromTables().remove( name ) ;
+//	            }
+//	        }
+//	        catch( Exception ex ){
+//	            ; ex.printStackTrace() ;
+//	        } 
 	        // Now do the business...
-	        clipBoard = entry.getXmlObject().copy() ;
-	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent()  ;
-	        AdqlEntry.removeInstance( parent, entry ) ;
-	   
-	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( parent ) ;
-            adqlTree.repaint() ;
+	        clipBoard = command.getChildEntry().getXmlObject().copy() ;
+	        if( command.execute() != CommandExec.FAILED ) {
+	            adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
+        	    // Refresh tree...
+    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( command.getParentEntry() ) ;
+    	        adqlTree.repaint() ;
+        	}
 	    }
 	}
-	
 	
 	private class CopyAction extends AbstractAction {
 	    private AdqlEntry entry ;
@@ -1190,286 +930,121 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	}
 	
 	private class PasteOverAction extends AbstractAction {
-	    private AdqlEntry entry ;
-	    private XmlObject pasteObject;
+	    
+	    private PasteOverCommand command = null ;
 	    
 	    public PasteOverAction( AdqlEntry entry ) {
 	        super( "Paste over" ) ;
-	        this.entry = entry ;
-	        setEnabled( testAndBuildSuitability() ) ;
+	        if( preConditionsForPaste() == true ) {
+	            this.command = adqlTree.getCommandFactory().newPasteOverCommand( entry, clipBoard );
+	        }
+	        setEnabled( command != null ) ;
 	    }
 	    
-	    private boolean testAndBuildSuitability() {
-	        TreePath path = adqlTree.getSelectionPath() ;
-	        // If the path is null or there is no parent
-	        // Then we cannot paste into this entry...
-	        if( path == null || path.getPathCount() < 2 )
-	            return false ;
-	        // If the clipboard is empty then there is nothing to paste...
-	        if( clipBoard == null )
-	            return false ;
-	        // Check whether the last clipboard object is a very good match...
-	        pasteObject = clipBoard ;
-	        if( entry.getSchemaType().isAssignableFrom( pasteObject.schemaType() ) )
-	            return true ; 	 
-	        
-	        // Build array of possible insert commands for target's parent...
-	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent() ;
-	        ArrayList commands = AdqlCommand.buildCommands( parent ) ;  
-	        
-	        // Now check to see whether the pasteObject and the target Object
-	        // share a suitable base object type ...
-	        // (eg: a column reference and a literal would equate!!!)...
-	        SchemaType[] targetTypes = null ;
-	        ListIterator iterator = commands.listIterator() ;
-	        boolean pasteTypeFound = false ;
-	        boolean targetTypeFound = false ;
-	        while( iterator.hasNext() && targetTypeFound!=true && pasteTypeFound!=true ) {
-	            AdqlCommand c = (AdqlCommand)iterator.next() ;
-	            targetTypes = c.getConcreteTypes() ;
-	            for( int i=0; i<targetTypes.length; i++ ) {
-	                if( targetTypes[i].getName().equals( pasteObject.schemaType().getName() ) ) {
-	                    pasteTypeFound = true ;
-	                }
-	                else if( targetTypes[i].getName().equals( entry.getSchemaType().getName() ) ) {
-	                    targetTypeFound = true ;
-                    }
-	            }
-	            if( pasteTypeFound && targetTypeFound ) {
-	                return true ;
-	            }
-	                
-	        } // end while
-	        return false ;
-	    }
-	    
-	    public void actionPerformed( ActionEvent e ) {
-	        TreePath path = adqlTree.getSelectionPath() ;
-	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent() ;
-	        XmlObject targetObject = this.entry.getXmlObject() ;
-	        AdqlEntry.disconnectInstance( parent, entry ) ;	        
-	        targetObject = targetObject.set( pasteObject ) ;        
-            // Create the new tree node instance (and pray it works)...
-        	AdqlEntry.newInstance( parent, targetObject ) ;  
-        	
-        	// Refresh tree...
-	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( parent ) ;
-	        adqlTree.repaint() ;
+	    public void actionPerformed( ActionEvent e ) {	        
+        	if( command.execute() != CommandExec.FAILED ) {
+        	    adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
+        	    // Refresh tree...
+    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( command.getParentEntry() ) ;
+    	        adqlTree.repaint() ;
+        	}
 	    }
 	    
 	}
 	
-	
-	
 	private class PasteNextToAction extends AbstractAction {
-	    private AdqlEntry entry ;
-	    private AdqlCommand command ;
-	    private boolean before ;
+	    private PasteNextToCommand command ;
 	    
 	    public PasteNextToAction( AdqlEntry entry, boolean before ) {
 	        super() ;
-	        this.before = before ;
 	        if( before ) {
 	            super.putValue( Action.NAME, "Paste before" ) ;
 	        }
 	        else {
 	            super.putValue( Action.NAME, "Paste after" ) ;
+	        }    
+	        if( preConditionsForPaste() == true ) {
+	            this.command = adqlTree.getCommandFactory().newPasteNextToCommand( entry, clipBoard, before );
 	        }
-	        this.entry = entry ;
-	        setEnabled( testAndBuildSuitability() ) ;
+	        setEnabled( command != null && command.isChildEnabled() ) ;    
+	    }
+	    	    
+	    public void actionPerformed( ActionEvent e ) {
+	        if( command.execute() != CommandExec.FAILED ) {
+	            adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
+        	    // Refresh tree...
+    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( command.getParentEntry() ) ;
+    	        adqlTree.repaint() ;
+        	}
 	    }
 	    
-	    private boolean testAndBuildSuitability() {
-	        TreePath path = adqlTree.getSelectionPath() ;
-	        // If the path is null or there is no parent
-	        // Then we cannot paste into this entry...
-	        if( path == null || path.getPathCount() < 2 )
-	            return false ;
-	        // If the clipboard is empty then there is nothing to paste...
-	        if( clipBoard == null )
-	            return false ;
-	        //	Build array of possible insert commands for target's parent...
-	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent() ;
-	        ArrayList commands = AdqlCommand.buildCommands( parent ) ;  
-	        
-	        XmlObject pasteObject = clipBoard ;
-	        
-	        // Now check to see whether the pasteObject and the target Object
-	        // share a suitable base object type ...
-	        // (eg: a column reference and a literal would equate!!!)...
-	        // Or they may even be of the same type!
-	        SchemaType[] targetTypes = null ;
-	        ListIterator iterator = commands.listIterator() ;
-	        boolean pasteTypeFound = false ;
-	        boolean targetTypeFound = false ;
-	        while( iterator.hasNext() && targetTypeFound!=true && pasteTypeFound!=true ) {
-	            AdqlCommand c = (AdqlCommand)iterator.next() ;
-	            // The following is a check on cardinality...
-	            if( c.isEnabled() == false )
-	                continue ;
-	            targetTypes = c.getConcreteTypes() ;
-	            for( int i=0; i<targetTypes.length; i++ ) {
-	                if( targetTypes[i].getName().equals( pasteObject.schemaType().getName() ) ) {
-	                    pasteTypeFound = true ;
-	                }
-	                if( targetTypes[i].getName().equals( entry.getSchemaType().getName() ) ) {
-	                    targetTypeFound = true ;
-                    }
-	            }
-	            if( pasteTypeFound && targetTypeFound ) {
-	                command = c ; // Save the appropriate command
-	                return true ;
-	            }
-	                
-	        } // end while
-	        return false ;
+	}
+	
+	private class PasteIntoAction extends AbstractAction {
+	    private PasteIntoCommand command = null ;
+	       
+	    public PasteIntoAction( AdqlEntry entry ) {
+	        super( "Paste into" ) ;
+	        if( preConditionsForPaste() == true ) {
+	            this.command = 
+	                adqlTree.getCommandFactory().newPasteIntoCommand( entry, clipBoard );
+	        }
+	        setEnabled( command != null && command.isChildEnabled() ) ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-	        TreePath path = adqlTree.getSelectionPath() ;
-	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent() ;	  
-	        //
-	        // ASSUMPTION. The parent is composed solely of an array of elements/types!
-	        
-	        XmlObject targetObject = null ;	        
-	        if( command.isArray() ) {   
-	            // First identify where in the array the selected entry is....
-	            Object selectedObject = entry.getXmlObject() ;
-	            Object[] objects = AdqlUtils.getArray( parent.getXmlObject(), command.getElementName() ) ;
-	            int offset = -1 ;
-	            for( int i=0; i<objects.length; i++ ) {
-	                if( selectedObject == objects[i] ) {
-	                    offset = i ;
-	                    break ;
-	                }
-	            }
-	            if( offset != -1 ) {
-	                if( before ) {
-	                    targetObject = AdqlUtils.insertNewInArray( parent.getXmlObject(), command.getElementName(), offset ) ;
-	                }
-	                // If not before, everything else must be after...
-	                else if( objects.length == offset+1 ) {
-	                    // Simply add to the end of the array...
-	                    targetObject = AdqlUtils.addNewToEndOfArray( parent.getXmlObject(), command.getElementName() ) ;
-	                }
-	                else {
-	                    targetObject = AdqlUtils.insertNewInArray( parent.getXmlObject(), command.getElementName(), offset+1 ) ;
-	                }
-	                
-	            }
-	            else {
-	                log.error( "Serious error in array structure with Paste before/after!" ) ;
-	            }
-            }
-	        else {
-	            log.error( "Paste before/after invoked on an element whose parent is NOT COMPOSED solely of an array of elements/types!" ) ;
-	        }
-	       	   
-	        // Paste the contents of the "copied" object into the newly created object...
-	        XmlObject pasteObject = clipBoard ;
-	        targetObject = targetObject.set( pasteObject ) ;        
-            // Create the new tree node instance (and pray it works)...
-        	AdqlEntry.newInstance( parent, targetObject ) ;  
-        	
-        	// Refresh tree...
-	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( parent ) ;
+	        if( command.execute() != CommandExec.FAILED ) {
+	            adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
+        	    // Refresh tree...
+    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( command.getParentEntry() ) ;
+    	        adqlTree.repaint() ;
+        	}
+	    }
+	}
+	
+	private class UndoAction extends AbstractAction {
+	    
+	    CommandFactory.UndoManager undoManager ;
+	    
+	    public UndoAction() {
+	        super() ;
+	        undoManager = adqlTree.getCommandFactory().getUndoManager() ;
+	        super.putValue( Action.NAME, undoManager.getUndoPresentationName() ) ;
+	        setEnabled( undoManager.canUndo() ) ;
+	    }
+	    
+	    public void actionPerformed( ActionEvent e ) {
+	        DefaultTreeModel model = (DefaultTreeModel)adqlTree.getModel() ;
+	        AbstractCommand ac = undoManager.getCommandToBeUndone() ;
+	        undoManager.undo() ;	       
+	        model.nodeStructureChanged( (TreeNode)adqlTree.getModel().getRoot() ) ;	  
+	        adqlTree.openBranches() ;
 	        adqlTree.repaint() ;
 	    }
 	    
 	}
 	
-
-	private class PasteIntoAction extends AbstractAction {
-	    private AdqlEntry entry ;
-	    private XmlObject pasteObject;
-	    private AdqlCommand suitableCommand ;
-	    private int validType ;
-	       
-	    public PasteIntoAction( AdqlEntry entry ) {
-	        super( "Paste into" ) ;
-	        this.entry = entry ;
-	        setEnabled( testAndBuildSuitability() ) ;
-	    }
+	private class RedoAction extends AbstractAction {
 	    
-	    private boolean testAndBuildSuitability() {
-	        TreePath path = adqlTree.getSelectionPath() ;
-	        // If the path is null or there is no parent
-	        // Then we cannot paste into this entry...
-	        if( path == null || path.getPathCount() < 2 )
-	            return false ;
-	        // If the clipboard is empty then there is nothing to paste...
-	        if( clipBoard == null )
-	            return false ;
-	        // If the target allows for no children, then we dont paste into it.
-	        SchemaProperty[] elements = entry.getElementProperties() ;
-	        if( elements == null || elements.length == 0 ) 
-	        	return false ;        
-	        // Check that the last clipboard object is suitable to paste into the target...
-	        pasteObject = clipBoard ;
-	        if( AdqlCommand.isSuitablePasteTarget( entry, pasteObject ) == false )
-	            return false ;
-	        
-	        // Build array of possible insert commands for target...
-	        ArrayList commands = AdqlCommand.buildCommands( entry ) ; 
-	        
-	        // Attempt to find a suitable match of types...
-	        int result[] = AdqlCommand.findSuitableMatch( commands, pasteObject ) ;	        
-	        if( result[0] == -1 )
-	            return false ;
-	        this.suitableCommand = (AdqlCommand)commands.get( result[0] ) ;
-	        this.validType = result[1] ;
-	        return true ;
+	    CommandFactory.UndoManager undoManager ;
+	    
+	    public RedoAction() {
+	        super() ;
+	        undoManager = adqlTree.getCommandFactory().getUndoManager() ;
+	        super.putValue( Action.NAME, undoManager.getRedoPresentationName() ) ;
+	        setEnabled( undoManager.canRedo() ) ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-	        // Now do the business.
-	        // Insert a basic object...
-	        XmlObject newObject1 = insertObject( suitableCommand, validType ) ;
-	        // Copy contents of paste object into it...
-	        XmlObject newObject2 = newObject1.set( pasteObject ) ;
-
-            // Create the new tree node instance (and pray it works)...
-        	AdqlEntry.newInstance( entry, newObject2 ) ;  
-        	
-        	// Refresh tree...
-	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( entry ) ;
-	        adqlTree.repaint() ;
-	        
+	        DefaultTreeModel model = (DefaultTreeModel)adqlTree.getModel() ;
+	        AbstractCommand ac = undoManager.getCommandToBeRedone() ;
+	        undoManager.redo() ;
+	        model.nodeStructureChanged( (TreeNode)model.getRoot() ) ;
+	        adqlTree.openBranches() ;
+	        adqlTree.repaint() ;	     
 	    }
-	  
-	        
-	    private XmlObject insertObject( AdqlCommand commandBean, int subType ) {
-            AdqlEntry parent = commandBean.getEntry() ;
-            XmlObject parentObject = parent.getXmlObject() ;
-            SchemaType schemaType = commandBean.getConcreteTypes()[subType] ;
-            XmlObject newObject = null ; 
-            if( commandBean.isArray() ) {                
-                newObject = AdqlUtils.addNewToEndOfArray( parentObject, commandBean.getElementName() ) ;
-                newObject = newObject.changeType( schemaType ) ;
-            }
-            else {
-                if( schemaType.isBuiltinType() ) {
-                    newObject = XmlObject.Factory.newInstance().changeType( schemaType ) ;
-                    newObject = setDefaultValue( newObject ) ;
-                }
-                else {            
-                    newObject = AdqlUtils.addNew( parentObject, commandBean.getElementName() ) ;
-                    if( newObject != null ) {
-                        newObject = newObject.changeType( schemaType ) ;
-                    }
-                    else {
-                        newObject = XmlObject.Factory.newInstance().changeType( commandBean.getElement().javaBasedOnType() ) ;
-                        newObject = newObject.changeType( schemaType ) ;
-                        newObject = setDefaultValue( newObject ) ;
-                        AdqlUtils.set( parentObject, commandBean.getElementName(), newObject ) ; 
-                    }
-                }
-            } 
-            return newObject ;
-        }
 	    
 	}
-		
 	
 	private class EditAction extends AbstractAction {
 	    private AdqlEntry entry ;
@@ -1498,47 +1073,23 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    }
 	}
 	
-	public class InsertAction extends AbstractAction {
+	private class InsertAction extends AbstractAction {
 	    
-	    protected AdqlCommand commandBean ;
-	    protected int indexOfConcreteSubtype ;
-	    protected AdqlEntry newEntry ;
-	    protected XmlObject newValueObject ;
+	    protected StandardInsertCommand command ;
 	    
-	    public InsertAction( String name, AdqlCommand commandBean ) {
+	    public InsertAction( String name, StandardInsertCommand command ) {
 	        super( name ) ;
-	        this.commandBean = commandBean ;
-	        indexOfConcreteSubtype = -1 ;   
-	        if( name.length() == 0 )
-	            if( DEBUG_ENABLED ) log.debug( "Empty name for " + commandBean.getElementName() ) ;
+	        this.command = command ;
+	        this.setEnabled( command.isChildEnabled() ) ;
 	    }
-	    
-	    public InsertAction( String name, AdqlCommand commandBean, int indexOfConcreteSubtype ) {
-	        super( name ) ;
-	        this.commandBean = commandBean ;
-	        this.indexOfConcreteSubtype = indexOfConcreteSubtype ;
-	        if( name.length() == 0 ) {
-	            if( DEBUG_ENABLED ) log.debug( "Empty name for " + commandBean.getElementName() ) ;
-	            if( indexOfConcreteSubtype == -1 )
-	                if( DEBUG_ENABLED ) log.debug( "with no concrete subtypes." ) ;
-	            else 
-	                if( DEBUG_ENABLED ) log.debug( "... " + commandBean.getConcreteTypes()[indexOfConcreteSubtype].toString() ) ;
-	        }
-	    }
-	    
 	    
         public void actionPerformed( ActionEvent e ) {
             TreePath path = adqlTree.getSelectionPath() ;
             if( path == null )
                 return ;
-            
-            AdqlEntry parent = commandBean.getEntry() ;          
-            if( this.indexOfConcreteSubtype == -1 ) {
-                this.insertType() ;
-            }
-            else {
-                this.insertConcreteSubtype() ;
-            }
+         
+            command.setSelectedValue( e.getActionCommand() ) ;
+            CommandExec.Result result = command.execute() ;
             
 //            if( newEntry.isBottomLeafEditable() ) {
 //                String typeName = newEntry.getSchemaType().getName().getLocalPart() ;
@@ -1551,18 +1102,15 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 //                }           
 //            }
             
-            if( e != null ) {
+            if( result != CommandExec.FAILED ) {
+                adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
                 DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
-    	        model.nodeStructureChanged( parent ) ;
-    	        path = path.pathByAddingChild( newEntry ) ;
-    	        adqlTree.scrollPathToVisible( path ) ;
+    	        model.nodeStructureChanged( command.getParentEntry() ) ;
+//    	        path = path.pathByAddingChild( command.getChildEntry() ) ;
+//    	        adqlTree.scrollPathToVisible( path ) ;
                 adqlTree.repaint() ;
+                
             }
-	        DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
-	        model.nodeStructureChanged( parent ) ;
-	        path = path.pathByAddingChild( newEntry ) ;
-	        adqlTree.scrollPathToVisible( path ) ;
-            adqlTree.repaint() ;
             
             // Switch to edit for a newly created bottom leaf...
             // This needs reviewing where multiple inserts are required...
@@ -1578,359 +1126,11 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
  
         } // end of actionPerformed() 
         
-        protected void insertType() {
-            if( DEBUG_ENABLED ) log.debug( "insertType() just adding " + commandBean.getElementName() ) ;
-            AdqlEntry parent = commandBean.getEntry() ;
-            XmlObject o = parent.getXmlObject() ;
-            XmlObject newObject = AdqlUtils.addNew( o, commandBean.getElementName() ) ;
-            this.newEntry = AdqlEntry.newInstance( parent, newObject ) ;
-        }
-        
-        protected void insertConcreteSubtype() {
-            AdqlEntry parent = commandBean.getEntry() ;
-            XmlObject parentObject = parent.getXmlObject() ;
-            SchemaType schemaType = commandBean.getConcreteTypes()[indexOfConcreteSubtype] ;
-            if( DEBUG_ENABLED ) log.debug( "insertConcreteSubtype() just adding " + schemaType.getName().getLocalPart() ) ;
-            XmlObject newObject = null ; 
-            this.newEntry = null ;
-            if( commandBean.isArray() ) {                
-                newObject = AdqlUtils.addNewToEndOfArray( parentObject, commandBean.getElementName() ) ;
-                newObject = newObject.changeType( schemaType ) ;
-                newObject = setDefaultValue( newObject ) ;
-                newEntry = AdqlEntry.newInstance( parent, newObject ) ;
-            }
-            else {
-                if( schemaType.isBuiltinType() ) {
-                    newValueObject = XmlObject.Factory.newInstance().changeType( schemaType ) ;
-                    newValueObject = this.setDefaultValue( newValueObject ) ;
-                    AdqlUtils.set( parentObject, commandBean.getElementName(), newValueObject ) ;                   
-                    XmlCursor cursor = parentObject.newCursor() ;
-                    cursor.toFirstChild();
-                    do {
-                        if( cursor.getName().getLocalPart().equals( commandBean.getElementName() ) ) {
-                            newObject = cursor.getObject() ;
-//                            break ;
-                        }
-                    } while( cursor.toNextSibling() ) ;                   
-                    newEntry = AdqlEntry.newInstance( parent, newObject ) ;
-                }
-                else {            
-                    newObject = AdqlUtils.addNew( parentObject, commandBean.getElementName() ) ;
-                    if( newObject != null ) {
-                        newObject = newObject.changeType( schemaType ) ;
-                        newObject = setDefaultValue( newObject ) ;
-                        newEntry = AdqlEntry.newInstance( parent, newObject ) ;
-                    }
-                    else {
-                        newValueObject = XmlObject.Factory.newInstance().changeType( commandBean.getElement().javaBasedOnType() ) ;
-                        newValueObject = newValueObject.changeType( schemaType ) ;
-                        newValueObject = setDefaultValue( newValueObject ) ;
-                        AdqlUtils.set( parentObject, commandBean.getElementName(), newValueObject ) ; 
-//                        newValueObject = newValueObject.changeType( schemaType ) ;
-                        XmlCursor cursor = parentObject.newCursor() ;
-                        cursor.toFirstChild();
-                        do {
-                            if( cursor.getName().getLocalPart().equals( commandBean.getElementName() ) ) {
-                                newObject = cursor.getObject() ;
-                                break ;
-                            }
-                        } while( cursor.toNextSibling() ) ;                   
-                        newEntry = AdqlEntry.newInstance( parent, newObject ) ;
-                    }
-                }
-            }   
-        }
-        
-        
-        private XmlObject setDefaultValue( XmlObject xmlObject ) {
-            XmlObject retVal = xmlObject ;     
-            if( xmlObject != null ) {
-                SchemaType type = xmlObject.schemaType() ;
-                if( type.isBuiltinType() ){
-                    retVal = setBuiltInDefaults( xmlObject ) ;
-                }
-                else if( isAttributeDriven( type ) ) {
-                    retVal = setAttributeDrivenDefaults( xmlObject ) ;
-                }
-                else if( type.isSimpleType() ) {
-                    retVal = setDerivedSimpleDefaults( xmlObject ) ;
-                }
-            }
-            return retVal ;
-        }
-        
-        private XmlObject setBuiltInDefaults( XmlObject xmlObject ) {
-            int typeCode = xmlObject.schemaType().getBuiltinTypeCode() ;
-            switch( typeCode ) {              
-            	case SchemaType.BTC_STRING: 
-            	    ((XmlString)xmlObject).setStringValue( "" ) ;
-            		break ;
-            	case SchemaType.BTC_DECIMAL:
-            	    ((XmlDecimal)xmlObject).setBigDecimalValue( new BigDecimal(0) ) ;
-            		break ;
-            	case SchemaType.BTC_FLOAT:
-            	    ((XmlFloat)xmlObject).setFloatValue( 0 ) ;
-            		break ;
-            	case SchemaType.BTC_INT:
-            	    ((XmlInt)xmlObject).setIntValue( 0 ) ;
-            		break ;
-               	case SchemaType.BTC_INTEGER:
-            	    ((XmlInteger)xmlObject).setBigIntegerValue( new BigInteger("0") ) ;
-            		break ;
-            	case SchemaType.BTC_DOUBLE:
-            	    ((XmlDouble)xmlObject).setDoubleValue( 0 ) ;
-        			break ;
-               	case SchemaType.BTC_LONG:
-            	    ((XmlLong)xmlObject).setLongValue( 0 ) ;
-              	case SchemaType.BTC_UNSIGNED_LONG:
-            	    ((XmlUnsignedLong)xmlObject).setBigDecimalValue( new BigDecimal(0) ) ;
-        			break ;
-              	case SchemaType.BTC_POSITIVE_INTEGER:
-            	    ((XmlPositiveInteger)xmlObject).setBigDecimalValue( new BigDecimal(1) ) ;
-        			break ;
-              	case SchemaType.BTC_UNSIGNED_SHORT:
-            	    ((XmlUnsignedShort)xmlObject).setIntValue( 0 ) ;
-        			break ;
-              	case SchemaType.BTC_UNSIGNED_INT:
-            	    ((XmlUnsignedInt)xmlObject).setLongValue( 0 ) ;
-        			break ;
-            	default:
-            	    ; // and for the rest do nothing (for the moment)                 
-            }   
-            return xmlObject ;
-        }
-        
-        private boolean isAttributeDriven( SchemaType type ) {
-            String[] name = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-            return ( name != null && name.length == 1 ) ;
-        }
-        
-        private XmlObject setAttributeDrivenDefaults( XmlObject xmlObject ) {
-            XmlObject retVal = xmlObject ;
-            SchemaType type = xmlObject.schemaType() ;
-            String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-            XmlString tempObject = XmlString.Factory.newInstance() ;
-            tempObject.setStringValue( (String)AdqlData.ATTRIBUTE_DEFAULTS.get( type.getName().getLocalPart() ) ) ; 
-            
-            //
-            // There is a better way to do this provided I can get at the fully qualified name
-            // of the attribute. Needs thinking about.
-            // Another point. The schema may itself define a default value. This too can be picked up.
-            SchemaType attrType = null ;
-            SchemaProperty[] attrProperties = type.getAttributeProperties() ;
-            for( int i=0; i<attrProperties.length; i++ ) {
-                if( attrProperties[i].getJavaPropertyName().equals( attributeNames[0] ) ) {
-                    attrType = attrProperties[i].getType();
-                    break ;
-                }
-            }
-            XmlObject valueObject = tempObject.changeType( attrType ) ;        
-            AdqlUtils.set( xmlObject, attributeNames[0], valueObject ) ; 
-            return xmlObject ;
-        }
-        
-        private XmlObject setDerivedSimpleDefaults( XmlObject xmlObject ) {
-            XmlObject retVal = xmlObject ;
-            SchemaType type = xmlObject.schemaType() ;
-            // Cooerce the empty element into an XmlString...
-            XmlString tempObject = (XmlString)xmlObject.changeType( XmlString.type ) ;
-            tempObject.setStringValue( (String)AdqlData.DERIVED_DEFAULTS.get( type.getName().getLocalPart() ) ) ;
-            // Cooerce back to original type...
-            retVal = tempObject.changeType( type ) ;
-            return retVal ;
-        }
-        
-} // end of class InsertAction
-  
-
-public class InsertTableAction extends InsertAction {  
-    protected DatabaseBean db ;
-    protected int indexOfTable ;
-    
-    public InsertTableAction( String name
-                            , AdqlCommand commandBean
-                            , int indexOfConcreteSubtype
-                            , DatabaseBean db
-                            , int indexOfTable ) {
-        super( name, commandBean, indexOfConcreteSubtype ) ;
-        this.db = db ;
-        this.indexOfTable = indexOfTable ;
-    }   
-    
-    
-    private void removeDummyTable() { 
-        // This processing attempts the automatic removal of the dummy table 
-        // which is included in the initial template for a new query...
-        // (Bit of a bind I'm afraid)
-        AdqlEntry parent = commandBean.getEntry() ;
-        XmlObject o = parent.getXmlObject() ;
-        int arraySize = AdqlUtils.sizeOfArray( o, commandBean.getElementName() ) ;
-        if( arraySize == 1 ) {
-            Object table = AdqlUtils.getArray( o, commandBean.getElementName(), 0 ) ;
-            String name = ((XmlString)AdqlUtils.get( (XmlObject)table, "name" )).getStringValue() ;
-            if( name.equals( AdqlData.DUMMY_TABLE_NAME ) ) {
-                AdqlEntry entry = parent.getChild( 0 ) ;           
-    	        AdqlEntry.removeInstance( parent, entry ) ;
-            }
-        }
-        checkedForDummyTable = true ;
-    }
-    
-    protected void insertConcreteSubtype() {
-        if( checkedForDummyTable == false ) {
-            removeDummyTable() ;
-        }
-        super.insertConcreteSubtype() ;
-        String alias = adqlTree.popAliasStack() ;
-        AdqlUtils.set( newEntry.getXmlObject()
-                     , "alias"
-                     , XmlString.Factory.newValue( alias ) ) ;
-        AdqlUtils.set( newEntry.getXmlObject()
-                     , "name"
-                     , XmlString.Factory.newValue( db.getTables()[indexOfTable].getName() ) ) ;
-        String name = commandBean.getConcreteTypes()[indexOfConcreteSubtype].getName().getLocalPart() ;
-        if( name.equalsIgnoreCase( "archiveTableType" ) ) {
-            AdqlUtils.set( newEntry.getXmlObject()
-                         , "archive"
-                         , XmlString.Factory.newValue( db.getName() ) ) ;
-        }
-        adqlTree.getFromTables().put( db.getTables()[indexOfTable].getName(), adqlTree.new TableData( db, indexOfTable, alias ) ) ;
-    }
-   
-} // end of class InsertTableAction
-
-
-
-public class InsertColumnAction extends InsertAction {  
-    protected AdqlTree.TableData tableData ;
-    protected XmlObject xmlTable ;
-    protected ColumnBean column ;
-    
-    public InsertColumnAction( String name
-                             , AdqlCommand commandBean
-                             , int indexOfConcreteSubtype
-                             , AdqlTree.TableData tableData
-                             , ColumnBean column ) {
-        super( name, commandBean, indexOfConcreteSubtype ) ;
-        this.tableData = tableData ;
-        this.column = column ;
-        this.putValue( AbstractAction.SHORT_DESCRIPTION, mkTooltip( column ) ) ;
-    }   
-    
-    protected void insertConcreteSubtype() {
-        if( checkedForAllColumnsOption == false ) {
-            removeAllColumnsOption() ;
-        }
-        super.insertConcreteSubtype() ;
-        // Somehow there should be some choice here regarding whether the table name or alias is used.
-        // And also somewhere a place the user can choose the alias rather than  have it automatically
-        // assigned.
-        
-        // But for the moment, we can test for the presence of alias...
-        if( tableData.alias != null ) {
-            AdqlUtils.set( newEntry.getXmlObject()
-                         , "table"
-                         , XmlString.Factory.newValue( tableData.alias ) ) ;
-        }
-        else {
-            AdqlUtils.set( newEntry.getXmlObject()
-                         , "table"
-                         , XmlString.Factory.newValue( tableData.database.getTables()[ tableData.tableIndex ].getName() ) ) ;
-        }
- 
-        AdqlUtils.set( newEntry.getXmlObject()
-                     , "name"
-                     , XmlString.Factory.newValue( column.getName() ) ) ;
-    }
-    
-    private String mkTooltip(ColumnBean c) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<html>");
-        sb.append("<b>Description</b>:").append(c.getDescription()).append("<br>");
-        sb.append("<b>UCD</b>:").append(c.getUCD()).append("<br>");
-        sb.append("<b>Datatype</b>:").append(c.getDatatype()).append("<br>");
-        sb.append("<b>Unit</b>:").append(c.getUnit()).append("<br>");                            
-        sb.append("</html>");
-        return sb.toString();
-    }
-    
-    private void removeAllColumnsOption() { 
-        // This processing attempts the automatic removal of the all-
-        // columns option which is included in the initial template 
-        // for a new query...
-        
-        // JL: I now think it is an open question whether this should be
-        // removed automatically or left up to the user to do so.
-        // When I first tried this out, I was far too severe on removing 
-        // the all columns option, which meant in effect the removal did
-        // not work most of the time. For the time being I have reset the
-        // algorithm to check that the background insertion is in the 
-        // selectionListType ("Items" in the display). If this condition
-        // is not met, then the all-columns option will be left in place.
-        // (ie: if you are inserting a column reference into a comparison,
-        // then the all-columns option will not be affected).
-        
-        AdqlEntry parent = commandBean.getEntry() ;
-        XmlObject o = parent.getXmlObject() ;
-        if( !AdqlUtils.areTypesEqual( o.schemaType(), AdqlUtils.getType( o, AdqlData.SELECTION_LIST_TYPE ) ) ) 
-           return ;
-        int arraySize = AdqlUtils.sizeOfArray( o, "Item" ) ;
-        if( arraySize == 1 ) {
-            XmlObject item = (XmlObject)AdqlUtils.getArray( o, commandBean.getElementName(), 0 ) ;
-            String name = item.schemaType().getName().getLocalPart() ;
-            if( name.equals( AdqlData.ALL_SELECTION_ITEM_TYPE ) ) {
-                AdqlEntry entry = parent.getChild( 0 ) ;           
-    	        AdqlEntry.removeInstance( parent, entry ) ;
-            }
-        }
-        checkedForAllColumnsOption = true ;
-    }
-   
-} // end of class InsertColumnAction
-
-
-public class InsertEnumeratedAction extends InsertAction {  
-    
-    public InsertEnumeratedAction( String name
-                                 , AdqlCommand commandBean
-                                 , int indexOfConcreteSubtype ) {
-        super( name, commandBean, indexOfConcreteSubtype ) ;
-    }   
-    
-    protected void insertConcreteSubtype() {
-        if( DEBUG_ENABLED ) log.debug( "InsertEnumeratedAction" ) ;
-        super.insertConcreteSubtype() ;
-        XmlObject obj = newEntry.getXmlObject() ;
-        SchemaType schemaType = obj.schemaType() ;
-        SchemaType attrSchemaType = null ;
-        String attributeName = null ;
-        SchemaStringEnumEntry[] enumEntries = null ;
-        SchemaProperty[] attrProperties = schemaType.getAttributeProperties() ;
-        for( int i=0; i<attrProperties.length; i++ ) {
-            attrSchemaType = attrProperties[i].getType() ;
-            if( attrSchemaType.hasStringEnumValues() ) {
-                attributeName = attrProperties[i].getJavaPropertyName() ;
-                enumEntries = attrSchemaType.getStringEnumEntries() ;
-//                for( int j=0; j<enumEntries.length; j++ ) {
-//                    
-//                }
-                break ;
-            }
-        }
-        XmlObject enumValue = XmlString.Factory.newInstance() ;
-        enumValue = enumValue.set(  XmlString.Factory.newValue( ((String)super.getValue( NAME )).trim() ) ) ;
-        enumValue = enumValue.changeType( attrSchemaType ) ;       
-        AdqlUtils.set( newEntry.getXmlObject()
-                     , attributeName
-                     , enumValue ) ;  
-    }
-   
-} // end of class InsertEnumeratedAction
-
-    
+	} // end of class InsertAction
+	
     protected JButton getChooseResourceButton() {
         if (chooseResourceButton == null) {
-            chooseResourceButton = new JButton("Set Catalog Definition..");
+            chooseResourceButton = new JButton("Set Archive Definition..");
             chooseResourceButton.addActionListener(new ActionListener() {               
                 public void actionPerformed(ActionEvent e) {
                    Object obj = regChooser.chooseResourceWithFilter( "Select Catalogue description for " 
@@ -1983,7 +1183,10 @@ public class InsertEnumeratedAction extends InsertAction {
                 final TableBean[] tables = dbs[0].getTables();
                 for( int j=0; j<tables.length; j++) {
                     tabbedCatalogPane.addTab( tables[j].getName()
-                                            , new TableMetadataPanel( ADQLToolEditorPanel.this, adqlTree, dbs[0], j ) ) ;
+                                            , new TableMetadataPanel( ADQLToolEditorPanel.this
+                                                                    , adqlTree
+                                                                    , dbs[0]
+                                                                    , tables[j] ) ) ;
                 }
                 catalog1.setLayout( new GridBagLayout() ) ;
                 GridBagConstraints gbc = new GridBagConstraints();
@@ -1997,81 +1200,69 @@ public class InsertEnumeratedAction extends InsertAction {
         }
     }
     
-    
-    
-    
-    
-    
-    private JMenu getInsertColumnMenu( String name, AdqlCommand command, int typeIndex ) {
-        JMenu columnMenu = new JMenu( name ) ;
-        java.util.Set set = adqlTree.getFromTables().entrySet() ;
-        Iterator it = set.iterator() ;
-        AdqlTree.TableData tableData = null ;
-        TableBean table = null ;
-//        JMenu dbMenu = new JMenu( "", true ) ;
-//        columnMenu.add( dbMenu );
-        //
-        // At present we are only dealing with one database,
-        // so the database menu part is something of a cheat.
-        // Also, the tables and columns will eventually need sorting!
+  
+    private JMenu getEnumeratedMenus( StandardInsertCommand command ) {
+        JMenu menu = new JMenu( command.getChildDisplayName() ) ;
+        String[] attrValues = ((EnumeratedInsertCommand)command).getEnumeratedValues() ;
+        for( int i=0; i<attrValues.length; i++ ) {
+            menu.add( new JMenuItem( new InsertAction( attrValues[i], command ) ) );
+        }
+        return menu ;
+    }
+        
+    private JMenu getInsertColumnMenu( StandardInsertCommand command ) {
+        ColumnInsertCommand cic = (ColumnInsertCommand)command ;
+        JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
+        insertMenu.setEnabled( false ) ;
+        Iterator it = adqlTree.getFromTables().entrySet().iterator() ;
+        ColumnInsertCommand cicForTable = null ;
+        // For each table ...
         while( it.hasNext() ) {
-             tableData = (AdqlTree.TableData)((java.util.Map.Entry)it.next()).getValue() ;
+            if( cicForTable == null ) {
+                cic.setArchive( adqlTree.getCatalogueResource().getDatabases()[0] ) ;
+                cicForTable = cic ;
+                insertMenu.setEnabled( true ) ;
+            }
+            else {
+                // Shallow copy of the command...
+                cicForTable = new ColumnInsertCommand( cic ) ;
+            }
+            AdqlTree.TableData tableData = (AdqlTree.TableData)((java.util.Map.Entry)it.next()).getValue() ;
             try {
-                table = tableData.database.getTables()[ tableData.tableIndex ] ;
+                TableBean table = tableData.getTable() ;
+                cicForTable.setTable( table ) ;
+                cicForTable.setTableAlias( tableData.alias ) ;
+                JMenu tableMenu = new JMenu( table.getName() ) ;
+                insertMenu.add( tableMenu ) ;
+                ColumnBean[] columns = table.getColumns();
+                for( int i=0; i<columns.length; i++ ) {
+                    tableMenu.add( new InsertAction( columns[i].getName(), cicForTable ) ) ;
+                }
             }
             catch( ArrayIndexOutOfBoundsException ex ) {
                 continue ;
-            }       
-            JMenu tableMenu = new JMenu( table.getName(),true ) ;
-//            dbMenu.add( tableMenu );
-            columnMenu.add( tableMenu );
-//            tableMenu.setToolTipText( table.getDescription() ) ;          
-            tableMenu.addSeparator();
-            final ColumnBean[] cols = table.getColumns();
-            for (int k = 0; k < cols.length; k++) {
-                tableMenu.add( new InsertColumnAction( cols[k].getName(), command, typeIndex, tableData, cols[k] ) ) ;
-            }      
-        }
-//        dbMenu.setText( tableData.database.getName() ) ;
-//        dbMenu.setToolTipText( tableData.database.getDescription() );     
-        return columnMenu;
+            }                       
+        }           
+        return insertMenu ;
     }
-    
-    
-    private JMenu getInsertTableMenu( String name, AdqlCommand command, int typeIndex ) {
-        JMenu insertMenu = new JMenu( name ) ;
-        DatabaseBean[] dbs = adqlTree.getCatalogueResource().getDatabases();
-        for( int i = 0; i < dbs.length; i++ ) {
-//            JMenu dbMenu = new JMenu( dbs[i].getName(), true );
-//            dbMenu.setToolTipText( dbs[i].getDescription() );
-//            insertMenu.add( dbMenu );
-            final TableBean[] tables = dbs[i].getTables();
-            for (int j = 0; j < tables.length; j++) {
-                InsertAction 
-                	action = new InsertTableAction( tables[j].getName()
-                                                  , command
-                                                  , typeIndex
-                                                  , dbs[i]
-                                                  , j ) ;
-//                JMenuItem menuItem = dbMenu.add( action ) ;
-                JMenuItem menuItem = insertMenu.add( action ) ;
-//                menuItem.setToolTipText( tables[j].getDescription() );
-                // Grey out those already chosen...
-//                if( fromTables.containsKey( tables[j].getName() ) ) {
-////                   menuItem.setEnabled( false ) ;
-//                }
+       
+    private JMenu getInsertTableMenu( StandardInsertCommand command ) {
+        TableInsertCommand tic= (TableInsertCommand)command ;       
+        JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
+        TabularDatabaseInformation tdb = adqlTree.getCatalogueResource() ;
+        if( tdb != null ) {
+            DatabaseBean db = tdb.getDatabases()[0] ;
+            tic.setDatabase( db ) ;
+            TableBean[] tables = db.getTables() ;
+            for( int i=0; i<tables.length; i++ ){            
+               insertMenu.add( new InsertAction( tables[i].getName(), command ) ) ;
             }
         }
-        return insertMenu;
+        return insertMenu ;
     }
     
     
     private void setAdqlParameter() {
-//        // Only update the parameter value if the adql is instream.
-//        // ( ie: If the adql parameter is a remote reference to a file
-//        // containing the adql, then we simply return )...
-//        if( queryParam.hasIndirect() == true )
-//            return ;
         if( queryParam.hasIndirect() == true )
             queryParam.setIndirect( false ) ;
         AdqlEntry rootEntry = ((AdqlEntry)adqlTree.getModel().getRoot()) ;
@@ -2179,8 +1370,7 @@ public class InsertEnumeratedAction extends InsertAction {
         }
         
     }
-    
-    
+     
     private class AdqlXmlView extends AdqlView {
         
         //JTextPane xmlTextPane ;
@@ -2264,7 +1454,7 @@ public class InsertEnumeratedAction extends InsertAction {
             ) ;
                        
             scrTree.setViewportView( component ) ;
-            openBranches() ;
+            adqlTree.openBranches() ;
             this.controller.updateModel( this, ((AdqlEntry)adqlTree.getModel().getRoot()).getXmlObject() ) ;
             this.setLayout( new BorderLayout() ) ;
             this.add(scrTree, BorderLayout.CENTER );
@@ -2276,26 +1466,14 @@ public class InsertEnumeratedAction extends InsertAction {
             adqlTree.setTree( AdqlEntry.newInstance( this.controller.getRootInstance() ), registry, toolModel.getInfo().getId() );
             adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
             setAdqlParameter() ;
-            openBranches() ;
-        }
-        
-        private void openBranches() {
-            Object[] obj = new Object[2] ;
-            obj[0] = adqlTree.getModel().getRoot() ;
-            AdqlEntry childEntries[] = ((AdqlEntry)obj[0]).getChildren() ;
-            for( int i=0; i<childEntries.length; i++ ) {
-                obj[1] = childEntries[i] ;
-                TreePath path = new TreePath( obj ) ;
-                adqlTree.expandPath( path ) ;
-            } 
+            adqlTree.openBranches() ;
         }
         
         protected void selectionLost() {}
         protected void validateAdql() {}
         
     }
-    
-    
+      
     private class AdqlStringView extends AdqlView {
         
         //JTextPane adqlTextPane ;
@@ -2383,7 +1561,6 @@ public class InsertEnumeratedAction extends InsertAction {
            
     } // end of class AdqlStringView
 
-    
     private Point[]	elastic ;
     
     protected void paintChildren(Graphics g) {
@@ -2413,7 +1590,16 @@ public class InsertEnumeratedAction extends InsertAction {
         return adqlTree.getRoot() ;
     }
     
+    private boolean preConditionsForPaste() {
+        TreePath path = adqlTree.getSelectionPath() ;
+        // If the path is null or there is no parent
+        // Then we cannot paste into this entry...
+        if( path == null || path.getPathCount() < 2 )
+            return false ;
+        // If the clipboard is empty then there is nothing to paste...
+        if( clipBoard == null )
+            return false ;
+        return true ;
+    }
+    
 } // end of ADQLToolEditor
-
-
-

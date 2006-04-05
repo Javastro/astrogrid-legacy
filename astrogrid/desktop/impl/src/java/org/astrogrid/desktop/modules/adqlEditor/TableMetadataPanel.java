@@ -53,6 +53,7 @@ import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean ;
 import org.astrogrid.acr.astrogrid.ColumnBean ;
 import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
+import org.astrogrid.desktop.modules.adqlEditor.commands.*;
 
 /**
  * @author jl99
@@ -74,8 +75,8 @@ public class TableMetadataPanel extends JPanel {
     	DESCRIPTION = "Description" ;
     
     private TableBean astroTable ;
-    private DatabaseBean dbBean ;
-    private int tableIndex ;
+    private DatabaseBean databaseBean ;
+    // private int tableIndex ;
     private JTable displayTable ;
     private JScrollPane displayTablerScrollPane ;
     private AdqlTree adqlTree ;
@@ -87,23 +88,27 @@ public class TableMetadataPanel extends JPanel {
     private SchemaType arrayOfFromTableType ;
     private SchemaType tableType ;
 
-    public TableMetadataPanel( ADQLToolEditorPanel adqlToolEditorPanel
-                             , AdqlTree adqlTree
-                             , DatabaseBean dbBean
-                             , int tableIndex ) {
-        this( adqlToolEditorPanel, adqlTree, dbBean.getTables()[tableIndex] ) ;
-        this.dbBean = dbBean ;
-        this.tableIndex = tableIndex ;
-    }
+//    public TableMetadataPanel( ADQLToolEditorPanel adqlToolEditorPanel
+//                             , AdqlTree adqlTree
+//                             , DatabaseBean dbBean
+//                             , int tableIndex ) {
+//        this( adqlToolEditorPanel, adqlTree, dbBean.getTables()[tableIndex] ) ;
+//        this.dbBean = dbBean ;
+//        this.tableIndex = tableIndex ;
+//    }
     
     
     /**
      * 
      */
-    public TableMetadataPanel( ADQLToolEditorPanel adqlToolEditorPanel, AdqlTree adqlTree, TableBean tableBean ) {
+    public TableMetadataPanel( ADQLToolEditorPanel adqlToolEditorPanel
+                             , AdqlTree adqlTree
+                             , DatabaseBean databaseBean 
+                             , TableBean tableBean ) {
         super();
         this.adqlToolEditorPanel = adqlToolEditorPanel ;
         this.adqlTree = adqlTree ;
+        this.databaseBean = databaseBean ;
         this.astroTable = tableBean ;
         setLayout( new GridBagLayout() ) ;       
         GridBagConstraints gbc ;
@@ -319,9 +324,8 @@ public class TableMetadataPanel extends JPanel {
     } // end of class ContextPopup
     
     private class InsertAction extends AbstractAction {
-        ArrayList commands ; 
-        AdqlCommand suitableCommand ;
-        int concreteType ;
+        
+        MultipleColumnInsertCommand command ;
 	   
 	    public InsertAction( String contextInstruction ) {
 	        super( contextInstruction ) ;
@@ -338,413 +342,49 @@ public class TableMetadataPanel extends JPanel {
 	        SchemaProperty[] elements = entry.getElementProperties() ;
 	        if( elements == null || elements.length == 0 ) 
 	        	return false ;  
-	        //  Check that it is OK to create a column reference into the target...
-	        if( AdqlCommand.isSuitablePasteTarget( entry, getColumnReferenceType() ) == false ) 
-	            return false ;
-	        //  Build array of possible insert commands for target...
-	        commands = AdqlCommand.buildCommands( entry ) ; 
+	                
+	        // This is admittedly confusing terminology...
+	        // Since the JTable is holding information about relational table columns
+	        // in a display table with each row displaying metadata about a column!!!
+	        int[] selectedColumnBeans = displayTable.getSelectedRows() ;
+	        AstroTableModel model = (AstroTableModel)displayTable.getModel() ;
+	        ColumnBean[] columnBeans = new ColumnBean[ selectedColumnBeans.length ] ;
 	        
-	        //  Find a suitable match of types...
-	        int result[] = AdqlCommand.findSuitableMatch( commands, getColumnReferenceType() ) ;
-	        if( result[0] == -1 )
-	            return false ;
-	        suitableCommand = (AdqlCommand)commands.get( result[0] ) ;
-	        concreteType = result[1] ;
-	        
-	        // Now for the specific testing of arrays ...
-	        int count = displayTable.getSelectedRowCount() ;
-	        if( suitableCommand.isArray() ) {
-	            if( suitableCommand.isInsertableIntoArray( count ) )
-	                return true ;
-	            else
-	                return false ;
+	        for( int i=0 ; i<selectedColumnBeans.length; i++ ) {
+	            columnBeans[i] = model.getColumnBeanGivenRowIndex( selectedColumnBeans[i] ) ;            
 	        }
-	       
+	        CommandFactory factory = adqlTree.getCommandFactory() ;
+	        command = factory.newMultipleColumnInsertCommand( entry 
+	                                                        , AdqlUtils.getType( entry.getXmlObject(), AdqlData.COLUMN_REFERENCE_TYPE ) ) ;
+	        if( command == null ) {
+	            return false ;
+	        }
+	        command.setArchive( databaseBean ) ;
+	        command.setTable( astroTable ) ;
+	        command.setColumns( columnBeans ) ;
 	        return true ;
 	        
 	    }
-	    
-	    
+	       
 	    public void actionPerformed( ActionEvent e ) {
-	        //
-	        // If nothing has been selected in the tree (or in the equivalent edit panes)
-	        // or the user has managed to select elements above the primary 
-	        // select clause (impossible but still we cater for it!)
-	        // Then we just ignore the attempt...
 	        TreePath path = adqlTree.getSelectionPath() ;
-	        if( path == null || path.getPathCount() < 2 )
-	            return ;	      
-	        // If the target allows for no children, then we cannot create into it.
-	        // (This is weak. We should allow creating over bottom leaves)
-	        AdqlEntry entry = (AdqlEntry)path.getLastPathComponent() ;
-	        SchemaProperty[] elements = entry.getElementProperties() ;
-	        if( elements == null || elements.length == 0 ) 
-	        	return ;        
-	        // Check that it is OK to create a column reference into the target...
-	        if( AdqlCommand.isSuitablePasteTarget( entry, getColumnReferenceType() ) == false ) {
-	            if( DEBUG_ENABLED ) log.debug( "columnReferenceType unsuitable" ) ;
-	            return ;
-	        }
-	  
-	        // Build array of possible insert commands for target...
-	        ArrayList commands = AdqlCommand.buildCommands( entry ) ; 
+            if( path == null )
+                return ;
+            
+	        CommandExec.Result result = command.execute()  ;   
+	       	        
+	        if( result != CommandExec.FAILED ) {
+                DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+    	        model.nodeStructureChanged( command.getParentEntry() ) ;
+    	        model.nodeStructureChanged( command.findFromClause( path ) ) ;
+                adqlTree.repaint() ;
+            }
 	        
-	        // Attempt to find a suitable match of types...
-	        int result[] = AdqlCommand.findSuitableMatch( commands, getColumnReferenceType() ) ;	        
-	        if( result[0] == -1 ) {
-	            if( DEBUG_ENABLED ) log.debug( "could not find a suitable match." ) ;
-	            return ;
-	        }
-	        if( DEBUG_ENABLED ) log.debug( "columnReferenceType suitable..." ) ;
-	        if( DEBUG_ENABLED ) log.debug( "found: " 
-	                 + ((AdqlCommand)commands.get( result[0] )).getConcreteTypes()[ result[1] ].getName() ) ;	
 	        
-	        //
-	        // The column reference must be within the remit of 
-	        // either a FROM clause within a normal SELECT statement,
-	        // or a tables' array within a JOIN TABLE clause...
-	        if( isJoinTableBound() ) {
-	            maintainArrayOfJoinTables() ;
-	        }
-	        else {
-	            maintainFromTables( path ) ;
-	        }
-	        //
-	        // At last we are in a position to include the user's chosen columns for this table...
-	        addSelectedColumns( (AdqlCommand)commands.get( result[0] ), result[1] ) ;
 	        
-	        return ;
+	        
 	    }
 	        
     }
-    
- 
-    
-    
-    
-//	private class PasteIntoAction extends AbstractAction {
-//	    private AdqlEntry entry ;
-//	    private XmlObject pasteObject;
-//	    private AdqlCommand suitableCommand ;
-//	    private int validType ;
-//	       
-//	    public PasteIntoAction( AdqlEntry entry ) {
-//	        super( "Paste into" ) ;
-//	        this.entry = entry ;
-//	        setEnabled( testAndBuildSuitability() ) ;
-//	    }
-//	    
-//	    private boolean testAndBuildSuitability() {
-//	        TreePath path = adqlTree.getSelectionPath() ;
-//	        // If the path is null or there is no parent
-//	        // Then we cannot paste into this entry...
-//	        if( path == null || path.getPathCount() < 2 )
-//	            return false ;
-//	        // If the clipboard is empty then there is nothing to paste...
-//	        if( clipBoard.isEmpty() )
-//	            return false ;
-//	        // If the target allows for no children, then we dont paste into it.
-//	        SchemaProperty[] elements = entry.getElementProperties() ;
-//	        if( elements == null || elements.length == 0 ) 
-//	        	return false ;        
-//	        // Check that the last clipboard object is suitable to paste into the target...
-//	        pasteObject = (XmlObject)clipBoard.get( clipBoard.size() - 1 ) ;
-//	        if( AdqlCommand.isSuitablePasteTarget( entry, pasteObject ) == false )
-//	            return false ;
-//	        
-//	        // Build array of possible insert commands for target...
-//	        ArrayList commands = AdqlCommand.buildCommands( entry ) ; 
-//	        
-//	        // Attempt to find a suitable match of types...
-//	        int result[] = AdqlCommand.findSuitableMatch( commands, pasteObject ) ;	        
-//	        if( result[0] == -1 )
-//	            return false ;
-//	        this.suitableCommand = (AdqlCommand)commands.get( result[0] ) ;
-//	        this.validType = result[1] ;
-//	        return true ;
-//	    }
-//	    
-//	    public void actionPerformed( ActionEvent e ) {
-//	        // Now do the business.
-//	        // Insert a basic object...
-//	        XmlObject newObject1 = insertObject( suitableCommand, validType ) ;
-//	        // Copy contents of paste object into it...
-//	        XmlObject newObject2 = newObject1.set( pasteObject ) ;
-//
-//            // Create the new tree node instance (and pray it works)...
-//        	AdqlEntry.newInstance( entry, newObject2 ) ;  
-//        	
-//        	// Refresh tree...
-//	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( entry ) ;
-//	        adqlTree.repaint() ;
-//	        
-//	    }
-//	  
-//	        
-//	    private XmlObject insertObject( AdqlCommand commandBean, int subType ) {
-//            AdqlEntry parent = commandBean.getEntry() ;
-//            XmlObject parentObject = parent.getXmlObject() ;
-//            SchemaType schemaType = commandBean.getConcreteTypes()[subType] ;
-//            XmlObject newObject = null ; 
-//            if( commandBean.isArray() ) {                
-//                newObject = AdqlUtils.addNewToEndOfArray( parentObject, commandBean.getElementName() ) ;
-//                newObject = newObject.changeType( schemaType ) ;
-//            }
-//            else {
-//                if( schemaType.isBuiltinType() ) {
-//                    newObject = XmlObject.Factory.newInstance().changeType( schemaType ) ;
-//                    newObject = setDefaultValue( newObject ) ;
-//                }
-//                else {            
-//                    newObject = AdqlUtils.addNew( parentObject, commandBean.getElementName() ) ;
-//                    if( newObject != null ) {
-//                        newObject = newObject.changeType( schemaType ) ;
-//                    }
-//                    else {
-//                        newObject = XmlObject.Factory.newInstance().changeType( commandBean.getElement().javaBasedOnType() ) ;
-//                        newObject = newObject.changeType( schemaType ) ;
-//                        newObject = setDefaultValue( newObject ) ;
-//                        AdqlUtils.set( parentObject, commandBean.getElementName(), newObject ) ; 
-//                    }
-//                }
-//            } 
-//            return newObject ;
-//        }
-//	    
-//	}    
-    
-    
-    
-    
-    
-    
-    private void addSelectedColumns( AdqlCommand command, int concreteSubtype ) {
-        // This is admittedly confusing terminology...
-        // Since the JTable is holding information about relational table columns
-        // in a display table with each row displaying metadata about a column!!!
-        int[] selectedColumnBeans = displayTable.getSelectedRows() ;
-        AstroTableModel model = (AstroTableModel)displayTable.getModel() ;
-        ColumnBean columnBean = null ;
-        ADQLToolEditorPanel.InsertColumnAction insert = null ;
-        AdqlTree.TableData tableData = adqlTree.getTableData( astroTable.getName() ) ;
-        // Following getout is a temporary kludge
-        if( tableData == null )
-            return ;
-        for( int i=0 ; i<selectedColumnBeans.length; i++ ) {
-            columnBean = model.getColumnBeanGivenRowIndex( selectedColumnBeans[i] ) ;
-            // Using the InsertColumnAction is also a kludge.
-            // Need to factor out the appropriate code.
-            insert = adqlToolEditorPanel.new InsertColumnAction( "dummy name"
-                                                               , command
-                                                               , concreteSubtype
-                                                               , tableData
-                                                               , columnBean ) ;
-            ActionEvent e = null ;
-            if( i == selectedColumnBeans.length-1 )
-                e = new ActionEvent( this, 1, "Repaint" ) ;
-            insert.actionPerformed( null ) ;
-        }
-        
-         
-    }
-    
-    
-    private void maintainArrayOfJoinTables() {
-        
-    }
-    
-    private void maintainFromTables( TreePath path )  {
-        AdqlEntry fromEntry = findFromClause( path ) ;
-        AdqlEntry[] children = fromEntry.getChildren() ;
-        SchemaType tableType = getTableType() ;
-        AdqlEntry tableEntry = null ;
-        XmlString tableName = null ;
-        for( int i=0; i<children.length; i++ ) {
-            if( children[i].getSchemaType().getName().equals( tableType.getName() ) ) {
-                tableName = (XmlString)AdqlUtils.get( children[i].getXmlObject(), "name" ) ;
-                // NB: This does not currently cater for a table being quoted twice
-                // using a different alias. This is a viable situation...
-                if( tableName.getStringValue().equals( astroTable.getName() ) ) {
-                    tableEntry = children[i] ;
-                    break ;
-                }
-            }
-        }
-        //  
-        // If we haven't found an entry in the FROM clause that corresponds to
-        // the table from which the user wishes to include column references,
-        // Then we auto-include an appropriate entry in the FROM clause...
-        if( tableEntry == null ) {
-            // Build array of possible insert commands for target...
-	        ArrayList commands = AdqlCommand.buildCommands( fromEntry ) ; 
-	        
-	        // Attempt to find a suitable match of types...
-	        int result[] = AdqlCommand.findSuitableMatch( commands, getTableType() ) ;	        
-	        if( result[0] == -1 ) {
-	            if( DEBUG_ENABLED ) log.debug( "could not find a suitable match." ) ;
-	            return ;
-	        }
-	        if( DEBUG_ENABLED ) log.debug( "tableType suitable..." ) ;
-	        if( DEBUG_ENABLED ) log.debug( "found: " 
-	                 + ((AdqlCommand)commands.get( result[0] )).getConcreteTypes()[ result[1] ].getName() ) ;	
-	        	        
-            ADQLToolEditorPanel.InsertTableAction insert = adqlToolEditorPanel.new
-               InsertTableAction( "dummy name"
-                                , (AdqlCommand)commands.get( result[0] )
-                                , result[1]
-                                , dbBean
-                                , tableIndex ) ;          
-            insert.actionPerformed( null ) ;
-        }
-    }
-    
    
-    
-    private TreePath findParentSelect( TreePath path ) {
-        TreePath workPath = path ;
-        AdqlEntry entry = null ;
-        SchemaType selectType = getSelectType() ;
-        for( int i=0; i<path.getPathCount(); i++, workPath = workPath.getParentPath() ) {
-            entry = (AdqlEntry)workPath.getLastPathComponent() ;
-            if( entry.getSchemaType().getName().equals( selectType.getName() ) ) {
-                break ;
-            }
-        }   
-        return workPath ;
-    }
-    
-  
-    
-    
-    private AdqlEntry findFromClause( TreePath path ) {
-        //
-        // Find the enclosing SELECT clause...
-        TreePath selectPath = findParentSelect( path ) ;
-        //
-        // Find all the child elements of the SELECT clause...
-        AdqlEntry selectEntry = ((AdqlEntry)selectPath.getLastPathComponent()) ;
-        AdqlEntry childEntries[] = selectEntry.getChildren() ;
-        //
-        // Go through the children of the SELECT clause looking for the FROM clause...
-        AdqlEntry entry = null ;
-        SchemaType fromType = getFromType() ;
-        for( int i=0; i<childEntries.length; i++ ) {
-            entry = childEntries[i] ;
-            if( entry.getSchemaType().getName().equals( fromType.getName() ) ) {
-                break ;
-            }
-        } 
-        // If no FROM clause found in this part of the query.
-        // We need to create a new one...
-        if( entry == null ) { 
-            ArrayList commands = AdqlCommand.buildCommands( selectEntry ) ;
-            // Attempt to find a suitable match of types...
-	        int match[] = AdqlCommand.findSuitableMatch( commands, fromType ) ;	        
-	        if( match[0] == -1 ) {
-	            log.error( "could not find a suitable match." ) ;
-	        }
-	        else {
-	            // Now create the empty FROM clause...
-	            XmlObject newObject = AdqlUtils.addNew( selectEntry.getXmlObject()
-	                                                  , ((AdqlCommand)commands.get(match[0])).getElementName() ) ;
-	            entry = AdqlEntry.newInstance( selectEntry, newObject ) ;
-	        }
-        }       
-        return entry ;
-    }
-    
-    
-    private AdqlEntry findTablesHolder( TreePath path ) {
-        //
-        // Find the enclosing SELECT clause...
-        TreePath selectPath = findParentSelect( path ) ;
-        //
-        // Find all the child elements of the SELECT clause...
-        AdqlEntry selectEntry = ((AdqlEntry)selectPath.getLastPathComponent()) ;
-        AdqlEntry childEntries[] = selectEntry.getChildren() ;
-        //
-        // Go through the children of the SELECT clause looking for the FROM clause...
-        AdqlEntry entry = null ;
-        SchemaType fromType = getFromType() ;
-        for( int i=0; i<childEntries.length; i++ ) {
-            entry = childEntries[i] ;
-            if( entry.getSchemaType().getName().equals( fromType.getName() ) ) {
-                break ;
-            }
-        } 
-        // If no FROM clause found in this part of the query.
-        // We need to create a new one...
-        if( entry == null ) { 
-            ArrayList commands = AdqlCommand.buildCommands( selectEntry ) ;
-            // Attempt to find a suitable match of types...
-	        int match[] = AdqlCommand.findSuitableMatch( commands, fromType ) ;	        
-	        if( match[0] == -1 ) {
-	            log.error( "could not find a suitable match." ) ;
-	        }
-	        else {
-	            // Now create the empty FROM clause...
-	            XmlObject newObject = AdqlUtils.addNew( selectEntry.getXmlObject()
-	                                                  , ((AdqlCommand)commands.get(match[0])).getElementName() ) ;
-	            entry = AdqlEntry.newInstance( selectEntry, newObject ) ;
-	        }
-        }       
-        return entry ;
-    }
-    
-    private boolean isJoinTableBound() {
-        return false ;
-    }
-    
-    private SchemaType getFromType() {
-        if( fromType == null ) {
-            fromType = getType( AdqlData.FROM_TYPE ) ;
-        }
-        return fromType ;
-    }
-    
-    
-    private SchemaType getSelectType() {
-        if( selectType == null ) {
-            selectType = getType( AdqlData.SELECT_TYPE ) ;
-        }
-        return selectType ;
-    }
-    
-    
-    private SchemaType getColumnReferenceType() {
-        if( columnReferenceType == null ) {
-            columnReferenceType = getType( AdqlData.COLUMN_REFERENCE_TYPE ) ;
-        }
-        return columnReferenceType ;
-    }
-    
-    
-    private SchemaType getArrayOfFromTableType() {
-        if( arrayOfFromTableType == null ) {
-            arrayOfFromTableType = getType( AdqlData.ARRAY_OF_FROM_TABLE_TYPE ) ;
-        }
-        return arrayOfFromTableType ;
-    }
-    
- 
-    private SchemaType getJoinTableType() {
-        if( joinTableType == null ) {
-            joinTableType = getType( AdqlData.JOIN_TABLE_TYPE ) ;
-        }
-        return joinTableType ;
-    }
-    
-    
-    private SchemaType getTableType() {
-        if( tableType == null ) {
-            tableType = getType( AdqlData.TABLE_TYPE ) ;
-        }
-        return tableType ;
-    }
-    
-
-    private SchemaType getType( String localName ) {
-        return AdqlUtils.getType( adqlTree.getRoot(), localName ) ;
-    }
-    
 } // end of class TableMetadataPanel

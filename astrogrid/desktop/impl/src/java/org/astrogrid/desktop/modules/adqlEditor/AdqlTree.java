@@ -67,6 +67,7 @@ import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
+import org.astrogrid.desktop.modules.adqlEditor.commands.*;
 /**
  * A tree view on XML, with nodes representing both elements and attributes. See
  * {@link XmlEntry}and {@link XmlModel}for information on how information
@@ -93,6 +94,7 @@ public final class AdqlTree extends JTree
     
     private boolean editingActive = false ;
     private int availableWidth ;
+    private CommandFactory commandFactory ;
     
     /**
      * Constructs the tree using <em>xmlFile</em> as an original source of
@@ -138,6 +140,19 @@ public final class AdqlTree extends JTree
         }
         return result ;
     }
+    
+    
+    public void openBranches() {
+        Object[] obj = new Object[2] ;
+        obj[0] = getModel().getRoot() ;
+        AdqlEntry childEntries[] = ((AdqlEntry)obj[0]).getChildren() ;
+        for( int i=0; i<childEntries.length; i++ ) {
+            obj[1] = childEntries[i] ;
+            TreePath path = new TreePath( obj ) ;
+            expandPath( path ) ;
+        } 
+    }
+    
     
     
     public String convertValueToText( Object value
@@ -247,6 +262,7 @@ public final class AdqlTree extends JTree
      */
     private void initialize( AdqlEntry rootEntry, Registry registry, URI toolIvorn ) {
    
+        this.commandFactory = new CommandFactory( this ) ;
         setModel( new DefaultTreeModel( rootEntry ) );
         getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION ) ;
         this.registry = registry ;
@@ -507,6 +523,14 @@ public final class AdqlTree extends JTree
     
     public String popAliasStack() {
         return aliasStack.pop() ;
+    }
+    
+    public void pushAliasStack( String alias ) {
+        aliasStack.push( alias ) ;
+    }
+    
+    public CommandFactory getCommandFactory() {
+        return this.commandFactory ;
     }
     
     //
@@ -1240,8 +1264,37 @@ public final class AdqlTree extends JTree
             this.database = database ;
             this.tableIndex = tableIndex ;
             this.alias = alias ;
-        }   
+        }
         
+        public TableData( DatabaseBean database, TableBean table, String alias ) {
+            this.database = database ;
+            this.alias = alias ;
+            final TableBean[] tables = database.getTables() ;
+            for (int i = 0; i < tables.length; i++) {
+                if( tables[i].getName().equals( table.getName() ) ) {
+                    tableIndex = i ;
+                    break ;
+                }
+            }  
+        }
+        
+        public TableBean getTable() {
+            return database.getTables()[ tableIndex ] ;
+        }
+        
+        
+        /**
+         * @return Returns the alias.
+         */
+        public String getAlias() {
+            return alias;
+        }
+        /**
+         * @param alias The alias to set.
+         */
+        public void setAlias(String alias) {
+            this.alias = alias;
+        }
     }
     
     private class AliasStack {
@@ -1266,6 +1319,10 @@ public final class AdqlTree extends JTree
                 guard++ ;
             } while ( this.isAlreadyInUse( newAlias ) == true && guard < MAX ) ;        
             return newAlias ;
+        }
+        
+        public void push( String alias ) {
+            autoStack.push( alias ) ;
         }
         
         private String _pop() {

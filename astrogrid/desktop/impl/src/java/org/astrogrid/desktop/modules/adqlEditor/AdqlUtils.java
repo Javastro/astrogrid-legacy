@@ -13,10 +13,13 @@ import org.apache.xmlbeans.* ;
 
 import java.util.Hashtable ;
 import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.XmlString.Factory;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.xml.namespace.QName;
 
@@ -38,19 +41,7 @@ public final class AdqlUtils {
     private static final boolean TRACE_ENABLED = false ;
     
     private static final String EMPTY_STRING = "".intern() ;
-    
-    public static final Hashtable DISPLAY_NAME_FILTER ; 
-    static {
-        DISPLAY_NAME_FILTER = new Hashtable() ;
-        DISPLAY_NAME_FILTER.put( "Select", "Query:" ) ;
-        DISPLAY_NAME_FILTER.put( "Selection List", "Select" ) ;  
-        DISPLAY_NAME_FILTER.put( "Column Reference", "Column" ) ;  
-        DISPLAY_NAME_FILTER.put( "Comparison Pred", "Comparison" ) ; 
-        DISPLAY_NAME_FILTER.put( "Region Search", "Region" ) ; 
-    }
-    
- 
-    
+     
     /**
      * 
      */
@@ -150,6 +141,31 @@ public final class AdqlUtils {
         return retArray ;
     }
     
+    
+    static public SchemaType getAttributeType( String unqualifiedName, SchemaTypeSystem typeSystem ) {
+        SchemaType schemaType = null ;
+        SchemaType[] sgTypes = typeSystem.globalTypes() ;
+        for( int i=0; i<sgTypes.length; i++ ) {
+            if( sgTypes[i].getName().getLocalPart().equals( unqualifiedName ) ) {
+                schemaType = sgTypes[i] ;
+                break ;
+            }
+        }
+        return schemaType ;
+    }
+    
+    
+    static public String getAttributeName( SchemaType childType, SchemaType attributeType ) {
+        SchemaProperty[] attrProperties = childType.getAttributeProperties() ;
+        for( int i=0; i<attrProperties.length; i++ ) {
+            if( areTypesEqual( attrProperties[i].getType(), attributeType ) ) {
+                return attrProperties[i].getJavaPropertyName() ;
+            }
+        }
+        return null ;
+    }
+    
+    
     public static boolean isEnumerated( SchemaType type ) {
         if( isDrivenByEnumeratedAttribute( type )
             ||
@@ -210,12 +226,69 @@ public final class AdqlUtils {
     }
     
     
-    static public String extractDisplayName( String name ) {
-        String retValue = null ;
-        retValue = (String)AdqlData.T2D_NAMES.get( name ) ;
-        if( retValue == null )
-            retValue = EMPTY_STRING ;
+    public static boolean isCascadeable( XmlObject xmlObject ) {
+        return isCascadeable( xmlObject.schemaType() ) ;
+    }
+    
+    public static boolean isCascadeable( SchemaType type ) {
+        boolean answer = false ;   
+        try {
+            answer = AdqlData.CASCADEABLE.containsKey( type.getName().getLocalPart() ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }                          
+        return answer ;
+    }
+    
+    public static boolean isColumnLinked( XmlObject xmlObject ) {
+        return isColumnLinked( xmlObject.schemaType() ) ;
+    }
+    
+    public static boolean isColumnLinked( SchemaType type ) {
+        boolean answer = false ;     
+        try {
+            answer = AdqlData.METADATA_LINK_COLUMN.containsKey( type.getName().getLocalPart() ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }          
+        return answer ;
+    }
+    
+    // NB: This does not deal with element context, only type.
+    public static boolean isSupportedType( SchemaType type ) {
+        boolean retValue = false ;
+        try {
+            retValue = !AdqlData.UNSUPPORTED_TYPES.containsKey( type.getName().getLocalPart() ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }
         return retValue ;
+    }
+   
+      
+    public static boolean isTableLinked( XmlObject xmlObject ) {
+        return isTableLinked( xmlObject.schemaType() ) ;
+    }
+    
+    
+    public static boolean isTableLinked( SchemaType type  ) {
+        boolean answer = false ;
+        try {
+            answer = AdqlData.METADATA_LINK_TABLE.containsKey( type.getName().getLocalPart() ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }             
+        return answer ;
+    }
+    
+    
+    static public String extractDisplayName( String name ) {
+        String retValue = (String)AdqlData.T2D_NAMES.get( name ) ; ;
+        return ( retValue == null ? EMPTY_STRING : retValue ) ;
     }
     
     static public String extractDisplayName( XmlObject xmlObject ) {
@@ -299,47 +372,22 @@ public final class AdqlUtils {
         return name ; 
     }
     
-    static public String _extractDefaultDisplayName( XmlObject o ) {
-        return _extractDisplayName( o, DISPLAY_NAME_FILTER ) ;
-    }
     
-    static public String _extractDisplayName( XmlObject o
-            							   , final Hashtable filter ) {
-        String displayName = extractDisplayName( o ) ;
-        if( filter.containsKey( displayName ) ) {
-            displayName = (String)filter.get( displayName ) ;
-        }
-        return displayName ;
-    }
-    
-    
-    static public String _extractDisplayName( XmlObject o ) {
-        XmlCursor cursor = o.newCursor() ;
-        String displayName = extractDisplayName( cursor ) ;
-        cursor.dispose() ;
-        return displayName ;
-    }
-    
-    
-    static public String _extractDisplayName( XmlCursor cursor ) {
-        String displayName = null ;
+    static public String extractElementLocalName( XmlObject xmlObject ) {
+        String elementName = null ;
+        XmlCursor cursor = xmlObject.newCursor() ; 
         if( !cursor.currentTokenType().isStart() ) 
-            cursor.toFirstChild();
-        displayName = cursor.getAttributeText( new QName( "label" ) ) ;
-        if( displayName == null || displayName.length() == 0 ) {
-            displayName = cursor.getName().getLocalPart() ;
-            if( cursor.toFirstAttribute() ) {
-                do {
-                    if( cursor.getName().getLocalPart().equals( "type" ) ) {
-                        displayName = cursor.getTextValue() ;
-                        break ;
-                    }
-                } while( cursor.toNextAttribute() ) ;
-            }
+            cursor.toFirstChild(); 
+        cursor.push() ;
+        try {
+            elementName = cursor.getName().getLocalPart() ;
         }
-        return normalizeName( displayName ) ; 
+        catch ( Exception ex ) {
+            elementName = EMPTY_STRING ;
+        }
+        cursor.dispose() ;
+        return elementName ;
     }
-    
     
     static public boolean localNameEquals( XmlObject o, String name ) {
         SchemaType type = o.schemaType() ;
@@ -351,13 +399,21 @@ public final class AdqlUtils {
     }
     
     static public String getLocalName( XmlObject object ) {
-        return object.schemaType().getName().getLocalPart(); 
+        return getLocalName( object.schemaType() ) ; 
+    }
+    
+    static public String getLocalName( SchemaType type ) {
+        return type.getName().getLocalPart();
     }
     
     
     static public SchemaType getType( XmlObject object, String localName ) {
+        return getType( object.schemaType(), localName ) ;
+    }
+    
+    static public SchemaType getType( SchemaType someType, String localName ) {
         SchemaType target = null ;
-        SchemaType[] globalTypes = object.schemaType().getTypeSystem().globalTypes() ;
+        SchemaType[] globalTypes = someType.getTypeSystem().globalTypes() ;
         for( int i=0; i<globalTypes.length; i++ ) {
             if( globalTypes[i].getName().getLocalPart().equals( localName ) ) {
                 target = globalTypes[i] ;
@@ -372,8 +428,12 @@ public final class AdqlUtils {
     }
     
     
+    static public boolean areTypesEqual( SchemaType typeOne, String typeTwoLocalName ) {
+        return areTypesEqual( typeOne, getType( typeOne, typeTwoLocalName ) ) ;
+    }
+    
+    
     static public String normalizeName( String name ) {
-//        System.out.println( "normalizeName" ) ;
         //
         // Removes the redundant "Type" word from the end...
         int index = name.lastIndexOf( "Type" ) ;
@@ -401,142 +461,137 @@ public final class AdqlUtils {
     }
     
     
-    static public XmlObject get( XmlObject o, String elementName ) {
-        String methodName = "get" + capitalize( elementName ) ;
-        return (XmlObject)invoke( o, methodName, null, null ) ;
+    static public XmlObject get( XmlObject o, String name ) {
+        return (XmlObject)invoke( o, "get"+capitalize( name ), null, null ) ;
     }
     
-    static public void set( XmlObject o, String elementName, XmlObject param ) {
-        String methodName = "set" + capitalize( elementName ) ;
-        invoke( o, methodName, new Object[] { param }, new Class[] { getInterface( param ) } ) ;
+    static public void set( XmlObject o, String name, XmlObject param ) {
+        invoke( o, "set"+capitalize( name ), new Object[] { param }, new Class[] { param.getClass() } ) ;
     }
     
-    static public boolean isSet( XmlObject o, String elementName ) {
-        String methodName = "isSet" + capitalize( elementName ) ;
-        return ((Boolean)invoke( o, methodName, null, null )).booleanValue() ;
+    static public boolean isSet( XmlObject o, String name ) {
+        return ((Boolean)invoke( o, "isSet"+capitalize( name ), null, null )).booleanValue() ;
     }
     
-    static public void unset( XmlObject o, String elementName ) {
-        String methodName = "unset" + capitalize( elementName ) ;
-        invoke( o, methodName, null, null ) ;
+    static public void unset( XmlObject o, String name ) {
+        invoke( o, "unset"+capitalize( name ), null, null ) ;
     }
     
-    static public XmlObject addNew( XmlObject o, String elementName ) {
-        String methodName = "addNew" + capitalize( elementName ) ;
-        return (XmlObject)invoke( o, methodName, null, null ) ;
+    static public XmlObject addNew( XmlObject o, String name ) {
+        return (XmlObject)invoke( o, "addNew"+capitalize(name), null, null ) ;
     }
     
-    static public Object[] getArray( XmlObject o, String elementName ) {
-        String methodName = "get" + capitalize( elementName ) + "Array" ;
-        return (Object[])invoke( o, methodName, null, null ) ;
+    static public Object[] getArray( XmlObject o, String name ) {
+        return (Object[])invoke( o, "get"+capitalize(name)+"Array" , null, null ) ;
     }
     
-    static public Object getArray( XmlObject o, String elementName, int param ) {
-        String methodName = "get" + capitalize( elementName ) + "Array" ;
-        return invoke( o, methodName, new Object[]{new Integer(param)}, new Class[]{ Integer.TYPE } ) ;
+    static public Object getArray( XmlObject o, String name, int param ) {
+        return invoke( o, "get"+capitalize( name )+"Array", new Object[]{new Integer(param)}, new Class[]{ Integer.TYPE } ) ;
     }  
     
-    static public int sizeOfArray( XmlObject o, String elementName ) {
-        String methodName = "sizeOf" +capitalize( elementName ) + "Array" ;
-        return ((Integer)invoke( o, methodName, null, null )).intValue() ;
+    static public int sizeOfArray( XmlObject o, String name ) {
+        return ((Integer)invoke( o, "sizeOf"+capitalize( name )+"Array", null, null )).intValue() ;
     }
     
     
-    static public void setArray( XmlObject o, String elementName, XmlObject[] array ) {
-        String methodName = "set" + capitalize( elementName ) + "Array" ;
+    static public void setArray( XmlObject o, String name, XmlObject[] array ) {
         //
         // This may well not work because of the difficulty of setting the correct
         // interface within the call for the array object.
         // In fact the array argument may require reformatting in order to work.
         // Requires experimentation!!!
-        invoke( o, methodName, new Object[]{ array }, new Class[] { array.getClass() } ) ;
+        invoke( o, "set"+capitalize( name )+"Array", new Object[]{ array }, new Class[] { array.getClass() } ) ;
     }
     
     // void setItemArray(int i, net.ivoa.xml.adql.v10.SelectionItemType item);
-    static public Object setArray( XmlObject o, String elementName, int param1, XmlObject param2 ) {
-        String methodName = "set" + capitalize( elementName ) + "Array" ;
+    static public Object setArray( XmlObject o, String name, int param1, XmlObject param2 ) {
         return invoke( o
-                     , methodName
+                     , "set"+capitalize( name )+"Array"
                      , new Object[]{ new Integer(param1), param2 }
-                     , new Class[] { Integer.TYPE, getInterface( param2 ) } ) ;
+                     , new Class[] { Integer.TYPE, param2.getClass() } ) ;
     } 
     
     // net.ivoa.xml.adql.v10.SelectionItemType insertNewItem(int i);
-    static public XmlObject insertNewInArray( XmlObject o, String elementName, int param ) {
-        String methodName = "insertNew" + capitalize( elementName ) ;
+    static public XmlObject insertNewInArray( XmlObject o, String name, int param ) {
         return (XmlObject)invoke( o
-                                , methodName
+                                , "insertNew"+capitalize( name )
                                 , new Object[]{ new Integer(param) }
                                 , new Class[] { Integer.TYPE } ) ;
     }
     
     // net.ivoa.xml.adql.v10.SelectionItemType addNewItem();
-    static public XmlObject addNewToEndOfArray( XmlObject o, String elementName ) {
-        String methodName = "addNew" + capitalize( elementName ) ;
-//        System.out.println( "methodName: " + methodName ) ;
-        return (XmlObject)invoke( o, methodName, null, null ) ;
+    static public XmlObject addNewToEndOfArray( XmlObject o, String name ) {
+        return (XmlObject)invoke( o, "addNew"+capitalize( name ), null, null ) ;
     }
     
     // void removeItem(int i);
-    static public void removeFromArray( XmlObject o, String elementName, int param ) {
-        String methodName = "remove" + capitalize( elementName ) ;
+    static public void removeFromArray( XmlObject o, String name, int param ) {
         invoke( o
-              , methodName
+              , "remove"+capitalize( name )
               , new Integer[]{ new Integer(param) }
               , new Class[] { Integer.TYPE } ) ;
     }
     
     static public XmlObject newInstance( SchemaType st ) {
-        XmlObject o = XmlObject.Factory.newInstance() ;
-        o = o.changeType( st ) ;
-        return o ;
+        return XmlObject.Factory.newInstance().changeType( st ) ;
     }
-    
-//    static public XmlObject newInstance( SchemaType st ) {
-//        Class cls[] = st.getJavaClass().getClasses() ;
-//        Class factory = null ;
-//        for( int i=0; i<cls.length; i++ ) {
-//            // This may be weak...
-//            if( cls[i].getName().indexOf( "Factory" ) != -1 ){
-//                factory = cls[i] ;
-//                break ;
-//            }
-//        }      
-//        return (XmlObject)invoke( factory, "newInstance", null ) ;
-//    }
-    
-//    static public XmlObject newInstance( SchemaType st ) {
-//        XmlObject o = null ;
-//        Class cls = null ;
-////        Class[] parameterTypes = new Class[] { st.getClass() } ;
-//        Class[] parameterTypes = null ;
-//        Constructor constructor = null ;
-//        try {
-//            parameterTypes = new Class[] { Class.forName( "org.apache.xmlbeans.SchemaType" ) } ;
-//            cls = Class.forName( st.getFullJavaImplName() ) ;
-//            constructor = cls.getConstructor( parameterTypes ) ;
-//            o = (XmlObject)constructor.newInstance( new SchemaType[] { st } ) ;
-//        }
-//        catch( Exception ex ) {
-//            ex.printStackTrace() ;
-//        }
-//        return o ;
-//    }
-    
     
     static private String capitalize( String name ) {
         return (name.substring(0,1).toUpperCase() + name.substring(1)).trim() ;
     }
+        
+    static private Object[] getInterfaces( Class cls ) {
+        ArrayList iList = new ArrayList() ;
+        Class[] interfaces = cls.getInterfaces() ;
+        for( int i=0; i<interfaces.length; i++ ) {
+            getInterfaces( interfaces[i], iList ) ;
+        }
+        return iList.toArray() ;
+    }
     
+    static private void getInterfaces( Class iFace, ArrayList iList ) {
+        iList.add( iFace ) ;
+        Class[] interfaces = iFace.getInterfaces() ;
+        for( int i=0; i<interfaces.length; i++ ) {
+            if( iList.contains( interfaces[i] ) )
+                continue ;
+            getInterfaces( interfaces[i], iList ) ;
+        }
+    }
     
-    static private Class getInterface( XmlObject obj ) {
-        // Beware!
-        // This will be weak if xmlBeans sprouts more than one interface
-        // per implementation. Not sure what to do about arrays passed in.
-        Class[] interfaces = obj.getClass().getInterfaces() ;
-        if( interfaces.length > 0 )
-            return interfaces[0] ;
-        return obj.getClass() ;
+
+    static private Method getMethod( Object o, String methodName, Class[] paramTypes ) {
+        Method method = null ;
+        if( paramTypes == null ) {
+            try {
+                method = o.getClass().getMethod( methodName, paramTypes ) ;
+            }
+            catch( Exception ex ) {
+                ;
+            } 
+        }
+        else {
+            Class[] paramTypes2 = new Class[ paramTypes.length ] ;
+            findMethod: for( int i=0; i<paramTypes.length; i++ ) {
+                Object[] cls = getInterfaces( paramTypes[i] ) ;
+                if( cls.length == 0 ) {
+                    cls = new Object[1] ;
+                    cls[0] = paramTypes[i] ;
+                }
+                for( int j=0; j<cls.length; j++ ) {
+                    System.arraycopy( paramTypes, 0,  paramTypes2, 0, paramTypes.length );
+                    paramTypes2[i] = (Class)cls[j] ;
+                    try {
+                        method = o.getClass().getMethod( methodName, paramTypes2 ) ;
+                        break findMethod ;
+                    }
+                    catch( Exception ex ) {
+                        ;
+                    }         
+                } // end for
+            }  // end findMethod for 
+        }      
+        return method ;
     }
     
     
@@ -545,35 +600,163 @@ public final class AdqlUtils {
         Method method = null ;
 
         if( methodName.startsWith( "set" ) || methodName.startsWith( "get" ) ) {
-            String altName = 'x' + methodName ;
-            try {
-                method = o.getClass().getMethod( altName, paramTypes ) ;
-            }
-            catch( NoSuchMethodException ex1 ) {
-                ;
-            }
+            method = getMethod( o, 'x' + methodName, paramTypes ) ;
         }
         if( method == null ) {
+            method = getMethod( o, methodName, paramTypes ) ;
+        }
+        if( method != null ) {
             try {
-                method = o.getClass().getMethod( methodName, paramTypes ) ;
+                retObj = method.invoke( o, params ) ;
             }
-            catch( NoSuchMethodException ex1 ) {
-                logger.error( ex1 );
+            catch( java.lang.reflect.InvocationTargetException itx ) {
+                logger.error( "AdqlUtils.invoke: ", itx.getCause() ) ;
             }
-        }
-        if( method == null )
-            return retObj ;
-        
-        try {
-            retObj = method.invoke( o, params ) ;
-        }
-        catch( java.lang.reflect.InvocationTargetException itx ) {
-            logger.error( itx.getCause() ) ;
-        }
-        catch( Exception ex2 ) {
-            logger.error( ex2 );
+            catch( Exception ex2 ) {
+                logger.error( "AdqlUtils.invoke: ", ex2 );
+            }
         }
         return retObj ;
+    }
+    
+    
+    public static boolean isSuitablePasteIntoTarget( AdqlEntry entry, XmlObject clipboardObject ) {
+        return isSuitablePasteIntoTarget( entry, clipboardObject.schemaType() ) ;
+    }
+
+    public static boolean isSuitablePasteIntoTarget( AdqlEntry entry, SchemaType clipboardType ) {
+       return ( findSuitablePasteIntoTarget( entry, clipboardType ) != null ) ;
+    }
+    
+    public static SchemaType findSuitablePasteIntoTarget( AdqlEntry entry, XmlObject clipboardObject ) {
+       return  findSuitablePasteIntoTarget( entry, clipboardObject.schemaType() ) ;
+    }
+    
+    public static SchemaType findSuitablePasteIntoTarget( AdqlEntry entry, SchemaType clipboardType ) {
+        SchemaProperty[] elementProperties = entry.getElementProperties() ;
+        for ( int i = 0 ; i < elementProperties.length ; i++ ) {
+            if( elementProperties[i].getType().isAssignableFrom( clipboardType ) ) { 
+                return elementProperties[i].getType() ;
+            }
+        }
+        return null ;
+    }
+
+    public static boolean isSuitablePasteOverTarget( AdqlEntry entry, XmlObject pasteObject ) {
+        return isSuitablePasteOverTarget( entry, pasteObject.schemaType() ) ;
+    }
+
+    public static boolean isSuitablePasteOverTarget( AdqlEntry entry, SchemaType pasteType ) {
+        SchemaType entryType = entry.getXmlObject().schemaType() ;
+        // Checks that the entry type derives from or is the same type as paste type:
+        if( entryType.isAssignableFrom( pasteType ) )
+            return true ;
+        // Checks that the entry type and the paste type share a base type OTHER THAN the any type:
+        // ( This is probably not sufficient in all circumstances. Better would be to test whether
+        //   the entry type was a member of an array with a base type that matched the common
+        //   base type. Worth thinking over. )
+        if( !entryType.getCommonBaseType( pasteType ).getName().equals( XmlObject.type.getName() ) ) {
+            return true ;
+        }
+        return false ;
+    }
+
+    public static XmlObject setDefaultValue( XmlObject xmlObject ) {
+        XmlObject retVal = xmlObject ;     
+        if( xmlObject != null ) {
+            SchemaType type = xmlObject.schemaType() ;
+            if( type.isBuiltinType() ){
+                retVal = setBuiltInDefaults( xmlObject ) ;
+            }
+            else if( isAttributeDriven( type ) ) {
+                retVal = setAttributeDrivenDefaults( xmlObject ) ;
+            }
+            else if( type.isSimpleType() ) {
+                retVal = setDerivedSimpleDefaults( xmlObject ) ;
+            }
+        }
+        return retVal ;
+    }
+
+    public static XmlObject setBuiltInDefaults( XmlObject xmlObject ) {
+        int typeCode = xmlObject.schemaType().getBuiltinTypeCode() ;
+        switch( typeCode ) {              
+        	case SchemaType.BTC_STRING: 
+        	    ((XmlString)xmlObject).setStringValue( "" ) ;
+        		break ;
+        	case SchemaType.BTC_DECIMAL:
+        	    ((XmlDecimal)xmlObject).setBigDecimalValue( new BigDecimal(0) ) ;
+        		break ;
+        	case SchemaType.BTC_FLOAT:
+        	    ((XmlFloat)xmlObject).setFloatValue( 0 ) ;
+        		break ;
+        	case SchemaType.BTC_INT:
+        	    ((XmlInt)xmlObject).setIntValue( 0 ) ;
+        		break ;
+           	case SchemaType.BTC_INTEGER:
+        	    ((XmlInteger)xmlObject).setBigIntegerValue( new BigInteger("0") ) ;
+        		break ;
+        	case SchemaType.BTC_DOUBLE:
+        	    ((XmlDouble)xmlObject).setDoubleValue( 0 ) ;
+    			break ;
+           	case SchemaType.BTC_LONG:
+        	    ((XmlLong)xmlObject).setLongValue( 0 ) ;
+          	case SchemaType.BTC_UNSIGNED_LONG:
+        	    ((XmlUnsignedLong)xmlObject).setBigDecimalValue( new BigDecimal(0) ) ;
+    			break ;
+          	case SchemaType.BTC_POSITIVE_INTEGER:
+        	    ((XmlPositiveInteger)xmlObject).setBigDecimalValue( new BigDecimal(1) ) ;
+    			break ;
+          	case SchemaType.BTC_UNSIGNED_SHORT:
+        	    ((XmlUnsignedShort)xmlObject).setIntValue( 0 ) ;
+    			break ;
+          	case SchemaType.BTC_UNSIGNED_INT:
+        	    ((XmlUnsignedInt)xmlObject).setLongValue( 0 ) ;
+    			break ;
+        	default:
+        	    ; // and for the rest do nothing (for the moment)                 
+        }   
+        return xmlObject ;
+    }
+
+    public static boolean isAttributeDriven( SchemaType type ) {
+        String[] name = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+        return ( name != null && name.length == 1 ) ;
+    }
+
+    public static XmlObject setAttributeDrivenDefaults( XmlObject xmlObject ) {
+        XmlObject retVal = xmlObject ;
+        SchemaType type = xmlObject.schemaType() ;
+        String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+        XmlString tempObject = XmlString.Factory.newInstance() ;
+        tempObject.setStringValue( (String)AdqlData.ATTRIBUTE_DEFAULTS.get( type.getName().getLocalPart() ) ) ; 
+        
+        //
+        // There is a better way to do this provided I can get at the fully qualified name
+        // of the attribute. Needs thinking about.
+        // Another point. The schema may itself define a default value. This too can be picked up.
+        SchemaType attrType = null ;
+        SchemaProperty[] attrProperties = type.getAttributeProperties() ;
+        for( int i=0; i<attrProperties.length; i++ ) {
+            if( attrProperties[i].getJavaPropertyName().equals( attributeNames[0] ) ) {
+                attrType = attrProperties[i].getType();
+                break ;
+            }
+        }
+        XmlObject valueObject = tempObject.changeType( attrType ) ;        
+        set( xmlObject, attributeNames[0], valueObject ) ; 
+        return xmlObject ;
+    }
+
+    public static XmlObject setDerivedSimpleDefaults( XmlObject xmlObject ) {
+        XmlObject retVal = xmlObject ;
+        SchemaType type = xmlObject.schemaType() ;
+        // Cooerce the empty element into an XmlString...
+        XmlString tempObject = (XmlString)xmlObject.changeType( XmlString.type ) ;
+        tempObject.setStringValue( (String)AdqlData.DERIVED_DEFAULTS.get( type.getName().getLocalPart() ) ) ;
+        // Cooerce back to original type...
+        retVal = tempObject.changeType( type ) ;
+        return retVal ;
     }
 
 }

@@ -4,6 +4,7 @@ package org.astrogrid.desktop.modules.adqlEditor ;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.lang.Integer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,7 +67,7 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         if( parent != null && !parent.isChildHidingRequired() ) {
             // Time to check where the position within the xml tree so we
             // can keep the display and the tree in line...
-            int index = findRequiredChildIndex( parent.getXmlObject(), xmlObject ) ;
+            int index = findChildIndex( parent.getXmlObject(), xmlObject ) ;
             if( index == -1 )
                 parent.add( entry ) ; 
             else
@@ -77,23 +78,41 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
     
     public static boolean removeInstance( AdqlEntry parent, AdqlEntry child ) {
         boolean retValue = false ;
-        //
-        // Simple bit first. Remove the child entry from the mutable tree...
-        parent.remove( child ) ;
-        //
-        // XmlCursor is plain wonderful! 
-        // I use it to remove the object from the parent.
-        XmlObject co = child.getXmlObject() ;  // child object
-        XmlObject po = parent.getXmlObject() ; // parent object
-        XmlCursor cursor = po.newCursor() ;
-        cursor.toFirstChild() ; // There has to be a first child!
-        do {
-            if( co == cursor.getObject() ) {
-                retValue = cursor.removeXml() ;
-                break ;
-            }
-        } while( cursor.toNextSibling() ) ;
-        cursor.dispose() ;       
+        XmlObject co ;  // child object
+        XmlObject po ; // parent object     
+        XmlCursor cursor = null ;
+        try {
+            //
+            // Simple bit first. Remove the child entry from the mutable tree...
+            parent.remove( child ) ;
+            //
+            // XmlCursor is plain wonderful! 
+            // I use it to remove the object from the parent.
+            co = child.getXmlObject() ;  // child object
+            po = parent.getXmlObject() ; // parent object
+            cursor = po.newCursor() ;
+            cursor.toFirstChild() ; // There has to be a first child!
+            do {
+                if( co == cursor.getObject() ) {
+                    retValue = cursor.removeXml() ;
+                    break ;
+                }
+            } while( cursor.toNextSibling() ) ;
+            retValue = true ;
+        }
+        catch( Exception ex ) {
+            log.debug( "Failure to remove instance..." ) ;
+            log.debug( "Parent:" ) ;
+            parent.debug_LogChildren() ;
+                        
+            log.debug( "Child:" ) ;
+            log.debug( child.getXmlObject().toString() ) ;
+            log.debug( "hashCode: " + child.hashCode() ) ;
+        } 
+        finally {
+            if( cursor != null )
+                cursor.dispose() ;
+        }
         return retValue ;
     }
     
@@ -102,8 +121,17 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
         parent.remove( child ) ;
         return true ;
     }
-      
 
+    public static boolean reconnectInstance( AdqlEntry parent, AdqlEntry child, int index ) {
+        parent.insert( child, index ) ;
+        return true ;
+    } 
+
+    public static boolean reconnectInstance( AdqlEntry parent, AdqlEntry child ) {
+        parent.add( child ) ;
+        return true ;
+    } 
+    
     public static boolean isChildHidingRequired( XmlObject xmlbean ) {
         boolean retValue = false ;
         SchemaType type = xmlbean.schemaType() ;
@@ -118,16 +146,19 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
     }
     
       
-    private static int findRequiredChildIndex( XmlObject parent, XmlObject child ) {
+    public static int findChildIndex( XmlObject parent, XmlObject child ) {
         int index = 0 ;
+        boolean found = false ;
         XmlCursor cursor = parent.newCursor() ;
         cursor.toFirstChild() ; // There has to be a first child!
         do {
-            if( child == cursor.getObject() ) 
+            if( child == cursor.getObject() ) {
+                found = true ;
                 break ;
+            }
             index++ ;
         } while( cursor.toNextSibling() ) ;
-        if( !cursor.toNextSibling() ) {
+        if( found == false ) {
             index = -1 ;
         }
         cursor.dispose() ;
@@ -470,6 +501,21 @@ public final class AdqlEntry extends DefaultMutableTreeNode {
     
     public void setExpanded( boolean expanded ) {
         this.expanded = expanded ;
+    }
+    
+    public void debug_LogChildren() {
+        AdqlEntry[] children = getChildren() ;
+        if( children.length == 0 ) {
+            log.debug( "Has no children." ) ;
+        } 
+        else {
+            for( int i=0; i<children.length; i++ ) {
+                log.debug( "child as xmlobject " + i + ":") ;
+                log.debug( children[i].getXmlObject().toString() ) ;
+                log.debug( "AdqlEntry hashcode: " + children[i].hashCode() ) ;
+                log.debug( "xmlobject hashcode: " + children[i].getXmlObject().hashCode() ) ;
+            }
+        }
     }
     
     static public class Atom {
