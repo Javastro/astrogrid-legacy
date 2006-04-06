@@ -26,7 +26,7 @@ import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree ;
 
-import com.sun.corba.se.connection.GetEndPointInfoAgainException;
+//import com.sun.corba.se.connection.GetEndPointInfoAgainException;
 
 
 /**
