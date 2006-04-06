@@ -1,11 +1,23 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityPasswordResolver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2006/04/06 17:44:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityPasswordResolver.java,v $
+ *   Revision 1.6  2006/04/06 17:44:25  clq2
+ *   wb-gtr-1537.
+ *
+ *   Revision 1.5.140.3  2006/03/06 17:29:38  gtr
+ *   I changed it to return a JAAS subject instead of a CredentialStore.
+ *
+ *   Revision 1.5.140.2  2006/03/02 19:25:08  gtr
+ *   Various fixes after tests with the workbench. Login in via my Proxy now works.
+ *
+ *   Revision 1.5.140.1  2006/02/28 14:48:35  gtr
+ *   This supports access to cryptographic credentials via MyProxy.
+ *
  *   Revision 1.5  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -27,30 +39,35 @@
  */
 package org.astrogrid.community.resolver ;
 
+import java.net.URI;
+import java.net.URL;
+import java.security.KeyStoreException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.CertPath;
+import java.util.Arrays;
+import java.util.List;
+import javax.security.auth.Subject;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
-
-import java.net.URL ;
-
 import org.astrogrid.community.common.security.data.SecurityToken ;
-
 import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
-
 import org.astrogrid.community.client.security.service.SecurityServiceDelegate ;
 import org.astrogrid.community.resolver.security.service.SecurityServiceResolver ;
-
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.community.common.exception.CommunityServiceException ;
 import org.astrogrid.community.common.exception.CommunitySecurityException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 import org.astrogrid.community.resolver.exception.CommunityResolverException ;
+import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
+import org.globus.myproxy.MyProxy;
+import org.ietf.jgss.GSSCredential;
 
 /**
- * A utility to resolve passwords into tokens.
+ * A utility to resolve passwords into other credentials.
  *
  */
-public class CommunityPasswordResolver
-    {
+public class CommunityPasswordResolver {
+  
     /**
      * Our debug logger.
      *
@@ -122,4 +139,75 @@ public class CommunityPasswordResolver
             password
             ) ;
         }
+ 
+  /**
+   * Resolves an account-name and password into a set of cryptographic
+   * credentials and a user alias. This implementation talks directly
+   * to a MyProxy service. The credentials are transformed into a
+   * java.security.PrivateKey and a java.security.cert.CertPath (i.e.
+   * a certificate chain) and these are packaged and returned in
+   * a JAAS Subject.
+   * 
+   * @param account IVOID for account.
+   * @param password Plain-text password
+   * @param lifetime Desired length of validity of credentials in seconds.
+   * @param trustAnchors Name of directory holding trusted certificates.
+   * @return The credentials.
+   */
+  public Subject checkPassword(String account, 
+                               String password, 
+                               int    lifetime,
+                               String trustAnchors) 
+      throws RegistryException,
+             CommunityResolverException,
+             CommunityIdentifierException   {
+    
+    // Record where the trusted certificates are kept. The MyProxy
+    // class from Globus needs this information specifically attached
+    // to this system property.
+    log.debug("Trusted-certificates are in " + trustAnchors);
+    System.setProperty("X509_CERT_DIR", trustAnchors);
+    
+    // Parse the account IVORN. This gives access to details of
+    // both the account and the community.
+    CommunityIvornParser parser = new CommunityIvornParser(account);
+    
+    // Get the account name from the account IVOID.
+    String name = parser.getAccountName();
+    
+    // Get a delegate for the MyProxy service associated with the account.
+    CommunityMyProxyResolver resolver = new CommunityMyProxyResolver();
+    MyProxy myProxy = resolver.resolve(parser.getIvorn());
+    
+    // Get credentials from the MyProxy service using jGlobus. The
+    // credentials come back as a GSS object which is so generic that
+    // it doesn't have accessors for the useful parts of the credentials.
+    // However, the Globus implementation of the GSS interface does have
+    // the right accessors.
+    GlobusGSSCredentialImpl globusCred;
+    try {
+      GSSCredential gssCred = myProxy.get(name, password, lifetime);
+      globusCred = (GlobusGSSCredentialImpl)gssCred;
     }
+    catch (Exception e) {
+      throw new CommunityResolverException(
+          "Failed to get credentials from the MyProxy service.", e);
+    }
+    
+    // Package and return the results.
+    try {
+      Subject subject = new Subject();
+      subject.getPrivateCredentials().add(globusCred.getPrivateKey());
+      List certList = Arrays.asList(globusCred.getCertificateChain());
+      CertificateFactory factory = CertificateFactory.getInstance("X509");
+      CertPath certPath = factory.generateCertPath(certList);
+      subject.getPublicCredentials().add(certPath);
+      return subject;
+    }
+    catch (Exception e) {
+      throw new CommunityResolverException("Credentials were obtained but " +
+          "the resolver failed to package them in a JAAS Subject.", e);
+    }
+  }
+
+}

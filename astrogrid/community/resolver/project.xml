@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/08/04 09:40:11 $</cvs:date>
-    | <cvs:version>$Revision: 1.15 $</cvs:version>
+    | <cvs:date>$Date: 2006/04/06 17:44:25 $</cvs:date>
+    | <cvs:version>$Revision: 1.16 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.16  2006/04/06 17:44:25  clq2
+    |   wb-gtr-1537.
+    |
+    |   Revision 1.15.28.1  2006/03/02 19:24:28  gtr
+    |   Jars in support of MyProxy are included.
+    |
     |   Revision 1.15  2005/08/04 09:40:11  clq2
     |   kevin's second batch
     |
@@ -275,7 +281,15 @@ We should ise the version packaged with Axis, otherwise we risk breaking Axis.
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
-            +-->
+        	+-->
+    	
+    	<dependency>
+    		<groupId>globus</groupId>
+    		<artifactId>cog-jglobus</artifactId>
+    		<version>1.2</version>
+    		<type>jar</type>
+    	</dependency>
+    	
     </dependencies>
 
     <!--+

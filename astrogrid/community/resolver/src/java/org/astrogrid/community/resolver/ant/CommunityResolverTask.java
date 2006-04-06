@@ -1,11 +1,18 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityResolverTask.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:source>$Source:
+ /devel/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/CommunityResolverTask.java,v $</cvs:source>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2006/04/06 17:44:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityResolverTask.java,v $
+ *   Revision 1.7  2006/04/06 17:44:25  clq2
+ *   wb-gtr-1537.
+ *
+ *   Revision 1.6.222.1  2006/02/28 14:47:43  gtr
+ *   I changed a variable called enum to "en" to be compatible with Java 5.
+ *
  *   Revision 1.6  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -33,7 +40,7 @@ import org.astrogrid.community.common.security.data.SecurityToken ;
 
 /**
  * Base class for our Ant tasks.
- * 
+ *
  */
 public class CommunityResolverTask
     extends Task
@@ -212,13 +219,13 @@ public class CommunityResolverTask
                     ) ;
                 //
                 // Add the properties to our config.
-                Enumeration enum = map.keys() ;
-                while (enum.hasMoreElements())
+                Enumeration en = map.keys() ;
+                while (en.hasMoreElements())
                     {
                     if (DEBUG_FLAG) System.out.println("----");
                     //
                     // Get the property name and value.
-                    String name = (String)enum.nextElement() ;
+                    String name = (String)en.nextElement() ;
                     if (DEBUG_FLAG) System.out.println("  Name  : " + name);
                     String value = map.getProperty(name) ;
                     if (DEBUG_FLAG) System.out.println("  Value : " + value);
@@ -258,4 +265,5 @@ public class CommunityResolverTask
         this.configure() ;
         }
     }
+
 

@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/05/09 15:10:15 $</cvs:date>
- * <cvs:version>$Revision: 1.17 $</cvs:version>
+ * <cvs:date>$Date: 2006/04/06 17:44:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.18 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.18  2006/04/06 17:44:25  clq2
+ *   wb-gtr-1537.
+ *
+ *   Revision 1.17.54.2  2006/03/02 19:25:08  gtr
+ *   Various fixes after tests with the workbench. Login in via my Proxy now works.
+ *
+ *   Revision 1.17.54.1  2006/02/28 14:48:35  gtr
+ *   This supports access to cryptographic credentials via MyProxy.
+ *
  *   Revision 1.17  2005/05/09 15:10:15  clq2
  *   Kevin's commits
  *
@@ -64,6 +73,7 @@ package org.astrogrid.community.resolver ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
+import java.net.URI;
 import java.net.URL ;
 import java.net.MalformedURLException ;
 
@@ -205,6 +215,39 @@ public class CommunityEndpointResolver
         return returnIvorn;
     }
 
+   /**
+    * Resolve data from a CommunityIvornParser.
+    * @param parser A CommunityIvornParser containing the Community identifier.
+    * @param type   The Java class of the service interface we want.
+    * @return The endpoint address for the service.
+    * @throws CommunityIdentifierException If the identifier is not valid.
+    * @throws CommunityResolverException If the Community is unable to resolve the identifier.
+    * @throws RegistryException If the Registry is unable to resolve the identifier.
+    */
+   public URL resolve(CommunityIvornParser parser, Class type)
+       throws RegistryException, 
+              CommunityIdentifierException, 
+              CommunityResolverException {
+     // Resolve to a java.net.URI first, and then
+     // convert that to a java.net.URL. The subordinate
+     // method handles the probably errors and returns the
+     // right kind of exceptions, so they are not caught.
+     // The URI-to-URL connvertion can go wrong if Java
+     // doesn't understand the scheme, and that error is
+     // caught here.
+     try {
+       return this.resolveToUri(parser, type).toURL();
+     }
+     catch (MalformedURLException ouch) {
+       throw new CommunityResolverException(
+           "IVOID " + 
+           parser.getIvorn() +
+           " was resolved to a service-endpoint URI, " +
+           "but that URI cannot be converted to a URL " +
+           "because Java has no handler for the scheme of the URI.");
+     }
+   }
+
     /**
      * Resolve data from a CommunityIvornParser.
      * @param parser A CommunityIvornParser containing the Community identifier.
@@ -216,12 +259,12 @@ public class CommunityEndpointResolver
      * @todo relies on ivorn.getPath()
      *
      */
-    public URL resolve(CommunityIvornParser parser, Class type)
+    public URI resolveToUri(CommunityIvornParser parser, Class type)
         throws RegistryException, CommunityIdentifierException, CommunityResolverException
         {
         log.debug("") ;
         log.debug("----\"----") ;
-        log.debug("CommunityEndpointResolver.resolve()") ;
+        log.debug("CommunityEndpointResolver.resolveToUri()") ;
         log.debug("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
         log.debug("  Type  : " + type)  ;
         //
@@ -283,14 +326,14 @@ public class CommunityEndpointResolver
             //
             // Convert it into an endpoint URL.
             try {
-                return new URL(endpoint) ;
+                return new URI(endpoint) ;
                 }
             //
             // Report the problem in a Exception.
-            catch (MalformedURLException ouch)
+            catch (Exception ouch)
                 {
                 throw new CommunityResolverException(
-                    "Unable to parse Registry response into endpoint URL",
+                    "Unable to parse Registry response into endpoint URI",
                     ivorn
                     ) ;
                 }
