@@ -1,0 +1,447 @@
+<?xml version='1.0'?>
+
+<!-- $Id: access-control.xml,v 1.1 2006/04/07 11:05:31 norman Exp $ -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ng="http://ns.nxg.me.uk/myxml">
+
+<head>
+<title>Reasoning about access using ontologies</title>
+<!--link rel='stylesheet'
+      type='text/css'
+      href='/Volumes/Faraday/w/me/TRUNK/text/webpages/nxg.me.uk/style/base.css'/-->
+<ng:rcsdate>$Date: 2006/04/07 11:05:31 $</ng:rcsdate>
+<ng:rdf/>
+</head>
+
+<body>
+
+<h1>Reasoning about access using ontologies</h1>
+
+<div class='abstract'>
+There exists a small number of approaches to the authorisation problem
+of deciding, once a user has been authenticated, what that user is
+permitted to do.  This problem is very naturally viewed as an
+(ontological) subsumption problem: `is this user provably a member of
+the class of entities allowed access to this resource?'.  This
+approach provides a flexible solution, in which delegation and
+federation are natural, and which fits into a broad range or
+architectures.  I also describe a reasoning service, Quaestor, which
+implements the reasoning service.
+</div>
+
+<ng:toc/>
+
+<p>Once a user has been authenticated -- that is, once a resource has
+decided that a user really is who they claim to be -- there exists a
+separate problem of deciding what that user is and is not allowed to
+do with or to the resource.  There are various approaches which
+address this (including Shibboleth and PERMIS), but the problem can
+very naturally be expressed in ontological terms, as a straightforward
+subsumption problem: `is this user provably a member of the class of
+entities allowed access to this resource?'.</p>
+
+<p>The account below describes:</p>
+<ol>
+<li>the simple ontology required to address a simple but
+realistic access-control problem;</li>
+<li>the application, <em>Quaestor</em>, which provides generic
+reasoning services, with both a RESTful and an XML-RPC interface;</li>
+<li>possible extensions of this simple demo to address some of the
+existing outstanding problems to do with authorisation.</li>
+</ol>
+
+<div class='section'>
+<p>The use-case</p>
+
+<p>The simple, but non-trivial, use-case which this demo addresses is
+the following.  A database is to be accessible to researchers at
+institutions in the UK and researchers who are members of a particular
+collaboration.  Certain tagged rows are accessible to researchers at
+African institutions.</p>
+
+<p>There are a few other use-cases on <a
+href="http://wiki.eurovotech.org/bin/view/VOTech/AccessControlUseCases"
+>the VOTech wiki</a>.</p>
+</div>
+
+<div class='section'>
+<p>The solution</p>
+
+<div class='section'>
+<p>An ontology of access control</p>
+
+<p>On the right is the asserted hierarchy for an
+access-control ontology, as displayed by the ontology editor Protégé.
+Although it is not obvious from this screenshot, Protégé writes its
+ontologies out as OWL ontologies <ng:cite>std:owl</ng:cite>, which is
+layeed on top of RDF <ng:cite>std:rdf</ng:cite>.
+The various locations are represented as classes, gathered
+together under other classes representing continents.  The
+<code>GroupOfPeople</code> class represents either collaborations or
+institutional groups, and the <code>Person</code> class has subclasses
+based on location and on access rights.  The goal is to end up
+assigning individuals into the <code>CanSeeAllData</code> class, the
+<code>CanSeeTaggedData</code> class, or neither.</p>
+
+<p><img class='smallimage' src='asserted-hierarchy.png' alt='asserted
+hierarchy'/>To this class hierarchy, we add further conditions.  We
+declare a <code>locatedIn</code> property, which has
+<code>Person</code> as its domain, and
+<code>GeographicalLocation</code> as its range, or co-domain.  We then
+declare as a <em>necessary condition</em> of membership of the
+<code>UniversityOfLeicesterPerson</code> class that an entity has a
+<code>locatedIn</code> property whose range is specifically
+<code>UnitedKingdom</code>, with similar necessary conditions on the
+other institutional groups.  We can then add as a necessary <em>and
+sufficient</em> condition on the <code>PersonAtUKInstitution</code>
+class that they have a <code>locatedIn</code> property whose range is
+<code>UnitedKingdom</code>.  If we subsequently assert that
+<code>#norman</code> is a <code>UniversityOfLeicesterPerson</code>,
+then we can <em>deduce</em> that he must have the given
+<code>locatedIn</code> property, and this is sufficient to then
+deduce that he is a member of the <code>PersonAtUKInstitution</code>
+class.  If we then assert that a necessary and sufficient condition
+for membership of the <code>CanSeeAllData</code> class is that an
+individual is a member of the union of the
+<code>PersonAtUKInstitution</code> and
+<code>CollaborationXMember</code> classes, and that a member of the
+<code>CanSeeTaggedData</code> class is in the union of the
+<code>CanSeeAllData</code> and <code>PersonAtAfricanInstitution</code>
+classes, then we are finished.</p>
+
+<p>These various conditions are all compactly asserted as extra
+statements about the classes shown in the hierarchy here.  Indeed, the
+displayed tree is just the visualisation of the assertion that, for
+example, a <code>UniversityOfLeicesterPerson</code> is necessarily a
+member of the <code>InstitutionalGroup</code> class.</p>
+
+<p style='clear:both;'><img class='smallimage'
+src='inferred-hierarchy.png' alt='inferred hierarchy'/>We (or rather
+Protégé) can give this collection of assertions (which corresponds to
+a single <em>RDF graph</em>) to a 
+<em>reasoner</em>, and ask it to deduce the inferred subclass
+hierarchy which these extra conditions impose on the asserted
+hierarchy we have displayed above.  That results in the hierarchy shown
+here.  Observe that the <code>Person</code> class has been
+restructured, with various <code>InstitutionalGroup</code> subclasses
+appearing under <code>Person</code>, and several of them appearing
+also under <code>PersonWithAccessRights</code>.  You can see that
+someone who is a member of the
+<code>UniversityOfLeicesterPerson</code> class is also a member of the
+<code>CanSeeAllData</code> and <code>CanSeeFlaggedData</code>
+classes.  We can see that, with a hierarchy of classes plus a
+<em>few</em> extra conditions, the reasoner has done most of our
+authorisation work for us.</p>
+
+<p>Although we have presented this as a single ontology, this is only
+for the purposes of this demo, and in practice this would most
+reasonably be split amongst several ontologies, maintained by
+different actors.</p>
+<ul>
+<li>The <code>GeographicalLocation</code> and
+<code>InstitutionalGroup</code> classes are rather generic, and could
+be managed centrally.  Note that defining the class
+<code>UniversityOfLeicesterPerson</code> is distinct from asserting
+that a given individual is a member of it; the former can be done
+centrally and mechanically, while the latter should be done only by
+the appropriate authority at Leicester (there are complications here,
+see <a href='#security'>below</a>).</li>
+
+<li>Classes such as <code>PersonAtUKInstitution</code> are `utility'
+classes, in the sense that they provide useful bits of logic which
+build on the simple generic classes above.</li>
+
+<li>Classes such as <code>CanSeeAllData</code> are meaningful only to
+a specific resource owner, and are the place where that resource owner
+actually articulates her access policy.  They can be defined only by
+(or on behalf of) that resource owner.</li>
+</ul>
+
+</div>
+
+<div class='section'>
+<p>Instances</p>
+
+<p>How, then, do we exploit this as a component of an authorisation
+architecture?</p>
+
+<p>Once the ontology is created, we can add assertions about
+individuals.  For example, here are some assertions written in
+<em>Notation 3</em> <ng:cite>std:n3</ng:cite>:</p>
+<pre>
+@prefix : &lt;urn:example#&gt; .
+@prefix ac: &lt;http://eurovotech.org/access-control2.owl#&gt; .
+:Norman a ac:UniversityOfLeicesterPerson, ac:CollaborationXMember.
+:Guy a ac:CambridgeUniversityPerson.
+:Markus a ac:EuropeanSouthernObservatoryPerson.
+:Sébastien a ac:CentreDeDonnéesDeStrasbourgPerson.
+:Jonathan a ac:HarvardUniversityPerson;
+        a ac:CollaborationXMember.
+:Nelson a ac:UniversityOfCapeTownPerson;
+        a ac:CollaborationXMember.
+:Tutankhamun a ac:UniversityOfCairoPerson.
+</pre>
+
+<p>We can add further assertions such as:</p>
+<pre>
+&lt;urn:example#Norman&gt; = &lt;mailto:norman@astro.gla.ac.uk&gt;.
+</pre>
+<p>This indicates that these two URIs are to be deemed to be
+equivalent, in the sense that any assertion made about one can be
+taken to be made about the other also.</p>
+
+<p>As with the ontology above, these various assertions would be made
+in practice by different actors.  Assertions that
+<code>&lt;urn:example#Norman&gt; a
+ac:UniversityOfLeicesterPerson</code> would be made by (a proxy of)
+the Leicester personnel department, and an equivalence relation
+similar to the one above might be made by the resource owner to link
+the URI that the Leicester authorities use to a different local name
+for the same individual, such as a local username or, as in this case,
+an email address.</p>
+</div>
+
+<div class='section'>
+<p>Querying</p>
+
+<p>So we have an ontology plus some individuals.  How do we get this
+information out?  How do we go about actually plumbing this in to the
+architecture of our resource-owner's system?</p>
+
+<p>Enter SPARQL <ng:cite>std:sparql</ng:cite>.</p>
+
+<p>SPARQL is a vaguely SQL-like language for querying RDF
+triple-stores.  A query against the access-control ontology might
+be:</p>
+<pre>
+prefix : &lt;http://eurovotech.org/access-control2.owl#&gt;
+select ?person
+where { ?person a :CanSeeFlaggedData }
+</pre>
+<p>This would return a list of all the individuals in the triple-store
+which were members of the <code>CanSeeFlaggedData</code> class.
+Alternatively, </p>
+<pre>
+ask { &lt;mailto:norman@astro.gla.ac.uk&gt;
+    a &lt;http://eurovotech.org/access-control2.owl#CanSeeAllData&gt; }
+</pre>
+<p>would return a yes or no answer if
+<code>norman@astro.gla.ac.uk</code> was indeed in the class 
+of individuals who could see all the data (it should be `yes').</p>
+
+<p>There are other types of query which return RDF graphs, and various
+ways of filtering and enhancing the results.  As of April 2006, SPARQL
+is not yet standardised, but it is an advanced W3C Working Draft, with
+multiple working implementations.</p>
+
+</div>
+
+<div class='section'>
+<p>A reasoning service: Quaestor</p>
+
+<p>I have created a generic SPARQL endpoint, called Quaestor, which
+can be given multiple ontologies and instance assertions, and run
+SPARQL queries against the merged result.  It has both RESTful
+<ng:cite>fielding00</ng:cite> and XML-RPC
+<ng:cite>std:xmlrpc</ng:cite> interfaces, and runs within Tomcat.
+Once the ontologies have been uploaded to it, via HTTP PUT requests,
+a client can make SPARQL queries of the merged result using either
+HTTP POST or GET queries.</p>
+
+<p>This service is generic in the sense that it is not tied to any
+particular ontology -- in particular, it is not tied to just this
+access-control problem.  It is designed to provide OWL-based reasoning
+services as part of a larger infrastructure, and so its interface has
+been designed with generality and extensibility in mind.</p>
+</div>
+</div>
+
+<div class='section' id='strengths'>
+<p>Strengths</p>
+
+<p>This approach is heavily standards-based, and builds on
+pre-existing standards rather than new ones.</p>
+
+<p>OWL, as used here, is essentially a logic programming language,
+and so the architecture described here is essentially one which relies
+on mobile code, though it is safe because the language is sufficiently
+restricted.  This flexibility also means that resource owners can be
+as sophisticated as they wish in defining their security policies, and
+are not restricted to a pre-existing authorisation language.</p>
+
+<p>Because the relevant assertions are given to the reasoner in the
+form of OWL/RDF, which is a very low-level format, it is possible to
+extract assertions from a wide variety of other sources, such as SAML
+assertions, X.509 certificates, and PERMIS policies (I expect -- I
+haven't yet tried this, and so don't know just how much preprocessing
+would be required).</p>
+
+<p>For the same reason, federation of authorisation logic is (again,
+<em>should be</em>) relatively simple, and flexible.  If, for example,
+institution <em>A</em> has a class <code>a:CanSeeEJournals</code>,
+and wishes to give e-journal access to members of another institution,
+<em>B</em>, without re-registering all the relevant members of that
+institition, then it can do so in multiple ways.  If the other
+institution (or `identity provider', IdP) maintains a class
+<code>b:LibraryUser</code> and gives 
+access to its e-journals to individuals it asserts to be members of that
+class, then institution <em>A</em> could simply declare class
+<code>b:LibraryUser</code> to be a subclass of
+<code>a:CanSeeEJournals</code>, at which point any individuals
+asserted to be members of <code>b:LibraryUser</code> can be
+immediately deduced to be members of <code>a:CanSeeEJournals</code>
+also.  Alternatively, it might be more suitable for institution B to
+assert individuals' membership of <code>a:CanSeeEJournals</code>
+directly.  In either case the set of assertions would be transmitted
+to institution <em>A</em> in a discrete packet of RDF assertions (a
+single RDF graph), and
+in each case the trust is isolated into <em>A</em>'s decision whether or not
+to trust that particular set of <em>B</em>'s assertions (this is
+expanded on in the discussion of security <a href='#security'
+>below</a>).</p>
+
+<p>An infrastructure based on these standards allows delegation in other ways.
+We have described an architecture in which the reasoning is done
+locally to the resource, using RDF graphs which may originate
+from multiple sources.  Alternatively a decision could be delegated, in
+whole or in part, to a remote IdP.  Continuing the example above,
+the resource <em>A</em> could wholly or partially decide to allow
+an entity access to its e-journals by simply asking <em>B</em> whether
+they would allow that entity access to <em>their</em> e-journals; that
+is, by sending a SPARQL query to ask <em>B</em> whether that entity is
+in <code>b:LibraryUser</code>.</p>
+
+</div>
+
+<!--
+intro
+use-case(s)
+access example
+  the ontology: Protégé screenshots
+  example of instance assertions
+  examples of queries (ask+select) and responses
+strengths
+  very flexible and portable -> interop (lets sites be as clever as
+    they want without sacrificing interop
+  can draw from multiple systems such as SAML and PERMIS and ...?
+    which essentially represent controlled vocabularies/taxonomies
+  delegating authority is easy
+  passing round RDF/OWL is essentially movable code, but very safe
+  can make things more elaborate: rather than SAML advertising
+    attributes, you could make a query of a IdP more specific: `would
+    this user be allowed to use your library?', as part of the
+    go/no-go decision
+-->
+
+<div class='section'>
+<p>Open issues</p>
+
+<p>The problem is not of course completely solved.  The following
+problems need to be addressed.</p>
+<ul>
+<li>Verifying that the expectations <a href='#strengths'
+>above</a>, concerning the ease of federating or delegating all or
+part of the authorisation decision, are borne out in fact.</li>
+<li>The above account only touches on the issues of trust and security
+involved in having the reasoner ingest graphs from various
+sources.</li>
+<li>There are existing authorisation architectures which this proposal
+would have to work with.</li>
+</ul>
+
+<div class='section' id='security'>
+<p>Security and trust</p>
+
+<p>In the simplest scenario, the reasoning service described here
+would sit well away from the open internet, and the graphs
+which it handles would either be generated locally in the
+case of the resource owner's own rules, obtained from known-good
+sources in the case of utility ontologies, or from otherwise secure
+sources, such as a graph extracted from a signed X.509
+certificate.</p>
+
+<p>In contrast to this, the delegation example above required an RDF
+graph to be sent from one institution to another.  This could either
+be done through a separately secured channel, or by signing the graph
+using one of the relevant emerging standards (see, for example,
+<a href='http://xmlns.com/wot/0.1/'
+  ><code>http://xmlns.com/wot/0.1/</code></a>).</p>
+
+<p>Since the parsed RDF graphs are programmatically manipulable, it
+would be possible for a resource owner to constrain or filter the set
+of assertions which a remote entity makes, to ensure that the graph is
+not only from a known source, but also that it does not assert
+anything it shouldn't.</p>
+
+<p>Privacy: This architecture suffers from some of the same
+information-leakage problems that SAML assertions do.  It is not
+immediately obvious how an IdP should restrict the set of RDF
+assertions it makes available to those which are relevant to the
+properties a remote resource needs or wishes.  A possible solution to
+this is to allow the resource to make more indirect SPARQL queries of
+the IdP, such as `would you allow this person in to <em>your</em>
+library?', since these do not expose the underlying assertions.
+However a malevolent user of such an interface could still build up a
+substantial amount of information through such a channel, through
+multiple crafted queries.  Combining queries of this type
+with the Shibboleth handle system <ng:cite>proj:shibboleth</ng:cite>
+would provide most of the required security.</p>
+
+</div>
+
+<div class='section'>
+<p>Other authorisation frameworks</p>
+
+<p>The Shibboleth system <ng:cite>proj:shibboleth</ng:cite> has
+defined an intricate infrastructure for access control.  When a user
+requests access to a resource, the resource owner may securely query
+an appropriate IdP, as guided by the user, to discover the set of
+attributes, transported in a SAML assertion, which the IdP will
+warrant applies to the user.  The resource owner will then allow or
+deny access based on those attributes.  The Shibboleth system concerns
+itself with the mechanism for negotiating and transporting the
+attribute sets, and does not cover any support for the resource
+owner's reasoning.</p>
+
+<p>The PERMIS system <ng:cite>proj:permis</ng:cite> focuses on the
+resource owner's specification of their access policy, and provides
+algorithmic support for the reasoning involved.  The PERMIS system
+does not provide easy support for the dynamic or delegated
+authorisation frameworks, though it is possible to add such support
+indirectly.</p>
+
+<p>Since RDF functions at a rather low level, it will be possible to
+transform PERMIS policies and SAML assertions into equivalent OWL/RDF
+graphs, so that an OWL-based reasoning infrastructure would be
+possible as a plug-in replacement for the reasoning in these other
+authorisation frameworks.  This would have the advantage that the
+resource owner is limited only by their ingenuity in the type and
+structure of the access controls they wish to impose.</p>
+
+<p>[This section needs to be expanded; add refs to NESC federation
+experiments.  Add pointers to demos/downloads]</p>
+
+</div>
+
+</div>
+
+<div class='section'>
+<p>Bibliography</p>
+<ng:bibliography data='compsci' style="plainhtml"/>
+</div>
+
+<pre class='doc.history'>
+$Log: access-control.xml,v $
+Revision 1.1  2006/04/07 11:05:31  norman
+Initial version
+
+</pre>
+
+<div class="signature">
+<a href='http://nxg.me.uk' >Norman Gray</a><br/>
+<ng:rcsdate format="standard">$Date: 2006/04/07 11:05:31 $</ng:rcsdate>
+</div>
+
+</body>
+</html>

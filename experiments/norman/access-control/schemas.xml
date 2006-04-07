@@ -1,0 +1,5 @@
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+<uri resource="access-control.xml" uri="../../text/webpages/misc/myxhtml.rnc"/>
+<!--<namespace ns="http://ns.nxg.me.uk/myxml" uri="myxml.rnc"/> -->
+<namespace ns="http://ns.nxg.me.uk/myxhtml" uri="myxhtml.rnc"/>
+</locatingRules>
