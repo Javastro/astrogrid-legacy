@@ -4,8 +4,8 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.commons.collections.buffer.BoundedFifoBuffer;
 import org.apache.commons.logging.Log;
@@ -56,10 +56,10 @@ public class PollingPlasticClient extends PlasticClientProxy {
 	public synchronized Object perform(URI sender, URI message, List args)
 			throws PlasticException {
 		
-		List messageDetails = new ArrayList();
+		List messageDetails = new Vector();
 		messageDetails.add(sender);
 		messageDetails.add(message);
-		messageDetails.add(new ArrayList(args)); //necessary to create a new one, in case the old list is reused by the client
+		messageDetails.add(new Vector(args)); //necessary to create a new one, in case the old list is reused by the client
 		if (buffer.isFull()) {
 			List thrownAwayMessage = (List) buffer.remove();
 			URI tamSender = (URI) thrownAwayMessage.get(0);
@@ -72,7 +72,7 @@ public class PollingPlasticClient extends PlasticClientProxy {
 	BoundedFifoBuffer buffer = new BoundedFifoBuffer(BUFFERSIZE);
 
 	public List getStoredMessages() {
-		return new ArrayList(buffer);
+		return new Vector(buffer);
 	}
 
 	/**

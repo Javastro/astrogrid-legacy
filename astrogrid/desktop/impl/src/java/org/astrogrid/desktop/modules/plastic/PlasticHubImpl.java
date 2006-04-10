@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +25,8 @@ import java.util.Vector;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
@@ -146,7 +147,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         clients.add(client);
         
         // Tell the world
-        List args = new ArrayList();
+        List args = new Vector();
         args.add(id.toString());
         logger.info(id + " has registered");
         requestAsynch(hubId, HubMessageConstants.APPLICATION_REGISTERED_EVENT, args);
@@ -212,7 +213,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             boolean shouldWaitForResults) {
     	//Gotcha.  The recipients are in a List of URIs from Java, but a List of Strings from xml-rpc
     	if (recipients.size()!=0 && recipients.get(0).getClass()==String.class) {
-    		List recipientURIs = new ArrayList();
+    		List recipientURIs = new Vector();
     		for (Iterator it = recipients.iterator();it.hasNext();recipientURIs.add(URI.create((String) it.next())));
     		recipients = recipientURIs;
     		//Now we can carry on with our List of URIs....
@@ -398,14 +399,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      */
     public List markUnresponsiveApps() {
         // ping them. Applications will automcatically mark themselves as duff.
-        List args = new ArrayList();
+        List args = new Vector();
         args.add("ping");
         request(hubId, CommonMessageConstants.ECHO, args);
         return getNonResponders();
     }
 
     private List getNonResponders() {
-        List dead = new ArrayList();
+        List dead = new Vector();
         List appsIds = clients.getIds();
         Iterator it = appsIds.iterator();
         while (it.hasNext()) {
@@ -446,7 +447,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 	
 	public void prettyPrintRegisteredApps() throws IOException, ACRException {
-		List applicationDescriptions = new ArrayList();
+		List applicationDescriptions = new Vector();
 		List apps = getRegisteredIds();
 		URI hubId2 = getHubId();
 		apps.remove(hubId2);
@@ -492,6 +493,21 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	public String lastChance() {
 		return null; //returning null indicates we don't care.
+	}
+
+	public void setLoggingLevel(String level) {
+		//NOTE This relies on the logger being log4j since there's
+		//no way to do this through clogging.  Fortunately, if we ever
+		//change from log4j this should file to compile. 
+		Logger log = Logger.getLogger(this.getClass());
+		Level logLevel = Level.INFO;
+		if (level.equalsIgnoreCase("off")) {
+			logLevel = Level.OFF;
+		} else if (level.equalsIgnoreCase("debug")) {
+			logLevel = Level.DEBUG;
+		}
+		
+		log.setLevel(logLevel);
 	}
 
 }

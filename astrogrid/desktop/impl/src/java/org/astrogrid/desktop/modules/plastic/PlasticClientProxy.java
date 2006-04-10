@@ -2,9 +2,9 @@ package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,7 +59,7 @@ abstract class PlasticClientProxy {
     	//Gotcha.  The supportedMessages are in a List of URIs from Java, but a List of Strings from xml-rpc
         //Hopefully will go away in java1.5 when we have generics and can type the lists
     	if (supportedMessages.size()!=0 && supportedMessages.get(0).getClass()==String.class) {
-    		this.supportedMessages = new ArrayList();
+    		this.supportedMessages = new Vector();
     		for (Iterator it = supportedMessages.iterator();it.hasNext();) {
     			String m = (String) it.next();
     			try {
@@ -70,7 +70,7 @@ abstract class PlasticClientProxy {
     		}
     		//Now we can carry on with our List of URIs....
     	} else {       
-    		this.supportedMessages = new ArrayList(supportedMessages); //take a copy in case someone pulls the list from under our feet.
+    		this.supportedMessages = new Vector(supportedMessages); //take a copy in case someone pulls the list from under our feet.
     	}
         this.name = name;
     }

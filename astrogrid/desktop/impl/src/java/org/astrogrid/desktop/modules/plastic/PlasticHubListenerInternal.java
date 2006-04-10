@@ -40,4 +40,10 @@ public interface PlasticHubListenerInternal {
      * @param enable true to enable, falst to disable
      */
     void setNotificationsEnabled(boolean enable);
+    
+    /**
+     * Set the logging level for the Plastic module
+     * @param level can be off, normal or debug.
+     */
+    void setLoggingLevel(String level);
 }

@@ -36,7 +36,25 @@
 				<key>system.ui.menu.entry</key>
 				<value>List registered application details</value>
 			</property>
-		</method>			
+		</method>	
+		<method name="setLoggingLevel">
+		    <description>Set the logging level (off/normal/debug) for the Plastic Module.  You need to have enabled the Java Console to view the logs.</description>
+		    <property>
+		    <key>icon</key>
+		    <value>paste_edit.gif</value>
+		    </property>
+			<property>
+				<key>system.ui.menu.entry</key>
+				<value>Change the level of detail in the logs</value>
+			</property>	
+			<parameter name="level">
+				<description>Logging level</description>
+				<property>
+					<key>system.xmlrpc.type</key>
+					<value>array</value>
+				</property>
+			</parameter>				    
+		</method>		
 		<method name="getHubId">
 			<description>Get the ID of this Hub</description>
 			<property>

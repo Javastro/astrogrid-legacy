@@ -4,10 +4,10 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -144,7 +144,7 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      * @see org.astrogrid.acr.plastic.HubApplication#echo(java.lang.String)
      */
     public Map echo(String message) {
-        List args = new ArrayList();
+        List args = new Vector();
         args.add(message);
         return hub.request(this.id, CommonMessageConstants.ECHO, args);
     }
@@ -165,7 +165,7 @@ public class MessengerImpl implements MessengerInternal, PlasticListener {
      */
     public URI registerWith(PlasticHubListener hub) {
         this.hub = hub;
-        this.id = hub.registerRMI(NAME, new ArrayList(this.getSupportedMessages()), this);
+        this.id = hub.registerRMI(NAME, new Vector(this.getSupportedMessages()), this);
         logger.info("Hub self-registered with ID " + id);
         return id;
     }
