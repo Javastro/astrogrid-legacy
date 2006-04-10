@@ -13,6 +13,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jdt" type="fix" issue="1624">
+	Plastic: showObjects message wasn't working for xml-rpc.
+</action>
+<action dev="jdt" type="add" issue="1624">
+	Plastic: added an option to show debug information from the workbench
+	console.
+</action>
 <action dev="jl" type="update" issue="1605">
 	Query Builder: Command structure in place and working.
 	Visually the only change is the addition of an undo/redo facility.
