@@ -31,7 +31,7 @@ class XMLRPCPlasticClient extends PlasticClientProxy {
     private boolean validURL;
 
     public XMLRPCPlasticClient(NameGen gen, String name, List supportedMessages, URL callbackURL) {
-        super(gen, name, supportedMessages); //TODO this is not working.
+        super(gen, name, supportedMessages); 
 
         logger.info("Ctor: XMLRPCPlasticClient with callBackURL " + callbackURL + " and supports messages: "
                 + supportedMessages);
@@ -48,7 +48,7 @@ class XMLRPCPlasticClient extends PlasticClientProxy {
             Vector xmlrpcArgs = new Vector();
             xmlrpcArgs.add(sender.toString());
             xmlrpcArgs.add(message.toString());
-            xmlrpcArgs.add(new Vector(args));
+            xmlrpcArgs.add(args); 
             setResponding(true);
             return xmlrpc.execute(PLASTIC_CLIENT_PERFORM, xmlrpcArgs);
         } catch (Exception e) {

@@ -211,13 +211,18 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      */
     private Map send(final URI sender, final URI message, final List args, List recipients,
             boolean shouldWaitForResults) {
-    	//Gotcha.  The recipients are in a List of URIs from Java, but a List of Strings from xml-rpc
+    	//xmlrpc<->Java gotchas
+    	//Gotcha 1.  The recipients are in a List of URIs from Java, but a List of Strings from xml-rpc
+    	// TODO JDK1.5 this should go away with Java 5
     	if (recipients.size()!=0 && recipients.get(0).getClass()==String.class) {
     		List recipientURIs = new Vector();
     		for (Iterator it = recipients.iterator();it.hasNext();recipientURIs.add(URI.create((String) it.next())));
     		recipients = recipientURIs;
     		//Now we can carry on with our List of URIs....
     	}
+    	//Gotcha 2.   The spec says that xml-rpc arrays can be converted to Lists.  In fact, with the current
+    	//version of the xml-rpc library, they must be Vectors.  This will go away with version 3.
+    	final Vector safeArgs = sanitizeXmlRpcTypes(args);
     	
         final Map returns = Collections.synchronizedMap(new HashMap());
         
@@ -254,7 +259,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             public void run() {
                 try {
                 	logger.debug(sender+" sending message "+message+" to "+client.getId());
-                    Object rv = client.perform(sender, message, args);
+                    Object rv = client.perform(sender, message, safeArgs);
                     logger.debug("Client "+client.getId()+" returned "+rv);
                     // A return value really shouldn't be null, as xml-rpc
                     // doesn't
@@ -299,7 +304,34 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         return returns;
     }
 
-    /*
+    /**
+     * With the current version of xmlrpc libraries, only Vectors are compatible with xml-rpc arrays.
+     * Furthermore, only only Integers become ints.
+     * The need for this method will disappear with version 3 of the xml-rpc lib when any List will be allowed.
+     * Thank God.
+     * @param args
+     * @return
+     */
+    private Vector sanitizeXmlRpcTypes(List args) {
+		Vector toReturn;
+		if (!(args instanceof Vector)) {
+			toReturn = new Vector(args);
+		} else {
+			toReturn = (Vector) args;
+		}
+		for (int i=0;i<toReturn.size();++i) {
+			Object item = toReturn.get(i);
+			if (item instanceof List) {
+				toReturn.set(i, sanitizeXmlRpcTypes((List)item));
+			}
+			if (item instanceof Long) {
+				toReturn.set(i, new Integer((int) ((Long)item).longValue()));
+			}
+		}
+		return toReturn;
+	}
+
+	/*
      * (non-Javadoc)
      * 
      * @see org.votech.plastic.PlasticHub#send(java.lang.String, java.lang.String, java.util.Vector)
