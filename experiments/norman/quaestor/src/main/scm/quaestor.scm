@@ -329,7 +329,7 @@
              ((= (length path-list) 1)
               (manage-knowledgebase (car path-list)
                                     (get-reader request)
-                                    (request->query-string request)
+                                    query-string
                                     response))
 
              ((= (length path-list) 2)
@@ -741,14 +741,18 @@
 ;;                      (->list (split path-string (->jstring "/"))))))))
 
 ;; Extract the query-string from the request, returning it as a (scheme)
-;; string, or #f if there is no query.
+;; string, or #f if there is no query, or if the query is the empty string.
 (define (request->query-string request)
-  (define-generic-java-method
-    get-query-string)
+  (define-generic-java-methods
+    get-query-string
+    length)
   (let ((qs (get-query-string request)))
-    (if (java-null? qs)
-        #f
-        (->string qs))))
+    (cond ((java-null? qs)
+           #f)
+          ((= (->number (length qs)) 0)
+           #f)
+          (else
+           (->string qs)))))
 
 ;; request->content-type java-request -> string-or-false
 ;;
