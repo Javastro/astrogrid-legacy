@@ -51,19 +51,25 @@
                 </unitTest>
                 <resources>
                         <resource>
-                                <directory>${basedir}/src/java</directory>
-                                <includes>
-                                        <include>*.properties</include>
-										<include>*.hs</include>
-                                        <include>**/*.xml</include>
-                                        <include>**/*.png</include>
-										<include>javahelp/**</include>
-					<include>**/*.html</include>
-                                        <include>**/*.xsl</include>
-          				<include>**/*.gif</include>
-                                </includes>
+                        	<directory>${basedir}/src/java</directory>
+                        	<includes>
+                        		<include>*.properties</include>
+                        		<include>*.hs</include>
+                        		<include>**/*.xml</include>
+                        		<include>**/*.png</include>
+                        		<include>javahelp/**</include>
+                        		<include>**/*.html</include>
+                        		<include>**/*.xsl</include>
+                        		<include>**/*.gif</include>
+                        	</includes>
                         </resource>
-						<resource>
+                        <resource>
+                        	<directory>${basedir}/test/java</directory>
+                        	<includes>
+                        		<include>log4j.properties</include>
+                        	</includes>
+                        </resource>
+                        <resource>
 								<directory>${basedir}/target/index</directory>
 								<includes>
 									<include>**/*</include>
@@ -581,7 +587,13 @@
                         <version>0.8.1</version>
                         <url>http://www.apache.org/~andyc/neko/doc/html/</url>
                 </dependency>
- 
+                <!-- Useful for building a standalone jar -->
+    	         <dependency>
+		            <groupId>maven-plugins</groupId>
+		            <artifactId>maven-javaapp-plugin</artifactId>
+		            <version>1.3</version>
+		            <type>plugin</type>
+		        </dependency> 
 	
     </dependencies>
 </project>
