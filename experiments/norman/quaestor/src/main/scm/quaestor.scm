@@ -30,8 +30,7 @@
          string-downcase
          string-index)
 
-;; (set! this to #t to produce more verbose (but XML ill-formed) error messages
-(define *debugging* #f)
+(define *ident* "quaestor.scm @VERSION@ ($Revision: 1.25 $ $Date: 2006/04/10 22:08:55 $)")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -489,7 +488,7 @@
     (lambda (m e)
       ;; don't print the stack trace except when debugging:
       ;; angle brackets result in malformed XML
-      (if *debugging*
+      (if (debugging?)
           (fault message-code
                  "~a (~a)~%~a"
                  message-text
@@ -964,7 +963,7 @@
       set-status
       set-content-type)
     (lambda (response response-symbol . mime-type-l)
-      (if (not response-object)         ;first time
+      (or response-object
           (set! response-object (java-null
                                  (java-class
                                   '|javax.servlet.http.HttpServletResponse|))))
@@ -974,3 +973,15 @@
       (or (null? mime-type-l)
           (set-content-type response (->jstring (car mime-type-l))))
       #t)))
+
+;; Return true if debugging is on; false otherwise.
+;; If given an argument, set the debugging state to that value and return the
+;; previous one
+(define debugging?
+  (let ((flag #f))
+    (lambda args
+      (if (null? args)
+          flag
+          (let ((prev flag))
+            (set! flag (car args))
+            prev)))))
