@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.13 2006/04/10 17:29:27 norman Exp $
+     $Id: build.xml,v 1.14 2006/04/10 22:11:07 norman Exp $
 -->
 
 
@@ -111,7 +111,7 @@
 
   <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
-  <property name="app.version"   value="0.1-dev"/>
+  <property name="app.version"   value="0.1"/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.classes" value="${build.home}/WEB-INF/classes"/>
   <property name="build.tests"   value="${build.home}/tests"/>
@@ -300,6 +300,7 @@
          to the functionality, so they don't need access to the classpath of
          the main built code -->
     <pathelement location="${build.tests}"/>
+    <pathelement location="${build.classes}"/>
   </path>
 
 
@@ -585,6 +586,9 @@
     <!-- Copy static content of this web application -->
     <copy todir="${build.home}">
       <fileset dir="${web.home}"/>
+      <filterset>
+        <filter token="VERSION" value="${app.version}"/>
+      </filterset>
     </copy>
 
     <!-- Copy in external dependencies -->
@@ -606,14 +610,10 @@
 -->
     <copy todir="${build.home}/WEB-INF">
       <fileset file="${scm.src.home}/quaestor.scm"/>
+      <filterset>
+        <filter token="VERSION" value="${app.version}"/>
+      </filterset>
     </copy>
-
-<!--
-    <copy todir="${build.home}/WEB-INF/lib" file="${foo.jar}"/>
--->
-
-    <!-- Copy static files from external dependencies as needed -->
-    <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
 
   </target>
 
@@ -621,7 +621,7 @@
   <!-- Run regression tests -->
 
   <target name="test"
-          depends="scm-tests, protocol-tests"
+          depends="scm-tests, junit-tests"
           description="Run all tests"/>
 
   <path id="sisc.test.classpath">
@@ -650,7 +650,6 @@
       <!-- add further arguments? -->
     </java>
   </target>
-
   
   <target name="compile-junit-tests"
           depends="compile"
@@ -666,6 +665,7 @@
     </javac>
   </target>
 
+  <!--
   <target name="protocol-tests"
           depends="compile-junit-tests"
           if="junit.present">
@@ -681,7 +681,6 @@
       <sysproperty key="build.tests" value="${build.tests}"/>
       <sysproperty key="quaestor.url" value="${quaestor.url}"/>
 
-      <!--formatter type="plain" usefile="true"/-->
       <formatter type="brief" usefile="false"/>
 
       <batchtest>
@@ -692,6 +691,56 @@
 
     </junit>
     
+  </target>
+  -->
+
+  <target name="junit-tests"
+          depends="compile-junit-tests"
+          if="junit.present"
+          description="runs all of the JUnit tests">
+    <junit printsummary="${junit.summary}"
+           haltonfailure="yes"
+           filtertrace="${junit.filtertrace}"
+           fork="${junit.fork}">
+
+      <jvmarg value="-enableassertions"/>
+      <classpath refid="tests.classpath"/>
+
+      <sysproperty key="build.tests" value="${build.tests}"/>
+      <sysproperty key="quaestor.url" value="${quaestor.url}"/>
+
+      <formatter type="brief" usefile="false"/>
+
+      <batchtest>
+        <fileset dir="${src.tests}">
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+
+    </junit>
+    
+  </target>
+
+  <target name="run-single-test"
+          depends="compile-junit-tests"
+          if="junit.present"
+          description="runs the single test defined in the testcase property">
+    
+    <junit printsummary="${junit.summary}"
+           haltonfailure="yes"
+           filtertrace="${junit.filtertrace}"
+           fork="${junit.fork}">
+
+      <jvmarg value="-enableassertions"/>
+      <classpath refid="tests.classpath"/>
+
+      <sysproperty key="build.tests" value="${build.tests}"/>
+      <sysproperty key="quaestor.url" value="${quaestor.url}"/>
+
+      <formatter type="brief" usefile="false"/>
+
+      <test name="${testcase}"/>
+    </junit>
   </target>
 
 <!-- ==================== Reload Target =================================== -->
