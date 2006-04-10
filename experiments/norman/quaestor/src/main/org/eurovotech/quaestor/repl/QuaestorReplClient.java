@@ -13,7 +13,13 @@ import java.net.URL;
 
 /**
  * A helper class which provides command-line access to the REPL in Quaestor.
- * <p>Sexps typed in at the prompt are PUT to the Quaestor REPL.
+ * <p>Usage:
+ * <pre>
+ * java -cp ... org.eurovotech.quaestor.repl.QuaestorReplClient [options]
+ * </pre>
+ * <p>Sexps typed in at the prompt are evaluated in the Quaestor REPL
+ * (this is done by sending them via a PUT request to the Quaestor servlet).
+ * <p>See {@link #main} for details.
  */
 public class QuaestorReplClient {
 
@@ -34,7 +40,7 @@ public class QuaestorReplClient {
      * @throws IOException if the input is malformed (ie, too many right
      * parentheses)
      */
-    public String readSexp() 
+    private String readSexp() 
             throws IOException {
         if (stdin == null)
             stdin = new PushbackReader
@@ -157,14 +163,51 @@ public class QuaestorReplClient {
     }
 
     /**
-     * Main command-line function.  No args at present, so it always
-     * connects to the same server (localhost:8080)
+     * Main command-line function.
+     * <p>Usage:
+     * <pre>
+     * java -cp ... org.eurovotech.quaestor.repl.QuaestorReplClient [options]
+     * </pre>
+     * <p>Options:
+     * <dl>
+     * <dt>--host=&lt;hostname&gt;</dt>
+     * <dd>server host, default=localhost</dd>
+     * <dt>--port=&lt;port&gt;</dt>
+     * <dd>server port, default=8080</dd>
+     * </dl>
      */
     public static void main(String[] args) {
         String sexp;
+        String quaestorHost = "localhost";
+        int quaestorPort = 8080;
+
+        java.util.regex.Pattern opt
+                = java.util.regex.Pattern.compile("^--([^=]*)(?:=(.*))?");
+        for (int i=0; i<args.length; i++) {
+            java.util.regex.Matcher m = opt.matcher(args[i]);
+            if (m.matches()) {
+                String option = m.group(1);
+                String value  = m.group(2);
+                if (option.equals("host")) {
+                    quaestorHost = value;
+                } else if (option.equals("port")) {
+                    try {
+                        quaestorPort = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Badly formatted number: " + value);
+                        Usage();
+                    }
+                } else {
+                    Usage();
+                }
+            } else {
+                Usage();
+            }
+        }
+
         try {
             QuaestorReplClient client
-                    = new QuaestorReplClient("localhost", 8080);
+                    = new QuaestorReplClient(quaestorHost, quaestorPort);
 
             do {
                 try {
@@ -182,4 +225,11 @@ public class QuaestorReplClient {
         }
     }
 
+    private static void Usage() {
+        System.err.println("Usage: QuaestorReplClient [options]");
+        System.err.println("Options:");
+        System.err.println("  --host=<hostname>  server host, default=localhost");
+        System.err.println("  --port=<port>      server port, default=8080");
+        System.exit(1);
+    }
 }
