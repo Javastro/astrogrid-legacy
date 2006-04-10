@@ -44,12 +44,16 @@ public class CodeManager extends HttpServlet {
                     response.setStatus(response.SC_NO_CONTENT);
                 } else if (val instanceof String) {
                     response.setStatus(response.SC_OK);
-                    response.getWriter().println(val);
+                    response.getWriter().print(val);
+                } else if (val instanceof Boolean) {
+                    response.setStatus(response.SC_OK);
+                    response.getWriter()
+                            .print(((Boolean)val).booleanValue() ? "#t" : "#f");
                 } else {
                     response.setStatus(response.SC_BAD_REQUEST); // ???
                     PrintWriter p = response.getWriter();
-                    p.println("Bad request?");
-                    p.println(val.toString());
+                    p.println(";; Bad request?");
+                    p.print(val.toString());
                 }
             } else if (codeStatus.equals("disabled")) {
                 response.setStatus(response.SC_FORBIDDEN);
