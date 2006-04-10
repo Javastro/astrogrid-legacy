@@ -1,5 +1,9 @@
 // JUnit test cases for Quaestor
 
+// Control the Quaestor servlet which is tested by setting the quaestor.url
+// property (which means setting -Dquaestor.url=http://.../quaestor/. 
+// in the call to ant).
+
 package org.eurovotech.quaestor;
 
 import java.net.URL;
@@ -21,9 +25,9 @@ import junit.framework.TestCase;
 public class QuaestorTest
         extends TestCase {
 
-    private URL baseURL;
-    private URL xmlrpcEndpoint;
-    private String testKB;
+    private static URL baseURL = null; // null indicates uninitialised
+    private static URL xmlrpcEndpoint;
+    private static String testKB;
 
     private static final int METHOD_GET    = 111;
     private static final int METHOD_POST   = 222;
@@ -33,20 +37,33 @@ public class QuaestorTest
     public QuaestorTest(String name)
             throws Exception {
         super(name);
-        // I should include here some mechanism for checking that the 
-        // Quaestor server is indeed running in Tomcat.
+        // the testGetTopPage test effectively checks that the
+        // Quaestor servlet is indeed runing in Tomcat.
 
-        // Generalise this URL with a property
-        baseURL = new URL("http://localhost:8080/quaestor/.");
-        xmlrpcEndpoint = new URL(baseURL, "xmlrpc");
-        testKB = "testing";
+        if (baseURL == null) {
+            // first time
+            baseURL = new URL(System.getProperty
+                              ("quaestor.url",
+                               "http://localhost:8080/quaestor/."));
+            System.err.println("baseURL=" + baseURL);
+            xmlrpcEndpoint = new URL(baseURL, "xmlrpc");
+            testKB = "testing";
+        }
     }
 
     public void testGetTopPage()
             throws Exception {
         HttpResult r = httpGet(new URL(baseURL, "."));
-        assertEquals(HttpURLConnection.HTTP_OK, r.getStatus());
-        assertEquals(r.getContentType(), "text/html");
+        if (r.getStatus() == HttpURLConnection.HTTP_OK) {
+            assertEquals(r.getContentType(), "text/html");
+        } else {
+            // Tomcat appears not to be running.
+            // Print an explanatory message and stop the test.
+            System.err.println
+                    ("Can't get Quaestor top page: is Tomcat running?");
+            throw new junit.framework.AssertionFailedError
+                    ("Tomcat not running");
+        }
     }
 
     public void testGetKnowledgebaseList()
