@@ -59,9 +59,19 @@ public class SchemeWrapper {
     /**
      * Evaluates the string, returning the value as a String.
      *
+     * <p>The value returned is converted from a Scheme value to a Java value
+     * as follows:
+     * <table border="1">
+     * <tr><th>Scheme value</th><th align="left">Java value</th></tr>
+     * <tr><td>boolean</td><td>{@link Boolean}</td></tr>
+     * <tr><td>string</td><td>{@link String}</td></tr>
+     * <tr><td>void</td><td>null</td></tr>
+     * <tr><td>otherwise</td><td>a String representation of the object</td></tr>
+     * </table>
+     *
      * @param expr a scheme expression
-     * @return a Java Object (String, Boolean or null
-     * (see {@link #schemeToJava}) representing the value of the expression
+     * @return a Java Object (String, Boolean or null) representing the 
+     * value of the expression 
      * @throws IOException if there was a problem parsing the expression
      * @throws SchemeException if one there was a problem executing
      * the expression
@@ -92,8 +102,8 @@ public class SchemeWrapper {
      *
      * @param proc the name of a Scheme procedure defined in the top level
      * @param args an array of Java objects
-     * @return a Java Object (String, Boolean or null
-     * (see {@link #schemeToJava}) representing the value of the expression
+     * @return a Java Object (String, Boolean or null) representing the
+     * value of the expression
      * @throws IOException if there was a problem parsing the expression
      * @throws SchemeException if one there was a problem executing
      * the expression
@@ -120,8 +130,8 @@ public class SchemeWrapper {
 
     /**
      * Evals the given input stream.
-     * @return a Java Object (String, Boolean or null
-     * (see {@link #schemeToJava}) representing the value of the expression
+     * @return a Java Object (String, Boolean or null) representing the
+     * value of the expression
      * @throws IOException if the input stream cannot be parsed
      * @throws SchemeException if there is a syntax error reading the 
      * Scheme input
