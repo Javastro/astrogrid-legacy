@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.14 2006/04/10 22:11:07 norman Exp $
+     $Id: build.xml,v 1.15 2006/04/11 20:17:12 norman Exp $
 -->
 
 
@@ -111,9 +111,10 @@
 
   <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
-  <property name="app.version"   value="0.1"/>
+  <property name="app.version"   value="0.1-dev"/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.classes" value="${build.home}/WEB-INF/classes"/>
+  <property name="build.lib"     value="${build.home}/WEB-INF/lib"/>
   <property name="build.tests"   value="${build.home}/tests"/>
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
@@ -202,7 +203,7 @@
 
   <fileset dir="${sisc.lib}" id="sisc.support">
     <include name="*.jar"/>
-    <include name="sisc.shp"/>
+    <!--include name="sisc.shp"/-->
   </fileset>
 
   <!-- include Jena support -->
@@ -226,11 +227,9 @@
   <target name="check-packages"
           unless="runonly.install"
           >
-    <!-- the two following tests don't seem to work, but since I don't
-         use the named properties, I might as well ignore them for now-->
     <available property="sisc.present"
                filepath="${sisc.lib}"
-               file="sisc.shp"/>
+               file="sisc.jar"/>
     <fail unless="sisc.present"
           message="Must have SISC to build: see sisc.sourceforge.net"/>
 
@@ -263,23 +262,13 @@
   <path id="sisc.classpath">
     <fileset refid="sisc.support"/>
   </path>
-  <!--
-  <path id="sisc.classpath">
-    <fileset dir="${sisc.lib}">
-      <include name="*.jar"/>
-    </fileset>
-  </path>
-  -->
 
   <path id="compile.classpath">
 
     <!-- Include all JAR files that will be included in /WEB-INF/lib -->
-    <!--<pathelement location="${sisc.lib}"/>-->
+
     <!-- for the sisc.shp file -->
     <path refid="sisc.classpath"/>
-<!--     <fileset dir="${sisc.lib}"> -->
-<!--       <include name="*.jar"/> -->
-<!--     </fileset> -->
 
     <!-- Include all elements that Tomcat exposes to applications -->
     <pathelement location="${catalina.home}/common/classes"/>
@@ -296,9 +285,6 @@
   </path>
 
   <path id="tests.classpath">
-    <!-- At present, the JUnit regression tests test only the HTTP interface
-         to the functionality, so they don't need access to the classpath of
-         the main built code -->
     <pathelement location="${build.tests}"/>
     <pathelement location="${build.classes}"/>
   </path>
@@ -398,14 +384,6 @@
     </java>
     -->
 
-
-    <!-- Copy application resources -->
-    <!-- doesn't need done
-    <copy  todir="${build.classes}">
-      <fileset dir="${src.home}" excludes="**/*.java"/>
-    </copy>
-    -->
-
   </target>
 
   <!-- Compile the SISC .scm files under ${scm.src.home}/quaestor,
@@ -439,7 +417,7 @@
          includes="**/*.scc"/>
     -->
     <jar basedir="${scm.src.home}"
-         destfile="${build.home}/WEB-INF/lib/quaestor.jar"
+         destfile="${build.lib}/quaestor.jar"
          includes="quaestor/*.scm"
          />
   </target>
@@ -582,7 +560,6 @@
     <mkdir  dir="${build.home}/WEB-INF"/>
     <mkdir  dir="${build.classes}"/>
 
-
     <!-- Copy static content of this web application -->
     <copy todir="${build.home}">
       <fileset dir="${web.home}"/>
@@ -592,22 +569,12 @@
     </copy>
 
     <!-- Copy in external dependencies -->
-    <mkdir  dir="${build.home}/WEB-INF/lib"/>
-    <copy todir="${build.home}/WEB-INF/lib">
+    <mkdir  dir="${build.lib}"/>
+    <copy todir="${build.lib}">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
     </copy>
-<!--
-    <copy todir="${build.home}/WEB-INF/lib">
-      <fileset dir="${sisc.lib}">
-        <include name="*.jar"/>
-      </fileset>
-    </copy>
-    <!-x- SISC heap file -x->
-    <copy todir="${build.classes}">
-      <fileset file="${sisc.lib}/sisc.shp"/>
-    </copy>
--->
+
     <copy todir="${build.home}/WEB-INF">
       <fileset file="${scm.src.home}/quaestor.scm"/>
       <filterset>
@@ -625,10 +592,11 @@
           description="Run all tests"/>
 
   <path id="sisc.test.classpath">
-    <!--pathelement location="${scm.test.home}/run-tests.scm"/-->
-    <pathelement location="${scm.src.home}"/>
-    <fileset refid="sisc.support"/>
-    <fileset refid="jena.support"/>
+    <pathelement location="${build.classes}"/>
+    <pathelement location="${build.lib}"/>
+    <fileset dir="${build.lib}">
+      <include name="*.jar"/>
+    </fileset>
   </path>
   <target name="scm-tests"
           depends="compile"
@@ -637,9 +605,9 @@
           fork="true"
           classpathref="sisc.test.classpath"
           failonerror="true">
-      <sysproperty key="sisc.home" value="${sisc.lib}"/>
+      <sysproperty key="sisc.home" value="${build.lib}"/>
       <arg value="-h"/>
-      <arg value="${sisc.lib}/sisc.shp"/>
+      <arg value="${build.classes}/sisc.shp"/>
       <arg value="${scm.test.home}/run-tests.scm"/>
       <arg value="--no-repl"/>
       <arg value="--call-with-args"/>
@@ -664,35 +632,6 @@
       <classpath refid="tests.classpath"/>
     </javac>
   </target>
-
-  <!--
-  <target name="protocol-tests"
-          depends="compile-junit-tests"
-          if="junit.present">
-
-    <junit printsummary="${junit.summary}"
-           haltonfailure="yes"
-           filtertrace="${junit.filtertrace}"
-           fork="${junit.fork}">
-
-      <jvmarg value="-enableassertions"/>
-      <classpath refid="tests.classpath"/>
-
-      <sysproperty key="build.tests" value="${build.tests}"/>
-      <sysproperty key="quaestor.url" value="${quaestor.url}"/>
-
-      <formatter type="brief" usefile="false"/>
-
-      <batchtest>
-        <fileset dir="${src.tests}">
-          <include name="**/*Test.java"/>
-        </fileset>
-      </batchtest>
-
-    </junit>
-    
-  </target>
-  -->
 
   <target name="junit-tests"
           depends="compile-junit-tests"
