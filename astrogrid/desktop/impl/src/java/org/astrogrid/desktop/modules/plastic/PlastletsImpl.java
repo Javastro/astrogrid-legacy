@@ -23,6 +23,8 @@ import org.votech.ds6.plastlets.PrintPlastlet;
 import org.votech.ds6.plastlets.SaveToMySpacePlastlet;
 
 import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.PlasticListener;
+import org.votech.plastic.incoming.handlers.StandardHandler;
 import org.votech.plastic.managers.PlasticManager;
 import org.votech.plastic.managers.PlasticManager.PlasticHubObserver;
 /**
@@ -31,6 +33,10 @@ import org.votech.plastic.managers.PlasticManager.PlasticHubObserver;
  *
  */
 public class PlastletsImpl implements PlastletsInternal, Startable, PlasticHubObserver {
+	private static final String NAME = "Plastlets Manager";
+
+	private static final String DESCRIPTION = "The Plastlets manager is part of the ACR resposible for (surprise, surprise) managing Plastlets.  Plastlets are small Plastic applications.  These are disabled by default - go to the plastlets menu in the Workbench to enable them.  More soon...";
+
 	/**
 	 * Logger for this class
 	 */
@@ -64,7 +70,8 @@ public class PlastletsImpl implements PlastletsInternal, Startable, PlasticHubOb
 	public void start() {
 		logger.info("PlastletManager starting");
 		logger.debug("Creating PlasticManager");
-		plasticManager = new PlasticManager("PlastletsManager",null,false,30000);
+		StandardHandler handler = new StandardHandler(NAME, DESCRIPTION, "", "http://logo", PlasticListener.CURRENT_VERSION); 
+		plasticManager = new PlasticManager(NAME,handler,false,30000);
 		plasticManager.addObserver(plasticManager.new ObserverAdaptor(this));
 		logger.debug("Manager will connect to hub when ready");
 		plasticManager.connectWhenReady();
@@ -80,7 +87,7 @@ public class PlastletsImpl implements PlastletsInternal, Startable, PlasticHubOb
 	private void unregisterPlastlets() {
 		logger.debug("Unregistering plastlets");
 		Iterator it = plastlets.iterator();
-		if (it.hasNext()) {
+		while (it.hasNext()) {
 			Plastlet plastlet = (Plastlet) it.next();
 			plastlet.unregister();//TODO this might not work if the hub is going down
 			plastlets.remove(plastlet);
