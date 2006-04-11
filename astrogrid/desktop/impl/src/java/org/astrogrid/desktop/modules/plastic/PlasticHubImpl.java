@@ -324,9 +324,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			if (item instanceof List) {
 				toReturn.set(i, sanitizeXmlRpcTypes((List)item));
 			}
-			if (item instanceof Long) {
-				toReturn.set(i, new Integer((int) ((Long)item).longValue()));
-			}
 		}
 		return toReturn;
 	}
