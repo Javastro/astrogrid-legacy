@@ -30,7 +30,13 @@
          string-downcase
          string-index)
 
-(define *ident* "quaestor.scm @VERSION@ ($Revision: 1.25 $ $Date: 2006/04/10 22:08:55 $)")
+(define (ident)
+  (define-java-class <sisc.util.version>)
+  (define-generic-java-field-accessor :version |VERSION|)
+  `((quaestor.version . "@VERSION@")
+    (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
+    (string
+     . "quaestor.scm @VERSION@ ($Revision: 1.26 $ $Date: 2006/04/11 20:13:02 $)")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
