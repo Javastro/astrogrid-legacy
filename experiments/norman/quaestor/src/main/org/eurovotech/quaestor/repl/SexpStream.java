@@ -11,7 +11,8 @@ import java.io.IOException;
  * It isn't a full Scheme tokenizer, since that is best left to the
  * Scheme reader which will receive the expressions which are read, and this
  * is only intended to ensure that we read expressions from the stream
- * one at a time.
+ * one at a time.  The goal is not to parse scheme expressions fully, not to
+ * detect malformed expressions, but simply to avoid creating new errors.
  */
 public class SexpStream {
     private PushbackReader in = null;
@@ -51,16 +52,22 @@ public class SexpStream {
             throw new IOException
                     ("malformed input -- too many right parentheses");
 
-        in.unread(chint);       // push it back into the stream
         if (ch == ';') {
             skipComment();
             return readSexp();
-        } else if (ch == '(') 
+        } else if (ch=='\'' || ch=='`' || ch=='@' || ch==',') {
+            return String.valueOf(ch) + readSexp(); // not very efficient
+        } else if (ch == '(') {
+            in.unread(chint);       // push it back into the stream
             return readSexpList();
-        else if (ch == '"')
+        } else if (ch == '"') {
+            in.unread(chint);
             return readSexpString();
-        else
+        } else {
+            in.unread(chint);
             return readSexpOther();
+        }
+        
     }
 
     /**
@@ -86,18 +93,24 @@ public class SexpStream {
                 throw new IOException
                       ("Unexpected end of input -- too many left parentheses");
             ch = (char)chint;
-            if (ch == '(')
+            if (ch == '(') {
                 nesting++;
-            else if (ch == ')')
+                sexp.append(ch);
+            } else if (ch == ')') {
                 nesting--;
-            else if (ch == ';') {
+                sexp.append(ch);
+            } else if (ch == '"') {
+                in.unread(chint);
+                sexp.append(readSexpString());
+            } else if (ch == ';') {
                 skipComment();
-                ch = '\n';
+                sexp.append("\n");
+            } else {
+                sexp.append(ch);
             }
             if (nesting < 0)
                 throw new IOException
                         ("Malformed input -- too many right parentheses");
-            sexp.append(ch);
         } while (nesting > 0);
         return sexp.toString();
     }
@@ -105,7 +118,8 @@ public class SexpStream {
     /**
      * Read a string from the input.  The stream is positioned at the
      * opening quotation mark.  Leave the stream positioned at the first
-     * character after the end-quote.
+     * character after the end-quote.  Allow a sequence <code>\"</code> to
+     * be present in the string without terminating it.
      * @return the string read from the input, including its quotation marks,
      * not null
      * @throws IOException if the stream is malformed, so that there is
@@ -128,6 +142,22 @@ public class SexpStream {
                         ("Unexpected end of input before end-quote");
             ch = (char)chint;
             sb.append(ch);
+            if (ch == '\\') {
+                // append escaped character (this only makes a difference
+                // if the character in question is a quote, which mustn't
+                // end this string)
+                if ((chint = in.read()) < 0)
+                    throw new IOException
+                            ("Unexpected end of string after backslash");
+                sb.append((char)chint);
+
+                // ...and again, to get the character after a possible quote
+                if ((chint = in.read()) < 0)
+                    throw new IOException
+                            ("Unexpected end of string after backslash");
+                ch = (char)chint;
+                sb.append(ch);
+            }
         } while (ch != '"');
         return sb.toString();
     }
@@ -158,15 +188,9 @@ public class SexpStream {
             if ((chint = in.read()) < 0)
                 return str.toString();
             ch = (char)chint;
-        } while (!(// following match the rules for Scheme identifiers,
-                   // see R5RS section 2.1
-                   Character.isWhitespace(ch)
-                   || ch=='"' || ch=='#' || ch=='\''
-                   || ch=='(' || ch==')' || ch==','
-                   || ch==';'
-                   || ch=='@'
-                   || ch=='[' || ch==']'
-                   || ch=='`'));
+        } while (!(Character.isWhitespace(ch)
+                   || ch=='(' || ch==')'
+                   || ch=='"' || ch==',' || ch=='\'' || ch=='`'));
         in.unread(chint);
         return str.toString();
     }

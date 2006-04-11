@@ -19,16 +19,24 @@ public class SexpStreamTest
             throws Exception {
         SexpStream ss = new SexpStream
                 (new StringReader
-                 (" (hello) (wibble (x))  there \"how are) you?\"  'ping #f (x)(y)hi(there)"));
+                 (" (hello) (1 ,(2)) `(3 ,(4))  there \"how are) you?\" (\"1\") ,(\"2\") ,@(\"3\") (\"x)y\") \"q\\\"t\" 'ping #f (a)\"b\"hi'fi,ve(there)"));
         assertEquals("(hello)",           ss.readSexp());
-        assertEquals("(wibble (x))",      ss.readSexp());
+        assertEquals("(1 ,(2))",          ss.readSexp());
+        assertEquals("`(3 ,(4))",         ss.readSexp());
         assertEquals("there",             ss.readSexp());
         assertEquals("\"how are) you?\"", ss.readSexp());
+        assertEquals("(\"1\")",           ss.readSexp());
+        assertEquals(",(\"2\")",          ss.readSexp());
+        assertEquals(",@(\"3\")",         ss.readSexp());
+        assertEquals("(\"x)y\")",         ss.readSexp());
+        assertEquals("\"q\\\"t\"",        ss.readSexp());
         assertEquals("'ping",             ss.readSexp());
         assertEquals("#f",                ss.readSexp());
-        assertEquals("(x)",               ss.readSexp());
-        assertEquals("(y)",               ss.readSexp());
+        assertEquals("(a)",               ss.readSexp());
+        assertEquals("\"b\"",             ss.readSexp());
         assertEquals("hi",                ss.readSexp());
+        assertEquals("'fi",               ss.readSexp());
+        assertEquals(",ve",               ss.readSexp());
         assertEquals("(there)",           ss.readSexp());
         assertNull(ss.readSexp());
     }
@@ -69,7 +77,10 @@ public class SexpStreamTest
 
     public void testFailures()
             throws Exception {
-        String[] testcases = { ")", "(one (two)", "\"hell" };
+        String[] testcases = { ")",          // too many right parens
+                               "(one (two)", // too few right parens
+                               "\"hell",     // unterminated quote
+        };
         for (int i=0; i<testcases.length; i++) {
             SexpStream ss = new SexpStream(new StringReader(testcases[i]));
             try {
