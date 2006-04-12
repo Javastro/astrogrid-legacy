@@ -1,0 +1,45 @@
+
+Quaestor: a generic SPARQL endpoint.
+
+To build, requires Tomcat, Jena and SISC.
+
+It works with both Java 1.4 and 1.5, and with Tomcat 5.0.x and 5.5.x.
+
+I've only tried it with Jena 2.3 -- other versions may or may not
+work.  See <http://jena.sourceforge.net>.
+
+SISC is available from <http://sisc.sourceforge.net>.  It works
+with sisc-1.13.4 and later.  Mmmm: actually, it doesn't: it works with
+the head of the r1_13_freeze branch as of 2006 April 12, but not with
+the 1.13.4 source distribution, though they should be pretty much
+identical....
+
+Building Quaestor
+-----------------
+
+Copy build.properties.template to build.properties and fill in the
+following properties:
+
+  catalina.home : the directory which should be assigned to the
+  environment variable CATALINA_HOME, that is, the directory
+  containing bin/, webapps and so on.
+
+  jena.lib : Jena library directory.  This is the directory which
+  contains the jena.jar file and friends. 
+
+  sisc.bin : the binary directory is the one which contains the sisc
+  program.
+
+  sisc.lib : the directory which contains sisc{,-opt,-lib}.jar and
+  sisc.shp.
+
+Then 'ant && ant dist' to make the .war file.
+
+Testing
+-------
+
+To run the full regression tests, you'll have to install the
+application in a Tomcat server.  Do that either by creating the .war
+file ('ant dist'), or with 'ant install', after making sure that
+manager.url has the correct value in the build.xml file (or in
+build.properties).  Then 'ant test' should work.
