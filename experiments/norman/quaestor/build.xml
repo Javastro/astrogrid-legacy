@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.15 2006/04/11 20:17:12 norman Exp $
+     $Id: build.xml,v 1.16 2006/04/12 15:24:57 norman Exp $
 -->
 
 
@@ -111,7 +111,7 @@
 
   <property name="app.name"      value="quaestor"/>
   <property name="app.path"      value="/${app.name}"/>
-  <property name="app.version"   value="0.1-dev"/>
+  <property name="app.version"   value="0.1"/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.classes" value="${build.home}/WEB-INF/classes"/>
   <property name="build.lib"     value="${build.home}/WEB-INF/lib"/>
@@ -348,6 +348,14 @@
          >
         <classpath refid="compile.classpath"/>
     </javac>
+
+    <!-- Copy the SISC heap into WEB-INF/classes, where it is findable
+     !   as a resource.
+     !-->
+    <copy todir="${build.classes}">
+      <fileset dir="${sisc.lib}"
+               includes="sisc.shp"/>
+    </copy>
 
     <!-- Copy Scheme utility scripts into the classpath.
      !   Don't use a JAR: see the quaestor.jar target.
@@ -633,6 +641,16 @@
     </javac>
   </target>
 
+  <!--
+   ! JUnit tests.
+   !
+   ! This includes a protocol test, for which Tomcat must be running.
+   ! The URL of the service can be overridden by setting the quaestor.url
+   ! property when invoking ant:
+   !   % ant -Dquaestor.url=http://ptolemy.astro.gla.ac.uk:8080/quaestor/. \
+   !         -Dtestcase=org.eurovotech.quaestor.QuaestorTest \
+   !         run-single-test
+   !-->
   <target name="junit-tests"
           depends="compile-junit-tests"
           if="junit.present"

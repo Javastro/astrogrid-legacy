@@ -17,11 +17,27 @@ import sisc.interpreter.SchemeException;
 public class Quaestor extends HttpServlet {
 
     private java.util.Map requestHandlerMap;
+    private static java.net.URL heap = null;
     
     public void init()
             throws ServletException {
         String qt = null;
         try {
+            if (heap == null) {
+                // This is the first time one of these servlets has been called.
+                // Specify the heap which SISC should use, which is available
+                // within the Tomcat servlet context (and SISC can't find it
+                // for itself).
+                heap = getServletContext()
+                        .getResource("/WEB-INF/classes/sisc.shp");
+                if (heap == null) 
+                    throw new ServletException
+                            ("Couldn't locate resource sisc.shp");
+                log("Using heap in " + heap);
+                SchemeWrapper.useHeap(heap);
+            }
+
+            // load quaestor.scm
             qt = getServletContext().getRealPath("WEB-INF/quaestor.scm");
             if (!SchemeWrapper.getInstance().loadOnce(qt)) {
                 // shouldn't happen -- load returns true or throws exception
@@ -29,7 +45,9 @@ public class Quaestor extends HttpServlet {
                         ("Unexpected return from Quaestor load: " + qt);
             }
             log("Successfully(?) loaded quaestor.scm from " + qt);
-            
+
+            // Initialise the map of method+context which drives
+            // the dispatcher below
             String kbContext = getInitParameter("kb-context");
             String xmlrpcContext = getInitParameter("xmlrpc-context");
             String pickupContext = getInitParameter("pickup-context");
@@ -47,7 +65,9 @@ public class Quaestor extends HttpServlet {
             requestHandlerMap.put("POST" + xmlrpcContext,
                                   "xmlrpc-handler");
         } catch (IOException e) {
-            throw new ServletException("Couldn't parse load file " + qt, e);
+            throw new ServletException("Error starting SISC (heap=" + heap
+                                       + ", code=" + qt + ")",
+                                       e);
         } catch (SchemeException e) {
             throw new ServletException("Error reading file " + qt, e);
         }
@@ -66,6 +86,7 @@ public class Quaestor extends HttpServlet {
         String quaestorMethod
                 = (String)requestHandlerMap.get(httpMethod+context);
         if (quaestorMethod == null) {
+            // error: unrecognised method+context combination
             response.setContentType("text/plain");
             response.setStatus(response.SC_NOT_IMPLEMENTED);
 
@@ -83,7 +104,15 @@ public class Quaestor extends HttpServlet {
                      + " (can have" + mapkeys.toString() + ")");
             out.flush();
         } else {
-            log(httpMethod + context + ": calling procedure " + quaestorMethod);
+            // OK: normal case
+            StringBuffer msg = new StringBuffer();
+            msg.append(httpMethod)
+                    .append(context)
+                    .append(": calling procedure ")
+                    .append(quaestorMethod)
+                    .append(" on ")
+                    .append(request.getPathInfo());
+            log(msg.toString());
 
             // following statuses will very probably be overridden within the
             // quaestorMethod procedure, but they're here in order to provide

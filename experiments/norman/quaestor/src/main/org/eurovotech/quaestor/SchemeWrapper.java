@@ -13,6 +13,7 @@ import sisc.data.SchemeVoid;
 import sisc.data.Symbol;
 import sisc.interpreter.Interpreter;
 import sisc.interpreter.Context;
+import sisc.interpreter.AppContext;
 import sisc.interpreter.SchemeException;
 import sisc.interpreter.SchemeCaller;
 import sisc.io.StreamInputPort;
@@ -25,26 +26,74 @@ import sisc.io.StreamInputPort;
  */
 public class SchemeWrapper {
 
-    static private SchemeWrapper instance;
-    static private java.util.Set loadedOnce;
+    private static SchemeWrapper instance;
+    private static java.net.URL heap;
+    private static java.util.Set loadedOnce;
 
     /**
      * Constructs a new wrapper for SISC.  Private constructor.
-     * @throws SchemeException passed on from execute
+     * @throws IOException if there are problems locating the heap
      */
     private SchemeWrapper()
-            throws SchemeException {
-        // nothing to do
+            throws IOException {
+        // The complication below is because the AppContext.findHeap()
+        // method can't find sisc.shp in its classpath.  If
+        // sisc-heap.jar is installed then findHeap() _can_ find the
+        // heap in that, though this is more costly in memory, since
+        // it has to load the entire heap file at once.  It's probably
+        // not a big deal, however, and it's certainly neater.  The
+        // only problem is that sisc-heap.jar isn't included in the
+        // binary SISC distribution, as of sisc-1.13.4, so the
+        // quaestor build.xml can't include it in the .war unless I
+        // build SISC from source and hand-install the jar file, which
+        // isn't complicated, but requires leaving notes to myself,
+        // and READMEs in any Quaestor distribution.  So leave this as
+        // it is for now, and possibly revisit it if SISC starts
+        // distributing sisc-heap.jar in some future version.
+        if (heap != null) {
+            AppContext ctx = new AppContext();
+            sisc.ser.SeekableInputStream heapstream = null;
+            try {
+                heapstream = AppContext.openHeap(heap);
+            } catch (IOException e) {
+                throw new IOException("Failed to load SISC heap from " + heap
+                                      + " (" + e + ")");
+            }
+            try {
+                if (!ctx.addHeap(heapstream)) {
+                    throw new IOException
+                            ("Failed to load SISC heap from " + heap
+                             + " (opened heap file but loading failed)");
+                }
+            } catch (ClassNotFoundException e) {
+                // it's not clear to me why addHeap throws this,
+                // but presumably the detail message explains all...
+                throw new IOException("Failed to load SISC heap from " + heap
+                                      + " (" + e + ")");
+            }
+            Context.setDefaultAppContext(ctx);
+        }
     }
 
     /**
      * Returns the single instance of the SchemeWrapper.
      */
-    static public SchemeWrapper getInstance()
-            throws SchemeException {
+    public static SchemeWrapper getInstance()
+            throws IOException {
         if (instance == null)
             instance = new SchemeWrapper();
         return instance;
+    }
+
+    /**
+     * Specify the heap to be used when creating the instance.
+     * This is required since the heap file is not in the Tomcat classpath,
+     * and so will not be found by SISC's mechanism for finding the
+     * default heap.
+     * @param heapURL a URL indicating the location of the heap
+     */
+    public static void useHeap(java.net.URL heapURL) {
+        heap = heapURL;
     }
 
     /**
