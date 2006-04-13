@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.17 2006/04/13 14:23:06 norman Exp $
+     $Id: build.xml,v 1.18 2006/04/13 14:42:01 norman Exp $
 -->
 
 
@@ -573,7 +573,8 @@
 
     <!-- Copy static content of this web application -->
     <copy todir="${build.home}">
-      <fileset dir="${web.home}"/>
+      <fileset dir="${web.home}"
+               excludes="generate/**"/>
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
