@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 
-<!-- $Id: access-control.xml,v 1.1 2006/04/07 11:05:31 norman Exp $ -->
+<!-- $Id: access-control.xml,v 1.2 2006/04/13 17:26:11 norman Exp $ -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ng="http://ns.nxg.me.uk/myxml">
@@ -10,7 +10,7 @@
 <!--link rel='stylesheet'
       type='text/css'
       href='/Volumes/Faraday/w/me/TRUNK/text/webpages/nxg.me.uk/style/base.css'/-->
-<ng:rcsdate>$Date: 2006/04/07 11:05:31 $</ng:rcsdate>
+<ng:rcsdate>$Date: 2006/04/13 17:26:11 $</ng:rcsdate>
 <ng:rdf/>
 </head>
 
@@ -171,7 +171,7 @@ individuals.  For example, here are some assertions written in
 <em>Notation 3</em> <ng:cite>std:n3</ng:cite>:</p>
 <pre>
 @prefix : &lt;urn:example#&gt; .
-@prefix ac: &lt;http://eurovotech.org/access-control2.owl#&gt; .
+@prefix ac: &lt;http://eurovotech.org/access-control.owl#&gt; .
 :Norman a ac:UniversityOfLeicesterPerson, ac:CollaborationXMember.
 :Guy a ac:CambridgeUniversityPerson.
 :Markus a ac:EuropeanSouthernObservatoryPerson.
@@ -215,7 +215,7 @@ architecture of our resource-owner's system?</p>
 triple-stores.  A query against the access-control ontology might
 be:</p>
 <pre>
-prefix : &lt;http://eurovotech.org/access-control2.owl#&gt;
+prefix : &lt;http://eurovotech.org/access-control.owl#&gt;
 select ?person
 where { ?person a :CanSeeFlaggedData }
 </pre>
@@ -224,7 +224,7 @@ which were members of the <code>CanSeeFlaggedData</code> class.
 Alternatively, </p>
 <pre>
 ask { &lt;mailto:norman@astro.gla.ac.uk&gt;
-    a &lt;http://eurovotech.org/access-control2.owl#CanSeeAllData&gt; }
+    a &lt;http://eurovotech.org/access-control.owl#CanSeeAllData&gt; }
 </pre>
 <p>would return a yes or no answer if
 <code>norman@astro.gla.ac.uk</code> was indeed in the class 
@@ -254,6 +254,11 @@ particular ontology -- in particular, it is not tied to just this
 access-control problem.  It is designed to provide OWL-based reasoning
 services as part of a larger infrastructure, and so its interface has
 been designed with generality and extensibility in mind.</p>
+
+<p>There is a <a href='access-control-demo.html' >walkthrough of the
+interaction with Quaestor</a>, and you can download the <a
+href='demo.tar.gz' >demo files</a> and the <a href='quaestor-0.1.war'
+>service .war file</a> from here.</p>
 </div>
 </div>
 
@@ -433,6 +438,10 @@ experiments.  Add pointers to demos/downloads]</p>
 
 <pre class='doc.history'>
 $Log: access-control.xml,v $
+Revision 1.2  2006/04/13 17:26:11  norman
+The ontology prefix has changed from access-control2.owl to access-control.owl.
+Point to Quaestor demo/walkthrough.
+
 Revision 1.1  2006/04/07 11:05:31  norman
 Initial version
 
@@ -440,7 +449,7 @@ Initial version
 
 <div class="signature">
 <a href='http://nxg.me.uk' >Norman Gray</a><br/>
-<ng:rcsdate format="standard">$Date: 2006/04/07 11:05:31 $</ng:rcsdate>
+<ng:rcsdate format="standard">$Date: 2006/04/13 17:26:11 $</ng:rcsdate>
 </div>
 
 </body>
