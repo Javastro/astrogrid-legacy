@@ -241,7 +241,7 @@
 ;; Given a filename or "-", read the corresponding file into a single string
 (define (read-file-into-string fn)
   (define (gobble-port p)
-    (let ((r (read-string/partial 256 p)))
+    (let ((r (read-string/partial 8192 p)))
       (if r
           (string-append r (gobble-port p))
           "")))
