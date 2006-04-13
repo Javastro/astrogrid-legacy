@@ -43,6 +43,11 @@ $(WEB)/note/2006/access-control/access-control.html: \
 	    cp $$f $$D; \
 	  done
 
-clean:
-	rm -Rf demo.tar demo.tar.gz access-control-demo access-control-demo.html
-	rm -f access-control.bbl access-control.blg
+tidy:
+	rm -f *~
+
+clean: tidy
+	rm -Rf access-control-demo
+	rm -f demo.tar demo.tar.gz access-control-demo.html demo/demo.html
+	rm -f access-control.bbl access-control.blg access-control.html
+	rm -f base.css
