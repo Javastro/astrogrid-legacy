@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.xmlrpc.XmlRpc;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
@@ -525,18 +526,24 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 
 	public void setLoggingLevel(String level) {
+		XmlRpc.setDebug(false);
 		//NOTE This relies on the logger being log4j since there's
 		//no way to do this through clogging.  Fortunately, if we ever
 		//change from log4j this should file to compile. 
-		Logger log = Logger.getLogger(this.getClass());
+		Logger log1 = Logger.getLogger("org.astrogrid.desktop.modules.plastic");
+		Logger log2 = Logger.getLogger("org.votech.plastic");
 		Level logLevel = Level.INFO;
 		if (level.equalsIgnoreCase("off")) {
 			logLevel = Level.OFF;
 		} else if (level.equalsIgnoreCase("debug")) {
 			logLevel = Level.DEBUG;
+			XmlRpc.setDebug(true);
 		}
 		
-		log.setLevel(logLevel);
+		log1.setLevel(logLevel);
+		log2.setLevel(logLevel);
+		
+		
 	}
 
 }

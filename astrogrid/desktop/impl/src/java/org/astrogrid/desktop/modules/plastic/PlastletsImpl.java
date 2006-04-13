@@ -33,7 +33,7 @@ import org.votech.plastic.managers.PlasticManager.PlasticHubObserver;
  *
  */
 public class PlastletsImpl implements PlastletsInternal, Startable, PlasticHubObserver {
-	private static final String NAME = "Plastlets Manager";
+	private static final String NAME = "ACR Plastlets Manager";
 
 	private static final String DESCRIPTION = "The Plastlets manager is part of the ACR resposible for (surprise, surprise) managing Plastlets.  Plastlets are small Plastic applications.  These are disabled by default - go to the plastlets menu in the Workbench to enable them.  More soon...";
 
@@ -90,14 +90,16 @@ public class PlastletsImpl implements PlastletsInternal, Startable, PlasticHubOb
 		while (it.hasNext()) {
 			Plastlet plastlet = (Plastlet) it.next();
 			plastlet.unregister();//TODO this might not work if the hub is going down
-			plastlets.remove(plastlet);
 		}
-		
+		plastlets.clear();
 	}
 
 	private void registerPlastlets() {
 		logger.debug("Registering Plastlets");
-		if (!plasticManager.isConnected()) return; //just to be on the safe side
+		if (!plasticManager.isConnected()) {
+			logger.warn("PlastletManager's PlasticManager isn't connected.  Cannot register plastlets.");
+			return; //just to be on the safe side
+		}
 		
 		//Construct them////////////////////////////////////////////////////
 		
