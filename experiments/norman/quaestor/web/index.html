@@ -112,9 +112,12 @@ there was no such knowledgebase to remove.</dd>
 
 <p>The XML-RPC endpoint is <code>http://hostport/quaestor/xmlrpc</code></p>
 
+<p>There are only two methods defined at present; more might appear
+in future.</p>
+
 <dl>
 <dt><code>get-model(<em>knowledgebase</em>:string 
-[,<em>submodel</em>:string])</code> : <em>URI</em></dt>
+[,<em>submodel</em>:string])</code> : <em>URL</em></dt>
 <dd>Retrieve a URL from which the client can obtain the full
 knowledgebase, or just a submodel.  This is just a convenience method,
 since the URL returned is just the one described in the HTTP-interface
@@ -122,9 +125,11 @@ above.</dd>
 
 <dt><code>query-model(<em>knowledgebase</em>:string,
 <em>sparql-query</em>:string
-[,<em>mime-type</em>:string])</code> : <em>URI</em></dt>
-<dd>Sends a SPARQL query to the server, and return a URI from which
-the results can be retrieved.</dd>
+[,<em>mime-type</em>:string])</code> : <em>URL</em></dt>
+<dd>Sends a SPARQL query to the server, and return a URL from which
+the results can be retrieved.  Although this returns promptly, after
+having done all required checking and parsing, the query is not
+actually run until the returned URL is dereferenced.</dd>
 </dl>
 
 <h3>XML-RPC fault codes</h3>
@@ -163,6 +168,10 @@ unsupported MIME type</dd>
   href="http://www.w3.org/2001/sw/DataAccess/prot26" >SPARQL service
   interface</a> elsewhere.</li>
   <li>XML-RPC <a href="http://www.xmlrpc.com/">home</a></li>
+  <li><a href='http://www.w3.org/DesignIssues/Notation3'
+    >Notation 3 spec</a></li>
+  <li>The HTTP protocol is defined in
+    <a href='http://www.ietf.org/rfc/rfc2616.txt' >RFC 2616</a></li>
 </ul>
 
 </body>
