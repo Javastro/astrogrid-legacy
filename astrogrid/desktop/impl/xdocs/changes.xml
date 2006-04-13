@@ -13,6 +13,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="1.6-beta-1" date="2006-04-12">
 <action dev="jdt" type="fix" issue="1624">
 	Plastic: showObjects message wasn't working for xml-rpc.
 </action>
@@ -24,12 +25,11 @@
 	Query Builder: Command structure in place and working.
 	Visually the only change is the addition of an undo/redo facility.
 </action>
-<release version="1.5-beta-2" date="2006-03-31">
+</release>
+<release version="1.5" date="2006-04-10">
 	<action dev="kmb" type="fix">
 		Corrected astroscope to show offset in arcseconds (previously was in decimal degrees)
 	</action>
-</release>
-<release version="1.5-beta-1" date="2006-03-24">
 	<action dev="jdt" type="update">
 	Updated Plastic version to 0.4
 	</action>
