@@ -23,20 +23,6 @@ public class Quaestor extends HttpServlet {
             throws ServletException {
         String qt = null;
         try {
-            if (heap == null) {
-                // This is the first time one of these servlets has been called.
-                // Specify the heap which SISC should use, which is available
-                // within the Tomcat servlet context (and SISC can't find it
-                // for itself).
-                heap = getServletContext()
-                        .getResource("/WEB-INF/classes/sisc.shp");
-                if (heap == null) 
-                    throw new ServletException
-                            ("Couldn't locate resource sisc.shp");
-                log("Using heap in " + heap);
-                SchemeWrapper.useHeap(heap);
-            }
-
             // load quaestor.scm
             qt = getServletContext().getRealPath("WEB-INF/quaestor.scm");
             if (!SchemeWrapper.getInstance().loadOnce(qt)) {

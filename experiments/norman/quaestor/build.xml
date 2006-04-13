@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.16 2006/04/12 15:24:57 norman Exp $
+     $Id: build.xml,v 1.17 2006/04/13 14:23:06 norman Exp $
 -->
 
 
@@ -350,12 +350,15 @@
     </javac>
 
     <!-- Copy the SISC heap into WEB-INF/classes, where it is findable
-     !   as a resource.
+     !   as a resource.  No, don't do this: we have SchemeWrapper.java rely
+     !   on findHeap finding the heap inside a separately installed .jar file.
      !-->
+    <!--
     <copy todir="${build.classes}">
       <fileset dir="${sisc.lib}"
                includes="sisc.shp"/>
     </copy>
+    -->
 
     <!-- Copy Scheme utility scripts into the classpath.
      !   Don't use a JAR: see the quaestor.jar target.
