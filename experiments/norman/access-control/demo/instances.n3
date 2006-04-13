@@ -1,0 +1,12 @@
+@prefix : <urn:example#> .
+@prefix ac: <http://eurovotech.org/access-control.owl#> .
+
+:Norman a ac:UniversityOfLeicesterPerson, ac:CollaborationXMember.
+:Guy a ac:CambridgeUniversityPerson.
+:Markus a ac:EuropeanSouthernObservatoryPerson.
+:Sébastien a ac:CentreDeDonnéesDeStrasbourgPerson.
+:Jonathan a ac:HarvardUniversityPerson;
+        a ac:CollaborationXMember.
+:Nelson a ac:UniversityOfCapeTownPerson;
+        a ac:CollaborationXMember.
+:Tutankhamun a ac:UniversityOfCairoPerson.

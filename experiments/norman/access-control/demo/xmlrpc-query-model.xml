@@ -1,0 +1,11 @@
+<methodCall>
+<methodName>query-model</methodName>
+<params>
+<param><value><string>testing</string></value></param>
+<param><value><string>
+prefix : &lt;http://eurovotech.org/access-control.owl#&gt;
+select ?person
+where { ?person a :CanSeeAllData }
+</string></value></param>
+</params>
+</methodCall>

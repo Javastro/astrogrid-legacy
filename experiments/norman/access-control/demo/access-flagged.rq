@@ -1,0 +1,3 @@
+prefix : <http://eurovotech.org/access-control.owl#>
+select ?person
+where { ?person a :CanSeeFlaggedData }

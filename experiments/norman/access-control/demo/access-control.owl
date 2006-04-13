@@ -1,0 +1,343 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://eurovotech.org/access-control.owl#"
+  xml:base="http://eurovotech.org/access-control.owl">
+  <owl:Ontology rdf:about=""/>
+  <owl:Class rdf:ID="AfricanLocation">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="GeographicalLocation"/>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="NorthAmericanLocation"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="EuropeanLocation"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:ID="LocatedPerson">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Person"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="UnitedStatesOfAmerica">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#NorthAmericanLocation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="France">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EuropeanLocation"/>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="UnitedKingdom"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="Germany"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:ID="GroupOfPeople">
+    <owl:disjointWith>
+      <owl:Class rdf:about="#GeographicalLocation"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:ID="CentreDeDonnéesDeStrasbourgPerson">
+    <owl:disjointWith>
+      <owl:Class rdf:ID="EuropeanSouthernObservatoryPerson"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="InstitutionalGroup"/>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="#France"/>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="locatedIn"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="HarvardUniversityPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="UniversityOfCairoPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="CambridgeUniversityPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="UniversityOfCapeTownPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="UniversityOfLeicesterPerson"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:about="#Person">
+    <owl:disjointWith>
+      <owl:Class rdf:about="#GeographicalLocation"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:about="#Germany">
+    <owl:disjointWith>
+      <owl:Class rdf:about="#UnitedKingdom"/>
+    </owl:disjointWith>
+    <owl:disjointWith rdf:resource="#France"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#EuropeanLocation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#HarvardUniversityPerson">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="#UnitedStatesOfAmerica"/>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#locatedIn"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#EuropeanSouthernObservatoryPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#CambridgeUniversityPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#UniversityOfLeicesterPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#UniversityOfCairoPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#UniversityOfCapeTownPerson"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#InstitutionalGroup"/>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#CentreDeDonnéesDeStrasbourgPerson"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Egypt">
+    <owl:disjointWith>
+      <owl:Class rdf:ID="RepublicOfSouthAfrica"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf rdf:resource="#AfricanLocation"/>
+  </owl:Class>
+  <owl:Class rdf:about="#UniversityOfCapeTownPerson">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >UniversityOfCapeTownPerson</rdfs:comment>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#CambridgeUniversityPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#UniversityOfCairoPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#EuropeanSouthernObservatoryPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#UniversityOfLeicesterPerson"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#locatedIn"/>
+        </owl:onProperty>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="#RepublicOfSouthAfrica"/>
+        </owl:someValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#InstitutionalGroup"/>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#HarvardUniversityPerson"/>
+    <owl:disjointWith rdf:resource="#CentreDeDonnéesDeStrasbourgPerson"/>
+  </owl:Class>
+  <owl:Class rdf:ID="CanSeeFlaggedData">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:ID="PersonAtAfricanInstitution"/>
+          <owl:Class rdf:ID="CanSeeAllData"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="PersonWithAccessRights"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#NorthAmericanLocation">
+    <owl:disjointWith>
+      <owl:Class rdf:about="#EuropeanLocation"/>
+    </owl:disjointWith>
+    <owl:disjointWith rdf:resource="#AfricanLocation"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#GeographicalLocation"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#RepublicOfSouthAfrica">
+    <owl:disjointWith rdf:resource="#Egypt"/>
+    <rdfs:subClassOf rdf:resource="#AfricanLocation"/>
+  </owl:Class>
+  <owl:Class rdf:about="#GeographicalLocation">
+    <owl:disjointWith rdf:resource="#Person"/>
+    <owl:disjointWith rdf:resource="#GroupOfPeople"/>
+  </owl:Class>
+  <owl:Class rdf:about="#EuropeanLocation">
+    <owl:disjointWith rdf:resource="#NorthAmericanLocation"/>
+    <rdfs:subClassOf rdf:resource="#GeographicalLocation"/>
+    <owl:disjointWith rdf:resource="#AfricanLocation"/>
+  </owl:Class>
+  <owl:Class rdf:about="#InstitutionalGroup">
+    <rdfs:subClassOf rdf:resource="#GroupOfPeople"/>
+  </owl:Class>
+  <owl:Class rdf:about="#UniversityOfLeicesterPerson">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="#UnitedKingdom"/>
+        </owl:someValuesFrom>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#locatedIn"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#UniversityOfCairoPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith rdf:resource="#UniversityOfCapeTownPerson"/>
+    <rdfs:subClassOf rdf:resource="#InstitutionalGroup"/>
+    <owl:disjointWith rdf:resource="#HarvardUniversityPerson"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#EuropeanSouthernObservatoryPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#CambridgeUniversityPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith rdf:resource="#CentreDeDonnéesDeStrasbourgPerson"/>
+  </owl:Class>
+  <owl:Class rdf:about="#EuropeanSouthernObservatoryPerson">
+    <owl:disjointWith rdf:resource="#HarvardUniversityPerson"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#CambridgeUniversityPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#UniversityOfCairoPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith rdf:resource="#UniversityOfLeicesterPerson"/>
+    <rdfs:subClassOf rdf:resource="#InstitutionalGroup"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="#Germany"/>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#locatedIn"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#CentreDeDonnéesDeStrasbourgPerson"/>
+    <owl:disjointWith rdf:resource="#UniversityOfCapeTownPerson"/>
+  </owl:Class>
+  <owl:Class rdf:about="#UniversityOfCairoPerson">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#locatedIn"/>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="#Egypt"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#UniversityOfCapeTownPerson"/>
+    <owl:disjointWith rdf:resource="#EuropeanSouthernObservatoryPerson"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#CambridgeUniversityPerson"/>
+    </owl:disjointWith>
+    <owl:disjointWith rdf:resource="#UniversityOfLeicesterPerson"/>
+    <owl:disjointWith rdf:resource="#CentreDeDonnéesDeStrasbourgPerson"/>
+    <owl:disjointWith rdf:resource="#HarvardUniversityPerson"/>
+    <rdfs:subClassOf rdf:resource="#InstitutionalGroup"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Collaboration">
+    <rdfs:subClassOf rdf:resource="#GroupOfPeople"/>
+  </owl:Class>
+  <owl:Class rdf:about="#PersonAtAfricanInstitution">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#locatedIn"/>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="#AfricanLocation"/>
+      </owl:Restriction>
+    </owl:equivalentClass>
+    <rdfs:subClassOf rdf:resource="#LocatedPerson"/>
+    <owl:disjointWith>
+      <owl:Class rdf:ID="PersonAtUKInstitution"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:about="#CanSeeAllData">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#PersonAtUKInstitution"/>
+          <owl:Class rdf:ID="CollaborationXMember"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#PersonWithAccessRights"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#CambridgeUniversityPerson">
+    <owl:disjointWith rdf:resource="#UniversityOfCairoPerson"/>
+    <owl:disjointWith rdf:resource="#HarvardUniversityPerson"/>
+    <owl:disjointWith rdf:resource="#CentreDeDonnéesDeStrasbourgPerson"/>
+    <owl:disjointWith rdf:resource="#UniversityOfCapeTownPerson"/>
+    <owl:disjointWith rdf:resource="#UniversityOfLeicesterPerson"/>
+    <owl:disjointWith rdf:resource="#EuropeanSouthernObservatoryPerson"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#locatedIn"/>
+        </owl:onProperty>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="#UnitedKingdom"/>
+        </owl:someValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="#InstitutionalGroup"/>
+  </owl:Class>
+  <owl:Class rdf:about="#UnitedKingdom">
+    <rdfs:subClassOf rdf:resource="#EuropeanLocation"/>
+    <owl:disjointWith rdf:resource="#Germany"/>
+    <owl:disjointWith rdf:resource="#France"/>
+  </owl:Class>
+  <owl:Class rdf:about="#PersonAtUKInstitution">
+    <owl:disjointWith rdf:resource="#PersonAtAfricanInstitution"/>
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="#UnitedKingdom"/>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#locatedIn"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </owl:equivalentClass>
+    <rdfs:subClassOf rdf:resource="#LocatedPerson"/>
+  </owl:Class>
+  <owl:Class rdf:about="#PersonWithAccessRights">
+    <rdfs:subClassOf rdf:resource="#Person"/>
+  </owl:Class>
+  <owl:Class rdf:about="#CollaborationXMember">
+    <rdfs:subClassOf rdf:resource="#Collaboration"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="#locatedIn">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:range rdf:resource="#GeographicalLocation"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="memberOfGroup">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:range rdf:resource="#GroupOfPeople"/>
+  </owl:ObjectProperty>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 2.1, Build 284)  http://protege.stanford.edu -->

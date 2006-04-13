@@ -1,0 +1,4 @@
+# very simple construct query
+prefix : <http://eurovotech.org/access-control.owl#>
+construct { ?name a :CanSeeAllData }
+where { ?name a :CanSeeAllData }

@@ -1,0 +1,6 @@
+<methodCall>
+<methodName>get-model</methodName>
+<params>
+<param><value><string>testing</string></value></param>
+</params>
+</methodCall>
