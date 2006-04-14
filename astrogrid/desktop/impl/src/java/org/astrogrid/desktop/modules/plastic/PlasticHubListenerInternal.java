@@ -42,8 +42,8 @@ public interface PlasticHubListenerInternal {
     void setNotificationsEnabled(boolean enable);
     
     /**
-     * Set the logging level for the Plastic module
-     * @param level can be off, normal or debug.
+     * Set the logging level for the Plastic module XML-RPC calls
+     * @param level can be off, debug.
      */
     void setLoggingLevel(String level);
 }

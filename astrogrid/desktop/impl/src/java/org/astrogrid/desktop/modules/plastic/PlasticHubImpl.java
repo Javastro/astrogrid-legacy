@@ -526,24 +526,11 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 
 	public void setLoggingLevel(String level) {
-		XmlRpc.setDebug(false);
-		//NOTE This relies on the logger being log4j since there's
-		//no way to do this through clogging.  Fortunately, if we ever
-		//change from log4j this should file to compile. 
-		Logger log1 = Logger.getLogger("org.astrogrid.desktop.modules.plastic");
-		Logger log2 = Logger.getLogger("org.votech.plastic");
-		Level logLevel = Level.INFO;
 		if (level.equalsIgnoreCase("off")) {
-			logLevel = Level.OFF;
+			XmlRpc.setDebug(false);
 		} else if (level.equalsIgnoreCase("debug")) {
-			logLevel = Level.DEBUG;
 			XmlRpc.setDebug(true);
 		}
-		
-		log1.setLevel(logLevel);
-		log2.setLevel(logLevel);
-		
-		
 	}
 
 }
