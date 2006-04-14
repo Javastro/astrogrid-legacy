@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.6 2006/02/02 14:19:47 nw Exp $
+/*$Id: Finder.java,v 1.7 2006/04/14 19:41:46 jdt Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,8 +80,24 @@ public class Finder {
      * 
      * */
     public synchronized ACR find()  throws ACRException{
-        if (acr == null) {
-            acr= createACR();
+    	boolean tryToStartIfNotRunning = true;
+    	boolean warnUserBeforeStarting = false;
+         
+        return find(tryToStartIfNotRunning, warnUserBeforeStarting);
+
+    }
+
+    /**
+     * Find or create a running ACR server.
+     * @see #find()
+     * @param tryToStartIfNotRunning if false, will not attempt to start an ACR, but merely return NULL if there isn't one running
+     * @param warnUserBeforeStarting if true, will warn the user before attempting start an ACR, giving him the chance to start one manually
+     * @return
+     * @throws ACRException
+     */
+	public ACR find(boolean tryToStartIfNotRunning, boolean warnUserBeforeStarting) throws ACRException {
+		if (acr == null) {
+            acr= createACR(tryToStartIfNotRunning, warnUserBeforeStarting);
             try { // attempt to register a listener, it it'll let me: use it to remove singleton when host vanishes.
                 Shutdown sd = (Shutdown)acr.getService(Shutdown.class);
                 sd.addShutdownListener(new ShutdownListener() {
@@ -97,73 +113,109 @@ public class Finder {
                 logger.warn("Failed to register shutdown listener - no matter",e);
             }
                 
-        } 
-        return acr;
-
-    }
+        }
+		return acr;
+	}
     
     /**
+     * @param userWarning If not null, prompt the user <b>before</b> attempting to start an external ACR.
+     * @param tryToStartIfNotRunning if false, don't start an external ACR if there isn't one. 
      * @throws NoAvailableACRException
      */
-    private ACR createACR() throws ACRException {
-        logger.info("Searching for acr");
-        ACR result = null;
-            try {
-                result = connectExternal();
-                if (result != null) {
-                    return result;
-                }
-            } catch (Exception e) {
-                logger.warn("Failed to connect to external acr",e);
-            }                    
-     
-        try {
-                result = createInternal();
-                if (result != null) {
-                    return result;
-                }    
-            } catch (Exception e) {
-                logger.warn("Failed to create internal acr",e);
-            }
-            // hmm, try starting external service
-            try {
-                createExternal();
-                // need to wait some time to allow external to bootup (and maybe download).
-                // @todo make this a dialogue for information / cancel, and a retry-loop.
-                long now = System.currentTimeMillis();
-                long tooLong = now + (2 * 60 * 1000) ; // 2 minutes
-                while (! configurationFile().exists() && System.currentTimeMillis() < tooLong) {
-                    Thread.sleep(5000); // 5 seconds.
-                }
-                result = connectExternal();
-                if (result != null) {
-                    return result;
-                }
-            } catch (Exception e) {
-                  logger.warn("Failed to create external acr",e);
-            }            
-            // finally - try prompting the user.
-            int dialogueResult;
-            try {
-            dialogueResult = JOptionPane.showConfirmDialog(null,"<html><b>Please start the ACR by hand</b><br>When started press 'Ok'. To halt press 'Cancel'","Unable to automatically start ACR",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
-            } catch (HeadlessException e) {
-                logger.warn("Not running in a ui environment - can't promt");
-                dialogueResult = JOptionPane.NO_OPTION;
-            }
-            
-            if (dialogueResult == JOptionPane.YES_OPTION) { // try to connect again.
-                try {
-                    result = connectExternal();
-                    if (result != null) {
-                        return result;
-                    }
-                } catch (Exception e) {
-                    logger.warn("Failed to connect to external acr, after user claimed to start one.",e);
-                    // could loop here?
-                }                  
-            }
-            // fallen through everything.
-            throw new ACRException("Failed to find or create an ACR to connect to");
+    private ACR createACR(boolean tryToStartIfNotRunning, boolean warnUser) throws ACRException {
+    	logger.info("Searching for acr");
+    	ACR result = null;
+    	try {
+    		result = connectExternal();
+    		if (result != null) {
+    			return result;
+    		}
+    	} catch (Exception e) {
+    		logger.warn("Failed to connect to existing external acr",e);
+    	}                    
+    	
+    	try {
+    		result = createInternal();
+    		if (result != null) {
+    			return result;
+    		}    
+    	} catch (Exception e) {
+    		logger.warn("Failed to create internal acr",e);
+    	}
+    	// hmm, try starting external service
+    	if (tryToStartIfNotRunning) {
+    		try {
+    			if (warnUser) {
+    				try {
+    					//warn before attempting to start, it's only polite
+    					JOptionPane.showMessageDialog(null,"<html>This application requires the ACR.<br>Either start it yourself and press 'OK', or simply press 'OK' to auto-start it.</html>",
+    							"ACR Required",JOptionPane.INFORMATION_MESSAGE);
+    					//Try again, maybe they started it now
+    					result = connectExternal();
+    					if (result != null) {
+    						return result;
+    					}
+    				} catch (HeadlessException he) {
+    					logger.warn("Not running in a ui environment - can't ask permission, so starting ACR anyway");
+    				} catch (Exception e) {
+    					logger.warn("Failed to connect to external acr.",e);
+    				}  
+    			}
+    			logger.info("Still no ACR, so attempt to create one");
+    			createExternal();
+    			// need to wait some time to allow external to bootup (and maybe download).
+    			
+    			long now = System.currentTimeMillis();
+    			final int WAIT_TIME = (2 * 60  * 1000); // 2 minutes
+				long tooLong = now + WAIT_TIME ; 
+    			while (connectExternal()==null) {
+    				if (System.currentTimeMillis()>tooLong) {
+    					//prompt and see if we want to carry on waiting
+    		    		int continueToWait;
+    		    		try {
+    		    			continueToWait = JOptionPane.showConfirmDialog(null,"<html>The ACR hasn't started yet.  Press OK to continue waiting, Cancel to abort.</html>","ACR not started",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
+    		    		} catch (HeadlessException e) {
+    		    			logger.warn("Not running in a ui environment - can't prompt");
+    		    			continueToWait = JOptionPane.CANCEL_OPTION;
+    		    		}
+    		    		if (continueToWait == JOptionPane.CANCEL_OPTION) {
+    		    			break;
+    		    		} else {
+    		    			tooLong += WAIT_TIME;
+    		    		}
+    				}
+    				Thread.sleep(5000); // 5 seconds.
+    			}
+    			result = connectExternal();
+    			if (result != null) {
+    				return result;
+    			}
+    		} catch (Exception e) {
+    			logger.warn("Failed to create external acr",e);
+    		}            
+    		// finally - try prompting the user.
+    		int dialogueResult;
+    		try {
+    			dialogueResult = JOptionPane.showConfirmDialog(null,"<html><b>Please start the ACR by hand</b><br>When started press 'Ok'. To halt press 'Cancel'","Unable to automatically start ACR",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
+    		} catch (HeadlessException e) {
+    			logger.warn("Not running in a ui environment - can't prompt");
+    			dialogueResult = JOptionPane.NO_OPTION;
+    		}
+    		
+    		if (dialogueResult == JOptionPane.YES_OPTION) { // try to connect again.
+    			try {
+    				result = connectExternal();
+    				if (result != null) {
+    					return result;
+    				}
+    			} catch (Exception e) {
+    				logger.warn("Failed to connect to external acr, after user claimed to start one.",e);
+    				// could loop here?
+    			}                  
+    		}
+    	}
+    	// fallen through everything.
+    	throw new ACRException("Failed to find or create an ACR to connect to");
     }
 
     /** connect to an external acr.
@@ -175,70 +227,75 @@ public class Finder {
      * @throws NotBoundException
      */
     private ACR connectExternal() throws FileNotFoundException, NumberFormatException, IOException, RemoteException, NotBoundException {
-        File conf = configurationFile();                
-            if (conf.exists()) {
-           logger.info("configuration file indicates an acr is already running");                
-           BufferedReader br = new BufferedReader(new FileReader(conf));                
-           int port = Integer.parseInt(br.readLine());
-           logger.info("Port determined to be " + port);
-           final Client client = new Client("localhost",port);
-           final ApiHelp api = (ApiHelp)client.lookup(ApiHelp.class);
-           return new ACR() {
-
-            public Object getService(Class interfaceClass) throws ACRException, NotFoundException {
-                if (interfaceClass.equals(ACR.class)) {
-                    return this;
-                }
-                try {
-                    registerListeners(interfaceClass);
-                    return client.lookup(interfaceClass);
-                } catch (RemoteException e) {
-                    throw new ACRException(e);
-                } catch (NotBoundException e) {
-                    throw new NotFoundException(e);
-                }
-            }
-
-            private void registerListeners(Class c) {
-                Method[] arr = c.getMethods();
-                for (int i = 0; i < arr.length; i++) {
-                    Method m = arr[i];
-                    Class[] ps = m.getParameterTypes();
-                    for (int j = 0; j < ps.length; j++) {
-                        maybeRegister(ps[j]);
-                    }
-                    Class ret = m.getReturnType();
-                    maybeRegister(ret);
-                }
-            }
-            private void maybeRegister(Class c) {
-                if (c.isInterface() &&   c.getName().endsWith("Listener")) {
-                    logger.debug("Exporting interface " + c.getName());
-                    client.exportInterface(c);
-                }
-            }
-            
-            
-            public Object getService(String componentName) throws ACRException, NotFoundException {
-                String className = api.interfaceClassName(componentName);
-                Class clazz = null;
-                try {
-                    clazz = Class.forName(componentName); // makes the interface more user friendly.
-                } catch (ClassNotFoundException e) {
-                    // try to resolve on the server
-                    try {
-                        clazz = Class.forName(className);
-                    } catch (ClassNotFoundException e1) {
-                        throw new NotFoundException(e1);
-                    }
-                }
-               return getService(clazz);
-            }
-           };           
-            } else {
-                logger.info("No configuration file - suggests an acr instance is not running at the moment");
-                return null;
-            }
+    	File conf = configurationFile();  
+    	if (!conf.exists()) {
+    		logger.info("No configuration file - suggests an acr instance is not running at the moment");
+    		return null;    		
+    	}
+    	
+    	logger.info("configuration file indicates an acr is already running");                
+    	BufferedReader br = new BufferedReader(new FileReader(conf));                
+    	int port = Integer.parseInt(br.readLine());
+    	br.close(); //Otherwise the file can be locked and left undeleted when the ACR shuts down.
+    	logger.info("Port determined to be " + port);
+    	final Client client = new Client("localhost",port);
+    	final ApiHelp api = (ApiHelp)client.lookup(ApiHelp.class);
+    	ACR newAcr = new ACR() {
+    		
+    		public Object getService(Class interfaceClass) throws ACRException, NotFoundException {
+    			if (interfaceClass.equals(ACR.class)) {
+    				return this;
+    			}
+    			try {
+    				registerListeners(interfaceClass);
+    				return client.lookup(interfaceClass);
+    			} catch (RemoteException e) {
+    				throw new ACRException(e);
+    			} catch (NotBoundException e) {
+    				throw new NotFoundException(e);
+    			}
+    		}
+    		
+    		private void registerListeners(Class c) {
+    			Method[] arr = c.getMethods();
+    			for (int i = 0; i < arr.length; i++) {
+    				Method m = arr[i];
+    				Class[] ps = m.getParameterTypes();
+    				for (int j = 0; j < ps.length; j++) {
+    					maybeRegister(ps[j]);
+    				}
+    				Class ret = m.getReturnType();
+    				maybeRegister(ret);
+    			}
+    		}
+    		private void maybeRegister(Class c) {
+    			if (c.isInterface() &&   c.getName().endsWith("Listener")) {
+    				logger.debug("Exporting interface " + c.getName());
+    				client.exportInterface(c);
+    			}
+    		}
+    		
+    		
+    		public Object getService(String componentName) throws ACRException, NotFoundException {
+    			String className = api.interfaceClassName(componentName);
+    			Class clazz = null;
+    			try {
+    				clazz = Class.forName(componentName); // makes the interface more user friendly.
+    			} catch (ClassNotFoundException e) {
+    				// try to resolve on the server
+    				try {
+    					clazz = Class.forName(className);
+    				} catch (ClassNotFoundException e1) {
+    					throw new NotFoundException(e1);
+    				}
+    			}
+    			return getService(clazz);
+    		}
+    	};
+    	//TODO check that the ACR is booted?  Sometimes the config file is present before the ACR is ready.
+    	
+    	return newAcr;           
+    	
     }
    
     
@@ -317,6 +374,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.7  2006/04/14 19:41:46  jdt
+Added some new features to the Finder and made it more robust.  It's now more of a rats' nest though and so could do with some refactoring.
+
 Revision 1.6  2006/02/02 14:19:47  nw
 fixed up documentation.
 

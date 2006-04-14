@@ -14,6 +14,9 @@
 	</head>
 <body>
 <release version="1.6-beta-1" date="2006-04-12">
+<action dev="jdt" type="fix">
+Made the Finder more robust to orphaned ACR config files.  Also now can prompt the user before starting the ACR, and prompt if the start up is taking too long.
+</action>
 <action dev="jdt" type="fix" issue="1624">
 	Plastic: showObjects message wasn't working for xml-rpc.
 </action>
