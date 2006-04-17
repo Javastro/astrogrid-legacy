@@ -35,7 +35,7 @@ import org.votech.plastic.managers.PlasticManager.PlasticHubObserver;
 public class PlastletsImpl implements PlastletsInternal, Startable, PlasticHubObserver {
 	private static final String NAME = "ACR Plastlets Manager";
 
-	private static final String DESCRIPTION = "The Plastlets manager is part of the ACR resposible for (surprise, surprise) managing Plastlets.  Plastlets are small Plastic applications.  These are disabled by default - go to the plastlets menu in the Workbench to enable them.  More soon...";
+	private static final String DESCRIPTION = "The Plastlets manager is part of the ACR responsible for (surprise, surprise) managing <a href='http://plastic.sourceforge.net/multiproject/plastlets/'>Plastlets</a>.  Plastlets are small Plastic applications.  These are disabled by default - go to the plastlets menu in the Workbench to enable them.  More soon...";
 
 	/**
 	 * Logger for this class
@@ -70,7 +70,7 @@ public class PlastletsImpl implements PlastletsInternal, Startable, PlasticHubOb
 	public void start() {
 		logger.info("PlastletManager starting");
 		logger.debug("Creating PlasticManager");
-		StandardHandler handler = new StandardHandler(NAME, DESCRIPTION, "", "http://logo", PlasticListener.CURRENT_VERSION); 
+		StandardHandler handler = new StandardHandler(NAME, DESCRIPTION, "", "http://plastic.sourceforge.net/multiproject/plastlets/images/plastlets.gif", PlasticListener.CURRENT_VERSION); 
 		plasticManager = new PlasticManager(NAME,handler,false,30000);
 		plasticManager.addObserver(plasticManager.new ObserverAdaptor(this));
 		logger.debug("Manager will connect to hub when ready");
