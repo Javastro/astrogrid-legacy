@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.nvo.ConeInformation;
-
-import org.apache.commons.collections.iterators.UnmodifiableIterator;
-
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
+import org.apache.commons.collections.iterators.UnmodifiableIterator;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
 
 /**
  * aggregates a set of retreivers together - so they can be operated as a whole.
@@ -79,6 +75,12 @@ public class DalProtocolManager implements QueryResultSummarizer {
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.2  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.1.6.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2006/02/02 14:51:11  nw
 components of astroscope, plus new ssap component.
  

@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.5 2005/11/11 10:08:18 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.6 2006/04/18 23:25:43 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,46 +10,24 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
-
-import org.w3c.dom.Document;
-
-import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
-
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.StringWriter;
-import java.net.URI;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 /** Implementation of the registry browser component.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Mar-2005
  *
  */
-public class RegistryBrowserImpl extends UIComponent implements  RegistryBrowser
+public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBrowser
 {
    
 
@@ -84,6 +62,12 @@ public class RegistryBrowserImpl extends UIComponent implements  RegistryBrowser
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.6  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.5.34.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.5  2005/11/11 10:08:18  nw
 cosmetic fixes
 

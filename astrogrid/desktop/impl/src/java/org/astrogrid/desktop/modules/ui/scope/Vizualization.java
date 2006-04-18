@@ -1,4 +1,4 @@
-/*$Id: Vizualization.java,v 1.2 2006/02/09 15:40:01 nw Exp $
+/*$Id: Vizualization.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,8 +20,6 @@ import edu.berkeley.guir.prefuse.render.DefaultEdgeRenderer;
 import edu.berkeley.guir.prefuse.render.DefaultRendererFactory;
 import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 import edu.berkeley.guir.prefuse.util.StringAbbreviator;
-
-import java.util.Map;
 
 public abstract class Vizualization extends GraphEventAdapter {
         public Vizualization(String name, VizualizationManager vizs) {
@@ -72,6 +70,12 @@ public abstract class Vizualization extends GraphEventAdapter {
 
 /* 
 $Log: Vizualization.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.6.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2006/02/09 15:40:01  nw
 finished refactoring of astroscope.
 added vospec viewer

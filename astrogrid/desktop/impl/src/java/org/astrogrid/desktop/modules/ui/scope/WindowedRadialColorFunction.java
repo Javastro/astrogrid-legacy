@@ -1,4 +1,4 @@
-/*$Id: WindowedRadialColorFunction.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+/*$Id: WindowedRadialColorFunction.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Color;
+import java.awt.Paint;
+
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.EdgeItem;
 import edu.berkeley.guir.prefuse.NodeItem;
 import edu.berkeley.guir.prefuse.VisualItem;
 import edu.berkeley.guir.prefuse.action.assignment.ColorFunction;
 import edu.berkeley.guir.prefuse.util.ColorMap;
-
-import java.awt.Color;
-import java.awt.Paint;
 /**
  * colorer that determines color of elemnts in astroscope vizualizations
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
@@ -82,6 +82,12 @@ public class WindowedRadialColorFunction extends ColorFunction {
 
 /* 
 $Log: WindowedRadialColorFunction.java,v $
+Revision 1.2  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.1.6.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2006/02/02 14:51:11  nw
 components of astroscope, plus new ssap component.
  

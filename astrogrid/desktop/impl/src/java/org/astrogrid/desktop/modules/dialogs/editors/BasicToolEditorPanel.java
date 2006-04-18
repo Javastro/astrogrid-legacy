@@ -3,8 +3,6 @@ package org.astrogrid.desktop.modules.dialogs.editors;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -46,7 +44,7 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
-import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.io.Piper;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -334,7 +332,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                             Piper.pipe(in,sw);
                             parameter.setValue(sw.toString());
                             } catch (IOException ex) {
-                                UIComponent.showError(BasicToolEditorPanel.this,ex.getMessage(),ex);
+                                UIComponentImpl.showError(BasicToolEditorPanel.this,ex.getMessage(),ex);
                             }
                             parameter.setIndirect(false);
                             pm.fireTableCellUpdated(row,1);
@@ -814,6 +812,15 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.16  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.14.22.2  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.14.22.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.15  2006/03/06 15:45:51  pjn3
 improved column headings to make 'less criptic'
 

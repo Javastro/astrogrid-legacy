@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.5 2006/01/30 17:16:42 jdt Exp $
+/*$Id: HelpServerImpl.java,v 1.6 2006/04/18 23:25:44 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,35 +10,28 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.acr.system.HelpServer;
-
-import org.picocontainer.Startable;
-
-import acrjavahelp.ACRJavaHelpResourceAnchor;
-
 import java.awt.Component;
 import java.awt.MenuItem;
 import java.awt.event.ActionListener;
 import java.net.URL;
-
 
 import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.help.InvalidHelpSetContextException;
 import javax.help.Map;
-import javax.help.SwingHelpUtilities;
 import javax.swing.AbstractButton;
-import javax.swing.Action;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import acrjavahelp.ACRJavaHelpResourceAnchor;
 
 /** Implementation of the help server.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
  *
  */
-public class HelpServerImpl implements Startable, HelpServerInternal{
+public class HelpServerImpl implements  HelpServerInternal{
     /**
      * Commons Logger for this class
      */
@@ -49,20 +42,8 @@ public class HelpServerImpl implements Startable, HelpServerInternal{
      */
     public HelpServerImpl() {
         super();
-    }
-    /** loads the helpset in a background thread.
-     * @see org.picocontainer.Startable#start()
-     */
-    public void start() {
-        // if jdic browser is available, set help browser to use that.
-        /* @todo get this working and test cross-platform
-        Check jdic  = new CheckJDICBrowserPresent();
-        if (jdic.check()) {
-            SwingHelpUtilities.setContentViewerUI
-                ("javax.help.plaf.basic.BasicNativeContentViewerUI");
-        }
-        */
- 
+       
+        // loads the helpset in a background thread.
         ClassLoader cl = this.getClass().getClassLoader();
         try {
             URL u = HelpSet.findHelpSet(cl,"javahelp/workbench-helpset.hs");
@@ -85,16 +66,11 @@ public class HelpServerImpl implements Startable, HelpServerInternal{
             logger.error("Failed to load subsidiary helpset",e);
         }
     }
-    
+ 
     protected HelpBroker broker;
     protected HelpSet hs;
 
-    /**
-     * @see org.picocontainer.Startable#stop()
-     */
-    public void stop() {
-    }
-    
+
     
     public void showHelp() {
         Map.ID home = hs.getHomeID();
@@ -142,6 +118,18 @@ public class HelpServerImpl implements Startable, HelpServerInternal{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.6  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.5.10.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.5.10.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.5.10.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.5  2006/01/30 17:16:42  jdt
 Make robust to help system failures - bug 1519.
 

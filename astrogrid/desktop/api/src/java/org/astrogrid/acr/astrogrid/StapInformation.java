@@ -1,4 +1,4 @@
-/*$Id: StapInformation.java,v 1.2 2006/03/16 09:14:21 KevinBenson Exp $
+/*$Id: StapInformation.java,v 1.3 2006/04/18 23:25:45 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,6 +44,7 @@ public class StapInformation extends ApplicationInformation {
         this.verbosity = verbosity;
     }
 
+    static final long serialVersionUID = 2536170096793692102L;
     protected final float maxSR;
     protected final int maxRecords;
     protected final boolean verbosity;
@@ -95,6 +96,15 @@ public class StapInformation extends ApplicationInformation {
 
 /* 
 $Log: StapInformation.java,v $
+Revision 1.3  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.2.2.3  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.2.2.2  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2006/03/16 09:14:21  KevinBenson
 usually comment/clean up type changes such as siap to stap
 

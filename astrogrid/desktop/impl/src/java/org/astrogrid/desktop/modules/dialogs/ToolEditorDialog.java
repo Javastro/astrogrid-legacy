@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.3 2005/11/21 18:25:39 pjn3 Exp $
+/*$Id: ToolEditorDialog.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,38 +10,32 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.dialogs.RegistryChooser;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.ui.JobMonitor;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.picocontainer.PicoContainer;
-
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
+import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.workflow.beans.v1.Tool;
 /** dialog that allows the user to edit a tool document - i.e. a set of parameters.
  * 
  * <p>
@@ -59,15 +53,21 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
     
     private JOptionPane jOptionPane = null;
     private final AbstractToolEditorPanel parametersPanel;
-    private final UIComponent parent;
+    private final UIComponentImpl parent;
     
    	private JLabel topLabel = null;
     
-    public ToolEditorDialog(PicoContainer pico,      Configuration conf, HelpServerInternal help, UIInternal ui) throws HeadlessException {
+    public ToolEditorDialog(
+    		List panelFactories
+            ,ResourceChooserInternal rChooser
+            ,ApplicationsInternal apps
+            ,MyspaceInternal myspace
+            ,Registry reg
+            ,Configuration conf, HelpServerInternal help, UIInternal ui) throws HeadlessException {
         super();          
-        this.parent = new UIComponent(conf,help,ui);
+        this.parent = new UIComponentImpl(conf,help,ui);
    
-        parametersPanel = new CompositeToolEditorPanel(parent,pico, help);
+        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent,false, help);
         this.setTitle("Task Editor");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -165,6 +165,15 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.30.2  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.30.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.3  2005/11/21 18:25:39  pjn3
 basic task editor help added
 

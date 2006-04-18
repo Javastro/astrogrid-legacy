@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!DOCTYPE module  [
+	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/plastic-descriptors.xml">
+	]>
+<module id="plastic" version="1.0.0" package="org.votech.plastic">
+	PLASTIC - PLatform for AStronomical Tools Inter Connection
+	<dependency module-id="system"/>
+	
+	<contribution configuration-id="framework.acrServices">
+			<acrService id="hub" interface="PlasticHubListener" />
+			<acrService  id="messenger" interface="org.astrogrid.desktop.modules.plastic.MessengerInternal"/>
+	</contribution>
+		
+	<contribution configuration-id="framework.descriptors">
+		<acr-module name="plastic" description="PLatform for AStronomical Tools Inter Connection">
+		&descriptors;
+		</acr-module>
+	</contribution>
+	
+	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">
+		<action parentName="projects" name="plasticProject" text="Plastic" iconName="plasticeye.gif"
+			object="service:system.browser" methodName="openURL"
+			>
+			<tooltip>Home Page for PLASTIC</tooltip>
+			<parameter>http://plastic.sourceforge.net/</parameter>
+		</action>		
+	</contribution>
+	
+	<contribution configuration-id="system.uiStructure">
+		<tab name="plastic" text="PLASTIC"  iconName="plasticeye.gif" />
+		<action parentName="plastic" name="listPlastic" text="List"
+			iconName="plastic.gif" before="*"
+			object="service:hub" methodName="prettyPrintRegisteredApps">
+			<tooltip>List details of all registered Applications</tooltip>
+		</action>
+		<action parentName="plastic" name="purgePlastic" text="Purge"
+			iconName="delete_obj.gif" after="listPlastic"
+			object="service:hub" methodName="purgeUnresponsiveApps">
+			<tooltip>Unregister any unresponsive applications from the hub</tooltip>
+		</action>
+	</contribution>	
+	
+	<contribution configuration-id="system.uiStructure" if="property hub.mode">
+	<action parentName="help" name="about" text="About AstroGrid PLASTIC Hub.."
+			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
+			after="*" > 
+			<parameter><![CDATA[
+			<html>
+			<h1>Astrogrid PLASTIC Hub v${hub.version}</h1>			
+			<b>http://software.astrogrid.org</b><br>
+			TODO - fill this in
+		
+			</html>
+			]]></parameter>
+		</action>		
+	</contribution>
+
+	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled)) and (property hub.mode)">
+		<action parentName="plastic" name="htmlPLASTIC" text="Open PLASTIC in Browser"
+			iconName="overview48.gif" after="listPlastic" before="purgePlastic"
+			object="service:system.browser" methodName="openRelative"  >
+			<parameter></parameter> <!-- intentionally blank -->
+			<tooltip>Browse and exectute Plastic functions in a webbrowser</tooltip>
+		</action>
+	</contribution>			
+	
+	<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="hub"/> 
+	</contribution>
+	
+	<contribution configuration-id="hivemind.ApplicationDefaults" if="property hub.mode">
+		<default symbol="system.ui.title" value="AstroGrid PLASTIC Hub" />
+		<default symbol="system.rmi.disableConnectionFile" value="true" /> <!-- as we've not got acr running, and plastic records connection details in it's own way -->
+		<default symbol="system.webserver.disableConnectionFile" value="true" />
+	</contribution>
+	<!-- everything else - eager when testing -->
+	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
+		<load service-id="messenger"/>
+		<load service-id="namegen" />
+	</contribution>		
+	
+	<!-- services and implementations-->	
+	
+	<service-point id="hub" interface="org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal">
+		Plastic hub
+		<interceptor service-id="system.throbber" />		
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.plastic.PlasticHubImpl"
+				initialize-method="start">
+				<event-listener service-id="builtin.shutdown" />					
+				<service>system.executor</service>
+				<service>namegen</service>
+				<service>messenger</service>
+				<service>system.rmi</service>
+				<service>system.webserver</service>
+				<service>system.systray</service>	
+				<service>prettyPrinter</service>
+				<service>system.configuration</service>							
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<implementation service-id="hub" if="property plastic.hub.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>	
+			
+	<service-point id="messenger" interface="org.astrogrid.desktop.modules.plastic.MessengerInternal">
+		Messenger component
+		<interceptor service-id="system.throbber" />		
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.plastic.MessengerImpl"/>
+		</invoke-factory>
+	</service-point>	
+
+
+	<implementation service-id="messenger" if="property plastic.messenger.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>
+			
+	<!-- supporting service -->
+	<service-point id="namegen" visibility="private" interface="org.astrogrid.common.namegen.NameGen">
+		Unique name generator
+		<invoke-factory>
+			<construct class="org.astrogrid.common.namegen.InMemoryNameGen" />
+		</invoke-factory>	
+	</service-point>
+	
+	<service-point id="prettyPrinter" visibility="private" interface="org.astrogrid.desktop.modules.plastic.PrettyPrinterInternal">
+		Pretty printer component.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.plastic.PrettyPrinterImpl" >
+				<service>system.browser</service>
+			</construct>
+		</invoke-factory>	
+	</service-point>	
+	
+
+		
+ </module>
+ 

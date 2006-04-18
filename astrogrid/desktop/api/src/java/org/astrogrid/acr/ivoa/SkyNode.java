@@ -1,4 +1,4 @@
-/*$Id: SkyNode.java,v 1.1 2006/02/24 12:17:52 nw Exp $
+/*$Id: SkyNode.java,v 1.2 2006/04/18 23:25:45 nw Exp $
  * Created on 21-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,13 +40,13 @@ public interface SkyNode {
     /**
      * interrogate skynode for  complete metadata about it's database
      * @param service identifier of the service to retrieve metadata for
-     * @return  a databasebean describing the data - where columns and tables will use the {@link SkyNodeColumnBean} 
-     * and {@link SkyNodeTableBean} subclasses that present additional metadata
+     * @return  a list of will use the tablebeans - actually, {@link SkyNodeTableBean} and 
+     * {@link SkyNodeColumnBean}  subclasses that present additional metadata
      * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// identifier
      * @throws NotFoundException of the service does not exist (i.e. cannot be resolved in registry) ,
      * @throws ServiceException if the service cannot be connected to, or fails in some way.
      */
-    public TabularDatabaseInformation getMetadata(URI service) throws InvalidArgumentException, NotFoundException, ServiceException;
+    public SkyNodeTableBean[] getMetadata(URI service) throws InvalidArgumentException, NotFoundException, ServiceException;
     
     /** interrogate skynode for supported output formats 
      * @param service identifier of the service to retrieve metadata for
@@ -159,6 +159,12 @@ public interface SkyNode {
 
 /* 
 $Log: SkyNode.java,v $
+Revision 1.2  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.1.2.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.1  2006/02/24 12:17:52  nw
 added interfaces for skynode
  

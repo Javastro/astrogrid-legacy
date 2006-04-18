@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderInternal.java,v 1.2 2005/11/24 01:13:24 nw Exp $
+/*$Id: MessageRecorderInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,18 +11,16 @@
 package org.astrogrid.desktop.modules.ag;
 
 
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.ExecutionMessage;
-
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URI;
-import java.util.Date;
+import java.util.EventListener;
 import java.util.List;
-import java.util.Observable;
 
 import javax.swing.table.TableModel;
 import javax.swing.tree.TreeModel;
+
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.ExecutionMessage;
 
 /** persists messages, and provides a gui-friendly model of them, plus basic query / management methods.
  * <P>
@@ -40,7 +38,7 @@ public interface MessageRecorderInternal {
     public void addRecorderListener(RecorderListener listener);
     public void removeRecorderListener(RecorderListener listener);
     
-    public interface RecorderListener {
+    public interface RecorderListener extends EventListener {
         public void messageReceived(Folder f,MessageContainer msg);
     }
     
@@ -50,10 +48,6 @@ public interface MessageRecorderInternal {
     /** get a table model that will display messages in a single folder */
     TableModel getMessageList();
 
-// current-selection oriented methods - depend on current state of display, and so shouldn't be
-    // called from backgrund threads.
-    //@todo if Ii find I need more than one of these, I just roll the following 3 methods inito a custom
-    // subclass of tableModel, and replace getMessageList() with createMessageList()
     /** instruct the messageList table model to display messages in a folder */
     void displayMessages(Folder f) throws IOException;
 
@@ -92,6 +86,8 @@ public interface MessageRecorderInternal {
         /** number of unread messages in this folder */
         public int getUnreadCount();
         public void setUnreadCount(int c);
+        public void setDeleted(boolean b);
+        public boolean isDeleted() ;      
     }  
     
     /** interface to a message object */
@@ -106,6 +102,15 @@ public interface MessageRecorderInternal {
 
 /* 
  $Log: MessageRecorderInternal.java,v $
+ Revision 1.3  2006/04/18 23:25:44  nw
+ merged asr development.
+
+ Revision 1.2.30.2  2006/04/14 02:45:01  nw
+ finished code.extruded plastic hub.
+
+ Revision 1.2.30.1  2006/03/28 13:47:35  nw
+ first webstartable version.
+
  Revision 1.2  2005/11/24 01:13:24  nw
  merged in final changes from release branch.
 

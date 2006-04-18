@@ -1,4 +1,4 @@
-/*$Id: DefaultPlainTransformer.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: DefaultPlainTransformer.java,v 1.2 2006/04/18 23:25:46 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
-import org.apache.commons.collections.Transformer;
-
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import org.apache.commons.collections.Transformer;
 
 /** Default implementation of transformer to plaintext.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
@@ -27,15 +27,17 @@ public class DefaultPlainTransformer implements Transformer {
     /** Construct a new DefaultPlainTransformer
      * 
      */
-    private    DefaultPlainTransformer() {
+    public DefaultPlainTransformer(final Transformer trans) {
         super();
+        this.trans = trans;
     }
 
+    private final Transformer trans;
     /**
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
      */
     public Object transform(Object arg0) {
-        Object arg1 = TypeStructureTransformer.getInstance().transform(arg0);
+        Object arg1 = trans.transform(arg0);
         StringBuffer result = new StringBuffer();
         format(arg1,result);
         return result.toString();
@@ -76,19 +78,22 @@ public class DefaultPlainTransformer implements Transformer {
         return;
         
     }
-    
-    private static final Transformer theInstance = new DefaultPlainTransformer();
-    public static final Transformer getInstance() {
-        return theInstance;
-    }
-    
-
+ 
 
 }
 
 
 /* 
 $Log: DefaultPlainTransformer.java,v $
+Revision 1.2  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.1.68.2  2006/04/18 18:49:03  nw
+version to merge back into head.
+
+Revision 1.1.68.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

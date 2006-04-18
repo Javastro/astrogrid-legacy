@@ -1,4 +1,4 @@
-/*$Id: ResourceInformation.java,v 1.7 2006/02/02 14:19:48 nw Exp $
+/*$Id: ResourceInformation.java,v 1.8 2006/04/18 23:25:45 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,8 @@ public class ResourceInformation extends AbstractInformation {
         this.logo = logo;
     }
     
+    static final long serialVersionUID = -3288849668731075130L;
+
     protected final String description;
 
     protected final URL url;
@@ -86,6 +88,12 @@ public class ResourceInformation extends AbstractInformation {
 
 /* 
 $Log: ResourceInformation.java,v $
+Revision 1.8  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.7.6.1  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
 Revision 1.7  2006/02/02 14:19:48  nw
 fixed up documentation.
 

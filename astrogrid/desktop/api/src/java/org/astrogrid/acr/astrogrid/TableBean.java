@@ -1,4 +1,4 @@
-/*$Id: TableBean.java,v 1.2 2006/02/02 14:19:48 nw Exp $
+/*$Id: TableBean.java,v 1.3 2006/04/18 23:25:45 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,9 +27,10 @@ public class TableBean implements Serializable {
         this.description = description;
         this.columns  = columns;
     }
-    private final String name;
-    private final String description;
-    private final ColumnBean[] columns;
+    static final long serialVersionUID = 6606414688098836079L;
+    protected final String name;
+    protected final String description;
+    protected final ColumnBean[] columns;
 
     /** list descriptions of the columns in this table */
     public ColumnBean[] getColumns() {
@@ -43,11 +44,35 @@ public class TableBean implements Serializable {
     public String getName() {
         return this.name;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("TableBean[");
+        sb.append("name: ");
+        sb.append(name);
+        sb.append(" description: ");
+        sb.append(description);
+        sb.append(" columns[");
+        for (int i = 0; i < columns.length; i++) {
+            sb.append(columns[i]);
+            sb.append(" ");
+        }
+        sb.append("]]");
+        return sb.toString();
+    }
 }
 
 
 /* 
 $Log: TableBean.java,v $
+Revision 1.3  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.2.6.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.2.6.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.2  2006/02/02 14:19:48  nw
 fixed up documentation.
 

@@ -22,7 +22,6 @@ import org.astrogrid.adql.v1_0.beans.*;
 
 import javax.swing.tree.DefaultMutableTreeNode ;
 
-import org.astrogrid.desktop.modules.system.transformers.AdqlTransformer ;
 
 /**
  * Represents the data for a single node in the XmlTree. This class (known as a

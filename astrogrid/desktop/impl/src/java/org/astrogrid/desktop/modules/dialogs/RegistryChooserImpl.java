@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserImpl.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: RegistryChooserImpl.java,v 1.5 2006/04/18 23:25:44 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
@@ -82,6 +81,12 @@ public class RegistryChooserImpl implements RegistryChooser {
 
 /* 
 $Log: RegistryChooserImpl.java,v $
+Revision 1.5  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.4.30.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

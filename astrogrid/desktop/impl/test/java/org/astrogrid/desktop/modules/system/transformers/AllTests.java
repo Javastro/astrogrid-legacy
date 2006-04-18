@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: AllTests.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ public class AllTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite(
-                "Test for org.astrogrid.desktop.modules.system.transformers");
+                "Test for Transformers");
         //$JUnit-BEGIN$
         suite.addTestSuite(TypeStructureTransformerTest.class);
         //$JUnit-END$
@@ -36,6 +36,12 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.66.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

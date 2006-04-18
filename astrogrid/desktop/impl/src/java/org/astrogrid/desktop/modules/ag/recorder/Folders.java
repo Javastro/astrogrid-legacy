@@ -1,4 +1,4 @@
-/*$Id: Folders.java,v 1.3 2006/01/31 14:50:33 jdt Exp $
+/*$Id: Folders.java,v 1.4 2006/04/18 23:25:46 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,13 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag.recorder;
-
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -32,16 +25,22 @@ import javax.swing.tree.TreePath;
 
 import jdbm.RecordManager;
 import jdbm.btree.BTree;
-import jdbm.helper.StringComparator;
 import jdbm.helper.Tuple;
 import jdbm.helper.TupleBrowser;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 
 
 /** represents a collection of folders - models their arrangement into a hierarchy, and
  * manages their storage in the JDBM
  *  
  * 
- * very little checking on methods - clients use with care.
+ * very little bounds checking on methods - clients use with care.
+ * @todo work out whether all the syncronization overhead is necessary.
  * */
 public class Folders implements TreeModel {
     /**
@@ -105,15 +104,8 @@ public class Folders implements TreeModel {
                         ,ExecutionInformation.UNKNOWN
                         ,null,null
                         ),MessageRecorderImpl.ROOT);        
-        FolderImpl alerts = new FolderImpl(
-                new ExecutionInformation(MessageRecorderImpl.ALERTS,
-                        "Alerts"
-                        ,"System messages"
-                        ,ExecutionInformation.UNKNOWN
-                        ,null,null
-                        ),MessageRecorderImpl.ROOT);
+      
         // don't think we need any user objects here.
-        root.getChildKeyList().add(MessageRecorderImpl.ALERTS);
         root.getChildKeyList().add(MessageRecorderImpl.QUERIES);
         root.getChildKeyList().add(MessageRecorderImpl.TASKS);
         root.getChildKeyList().add(MessageRecorderImpl.JOBS);            
@@ -121,7 +113,6 @@ public class Folders implements TreeModel {
         b.insert(MessageRecorderImpl.JOBS,jobs,false);
         b.insert(MessageRecorderImpl.TASKS,tasks,false);
         b.insert(MessageRecorderImpl.QUERIES,queries,false);
-        b.insert(MessageRecorderImpl.ALERTS,alerts,false);
         rec.commit();            
         final TreeModelEvent e = new TreeModelEvent(this, new Object[]{root});                    
         SwingUtilities.invokeLater(new Runnable() {
@@ -151,13 +142,28 @@ public class Folders implements TreeModel {
         Tuple t = new Tuple();
         while (browser.getNext(t)) {
             FolderImpl f = (FolderImpl)t.getValue();
-            if (f.getChildKeyList().size() == 0) { // add it if it has no children.
+            if ((! f.isDeleted()) && f.getChildKeyList().size() == 0) { // add it if it has no children.
                 result.add(f.getKey());
             }
         }
         return result;
         
     }
+    
+    /** remove all folders previously marked as 'deleted' 
+     * @throws IOException */
+    public void cleanup() throws IOException  {
+        TupleBrowser browser = b.browse();
+        Tuple t = new Tuple();
+        while (browser.getNext(t)) {
+            FolderImpl f = (FolderImpl)t.getValue();
+            if (f.isDeleted()) {
+            	b.remove(f); // @todo this may not work - in which case need to do 2 passes - first list, then delete 
+            }
+        }   
+        rec.commit();
+    }	
+    
     
     public synchronized Folder createFolder(URI parentKey, ExecutionInformation newProcess) throws IOException {
         final FolderImpl f = new FolderImpl(newProcess,parentKey);
@@ -197,8 +203,9 @@ public class Folders implements TreeModel {
         int pos = parent.getChildKeyList().indexOf(doomed.getKey());
         parent.getChildKeyList().remove(pos);
         b.insert(parent.getKey(),parent,true);
-        // delete child.
-        b.remove(doomed.getKey());
+        // just mark child as deleted.
+        doomed.setDeleted(true); // will be cleaned up on shutdown
+        //b.remove(doomed.getKey());
         rec.commit();
         final TreeModelEvent e =  new TreeModelEvent(this
                 , getPathToRoot(parent) 
@@ -346,6 +353,12 @@ public class Folders implements TreeModel {
 
 /* 
 $Log: Folders.java,v $
+Revision 1.4  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.3.8.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.3  2006/01/31 14:50:33  jdt
 The odd typo and a bit of tidying.
 

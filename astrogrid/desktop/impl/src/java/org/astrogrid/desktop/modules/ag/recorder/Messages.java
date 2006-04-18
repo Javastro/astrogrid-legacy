@@ -1,4 +1,4 @@
-/*$Id: Messages.java,v 1.2 2005/11/24 01:13:24 nw Exp $
+/*$Id: Messages.java,v 1.3 2006/04/18 23:25:46 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag.recorder;
-
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,10 +28,14 @@ import jdbm.helper.LongComparator;
 import jdbm.helper.Tuple;
 import jdbm.helper.TupleBrowser;
 
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
+
 /**
  * implementation of a table of messages, and management of their storage.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Nov-2005
- *
+ *@todo experiment to see whether synchronization of methods is necessary.
+ * only needed if called from more than the UI thread.
+ * - or if so, maybe passing them onto the scheduler for single threaded calling is faster
  */
 public class Messages extends AbstractTableModel implements TableModel {
 
@@ -200,6 +202,12 @@ public class Messages extends AbstractTableModel implements TableModel {
 
 /* 
 $Log: Messages.java,v $
+Revision 1.3  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.2.30.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

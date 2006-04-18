@@ -1,4 +1,4 @@
-/*$Id: URIConverter.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: URIConverter.java,v 1.3 2006/04/18 23:25:46 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,18 @@
 **/
 package org.astrogrid.desktop.modules.system.converters;
 
-import org.apache.commons.beanutils.Converter;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
+import org.apache.commons.beanutils.Converter;
+
+/** convet object to URI
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
 public class URIConverter implements Converter {
 
-    /** Construct a new URI converter
-     * 
-     */
-    private URIConverter() {
-        super();
-    }
+  
 
     /**
      * @throws URISyntaxException
@@ -43,17 +38,21 @@ public class URIConverter implements Converter {
         }
     }
     
-    private static Converter theInstance = new URIConverter();
-    
-    public static Converter getInstance() {
-        return theInstance;
-    }
-
+  
 }
 
 
 /* 
 $Log: URIConverter.java,v $
+Revision 1.3  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.2.66.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.66.1  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

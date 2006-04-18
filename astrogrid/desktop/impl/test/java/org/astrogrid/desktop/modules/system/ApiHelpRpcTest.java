@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRpcTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApiHelpRpcTest.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,7 +81,7 @@ public class ApiHelpRpcTest extends TestCase {
         assertEquals(1,result.size());
         List sig1 = (List)result.get(0);
         assertEquals(1,sig1.size());
-        assertEquals("string",sig1.get(0)); //@todo this is incorrect actually.
+        assertEquals("key-value map",sig1.get(0)); 
     }
 
     public void testModuleHelp() throws Exception {
@@ -115,6 +115,12 @@ public class ApiHelpRpcTest extends TestCase {
 
 /* 
 $Log: ApiHelpRpcTest.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.66.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

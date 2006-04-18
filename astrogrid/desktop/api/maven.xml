@@ -26,12 +26,10 @@
 				</j:choose>
 			</j:if>
                 </j:forEach>		
-	</postGoal>
-	
-	<preGoal name="xdoc:jelly-transform">
+	</postGoal>	
+	<preGoal name="jar:jar">
 		<attainGoal name="xmlrpcdoc"/>
-	</preGoal>
-	
+	</preGoal>	
 	<goal name="javahelp-install">
 		<maven:maven goals="jar:install" descriptor="javahelp/project.xml" />
 	</goal>
@@ -44,7 +42,6 @@
 	<goal name="javahelp-clean">
 		<maven:maven goals="clean:clean" descriptor="javahelp/project.xml" />
 	</goal>
-	
 	<goal name="xmlrpcdoc">		
 		<j:set var="maven.javadoc.doclet" value="com.jeldoclet.JELDoclet" />
 		<mkdir dir="${basedir}/target/xmlrpcdoc" />
@@ -63,6 +60,20 @@
 			<outputproperty name="standalone" value="yes"/>
   			<outputproperty name="indent" value="yes"/>
 		</xslt>
+		
+		
+		<!-- splitting stylesheet. -->
+		<mkdir dir="${basedir}/target/classes/org/astrogrid/desktop/hivemind" />
+		<xslt style="${basedir}/split.xsl"
+		      in="${basedir}/target/xmlrpcdoc/jel.xml"
+		      out="${basedir}/target/dummy"
+		      >
+			<param name="outputDir" expression="${basedir}/target/classes/org/astrogrid/desktop/hivemind/"/>
+		</xslt>
+		<!-- reset doclet values - as later standard doclet will be run. - can't find a nicer way to set back to null. -->
+		${context.setVariable('maven.javadoc.doclet',null)}
+		${context.setVariable('maven.javadoc.docletpath',null)}
+		${context.setVariable('maven.javadoc.additionalparam',null)}
 	</goal>
 	
 </project>

@@ -1,4 +1,4 @@
-/*$Id: InvalidArgumentException.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: InvalidArgumentException.java,v 1.4 2006/04/18 23:25:45 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,8 @@ package org.astrogrid.acr;
  *
  */
 public class InvalidArgumentException extends ACRException {
+
+    static final long serialVersionUID = 3710373580318214188L;
 
     /** Construct a new InvalidArgumentException.
      * 
@@ -52,6 +54,12 @@ public class InvalidArgumentException extends ACRException {
 
 /* 
 $Log: InvalidArgumentException.java,v $
+Revision 1.4  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.3.6.1  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
 Revision 1.3  2006/02/02 14:19:47  nw
 fixed up documentation.
 

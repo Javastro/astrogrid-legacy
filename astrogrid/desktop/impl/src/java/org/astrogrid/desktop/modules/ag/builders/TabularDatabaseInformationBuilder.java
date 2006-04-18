@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformationBuilder.java,v 1.6 2005/12/02 13:40:32 nw Exp $
+/*$Id: TabularDatabaseInformationBuilder.java,v 1.7 2006/04/18 23:25:47 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,29 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.ag.builders;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
+import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.CachedXPathAPI;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
-import org.astrogrid.desktop.modules.ag.XPathHelper;
-
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import javax.xml.transform.TransformerException;
 
 /** information builder for tablular database registry entries
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
@@ -133,6 +121,12 @@ public boolean isApplicable(CachedXPathAPI xpath, Element el) {
 
 /* 
 $Log: TabularDatabaseInformationBuilder.java,v $
+Revision 1.7  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.6.26.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.6  2005/12/02 13:40:32  nw
 optimized, and made more error-tolerant
 

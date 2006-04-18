@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE module  [
+	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/builtin-descriptors.xml">
+	]>
+<module id="builtin" version="1.0.0" package="org.astrogrid.acr.builtin">
+Builtin Components
+	
+	<!-- contributions -->
+	<contribution configuration-id="framework.acrServices">
+			<acrService id="shutdown" interface="Shutdown" />
+	</contribution>
+		
+	<contribution configuration-id="framework.descriptors">
+		<acr-module name="builtin" description="intrinsic services that all others depend upon.">
+		&descriptors;
+		</acr-module>
+	</contribution>
+	
+	<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="acr"/> 
+	</contribution>
+	
+	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
+		<load service-id="shutdown"/> 
+	</contribution>	
+	
+	<!-- set to 'true' to have System.exit() called at end of shutdown
+	 (obvioously not a good idea when running embedded, or in a web container, etc -->
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="builtin.shutdown.exit" value="true" /> <!-- work around for jetty problem, for now -->
+	</contribution>
+	
+	<!-- if running under webstart, need to call System.exit() to terminate the applicaiton, it seems -->
+	<contribution configuration-id="hivemind.ApplicationDefaults"  if="class javax.jnlp.ServiceManager">
+		<default symbol="builtin.shutdown.exit" value="true" />
+	</contribution>
+	
+	<!-- services and iimplementations -->
+	<service-point id="acr" interface="org.astrogrid.desktop.framework.ACRInternal">
+		Registry of all available acr components. Consumes the acrServices and descriptors configuration
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.hivemind.HivemindMutableACR">
+				<configuration>framework.acrServices</configuration>
+				<configuration>framework.descriptors</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="shutdown" interface="Shutdown">
+		Service to shutdown the ACR
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.framework.ShutdownImpl" >
+				<service>hivemind.ShutdownCoordinator</service>
+				<boolean>${builtin.shutdown.exit}</boolean>
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+
+ </module>
+ 

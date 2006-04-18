@@ -2,6 +2,13 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 
 
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Paint;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
+
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.EdgeItem;
@@ -31,14 +38,6 @@ import edu.berkeley.guir.prefuse.render.ShapeRenderer;
 import edu.berkeley.guir.prefuse.util.ColorLib;
 import edu.berkeley.guir.prefusex.controls.ToolTipControl;
 import edu.berkeley.guir.prefusex.controls.ZoomControl;
-
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Paint;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseMotionListener;
-import java.awt.geom.Point2D;
-import java.util.Map;
 
 /** vizualization that hides some of the data some of the time 
  * based on edu.berkeley.guir.prefuse.action.filter.WindowedTreeFilter

@@ -5,7 +5,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.Collection;
 
-import org.picocontainer.Startable;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -16,7 +15,7 @@ public class BasicTest  extends AbstractPlasticTestBase {
 		File file = new File(System.getProperty("user.home"),".plastic");
 		//System.out.println(file);
 		assertFalse("Plastic file should not exist before test", file.exists());
-		Startable listener = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web, new PrettyPrinterImpl(browser), config, shutdown);
+		PlasticHubImpl listener = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web, new PrettyPrinterImpl(browser), config);
 		listener.start();
 		assertTrue("Plastic file should exist after test",file.exists());
 		PlasticHubListener hub = (PlasticHubListener) listener;
@@ -25,11 +24,11 @@ public class BasicTest  extends AbstractPlasticTestBase {
 		assertNotNull("hub is registered", hubId);
 		assertTrue("Hub is regisered", allIds.contains(hubId));
 		assertEquals("Nothing else is registered", 1, allIds.size());
-		listener.stop();
+		listener.halting();
 	}
 	
 	public void testShutDown() {
-		PlasticHubImpl hub = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web, new PrettyPrinterImpl(browser), config, shutdown);
+		PlasticHubImpl hub = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web, new PrettyPrinterImpl(browser), config);
 		hub.start();
 		TestListener2 client = new TestListener2();
 		hub.registerRMI("client", CommonMessageConstants.EMPTY, client);

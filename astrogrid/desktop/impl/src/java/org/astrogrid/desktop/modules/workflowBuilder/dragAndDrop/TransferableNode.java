@@ -10,11 +10,6 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -23,6 +18,9 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author pjn3

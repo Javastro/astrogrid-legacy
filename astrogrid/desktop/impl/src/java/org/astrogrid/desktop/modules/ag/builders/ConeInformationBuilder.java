@@ -1,4 +1,4 @@
-/*$Id: ConeInformationBuilder.java,v 1.3 2005/12/02 13:40:32 nw Exp $
+/*$Id: ConeInformationBuilder.java,v 1.4 2006/04/18 23:25:47 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.ag.builders;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.CachedXPathAPI;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.nvo.ConeInformation;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import javax.xml.transform.TransformerException;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Oct-2005
@@ -96,6 +94,12 @@ public class ConeInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ConeInformationBuilder.java,v $
+Revision 1.4  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.3.26.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.3  2005/12/02 13:40:32  nw
 optimized, and made more error-tolerant
 

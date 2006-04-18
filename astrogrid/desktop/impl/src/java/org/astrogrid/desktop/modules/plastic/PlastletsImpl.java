@@ -15,7 +15,6 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.jdesktop.jdic.desktop.Desktop;
 import org.jdesktop.jdic.desktop.DesktopException;
 import org.jdesktop.jdic.desktop.Message;
-import org.picocontainer.Startable;
 import org.votech.ds6.plastlets.BrowserPlastlet;
 import org.votech.ds6.plastlets.EmailPlastlet;
 import org.votech.ds6.plastlets.Plastlet;
@@ -32,7 +31,7 @@ import org.votech.plastic.managers.PlasticManager.PlasticHubObserver;
  * @author jdt
  *
  */
-public class PlastletsImpl implements PlastletsInternal, Startable, PlasticHubObserver {
+public class PlastletsImpl implements PlastletsInternal, PlasticHubObserver {
 	private static final String NAME = "ACR Plastlets Manager";
 
 	private static final String DESCRIPTION = "The Plastlets manager is part of the ACR responsible for (surprise, surprise) managing <a href='http://plastic.sourceforge.net/multiproject/plastlets/'>Plastlets</a>.  Plastlets are small Plastic applications.  These are disabled by default - go to the plastlets menu in the Workbench to enable them.  More soon...";

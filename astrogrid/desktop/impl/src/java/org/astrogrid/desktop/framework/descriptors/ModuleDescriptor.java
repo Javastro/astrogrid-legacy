@@ -1,4 +1,4 @@
-/*$Id: ModuleDescriptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: ModuleDescriptor.java,v 1.3 2006/04/18 23:25:47 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.desktop.framework.descriptors;
 
-import org.apache.commons.collections.map.ListOrderedMap;
-
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.collections.map.ListOrderedMap;
 
 /** Representation of the descriptor for a module.
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
@@ -62,6 +62,12 @@ public class ModuleDescriptor  extends Descriptor {
 
 /* 
 $Log: ModuleDescriptor.java,v $
+Revision 1.3  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.2.60.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

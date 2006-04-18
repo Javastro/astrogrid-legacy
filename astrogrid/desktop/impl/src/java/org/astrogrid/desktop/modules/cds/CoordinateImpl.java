@@ -1,4 +1,4 @@
-/*$Id: CoordinateImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
+/*$Id: CoordinateImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,18 @@
 **/
 package org.astrogrid.desktop.modules.cds;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Coordinate;
 import org.astrogrid.acr.cds.Glu;
 import org.astrogrid.desktop.modules.cds.astrocoo.AstroCoo;
 import org.astrogrid.desktop.modules.cds.astrocoo.AstroCooService;
 import org.astrogrid.desktop.modules.cds.astrocoo.AstroCooServiceLocator;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.net.URL;
-import java.rmi.RemoteException;
 
 /** Implementation of the Coordinate service
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
@@ -34,12 +34,14 @@ public class CoordinateImpl implements Coordinate {
     private static final Log logger = LogFactory.getLog(CoordinateImpl.class);
 
     /** Construct a new CoordinateImpl
+     * @throws MalformedURLException 
      * 
      */
-    public CoordinateImpl(Glu glu) throws javax.xml.rpc.ServiceException  {
+    public CoordinateImpl(Glu glu, String endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
         super();
         AstroCooService serv = new AstroCooServiceLocator();
         AstroCoo coo1 = null;
+        if (endpoint == null || endpoint.trim().length() == 0) {
         try {
             String coordEndpoint = glu.getURLfromTag(COORDINATE_WS_GLU_TAG);
             coo1 = serv.getAstroCoo(new URL(coordEndpoint));
@@ -47,12 +49,14 @@ public class CoordinateImpl implements Coordinate {
             logger.warn("Exception when finding endpoint via glu - falling back",e);
             coo1 = serv.getAstroCoo();
         } 
+        } else {
+            coo1 = serv.getAstroCoo(new URL(endpoint));
+        }
         coo = coo1;
 
     }
     protected final AstroCoo coo;
-    public final static String COORDINATE_WS_GLU_TAG = "CDS/ws/AstroCoo.WS";
-
+    public final static String COORDINATE_WS_GLU_TAG = "CDS/ws/AstroCoo.WS";   
     /**
      * @see org.astrogrid.acr.cds.Coordinate#convert(double, double, double, int)
      */
@@ -95,6 +99,15 @@ public class CoordinateImpl implements Coordinate {
 
 /* 
 $Log: CoordinateImpl.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.60.2  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.60.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.3  2005/09/02 14:03:34  nw
 javadocs for impl
 

@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: CeaHelper.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.InvalidArgumentException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
@@ -18,10 +21,6 @@ import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 /** helper object for working with cea services.
  * <P>
@@ -107,6 +106,12 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
 /* 
 $Log: CeaHelper.java,v $
+Revision 1.2  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.1.42.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  

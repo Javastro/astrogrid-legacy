@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServletTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: XmlRpcServletTest.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.system;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ACRTestSetup;
-import org.astrogrid.desktop.framework.MutableACR;
+import org.astrogrid.desktop.framework.ACRInternal;
 
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
@@ -100,7 +100,7 @@ public class XmlRpcServletTest extends TestCase {
      * @throws Exception
      */
     public void testSerializationOfModuleDescriptors() throws Exception {
-        Map m = ((MutableACR)this.reg).getDescriptors();
+        Map m = ((ACRInternal)this.reg).getDescriptors();
         assertNotNull(m);
         for (Iterator i = m.entrySet().iterator(); i.hasNext();) {
             Map.Entry e = (Map.Entry)i.next();
@@ -137,6 +137,12 @@ public class XmlRpcServletTest extends TestCase {
 
 /* 
 $Log: XmlRpcServletTest.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.66.1  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

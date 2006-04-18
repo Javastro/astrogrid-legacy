@@ -1,4 +1,4 @@
-/*$Id: HelpServerInternal.java,v 1.2 2005/10/12 13:30:10 nw Exp $
+/*$Id: HelpServerInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 11-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.system.HelpServer;
-
 import java.awt.Component;
 import java.awt.MenuItem;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
+
+import org.astrogrid.acr.system.HelpServer;
 
 /** Internal interface for the help server component
  * @author Noel Winstanley nw@jb.man.ac.uk 11-Oct-2005
@@ -68,6 +68,12 @@ public interface HelpServerInternal extends HelpServer{
 
 /* 
 $Log: HelpServerInternal.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.46.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.4 2006/02/02 14:19:48 nw Exp $
+/*$Id: NodeInformation.java,v 1.5 2006/04/18 23:25:45 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,7 @@ public class NodeInformation extends AbstractInformation {
         this.contentLocation = contentLocation;
     }
     
+    static final long serialVersionUID = 8310686463381671881L;
     private final boolean file;
     private final long size;
     private final Calendar createDate;
@@ -119,6 +120,12 @@ public class NodeInformation extends AbstractInformation {
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.5  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.4.6.1  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
 Revision 1.4  2006/02/02 14:19:48  nw
 fixed up documentation.
 

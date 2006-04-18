@@ -63,15 +63,17 @@ public class CollectionConvertor implements Converter {
         result.addAll(Arrays.asList(tokenized));
         return result;
     }
-    
-    private static Converter theInstance = new CollectionConvertor();
-    public static Converter getInstance() {
-        return theInstance;
-    }
+ 
 }
 
 /* 
 $Log$
+Revision 1.2  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.1.26.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/12/01 16:11:08  jdt
 added a general Collections converter and registered it for Lists.
 

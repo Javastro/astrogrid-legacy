@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: HtmlServlet.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.desktop.framework.DefaultModule;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.Descriptor;
 import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
-import org.astrogrid.desktop.modules.system.transformers.ResultTransformerSet;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.iterators.FilterIterator;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,15 +29,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** servlet that exposes ACR functions over plain old http.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
- *
+ * 
  */
 public class HtmlServlet extends AbstractReflectionServlet {
+    public void init(ServletConfig conf) throws ServletException {
+        super.init(conf);
+        final ServletContext servletContext = conf.getServletContext();
+        conv = (Converter)servletContext.getAttribute("converter");
+        //trans = (ResultTransformerSet)servletContext.getAttribute("transformer");
+        plain = (Transformer)servletContext.getAttribute("plainResultTransformer");
+        html = (Transformer)servletContext.getAttribute("htmlResultTransformer");
+    }
 
     /**
      * @see org.astrogrid.desktop.modules.system.AbstractReflectionServlet#processRoot(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -49,14 +56,16 @@ public class HtmlServlet extends AbstractReflectionServlet {
         PrintWriter out = response.getWriter();
         header(out);
         out.println("<h1>Modules</h1><dl>");
-        for (Iterator ms = reg.moduleIterator(); ms.hasNext(); ) {
-            DefaultModule m = (DefaultModule)ms.next();
+        for (Iterator ms = reg.getDescriptors().values().iterator(); ms.hasNext(); ) {
+            ModuleDescriptor m = (ModuleDescriptor)ms.next();
             out.println("<dt>");
-            out.println("<a href='./" + m.getDescriptor().getName() + "/'>");
-            out.println(m.getDescriptor().getName());
+            out.print("<a href='./");
+            out.print(m.getName());
+            out.print("/'>");
+            out.println(m.getName());
             out.println("</a>");
             out.println("</dt><dd>");
-            out.println(m.getDescriptor().getDescription());
+            out.println(m.getDescription());
             out.println("</dd>");
         }
         out.println("</dl>");
@@ -70,14 +79,12 @@ public class HtmlServlet extends AbstractReflectionServlet {
     protected void processModule(ModuleDescriptor md, HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
         header(out);
-        descriptorSummary(out, md);
-        descriptorList(out, new FilterIterator(md.componentIterator(), new Predicate() {
-            public boolean evaluate(Object arg0) {
-                Descriptor d = (Descriptor)arg0;
-                String value = d.getProperty("hidden.component");
-                return value == null || ! (value.trim().equals("true"));
-            }
-        }));
+        out.println("<p><a href='../.'>up</a></p>");
+        out.print("<h1>Module: ");
+        out.print(md.getName());
+        out.println("</h1>");
+         formatDescription(out,md);
+        descriptorList(out, md.componentIterator());
         footer(out);                    
     }
 
@@ -86,10 +93,16 @@ public class HtmlServlet extends AbstractReflectionServlet {
     /**
      * @see org.astrogrid.desktop.modules.system.AbstractReflectionServlet#processComponent(Module, java.lang.Object, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    protected void processComponent(ComponentDescriptor cd, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processComponent(ModuleDescriptor md,ComponentDescriptor cd, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         header(out);
-        descriptorSummary(out,cd);
+        out.println("<p><a href='../.'>up</a></p>");
+        out.print("<h1>Component: <a href='../.'>" );
+        out.print(md.getName());
+        out.print("</a>.");
+        out.print(cd.getName());
+        out.print("</h1>");
+         formatDescription(out,cd);
         descriptorList(out,cd.methodIterator());
         footer(out);
     }
@@ -97,34 +110,52 @@ public class HtmlServlet extends AbstractReflectionServlet {
     /**
      * @see org.astrogrid.desktop.modules.system.AbstractReflectionServlet#processMethod(java.lang.String, java.lang.Object, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    protected void processMethod(MethodDescriptor methodDescriptor, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        
+    protected void processMethod(ModuleDescriptor md, ComponentDescriptor cd,MethodDescriptor methodDescriptor, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {        
         PrintWriter out = response.getWriter();
         header(out);
         out.println("<p><a href='../.'>up</a></p>");        
-        out.println("<h1>" + methodDescriptor.getName() + "</h1>");
-        out.println("<p>" + methodDescriptor.getDescription() + "</p><h2>Parameters</h2><dl>");     
-        for (Iterator params = methodDescriptor.parameterIterator(); params.hasNext(); ) {
-           ValueDescriptor v = (ValueDescriptor)params.next();
-            out.println("<dt>");
-            out.println(v.getName() );
-            out.println("</dt><dd>");
-            out.println(v.getDescription());
-            out.println("</dd>");           
-        }        
+        out.print("<h1>Function: <a href='../../.'>");
+        out.print(md.getName());
+        out.print( "</a>.<a href='../.'>");
+        out.print(cd.getName());
+        out.print("</a>.");
+        out.print( methodDescriptor.getName());
+        out.print("()</h1>");
+        formatDescription(out,methodDescriptor);
+         out.println("<h2>Parameters</h2><dl>");    
+        {
+        Iterator params = methodDescriptor.parameterIterator();
+        if (!params.hasNext()) {
+            out.println("<dt><i>none</i></dt><dd></dd>");
+        } else {
+            while  (params.hasNext()) {
+                ValueDescriptor v = (ValueDescriptor)params.next();
+                out.println("<dt>");
+                out.println(v.getName() );
+                out.println("</dt><dd>");
+                out.println(v.getDescription());
+                out.println("<br /><i>Type:</i> ");
+                out.println(v.getUitype());
+                out.println("</dd>");           
+            }        
+        }
+        }
         out.println("</dl><h2>Return</h2>");
         ValueDescriptor v = methodDescriptor.getReturnValue();
         out.println("<dl><dt>");
-        out.println(v.getName() );
+       //never contains useful nformation: out.println(v.getName() );
         out.println("</dt><dd>");
-        out.println(v.getDescription());
+        out.println(v.getDescription());       
+        out.println("<br /><i>Type:</i> ");
+        out.println(v.getUitype());       
         out.println("</dd></dl>");    
                 
-        
+        out.println("<hr/><h1>Call Function</h1>");
         for (Iterator i = resultTypes.iterator(); i.hasNext(); ) {
             String method = i.next().toString();
-            out.println("<hr/><h1>Call " + method +" endpoint</h1>");
+            out.println("<hr/><h2>");
+            out.print(method);
+            out.print(" result</h2>");
             out.println("<form name='call' method='POST' action='./" + method+ "'><table>");
             for (Iterator params = methodDescriptor.parameterIterator(); params.hasNext(); ) {
                 out.println("<tr><td>");
@@ -136,17 +167,35 @@ public class HtmlServlet extends AbstractReflectionServlet {
             }
             out.println("</table><input type='submit' value='Call'></form>");
         }       
+        
+        out.println("<hr/><h1>Invocation URL</h1>");
+        out.print("<i>base-url</i>/");
+        out.print(md.getName());
+        out.print("/");
+        out.print(cd.getName());
+        out.print("/");
+        out.print(methodDescriptor.getName());
+        out.println("/<i>[");
+        out.println(StringUtils.join(resultTypes.iterator(),'|'));
+        out.print("]</i>?");
+        for (Iterator params = methodDescriptor.parameterIterator(); params.hasNext();) {
+            ValueDescriptor p = (ValueDescriptor)params.next();
+            out.print(p.getName());
+            out.print("=<i>val</i>");
+            if (params.hasNext()) {
+                out.print("&amp;");
+            }
+        }
+        
+        
+        
         footer(out);
     }
     
-    /**
-     * @param out
-     * @param md
-     */
-    private void descriptorSummary(PrintWriter out, Descriptor md) {
-        out.println("<p><a href='../.'>up</a></p>");
-        out.println("<h1>" + md.getName() + "</h1>");
-        out.println("<p>" + md.getDescription() + "</p>");
+    private void formatDescription(PrintWriter out, Descriptor d) {
+        out.println("<p>");
+        out.println(StringUtils.replace(d.getDescription(),"\n","<br />"));
+        out.println("</p>");
     }
     
     
@@ -159,20 +208,21 @@ public class HtmlServlet extends AbstractReflectionServlet {
             out.println(d.getName());
             out.println("</a>");
             out.println("</dt><dd>");
-            out.println(d.getDescription());
+            out.println(StringUtils.substringBefore(d.getDescription(),"."));
             out.println("</dd>");
         }
         out.println("</dl>");
     }
+
+    protected Converter conv;
+    protected Transformer html;
+    protected Transformer plain;   
     
     /** list of supported result types */
     private static final List resultTypes = new ArrayList();
     static {
         resultTypes.add("html");
         resultTypes.add("plain");
-        /** not supported for now
-        resultTypes.add("xml");
-        */
     }
     
 
@@ -196,25 +246,23 @@ public class HtmlServlet extends AbstractReflectionServlet {
         for (int j = 0; j < parameterTypes.length &&  i.hasNext(); j++) {
             ValueDescriptor p = (ValueDescriptor)i.next();
             String strValue = request.getParameter(p.getName());
-            Converter conv = XmlRpcServlet.getConverter(p); 
             args[j] = conv.convert(parameterTypes[j],strValue);
         }
 
         Object result = MethodUtils.invokeMethod(component,md.getName(),args);
         response.setContentType("text/" + resultType.trim().toLowerCase());
         PrintWriter out = response.getWriter();
-        ResultTransformerSet rts = XmlRpcServlet.getTransformerSet(md.getReturnValue());
         if (resultType.equalsIgnoreCase("html")) {
-            out.println(rts.getHtmlTransformer().transform(result));
+            out.println(html.transform(result));
         } else if (resultType.equalsIgnoreCase("plain")) {
-            out.println( rts.getPlainTransformer().transform(result));
-        } else if (resultType.equalsIgnoreCase("xml")) {
-            out.println(rts.getXmlTransformer().transform(result));
+            out.println( plain.transform(result));
         } else {
+        	
+        	//@todo - maybe fall back to plain??
             throw new IllegalStateException("Really can't get here");
         }
         } catch (Exception e) {
-            throw new ServletException("Could not call method " + md.getName(),e);
+            throw new ServletException("Could not call method " + md.getName() + ": "  + e.getMessage(),e);
         }
     }    
     /**
@@ -242,6 +290,21 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.60.4  2006/04/18 18:49:03  nw
+version to merge back into head.
+
+Revision 1.2.60.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.60.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.2.60.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

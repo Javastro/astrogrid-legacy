@@ -10,27 +10,6 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl;
-import org.astrogrid.desktop.modules.workflowBuilder.renderers.WorkflowTreeCellRenderer;
-import org.astrogrid.workflow.beans.v1.AbstractActivity;
-import org.astrogrid.workflow.beans.v1.Flow;
-import org.astrogrid.workflow.beans.v1.For;
-import org.astrogrid.workflow.beans.v1.If;
-import org.astrogrid.workflow.beans.v1.Parfor;
-import org.astrogrid.workflow.beans.v1.Scope;
-import org.astrogrid.workflow.beans.v1.Script;
-import org.astrogrid.workflow.beans.v1.Sequence;
-import org.astrogrid.workflow.beans.v1.Set;
-import org.astrogrid.workflow.beans.v1.Step;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Unset;
-import org.astrogrid.workflow.beans.v1.While;
-import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -40,10 +19,15 @@ import java.util.Enumeration;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl;
+import org.astrogrid.desktop.modules.workflowBuilder.renderers.WorkflowTreeCellRenderer;
 
 /**
  * @author pjn3

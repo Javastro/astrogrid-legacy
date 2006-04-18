@@ -2,17 +2,17 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 
 
+import java.awt.event.MouseEvent;
+import java.util.Iterator;
+
+import javax.swing.SwingUtilities;
+
 import edu.berkeley.guir.prefuse.NodeItem;
 import edu.berkeley.guir.prefuse.VisualItem;
 import edu.berkeley.guir.prefuse.collections.BreadthFirstTreeIterator;
 import edu.berkeley.guir.prefuse.event.ControlAdapter;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
-
-import java.awt.event.MouseEvent;
-import java.util.Iterator;
-
-import javax.swing.SwingUtilities;
 
 /** focus control - on double click, adds / removes node and children from focus set. */
 public class DoubleClickMultiSelectFocusControl extends ControlAdapter {

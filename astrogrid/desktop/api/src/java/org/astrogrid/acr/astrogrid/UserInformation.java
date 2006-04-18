@@ -1,4 +1,4 @@
-/*$Id: UserInformation.java,v 1.2 2006/02/02 14:19:48 nw Exp $
+/*$Id: UserInformation.java,v 1.3 2006/04/18 23:25:45 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ public class UserInformation extends AbstractInformation {
         this.community = community;
     }
     
+    static final long serialVersionUID = -6197661977180232772L;
     protected transient final String password;
     protected final String community;
     
@@ -49,12 +50,23 @@ public class UserInformation extends AbstractInformation {
     public String getPassword() {
         return this.password;
     }
+    
+
 
 }
 
 
 /* 
 $Log: UserInformation.java,v $
+Revision 1.3  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.2.6.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.2.6.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.2  2006/02/02 14:19:48  nw
 fixed up documentation.
 

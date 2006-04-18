@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.3 2005/11/01 09:19:46 nw Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,30 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.config.SimpleConfig;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.picocontainer.Startable;
-
-import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hivemind.service.impl.FactoryDefault;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.config.SimpleConfig;
+
 /** Implementation of a configuration service - backed by java.util.prefs.
+ * , uses defaults provided by hivemiind system (including sys.properties).
  * and keeps astrogrid's configuration system in-synch.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
-public class JavaPrefsConfiguration implements PreferenceChangeListener, Configuration, ConfigurationInternal, Startable {
+public class JavaPrefsConfiguration implements PreferenceChangeListener, Configuration, ConfigurationInternal{
     /**
      * Commons Logger for this class
      */
@@ -42,38 +42,47 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
     /** Construct a new Configuration
      * 
      */
-    public JavaPrefsConfiguration() {
+    public JavaPrefsConfiguration(List factoryDefaults,List appDefaults) {
         super();
+        this.defaults = buildProperties(factoryDefaults,appDefaults);
     }
+    
+    private final  Properties defaults;
+
+    private final Properties buildProperties(final List fac,final List app) {
+        Properties p = new Properties();
+        for (Iterator i = fac.iterator(); i.hasNext(); ) {
+            FactoryDefault d = (FactoryDefault)i.next();
+            p.setProperty(d.getSymbol(),d.getValue());
+        }
+        // now any overrides...
+        for (Iterator i = app.iterator(); i.hasNext(); ) {
+            FactoryDefault d = (FactoryDefault)i.next();
+            p.setProperty(d.getSymbol(),d.getValue());
+        }        
+        // now system properties.
+        for (Iterator i = System.getProperties().entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry e = (Map.Entry)i.next();
+            p.setProperty((String)e.getKey(),(String)e.getValue());            
+        }
+        return p;
+    }
+    
+    
+    // @todo change preference location to something more meaningful - i.e. start class of system.
+    // need to take care to refer to classes that are always going to be on classpath.
+    private Class preferenceClass = UIImpl.class;
     
     /**
      * 
      */
-    private void maybePrepopulatePrefs() {
-        //check whether any required keys are missing - if so, fill them in.
-        try {
-        List keys = Arrays.asList(userPrefs.keys());
-        for (int i = 0; i < ConfigurationKeys.REQUIRED_KEYS.length; i++) {
-            String key = ConfigurationKeys.REQUIRED_KEYS[i];
-            if (! keys.contains(key)){
-                logger.info("Missing key " + key + " must be configured");
-                String value;
-                if (key.equals(ConfigurationKeys.WORK_DIR_KEY)) { // this one needs to be initialied programatically.
-                    File f = new File(new File(System.getProperty("user.home")),".workbench");
-                    if (!f.exists()) {
-                        f.mkdirs();
-                    }
-                    value = f.getAbsolutePath();
-                } else {
-                    value = System.getProperty("configuration." + key);
-                }
-                userPrefs.put(key,value == null ? "fill this in" : value);
-            }
-        }
-        } catch (Exception e) {
-            logger.error("failed to prepopulate prefs",e);
-        }
+    public void init() {
+        userPrefs = Preferences.userNodeForPackage(preferenceClass);        
+        userPrefs.addPreferenceChangeListener(this);  
+        synchPrefs();
     }
+    
+ 
     protected Preferences userPrefs;
     
 
@@ -86,12 +95,12 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
      * @see org.astrogrid.acr.system.Configuration#removeKey(java.lang.String)
      */
     public void removeKey(String key) {
-        userPrefs.remove(key);
+        userPrefs.remove(key); // will revert to defaults, if any.
     }
     
  
     public String getKey(String key) {
-        return userPrefs.get(key,null);
+        return userPrefs.get(key,defaults.getProperty(key));
     }
 
     public String[] listKeys() throws ACRException {
@@ -119,7 +128,11 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
     }
 
     private void synchPrefs()  {
-        try {
+        for (Iterator i = defaults.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry e = (Map.Entry)i.next();
+            SimpleConfig.setProperty((String)e.getKey(),(String)e.getValue());
+        }
+        try {           
         String[] keys = userPrefs.keys();
         for (int i = 0; i < keys.length; i++) {
             SimpleConfig.setProperty(keys[i],userPrefs.get(keys[i],null));
@@ -142,23 +155,8 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
         this.userPrefs.addPreferenceChangeListener(pcl);
     }
 
-    /**
-     * @see org.picocontainer.Startable#start()
-     */
-    public void start() {
 
-        userPrefs = Preferences.userNodeForPackage(UIImpl.class);        
-        userPrefs.addPreferenceChangeListener(this);  
-        maybePrepopulatePrefs();
-        synchPrefs();
-    }
-
-    /**
-     * @see org.picocontainer.Startable#stop()
-     */
-    public void stop() {
-        userPrefs.removePreferenceChangeListener(this);
-    }
+ 
 
     /**
      * @throws ServiceException
@@ -166,13 +164,20 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
      */
     public void reset() throws ServiceException {
         try {        
-        this.stop();
+            userPrefs.removePreferenceChangeListener(this);
         userPrefs.removeNode();
         userPrefs.flush();        
-        this.start();
+        this.init();
         } catch (BackingStoreException e) {
             throw new ServiceException(e);
         }
+    }
+
+ 
+
+    /** startup configuration property - determines where to look in java prefs registry */ 
+    public void setPreferenceClass(Class preferenceClass) {
+        this.preferenceClass = preferenceClass;
     }
 
  
@@ -181,6 +186,18 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.42.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.42.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.3.42.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.3  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
 

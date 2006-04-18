@@ -1,19 +1,16 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.net.URI;
+import java.net.URL;
+
+import org.apache.commons.lang.WordUtils;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-
-import org.apache.commons.lang.WordUtils;
 import org.xml.sax.InputSource;
 
-import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
-
-import java.net.URI;
-import java.net.URL;
-import java.util.Map;
 
 /** taks that retreives, parses and adds to the display the results of one cone service 
  * 

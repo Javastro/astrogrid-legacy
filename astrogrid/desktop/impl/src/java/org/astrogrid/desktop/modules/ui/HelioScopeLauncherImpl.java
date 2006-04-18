@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.7 2006/03/31 15:20:56 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.8 2006/04/18 23:25:43 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -98,7 +98,7 @@ import java.util.Calendar;
  * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
-public class HelioScopeLauncherImpl extends UIComponent 
+public class HelioScopeLauncherImpl extends UIComponentImpl 
     implements HelioScope, ActionListener, PlasticListener, PlasticWrapper {
    
 /** extends the plastic mesagehandler to display new buttons */
@@ -191,7 +191,7 @@ public class HelioScopeLauncherImpl extends UIComponent
      */
     public HelioScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Stap stap,Sesame ses, Community comm, PlasticHubListener hub) throws URISyntaxException {
+                                  Stap stap,Sesame ses,/* Community comm,*/ PlasticHubListener hub) throws URISyntaxException {
         super(conf,hs,ui);
         
         this.ses = ses;               
@@ -205,7 +205,7 @@ public class HelioScopeLauncherImpl extends UIComponent
         vizualizations.add( new WindowedRadialVizualization(vizualizations));
         vizualizations.add(new HyperbolicVizualization(vizualizations));
 
-        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,comm,chooser,myspace));
+        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
         //dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
         
         // plastic setup
@@ -658,6 +658,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.8  2006/04/18 23:25:43  nw
+merged asr development.
+
 Revision 1.7  2006/03/31 15:20:56  nw
 removed work-around, due to new version of plastic library
 

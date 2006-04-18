@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.5 2006/03/13 18:29:56 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.6 2006/04/18 23:25:47 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.editors;
 
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
@@ -23,14 +27,6 @@ import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-import org.apache.commons.lang.StringUtils;
-
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
 /** Tool Editor Panel that prompts the user to search for and select a tool.
  * <p>
  * just a wapper of some event listeners around the registry chooser panel - nice!
@@ -39,7 +35,7 @@ import javax.swing.event.ListDataListener;
  */
 public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
 
-    public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, Registry reg, final ApplicationsInternal apps, Boolean allApps) {
+    public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, Registry reg, final ApplicationsInternal apps, boolean allApps) {
         super(tm);
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         add(new JLabel("Select an Application:"));
@@ -48,7 +44,7 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
 
         rcp.setFilter(" (@xsi:type like '%CeaApplicationType' " +
                 " or @xsi:type like '%CeaHttpApplicationType' " + 
-                ( allApps.booleanValue() ? " or @xsi:type like '%ConeSearch' " + 
+                ( allApps ? " or @xsi:type like '%ConeSearch' " + 
                         " or @xsi:type like '%SimpleImageAccess' "  + 
 			" or @xsi:type like '%SimpleSpectrumAccess' "+ 
             " or (@xsi:type like '%TabularSkyService' and vr:identifier like 'ivo://CDS/%'" +
@@ -113,6 +109,18 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.6  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.4.30.3  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.4.30.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.4.30.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.5  2006/03/13 18:29:56  nw
 fixed queries to not restrict to @status='active'
 

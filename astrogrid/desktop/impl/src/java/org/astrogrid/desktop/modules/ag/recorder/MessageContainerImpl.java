@@ -1,4 +1,4 @@
-/*$Id: MessageContainerImpl.java,v 1.2 2005/11/11 10:08:18 nw Exp $
+/*$Id: MessageContainerImpl.java,v 1.3 2006/04/18 23:25:46 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ag.recorder;
 
+import java.io.Serializable;
+
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
-
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * implementation of the message data object
@@ -56,6 +55,12 @@ public class MessageContainerImpl implements Serializable, MessageContainer{
 
 /* 
 $Log: MessageContainerImpl.java,v $
+Revision 1.3  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.2.34.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2005/11/11 10:08:18  nw
 cosmetic fixes
 

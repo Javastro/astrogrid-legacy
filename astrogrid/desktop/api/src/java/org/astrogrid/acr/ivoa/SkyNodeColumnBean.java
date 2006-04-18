@@ -1,4 +1,4 @@
-/*$Id: SkyNodeColumnBean.java,v 1.1 2006/02/24 12:17:52 nw Exp $
+/*$Id: SkyNodeColumnBean.java,v 1.2 2006/04/18 23:25:45 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ public class SkyNodeColumnBean extends ColumnBean {
     }
     
 
+    static final long serialVersionUID = -5877074271925631286L;
     //additional metadata provided by skynode..
     private final int precision;
     private final int byteSize;
@@ -47,12 +48,43 @@ public class SkyNodeColumnBean extends ColumnBean {
     public int getRank() {
         return this.rank;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("SkyNodeColumnBean[");
+        sb.append("name: ");
+        sb.append(name);
+        sb.append(" description: ");
+        sb.append(description);
+        sb.append(" UCD: ");
+        sb.append(UCD);
+        sb.append(" datatype: ");
+        sb.append(datatype);
+        sb.append(" unit: ");
+        sb.append(unit);
+        sb.append(" precision: ");
+        sb.append(precision);
+        sb.append(" byteSize: ");
+        sb.append(byteSize);
+        sb.append(" rank: ");
+        sb.append(rank);
+        sb.append("]");
+        return sb.toString();
+    }
 
 }
 
 
 /* 
 $Log: SkyNodeColumnBean.java,v $
+Revision 1.2  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.1.2.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.1.2.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.1  2006/02/24 12:17:52  nw
 added interfaces for skynode
  

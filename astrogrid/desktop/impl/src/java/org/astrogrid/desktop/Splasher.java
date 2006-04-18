@@ -1,4 +1,4 @@
-/*$Id: Splasher.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: Splasher.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,17 @@
 **/
 package org.astrogrid.desktop;
 
+import org.astrogrid.Workbench;
+
 /** Bootstrap class - displays splashcreen before starting off main application.
+ * @deprecated - call one of the classes in <tt>org.astrogrid</tt> directly. For 
+ * now this class delegates to {@link Workbench}
+ * .
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Jul-2005
- *
  */
 public class Splasher {
 
-    /** Construct a new Splasher
+    /** Construct a new Workbench
      * 
      */
     public Splasher() {
@@ -24,9 +28,7 @@ public class Splasher {
     }
     
     public static void main(String[] args) {
-        SplashWindow.splash(Splasher.class.getResource("splash.gif"));
-        SplashWindow.invokeMain("org.astrogrid.desktop.Main", args);
-        SplashWindow.disposeSplash();
+    	Workbench.main(args);
     }
 
 }
@@ -34,6 +36,21 @@ public class Splasher {
 
 /* 
 $Log: Splasher.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.68.4  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.1.68.3  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.1.68.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.1.68.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

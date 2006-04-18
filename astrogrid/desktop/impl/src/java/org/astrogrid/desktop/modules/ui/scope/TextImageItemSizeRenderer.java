@@ -1,4 +1,4 @@
-/*$Id: TextImageItemSizeRenderer.java,v 1.4 2006/02/23 12:27:26 KevinBenson Exp $
+/*$Id: TextImageItemSizeRenderer.java,v 1.5 2006/04/18 23:25:44 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,12 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 
-import edu.berkeley.guir.prefuse.VisualItem;
-import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
-
+import java.awt.Font;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
-import java.util.Map;
-import java.awt.Font;
+
+import edu.berkeley.guir.prefuse.VisualItem;
+import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 /**
  * renderer for node that produces a text and image, where the text varies in size.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
@@ -64,6 +63,12 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
 
 /* 
 $Log: TextImageItemSizeRenderer.java,v $
+Revision 1.5  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.4.2.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.4  2006/02/23 12:27:26  KevinBenson
 small change to make Search Results bigger
 

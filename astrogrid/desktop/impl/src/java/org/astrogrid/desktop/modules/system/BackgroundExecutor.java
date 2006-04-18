@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutor.java,v 1.1 2005/12/02 13:43:18 nw Exp $
+/*$Id: BackgroundExecutor.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,11 +12,10 @@ package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
-import javax.swing.ListModel;
-
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 
-/** Interface to a component that manages exection of background processes.
+/** Interface to a component that executes tasks in the background.
+ * assumed that the implementation executes tasks in parallel if possible.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Nov-2005
 
  */
@@ -30,6 +29,18 @@ public interface BackgroundExecutor extends Executor {
 
 /* 
 $Log: BackgroundExecutor.java,v $
+Revision 1.2  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.1.28.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.1.28.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.1.28.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/12/02 13:43:18  nw
 new compoent that manages a pool of threads to execute background processes on
  

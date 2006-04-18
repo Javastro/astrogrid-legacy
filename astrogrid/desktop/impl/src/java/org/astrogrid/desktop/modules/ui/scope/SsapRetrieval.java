@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.2 2006/02/09 15:40:01 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,25 +10,20 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.scope.Retriever.BasicTableHandler;
+import java.net.URI;
+import java.net.URL;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.ColumnInfo;
-
 import edu.berkeley.guir.prefuse.graph.TreeNode;
-
-import java.net.URI;
-import java.net.URL;
-import java.util.Map;
 
 public class SsapRetrieval extends Retriever {
     public SsapRetrieval(UIComponent comp,ResourceInformation information,TreeNode primaryNode,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
@@ -174,6 +169,12 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.6.1  2006/04/14 02:45:00  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2006/02/09 15:40:01  nw
 finished refactoring of astroscope.
 added vospec viewer

@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: XPathHelper.java,v 1.5 2006/04/18 23:25:44 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.w3c.dom.DOMException;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /** Class of Helper methods for working with XPath, namespaces, and registry documents in particular.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
@@ -88,21 +88,7 @@ public class XPathHelper {
         for (int i = 0; i < namespaces.length; i++) {
             namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:" + namespaces[i][0],namespaces[i][1]);
         }
-        /*
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xsi",XSI_NS);
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",VR_NS);
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vor", VOR_NS);
 
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceab", CEAB_NS);     
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:cea", CEA_NS);  
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:ceapd", CEAPD_NS);
-
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:tdb", TDB_NS);     
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vods", VODS_NS);   
-
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:cs", CS_NS);           
-        namespaceNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:sia", SIA_NS);
-        */ 
         return namespaceNode;
     }
 
@@ -117,6 +103,15 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.5  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.4.30.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.4.30.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

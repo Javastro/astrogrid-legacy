@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.9 2006/02/24 15:25:34 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.10 2006/04/18 23:25:43 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,85 +10,43 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.dialogs.RegistryChooser;
+import java.util.List;
+
+import javax.swing.JPanel;
+
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.ui.ApplicationLauncher;
-import org.astrogrid.acr.ui.JobMonitor;
+import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.picocontainer.PicoContainer;
-import org.w3c.dom.Document;
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.Comparator;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.ListCellRenderer;
 /** Implementation of the Application Launcher component
  * <p>
  * not just a thin wrapper around the composite tool editor;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-May-2005
  *
  */
-public class ApplicationLauncherImpl extends UIComponent  implements ApplicationLauncher {
+public class ApplicationLauncherImpl extends UIComponentImpl  implements ApplicationLauncher {
 
 
-    public ApplicationLauncherImpl(  PicoContainer pico,Configuration conf, HelpServerInternal help, UIInternal ui) {
+    public ApplicationLauncherImpl( 
+    		List panelFactories
+            ,ResourceChooserInternal rChooser
+            ,ApplicationsInternal apps
+            ,MyspaceInternal myspace
+            ,Lookout lookout                                  
+            ,Configuration conf, HelpServerInternal help, UIInternal ui) {
             super(conf, help, ui);
-            editor =  new CompositeToolEditorPanel(this,true,pico, help);
+            editor =  new CompositeToolEditorPanel(
+                    panelFactories,rChooser,apps,myspace,this,false,help);
+            editor.setLookout(lookout);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-            this.setLocationRelativeTo(ui.getComponent());
             this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
             setIconImage(IconHelper.loadIcon("thread_view.gif").getImage());                
             JPanel pane = getMainPanel();
@@ -107,12 +65,24 @@ public class ApplicationLauncherImpl extends UIComponent  implements Application
             });
     }
     
-    private final AbstractToolEditorPanel editor;
+    private final CompositeToolEditorPanel editor;
   
 }
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.10  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.9.2.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.9.2.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.9.2.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.9  2006/02/24 15:25:34  nw
 minor fix to remove use of deprecated method
 

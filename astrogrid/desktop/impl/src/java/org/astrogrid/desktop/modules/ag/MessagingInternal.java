@@ -1,4 +1,4 @@
-/*$Id: MessagingInternal.java,v 1.1 2005/11/10 12:05:43 nw Exp $
+/*$Id: MessagingInternal.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,56 +10,95 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.aopalliance.intercept.MethodInvocation;
+import java.net.URI;
+import java.util.Date;
+import java.util.EventListener;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageListener;
-import javax.jms.Session;
+import org.astrogrid.acr.astrogrid.ExecutionMessage;
+
 
 /** Internal interface to a messaging component.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
  *
  */
 public interface MessagingInternal {
-   /** create a new JMS session - can only be used within one thread */
-    public Session createSession() throws  JMSException;
-    /** access the queue for notifying users of events 
-     * 
-     * this queue provides execution events relating to cea, jes, etc.
+ 
+    /** inject a message into the system
      * */
-    public Destination getEventQueue();
-    /** add a consumer to the event queue
+    public void injectMessage(SourcedExecutionMessage m);
+    /** add a consumer for messages
      * @param condition a filter for events. may be null to indicate (all events)
      * @param l a listener 
      * @throws JMSException
      */
-    void addEventProcessor(String condition, MessageListener l) throws JMSException;
+    void addEventProcessor(MessageListener l); 
     /**
      * @param l
      * @throws JMSException
      */
-    void removeEventProcessor(MessageListener l) throws JMSException;
-    /** add a subscriber to the alert topic
-     * @param l
-     * @throws JMSException
-     */
-    void addAlertSubscriber(MessageListener l) throws JMSException;
-    /**
-     * @param l
-     * @throws JMSException
-     */
-    void removeAlertSubscriber(MessageListener l) throws JMSException;
+    void removeEventProcessor(MessageListener l) ;
+    
+    public interface MessageListener extends EventListener {
+        void onMessage(SourcedExecutionMessage m);
+    }
+    
+    // wraps an execution message with details of it's source
+    public class SourcedExecutionMessage {
+        private final URI processId;
+        private final String processName; 
+        private final ExecutionMessage message;
+        private final Date startTime;
+        private final Date endTime;
+        public URI getProcessId() {
+            return this.processId;
+        }
+        
+        public String getProcessName() {
+            return this.processName;
+        }      
+        public ExecutionMessage getMessage() {
+        	return this.message;
+        }
 
+        public Date getStartTime() {
+            return this.startTime;
+        }
+        
+        public Date getEndTime() {
+            return this.endTime;
+        }
+
+		public SourcedExecutionMessage(final URI processId, final String processName, final ExecutionMessage message, final Date startTime, final Date endTime) {
+			super();
+			this.processId = processId;
+			this.processName = processName;
+			this.message = message;
+			this.startTime = startTime;
+			this.endTime = endTime;
+		}        
+
+    }
     
-    void sendTrackingMessage(MethodInvocation m) ;
+ 
     
-    void sendErrorMessage(MethodInvocation m, Exception e);
+
 }
 
 
 /* 
 $Log: MessagingInternal.java,v $
+Revision 1.2  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.1.34.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.1.34.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.1.34.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/11/10 12:05:43  nw
 big change around for vo lookout
 

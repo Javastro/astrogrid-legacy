@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderImpl.java,v 1.5 2006/01/31 14:50:33 jdt Exp $
+/*$Id: MessageRecorderImpl.java,v 1.6 2006/04/18 23:25:44 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,34 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.table.TableModel;
+import javax.swing.tree.TreeModel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.astrogrid.StapInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.SkyNodeInformation;
+import org.astrogrid.acr.ivoa.SsapInformation;
 import org.astrogrid.acr.nvo.ConeInformation;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.desktop.modules.ag.MessagingInternal.MessageListener;
+import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.FolderImpl;
 import org.astrogrid.desktop.modules.ag.recorder.Folders;
 import org.astrogrid.desktop.modules.ag.recorder.MessageContainerImpl;
@@ -30,30 +45,7 @@ import org.astrogrid.desktop.modules.ag.recorder.Messages;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.xml.CastorException;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.jms.JMSException;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
-import javax.swing.table.TableModel;
-import javax.swing.tree.TreeModel;
-
-/** Implementation a message recorder - main consumer of  JMS messages from the 
+/** Implementation a message recorder - main consumer of  messages from the 
  * event notification queue.
  * Collates and records them to a persistent store.
  * datastructures used are in the 'recorder' sub-package. this class defines the message listeners
@@ -64,16 +56,13 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
 
     static final Log logger = LogFactory.getLog(MessageRecorderImpl.class);
 
-    public MessageRecorderImpl(MessagingInternal m, StoreInternal store, Registry reg, Community comm) throws IOException {
+    public MessageRecorderImpl(MessagingInternal m, StoreInternal store, Registry reg) throws IOException {
         super(); 
         this.store = store;
         this.m = m;
         this.reg= reg;
-        this.comm = comm;
-        comm.addUserLoginListener(this);
-        
+        init();
     }
-    protected final Community comm;
     protected final StoreInternal store;
     protected final Registry reg;
     protected final MessagingInternal m;
@@ -85,20 +74,17 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
     }
 
     protected Messages getMessages() {
-        // force a login
-        comm.getUserInformation();
         return messages;
     }
 
-    Folders getFolder() {
-        // will force a login here.
-        comm.getUserInformation();
+    private Folders getFolder() {
         return folders;
     }
 
     public List listLeaves() throws IOException {
         return getFolder().listLeaves();
     }
+
     
     public Folder getFolder(URI id) throws IOException {
         return getFolder().getFolder(id);
@@ -139,65 +125,12 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
        
     // id keys for well-known folders.
     public final static URI ROOT = URI.create("folder:root") ;
-    public final static URI ALERTS = URI.create("folder:alerts");
     public final static URI TASKS = URI.create("folder:tasks");
     public final static URI QUERIES = URI.create("folder:queries");
     public final static URI JOBS = URI.create("folder:jobs");
 
-    /** simple recorder - listens to all alert messages
-     * expects them to be text messages
-     * disabled for now - as no-one is firing alerts.
-     * @author Noel Winstanley nw@jb.man.ac.uk 26-Oct-2005
-     *
-     */
-    private class AlertRecorder implements MessageListener {
-
-        public void onMessage(javax.jms.Message arg0) {
-            try {
-            if (arg0 instanceof TextMessage) {
-                TextMessage t = (TextMessage)arg0;
-                ExecutionMessage msg = parseMessage(t.getText());
-                MessageContainerImpl m = new MessageContainerImpl(
-                        t.getStringProperty(MessageUtils.SUMMARY_PROPERTY)
-                        ,msg);
-                FolderImpl f = (FolderImpl) getFolder().getFolder(ALERTS);
-                // must always be here.
-                f.setUnreadCount(f.getUnreadCount()+1);
-                getFolder().updateFolder(f);                
-                getMessages().addMessage(ALERTS,m);
-                notifyMessageReceived(f,m);
-            } else {
-                logger.warn("Unrecognized message type " + arg0.toString());
-            }
-            } catch (JMSException e) {
-                logger.error("Failed to process message",e);
-            } catch (CastorException e) {
-                logger.error("Failed to parse message",e);
-            } catch (IOException e) {
-                logger.error("Failed to persist message",e);
-            }
-        }
-    }
     
-    //deserialize xmlstring to Message, then copy across to an execution message
-    ExecutionMessage parseMessage(String s) throws CastorException {
-        Reader r = new StringReader(s);
-        MessageType mt= MessageType.unmarshalMessageType(r);
-        return new ExecutionMessage(
-                mt.getSource()
-                ,mt.getLevel().toString()
-                ,mt.getPhase().toString()
-                ,mt.getTimestamp()
-                ,mt.getContent()
-                );
-    }
-    
-    ResultListType parseResultList(String s) throws CastorException {
-        Reader r = new StringReader(s);
-        ResultListType rs = ResultListType.unmarshalResultListType(r);
-        return rs;
 
-    }
      
     /** records all events on the user's queue */
     private class NotificationRecorder implements MessageListener {
@@ -216,12 +149,12 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
             return false;
         }
         
-        private Folder createFolderFor(URI id, javax.jms.Message msg) throws JMSException, IOException {
+        private Folder createFolderFor(URI id, SourcedExecutionMessage msg) throws IOException {
             // a little hacky - relies on parsing the uri to know what kind of thing we're dealing with.
             // so only works for known uri types.
             URI parent = TASKS;
             ResourceInformation ri = null;
-                    String name= msg.getStringProperty(MessageUtils.PROCESS_NAME_PROPERTY);
+                    String name= msg.getProcessName();
             if ("jes".equals(id.getScheme())) {
                 parent = JOBS;
             } else {
@@ -231,6 +164,9 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
                 ri = reg.getResourceInformation(uri);
                 if (ri instanceof SiapInformation 
                         || ri instanceof ConeInformation
+                        || ri instanceof SsapInformation
+                        || ri instanceof SkyNodeInformation
+                        || ri instanceof StapInformation
                         || isAdqlApplication(ri)) {
                     parent = QUERIES;
                 }
@@ -239,11 +175,11 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
                 }
             }
                       
-            Date startDate = msg.getStringProperty(MessageUtils.START_TIME_PROPERTY) != null
-                ? new Date(msg.getStringProperty(MessageUtils.START_TIME_PROPERTY))
-                : new Date(msg.getJMSTimestamp());
-            Date endDate =msg.getStringProperty(MessageUtils.END_TIME_PROPERTY) != null // unlikely, but still..
-                ? new Date(msg.getStringProperty(MessageUtils.END_TIME_PROPERTY))
+            Date startDate = msg.getStartTime() != null
+                ? msg.getStartTime()
+                : new Date();
+            Date endDate = msg.getEndTime() != null // unlikely, but still..
+                ? msg.getEndTime()
                 : null;
                         
             ExecutionInformation nfo = new ExecutionInformation(
@@ -255,95 +191,80 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
                     ,endDate);
             return getFolder().createFolder(parent,nfo);
         }
-        
-        public void onMessage(javax.jms.Message arg0) {
+        public void onMessage(SourcedExecutionMessage arg0) {
             try {
-                URI id = new URI(arg0.getStringProperty(MessageUtils.PROCESS_ID_PROPERTY));
-                String type = arg0.getStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY);
-                Folder f = getFolder().getFolder(id);
+                URI id = arg0.getProcessId();
+               Folder f = getFolder().getFolder(id);               
                 if (f == null) {
                     f = createFolderFor(id,arg0);
-                }
-                if (arg0 instanceof TextMessage) { 
-                    TextMessage t = (TextMessage)arg0;         
-                    ExecutionMessage msg= null;
-                    if (type.equals(MessageUtils.RESULTS_MESSAGE)) {
-                        msg = new ResultsExecutionMessage(
-                        id.toString()
-                        ,new Date(t.getJMSTimestamp())
-                        ,parseResultList(t.getText())
-                        );
-
-                    } else if (type.equals(MessageUtils.STATUS_CHANGE_MESSAGE)) {
-                        msg = new StatusChangeExecutionMessage(
-                                id.toString()
-                                ,t.getText()
-                                ,new Date(t.getJMSTimestamp())
-                                );                        
+                }         
+                    ExecutionMessage msg = arg0.getMessage();
+                    String type;
+                    if (msg instanceof StatusChangeExecutionMessage) {
                         ExecutionInformation orig = f.getInformation();
                         f.setInformation(new ExecutionInformation(
                                 orig.getId()
                                 ,orig.getName()
                                 ,orig.getDescription()
-                                ,t.getText()
-                                , t.getStringProperty(MessageUtils.START_TIME_PROPERTY) != null
-                                   ? new Date(t.getStringProperty(MessageUtils.START_TIME_PROPERTY))
+                                ,msg.getStatus()
+                                , arg0.getStartTime() != null
+                                   ? arg0.getStartTime()
                                    : orig.getStartTime()
-                                , t.getStringProperty(MessageUtils.END_TIME_PROPERTY) != null
-                                   ? new Date(t.getStringProperty(MessageUtils.END_TIME_PROPERTY))
+                                , arg0.getEndTime() != null
+                                   ? arg0.getEndTime()
                                    : orig.getFinishTime()        
-                                ));                        
-                    } else { // hope for the best
-                        logger.debug(t.getText());
-                        msg = parseMessage(t.getText());
-                    }
-                    MessageContainer m = new MessageContainerImpl(type,msg); 
+                                ));   
+                    }   
+                    MessageContainer m = new MessageContainerImpl(getTypeForMessage(msg),msg); 
                     f.setUnreadCount(f.getUnreadCount()+1);
                     getFolder().updateFolder(f);                                
                     getMessages().addMessage(id,m);
                     notifyMessageReceived(f,m);
-                } else {
-                    logger.warn("Unrecognized message type " + arg0.toString());
-                    return;
-                }
-            } catch (JMSException e) {
-                logger.error("Failed to process message",e);
             } catch (IOException e) {
                 logger.error("Failed to persist message",e);
-            } catch (URISyntaxException e) {
-                logger.error("Failed to process message",e);
-            } catch (CastorException e) {
-                logger.error("Failed to parse message",e);
-            }
+            } 
+        }
+        	
+        private final String getTypeForMessage(ExecutionMessage m) {
+        	if (m instanceof StatusChangeExecutionMessage) {
+        		return "Status Change";
+        	} 
+        	if (m instanceof ResultsExecutionMessage) {
+        		return "Result";
+        	}
+        	return "Information";
         }
     }
 
-   
-
     public void userLogin(UserLoginEvent arg0) {
         try {         
-            this.folders = Folders.findOrCreate(store.getManager());
-            this.messages = new Messages(store.getManager());
-//unused at present            this.alertRecorder = new AlertRecorder();
-            this.notificationRecorder = new NotificationRecorder();            
-//unused at present            m.addAlertSubscriber(alertRecorder);
-            // this condition should catch all messages - but leaves options open in the future.
-            m.addEventProcessor(MessageUtils.PROCESS_ID_PROPERTY +" is not null",notificationRecorder);
+            init();
             } catch (Exception e) {
                 logger.error("Could not start recorder",e);
             }        
     }
+
+	/** initialize all the recorder machinery for a new user.
+	 * @throws IOException
+	 */
+	private void init() throws IOException {
+		this.folders = Folders.findOrCreate(store.getManager());
+		this.messages = new Messages(store.getManager());
+		this.notificationRecorder = new NotificationRecorder();    
+		// this condition should catch all messages - but leaves options open in the future.
+		m.addEventProcessor(notificationRecorder);
+	}
     
-    //unused private AlertRecorder alertRecorder;
     private NotificationRecorder notificationRecorder;
 
-    public void userLogout(UserLoginEvent arg0) {
-        try {
-//unused        m.removeAlertSubscriber(alertRecorder);
-        m.removeEventProcessor(notificationRecorder);
-        } catch (JMSException e) {
-            logger.error("Could not stop recorders");
-        }
+    public void userLogout(UserLoginEvent arg0) {   	
+       m.removeEventProcessor(notificationRecorder);  
+       try {
+    	   folders.cleanup();
+    	   store.getManager().close();
+       } catch (IOException e) {
+    	   logger.warn("Exception when cleaning up deleted folders",e);
+       }
     }
 
     private Set listeners =  new HashSet();
@@ -355,7 +276,7 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
         listeners.remove(listener);
     }
     
-    void notifyMessageReceived(Folder f, MessageContainer c) {
+    private void notifyMessageReceived(Folder f, MessageContainer c) {
         for (Iterator i = listeners.iterator(); i.hasNext(); ) {
             RecorderListener rl = (RecorderListener)i.next();
             rl.messageReceived(f,c);
@@ -368,6 +289,15 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
 
 /* 
 $Log: MessageRecorderImpl.java,v $
+Revision 1.6  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.5.8.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.5.8.1  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
 Revision 1.5  2006/01/31 14:50:33  jdt
 The odd typo and a bit of tidying.
 

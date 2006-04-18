@@ -84,7 +84,6 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.Lookout;
-import org.astrogrid.acr.ui.WorkflowBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.JobsInternal;
@@ -139,7 +138,7 @@ import com.l2fprod.common.swing.StatusBar;
  * @modified nww smoothed up backgrounnd operaitons, added new tool editor, removed top tabs.
  *
  */
-public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.acr.ui.WorkflowBuilder {
+public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogrid.acr.ui.WorkflowBuilder {
 	
     /** save a workflow */
 	protected final class SaveAction extends AbstractAction {
@@ -488,8 +487,8 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
                 	populateTextArea();
                     tabbedPaneWF.setSelectedIndex(1);
                     Properties p = new Properties();
-                    Toolkit toolkit = parent.getToolkit();
-                    PrintJob printJob = toolkit.getPrintJob(parent, "Workflow transcript", p);
+                    Toolkit toolkit = parent.getFrame().getToolkit();
+                    PrintJob printJob = toolkit.getPrintJob(parent.getFrame(), "Workflow transcript", p);
                     try {
                        	if (printJob != null) {
                             Graphics pg = printJob.getGraphics();
@@ -1717,12 +1716,12 @@ public class WorkflowBuilderImpl extends UIComponent implements org.astrogrid.ac
 		focusDialog = null;
 	}
 	
-	public void displayWorkflow(Workflow wf, Component parent) {
+	public void displayWorkflow(Workflow wf, UIComponent parent) {
         getModel().setWorkflow(wf, false);   
         getTree().expandAll(true);
         tabbedPaneWF.setSelectedIndex(0);
 	    activateMenus();
-	    setLocationRelativeTo(parent);
+	    setLocationRelativeTo(parent.getFrame());
 	    show();
 	}
 } 

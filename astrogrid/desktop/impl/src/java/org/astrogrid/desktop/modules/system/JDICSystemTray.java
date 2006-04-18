@@ -1,4 +1,4 @@
-/*$Id: JDICSystemTray.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: JDICSystemTray.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,25 +10,25 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.desktop.icons.IconHelper;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdesktop.jdic.tray.SystemTray;
-import org.jdesktop.jdic.tray.TrayIcon;
-import org.picocontainer.Startable;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Icon;
+import javax.swing.SwingUtilities;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.jdesktop.jdic.tray.SystemTray;
+import org.jdesktop.jdic.tray.TrayIcon;
 
 /** Implementation of System Tray, using JDIC extensions.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Jun-2005
- * @todo popup menu, (can reuse main menu?)
  *
  */
-public class JDICSystemTray implements Startable, org.astrogrid.acr.system.SystemTray {
+public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,ShutdownListener {
     /**
      * Commons Logger for this class
      */
@@ -37,9 +37,10 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
     /** Construct a new JDICSystemTray
      * 
      */
-    public JDICSystemTray(final UIInternal ui) {
+    public JDICSystemTray(final UIInternal ui, final Shutdown shutdown) {
         super();
         this.ui = ui;
+        this.shutdown = shutdown;
         SystemTray st1 = null;
         try {
             st1 = SystemTray.getDefaultSystemTray();
@@ -49,11 +50,12 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
         st = st1;
             idleIcon = IconHelper.loadIcon("AGlogo16x16.png");
             activeIcon = IconHelper.loadIcon("flashpoint.gif");
-  
+            start();
 
     }
     protected final SystemTray st;
     protected final UIInternal ui;
+    protected final Shutdown shutdown;
     protected TrayIcon ti;
     protected final Icon idleIcon;
     protected final Icon activeIcon;
@@ -64,9 +66,10 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
      */
     public void start() {
         if (st != null) {
-            ti = new TrayIcon(idleIcon,"AstroGrid Workbench");
+            ti = new TrayIcon(idleIcon,"AstroGrid");
             ti.setIconAutoSize(true);
-            ti.setToolTip("Left-click to show / hide Workbench");   
+            if (ui.getComponent() != null ) { // otherwise, ui is disabled
+            ti.setToolTip("Left-click to show / hide User Interface");   
             ti.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -77,18 +80,19 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
                 }
             }
             });
+            } else {
+            	ti.setToolTip("Left-click to halt and exit ACR");
+            	ti.addActionListener(new ActionListener() {
+            
+            	public void actionPerformed(ActionEvent e) {
+            		shutdown.halt();
+            	}
+            	});
+            }
             st.addTrayIcon(ti);            
         }
     }
 
-    /**
-     * @see org.picocontainer.Startable#stop()
-     */
-    public void stop() {
-        if (st != null) {
-        st.removeTrayIcon(ti);
-        }
-    }
 
     /**
      * @see org.astrogrid.acr.system.SystemTray#displayErrorMessage(java.lang.String, java.lang.String)
@@ -122,9 +126,13 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
      */
     public void startThrobbing() {
         if (st != null) {
-        if (++throbberCallCount > 0) {
-            ti.setIcon(activeIcon);
-        }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    if (++throbberCallCount > 0) {
+                        ti.setIcon(activeIcon);
+                    }
+                }
+            });
         }
     }
 
@@ -133,10 +141,25 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
      */
     public void stopThrobbing() {
         if (st != null) {
-        if (! (--throbberCallCount > 0)) {
-            ti.setIcon(idleIcon);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {            
+                    if (! (--throbberCallCount > 0)) {
+                        ti.setIcon(idleIcon);
+                    }
+                }
+            });
         }
-        }
+    }
+
+    // probably unnecessary, but still.
+    public void halting() {
+        if (st != null) {
+            st.removeTrayIcon(ti);
+            }        
+    }
+
+    public String lastChance() {
+        return null;
     }
 
 }
@@ -144,6 +167,18 @@ public class JDICSystemTray implements Startable, org.astrogrid.acr.system.Syste
 
 /* 
 $Log: JDICSystemTray.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.66.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.66.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.2.66.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

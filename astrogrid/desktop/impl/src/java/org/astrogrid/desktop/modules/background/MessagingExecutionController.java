@@ -1,4 +1,4 @@
-/*$Id: MessagingExecutionController.java,v 1.5 2005/11/24 01:13:24 nw Exp $
+/*$Id: MessagingExecutionController.java,v 1.6 2006/04/18 23:25:43 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,37 +10,28 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
+import java.util.Date;
+import java.util.Observable;
+
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.applications.AbstractApplication;
-import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.ThreadPoolExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
 import org.astrogrid.desktop.modules.ag.CeaHelper;
-import org.astrogrid.desktop.modules.ag.MessageUtils;
 import org.astrogrid.desktop.modules.ag.MessagingInternal;
+import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
+import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
+import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
+import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 
-import EDU.oswego.cs.dl.util.concurrent.Executor;
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
-import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
-
-import java.io.StringWriter;
-import java.util.Observable;
-
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
-/** Execution controller that adds a monitor to applicatoins that inserts progress messages into jms.
+/** Execution controller that adds a monitor to applicatoins that inserts progress messages into 
+ * our internal messaging system..
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
  *
  */
@@ -50,74 +41,67 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
      * @param arg0
      * @param arg1
      * @throws ServiceException
-     * @throws JMSException
      */
-    public MessagingExecutionController(ApplicationDescriptionLibrary arg0, ExecutionHistory arg1, PooledExecutor e,MessagingInternal messaging, Registry reg) throws ServiceException, JMSException {
-        super(arg0, arg1, e);
+    public MessagingExecutionController(ApplicationDescriptionLibrary arg0, ExecutionHistory arg1, BackgroundExecutor e,MessagingInternal messaging, Registry reg) throws ServiceException{
+        super(arg0, arg1, new PooledExecutorAdapter(e));
         ceaHelper = new CeaHelper(reg);
-        sess = messaging.createSession();
-        prod = sess.createProducer(messaging.getEventQueue());       
-        prod.setDisableMessageID(true);
-        txtMsg = sess.createTextMessage();
+        this.messaging =  messaging;
     }
-    final Session sess;
-    final TextMessage txtMsg;
-    final MessageProducer prod;
-    final Executor exec = new QueuedExecutor();
+    final MessagingInternal messaging;
     final CeaHelper ceaHelper;
 
     public void update(final Observable o, final Object arg) {
-        super.update(o, arg);
-        try {
-            // now notify messaging system - always want to do this on the same thread (as sessions are single threaded) - hence using an executor
-            exec.execute(new Runnable() {
-                public void run() {
-                    try {
-                        AbstractApplication app = (AbstractApplication)o;
-                        //txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,app.getApplicationDescription().getName());
-                        txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,app.getTool().getName());                        
-                        txtMsg.setStringProperty(MessageUtils.PROCESS_ID_PROPERTY,ceaHelper.mkLocalTaskURI(app.getID()).toString());
-                        txtMsg.setStringProperty(MessageUtils.CLIENT_ASSIGNED_ID_PROPERTY,app.getJobStepID());
+    	super.update(o, arg);
+    	try {
+    	AbstractApplication app = (AbstractApplication)o;
+    	if (arg instanceof Status) {
+    		Status stat = (Status)arg;    
+    		ExecutionMessage em = new StatusChangeExecutionMessage (
+    				app.getID()
+    				,stat.toExecutionPhase().toString()
+    				,new Date()
+    		);
+    		injectMessage(app, em);  
+    		if (stat.equals(Status.COMPLETED) || stat.equals(Status.ERROR)) {// send a results message too.
+    			em = new ResultsExecutionMessage(app.getID(),new Date(), app.getResult());
+    		injectMessage(app,em);                          
+    		}
+    	} else if (arg instanceof MessageType) {
+    		MessageType mt = (MessageType)arg;
+    		ExecutionMessage em = new ExecutionMessage(
+    				app.getID()
+    				,mt.getLevel().toString()
+    				,mt.getPhase().toString()
+    				,mt.getTimestamp()
+    				,mt.getContent()
+    		);
+    		injectMessage(app,em);
+    	}
+    	} catch (ServiceException ex) {// unlikey
+    		logger.error("Failed to send notification messages",ex);
+    	}
 
-                        if (arg instanceof Status) {
-                            Status stat = (Status)arg;                            
-                            txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.STATUS_CHANGE_MESSAGE);
-                            txtMsg.setText(stat.toExecutionPhase().toString());
-                            prod.send(txtMsg);
-                            if (stat.equals(Status.COMPLETED) || stat.equals(Status.ERROR)) {// send a results message too.
-                                txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.RESULTS_MESSAGE);
-                                StringWriter sw = new StringWriter();
-                                app.getResult().marshal(sw);
-                                txtMsg.setText(sw.toString());
-                                prod.send(txtMsg);
-                            }
-                        } else if (arg instanceof MessageType) {
-                            MessageType m = (MessageType)arg;
-                            txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.INFORMATION_MESSAGE);
-                            StringWriter s= new StringWriter();
-                            m.marshal(s);                            
-                            txtMsg.setText(s.toString());
-                            prod.send(txtMsg);
-                        }
-                        txtMsg.clearBody();
-                    } catch (JMSException e) {                        
-                        logger.warn("Failed to send notification message",e);
-                    } catch (MarshalException e) {
-                        logger.warn("Failed to send notification message",e);
-                    } catch (ValidationException e) {
-                        logger.warn("Failed to send notification message",e);
-                    } catch (ServiceException e) {
-                        // @todo Auto-generated catch block
-                        logger.debug("ServiceException",e);
-                    }
-                }
-            });
-        } catch (InterruptedException e) {
-            logger.debug("InterruptedException",e);
-        }
     }
 
-    /**
+	/** inject a message into the internal messaging system.
+	 * @param app
+	 * @param em
+	 * @throws ServiceException 
+	 * @throws ServiceException
+	 */
+	private void injectMessage(AbstractApplication app, ExecutionMessage em) throws ServiceException  {
+		SourcedExecutionMessage sem = new SourcedExecutionMessage(
+		        ceaHelper.mkLocalTaskURI(app.getID())
+		        ,app.getTool().getName()
+		        ,em
+		        ,null //@odo find date fromsomewhere
+		        ,null
+		        );                                   
+		messaging.injectMessage(sem);
+
+    }
+
+    /** extends delete - so when app is deleted, is removed from file store too.
      * @see org.astrogrid.desktop.modules.background.ManagingExecutionController#delete(java.lang.String)
      */
     public void delete(String execId) {
@@ -132,6 +116,18 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
 
 /* 
 $Log: MessagingExecutionController.java,v $
+Revision 1.6  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.5.30.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.5.30.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.5.30.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.5  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

@@ -1,0 +1,389 @@
+<?xml version="1.0"?>
+<!DOCTYPE module  [
+	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/astrogrid-descriptors.xml">
+	]>
+<module id="astrogrid" version="1.0.0" package="org.astrogrid.acr.astrogrid">
+	<dependency module-id="system"/>
+	AstroGrid Services
+
+	<!-- new configurations -->
+	<configuration-point id="processStrategies" schema-id="system.objects">
+		list of strategies for running remote processes.		
+		Each must implement  RemoteProcessStrategy
+
+	</configuration-point>
+	
+	<!-- contributions to existing configuraitons -->
+	
+	<!-- how to handle new types.. -->
+	<contribution configuration-id="framework.converters">
+		<register output="org.astrogrid.workflow.beans.v1.Workflow" converter="instance:org.astrogrid.desktop.modules.ag.converters.CastorBeanUtilsConvertor" />
+		<register output="org.astrogrid.workflow.beans.v1.Tool" converter="instance:org.astrogrid.desktop.modules.ag.converters.CastorBeanUtilsConvertor" />
+		<register output="org.astrogrid.workflow.beans.v1.execution.JobURN" converter="instance:org.astrogrid.desktop.modules.ag.converters.JobURNConverter" />
+	</contribution>
+	
+	<contribution configuration-id="framework.htmlResultTransformers">
+		<strategy class="org.astrogrid.workflow.beans.v1.Workflow"
+			object="service:styledCastorTransformer" />			
+		<strategy class="org.astrogrid.workflow.beans.v1.Tool"
+			object="service:styledCastorTransformer" />		
+	</contribution>
+	
+	<contribution configuration-id="framework.rpcResultTransformers">
+		<strategy class="org.astrogrid.workflow.beans.v1.execution.JobURN" 
+			object="instance:org.astrogrid.desktop.modules.ag.transformers.JobURNTransformer" />
+		<strategy class="org.astrogrid.store.Ivorn"
+			object="service:toStringTransformer" />
+		<strategy class="org.astrogrid.filemanager.common.Ivorn"
+			object="service:toStringTransformer" />
+		<strategy class="org.astrogrid.filemanager.common.NodeIvorn"
+			object="service:toStringTransformer" />
+		<strategy class="org.astrogrid.workflow.beans.v1.Workflow"
+			object="service:castorTransformer" />			
+		<strategy class="org.astrogrid.workflow.beans.v1.Tool"
+			object="service:castorTransformer" />					
+	</contribution>
+	
+	
+		<contribution configuration-id="framework.acrServices">
+			<acrService id="registry" interface="Registry" />
+			<acrService id="myspace" interface="Myspace" />
+			<acrService id="community" interface="Community" />
+			<acrService id="applications" interface="Applications" />
+			<acrService id="jobs" interface="Jobs" />
+			<acrService id="processManager" interface="RemoteProcessManager" />
+			<acrService id="stap" interface="Stap"/>
+	</contribution>
+
+	<contribution configuration-id="system.rmiListenerInterfaces">
+		<service id="community">
+			<listener interface="org.astrogrid.acr.astrogrid.UserLoginListener" />
+		</service>
+	</contribution>
+	
+	<contribution configuration-id="framework.descriptors">
+		<acr-module name="astrogrid" description="AstroGrid Services">
+		&descriptors;
+		</acr-module>
+	</contribution>
+	
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="org.astrogrid.registry.query.endpoint" 
+			value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery" />
+		<default symbol="org.astrogrid.registry.admin.endpoint"
+			value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryAdmin" />
+		<default symbol="org.astrogrid.registry.query.altendpoint"
+			value="http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery" />
+		<default symbol="jes.job.controller.endpoint"
+			value="http://galahad.star.le.ac.uk:8080/astrogrid-jes/services/JobControllerService" />
+
+
+		<default symbol="astrogrid.myspace.fetchParents" value="true" />
+		<default symbol="astrogrid.myspace.maxExtraNodes" value="200" />
+		<default symbol="astrogrid.myspace.prefetchDepth" value="3" />
+	</contribution>
+	
+	<contribution configuration-id="hivemind.ApplicationDefaults">
+		<!-- needs to be placed in application defaults, as refers to 
+		symbols defined in system properties (which aren't visible to factory defaults -->
+		<default symbol="astrogrid.store.workdir"
+			value="${user.home}${file.separator}.workbench" />	
+	</contribution>
+
+	<!-- things to start eager -->	
+	<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="messaging" />
+	</contribution>
+	
+	<contribution configuration-id="hivemind.EagerLoad"  if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
+		<load service-id="trayRemoteProcessListener"/>
+	</contribution>
+	
+	<!-- the rest - only eager when testing -->
+	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
+		<load service-id="registry" />
+		<load service-id="community"/>
+		<load service-id="myspace" />
+		<load service-id="applications" />
+		<load service-id="jobs" />
+		<load service-id="stap" />
+		<load service-id="processManager"/>
+		<load service-id="recorder" />		
+		<load service-id="store" />
+	</contribution>	
+	
+	<!-- assume that if this module is loaded, ACR is enabled -->
+	<contribution configuration-id="system.uiStructure">
+		<tab name="acr" text="ACR" after="*"  />	
+	</contribution>
+	
+	<!-- add login and logout actions -->
+	<contribution configuration-id="system.uiStructure">
+		<action text="Login" name="login" parentName="file" iconName="connect_creating.png"
+			object="service:community" methodName="guiLogin" before="close,exit,logout">
+			<tooltip>Log in to AstroGrid</tooltip>
+		</action>
+		<action text="Logout" name="logout" parentName="file" iconName="connect_no.png"
+			object="service:community" methodName="logout" after="login" before="close,exit">
+			<tooltip>Log out of AstroGrid</tooltip>
+		</action>
+	</contribution>
+	
+	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled)">
+		<action text="ACR Help" name="acrHelp"  parentName="help" iconName="java_lib_obj.gif"
+			object="service:system.help" methodName="showHelpForTarget" after="contents">
+					<tooltip>Concepts,  lists available functions, gives examples of their use</tooltip>
+			<parameter>overview</parameter>
+		</action>		
+	</contribution>	
+	
+	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">					
+		<action text="ACR for Java" name="acrJava" parentName="acr" after="*"
+					iconName="source_java.png"
+					object="service:system.browser" methodName="openURL"	>			
+					<parameter>http://software.astrogrid.org/jnlp/astrogrid-desktop/acr-interface.tar.gz</parameter>
+					<tooltip>Download a zip of interfaces to call ACR from Java using JavaRMI</tooltip>
+		</action>				
+		<action text="ACR for Python" name="acrPython" parentName="acr" before="acrJava"
+					iconName="source_py.png"
+					object="service:system.browser" methodName="openURL" >
+					<parameter>http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip</parameter>
+					<tooltip><![CDATA[
+						<html>Download a zip of useful and example python scripts that <br>call VO Services using ACR
+						]]></tooltip>
+		</action>
+	</contribution>		
+	
+	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
+		<action parentName="acr" name="htmlACR" text="Open ACR / PLASTIC in Browser"
+			iconName="overview48.gif"
+			object="service:system.browser" methodName="openRelative" before="*" >
+			<parameter></parameter> <!-- intentionally blank -->
+			<tooltip>Browse and exectute ACR and PLASTIC functions in a webbrowser</tooltip>
+		</action>
+	</contribution>		
+	
+	<contribution configuration-id="hivemind.ApplicationDefaults" if="(property acr.mode) or (property asr.mode)">
+		<default symbol="system.ui.title" value="Astro Runtime" />
+	</contribution>
+	
+	<contribution configuration-id="system.uiStructure" if="(property acr.mode) or (property asr.mode)">
+	<action parentName="help" name="about" text="About AstroGrid Astro Runtime."
+			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
+			after="*" > 
+			<parameter><![CDATA[
+			<html>
+			<h1>Astrogrid Astro Runtime v${acr.version}</h1>			
+			<b>http://software.astrogrid.org</b><br>
+			TODO - fill this in
+		
+			</html>
+			]]></parameter>
+		</action>		
+	</contribution>	
+	
+	<!-- service points and implementations -->
+	
+	<service-point id="registry" interface="Registry">
+		VO Registry
+		<interceptor service-id="system.throbber" />
+		<invoke-factory>			
+			<construct class="org.astrogrid.desktop.modules.ag.RegistryImpl" />
+		</invoke-factory>	
+	</service-point>
+
+	<implementation service-id="registry" if="property astrogrid.registry.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+
+	<service-point id="myspace" interface="org.astrogrid.desktop.modules.ag.MyspaceInternal">
+		Myspace client
+		<interceptor service-id="system.throbber" />	
+		<interceptor service-id="login" />			
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.VospaceImpl" >
+				<service>community</service>
+				<service>bundlePrefs</service>
+				<event-listener service-id="community" />	
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+	<!-- bean service - configuration preferences for vospace client -->
+	<service-point id="bundlePrefs" visibility="private" interface="org.astrogrid.filemanager.common.BundlePreferences">
+		<invoke-factory>
+			<construct class="org.astrogrid.filemanager.common.BundlePreferences">
+				<set property="fetchParents" value="${astrogrid.myspace.fetchParents}" />
+				<set-object property="maxExtraNodes" value="primitive:${astrogrid.myspace.maxExtraNodes}" />
+				<set-object property="prefetchDepth" value="primitive:${astrogrid.myspace.prefetchDepth}" />
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<implementation service-id="myspace" if="property astrogrid.myspace.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>	
+	
+	<service-point id="community" interface="Community">
+		Community and login.
+		<interceptor service-id="system.throbber" />		
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.CommunityImpl" />
+		</invoke-factory>	
+	</service-point>
+	
+	<implementation service-id="community" if="property astrogrid.community.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+	
+	
+	<service-point id="applications" interface="org.astrogrid.desktop.modules.ag.ApplicationsInternal">
+		Run remote applications.
+		<interceptor service-id="system.throbber" />		
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.ApplicationsImpl" >
+				<service>processManager</service>
+				<service>myspace</service>
+				<service>registry</service>
+				<service>ivoa.adql074</service>
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+	<implementation service-id="applications" if="property astrogrid.applications.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+
+	
+	<service-point id="jobs" interface="org.astrogrid.desktop.modules.ag.JobsInternal">
+		Workflow client
+		<interceptor service-id="system.throbber" />		
+		<interceptor service-id="login" />		
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.JobsImpl" >
+				<service>community</service>
+				<service>processManager</service>
+				<event-listener service-id="community" />				
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+	<implementation service-id="jobs" if="property astrogrid.jobs.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+	
+	<service-point id="messaging" interface="org.astrogrid.desktop.modules.ag.MessagingInternal">
+		Internal component - messaging system.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.MessagingImpl">
+				<service>system.scheduler</service>		
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+	<implementation service-id="messaging" if="property astrogrid.messaging.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>				
+
+	<service-point id="stap" interface="Stap">
+		Client for STAP services.
+		<interceptor service-id="system.throbber" />		
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.StapImpl" />
+		</invoke-factory>	
+	</service-point>
+	
+	<implementation service-id="stap" if="property astrogrid.stap.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+	
+	<service-point id="recorder" interface="org.astrogrid.desktop.modules.ag.MessageRecorderInternal">
+		Recorder of messages
+		<interceptor service-id="login" />
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.MessageRecorderImpl" >
+				<service>messaging</service>
+				<service>store</service>
+				<service>registry</service>
+				<event-listener service-id="community" />
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+	<implementation service-id="recorder" if="property astrogrid.recorder.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>	
+	
+	<service-point id="processManager" interface="RemoteProcessManager">
+		Manages and monitors execution of remote processes. Consumes the processStrategies configuration
+		<interceptor service-id="system.throbber" />		
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.RemoteProcessManagerImpl" >
+				<service>recorder</service>
+				<configuration>processStrategies</configuration>
+				<service>myspace</service>
+				<event-listener service-id="recorder" />
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+	<implementation service-id="processManager" if="property astrogrid.processManager.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+	
+	<service-point id="trayRemoteProcessListener" visibility="private" interface="org.astrogrid.desktop.modules.ag.MessageRecorderInternal.RecorderListener">						
+		Display process events in systray.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.SysTrayRemoteProcessListener">
+				<service>recorder</service>
+				<service>system.systray</service>
+				<event-listener service-id="recorder" />
+			</construct>
+		</invoke-factory>		
+	</service-point>						
+	
+	<service-point id="store" interface="org.astrogrid.desktop.modules.ag.StoreInternal">
+		Store for remote process execution information.
+		<interceptor service-id="login" />		
+ 	<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.StoreImpl" >
+				<event-listener service-id="builtin.shutdown" />
+				<service>community</service>
+				<set property="workDir" value="${astrogrid.store.workdir}" />				
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+	<implementation service-id="store" if="property astrogrid.store.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>				
+	
+	<service-point id="login" interface="org.apache.hivemind.ServiceInterceptorFactory">
+		Causes login before accessing intercepted services.
+		Keeps service code cleaner, as no need for 'forceLogin' calls.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.LoginInterceptor">
+				<service>community</service>
+				<service>hivemind.ClassFactory</service>
+			</construct>
+		</invoke-factory>		
+	</service-point>
+	
+	<!-- new transformers -->
+	<service-point id="toStringTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
+		<create-instance class="org.astrogrid.desktop.modules.ag.transformers.ToStringTransformer" />
+	</service-point>
+
+	<service-point id="castorTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
+		<create-instance class="org.astrogrid.desktop.modules.ag.transformers.CastorTransformer" />
+	</service-point>	
+	<service-point id="styledCastorTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.transformers.StyledCastorTransformer" >
+				<service>framework.stylesheetTransformer</service>
+			</construct>
+		</invoke-factory>
+	</service-point>		
+	
+ </module>
+ 

@@ -1,4 +1,4 @@
-/*$Id: AvailabilityBean.java,v 1.1 2006/02/24 12:17:52 nw Exp $
+/*$Id: AvailabilityBean.java,v 1.2 2006/04/18 23:25:45 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.acr.ivoa;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,15 +19,16 @@ import java.util.Date;
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Feb-2006
  *
  */
-public class AvailabilityBean {
+public class AvailabilityBean implements Serializable {
 
 
+    static final long serialVersionUID = 3561008426242896164L;
     private final String location;
     private final String message;
     private final String serverName;
-    private final Date validTo;
-    private final Date upTime;
-    private final Date timeOnServer;
+    private final String validTo;
+    private final String upTime;
+    private final String timeOnServer;
     /** Construct a new AvailabilityBean
      * @param location
      * @param message
@@ -35,7 +37,7 @@ public class AvailabilityBean {
      * @param upTime
      * @param timeOnServer
      */
-    public AvailabilityBean(String location, String message, String serverName, Date validTo, Date upTime, Date timeOnServer) {
+    public AvailabilityBean(String serverName, String location, String message, String validTo, String upTime, String timeOnServer) {
         super();
         this.location = location;
         this.message = message;
@@ -57,16 +59,34 @@ public class AvailabilityBean {
         return this.serverName;
     }
     /** current time on server */
-    public Date getTimeOnServer() {
+    public String getTimeOnServer() {
         return this.timeOnServer;
     }
     /** time server has been continuously running for */
-    public Date getUpTime() {
+    public String getUpTime() {
         return this.upTime;
     }
     /** @todo find out what this field means */
-    public Date getValidTo() {
+    public String getValidTo() {
         return this.validTo;
+    }
+   
+    public String toString() {
+        StringBuffer sb = new StringBuffer("AvailabilityBean[");
+        sb.append("ServerName: ");
+        sb.append(serverName);
+        sb.append(", Location: ");
+        sb.append(location);
+        sb.append(", Message: ");
+        sb.append(message);
+        sb.append(", UpTime: ");
+        sb.append(upTime);
+        sb.append(", TimeOnServer: ");
+        sb.append(timeOnServer);
+        sb.append(", ValidTo: ");
+        sb.append(validTo);
+        sb.append("]");
+        return sb.toString();
     }
 
 }
@@ -74,6 +94,15 @@ public class AvailabilityBean {
 
 /* 
 $Log: AvailabilityBean.java,v $
+Revision 1.2  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.1.2.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.1.2.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.1  2006/02/24 12:17:52  nw
 added interfaces for skynode
  

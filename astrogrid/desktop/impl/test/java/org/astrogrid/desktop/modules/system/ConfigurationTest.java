@@ -1,4 +1,4 @@
-/*$Id: ConfigurationTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ConfigurationTest.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.system;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.framework.ACRTestSetup;
-import org.astrogrid.desktop.framework.MutableACR;
+import org.astrogrid.desktop.framework.ACRInternal;
 
 import java.util.Map;
 import java.util.prefs.BackingStoreException;
@@ -77,6 +77,12 @@ public class ConfigurationTest extends TestCase {
 
 /* 
 $Log: ConfigurationTest.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.66.1  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

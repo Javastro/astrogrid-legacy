@@ -1,4 +1,4 @@
-/*$Id: ACRTestSetup.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ACRTestSetup.java,v 1.2 2006/04/18 23:25:45 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.desktop.framework;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.picocontainer.PicoContainer;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.Community;
@@ -21,8 +20,6 @@ import org.astrogrid.config.Config;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.desktop.BuildInprocessACR;
-import org.astrogrid.desktop.framework.descriptors.DescriptorParser;
-import org.astrogrid.desktop.framework.descriptors.DigesterDescriptorParser;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -89,15 +86,11 @@ public class ACRTestSetup extends TestSetup{
     public static BuildInprocessACR pico;
 
     
-    protected void tearDown()  {
+    protected void tearDown()  throws Exception{
         logger.info("Stopping ACR as fixture");
-        try {
-            pico.stop();     
-        } catch (Throwable e) {
-            logger.error("ACR fixture threw exception on shutdown",e);
-            fail(e.getMessage());
-        }
+        pico.stop();     
         logger.info("ACR Fixture stopped");
+        super.tearDown();
 
 
     }
@@ -107,6 +100,12 @@ public class ACRTestSetup extends TestSetup{
 
 /* 
 $Log: ACRTestSetup.java,v $
+Revision 1.2  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.1.66.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

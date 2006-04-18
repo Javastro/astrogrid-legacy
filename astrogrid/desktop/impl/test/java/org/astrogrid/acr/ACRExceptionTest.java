@@ -1,4 +1,4 @@
-/*$Id: ACRExceptionTest.java,v 1.1 2005/08/11 10:15:01 nw Exp $
+/*$Id: ACRExceptionTest.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import java.rmi.UnexpectedException;
 
 import junit.framework.TestCase;
 
-/** tests the cause-exception converting behaviour of acr exception
+/** tests the cause-exception converting behaviour of acr exception.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2005
  *
  */
@@ -105,6 +105,12 @@ public class ACRExceptionTest extends TestCase {
 
 /* 
 $Log: ACRExceptionTest.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.66.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:01  nw
 finished split
 

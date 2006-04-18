@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserDialog.java,v 1.7 2005/11/24 01:13:24 nw Exp $
+/*$Id: RegistryChooserDialog.java,v 1.8 2006/04/18 23:25:44 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,18 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.dialogs;
-
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -33,12 +21,21 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 
 /** wraps a dialogue around a registry chooser pane.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
@@ -53,13 +50,13 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
     private JOptionPane jOptionPane = null;
     private final RegistryChooserPanel chooserPanel;
-    private final UIComponent parent;
+    private final UIComponentImpl parent;
     /** Construct a new RegistryChooserDialog
      * @throws java.awt.HeadlessException
      */
     public RegistryChooserDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,Registry reg) throws HeadlessException {
         super();
-        this.parent = new UIComponent(conf,help,ui);
+        this.parent = new UIComponentImpl(conf,help,ui);
         this.chooserPanel = new RegistryChooserPanel(parent,reg);
         this.setContentPane(getJOptionPane());           
      
@@ -178,6 +175,12 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
 /* 
 $Log: RegistryChooserDialog.java,v $
+Revision 1.8  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.7.30.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.7  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

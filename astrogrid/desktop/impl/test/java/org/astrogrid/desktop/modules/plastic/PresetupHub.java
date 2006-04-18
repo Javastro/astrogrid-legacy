@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.plastic;
 
-import org.picocontainer.Startable;
 import org.votech.plastic.PlasticHubListener;
 
 /**
@@ -16,13 +15,13 @@ public class PresetupHub extends AbstractPlasticTestBase {
 
 	public void setUp() {
 		super.setUp();
-		hub = new PlasticHubImpl(executor , idGenerator, messenger,  rmi, web, new PrettyPrinterImpl(browser), config, shutdown);
-		((Startable)hub).start();	
+		hub = new PlasticHubImpl(executor , idGenerator, messenger,  rmi, web, new PrettyPrinterImpl(browser), config);
+		((PlasticHubImpl)hub).start();	
 	}
 
 	public void tearDown() throws Exception {
 		super.tearDown();
-		((Startable)hub).stop();
+		((PlasticHubImpl)hub).halting();
 		hub = null;
 	}
 

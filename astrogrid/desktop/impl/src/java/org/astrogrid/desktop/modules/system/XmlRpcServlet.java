@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.builtin.Module;
-import org.astrogrid.acr.system.ApiHelp;
-import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.framework.DefaultModule;
-import org.astrogrid.desktop.framework.MutableACR;
-import org.astrogrid.desktop.framework.ReflectionHelper;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
-import org.astrogrid.desktop.modules.system.converters.DefaultConverter;
-import org.astrogrid.desktop.modules.system.transformers.DefaultResultTransformerSet;
-import org.astrogrid.desktop.modules.system.transformers.ResultTransformerSet;
-
-import org.apache.commons.beanutils.Converter;
-import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xmlrpc.XmlRpcException;
-import org.apache.xmlrpc.XmlRpcHandler;
-import org.apache.xmlrpc.XmlRpcServer;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -44,87 +20,51 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.XmlRpcHandler;
+import org.apache.xmlrpc.XmlRpcServer;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.system.ApiHelp;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.framework.ACRInternal;
+import org.astrogrid.desktop.framework.Module;
+import org.astrogrid.desktop.framework.ReflectionHelper;
+import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
+import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
+import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
+import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
 /** Implementation of full-featured XMLRPC server that exposes the ACR functions
- * @todo future - look at other xmlrpc implementations..
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *
  */
 public class XmlRpcServlet extends HttpServlet {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(XmlRpcServlet.class);
-
-    /** process an xmlrpc call */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("doPost(request = " + request + ", response = " + response + ") - start");
-        }
-        
-        byte[] result = xmlrpc.execute (request.getInputStream ());
-        response.setContentType ("text/xml");
-        response.setContentLength (result.length);
-        OutputStream out = response.getOutputStream();
-        out.write (result);
-        out.flush ();        
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("doPost() - end");
-        }
-    }
-
-    /** return a bit of documentation */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        //can't call a service - so just list out the methods we've got.
-         PrintWriter out = response.getWriter();
-        out.println("<html><body><a href='./.' >up</a><h1>XMLRPC Server</h1>");
-        out.println("To call service, use POST");
-
-        out.println("</body></html>");        
-}
-    /** the server implemntation that this servlet exposes */
-    protected final XmlRpcServer xmlrpc = new XmlRpcServer ();
-    
-    /** create the xml server, register all the services */
-    public void init(ServletConfig conf) throws ServletException {
-        MutableACR reg = (MutableACR) conf.getServletContext().getAttribute(WebServer.ACR_CONTEXT_KEY);        
-       for (Iterator i = reg.moduleIterator(); i.hasNext(); ) {
-           DefaultModule m = (DefaultModule)i.next();
-           ModuleDescriptor md = m.getDescriptor();
-           for (Iterator j = md.componentIterator(); j.hasNext(); ) {
-               ComponentDescriptor cd = (ComponentDescriptor)j.next();
-            String name1= md.getName() + "." + cd.getName();
-               String name = name1;               
-               xmlrpc.addHandler(name,new ComponentXmlRpcHandler(m,cd));
-           }
-       }
-     try {
-        xmlrpc.addHandler("system",new SystemXmlRpcHandler(reg));
-    } catch (ACRException e) {
-        throw new ServletException(e);
-    }
-    }
-    
+    protected Converter conv;
+    protected Transformer trans;    
     /** class that exposes one of our annotated services as a xml service */
     public class ComponentXmlRpcHandler implements XmlRpcHandler {
+        protected final ComponentDescriptor cd;
+        protected final Module m    ;
+
         /**
          * Commons Logger for this class
          */
         private final Log logger = LogFactory.getLog(ComponentXmlRpcHandler.class);
-
         public ComponentXmlRpcHandler(Module m, ComponentDescriptor cd){
-            this.m = (DefaultModule)m;
-            this.cd = cd;            
+            this.m = m;
+            this.cd = cd;         
         }
-        protected final DefaultModule m;
-        protected final ComponentDescriptor cd;
         
         /**
          * @see org.apache.xmlrpc.XmlRpcHandler#execute(java.lang.String, java.util.Vector)
@@ -153,7 +93,6 @@ public class XmlRpcServlet extends HttpServlet {
                 Iterator it = md.parameterIterator();
                 for (int i =0; i < parameterTypes.length; i++) {
                     ValueDescriptor vd = (ValueDescriptor)it.next();
-                    Converter conv = getConverter(vd);
                     args[i] = conv.convert(parameterTypes[i],inputArgs.get(i));
                 }
                 // call method
@@ -166,8 +105,7 @@ public class XmlRpcServlet extends HttpServlet {
                     logger.info("Method returned null - bodging");
                     result = "NULL";
                 }
-                ResultTransformerSet trans = getTransformerSet(md.getReturnValue());
-                return trans.getXmlrpcTransformer().transform(result);  
+                return trans.transform(result);  
             } catch (InvocationTargetException e) {
                 logger.warn("Exception in calling method",e.getCause());
                 if (e.getCause() instanceof Exception) { // hamstrung by the method signature
@@ -183,57 +121,7 @@ public class XmlRpcServlet extends HttpServlet {
 
    
     }
-    /**    
-        * @param returnValue
-         * @return
-         */
-        public static ResultTransformerSet getTransformerSet(ValueDescriptor returnValue) {
-            String s = returnValue.getProperty(RESULT_TRANSFORMER);
-            if (s == null) {
-                return DefaultResultTransformerSet.getInstance();
-            }
-            ResultTransformerSet trans = null;
-            try {
-                Class c = Class.forName(s.trim());
-                Object o = c.newInstance();
-                if (o instanceof ResultTransformerSet) {
-                    trans = (ResultTransformerSet)o;
-                }
-            } catch (ClassNotFoundException e) {
-                logger.warn("ClassNotFoundException",e);
-            } catch (InstantiationException e) {
-                logger.warn("InstantiationException",e);
-            } catch (IllegalAccessException e) {
-                logger.warn("IllegalAccessException",e);
-            }        
-        return trans != null ? trans : DefaultResultTransformerSet.getInstance();
-    } 
-    
-    public static Converter getConverter(ValueDescriptor parameter) {
-        String s = parameter.getProperty(PARAMETER_CONVERTER);
-        if (s == null) {
-            return DefaultConverter.getInstance();
-        }
-        Converter conv = null;
-        try {
-            Class c = Class.forName(s.trim());
-            Object o = c.newInstance();
-            if (o instanceof Converter) {
-                conv = (Converter)o;
-            }
-        } catch (ClassNotFoundException e) {
-            logger.warn("ClassNotFoundException",e);
-        } catch (InstantiationException e) {
-            logger.warn("InstantiationException",e);
-        } catch (IllegalAccessException e) {
-            logger.warn("IllegalAccessException",e);
-        }        
-    return conv != null ? conv : DefaultConverter.getInstance();        
-    }
-        
-    public static final String RESULT_TRANSFORMER="system.result.transformer";
-    public static final String PARAMETER_CONVERTER="system.parameter.converter";
-   
+
     /** implementation of the system-introspection service */
     public static class SystemXmlRpcHandler implements XmlRpcHandler {
         /**
@@ -241,10 +129,10 @@ public class XmlRpcServlet extends HttpServlet {
          */
         private static final Log logger = LogFactory.getLog(SystemXmlRpcHandler.class);
 
+        protected final ApiHelp apiHelp;
         public SystemXmlRpcHandler(ACR reg) throws ACRException {            
             apiHelp = (ApiHelp)reg.getService(ApiHelp.class);
         }
-        protected final ApiHelp apiHelp;
         /**
          * @see org.apache.xmlrpc.XmlRpcHandler#execute(java.lang.String, java.util.Vector)
          */
@@ -262,6 +150,65 @@ public class XmlRpcServlet extends HttpServlet {
         }
         
     }
+
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(XmlRpcServlet.class);
+    /** the server implemntation that this servlet exposes */
+    protected final XmlRpcServer xmlrpc = new XmlRpcServer ();
+    
+    /** create the xml server, register all the services */
+    public void init(ServletConfig conf) throws ServletException {
+        final ServletContext servletContext = conf.getServletContext();
+        ACRInternal reg = (ACRInternal) servletContext.getAttribute(WebServer.ACR_CONTEXT_KEY);
+        conv = (Converter)servletContext.getAttribute("converter");
+        trans = (Transformer)servletContext.getAttribute("rpcResultTransformer");   
+       for (Iterator i = reg.moduleIterator(); i.hasNext(); ) {
+           Module m = (Module)i.next();
+           ModuleDescriptor md = m.getDescriptor();
+           for (Iterator j = md.componentIterator(); j.hasNext(); ) {
+               ComponentDescriptor cd = (ComponentDescriptor)j.next();
+            String name= md.getName() + "." + cd.getName();
+               xmlrpc.addHandler(name,new ComponentXmlRpcHandler(m,cd));
+           }
+       }
+     try {
+        xmlrpc.addHandler("system",new SystemXmlRpcHandler(reg));
+    } catch (ACRException e) {
+        throw new ServletException(e);
+    }
+    }
+    
+    /** return a bit of documentation */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        //can't call a service - so just list out the methods we've got.
+         PrintWriter out = response.getWriter();
+        out.println("<html><body><a href='./.' >up</a><h1>XMLRPC Server</h1>");
+        out.println("To call service, use POST");
+
+        out.println("</body></html>");        
+}
+     
+    /** process an xmlrpc call */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("doPost(request = " + request + ", response = " + response + ") - start");
+        }
+        
+        byte[] result = xmlrpc.execute (request.getInputStream ());
+        response.setContentType ("text/xml");
+        response.setContentLength (result.length);
+        OutputStream out = response.getOutputStream();
+        out.write (result);
+        out.flush ();        
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("doPost() - end");
+        }
+    }
    
         
     }
@@ -271,6 +218,21 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.60.4  2006/04/18 18:49:03  nw
+version to merge back into head.
+
+Revision 1.2.60.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.60.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.2.60.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

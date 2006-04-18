@@ -24,14 +24,14 @@ import java.net.URL;
 /** 
  * A Splash window.
  *  <p>
- * Usage: MyApplication is your application class. Create a Splasher class which
+ * Usage: MyApplication is your application class. Create a Workbench class which
  * opens the splash window, invokes the main method of your Application class,
  * and disposes the splash window afterwards.
- * Please note that we want to keep the Splasher class and the SplashWindow class
+ * Please note that we want to keep the Workbench class and the SplashWindow class
  * as small as possible. The less code and the less classes must be loaded into
  * the JVM to open the splash screen, the faster it will appear.
  * <pre>
- * class Splasher {
+ * class Workbench {
  *    public static void main(String[] args) {
  *         SplashWindow.splash(Startup.class.getResource("splash.gif"));
  *         MyApplication.main(args);

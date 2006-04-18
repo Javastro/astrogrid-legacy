@@ -1,4 +1,4 @@
-/*$Id: StoreImpl.java,v 1.2 2005/11/24 01:13:24 nw Exp $
+/*$Id: StoreImpl.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.desktop.modules.system.ConfigurationKeys;
-
-import org.picocontainer.Startable;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -27,15 +18,22 @@ import java.util.Properties;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
-import jdbm.recman.Provider;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.builtin.ShutdownListener;
 
 /** Implementation of a storage mechanism - based on jdbm
  * intended for storing largeish chunks of data. smaller snippets of info are better stored in cache.
  *  - no public inteface, just an internal one.
+ *  
+ *  uses community, but doesn't implement UserLoginListener - instead,
+ *  cleanup at logout of the store is done by MessageRecorderImpl - as
+ *  has to do some other work before closing the user's store.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Oct-2005
- *
  */
-public class StoreImpl implements Startable, StoreInternal{
+public class StoreImpl implements StoreInternal, ShutdownListener{
     /**
      * Commons Logger for this class
      */
@@ -45,20 +43,28 @@ public class StoreImpl implements Startable, StoreInternal{
      * @throws IOException
      * 
      */
-    public StoreImpl(Configuration conf, Community comm) {
+    public StoreImpl(Community comm) {
         super();
-        this.conf = conf;
         this.comm= comm;
 
     }
-    private final Configuration conf;
+    // dunno if finalize() is guaranteed to be called on system shutdown, but it's worth a try..
+    //might mean that we manage to close the store cleanly more often.
+    protected void finalize() throws Throwable {
+    	halting();
+    }
     private final Community comm;
     private RecordManager manager;
+    private File workDir = new File(new File(System.getProperty("user.home")),".workbench");
+    
+    public void setWorkDir(String location) {
+        workDir = new File(location);
+    }
     // unique key that defines the format of store, plus all classes within it.
     // whenever a binary incompatible change is made, change the version string
     // this will be detected, and a new store created (all old data lost - will do for now
     // later will add migration functions.
-    public static final String STORE_FORMAT_VERSION = "13";
+    public static final String STORE_FORMAT_VERSION = "20";
 
     public synchronized RecordManager getManager() {
         if (manager == null) {
@@ -67,21 +73,14 @@ public class StoreImpl implements Startable, StoreInternal{
         return manager;
     }
     
-    /**
-     * @see org.picocontainer.Startable#start()
-     */
-    public void start() {
-        // does nothing.
-    }
+
     // create a manager - requires user login.
     private void createManager() {
         try {
-        File workDir = new File(conf.getKey(ConfigurationKeys.WORK_DIR_KEY));
-        // can't assume it exists
+        String storeId = URLEncoder.encode(comm.getUserInformation().getId().toString() + "-store-" + STORE_FORMAT_VERSION,"UTF-8");
         if (!workDir.exists()) {
             workDir.mkdirs();
-        }
-        String storeId = URLEncoder.encode(comm.getUserInformation().getId().toString() + "-store-" + STORE_FORMAT_VERSION,"UTF-8");
+        }        
         File f = new File(workDir,storeId);
         Properties props = new Properties();
         
@@ -103,17 +102,19 @@ public class StoreImpl implements Startable, StoreInternal{
     }
 
     
-    /**
-     * @see org.picocontainer.Startable#stop()
-     */
-    public void stop() {
-        try {
+ 
+    public void halting() {
+        try { //' think this is the cause of problems - if the system goes down quickly, the manager isn't necessarily closed.
             if (manager != null) {
                 manager.close();
             }
         } catch (IOException e) {            
             logger.warn("Failed to close JDBM file",e);
-        }
+        }        
+    }
+
+    public String lastChance() {
+        return null;
     }
 
 }
@@ -121,6 +122,15 @@ public class StoreImpl implements Startable, StoreInternal{
 
 /* 
 $Log: StoreImpl.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.30.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.30.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.2  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

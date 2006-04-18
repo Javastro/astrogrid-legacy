@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.11 2006/02/24 13:20:41 pjn3 Exp $
+/*$Id: LookoutImpl.java,v 1.12 2006/04/18 23:25:43 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import java.awt.event.MouseListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -38,6 +39,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -80,6 +82,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -96,9 +99,6 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
@@ -115,20 +115,17 @@ import org.astrogrid.desktop.modules.ag.JobsInternal;
 import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
-import org.astrogrid.desktop.modules.background.CeaStrategyInternal;
-import org.astrogrid.desktop.modules.background.JesStrategyInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.system.transformers.Votable2XhtmlTransformer;
-import org.astrogrid.desktop.modules.system.transformers.WorkflowResultTransformerSet;
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
-import org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl.CloseAction;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Oct-2005
@@ -136,7 +133,7 @@ import org.w3c.dom.Document;
  *   
  *
  */
-public class LookoutImpl extends UIComponent implements  Lookout {
+public class LookoutImpl extends UIComponentImpl implements  Lookout {
     //forgotten what this is for..
     public class JComponentCellEditor implements TableCellEditor, TreeCellEditor,
     Serializable {
@@ -300,10 +297,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         
         public void valueChanged(ListSelectionEvent e) {
             folderMode=false;
-            int index = getMessageTable().getSelectedRow();           
-            Folder f = getCurrentFolder();
-            setEnabled(f != null && f.getInformation().getId().equals(MessageRecorderImpl.ALERTS)
-                    && index > 0 &&  index < getMessageTable().getRowCount()) ;            
+            setEnabled(false) ;            
         }
         
         public void valueChanged(TreeSelectionEvent e) {
@@ -441,8 +435,10 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
         }
         public void actionPerformed(ActionEvent e) {
-            jesStrategy.triggerUpdate();
-            ceaStrategy.triggerUpdate();
+        	for (Iterator i = strategies.iterator(); i.hasNext(); ) {
+        		RemoteProcessStrategy rps = (RemoteProcessStrategy)i.next();
+        		rps.triggerUpdate();
+        	}
             //@todo add a 'completed' task that sets the status message.
             LookoutImpl.this.setStatusMessage("Refreshing..");
         }
@@ -700,16 +696,16 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private static final String MESSAGE_RESULTS = "message_results";
     final ApplicationLauncher appLauncher;
     final ResourceChooserInternal chooser;
-    final JesStrategyInternal jesStrategy;
     final RemoteProcessManager manager;
     final ParameterizedWorkflowLauncher pwLauncher;
     final MessageRecorderInternal recorder;
-    final MyspaceInternal vos;
+   final MyspaceInternal vos;
     final WorkflowBuilder workflowLauncher;
     final BrowserControl browser;
     final JobsInternal jobs;
+    final org.apache.commons.collections.Transformer trans;
     
-    final CeaStrategyInternal ceaStrategy;
+    final List strategies;
     private MessageDisplayPane contentPane;
     
     private Folder currentFolder;
@@ -739,11 +735,8 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     private Action closeAction;
     
     private JToolBar toolbar;
-    private Transformer votableTransformer;
     private Action workflowEditorAction;
-    
-    private Transformer workflowTransformer;
-    private Transformer xmlTransformer;
+
     
     private JPopupMenu messageLevelMenu;
     private String messageLevel = "All";
@@ -761,17 +754,15 @@ public class LookoutImpl extends UIComponent implements  Lookout {
             ,MyspaceInternal vos, ParameterizedWorkflowLauncher pw
             ,WorkflowBuilder workflows, ApplicationLauncher appLauncher
             , RemoteProcessManager manager
-            , Community comm
-            ,JesStrategyInternal jesStrategy
-            ,CeaStrategyInternal ceaStrategy
+            ,List strategies
             , BrowserControl browser
 			, JobsInternal jobs
+			, org.apache.commons.collections.Transformer trans
     )
     throws HeadlessException {
         super(conf, hs, ui);
         this.browser = browser;
-        this.jesStrategy = jesStrategy;
-        this.ceaStrategy = ceaStrategy;
+        this.strategies = strategies;
         this.manager = manager;
         this.recorder = recorder;
         this.chooser = chooser;
@@ -780,8 +771,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         this.workflowLauncher = workflows;
         this.appLauncher = appLauncher;
         this.jobs = jobs;
-        // force community login.
-        comm.getUserInformation();
+        this.trans = trans;
         initialize();
     }
     
@@ -804,31 +794,14 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     
     
     // dislpaying results
-    //@todo hard-coded for now. replace later with a strategy engine - or a component that just knows how to do the right thing.
-    // file and mime types, maybe.
     // later handle indirect too.
-    URL displayResult(ParameterValue pv ) throws TransformerFactoryConfigurationError, IOException, TransformerException {
-        Transformer trans;
-        if (pv.getValue().indexOf("<workflow") != -1) {
-            trans = getWorkflowTransformer();
-        } else if (pv.getValue().indexOf("<VOTABLE") != -1) {
-            trans = getVotableTransformer();
-        } else if (pv.getValue().indexOf("<?xml") != -1) {
-            trans = getXmlTransformer();                        
-        } else {
-            trans = null;
-        }
+    URL displayResult(ParameterValue pv ) throws TransformerFactoryConfigurationError, IOException, TransformerException, ParserConfigurationException, SAXException {
+
         File f = File.createTempFile(pv.getName(),".html");
-        OutputStream out = new FileOutputStream(f);
-        if (trans != null) {
-            Result result= new StreamResult(out);
-            Source source = new StreamSource(new ByteArrayInputStream(pv.getValue().getBytes()));
-            trans.transform(source,result);
-        } else {
-            OutputStreamWriter w = new OutputStreamWriter(out);
-            w.write(pv.getValue());
-            w.flush();
-        }
+        Writer out = new FileWriter(f);
+            Document source = XMLUtils.newDocument(new ByteArrayInputStream(pv.getValue().getBytes()));
+            Object result= trans.transform(source);
+            out.write((String)result);
         out.close();
         return f.toURL();
         
@@ -913,9 +886,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
                     sb.append("</font></html>");
                     setText(sb.toString());
                     // finally set the icon.
-                    if (info.getId().equals(MessageRecorderImpl.ALERTS)) {
-                        setIcon(IconHelper.loadIcon("info_obj.gif"));
-                    } else if (info.getId().equals(MessageRecorderImpl.JOBS)) {
+                    if (info.getId().equals(MessageRecorderImpl.JOBS)) {
                         setIcon(IconHelper.loadIcon("tree.gif"));
                     } else if (info.getId().equals(MessageRecorderImpl.QUERIES)) {
                         setIcon(IconHelper.loadIcon("search.gif"));
@@ -1306,43 +1277,20 @@ public class LookoutImpl extends UIComponent implements  Lookout {
         return toolbar;
     }
     
-    private Transformer getVotableTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        if (votableTransformer == null) {
-            Source styleSource = Votable2XhtmlTransformer.getStyleSource();
-            votableTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
-            votableTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
-        }
-        return votableTransformer;
-    }
+
     private Action getWorkflowEditorAction() {
         if (workflowEditorAction == null) {
             workflowEditorAction = new WorkflowEditorAction();
         }
         return workflowEditorAction;        
     }
-    private Transformer getWorkflowTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        if (workflowTransformer == null) {
-            Source styleSource = WorkflowResultTransformerSet.Workflow2XhtmlTransformer.getStyleSource();
-            workflowTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
-            workflowTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
-        }
-        return workflowTransformer;
-    }
-    
-    private Transformer getXmlTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        if (xmlTransformer == null) {
-            Source styleSource = Xml2XhtmlTransformer.getStyleSource();
-            xmlTransformer = TransformerFactory.newInstance().newTransformer(styleSource);
-            xmlTransformer.setOutputProperty(OutputKeys.METHOD,"html");              
-        }
-        return xmlTransformer;
-    }
+
+
     
     
     private void initialize() {
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.lookout");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        this.setLocationRelativeTo(getUI().getComponent());
         this.setJMenuBar(getJJMenuBar());
         JPanel pane = getJContentPane();    
         this.setTitle("VO Lookout");
@@ -1374,8 +1322,7 @@ public class LookoutImpl extends UIComponent implements  Lookout {
     }        
     
     boolean isTaskFolder(URI uri) {
-        return ! (uri.equals(MessageRecorderImpl.ALERTS) 
-                || uri.equals(MessageRecorderImpl.JOBS)
+        return ! ( uri.equals(MessageRecorderImpl.JOBS)
                 || uri.equals(MessageRecorderImpl.QUERIES)
                 || uri.equals(MessageRecorderImpl.ROOT)
                 || uri.equals(MessageRecorderImpl.TASKS)
@@ -1409,6 +1356,18 @@ public class LookoutImpl extends UIComponent implements  Lookout {
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.12  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.11.2.3  2006/04/18 18:49:03  nw
+version to merge back into head.
+
+Revision 1.11.2.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.11.2.1  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
 Revision 1.11  2006/02/24 13:20:41  pjn3
 Menu changes
 

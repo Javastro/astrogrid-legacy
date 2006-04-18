@@ -1,4 +1,4 @@
-/*$Id: ValueDescriptor.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ValueDescriptor.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,20 +22,48 @@ public class ValueDescriptor extends Descriptor {
     public ValueDescriptor() {
         super();
     }
+    private Class type;
+    private String uitype;
  
+    public String getUitype() {
+        return this.uitype;
+    }
+
+    public void setUitype(String uitype) {
+        this.uitype = uitype;
+    }
+
     public String toString() {
         StringBuffer buffer = new StringBuffer();
         buffer.append("[ValueDescriptor:");
+        buffer.append("\nuitype: ");
+        buffer.append(uitype);
+        buffer.append("\ntype: ");
+        buffer.append(type != null ? type.getName() : "");
         buffer.append('\n');        
         buffer.append(super.toString());
         buffer.append("]");
         return buffer.toString();
+    }
+
+    public Class getType() {
+        return this.type;
+    }
+
+    public void setType(Class type) {
+        this.type = type;
     }
 }
 
 
 /* 
 $Log: ValueDescriptor.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.68.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

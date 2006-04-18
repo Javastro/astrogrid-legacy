@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.3 2005/09/12 15:21:16 nw Exp $
+/*$Id: IconHelper.java,v 1.4 2006/04/18 23:25:45 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,14 @@
 **/
 package org.astrogrid.desktop.icons;
 
-import org.apache.commons.collections.map.ReferenceMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.net.URL;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
+
+import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /** class of helper methods for locating and loading icons.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Apr-2005
@@ -37,7 +37,6 @@ public class IconHelper {
     }
     
     /** load an icon,
-     * @todo extend to find icons from elsewhere as needed.
      * @param imgName filename of the icon, which must be located in this package (<tt>org.astrogrid.desktop.icons</tt>)
      * @return the icon object, or null if not found
      */
@@ -66,6 +65,15 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.4  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.3.56.2  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.56.1  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
 Revision 1.3  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

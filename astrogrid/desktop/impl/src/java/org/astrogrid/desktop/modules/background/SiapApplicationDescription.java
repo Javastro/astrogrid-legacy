@@ -1,4 +1,4 @@
-/*$Id: SiapApplicationDescription.java,v 1.1 2005/11/01 09:19:46 nw Exp $
+/*$Id: SiapApplicationDescription.java,v 1.2 2006/04/18 23:25:43 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.applications.AbstractApplication;
@@ -30,18 +41,6 @@ import org.astrogrid.community.User;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /** implementation of a siap search proxy.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
@@ -176,6 +175,12 @@ public class SiapApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: SiapApplicationDescription.java,v $
+Revision 1.2  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.1.42.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/11/01 09:19:46  nw
 messsaging for applicaitons.
  

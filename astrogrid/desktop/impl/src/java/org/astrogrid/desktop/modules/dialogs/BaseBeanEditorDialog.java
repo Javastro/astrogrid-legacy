@@ -1,4 +1,4 @@
-/*$Id: BaseBeanEditorDialog.java,v 1.2 2005/10/12 13:30:10 nw Exp $
+/*$Id: BaseBeanEditorDialog.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 10-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.common.bean.BaseBean;
-import org.astrogrid.workflow.beans.v1.AbstractActivity;
-
 import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -22,6 +19,8 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import org.astrogrid.common.bean.BaseBean;
 
 /** Abstract base class for all pop-up dialogs used in the workflow editor.
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Oct-2005
@@ -131,6 +130,12 @@ public abstract class BaseBeanEditorDialog extends JDialog implements PropertyCh
 
 /* 
 $Log: BaseBeanEditorDialog.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.46.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

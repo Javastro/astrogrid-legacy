@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.5 2006/04/18 23:25:43 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
+import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -17,45 +27,33 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
-import org.astrogrid.desktop.modules.ag.MessageUtils;
 import org.astrogrid.desktop.modules.ag.MessagingInternal;
+import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
+import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
+import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
+import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;
-import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 
-import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
 
 /** 
  * remote process strategy for jobs.
@@ -65,7 +63,7 @@ import javax.jms.TextMessage;
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Nov-2005
  *
  */
-public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
+public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener {
     /**
      * Commons Logger for this class
      */
@@ -76,35 +74,25 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
             , Community comm
             , SchedulerInternal scheduler
             , ApplicationsInternal apps
-            ) throws JMSException {
+            ) {
         super();
-        this.comm = comm;
-        comm.addUserLoginListener(this);        
+        this.messaging = messaging;
+        this.comm = comm;    
         this.apps = apps;
         this.scheduler = scheduler;
-        this.recorder = recorder;
-        this.sess = messaging.createSession();
-        this.prod = sess.createProducer(messaging.getEventQueue());
-        prod.setDisableMessageID(true);
-            txtMsg = sess.createTextMessage();
-        
+        this.recorder = recorder;      
     }
-    final DateFormat df = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.SHORT,SimpleDateFormat.SHORT);
     final Community comm;
-    final MessageProducer prod;
+    final MessagingInternal messaging;
     final MessageRecorderInternal recorder;
-    final TextMessage txtMsg;
-    final Session sess;
-    final SchedulerInternal scheduler; // already auto-registered with this.
+    final SchedulerInternal scheduler; 
     final ApplicationsInternal apps;
     private Account acc;      
     boolean poll = false;
     
     private JobController jes;
-    private WorkflowManagerFactory fac;
     private synchronized JobController getJes() {
         if (jes == null) {
-            // auto-configures.
             jes = JesDelegateFactory.createJobController();
         } 
         return jes;
@@ -118,15 +106,15 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
         }
         return acc;
     }
- 
-    //@todo make period configurable 
-    public final  long getPeriod() {
-        return 1000 * 60 * 5;
+    public long getPeriod() {
+        return 1000 * refreshSeconds;
     }
-
-    // horribly inefficient munging, copying, and marshalling/unmarshalling.
-    // only to be passed over an in-vm wire, and then the same rigmarole repeated at the other end
-    // will stand in good stead for later developments though.
+    private long refreshSeconds;
+    public void setRefreshSeconds(long period) {
+    	this.refreshSeconds = period;
+    }
+    
+    /** refresh method */    
     public void run() {
         if (!poll) { // only run if this flag is set.
             return;
@@ -142,8 +130,7 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
         }       
     }
     
-    
-
+   
 
     /** check a single job for updates.
      * to be called within shceduler thread.
@@ -154,11 +141,14 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
         try {
             Folder f= recorder.getFolder(new URI(jobSummary.getJobId().getContent()));
             String currentStatus;
-            int messageCount;
+            int messageCount;            
             if (f == null) {
                 // totally new.. upload everything
                 currentStatus = ExecutionInformation.UNKNOWN;
                 messageCount = 0;
+            } else if (f.isDeleted()) {
+            	// don't care about thiis one anymore
+            	return;
             } else {                    
                 currentStatus = f.getInformation().getStatus();
                 if(isCompletedOrError(currentStatus) ) {
@@ -166,34 +156,44 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
                 } // otherwise..
                 messageCount = recorder.listFolder(f).length;
             }
-            String newStatus = jobSummary.getStatus().toString(); 
-            txtMsg.setStringProperty(MessageUtils.PROCESS_ID_PROPERTY,jobSummary.getJobId().getContent());
-            txtMsg.setStringProperty(MessageUtils.PROCESS_NAME_PROPERTY,jobSummary.getWorkflowName());
-            if (jobSummary.getStartTime() != null) {
-                txtMsg.setStringProperty(MessageUtils.START_TIME_PROPERTY,df.format(jobSummary.getStartTime()));
+            String newStatus = jobSummary.getStatus().toString();            
+            if (! currentStatus.equals(newStatus)) {   
+            	ExecutionMessage em = new StatusChangeExecutionMessage(
+            		    jobSummary.getJobId().getContent()
+            			,newStatus
+            			,new Date()
+            			);
+            	SourcedExecutionMessage sem = new SourcedExecutionMessage(
+            			new URI(jobSummary.getJobId().getContent())
+                        ,jobSummary.getWorkflowName()
+            			,em
+            			  ,jobSummary.getStartTime()
+                          ,jobSummary.getFinishTime()
+            			);
+                messaging.injectMessage(sem);   
             }
-            if (jobSummary.getFinishTime() != null) {
-                txtMsg.setStringProperty(MessageUtils.END_TIME_PROPERTY,df.format(jobSummary.getFinishTime()));
-            }
-            
-            if (! currentStatus.equals(newStatus)) { // emit a status change
-                txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.STATUS_CHANGE_MESSAGE);
-                txtMsg.setText(newStatus);
-                prod.send(txtMsg);
-            }
+           
             if (messageCount < jobSummary.getMessageCount()) { // some messages to pass on
-                txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.INFORMATION_MESSAGE);
                 for (int j = messageCount;  j < jobSummary.getMessageCount(); j++) {
-                    StringWriter s = new StringWriter();
-                    jobSummary.getMessage()[j].marshal(s);
-                    txtMsg.setText(s.toString());
-                    prod.send(txtMsg);
-                    // clear space.
-                    txtMsg.clearBody();
+            		MessageType mt = jobSummary.getMessage(j);
+            		ExecutionMessage em = new ExecutionMessage(
+            				jobSummary.getJobId().getContent()
+            				,mt.getLevel().toString()
+            				,mt.getPhase().toString()
+            				,mt.getTimestamp()
+            				,mt.getContent()
+            		);
+                	SourcedExecutionMessage sem = new SourcedExecutionMessage(
+                			new URI(jobSummary.getJobId().getContent())
+                            ,jobSummary.getWorkflowName()
+                			,em
+                			  ,jobSummary.getStartTime()
+                              ,jobSummary.getFinishTime()
+                			);                    
+                    messaging.injectMessage(sem);
                 }
             }
             if (isCompletedOrError(newStatus)) { // emit result message  
-                txtMsg.setStringProperty(MessageUtils.MESSAGE_TYPE_PROPERTY,MessageUtils.RESULTS_MESSAGE);                                       
                 Workflow wf = getJes().readJob(jobSummary.getJobId());
                 wf.getJobExecutionRecord().clearExtension(); // clears out junk
                 ResultListType results = new ResultListType();
@@ -204,12 +204,19 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
                 wf.marshal(s);
                 v.setValue(s.toString());
                 results.setResult(new ParameterValue[]{v });
-                s = new StringWriter();
-                results.marshal(s);
-                txtMsg.setText(s.toString());
-                prod.send(txtMsg);
-                // free space.
-                txtMsg.clearBody();                
+                ExecutionMessage em = new ResultsExecutionMessage(
+                		jobSummary.getJobId().getContent()
+                		,jobSummary.getFinishTime()
+                		,results
+                		);
+            	SourcedExecutionMessage sem = new SourcedExecutionMessage(
+            			new URI(jobSummary.getJobId().getContent())
+                        ,jobSummary.getWorkflowName()
+            			,em
+            			  ,jobSummary.getStartTime()
+                          ,jobSummary.getFinishTime()
+            			);                   
+                messaging.injectMessage(sem);             
         }
         } catch (Exception e) {
             logger.warn("Failed to process job info for " + jobSummary.getJobId().getContent());
@@ -347,6 +354,18 @@ public class JesStrategyImpl implements JesStrategyInternal, UserLoginListener {
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.5  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.4.30.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.4.30.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.4.30.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

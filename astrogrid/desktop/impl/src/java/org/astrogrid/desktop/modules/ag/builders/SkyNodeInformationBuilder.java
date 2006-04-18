@@ -1,4 +1,4 @@
-/*$Id: SkyNodeInformationBuilder.java,v 1.1 2006/02/24 15:22:29 nw Exp $
+/*$Id: SkyNodeInformationBuilder.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ag.builders;
 
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.ivoa.SkyNodeInformation;
+import javax.xml.transform.TransformerException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.CachedXPathAPI;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.SkyNodeInformation;
 import org.w3c.dom.Element;
-
-import javax.xml.transform.TransformerException;
 
 /**
  * builder of a skynode information bean
@@ -80,6 +79,12 @@ public class SkyNodeInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: SkyNodeInformationBuilder.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.2.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2006/02/24 15:22:29  nw
 integration necessary for skynode
  

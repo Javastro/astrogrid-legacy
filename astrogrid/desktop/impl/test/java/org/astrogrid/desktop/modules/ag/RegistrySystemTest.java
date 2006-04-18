@@ -1,4 +1,4 @@
-/*$Id: RegistrySystemTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: RegistrySystemTest.java,v 1.3 2006/04/18 23:25:47 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -114,15 +114,17 @@ public class RegistrySystemTest extends TestCase {
     }
     
     public void testAdqlSearchMultiple() throws Exception {
-        Document result = registry.adqlSearch("select * from Registry where vr:content/vr:type='Archive'");
+        Document result = registry.adqlSearch(multipleQuery);
         assertNotNull(result);
         assertNotNull(result.getDocumentElement());
         assertEquals("VOResources",result.getDocumentElement().getLocalName());
         assertTrue(result.getElementsByTagNameNS("*","Resource").getLength() > 1);        
     }
     
+    private static final String multipleQuery = "select * from Registry where @xsi:type like '%CeaServiceType'";
+    
     public void testAdqlSearchRIMultiple() throws Exception {
-        ResourceInformation[] ris = registry.adqlSearchRI("select * from Registry where vr:content/vr:type='Archive'");
+        ResourceInformation[] ris = registry.adqlSearchRI(multipleQuery);
         assertNotNull(ris);
         assertTrue(ris.length > 1);
         for (int i = 0 ; i < ris.length; i++) {            
@@ -162,6 +164,12 @@ public class RegistrySystemTest extends TestCase {
 
 /* 
 $Log: RegistrySystemTest.java,v $
+Revision 1.3  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.2.64.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

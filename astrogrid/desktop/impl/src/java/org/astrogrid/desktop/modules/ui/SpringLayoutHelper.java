@@ -1,4 +1,4 @@
-/*$Id: SpringLayoutHelper.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: SpringLayoutHelper.java,v 1.2 2006/04/18 23:25:43 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-
 import java.awt.Component;
 import java.awt.Container;
 
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
-import javax.swing.SpringLayout.Constraints;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /** Class of helper code for phil's spring layout stuff
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
@@ -122,6 +120,12 @@ public class SpringLayoutHelper {
 
 /* 
 $Log: SpringLayoutHelper.java,v $
+Revision 1.2  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.1.56.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

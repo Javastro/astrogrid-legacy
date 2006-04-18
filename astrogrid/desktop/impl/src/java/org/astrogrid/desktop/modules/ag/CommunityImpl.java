@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.3 2005/11/11 10:08:18 nw Exp $
+/*$Id: CommunityImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,19 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.UI;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
@@ -27,15 +33,8 @@ import org.astrogrid.registry.RegistryException;
 import org.astrogrid.ui.script.LoginFactory;
 import org.astrogrid.ui.script.ScriptEnvironment;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
 /** Community Service implementation
+ *@todo remove UI aspect of this.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
 public class CommunityImpl implements CommunityInternal  {
@@ -204,6 +203,15 @@ public class CommunityImpl implements CommunityInternal  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.34.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.34.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.3  2005/11/11 10:08:18  nw
 cosmetic fixes
 

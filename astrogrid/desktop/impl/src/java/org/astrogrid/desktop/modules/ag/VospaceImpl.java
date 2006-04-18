@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.9 2006/03/13 18:27:34 nw Exp $
+/*$Id: VospaceImpl.java,v 1.10 2006/04/18 23:25:44 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,23 +81,18 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
     /** Construct a new Vospace
      * 
      */
-    public VospaceImpl(Community community) {
+    public VospaceImpl(Community community, BundlePreferences preferences) {
         super();
         this.community = community;
-        community.addUserLoginListener(this);
+        this.prefs = preferences;
     }
    protected final Community community;
+   protected final BundlePreferences prefs;
     protected URI home;
     protected FileManagerClient client;
     
     protected synchronized FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
         if (client == null) {
-           
-            // want to create my own file manager client, so can set up customprefs.
-            BundlePreferences prefs = new BundlePreferences();
-            prefs.setFetchParents(true);
-            prefs.setMaxExtraNodes(new Integer(200));
-            prefs.setPrefetchDepth(new Integer(3));
             FileManagerClientFactory fac = new FileManagerClientFactory(prefs); 
             client = fac.login(new Ivorn(community.getUserInformation().getId().toString()),community.getUserInformation().getPassword());
         } 
@@ -913,6 +908,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.10  2006/04/18 23:25:44  nw
+merged asr development.
+
 Revision 1.9  2006/03/13 18:27:34  nw
 fixed queries to not restrict to @status='active'
 

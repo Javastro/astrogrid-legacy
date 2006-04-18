@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: AllTests.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ public class AllTests {
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.desktop.modules.ag");
+        TestSuite suite = new TestSuite("AstroGrid Module Tests");
         suite.addTestSuite(RegistrySystemTest.class);
         suite.addTestSuite(RegistryRmiSystemTest.class);
         suite.addTestSuite(RegistryRpcSystemTest.class);
@@ -38,7 +38,8 @@ public class AllTests {
         suite.addTestSuite(ApplicationsRpcSystemTest.class);    
         suite.addTestSuite(JobsSystemTest.class);
         suite.addTestSuite(JobsRmiSystemTest.class);
-        suite.addTestSuite(JobsRpcSystemTest.class);           
+        suite.addTestSuite(JobsRpcSystemTest.class);     
+        suite.addTestSuite(StoreSystemTest.class);
         return new ACRTestSetup(suite,true);       
     }
 }
@@ -46,6 +47,15 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.66.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.1.66.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

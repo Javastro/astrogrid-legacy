@@ -1,4 +1,4 @@
-/*$Id: ExecutionMessage.java,v 1.3 2006/02/02 14:19:48 nw Exp $
+/*$Id: ExecutionMessage.java,v 1.4 2006/04/18 23:25:45 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ public class ExecutionMessage implements Serializable{
         this.source = source;
     }
     
+    static final long serialVersionUID = 2339344360407684926L;
     private final String content;
     private final String level;
     private final String status;
@@ -60,11 +61,36 @@ public class ExecutionMessage implements Serializable{
     public Date getTimestamp() {
         return this.timestamp;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("ExecutionMessage[");
+        sb.append(" content: ");
+        sb.append(content);
+        sb.append(" level: ");
+        sb.append(level);
+        sb.append(" status: ");
+        sb.append(status);
+        sb.append(" timestamp: ");
+        sb.append(timestamp);
+        sb.append(" source: ");
+        sb.append(source);
+        sb.append("]");
+        return sb.toString();
+    }
 }
 
 
 /* 
 $Log: ExecutionMessage.java,v $
+Revision 1.4  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.3.6.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.3.6.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.3  2006/02/02 14:19:48  nw
 fixed up documentation.
 

@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.3 2006/04/18 23:25:46 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
-import org.astrogrid.filemanager.common.NodeIvorn;
-import org.astrogrid.store.Ivorn;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
-
-import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.beanutils.DynaClass;
-import org.apache.commons.beanutils.DynaProperty;
-import org.apache.commons.beanutils.WrapDynaBean;
-import org.apache.commons.collections.Transformer;
-import org.exolab.castor.xml.Marshaller;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
@@ -39,24 +25,26 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.DynaClass;
+import org.apache.commons.beanutils.DynaProperty;
+import org.apache.commons.beanutils.WrapDynaBean;
+import org.apache.commons.collections.Transformer;
+
 /** implem,entation of transformer that will render almost any object tree down to types suitable for xmlrpc lib - i.e. type structures - prims, maps, vectors.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
  *
  */
 public class TypeStructureTransformer implements Transformer {
+	
+	public TypeStructureTransformer(Transformer trans) {
+		this.trans = trans;
+	}
+	// transformer used to perform recursion.
+	private final Transformer trans;
+	
 
-    /** Construct a new DefaultXmlRpcTransformer
-     * 
-     */
-    private TypeStructureTransformer() {
-        this(true);
-    }
-    
-    private TypeStructureTransformer(boolean b) {
-        this.specialTreatmentForCastor = b;
-    }
-    
-    private final boolean specialTreatmentForCastor;
+  
 
     /**
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -65,18 +53,7 @@ public class TypeStructureTransformer implements Transformer {
         if (arg0 == null) {
             return null;
         }
-        if (arg0 instanceof JobURN) { // simple castor type - just get value.
-            return ((JobURN)arg0).getContent();
-        }
-        if ( specialTreatmentForCastor && (arg0 instanceof Workflow || arg0 instanceof Tool)) { // special treatment for castor types..
-            try {
-                StringWriter sw = new StringWriter();
-                Marshaller.marshal(arg0,sw);
-                return sw.toString();
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
-            }            
-        }
+
         if (arg0 instanceof String 
                 || arg0 instanceof Integer 
                 || arg0 instanceof Double 
@@ -102,10 +79,7 @@ public class TypeStructureTransformer implements Transformer {
         }
         
         if (arg0 instanceof URL
-                || arg0 instanceof URI
-                || arg0 instanceof Ivorn 
-                || arg0 instanceof org.astrogrid.filemanager.common.Ivorn 
-                || arg0 instanceof NodeIvorn) {
+                || arg0 instanceof URI) {
             return arg0.toString();
         }
         if (arg0 instanceof Map) {
@@ -113,7 +87,7 @@ public class TypeStructureTransformer implements Transformer {
             Hashtable h = new Hashtable(m.size());
             for (Iterator i = m.entrySet().iterator(); i.hasNext(); ) {
                 Map.Entry e = (Map.Entry)i.next();
-                h.put(this.transform(e.getKey()),this.transform(e.getValue()));
+                h.put(trans.transform(e.getKey()),trans.transform(e.getValue()));
             }
             return h;
         }
@@ -124,7 +98,7 @@ public class TypeStructureTransformer implements Transformer {
             Collection col = (Collection)arg0;
             Vector v = new Vector(col.size());
             for (Iterator i = col.iterator(); i.hasNext(); ) {
-                v.add(this.transform(i.next()));
+                v.add(trans.transform(i.next()));
             }
             return v;
         }
@@ -152,7 +126,7 @@ public class TypeStructureTransformer implements Transformer {
             try {
                 Object value = db.get(name);
                 if (value != null) { // hashtable can't handle nulls..
-                    result.put(name,this.transform(value));
+                    result.put(name,trans.transform(value));
                 }
             } catch (IllegalArgumentException e) {
                 // thrown by dynabean for properties with only a setter - ignore.
@@ -160,21 +134,21 @@ public class TypeStructureTransformer implements Transformer {
         }
         return result;
     }
-    
-    private static final Transformer theInstance = new TypeStructureTransformer();
-    private static final Transformer castorIgnoringInstance = new TypeStructureTransformer(false);
-    public static Transformer getInstance() {
-        return theInstance;
-    }
-    public static Transformer getCastorIgnoringInstance() {
-        return castorIgnoringInstance;
-    }
-
+   
 }
 
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.3  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.2.66.2  2006/04/18 18:49:03  nw
+version to merge back into head.
+
+Revision 1.2.66.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

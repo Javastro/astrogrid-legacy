@@ -10,7 +10,8 @@
 
     <menu name="Navigation">
 	    <item name="Home" href="/index.html" />
-	    <item name="Documentation" href="/apidocs/index.html" />
+	    <item name="API: Scripting" href="xmlrpc.html" />
+	    <item name="API: Javadoc" href="/apidocs/index.html" />
 	    
     </menu>
 

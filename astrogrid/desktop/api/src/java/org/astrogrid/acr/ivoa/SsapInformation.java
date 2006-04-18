@@ -1,4 +1,4 @@
-/*$Id: SsapInformation.java,v 1.2 2006/02/24 12:17:52 nw Exp $
+/*$Id: SsapInformation.java,v 1.3 2006/04/18 23:25:45 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ public class SsapInformation extends ApplicationInformation {
         super(id, name, description, parameters, ifaces, endpoint, logo);
     }
     
+    static final long serialVersionUID = -4375801957623175156L;
     private static Map parameters;
     private static InterfaceBean[] ifaces;
     //@todo copied from siap at the moment.
@@ -110,7 +111,9 @@ public class SsapInformation extends ApplicationInformation {
         };
     }
 
- 
+ public String toString() {
+    return "SsapInformation[" + super.toString() + "]";
+}
 
   
 
@@ -119,6 +122,15 @@ public class SsapInformation extends ApplicationInformation {
 
 /* 
 $Log: SsapInformation.java,v $
+Revision 1.3  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.2.2.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.2.2.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.2  2006/02/24 12:17:52  nw
 added interfaces for skynode
 

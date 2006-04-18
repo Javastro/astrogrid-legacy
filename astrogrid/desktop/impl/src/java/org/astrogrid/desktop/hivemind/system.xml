@@ -1,0 +1,681 @@
+<?xml version="1.0"?>
+<!DOCTYPE module  [
+	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/system-descriptors.xml">
+	]>
+<module id="system" version="1.0.0" package="org.astrogrid.acr.system">
+System module.
+	<!-- new configurations -->
+	
+	<configuration-point id="servlets">
+			List of servlets to deploy in Webserver
+			<schema>
+				<element name="servlet">
+					Describes a single servlet
+					<attribute name="name" required="true" unique="true" >
+						the name of the servlet
+					</attribute>
+					<attribute name="path" required="true" unique="true" >
+						the context path to deploy the servlet to
+					</attribute>
+					<attribute name="servletClass" required="true" translator="class">			
+						name of the class implementing this servlet. Must extend AbstractServlet
+					</attribute>
+					<conversion 
+						class="org.astrogrid.desktop.modules.system.contributions.ServletsContribution" 
+						/>				
+				</element>
+			</schema>
+	</configuration-point>
+	
+	<configuration-point id="servletContext">
+		List of objects to add into servlet context, so they can be accessed by servlets
+		(as hivemind can't constructor-inject into servlets itself)
+		<schema>
+			<element name="attribute">
+				Describes a single addition to the servlet context
+				<attribute name="name" required="true" unique="true" >
+					name to store the object under
+				</attribute>
+				<attribute name="object" required="true" translator="object" >
+					the object to store - give a reference to a service using 'service:..', or 
+					instantiate a new object using 'instance:..'
+				</attribute>
+				<conversion 
+					class="org.astrogrid.desktop.modules.system.contributions.ServletContextContribution"
+					/>
+			</element> 
+		</schema>
+	</configuration-point>
+	
+	<configuration-point id="rmiListenerInterfaces">
+		Used in RMI service. - list of services that accept listener interfaces - and the 
+		interfaces used. Each of these listener interfaces needs to be registered differently
+		with the RMI service.
+		<schema>
+			<element name="service" key-attribute="id">
+				Description of an acr service with listener interfaces
+				<attribute name="id" required="true" unique="true" translator="qualified-id" >
+					the id of the service
+				</attribute>
+				<element name="listener">
+					A listener inteface that this service accepts as a parameter
+					<attribute name="interface" required="true" translator="class" >
+						Class name of the listener interface. Must extend Listener.
+					</attribute>
+					<rules>
+						<push-attribute attribute="interface" />
+						<invoke-parent method="add" />
+					</rules>
+				</element>
+				<rules>
+					<create-object class="org.astrogrid.desktop.modules.system.contributions.RmiListenerInterfacesContribution" />
+					<read-attribute property="id" attribute="id" />
+					<invoke-parent method="addElement" />
+				</rules>
+			</element>
+		</schema>
+	</configuration-point>
+	
+	<configuration-point id="scheduledTasks" schema-id="objects">
+		List of task objects to add to the scheduler.
+	</configuration-point>
+	
+	<schema id="objects">
+		A list of objects - used in various configuration points.
+			<element name="object" content-translator="object">
+				A single object may refer to another service - using service:.., etc
+				<rules>
+					<push-content />
+					<invoke-parent method="addElement" />
+				</rules>
+			</element>		
+	</schema>	
+	
+	
+	<configuration-point id="uiStructure">
+		Defines menus, tabs, and entries of the user interface.
+		<schema>
+			<element name="menu" key-attribute="name">
+				A new menu
+				<attribute name="parentName"  required="true">
+					names the parent of this menu - i.e. where it should be added.
+					Either nominate another menu, or 'menubar' to add a new top-level menu
+				</attribute>
+				<attribute name="name" required="true" unique="true" >
+					the name of this new menu 
+				</attribute>
+				<attribute name="text" required="true" >
+					Display text for this menu
+				</attribute>
+				<element name="tooltip">
+					<rules>
+						<push-content />
+						<invoke-parent method="setToolTipText" />
+					</rules>					
+				</element>
+				<attribute name="iconName">
+					unqualified name of the icon file. Must be loadable by IconHelper
+				</attribute>
+				<attribute name="before" >
+					list of names of items that this menu should appear before.
+					Use '*' to indicate all.
+				</attribute>
+				<attribute name="after">		
+					list of names of items that this menu should appear after. Use '*' to indicate all.
+				</attribute>
+				<conversion class="org.astrogrid.desktop.modules.system.contributions.UIMenuContribution" />
+			</element>		
+		<element name="action" key-attribute="name">	
+			A new action - materializes as a button or menu entry.
+				<attribute name="parentName"  required="true">
+					Names the parent tab or menu for this action.
+				</attribute>
+				<attribute name="name" required="true" unique="true" >					
+					name of this action.
+				</attribute>
+				<attribute name="text" required="true" >
+					Display text for this action.
+				</attribute>
+				<element name="tooltip">
+					<rules>
+						<push-content />
+						<invoke-parent method="setToolTipText" />
+					</rules>					
+				</element>
+				<attribute name="iconName" > 
+					unqualified name of the icon file. Must be loadable by IconHelper					
+				</attribute>
+				<attribute name="before" >
+					list of names of items that this menu should appear before.
+					Use '*' to indicate all.					
+				</attribute>
+				<attribute name="after" >
+					list of names of items that this menu should appear after.
+					Use '*' to indicate all.					
+				</attribute>
+				<attribute name="object" required="true" translator="object">
+					The object that this action invokes a method on. May refer to an
+					existing service using 'service:..' or a new object using 'instance:..'
+				</attribute>
+				<attribute name="methodName" required="true" >	
+					name of the method to invoke.
+				</attribute>
+				<element name="confirmMessage" > 
+					If present, this element defines a message to display in a 'yes'/'no' popup
+					dialogue before invoking the action method. Useful for 'are you sure'
+					checks.
+					<rules>
+						<push-content />
+						<invoke-parent method="setConfirmMessage" />
+					</rules>					
+				</element>
+				<element name="parameter">
+					An inline parameter to the action method. Will be converted from
+					string to the appropriate basic type if necessary.
+					<rules>
+						<push-content />
+						<invoke-parent method="addParameter" />
+					</rules>
+				</element>			
+				<element name="reference">
+					A parameter given as a reference to some other object 
+					- e.g. a  service: or instance:
+					<attribute name="value" translator="object"/>
+					<rules>
+						<push-attribute  attribute="value" />
+						<invoke-parent method="addParameter" />
+					</rules>
+				</element>
+			
+				<conversion class="org.astrogrid.desktop.modules.system.contributions.UIActionContribution" />				
+			</element>						
+			<element name="tab" key-attribute="name">
+				A new tab in the user interface
+				<attribute name="name" required="true" unique="true" >
+					name of this tab
+				</attribute>
+				<attribute name="text" required="true" >
+					text to display
+				</attribute>
+				<element name="tooltip">
+					<rules>
+						<push-content />
+						<invoke-parent method="setToolTipText" />
+					</rules>					
+				</element>
+				<attribute name="iconName">
+				unqualified name of the icon file. Must be loadable by IconHelper		
+				</attribute>					
+				<attribute name="before" translator="id-list" >
+		list of names of items that this menu should appear before.
+					Use '*' to indicate all.							
+				</attribute>
+				<attribute name="after" translator="id-list" >		
+		list of names of items that this menu should appear after.
+					Use '*' to indicate all.		
+				</attribute>					
+				<conversion class="org.astrogrid.desktop.modules.system.contributions.UITabContribution" />				
+			</element>							
+		</schema>
+	</configuration-point>
+	
+	<!-- contributions to existing configurations -->
+	
+
+	<contribution configuration-id="uiStructure">
+		<menu name="file" text="File" parentName="menubar" before="*" />
+		<menu name="edit" text="Edit" parentName="menubar" after="file" />
+		<menu name="help" text="Help" parentName="menubar" after="*" />
+		<menu name="projects" text="About Projects" parentName="help" before="about" />
+		<tab name="apps" text="Applications" before="*" />
+
+		
+		<action parentName="file" name="close" text="Close" 
+			object="service:ui" methodName="hide" before="exit">		
+			<tooltip>Close this window, but keep the service running</tooltip>
+			</action>
+		<action parentName="file" name="exit" text="Exit" iconName="exit_small.png"
+			object="service:builtin.shutdown" methodName="halt" after="*">
+			<tooltip>Close this window, and halt the service</tooltip>
+			<confirmMessage>Exit: are you sure?</confirmMessage>
+		</action>
+
+				
+	</contribution>
+	
+	<contribution configuration-id="uiStructure" if="not (property system.help.disabled)">
+		<action parentName="help" name="contents" text="Help Contents.."
+			object="service:help" methodName="showHelp" before="*" iconName="help.gif" />
+	</contribution>
+	
+	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled)">
+		<action parentName="projects" name="agProject" text="AstroGrid" iconName="logo1.gif"
+			object="service:browser" methodName="openURL" before="*">
+			<parameter>http://software.astrogrid.org</parameter>
+		</action>		
+		<action parentName="help" name="bugreport" text="Report a bug / Request a feature"
+			object="service:browser" methodName="openURL" >
+			<parameter>http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</parameter>
+		</action>
+		<action parentName="apps" name="aladin" text="Aladin" iconName="aladin.gif"
+			object="service:browser" methodName="openURL">
+			<tooltip><![CDATA[
+			<html><b>Aladin</b> is an interactive software sky atlas allowing the user to <br>
+			visualize digitized images of any part of the sky, to superimpose entries from <br>
+			astronomical catalogs or personal user data files, and to interactively access related <br>
+			data and information from the SIMBAD, NED, VizieR, or other archives for all known objects in the field. </tooltip>
+			]]></tooltip>
+			<parameter>http://aladin.u-strasbg.fr/</parameter>
+		</action>		
+		<action parentName="apps" name="topcat" text="TopCat" iconName="tc3.gif"
+			after="aladin"
+			object="service:browser" methodName="openURL" >
+			<tooltip><![CDATA[
+			<html><b>TOPCAT</b> is an interactive graphical viewer and editor for tabular data.<br>
+			 It has been designed for use with astronomical tables such as object catalogues, but is not <br>
+			 restricted to astronomical applications. It understands a number of different astronomically<br>
+			 important formats (including FITS and VOTable) and more formats can be added.
+			]]></tooltip>
+			<parameter>http://www.starlink.ac.uk/topcat/</parameter>
+		</action>
+		<action parentName="apps" name="visivo" text="VisIVO" iconName="visivo.png"
+			after="topcat"
+			object="service:browser" methodName="openURL">
+			<tooltip><![CDATA[
+			<html><b>VisIVO</b> is a visualisation and analysis software for astrophysical data.<br>
+			 VisIVO can handle both observational and theoretical data.<br>
+			  It can be used both as a stand-alone application, that acts on local files, <br>
+			  and as an interface to the Virtual Observatory framework.
+			  ]]></tooltip>
+			<parameter>http://visivo.cineca.it/</parameter>
+		</action>
+		<action parentName="apps" name="voplot" text="VOPlot" iconName="voplot.png"
+			after="visivo"
+			object="service:browser" methodName="openURL">
+			<tooltip><![CDATA[
+			<html><b>VOPlot</b> is a tool for visualizing astronomical data.<br>
+			 VOPlot is developed in JAVA, and acts on data available in the VOTable format.<br>
+			  VOPlot is available as a stand alone version, which is to be installed on the user's machine, `<br>
+			  or as a web-based version fully integrated with the VizieR database.</tooltip>
+			  ]]></tooltip>
+			<parameter>http://vo.iucaa.ernet.in/~voi/voplot.htm</parameter>
+		</action>
+		<action parentName="apps" name="vospec" text="VOSpec" iconName="vospec.png"
+			after="voplot"
+			object="service:browser" methodName="openURL">
+			<tooltip><![CDATA[
+			<html><b>VOSpec</b>: A tool to handle VO-compatible spectra
+			  ]]></tooltip>
+			<parameter>http://esavo.esa.int/vospecapp</parameter>
+		</action>				
+		<action parentName="apps" name="xmdv" text="xmdv-lite" 
+			after="vospec"
+			object="service:browser" methodName="openURL">
+			<tooltip><![CDATA[
+			<html><b>xmdv-lite-vo</b> is a vo-enabled, plasticized version of the XMDV visualization tool
+			]]></tooltip>
+			<parameter>http://software.astrogrid.org/votech/ds6/xmdv/</parameter>
+		</action>		
+	</contribution>	
+	<!-- add a link to the workbench if we're not running in workbench mode. -->
+	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled) and ((property hub.mode) or (property acr.mode))">
+		<action parentName="apps" name="workbench" text="Workbench" iconName="logo48x48.png"
+			before="aladin" object="service:browser" methodName="openURL" >
+			<tooltip><![CDATA[
+			<html><b>AstroGrid Workbench</b> is a suite of programs for working with the AstroGrid system<br>
+			and the VO in general. Notable featues include <b>AstroScope</b>, <b>HelioScope</b> <br>
+			<b>Application Launcher</b> and <b>Workflow Editor</b>
+			]]></tooltip>
+			<parameter>http://software.astrogrid.org/userdocs/workbench.html</parameter>
+		</action>
+	</contribution>
+		
+	<contribution configuration-id="uiStructure" if="not (property system.configuration.disabled)">
+		<action parentName="edit" name="configreset" text="Reset Configuration"
+			object="service:configuration" methodName="reset" after="*" >
+			<confirmMessage><![CDATA[<html>
+				This will reset the application's configuration to factory settings. <br>
+				 All user settings will be lost.<br>
+				Proceed?
+			]]></confirmMessage>
+		</action>
+	</contribution>	
+
+		
+	<contribution configuration-id="uiStructure" if="property acr.debug">
+		<menu name="debug" text="Debug" parentName="menubar" before="help" after="edit"/>
+		<action parentName="debug" name="configdump" text="Show Configuration"
+			object="service:configuration" methodName="list"  />
+	</contribution>	
+	
+			
+	<contribution configuration-id="servlets" if="not (property system.xmlrpc.disabled)">
+		<servlet name="xmlrpc" path="/xmlrpc" servletClass="org.astrogrid.desktop.modules.system.XmlRpcServlet" />
+	</contribution>
+	
+	<contribution configuration-id="servlets" if="not (property system.html.disabled)">
+			<servlet name="html" path="/*" servletClass="org.astrogrid.desktop.modules.system.HtmlServlet"/>		
+	</contribution>
+		
+	<contribution configuration-id="servletContext">
+		<attribute name="module-registry" object="service:builtin.acr"/>
+		<attribute name="converter" object="service:framework.converter"/>
+		<attribute name="plainResultTransformer" object="service:framework.plainResultTransformer" />
+		<attribute name="htmlResultTransformer" object="service:framework.htmlResultTransformer" />
+		<attribute name="rpcResultTransformer" object="service:framework.rpcResultTransformer" />
+
+	</contribution>
+
+	
+	<contribution configuration-id="framework.acrServices">
+			<acrService id="help" interface="HelpServer" />
+			<acrService id="browser" interface="BrowserControl" />
+			<acrService id="configuration" interface="Configuration" />
+			<acrService id="ui" interface="UI" />
+		    <acrService id="webserver" interface="WebServer" />
+			<acrService id="apihelp" interface="ApiHelp" />
+			<acrService id="rmi" interface="RmiServer" />
+	</contribution>
+		
+	<contribution configuration-id="framework.descriptors">
+		<acr-module name="system" description="System Components">
+		&descriptors;
+		</acr-module>
+	</contribution>
+	
+	
+	<!-- factory defaults for enabled services and config properties -->
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="system.rmi.port" value="-1"/>		
+		<default symbol="system.rmi.startScanPort" value="1099" />
+		<default symbol="system.rmi.endScanPort" value="2099" />
+		<default symbol="system.rmi.disableConnectionFile" value="false" />
+				
+		<default symbol="system.webserver.port" value="-1"/>		
+		<default symbol="system.webserver.startScanPort" value="8001" />
+		<default symbol="system.webserver.endScanPort" value="8800" />
+		<default symbol="system.webserver.contextName" value=""/> <!-- indicates auto-generate -->
+		<default symbol="system.webserver.disableConnectionFile" value="false" />
+
+	    <default symbol="system.executor.queueSize" value="10000" />
+		<default symbol="system.executor.startThreads" value="15" />
+		<default symbol="system.executor.maxThreads" value="30" />
+
+		<default symbol="system.configuration.preferenceClass" value="org.astrogrid.desktop.modules.system.UIImpl" />
+		
+		<default symbol="system.ui.visible" value="true" />
+		<default symbol="system.ui.title" value="AstroGrid Workbench" />
+		
+		<!-- configuration for alternatives -->
+		<default symbol='system.systray.alternative.logger' value='SYSTRAY' />
+		<default symbol='system.ui.alternative.logger' value='UI' />
+	</contribution>
+	
+	<!-- necessary to define these as application defailts, as refer to symbols from system properties, which 
+	aren't visible to factory defaults -->
+<!--	<contribution configuration-id="hivemind.ApplicationDefaults">-->
+<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="system.webserver.connectionFile" value="${user.home}${file.separator}.astrogrid-desktop" />
+	   <default symbol="system.rmi.connectionFile" value="${user.home}${file.separator}.acr-rmi-port" />			
+	</contribution>
+	
+
+
+		<!-- things that should be started eager -->
+	<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="help"/> 
+		<load service-id="webserver" /> 
+		<load service-id="rmi" /> 
+		<load service-id="scheduler"/>
+		<load service-id="executor" />
+	</contribution>
+	
+	<!-- start this eager if running under webstart -->
+	<contribution configuration-id="hivemind.EagerLoad" if="class javax.jnlp.ServiceManager">
+		<load service-id="singleInstanceListener" />
+	</contribution>
+	<!-- start this eager if we want to display a UI -->
+	<contribution configuration-id="hivemind.EagerLoad" if="property system.ui.visible">
+		<load service-id="ui"/>
+	</contribution>
+	
+	<!-- everything else - eager when testing -->
+	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
+		<load service-id="browser"/>
+		<load service-id="configuration" />
+		<load service-id="apihelp" />
+		<load service-id="systray" />
+	</contribution>	
+	
+
+	
+	
+	<!-- service points and implementations -->
+	<!-- many of the services define a default implementation and a 'mock' implementation
+		in an overriding implementation that is activated when the appropriate system property is set -->
+	<service-point id="help" interface="org.astrogrid.desktop.modules.system.HelpServerInternal"> <!-- subclass of Help -->
+		Help Browser
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.HelpServerImpl"/>
+		</invoke-factory>			
+	</service-point>
+	
+	<implementation service-id="help" if="property system.help.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>
+	
+	<service-point id="browser" interface="BrowserControl"/>
+	Controls the webbrowser
+	<implementation service-id="browser" if="(class javax.jnlp.ServiceManager) and (not (property system.browser.disabled))">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.WebstartBrowserControl"/>
+		</invoke-factory>		
+	</implementation>
+
+	<implementation service-id="browser" if="(not (class javax.jnlp.ServiceManager)) and (not (property system.browser.disabled)) ">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.alternatives.FallbackBrowserControl"/>
+		</invoke-factory>		
+	</implementation>	
+		
+	<implementation service-id="browser"  if="property system.browser.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>	
+	
+	<!-- TODO add inspection of some kind of configuration contribution -->
+	<service-point id="configuration" interface="org.astrogrid.desktop.modules.system.ConfigurationInternal"> <!-- subclass of configuration -->
+		Configuration properties.
+		<invoke-factory>
+			<construct 
+				class="org.astrogrid.desktop.modules.system.JavaPrefsConfiguration"
+				initialize-method="init"
+				>
+				<configuration>hivemind.FactoryDefaults</configuration>
+				<configuration>hivemind.ApplicationDefaults</configuration>
+				<set-object property="preferenceClass" value="class:${system.configuration.preferenceClass}" />
+			</construct>
+		</invoke-factory>
+	</service-point>	
+	
+	<implementation service-id="configuration"  if="property system.configuration.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>		
+	
+	<service-point id="ui" interface="org.astrogrid.desktop.modules.system.UIInternal"> <!-- subclass of UI -->
+		Main user interface - consumes the uiStructure configuration
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.UIImpl"> 
+				<service>system.browser</service>
+				<service>builtin.acr</service>
+				<service>builtin.shutdown</service>
+				<service>configuration</service>
+				<service>help</service>
+				<service>executor</service>
+				<service>framework.converter</service>
+				<service>framework.htmlResultTransformer</service>
+				<configuration>uiStructure</configuration>
+				<error-handler/>
+				<event-listener service-id="builtin.shutdown" />				
+				<set property="visible" value="${system.ui.visible}" />
+				<set property="title"	value="${system.ui.title}" />
+			</construct>
+		</invoke-factory>		
+	</service-point>
+	
+	<implementation service-id="ui"  if="property system.ui.disabled">
+	<invoke-factory>
+		<construct class="org.astrogrid.desktop.alternatives.HeadlessUI">
+			<string>${system.ui.alternative.logger}</string>
+			<service>system.executor</service>
+	 </construct>
+	</invoke-factory>
+	</implementation>	
+	
+	<service-point id="webserver" interface="WebServer">
+		Web server - consumes servlets and servletContext configurations.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.JettyWebServer"
+				initialize-method="init" >
+				<configuration>servlets</configuration>				
+				<configuration>servletContext</configuration>
+				<event-listener service-id="builtin.shutdown" />				
+				<set property="port" value="${system.webserver.port}" />
+				<set property="scanStartPort" value="${system.webserver.startScanPort}" />
+				<set property="scanEndPort" value="${system.webserver.endScanPort}" />
+				<set property="contextName" value="${system.webserver.contextName}" />			
+				<set property="connectionFile" value="${system.webserver.connectionFile}" />
+				<set property="disableConnectionFile" value="${system.webserver.disableConnectionFile}" />
+			</construct>
+		</invoke-factory>
+	</service-point>	
+	
+	<implementation service-id="webserver"  if="property system.webserver.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>	
+
+	<service-point id="systray" interface="SystemTray">		
+	System Tray
+	</service-point>
+	
+	<!-- default implementation - will fallback if cannot load class - i.e. the native drivers aren't present -->	
+	<implementation service-id="systray" if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.JDICSystemTray">	
+				<service>system.ui</service>
+				<service>builtin.shutdown</service>	
+				<event-listener service-id="builtin.shutdown" />
+		</construct>
+		</invoke-factory>		
+	</implementation>
+	
+	<implementation service-id="systray"  if="(property system.systray.disabled) or (not (class org.jdesktop.jdic.tray.SystemTray))">
+		<invoke-factory>
+			<construct class='org.astrogrid.desktop.alternatives.LoggingSystemTray'>
+				<string>${system.systray.alternative.logger}</string>
+			</construct>
+		</invoke-factory>		
+	</implementation>	-
+	
+	<service-point id="apihelp" interface="ApiHelp">
+		Access api help on acr methods
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.ApiHelpImpl"/>
+		</invoke-factory>
+	</service-point>		
+
+	<implementation service-id="apihelp"  if="property system.apihelp.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>	
+	
+	<service-point id="rmi" interface="RmiServer">
+		RMI Service. Consumes the rmiListenerInterfaces configuration
+		<invoke-factory>
+			<construct 
+				class="org.astrogrid.desktop.modules.system.RmiLiteRmiServerImpl"
+				initialize-method="init"
+				>
+				<service>builtin.acr</service>
+				<configuration>rmiListenerInterfaces</configuration>
+				<event-listener service-id="builtin.shutdown" />						
+				<set property="port" value="${system.rmi.port}" />
+				<set property="scanStartPort" value="${system.rmi.startScanPort}" />
+				<set property="scanEndPort" value="${system.rmi.endScanPort}" />
+				<set property="disableConnectionFile" value="${system.rmi.disableConnectionFile}" />				
+			</construct>
+		</invoke-factory>	
+	</service-point>	
+	
+	<implementation service-id="rmi"  if="property system.rmi.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>
+	
+	<!-- internals - not visible as acr services  -->	
+	<service-point id="scheduler" interface="org.astrogrid.desktop.modules.system.SchedulerInternal">
+		Runs scheduled tasks. consumes the scheduledTasks configuration
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.ClockDaemonScheduler">
+				<configuration>scheduledTasks</configuration>
+				<event-listener service-id="builtin.shutdown" />
+			</construct>
+		</invoke-factory>
+	</service-point>		
+
+	<implementation service-id="scheduler"  if="property system.scheduler.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>		
+
+	
+	<service-point id="executor" interface="org.astrogrid.desktop.modules.system.BackgroundExecutor">
+		Runs background tasks.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.BackgroundExecutorImpl"
+				initialize-method="init">
+				<set property="queueSize" value="${system.executor.queueSize}" />
+				<set property="startThreads" value="${system.executor.startThreads}" />
+				<set property="maxThreads" value="${system.executor.maxThreads}" />
+				<event-listener service-id="builtin.shutdown" />				
+			</construct>
+			
+		</invoke-factory>
+	</service-point>		
+
+	<implementation service-id="executor"  if="property system.executor.disabled">
+		<invoke-factory>
+			<!-- just an in-thread executor -->
+			<construct class="org.astrogrid.desktop.alternatives.InThreadExecutor" />
+		</invoke-factory>
+	</implementation>		
+
+
+	<service-point id="singleInstanceListener" visibility="private" interface="java.lang.reflect.InvocationHandler">
+	Hook into webstart system, and will display ui if app is webstarted repeatedly.
+	</service-point>		
+	
+	<implementation service-id="singleInstanceListener" if="class javax.jnlp.ServiceManager">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.SingleInstanceListener">
+				<service>ui</service>
+			</construct>
+		</invoke-factory>		
+	</implementation>
+	<implementation service-id="singleInstanceListener"  if="not (class javax.jnlp.ServiceManager)">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>		
+	
+	<service-point id="throbber" interface="org.apache.hivemind.ServiceInterceptorFactory">
+		Causes UI to throb to indicate calls to remote services.
+	</service-point>
+	<implementation service-id="throbber"  if="not ((property system.ui.disabled) and (property system.systray.disabled))" >
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.ThrobberInterceptorFactory">
+				<service>ui</service>
+				<service>systray</service>
+				<service>hivemind.ClassFactory</service>
+			</construct>
+		</invoke-factory>		
+	</implementation>
+	<implementation service-id="throbber"  if="(property system.ui.disabled) and (property system.systray.disabled)" >
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>	
+
+ </module> 

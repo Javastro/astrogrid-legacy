@@ -1,4 +1,4 @@
-/*$Id: InformationBuilder.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: InformationBuilder.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,9 @@
  **/
 package org.astrogrid.desktop.modules.ag.builders;
 
+import org.apache.xpath.CachedXPathAPI;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
-
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Element;
 
 /** interface to something that will build some kind of information bean from a reg entry
@@ -41,6 +40,12 @@ public interface InformationBuilder {
 
 /* 
  $Log: InformationBuilder.java,v $
+ Revision 1.2  2006/04/18 23:25:47  nw
+ merged asr development.
+
+ Revision 1.1.56.1  2006/04/14 02:45:03  nw
+ finished code.extruded plastic hub.
+
  Revision 1.1  2005/09/12 15:21:16  nw
  reworked application launcher. starting on workflow builder
  

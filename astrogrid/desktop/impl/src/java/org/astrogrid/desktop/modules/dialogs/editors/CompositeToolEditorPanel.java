@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.16 2006/03/14 15:07:35 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.17 2006/04/18 23:25:47 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,9 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -46,12 +49,9 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.Marshaller;
-import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.PicoContainer;
-import org.picocontainer.defaults.DefaultPicoContainer;
 import org.w3c.dom.Document;
 
 /** Tool Editor Panel that composites together a bunch of other ones, and determines which
@@ -109,9 +109,11 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                 
                 protected void doFinished(Object o) {
                     ResultDialog rd = new ResultDialog(CompositeToolEditorPanel.this,"ExecutionId : " + o);
-                    //rd.show();                   
-                    lookout.show();
-                }
+                    //rd.show();        
+                    if (lookout != null) {
+                    	lookout.show();
+                    }	
+                    }
                 
             }).start();
         }
@@ -141,7 +143,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }        
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResourceWithParent("Select tool document to load",true,true, true,CompositeToolEditorPanel.this);
+            final URI u = rChooser.chooseResourceWithParent("Select tool document to load",true,true, true,CompositeToolEditorPanel.this);
             if (u == null) {
                 return;
             }                   
@@ -193,7 +195,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            final URI u = chooser.chooseResourceWithParent("Save Task Document",true,true, true,CompositeToolEditorPanel.this);
+            final URI u = rChooser.chooseResourceWithParent("Save Task Document",true,true, true,CompositeToolEditorPanel.this);
             if (u == null) {
                 return;
             }
@@ -249,13 +251,14 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                
         
         private void enableApplicable(Tool t, ApplicationInformation info) {
-                    int firstApplicable = -1;
-                    for (int i = 0; i < views.length; i++ ) {
+                    int firstApplicable = 0;
+                    for (int i = 1; i < views.length; i++ ) { 
+                    	// start at 1, as 0 is hte chooser - always applicable, but other applicable should take precedence
                         int pos = tabPane.indexOfComponent(views[i]);
 
                         if (views[i].isApplicable(t, info)) {
                             tabPane.setEnabledAt(pos,true);
-                            if (firstApplicable == -1) {
+                            if (firstApplicable == 0) {
                                 firstApplicable = pos;
                             }                    
                         } else {
@@ -270,57 +273,48 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
      */
     private static final Log logger = LogFactory.getLog(CompositeToolEditorPanel.class);
     protected final ApplicationsInternal apps;
-    protected final ResourceChooserInternal chooser;
+    protected final ResourceChooserInternal rChooser;
     protected final MyspaceInternal myspace;
-    protected final Lookout lookout;
-    protected final UIComponent parent;
+    protected  Lookout lookout;
+    protected final UIComponentImpl parent;
     protected final  JTabbedPane tabPane;
     protected final AbstractToolEditorPanel[] views;
     protected Action newAction, saveAction, openAction, executeAction, closeAction;
    
 
-    public CompositeToolEditorPanel(UIComponent parent, PicoContainer pico, HelpServerInternal hs) {
-        this(parent,false,pico, hs);
+    /** set the lookout reference - not passed into constructor, as may not always be available*/
+    public void setLookout(Lookout l) {
+    	this.lookout = l;
     }
     
     /** constructor when being used as an app. */
-    public CompositeToolEditorPanel(UIComponent parent, boolean allApps, PicoContainer pico, HelpServerInternal hs) {        
+    public CompositeToolEditorPanel(
+    		List panelFactories
+            ,ResourceChooserInternal rChooser
+            ,ApplicationsInternal apps
+            ,MyspaceInternal myspace
+            , UIComponentImpl parent
+            , boolean allApps // @todo currenctly allApps is ignored.
+            ,HelpServerInternal hs
+            ) {        
         this.parent = parent;        
-        this.chooser = (ResourceChooserInternal)pico.getComponentInstanceOfType(ResourceChooserInternal.class);
-        this.apps = (ApplicationsInternal)pico.getComponentInstanceOfType(ApplicationsInternal.class);
-        this.myspace = (MyspaceInternal)pico.getComponentInstanceOfType(MyspaceInternal.class);
-        this.lookout =(Lookout) pico.getComponentInstanceOfType(Lookout.class);     
+        this.rChooser = rChooser;
+        this.apps = apps;
+        this.myspace = myspace;
         tabPane = new JTabbedPane();
         tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabPane.setTabPlacement(SwingConstants.LEFT);
         tabPane.setPreferredSize(new Dimension(600,495));
         parent.setJMenuBar(getJJMenuBar());
-        
-        MutablePicoContainer builder = new DefaultPicoContainer(pico);
-        builder.registerComponentInstance(this.getToolModel());
-        builder.registerComponentInstance(parent);
-//        builder.registerComponentImplementation(DatacenterToolEditorPanel.class);
-        builder.registerComponentImplementation(ADQLToolEditorPanel.class);
-        builder.registerComponentImplementation(BasicToolEditorPanel.class);
-        builder.registerComponentImplementation(RawXMLToolEditorPanel.class);       
-        builder.registerComponentImplementation(ToolInformationPanel.class);
-        builder.registerComponentImplementation(ChooseAToolEditorPanel.class);
-        builder.registerComponentInstance(new Boolean(allApps));
-        builder.start();
-        AbstractToolEditorPanel information =(AbstractToolEditorPanel)builder.getComponentInstance(ToolInformationPanel.class);
-        AbstractToolEditorPanel chooser = (AbstractToolEditorPanel)builder.getComponentInstance(ChooseAToolEditorPanel.class);
-//        AbstractToolEditorPanel datacenter =(AbstractToolEditorPanel)builder.getComponentInstance(DatacenterToolEditorPanel.class);
-        AbstractToolEditorPanel adqlEditor =(AbstractToolEditorPanel)builder.getComponentInstance(ADQLToolEditorPanel.class);
 
-//        tabPane.addTab("Query",datacenter);
-        tabPane.addTab("Chooser",chooser);
-        tabPane.addTab("Query",adqlEditor);   
-        AbstractToolEditorPanel basic =(AbstractToolEditorPanel)builder.getComponentInstance(BasicToolEditorPanel.class);
-        tabPane.addTab("Parameter",basic);       
-        AbstractToolEditorPanel xml = (AbstractToolEditorPanel)builder.getComponentInstance(RawXMLToolEditorPanel.class);
-        tabPane.addTab("XML",xml);
-        tabPane.addTab("Info",information);        
-//        tabPane.addTab("Chooser",chooser);
+        List panels = new ArrayList();
+        for (Iterator i = panelFactories.iterator(); i.hasNext(); ) {
+        	ToolEditorPanelFactory fac = (ToolEditorPanelFactory)i.next();
+        	AbstractToolEditorPanel p = fac.create(getToolModel(),parent);
+        	panels.add(p);
+        	tabPane.addTab(fac.getName(),p);
+        }   
+        views = (AbstractToolEditorPanel[])panels.toArray(new AbstractToolEditorPanel[panels.size()]);
         hs.enableHelp(tabPane, "userInterface.workflowBuilder.taskEditor");
            
         newAction = new NewAction();
@@ -335,24 +329,19 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         tb.add(newAction);
         tb.add(openAction);
         tb.add(saveAction);
-        if (lookout != null) {
-            tb.add(executeAction);
-        }
+        tb.add(executeAction);
+            
         fileMenu.add(newAction);
         fileMenu.add(openAction);
         fileMenu.add(saveAction);
-        if (lookout != null) {
-            fileMenu.add(executeAction);
-        }
+        fileMenu.add(executeAction);
+        
         fileMenu.add(new JSeparator());
         fileMenu.add(closeAction);
         this.setLayout(new BorderLayout());
         this.add(tb,BorderLayout.NORTH);
         this.add(tabPane,BorderLayout.CENTER);
-
-//        views = new AbstractToolEditorPanel[] {datacenter,basic,xml,information,chooser};
-        views = new AbstractToolEditorPanel[] { adqlEditor, basic, xml, information, chooser } ;
-        this.getToolModel().addToolEditListener(new Controller());
+      this.getToolModel().addToolEditListener(new Controller());
         //this.setPreferredSize(new Dimension(600,425));
     }
 
@@ -386,6 +375,18 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.17  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.12.2.3  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.12.2.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.12.2.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.16  2006/03/14 15:07:35  pjn3
 Typo
 

@@ -31,9 +31,9 @@
 <section name="Overview"><p>
 This document lists the functions available on the Astro Client Runtime via XMLRPC. It presents the 
 methods in an abridged, language-independent form. This document is generated from the 
-<a href="http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html">ACR javadoc</a> - refer there for full details, and 
+<a href="apidocs/index.html">ACR javadoc</a> - refer there for full details, and 
 especially for 
-<a href="http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/overview-summary.html#overview_description">Getting Started</a> information.
+<a href="apidocs/overview-summary.html#overview_description">Getting Started</a> information.
 </p>
 
 <subsection name="Service List">

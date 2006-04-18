@@ -1,4 +1,4 @@
-/*$Id: NotFoundException.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: NotFoundException.java,v 1.4 2006/04/18 23:25:45 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,8 @@ package org.astrogrid.acr;
  *
  */
 public class NotFoundException extends ACRException {
+
+    static final long serialVersionUID = -6549541128563442242L;
 
     /** Construct a new NotFoundException
      * 
@@ -52,6 +54,12 @@ public class NotFoundException extends ACRException {
 
 /* 
 $Log: NotFoundException.java,v $
+Revision 1.4  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.3.6.1  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
 Revision 1.3  2006/02/02 14:19:47  nw
 fixed up documentation.
 

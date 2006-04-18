@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.7 2005/11/24 01:13:24 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.8 2006/04/18 23:25:44 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,34 +10,30 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import java.awt.Component;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.axis.utils.XMLUtils;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
-import org.picocontainer.PicoContainer;
 import org.w3c.dom.Document;
-
-import java.awt.Component;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /** Implementation of the ToolEditor component.
  * Displays a {@link org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel} in a dialogue 
@@ -46,15 +42,20 @@ import java.net.URISyntaxException;
  */
 public class ToolEditorImpl implements ToolEditorInternal {
    private final Applications apps;
-    private final ToolEditorDialog dialog;
-    private final MyspaceInternal myspace;    
+   private final ToolEditorDialog dialog;
+   private final MyspaceInternal myspace;    
 
     /** Construct a new ToolEditorImpl
      * 
      */
-    public ToolEditorImpl( PicoContainer pico, Configuration conf, HelpServerInternal help, UIInternal ui, Applications apps, MyspaceInternal myspace) {
-        super();
-        dialog = new ToolEditorDialog(pico, conf,help,ui);
+    public ToolEditorImpl(
+    		List panelFactories
+            ,ResourceChooserInternal rChooser
+            ,Registry reg           
+            , Configuration conf, HelpServerInternal help, UIInternal ui
+            , ApplicationsInternal apps, MyspaceInternal myspace) {
+        super(); 
+        dialog = new ToolEditorDialog(panelFactories,rChooser,apps,myspace,reg,conf,help,ui);
         //dialog.setSize(600,425);
         dialog.pack();      
         
@@ -197,6 +198,15 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.8  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.7.30.2  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.7.30.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.7  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

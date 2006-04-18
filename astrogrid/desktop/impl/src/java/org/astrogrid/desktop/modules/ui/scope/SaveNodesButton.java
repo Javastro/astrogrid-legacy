@@ -1,4 +1,4 @@
-/*$Id: SaveNodesButton.java,v 1.1 2006/02/24 15:26:53 nw Exp $
+/*$Id: SaveNodesButton.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,27 +9,6 @@
  *
  **/
 package org.astrogrid.desktop.modules.ui.scope;
-
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotApplicableException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.io.Piper;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -47,6 +26,25 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotApplicableException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.io.Piper;
+
+import edu.berkeley.guir.prefuse.event.FocusEvent;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
+
 /** Action that takes a set of nodes and saves to myspace / localspace.
  * @todo improve code.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
@@ -57,17 +55,16 @@ public class SaveNodesButton extends NodeConsumerButton {
     
     private static final Log logger = LogFactory.getLog(SaveNodesButton.class);
     
-    public SaveNodesButton( FocusSet selection, UIComponent ui,Community comm, ResourceChooserInternal chooser, MyspaceInternal myspace ) {
+    public SaveNodesButton( FocusSet selection, UIComponent ui, ResourceChooserInternal chooser, MyspaceInternal myspace ) {
         super("Save", "Save the selected nodes to Myspace or local disk",selection);
         this.setIcon(IconHelper.loadIcon("filesave.png"));
-        this.comm = comm;
         this.chooser = chooser;
         this.ui = ui;
         this.myspace = myspace;
     }
     
     
-    private final Community comm;
+    //private final Community comm;
     private final ResourceChooserInternal chooser;
     private final UIComponent ui;
     private final MyspaceInternal myspace;
@@ -81,10 +78,9 @@ public class SaveNodesButton extends NodeConsumerButton {
      *
      */
     public void actionPerformed(ActionEvent e) {       
-        // forces a login.
-        comm.getUserInformation();
+
         //choose a uri to save the data to.             
-        final URI saveLocationRoot = chooser.chooseResourceWithParent("Save Data",true,true,true,false,ui);
+        final URI saveLocationRoot = chooser.chooseResourceWithParent("Save Data",true,true,true,false,ui.getFrame());
         if (saveLocationRoot == null) {
             return;
         }
@@ -98,7 +94,7 @@ public class SaveNodesButton extends NodeConsumerButton {
                     SwingUtilities.invokeLater(
                             new Runnable() {
                                 public void run() {
-                                    JOptionPane.showMessageDialog(ui, 
+                                    JOptionPane.showMessageDialog(ui.getFrame(), 
                                             "You can only save data to a folder, nothing was saved.",
                                             "Selection is not a folder", JOptionPane.OK_OPTION );
                                 }
@@ -278,6 +274,12 @@ public class SaveNodesButton extends NodeConsumerButton {
 
 /* 
  $Log: SaveNodesButton.java,v $
+ Revision 1.2  2006/04/18 23:25:44  nw
+ merged asr development.
+
+ Revision 1.1.2.1  2006/04/14 02:45:00  nw
+ finished code.extruded plastic hub.
+
  Revision 1.1  2006/02/24 15:26:53  nw
  build framework for dynamically adding buttons
 

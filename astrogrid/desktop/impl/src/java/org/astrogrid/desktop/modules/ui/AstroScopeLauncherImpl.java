@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.35 2006/03/31 15:20:56 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.36 2006/04/18 23:25:43 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,56 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ui;
-
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.acr.nvo.Cone;
-import org.astrogrid.acr.nvo.ConeInformation;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.AstroScope;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
-import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
-import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
-import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
-import org.astrogrid.desktop.modules.ui.scope.VizModel;
-import org.astrogrid.desktop.modules.ui.scope.Vizualization;
-import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
-import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.HubMessageConstants;
-import org.votech.plastic.PlasticHubListener;
-import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.MessageHandler;
-import org.votech.plastic.incoming.handlers.StandardHandler;
-
-import com.l2fprod.common.swing.JButtonBar;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.event.FocusListener;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -89,6 +39,54 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.WordUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.nvo.Cone;
+import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.AstroScope;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
+import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
+import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
+import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
+import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
+import org.astrogrid.desktop.modules.ui.scope.VizModel;
+import org.astrogrid.desktop.modules.ui.scope.Vizualization;
+import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
+import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
+import org.votech.plastic.CommonMessageConstants;
+import org.votech.plastic.HubMessageConstants;
+import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.PlasticListener;
+import org.votech.plastic.incoming.handlers.MessageHandler;
+import org.votech.plastic.incoming.handlers.StandardHandler;
+
+import com.l2fprod.common.swing.JButtonBar;
+
+import edu.berkeley.guir.prefuse.event.FocusEvent;
+import edu.berkeley.guir.prefuse.event.FocusListener;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
+
 
 /** Implementation of the Datascipe launcher
  * 
@@ -96,7 +94,7 @@ import javax.swing.table.TableColumnModel;
  * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
-public class AstroScopeLauncherImpl extends UIComponent 
+public class AstroScopeLauncherImpl extends UIComponentImpl 
     implements AstroScope, ActionListener, PlasticListener, PlasticWrapper {
    
 /** extends the plastic mesagehandler to display new buttons */
@@ -187,7 +185,7 @@ public class AstroScopeLauncherImpl extends UIComponent
      */
     public AstroScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, Community comm, PlasticHubListener hub) throws URISyntaxException {
+                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, /*Community comm,*/ PlasticHubListener hub) throws URISyntaxException {
         super(conf,hs,ui);
         
         this.ses = ses;               
@@ -203,7 +201,7 @@ public class AstroScopeLauncherImpl extends UIComponent
         vizualizations.add( new WindowedRadialVizualization(vizualizations));
         vizualizations.add(new HyperbolicVizualization(vizualizations));
 
-        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,comm,chooser,myspace));
+        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
         dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
         
         // plastic setup
@@ -647,6 +645,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.36  2006/04/18 23:25:43  nw
+merged asr development.
+
 Revision 1.35  2006/03/31 15:20:56  nw
 removed work-around, due to new version of plastic library
 

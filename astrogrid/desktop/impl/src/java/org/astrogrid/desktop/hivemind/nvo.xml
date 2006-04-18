@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE module  [
+	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/nvo-descriptors.xml">
+	]>
+<module id="nvo" version="1.0.0" package="org.astrogrid.acr.nvo">
+	Services from American NVO
+	<!-- new configurations -->
+	
+	
+	<!-- contributions to existing configurations -->
+
+	
+	<contribution configuration-id="framework.descriptors">
+		<acr-module name="nvo" description="NVO Services">
+		&descriptors;
+		</acr-module>
+	</contribution>	
+		
+	<contribution configuration-id="framework.acrServices">
+			<acrService id="cone" interface="Cone"/>
+	</contribution>
+	
+	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">
+		<action parentName="projects" name="nvoProject" text="NVO" iconName="nvo.gif"
+			object="service:system.browser" methodName="openURL"
+			>
+			<tooltip>Home Page for the US National Virtual Observatory</tooltip>
+			<parameter>http://www.us-vo.org/</parameter>
+		</action>		
+
+	</contribution>	
+	
+	<!-- everything else - eager when testing -->
+	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
+		<load service-id="cone"/>
+	</contribution>	
+	
+	<!-- services and implementations -->
+	
+	<service-point id="cone" interface="Cone">
+		Client to Cone Services
+		<interceptor service-id="system.throbber" />		
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.nvo.ConeImpl" />
+		</invoke-factory>	
+	</service-point>
+
+	<implementation service-id="cone" if="property nvo.cone.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>
+			
+	
+ </module>
+ 

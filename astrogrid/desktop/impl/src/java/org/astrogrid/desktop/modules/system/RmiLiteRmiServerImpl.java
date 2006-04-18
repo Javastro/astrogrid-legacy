@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.4 2005/11/10 12:05:53 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.5 2006/04/18 23:25:44 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,146 +10,133 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import net.ladypleaser.rmilite.Server;
-import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
-
-import org.astrogrid.acr.system.RmiServer;
-import org.astrogrid.desktop.framework.DefaultModule;
-import org.astrogrid.desktop.framework.MutableACR;
-import org.astrogrid.desktop.framework.NewModuleEvent;
-import org.astrogrid.desktop.framework.NewModuleListener;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.picocontainer.Startable;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Map;
+
+import net.ladypleaser.rmilite.Server;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.acr.system.RmiServer;
+import org.astrogrid.desktop.framework.ACRInternal;
+import org.astrogrid.desktop.framework.Module;
+import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 
 /** Implementation of the RmiServer using rmi lite.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2005
- *
+ 
  */
-public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiServer, Startable, NewModuleListener {
+public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiServer, ShutdownListener {
+
+
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(RmiLiteRmiServerImpl.class);
+    private final ACRInternal acr;
+    private final Map listenerInterfaces;
+    private Server server;
+
 
     /** Construct a new RmiLiteRmiServerImpl
      * 
      */
-    public RmiLiteRmiServerImpl(MutableACR acr) throws Exception {
+    public RmiLiteRmiServerImpl(ACRInternal acr, Map listenerInterfaces)  {
         super();
         this.acr = acr;
+        this.listenerInterfaces = listenerInterfaces;
     }
-    private Server server;
-    private final MutableACR acr;
 
-    /**
-     * @see org.picocontainer.Startable#start()
-     */
-    public void start() {
-        try {
+ 
+
+    public void init() throws Exception {
+        super.init();// selects correct port, etc.
         server = new Server(getPort());       
-        logger.info("Started RMI Server");
-        // only register for events once we've started the server.
-        acr.addNewModuleListener(this);        
-        } catch (RemoteException e) {
-            logger.error("Unable to start rmi service",e);
+        logger.debug("Started RMI Server");       
+        for (Iterator i = acr.moduleIterator(); i.hasNext(); ) {
+            registerServicesInModule((Module)i.next());
         }
     }
 
-    /**
-     * @see org.picocontainer.Startable#stop()
-     */
-    public void stop() {
-
-    }
-
-    public static final String LISTENER_INTERFACES_KEY = "listener-interfaces";
-    /**
-     * @see org.astrogrid.desktop.framework.NewModuleListener#newModuleRegistered(org.astrogrid.desktop.framework.NewModuleEvent)
-     */
-    public void newModuleRegistered(NewModuleEvent e) {
-        DefaultModule module = (DefaultModule)e.getModule();
+    private void registerServicesInModule(Module module) {
         // special case - don't bother if there's no components..
         if (! module.getDescriptor().componentIterator().hasNext()) {
             return;
         }
-        String name = module.getDescriptor().getName();
-        logger.info("Registering components in " + name);
+        final List theEmptyList = Collections.EMPTY_LIST;
+        String moduleName = module.getDescriptor().getName();
+        logger.debug("Registering components in " + moduleName);
         for (Iterator i = module.getDescriptor().componentIterator(); i.hasNext(); ) {
             ComponentDescriptor cd = (ComponentDescriptor)i.next();
-            if ("true".equals(cd.getProperty("hidden.component"))) {
-                continue; // don't want to expose this one. 
-            }
-            Class iface = cd.getInterfaceClass();
-            List listenerClasses= new ArrayList();
-            if (cd.getProperty(LISTENER_INTERFACES_KEY) != null) {
-                logger.info("Component " + cd.getName() +" includes listeners");
-                StringTokenizer tok = new StringTokenizer(cd.getProperty(LISTENER_INTERFACES_KEY));
-                while (tok.hasMoreTokens()) {
-                    try {
-                        Class listenerClass = Class.forName(tok.nextToken());
-                        listenerClasses.add(listenerClass);
-                    } catch (ClassNotFoundException e2) {
-                        logger.warn("Failed to find listener class - skipping",e2);
-                    }                    
-                }
+            String componentName = cd.getName();
+            Class iface = cd.getInterfaceClass();            
+            List listeners= (List)listenerInterfaces.get(moduleName + "." + componentName);
+            if (listeners == null) { // most likely.
+                listeners = theEmptyList;
             }
             try {
-                Object impl = module.getComponent(cd.getName());                
-                server.publish(iface,impl,(Class[])listenerClasses.toArray(new Class[]{}));
-                logger.info("Published " + cd.getName());
+                Object impl = module.getComponent(componentName);                
+                server.publish(iface,impl,(Class[])listeners.toArray(new Class[listeners.size()]));
          
-            } catch (Exception e1) {               
-                logger.error("Failed to publish " + cd.getName(),e1);
+            } catch (Exception e1) {
+                logger.error("Failed to publish " + componentName,e1);
             }
         }
     }
-    /** lifted from rmilite sources - couldn't extend, as registry field is private */
-    static class CustomServer {
-            public static final int DEFAULT_PORT = Registry.REGISTRY_PORT;
 
-            protected Registry registry;
+
+
+    public void halting() {
+      //  need to shut down the rmi registry.
+        try {
+            Registry reg= LocateRegistry.getRegistry(getPort());
+            for (Iterator i = acr.moduleIterator(); i.hasNext(); ) {
+                Module m = (Module)i.next();
+                for (Iterator j = m.getDescriptor().componentIterator(); j.hasNext(); ) {
+                    ComponentDescriptor cd = (ComponentDescriptor)j.next();
+                    String regKey = cd.getInterfaceClass().getName();
+                    try {
+                        reg.unbind(regKey);
+                    } catch (Exception e) {
+                        logger.warn("Failed to deregister " + regKey + " from rmi server",e);
+                    }
+                }                
+            }
+        } catch (RemoteException e) {
+            logger.warn("Failed to deregister all from rmi server",e);
+        }
+       
+    }
+
+
+
+    public String lastChance() {
+        return null;
+    }
  
-            public CustomServer() throws RemoteException {
-                this(DEFAULT_PORT);
-            }
-
-            public CustomServer(int port) throws RemoteException{
-                try {
-                    registry = LocateRegistry.getRegistry(port);
-                    
-                } catch (RemoteException e) {                
-                    registry = LocateRegistry.createRegistry(port);
-                }
-            }
-            
-            public CustomServer(Registry reg) {
-                this.registry = reg;
-            }
-
-            public void publish(Class iface, Object impl, Class[] exportedInterfaces) throws RemoteException {
-                RemoteInvocationHandlerImpl handler = new RemoteInvocationHandlerImpl(impl, new HashSet(Arrays.asList(exportedInterfaces)));
-                registry.rebind(iface.getName(), handler);
-            }
-        }       
-
 }
 
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.5  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.4.34.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.4.34.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.4.34.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.4  2005/11/10 12:05:53  nw
 big change around for vo lookout
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInternal.java,v 1.3 2005/09/12 15:21:16 nw Exp $
+/*$Id: ApplicationsInternal.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,11 +15,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.portal.workflow.intf.ApplicationDescription;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import java.net.URI;
 
 /** Internal interface to further applications operations.
  * 
@@ -53,6 +49,12 @@ public interface ApplicationsInternal extends Applications {
 
 /* 
 $Log: ApplicationsInternal.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.56.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.3  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

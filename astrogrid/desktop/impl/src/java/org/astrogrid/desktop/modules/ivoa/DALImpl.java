@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.1 2005/10/17 16:02:45 nw Exp $
+/*$Id: DALImpl.java,v 1.2 2006/04/18 23:25:45 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
@@ -21,16 +28,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
-
-import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
 
 /** Abstract class for implemntations of HTTP-GET based DAL standards
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
@@ -124,6 +122,12 @@ public abstract class DALImpl {
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.2  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.1.48.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/10/17 16:02:45  nw
 added siap and cone interfaces
  

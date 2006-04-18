@@ -1,4 +1,4 @@
-/*$Id: ColumnBean.java,v 1.3 2006/02/24 12:17:52 nw Exp $
+/*$Id: ColumnBean.java,v 1.4 2006/04/18 23:25:45 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,11 +31,12 @@ public class ColumnBean implements Serializable{
                 
     }
     
-    private final String name;
-    private final String description;
-    private final String UCD;
-    private final String datatype;
-    private final String unit;
+    static final long serialVersionUID = -2671716048567347051L;
+    protected final String name;
+    protected final String description;
+    protected final String UCD;
+    protected final String datatype;
+    protected final String unit;
 
     /**
      * the type of this column     
@@ -61,11 +62,36 @@ public class ColumnBean implements Serializable{
     public String getUnit() {
         return this.unit;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("ColumnBean[");
+        sb.append("name: ");
+        sb.append(name);
+        sb.append(" description: ");
+        sb.append(description);
+        sb.append(" UCD: ");
+        sb.append(UCD);
+        sb.append(" datatype: ");
+        sb.append(datatype);
+        sb.append(" unit: ");
+        sb.append(unit);
+        sb.append("]");
+        return sb.toString();
+    }
 }
 
 
 /* 
 $Log: ColumnBean.java,v $
+Revision 1.4  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.3.2.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.3.2.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.3  2006/02/24 12:17:52  nw
 added interfaces for skynode
 

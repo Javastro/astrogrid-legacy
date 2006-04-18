@@ -1,4 +1,4 @@
-/*$Id: FolderImpl.java,v 1.3 2005/11/24 01:13:24 nw Exp $
+/*$Id: FolderImpl.java,v 1.4 2006/04/18 23:25:46 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,13 @@
 **/
 package org.astrogrid.desktop.modules.ag.recorder;
 
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 
 /**
  * implementation of a folder - little more than a bean.
@@ -36,6 +34,7 @@ public class FolderImpl implements Serializable, Folder {
     private final  URI parentKey; // key of parent (null for root)
     private ExecutionInformation info;
     private int unread;
+    private boolean deleted;
   
 
     public ExecutionInformation getInformation() {
@@ -46,6 +45,13 @@ public class FolderImpl implements Serializable, Folder {
         this.info = e;
     }
 
+    
+    public void setDeleted(boolean b) {
+    	this.deleted = b;
+    }
+    public boolean isDeleted() {
+    	return deleted;
+    }
     public int getUnreadCount() {
         return unread;
     }
@@ -68,6 +74,12 @@ public class FolderImpl implements Serializable, Folder {
 
 /* 
 $Log: FolderImpl.java,v $
+Revision 1.4  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.3.30.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.3  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

@@ -1,4 +1,4 @@
-/*$Id: DatabaseBean.java,v 1.2 2006/02/02 14:19:48 nw Exp $
+/*$Id: DatabaseBean.java,v 1.3 2006/04/18 23:25:45 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ public class DatabaseBean implements Serializable{
         this.tables = tables;
     }
     
+    static final long serialVersionUID = -3221050086290430194L;
     private final String name;
     private final String description;
     private final TableBean[] tables;
@@ -44,11 +45,35 @@ public class DatabaseBean implements Serializable{
     public TableBean[] getTables() {
         return this.tables;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("DatabaseBean[");
+        sb.append("name: ");
+        sb.append(name);
+        sb.append(" description: ");
+        sb.append(description);
+        sb.append(" tables:[");
+        for (int i =0; i < tables.length; i++) {
+            sb.append(tables[i]);
+            sb.append(" ");
+        }
+        sb.append("]]");
+        return sb.toString();
+    }
 }
 
 
 /* 
 $Log: DatabaseBean.java,v $
+Revision 1.3  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.2.6.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.2.6.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.2  2006/02/02 14:19:48  nw
 fixed up documentation.
 

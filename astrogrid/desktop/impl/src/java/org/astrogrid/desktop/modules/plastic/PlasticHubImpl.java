@@ -34,7 +34,6 @@ import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.NameGen;
-import org.picocontainer.Startable;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -44,7 +43,7 @@ import org.votech.plastic.outgoing.PlasticException;
 import EDU.oswego.cs.dl.util.concurrent.CountDown;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 
-public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInternal, Startable, ShutdownListener {
+public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInternal, ShutdownListener {
     /**
      * Logger for this class
      */
@@ -83,14 +82,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     /** constructor selected by pico when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app, RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config, Shutdown shutdown) {
-        this(executor,idGenerator,app,rmi, web,null, prettyPrinter, config, shutdown);
+            MessengerInternal app, RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config) {
+        this(executor,idGenerator,app,rmi, web,null, prettyPrinter, config);
     }
     
     /** constructor selected by pico when systemtray is available 
      * @param prettyPrinter */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app,RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config, Shutdown shutdown) {
+            MessengerInternal app,RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config) {
         this.tray = tray;
         this.rmiServer= rmi;
         this.webServer= web;
@@ -98,7 +97,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.idGenerator = idGenerator;
         this.prettyPrinter = prettyPrinter;
         this.config = config;
-        shutdown.addShutdownListener(this);
         logger.info("Constructing a PlasticHubImpl");
         hubId = app.registerWith(this); 
     }
@@ -403,13 +401,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		return alreadyPresent;
 	}
 
-    public void stop() {
-        // Plastic properties file should already be deleted automatically on exit, but just in case
-    	// I've seen cases when it's been left behind, which could be enough to stop other hubs starting up.
-    	if (weWroteTheConfigFile && plasticPropertyFile.exists()) {
-    		plasticPropertyFile.delete();
-    	}
-    }
+
 
     /*
      * (non-Javadoc)
@@ -525,7 +517,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	public void halting() {
 		//Message should be sent _after_ apps have been given a chance to stop it.
 		requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
-	}
+    	if (plasticPropertyFile != null && weWroteTheConfigFile && plasticPropertyFile.exists()) {
+    		plasticPropertyFile.delete();
+    	}	}
 
 	public String lastChance() {
 		return null; //returning null indicates we don't care.

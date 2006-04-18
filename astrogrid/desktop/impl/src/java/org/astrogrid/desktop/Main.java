@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.4 2006/02/09 15:39:15 nw Exp $
+/*$Id: Main.java,v 1.5 2006/04/18 23:25:47 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,89 +10,34 @@
 **/
 package org.astrogrid.desktop;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.UI;
-import org.astrogrid.desktop.modules.system.UIImpl;
+import javax.swing.UIManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.picocontainer.Startable;
+import org.astrogrid.Workbench;
+import org.astrogrid.Workbench1;
 
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
-import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
-
-/** Main class when running workbench / ACR in standalone mode.
+/** @deprecated use one of the entry points in package <tt>org.astrogrid</tt>
+ * instead.
+ * 
+ * Delegtes to {@link Workbench1}
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
- *
  */
-public class Main extends BuildInprocessACR implements Startable  {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(Main.class);
+public class Main  {
+  
 
-    /** Construct a new workbench.
-     * 
-     */
-    public Main() {
-        super();
-        try {
-            UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
-            UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY,    Boolean.TRUE);          
-         } catch (Exception e) {
-             logger.warn("Failed to install plastic look and feel - oh well");
-             }   
-         
-         // configure tooltip behaviour.
-         UIManager.put("ToolTip.background",Color.white);
-         ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
-         ToolTipManager.sharedInstance().setInitialDelay(500);
-    }
-
-    /**
-     * @see org.picocontainer.Startable#start()
-     * starts the pico container - on the swing event dispatch thread - but waits for it. 
-     */
-    public void start() {
-       try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    Main.super.start();
-                    // maybe show the ui.
-                    ACR acr = getACR();
-                    try {
-                    Configuration c = (Configuration)acr.getService(Configuration.class);
-                    String key = c.getKey(UIImpl.START_HIDDEN_KEY);
-                    if (key == null || !  Boolean.valueOf(key).equals(Boolean.TRUE)){
-                        UI ui = (UI)acr.getService(UI.class);
-                        ui.show();                        
-                    }
-                    } catch (ACRException e) {
-                        logger.warn("Problems displaying the ui - maybe running in headless mode");
-                    }
-                }
-            });
-            
-        } catch (InterruptedException e) {
-            logger.fatal("InterruptedException on startup",e);
-        } catch (InvocationTargetException e) {
-            logger.fatal("InvocationTargetException on startup",e);
-        }
-    }
-
- 
+   
     public static final void main(String[] args) {
-        Main d = new Main();
-        d.start();
+    	try {
+        UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+        UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY,    Boolean.TRUE);
+    	} catch (Exception e) {
+    		System.err.println("Failed to install plastic look and feel");
+    		e.printStackTrace();
+    	}
+    	Workbench.main(args);
     }
 
 
@@ -101,6 +46,21 @@ public class Main extends BuildInprocessACR implements Startable  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.5  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.4.6.4  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.4.6.3  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.4.6.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.4.6.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.4  2006/02/09 15:39:15  nw
 tooltip improvements
 

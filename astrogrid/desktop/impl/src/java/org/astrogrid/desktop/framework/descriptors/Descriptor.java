@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: Descriptor.java,v 1.3 2006/04/18 23:25:47 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,7 @@
 **/
 package org.astrogrid.desktop.framework.descriptors;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /** Base class for all descriptors;
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
@@ -33,8 +28,6 @@ public class Descriptor implements Serializable {
     protected String name = "unknown";
     /** description of hte entity */
     protected String description = "none given";
-    /** container for configuration properties for the entity */
-    protected final Map properties = new HashMap();
     
     
     public String getDescription() {
@@ -46,36 +39,13 @@ public class Descriptor implements Serializable {
     public String getName() {
         return this.name;
     }
-    /** helper method - returns {@link #getName} capitalized.
-     * @todo  later will break with spaces too */
-    public String getUIName() {
-        return StringUtils.capitalize(name);
-    }
+
     
     public void setName(String name) {
         this.name = name;
     }
     
-    /** retrive an arbitrary attribute from the descriptor */
-    public String getProperty(String key) {
-        Object o = this.properties.get(key);
-        return o == null? null : o.toString();
-    }
-    
-    /** retrieve an arbitrary attribute wrapped in &lt;value&gt; tags - sutable for further parsing */
-    public String getPropertyDocument(String key) {
-        String s = getProperty(key);
-        return s == null ? null  : "<value>" + s + "</value>";
-    }
-    
-    public void setProperty(String key,String value) {
-        this.properties.put(key,value);
-    }
-    
-    /** iterate over all properties of the descriptor */
-    public Iterator propertyIterator() {
-        return properties.values().iterator();
-    }
+
         
         
     public String toString() {
@@ -85,9 +55,6 @@ public class Descriptor implements Serializable {
         buffer.append('\n');
         buffer.append(" description: ");
         buffer.append(description);
-        buffer.append('\n');        
-        buffer.append(" properties: ");
-        buffer.append(properties);
         buffer.append('\n');        
         return buffer.toString();
     }
@@ -113,6 +80,18 @@ public class Descriptor implements Serializable {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.3  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.2.60.3  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.60.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.2.60.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

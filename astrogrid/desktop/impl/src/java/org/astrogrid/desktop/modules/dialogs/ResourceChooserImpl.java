@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.7 2005/11/24 01:13:24 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.8 2006/04/18 23:25:44 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import java.awt.Component;
+import java.net.URI;
+
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-
-import java.awt.Component;
-import java.net.URI;
 
 /** Implementation of the ResourceChooser component
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
@@ -27,30 +26,25 @@ import java.net.URI;
 public class ResourceChooserImpl implements ResourceChooserInternal {
 
     public ResourceChooserImpl(MyspaceInternal vos,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
-        this.vos = vos;
-        this.comm = comm;
         dialog = new ResourceChooserDialog(vos,conf,help,ui, comm) ;
-        dialog.pack();
+        getDialog().pack();
     }
-    protected final Community comm;
-    protected final MyspaceInternal vos;
-    protected final ResourceChooserDialog dialog;
+    private final ResourceChooserDialog dialog;
     public synchronized URI chooseResource(String title,boolean enableMySpace) {
-        // force login.
-         comm.getUserInformation();
-        dialog.setTitle(title);
-        dialog.setEnableMySpacePanel(enableMySpace);
+         ResourceChooserDialog d = getDialog();
+        d.setTitle(title);
+        d.setEnableMySpacePanel(enableMySpace);
        // dialog.setUri(null);
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
-        dialog.requestFocus();
-        dialog.toFront();
-        return dialog.getUri();        
+        d.setLocationRelativeTo(null);
+        d.setVisible(true);
+        d.requestFocus();
+        d.toFront();
+        return d.getUri();        
     }
     
     public synchronized URI fullChooseResource(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
-        dialog.setEnableLocalFilePanel(enableLocalFile);
-        dialog.setEnableURIPanel(enableURI);
+        getDialog().setEnableLocalFilePanel(enableLocalFile);
+        getDialog().setEnableURIPanel(enableURI);
         return chooseResource(title,enableMySpace);        
     }
     
@@ -59,26 +53,38 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
     }    
     
     public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableDirectorySelection, boolean enableURI,Component comp) {
-        comm.getUserInformation(); // force login, to avoid duplicate modal dialogue lockup.
                 
-        dialog.setLocationRelativeTo(comp);
-        dialog.setTitle(title);
-        dialog.setEnableLocalFilePanel(enableLocalFile);
-        dialog.setEnableURIPanel(enableURI);
-        dialog.setEnableMySpacePanel(enableMySpace);
-        dialog.setEnabledDirectorySelection(enableDirectorySelection);
+        getDialog().setLocationRelativeTo(comp);
+        getDialog().setTitle(title);
+        getDialog().setEnableLocalFilePanel(enableLocalFile);
+        getDialog().setEnableURIPanel(enableURI);
+        getDialog().setEnableMySpacePanel(enableMySpace);
+        getDialog().setEnabledDirectorySelection(enableDirectorySelection);
         //dialog.setUri(null);
-        dialog.setVisible(true);
-        dialog.requestFocus();
-        dialog.toFront();
-        return dialog.getUri();    
+        getDialog().setVisible(true);
+        getDialog().requestFocus();
+        getDialog().toFront();
+        return getDialog().getUri();    
     }
+
+	/**
+	 * @return the dialog
+	 */
+	protected ResourceChooserDialog getDialog() {
+		return dialog;
+	}
 
 }
 
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.8  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.7.30.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.7  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

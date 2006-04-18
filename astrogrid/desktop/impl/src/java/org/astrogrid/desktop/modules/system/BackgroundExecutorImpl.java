@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.3 2005/12/02 17:05:29 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,52 +10,42 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.apache.commons.collections.ComparatorUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-
-import java.util.Comparator;
 import java.util.Iterator;
 
-import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 import EDU.oswego.cs.dl.util.concurrent.BoundedPriorityQueue;
 import EDU.oswego.cs.dl.util.concurrent.Channel;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 import EDU.oswego.cs.dl.util.concurrent.SynchronousChannel;
-import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Nov-2005
- *
  */
-public class BackgroundExecutorImpl implements BackgroundExecutor {
+public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownListener{
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(BackgroundExecutorImpl.class);
 
-    public static int QUEUE_SIZE = 10000; // ten thousand queued tasks.
-    final static class TimeoutPooledExecutor extends PooledExecutor {
-        TimeoutPooledExecutor(Channel arg0) {
-            super(arg0,30); // when queue is full, up to 30 concurrent threads.
-            setMinimumPoolSize(15);
-            createThreads(15); // start with 20 threads. keep-alive is a minute by default.
-            discardOldestWhenBlocked(); // when queue is full, on new request discard oldest unfulfilled request.                
-            setThreadFactory(new ThreadFactory() {
-                public Thread newThread(Runnable arg0) {
-                    Thread t = new Thread(arg0);
-                    t.setPriority(Thread.MIN_PRIORITY+2);
-                    t.setName("Pool-Thread-" + System.currentTimeMillis());
-                    return t;
-                }
-            });
-            
+    public static int QUEUE_SIZE_DEFAULT = 10000; // ten thousand queued tasks.
+    public static int START_THREADS_DEFAULT = 15;
+    public static int MAX_THREADS_DEFAULT = 30;
+    
+    int queueSize = QUEUE_SIZE_DEFAULT;
+    int startThreads = START_THREADS_DEFAULT; // number of threads to start with
+    int maxThreads = MAX_THREADS_DEFAULT; // maximum number of threads to produce - when queue is full
+    
+    
+    static class TimeoutPooledExecutor extends PooledExecutor {
+        TimeoutPooledExecutor(Channel arg0,int maxThreads,int startThreads) {
+            super(arg0,maxThreads); 
+            setMinimumPoolSize(startThreads);
+            createThreads(startThreads); // start with 20 threads. keep-alive is a minute by default.
+            discardOldestWhenBlocked(); // when queue is full, on new request discard oldest unfulfilled request.                            
         }
 
         public void interrupt(Runnable r) {
@@ -77,6 +67,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
             Worker worker = new TimeoutAwareWorker(arg0);
             // rest copied from parent source.
             Thread thread = getThreadFactory().newThread(worker);
+            thread.setDaemon(true);
+            thread.setName("Executor Worker Thread-" + poolSize_);
+            thread.setPriority(Thread.MIN_PRIORITY + 2);
             threads_.put(worker,thread);
             ++poolSize_;
             thread.start();
@@ -100,12 +93,12 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
                             executionThread.interrupt(); // abort executioin thread
                         }
                         } catch (InterruptedException e) {
-                            // dunno. @todo work out what to do here.
+                            // dunno.will this ever happen?
                             logger.warn("Timer thread interupted");
                         }
                     }
                 }
-            }
+            } // end Timer Runnable.
 
             protected final Thread timerThread;
             protected final Channel c;
@@ -113,10 +106,14 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
             public Runnable getCurrentTask() {
                 return firstTask_;
             }
+            /** constructor */
             protected TimeoutAwareWorker(Runnable firstTask) { 
                 super(firstTask);
                 this.c = new SynchronousChannel();
                 this.timerThread = getThreadFactory().newThread(new Timer());
+                this.timerThread.setDaemon(true);
+                this.timerThread.setName("Executor Timer Thread-" + poolSize_);
+                this.timerThread.setPriority(Thread.MIN_PRIORITY + 3);
                 this.timerThread.start();
                 }
             
@@ -147,15 +144,16 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
     }
     
     public BackgroundExecutorImpl(UIInternal ui) {
-        // configure the executor as follows - 10 requests processed at same time, rest queued, increasing to  15 simultaneous when queue is full.        
-        // I'm guessing that most background tasks will be io-blocked for the majority of the time (soap call, http get, etc)
-        // so can afford to have more concurrency here. but don't want too much - as all the request may saturate network / servers.
-        this.chan = new BoundedPriorityQueue(QUEUE_SIZE);
-        this.exec = new TimeoutPooledExecutor(chan);
         this.ui = ui;        
     }
-    private final BoundedPriorityQueue chan;
-    private final TimeoutPooledExecutor exec;
+    
+    // separate initialize method, to start service after it's been configured using setters.
+    public void init() {
+        this.chan = new BoundedPriorityQueue(queueSize);
+        this.exec = new TimeoutPooledExecutor(chan,maxThreads,startThreads);
+    }
+    private BoundedPriorityQueue chan;
+    private TimeoutPooledExecutor exec;
     private final UIInternal ui;
     
     
@@ -168,6 +166,7 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
         }
     }
 
+    /** first converts from a runnable to a BackgroundWorker, attached to the parent ui */
     public void execute(Runnable arg0) throws InterruptedException {
         this.executeWorker(ui.wrap(arg0));
     }
@@ -177,6 +176,31 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
      */
     public void interrupt(Runnable r) {
         exec.interrupt(r);
+    }
+
+
+
+    public void setMaxThreads(int maxThreads) {
+        this.maxThreads = maxThreads;
+    }
+
+
+
+    public void setQueueSize(int queueSize) {
+        this.queueSize = queueSize;
+    }
+
+
+    public void setStartThreads(int startThreads) {
+        this.startThreads = startThreads;
+    }
+
+    public void halting() {       
+        exec.shutdownAfterProcessingCurrentlyQueuedTasks();
+    }
+
+    public String lastChance() {
+        return null;
     }
    
     
@@ -188,6 +212,18 @@ public class BackgroundExecutorImpl implements BackgroundExecutor {
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.26.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.26.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.3.26.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.3  2005/12/02 17:05:29  nw
 turned up numer of concurrent threads,
 

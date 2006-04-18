@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformerTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: TypeStructureTransformerTest.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 /** test for the xmltransformer code.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
- *
+ *@todo add in tests for exceptions, bytes, byte arrays, etc.
  */
 public class TypeStructureTransformerTest extends TestCase {
 
@@ -33,7 +33,12 @@ public class TypeStructureTransformerTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        trans = TypeStructureTransformer.getInstance();
+        Transformer lazy = new Transformer() {
+        	public Object transform(Object arg0) {
+        		return trans.transform(arg0);
+        	}
+        };
+        trans = new TypeStructureTransformer(lazy);
         
         l = new ArrayList();
         l.add("foo");
@@ -183,6 +188,15 @@ private int i;
 
 /* 
 $Log: TypeStructureTransformerTest.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.66.2  2006/04/18 18:49:04  nw
+version to merge back into head.
+
+Revision 1.1.66.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

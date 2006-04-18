@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.9 2006/03/13 18:27:34 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.10 2006/04/18 23:25:44 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,44 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.ParameterBean;
-import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.ivoa.Adql074;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.ivoa.SsapInformation;
-import org.astrogrid.acr.nvo.ConeInformation;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.common.bean.BaseBean;
-import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
-import org.astrogrid.workflow.beans.v1.Input;
-import org.astrogrid.workflow.beans.v1.Output;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xpath.CachedXPathAPI;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -64,6 +26,42 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.CachedXPathAPI;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.ParameterBean;
+import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.RemoteProcessManager;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.Adql074;
+import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.SsapInformation;
+import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.common.bean.BaseBean;
+import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 /** Application service.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  * * @todo refine exception reporting.
@@ -77,13 +75,11 @@ public class ApplicationsImpl implements ApplicationsInternal {
     /** 
      * 
      */
-    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, Registry reg, ACR acr) throws  ACRException{
+    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, Registry reg, Adql074 adql) throws  ACRException{
         this.manager = manager;
         this.vos = vos;
         this.reg = reg;
-        //@todo move this into strategy, or remote process manager, later.
-        this.adql = (Adql074) acr.getService(Adql074.class); // necessary work-around - can't get at the adql component by constructor-injection
-
+        this.adql = adql;
     }
     protected final RemoteProcessManager manager;
     private final MyspaceInternal vos;
@@ -545,6 +541,18 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.10  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.8.34.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.8.34.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.8.34.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.9  2006/03/13 18:27:34  nw
 fixed queries to not restrict to @status='active'
 

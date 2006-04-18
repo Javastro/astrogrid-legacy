@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.3 2005/11/15 19:39:07 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.4 2006/04/18 23:25:47 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.desktop.framework.descriptors;
 
-import org.apache.commons.collections.map.ListOrderedMap;
-
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.collections.map.ListOrderedMap;
 
 /** Descriptor for a component
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
@@ -47,24 +47,9 @@ public class ComponentDescriptor extends Descriptor{
     }
     
     protected Class interfaceClass;
-    protected transient Class implementationClass;
-    protected boolean singleton = true; // defaults to true.
     
-    public void setSingleton(boolean singleton) {
-        this.singleton = singleton;    
-    }
-    
-    public boolean isSingleton() {
-        return this.singleton;
-    }
-    
-    /** return the implementation class for this component */
-    public Class getImplementationClass() {
-        return this.implementationClass;
-    }
-   public void setImplementationClass(Class implementationClass) {
-        this.implementationClass = implementationClass;
-    }
+
+
 
    /** return the interface class for this component - which, must be implemented by the class returned by {@link #getImplementationClass()}*/   
     public Class getInterfaceClass() {
@@ -73,14 +58,7 @@ public class ComponentDescriptor extends Descriptor{
     public void setInterfaceClass(Class interfaceClass) {
         this.interfaceClass = interfaceClass;
     }
-    
-    public void setInterfaceClass(String name) throws ClassNotFoundException {
-        this.interfaceClass = Class.forName(name);
-    }
-    
-    public void setImplementationClass(String name) throws ClassNotFoundException {
-        this.implementationClass = Class.forName(name);
-    }
+
 
     public String toString() {
         StringBuffer buffer = new StringBuffer();
@@ -91,9 +69,6 @@ public class ComponentDescriptor extends Descriptor{
         buffer.append(" interfaceClass: ");
         buffer.append(interfaceClass);
         buffer.append('\n');        
-        buffer.append(" implementationClass: ");
-        buffer.append(implementationClass);
-        buffer.append('\n');        
         buffer.append(super.toString());
         buffer.append("]");
         return buffer.toString();
@@ -103,6 +78,15 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.4  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.3.32.2  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.32.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.3  2005/11/15 19:39:07  nw
 merged in improvements from release branch.
 

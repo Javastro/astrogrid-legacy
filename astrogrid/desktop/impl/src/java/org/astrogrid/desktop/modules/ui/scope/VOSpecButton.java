@@ -1,4 +1,4 @@
-/*$Id: VOSpecButton.java,v 1.1 2006/02/24 15:26:53 nw Exp $
+/*$Id: VOSpecButton.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.util.Iterator;
+
+import javax.swing.ImageIcon;
+
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-
-import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.lang.StringUtils;
-
-import com.sun.java.swing.SwingUtilities2;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
@@ -26,15 +28,6 @@ import esavo.vospec.spectrum.Spectrum;
 import esavo.vospec.spectrum.SpectrumSet;
 import esavo.vospec.spectrum.Unit;
 import esavo.vospec.standalone.VoSpec;
-
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.util.Iterator;
-
-import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 /**
  * node consumer that displays selected spectra in vospec.
 
@@ -128,6 +121,12 @@ public class VOSpecButton extends NodeConsumerButton {
 
 /* 
 $Log: VOSpecButton.java,v $
+Revision 1.2  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.1.2.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2006/02/24 15:26:53  nw
 build framework for dynamically adding buttons
 

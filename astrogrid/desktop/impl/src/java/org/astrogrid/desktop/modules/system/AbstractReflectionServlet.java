@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,6 @@
  **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.framework.DefaultModule;
-import org.astrogrid.desktop.framework.MutableACR;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
-
 import java.io.IOException;
 import java.util.StringTokenizer;
 
@@ -26,19 +19,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.framework.ACRInternal;
+import org.astrogrid.desktop.framework.Module;
+import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
+import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
+import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
+
 /** Abstract servlet class for exposing services.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
- *  
+ *  @todo work out how to add a handler for servlet exceptions that displays pretty error messages.
  */
 public abstract class AbstractReflectionServlet extends HttpServlet {
 
     /** retreive services from the servlet context */
     public void init(ServletConfig conf) throws ServletException {
         super.init(conf);
-        reg = (MutableACR)conf.getServletContext().getAttribute(WebServer.ACR_CONTEXT_KEY);
+        reg = (ACRInternal)conf.getServletContext().getAttribute(WebServer.ACR_CONTEXT_KEY);
     }
 
-    protected MutableACR reg;
+    protected ACRInternal reg;
 
     /** parse the request path, calling a different abstract method to process each level */
     protected void navigate(HttpServletRequest request,
@@ -54,39 +55,44 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
                 processRoot(request, response);
                 return;
             }
-            DefaultModule m = (DefaultModule)reg.getModule(tok.nextToken());
-            ModuleDescriptor md = m.getDescriptor();
+            final String requestedModule = tok.nextToken();
+            Module m = reg.getModule(requestedModule);
             if (m == null) {
-                throw new ServletException("Unknown module");
+                reportError("Unknown module '" + requestedModule + "'" ,request,response);
             }
+            ModuleDescriptor md = m.getDescriptor();
             if (!tok.hasMoreTokens()) {
                 processModule(md,request,response);
                 return;
             }                       
-            ComponentDescriptor cd = md.getComponent(tok.nextToken());
+            final String requestedComponent = tok.nextToken();
+            ComponentDescriptor cd = md.getComponent(requestedComponent);
             if (cd == null) {
-                throw new ServletException("Unknown component");
+                reportError("Unknown component '"  + requestedComponent + "'",request,response);
             }
             if (!tok.hasMoreTokens()) {
-                processComponent(cd, request, response);
+                processComponent(md,cd, request, response);
                 return;
             }
-            MethodDescriptor methodD = cd.getMethod(tok.nextToken());
+            final String requestedMethod = tok.nextToken();
+            MethodDescriptor methodD = cd.getMethod(requestedMethod);
             if (methodD == null) {
-                throw new ServletException("unknown method");
+                reportError("unknown method '" + requestedMethod + "'",request,response);
             }
             if (! tok.hasMoreTokens()) {
-                processMethod(methodD, request, response);
+                processMethod(md,cd,methodD, request, response);
                 return;
             }
-            String resultType = tok.nextToken();
-            Object component = m.getComponent(cd.getName());
+            String resultType = tok.nextToken();           
+            Object component = m.getComponent(requestedComponent);
             if (component == null) {
-                throw new ServletException("component not found");
+                reportError("component not found '" + requestedComponent + "'",request,response);
             }
             callMethod(methodD,resultType,component,request,response);
-        } catch (Throwable t) {
-            reportError(t, request, response);
+       } catch (ACRException t) {
+            reportError("Failed to access component",t, request, response);
+        } catch (RuntimeException t) {
+            reportError(t,request,response);
         }
     }
 
@@ -104,11 +110,11 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
     /** process a request to a service 
      * @param module */
-    protected abstract void processComponent(ComponentDescriptor cd, HttpServletRequest request, HttpServletResponse response)
+    protected abstract void processComponent(ModuleDescriptor m,ComponentDescriptor cd, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException;
 
     /** process a request to a method in a service */
-    protected abstract void processMethod(MethodDescriptor cd,
+    protected abstract void processMethod(ModuleDescriptor m, ComponentDescriptor cd,MethodDescriptor md,
             HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException;
 
@@ -132,6 +138,18 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException {
         throw new ServletException(t);
     }
+    
+    protected void reportError(String msg, HttpServletRequest request,
+            HttpServletResponse response) throws ServletException {
+        throw new ServletException(msg);
+    }
+    
+    protected void reportError(String msg, Throwable t,HttpServletRequest request,
+            HttpServletResponse response) throws ServletException {
+        throw new ServletException(msg,t);
+    }
+    
+    
 
     protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
         navigate(arg0,arg1);
@@ -145,6 +163,18 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.3  2006/04/18 23:25:44  nw
+ * merged asr development.
+ *
+ * Revision 1.2.66.3  2006/04/14 02:45:01  nw
+ * finished code.extruded plastic hub.
+ *
+ * Revision 1.2.66.2  2006/04/04 10:31:26  nw
+ * preparing to move to mac.
+ *
+ * Revision 1.2.66.1  2006/03/22 18:01:30  nw
+ * merges from head, and snapshot of development
+ *
  * Revision 1.2  2005/08/25 16:59:58  nw
  * 1.1-beta-3
  *

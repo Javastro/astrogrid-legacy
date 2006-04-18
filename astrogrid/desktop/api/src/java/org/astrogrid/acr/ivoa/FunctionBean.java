@@ -1,4 +1,4 @@
-/*$Id: FunctionBean.java,v 1.1 2006/02/24 12:17:52 nw Exp $
+/*$Id: FunctionBean.java,v 1.2 2006/04/18 23:25:45 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,15 @@ package org.astrogrid.acr.ivoa;
 
 import org.astrogrid.acr.astrogrid.ParameterBean;
 
+import java.io.Serializable;
+
 /**
  * description of one ADQL function
  * @since 1.9
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Feb-2006
  *
  */
-public class FunctionBean {
+public class FunctionBean implements Serializable{
 
     /** Construct a new FunctionBean
      * @param name
@@ -33,6 +35,7 @@ public class FunctionBean {
     }
 
     
+    static final long serialVersionUID = -7423110308499775880L;
     private final String name;
     private final String description;
     private final ParameterBean[] parameters;
@@ -51,12 +54,34 @@ public class FunctionBean {
         return this.parameters;
     }
     
+    public String toString() {
+        StringBuffer sb = new StringBuffer("FunctionBean[");
+        sb.append("name: ");
+        sb.append(name);
+        sb.append(", description: ");
+        sb.append(description);
+        sb.append(", parameters: [");
+        for (int i = 0; i < parameters.length; i++) {
+            sb.append(parameters[i]);
+        }
+        sb.append("]]");
+        return sb.toString();
+    }
 
 }
 
 
 /* 
 $Log: FunctionBean.java,v $
+Revision 1.2  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.1.2.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.1.2.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.1  2006/02/24 12:17:52  nw
 added interfaces for skynode
  

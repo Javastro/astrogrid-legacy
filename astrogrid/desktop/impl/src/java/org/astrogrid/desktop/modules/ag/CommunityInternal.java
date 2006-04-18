@@ -1,4 +1,4 @@
-/*$Id: CommunityInternal.java,v 1.3 2005/09/12 15:21:16 nw Exp $
+/*$Id: CommunityInternal.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import org.astrogrid.ui.script.ScriptEnvironment;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
- *@deprecated - soon to be made package-private - not to be exposed outside modules.ag package.
  *other clients of this interface (e.g. ui code) should move to Community, and use the acr interfaces to access functionality previously called in getEnv
  */
 interface CommunityInternal  extends Community{
@@ -39,6 +38,12 @@ interface CommunityInternal  extends Community{
 
 /* 
 $Log: CommunityInternal.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.56.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.3  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

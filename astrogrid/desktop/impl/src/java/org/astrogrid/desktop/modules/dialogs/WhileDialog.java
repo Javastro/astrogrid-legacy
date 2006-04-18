@@ -12,20 +12,13 @@ package org.astrogrid.desktop.modules.dialogs;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import org.astrogrid.desktop.modules.ui.SpringLayoutHelper;
-import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.While;
 
 /**

@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.7 2005/12/02 17:04:28 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.8 2006/04/18 23:25:43 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.IllegalComponentStateException;
 import java.awt.Point;
 
 import javax.swing.JFrame;
+
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
 
 /** Extended jFrame baseclass that remembers positioning of the window.
  * <p>
@@ -73,7 +72,10 @@ public class PositionRememberingJFrame extends JFrame {
     
     /** load position from configuration */
     private void loadConfiguration() {
-        if (configuration != null) {
+        if (ui != null) { // as a starting point.
+            this.setLocationRelativeTo(ui.getComponent());
+        }        
+        if (configuration != null) { // reposition, if we have the information
             String xString = configuration.getKey(this.getClass().getName()+".x");
             String yString = configuration.getKey(this.getClass().getName()+".y");
             Dimension dim = getToolkit().getScreenSize();            
@@ -91,9 +93,7 @@ public class PositionRememberingJFrame extends JFrame {
                 }
             }
         }
-        if (ui != null) {
-            this.setLocationRelativeTo(ui.getComponent());
-        }
+
     }
         
    /** save position to configuration */
@@ -149,6 +149,15 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.8  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.7.26.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.7.26.1  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
 Revision 1.7  2005/12/02 17:04:28  nw
 minor change
 

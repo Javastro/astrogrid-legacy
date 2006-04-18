@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.3 2005/11/11 15:25:49 pjn3 Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.4 2006/04/18 23:25:46 nw Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -25,12 +23,19 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.system.contributions.StylesheetsContribution;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 11-May-2005
- *
+ *@todo find more efficient implementation.
  */
 public class Xml2XhtmlTransformer implements Transformer{
     /**
@@ -43,61 +48,56 @@ public class Xml2XhtmlTransformer implements Transformer{
      * @throws TransformerConfigurationException
      * 
      */
-    protected Xml2XhtmlTransformer(Source styleSource) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+    public Xml2XhtmlTransformer(List sheets) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
         super();
-        xslt = TransformerFactory.newInstance().newTransformer(styleSource);
+        this.sheets = (StylesheetsContribution[])sheets.toArray(new StylesheetsContribution[sheets.size()]);
     }
-    /**
-     * @return
-     */
-    public static Source getStyleSource() {
-        return new StreamSource(Xml2XhtmlTransformer.class.getResourceAsStream("xmlverbatim.xsl"));
-    }
-    public static Source getRegistryStyleSource() {
-        return new StreamSource(Xml2XhtmlTransformer.class.getResourceAsStream("registryResults.xsl"));
-    }
-    private final javax.xml.transform.Transformer xslt;
-
-    /**
-     * @return
-     */
-    public static Transformer getInstance() {
-        if (theInstance == null) {
-            try {
-                Source styleSource = getStyleSource();
-                theInstance = new Xml2XhtmlTransformer(styleSource);
-            } catch (Exception e) {
-                logger.error("Could not load stylesheet ",e);
-                theInstance = IDTransformer.getInstance();
-            }
-        }
-        return theInstance;
-    }
+    private final StylesheetsContribution[] sheets;
     
-    private static Transformer theInstance;
-
+    
     /**
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+     * 
      */
     public Object transform(Object arg0) {
-        Source source = new DOMSource((Document)arg0);
-        StringWriter sw = new StringWriter();
-        Result sink = new StreamResult(sw);
-        try {
-            xslt.transform(source, sink);
-            return sw.toString();
-        } catch (TransformerException e) {
-            logger.error("TransformerException",e);
-            return XMLUtils.DocumentToString((Document)arg0);
+    	Document d = (Document)arg0;
+    	for (int i = 0; i < sheets.length ; i++) {
+    		if (sheets[i].isApplicable(d)) {    	
+    			Source source = new DOMSource(d);
+    			StringWriter sw = new StringWriter();
+    			Result sink = new StreamResult(sw);
+    			try {
+    				sheets[i].createTransformer().transform(source,sink);
+    				return sw.toString();
+    			} catch (TransformerException e) {
+    				logger.error("TransformerException",e);
+    				// will continue iterating - may find a fallback.
+    			}
+    		}
         }
+    	// just return the XML.
+    	return DomHelper.DocumentToString(d);
 
     }
 
+    
 }
 
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.4  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.3.34.3  2006/04/18 18:49:03  nw
+version to merge back into head.
+
+Revision 1.3.34.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.34.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.3  2005/11/11 15:25:49  pjn3
 new stylesheet
 

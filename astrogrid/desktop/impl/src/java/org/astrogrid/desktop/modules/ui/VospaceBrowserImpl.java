@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.10 2005/11/24 01:13:24 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.11 2006/04/18 23:25:43 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,53 +10,14 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.astrogrid.UserLoginEvent;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.ui.MyspaceBrowser;
-import org.astrogrid.community.common.exception.CommunityException;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser.FileAction;
-import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.filemanager.client.NodeMetadata;
-import org.astrogrid.filemanager.common.FileManagerFault;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
-import org.astrogrid.io.Piper;
-import org.astrogrid.registry.RegistryException;
-import org.astrogrid.store.Ivorn;
-
-import com.l2fprod.common.swing.JTaskPane;
-import com.l2fprod.common.swing.JTaskPaneGroup;
-
-import java.util.zip.ZipEntry;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipInputStream;
-import com.ice.tar.TarInputStream;
-import com.ice.tar.TarEntry;
-import com.ice.tar.TarHeader;
-
-
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedInputStream;
-import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -65,10 +26,6 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -80,6 +37,32 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
+
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.MyspaceBrowser;
+import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.client.NodeMetadata;
+import org.astrogrid.filemanager.common.FileManagerFault;
+import org.astrogrid.filemanager.common.NodeNotFoundFault;
+import org.astrogrid.io.Piper;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.store.Ivorn;
+
+import com.l2fprod.common.swing.JTaskPane;
+import com.l2fprod.common.swing.JTaskPaneGroup;
 
 /**
  * 
@@ -376,50 +359,51 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             } else {
                 //must be a directory elected, check if it is compressed and see if they want to
                 //uncompress it
-                if(isPackedFile(name) && askDecompressQuestion() == JOptionPane.YES_OPTION) {
-                    //they want to uncompress it in myspace.
-                    
-                    //this is the regular inputstream or a GZipInputStream method call.
-                    is = decompress(name, url.openStream());
-
-                    if(name.toLowerCase().endsWith(ZIP)) {
-                        //its a Zip file open a ZipInputStream to it and save each named entry into myspace.                        
-                        ZipEntry ze = null;
-                        ZipInputStream zis = new ZipInputStream(is);
-                        while( (ze = zis.getNextEntry()) != null) {
-                            name = conformToMyspaceName(ze.getName());
-                            if(!ze.isDirectory()) {  
-                                writeStream(new URI(node.getIvorn().toString() + "/" + name), zis);
-                            }
-                        }
-                    } else if(name.toLowerCase().endsWith(JAR) || name.toLowerCase().endsWith(WAR)) { 
-                        //its a Jar file open a JarInputStream to it and save each named entry into myspace.
-                        JarEntry je = null;
-                        JarInputStream jis = new JarInputStream(is);
-                        while( (je = jis.getNextJarEntry()) != null) {
-                            name = conformToMyspaceName(je.getName());
-                            if(!je.isDirectory()) {
-                                writeStream(new URI(node.getIvorn().toString() + "/" + name), jis);
-                            }
-                        }
-                    } else if(name.toLowerCase().endsWith(TAR)  || name.toLowerCase().endsWith(TAR + "." + GZIP)) {
-                        //Tar or Tar.gz file unarchive the already GzipInputstream(from decompress)
-                        TarEntry te = null;
-                        TarInputStream tis = new TarInputStream(new BufferedInputStream(is));
-                        while( (te = tis.getNextEntry()) != null) {
-                            name = conformToMyspaceName(te.getName());
-                            if(!te.isDirectory()) {
-                                writeStream(new URI(node.getIvorn().toString() + "/" + name), tis);
-                            }
-                        }
-                    } else {
-                        //must be a gzipstream
-                        writeStream(new URI(node.getIvorn().toString() + "/" + voName), is);
-                    }                    
-                } else {
+//NWW removed - was only added for the datascope hack, and is surprising to user - folk at workshops have been caught out by this.                
+//                if(isPackedFile(name) && askDecompressQuestion() == JOptionPane.YES_OPTION) {
+//                    //they want to uncompress it in myspace.
+//                    
+//                    //this is the regular inputstream or a GZipInputStream method call.
+//                    is = decompress(name, url.openStream());
+//
+//                    if(name.toLowerCase().endsWith(ZIP)) {
+//                        //its a Zip file open a ZipInputStream to it and save each named entry into myspace.                        
+//                        ZipEntry ze = null;
+//                        ZipInputStream zis = new ZipInputStream(is);
+//                        while( (ze = zis.getNextEntry()) != null) {
+//                            name = conformToMyspaceName(ze.getName());
+//                            if(!ze.isDirectory()) {  
+//                                writeStream(new URI(node.getIvorn().toString() + "/" + name), zis);
+//                            }
+//                        }
+//                    } else if(name.toLowerCase().endsWith(JAR) || name.toLowerCase().endsWith(WAR)) { 
+//                        //its a Jar file open a JarInputStream to it and save each named entry into myspace.
+//                        JarEntry je = null;
+//                        JarInputStream jis = new JarInputStream(is);
+//                        while( (je = jis.getNextJarEntry()) != null) {
+//                            name = conformToMyspaceName(je.getName());
+//                            if(!je.isDirectory()) {
+//                                writeStream(new URI(node.getIvorn().toString() + "/" + name), jis);
+//                            }
+//                        }
+//                    } else if(name.toLowerCase().endsWith(TAR)  || name.toLowerCase().endsWith(TAR + "." + GZIP)) {
+//                        //Tar or Tar.gz file unarchive the already GzipInputstream(from decompress)
+//                        TarEntry te = null;
+//                        TarInputStream tis = new TarInputStream(new BufferedInputStream(is));
+//                        while( (te = tis.getNextEntry()) != null) {
+//                            name = conformToMyspaceName(te.getName());
+//                            if(!te.isDirectory()) {
+//                                writeStream(new URI(node.getIvorn().toString() + "/" + name), tis);
+//                            }
+//                        }
+//                    } else {
+//                        //must be a gzipstream
+//                        writeStream(new URI(node.getIvorn().toString() + "/" + voName), is);
+//                    }                    
+//                } else {
                     //user justs wants the raw file into myspace.
                     getVospace().copyURLToContent(url, new URI(node.getIvorn().toString() + "/" + voName));
-                }
+//                }
             }//else
     }
     // moved from MySpaceInternal - redundant there 
@@ -752,8 +736,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @throws NodeNotFoundFault
      * @throws FileManagerFault
      */
-    public VospaceBrowserImpl(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, Community comm, BrowserControl browser,ResourceChooserInternal chooser) {
-        super(conf, hs,ui,vos,comm);       
+    public VospaceBrowserImpl(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, BrowserControl browser,ResourceChooserInternal chooser) {
+        super(conf, hs,ui,vos);       
         this.browser = browser;
         this.chooser =chooser;
         initialize();
@@ -876,6 +860,15 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.11  2006/04/18 23:25:43  nw
+ * merged asr development.
+ *
+ * Revision 1.10.30.2  2006/04/14 02:45:01  nw
+ * finished code.extruded plastic hub.
+ *
+ * Revision 1.10.30.1  2006/04/04 10:31:26  nw
+ * preparing to move to mac.
+ *
  * Revision 1.10  2005/11/24 01:13:24  nw
  * merged in final changes from release branch.
  *

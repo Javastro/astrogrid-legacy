@@ -1,4 +1,4 @@
-/*$Id: SiapInformation.java,v 1.4 2006/02/02 14:19:47 nw Exp $
+/*$Id: SiapInformation.java,v 1.5 2006/04/18 23:25:45 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,6 +54,7 @@ public class SiapInformation extends ApplicationInformation {
         this.maxRecords = maxRecords;
         
     }
+    static final long serialVersionUID = 236947420491937409L;
     protected final String imageServiceType ;
     protected final float maxQueryRegionSizeRa;
     protected final float maxQueryRegionSizeDec;
@@ -90,6 +91,32 @@ public class SiapInformation extends ApplicationInformation {
     }
     public int getMaxRecords() {
         return this.maxRecords;
+    }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("SiapInformation[");
+        sb.append(super.toString());
+        sb.append(" imageServiceType: ");
+        sb.append(imageServiceType);
+        sb.append(" maxFileSize: ");
+        sb.append(maxFileSize);
+        sb.append(" maxImageExtentRa: ");
+        sb.append(maxImageExtentRa);
+        sb.append(" maxImageExtentDec: ");
+        sb.append(maxImageExtentDec);
+        sb.append(" maxImageSizeRa: ");
+        sb.append(maxImageSizeRa);
+        sb.append(" maxImageSizeDec: ");
+        sb.append(maxImageSizeDec);
+        sb.append(" maxQueryRegionSizeRa: ");
+        sb.append(maxQueryRegionSizeRa);
+        sb.append(" maxQueryRegionSizeDec: ");
+        sb.append(maxQueryRegionSizeDec);
+        sb.append(" maxRecords: ");
+        sb.append(maxRecords);
+        
+        sb.append("]");
+        return sb.toString();
     }
     
     private static Map parameters;
@@ -172,6 +199,15 @@ public class SiapInformation extends ApplicationInformation {
 
 /* 
 $Log: SiapInformation.java,v $
+Revision 1.5  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.4.6.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.4.6.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.4  2006/02/02 14:19:47  nw
 fixed up documentation.
 

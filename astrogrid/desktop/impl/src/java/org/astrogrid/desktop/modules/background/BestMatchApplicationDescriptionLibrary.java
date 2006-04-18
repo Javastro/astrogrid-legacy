@@ -1,4 +1,4 @@
-/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.2 2005/11/10 10:46:58 nw Exp $
+/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.3 2006/04/18 23:25:43 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
+import java.net.URI;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
@@ -18,10 +23,6 @@ import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 
-import org.apache.commons.lang.ArrayUtils;
-
-import java.net.URI;
-
 /** customized app description library that tries to bridge gap between cea and acr systems.
  * also fits applications to descriptions in a more general way than just name matching
  *  - works based on the class of application description.
@@ -29,22 +30,24 @@ import java.net.URI;
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Oct-2005
  *
  */
-public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescriptionLibrary {
+public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescriptionLibrary implements IBestMatchApplicationDescriptionLibrary {
 
     /** Construct a new BestMatchApplicationDescriptionLibrary
      * @param arg0
      */
-    public BestMatchApplicationDescriptionLibrary(Registry reg,ApplicationDescriptionEnvironment arg0) {
+    public BestMatchApplicationDescriptionLibrary(Registry reg,ApplicationDescriptionEnvironment arg0,List descs) {
         super(arg0);
         this.reg = reg;
+        for (Iterator i = descs.iterator(); i.hasNext(); ) {
+            ApplicationDescription a = (ApplicationDescription)i.next();
+            this.addApplicationDescription(a);
+        }
     }
     private final Registry reg;
     
     
-    /** returns true if this library contains an app matching the info objject
-     * 
-     * @param info
-     * @return
+    /**
+     * @see org.astrogrid.desktop.modules.background.IBestMatchApplicationDescriptionLibrary#hasMatch(org.astrogrid.acr.astrogrid.ApplicationInformation)
      */
     public boolean hasMatch(ApplicationInformation info) {
         return ArrayUtils.contains(getApplicationNames(),info.getClass().getName());
@@ -69,6 +72,15 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: BestMatchApplicationDescriptionLibrary.java,v $
+Revision 1.3  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.2.34.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.34.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.2  2005/11/10 10:46:58  nw
 big change around for vo lookout
 

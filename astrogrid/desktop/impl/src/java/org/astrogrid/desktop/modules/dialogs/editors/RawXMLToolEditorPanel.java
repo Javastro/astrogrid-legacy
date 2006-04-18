@@ -1,4 +1,4 @@
-/*$Id: RawXMLToolEditorPanel.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: RawXMLToolEditorPanel.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,28 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-import org.apache.axis.utils.XMLUtils;
-import org.exolab.castor.xml.Marshaller;
-import org.w3c.dom.Document;
-
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -40,6 +24,18 @@ import javax.swing.JButton;
 import jedit.JEditTextArea;
 import jedit.SyntaxDocument;
 import jedit.XMLTokenMarker;
+
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.exolab.castor.xml.Marshaller;
+import org.w3c.dom.Document;
 
 /** Cheap n cheerful Tool Editor Panel that just displays raw xml.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
@@ -184,6 +180,12 @@ public class RawXMLToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: RawXMLToolEditorPanel.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.56.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

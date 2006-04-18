@@ -1,4 +1,4 @@
-/*$Id: ApiHelpTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: ApiHelpTest.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,7 @@ public class ApiHelpTest extends TestCase {
         assertEquals(1,result.size());
         String[] sig1 = (String[])result.get(0);
         assertEquals(1,sig1.length);
-        assertEquals("string",sig1[0]); //@todo this is incorrect actually.
+        assertEquals("key-value map",sig1[0]); 
     }
 
     public void testModuleHelp() throws Exception {
@@ -112,6 +112,12 @@ public class ApiHelpTest extends TestCase {
 
 /* 
 $Log: ApiHelpTest.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.66.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

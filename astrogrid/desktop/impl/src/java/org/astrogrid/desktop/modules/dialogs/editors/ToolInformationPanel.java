@@ -1,4 +1,4 @@
-/*$Id: ToolInformationPanel.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: ToolInformationPanel.java,v 1.5 2006/04/18 23:25:47 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.editors;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
@@ -19,18 +25,14 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-
 /** an 'editor' that just displays information about the tool - doesn't permit any editing.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
  *
  */
 public class ToolInformationPanel extends AbstractToolEditorPanel {
 
+	
+	
     /** Construct a new ToolInformationPanel
      * @param tm
      */
@@ -92,6 +94,12 @@ public class ToolInformationPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ToolInformationPanel.java,v $
+Revision 1.5  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.4.30.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

@@ -1,0 +1,57 @@
+/*$Id: ServletsContribution.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+ * Created on 16-Mar-2006
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.desktop.modules.system.contributions;
+/**
+ * bean to hold details of a servlet to be deployed 
+ * @author Noel Winstanley nw@jb.man.ac.uk 16-Mar-2006
+ *
+ */
+public class ServletsContribution {
+
+    public ServletsContribution() {
+        super();
+    }
+    
+    private String name;
+    private String path;
+    private Class servletClass;
+    public String getName() {
+        return this.name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getPath() {
+        return this.path;
+    }
+    public void setPath(String path) {
+        this.path = path;
+    }
+    public Class getServletClass() {
+        return this.servletClass;
+    }
+    public void setServletClass(Class servletClass) {
+        this.servletClass = servletClass;
+    }
+    
+
+}
+
+
+/* 
+$Log: ServletsContribution.java,v $
+Revision 1.2  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.1.2.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+ 
+*/

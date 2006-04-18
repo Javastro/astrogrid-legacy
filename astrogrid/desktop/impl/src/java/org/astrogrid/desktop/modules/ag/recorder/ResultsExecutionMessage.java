@@ -1,4 +1,4 @@
-/*$Id: ResultsExecutionMessage.java,v 1.3 2005/11/11 10:08:18 nw Exp $
+/*$Id: ResultsExecutionMessage.java,v 1.4 2006/04/18 23:25:46 nw Exp $
  * Created on 09-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.ag.recorder;
 
+import java.util.Date;
+
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-
-import java.util.Date;
-import java.util.Map;
 
 /** specialized subclass of execution message - just used internally for storing resultts.
  *  - not to be transported over the wire to client.
@@ -43,6 +42,12 @@ public class ResultsExecutionMessage extends ExecutionMessage {
 
 /* 
 $Log: ResultsExecutionMessage.java,v $
+Revision 1.4  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.3.34.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.3  2005/11/11 10:08:18  nw
 cosmetic fixes
 

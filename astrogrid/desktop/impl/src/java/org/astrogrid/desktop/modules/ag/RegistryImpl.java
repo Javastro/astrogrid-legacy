@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.8 2005/11/24 01:13:24 nw Exp $
+/*$Id: RegistryImpl.java,v 1.9 2006/04/18 23:25:44 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.desktop.modules.ag.builders.InformationBuilder;
-import org.astrogrid.desktop.modules.ag.builders.MostSuitableBuilder;
-import org.astrogrid.desktop.modules.ag.builders.ResourceInformationBuilder;
-import org.astrogrid.registry.NoResourcesFoundException;
-import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.store.Ivorn;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.map.ReferenceMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,7 +17,28 @@ import java.net.URL;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.CachedXPathAPI;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.desktop.modules.ag.builders.InformationBuilder;
+import org.astrogrid.desktop.modules.ag.builders.MostSuitableBuilder;
+import org.astrogrid.registry.NoResourcesFoundException;
+import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.store.Ivorn;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /** implementation of the registry component
  * 
@@ -332,6 +329,12 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.9  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.8.30.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.8  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

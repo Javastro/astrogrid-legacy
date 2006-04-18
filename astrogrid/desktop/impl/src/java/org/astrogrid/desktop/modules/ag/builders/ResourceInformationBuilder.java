@@ -1,4 +1,4 @@
-/*$Id: ResourceInformationBuilder.java,v 1.5 2005/12/02 13:40:32 nw Exp $
+/*$Id: ResourceInformationBuilder.java,v 1.6 2006/04/18 23:25:47 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,20 @@
 **/
 package org.astrogrid.desktop.modules.ag.builders;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.desktop.modules.ag.XPathHelper;
-
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.Element;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.CachedXPathAPI;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.desktop.modules.ag.XPathHelper;
+import org.w3c.dom.Element;
 
 /** builder for a vanilla resource information bean. 
  * 
@@ -150,6 +147,12 @@ public class ResourceInformationBuilder implements InformationBuilder {
 
 /* 
 $Log: ResourceInformationBuilder.java,v $
+Revision 1.6  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.5.26.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.5  2005/12/02 13:40:32  nw
 optimized, and made more error-tolerant
 

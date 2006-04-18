@@ -16,7 +16,7 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.PlasticListener;
-
+//@todo NWW : remove dependency on browser - let infrastructure take care of displaying result instead.
 public class PrettyPrinterImpl implements PrettyPrinterInternal {
 	/**
 	 * Logger for this class

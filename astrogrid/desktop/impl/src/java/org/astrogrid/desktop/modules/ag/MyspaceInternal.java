@@ -1,4 +1,4 @@
-/*$Id: MyspaceInternal.java,v 1.4 2005/10/14 14:20:41 nw Exp $
+/*$Id: MyspaceInternal.java,v 1.5 2006/04/18 23:25:44 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.filemanager.client.FileManagerNode;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Aug-2005
@@ -73,6 +72,12 @@ public interface MyspaceInternal extends Myspace {
 
 /* 
 $Log: MyspaceInternal.java,v $
+Revision 1.5  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.4.46.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.4  2005/10/14 14:20:41  nw
 work around for problems with FileStoreOutputStream
 

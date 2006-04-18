@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.30 2006/03/14 15:46:21 pjn3 Exp $
+/*$Id: RegistryChooserPanel.java,v 1.31 2006/04/18 23:25:47 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
@@ -346,7 +347,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
      */
     public Object transform(Object arg0) {
         try {
-            Source styleSource = Xml2XhtmlTransformer.getRegistryStyleSource();
+            Source styleSource = getRegistryStyleSource();
             Transformer transformer = TransformerFactory.newInstance().newTransformer(styleSource);
             Source source = new DOMSource((Document)arg0);
             StringWriter sw = new StringWriter();
@@ -606,6 +607,10 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
        }
        return results;                
    } 
+     
+ private Source getRegistryStyleSource() {
+    return new StreamSource(Xml2XhtmlTransformer.class.getResourceAsStream("registryResults.xsl"));
+}
    
     /**
      * Simple cell renderer used to wrap cell contents to 
@@ -644,6 +649,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.31  2006/04/18 23:25:47  nw
+merged asr development.
+
 Revision 1.30  2006/03/14 15:46:21  pjn3
 Scrollpane replaced
 

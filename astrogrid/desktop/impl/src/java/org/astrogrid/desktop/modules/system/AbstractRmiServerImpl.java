@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.Finder;
-import org.astrogrid.acr.system.RmiServer;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,7 +17,13 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.rmi.registry.Registry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.Finder;
+import org.astrogrid.acr.system.RmiServer;
+
 /** Abstract class for implementations of the RmiServer
+ * implements the scanning bit.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2005
  *
  */
@@ -33,51 +33,79 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
      * @throws Exception
      * 
      */
-    public AbstractRmiServerImpl() throws Exception {
+    public AbstractRmiServerImpl() {
         super();
-        findSparePort();
-        recordDetails();
+
+    }
+    
+    /** actually start the service up 
+     * @throws Exception */
+    public void init() throws Exception{
+        if (port < 1) { // not been set
+            port = findSparePort(scanStartPort,scanEndPort);
+        }else {
+            if (!checkPort(port)) {
+                throw new Exception("Cannot connect on specified port " + port);
+            }
+        }
+        logger.info("Rmi Server will listen on port " + port);  
+        if (! disableConnectionFile) {
+        	recordDetails();
+        }
     }
 
     /**
      * Commons Logger for this class
      */
     protected static final Log logger = LogFactory.getLog(AbstractRmiServerImpl.class);
-    private int port;
-    public static final int START_SCAN_PORT = Registry.REGISTRY_PORT;
-    public static final int END_SCAN_PORT = Registry.REGISTRY_PORT + 1000;
+    private int port  = -1;
+    private File connectionFile = Finder.configurationFile();
+    public static int SCAN_START_PORT_DEFAULT = Registry.REGISTRY_PORT;
+    public static int SCAN_END_PORT_DEFAULT = SCAN_START_PORT_DEFAULT + 1000;
+    private int scanStartPort = SCAN_START_PORT_DEFAULT;
+    private int scanEndPort = SCAN_END_PORT_DEFAULT;
+    private boolean disableConnectionFile = false;
 
-    private void findSparePort() throws Exception {
+    static int findSparePort(int scanStartPort,int scanEndPort) throws Exception {
+        if (scanEndPort < scanStartPort) {
+            throw new Exception("scanEndPort (" + scanEndPort + ") is smaller than scanStartPort (" + scanStartPort + ")");
+        }
+        logger.info("Will scan for spare port, from " + scanStartPort + " to " + scanEndPort);
+        for (int i = scanStartPort; i < scanEndPort; i++) {
+            if (checkPort(i)) {
+                return i;
+            }            
+        } 
+            throw new Exception("Could not find a free port between" + scanStartPort + " and " + scanEndPort);        
+    }
+  
+    /** will return true if this port can be connected to */
+    static boolean checkPort(int i) {
         ServerSocket ss = null;
-        for (int i = START_SCAN_PORT; i < END_SCAN_PORT; i++) {
-            try {
-                ss = new ServerSocket(i);            
-                port = i;
-                logger.info("Rmi Server will listen on port " + port);
-                break;
-            } catch (IOException e) {    // oh well, that port is already taken. try another.
-            } finally {
-                if (ss != null) {
-                    try {
-                        ss.close();
-                    } catch (IOException e) {
-                        // ignore.
-                    }
+        try {
+            ss = new ServerSocket(i);            
+            return true;
+        } catch (IOException e) {    // oh well, that port is already taken. try another.
+        } finally {
+            if (ss != null) {
+                try {
+                    ss.close();
+                } catch (IOException e) {
+                    // ignore.
                 }
             }
-        } 
-        if (port == 0) {
-            throw new Exception("Could not find a free port for RMI Server");
         }
+        return false;
     }
 
+    //private String connection
+    
     private void recordDetails() throws IOException {
-        File f = Finder.configurationFile();
-        if (f.exists()) {
-            f.delete();
+        if (connectionFile.exists()) {
+            connectionFile.delete();
         }
-        f.deleteOnExit();
-        PrintWriter pw = new PrintWriter(new FileWriter(f));
+        connectionFile.deleteOnExit();
+        PrintWriter pw = new PrintWriter(new FileWriter(connectionFile));
         pw.println(port);
         pw.close();
     }
@@ -88,12 +116,57 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
     public int getPort() {
         return port;
     }
+    
+    /** setters - only for use while constructing */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    /** setters - only for use while constructing */
+    public void setScanEndPort(int scanEndPort) {
+        this.scanEndPort = scanEndPort;
+    }
+
+    /** setters - only for use while constructing */
+    public void setScanStartPort(int scanStartPort) {
+        this.scanStartPort = scanStartPort;
+    }
+
+    public void setConnectionFile(String connectionFile) {
+        this.connectionFile = new File(connectionFile);
+    }
+
+	/**
+	 * @return the disableConnectionFile
+	 */
+	public boolean isDisableConnectionFile() {
+		return this.disableConnectionFile;
+	}
+
+	/**
+	 * @param disableConnectionFile the disableConnectionFile to set
+	 */
+	public void setDisableConnectionFile(boolean disableConnectionFile) {
+		this.disableConnectionFile = disableConnectionFile;
+	}
 
 }
 
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.60.3  2006/04/18 18:49:03  nw
+version to merge back into head.
+
+Revision 1.2.60.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.60.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

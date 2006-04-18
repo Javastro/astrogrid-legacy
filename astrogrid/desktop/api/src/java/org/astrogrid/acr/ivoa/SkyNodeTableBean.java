@@ -1,4 +1,4 @@
-/*$Id: SkyNodeTableBean.java,v 1.1 2006/02/24 12:17:52 nw Exp $
+/*$Id: SkyNodeTableBean.java,v 1.2 2006/04/18 23:25:45 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ public class SkyNodeTableBean extends TableBean {
         this.rank = rank;
         this.relations = relations;
     }
+    static final long serialVersionUID = -868967333231244844L;
     private final String primaryKey;
     private final int rows;
     private final int rank;
@@ -55,6 +56,28 @@ public class SkyNodeTableBean extends TableBean {
         return this.rows;
     }
    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("SkyNodeTableBean[");
+        sb.append("name: ");
+        sb.append(name);
+        sb.append(" description: ");
+        sb.append(description);
+        sb.append(" primaryKey: ");
+        sb.append(primaryKey);
+        sb.append(" rows: ");
+        sb.append(rows);
+        sb.append(" rank: ");
+        sb.append(rank);
+        sb.append(" relations: ");
+        sb.append(relations);
+        sb.append(" columns[");
+        for (int i = 0; i < columns.length; i++) {
+            sb.append(columns[i]);
+            sb.append(" ");
+        }
+        sb.append("]]");
+        return sb.toString();
+    }
     
     
 
@@ -63,6 +86,15 @@ public class SkyNodeTableBean extends TableBean {
 
 /* 
 $Log: SkyNodeTableBean.java,v $
+Revision 1.2  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.1.2.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.1.2.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.1  2006/02/24 12:17:52  nw
 added interfaces for skynode
  

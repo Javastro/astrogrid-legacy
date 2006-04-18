@@ -1,4 +1,4 @@
-/*$Id: ConeApplicationDescription.java,v 1.3 2005/11/11 10:08:18 nw Exp $
+/*$Id: ConeApplicationDescription.java,v 1.4 2006/04/18 23:25:43 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.AbstractApplication;
@@ -18,7 +28,6 @@ import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.DefaultIDs;
 import org.astrogrid.applications.MandatoryParameterNotPassedException;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
@@ -31,16 +40,6 @@ import org.astrogrid.community.User;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /** implementation of a cone-search cea proxy.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
@@ -167,6 +166,12 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: ConeApplicationDescription.java,v $
+Revision 1.4  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.3.34.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.3  2005/11/11 10:08:18  nw
 cosmetic fixes
 

@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.5 2006/04/18 23:25:44 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,41 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag;
-
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.ExecutionMessage;
-import org.astrogrid.acr.astrogrid.RemoteProcessListener;
-import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.acr.system.SystemTray;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.framework.DefaultModule;
-import org.astrogrid.desktop.framework.MutableACR;
-import org.astrogrid.desktop.framework.NewModuleEvent;
-import org.astrogrid.desktop.framework.NewModuleListener;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
-import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
-import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
-import org.astrogrid.desktop.modules.background.JesStrategyImpl;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.iterators.IteratorChain;
-import org.apache.commons.collections.map.LazyMap;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.picocontainer.Startable;
-import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +21,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.iterators.IteratorChain;
+import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.ExecutionMessage;
+import org.astrogrid.acr.astrogrid.RemoteProcessListener;
+import org.astrogrid.acr.astrogrid.RemoteProcessManager;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
+import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
+import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
+import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
+import org.w3c.dom.Document;
+
 /** implementation of a remote process manager.
  *  - handles running cea / jes / whatever else.
  * 
@@ -63,40 +53,25 @@ import java.util.Set;
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
  *
  */
-public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModuleListener, MessageRecorderInternal.RecorderListener, Startable {
+public class RemoteProcessManagerImpl implements RemoteProcessManager, MessageRecorderInternal.RecorderListener{
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(RemoteProcessManagerImpl.class);
 
-    /** Construct a new RemoteProcessManagerImpl
-     * 
-     */
-    public RemoteProcessManagerImpl(MessageRecorderInternal recorder, MutableACR reg, MyspaceInternal vos) {
-            this(recorder,reg,vos,null);
-    }; 
-    public RemoteProcessManagerImpl(MessageRecorderInternal recorder, MutableACR reg, MyspaceInternal vos, SystemTray tray
-             ) {
+
+    public RemoteProcessManagerImpl(
+            MessageRecorderInternal recorder, List strategies, 
+            MyspaceInternal vos ) {
         super();
         this.recorder = recorder;
         this.vos = vos;
-        this.tray = tray;
-        strategies = new ArrayList();
-        reg.addNewModuleListener(this);
-        recorder.addRecorderListener(this);
+        this.strategies = strategies;
     }
-    final SystemTray tray;
     final MessageRecorderInternal recorder;
     final List strategies;
     final MyspaceInternal vos;
 
-    public void newModuleRegistered(NewModuleEvent e) {
-        DefaultModule nu = (DefaultModule)e.getModule();
-        List l = nu.getComponentInstancesOfType(RemoteProcessStrategy.class);        
-        logger.info("Registering " + l.size() +" process strategies");
-        strategies.addAll(l);
-        
-    }    
     
     private RemoteProcessStrategy selectStrategy(URI uri) throws InvalidArgumentException {
         for (Iterator i = strategies.iterator(); i.hasNext(); ) {
@@ -192,9 +167,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
 
     public void delete(URI arg0) throws NotFoundException, ServiceException, SecurityException, InvalidArgumentException {
         RemoteProcessStrategy s = selectStrategy(arg0);
-        // problem here about which to delete first - would like to do both really..
-        // curent solution isn't perfect - complicated because shouldn't throw exceptions from within finally blocks
-        //@todo not happy with this.
+        // FIXME - problem here - if we delete a folder, but there's meanwhile polling
+        // processes checking for it, a message may well be emitted that creates the folder again.
+        // need to keep a temporary list of deleted resources, and filter out any further processing.
         try {
             Folder f = recorder.getFolder(arg0);
         if (f == null) {
@@ -235,6 +210,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
             MessageContainer[] ms = recorder.listFolder(f);
             // only safe to return plain messages.
             //@todo check this - maybe we can serialize messages of an unknown subtype. I'd have thought this was possible.
+            //also , only a potential problem when serializing over a wire - if this is a problem, maybe should have an internal method for in-process use?
             List result = new ArrayList(ms.length);
             for (int i = 0; i < ms.length; i++) {
                 if (ms[i].getMessage().getClass() == ExecutionMessage.class) {
@@ -311,6 +287,10 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
     }
     // implementation of recorder listener
     public void messageReceived(Folder f, MessageContainer msg) {
+    	if (f.isDeleted()) {
+    		// skip it;
+    		return;
+    	}
         // check whether we've gt anything that's registered an interest in this.
         final URI id = f.getInformation().getId();
         if( wildcardListeners.size() > 0 || listenerMap.containsKey(id)) {
@@ -349,55 +329,27 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, NewModule
     return result;
    }
 
-/**
- * register sys tray as a listener, if its around.
- */
-public void start() {
-   if (tray != null) { // as not available on all platforms
-        addRemoteProcessListener(null,new RemoteProcessListener() {
-
-            public void statusChanged(URI arg0, String arg1) {
-                if (JesStrategyImpl.isCompletedOrError(arg1)) {
-                    try {
-                    Folder f = recorder.getFolder(arg0);
-                    String name = f.getInformation().getName();
-                    if (arg1.equals("ERROR")) {
-                        tray.displayWarningMessage(name + " ended in error","See VO Lookout for details");
-                    } else {
-                       tray.displayInfoMessage(name + " completed successfuly","See VO Lookout for results");
-                    }                    
-                    } catch (IOException e) {
-                        logger.fatal("Failed to find folder for id - " + arg0,e);
-                    }
-                } else {
-                    System.err.println(arg0 + " " + arg1);
-                }
-                
-            }
-
-            public void messageReceived(URI arg0, ExecutionMessage arg1) {
-                
-            }
-
-            public void resultsReceived(URI arg0, Map arg1) {
-            }
-            
-        });
-    }
-}
-
-/**
- * @see org.picocontainer.Startable#stop()
- */
-public void stop() {
-    // does nothing
-}
 
 }
 
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.5  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.4.30.4  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.4.30.3  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.4.30.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.4.30.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

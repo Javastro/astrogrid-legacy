@@ -1,4 +1,4 @@
-/*$Id: WorkbenchCeaComponentManager.java,v 1.6 2006/03/22 17:24:39 nw Exp $
+/*$Id: WorkbenchCeaComponentManager.java,v 1.7 2006/04/18 23:25:43 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,148 +10,62 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.applications.description.ApplicationDescription;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.manager.AppAuthorityIDResolver;
-import org.astrogrid.applications.manager.ApplicationEnvironmentRetriver;
-import org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever;
-import org.astrogrid.applications.manager.DefaultQueryService;
-import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
-import org.astrogrid.applications.manager.idgen.IdGen;
-import org.astrogrid.applications.manager.persist.ExecutionHistory;
-import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
-import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
-import org.astrogrid.desktop.modules.system.ConfigurationKeys;
-
-import org.picocontainer.ComponentAdapter;
-import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.Startable;
-import org.picocontainer.defaults.DefaultPicoContainer;
-
-import EDU.oswego.cs.dl.util.concurrent.LinkedQueue;
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
-import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
-import EDU.oswego.cs.dl.util.concurrent.ThreadFactoryUser;
-
-import java.io.File;
-import java.net.URL;
-import java.util.Iterator;
 
 /** Custom cea component manager - just the things needed for an in-process cea server.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
  * 
  */
-public class WorkbenchCeaComponentManager implements TasksInternal, Startable{
-
-    private final MutablePicoContainer pico;
+public class WorkbenchCeaComponentManager implements TasksInternal{
+   
     
-    public WorkbenchCeaComponentManager(MutablePicoContainer parent, final Configuration configuration) { 
+    private final ManagingExecutionController controller;
+    private final QueryService query;
+    private final IBestMatchApplicationDescriptionLibrary appDescLib;
+
+    public WorkbenchCeaComponentManager( 
+             ManagingExecutionController controller
+            , QueryService query
+            , IBestMatchApplicationDescriptionLibrary appDescLib) { 
         super();
-        this.pico = new DefaultPicoContainer(parent);
-        pico.registerComponentImplementation(ApplicationDescriptionEnvironment.class,ApplicationDescriptionEnvironment.class);
-        pico.registerComponentImplementation(ApplicationEnvironmentRetriver.class, DefaultApplicationEnvironmentRetriever.class);
-        pico.registerComponentImplementation(ExecutionController.class, MessagingExecutionController.class);
+        this.controller = controller;
+        this.query = query;
+        this.appDescLib = appDescLib;
 
-        pico.registerComponentImplementation(PooledExecutor.class,PooledExecutorAdapter.class);
-        pico.registerComponentImplementation(QueryService.class,DefaultQueryService.class);
-        
-        // protocol library - necessary, but not using it.
-        pico.registerComponentImplementation(ProtocolLibrary.class,DefaultProtocolLibrary.class);
-
-        // persistence
-        pico.registerComponentImplementation(ExecutionHistory.class,ManagingFileStoreExecutionHistory.class);
-        // configuration for the managing file store history.
-        pico.registerComponentInstance(org.astrogrid.applications.contracts.Configuration.class,new org.astrogrid.applications.contracts.Configuration() {
-
-            public File getBaseDirectory() {
-                return null;
-            }
-            private final File dir= new File(new File(configuration.getKey(ConfigurationKeys.WORK_DIR_KEY)),"cea");
-            // only need to implement this one.
-            public File getRecordsDirectory() {
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-                return dir;
-            }
-
-            public File getTemporaryFilesDirectory() {
-                return null;
-            }
-
-            public URL getRegistryTemplate() {
-                return null;
-            }
-
-            public URL getServiceEndpoint() {
-                return null;
-            }
-        });
-
-
-        pico.registerComponentInstance(new IdGen(){
-            public String getNewID() {
-                return Long.toString(System.currentTimeMillis()); // simple  - don't need to be globally unique.
-            }
-        });
-        
-        pico.registerComponentImplementation(BestMatchApplicationDescriptionLibrary.class);
-        pico.registerComponentInstance(new AppAuthorityIDResolver() {
-            public String getAuthorityID() {
-                return "in-process";
-            }
-        });        
-        // register a throwaway component that adds all applicationDescriptions in the container into the library on container startup.
-        pico.registerComponentInstance(new Startable() {
-
-         public void start() {
-             BaseApplicationDescriptionLibrary lib = (BaseApplicationDescriptionLibrary)pico.getComponentInstanceOfType(BaseApplicationDescriptionLibrary.class);
-             for (Iterator i = pico.getComponentAdaptersOfType(ApplicationDescription.class).iterator(); i.hasNext();) {
-                 ComponentAdapter ca = (ComponentAdapter)i.next();
-                 ApplicationDescription appDesc = (ApplicationDescription)ca.getComponentInstance(pico);
-                 lib.addApplicationDescription(appDesc);
-             }
-         }
-         public void stop() {
-         }
-        }); 
-             
-        pico.registerComponentImplementation(SiapApplicationDescription.class);
-        pico.registerComponentImplementation(ConeApplicationDescription.class);        
     }
 
     public ManagingExecutionController getExecutionController() {
-        return (ManagingExecutionController)pico.getComponentInstanceOfType(ExecutionController.class);
-        
+        return controller;
     }
 
     public QueryService getQueryService() {
-        return (QueryService)pico.getComponentInstanceOfType(QueryService.class);
-        
+        return query;
+     
     }
     
-    public BestMatchApplicationDescriptionLibrary getAppLibrary() {
-        return (BestMatchApplicationDescriptionLibrary) pico.getComponentInstance(BestMatchApplicationDescriptionLibrary.class);
-    }
-
-    public void start() {
-        pico.start();
-    }
+    public IBestMatchApplicationDescriptionLibrary getAppLibrary() {
+        return appDescLib;
+        }
 
 
-    public void stop() {
-        pico.stop();
-    }
     
 }
 
 
 /* 
 $Log: WorkbenchCeaComponentManager.java,v $
+Revision 1.7  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.5.26.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.5.26.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.5.26.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.6  2006/03/22 17:24:39  nw
 fixes necessary for upgrade to 2006.1 libs
 

@@ -1,4 +1,4 @@
-/*$Id: WorkflowDetailsDialog.java,v 1.5 2005/11/08 09:54:37 pjn3 Exp $
+/*$Id: WorkflowDetailsDialog.java,v 1.6 2006/04/18 23:25:44 nw Exp $
  * Created on 29-5-05
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,15 +13,9 @@ package org.astrogrid.desktop.modules.dialogs;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;

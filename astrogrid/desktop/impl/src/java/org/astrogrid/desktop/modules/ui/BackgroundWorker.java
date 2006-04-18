@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.4 2005/12/02 13:42:18 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.5 2006/04/18 23:25:43 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.desktop.icons.IconHelper;
-
-import EDU.oswego.cs.dl.util.concurrent.Callable;
-import EDU.oswego.cs.dl.util.concurrent.FutureResult;
-import EDU.oswego.cs.dl.util.concurrent.TimedCallable;
-import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
-import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Observable;
 
-import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
+
+import EDU.oswego.cs.dl.util.concurrent.Callable;
+import EDU.oswego.cs.dl.util.concurrent.FutureResult;
+import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 
 /** abstract class for all long-running operations - all requests to VO services should be done in instances of this class.
@@ -72,7 +65,7 @@ import javax.swing.SwingUtilities;
         /**
          *  Construct a new BackgroundOperation
          * @param parent - UICOmponent to report progress in.
-         * @param msg message to display in status bar in parent UIComponent.
+         * @param msg message to display in status bar in parent UIComponentImpl.
          */
         public BackgroundWorker(UIComponent parent,String msg, long msecs, int priority) {
             super();
@@ -284,6 +277,12 @@ import javax.swing.SwingUtilities;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.5  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.4.26.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.4  2005/12/02 13:42:18  nw
 improved task-reporting system
 

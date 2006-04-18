@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.9 2005/11/24 01:13:24 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.10 2006/04/18 23:25:44 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,18 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.dialogs;
-
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
-import org.astrogrid.filemanager.client.FileManagerNode;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -46,6 +34,16 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
+import org.astrogrid.filemanager.client.FileManagerNode;
 /** Dialog that allows the user to choose a resource in file:// or ivo:// space.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2005
 
@@ -55,8 +53,9 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     class VospaceChooser extends AbstractVospaceBrowser {
 
         public VospaceChooser() throws HeadlessException {
-            super(conf, ResourceChooserDialog.this.help, ResourceChooserDialog.this.ui, vos, comm); 
+            super(conf, ResourceChooserDialog.this.help, ResourceChooserDialog.this.ui, vos); 
             // need to disambiguate help and ui, as vospace chooser's parent class has fields of this name too - and it won't compile otherwise
+            comm.addUserLoginListener(this);
         }
         private Actions actions;
 
@@ -257,6 +256,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 	private JComponent getMyspacePanel() {
 		if (myspacePanel == null) {
             VospaceChooser chooser = new VospaceChooser();
+            comm.addUserLoginListener(chooser);
 			JSplitPane split = new JSplitPane();
             split.setDividerSize(5);
             split.setDividerLocation(300);
@@ -395,6 +395,12 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.10  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.9.30.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.9  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

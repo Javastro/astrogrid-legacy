@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.6 2005/11/11 10:08:18 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.7 2006/04/18 23:25:43 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,22 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Applications;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Jobs;
-import org.astrogrid.acr.system.UI;
-import org.astrogrid.acr.ui.JobMonitor;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.community.beans.v1.Account;
@@ -28,26 +36,9 @@ import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JOptionPane;
 
 /** Implementaton of the parameterized workflow launcher component.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
@@ -60,21 +51,18 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
      */
     private static final Log logger = LogFactory.getLog(ParameterizedWorkflowLauncherImpl.class);
 
-    /** Construct a new ParameterizedWorkflowLauncher, using default index 
-     * @throws MalformedURLException
-     * @throws IOException
-     * @throws SAXException
-     * 
-     */
-    public ParameterizedWorkflowLauncherImpl(Community community, Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor,ResourceChooserInternal chooser) throws MalformedURLException, IOException, SAXException {
-        this(community,monitor,jobs,vos,apps,editor, chooser,new URL(DEFAULT_INDEX_URL));       
-    }
+  
     
-    /** url of pw workflow index */
-    public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
+    
+    // not used - now list is passed in by hivemind.
+   // public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
 /** construct a new launcher, specifying the index url to use */
-    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,URL indexURL) throws IOException, SAXException{ 
-        URL[] list = getWorkflowList(indexURL);
+    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,List templateURLs) throws IOException, SAXException{ 
+        URL[] list = new URL[templateURLs.size()];
+        Iterator i = templateURLs.iterator();
+        for (int ix = 0; i.hasNext(); ix++) {
+            list[ix] = new URL((String)i.next());
+        }
     templates = loadWorkflows(list);        
     this.community = community;
     this.editor = editor;
@@ -95,8 +83,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     protected final ToolEditorInternal editor;
     
     public void run() {
-        // force login.
-        community.getUserInformation();
+
         
         ParameterizedWorkflowTemplate wft = chooseTemplate();
         if (wft == null) {
@@ -130,41 +117,10 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
         } catch (Exception e) {
             logger.warn("Failed",e);
-            UIComponent.showError(null,"Failed",e);
+            UIComponentImpl.showError(null,"Failed",e);
             
         }
     }
-    
-
-    /** access a list of URLs from somewhere, each of which points to a workflow document 
-     * @throws IOException
-     * @throws SAXException
-     * @throws MalformedURLException*/
-    protected URL[] getWorkflowList(URL indexURL) throws IOException, SAXException {
-        InputStream is = indexURL.openStream();
-        indexDigester.clear();
-        List l = new ArrayList() {
-            public boolean add(Object o) {
-                try {
-                    return super.add(new URL(o.toString().trim()));
-                } catch (MalformedURLException e) {
-                    logger.error("Didn't recognize that one " + e);
-                    return false;
-                }
-            }
-        };
-        
-        indexDigester.push(l);
-        indexDigester.parse(is);
-        logger.debug(l);
-        return (URL[])l.toArray(new URL[]{});
-    }
-    
-    protected final Digester indexDigester = new Digester() {{
-        addCallMethod("*/workflow-template","add",1,new Class[]{String.class});
-        addCallParam("*/workflow-template",0);
-    }};
-    
     
     
     /** construct a list of workflow documents from an array of urls , silently handle any errors.*/
@@ -200,6 +156,15 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.7  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.6.34.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.6.34.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.6  2005/11/11 10:08:18  nw
 cosmetic fixes
 

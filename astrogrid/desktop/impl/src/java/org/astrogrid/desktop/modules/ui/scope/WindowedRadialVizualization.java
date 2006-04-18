@@ -32,8 +32,6 @@ import edu.berkeley.guir.prefusex.force.NBodyForce;
 import edu.berkeley.guir.prefusex.layout.ForceDirectedLayout;
 import edu.berkeley.guir.prefusex.layout.RadialTreeLayout;
 
-import java.util.Map;
-
 /**
  * Uses the Prefuse Radial Layout for display along with a little bit of Animation to it. Uses
  *windowing filter - displays nearer neighbours, not entire graph.

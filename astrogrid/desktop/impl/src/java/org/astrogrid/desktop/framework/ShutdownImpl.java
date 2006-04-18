@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.3 2006/04/18 23:25:46 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,32 +10,41 @@
 **/
 package org.astrogrid.desktop.framework;
 
-import org.astrogrid.acr.builtin.Shutdown;
-import org.astrogrid.acr.builtin.ShutdownListener;
-
-import org.apache.commons.collections.Closure;
-import org.apache.commons.collections.CollectionUtils;
-import org.picocontainer.PicoContainer;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hivemind.ShutdownCoordinator;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.builtin.ShutdownListener;
+
 /** implementation class for {@link Shutdown}
  * 
- * calls stop() on each module in the registry, before terminating.
+ * hides details of hivemind - and means that rest of code doesn't need to 
+ * be tied to that particular container system.
+ * @todo remove gui aspect - or provide non-gui alternative.
  *  */
-public class ShutdownImpl implements Shutdown {
-    private final Map modules;
+public class ShutdownImpl implements Shutdown{
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory.getLog(ShutdownImpl.class);
 
-    public ShutdownImpl(Map modules) {
-        super();
-        this.modules = modules;
+    public ShutdownImpl(ShutdownCoordinator coord, boolean callSystemExit) {
+        this.coord = coord;
+        this.callSystemExit = callSystemExit;
     }
+    private final boolean callSystemExit;
+    private final ShutdownCoordinator coord;
+    
+
 
     public void halt() {
+        logger.debug("halt() - start");
+
         // tell everyone 
         List objections = new ArrayList();
         for (int i = 0; i < listeners.size(); i++) {
@@ -48,6 +57,8 @@ public class ShutdownImpl implements Shutdown {
                   }
                 }
             } catch (Throwable t) {
+                logger.error("halt()", t);
+
                 // really don't care - nothing can stop us
             }
         }
@@ -56,9 +67,13 @@ public class ShutdownImpl implements Shutdown {
             reallyHalt();
         }
         
+
+        logger.debug("halt() - end");
     }
     
     private String fmt(List l) {
+        logger.debug("fmt(List) - start");
+
         StringBuffer sb = new StringBuffer();
         sb.append("<html><b>There appears to be clients that still require the ACR</b><ul>");
         for (int i = 0; i < l.size(); i++) {
@@ -66,13 +81,17 @@ public class ShutdownImpl implements Shutdown {
             sb.append(l.get(i).toString());            
         }
         sb.append("</ul><b>Select 'OK' if you still want to halt the ACR, otherwise 'Cancel'</b></html>");
-        return sb.toString();
+        String returnString = sb.toString();
+        logger.debug("fmt(List) - end");
+        return returnString;
     }
 
     /**
      * @see org.astrogrid.acr.builtin.Shutdown#reallyHalt()
      */
     public void reallyHalt() {
+        logger.debug("reallyHalt() - start");
+
         // tell everyone 
         for (int i = 0; i < listeners.size(); i++) {
             try {
@@ -81,16 +100,18 @@ public class ShutdownImpl implements Shutdown {
                     sl.halting();
                 }
             } catch (Throwable t) {
+                logger.error("reallyHalt()", t);
+
                 // really don't care - nothing can stop us
             }
         }
         // do the deed
-        CollectionUtils.forAllDo(modules.values(),new Closure() {
-            public void execute(Object arg0) {
-                ((PicoContainer)arg0).stop();
-            }
-        });
-        System.exit(0);
+        coord.shutdown();
+
+        logger.debug("reallyHalt() - end");
+        if (callSystemExit) {
+        	System.exit(0);
+        }
     }
 
     protected List listeners = new ArrayList();
@@ -98,19 +119,47 @@ public class ShutdownImpl implements Shutdown {
      * @see org.astrogrid.acr.builtin.Shutdown#addShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
      */
     public void addShutdownListener(ShutdownListener arg0) {
+        logger.debug("addShutdownListener(ShutdownListener) - start");
+        logger.debug(arg0);
         listeners.add(arg0);
+
+        logger.debug("addShutdownListener(ShutdownListener) - end");
     }
 
     /**
      * @see org.astrogrid.acr.builtin.Shutdown#removeShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
      */
     public void removeShutdownListener(ShutdownListener arg0) {
+        logger.debug("removeShutdownListener(ShutdownListener) - start");
+        logger.debug(arg0);
         listeners.remove(arg0);
+
+        logger.debug("removeShutdownListener(ShutdownListener) - end");
     }
+
+
 }
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.3  2006/04/18 23:25:46  nw
+merged asr development.
+
+Revision 1.2.66.5  2006/04/18 18:49:04  nw
+version to merge back into head.
+
+Revision 1.2.66.4  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.66.3  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.2.66.2  2006/03/28 13:47:35  nw
+first webstartable version.
+
+Revision 1.2.66.1  2006/03/22 18:01:31  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

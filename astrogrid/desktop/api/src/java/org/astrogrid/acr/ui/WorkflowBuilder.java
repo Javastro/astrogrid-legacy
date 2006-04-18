@@ -13,7 +13,7 @@ package org.astrogrid.acr.ui;
 /** Control the Workflow Viewer / Builder UI
  *
  * <img src="doc-files/wfbuilder.png"/>
- * @service userInterface.workflowViewer
+ * @service userInterface.workflowBuilder
  * @author Phil Nicolson pjn3@star.le.ac.uk
  *@see org.astrogrid.acr.ui.JobMonitor
  *@see org.astrogrid.acr.astrogrid.Jobs

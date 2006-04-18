@@ -1,4 +1,4 @@
-/*$Id: TasksInternal.java,v 1.3 2005/11/11 17:53:27 nw Exp $
+/*$Id: TasksInternal.java,v 1.4 2006/04/18 23:25:43 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
-import org.astrogrid.applications.manager.ExecutionController;
 import org.astrogrid.applications.manager.QueryService;
 
 /**low-level interface into a minimalistic cea server
@@ -22,12 +21,21 @@ public interface TasksInternal {
 
     public QueryService getQueryService();
     
-    public BestMatchApplicationDescriptionLibrary getAppLibrary() ;
+    public IBestMatchApplicationDescriptionLibrary getAppLibrary() ;
 }
 
 
 /* 
 $Log: TasksInternal.java,v $
+Revision 1.4  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.3.34.2  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.34.1  2006/03/28 13:47:35  nw
+first webstartable version.
+
 Revision 1.3  2005/11/11 17:53:27  nw
 added cea polling to lookout.
 

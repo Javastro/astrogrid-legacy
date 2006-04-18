@@ -1,4 +1,4 @@
-/*$Id: LoginDialogue.java,v 1.3 2005/11/24 01:13:24 nw Exp $
+/*$Id: LoginDialogue.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag;
-
-import org.astrogrid.community.common.exception.CommunityException;
-import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
-import org.astrogrid.store.Ivorn;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -28,6 +24,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
+import org.astrogrid.store.Ivorn;
 
 /**
  * Dialog for logging in to an Astrogrid community.
@@ -208,6 +208,12 @@ class LoginDialogue extends JPanel {
 
 /* 
 $Log: LoginDialogue.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.30.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.3  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

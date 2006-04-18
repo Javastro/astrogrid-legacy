@@ -1,4 +1,4 @@
-/*$Id: UserLoginEvent.java,v 1.2 2005/08/12 08:45:16 nw Exp $
+/*$Id: UserLoginEvent.java,v 1.3 2006/04/18 23:25:45 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ public class UserLoginEvent extends EventObject {
         this.loggedIn = loggedIn;
     }
     
+    static final long serialVersionUID = 1045060924801372793L;
     private final boolean loggedIn;
     
     /** reutrns true if this is a login event */
@@ -40,6 +41,12 @@ public class UserLoginEvent extends EventObject {
 
 /* 
 $Log: UserLoginEvent.java,v $
+Revision 1.3  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.2.40.1  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
 Revision 1.2  2005/08/12 08:45:16  nw
 souped up the javadocs
 

@@ -1,4 +1,4 @@
-/*$Id: UIInternal.java,v 1.2 2005/12/02 13:43:18 nw Exp $
+/*$Id: UIInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.system.UI;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-
 import java.awt.Component;
 
-import javax.swing.JMenu;
+import org.astrogrid.acr.system.UI;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
@@ -23,18 +21,17 @@ import javax.swing.JMenu;
  */
 public interface UIInternal extends UI{
 
-    /** get the AWT component that implements the user interface - used for centering new windows, dialogues, etc. */
+    /** get the AWT component that implements the user interface .
+     * - used for centering new windows, dialogues, etc. */
     public Component getComponent();
+
     
-    /** access the help menu */
-    public JMenu getHelpMenu();
-   /** access the main modules menu */
-    public JMenu getModulesMenu();
-    
-    /** access the background executor */
+    /** access the background executor
+     * used in backgroundWorker. */
     public BackgroundExecutor getExecutor();
     
-    /**wrap an arbitrary runnable as an  BackgroundWorker, which when run, will report progress in the ui.*/
+    /**wrap an arbitrary runnable as an  BackgroundWorker, which when run, will report progress in the ui.
+     *used in background exector*/
     public BackgroundWorker wrap(Runnable r);
    
 
@@ -43,6 +40,18 @@ public interface UIInternal extends UI{
 
 /* 
 $Log: UIInternal.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.26.3  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
+Revision 1.2.26.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.2.26.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.2  2005/12/02 13:43:18  nw
 new compoent that manages a pool of threads to execute background processes on
 

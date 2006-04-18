@@ -1,4 +1,4 @@
-/*$Id: VizualizationManager.java,v 1.2 2006/02/09 15:40:01 nw Exp $
+/*$Id: VizualizationManager.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,14 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.apache.commons.collections.iterators.UnmodifiableIterator;
 
 import edu.berkeley.guir.prefuse.ItemRegistry;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.render.ImageFactory;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 /**
  * aggregates a set of vizualizations together - enables them to be worked
  * with as a whole, attached to a single vizualization model.
@@ -97,6 +97,12 @@ public class VizualizationManager {
 
 /* 
 $Log: VizualizationManager.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.6.1  2006/04/14 02:45:00  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2006/02/09 15:40:01  nw
 finished refactoring of astroscope.
 added vospec viewer

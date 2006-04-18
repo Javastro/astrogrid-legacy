@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.6 2005/11/01 09:19:46 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.7 2006/04/18 23:25:43 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,24 +10,9 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.UserLoginEvent;
-import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.filemanager.client.FileManagerNode;
-
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.iterators.FilterIterator;
-
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Observable;
@@ -50,11 +35,22 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.iterators.FilterIterator;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.filemanager.client.FileManagerNode;
+
 /** Abstract class for displays of myspace - in file chooser dialogues and myspace browser.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
  *  @todo make tree expansion behave same as clicking on name - both show child folders, and contents.
  */
-public abstract class AbstractVospaceBrowser extends UIComponent implements UserLoginListener {
+public abstract class AbstractVospaceBrowser extends UIComponentImpl implements UserLoginListener {
 
     /** class that manages the currently selected node */
     protected class CurrentNodeManager implements TreeSelectionListener, ListSelectionListener {
@@ -468,10 +464,9 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, Community comm) throws HeadlessException {
+    public AbstractVospaceBrowser(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos) throws HeadlessException {
         super(conf, hs,ui);
         this.vos = vos;
-        comm.addUserLoginListener(this);
     }
 
     protected abstract CurrentNodeManager createCurrentNodeManager();
@@ -605,6 +600,12 @@ public abstract class AbstractVospaceBrowser extends UIComponent implements User
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.7  2006/04/18 23:25:43  nw
+ * merged asr development.
+ *
+ * Revision 1.6.42.1  2006/04/14 02:45:01  nw
+ * finished code.extruded plastic hub.
+ *
  * Revision 1.6  2005/11/01 09:19:46  nw
  * messsaging for applicaitons.
  *

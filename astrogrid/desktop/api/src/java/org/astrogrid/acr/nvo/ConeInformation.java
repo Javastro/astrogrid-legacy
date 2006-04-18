@@ -1,4 +1,4 @@
-/*$Id: ConeInformation.java,v 1.4 2006/02/02 14:19:48 nw Exp $
+/*$Id: ConeInformation.java,v 1.5 2006/04/18 23:25:47 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,6 +44,7 @@ public class ConeInformation extends ApplicationInformation {
         this.verbosity = verbosity;
     }
 
+    static final long serialVersionUID = -7863062461216502823L;
     protected final float maxSR;
     protected final int maxRecords;
     protected final boolean verbosity;
@@ -60,6 +61,18 @@ public class ConeInformation extends ApplicationInformation {
     /** true if this service supports the <tt>VERB</tt> keyword */
     public boolean isVerbosity() {
         return this.verbosity;
+    }
+    
+    public String toString() {
+       StringBuffer sb = new StringBuffer("ConeInformation[");
+       sb.append(" maxRecords: ");
+       sb.append(maxRecords);
+       sb.append(" maxSR: ");
+       sb.append(maxSR);
+       sb.append(" verbosity: ");
+       sb.append(verbosity);
+       sb.append("]");
+       return sb.toString();
     }
     
     private static Map parameters;
@@ -95,6 +108,15 @@ public class ConeInformation extends ApplicationInformation {
 
 /* 
 $Log: ConeInformation.java,v $
+Revision 1.5  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.4.6.2  2006/04/04 10:31:27  nw
+preparing to move to mac.
+
+Revision 1.4.6.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.4  2006/02/02 14:19:48  nw
 fixed up documentation.
 

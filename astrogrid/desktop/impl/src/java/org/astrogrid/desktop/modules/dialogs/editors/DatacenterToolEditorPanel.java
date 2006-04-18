@@ -1,4 +1,4 @@
-/*$Id: DatacenterToolEditorPanel.java,v 1.4 2005/10/19 18:16:47 nw Exp $
+/*$Id: DatacenterToolEditorPanel.java,v 1.5 2006/04/18 23:25:47 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,31 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.ColumnBean;
-import org.astrogrid.acr.astrogrid.DatabaseBean;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.ParameterBean;
-import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
-import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
-import org.astrogrid.acr.dialogs.RegistryChooser;
-import org.astrogrid.acr.ivoa.Adql074;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.workflow.beans.v1.Tool;
-
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -53,6 +32,24 @@ import jedit.JEditTextArea;
 import jedit.SyntaxDocument;
 import jedit.TSQLTokenMarker;
 import jedit.TextAreaDefaults;
+
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.ColumnBean;
+import org.astrogrid.acr.astrogrid.DatabaseBean;
+import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.ParameterBean;
+import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
+import org.astrogrid.acr.astrogrid.TableBean;
+import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
+import org.astrogrid.acr.dialogs.RegistryChooser;
+import org.astrogrid.acr.ivoa.Adql074;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /** custom tool editors for dsa - gives prominence to the query
  * <p>
@@ -429,6 +426,12 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
 
 /* 
 $Log: DatacenterToolEditorPanel.java,v $
+Revision 1.5  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.4.46.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.4  2005/10/19 18:16:47  nw
 made more error tolerant
 

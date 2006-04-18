@@ -1,4 +1,4 @@
-/*$Id: ToolEditorInternal.java,v 1.2 2005/09/12 15:21:16 nw Exp $
+/*$Id: ToolEditorInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import java.awt.Component;
+import java.net.URI;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.dialogs.ToolEditor;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import java.awt.Component;
-import java.net.URI;
 
 /** extension of the tool editor interface with some more handy methods.
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Aug-2005
@@ -73,6 +73,12 @@ public interface ToolEditorInternal extends ToolEditor {
 
 /* 
 $Log: ToolEditorInternal.java,v $
+Revision 1.3  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.2.56.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.2  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

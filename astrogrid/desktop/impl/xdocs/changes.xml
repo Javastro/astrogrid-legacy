@@ -13,6 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2.0-alpha-4" date="2006-03-31">
+	<action dev="nw" type="update">
+		Converted system from picocontainer to hivemind.
+	</action>
+</release>
 <release version="1.6-beta-1" date="2006-04-12">
 <action dev="jdt" type="fix">
 Made the Finder more robust to orphaned ACR config files.  Also now can prompt the user before starting the ACR, and prompt if the start up is taking too long.

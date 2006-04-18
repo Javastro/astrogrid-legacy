@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowTemplate.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: ParameterizedWorkflowTemplate.java,v 1.2 2006/04/18 23:25:43 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,29 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
-import org.astrogrid.desktop.modules.ag.builders.ApplicationInformationBuilder;
-import org.astrogrid.desktop.modules.ag.builders.InformationBuilder;
-import org.astrogrid.workflow.beans.v1.AbstractActivity;
-import org.astrogrid.workflow.beans.v1.Set;
-import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xpath.CachedXPathAPI;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ProcessingInstruction;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +20,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.CachedXPathAPI;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.desktop.modules.ag.builders.ApplicationInformationBuilder;
+import org.astrogrid.desktop.modules.ag.builders.InformationBuilder;
+import org.astrogrid.workflow.beans.v1.AbstractActivity;
+import org.astrogrid.workflow.beans.v1.Set;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
 
 /**
  * data class that holds all the info and metadata for a parameterized workflow template 
@@ -152,6 +150,12 @@ class ParameterizedWorkflowTemplate  {
 
 /* 
 $Log: ParameterizedWorkflowTemplate.java,v $
+Revision 1.2  2006/04/18 23:25:43  nw
+merged asr development.
+
+Revision 1.1.56.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformation.java,v 1.3 2006/02/02 14:19:48 nw Exp $
+/*$Id: TabularDatabaseInformation.java,v 1.4 2006/04/18 23:25:45 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,18 +31,42 @@ public class TabularDatabaseInformation extends ResourceInformation {
         super(ivorn, title, description, url,logo);
         this.databases = databases;
     }
+    static final long serialVersionUID = -3229984290051480122L;
     protected final DatabaseBean[] databases;
     
     /** list the databases described by this registry entry */
     public DatabaseBean[] getDatabases() {
         return databases;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("TabularDatabaseInformation[");
+        sb.append(super.toString());
+        sb.append(" databases:[");
+        for (int i =0; i < databases.length; i++) {
+            sb.append(databases[i]);
+        }
+        sb.append("]]");
+        return sb.toString();
+        
+    }
+    
+    
 
 }
 
 
 /* 
 $Log: TabularDatabaseInformation.java,v $
+Revision 1.4  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.3.6.2  2006/04/04 10:31:25  nw
+preparing to move to mac.
+
+Revision 1.3.6.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.3  2006/02/02 14:19:48  nw
 fixed up documentation.
 

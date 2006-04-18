@@ -1,4 +1,4 @@
-/*$Id: ToolEditEvent.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: ToolEditEvent.java,v 1.2 2006/04/18 23:25:47 nw Exp $
  * Created on 06-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.editors.model;
 
+import java.util.EventObject;
+
+import org.astrogrid.acr.dialogs.ToolEditor;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
-
-import java.util.EventObject;
 
 /** event object fired by tool editors - source will be an instance of the {@link ToolEditor} interface
  * 
@@ -50,6 +51,12 @@ public class ToolEditEvent extends EventObject {
 
 /* 
 $Log: ToolEditEvent.java,v $
+Revision 1.2  2006/04/18 23:25:47  nw
+merged asr development.
+
+Revision 1.1.56.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

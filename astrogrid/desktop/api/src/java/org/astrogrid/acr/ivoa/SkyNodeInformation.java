@@ -1,4 +1,4 @@
-/*$Id: SkyNodeInformation.java,v 1.1 2006/02/24 12:17:52 nw Exp $
+/*$Id: SkyNodeInformation.java,v 1.2 2006/04/18 23:25:45 nw Exp $
  * Created on 21-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,6 +44,7 @@ public class SkyNodeInformation extends ApplicationInformation {
     }
     
 
+    static final long serialVersionUID = 6247601098828504183L;
     private final String compliance;
     private final double latitude;
     private final double longitude;
@@ -128,11 +129,37 @@ public class SkyNodeInformation extends ApplicationInformation {
     public String getPrimaryTable() {
         return this.primaryTable;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("SkyNodeInformation[");        
+        sb.append(super.toString());
+        sb.append(" complicance: ");
+        sb.append(compliance);
+        sb.append(" lattitude: ");
+        sb.append(latitude);
+        sb.append(" longitude: ");
+        sb.append(longitude);
+        sb.append(" maxRecords: ");
+        sb.append(maxRecords);
+        sb.append(" primaryKey: ");
+        sb.append(primaryKey);
+        sb.append("]");
+        return sb.toString();
+    }
 }
 
 
 /* 
 $Log: SkyNodeInformation.java,v $
+Revision 1.2  2006/04/18 23:25:45  nw
+merged asr development.
+
+Revision 1.1.2.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.1.2.1  2006/03/22 17:27:20  nw
+first development snapshot
+
 Revision 1.1  2006/02/24 12:17:52  nw
 added interfaces for skynode
  

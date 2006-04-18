@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.3 2005/09/02 14:03:34 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,26 +10,24 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.system.ApiHelp;
-import org.astrogrid.desktop.framework.DefaultModule;
-import org.astrogrid.desktop.framework.MutableACR;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.system.ApiHelp;
+import org.astrogrid.desktop.framework.ACRInternal;
+import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
+import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
+import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
+import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
+
 /** Implementation of the APIHelp component
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Jun-2005
- *
+ * @todo strip html tags from responses - this should be text-only.
  */
 public class ApiHelpImpl implements ApiHelp {
     /**
@@ -40,21 +38,21 @@ public class ApiHelpImpl implements ApiHelp {
     /** Construct a new ApiHelpImpl
      * 
      */
-    public ApiHelpImpl(MutableACR reg) {
+    public ApiHelpImpl(ACRInternal reg) {
         super();
         this.reg = reg;
     }
-    protected final MutableACR reg;
+    protected final ACRInternal reg;
     public String[] listMethods() {
         Vector result = new Vector();
 
-        for (Iterator i = reg.moduleIterator(); i.hasNext(); ) {
-            DefaultModule m = (DefaultModule)i.next();
-            for(Iterator j = m.getDescriptor().componentIterator(); j.hasNext(); ) {
+        for (Iterator i = reg.getDescriptors().values().iterator(); i.hasNext(); ) {
+            ModuleDescriptor m = (ModuleDescriptor) i.next();
+            for(Iterator j = m.componentIterator(); j.hasNext(); ) {
                 ComponentDescriptor cd = (ComponentDescriptor)j.next();
                 for (Iterator k = cd.methodIterator(); k.hasNext(); ) {
                     MethodDescriptor md = (MethodDescriptor)k.next();
-                    result.add(m.getDescriptor().getName() + "." + cd.getName() + "." + md.getName());
+                    result.add(m.getName() + "." + cd.getName() + "." + md.getName());
                 }
             }
         }
@@ -63,8 +61,8 @@ public class ApiHelpImpl implements ApiHelp {
 
     public String[] listModules() {
         Vector modules = new Vector();
-        for (Iterator i =reg.moduleIterator(); i.hasNext(); ) {
-            ModuleDescriptor md = ((DefaultModule)i.next()).getDescriptor();
+        for (Iterator i =reg.getDescriptors().values().iterator(); i.hasNext(); ) {
+            ModuleDescriptor md = (ModuleDescriptor)i.next();
             modules.add(md.getName());
         }
         return (String[])modules.toArray(new String[]{});
@@ -72,13 +70,13 @@ public class ApiHelpImpl implements ApiHelp {
     
     public String[] listComponentsOfModule(String moduleName) throws NotFoundException {
         Vector components = new Vector();
-        DefaultModule m = (DefaultModule)reg.getModule(moduleName);
+        ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(moduleName);
         if (m == null) {
             throw new NotFoundException("Unknown module " + moduleName);
          }            
-        for (Iterator i = m.getDescriptor().componentIterator(); i.hasNext(); ) {
+        for (Iterator i = m.componentIterator(); i.hasNext(); ) {
             ComponentDescriptor cd = (ComponentDescriptor)i.next();
-            components.add(m.getDescriptor().getName() + "." + cd.getName());
+            components.add(m.getName() + "." + cd.getName());
         }
         return (String[])components.toArray(new String[]{});
     }
@@ -88,11 +86,11 @@ public class ApiHelpImpl implements ApiHelp {
      */
     public String interfaceClassName(String arg0) throws NotFoundException {
         String[] names = arg0.split("\\.");        
-        DefaultModule m = (DefaultModule)reg.getModule(names[0]);
+        ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
         if (m == null) {
             throw new NotFoundException("Unknown module " + names[0]);
         }
-        ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
+        ComponentDescriptor cd = m.getComponent(names[1]);
         if (cd == null) {
             throw new NotFoundException("Unknown component " + names[1]);
         }
@@ -102,18 +100,18 @@ public class ApiHelpImpl implements ApiHelp {
     public String[] listMethodsOfComponent(String componentName) throws NotFoundException {
         Vector methods = new Vector();
         String[] names = componentName.split("\\.");
-        DefaultModule m = (DefaultModule)reg.getModule(names[0]);
+        ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
 
         if (m == null) {
             throw new NotFoundException("Unknown module " + names[0]);
         }
-        ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
+        ComponentDescriptor cd = m.getComponent(names[1]);
         if (cd == null) {
             throw new NotFoundException("Unknown component " + names[1]);
         }                     
         for (Iterator i = cd.methodIterator(); i.hasNext(); ) {
             MethodDescriptor md = (MethodDescriptor)i.next();
-            methods.add(m.getDescriptor().getName() + "." + cd.getName() + "." + md.getName());
+            methods.add(m.getName() + "." + cd.getName() + "." + md.getName());
         }
         return (String[])methods.toArray(new String[]{});            
     }
@@ -156,11 +154,11 @@ public class ApiHelpImpl implements ApiHelp {
                 return (String[][])sigs.toArray(new String[][]{});
             }                
         }
-            DefaultModule m = (DefaultModule)reg.getModule(names[0]);
+            ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
             if (m == null) {
                 throw new NotFoundException( "Unknown module " + names[0]);
             }
-            ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
+            ComponentDescriptor cd = m.getComponent(names[1]);
             if (cd == null) {
                 throw new NotFoundException("Unknown component " + names[1]);
             }                
@@ -178,23 +176,23 @@ public class ApiHelpImpl implements ApiHelp {
             
         return (String[][])sigs.toArray(new String[][]{});
     }
-    public static final String XMLRPC_TYPE_KEY = "system.xmlrpc.type";
     
     protected String getXMLRPCType(ValueDescriptor vd) {
-        String type = vd.getProperty(XMLRPC_TYPE_KEY);
+        // strictly speaking, this doesn't return valid xmlrpc types - but these are only a suggestion, not a spec, anyhow.
+        String type = vd.getUitype();
         return type == null ? "string" : type.trim();
     }
 
     public String moduleHelp(String moduleName) throws NotFoundException {
-            DefaultModule m = (DefaultModule)reg.getModule(moduleName);
+            ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(moduleName);
             if (m == null) {
                 throw new NotFoundException("Unknown module " + moduleName);
             }
             StringBuffer result = new StringBuffer();
             result.append("Module ")
-            .append(m.getDescriptor().getName())
+            .append(m.getName())
             .append("\n\t")
-            .append(m.getDescriptor().getDescription())    ;
+            .append(m.getDescription())    ;
             return result.toString();        
                                   
     }
@@ -202,11 +200,11 @@ public class ApiHelpImpl implements ApiHelp {
     public String componentHelp(String componentName) throws NotFoundException {
         String[] names = componentName.split("\\.");
         String moduleName=names[0];
-            DefaultModule m = (DefaultModule)reg.getModule(moduleName);
+            ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(moduleName);
             if (m == null) {
                 throw new NotFoundException("Unknown module " + moduleName);
             }
-            ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
+            ComponentDescriptor cd = m.getComponent(names[1]);
             if (cd == null) {
                 throw new NotFoundException("Unknown component " + names[1]);
             }                        
@@ -214,23 +212,23 @@ public class ApiHelpImpl implements ApiHelp {
             .append("Component ")
             .append(cd.getName())
             .append(" in module ")
-            .append(m.getDescriptor().getName())
+            .append(m.getName())
             .append("\n\t")
             .append(cd.getDescription());
             return result.toString();                   
     }
     public String methodHelp(String methodName) throws NotFoundException {
         String[] names = methodName.split("\\.");
-        DefaultModule m = (DefaultModule)reg.getModule(names[0]);
+        ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
         if (m == null) {
             throw new NotFoundException( "Unknown module " + names[0]);
         }
         // special case for builtin methods..
-        if (m.equals("system") && names.length == 2) {
+        if (m.getName().equals("system") && names.length == 2) {
             return methodHelp("system.apihelp." + names[1]);
         }
         
-        ComponentDescriptor cd = m.getDescriptor().getComponent(names[1]);
+        ComponentDescriptor cd = m.getComponent(names[1]);
         if (cd == null) {
             throw new NotFoundException("Unknown component " + names[1]);
         }                
@@ -245,7 +243,7 @@ public class ApiHelpImpl implements ApiHelp {
                 .append(" belonging to component ")
                 .append(cd.getName())
                 .append(" in module ")
-                .append(m.getDescriptor().getName())
+                .append(m.getName())
                 .append("\n\t")
                 .append(md.getDescription());
         for (Iterator i = md.parameterIterator(); i.hasNext(); ) {
@@ -273,6 +271,18 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.4  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.3.60.3  2006/04/14 02:45:02  nw
+finished code.extruded plastic hub.
+
+Revision 1.3.60.2  2006/04/04 10:31:26  nw
+preparing to move to mac.
+
+Revision 1.3.60.1  2006/03/22 18:01:30  nw
+merges from head, and snapshot of development
+
 Revision 1.3  2005/09/02 14:03:34  nw
 javadocs for impl
 

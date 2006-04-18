@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.5 2005/11/24 01:13:24 nw Exp $
+/*$Id: JobsImpl.java,v 1.6 2006/04/18 23:25:44 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,66 +10,45 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.Jobs;
-import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
-import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.JobURN;
-import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.CastorException;
-import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 /** Job management service.implementation
  */
-public class JobsImpl implements JobsInternal {
+public class JobsImpl implements JobsInternal, UserLoginListener {
     /**
      * Commons Logger for this class
      */
@@ -244,6 +223,14 @@ public class JobsImpl implements JobsInternal {
    
     }
 
+	public void userLogin(UserLoginEvent arg0) {
+	}
+
+	public void userLogout(UserLoginEvent arg0) {
+		this.acc = null;
+		this.fac = null;
+	}
+
 
 
 }
@@ -251,6 +238,12 @@ public class JobsImpl implements JobsInternal {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.6  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.5.30.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.5  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

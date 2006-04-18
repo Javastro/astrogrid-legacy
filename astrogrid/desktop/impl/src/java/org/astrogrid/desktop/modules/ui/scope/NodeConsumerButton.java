@@ -1,4 +1,4 @@
-/*$Id: NodeConsumerButton.java,v 1.1 2006/02/24 15:26:53 nw Exp $
+/*$Id: NodeConsumerButton.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,12 +12,10 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+
 import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
 
 /** Something that consumes a set of selected nodes - used as a plugin for the astroscope ui,
  * 
@@ -51,6 +49,12 @@ public  abstract class  NodeConsumerButton extends JButton implements FocusListe
 
 /* 
 $Log: NodeConsumerButton.java,v $
+Revision 1.2  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.1.2.1  2006/04/14 02:45:01  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2006/02/24 15:26:53  nw
 build framework for dynamically adding buttons
 

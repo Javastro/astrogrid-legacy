@@ -1,8 +1,8 @@
 package org.astrogrid.desktop.modules.ui;
 
-import org.votech.plastic.PlasticHubListener;
-
 import java.net.URI;
+
+import org.votech.plastic.PlasticHubListener;
 
 /** 
  * standard interface that all workbench UI components shoud implement if they

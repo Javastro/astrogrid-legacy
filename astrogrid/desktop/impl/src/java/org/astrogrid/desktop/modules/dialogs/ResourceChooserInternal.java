@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserInternal.java,v 1.4 2005/10/12 13:30:10 nw Exp $
+/*$Id: ResourceChooserInternal.java,v 1.5 2006/04/18 23:25:44 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
-import org.astrogrid.acr.dialogs.ResourceChooser;
-
 import java.awt.Component;
 import java.net.URI;
+
+import org.astrogrid.acr.dialogs.ResourceChooser;
 
 /** Internal interface to resource chooser - allows you to specifiy a parent component
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Aug-2005
@@ -30,6 +30,12 @@ public interface ResourceChooserInternal extends ResourceChooser {
 
 /* 
 $Log: ResourceChooserInternal.java,v $
+Revision 1.5  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.4.46.1  2006/04/14 02:45:03  nw
+finished code.extruded plastic hub.
+
 Revision 1.4  2005/10/12 13:30:10  nw
 merged in fixes for 1_2_4_beta_1
 

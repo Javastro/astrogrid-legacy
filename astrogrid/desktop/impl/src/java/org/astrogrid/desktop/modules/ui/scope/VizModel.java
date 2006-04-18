@@ -1,5 +1,10 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Font;
+import java.util.Iterator;
+
+import javax.swing.table.DefaultTableModel;
+
 import edu.berkeley.guir.prefuse.focus.DefaultFocusSet;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
@@ -8,14 +13,6 @@ import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.Node;
 import edu.berkeley.guir.prefuse.graph.Tree;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
-import edu.berkeley.guir.prefuse.render.ImageFactory;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.awt.Font;
-
-import javax.swing.table.DefaultTableModel;
 
 /** represents the internal model of the vizualization - a tree of results, plus selections, etc.
  * model is shared between all vizualizations.

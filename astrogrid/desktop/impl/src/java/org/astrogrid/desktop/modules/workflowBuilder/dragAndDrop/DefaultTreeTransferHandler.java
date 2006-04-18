@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.workflowBuilder.dragAndDrop;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTargetDropEvent;
 import java.util.Enumeration;
 import java.util.Vector;
 

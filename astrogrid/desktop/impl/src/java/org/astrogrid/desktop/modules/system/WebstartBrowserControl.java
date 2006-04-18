@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: WebstartBrowserControl.java,v 1.2 2006/04/18 23:25:44 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.framework.ReflectionHelper;
+import java.lang.reflect.Method;
+import java.net.URL;
 
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.lang.reflect.Method;
-import java.net.URL;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.alternatives.FallbackBrowserControl;
+import org.astrogrid.desktop.framework.ReflectionHelper;
 
 /** Implementation of browsercontrol using the webstart additional APIs.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
@@ -78,6 +78,12 @@ public class WebstartBrowserControl extends FallbackBrowserControl implements Br
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.2  2006/04/18 23:25:44  nw
+merged asr development.
+
+Revision 1.1.68.1  2006/04/14 02:45:02  nw
+finished code.extruded plastic hub.
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 
