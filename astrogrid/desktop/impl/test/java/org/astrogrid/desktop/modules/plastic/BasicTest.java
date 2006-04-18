@@ -15,7 +15,7 @@ public class BasicTest  extends AbstractPlasticTestBase {
 	public void testContructsOK() {
 		File file = new File(System.getProperty("user.home"),".plastic");
 		//System.out.println(file);
-		// TODO fix this - the .plastic file is now deleted on shutdown of the JVM assertFalse("Plastic file should not exist before test", file.exists());
+		assertFalse("Plastic file should not exist before test", file.exists());
 		Startable listener = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web, new PrettyPrinterImpl(browser), config, shutdown);
 		listener.start();
 		assertTrue("Plastic file should exist after test",file.exists());
@@ -29,17 +29,14 @@ public class BasicTest  extends AbstractPlasticTestBase {
 	}
 	
 	public void testShutDown() {
-		//TODO fix me 
-		/*
-		Startable listener = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web, new PrettyPrinterImpl(browser), config, shutdown);
-		listener.start();
-		PlasticHubListener hub = (PlasticHubListener) listener;
+		PlasticHubImpl hub = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web, new PrettyPrinterImpl(browser), config, shutdown);
+		hub.start();
 		TestListener2 client = new TestListener2();
 		hub.registerRMI("client", CommonMessageConstants.EMPTY, client);
-		listener.stop();
+		hub.halting();
 		assertEquals(HubMessageConstants.HUB_STOPPING_EVENT, client.getMessage());
 		assertEquals(hub.getHubId(), client.getSender());
-		*/
+		
 	}
 	
 

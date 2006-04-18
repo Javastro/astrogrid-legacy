@@ -25,8 +25,6 @@ import java.util.Vector;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpc;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.Shutdown;
@@ -69,6 +67,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	private PrettyPrinterInternal prettyPrinter;
 
 	private Configuration config;
+
+	private boolean weWroteTheConfigFile;
 
 
 
@@ -358,6 +358,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // Write out connection properties in a non-astrogriddy way
         // see the Plastic spec http://plastic.sourceforge.net and
         // discussions on the DS6 forum about debranding.
+    	weWroteTheConfigFile = false;
         try {
             int rmiPort = rmiServer.getPort();
             String xmlServer = webServer.getUrlRoot() + "xmlrpc";
@@ -385,6 +386,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 
             }
             plasticPropertyFile.deleteOnExit();
+            weWroteTheConfigFile = true;
             OutputStream os = new BufferedOutputStream(new FileOutputStream(plasticPropertyFile));
             props.store(os, "Plastic Hub Properties.  See http://plastic.sourceforge.net");
             os.close();
@@ -402,7 +404,11 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 
     public void stop() {
-        // Plastic properties file should already be deleted automatically on exit
+        // Plastic properties file should already be deleted automatically on exit, but just in case
+    	// I've seen cases when it's been left behind, which could be enough to stop other hubs starting up.
+    	if (weWroteTheConfigFile && plasticPropertyFile.exists()) {
+    		plasticPropertyFile.delete();
+    	}
     }
 
     /*
