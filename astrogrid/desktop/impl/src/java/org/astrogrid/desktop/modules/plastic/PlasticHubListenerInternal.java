@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.util.List;
 
 import org.astrogrid.acr.ACRException;
+import org.votech.plastic.PlasticHubListener;
 
 /**
  * @author jdt@roe.ac.uk
  * @date 22-Nov-2005
  */
-public interface PlasticHubListenerInternal {
+public interface PlasticHubListenerInternal extends PlasticHubListener{//NWW - needs to extend public interface, otherwise won't get found
     /**
      * Ping registered applications, mark any that don't respond for potential purging.
      * 

@@ -27,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpc;
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
