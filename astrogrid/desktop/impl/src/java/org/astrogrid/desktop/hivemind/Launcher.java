@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: Launcher.java,v 1.3 2006/04/19 01:02:24 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,8 +61,8 @@ public final class Launcher implements Runnable {
     // runtime defaults. - can be overridden by things in system properties
     protected final Properties defaults = new Properties(){{
         setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.SimpleLog");
-        setProperty("org.apache.commons.logging.simplelog.defaultlog","error");
-        //    setProperty("org.apache.commons.logging.simplelog.defaultlog","info");        
+   //     setProperty("org.apache.commons.logging.simplelog.defaultlog","error");
+            setProperty("org.apache.commons.logging.simplelog.defaultlog","info");        
         setProperty("org.apache.commons.logging.simplelog.showlogname","true");
         setProperty("org.apache.commons.logging.simplelog.showShortLogname","true");
         setProperty("java.net.preferIPv4Stack","true");
@@ -154,6 +154,9 @@ public final class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.3  2006/04/19 01:02:24  nw
+turned up logging for now
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 
