@@ -8,14 +8,14 @@ It works with both Java 1.4 and 1.5, and with Tomcat 5.0.x and 5.5.x.
 I've only tried it with Jena 2.3 -- other versions may or may not
 work.  See <http://jena.sourceforge.net>.
 
-SISC is available from <http://sisc.sourceforge.net>.  It works
-with sisc-1.13.4 and later.  Mmmm: actually, it doesn't: it works with
-the head of the r1_13_freeze branch as of 2006 April 12, but not with
-the 1.13.4 source distribution, though they should be pretty much
-identical....  As of 1.13.4, you actually need to download, build and
-install the source distribution, then copy sisc-heap.jar from the
-build directory into the same directory that the other jars are
-installed in.
+SISC is available from <http://sisc.sourceforge.net>.  Quaestor works
+with sisc-1.13.5 at least, and probably later versions also.  It
+requires a little bit of post-installation configuration.  Download
+sisc-1.13.5 (or later, presumably):
+  % cd .../sisc-x.y.z ;installation directory
+  % ./install-srfi22.sh $PWD
+  % chmod +x srfi-22.sh
+  % PATH=.:$PATH scheme-src/build-heapjar.scm
 
 Building Quaestor
 -----------------
@@ -34,7 +34,8 @@ following properties:
   program.
 
   sisc.lib : the directory which contains sisc{,-opt,-lib}.jar and
-  sisc.shp.
+  sisc.shp (in the SISC binary distributions, this is usually the same
+  directory as sisc.bin).
 
 Then 'ant && ant dist' to make the .war file.
 
