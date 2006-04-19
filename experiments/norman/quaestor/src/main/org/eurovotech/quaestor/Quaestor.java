@@ -17,7 +17,6 @@ import sisc.interpreter.SchemeException;
 public class Quaestor extends HttpServlet {
 
     private java.util.Map requestHandlerMap;
-    private static java.net.URL heap = null;
     
     public void init()
             throws ServletException {
@@ -51,8 +50,7 @@ public class Quaestor extends HttpServlet {
             requestHandlerMap.put("POST" + xmlrpcContext,
                                   "xmlrpc-handler");
         } catch (IOException e) {
-            throw new ServletException("Error starting SISC (heap=" + heap
-                                       + ", code=" + qt + ")",
+            throw new ServletException("Error starting SISC (code=" + qt + ")",
                                        e);
         } catch (SchemeException e) {
             throw new ServletException("Error reading file " + qt, e);
