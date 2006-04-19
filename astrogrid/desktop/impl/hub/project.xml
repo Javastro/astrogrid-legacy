@@ -40,7 +40,7 @@
                                 <includes>
                                         <include>**/hivemind/*.xml</include>
                                         <include>org/astrogrid/desktop/icons/*.png</include>
-                                        <include>**/*.xsl</include> <!-- needed ?? -->
+                                        <include>org/astrogrid/desktop/modules/system/transformers/xmlverbatim.xsl</include>
                                         <include>org/astrogrid/plastic-splash.png</include>
           								<include>org/astrogrid/desktop/icons/*.gif</include>
                                 </includes>
@@ -315,27 +315,24 @@ dunno what to do in single-app case - just leave out, i guess.
    
 
 <!-- used within development only -->
-<!-- testing html interface -->
 
                 <!-- plugins -->
     	         <dependency>
 		            <groupId>maven-plugins</groupId>
 		            <artifactId>maven-javaapp-plugin</artifactId>
 		            <version>1.3.1 	</version>
-		            <type>plugin</type>
+		            <type>plugin</type>			            
 		        </dependency> 	
  <dependency>
       <groupId>commons-jelly</groupId>
       <artifactId>commons-jelly-tags-jsl</artifactId>
       <version>20030211.143151</version>
-      <properties />
     </dependency>
     <dependency>
       <groupId>commons-jelly</groupId>
       <artifactId>commons-jelly-tags-xml</artifactId>
       <version>20030211.142705</version>
       <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
-      <properties />
     </dependency>
 		        
     </dependencies>
