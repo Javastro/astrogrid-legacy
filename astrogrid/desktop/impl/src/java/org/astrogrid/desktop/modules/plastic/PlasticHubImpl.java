@@ -515,7 +515,16 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	public void halting() {
 		//Message should be sent _after_ apps have been given a chance to stop it.
+//TODO - system goes down before this message is send. make synchronous instead.
 		requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
+		
+		//request(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
+		// nope, don't reckon the synchronous will work - as this means that it waits for a response
+		// from all the things it's messaged. (which, I don't think the spec requires)
+		// meanwhile, all the message-sending is still done in separate threads, so the 
+		// system could still be falling down around our ears before all the messages get out.
+		// need a different messaging-sending variant - which blocks just until all messages
+		// have been sent.
     	if (plasticPropertyFile != null && weWroteTheConfigFile && plasticPropertyFile.exists()) {
     		plasticPropertyFile.delete();
     	}	}
