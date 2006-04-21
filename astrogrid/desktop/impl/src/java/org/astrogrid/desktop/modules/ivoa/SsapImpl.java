@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.2 2006/03/13 18:29:32 nw Exp $
+/*$Id: SsapImpl.java,v 1.3 2006/04/21 13:48:11 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
@@ -17,10 +21,6 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 
 /** implementation of a component that does ssap queries.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
@@ -99,6 +99,9 @@ public class SsapImpl extends DALImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.3  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.2  2006/03/13 18:29:32  nw
 fixed queries to not restrict to @status='active'
 

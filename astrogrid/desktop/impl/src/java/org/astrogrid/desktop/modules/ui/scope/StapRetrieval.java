@@ -1,31 +1,24 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.astrogrid.Stap;
-import org.astrogrid.acr.astrogrid.StapInformation;
-import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
-import org.astrogrid.desktop.modules.ui.UIComponent;
+import java.net.URI;
+import java.net.URL;
+import java.util.Calendar;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.ColumnInfo;
-
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
-
-import java.net.URI;
-import java.net.URL;
-import java.util.Map;
-import java.util.Calendar;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 
 /** 

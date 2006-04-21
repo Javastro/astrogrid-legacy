@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.3 2006/04/19 01:02:24 nw Exp $
+/*$Id: Launcher.java,v 1.4 2006/04/21 13:48:11 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,9 +57,10 @@ import org.xml.sax.SAXException;
 public final class Launcher implements Runnable {
     private final ClassResolver cl;
     private final List resources = new ArrayList();
+  
     private Registry reg;
     // runtime defaults. - can be overridden by things in system properties
-    protected final Properties defaults = new Properties(){{
+    public static final Properties defaults = new Properties(){{
         setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.SimpleLog");
    //     setProperty("org.apache.commons.logging.simplelog.defaultlog","error");
             setProperty("org.apache.commons.logging.simplelog.defaultlog","info");        
@@ -67,7 +68,7 @@ public final class Launcher implements Runnable {
         setProperty("org.apache.commons.logging.simplelog.showShortLogname","true");
         setProperty("java.net.preferIPv4Stack","true");
         setProperty("java.net.preferIPv6Addresses","false");
-        setProperty("ivoa.skynode.disabled","false");
+        setProperty("ivoa.skynode.disabled","true");
     }};    
     
     /** access the hivemind registry. creates acr if necessary */
@@ -83,7 +84,6 @@ public final class Launcher implements Runnable {
         System.setSecurityManager(null); 
         Thread.currentThread().setContextClassLoader(Launcher.class.getClassLoader()); 
         Thread.currentThread().setName("Main Thread");
-       // (new SwingSetup()).run();
         cl = new DefaultClassResolver(Thread.currentThread().getContextClassLoader());
         // add the preliminary resources.
         addModuleByName("hivemind");
@@ -118,7 +118,18 @@ public final class Launcher implements Runnable {
     		}
     	}
     	
-        // unpleasant hack - dive into internals to set entity resolver on the parser used.
+        ModuleDescriptorProvider provider = createModuleDescriptorProvider();        
+        RegistryBuilder builder = new RegistryBuilder();
+      //  builder.addModuleDescriptorProvider(new XmlModuleDescriptorProvider(cl)); //this one loads descriptors for libraries from default locations.
+        builder.addModuleDescriptorProvider(provider); // this one loads our own descriptors
+        reg = builder.constructRegistry(Locale.getDefault());        
+    }
+
+	/**
+	 * @return
+	 */
+	public ModuleDescriptorProvider createModuleDescriptorProvider() {
+		// unpleasant hack - dive into internals to set entity resolver on the parser used.
         // otherwise, doesn't see external entity references.
         // doesn't seem to be a nicer way to do this.
         ModuleDescriptorProvider provider = new XmlModuleDescriptorProvider(cl,resources) {
@@ -141,12 +152,9 @@ public final class Launcher implements Runnable {
                     }                    
                 };
             }
-        };        
-        RegistryBuilder builder = new RegistryBuilder();
-      //  builder.addModuleDescriptorProvider(new XmlModuleDescriptorProvider(cl)); //this one loads descriptors for libraries from default locations.
-        builder.addModuleDescriptorProvider(provider); // this one loads our own descriptors
-        reg = builder.constructRegistry(Locale.getDefault());        
-    }
+        };
+		return provider;
+	}
     
 
 }
@@ -154,6 +162,9 @@ public final class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.4  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.3  2006/04/19 01:02:24  nw
 turned up logging for now
 

@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
+/*$Id: CommunityImpl.java,v 1.5 2006/04/21 13:48:12 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,25 +19,27 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
+import org.astrogrid.community.resolver.CommunityPasswordResolver;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
-import org.astrogrid.desktop.modules.system.UIImpl;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.ui.script.LoginFactory;
-import org.astrogrid.ui.script.ScriptEnvironment;
+import org.astrogrid.store.Ivorn;
 
 /** Community Service implementation
- *@todo remove UI aspect of this.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
-public class CommunityImpl implements CommunityInternal  {
+public class CommunityImpl implements Community  {
     /**
      * Commons Logger for this class
      */
@@ -46,14 +48,12 @@ public class CommunityImpl implements CommunityInternal  {
     /** Construct a new Community
      * 
      */
-    public CommunityImpl(BrowserControl browser,UIInternal ui) {       
-        this.browser = browser;
+    public CommunityImpl(UIInternal ui,LoginDialogue loginDialogue) {       
         this.ui = ui;
-        loginDialogue = new LoginDialogue();
+        this.loginDialogue = loginDialogue;
         ui.setStatusMessage("Not Logged In");
     }
     protected final UIInternal ui;
-    protected final BrowserControl browser;
     protected final LoginDialogue loginDialogue;
     protected UserInformation userInformation;
 
@@ -65,7 +65,6 @@ public class CommunityImpl implements CommunityInternal  {
     }
 
     public void logout() {
-        env = null;
         userInformation = null;
         loginDialogue.setPassword("");
         notifyListeners(false);
@@ -73,16 +72,6 @@ public class CommunityImpl implements CommunityInternal  {
         ui.setLoggedIn(false);
     }
     
-    private ScriptEnvironment env;
-
-    public ScriptEnvironment getEnv() {
-        guiLogin();
-        if (! isLoggedIn()) {
-            throw new RuntimeException("Cannot proceed - failed to login");
-        }       
-        return this.env;
-    }
-
     public UserInformation getUserInformation()  {
        guiLogin();
        if (! isLoggedIn()) {
@@ -92,7 +81,7 @@ public class CommunityImpl implements CommunityInternal  {
     }    
     
     public boolean isLoggedIn() {
-        return env != null;
+        return userInformation != null;
     }
     /** @todo strictly speaking this should call swing worker to put this on the event queue thread. I think  
      * 
@@ -106,15 +95,41 @@ public class CommunityImpl implements CommunityInternal  {
             return;
         }
         while(!isLoggedIn()) {
-            if (! (loginDialogue.showDialog(null))) { // cancel was hit.
+            if (! (loginDialogue.showDialog())) { // cancel was hit.
                 break;
             }
             try {
                 authenticate();
             } catch (Exception e) {
-                UIImpl.showError(null,"Failed to login",e);
+                UIComponentImpl.showError(null,"Failed to login",e);
             }
         }                    
+    }
+    /** do the authentication to the legacy communiuty service.
+     * in time, this will all be replaced by guy's work.
+     * @param name
+     * @param community
+     * @param password
+     * @return user ivorn (just for convenience, proabbly later will return some kind of credentials)
+     * @throws CommunityResolverException
+     * @throws CommunityServiceException
+     * @throws CommunitySecurityException
+     * @throws CommunityIdentifierException
+     * @throws RegistryException
+     * @throws URISyntaxException
+     */
+    private URI doCommunityLogin(String name,String community,String password) throws CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException, RegistryException, URISyntaxException {
+     
+        CommunityPasswordResolver security = new CommunityPasswordResolver();
+        Account acc = new Account();
+        Group group = new Group();
+        group.setName("login-script-env-users");
+        acc.setName(name);
+        acc.setCommunity(community);
+        group.setCommunity(community);
+        Ivorn userIvorn = new Ivorn(community,name,"");
+        security.checkPassword(userIvorn.toString(),password);
+        return new URI(userIvorn.toString());
     }
     
     /** uses fields in loginDialogue to autenticate against the server 
@@ -127,14 +142,14 @@ public class CommunityImpl implements CommunityInternal  {
         logger.info("In authenticate");
         try {
             ui.setStatusMessage("Logging in..");   
-        env = LoginFactory.login(loginDialogue.getUser(),loginDialogue.getCommunity(),loginDialogue.getPassword());
+        URI user = doCommunityLogin(loginDialogue.getUser(),loginDialogue.getCommunity(),loginDialogue.getPassword());
         userInformation = new UserInformation(
-                new URI(env.getUserIvorn().toString())
+                user
                 ,loginDialogue.getUser()
                 ,loginDialogue.getPassword()
                 ,loginDialogue.getCommunity()
                );
-        ui.setStatusMessage("Logged in as " + env.getUserIvorn());
+        ui.setStatusMessage("Logged in as " + user);
         ui.setLoggedIn(true);
         notifyListeners(true);
         } catch (CommunityResolverException e) {
@@ -203,6 +218,9 @@ public class CommunityImpl implements CommunityInternal  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.5  2006/04/21 13:48:12  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 

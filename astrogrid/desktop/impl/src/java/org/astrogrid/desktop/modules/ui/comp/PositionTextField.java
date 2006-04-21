@@ -1,9 +1,10 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import javax.swing.JTextField;
-import org.astrogrid.acr.cds.Sesame;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.cds.Sesame;
 
 /**
  * Class: PositionTextField

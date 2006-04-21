@@ -10,8 +10,11 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -19,7 +22,17 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.hivemind.Element;
+import org.apache.hivemind.ErrorHandler;
+import org.apache.hivemind.Resource;
+import org.apache.hivemind.impl.DefaultErrorHandler;
+import org.apache.hivemind.parse.ContributionDescriptor;
+import org.apache.hivemind.parse.ModuleDescriptor;
 import org.astrogrid.desktop.hivemind.Launcher;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /** Sets up the default commandline parser for all the different app variants.
  * @author Noel Winstanley
@@ -59,6 +72,7 @@ class CmdLineParser {
 		// other options.
 		o.addOption(OptionBuilder.withDescription("Enable Debugging").create("debug"));
 		o.addOption(OptionBuilder.withDescription("Print Help").create("help"));
+		o.addOption(OptionBuilder.withDescription("List available properties").create("list"));
 ;
 		
 		return o;
@@ -80,9 +94,10 @@ class CmdLineParser {
 			if (cl.hasOption("help")) {
 				showHelp(usage,options);
 				return null;
-			} else {
-			  return cl;
 			}
+			
+			  return cl;
+			
 		} catch (ParseException x) {
 			System.out.println(x.getMessage());
 			showHelp(usage,options);
@@ -127,6 +142,47 @@ class CmdLineParser {
 		if (moduleURLs != null ) {
 			processModuleURLs(l, moduleURLs);		
 		}
+		// once we've loaded up everything, check whether we're to just list, or to go live.
+		if (cl.hasOption("list")) {
+			listConfiguration(l);
+			System.exit(0); // urgh. best to do this for now.
+		}
+	}
+	/** List all the configuration properties, etc in the currently configured launcher.
+	 * @param l
+	 */
+	private static void listConfiguration(Launcher l) {
+		System.out.println("System Settings");
+		Properties props = System.getProperties();
+		props.list(System.out);
+		System.out.println();
+		System.out.println("System Defaults - can be overridden");
+		Launcher.defaults.list(System.out);
+		System.out.println();
+		System.out.println("Module Defaults - can be overridden");
+		ErrorHandler err = new DefaultErrorHandler();
+		List descr = l.createModuleDescriptorProvider().getModuleDescriptors(err);
+		for (Iterator i = descr.iterator(); i.hasNext(); ) {
+			ModuleDescriptor md = (ModuleDescriptor) i.next();
+			if (md.getModuleId().indexOf("hivemind") != -1) {
+				// skip system modules.
+				continue;
+			}
+			System.out.println();
+			System.out.println(md.getModuleId());
+			for (Iterator j = md.getContributions().iterator(); j.hasNext(); ) {
+				ContributionDescriptor cd = (ContributionDescriptor)j.next();
+				if (cd.getConfigurationId().equals("hivemind.FactoryDefaults")) {
+					for (Iterator k = cd.getElements().iterator(); k.hasNext(); ) {
+						Element e= (Element)k.next();
+						System.out.println(e.getAttributeValue("symbol") + "=" + e.getAttributeValue("value"));
+					}
+				}
+			}
+		}
+		System.out.println();
+		System.out.println("Any service can be disabled by setting the property 'service.name.disabled");
+		System.out.println("For example, to disable the rmi server, set 'system.rmi.disabled'");
 	}
 	/**
 	 * @param l

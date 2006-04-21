@@ -3,8 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ag.transformers;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.collections.Transformer;
 import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.Marshaller;

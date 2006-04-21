@@ -309,7 +309,7 @@ System module.
 			<parameter>http://esavo.esa.int/vospecapp</parameter>
 		</action>				
 		<action parentName="apps" name="xmdv" text="xmdv-lite" 
-			after="vospec"
+			after="vospec" iconName="xmdv.png"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
 			<html><b>xmdv-lite-vo</b> is a vo-enabled, plasticized version of the XMDV visualization tool
@@ -390,12 +390,14 @@ System module.
 		<default symbol="system.rmi.startScanPort" value="1099" />
 		<default symbol="system.rmi.endScanPort" value="2099" />
 		<default symbol="system.rmi.disableConnectionFile" value="false" />
+	   <default symbol="system.rmi.connectionFile" value="${user.home}${file.separator}.acr-rmi-port" />			
 				
 		<default symbol="system.webserver.port" value="-1"/>		
 		<default symbol="system.webserver.startScanPort" value="8001" />
 		<default symbol="system.webserver.endScanPort" value="8800" />
 		<default symbol="system.webserver.contextName" value=""/> <!-- indicates auto-generate -->
 		<default symbol="system.webserver.disableConnectionFile" value="false" />
+		<default symbol="system.webserver.connectionFile" value="${user.home}${file.separator}.astrogrid-desktop" />
 
 	    <default symbol="system.executor.queueSize" value="10000" />
 		<default symbol="system.executor.startThreads" value="15" />
@@ -409,14 +411,7 @@ System module.
 		<!-- configuration for alternatives -->
 		<default symbol='system.systray.alternative.logger' value='SYSTRAY' />
 		<default symbol='system.ui.alternative.logger' value='UI' />
-	</contribution>
-	
-	<!-- necessary to define these as application defailts, as refer to symbols from system properties, which 
-	aren't visible to factory defaults -->
-<!--	<contribution configuration-id="hivemind.ApplicationDefaults">-->
-<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="system.webserver.connectionFile" value="${user.home}${file.separator}.astrogrid-desktop" />
-	   <default symbol="system.rmi.connectionFile" value="${user.home}${file.separator}.acr-rmi-port" />			
+
 	</contribution>
 	
 
@@ -428,6 +423,7 @@ System module.
 		<load service-id="rmi" /> 
 		<load service-id="scheduler"/>
 		<load service-id="executor" />
+		<load service-id="configuration" />
 	</contribution>
 	
 	<!-- start this eager if running under webstart -->
@@ -442,12 +438,14 @@ System module.
 	<!-- everything else - eager when testing -->
 	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
 		<load service-id="browser"/>
-		<load service-id="configuration" />
 		<load service-id="apihelp" />
 		<load service-id="systray" />
 	</contribution>	
 	
-
+	<!-- when running in workbench mode, tweak the ui up -->
+	<contribution configuration-id="hivemind.Startup" if="property workbench.mode">
+		<startup object="instance:org.astrogrid.desktop.modules.system.SwingSetup" />
+	</contribution>
 	
 	
 	<!-- service points and implementations -->

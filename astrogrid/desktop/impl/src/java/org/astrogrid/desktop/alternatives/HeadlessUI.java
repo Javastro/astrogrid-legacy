@@ -20,14 +20,12 @@ public class HeadlessUI implements UIInternal {
 	 * Logger for this class
 	 */
 	private  Log logger;
-	private final UIComponent parent;
 
 	protected final BackgroundExecutor executor;
 	public HeadlessUI(final String category, final BackgroundExecutor executor) {
 		super();
 		this.logger =LogFactory.getLog(category);
 		this.executor = executor;
-		this.parent = new HeadlessUIComponent();
 	}
 
 	public Component getComponent() {
@@ -39,7 +37,7 @@ public class HeadlessUI implements UIInternal {
 	}
 
 	public BackgroundWorker wrap(final Runnable r) {
-        return new BackgroundWorker(parent,"Background Task") {
+        return new BackgroundWorker(this,"Background Task") {
 
             protected Object construct() throws Exception {
                 r.run();
@@ -57,10 +55,7 @@ public class HeadlessUI implements UIInternal {
 		logger.info("Logged in = " + arg0);
 	}
 
-	public void setStatusMessage(String arg0) {
-		logger.info(arg0);
 
-	}
 
 	public void show() {
 		// does nothing.
@@ -75,9 +70,6 @@ public class HeadlessUI implements UIInternal {
 
 	}
 
-	
-	private class HeadlessUIComponent implements UIComponent {
-		// dunno if these are necessary, but doesn't take much to implement them.
 		private int max = 0;
 		private int progress = 0;
 		
@@ -98,7 +90,7 @@ public class HeadlessUI implements UIInternal {
 		}
 
 		public UIInternal getUI() {
-			return HeadlessUI.this;
+			return this;
 		}
 
 		public void removeBackgroundWorker(BackgroundWorker w) {
@@ -123,6 +115,4 @@ public class HeadlessUI implements UIInternal {
 		public void showError(String msg, Throwable e) {
 			logger.error(msg,e);
 		}
-	
-	}
 }

@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.4 2006/04/18 23:25:44 nw Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.5 2006/04/21 13:48:12 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import java.util.prefs.Preferences;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hivemind.service.impl.FactoryDefault;
+import org.astrogrid.Workbench;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.Configuration;
@@ -55,23 +56,24 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
             FactoryDefault d = (FactoryDefault)i.next();
             p.setProperty(d.getSymbol(),d.getValue());
         }
-        // now any overrides...
-        for (Iterator i = app.iterator(); i.hasNext(); ) {
-            FactoryDefault d = (FactoryDefault)i.next();
-            p.setProperty(d.getSymbol(),d.getValue());
-        }        
+    
         // now system properties.
         for (Iterator i = System.getProperties().entrySet().iterator(); i.hasNext(); ) {
             Map.Entry e = (Map.Entry)i.next();
             p.setProperty((String)e.getKey(),(String)e.getValue());            
         }
+        // now any overrides...
+        for (Iterator i = app.iterator(); i.hasNext(); ) {
+            FactoryDefault d = (FactoryDefault)i.next();
+            p.setProperty(d.getSymbol(),d.getValue());
+        }            
         return p;
     }
     
     
     // @todo change preference location to something more meaningful - i.e. start class of system.
     // need to take care to refer to classes that are always going to be on classpath.
-    private Class preferenceClass = UIImpl.class;
+    private Class preferenceClass = Workbench.class;
     
     /**
      * 
@@ -186,6 +188,9 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.5  2006/04/21 13:48:12  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 

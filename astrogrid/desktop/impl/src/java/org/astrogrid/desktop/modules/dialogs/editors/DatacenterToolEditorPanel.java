@@ -1,4 +1,4 @@
-/*$Id: DatacenterToolEditorPanel.java,v 1.5 2006/04/18 23:25:47 nw Exp $
+/*$Id: DatacenterToolEditorPanel.java,v 1.6 2006/04/21 13:48:12 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,14 +36,12 @@ import jedit.TextAreaDefaults;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.ParameterBean;
-import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
 import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
@@ -92,7 +90,7 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
         protected ParameterValue[] filter(ParameterValue[] parameter) {
             String interfaceName =toolModel.getTool().getInterface();
             ApplicationInformation info = toolModel.getInfo();
-            List filterList = Arrays.asList(  listADQLParameters(interfaceName,info));
+            List filterList = Arrays.asList(  ApplicationsImpl.listADQLParameters(interfaceName,info));
             List p= new ArrayList(Arrays.asList(parameter));
             for (Iterator i = p.iterator(); i.hasNext(); ) {
                 if (filterList.contains( ((ParameterValue)i.next()).getName())) {
@@ -167,7 +165,7 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
             setEnabled(false);
         }
         public void toolSet(ToolEditEvent te) {
-            String[] toks = listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
+            String[] toks = ApplicationsImpl.listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
             if (toks.length > 0) {
                 setEnabled(true);
                 queryParam = (ParameterValue)toolModel.getTool().findXPathValue("input/parameter[name='" + toks[0] +"']");
@@ -186,31 +184,6 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
         myDefaults.caretVisible=true;
     }    
 
-    /** returns true if this app has an adql parameter */
-    public static String[] listADQLParameters(String interfaceName,ApplicationInformation info) {
-        InterfaceBean ib = null;
-        List results = new ArrayList();
-        for (int i = 0; i < info.getInterfaces().length; i++) {        
-            if (info.getInterfaces()[i].getName().equals(interfaceName)) {
-                ib = info.getInterfaces()[i];
-            }            
-        }
-        if (ib == null) {
-            return new String[]{};
-        }
-        for (int i =0; i < ib.getInputs().length; i++) {
-            ParameterReferenceBean prb = ib.getInputs()[i];
-            ParameterBean pb = (ParameterBean)info.getParameters().get(prb.getRef());
-            if (pb ==null) {
-                return new String[]{};
-            }
-            if (pb.getType() != null && pb.getType().equalsIgnoreCase("adql")) {
-                results.add(pb.getName());
-            }
-        }
-        return (String[])results.toArray(new String[]{});
-        
-    }
     protected final UIComponent parent;
     protected final RegistryChooser regChooser;
     protected final Adql074 validator;
@@ -239,7 +212,7 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
     /** applicable when it's a dsa-style tool - ie. has an ADQL parameter*/
     public boolean isApplicable(Tool t, ApplicationInformation info) {
         
-        return t != null && info != null && listADQLParameters(t.getInterface(),info).length > 0;
+        return t != null && info != null && ApplicationsImpl.listADQLParameters(t.getInterface(),info).length > 0;
     }
     /** 
      *Button that lets the user select the table description associated with this dsa cea app. 
@@ -426,6 +399,9 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
 
 /* 
 $Log: DatacenterToolEditorPanel.java,v $
+Revision 1.6  2006/04/21 13:48:12  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.5  2006/04/18 23:25:47  nw
 merged asr development.
 

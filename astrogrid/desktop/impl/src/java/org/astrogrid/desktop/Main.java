@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.5 2006/04/18 23:25:47 nw Exp $
+/*$Id: Main.java,v 1.6 2006/04/21 13:48:11 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,10 +14,10 @@ import javax.swing.UIManager;
 
 import org.astrogrid.Workbench;
 import org.astrogrid.Workbench1;
-
+/*
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
-
+*/
 
 /** @deprecated use one of the entry points in package <tt>org.astrogrid</tt>
  * instead.
@@ -30,6 +30,7 @@ public class Main  {
 
    
     public static final void main(String[] args) {
+    	/*
     	try {
         UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
         UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY,    Boolean.TRUE);
@@ -37,6 +38,7 @@ public class Main  {
     		System.err.println("Failed to install plastic look and feel");
     		e.printStackTrace();
     	}
+    	*/
     	Workbench.main(args);
     }
 
@@ -46,6 +48,9 @@ public class Main  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.6  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.5  2006/04/18 23:25:47  nw
 merged asr development.
 

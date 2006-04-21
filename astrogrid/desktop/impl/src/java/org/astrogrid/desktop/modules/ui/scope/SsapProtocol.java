@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.3 2006/03/24 10:30:15 KevinBenson Exp $
+/*$Id: SsapProtocol.java,v 1.4 2006/04/21 13:48:11 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.util.Calendar;
+
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-
-import java.util.Calendar;
 
 public class SsapProtocol extends DalProtocol {
 
@@ -48,6 +48,9 @@ public class SsapProtocol extends DalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.4  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.3  2006/03/24 10:30:15  KevinBenson
 new checkboxes on heliosope for the Format, and the ability to query by Format
 for stap services on helioscope

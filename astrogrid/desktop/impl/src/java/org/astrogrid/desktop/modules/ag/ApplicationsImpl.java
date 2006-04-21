@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.10 2006/04/18 23:25:44 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.11 2006/04/21 13:48:12 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,7 +49,7 @@ import org.astrogrid.acr.ivoa.SsapInformation;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
-import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
+//import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -504,7 +504,7 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
      */
     public void translateQueries(ApplicationInformation application, Tool document) throws ServiceException {
         // fiddle any embedded queries..
-        String[] adqlParameters = DatacenterToolEditorPanel.listADQLParameters(document.getInterface(),application);
+        String[] adqlParameters = listADQLParameters(document.getInterface(),application);
         if (adqlParameters.length > 0) {            
             for (int i = 0; i < adqlParameters.length; i++) {
                 ParameterValue val = (ParameterValue) document.findXPathValue("input/parameter[name='" + adqlParameters[i] + "']");
@@ -534,6 +534,34 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
     public Map getResults(URI executionId) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
         return manager.getResults(executionId);
     }
+
+
+
+	/** returns true if this app has an adql parameter */
+	public static String[] listADQLParameters(String interfaceName,ApplicationInformation info) {
+	    InterfaceBean ib = null;
+	    List results = new ArrayList();
+	    for (int i = 0; i < info.getInterfaces().length; i++) {        
+	        if (info.getInterfaces()[i].getName().equals(interfaceName)) {
+	            ib = info.getInterfaces()[i];
+	        }            
+	    }
+	    if (ib == null) {
+	        return new String[]{};
+	    }
+	    for (int i =0; i < ib.getInputs().length; i++) {
+	        ParameterReferenceBean prb = ib.getInputs()[i];
+	        ParameterBean pb = (ParameterBean)info.getParameters().get(prb.getRef());
+	        if (pb ==null) {
+	            return new String[]{};
+	        }
+	        if (pb.getType() != null && pb.getType().equalsIgnoreCase("adql")) {
+	            results.add(pb.getName());
+	        }
+	    }
+	    return (String[])results.toArray(new String[]{});
+	    
+	}
            
     
 }
@@ -541,6 +569,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.11  2006/04/21 13:48:12  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.10  2006/04/18 23:25:44  nw
 merged asr development.
 

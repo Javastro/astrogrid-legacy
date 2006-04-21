@@ -10,11 +10,6 @@
  **/
 package org.astrogrid.desktop.modules.workflowBuilder.renderers;
 
-import org.astrogrid.desktop.icons.IconHelper;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -24,6 +19,10 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ToolTipManager;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.icons.IconHelper;
 
 /**
  * @author pjn3

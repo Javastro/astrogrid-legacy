@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformationBuilder.java,v 1.7 2006/03/02 11:32:28 nw Exp $
+/*$Id: ApplicationInformationBuilder.java,v 1.8 2006/04/21 13:48:12 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,20 @@
 **/
 package org.astrogrid.desktop.modules.ag.builders;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.CachedXPathAPI;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.desktop.modules.ag.XPathHelper;
-
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.transform.TransformerException;
 
 /** Information Builder for Application Registry Entries.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
@@ -150,6 +140,9 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ApplicationInformationBuilder.java,v $
+Revision 1.8  2006/04/21 13:48:12  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.7  2006/03/02 11:32:28  nw
 fixed parsing of option lists -- sorry phil!
 

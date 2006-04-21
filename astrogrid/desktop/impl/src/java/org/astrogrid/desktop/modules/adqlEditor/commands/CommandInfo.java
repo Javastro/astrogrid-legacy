@@ -10,10 +10,7 @@
  **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
-import java.math.BigInteger;
-
 import org.apache.xmlbeans.SchemaProperty;
-import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
 

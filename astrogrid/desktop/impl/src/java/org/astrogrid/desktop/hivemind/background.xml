@@ -53,9 +53,6 @@ Module of background services
 	<contribution configuration-id="hivemind.FactoryDefaults">
 		<default symbol="background.jesStrategy.refreshSeconds" value="240" />
 		<default symbol="background.ceaStrategy.refreshSeconds" value="240" />
-	</contribution>
-	
-	<contribution configuration-id="hivemind.ApplicationDefaults">
 		<default symbol="background.tasks.workdir" 
 			value="${user.home}$[file.separator}.workbench${file.separator}cea" />
 	</contribution>	

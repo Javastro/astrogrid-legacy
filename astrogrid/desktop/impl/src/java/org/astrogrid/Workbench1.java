@@ -18,11 +18,10 @@ public class Workbench1 {
 	 */
 	public static void main(String[] args) {
 		Options o = CmdLineParser.createDefaultOptions();
-		// @todo later add in app-specific options here.
 		CommandLine cl = CmdLineParser.parse(args,"workbench",o);
 		if (cl != null) {
-		//@todo later process app-specific options here.
     	Launcher l = new Launcher();
+    	System.setProperty("workbench.mode","true");
     	l.addModuleByName("background");
     	l.addModuleByName("ui");
     	l.addModuleByName("dialogs");

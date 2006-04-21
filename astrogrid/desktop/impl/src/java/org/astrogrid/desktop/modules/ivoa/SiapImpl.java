@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.2 2006/03/13 18:29:32 nw Exp $
+/*$Id: SiapImpl.java,v 1.3 2006/04/21 13:48:11 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
@@ -17,15 +21,6 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-
-import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.Document;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
 
 /** Implementaiton of a component that does siap queries.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
@@ -126,6 +121,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.3  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.2  2006/03/13 18:29:32  nw
 fixed queries to not restrict to @status='active'
 

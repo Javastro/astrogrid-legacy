@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.11 2006/04/18 23:25:44 nw Exp $
+/*$Id: UIImpl.java,v 1.12 2006/04/21 13:48:11 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -127,7 +127,6 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
     /** this is the production constructor */
     public UIImpl(BrowserControl browser,ACRInternal reg, Shutdown sh, ConfigurationInternal conf, HelpServerInternal help, BackgroundExecutor executor,Converter conv,Transformer trans, Map structures,ErrorHandler err) {     
         super(conf,help,null);
-        // not liked on macos(new SwingSetup()).run();
         this.confInternal = conf;
         this.browser = browser;
         this.shutdown = sh;
@@ -390,6 +389,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.12  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.11  2006/04/18 23:25:44  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.8 2006/04/18 23:25:43 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.9 2006/04/21 13:48:11 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,53 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ui;
-
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.acr.astrogrid.Stap;
-import org.astrogrid.acr.astrogrid.StapInformation;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.HelioScope;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
-import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
-import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
-import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
-import org.astrogrid.desktop.modules.ui.scope.VizModel;
-import org.astrogrid.desktop.modules.ui.scope.Vizualization;
-import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
-import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.HubMessageConstants;
-import org.votech.plastic.PlasticHubListener;
-import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.MessageHandler;
-import org.votech.plastic.incoming.handlers.StandardHandler;
-
-import com.l2fprod.common.swing.JButtonBar;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.event.FocusListener;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -69,18 +22,19 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
@@ -88,8 +42,48 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.WordUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.acr.astrogrid.StapInformation;
+import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.HelioScope;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
+import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
+import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
+import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
+import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.VizModel;
+import org.astrogrid.desktop.modules.ui.scope.Vizualization;
+import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
+import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
 import org.freixas.jcalendar.JCalendarCombo;
-import java.util.Calendar;
+import org.votech.plastic.CommonMessageConstants;
+import org.votech.plastic.HubMessageConstants;
+import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.PlasticListener;
+import org.votech.plastic.incoming.handlers.MessageHandler;
+import org.votech.plastic.incoming.handlers.StandardHandler;
+
+import com.l2fprod.common.swing.JButtonBar;
+
+import edu.berkeley.guir.prefuse.event.FocusEvent;
+import edu.berkeley.guir.prefuse.event.FocusListener;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 
 /** Implementation of the HelioScope launcher
@@ -658,6 +652,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.9  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.8  2006/04/18 23:25:43  nw
 merged asr development.
 

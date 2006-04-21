@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.4 2006/03/24 10:30:15 KevinBenson Exp $
+/*$Id: ConeProtocol.java,v 1.5 2006/04/21 13:48:11 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.nvo.Cone;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-
-import org.apache.commons.lang.ArrayUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.nvo.Cone;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
@@ -81,6 +79,9 @@ public class ConeProtocol extends DalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.5  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.4  2006/03/24 10:30:15  KevinBenson
 new checkboxes on heliosope for the Format, and the ability to query by Format
 for stap services on helioscope

@@ -18,12 +18,13 @@ public class AstroRuntime1 {
 	 */
 	public static void main(String[] args) {
 		Options o = CmdLineParser.createDefaultOptions();
-		// @todo later add in app-specific options here.
 		CommandLine cl = CmdLineParser.parse(args,"acr",o);
 		if (cl != null) {
-		//@todo later process app-specific options here.
+		System.setProperty("system.configuration.preferenceClass",AstroRuntime.class.getName());
+				
     	Launcher l = new Launcher();
     	System.setProperty("acr.mode","true");
+    	// leave logging as-is - can always be overridden by user.
     	l.addModuleByName("background");
     	l.addModuleByName("dialogs");
     	l.addModuleByName("plastic");

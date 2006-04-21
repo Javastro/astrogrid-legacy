@@ -20,14 +20,21 @@ public class HeadlessAstroRuntime {
 	 */
 	public static void main(String[] args) {
 		Options o = CmdLineParser.createDefaultOptions();
-		// @todo later add in app-specific options here.
 		CommandLine cl = CmdLineParser.parse(args,"asr",o);
-		//@todo later process app-specific options here.
 		if (cl != null) {
     	Launcher l = new Launcher();
-    	System.setProperty("acr.mode","true"); // "@todo unsure whether to use a different key here.  
+
+    	System.setProperty("asr.mode","true"); // "@todo unsure whether to use a different key here.  
     	System.setProperty("system.ui.disabled","true");
     	System.setProperty("system.systray.disabled","true");
+    	System.setProperty("system.help.disabled","true");
+    	System.setProperty("system.browser.disabled","true");
+    	System.setProperty("astrogrid.loginDialogue.disabled","true");
+    	
+    	System.setProperty("system.configuration.preferenceClass",HeadlessAstroRuntime.class.getName());
+    	// we're packaging log4j in this release, so configure clogging to use it.
+    	System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.Log4JLogger");
+    	
     	l.addModuleByName("background");
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
@@ -36,6 +43,7 @@ public class HeadlessAstroRuntime {
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
     	CmdLineParser.processCommandLine(cl,l);
+    	
     	l.run();
 		}
 	}

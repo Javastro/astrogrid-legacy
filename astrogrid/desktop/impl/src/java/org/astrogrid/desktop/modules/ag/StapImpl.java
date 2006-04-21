@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.2 2006/03/16 14:03:57 KevinBenson Exp $
+/*$Id: StapImpl.java,v 1.3 2006/04/21 13:48:12 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,25 +10,18 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.Stap;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-
-import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.Document;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
 
 /** Implementaiton of a component that does siap queries.
@@ -156,6 +149,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.3  2006/04/21 13:48:12  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.2  2006/03/16 14:03:57  KevinBenson
 I had a bunch of printlns in this file for some reason
 

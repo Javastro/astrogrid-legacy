@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.4 2006/04/18 23:25:46 nw Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.5 2006/04/21 13:48:11 nw Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.system.transformers;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.collections.Transformer;
@@ -86,6 +81,9 @@ public class Xml2XhtmlTransformer implements Transformer{
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.5  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.4  2006/04/18 23:25:46  nw
 merged asr development.
 

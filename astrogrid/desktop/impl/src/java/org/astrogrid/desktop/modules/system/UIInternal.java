@@ -1,4 +1,4 @@
-/*$Id: UIInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: UIInternal.java,v 1.4 2006/04/21 13:48:11 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,13 @@ import java.awt.Component;
 
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
  *
  */
-public interface UIInternal extends UI{
+public interface UIInternal extends UI, UIComponent{
 
     /** get the AWT component that implements the user interface .
      * - used for centering new windows, dialogues, etc. */
@@ -40,6 +41,9 @@ public interface UIInternal extends UI{
 
 /* 
 $Log: UIInternal.java,v $
+Revision 1.4  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

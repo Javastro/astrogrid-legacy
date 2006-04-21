@@ -1,4 +1,4 @@
-/*$Id: ImageLoadPlasticButton.java,v 1.4 2006/03/31 15:20:56 nw Exp $
+/*$Id: ImageLoadPlasticButton.java,v 1.5 2006/04/21 13:48:11 nw Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,31 +10,24 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.event.ActionEvent;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.PlasticWrapper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-
 import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.PlasticHubListener;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
-
-import java.awt.event.ActionEvent;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 /** button that loads an image over plastic */
 public class ImageLoadPlasticButton extends PlasticButton {
     /**
@@ -86,6 +79,9 @@ public class ImageLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: ImageLoadPlasticButton.java,v $
+Revision 1.5  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.4  2006/03/31 15:20:56  nw
 removed work-around, due to new version of plastic library
 

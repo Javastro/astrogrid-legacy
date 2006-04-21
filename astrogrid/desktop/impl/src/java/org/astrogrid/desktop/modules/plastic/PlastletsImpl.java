@@ -20,7 +20,6 @@ import org.votech.ds6.plastlets.EmailPlastlet;
 import org.votech.ds6.plastlets.Plastlet;
 import org.votech.ds6.plastlets.PrintPlastlet;
 import org.votech.ds6.plastlets.SaveToMySpacePlastlet;
-
 import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.PlasticListener;
 import org.votech.plastic.incoming.handlers.StandardHandler;

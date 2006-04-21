@@ -1,4 +1,4 @@
-/*$Id: MostSuitableBuilder.java,v 1.4 2006/03/13 18:28:08 nw Exp $
+/*$Id: MostSuitableBuilder.java,v 1.5 2006/04/21 13:48:12 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ag.builders;
 
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.xpath.CachedXPathAPI;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.w3c.dom.Element;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 
 /** aggregating builder which chooses the most suitable builder from a set.
 
@@ -78,6 +76,9 @@ public class MostSuitableBuilder implements InformationBuilder {
 
 /* 
 $Log: MostSuitableBuilder.java,v $
+Revision 1.5  2006/04/21 13:48:12  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.4  2006/03/13 18:28:08  nw
 special case of a cone builder from vizier reg entries.
 

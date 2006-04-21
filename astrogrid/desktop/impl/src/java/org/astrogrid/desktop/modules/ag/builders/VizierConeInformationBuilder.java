@@ -1,4 +1,4 @@
-/*$Id: VizierConeInformationBuilder.java,v 1.1 2006/03/13 18:27:56 nw Exp $
+/*$Id: VizierConeInformationBuilder.java,v 1.2 2006/04/21 13:48:12 nw Exp $
  * Created on 13-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.ag.builders;
 
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.nvo.ConeInformation;
-
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.CachedXPathAPI;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.nvo.ConeInformation;
+import org.w3c.dom.Element;
 
 public class VizierConeInformationBuilder extends ConeInformationBuilder {
 
@@ -82,6 +80,9 @@ public class VizierConeInformationBuilder extends ConeInformationBuilder {
 
 /* 
 $Log: VizierConeInformationBuilder.java,v $
+Revision 1.2  2006/04/21 13:48:12  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.1  2006/03/13 18:27:56  nw
 special case of a cone builder from vizier reg entries.
  

@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.12 2006/04/18 23:25:43 nw Exp $
+/*$Id: LookoutImpl.java,v 1.13 2006/04/21 13:48:11 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,10 +25,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.StringReader;
@@ -83,16 +81,8 @@ import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.Factory;
@@ -122,7 +112,6 @@ import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -1356,6 +1345,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.13  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.12  2006/04/18 23:25:43  nw
 merged asr development.
 

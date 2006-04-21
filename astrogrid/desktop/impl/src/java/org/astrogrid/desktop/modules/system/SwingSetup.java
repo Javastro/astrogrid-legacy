@@ -1,4 +1,4 @@
-/*$Id: SwingSetup.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: SwingSetup.java,v 1.3 2006/04/21 13:48:11 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,14 +18,10 @@ import javax.swing.UIManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.jgoodies.looks.plastic.PlasticLookAndFeel;
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
 /**
  * simple class that does some global configuration of swing.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
- * @todo trigger this from somewhere
- * @todo add hacks for Mac in here. - doesn't want to work at the moment.
  *
  */
 public class SwingSetup implements Runnable {
@@ -36,10 +32,10 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
 
     public SwingSetup() {
         super();
-        System.err.println("**** Setting up swing l&f***");
     }
 
     public void run()   {
+    	/*
         try {
         PlasticLookAndFeel feel = new PlasticXPLookAndFeel();
         // stick to default font policy - looks good.
@@ -47,7 +43,8 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
         UIManager.setLookAndFeel(feel);    
      } catch (Exception e) {
          logger.warn("Failed to install plastic look and feel - oh well");
-         }   
+         }  
+         */ 
      
      // configure tooltip behaviour.
      UIManager.put("ToolTip.background",Color.white);
@@ -60,6 +57,9 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
 
 /* 
 $Log: SwingSetup.java,v $
+Revision 1.3  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 

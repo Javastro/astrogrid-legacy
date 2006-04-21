@@ -1,4 +1,4 @@
-/*$Id: PlasticButton.java,v 1.4 2006/03/16 18:12:56 jdt Exp $
+/*$Id: PlasticButton.java,v 1.5 2006/04/21 13:48:11 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ui.PlasticWrapper;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.io.Piper;
-
-import org.apache.commons.collections.ListUtils;
-import org.votech.plastic.PlasticHubListener;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
-
 import java.awt.Image;
-import java.awt.event.ActionEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.ui.PlasticWrapper;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.io.Piper;
+
+import edu.berkeley.guir.prefuse.focus.FocusSet;
 
 /** abstract node consumer for passing data onto plastic apps
  * 
@@ -99,6 +92,9 @@ public abstract class PlasticButton extends NodeConsumerButton{
 
 /* 
 $Log: PlasticButton.java,v $
+Revision 1.5  2006/04/21 13:48:11  nw
+mroe code changes. organized impoerts to reduce x-package linkage.
+
 Revision 1.4  2006/03/16 18:12:56  jdt
 Some bug fixes, and the next version of the plastic library.
 

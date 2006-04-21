@@ -10,22 +10,18 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
-import org.astrogrid.acr.astrogrid.ColumnBean;
-import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
+import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
 
 /**
  * @author jl99@star.le.ac.uk
