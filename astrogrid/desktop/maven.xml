@@ -1,41 +1,81 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project xmlns:maven="jelly:maven" >
-	<goal name="astrogrid-clean" prereqs="multiproject:clean"/>
+	<goal name="astrogrid-clean" prereqs="multiproject:clean"
+	description="clean all sub projects - may not be possible if version in maven.base/project.properties has just been changed - clean before doing this"/>
 	
-	<goal name="astrogrid-deploy-site"
-	      prereqs="astrogrid-build-site,site:sshdeploy" />
-	<goal name="astrogrid-build-site" prereqs="multiproject:site"/>
 	
-
-	<goal name="astrogrid-install-artifact">
+	<goal name="publish-jnlp"
+	description="publish webstart releases for all apps. Requires -Dmaven.username=maven for this to work."
+	prereqs="install-materials">
 		<maven:reactor
-			      basedir="${basedir}"
-			      goals="astrogrid-install-artifact"
-			      ignoreFailures="false"
-			      glob="*/project.xml"
-			      />
+			basedir="${basedir}"
+			goals="publish-jnlp"
+			ignoreFailures="false"
+			includes="${jnlp.ar.projects}"/>
 	</goal>
-
-
-	<goal name="astrogrid-deploy-artifact">
+	
+	
+		<goal name="publish-beta-jnlp"
+		description="publish beta webstart releases for all apps. Requires -Dmaven.username=maven"
+		prereqs="install-materials">
 		<maven:reactor
-			      basedir="${basedir}"
-			      goals="astrogrid-deploy-artifact"
-			      ignoreFailures="false"
-			      glob="*/project.xml"
-			      />
-
+			basedir="${basedir}"
+			goals="publish-beta-jnlp"
+			ignoreFailures="false"
+			includes="${jnlp.ar.projects}"/>
 	</goal>
-
-	<goal name="astrogrid-build-artifact">
+	
+		<goal name="publish-alpha-jnlp" description="publish alpha webstart releases for all apps requires -Dmaven.username=maven"
+		prereqs="install-materials">
 		<maven:reactor
-			      basedir="${basedir}"
-			      goals="astrogrid-build-artifact"
-			      ignoreFailures="false"
-			      glob="*/project.xml"
-			      />
+			basedir="${basedir}"
+			goals="publish-alpha-jnlp"
+			ignoreFailures="false"
+			includes="${jnlp.ar.projects}"/>
 	</goal>
+	
+	
+	<goal name="install-materials" description="build all the pre-requsites (docs, examples, etc)">
+		<maven:reactor
+			basedir="${basedir}"
+			goals="astrogrid-install-artifact"
+			ignoreFailures="false"
+			includes="${supporting.projects}" />
+	</goal>
+	
+	<goal name="install-standalone-apps" description="build all the stand-alone (non-webstart) versions of the apps"
+	prereqs="install-materials">
+		<maven:reactor
+			basedir="${basedir}"
+			goals="astrogrid-install-artifact"
+			ignoreFailures="false"
+			includes="${ar.projects}" />
+	</goal>
+	
+	
+	<goal name="publish-site" description="assemble and publish the release site for the stable version of the apps"
+	prereqs="install-standalone-apps">
+		<!-- at this point, all materials and standalone apps will have been built - site project just needs to grab all these resources -->
+		<maven:maven basedir="site" descriptor="site/project.xml" ignoreFailures="false" goals="publish-site" />
+		<echo>Do you need to republish the webapps too? run 'maven publish-jnlp</echo>
+	</goal>
+	
+	<goal name="publish-beta-site" description="assemble and publish the release site for the beta version of the apps"
+	prereqs="install-standalone-apps">
+		<!-- at this point, all materials and standalone apps will have been built - site project just needs to grab all these resources -->
+		<maven:maven basedir="site" descriptor="site/project.xml" ignoreFailures="false" goals="publish-beta-site" />
+		<echo>Do you need to republish the webapps too? run 'maven publish-beta-jnlp</echo>
+	</goal>
+	
+	
+	<goal name="publish-alpha-site" description="assemble and publish the release site for the alpha version of the apps"
+	prereqs="install-standalone-apps">
+		<!-- at this point, all materials and standalone apps will have been built - site project just needs to grab all these resources -->
+		<maven:maven basedir="site" descriptor="site/project.xml" ignoreFailures="false" goals="publish-alpha-site" />
+		<echo>Do you need to republish the webapps too? run 'maven publish-alpha-jnlp</echo>
+	</goal>
+	
 
 </project>
 

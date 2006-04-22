@@ -1,58 +1,108 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
+<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml"      xmlns:artifact="artifact">
 
-         <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin,publish-beta-jnlp"/>	
-        <goal name="astrogrid-build-artifact" prereqs="jar,dist:build-bin,beta,release,jnlp"/>
-
+        <goal name="astrogrid-build-artifact" prereqs="javaapp,dist:build-bin"/>
+		<goal name="astrogrid-install-artifact" prereqs="javaapp:install,dist-install" />
+		
 	<goal name="astrogrid-build-site" prereqs="site" />
-	
+
 	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
 		<attainGoal name="site:sshdeploy" />
 	</goal>
-	
-
-	
-
-	
-	<!-- generate the mini site into the jnlp bundle -->
-	<postGoal name="jnlp:generate-jnlp">
-		<attainGoal name="changes:report" />
-		<move file="${maven.gen.docs}/changes-report.xml" tofile="${maven.gen.docs}/index.xml" />
-		<j:set var="maven.docs.src" value="${basedir}/jnlp-xdocs" />
-		<echo>${maven.docs.src}</echo>
-		<attainGoal name="xdoc:transform" />
-		<attainGoal name="zip-scripts"/>		
-		<attainGoal name="include-acr-interface" />
+		
+<!-- javaapp -->		
+	<!-- do the final tweaks to the javaapp process -->
+		    <!-- work around: javaapp unzips all dependent jars before making one big jar.
+		    this doesn't work on MacOS, as packages named EDU... and edu... get mapped to the
+		    same folder - which then results in a 'class not found' exception.
+		    Concurrent is the only one that uses non-standard capitalization, that falls foul of this
+		    so exclude it from the javaaapp process, and stuff it in later ourseleves using a maven 
+		    post goal.
+		    -->	
+	<postGoal name="javaapp:jar">
+   <j:forEach var="lib" items="${pom.artifacts}">
+      <j:set var="dep" value="${lib.dependency}"/>     
+      <j:if test="${dep.getProperty('nww.bundle.later')=='true'}">
+		<jar update="true" destfile="${maven.javaapp.final.name}"
+			filesetmanifest="skip" duplicate="fail">
+			<zipfileset src="${lib.path}" />
+		</jar>
+	  </j:if>
+    </j:forEach>
 	</postGoal>
-	
-	<goal name="zip-scripts">
-	  <zip destfile="${maven.docs.dest}/python-scripts.zip">
-		  <fileset dir="${basedir}/src">
-			  <include name="python-scripts/*" />
-		  </fileset>		 
-	  </zip>
-	  <zip destfile="${maven.docs.dest}/perl-scripts.zip">
-		  <fileset dir="${basedir}/src">
-			  <include name="perl-scripts/*" />
-		  </fileset>		 
-	  </zip>	       
-	       
-	</goal>
-	
 
-	<goal name="include-acr-interface">
-		<copy tofile="${maven.docs.dest}/acr-interface.tar.gz">
-			<fileset dir="${basedir}/../api/target/distributions">
-				<include name="acr-interface-*.tar.gz" />
-			</fileset>
+<!-- distribution -->
+     <!--  add in dependencies -->
+        <postGoal name="dist:prepare-bin-filesystem">
+                <j:forEach var="lib" items="${pom.artifacts}">
+                        <j:set var="dep" value="${lib.dependency}"/>
+                                <j:if test="${dep.getProperty('dist.bundle')=='true'}">
+                                        <copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}"/>
+                                </j:if>
+                </j:forEach>
+         </postGoal>
+         
+         <goal name="dist-install" prereqs="dist:build-bin">
+         <!-- rename - otherwise I can't distinguish it in the site build -->
+               <artifact:install
+        artifact="${maven.dist.dir}/${maven.final.name}.zip"
+        type="zip"
+        project="${pom}"
+        /> 
+        </goal>
+         
+<!-- webstart -->
+
+<!-- publishing goals -->
+
+<goal name="publish-jnlp" 
+      description="Publish the release configuration of this JNLP at the release URL"
+      prereqs="release,jnlp,site:sshdeploy" />
+<goal name="publish-beta-jnlp" 
+      description="Publish the beta configuration of this JNLP at the beta URL"
+      prereqs="beta,release,jnlp,site:sshdeploy"/>
+<goal name="publish-alpha-jnlp" 
+      description="Publish the alpha configuration of this JNLP at the alpha url"
+      prereqs="alpha,release,jnlp,site:sshdeploy"/>
+	
+	
+	<!-- zap values in pom, to adjust publish location -->
+<goal name="release">
+        <j:set var="_dir" value="/var/www/software/jnlp/${subPath}${pom.artifactId}/"/>
+        ${pom.setSiteDirectory(_dir)}
+        <echo>Publish location set to ${pom.siteDirectory}</echo>
+</goal>
+
+<goal name="beta">
+        <j:set var="subPath" value="beta/" />
+        <j:set var="jnlpVersion" value=" (BETA)" />
+</goal>
+
+<goal name="alpha">
+        <j:set var="subPath" value="alpha/" />
+        <j:set var="jnlpVersion" value=" (ALPHA)" />
+</goal>
+	
+        <postGoal name="jnlp:generate-jnlp">
+		<copy todir="${maven.jnlp.dir}">
+			<fileset dir="${basedir}/src/webapp" />
 		</copy>
-	</goal>
+                <!-- sign jars by hand - as maven jnlp task is flakey - -->
+                <signjar alias="astrogrid" storepass="qwertyuiop">
+                        <fileset dir="${maven.jnlp.dir}">
+                                <include name="*.jar" />
+                        </fileset>
+                </signjar>		
+		<attainGoal name="define-stylesheet" />
+         <attainGoal name="patch-jnlp" />
+        </postGoal>	
+	
 	
         <goal name="define-stylesheet">
              <jsl:stylesheet var="patch">
                 <jsl:template match=
-		  "jar|security|extension|application-desc|j2se|property|title|vendor|description|homepage|icon|offline-allowed|shortcut|association|related-content">
+		  "jar|security|extension|resources|application-desc|j2se|property|title|vendor|description|homepage|icon|offline-allowed|shortcut|association|related-content">
                         <jxml:copyOf select="." />
                 </jsl:template>
 		<jsl:template match="information">
@@ -63,7 +113,7 @@
 				</jxml:element>		
 				<jxml:element name="related-content">
 					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html</jxml:attribute>
-					<jxml:element name="title">ACR API Docs</jxml:element>
+					<jxml:element name="title">Plastic API Docs</jxml:element>
 				</jxml:element>					
 				<jxml:element name="related-content">
 					<jxml:attribute name="href">http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</jxml:attribute>
@@ -76,14 +126,6 @@
                 <jsl:template match="jnlp">
 					<jxml:copy>
   								<jsl:applyTemplates select="@* | information | security | resources "/>																
-								<jxml:element name="resources"><!-- need to splice in different resources for mac os -->
-									<jxml:attribute name="os">Mac OS</jxml:attribute>
-									<jxml:element name="j2se">
-										<jxml:attribute name="version">1.4+</jxml:attribute>
-										<jxml:attribute name="max-heap-size">256m</jxml:attribute>
-										<jxml:attribute name="initial-heap-size">32m</jxml:attribute>										
-									</jxml:element>
-								</jxml:element>	
 								<jxml:copyOf select="application-desc" />
                             </jxml:copy>
                 </jsl:template>
@@ -93,31 +135,20 @@
                                         <jsl:applyTemplates select="@* | node()" />
                                 </jxml:copy>				
 				</jsl:template>
-                <jsl:template match="resources">
-                        <jxml:copy>
-                                <jxml:element name="extension">
-                                        <jxml:attribute name="name">Astrogrid Script CDK${jnlpVersion}</jxml:attribute>
-                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-scripting/astrogrid-cdk-scripting.jnlp</jxml:attribute>
-                                </jxml:element>
-                                <jsl:applyTemplates select="@* | node()" />
-                        </jxml:copy>
-                </jsl:template>
              </jsl:stylesheet>
         </goal>
 
+        <goal name="patch-jnlp">
+                <echo>Patching JNLP file</echo>
+             ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
 
-
-<!-- utility - run the applcation from maven -->
-        <goal name="run-workbench" >
-                <java fork="yes" classname="org.astrogrid.desktop.Splasher">
-                        <classpath>
-                        <pathelement location="${basedir}/target/classes" />						
-                        <path refid="maven.dependency.classpath" />
-                </classpath>            
-                </java>
+             <!-- read in original jnlp -->
+             <jxml:parse var="originalJNLP" xml="file://${maven.jnlp.dir}/${pom.artifactId}.jnlp" />
+             <!-- apply stylesheet -->
+             <j:file name="${maven.jnlp.dir}/${pom.artifactId}.jnlp">
+                <jsl:style stylesheet="${patch}" select="$originalJNLP" />
+             </j:file>
         </goal>
-
-
 
 
 </project>

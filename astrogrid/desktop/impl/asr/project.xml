@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 
-    <extend>${basedir}/../../../maven-base/project.xml</extend>
-        <artifactId>plastic-hub</artifactId>
+    <extend>${basedir}/../../../aggregate/cdk/workflow/project.xml</extend>
+        <artifactId>asr</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>PLASTIC Hub</name>
+        <name>Astro Runtime (Server version)</name>
         <description>
-	  AstroGrid's implementation of a PLASTIC Hub.
+	 Astro Runtime - server version
 	</description>
-        <shortDescription>AstroGrid's PLASTIC Hub</shortDescription>
+        <shortDescription>Astro Server Runtime</shortDescription>
  
         <build>
                 <sourceDirectory>${basedir}/../src/java</sourceDirectory>
                 <!-- modifications to compile the hub portion -->
                 <sourceModifications>
                   <sourceModification>
-                    <className>neverPresent</className>
+                    <className>${ifBuildingASR}</className>
                     <excludes>
                       <exclude>org/astrogrid/desktop/*.java</exclude>
-                      <exclude>org/astrogrid/desktop/modules/ag/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/ui/**</exclude>
-                      <exclude>org/astrogrid/desktop/modules/cds/**</exclude>
-                      <exclude>org/astrogrid/desktop/modules/ivoa/**</exclude>
-                      <exclude>org/astrogrid/desktop/modules/nvo/**</exclude>
-                      <exclude>org/astrogrid/desktop/modules/background/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/system/HelpServerImpl.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/system/SwingSetup.java</exclude>
+                      <exclude>org/astrogrid/desktop/modules/system/UIImpl.java</exclude>
+                      <exclude>org/astrogrid/desktop/modules/ag/LoginDialogue.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/dialogs/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/adqlEditor/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/workflowBuilder/**</exclude>
+                      <!-- keep this out - as unfinished, and drags in all xbean stuff -->
+                      <exclude>org/astrogrid/desktop/modules/ivoa/SkyNodeImpl.java</exclude>
                   	</excludes>
                   	
                   </sourceModification>
@@ -36,30 +35,31 @@
                 <resources>
                         <resource>
                                 <directory>${basedir}/../src/java</directory>
-                                <!-- todo: trim these more -->
                                 <includes>
                                         <include>**/hivemind/*.xml</include>
-                                        <include>org/astrogrid/desktop/icons/*.png</include>
-                                        <include>org/astrogrid/desktop/modules/system/transformers/xmlverbatim.xsl</include>
-                                        <include>org/astrogrid/plastic-splash.png</include>
-          								<include>org/astrogrid/desktop/icons/*.gif</include>
+                                        <include>astrogrid.properties</include>
+                                        <include>org/astrogrid/desktop/modules/system/transformers/*.xsl</include>
                                 </includes>
+                        </resource>
+                        <resource>
+                        	<directory>${basedir}/resources</directory>
+                        	<includes>
+                        		<include>*.properties</include>
+                        	</includes>
                         </resource>
                 </resources>
         </build>
 
         <dependencies>
 
-<!-- public interfaces of the acr - all liable to change, so not in extension
-  also, all quite small - re-download his isn't significant.
- -->
+<!-- public interfaces of the acr -->
 	<dependency>
 		<groupId>org.astrogrid</groupId>
 		<artifactId>acr-interface</artifactId>
 		<version>${astrogrid.desktop.version}</version>
 		<properties>
 			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>
+			<dist.bundle>true</dist.bundle>			
 		</properties>
 	</dependency>
 
@@ -70,11 +70,10 @@
                         <url>http://plastic.sourceforge.net</url>
 		<properties>
 			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>	
+			<dist.bundle>true</dist.bundle>			
 		</properties>						
    </dependency>		
-	<dependency><!-- not very keen on having this one present - necessary to compile, but the 
-	functionality it offers (e.g. save to myspace) isn't present in this incarnation anyhow. -->
+	<dependency>
 		<groupId>votech-ds6</groupId>
 		<artifactId>plastlets</artifactId>
 		<version>0.4.1</version>
@@ -85,30 +84,40 @@
 		</properties>
 	</dependency>	   
 
-<!-- stuff that other variants inherit from CDK, but which 
-we have to add by hand -->
+<!-- cea server - jnlp extension -->
+	        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server</artifactId>
+                <version>${astrogrid.applications.version}</version>
+                <properties>
+                <!-- defined in an extension , but inserted by 
+                stylesheet - so we can munge path for alpha, etc -->
+				    <dist.bundle>true</dist.bundle>		    
+                </properties>
+        </dependency>
     <dependency>
-      <groupId>org.astrogrid</groupId>
-      <artifactId>astrogrid-common</artifactId>
-      <version>${astrogrid.common.version}</version>
-      <url>http://www.astrogrid.org/</url>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <version>3.8</version>
       <properties>
-        <jnlp.jar>true</jnlp.jar>
-        <dist.bundle>true</dist.bundle>
-       </properties>
-    </dependency>
-    
-    <dependency>
-      <artifactId>commons-logging</artifactId>
-      <groupId>commons-logging</groupId>
-      <version>1.0.3</version>
-      <url>http://jakarta.apache.org/commons/</url>
-      <properties>
-      	<jnlp.jar>true</jnlp.jar>
-        <dist.bundle>true</dist.bundle>
+		    <dist.bundle>true</dist.bundle>		    
       </properties>
     </dependency>
  
+  
+  <!-- storage - jnlp extension -->
+<dependency>
+	<artifactId>jdbm</artifactId>
+	<groupId>jdbm</groupId>
+	<version>1.0</version>
+	<properties>
+		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		<jnlp.extension.dir>/jnlp/file</jnlp.extension.dir>
+		<jnlp.extension.jnlp>file.jnlp</jnlp.extension.jnlp>			
+		<dist.bundle>true</dist.bundle>			
+	</properties>
+</dependency>
+
  <!-- jakarta commons - jnlp extension -->
        <dependency>
                 <artifactId>commons-collections</artifactId>            
@@ -152,9 +161,7 @@ we have to add by hand -->
 	  	</properties>
 	  </dependency>
 
-
-<!-- container system - hivemind    
--->
+<!-- container system - hivemind     -->
 
 <dependency>
 	<groupId>hivemind</groupId>
@@ -222,7 +229,7 @@ we have to add by hand -->
 		    <dist.bundle>true</dist.bundle>		
 	    </properties>
 </dependency> 
-<dependency>
+<dependency> 
 	<groupId>xmlrpc</groupId>
 	<artifactId>xmlrpc</artifactId>
 	<version>1.2-b1</version>
@@ -233,9 +240,7 @@ we have to add by hand -->
 </dependency>
 <!-- end of jetty servers -->
 
-
-<!-- web start extension - gui-basics -->
-   <!-- extra widgets: statusBar and ButtonBar - 440K mb could package smaller. -->
+ <!-- concurrent stuff-->
    <dependency>
         <groupId>l2fprod</groupId>
         <artifactId>l2fprod-common-all</artifactId>
@@ -244,29 +249,25 @@ we have to add by hand -->
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		 <jnlp.extension.dir>/jnlp/gui-basics</jnlp.extension.dir>
 		 <jnlp.extension.jnlp>gui-basics.jnlp</jnlp.extension.jnlp>	
-		<dist.bundle>true</dist.bundle>
+		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
+		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
 	 </properties>	 	
-    </dependency>
-    
-    <dependency><!-- contains SwingWorker class, for executing things in background threads -->
+    </dependency>    
+    <dependency>
 	    <artifactId>concurrent</artifactId>
 	    <groupId>concurrent</groupId>
 	    <version>1.3.4</version>
 	    <properties>
-    	<!-- add this aftrer the main javaapp process, as a work-around for package capitalization -->
+	    	<!-- add this aftrer the main javaapp process, as a work-around for package capitalization -->
 			<nww.bundle.later>true</nww.bundle.later>
 		    <uberjar.bundle>false</uberjar.bundle>		    
-		    <dist.bundle>true</dist.bundle>	    
+		    <dist.bundle>true</dist.bundle>
 	 </properties>	 	    
  </dependency>    
-   
- 
 
   
- <!-- JDIC components - a bit tricky, because of binary nature.. 
-  
-dunno what to do in single-app case - just leave out, i guess.
-      -->
+  <!-- JDIC components - a bit tricky, because of binary nature.. 
+-->
  <dependency>
 	 <artifactId>jdic</artifactId>
 	 <groupId>jdic</groupId>
@@ -275,7 +276,8 @@ dunno what to do in single-app case - just leave out, i guess.
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		 <jnlp.extension.dir>/jnlp/desktop-integration</jnlp.extension.dir>
 		 <jnlp.extension.jnlp>desktop-integration.jnlp</jnlp.extension.jnlp>
-		 <dist.bundle>true</dist.bundle>		 
+		 <dist.bundle>true</dist.bundle>
+		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
 	 </properties>
  </dependency>
  <!--NB: comment out following two when generating dependencies on macosx -->
@@ -284,19 +286,27 @@ dunno what to do in single-app case - just leave out, i guess.
 	 <artifactId>jdic_stub_${ag.os.name}</artifactId>
 	 <groupId>jdic</groupId>
 	 <version>0.9.1</version>
- </dependency> --> 
-  <!-- NB - this is the jar of native libs, that needs to be locally installed. 
+	 <properties>
+		 <dist.bundle>true</dist.bundle>
+		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
+	 </properties>	 
+ </dependency>
+-->  
+<!-- NB - this is the jar of native libs, that needs to be locally installed. 
       not a real dependency as such - and not needed for development
       -->
-      <!--
-<dependency>
+ <!--<dependency>
 	 <artifactId>jdic_native_${ag.os.name}_${ag.os.arch}</artifactId>
 	 <groupId>jdic</groupId>
 	 <version>0.9.1</version>
+	 <properties>
+		 <dist.bundle>true</dist.bundle>
+		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
+	 </properties>	 
  </dependency>
- --> 
- <!-- end of jdic -->
-   
+--> 
+<!-- end of jdic -->
+  
 
 <!-- used within development only -->
 
@@ -305,10 +315,10 @@ dunno what to do in single-app case - just leave out, i guess.
 		            <groupId>maven-plugins</groupId>
 		            <artifactId>maven-javaapp-plugin</artifactId>
 		            <version>1.3.1 	</version>
-		            <type>plugin</type>	
+		            <type>plugin</type>		
 		            <properties>
 		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>     		            
+		            </properties>
 		        </dependency> 	
  <dependency>
       <groupId>commons-jelly</groupId>
@@ -316,7 +326,7 @@ dunno what to do in single-app case - just leave out, i guess.
       <version>20030211.143151</version>
 		            <properties>
 		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>           
+		            </properties>      
     </dependency>
     <dependency>
       <groupId>commons-jelly</groupId>
@@ -325,7 +335,7 @@ dunno what to do in single-app case - just leave out, i guess.
       <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
 		            <properties>
 		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>           
+		            </properties>      
     </dependency>
 		        
     </dependencies>

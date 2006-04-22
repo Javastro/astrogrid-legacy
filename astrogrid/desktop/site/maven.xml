@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core">
+	
+ <goal name="publish-site" prereqs="stable,release,site,site:sshdeploy"/>
+ <goal name="publish-alpha-site" prereqs="alpha,release,site,site:sshdeploy" />
+ <goal name="publish-beta-site" prereqs="beta,release,site,site:sshdeploy" />
+	
+ <!-- zap values in pom, to adjust publish location -->
+<goal name="release">
+        <j:set var="_dir" value="/var/www/software/${subPath}${pom.artifactId}/"/>
+        ${pom.setSiteDirectory(_dir)}
+        <echo>Publish location set to ${pom.siteDirectory}</echo>
+</goal>
+
+<goal name="stable">
+	<j:set var="version" value=" (RELEASE)" />
+</goal>
+
+<goal name="beta">
+        <j:set var="subPath" value="beta/" />
+        <j:set var="version" value=" (BETA)" />
+</goal>
+
+<goal name="alpha">
+        <j:set var="subPath" value="alpha/" />
+        <j:set var="version" value=" (ALPHA)" />
+</goal>
+
+
+
+	<!-- copy changes.xml from development
+	xmlrpc doc from api.
+	and rest of docs from xdocs - filtering keys  as we go.
+	 -->
+	<preGoal name="site">
+		<j:set var="maven.docs.src" value="${basedir}/target/xdocs" />
+		<mkdir dir="${maven.docs.src}" />
+		<copy file="../impl/xdocs/changes.xml" todir="${maven.docs.src}" overwrite="true" />
+		<copy file="../api/target/generated-xdocs/xmlrpc.xml" todir="${maven.docs.src}" overwrite="true" />
+		<copy todir="${maven.docs.src}" overwrite="true">
+			<fileset dir="${basedir}/xdocs" />
+			<filterset>
+				<filter token="SUB_PATH" value="${subPath}" />
+				<filter token="VERSION" value="${version}" />
+				<filter token="VERSION_NUMBER" value="${pom.currentVersion}" />
+			</filterset>
+		</copy>
+	</preGoal>
+
+	<!-- generate the mini site into the jnlp bundle -->
+	<postGoal name="xdoc:transform">
+	<!-- copy each resource into the site -->
+   <j:forEach var="lib" items="${pom.artifacts}">
+      <j:set var="dep" value="${lib.dependency}"/>     
+      <j:set var="loc" value="${dep.getProperty('position')}" />
+      <j:if test="${loc!=null}">
+      	<mkdir dir="${maven.docs.dest}/${loc}" />
+      	<j:choose>
+      	<j:when test="${dep.getProperty('unzip')=='true'}">
+      		<unzip src="${lib.path}" dest="${maven.docs.dest}/${loc}"
+      		/>
+      	</j:when>
+      	<j:otherwise>
+      	<j:set var="toFile" value="${lib.name}" />
+      	<j:if test="${dep.getProperty('rename')!=null}" >
+      		<j:set var="toFile" value="${dep.getProperty('rename')}" />
+      	</j:if>
+      	<copy tofile="${maven.docs.dest}/${loc}/${toFile}"
+      		file="${lib.path}" />
+      	</j:otherwise>
+      	</j:choose>
+	  </j:if>
+    </j:forEach>		
+		
+	</postGoal>
+
+
+</project>
+

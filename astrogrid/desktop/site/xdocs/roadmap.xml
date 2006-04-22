@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        <title>Astro Runtime @VERSION@ - Roadmap</title>
+</properties>
+<body>
+
+
+<section name="Roadmap"><p>
+Now that this repackaging / splitting of the previous workbench into different flavours has been done,
+I can get back to fixing bugs (the striked out ones have been fixed as part of 
+the repackaging). Once these bugs and bottlenecks are sorted out, I'll take a look
+at adding some new features.
+<br/>
+NB: This roadmap doesn't include developments to the workbench GUI - this has it's own development plan, and progresses independenly.
+
+</p>
+<subsection name="Known Bugs"><p>
+<ul>
+<li> byte[] transport over xmlrpc
+</li>
+<li> exception transport over rmi, xmlrpc
+</li>
+<li> <strike>error reporting over http</strike>
+</li>
+<li> <strike>robustify store</strike>
+</li>
+<li> <strike>simplify recorder</strike>
+</li>
+<li> out-of-memory on myspace upload
+</li>
+<li> verify all threads are created in thread management system
+</li>
+<li> <strike>jdic upgrade</strike>
+</li>
+</ul>
+	</p>
+</subsection>
+
+<subsection name="Performance Bottlenecks"><p>
+<ul>
+<li> myspace
+<ul>
+<li>listing directory contents 
+</li>
+<li> tune node caching.
+</li>
+</ul>
+</li>
+<li> registry
+<ul>
+<li> does keyword search translated server-side give anything extra?
+</li>
+<li> use xqueries where possible (for registries that support this)
+</li>
+<li> use stax/sax soap lib for bulk query methods - avoid DOM creation
+</li>
+<li> efficient parsing of resourceInformation - streaming iterator over results.
+</li>
+<li> tune result caching
+</li>
+</ul>
+</li>
+<li> Finder - tune up behaviour
+</li>
+<li> <strike>Remote Process Manager update checking.</strike>
+</li>
+</ul>
+</p>
+</subsection>
+
+
+<subsection name="Feature Finishing"><p>
+Stalled, waiting on efficiency improvements
+<ul>
+<li> Skynode - needs streaming soap, efficient parsing of resourceInformation.
+</li>
+<li> CDS data services - similar - usability limited by  volume
+</li>
+</ul>
+</p></subsection>
+
+<subsection name="New Features"><p>
+New ACR APIS
+<ul>
+<li> Vizier 2
+</li>
+<li> NED
+</li>
+<li> votable convertor
+</li>
+<li> registry admin
+</li>
+<li> community management? if there's a delegate available.
+</li>
+<li> filestore management?
+</li>
+<li> Auth &amp; Auth
+</li>
+<li> groovy interpreter - rapid prototyping, callbacks, embedded script.
+</li>
+</ul>
+
+Other new features
+<ul>
+<li> usage tracking and profiling
+</li>
+<li> FTP-Myspace bridge
+</li>
+<li> CEA updates by RSS
+</li>
+</ul>
+</p>
+</subsection>
+
+<subsection name="Other issues"><p>
+<ul>
+<li> need to find and test xmlrpc implementation for IDL
+</li>
+<li> work-up examples: amalgamate francesco's and john's python libraries for acr
+</li>
+<li>write tutorial
+</li>
+<li>write ivoa note describing acr</li>
+</ul>
+</p>
+</subsection>
+
+
+</section>
+</body>
+</document>

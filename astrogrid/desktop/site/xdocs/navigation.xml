@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+  
+  <breadcrumbs>
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+		<item name="Software" href="http://software.astrogrid.org" />
+		<item name="Astro Runtime" href="./index.html" />  	
+  </breadcrumbs>
+  
+    <links>
+    	<item name="AR Release" href="http://software.astrogrid.org/ar-site" />
+    	<item name="AR Beta" href="http://software.astrogrid.org/beta/ar-site" />
+       <item name="PLASTIC"		href="http://plastic.sourceforge.net" />
+       <item name="IVOA" href="http://www.ivoa.net" />
+    </links>
+
+    <menu name="Navigation">
+	<item name="Download" href="index.html" />
+	<item name="Usage" href="usage.html" />
+	
+	<item name="API (xmlrpc)" href="xmlrpc.html" />
+	<item name="API (Javadoc)" href="apidocs/index.html" />	
+	<item name="Examples" href="examples.html" />
+	<item name="Documentation" href="docs.html" />
+	
+	<item name="Changes" href="changes-report.html" />
+	<item name="Roadmap" href="roadmap.html" />
+	
+    </menu>
+ 
+  </body>
+</project>

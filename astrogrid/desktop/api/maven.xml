@@ -1,21 +1,16 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project   xmlns:j="jelly:core" xmlns:maven="jelly:maven" >
+<project   xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:artifact="artifact">
 
-	<goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin,javahelp-install">
-		<echo>No goal exists to install a distro - so have built and just left it in target dir</echo>
-	</goal>
+	<goal name="astrogrid-install-artifact" prereqs="javadoc:install,jar:install,dist-install,javahelp-install"/>
 
 
-	<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin,javahelp-deploy">
-	</goal>
-
-	<goal name="astrogrid-build-artifact" prereqs="jar:jar,dist:build-bin,javahelp-jar">
+	<goal name="astrogrid-build-artifact" prereqs="javadoc,jar:jar,dist:build-bin,javahelp-jar">
 	</goal>
 	
 	<goal name="astrogrid-clean" prereqs="clean,javahelp-clean" />
 
-	<!-- add in dependent jars -->
+	<!-- add  dependent libs into distro -->
 	<postGoal name="dist:prepare-bin-filesystem">
 		<j:forEach var="lib" items="${pom.artifacts}">
 			<j:set var="dep" value="${lib.dependency}"/>			
@@ -27,21 +22,35 @@
 			</j:if>
                 </j:forEach>		
 	</postGoal>	
+	
+	    <goal name="dist-install" prereqs="dist:build-bin">
+             <artifact:install
+        artifact="${maven.dist.dir}/${maven.final.name}.zip"
+        type="zip"
+        project="${pom}"
+        /> 
+        </goal>
+        
+        
+        <!-- javahelp stuff -->
+	
 	<preGoal name="jar:jar">
 		<attainGoal name="xmlrpcdoc"/>
 	</preGoal>	
 	<goal name="javahelp-install">
-		<maven:maven goals="jar:install" descriptor="javahelp/project.xml" />
+		<maven:maven goals="jar:install" descriptor="${basedir}/javahelp/project.xml" />
 	</goal>
 	<goal name="javahelp-deploy">
-		<maven:maven goals="jar:deploy" descriptor="javahelp/project.xml" />
+		<maven:maven goals="jar:deploy" descriptor="${basedir}/javahelp/project.xml" />
 	</goal>
 	<goal name="javahelp-jar">
-		<maven:maven goals="jar:jar" descriptor="javahelp/project.xml" />
+		<maven:maven goals="jar:jar" descriptor="${basedir}/javahelp/project.xml" />
 	</goal>	
 	<goal name="javahelp-clean">
-		<maven:maven goals="clean:clean" descriptor="javahelp/project.xml" />
+		<maven:maven goals="clean:clean" descriptor="${basedir}/javahelp/project.xml" />
 	</goal>
+	
+	<!-- generate xmlrpc documentation -->
 	<goal name="xmlrpcdoc">		
 		<j:set var="maven.javadoc.doclet" value="com.jeldoclet.JELDoclet" />
 		<mkdir dir="${basedir}/target/xmlrpcdoc" />

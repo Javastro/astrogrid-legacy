@@ -11,7 +11,7 @@ import org.picocontainer.defaults.DefaultPicoContainer;
 import java.util.Iterator;
 import java.util.Map;
 
-/*$Id: Container.java,v 1.1 2006/01/13 15:44:22 nw Exp $
+/*$Id: Container.java,v 1.1 2006/04/22 12:41:55 nw Exp $
  * Created on 13-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,6 +77,9 @@ public class Container {
 
 /* 
 $Log: Container.java,v $
+Revision 1.1  2006/04/22 12:41:55  nw
+refactored workbench into ar.
+
 Revision 1.1  2006/01/13 15:44:22  nw
 new set of examples.
  

@@ -4,7 +4,7 @@
     <extend>${basedir}/../maven-base/project.xml</extend>
         <artifactId>astrogrid-desktop-root</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astrogrid Client Runtime and Workbench</name>
+        <name>Astronomy Runtimes</name>
         <description><![CDATA[
 
 	<p>  
@@ -21,7 +21,7 @@
 			myspace manager, job controller and application invoker. It is layered upon the AstroGrid Client Runtime (ACR).
 	</p>		
 		  ]]></description>
-        <shortDescription>AstroGrid Client Runtime and Workbench</shortDescription>
+        <shortDescription>Astro Runtimes</shortDescription>
 
    
         <build>

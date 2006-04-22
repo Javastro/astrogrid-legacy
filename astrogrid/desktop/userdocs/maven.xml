@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  >
+	
+        <goal name="astrogrid-install-artifact" prereqs="jar:install"/>
+
+	<!-- generate the javahelp index -->
+	<preGoal name="java:jar-resources">
+		<attainGoal name="index-javahelp" />
+	</preGoal>
+	
+	<goal name="index-javahelp">
+		<mkdir dir="${basedir}/target/index" />
+		<java classpathref="maven.dependency.classpath"
+			fork="true"  failonerror="true"
+			classname="com.sun.java.help.search.Indexer"
+			args="-db ${basedir}/target/index/javahelp/SearchData ${basedir}/src/javahelp"
+			/>
+	</goal>
+
+</project>
+

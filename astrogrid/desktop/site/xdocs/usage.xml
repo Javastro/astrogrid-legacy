@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        <title>Astro Runtime @VERSION@ - Usage Notes</title>
+</properties>
+<body>
+
+<section name="Usage"><p>
+This page describes what can be done with the different versions of AR
+
+</p>
+</section>
+
+<section name="Webstart Version">
+<p>
+No configuration, no user-servicable parts. Just run it by clicking the link.
+</p>
+</section>
+
+<section name="Standalone Version"><p>
+Run from commandline by typing
+</p>
+<source>
+java -jar acr-@VERSION_NUMBER@.jar
+</source>
+<p>
+Appending the <tt>-help</tt> flag gives
+</p>
+<source>
+usage: acr
+ -D &lt;property=value>               use value for given property
+ -addModule &lt;module file>          file location of additional module file
+ -addModuleURL &lt;URL>               URL location of additional module file
+ -debug                            Enable Debugging
+ -help                             Print Help
+ -list                             List available properties
+ -propertyFile &lt;properties file>   file location of properties file
+ -propertyURL &lt;URL>                URL location of properties file
+
+</source>
+<p>
+Each of the flavours of AR expose a set of configuration properties. The available properties
+and their default values can be found by running with the <tt>-list</tt> flag, which, for acr,  gives
+</p>
+<source>
+-- listing properties --
+org.apache.commons.logging.Log=org.apache.commons.logging.impl.Simpl...
+org.apache.commons.logging.simplelog.defaultlog=info
+java.net.preferIPv4Stack=true
+ivoa.skynode.disabled=true
+org.apache.commons.logging.simplelog.showlogname=true
+java.net.preferIPv6Addresses=false
+org.apache.commons.logging.simplelog.showShortLogname=true
+
+Module Defaults - can be overridden
+l
+framework
+workbench.version=2.0
+hub.version=2.0
+acr.version=2.0
+acr.debug=false
+
+builtin
+builtin.shutdown.exit=true
+
+background
+background.jesStrategy.refreshSeconds=240
+background.ceaStrategy.refreshSeconds=240
+background.tasks.workdir=${user.home}$[file.separator}.workbench${file.separator}cea
+
+dialogs
+
+plastic
+
+ivoa
+ivoa.adql074.endpoint=http://openskyquery.net/AdqlTranslator/ADQLTrans.asmx
+
+nvo
+
+cds
+cds.glu.endpoint=http://cdsws.u-strasbg.fr/axis/services/Jglu
+cds.sesame.endpoint=http://cdsws.u-strasbg.fr/axis/services/Sesame
+cds.coordinate.endpoint=http://cdsws.u-strasbg.fr/axis/services/AstroCoo
+cds.ucd.endpoint=http://cdsws.u-strasbg.fr/axis/services/UCD
+cds.vizier.endpoint=http://cdsws.u-strasbg.fr/axis/services/VizieR
+cds.vizier2.endpoint=http://cdsws.u-strasbg.fr/axis/services/VizieRBeta
+
+astrogrid
+org.astrogrid.registry.query.endpoint=http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery
+org.astrogrid.registry.admin.endpoint=http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryAdmin
+org.astrogrid.registry.query.altendpoint=http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery
+jes.job.controller.endpoint=http://galahad.star.le.ac.uk:8080/astrogrid-jes/services/JobControllerService
+astrogrid.myspace.fetchParents=true
+astrogrid.myspace.maxExtraNodes=200
+astrogrid.myspace.prefetchDepth=3
+astrogrid.loginDialogue.alternative.logger=LOGIN
+astrogrid.store.workdir=${user.home}${file.separator}.workbench
+
+system
+system.rmi.port=-1
+system.rmi.startScanPort=1099
+system.rmi.endScanPort=2099
+system.rmi.disableConnectionFile=false
+system.rmi.connectionFile=${user.home}${file.separator}.acr-rmi-port
+system.webserver.port=-1
+system.webserver.startScanPort=8001
+system.webserver.endScanPort=8800
+system.webserver.contextName=
+system.webserver.disableConnectionFile=false
+system.webserver.connectionFile=${user.home}${file.separator}.astrogrid-desktop
+system.executor.queueSize=10000
+system.executor.startThreads=15
+system.executor.maxThreads=30
+system.configuration.preferenceClass=org.astrogrid.desktop.modules.system.UIImpl
+system.ui.visible=true
+system.ui.title=AstroGrid Workbench
+system.systray.alternative.logger=SYSTRAY
+system.ui.alternative.logger=UI
+
+Any service can be disabled by setting the property 'service.name.disabled
+For example, to disable the rmi server, set 'system.rmi.disabled'
+</source>
+<p>
+(<i>I realize I need to document these keys better</i>)<br/>
+Based on this, if we wished to run acr and disable the system tray, and set the webserver port
+to 8090, we could run
+</p>
+<source>
+java -jar acr-@VERSION_NUMBER@.jar -D system.webserver.port=8090 -D system.systray.disabled=true
+</source>
+<p>
+Note that it's necessary to place a space between <tt>-D</tt> and the option. Option values
+can also be provided in a properties file, passed to the application using the <tt>-propertyFile</tt>
+or <tt>-propertyURL</tt> options.
+</p>
+<p>
+It's also possible to do more advanced customization - such as adding new services, 
+adding features to the user interface, etc, by passing in a new module descriptor. Email me
+if you want to know more about this.
+</p>
+</section>
+
+<section name="Embeddable Version"><p>
+The same configuration properties are available in the embeddable versions of the AR. 
+Simply set the values using <tt>System.setProperty</tt> <i>before</i> creating the 
+runtime.
+
+</p></section>
+
+</body>
+</document>

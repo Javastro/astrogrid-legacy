@@ -1,11 +1,18 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
-	
-	  	<goal name="setup">
+
+  		<goal name="setup">
 			<j:set var="ifBuildingASR" value="java.lang.Object" />
-			<j:set var="ifBuildingACR" value="java.lang.Object" />			
+			<j:set var="ifBuildingACR" value="true" />			
 		</goal>
+	<goal name="astrogrid-build-site" prereqs="site" />
+	
+	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+		<attainGoal name="site:sshdeploy" />
+	</goal>
+	
+
 	
         <goal name="define-stylesheet">
              <jsl:stylesheet var="patch">
@@ -46,14 +53,19 @@
                 <jsl:template match="resources">
                         <jxml:copy>
                                 <jxml:element name="extension">
-                                        <jxml:attribute name="name">Astrogrid Script CDK${jnlpVersion}</jxml:attribute>
-                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-scripting/astrogrid-cdk-scripting.jnlp</jxml:attribute>
+                                        <jxml:attribute name="name">Astrogrid Workflow CDK${jnlpVersion}</jxml:attribute>
+                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
                                 </jxml:element>
+                                <jxml:element name="extension">
+                                        <jxml:attribute name="name">CEA Server${jnlpVersion}</jxml:attribute>
+                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}cea-server/cea-server.jnlp</jxml:attribute>
+                                </jxml:element>         
                                 <jsl:applyTemplates select="@* | node()" />
                         </jxml:copy>
                 </jsl:template>
              </jsl:stylesheet>
         </goal>
+
 
 </project>
 
