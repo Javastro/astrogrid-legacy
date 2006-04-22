@@ -23,7 +23,7 @@
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>
 	  </dependency>
-	  <!-- misnamed - not needed anymore
+	  <!-- not needed for latest version -->
 	  <dependency>
 		  <artifactId>commons-digester</artifactId>
 		  <groupId>commons-digester</groupId>
@@ -33,7 +33,7 @@
 			  <jnlp.jar>true</jnlp.jar>
 		  </properties>		  
  </dependency>	
- -->
+ 
  <dependency>
 	 <artifactId>commons-lang</artifactId>
 	 <groupId>commons-lang</groupId>

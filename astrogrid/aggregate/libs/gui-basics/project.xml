@@ -4,41 +4,31 @@
 
   <currentVersion>${astrogrid.aggregate.version}</currentVersion>
 
-  <id>file</id>
+  <id>gui-basics</id>
 
-  <name>File-based Libraries</name>
+  <name>Basic GUI Widget Libraries</name>
 
-  <description>Hodepodge of libraries that work with files bundled as a JNLP Extension</description>
+  <description>Widget and Concurrent JNLP Extension</description>
 
-  <shortDescription>FileLibraries</shortDescription>
+  <shortDescription>Widget and Concurrent Libraries</shortDescription>
 
   <dependencies>
-	  <!-- to remove once old stables passes away -->
 	  <dependency>
-		  <artifactId>tar</artifactId>
-		  <groupId>ice-tar</groupId>
-		  <version>2.5</version>
+		  <groupId>l2fprod</groupId>
+		  <artifactId>l2fprod-common-all</artifactId>
+		  <version>6.2</version>
 		  <properties>
-			  <jnlp.jar>true</jnlp.jar>			
+			  <jnlp.jar>true</jnlp.jar>
 		  </properties>
-	  </dependency>
-	  
-	  <dependency>
-	  	<artifactId>commons-cli</artifactId>
-	  	<groupId>commons-cli</groupId>
-	  	<version>1.0</version>
-	  	<properties>
-	  		<jnlp.jar>true</jnlp.jar>
-	  	</properties>
-	  </dependency>
-	  <dependency>
-		  <artifactId>jdbm</artifactId>
-		  <groupId>jdbm</groupId>
-		  <version>1.0</version>
-		  <properties>
-			  <jnlp.jar>true</jnlp.jar>	
-		  </properties>
-</dependency>
+    </dependency>
+   <dependency>
+	    <artifactId>concurrent</artifactId>
+	    <groupId>concurrent</groupId>
+	    <version>1.3.4</version>
+	    <properties>
+		    <jnlp.jar>true</jnlp.jar>
+	    </properties>
+ </dependency>    
 
 <!-- stuff required in maven build -->
     <dependency>

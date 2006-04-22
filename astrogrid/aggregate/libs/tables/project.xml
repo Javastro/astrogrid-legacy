@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
+
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+
+  <id>tables</id>
+
+  <name>Table manipulation</name>
+
+  <description>Table manipulation Libs as  JNLP Extension</description>
+
+  <shortDescription>Table Manipulation Libraries</shortDescription>
+
+  <dependencies>
+
+            <dependency>
+                <groupId>starlink</groupId>
+                <artifactId>stil</artifactId>
+                <version>2.3-1</version>
+                <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
+                <properties>
+		    		<jnlp.jar>true</jnlp.jar>		    
+                </properties>
+        </dependency>
+    
+<!-- stuff required in maven build -->
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-jsl</artifactId>
+
+      <version>20030211.143151</version>
+
+      <properties />
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-xml</artifactId>
+
+      <version>20030211.142705</version>
+
+      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
+      <properties />
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory />
+
+    <unitTestSourceDirectory />
+
+    <unitTest />
+  </build>
+</project>
+

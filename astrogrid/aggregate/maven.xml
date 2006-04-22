@@ -61,13 +61,13 @@ this with signing with proper astrogrid certificates
 </goal>
 
 <goal name="publish-beta-jnlp" description="Publish all jnlp libs and apps at beta URLS">
-	<maven:reactor basedir="${basedir}" goals="publish-jnlp" ignoreFailures="false"
+	<maven:reactor basedir="${basedir}" goals="publish-beta-jnlp" ignoreFailures="false"
 		       includes="${maven.multiproject.includes}"
 		       />
 </goal>
 
 <goal name="publish-alpha-jnlp" description="Publish all jnlp libs and apps at alpha URLS">
-	<maven:reactor basedir="${basedir}" goals="publish-jnlp" ignoreFailures="false"
+	<maven:reactor basedir="${basedir}" goals="publish-alpha-jnlp" ignoreFailures="false"
 		       includes="${maven.multiproject.includes}"
 		       />
 </goal>

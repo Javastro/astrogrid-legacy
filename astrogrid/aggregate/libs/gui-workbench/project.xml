@@ -4,33 +4,16 @@
 
   <currentVersion>${astrogrid.aggregate.version}</currentVersion>
 
-  <id>gui</id>
+  <id>gui-workbench</id>
 
-  <name>GUI Widget Libraries</name>
+  <name>Workbench Widget Libraries</name>
 
-  <description>Widget and Look and Feel Libraries bundled as a JNLP Extension</description>
+  <description>Further Widget libraries, used by Workbench, a JNLP Extension</description>
 
-  <shortDescription>GUI Widget Libraries</shortDescription>
+  <shortDescription>Workbench Widget Libraries</shortDescription>
 
   <dependencies>
-  <!-- look and feel -->
-	  <dependency>
-		  <artifactId>looks</artifactId>
-		  <groupId>jgoodies</groupId>
-		  <version>2.0.1</version>
-		  <properties>
-			  <jnlp.jar>true</jnlp.jar>
-		  </properties>
-	  </dependency>
-	  <dependency>
-		  <groupId>l2fprod</groupId>
-		  <artifactId>l2fprod-common-all</artifactId>
-		  <!-- <version>0.1</version> -->
-		  <version>6.2</version> <!-- doesn't seem to interact well with our look and feel-->
-		  <properties>
-			  <jnlp.jar>true</jnlp.jar>
-		  </properties>
-    </dependency>
+ 
     <dependency> <!--graph viz library -->
 	    <groupId>prefuse</groupId>
 	    <artifactId>prefuse</artifactId>
@@ -40,24 +23,7 @@
 		    <jnlp.jar>true</jnlp.jar>			
 	    </properties>
         </dependency>
-	<dependency><!-- syntax highlighting editor -->
-		<groupId>jedit</groupId>
-		<artifactId>jedit-syntax</artifactId>
-		<version>1.0</version>
-		<type>jar</type>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-		</properties>
-	</dependency>
-    <dependency>
-    <!-- contains SwingWorker class, for executing things in background threads -->
-	    <artifactId>concurrent</artifactId>
-	    <groupId>concurrent</groupId>
-	    <version>1.3.4</version>
-	    <properties>
-		    <jnlp.jar>true</jnlp.jar>
-	    </properties>
- </dependency>    
+	
 <!-- calendar component used in helioscope-->
 <dependency>
 	<artifactId>jcalendar</artifactId>

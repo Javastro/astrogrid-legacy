@@ -16,6 +16,18 @@
 
 <!-- 3rd party libs -->
 
+<dependency> 
+     <!-- jaxp will be native for java 1.5. Until then this is required -->
+	 <artifactId>jaxp</artifactId>
+	 <groupId>jaxp</groupId>
+	 <version>1.4-20050623</version>
+	 <type>jar</type>
+	 <properties>
+      <jnlp.jar>true</jnlp.jar>
+	 </properties>		 
+ </dependency>
+ 
+
     <dependency>
       <groupId>xerces</groupId>
 

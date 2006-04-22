@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
+
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+
+  <id>jakarta-hivemind</id>
+
+  <name>Hivemind System</name>
+
+  <description>Hivemind IOC container bundled as a JNLP Extension</description>
+
+  <shortDescription>Hivemind</shortDescription>
+
+  <dependencies>
+
+
+<dependency>
+	<groupId>hivemind</groupId>
+	<artifactId>hivemind</artifactId>
+	<version>1.1.1</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+	
+</dependency>
+<dependency>
+	<groupId>hivemind</groupId>
+	<artifactId>hivemind-lib</artifactId>
+	<version>1.1.1</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+	
+</dependency>
+ <dependency>
+	 <id>oro</id>
+	 <version>2.0.7</version>
+	 <properties>
+		 <jnlp.jar>true</jnlp.jar>
+	 </properties>	 
+ </dependency>
+<dependency>
+	<groupId>javassist</groupId>
+	<artifactId>javassist</artifactId>
+	<version>3.0</version>
+	<properties>
+		<jnlp.jar>true</jnlp.jar>
+	</properties>
+	
+</dependency>
+
+<!-- stuff required in maven build -->
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-jsl</artifactId>
+
+      <version>20030211.143151</version>
+
+      <properties />
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-xml</artifactId>
+
+      <version>20030211.142705</version>
+
+      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
+      <properties />
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory />
+
+    <unitTestSourceDirectory />
+
+    <unitTest />
+  </build>
+</project>
+

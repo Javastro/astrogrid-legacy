@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
+
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+
+  <id>jakarta-commons</id>
+
+  <name>Libraries from Jakarta Commons</name>
+
+  <description>Jakarta Commons Libraries JNLP Extension</description>
+
+  <shortDescription>Jakarta Commons </shortDescription>
+
+  <dependencies>
+	  
+	 <dependency>
+                <artifactId>commons-collections</artifactId>            
+                <groupId>commons-collections</groupId>          
+                <version>3.1</version>          
+                <url>http://jakarta.apache.org/commons/</url>           
+                <properties>       
+			<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+			<jnlp.extension.dir>/jnlp/commons</jnlp.extension.dir>
+			<jnlp.extension.jnlp>commons.jnlp</jnlp.extension.jnlp>                             
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+    </dependency> 
+  
+ <dependency>
+	 <artifactId>commons-beanutils</artifactId>
+	 <groupId>commons-beanutils</groupId>
+	 <version>1.6</version>
+	 <type>jar</type>
+	 <properties>		 
+		 <jnlp.jar>true</jnlp.jar>
+	 </properties>		 
+ </dependency>
+ 
+ <dependency>
+	 <artifactId>commons-lang</artifactId>
+	 <groupId>commons-lang</groupId>
+	 <version>2.0</version>
+	 <type>jar</type>
+	 <properties>		 
+		 <jnlp.jar>true</jnlp.jar>
+	 </properties>		 
+        </dependency>  
+        
+	  <dependency>
+	  	<artifactId>commons-cli</artifactId>
+	  	<groupId>commons-cli</groupId>
+	  	<version>1.0</version>
+	  	<properties>			
+		<jnlp.jar>true</jnlp.jar>			
+	  	</properties>
+	  </dependency>
+
+
+<!-- stuff required in maven build -->
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-jsl</artifactId>
+
+      <version>20030211.143151</version>
+
+      <properties />
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-xml</artifactId>
+
+      <version>20030211.142705</version>
+
+      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
+      <properties />
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory />
+
+    <unitTestSourceDirectory />
+
+    <unitTest />
+  </build>
+</project>
+
