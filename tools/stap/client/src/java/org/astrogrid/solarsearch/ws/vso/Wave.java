@@ -158,7 +158,7 @@ public class Wave  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(Wave.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Wave"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Wave"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("wavemin");
         elemField.setXmlName(new javax.xml.namespace.QName("", "wavemin"));

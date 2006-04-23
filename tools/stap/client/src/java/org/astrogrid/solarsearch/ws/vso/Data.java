@@ -234,7 +234,7 @@ public class Data  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(Data.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Data"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Data"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("fileid");
         elemField.setXmlName(new javax.xml.namespace.QName("", "fileid"));

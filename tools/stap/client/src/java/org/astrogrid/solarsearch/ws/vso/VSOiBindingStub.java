@@ -25,9 +25,9 @@ public class VSOiBindingStub extends org.apache.axis.client.Stub implements org.
         org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("Query");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "body"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryRequest"), org.astrogrid.solarsearch.ws.vso.QueryRequest.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "body"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryRequest"), org.astrogrid.solarsearch.ws.vso.QueryRequest.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "VSOQueryResponse"));
+        oper.setReturnType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "VSOQueryResponse"));
         oper.setReturnClass(org.astrogrid.solarsearch.ws.vso.ProviderQueryResponse[].class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "body"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
@@ -36,9 +36,9 @@ public class VSOiBindingStub extends org.apache.axis.client.Stub implements org.
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("GetData");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "body"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "VSOGetDataRequest"), org.astrogrid.solarsearch.ws.vso.VSOGetDataRequest.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "body"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "VSOGetDataRequest"), org.astrogrid.solarsearch.ws.vso.VSOGetDataRequest.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "VSOGetDataResponse"));
+        oper.setReturnType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "VSOGetDataResponse"));
         oper.setReturnClass(org.astrogrid.solarsearch.ws.vso.ProviderGetDataResponse[].class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "body"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
@@ -76,111 +76,111 @@ public class VSOiBindingStub extends org.apache.axis.client.Stub implements org.
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
             java.lang.Class simplelistsf = org.apache.axis.encoding.ser.SimpleListSerializerFactory.class;
             java.lang.Class simplelistdf = org.apache.axis.encoding.ser.SimpleListDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Data");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Data");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.Data.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "DataArray");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "DataArray");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.Data[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Data");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Data");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "DataRequest");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "DataRequest");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.DataRequest.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "DataRequestArray");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "DataRequestArray");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.DataRequest[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "DataRequest");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "DataRequest");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Extent");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Extent");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.Extent.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Extra");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Extra");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.Extra.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "GetDataRequest");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "GetDataRequest");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.GetDataRequest.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Info");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Info");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.Info.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "ProviderGetDataResponse");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "ProviderGetDataResponse");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.ProviderGetDataResponse.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "ProviderQueryResponse");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "ProviderQueryResponse");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.ProviderQueryResponse.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryRequest");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryRequest");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.QueryRequest.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryRequestBlock");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryRequestBlock");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.QueryRequestBlock.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryResponseBlock");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryResponseBlock");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.QueryResponseBlock.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryResponseBlockArray");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryResponseBlockArray");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.QueryResponseBlock[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryResponseBlock");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryResponseBlock");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "StringArray");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "StringArray");
             cachedSerQNames.add(qName);
             cls = java.lang.String[].class;
             cachedSerClasses.add(cls);
@@ -189,46 +189,46 @@ public class VSOiBindingStub extends org.apache.axis.client.Stub implements org.
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Thumbnail");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Thumbnail");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.Thumbnail.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Time");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Time");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.Time.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "VSOGetDataRequest");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "VSOGetDataRequest");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.VSOGetDataRequest.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "VSOGetDataResponse");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "VSOGetDataResponse");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.ProviderGetDataResponse[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "ProviderGetDataResponse");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "ProviderGetDataResponse");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "VSOQueryResponse");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "VSOQueryResponse");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.ProviderQueryResponse[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "ProviderQueryResponse");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "ProviderQueryResponse");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Wave");
+            qName = new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Wave");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.solarsearch.ws.vso.Wave.class;
             cachedSerClasses.add(cls);
@@ -309,9 +309,9 @@ public class VSOiBindingStub extends org.apache.axis.client.Stub implements org.
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[0]);
         _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("http://virtualsolar.org/VSO/VSOi#Query");
+        _call.setSOAPActionURI("http://virtualsolar.org/VSO/VSOi_strict#Query");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Query"));
+        _call.setOperationName(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Query"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
@@ -340,9 +340,9 @@ public class VSOiBindingStub extends org.apache.axis.client.Stub implements org.
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[1]);
         _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("http://virtualsolar.org/VSO/VSOi#GetData");
+        _call.setSOAPActionURI("http://virtualsolar.org/VSO/VSOi_strict#GetData");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "GetData"));
+        _call.setOperationName(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "GetData"));
 
         setRequestHeaders(_call);
         setAttachments(_call);

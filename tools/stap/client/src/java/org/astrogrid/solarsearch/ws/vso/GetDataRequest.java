@@ -152,7 +152,7 @@ public class GetDataRequest  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(GetDataRequest.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "GetDataRequest"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "GetDataRequest"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("method");
         elemField.setXmlName(new javax.xml.namespace.QName("", "method"));
@@ -162,14 +162,14 @@ public class GetDataRequest  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("info");
         elemField.setXmlName(new javax.xml.namespace.QName("", "info"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Info"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Info"));
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("data");
         elemField.setXmlName(new javax.xml.namespace.QName("", "data"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "DataRequest"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "DataRequest"));
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

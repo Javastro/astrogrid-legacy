@@ -22,9 +22,7 @@ public class VSOiServiceLocator extends org.apache.axis.client.Service implement
     }
 
     // Use to get a proxy class for sdacVSOi
-    private java.lang.String sdacVSOi_address = "http://vso.nascom.nasa.gov/cgi/VSOi_strict";
-    
-    //private java.lang.String sdacVSOi_address = "http://localhost:1234/cgi/VSOi_strict";
+    private java.lang.String sdacVSOi_address = "http://vso.nascom.nasa.gov/cgi/VSOi_strict.temp";
 
     public java.lang.String getsdacVSOiAddress() {
         return sdacVSOi_address;
@@ -107,7 +105,7 @@ public class VSOiServiceLocator extends org.apache.axis.client.Service implement
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "VSOiService");
+        return new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "VSOiService");
     }
 
     private java.util.HashSet ports = null;
@@ -115,7 +113,7 @@ public class VSOiServiceLocator extends org.apache.axis.client.Service implement
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "sdacVSOi"));
+            ports.add(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "sdacVSOi"));
         }
         return ports.iterator();
     }

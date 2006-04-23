@@ -217,6 +217,13 @@ public class SolarSearch implements ISolarSearch, ISolarFetch {
         }
 
         instrumentName[0] = ((String [])info.get("INSTRUMENT_ID"))[0];
+
+        String providerReq = null;
+        if(info.containsKey("PROVIDER")) {
+            providerReq = ((String [])info.get("PROVIDER"))[0];
+        }
+        
+        
         Calendar startTimeCal = Calendar.getInstance();
         Calendar endTimeCal = Calendar.getInstance();
         
@@ -260,6 +267,9 @@ public class SolarSearch implements ISolarSearch, ISolarFetch {
         QueryRequestBlock qrb = new QueryRequestBlock();        
         qrb.setInstrument(instrumentName[0]);
         qrb.setTime(queryTime);
+        if(providerReq != null)
+            qrb.setProvider(providerReq);
+        
         
         Float versionNumber = new Float(1.0);
         try {

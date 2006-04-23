@@ -196,7 +196,7 @@ public class Extent  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(Extent.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Extent"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Extent"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("x");
         elemField.setXmlName(new javax.xml.namespace.QName("", "x"));

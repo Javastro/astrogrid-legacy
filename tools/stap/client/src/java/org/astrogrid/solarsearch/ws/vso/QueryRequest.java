@@ -106,7 +106,7 @@ public class QueryRequest  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(QueryRequest.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryRequest"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryRequest"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("version");
         elemField.setXmlName(new javax.xml.namespace.QName("", "version"));
@@ -117,7 +117,7 @@ public class QueryRequest  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("block");
         elemField.setXmlName(new javax.xml.namespace.QName("", "block"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryRequestBlock"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryRequestBlock"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

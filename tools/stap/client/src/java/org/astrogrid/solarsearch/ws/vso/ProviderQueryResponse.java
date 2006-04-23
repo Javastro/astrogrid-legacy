@@ -290,7 +290,7 @@ public class ProviderQueryResponse  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(ProviderQueryResponse.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "ProviderQueryResponse"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "ProviderQueryResponse"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("version");
         elemField.setXmlName(new javax.xml.namespace.QName("", "version"));
@@ -321,7 +321,7 @@ public class ProviderQueryResponse  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("record");
         elemField.setXmlName(new javax.xml.namespace.QName("", "record"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "QueryResponseBlock"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "QueryResponseBlock"));
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

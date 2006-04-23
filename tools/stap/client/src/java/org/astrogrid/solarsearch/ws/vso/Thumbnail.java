@@ -106,7 +106,7 @@ public class Thumbnail  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(Thumbnail.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Thumbnail"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Thumbnail"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("hires");
         elemField.setXmlName(new javax.xml.namespace.QName("", "hires"));

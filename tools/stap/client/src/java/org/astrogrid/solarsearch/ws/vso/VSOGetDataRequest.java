@@ -106,7 +106,7 @@ public class VSOGetDataRequest  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(VSOGetDataRequest.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "VSOGetDataRequest"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "VSOGetDataRequest"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("version");
         elemField.setXmlName(new javax.xml.namespace.QName("", "version"));
@@ -117,7 +117,7 @@ public class VSOGetDataRequest  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("request");
         elemField.setXmlName(new javax.xml.namespace.QName("", "request"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "GetDataRequest"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "GetDataRequest"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

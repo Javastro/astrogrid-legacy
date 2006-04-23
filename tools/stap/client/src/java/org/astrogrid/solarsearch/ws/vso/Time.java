@@ -106,7 +106,7 @@ public class Time  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(Time.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "Time"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "Time"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("start");
         elemField.setXmlName(new javax.xml.namespace.QName("", "start"));

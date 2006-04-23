@@ -114,7 +114,7 @@ public class DataRequest  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(DataRequest.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi", "DataRequest"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://virtualsolar.org/VSO/VSOi_strict", "DataRequest"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("provider");
         elemField.setXmlName(new javax.xml.namespace.QName("", "provider"));
