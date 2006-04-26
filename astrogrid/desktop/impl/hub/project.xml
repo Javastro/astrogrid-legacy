@@ -109,6 +109,18 @@ we have to add by hand -->
       </properties>
     </dependency>
  
+ <!-- brower control - only use for non-jnlp distribution -->
+ 	<dependency>
+ 		<artifactId>BrowserLauncher2</artifactId>
+ 		<groupId>BrowserLauncher2</groupId>
+ 		<version>10rc4</version>
+ 		<url>http://browserlaunch2.sourceforge.net/</url>
+ 		<properties>
+ 		<!-- don't jnlp.jar -->
+ 			<dist.bundle>true</dist.bundle>
+ 		</properties>
+ 	</dependency>
+ 
  <!-- jakarta commons - jnlp extension -->
        <dependency>
                 <artifactId>commons-collections</artifactId>            

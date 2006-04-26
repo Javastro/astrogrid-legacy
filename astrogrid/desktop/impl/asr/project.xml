@@ -22,6 +22,7 @@
                       <exclude>org/astrogrid/desktop/modules/system/HelpServerImpl.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/system/SwingSetup.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/system/UIImpl.java</exclude>
+                      <exclude>org/astrogrid/desktop/modules/system/BrowserLauncherBrowserControl.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/ag/LoginDialogue.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/dialogs/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/adqlEditor/**</exclude>
@@ -51,6 +52,8 @@
         </build>
 
         <dependencies>
+
+
 
 <!-- public interfaces of the acr -->
 	<dependency>
@@ -265,7 +268,6 @@
 	 </properties>	 	    
  </dependency>    
 
-  
   <!-- JDIC components - a bit tricky, because of binary nature.. 
 -->
  <dependency>

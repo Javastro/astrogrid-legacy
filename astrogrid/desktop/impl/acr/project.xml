@@ -46,6 +46,21 @@
         </build>
 
         <dependencies>
+        
+ 
+  <!-- brower control - only use for non-jnlp distribution -->
+ 	<dependency>
+ 		<artifactId>BrowserLauncher2</artifactId>
+ 		<groupId>BrowserLauncher2</groupId>
+ 		<version>10rc4</version>
+ 		<url>http://browserlaunch2.sourceforge.net/</url>
+ 		<properties>
+ 		<!-- don't jnlp.jar -->
+ 			<dist.bundle>true</dist.bundle>
+ 		</properties>
+ 	</dependency>
+ 	
+ 	        
 <!-- online help system -->
 
 	<dependency> <!-- no extension - as liable to change -->
