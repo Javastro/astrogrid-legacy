@@ -1,17 +1,12 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.io.IOException;
-import java.net.URL;
-
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -23,6 +18,17 @@ import uk.ac.starlink.votable.TableHandler;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Map;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.astrogrid.desktop.modules.ui.comp.PositionTextField;
 
 /** base class for something that fetches a resource
  *   extensible for siap, cone, ssap, etc by implementing the abstract {@link #construct} method. This method should
@@ -69,7 +75,29 @@ public abstract class Retriever extends BackgroundWorker {
         this.information = information;
         this.model = model;
         this.primaryNode = primaryNode;
-    }        
+    }
+    
+    public static String scaleValue(String doubleValue, int scale) {
+        int decIndex = doubleValue.indexOf('.');
+        int expIndex = doubleValue.indexOf('E'); 
+        //we use the scale during the substring process
+        //and to go to scale we need to increment by one character
+        //to include the "." decimal point.
+        scale++;           
+        if(decIndex != -1 && doubleValue.length() > (decIndex + scale)) {
+            if((decIndex + scale) <= (expIndex+1))
+                return doubleValue;
+            
+            String temp = doubleValue.substring(0,(decIndex + scale));
+            if((decIndex = doubleValue.indexOf('E')) != -1) {
+                temp += doubleValue.substring(decIndex);
+            }
+            return temp;
+        }
+        return doubleValue;
+    }
+
+    
     /** return a string describing what kind of service this is */
     public abstract String getServiceType();
         
@@ -154,6 +182,8 @@ public abstract class Retriever extends BackgroundWorker {
    protected void startTableExtensionPoint(int col,ColumnInfo columnInfo) {
    }
    
+   
+   /*
    protected double hav(double val) {
         return Math.pow((Math.sin(0.5D * val)),2);    
        }
@@ -161,6 +191,7 @@ public abstract class Retriever extends BackgroundWorker {
     protected double ahav(double val) {
            return 2.0D * Math.asin(Math.sqrt(val));
        }
+       */
        
 
        /**
@@ -174,6 +205,9 @@ public abstract class Retriever extends BackgroundWorker {
         * @return distance between two points.
         */
        protected double getOffset(double queryra, double querydec, double objectra, double objectdec) {
+           
+           return uk.ac.starlink.ttools.func.Coords.skyDistanceDegrees(queryra,querydec,objectra,objectdec);
+           /*
            // gcdist = ahav( hav(dec1-dec2) + cos(dec1)*cos(dec2)*hav(ra1-ra2) )
            queryra = Math.toRadians(queryra);  
            querydec = Math.toRadians(querydec);
@@ -185,16 +219,25 @@ public abstract class Retriever extends BackgroundWorker {
            //System.out.println("the haversine result = " + result + " throwing it toDegrees = " + Math.toDegrees(result));
            //return Math.toDegrees(result); NWW: fix accordng to kev.
            return result;
+           */
        }  
        
        protected String chopValue(String doubleValue, int scale) {
-           int decIndex = doubleValue.indexOf(".");
+           int decIndex = doubleValue.indexOf('.');
+           int expIndex = doubleValue.indexOf('E'); 
            //we use the scale during the substring process
            //and to go to scale we need to increment by one character
            //to include the "." decimal point.
-           scale++;
+           scale++;           
            if(decIndex != -1 && doubleValue.length() > (decIndex + scale)) {
-               return doubleValue.substring(0,(decIndex + scale));
+               if((decIndex + scale) <= (expIndex+1))
+                   return doubleValue;
+               
+               String temp = doubleValue.substring(0,(decIndex + scale));
+               if((decIndex = doubleValue.indexOf('E')) != -1) {
+                   temp += doubleValue.substring(decIndex);
+               }
+               return temp;
            }
            return doubleValue;
        }
@@ -212,7 +255,7 @@ public abstract class Retriever extends BackgroundWorker {
         String rowRa = row[raCol].toString();
         String rowDec = row[decCol].toString();                                 
         DefaultTreeNode valNode = new DefaultTreeNode();
-        String positionString = chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2) ;
+        String positionString = chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2);
         valNode.setAttribute(LABEL_ATTRIBUTE,"*");
         valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
         // unused
@@ -224,6 +267,9 @@ public abstract class Retriever extends BackgroundWorker {
         
         StringBuffer tooltip = new StringBuffer();
         tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
+        tooltip.append("<br>")
+        .append(PositionTextField.getRASexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))))
+        .append(",").append(PositionTextField.getDECSexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))));
         for (int v = 0; v < row.length; v++) {
             Object o = row[v];
             if (o == null) {
@@ -243,7 +289,7 @@ public abstract class Retriever extends BackgroundWorker {
         if(offsetNode == null) { // not found offset node.
             offsetNode = new DefaultTreeNode();
             offsetNode.setAttribute(LABEL_ATTRIBUTE,offsetVal);
-            offsetNode.setAttribute(OFFSET_ATTRIBUTE,offsetVal);
+            offsetNode.setAttribute(OFFSET_ATTRIBUTE,String.valueOf(offset));
             offsetNode.setAttribute(TOOLTIP_ATTRIBUTE,String.valueOf(offset));
             serviceNode.addChild(new DefaultEdge(serviceNode,offsetNode));
             model.getNodeSizingMap().addOffset(offsetVal);
@@ -254,6 +300,7 @@ public abstract class Retriever extends BackgroundWorker {
             pointNode = new DefaultTreeNode();
             offsetNode.addChild(new DefaultEdge(offsetNode,pointNode));
             pointNode.setAttribute(LABEL_ATTRIBUTE,positionString);
+            pointNode.setAttribute(TOOLTIP_ATTRIBUTE,positionString);
         }
         // now have found or created point node. add new result to this.
         

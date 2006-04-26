@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.36 2006/04/18 23:25:43 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.37 2006/04/26 15:21:26 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,59 @@
  *
 **/
 package org.astrogrid.desktop.modules.ui;
+
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.nvo.Cone;
+import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.AstroScope;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
+import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
+import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
+import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
+import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
+import org.astrogrid.desktop.modules.ui.scope.VizModel;
+import org.astrogrid.desktop.modules.ui.scope.Vizualization;
+import org.astrogrid.desktop.modules.ui.scope.Retriever;
+import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
+import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
+
+import org.astrogrid.desktop.modules.ui.comp.PositionTextField;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.WordUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.votech.plastic.CommonMessageConstants;
+import org.votech.plastic.HubMessageConstants;
+import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.PlasticListener;
+import org.votech.plastic.incoming.handlers.MessageHandler;
+import org.votech.plastic.incoming.handlers.StandardHandler;
+
+import com.l2fprod.common.swing.JButtonBar;
+
+import edu.berkeley.guir.prefuse.event.FocusEvent;
+import edu.berkeley.guir.prefuse.event.FocusListener;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -39,53 +92,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.acr.nvo.Cone;
-import org.astrogrid.acr.nvo.ConeInformation;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.AstroScope;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
-import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
-import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
-import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
-import org.astrogrid.desktop.modules.ui.scope.VizModel;
-import org.astrogrid.desktop.modules.ui.scope.Vizualization;
-import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
-import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
-import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.HubMessageConstants;
-import org.votech.plastic.PlasticHubListener;
-import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.MessageHandler;
-import org.votech.plastic.incoming.handlers.StandardHandler;
-
-import com.l2fprod.common.swing.JButtonBar;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.event.FocusListener;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
+import uk.ac.starlink.ttools.func.Coords;
 
 
 /** Implementation of the Datascipe launcher
@@ -94,7 +101,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
-public class AstroScopeLauncherImpl extends UIComponentImpl 
+public class AstroScopeLauncherImpl extends UIComponentImpl  
     implements AstroScope, ActionListener, PlasticListener, PlasticWrapper {
    
 /** extends the plastic mesagehandler to display new buttons */
@@ -133,10 +140,11 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
     static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
 
     //Various gui components.
-    private JTextField posText;           
+    private PositionTextField posText;           
     private JButton reFocusTopButton;   
     private JButton clearButton;
-    private JTextField regionText;
+    private JButton switchButton;
+    private PositionTextField regionText;
     private JButton submitButton;
            
     //name resolver.
@@ -249,6 +257,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
         logger.debug("actionPerformed(ActionEvent) - entered actionPerformed");
         if(source == submitButton) {
             logger.debug("actionPerformed(ActionEvent) - submit button clicked");
+            currentlyDegrees = true;
             query();
         }else if(source == reFocusTopButton) {
             vizualizations.refocusMainNodes();
@@ -262,9 +271,62 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
             }
             set.clear();
             vizualizations.reDrawGraphs();
+        }else if (source == switchButton) {
+            toggleAndConvertNodes(vizModel.getRootNode());
+            vizualizations.reDrawGraphs();
+            String regTemp = null;
+            if(currentlyDegrees) {
+                currentlyDegrees = false;
+                posText.setText(posText.getPositionSexagesimal());
+                regTemp = regionText.hasFullRegion() ?  String.valueOf((regionText.getRADegrees() * 3600)) + "," + String.valueOf((regionText.getDECDegrees() * 3600)) :
+                          String.valueOf((Double.parseDouble(regionText.getText()) * 3600));
+                regionText.setText(regTemp);
+            } else {
+                currentlyDegrees = true;
+                posText.setText(posText.getPositionDegrees());
+                regTemp = regionText.hasFullRegion() ?  String.valueOf((regionText.getRADegrees()/3600)) + "," + String.valueOf((regionText.getDECDegrees()/3600)) :
+                    String.valueOf((Double.parseDouble(regionText.getText())/3600));
+                regionText.setText(regTemp);
+            }
         }
-
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
+    }
+    
+    private boolean currentlyDegrees = true;
+    
+    private void toggleAndConvertNodes(TreeNode nd) {
+        String ndVal = null;  
+        String posVal = null;
+        boolean foundOffset = false;
+        if((ndVal = nd.getAttribute(Retriever.OFFSET_ATTRIBUTE)) != null) {
+            foundOffset = true;
+            double val;
+            if(currentlyDegrees) {
+                val = Double.parseDouble(ndVal) * 3600;
+                
+            } else {
+                val = Double.parseDouble(ndVal);
+            }
+            nd.setAttribute(Retriever.LABEL_ATTRIBUTE,Retriever.scaleValue(String.valueOf(val),2));
+            nd.setAttribute(Retriever.TOOLTIP_ATTRIBUTE,String.valueOf(val));
+            for(int i = 0;i < nd.getChildCount();i++) {
+                TreeNode childNode = nd.getChild(i);
+                //should be a position string.
+                ndVal = childNode.getAttribute(Retriever.LABEL_ATTRIBUTE);
+                if(currentlyDegrees) {
+                    posVal = PositionTextField.getRASexagesimal(ndVal) + "," + PositionTextField.getDECSexagesimal(ndVal);
+                }else {
+                    posVal = Retriever.scaleValue(String.valueOf(PositionTextField.getRADegrees(ndVal)),2) + "," + Retriever.scaleValue(String.valueOf(PositionTextField.getDECDegrees(ndVal)),2);
+                }
+                childNode.setAttribute(Retriever.LABEL_ATTRIBUTE,posVal);
+                childNode.setAttribute(Retriever.TOOLTIP_ATTRIBUTE,posVal);
+            }
+        }//if
+        for(int i = 0;i < nd.getChildCount();i++) {
+            if(!foundOffset)
+                toggleAndConvertNodes(nd.getChild(i));
+        }
+        
     }
     
     /** removes previous results, just leaving the skeleton */
@@ -277,80 +339,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
     }
          
         
-    /**
-     * Extracts out the dec of a particular position in the form of a ra,dec
-     * @param position
-     * @return
-     */    
-    private double getDEC(String position) {
-        String []val = position.split(",");
-        if(val.length != 2) {
-            throw new IllegalArgumentException("Invalid position was given for determinging 'dec', position: " + position);
-        }
-        return Double.parseDouble(val[1]);
-    }
-    /**
-     * Verify the entry in the position text box is a position.  If not it should try to look it up. 
-     * @return
-     */
-    private String getPosition() {
-        String pos = posText.getText().trim();       
-        String result =  getPosition(pos);
-        if (result == null) {
-            return getPosition(getPositionFromObject(pos));
-        } else {
-            return result;
-        }
-    }
-    
-    // better to return null if we're just going to catch it straght away.
-    private String getPosition(String pos)  {
-        if(pos == null || pos.trim().length() == 0) {
-            return null;
-        }
-        String expression = "\\+?-?\\d+\\.?\\d*,\\+?-?\\d+\\.?\\d*";
-        if(pos.matches(expression)) {            
-            return pos;            
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * method: getPositionFromObject
-     * Description: Queries CDS-Simbad service for a position in the sky based on a object name.  This is typically 
-     * called if the user enters an invalid position then it will attempt a lookup.
-     * @return position in the sky based on a object name.
-     */
-    private String getPositionFromObject(String inputPos) {
-        String pos = null;  
-        try {
-            String temp = ses.sesame(inputPos,"x");
-            //logger.debug("here is the xml response from sesame = " + temp);            
-            pos = temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>"));
-            pos += "," + temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>"));
-            //logger.debug("here is the position extracted from sesame = " + pos);
-        }catch(Exception e) {
-            //hmmm I think glueservice is throwing an exception but things seem to be okay.
-            //e.printStackTrace();
-				logger.debug("error from sesame - ho hum",e);
-        }
-        return pos;
-    }
-    /**
-     * Extracts out the ra of a particular position in the form of a ra,dec
-     * @param position
-     * @return
-     * @todo refactor -report error to user - or prevent invalid input in the first place.
-     */
-    private double getRA(String position) {
-        String []val = position.split(",");
-        if(val.length != 2) {
-            throw new IllegalArgumentException("Invalid position was given for determinging 'ra', position: " + position);
-        }
-        return Double.parseDouble(val[0]);        
-    }
-    /**
+   /**
      * Makes the Center Panel for the GUI.  The main look is is the display graph which is the 
      * majority of the center, and a series of save buttons below it.  A series of 
      * createInitialDisplay type methods are here to try and switch to see the best display.
@@ -473,13 +462,13 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         searchPanel.setLayout(new BoxLayout(searchPanel,BoxLayout.Y_AXIS));
         searchPanel.setBorder(new TitledBorder("1. Search"));
         
-        posText = new JTextField();
+        posText = new PositionTextField(ses);
         posText.setToolTipText("Place position or object name e.g. 120,0 (in decimal degrees and no spaces) or M11");
         posText.setAlignmentX(LEFT_ALIGNMENT);
         posText.setColumns(10);
         posText.setMaximumSize(posText.getPreferredSize());   
         
-        regionText = new JTextField();
+        regionText = new PositionTextField();
         regionText.setToolTipText("Enter region size e.g. 0.1 in decimal degrees");
         regionText.setAlignmentX(LEFT_ALIGNMENT);
         regionText.setColumns(10);
@@ -525,6 +514,15 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         clearButton.setEnabled(false);
         clearButton.addActionListener(this);
         
+        
+        switchButton = new JButton("Toggle Coords");
+        switchButton.setIcon(IconHelper.loadIcon("toggle.gif"));
+        switchButton.setToolTipText("Toggle between Degrees and Sexagesimal coordinates");
+        switchButton.setEnabled(false);
+        //switchButton.setMaximumSize(clearButton.getMaximumSize());
+        switchButton.addActionListener(this);
+        
+        
         final FocusSet sel = vizModel.getSelectionFocusSet();
         sel.addFocusListener(new FocusListener() {
             public void focusChanged(FocusEvent arg0) {
@@ -532,6 +530,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
             }
         });
         navPanel.add(clearButton);
+        navPanel.add(switchButton);
         
         // make these buttons all the same width - I know clear button is the biggest.
         submitButton.setMaximumSize(clearButton.getPreferredSize());
@@ -555,18 +554,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         //scopeMain.setPreferredSize(new Dimension().
         return scopeMain;
     }
-    
-    /**
-     * Checks to see if the regiion is in the form of ra,dec which will need to be parsed.
-     * @return
-     * @todo refactor
-     */
-    private boolean needsParsedRegion() {
-        String region = regionText.getText().trim();
-        String expression = "-?\\d+\\.?\\d*,-?\\d+\\.?\\d*";
-        return region.matches(expression);
-    }
-    
+        
     /**
      * method: query
      * description: Queries the registry for sia and conesearch types and begins working on them.
@@ -577,7 +565,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         logger.debug("query() - inside query method)");
         (new BackgroundOperation("Checking Position") {
             protected Object construct() throws Exception {
-                return getPosition();
+                return posText.getPositionDegrees();
             }
             protected void doFinished(Object o) {
                 String position = (String)o;
@@ -588,14 +576,27 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                 setStatusMessage(position);
                 clearTree();
                 reFocusTopButton.setEnabled(true);
+                switchButton.setEnabled(true);
                 
                 //  @todo refactor this string-munging methods.                
-                final double ra = getRA(position);
-                final double dec = getDEC(position);
-                final String region = regionText.getText().trim();
-//                final double size = needsParsedRegion() ? getRA(region) : getConeRegion();
-                final double raSize = needsParsedRegion() ?  getRA(region) : Double.parseDouble(region);
-                final double decSize= needsParsedRegion() ? getDEC(region) : raSize;
+                final double ra = PositionTextField.getRADegrees(position);
+                final double dec = PositionTextField.getDECDegrees(position);                
+                final String region = regionText.getText().trim();                
+                
+                final double raSize = regionText.hasFullRegion() ?  
+                        posText.isSexagesimal() ? PositionTextField.getRADegrees(region)/3600 : PositionTextField.getRADegrees(region) : 
+                        posText.isSexagesimal() ? Double.parseDouble(region)/3600 : Double.parseDouble(region);
+                final double decSize= regionText.hasFullRegion() ? 
+                        posText.isSexagesimal() ? PositionTextField.getDECDegrees(region)/3600 : raSize : raSize;
+
+                if(posText.isSexagesimal())
+                    regionText.setText(regionText.hasFullRegion() ? String.valueOf(raSize) + "," + String.valueOf(decSize) : String.valueOf(raSize));
+                
+                posText.setText(position);
+                if(raSize == decSize) 
+                    regionText.setText(String.valueOf(raSize));
+                else
+                    regionText.setText(String.valueOf(raSize) + "," + String.valueOf(decSize));
                 
                 for (Iterator i = protocols.iterator(); i.hasNext(); ) {
                     final DalProtocol p =(DalProtocol)i.next();
@@ -618,7 +619,6 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                         }).start();
                     }
                 }
-
             }
         }).start();
     }
@@ -645,8 +645,8 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
-Revision 1.36  2006/04/18 23:25:43  nw
-merged asr development.
+Revision 1.37  2006/04/26 15:21:26  KevinBenson
+Small additions to the astroscope to create conversions between sexagesimal and degrees
 
 Revision 1.35  2006/03/31 15:20:56  nw
 removed work-around, due to new version of plastic library
