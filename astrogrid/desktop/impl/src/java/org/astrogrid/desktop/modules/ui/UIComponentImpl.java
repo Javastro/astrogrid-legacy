@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.3 2006/04/26 15:56:54 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
@@ -311,7 +313,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             tasksButton.setEnabled(false);
             tasksButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             tasksButton.setBorder(BorderFactory.createEtchedBorder());
-            tasksButton.setToolTipText("List running background processes");
+            tasksButton.setToolTipText("<html>List background tasks.<br> Click a task to halt and cancel it.");
             tasksButton.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
                     getTasksMenu().show(tasksButton,e.getX(),e.getY());
@@ -382,10 +384,35 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
             p.setPreferredSize(new Dimension(200,600));            
             tasksMenu.add(p);
-            tasksMenu.setLabel("Running processes:");
+            tasksMenu.setLabel("Running tasks");
+            
+            tasksMenu.add(getHaltAllButton());
         }
         return tasksMenu;
     }
+    
+    
+    private JButton haltAllButton;
+    protected JButton getHaltAllButton() {
+    	if (haltAllButton == null) {
+    		haltAllButton = new JButton();
+    		haltAllButton.setText("Halt all tasks");
+    		haltAllButton.addActionListener(new ActionListener() {
+    			public void actionPerformed(ActionEvent e) {
+    				for (Enumeration i = getTasksModel().elements(); i.hasMoreElements(); ) {
+    					Object o = i.nextElement();
+    					if (o != null) {
+    						((BackgroundWorker)o).interrupt();
+    					}
+    				}
+    			}
+    		});
+    		
+    		
+    	}
+    	return haltAllButton;
+    }
+    
     
     private ObservingListModel tasksModel;
     private ObservingListModel getTasksModel() {
@@ -508,6 +535,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.3  2006/04/26 15:56:54  nw
+added 'halt query' and 'halt all tasks' functinaltiy.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.9 2006/04/21 13:48:11 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.10 2006/04/26 15:56:54 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -135,7 +135,7 @@ public class HelioScopeLauncherImpl extends UIComponentImpl
     private JButton reFocusTopButton;   
     private JButton clearButton;
     private JTextField regionText;
-    private JButton submitButton;
+    private FlipButton submitButton;
     private JCalendarCombo startCal;
     private JCalendarCombo endCal;
 
@@ -248,8 +248,14 @@ public class HelioScopeLauncherImpl extends UIComponentImpl
         Object source = e.getSource();
         logger.debug("actionPerformed(ActionEvent) - entered actionPerformed");
         if(source == submitButton) {
-            logger.debug("actionPerformed(ActionEvent) - submit button clicked");
-            query();
+        	if (submitButton.isDoingSearch()) {
+        		logger.debug("halting");
+        		haltQuery();
+        	} else {
+        		logger.debug("querying");
+        		query();
+        	}
+        	submitButton.flip();
         }else if(source == reFocusTopButton) {
             vizualizations.refocusMainNodes();
             vizualizations.reDrawGraphs();
@@ -476,10 +482,6 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         checkPanel.add(formatTimeSeriesCheck);
         checkPanel.add(formatGraphicCheck);
         searchPanel.add(checkPanel);
-        submitButton = new JButton("Search");
-        submitButton.setIcon(IconHelper.loadIcon("find.png"));
-        submitButton.setToolTipText("Find resources for this time");
-        submitButton.addActionListener(this);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
         scopeMain.getInputMap(scopeMain.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
         scopeMain.getActionMap().put("search",new AbstractAction() {
@@ -487,7 +489,10 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                 HelioScopeLauncherImpl.this.actionPerformed(e);
             }
         });                
-        searchPanel.add(submitButton);      
+        submitButton = new FlipButton();
+        submitButton.addActionListener(this);
+
+searchPanel.add(submitButton);    
         
         // start of tree navigation buttons - maybe add more here later.
         JPanel navPanel = new JPanel();      
@@ -629,7 +634,11 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
             }
         }).start();
     }
-
+    private void haltQuery() {
+    	super.getHaltAllButton().doClick();
+    	setStatusMessage("Halted");
+    	setProgressValue(getProgressMax());
+    }
     /// PLASTIC stuff below here 
 
     
@@ -652,6 +661,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.10  2006/04/26 15:56:54  nw
+added 'halt query' and 'halt all tasks' functinaltiy.
+
 Revision 1.9  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

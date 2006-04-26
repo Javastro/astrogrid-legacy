@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.37 2006/04/26 15:21:26 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.38 2006/04/26 15:56:54 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,59 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ui;
-
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.acr.nvo.Cone;
-import org.astrogrid.acr.nvo.ConeInformation;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.AstroScope;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
-import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
-import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
-import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
-import org.astrogrid.desktop.modules.ui.scope.VizModel;
-import org.astrogrid.desktop.modules.ui.scope.Vizualization;
-import org.astrogrid.desktop.modules.ui.scope.Retriever;
-import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
-import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
-
-import org.astrogrid.desktop.modules.ui.comp.PositionTextField;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.HubMessageConstants;
-import org.votech.plastic.PlasticHubListener;
-import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.MessageHandler;
-import org.votech.plastic.incoming.handlers.StandardHandler;
-
-import com.l2fprod.common.swing.JButtonBar;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.event.FocusListener;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -92,7 +39,55 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import uk.ac.starlink.ttools.func.Coords;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.WordUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.nvo.Cone;
+import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.AstroScope;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.comp.PositionTextField;
+import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
+import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
+import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
+import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
+import org.astrogrid.desktop.modules.ui.scope.Retriever;
+import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
+import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
+import org.astrogrid.desktop.modules.ui.scope.VizModel;
+import org.astrogrid.desktop.modules.ui.scope.Vizualization;
+import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
+import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
+import org.votech.plastic.CommonMessageConstants;
+import org.votech.plastic.HubMessageConstants;
+import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.PlasticListener;
+import org.votech.plastic.incoming.handlers.MessageHandler;
+import org.votech.plastic.incoming.handlers.StandardHandler;
+
+import com.l2fprod.common.swing.JButtonBar;
+
+import edu.berkeley.guir.prefuse.event.FocusEvent;
+import edu.berkeley.guir.prefuse.event.FocusListener;
+import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 
 /** Implementation of the Datascipe launcher
@@ -101,7 +96,7 @@ import uk.ac.starlink.ttools.func.Coords;
  * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
-public class AstroScopeLauncherImpl extends UIComponentImpl  
+public class AstroScopeLauncherImpl extends UIComponentImpl 
     implements AstroScope, ActionListener, PlasticListener, PlasticWrapper {
    
 /** extends the plastic mesagehandler to display new buttons */
@@ -145,7 +140,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
     private JButton clearButton;
     private JButton switchButton;
     private PositionTextField regionText;
-    private JButton submitButton;
+    private FlipButton submitButton;
            
     //name resolver.
     private final Sesame ses;
@@ -256,9 +251,15 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
         Object source = e.getSource();
         logger.debug("actionPerformed(ActionEvent) - entered actionPerformed");
         if(source == submitButton) {
-            logger.debug("actionPerformed(ActionEvent) - submit button clicked");
-            currentlyDegrees = true;
-            query();
+        	if (submitButton.isDoingSearch()) {
+        		logger.debug("halting");
+        		haltQuery();
+        	} else {
+        		logger.debug("querying");
+        		currentlyDegrees=true;
+        		query();
+        	}
+        	submitButton.flip();
         }else if(source == reFocusTopButton) {
             vizualizations.refocusMainNodes();
             vizualizations.reDrawGraphs();
@@ -275,7 +276,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
             toggleAndConvertNodes(vizModel.getRootNode());
             vizualizations.reDrawGraphs();
             String regTemp = null;
-            if(currentlyDegrees) {
+            if(currentlyDegrees) { // factor these actions out into separate methods.
                 currentlyDegrees = false;
                 posText.setText(posText.getPositionSexagesimal());
                 regTemp = regionText.hasFullRegion() ?  String.valueOf((regionText.getRADegrees() * 3600)) + "," + String.valueOf((regionText.getDECDegrees() * 3600)) :
@@ -287,7 +288,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
                 regTemp = regionText.hasFullRegion() ?  String.valueOf((regionText.getRADegrees()/3600)) + "," + String.valueOf((regionText.getDECDegrees()/3600)) :
                     String.valueOf((Double.parseDouble(regionText.getText())/3600));
                 regionText.setText(regTemp);
-            }
+        }
         }
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
     }
@@ -339,7 +340,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
     }
          
         
-   /**
+    /**
      * Makes the Center Panel for the GUI.  The main look is is the display graph which is the 
      * majority of the center, and a series of save buttons below it.  A series of 
      * createInitialDisplay type methods are here to try and switch to see the best display.
@@ -483,18 +484,19 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
             searchPanel.add(p.getCheckBox());
         }
         
-        submitButton = new JButton("Search");
-        submitButton.setIcon(IconHelper.loadIcon("find.png"));
-        submitButton.setToolTipText("Find resources for this position");
-        submitButton.addActionListener(this);
+
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
         scopeMain.getInputMap(scopeMain.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
         scopeMain.getActionMap().put("search",new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 AstroScopeLauncherImpl.this.actionPerformed(e);
             }
-        });                
-        searchPanel.add(submitButton);      
+        });         
+
+    	        submitButton = new FlipButton();
+    	        submitButton.addActionListener(this);
+    	
+        searchPanel.add(submitButton); 
         
         // start of tree navigation buttons - maybe add more here later.
         JPanel navPanel = new JPanel();      
@@ -554,7 +556,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         //scopeMain.setPreferredSize(new Dimension().
         return scopeMain;
     }
-        
+    
     /**
      * method: query
      * description: Queries the registry for sia and conesearch types and begins working on them.
@@ -581,7 +583,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                 //  @todo refactor this string-munging methods.                
                 final double ra = PositionTextField.getRADegrees(position);
                 final double dec = PositionTextField.getDECDegrees(position);                
-                final String region = regionText.getText().trim();                
+                final String region = regionText.getText().trim();
                 
                 final double raSize = regionText.hasFullRegion() ?  
                         posText.isSexagesimal() ? PositionTextField.getRADegrees(region)/3600 : PositionTextField.getRADegrees(region) : 
@@ -619,8 +621,15 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                         }).start();
                     }
                 }
+
             }
         }).start();
+    }
+    
+    private void haltQuery() {
+    	super.getHaltAllButton().doClick();
+    	setStatusMessage("Halted");
+    	setProgressValue(getProgressMax());
     }
 
     /// PLASTIC stuff below here 
@@ -638,15 +647,24 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
     }
     public URI getPlasticId() {
         return myPlasticID;
-    }    
-          
+    }
+
+
+
+
+
+	
+
   
 }
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
-Revision 1.37  2006/04/26 15:21:26  KevinBenson
-Small additions to the astroscope to create conversions between sexagesimal and degrees
+Revision 1.38  2006/04/26 15:56:54  nw
+added 'halt query' and 'halt all tasks' functinaltiy.
+
+Revision 1.36  2006/04/18 23:25:43  nw
+merged asr development.
 
 Revision 1.35  2006/03/31 15:20:56  nw
 removed work-around, due to new version of plastic library
