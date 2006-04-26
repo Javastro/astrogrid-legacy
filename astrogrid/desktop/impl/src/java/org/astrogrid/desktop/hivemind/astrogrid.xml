@@ -344,7 +344,7 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
 	
-	<service-point id="trayRemoteProcessListener" visibility="private" interface="org.astrogrid.desktop.modules.ag.MessageRecorderInternal.RecorderListener">						
+	<service-point id="trayRemoteProcessListener" visibility="private" interface="org.astrogrid.desktop.modules.ag.RecorderListener">						
 		Display process events in systray.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.SysTrayRemoteProcessListener">

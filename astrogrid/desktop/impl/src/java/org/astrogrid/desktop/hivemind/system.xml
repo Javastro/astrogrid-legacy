@@ -219,8 +219,37 @@ System module.
 		</schema>
 	</configuration-point>
 	
+	<configuration-point id="helpsets">
+		Lists the helpsets to display in the help browser.
+		<schema>
+			<element name="helpset">
+				Add a helpset to javahelp
+					<attribute name="path" required="true">
+						Path to the helpset '.hs' file
+					</attribute>
+					<attribute name="resourceAnchor" translator="class" required="true">
+					   Anchor class - path attribute is relative to this.
+					   necessary to work-around java webstart classloader evils
+					   - helpset resource should be in the same jar as this resourceAnchor
+					</attribute>
+			<conversion class="org.astrogrid.desktop.modules.system.contributions.HelpsetContribution" />
+			</element>
+		</schema>
+	</configuration-point>
+	
 	<!-- contributions to existing configurations -->
 	
+
+	<contribution configuration-id="helpsets" if="property workbench.mode">
+		<helpset path="javahelp/workbench-helpset.hs"
+		  resourceAnchor="javahelp.WorkbenchHelpResourceAnchor" />	
+	   </contribution>
+	
+
+	<contribution configuration-id="helpsets" if="(property acr.mode) or (property workbench.mode)" >
+		<helpset path="acrjavahelp/jhelp.hs"
+		  resourceAnchor="acrjavahelp.ACRJavaHelpResourceAnchor" />
+	</contribution>
 
 	<contribution configuration-id="uiStructure">
 		<menu name="file" text="File" parentName="menubar" before="*" />
@@ -398,7 +427,8 @@ System module.
 		<default symbol="system.webserver.contextName" value=""/> <!-- indicates auto-generate -->
 		<default symbol="system.webserver.disableConnectionFile" value="false" />
 		<default symbol="system.webserver.connectionFile" value="${user.home}${file.separator}.astrogrid-desktop" />
-
+		<default symbol="system.webserver.inetAddress" value="" />
+		
 	    <default symbol="system.executor.queueSize" value="10000" />
 		<default symbol="system.executor.startThreads" value="15" />
 		<default symbol="system.executor.maxThreads" value="30" />
@@ -454,7 +484,9 @@ System module.
 	<service-point id="help" interface="org.astrogrid.desktop.modules.system.HelpServerInternal"> <!-- subclass of Help -->
 		Help Browser
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.HelpServerImpl"/>
+			<construct class="org.astrogrid.desktop.modules.system.HelpServerImpl">
+				<configuration>helpsets</configuration>
+			</construct>
 		</invoke-factory>			
 	</service-point>
 	
@@ -470,7 +502,15 @@ System module.
 		</invoke-factory>		
 	</implementation>
 
-	<implementation service-id="browser" if="(not (class javax.jnlp.ServiceManager)) and (not (property system.browser.disabled)) ">
+	<implementation service-id="browser" if="(class edu.stanford.ejalbert.BrowserLauncher) and (not (property system.browser.disabled))">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.BrowserLauncherBrowserControl">
+			
+			</construct>
+		</invoke-factory>
+	</implementation>
+
+	<implementation service-id="browser" if="(not (class javax.jnlp.ServiceManager)) and (not (class edu.stanford.ejalbert.BrowserLauncher)) and (not (property system.browser.disabled)) ">
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.alternatives.FallbackBrowserControl"/>
 		</invoke-factory>		
@@ -543,6 +583,7 @@ System module.
 				<set property="contextName" value="${system.webserver.contextName}" />			
 				<set property="connectionFile" value="${system.webserver.connectionFile}" />
 				<set property="disableConnectionFile" value="${system.webserver.disableConnectionFile}" />
+				<set property="inetAddress" value="${system.webserver.inetAddress}" />
 			</construct>
 		</invoke-factory>
 	</service-point>	
