@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: JettyWebServer.java,v 1.4 2006/04/26 15:56:18 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,14 +65,14 @@ public class JettyWebServer implements WebServer, ShutdownListener{
     private boolean disableConnectionFile = false;
     
     private File connectionFile = new File(System.getProperty("user.home") , ".astrogrid-desktop");
-    private final InetAddress severInetAddress;
+    private InetAddress inetAddress;
     public JettyWebServer(List servlets,List contextObjects) throws UnknownHostException  {
         super();
         this.server = new Server();
        // this.server.setStopGracefully(true); 
         this.servlets = servlets;
         this.contextObjects = contextObjects;
-        severInetAddress = InetAddress.getLocalHost();
+        inetAddress = InetAddress.getLocalHost(); // default, but can be overridden.
     }
    
     public String getKey() {
@@ -113,9 +113,9 @@ public class JettyWebServer implements WebServer, ShutdownListener{
 
     public void init() throws Exception {
         if (port < 1) { // not been set.
-            port = AbstractRmiServerImpl.findSparePort(scanStartPort,scanEndPort);
+            port = AbstractRmiServerImpl.findSparePort(scanStartPort,scanEndPort,inetAddress);
         } else {
-            if (!AbstractRmiServerImpl.checkPort(port)) {
+            if (!AbstractRmiServerImpl.checkPort(port,inetAddress)) {
                 throw new Exception("Cannot connect on specified port " + port);
             }       
         }
@@ -123,12 +123,12 @@ public class JettyWebServer implements WebServer, ShutdownListener{
         if (contextName == null || contextName.trim().length() == 0) {
             generateContextName();
         }
-        urlRoot = (new URL("http",severInetAddress.getHostAddress(),port,"/" +  contextName + "/")).toString();
+        urlRoot = (new URL("http",inetAddress.getHostAddress(),port,"/" +  contextName + "/")).toString();
                 
         if (! disableConnectionFile) {
         	recordDetails() ;
         }
-        final InetAddrPort inetAddrPort = new InetAddrPort(severInetAddress,port);        
+        final InetAddrPort inetAddrPort = new InetAddrPort(inetAddress,port);        
         sockets = new SocketListener(inetAddrPort);
         server.addListener(sockets);
         
@@ -195,11 +195,32 @@ public void setDisableConnectionFile(boolean disableConnectionFile) {
 	this.disableConnectionFile = disableConnectionFile;
 }
 
+
+
+/** Set the internet address this server is to listen on.
+ * 
+ * defaults to localhost. set this to configure machines with
+ * more than one network catd / internet address.
+ * 
+ * @param netAddress dotted ip address or server name. null or empty strings are ignored.
+ * 
+ * @param inetAddress the inetAddress to set
+ * @throws UnknownHostException 
+ */
+public void setInetAddress(String netAddress) throws UnknownHostException {
+	if (netAddress != null && netAddress.trim().length() > 0) {
+		this.inetAddress = InetAddress.getByName(netAddress);
+	}
+}
+
 }
 
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.4  2006/04/26 15:56:18  nw
+made servers more configurable.added standalone browser launcher
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

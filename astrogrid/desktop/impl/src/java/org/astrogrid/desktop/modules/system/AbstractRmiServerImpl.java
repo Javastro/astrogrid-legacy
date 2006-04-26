@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.4 2006/04/26 15:56:18 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.rmi.registry.Registry;
 
 import org.apache.commons.logging.Log;
@@ -29,22 +31,23 @@ import org.astrogrid.acr.system.RmiServer;
  */
 public abstract class AbstractRmiServerImpl implements RmiServer{
 
-    /** Construct a new AbstractRmiServerImpl
-     * @throws Exception
-     * 
-     */
-    public AbstractRmiServerImpl() {
-        super();
-
+    
+    
+    private InetAddress inetAddress;
+    
+    
+    public AbstractRmiServerImpl() throws UnknownHostException {
+    	inetAddress = InetAddress.getLocalHost();
     }
+    
     
     /** actually start the service up 
      * @throws Exception */
     public void init() throws Exception{
         if (port < 1) { // not been set
-            port = findSparePort(scanStartPort,scanEndPort);
+            port = findSparePort(scanStartPort,scanEndPort,inetAddress);
         }else {
-            if (!checkPort(port)) {
+            if (!checkPort(port,inetAddress)) {
                 throw new Exception("Cannot connect on specified port " + port);
             }
         }
@@ -66,13 +69,13 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
     private int scanEndPort = SCAN_END_PORT_DEFAULT;
     private boolean disableConnectionFile = false;
 
-    static int findSparePort(int scanStartPort,int scanEndPort) throws Exception {
+    static int findSparePort(int scanStartPort,int scanEndPort, InetAddress addr) throws Exception {
         if (scanEndPort < scanStartPort) {
             throw new Exception("scanEndPort (" + scanEndPort + ") is smaller than scanStartPort (" + scanStartPort + ")");
         }
         logger.info("Will scan for spare port, from " + scanStartPort + " to " + scanEndPort);
         for (int i = scanStartPort; i < scanEndPort; i++) {
-            if (checkPort(i)) {
+            if (checkPort(i,addr)) {
                 return i;
             }            
         } 
@@ -80,10 +83,10 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
     }
   
     /** will return true if this port can be connected to */
-    static boolean checkPort(int i) {
+    static boolean checkPort(int i,InetAddress addr) {
         ServerSocket ss = null;
         try {
-            ss = new ServerSocket(i);            
+            ss = new ServerSocket(i,50,addr);            
             return true;
         } catch (IOException e) {    // oh well, that port is already taken. try another.
         } finally {
@@ -150,11 +153,16 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
 		this.disableConnectionFile = disableConnectionFile;
 	}
 
+	
+
 }
 
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.4  2006/04/26 15:56:18  nw
+made servers more configurable.added standalone browser launcher
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

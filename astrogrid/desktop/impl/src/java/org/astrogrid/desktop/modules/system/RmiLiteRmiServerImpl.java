@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.5 2006/04/18 23:25:44 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.6 2006/04/26 15:56:18 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -45,9 +46,10 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiSe
 
 
     /** Construct a new RmiLiteRmiServerImpl
+     * @throws UnknownHostException 
      * 
      */
-    public RmiLiteRmiServerImpl(ACRInternal acr, Map listenerInterfaces)  {
+    public RmiLiteRmiServerImpl(ACRInternal acr, Map listenerInterfaces) throws UnknownHostException  {
         super();
         this.acr = acr;
         this.listenerInterfaces = listenerInterfaces;
@@ -125,6 +127,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiSe
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.6  2006/04/26 15:56:18  nw
+made servers more configurable.added standalone browser launcher
+
 Revision 1.5  2006/04/18 23:25:44  nw
 merged asr development.
 

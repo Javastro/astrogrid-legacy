@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.6 2006/04/18 23:25:44 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.7 2006/04/26 15:56:18 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import java.awt.Component;
 import java.awt.MenuItem;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.help.CSH;
 import javax.help.HelpBroker;
@@ -24,6 +26,7 @@ import javax.swing.AbstractButton;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.system.contributions.HelpsetContribution;
 
 import acrjavahelp.ACRJavaHelpResourceAnchor;
 
@@ -40,31 +43,26 @@ public class HelpServerImpl implements  HelpServerInternal{
     /** Construct a new HelpServerImpl
      * 
      */
-    public HelpServerImpl() {
-        super();
-       
-        // loads the helpset in a background thread.
-        ClassLoader cl = this.getClass().getClassLoader();
-        try {
-            URL u = HelpSet.findHelpSet(cl,"javahelp/workbench-helpset.hs");
-            hs = new HelpSet(null, u);
-            broker = hs.createHelpBroker();
-        } catch (Exception e) {
-            logger.error("Failed to load helpset",e);
-            //create an empty helpset to avoid any future NullPointer problems
-            hs = new HelpSet();
-            hs.setTitle("Help not available");
-            broker = hs.createHelpBroker();
-        }
         
-        cl = ACRJavaHelpResourceAnchor.class.getClassLoader();
-        try {
-            URL u = HelpSet.findHelpSet(cl,"acrjavahelp/jhelp.hs");
-            HelpSet subsid = new HelpSet(cl,u);
-            hs.add(subsid);
-        } catch (Exception e) {
-            logger.error("Failed to load subsidiary helpset",e);
-        }
+    public HelpServerImpl(List helpsets) {
+    	super();
+    	for (Iterator i = helpsets.iterator();i.hasNext(); ) {
+    		try {
+    			HelpsetContribution c = (HelpsetContribution)i.next();
+    			HelpSet h= c.getHelpset();
+    			if (hs == null) {
+    				// use first valid helpset in the list as the 'root'
+    				hs = h;
+    				broker = hs.createHelpBroker();
+    			} else {
+    				// add rest as subsids
+    				hs.add(h);
+    			}
+    		} catch (Exception e) {
+    			logger.warn("Failed to load helpset",e);
+    		}        	
+    	}
+
     }
  
     protected HelpBroker broker;
@@ -118,6 +116,9 @@ public class HelpServerImpl implements  HelpServerInternal{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.7  2006/04/26 15:56:18  nw
+made servers more configurable.added standalone browser launcher
+
 Revision 1.6  2006/04/18 23:25:44  nw
 merged asr development.
 
