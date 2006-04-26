@@ -11,31 +11,35 @@
     			be merged at this time; please merge only the changes in astrogrid/community.
     		</action>
 			
-    		<action dev="kmb" type="fix">
-    			<em>Branch Reg_KMB_ErrorMessages in astrogrid/registry:</em>  This is only server side stuff no need to make new
- compiles for other components.  General tidy up with some error messages and a fix on the OAI
-             query to make it quicker, it had a couple of problems on full registries being slow because the xquery not
-             right or not good performance wise, its now correct.
-    		</action>
 			<action dev="kmb" type="add">
-    			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  Before
-it was only tied to fits stuff now it is generic to work with any xmldb:api database.  Still lacks some commenting and docs but doubt anybody
-will try to use this for awhile, I will try to add the docs at some other time.
+    			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
+				Before it was only tied to fits stuff now it is generic to work with any xmldb:api database.  
+				Still lacks some commenting and docs but doubt anybody 
+				will try to use this for awhile, I will try to add the docs at some other time. 
+				<b>don't have to merge this branch, merged into PAL_KEA_1612 - 24-April-2006</b>
     		</action>
-			<action dev="kmb" type="fix">
-    			<em>Branch Reg_KMB_WBDocs1_Fix in astrogrid/registry:</em>  Okay you only need to get the 
-webapp/src/sebapp-java/astrogrid/registry/oai/XMLExistOAICatalog.java file, all the other files were merged in some weeks ago before
-release, but this one being a java file was decided to wait.  Now we can go ahead and merge it in since release and demos are over.
-The fix is actually sort of important the query for oai was  not quite right and also slow on "full" registries it is now been fixed.
-    		</action>
-
+			
         </release>
 
         <release version="(Undertest)">
+
 				   
         </release>
 		
 		<release version="HEAD">
+						<action dev="kmb" type="fix">
+    			<em>Branch Reg_KMB_ErrorMessages in astrogrid/registry:</em>  This is only server side stuff no need to make new
+				compiles for other components.  General tidy up with some error messages and a fix on the OAI
+           		query to make it quicker, it had a couple of problems on full registries being slow because the xquery not
+             	right or not good performance wise, its now correct.
+    		</action>
+			<action dev="kmb" type="fix">
+    			<em>Branch Reg_KMB_WBDocs1_Fix in astrogrid/registry:</em>  Okay you only need to get the 
+				webapp/src/sebapp-java/astrogrid/registry/oai/XMLExistOAICatalog.java file, all the other files were merged in some weeks
+				ago before release, but this one being a java file was decided to wait.  Now we can go ahead and merge it in since release 
+				and demos are over.The fix is actually sort of important the query for oai was  not quite right and also slow on "full" 
+				registries it is now been fixed.
+    		</action>
 			<action dev="kea" type="fix">
            <em>Branch PAL_KEA_1534 in BOTH astrogrid/pal and astrogrid/xml</em>  Preliminary work fixing adql parser and adding unit tests.  Have decided to move to xmlbeans-based parsing, so terminating this branch early.  Unit tests added/extended will be incorporated in new work. 
     		</action>
