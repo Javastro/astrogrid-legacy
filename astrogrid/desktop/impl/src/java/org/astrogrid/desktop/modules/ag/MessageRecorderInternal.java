@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: MessageRecorderInternal.java,v 1.4 2006/04/26 15:55:57 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.ag;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.EventListener;
 import java.util.List;
 
 import javax.swing.table.TableModel;
@@ -37,10 +36,6 @@ public interface MessageRecorderInternal {
     
     public void addRecorderListener(RecorderListener listener);
     public void removeRecorderListener(RecorderListener listener);
-    
-    public interface RecorderListener extends EventListener {
-        public void messageReceived(Folder f,MessageContainer msg);
-    }
     
     /** get a tree model of the message folders. nodes in the tree model will be {@link #Folder} objects */
     TreeModel getFolderList();
@@ -102,6 +97,9 @@ public interface MessageRecorderInternal {
 
 /* 
  $Log: MessageRecorderInternal.java,v $
+ Revision 1.4  2006/04/26 15:55:57  nw
+ fixed jdic-tray bug by refactoring.
+
  Revision 1.3  2006/04/18 23:25:44  nw
  merged asr development.
 

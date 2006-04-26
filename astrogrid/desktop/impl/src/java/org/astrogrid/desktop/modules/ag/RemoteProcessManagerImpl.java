@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.5 2006/04/18 23:25:44 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.6 2006/04/26 15:55:57 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,7 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
  *
  */
-public class RemoteProcessManagerImpl implements RemoteProcessManager, MessageRecorderInternal.RecorderListener{
+public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderListener{
     /**
      * Commons Logger for this class
      */
@@ -335,6 +335,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, MessageRe
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.6  2006/04/26 15:55:57  nw
+fixed jdic-tray bug by refactoring.
+
 Revision 1.5  2006/04/18 23:25:44  nw
 merged asr development.
 
