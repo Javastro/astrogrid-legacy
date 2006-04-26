@@ -13,12 +13,33 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2.2-beta-2" date="unreleased">
 	<action dev="nw" type="add">
+		Added 'halt query' button to astroscope. Also added a 'halt all tasks' button to the tasks list (which does much the same
+		thing, but is available in all windows)
+	</action>
+	<action dev="kmb" type="add">
 		Added the ability to toggle and convert when needed between degrees and sexagesimal numbers for Astroscope.
 		required new dependency from a stilt package, visually new toggle button.  PositionTextField now used
         for input boxes, but will require refactoring later to pull out conversion routines to a better class.
 	</action>
-<release version="2.0-alpha-4" date="2006-03-31">
+	<action dev="gtr" type="add">
+		Added in MyProxy stubs
+	</action>
+	<action dev="nw" type="add" due-to="Francesco Pierfederici">
+		Added configuration option to set IP address for the webserver to use (necessary for dual-nic machines)
+	</action>
+	<action dev="nw" type="fix">
+		Made helpsets configurable
+	</action>
+	<action dev="nw" type="fix" due-to="Mark Taylor">
+		Added browser control for non-webstart versions
+	</action>
+</release>
+<release version="2.2-beta-1" date="2006-04-25">
+	<action dev="nw" type="add">
+		Split monolithic Workbench into AR family
+	</action>
 	<action dev="nw" type="update">
 		Converted system from picocontainer to hivemind.
 	</action>
