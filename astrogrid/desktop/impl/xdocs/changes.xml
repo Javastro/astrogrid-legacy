@@ -13,6 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+	<action dev="nw" type="add">
+		Added the ability to toggle and convert when needed between degrees and sexagesimal numbers for Astroscope.
+		required new dependency from a stilt package, visually new toggle button.  PositionTextField now used
+        for input boxes, but will require refactoring later to pull out conversion routines to a better class.
+	</action>
 <release version="2.0-alpha-4" date="2006-03-31">
 	<action dev="nw" type="update">
 		Converted system from picocontainer to hivemind.
