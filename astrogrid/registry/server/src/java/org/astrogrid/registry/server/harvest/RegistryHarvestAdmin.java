@@ -8,6 +8,7 @@ import org.astrogrid.registry.server.admin.AuthorityListManager;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.registry.server.XSLHelper;
 import org.astrogrid.registry.server.InvalidStorageNodeException;
+import org.astrogrid.registry.RegistryException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -109,7 +110,13 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        log.debug(DomHelper.DocumentToString(update));
        if(hasStyleSheet) {
           log.debug("performing transformation before analysis of update for versionNumber = " + versionNumber);
-          xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,true);
+          try {
+              xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,true);
+          }catch(RegistryException re) {
+              log.error("Problem with xsl transformation of xml in the update method will try to use raw xml from web service ");
+              log.error(re);
+              xsDoc = update;
+          }
        } else {
           xsDoc = update;
        }

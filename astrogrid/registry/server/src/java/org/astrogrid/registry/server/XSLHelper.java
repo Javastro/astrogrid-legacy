@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.contracts.http.filters.ContractsFilter;
+import org.astrogrid.registry.RegistryException;
 
 /** 
  * Class: XSLHelper
@@ -46,9 +47,6 @@ public class XSLHelper {
           }//if
     }    
     
-    
-   
-   
    /**
     * Empty constructor -- should delete later, this is automatic.
     *
@@ -80,7 +78,7 @@ public class XSLHelper {
     * @param namespaceDeclare A long string of all the 'declare namespace' for the XQL.
     * @return A XQL (XQuery) String to be used for querying on the XML database.
     */
-   public String transformADQLToXQL(Node doc, String versionNumber,String rootNode, String namespaceDeclare) {
+   public String transformADQLToXQL(Node doc, String versionNumber,String rootNode, String namespaceDeclare) throws RegistryException {
       
       Source xmlSource = new DOMSource(doc);
       Document resultDoc = null;      
@@ -110,24 +108,21 @@ public class XSLHelper {
          if (xqlResult.startsWith("<?")) {
             xqlResult = xqlResult.substring(xqlResult.indexOf("?>")+2);
          }
-                  
          xqlResult = xqlResult.replaceAll("&gt;", ">").replaceAll("&lt;", "<").replaceAll("&amp;","&");
          return xqlResult;
       }catch(ParserConfigurationException pce) {
         logger.error("transformADQLToXQL(Node, String)", pce);
-        pce.printStackTrace();
+        throw new RegistryException(pce);
       }catch(TransformerConfigurationException tce) {
         logger.error("transformADQLToXQL(Node, String)", tce);
-        tce.printStackTrace();
+        throw new RegistryException(tce);
       }catch(TransformerException te) {
         logger.error("transformADQLToXQL(Node, String)", te);
-        te.printStackTrace();
+        throw new RegistryException(te);
       }catch(UnsupportedEncodingException uee) {
           logger.error(uee);
-          uee.printStackTrace();
+          throw new RegistryException(uee);
       }
-      //@todo never return null on error
-      return null;
    }
       
    /**
@@ -139,7 +134,7 @@ public class XSLHelper {
     * @param versionNumber version number from the vr namespace, which is the main Resource namespace defined.
     * @return XML Document object of a OAI GetRecord XML.
     */
-   public Document transformToOAI(Node doc, String versionNumber) {
+   public Document transformToOAI(Node doc, String versionNumber) throws RegistryException {
       String fileName = "Resourcev" + versionNumber + "-OAI.xsl";
 
       Source xmlSource = new DOMSource(doc);
@@ -158,21 +153,20 @@ public class XSLHelper {
          Transformer transformer = transformerFactory.newTransformer(xslSource);
          
          transformer.transform(xmlSource,result);
+         return resultDoc;         
       }catch(ParserConfigurationException pce) {
         logger.error("transformToOAI(Node, String)", pce);
-        pce.printStackTrace();
+        throw new RegistryException(pce);
       }catch(TransformerConfigurationException tce) {
         logger.error("transformToOAI(Node, String)", tce);
-        tce.printStackTrace();
+        throw new RegistryException(tce);
       }catch(TransformerException te) {
         logger.error("transformToOAI(Node, String)", te);        
-        te.printStackTrace();
+        throw new RegistryException(te);
       }catch(UnsupportedEncodingException uee) {
           logger.error(uee); 
-          uee.printStackTrace();
+          throw new RegistryException(uee);
       }
-      //@todo never return null on error.
-      return resultDoc;
    }
    
    /**
@@ -230,7 +224,7 @@ public class XSLHelper {
     * @param harvestUpdate is this used on a harvest, if so use a different xsl stylesheet name.
     * @return XML to be updated into the database.
     */
-   public Document transformUpdate(Node doc,String versionNumber,boolean harvestUpdate) {
+   public Document transformUpdate(Node doc,String versionNumber,boolean harvestUpdate) throws RegistryException {
        
        Source xmlSource = new DOMSource(doc);
        Document resultDoc = null;
@@ -253,20 +247,20 @@ public class XSLHelper {
           Transformer transformer = transformerFactory.newTransformer(xslSource);
           
           transformer.transform(xmlSource,result);
-          
+          return resultDoc;  
        }catch(ParserConfigurationException pce) {
         logger.error("transformUpdate(Node, String)", pce);
+        throw new RegistryException(pce);        
        }catch(TransformerConfigurationException tce) {
         logger.error("transformUpdate(Node, String)", tce);
+        throw new RegistryException(tce);        
        }catch(TransformerException te) {
         logger.error("transformUpdate(Node, String)", te);
+        throw new RegistryException(te);        
        }catch(UnsupportedEncodingException uee) {
            logger.error(uee);
+           throw new RegistryException(uee);           
        }
-    logger
-            .debug("transformUpdate(Node, String) - THIS IS AFTER THE TRANSFORMUPDATE");
-       //DomHelper.DocumentToStream(resultDoc,System.out);
-       return resultDoc;
     }   
    
 }

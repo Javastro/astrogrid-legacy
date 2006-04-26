@@ -181,7 +181,7 @@ public class QueryHelper {
      */
     public Document getResourcesByIdentifier(String ivorn) {
         if(ivorn == null || ivorn.trim().length() <= 0) {
-            return SOAPFaultException.createQuerySOAPFaultException("Cannot have empty or null identifier","Cannot have empty or null identifier");
+            return SOAPFaultException.createQuerySOAPFaultException("Server Error: Cannot have empty or null identifier","Cannot have empty or null identifier");
         }
         String queryIvorn = ivorn;
         //this is a hack for now delete later.  Some old client delegates might not pass the ivorn
@@ -205,7 +205,7 @@ public class QueryHelper {
      */
     public Document getResourceByIdentifier(String ivorn) {
         if(ivorn == null || ivorn.trim().length() <= 0) {
-            return SOAPFaultException.createQuerySOAPFaultException("Cannot have empty or null identifier","Cannot have empty or null identifier");
+            return SOAPFaultException.createQuerySOAPFaultException("Server Error: Cannot have empty or null identifier","Cannot have empty or null identifier");
         }
         return getResourcesByIdentifier(ivorn);
 
@@ -300,7 +300,7 @@ public class QueryHelper {
            //xqlExpression = xqlExpression.replaceAll("__query__", xqlString);
            tempIndex = xqlExpression.indexOf("__query__");
            if(tempIndex == -1) {
-               return SOAPFaultException.createQuerySOAPFaultException("XQL Expression has no placement for a Query",
+               return SOAPFaultException.createQuerySOAPFaultException("Server Error: XQL Expression has no placement for a Query",
                                                                        "XQL Expression has no placement for a Query");
            }
            //todo: check into this again, for some reason could not do a replaceAll so currently placing
@@ -318,16 +318,16 @@ public class QueryHelper {
            return DomHelper.newDocument(xmlr.getContent().toString());
        }catch(XMLDBException xdbe) {
            xdbe.printStackTrace();
-           return SOAPFaultException.createQuerySOAPFaultException(xdbe.getMessage(),xdbe);
+           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);
        } catch(ParserConfigurationException pce) {
            pce.printStackTrace();
-           return SOAPFaultException.createQuerySOAPFaultException(pce.getMessage(),pce);
+           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + pce.getMessage(),pce);
        }catch(SAXException sax) {
            sax.printStackTrace();
-           return SOAPFaultException.createQuerySOAPFaultException(sax.getMessage(),sax);
+           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + sax.getMessage(),sax);
        }catch(IOException ioe) {
            ioe.printStackTrace();
-           return SOAPFaultException.createQuerySOAPFaultException(ioe.getMessage(),ioe);
+           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + ioe.getMessage(),ioe);
        }
     }
     

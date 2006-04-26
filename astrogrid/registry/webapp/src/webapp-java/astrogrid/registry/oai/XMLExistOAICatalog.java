@@ -28,18 +28,14 @@ package astrogrid.registry.oai;
 
 import org.w3c.dom.Text;
 import ORG.oclc.oai.server.catalog.*;
-// import java.io.BufferedInputStream;
+
 import java.io.File;
-// import java.io.FileNotFoundException;
-// import java.io.FileInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.ByteArrayInputStream;
-// // import java.net.URI;
-// // import java.net.URISyntaxException;
-// import java.net.URLEncoder;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -55,9 +51,10 @@ import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.HashMap;
+import java.util.Set;
 
-//import org.xmldb.api.modules.XQueryService;
-//import org.exist.xmldb.XQueryService;
+
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.base.Resource;
@@ -74,7 +71,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.net.MalformedURLException;
-// import java.lang.reflect.*;
+
 import ORG.oclc.oai.server.verb.BadResumptionTokenException;
 import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
 import ORG.oclc.oai.server.verb.OAIInternalServerError;
@@ -96,20 +93,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-
 import org.astrogrid.config.Config;
 import org.astrogrid.util.DomHelper;
-//import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.server.admin.AuthorityList;
 import org.astrogrid.registry.server.admin.AuthorityListManager;
 import org.astrogrid.registry.server.query.QueryConfigExtractor;
-
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.query.ISearch;
 import org.astrogrid.registry.server.query.QueryFactory;
-
 import org.astrogrid.registry.server.XSLHelper;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * XMLFileOAICatalog is an implementation of AbstractCatalog interface
@@ -183,20 +175,22 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            //saxParser.parse(new File(sourceFile), rsh);
            saxParser.parse(bas, rsh);
            nativeMap = rsh.getNativeRecords();
-      } catch (SAXException e) {
+      }catch (SAXException e) {
           e.printStackTrace();
           throw new OAIInternalServerError(e.getMessage());
-      } catch (ParserConfigurationException e) {
+      }catch (ParserConfigurationException e) {
           e.printStackTrace();
           throw new OAIInternalServerError(e.getMessage());
       }catch(MalformedURLException e) {
           e.printStackTrace();
           throw new OAIInternalServerError(e.getMessage());
-      } catch(IOException ioe) {
+      }catch(IOException ioe) {
           ioe.printStackTrace();
           throw new OAIInternalServerError(ioe.getMessage());
-          
-      }       
+      }catch(RegistryException re) {
+          re.printStackTrace();
+          throw new OAIInternalServerError(re.getMessage());
+      }
        
    }
    
@@ -237,6 +231,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                }catch(XMLDBException xdbe) {
                    log.error(xdbe);
                }
+               
                String authorityID = conf.getString("reg.amend.authorityid");
                //Set keys = manageAuths.keySet();
                java.util.Collection authList = manageAuths.values();
@@ -245,26 +240,33 @@ public class XMLExistOAICatalog extends AbstractCatalog {
                if(authList.size() == 0) {
                   throw new OAIInternalServerError("Could not find any authorites");
                }
-               String identWhere = " $x/vr:identifier &= 'ivo://";
+               
+               xqlQuery += " ( ";
+               //String identWhere = " $x/vr:identifier &= 'ivo://";
+               String identWhere = " starts-with($x/vr:identifier,'ivo://";
                String wildCard = "";
                AuthorityList al = null;
                while(keyIter.hasNext()) {
                    al = (AuthorityList)keyIter.next();
                    if(authorityID.equals(al.getOwner())) {               
-                       xqlQuery +=  identWhere + al.getAuthorityID() + "*' ";
+                       //xqlQuery +=  identWhere + al.getAuthorityID() + "*' ";
+                       xqlQuery +=  identWhere + al.getAuthorityID() + "') ";                       
                        while(keyIter.hasNext()) {
                            al = (AuthorityList)keyIter.next();
                            if(authorityID.equals(al.getOwner())) {                           
-                               xqlQuery += " or " + identWhere + al.getAuthorityID() + "*' ";
+                               //xqlQuery += " or " + identWhere + al.getAuthorityID() + "*' ";
+                               xqlQuery += " or " + identWhere + al.getAuthorityID() + "') ";                               
                            }//if
                        }//while
                    }//if
                }//while
+               xqlQuery += " ) ";
            }else if("ivo_standard".equals(set) || set == null || set.trim().length() == 0) {
                xqlQuery += " exists($x/vr:identifier) ";
            }else {
                xqlQuery += " $x/@xsi:type &= '" + set.substring(4) + "' ";
            }
+               
            
            if(from != null && from.trim().length() > 0) {
                xqlQuery += "and  $x/@updated >= '" + from + "' ";
@@ -281,8 +283,10 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            Node sourceFile = null;
            Collection coll = null;
            try {
+               long currentTimeInMillis = System.currentTimeMillis();
                coll = xdb.openCollection(collectionName);            
                ResourceSet rs = xdb.queryXQuery(coll, xqlQuery);
+               log.info("OAI query time = " + (System.currentTimeMillis() - currentTimeInMillis));
                log.info("OAI query performed resulted in returns/size = " + rs.getSize());
                if(rs.getSize() > 0) {
                    Resource xmlr = rs.getMembersAsResource();
@@ -329,7 +333,9 @@ public class XMLExistOAICatalog extends AbstractCatalog {
           } catch(IOException ioe) {
               ioe.printStackTrace();
               throw new OAIInternalServerError(ioe.getMessage());
-              
+          } catch(RegistryException re) {
+              re.printStackTrace();
+              throw new OAIInternalServerError(re.getMessage());
           }
    }
 

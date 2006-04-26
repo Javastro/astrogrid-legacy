@@ -183,7 +183,7 @@ public class RegistryAdminService {
       boolean hasStyleSheet = false;            
       
       if(update == null) {
-          return SOAPFaultException.createAdminSOAPFaultException("Nothing on request 'null sent'","Nothing on request 'null sent'");          
+          return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Nothing on request 'null sent'","Nothing on request 'null sent'");          
       }
       
       //Make a date. The registry automatically fills in the updated attribute for a Resource.
@@ -222,7 +222,13 @@ public class RegistryAdminService {
       XSLHelper xs = new XSLHelper();
       if(hasStyleSheet) {
          log.debug("performing transformation before analysis of update for versionNumber = " + versionNumber);
-         xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,false);
+         try {
+             xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,false);
+         }catch(RegistryException re) {
+             log.error("Problem with xsl transformation of xml in the update method will try to use raw xml from web service ");
+             log.error(re);
+             xsDoc = update;
+         }
       } else {
          xsDoc = update;
       }
@@ -230,7 +236,7 @@ public class RegistryAdminService {
       //Get all the Resource nodes.
       nl = xsDoc.getElementsByTagNameNS("*","Resource");
       if(nl.getLength() == 0) {
-          return SOAPFaultException.createAdminSOAPFaultException("No Resources Found to be updated","No Resources Found to be updated");          
+          return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "No Resources Found to be updated","No Resources Found to be updated");          
       }
       
       //is validation turned on.
@@ -250,7 +256,7 @@ public class RegistryAdminService {
               afe.printStackTrace();
               log.error("Error invalid document = " + afe.getMessage());
               if(conf.getBoolean("reg.amend.quiton.invalid",false)) {
-                  return SOAPFaultException.createAdminSOAPFaultException("Invalid update, document not valid ",afe.getMessage());
+                  return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Invalid update, document not valid ",afe.getMessage());
               }//if              
           }//catch
       }//if
@@ -266,7 +272,7 @@ public class RegistryAdminService {
               alm.populateManagedMaps(collectionName, versionNumber);
           }catch(XMLDBException xmldbe) {
               xmldbe.printStackTrace();
-              return SOAPFaultException.createAdminSOAPFaultException(xmldbe.getMessage(),xmldbe);
+              return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xmldbe.getMessage(),xmldbe);
           }          
       }else if(!manageAuths.isEmpty() && !manageAuths.containsKey(someTestAuth)) {
           //todo: I do not believe this is needed
@@ -276,7 +282,7 @@ public class RegistryAdminService {
               alm.populateManagedMaps(collectionName, versionNumber);
           }catch(XMLDBException xmldbe) {
               xmldbe.printStackTrace();
-              return SOAPFaultException.createAdminSOAPFaultException(xmldbe.getMessage(),xmldbe);              
+              return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xmldbe.getMessage(),xmldbe);              
           }
       }
 
@@ -315,7 +321,7 @@ public class RegistryAdminService {
          ident = RegistryDOMHelper.getAuthorityID((Element)nl.item(0));
          log.info("here is the auth id(1) = " + ident);
          if(ident == null || ident.trim().length() <= 0) {
-             return SOAPFaultException.createAdminSOAPFaultException("Could not find the AuthorityID from the Identifier","Could not find the AuthorityID from the Identifier");             
+             return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Could not find the AuthorityID from the Identifier","Could not find the AuthorityID from the Identifier");             
          }//if
          log.debug("here is the ident/authid = " + ident);         
          resKey = RegistryDOMHelper.getResourceKey((Element)nl.item(0));
@@ -391,10 +397,10 @@ public class RegistryAdminService {
                                             adminHelper.createStats(tempIdent));
             } catch(XMLDBException xdbe) {
                log.error(xdbe);
-               return SOAPFaultException.createAdminSOAPFaultException(xdbe.getMessage(),xdbe);
+               return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);
             } catch(Exception e) {
                 log.error(e);
-                return SOAPFaultException.createAdminSOAPFaultException(e.getMessage(),e);                
+                return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + e.getMessage(),e);                
             }
          }else {
              //Okay it is either not managed by this Registry or a Registry type.
@@ -434,7 +440,7 @@ public class RegistryAdminService {
                          managedAuthorityFound = true;
                 }//for
                 if(!managedAuthorityFound) {
-                    log.error("Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident);
+                    log.error("Server Error: " + "Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident);
                     error = true;
                     soapErrorMessage += "Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident;
                     //return SOAPFaultException.createAdminSOAPFaultException("No matching authority id found",new RegistryException("Trying to update the main Registry Type for this Registry with no matching Managed AuthorityID with the Identifiers AuthorityID; The AuthorityID = " + ident));
@@ -453,10 +459,10 @@ public class RegistryAdminService {
                      }
                  } catch(XMLDBException xdbe) {
                      log.error(xdbe);
-                     return SOAPFaultException.createAdminSOAPFaultException(xdbe.getMessage(),xdbe);
+                     return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);
                  } catch(InvalidStorageNodeException isne) {
                      log.error(isne);
-                     return SOAPFaultException.createAdminSOAPFaultException(isne.getMessage(),isne);                     
+                     return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + isne.getMessage(),isne);                     
                  }
              }else if(nodeVal.indexOf("Authority") != -1) {
                  // Okay it is an AuthorityType and if no other registries 
@@ -511,10 +517,10 @@ public class RegistryAdminService {
                                                         collectionName, root);
                        } catch(XMLDBException xdbe) {
                            log.error(xdbe);
-                           return SOAPFaultException.createAdminSOAPFaultException(xdbe.getMessage(),xdbe);                               
+                           return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);                               
                        } catch(InvalidStorageNodeException isne) {
                            log.error(isne);
-                           return SOAPFaultException.createAdminSOAPFaultException(isne.getMessage(),isne);                     
+                           return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + isne.getMessage(),isne);                     
                        }
                        
                        // Now get the information to re-update the
@@ -538,10 +544,10 @@ public class RegistryAdminService {
                                                         collectionName, elem);
                        } catch(XMLDBException xdbe) {
                            log.error(xdbe);
-                           return SOAPFaultException.createAdminSOAPFaultException(xdbe.getMessage(),xdbe);                               
+                           return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);                               
                        } catch(InvalidStorageNodeException isne) {
                            log.error(isne);
-                           return SOAPFaultException.createAdminSOAPFaultException(isne.getMessage(),isne);                     
+                           return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + isne.getMessage(),isne);                     
                        }                                                    
                     }else {
                        log.error("Skipping this update of resource - but somehow the Registries" +
@@ -565,7 +571,7 @@ public class RegistryAdminService {
 
       Document returnDoc = null;      
       if(soapErrorMessage.trim().length() > 0) {
-          return SOAPFaultException.createAdminSOAPFaultException("Error on Server",soapErrorMessage);
+          return SOAPFaultException.createAdminSOAPFaultException("Server Error: (See Error String) ",soapErrorMessage);
       }
       // errored Resource that was not able to be updated in the db.
       try {      
@@ -574,7 +580,7 @@ public class RegistryAdminService {
       }catch(ParserConfigurationException pce) {
           pce.printStackTrace();
           log.error(pce);
-          return SOAPFaultException.createAdminSOAPFaultException("Could not create successfull DOM for soap body",
+          return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Could not create successfull DOM for soap body",
                   new RegistryException("Could not create successfull DOM for soap body"));          
       }
       

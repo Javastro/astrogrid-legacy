@@ -100,7 +100,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="deploymentscript/project.xml,installer/project.xml,common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
+            includes="deploymentscript/project.xml,installer/project.xml,common/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml,xmldb_exist/project.xml"
             goals="astrogrid-install-artifact"
             banner="Building component artifact : "
             ignoreFailures="false"
@@ -114,7 +114,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="deploymentscript/project.xml,installer/project.xml,common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
+            includes="deploymentscript/project.xml,installer/project.xml,common/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml,xmldb_exist/project.xml"
             goals="astrogrid-install-snapshot"
             banner="Building snapshot artifact : "
             ignoreFailures="false"
@@ -152,7 +152,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="deploymentscript/project.xml,installer/project.xml,common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
+            includes="deploymentscript/project.xml,installer/project.xml,common/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml,xmldb_exist/project.xml"
             goals="astrogrid-deploy-snapshot"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"
@@ -166,7 +166,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="deploymentscript/project.xml,installer/project.xml,common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
+            includes="deploymentscript/project.xml,installer/project.xml,common/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml,xmldb_exist/project.xml"
             goals="astrogrid-deploy-artifact"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"

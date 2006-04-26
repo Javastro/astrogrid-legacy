@@ -39,7 +39,7 @@ import org.xmldb.api.base.XMLDBException;
  *
  * @author Kevin Benson
  */
-public abstract class DefaultQueryService{
+public abstract class DefaultQueryService {
 
    /**
    * Logging variable for writing information to the logs
@@ -112,7 +112,7 @@ public abstract class DefaultQueryService{
       try {
           xqlQuery = queryHelper.getQuery(query);
       }catch(Exception e) {
-          return SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e.getMessage());
+          return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + e.getMessage(),e.getMessage());
       }
       log.info("The XQLQuery From ADQLSearch = " + xqlQuery);
       //perform the query and log how long it took to query.
@@ -157,16 +157,16 @@ public abstract class DefaultQueryService{
              return resDoc;
          }catch(XMLDBException xdbe) {
              xdbe.printStackTrace();
-             return SOAPFaultException.createQuerySOAPFaultException(xdbe.getMessage(),xdbe);
+             return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);
          }catch(ParserConfigurationException pce) {
              pce.printStackTrace();
-             return SOAPFaultException.createQuerySOAPFaultException(pce.getMessage(),pce);
+             return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + pce.getMessage(),pce);
          }catch(SAXException sax) {
              sax.printStackTrace();
-             return SOAPFaultException.createQuerySOAPFaultException(sax.getMessage(),sax);
+             return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + sax.getMessage(),sax);
          }catch(IOException ioe) {
              ioe.printStackTrace();
-             return SOAPFaultException.createQuerySOAPFaultException(ioe.getMessage(),ioe);
+             return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + ioe.getMessage(),ioe);
          }
    }
 
@@ -204,7 +204,7 @@ public abstract class DefaultQueryService{
            keywords = DomHelper.getNodeTextValue(query,"keywords");
            orValue = DomHelper.getNodeTextValue(query,"orValue");
        }catch(IOException ioe) {
-           return SOAPFaultException.createQuerySOAPFaultException("IO problem trying to get keywords and orValue",ioe);
+           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + "IO problem trying to get keywords and orValue",ioe);
        }
        boolean orKeywords = new Boolean(orValue).booleanValue();
        return queryHelper.keywordQuery(keywords,orKeywords);
@@ -232,7 +232,7 @@ public abstract class DefaultQueryService{
            ident = DomHelper.getNodeTextValue(query,"identifier");
            log.info("found identifier in web service request = " + ident);
        }catch(IOException ioe) {
-           return SOAPFaultException.createQuerySOAPFaultException("IO problem trying to get identifier",ioe);
+           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe);
        }
        return queryHelper.getResourceByIdentifier(ident);
    }   
@@ -257,7 +257,7 @@ public abstract class DefaultQueryService{
            ident = DomHelper.getNodeTextValue(query,"identifier");
            log.info("found identifier in web service request = " + ident);
        }catch(IOException ioe) {
-           return SOAPFaultException.createQuerySOAPFaultException("IO problem trying to get identifier",ioe);
+           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe);
        }
        return queryHelper.getResourcesByIdentifier(ident);
    }
@@ -279,7 +279,7 @@ public abstract class DefaultQueryService{
            ident = DomHelper.getNodeTextValue(query,"identifier");
            log.info("found identifier in web service request = " + ident);
        }catch(IOException ioe) {
-           return SOAPFaultException.createQuerySOAPFaultException("IO problem trying to get identifier",ioe);
+           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe);
        }
        return queryHelper.getResourceByIdentifier(ident);
    }

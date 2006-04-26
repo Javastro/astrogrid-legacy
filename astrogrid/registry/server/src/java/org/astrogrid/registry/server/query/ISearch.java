@@ -24,5 +24,7 @@ public interface ISearch {
     
     public String getResourceVersion();
     
+    public String getQueryInterfaceRoot(String wsInterfaceMethod);    
+    
     
 }

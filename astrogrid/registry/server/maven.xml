@@ -192,6 +192,10 @@
         </ant:copy>        
     </preGoal>
         +-->   
+        
+	<postGoal name="test:test">        
+	        <ant:delete dir="${maven.build.dir}/../data" />
+	</postGoal>
 
     <!--+
         | Prepare the database config files for our JUnit tests.

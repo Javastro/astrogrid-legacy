@@ -36,13 +36,16 @@ public class QueryConfigExtractor extends ConfigExtractor {
     static {
         if(queries.size() == 0) {
           queries.put("findResourceWithoutAuthority",conf.getString("reg.custom.query.one"));
+          
           queries.put("findAllResourceWithoutAuthority",conf.getString("reg.custom.query.two"));
+          /*
           queries.put("findResourceWithAuthority",conf.getString("reg.custom.query.three"));
-          queries.put("findResourceWithAuthorityAndResourceKey",conf.getString("reg.custom.query.four"));
+          queries.put("findResourceWithAuthorityAndResourceKey",conf.getString("reg.custom.query.four"));          
           queries.put("findResourcesWithAuthorityAndResourceKey",conf.getString("reg.custom.query.five"));
+          */
           queries.put("findRegistryQuery",conf.getString("reg.custom.query.six"));
           queries.put("findRegistryQueryWithOutAuthority",conf.getString("reg.custom.query.seven"));
-          queries.put("findRegistryQueryWithAuthority",conf.getString("reg.custom.query.eight"));
+          //queries.put("findRegistryQueryWithAuthority",conf.getString("reg.custom.query.eight"));
           queries.put("findAllRegistryQuery",conf.getString("reg.custom.query.nine"));
           queries.put("findAll",conf.getString("reg.custom.query.ten"));
           queries.put("startQuery",conf.getString("reg.custom.query.eleven"));
@@ -86,21 +89,7 @@ public class QueryConfigExtractor extends ConfigExtractor {
         boolean hasAuthorityID = conf.getBoolean(
                 "reg.custom.identifier.hasauthorityid." + versionNumber,false);
         String mainQuery = null;        
-        
-        if(hasAuthorityID) {
-            int index = identifier.indexOf("/",7);
-            if(index != -1 && index < (identifier.trim().length()-1)) {
-                mainQuery = ((String)queries.get("findResourceWithAuthorityAndResourceKey"))
-                            .replaceAll("<id>",identifier.substring(6,index));
-                mainQuery = mainQuery
-                            .replaceAll("<reskey>",identifier.substring((index+1)));
-            } else {
-                mainQuery = ((String)queries.get("findResourceWithAuthority"))
-                .replaceAll("<id>",identifier.substring(6));
-            }
-        } else {
-            mainQuery = ((String)queries.get("findResourceWithoutAuthority")).replaceAll("<id>",identifier);
-        }
+        mainQuery = ((String)queries.get("findResourceWithoutAuthority")).replaceAll("<id>",identifier);
         return mainQuery.replaceAll("<rootnode>",
         getRootNodeName(versionNumber));
     }
@@ -116,16 +105,7 @@ public class QueryConfigExtractor extends ConfigExtractor {
         boolean hasAuthorityID = conf.getBoolean(
                 "reg.custom.identifier.hasauthorityid." + versionNumber,false);
         String mainQuery = null;        
-        
-        if(hasAuthorityID) {
-            int index = identifier.indexOf("/");
-                mainQuery = ((String)queries.get("findResourcesWithAuthorityAndResourceKey"))
-                            .replaceAll("<id>",identifier);
-                mainQuery = mainQuery
-                            .replaceAll("<reskey>",identifier);
-        } else {
-            mainQuery = ((String)queries.get("findAllResourceWithoutAuthority")).replaceAll("<id>",identifier);
-        }
+        mainQuery = ((String)queries.get("findAllResourceWithoutAuthority")).replaceAll("<id>",identifier);
         return mainQuery.replaceAll("<rootnode>",
         getRootNodeName(versionNumber));
     }
@@ -142,11 +122,7 @@ public class QueryConfigExtractor extends ConfigExtractor {
                 "reg.custom.identifier.hasauthorityid." + versionNumber,false);
         String mainQuery = null;
         String authorityID = conf.getString(AUTHORITYID_PROPERTY);
-        if(hasAuthorityID) {
-            mainQuery = ((String)queries.get("findRegistryQueryWithAuthority")).replaceAll("<id>",authorityID);
-        } else {
-            mainQuery = ((String)queries.get("findRegistryQueryWithOutAuthority")).replaceAll("<id>",authorityID);
-        }
+        mainQuery = ((String)queries.get("findRegistryQueryWithOutAuthority")).replaceAll("<id>",authorityID);
         return mainQuery.replaceAll("<rootnode>",
                getRootNodeName(versionNumber));
     }

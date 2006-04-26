@@ -18,6 +18,9 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     private static final String CONTRACT_VERSION = "0.1";  
     
     private static final String VORESOURCE_VERSION = "0.10";
+    
+    private static final String QUERYINTERFACE_ROOT = "vor:VOResources";
+    
 
     public RegistryQueryService() {
         super(QUERY_WSDL_NS, CONTRACT_VERSION, VORESOURCE_VERSION);     
@@ -28,5 +31,7 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     public String getContractVersion() { return this.CONTRACT_VERSION;}
     
     public String getResourceVersion() { return this.VORESOURCE_VERSION;}
+    
+    public String getQueryInterfaceRoot(String wsInterfaceMethod) {return QUERYINTERFACE_ROOT;}
    
 }

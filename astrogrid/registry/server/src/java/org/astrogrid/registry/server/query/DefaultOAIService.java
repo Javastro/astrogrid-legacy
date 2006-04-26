@@ -133,7 +133,7 @@ public class DefaultOAIService {
     private Document addWrapperElement(String wrapNodeString,
                                        Document resultDoc) {
         if(resultDoc.getElementsByTagNameNS("*","error").getLength() > 0) {
-            return SOAPFaultException.createHarvestSOAPFaultException("OAI Error",resultDoc);
+            return SOAPFaultException.createHarvestSOAPFaultException("Server Error: " + "OAI Error",resultDoc);
         }
         Element currentRoot = resultDoc.getDocumentElement();
         Element root = resultDoc.createElementNS(oaiWSDLNS,wrapNodeString);
@@ -179,7 +179,7 @@ public class DefaultOAIService {
      * @link http://www.openarchives.org 
      */   
     public Document ResumeListSets(Document query) {
-        return SOAPFaultException.createHarvestSOAPFaultException("Resume List Sets not supported","Resume List Sets not supported");
+        return SOAPFaultException.createHarvestSOAPFaultException("Server Error: " + "Resume List Sets not supported","Resume List Sets not supported");
     }
     
     /**
@@ -196,7 +196,7 @@ public class DefaultOAIService {
         if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  ) 
            oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue();
         else
-            return SOAPFaultException.createHarvestSOAPFaultException("No Identifier given","No Identifier given"); 
+            return SOAPFaultException.createHarvestSOAPFaultException("Server Error: " + "No Identifier given","No Identifier given"); 
         if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
          oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
         else

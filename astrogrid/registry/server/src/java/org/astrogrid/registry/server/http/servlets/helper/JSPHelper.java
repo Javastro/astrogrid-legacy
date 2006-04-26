@@ -21,7 +21,7 @@ public class JSPHelper {
         return contractVersion;
     }
     
-    private static String getQueryContractVersion(HttpServletRequest hsr) {
+    public static String getQueryContractVersion(HttpServletRequest hsr) {
         return hsr.getSession().getAttribute("reg.query.defaultContractVersion") == null ? 
                 setQueryContractVersion(hsr,QueryConfigExtractor.getDefaultContractVersion()) :
                 (String)hsr.getSession().getAttribute("reg.query.defaultContractVersion");

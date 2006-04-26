@@ -48,19 +48,19 @@ public class ProcessResults {
             }//if
         }catch(ParserConfigurationException e) {
           log.error(e);
-          doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);
+          doc = SOAPFaultException.createQuerySOAPFaultException("Server Error: " + e.getMessage(),e);
         }catch(TransformerConfigurationException e) {
             log.error(e);
-            doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);
+            doc = SOAPFaultException.createQuerySOAPFaultException("Server Error: " + e.getMessage(),e);
         }catch(TransformerException e) {
             log.error(e);
-            doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);
+            doc = SOAPFaultException.createQuerySOAPFaultException("Server Error: " + e.getMessage(),e);
         }catch(UnsupportedEncodingException e) {
             log.error(e);
-            doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);
+            doc = SOAPFaultException.createQuerySOAPFaultException("Server Error: " + e.getMessage(),e);
         }catch(IOException e) {
             log.error(e);
-            doc = SOAPFaultException.createQuerySOAPFaultException(e.getMessage(),e);           
+            doc = SOAPFaultException.createQuerySOAPFaultException("Server Error: " + e.getMessage(),e);           
         }
         return doc;
     }
