@@ -1,6 +1,7 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.astrogrid.common.namegen.NameGen;
@@ -20,7 +21,7 @@ class DeafPlasticClient extends PlasticClientProxy {
      * @param name
      */
     public DeafPlasticClient(NameGen gen, String name) {
-        super(gen, name);
+        super(gen, name, new ArrayList());
     }
 
     /*

@@ -69,8 +69,7 @@ public interface PlasticHubListener {
     public String getName(URI plid);
     
     /**
-     * Get the messages understood by this application.  As usual, an empty list means
-     * it will listen to all messages.  Note that just because an application declares itself
+     * Get the messages understood by this application.    Note that just because an application declares itself
      * to be interested in a message, it's no guarantee it will act on it.
      * @param plid the plastic ID returned at registration
      * @return A list of message URIs
@@ -92,8 +91,7 @@ public interface PlasticHubListener {
      * 
      * @param name An optional string with a short name describing the application. This may be added to the hub
      *            assigned ID, making it more human friendly.
-     * @param supportedMessages an array of messages (as URIs) the application is interested in. An empty List signifies
-     *            "all".
+     * @param supportedMessages an array of messages (as URIs) the application is interested in. 
      * @param callBackURL the application's internal xmlrpc server URL. Used by the hub to send messages to the
      *            application.
      * @return a hub-assigned ID
@@ -112,8 +110,6 @@ public interface PlasticHubListener {
      * @param caller the PlasticListener that wishes to register
      * @see #registerXMLRPC(String, List, URL) for other parameters
      * @xmlrpc Not available.
-     * @example Suppose your application implements {@link PlasticListener PlasticListener}. Then you register with the
-     *          hub to receive ALL messages using <code>URI id = hub.registerRMI("MyApp", new ArrayList(),this);</code>
      */
     public URI registerRMI(String name, List supportedMessages,
             PlasticListener caller);

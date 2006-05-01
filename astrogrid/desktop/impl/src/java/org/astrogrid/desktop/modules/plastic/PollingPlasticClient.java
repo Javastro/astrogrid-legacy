@@ -37,14 +37,7 @@ public class PollingPlasticClient extends PlasticClientProxy {
 		logger.debug("Creating a Polling Client: "+name);
 	}
 
-	/**
-	 * @param gen
-	 * @param name
-	 */
-	public PollingPlasticClient(NameGen gen, String name) {
-		super(gen, name);
-		logger.debug("Creating a Polling Client: "+name);
-	}
+
 
 	/**
 	 * 

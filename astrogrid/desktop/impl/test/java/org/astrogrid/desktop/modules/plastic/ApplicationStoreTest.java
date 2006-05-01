@@ -26,14 +26,14 @@ public class ApplicationStoreTest extends TestCase {
 		store = new ApplicationStore();
 		List messages1 = new ArrayList();
 		List messages2 = new ArrayList();
-		List messages3 = CommonMessageConstants.EMPTY;
+		List emptyOfMessages = new ArrayList();
 		
 		messages1.add(m1);
 		messages2.add(m1);
 		messages2.add(m2);
 		p1 = new PollingPlasticClient(namegen,"p1",messages1);
 		p2 = new PollingPlasticClient(namegen,"p2",messages2);
-		p3 = new PollingPlasticClient(namegen,"p3",messages3);
+		p3 = new PollingPlasticClient(namegen,"p3",emptyOfMessages);
 		store.add(p1);
 		store.add(p2);
 		store.add(p3);
@@ -72,15 +72,12 @@ public class ApplicationStoreTest extends TestCase {
 	 * Test method for 'org.astrogrid.desktop.modules.plastic.ApplicationStore.getClientIdsSupportingMessage(URI, boolean, boolean)'
 	 */
 	public void testGetClientIdsSupportingMessage1() {
-		List apps = store.getClientIdsSupportingMessage(m1, true, true);
-		assertEquals(3, apps.size());
-	}
-	public void testGetClientIdsSupportingMessage2() {
-		List apps = store.getClientIdsSupportingMessage(m2, true, true);
+		List apps = store.getClientIdsSupportingMessage(m1);
 		assertEquals(2, apps.size());
 	}
-	public void testGetClientIdsSupportingMessage3() {
-		List apps = store.getClientIdsSupportingMessage(m2, false, true);
+	public void testGetClientIdsSupportingMessage2() {
+		List apps = store.getClientIdsSupportingMessage(m2);
 		assertEquals(1, apps.size());
-	}	
+	}
+
 }

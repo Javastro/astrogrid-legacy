@@ -75,21 +75,18 @@ abstract class PlasticClientProxy {
         this.name = name;
     }
 
-    public PlasticClientProxy(NameGen gen, String name) {
+/*    public PlasticClientProxy(NameGen gen, String name) {
         this(gen, name, CommonMessageConstants.EMPTY);
     }
-
+*/
     /**
      * Does this client understand this message?
      * 
      * @param message
-     * @param implicitly if false, only respond true if the client explicitly lists the mssage
      * @return true if yes
      */
-    public boolean understands(URI message, boolean implicitly) {
-        if ((implicitly && supportedMessages.size() == 0) || supportedMessages.contains(message))
-            return true;
-        return false;
+    public boolean understands(URI message) {
+        return (supportedMessages.contains(message));
     }
 
     /**

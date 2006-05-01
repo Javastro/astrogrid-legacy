@@ -16,9 +16,19 @@ import org.votech.plastic.CommonMessageConstants;
  */
 public class PollingTest extends PresetupHub {
 	private URI sender = URI.create("ivo://junit");
+	private List messages;
+	private int MAX=5000;
+	public void setUp() {
+		super.setUp();
+		messages = new ArrayList();
+		for (int m=0;m<MAX;++m) {
+			URI message = URI.create("ivo://message"+m);
+			messages.add(message);
+		}
+	}
 
 	public void testPollingAll() {
-		URI id = hub.registerPolling("polling", CommonMessageConstants.EMPTY);
+		URI id = hub.registerPolling("polling", messages);
 		hub.pollForMessages(id); //just to clear out
 		
 		populate(id, 100);
@@ -43,7 +53,7 @@ public class PollingTest extends PresetupHub {
 	 *
 	 */
 	public void testPollingOverFlow() {
-		URI id = hub.registerPolling("polling", CommonMessageConstants.EMPTY);
+		URI id = hub.registerPolling("polling", messages);
 		hub.pollForMessages(id); //just to clear out
 		
 		populate(id, 1200);
@@ -63,6 +73,7 @@ public class PollingTest extends PresetupHub {
 	}
 
 	private void populate(URI id,  int num) {
+		assertTrue(num<MAX);// otherwise increase MAX
 		List args = new ArrayList();
 		for (int m=0;m<num;++m) {
 			URI message = URI.create("ivo://message"+m);

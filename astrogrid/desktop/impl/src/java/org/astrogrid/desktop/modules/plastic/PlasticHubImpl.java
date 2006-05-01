@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import org.votech.plastic.PlasticListener;
 import org.votech.plastic.outgoing.PlasticException;
 
 import EDU.oswego.cs.dl.util.concurrent.CountDown;
+import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 
 public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInternal, ShutdownListener {
@@ -56,7 +58,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     private final SystemTray tray;
     private final RmiServer rmiServer;
     private final WebServer webServer;
-    private final Executor executor;
+    private final Executor systemExecutor;
 
     private final URI hubId;
 
@@ -67,6 +69,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	private Configuration config;
 
 	private boolean weWroteTheConfigFile;
+
+	private Executor sequentialExecutor = new DirectExecutor();
 
 
 
@@ -92,7 +96,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.tray = tray;
         this.rmiServer= rmi;
         this.webServer= web;
-        this.executor = executor;
+        this.systemExecutor = executor;
         this.idGenerator = idGenerator;
         this.prettyPrinter = prettyPrinter;
         this.config = config;
@@ -206,9 +210,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * @param args any arguments
      * @param recipients if nonzero length, then only multiplex to these recipients, otherwise send to all.  
      * @param shouldWaitForResults
+     * @param singleThreaded if true, will send all the messages on a single thread.
+     * 
+     * 
+     * @todo this methid is getting rather unwieldy
      */
     private Map send(final URI sender, final URI message, final List args, List recipients,
-            boolean shouldWaitForResults) {
+            boolean shouldWaitForResults, boolean singleThreaded) {
     	//xmlrpc<->Java gotchas
     	//Gotcha 1.  The recipients are in a List of URIs from Java, but a List of Strings from xml-rpc
     	// TODO JDK1.5 this should go away with Java 5
@@ -224,14 +232,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     	
         final Map returns = Collections.synchronizedMap(new HashMap());
         
-        List clientsSupportingMessage = clients.getClientIdsSupportingMessage(message, true, true);
+        List clientsSupportingMessage = clients.getClientIdsSupportingMessage(message);
         Collection clientsToMessage;
-        if (recipients.size()==0) {
-        	clientsToMessage = clientsSupportingMessage; //send to everyone.  Ugly.
+        if (recipients==EVERYONE) {
+        	clientsToMessage = clientsSupportingMessage; 
         } else {
         	clientsToMessage = CollectionUtils.intersection(clientsSupportingMessage, recipients);
         }
-        clientsToMessage.remove(sender); //don't return to sender
+        clientsToMessage.remove(sender); //don't message the sender
 
         final CountDown gate = new CountDown(clientsToMessage.size());
 
@@ -259,11 +267,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 	logger.debug(sender+" sending message "+message+" to "+client.getId());
                     Object rv = client.perform(sender, message, safeArgs);
                     logger.debug("Client "+client.getId()+" returned "+rv);
-                    // A return value really shouldn't be null, as xml-rpc
-                    // doesn't
-                    // support it...but insulate ourselves in case java-rmi
-                    // clients
-                    // return null by mistake.
+                    // A return value really shouldn't be null, as xml-rpc doesn't support it
+                    // ...but insulate ourselves in case java-rmi clients return null by mistake.
                     if (rv == null) {
                         rv = CommonMessageConstants.RPCNULL;
                     }
@@ -281,11 +286,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
         }// end of message class.
 
+        Executor localExecutor = singleThreaded ? sequentialExecutor : systemExecutor;
+        
         Iterator it = clientsToMessage.iterator();
         while (it.hasNext()) {
             PlasticClientProxy currentClient = clients.get((URI) it.next());
             try {
-                executor.execute(new Messager(currentClient));
+            	localExecutor.execute(new Messager(currentClient));
             } catch (InterruptedException e) {
                logger.warn("Interrupted executing client "
                         + currentClient.getId(), e);
@@ -326,27 +333,33 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		return toReturn;
 	}
 
+    private final List EVERYONE = Collections.unmodifiableList(new ArrayList());
+    
 	/*
      * (non-Javadoc)
      * 
      * @see org.votech.plastic.PlasticHub#send(java.lang.String, java.lang.String, java.util.Vector)
      */
     public Map request(URI sender, URI message, List args) {
-        return send(sender, message, args, CommonMessageConstants.EMPTY, true);
+        return send(sender, message, args, EVERYONE, true, false);
     }
 
     public Map requestToSubset(URI sender, URI message, List args, List recipientIds) {
-        return send(sender, message, args, recipientIds, true);
+        return send(sender, message, args, recipientIds, true, false);
     }
 
     public void requestToSubsetAsynch(URI sender, URI message, List args, List recipientIds) {
-        send(sender, message, args, recipientIds, false);
+        send(sender, message, args, recipientIds, false, false);
     }
 
     public void requestAsynch(URI sender, URI message, List args) {
-        send(sender, message, args, CommonMessageConstants.EMPTY, false);
+        send(sender, message, args, EVERYONE, false, false);
     }
 
+    private void requestSingleThreaded(URI sender, URI message, List args) {
+    	send(sender, message, args, EVERYONE, false, true);
+    }
+    
     public URI getHubId() {
         return hubId;
     }
@@ -457,12 +470,10 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 
 	/**
-	 * At the moment this only returns apps that have explicitly registered
-	 * for that message.  ie. apps that register without saying what they're
-	 * interested in (in the hope of receiving all messages) won't be returned.
+	 * Return all applications that have registered for a particular message.
 	 */
 	public List getMessageRegisteredIds(URI message) {
-		return clients.getClientIdsSupportingMessage(message, false, true);
+		return clients.getClientIdsSupportingMessage(message);
 	}
 
 	public List getUnderstoodMessages(URI plid) {
@@ -515,19 +526,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	public void halting() {
 		//Message should be sent _after_ apps have been given a chance to stop it.
-//TODO - system goes down before this message is send. make synchronous instead.
-		requestAsynch(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
+		requestSingleThreaded(hubId, HubMessageConstants.HUB_STOPPING_EVENT, EVERYONE);
 		
-		//request(hubId, HubMessageConstants.HUB_STOPPING_EVENT, CommonMessageConstants.EMPTY);
-		// nope, don't reckon the synchronous will work - as this means that it waits for a response
-		// from all the things it's messaged. (which, I don't think the spec requires)
-		// meanwhile, all the message-sending is still done in separate threads, so the 
-		// system could still be falling down around our ears before all the messages get out.
-		// need a different messaging-sending variant - which blocks just until all messages
-		// have been sent.
     	if (plasticPropertyFile != null && weWroteTheConfigFile && plasticPropertyFile.exists()) {
     		plasticPropertyFile.delete();
-    	}	}
+    	}
+    }
 
 	public String lastChance() {
 		return null; //returning null indicates we don't care.

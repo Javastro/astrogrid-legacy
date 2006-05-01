@@ -65,17 +65,14 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 				writeIfNonNull(writer, plid);
 				writeIfNonNull(writer, ivorn);
 				writer.println("<td>");
-				if (CommonMessageConstants.EMPTY.equals(messages)) {
-					writer.write("All");
-				} else {
-					writer.write("<ul>");
-					Iterator mit = messages.iterator();
-					while (mit.hasNext()) {
-						URI msg = (URI) mit.next();  //TODO
-						writer.write("<li>"+msg+"</li>");
-					}
-					writer.write("</ul>");
+				writer.write("<ul>");
+				Iterator mit = messages.iterator();
+				while (mit.hasNext()) {
+					URI msg = (URI) mit.next();  //TODO
+					writer.write("<li>"+msg+"</li>");
 				}
+				writer.write("</ul>");
+
 				writer.println("</td>");
 				writeIfNonNull(writer, version);
 				writer.println("<td>"+(alive ? "yes":"no")+"</td>");

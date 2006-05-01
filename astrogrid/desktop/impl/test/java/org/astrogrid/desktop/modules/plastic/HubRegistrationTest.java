@@ -1,6 +1,8 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.votech.plastic.CommonMessageConstants;
@@ -39,8 +41,11 @@ public class HubRegistrationTest extends PresetupHub {
 	 */
 	public void testSenderShouldNotReceive() {
 		TestListener2 listener = new TestListener2();
-		URI id = hub.registerRMI("test", CommonMessageConstants.EMPTY, listener);
 		URI m = URI.create("ivo://test");
+		List messages = new ArrayList();
+		messages.add(m);
+		URI id = hub.registerRMI("test", messages, listener);
+		
 		hub.requestAsynch(id, m , CommonMessageConstants.EMPTY);
 		URI lastMessage = listener.getMessage();
 		assertNotSame(m,lastMessage);

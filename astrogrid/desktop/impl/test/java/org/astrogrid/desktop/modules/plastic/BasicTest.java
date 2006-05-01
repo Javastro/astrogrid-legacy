@@ -3,9 +3,10 @@ package org.astrogrid.desktop.modules.plastic;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
 
@@ -31,7 +32,9 @@ public class BasicTest  extends AbstractPlasticTestBase {
 		PlasticHubImpl hub = new PlasticHubImpl(executor , idGenerator, messenger, rmi, web, new PrettyPrinterImpl(browser), config);
 		hub.start();
 		TestListener2 client = new TestListener2();
-		hub.registerRMI("client", CommonMessageConstants.EMPTY, client);
+		List messages = new ArrayList();
+		messages.add(HubMessageConstants.HUB_STOPPING_EVENT);
+		hub.registerRMI("client", messages, client);
 		hub.halting();
 		assertEquals(HubMessageConstants.HUB_STOPPING_EVENT, client.getMessage());
 		assertEquals(hub.getHubId(), client.getSender());
