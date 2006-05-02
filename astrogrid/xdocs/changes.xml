@@ -16,9 +16,12 @@
 				Before it was only tied to fits stuff now it is generic to work with any xmldb:api database.  
 				Still lacks some commenting and docs but doubt anybody 
 				will try to use this for awhile, I will try to add the docs at some other time. 
-				<b>don't have to merge this branch, merged into PAL_KEA_1612 - 24-April-2006</b>
+				<b>don't have to merge this branch, merged into PAL_KEA_1612 - 24-April-2006 - Catherine</b>
     		</action>
 			
+			<action dev="jdt" type="fix">
+    			<em>Branch cea-jdt-1639 in astrogrid/cea:</em>  No Hurry.  
+    		</action>
         </release>
 
         <release version="(Undertest)">
