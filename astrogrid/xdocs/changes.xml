@@ -5,11 +5,7 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-    		<action dev="gtr" type="add">
-    			<em>Branch wb-gtr-1537:</em> Additions to the community/resolver project to allow logging in at a MyProxy service.
-    			Please note that there are changes to the security and desktop projects also on these branch and these should <em>not</em>
-    			be merged at this time; please merge only the changes in astrogrid/community.
-    		</action>
+
 			
 			<action dev="kmb" type="add">
     			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
@@ -30,7 +26,12 @@
         </release>
 		
 		<release version="HEAD">
-						<action dev="kmb" type="fix">
+			<action dev="gtr" type="add">
+    			<em>Branch wb-gtr-1537:</em> Additions to the community/resolver project to allow logging in at a MyProxy service.
+    			Please note that there are changes to the security and desktop projects also on these branch and these should <em>not</em>
+    			be merged at this time; please merge only the changes in astrogrid/community.
+    		</action>
+			<action dev="kmb" type="fix">
     			<em>Branch Reg_KMB_ErrorMessages in astrogrid/registry:</em>  This is only server side stuff no need to make new
 				compiles for other components.  General tidy up with some error messages and a fix on the OAI
            		query to make it quicker, it had a couple of problems on full registries being slow because the xquery not
