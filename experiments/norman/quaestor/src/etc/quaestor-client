@@ -486,6 +486,6 @@
                   "set comma-separated list of MIME types in arg"
                   acceptable-mime-types))
 
-(define (unrecognised-option)
+(define (unrecognised-option operand . seeds)
   (Usage)
-  (error "Bad command"))
+  (error (format #f "Bad option (~a)" seeds)))
