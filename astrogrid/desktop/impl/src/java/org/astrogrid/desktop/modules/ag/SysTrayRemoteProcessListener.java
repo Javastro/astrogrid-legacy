@@ -1,4 +1,4 @@
-/*$Id: SysTrayRemoteProcessListener.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: SysTrayRemoteProcessListener.java,v 1.3 2006/05/08 15:52:49 nw Exp $
  * Created on 03-Apr-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ public final class SysTrayRemoteProcessListener implements RemoteProcessListener
 
     private final SystemTray tray;
 
-    private SysTrayRemoteProcessListener(MessageRecorderInternal recorder, SystemTray tray) {
+    public SysTrayRemoteProcessListener(MessageRecorderInternal recorder, SystemTray tray) {
         super();
         this.recorder = recorder;
         this.tray = tray;
@@ -72,6 +72,9 @@ public final class SysTrayRemoteProcessListener implements RemoteProcessListener
 
 /* 
 $Log: SysTrayRemoteProcessListener.java,v $
+Revision 1.3  2006/05/08 15:52:49  nw
+fixed constructor visibility
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 
