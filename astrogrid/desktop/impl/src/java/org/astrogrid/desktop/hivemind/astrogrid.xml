@@ -91,9 +91,11 @@
 		<load service-id="messaging" />
 	</contribution>
 	
+	<!-- waiting on the tray remote processListener being sorted out
 	<contribution configuration-id="hivemind.EagerLoad"  if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
 		<load service-id="trayRemoteProcessListener"/>
 	</contribution>
+	-->
 	
 	<!-- the rest - only eager when testing -->
 	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
@@ -344,7 +346,11 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
 	
-	<service-point id="trayRemoteProcessListener" visibility="private" interface="org.astrogrid.desktop.modules.ag.RecorderListener">						
+	<!-- harrumph - got myself all confused here.
+	not sure whether this should be a remote process listerner, or a recorder listener.
+	no time to fix now - will code read and try to add back in after japan
+	also have to watch whether ti forces login behaviour
+	<service-point id="trayRemoteProcessListener" visibility="private" interface="org.astrogrid.acr.astrogrid.RemoteProcessListener">						
 		Display process events in systray.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.SysTrayRemoteProcessListener">
@@ -354,7 +360,7 @@
 			</construct>
 		</invoke-factory>		
 	</service-point>						
-	
+	-->
 	<service-point id="store" interface="org.astrogrid.desktop.modules.ag.StoreInternal">
 		Store for remote process execution information.
 		<interceptor service-id="login" />		
