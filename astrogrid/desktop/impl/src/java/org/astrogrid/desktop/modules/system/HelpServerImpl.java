@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.7 2006/04/26 15:56:18 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.8 2006/05/08 15:58:04 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,13 +13,13 @@ package org.astrogrid.desktop.modules.system;
 import java.awt.Component;
 import java.awt.MenuItem;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+import javax.help.HelpSetException;
 import javax.help.InvalidHelpSetContextException;
 import javax.help.Map;
 import javax.swing.AbstractButton;
@@ -27,8 +27,6 @@ import javax.swing.AbstractButton;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.system.contributions.HelpsetContribution;
-
-import acrjavahelp.ACRJavaHelpResourceAnchor;
 
 /** Implementation of the help server.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
@@ -49,7 +47,7 @@ public class HelpServerImpl implements  HelpServerInternal{
     	for (Iterator i = helpsets.iterator();i.hasNext(); ) {
     		try {
     			HelpsetContribution c = (HelpsetContribution)i.next();
-    			HelpSet h= c.getHelpset();
+    			HelpSet h= getHelpset(c);
     			if (hs == null) {
     				// use first valid helpset in the list as the 'root'
     				hs = h;
@@ -64,6 +62,13 @@ public class HelpServerImpl implements  HelpServerInternal{
     	}
 
     }
+    
+    private HelpSet getHelpset(HelpsetContribution c) throws HelpSetException {
+		return  new HelpSet(
+				c.getResourceAnchor().getClassLoader()
+				,HelpSet.findHelpSet(c.getResourceAnchor().getClassLoader(),c.getPath())
+				);
+	}
  
     protected HelpBroker broker;
     protected HelpSet hs;
@@ -116,6 +121,9 @@ public class HelpServerImpl implements  HelpServerInternal{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.8  2006/05/08 15:58:04  nw
+removed dependency on javax.help from HelpsetContribution - javax.help now only required by the HelpServerImpl
+
 Revision 1.7  2006/04/26 15:56:18  nw
 made servers more configurable.added standalone browser launcher
 

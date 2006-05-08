@@ -3,10 +3,6 @@
  */
 package org.astrogrid.desktop.modules.system.contributions;
 
-import java.net.URL;
-
-import javax.help.HelpSet;
-import javax.help.HelpSetException;
 
 /**
  * @author Noel Winstanley
@@ -17,12 +13,7 @@ public class HelpsetContribution {
 	private String path;
 	private Class resourceAnchor;
 	
-	public HelpSet getHelpset() throws HelpSetException {
-		return  new HelpSet(
-				resourceAnchor.getClassLoader()
-				,HelpSet.findHelpSet(resourceAnchor.getClassLoader(),path)
-				);
-	}
+	
 	
 	public void setPath(String path) {
 		this.path = path;
@@ -31,6 +22,20 @@ public class HelpsetContribution {
 	
 	public void setResourceAnchor(Class cl) {
 		this.resourceAnchor = cl;
+	}
+
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return this.path;
+	}
+
+	/**
+	 * @return the resourceAnchor
+	 */
+	public Class getResourceAnchor() {
+		return this.resourceAnchor;
 	}
 	
 }
