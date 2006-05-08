@@ -98,12 +98,20 @@ New ACR APIS
 </li>
 <li> Auth &amp; Auth
 </li>
-<li> groovy interpreter - rapid prototyping, callbacks, embedded script.
-</li>
+<li>SIAP response processing</li>
+<li>AstroScope dialogue</li>
+<li>Bulk SIAP query (programmatic astroscope)</li>
+</ul>
+
+Astroscope UI
+<ul>
+<li>Take validationLevel of resources into account - allow users to choose not to query low-quality services</li>
+<li>Scoring display in astroscope</li>
 </ul>
 
 Other new features
 <ul>
+<li>Multi-user sessioning version of ACR</li>
 <li> usage tracking and profiling
 </li>
 <li> FTP-Myspace bridge
