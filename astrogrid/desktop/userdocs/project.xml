@@ -11,7 +11,7 @@ Helpfiles, etc for workbench.
         <shortDescription>Workbench User Documentation.</shortDescription>
  
         <build>
-                <sourceDirectory/>
+                <sourceDirectory>src/java</sourceDirectory>
                 <resources>
                         <resource>
                                 <directory>${basedir}/src</directory>
