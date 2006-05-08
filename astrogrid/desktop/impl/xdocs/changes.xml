@@ -14,6 +14,9 @@
 	</head>
 <body>
 <release version="2.2-beta-2" date="unreleased">
+	<action dev="nw" type="fix">
+		Fixed startup problems with windows webstart version of workbench.
+	</action>
 	<action dev="nw" type="add">
 		Added 'halt query' button to astroscope. Also added a 'halt all tasks' button to the tasks list (which does much the same
 		thing, but is available in all windows)
