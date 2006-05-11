@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.40 2006/05/11 11:40:59 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.41 2006/05/11 12:14:54 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -506,7 +506,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new BoxLayout(searchPanel,BoxLayout.Y_AXIS));
         //searchPanel.setLayout(new GridLayout(10,1));
-        searchPanel.setBorder(new TitledBorder("1. Search"));
+        TitledBorder tb = new TitledBorder("1. Search");
+        tb.setTitleColor(java.awt.Color.BLUE);
+        searchPanel.setBorder(tb);
         
         posText = new PositionTextField(ses);
         posText.setToolTipText("Object name (3c273) or Position (187.27,+2.05 or 12:29:06.00,+02:03:08.60)");
@@ -522,7 +524,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         
         searchPanel.add(new JLabel("Position/Object: "));
         searchPanel.add(posText);
-        searchPanel.add(new JLabel("Search Radius: "));
+        searchPanel.add(new JLabel("Search Radius (degs or \"): "));
         searchPanel.add(regionText);
         
         degreesRadio = new JRadioButton("Degrees");        
@@ -579,8 +581,10 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         
         // start of tree navigation buttons - maybe add more here later.
         JPanel navPanel = new JPanel();      
-        navPanel.setLayout(new BoxLayout(navPanel,BoxLayout.Y_AXIS)); 
-        navPanel.setBorder(new TitledBorder("2. Navigate"));
+        navPanel.setLayout(new BoxLayout(navPanel,BoxLayout.Y_AXIS));
+        tb = new TitledBorder("2. Navigate");
+        tb.setTitleColor(java.awt.Color.BLUE);
+        navPanel.setBorder(tb);
         
         reFocusTopButton = new JButton("Go to Top");
         reFocusTopButton.setIcon(IconHelper.loadIcon("top.png"));
@@ -627,7 +631,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         
         // start of consumer buttons.
         JScrollPane sp =new JScrollPane(dynamicButtons);
-        sp.setBorder(new TitledBorder("3. Process"));
+        tb = new TitledBorder("3. Process");
+        tb.setTitleColor(java.awt.Color.BLUE);
+        sp.setBorder(tb);
         searchPanel.setMaximumSize(sp.getMaximumSize());
         navPanel.setMaximumSize(sp.getMaximumSize());
                 
@@ -747,6 +753,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.41  2006/05/11 12:14:54  KevinBenson
+minor tweaks with border colors and labels
+
 Revision 1.40  2006/05/11 11:40:59  KevinBenson
 small change on a label
 
