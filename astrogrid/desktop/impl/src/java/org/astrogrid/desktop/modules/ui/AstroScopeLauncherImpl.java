@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.39 2006/05/11 10:02:45 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.40 2006/05/11 11:40:59 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -522,7 +522,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         
         searchPanel.add(new JLabel("Position/Object: "));
         searchPanel.add(posText);
-        searchPanel.add(new JLabel("Region: "));
+        searchPanel.add(new JLabel("Search Radius: "));
         searchPanel.add(regionText);
         
         degreesRadio = new JRadioButton("Degrees");        
@@ -747,6 +747,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.40  2006/05/11 11:40:59  KevinBenson
+small change on a label
+
 Revision 1.39  2006/05/11 10:02:45  KevinBenson
 added history to astro and helioscope.  Along with tweaks to alignment and borders
 And changing decimal places to 6 degrees.
