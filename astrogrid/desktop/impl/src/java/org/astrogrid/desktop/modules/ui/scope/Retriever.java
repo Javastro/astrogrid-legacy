@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+import java.math.BigDecimal;
 
 import org.astrogrid.desktop.modules.ui.comp.PositionTextField;
 
@@ -77,9 +78,21 @@ public abstract class Retriever extends BackgroundWorker {
         this.primaryNode = primaryNode;
     }
     
+    /**
+     * Method scaleValue
+     * Description: scales a value now using BigDecimal.
+     * @param doubleValue string version of a double to be used with the BigDecimal constructor.
+     * @param scale to how many decimal places to be scaled.
+     * @return string version of the value.
+     * @todo there is a chopValue down below that is exactly the same as this method, but overall should probably
+     * not even be in this class and should get removed to some other location.
+     */
     public static String scaleValue(String doubleValue, int scale) {
+        return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
+        /*
         int decIndex = doubleValue.indexOf('.');
-        int expIndex = doubleValue.indexOf('E'); 
+        int expIndex = doubleValue.indexOf('E');
+        System.out.println("the doublevalue = " + doubleValue + " with bigdeciaml = " + new BigDecimal(doubleValue).setScale(scale).toString());
         //we use the scale during the substring process
         //and to go to scale we need to increment by one character
         //to include the "." decimal point.
@@ -95,6 +108,7 @@ public abstract class Retriever extends BackgroundWorker {
             return temp;
         }
         return doubleValue;
+        */
     }
 
     
@@ -223,11 +237,14 @@ public abstract class Retriever extends BackgroundWorker {
        }  
        
        protected String chopValue(String doubleValue, int scale) {
-           int decIndex = doubleValue.indexOf('.');
-           int expIndex = doubleValue.indexOf('E'); 
+           //int decIndex = doubleValue.indexOf('.');
+           //int expIndex = doubleValue.indexOf('E');
+           //System.out.println("the doublevalue33 = " + doubleValue + " with bigdeciaml = " + new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString());
+           return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
            //we use the scale during the substring process
            //and to go to scale we need to increment by one character
            //to include the "." decimal point.
+           /*
            scale++;           
            if(decIndex != -1 && doubleValue.length() > (decIndex + scale)) {
                if((decIndex + scale) <= (expIndex+1))
@@ -240,6 +257,7 @@ public abstract class Retriever extends BackgroundWorker {
                return temp;
            }
            return doubleValue;
+           */
        }
        
     /** called once for each row in the table
@@ -255,7 +273,7 @@ public abstract class Retriever extends BackgroundWorker {
         String rowRa = row[raCol].toString();
         String rowDec = row[decCol].toString();                                 
         DefaultTreeNode valNode = new DefaultTreeNode();
-        String positionString = chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2);
+        String positionString = chopValue(String.valueOf(rowRa),6) + "," + chopValue(String.valueOf(rowDec),6);
         valNode.setAttribute(LABEL_ATTRIBUTE,"*");
         valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
         // unused
@@ -283,7 +301,7 @@ public abstract class Retriever extends BackgroundWorker {
         tooltip.append("</p></html>");
         valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());  
         double offset = getOffset(ra, dec, Double.valueOf(rowRa).doubleValue(), Double.valueOf(rowDec).doubleValue());
-        String offsetVal = chopValue(String.valueOf(offset),2);
+        String offsetVal = chopValue(String.valueOf(offset),6);
         TreeNode offsetNode = model.findNode(offsetVal, serviceNode);
         String tempAttr;
         if(offsetNode == null) { // not found offset node.

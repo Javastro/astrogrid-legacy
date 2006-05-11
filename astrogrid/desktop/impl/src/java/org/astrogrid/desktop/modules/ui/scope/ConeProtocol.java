@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.5 2006/04/21 13:48:11 nw Exp $
+/*$Id: ConeProtocol.java,v 1.6 2006/05/11 10:02:45 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ public class ConeProtocol extends DalProtocol {
      * @param name
      */
     public ConeProtocol(UIComponent parent,Registry reg, Cone cone) {
-        super("Catalogs",parent);
+        super("Catalogues",parent);
         this.reg = reg;
         this.cone = cone;
     }
@@ -79,6 +79,10 @@ public class ConeProtocol extends DalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.6  2006/05/11 10:02:45  KevinBenson
+added history to astro and helioscope.  Along with tweaks to alignment and borders
+And changing decimal places to 6 degrees.
+
 Revision 1.5  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.38 2006/04/26 15:56:54 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.39 2006/05/11 10:02:45 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -32,6 +33,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JComboBox;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
@@ -41,6 +45,7 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Registry;
@@ -90,11 +95,13 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 
+
 /** Implementation of the Datascipe launcher
  * 
  * @todo tidy up scrappy get position code - in particular, report errors from simbad correctly - at moment,
  * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
+ * @todo again a position stuff with scaling doing a lot of converting string to double that could get rid of later.
  */
 public class AstroScopeLauncherImpl extends UIComponentImpl 
     implements AstroScope, ActionListener, PlasticListener, PlasticWrapper {
@@ -139,6 +146,9 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
     private JButton reFocusTopButton;   
     private JButton clearButton;
     private JButton switchButton;
+    JRadioButton degreesRadio;
+    JRadioButton sexaRadio;
+    private JComboBox historyCombo;
     private PositionTextField regionText;
     private FlipButton submitButton;
            
@@ -257,8 +267,24 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
         	} else {
         		logger.debug("querying");
         		currentlyDegrees=true;
+            degreesRadio.setEnabled(true);
+            sexaRadio.setEnabled(true);
+            degreesRadio.setSelected(true);
         		query();
-        	}
+            String histVal = posText.getText() + "_" + regionText.getText();
+            historyCombo.insertItemAt(histVal,2);
+            String histKey = getConfiguration().getKey("astroscope.history");          
+            if(histKey != null) {
+                String []hist = histKey.split(";");
+                if(hist.length < 20) {
+                    histVal += ";" + StringUtils.join(hist,";");                 
+                }else {
+                    hist[(hist.length - 1)] = "";
+                    histVal += ";" + StringUtils.join(hist,";");
+                }
+            }
+             getConfiguration().setKey("astroscope.history",histVal);
+         }
         	submitButton.flip();
         }else if(source == reFocusTopButton) {
             vizualizations.refocusMainNodes();
@@ -272,23 +298,42 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
             }
             set.clear();
             vizualizations.reDrawGraphs();
-        }else if (source == switchButton) {
+        }else if (degreesRadio.isEnabled() && (source == degreesRadio || source == sexaRadio)) {
             toggleAndConvertNodes(vizModel.getRootNode());
             vizualizations.reDrawGraphs();
             String regTemp = null;
-            if(currentlyDegrees) { // factor these actions out into separate methods.
+            if(currentlyDegrees && source == sexaRadio) { // factor these actions out into separate methods.
                 currentlyDegrees = false;
                 posText.setText(posText.getPositionSexagesimal());
                 regTemp = regionText.hasFullRegion() ?  String.valueOf((regionText.getRADegrees() * 3600)) + "," + String.valueOf((regionText.getDECDegrees() * 3600)) :
                           String.valueOf((Double.parseDouble(regionText.getText()) * 3600));
-                regionText.setText(regTemp);
-            } else {
+                regionText.setText(Retriever.scaleValue(regTemp,6));
+            } else if(!currentlyDegrees && source == degreesRadio) {
                 currentlyDegrees = true;
-                posText.setText(posText.getPositionDegrees());
+                posText.setText(Retriever.scaleValue(String.valueOf(posText.getRADegrees()),6) + "," + Retriever.scaleValue(String.valueOf(posText.getDECDegrees()),6));
                 regTemp = regionText.hasFullRegion() ?  String.valueOf((regionText.getRADegrees()/3600)) + "," + String.valueOf((regionText.getDECDegrees()/3600)) :
                     String.valueOf((Double.parseDouble(regionText.getText())/3600));
-                regionText.setText(regTemp);
-        }
+                regionText.setText(Retriever.scaleValue(regTemp,6));
+            }
+        }else if (source == historyCombo) {
+            if(historyCombo.getSelectedIndex() == 0) {
+                posText.setEnabled(true);
+                regionText.setEnabled(true);            
+            }else if(historyCombo.getSelectedIndex() == 1) {
+                posText.setEnabled(true);
+                regionText.setEnabled(true);
+                historyCombo.removeAllItems();
+                historyCombo.insertItemAt("Use Inputs",0);
+                historyCombo.insertItemAt("Clear History",1);
+                historyCombo.setSelectedIndex(0);
+            }else {
+                String histVal = (String) historyCombo.getSelectedItem();
+                String []hist = histVal.split("_");
+                posText.setEnabled(false);
+                regionText.setEnabled(false);
+                posText.setText(hist[0]);
+                regionText.setText(hist[1]);
+            }
         }
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
     }
@@ -303,12 +348,11 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
             foundOffset = true;
             double val;
             if(currentlyDegrees) {
-                val = Double.parseDouble(ndVal) * 3600;
-                
+                val = Double.parseDouble(ndVal) * 3600;                
             } else {
                 val = Double.parseDouble(ndVal);
             }
-            nd.setAttribute(Retriever.LABEL_ATTRIBUTE,Retriever.scaleValue(String.valueOf(val),2));
+            nd.setAttribute(Retriever.LABEL_ATTRIBUTE,Retriever.scaleValue(String.valueOf(val),6));
             nd.setAttribute(Retriever.TOOLTIP_ATTRIBUTE,String.valueOf(val));
             for(int i = 0;i < nd.getChildCount();i++) {
                 TreeNode childNode = nd.getChild(i);
@@ -317,7 +361,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
                 if(currentlyDegrees) {
                     posVal = PositionTextField.getRASexagesimal(ndVal) + "," + PositionTextField.getDECSexagesimal(ndVal);
                 }else {
-                    posVal = Retriever.scaleValue(String.valueOf(PositionTextField.getRADegrees(ndVal)),2) + "," + Retriever.scaleValue(String.valueOf(PositionTextField.getDECDegrees(ndVal)),2);
+                    posVal = Retriever.scaleValue(String.valueOf(PositionTextField.getRADegrees(ndVal)),6) + "," + Retriever.scaleValue(String.valueOf(PositionTextField.getDECDegrees(ndVal)),6);
                 }
                 childNode.setAttribute(Retriever.LABEL_ATTRIBUTE,posVal);
                 childNode.setAttribute(Retriever.TOOLTIP_ATTRIBUTE,posVal);
@@ -407,7 +451,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                      if (ri instanceof SiapInformation) {  //nasty little hack for now. - later find a way of getting this info from the protocol object..
                          sb.append("Image");
                      } else if (ri instanceof ConeInformation) {
-                         sb.append("Catalog");
+                         sb.append("Catalogue");
                      } else { // no special type for ssap at the moment, and have to assume that any other ri is a ssap
                          sb.append("Spectra");
                      }
@@ -461,30 +505,60 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
     
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new BoxLayout(searchPanel,BoxLayout.Y_AXIS));
+        //searchPanel.setLayout(new GridLayout(10,1));
         searchPanel.setBorder(new TitledBorder("1. Search"));
         
         posText = new PositionTextField(ses);
-        posText.setToolTipText("Place position or object name e.g. 120,0 (in decimal degrees and no spaces) or M11");
+        posText.setToolTipText("Object name (3c273) or Position (187.27,+2.05 or 12:29:06.00,+02:03:08.60)");
         posText.setAlignmentX(LEFT_ALIGNMENT);
         posText.setColumns(10);
-        posText.setMaximumSize(posText.getPreferredSize());   
+        //posText.setMaximumSize(posText.getPreferredSize());   
         
         regionText = new PositionTextField();
-        regionText.setToolTipText("Enter region size e.g. 0.1 in decimal degrees");
+        regionText.setToolTipText("Search radius (0.008333 degs or 30.00\")");
         regionText.setAlignmentX(LEFT_ALIGNMENT);
         regionText.setColumns(10);
-        regionText.setMaximumSize(regionText.getPreferredSize());
+        //regionText.setMaximumSize(regionText.getPreferredSize());
         
         searchPanel.add(new JLabel("Position/Object: "));
         searchPanel.add(posText);
         searchPanel.add(new JLabel("Region: "));
         searchPanel.add(regionText);
+        
+        degreesRadio = new JRadioButton("Degrees");        
+        sexaRadio = new JRadioButton("Sexagesimal");
+        ButtonGroup group = new ButtonGroup();
+        group.add(degreesRadio);
+        group.add(sexaRadio);        
+        degreesRadio.addActionListener(this);
+        degreesRadio.setEnabled(false);
+        sexaRadio.addActionListener(this);
+        sexaRadio.setEnabled(false);
+        searchPanel.add(degreesRadio);
+        searchPanel.add(sexaRadio);
+        
+        
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();
             searchPanel.add(p.getCheckBox());
         }
         
-
+        searchPanel.add(new JLabel("Previous searches:"));
+        String histCheck = getConfiguration().getKey("astroscope.history");
+        String []hist = histCheck != null ? histCheck.split(";") : new String[] {"Use Inputs"};
+        if(histCheck != null)
+            historyCombo = new JComboBox(histCheck.split(";"));
+        else
+            historyCombo = new JComboBox();        
+        historyCombo.setAlignmentX(LEFT_ALIGNMENT);
+        //historyCombo.setMaximumSize(new Dimension(150,50));                
+        historyCombo.insertItemAt("Use Inputs",0);
+        historyCombo.insertItemAt("Clear History",1);
+        historyCombo.setSelectedIndex(0);
+        historyCombo.addActionListener(this);        
+        searchPanel.add(historyCombo);
+        
+        //searchPanel.add(testComboPanel);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
         scopeMain.getInputMap(scopeMain.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
         scopeMain.getActionMap().put("search",new AbstractAction() {
@@ -493,10 +567,15 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
             }
         });         
 
-    	        submitButton = new FlipButton();
-    	        submitButton.addActionListener(this);
+        submitButton = new FlipButton();
+        submitButton.addActionListener(this);
+        //submitButton.
+              
     	
-        searchPanel.add(submitButton); 
+        searchPanel.add(submitButton);
+        
+        
+        //historyCombo.setLocation((int)submitButton.getLocation().getX(),(int)historyCombo.getLocation().getY());
         
         // start of tree navigation buttons - maybe add more here later.
         JPanel navPanel = new JPanel();      
@@ -517,13 +596,14 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         clearButton.addActionListener(this);
         
         
+        /*
         switchButton = new JButton("Toggle Coords");
         switchButton.setIcon(IconHelper.loadIcon("toggle.gif"));
         switchButton.setToolTipText("Toggle between Degrees and Sexagesimal coordinates");
         switchButton.setEnabled(false);
         //switchButton.setMaximumSize(clearButton.getMaximumSize());
         switchButton.addActionListener(this);
-        
+        */       
         
         final FocusSet sel = vizModel.getSelectionFocusSet();
         sel.addFocusListener(new FocusListener() {
@@ -532,28 +612,33 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
             }
         });
         navPanel.add(clearButton);
-        navPanel.add(switchButton);
+        //navPanel.add(degreesRadio);
+        //navPanel.add(sexaRadio);
         
         // make these buttons all the same width - I know clear button is the biggest.
         submitButton.setMaximumSize(clearButton.getPreferredSize());
         reFocusTopButton.setMaximumSize(clearButton.getPreferredSize());
+        
+        /*
         navPanel.setMinimumSize(navPanel.getPreferredSize());
         navPanel.setMaximumSize(navPanel.getPreferredSize());
         searchPanel.setMinimumSize(navPanel.getPreferredSize());
+        */
         
         // start of consumer buttons.
         JScrollPane sp =new JScrollPane(dynamicButtons);
         sp.setBorder(new TitledBorder("3. Process"));
-        
+        searchPanel.setMaximumSize(sp.getMaximumSize());
+        navPanel.setMaximumSize(sp.getMaximumSize());
+                
         // assemble it all together.
         JPanel bothTop = new JPanel();
         bothTop.setLayout(new BoxLayout(bothTop,BoxLayout.Y_AXIS));
         bothTop.add(searchPanel);
         bothTop.add(navPanel);
-        scopeMain.add(bothTop,BorderLayout.NORTH);;
-        scopeMain.add(sp,BorderLayout.CENTER);   
-        
-        //scopeMain.setPreferredSize(new Dimension().
+        bothTop.setMaximumSize(sp.getMaximumSize());
+        scopeMain.add(bothTop,BorderLayout.NORTH);
+        scopeMain.add(sp,BorderLayout.CENTER);           
         return scopeMain;
     }
     
@@ -564,7 +649,7 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
      *
      */
     private void query() {
-        logger.debug("query() - inside query method)");
+        logger.debug("query() - inside query method)");        
         (new BackgroundOperation("Checking Position") {
             protected Object construct() throws Exception {
                 return posText.getPositionDegrees();
@@ -578,7 +663,8 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                 setStatusMessage(position);
                 clearTree();
                 reFocusTopButton.setEnabled(true);
-                switchButton.setEnabled(true);
+                degreesRadio.setEnabled(true);
+                sexaRadio.setEnabled(true);
                 
                 //  @todo refactor this string-munging methods.                
                 final double ra = PositionTextField.getRADegrees(position);
@@ -594,11 +680,12 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
                 if(posText.isSexagesimal())
                     regionText.setText(regionText.hasFullRegion() ? String.valueOf(raSize) + "," + String.valueOf(decSize) : String.valueOf(raSize));
                 
-                posText.setText(position);
+                posText.setText(Retriever.scaleValue(String.valueOf(PositionTextField.getRADegrees(position)),6) + 
+                        "," + Retriever.scaleValue(String.valueOf(PositionTextField.getDECDegrees(position)),6));
                 if(raSize == decSize) 
-                    regionText.setText(String.valueOf(raSize));
+                    regionText.setText(Retriever.scaleValue(String.valueOf(raSize),6));
                 else
-                    regionText.setText(String.valueOf(raSize) + "," + String.valueOf(decSize));
+                    regionText.setText(Retriever.scaleValue(String.valueOf(raSize),6) + "," + Retriever.scaleValue(String.valueOf(decSize),6));
                 
                 for (Iterator i = protocols.iterator(); i.hasNext(); ) {
                     final DalProtocol p =(DalProtocol)i.next();
@@ -660,6 +747,10 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.39  2006/05/11 10:02:45  KevinBenson
+added history to astro and helioscope.  Along with tweaks to alignment and borders
+And changing decimal places to 6 degrees.
+
 Revision 1.38  2006/04/26 15:56:54  nw
 added 'halt query' and 'halt all tasks' functinaltiy.
 

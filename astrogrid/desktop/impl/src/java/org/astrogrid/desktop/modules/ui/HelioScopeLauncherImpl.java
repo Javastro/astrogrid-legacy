@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.10 2006/04/26 15:56:54 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.11 2006/05/11 10:02:45 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -27,9 +28,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,6 +49,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.Stap;
@@ -138,6 +142,7 @@ public class HelioScopeLauncherImpl extends UIComponentImpl
     private FlipButton submitButton;
     private JCalendarCombo startCal;
     private JCalendarCombo endCal;
+    private JComboBox historyCombo;
 
     // set of data retrieval components 
     private final DalProtocolManager protocols;
@@ -254,6 +259,19 @@ public class HelioScopeLauncherImpl extends UIComponentImpl
         	} else {
         		logger.debug("querying");
         		query();
+            String histVal = (String)startCal.getSelectedItem() + "_" + (String)endCal.getSelectedItem();
+            historyCombo.insertItemAt(histVal,2);
+            String histKey = getConfiguration().getKey("helioscope.history");
+            if(histKey != null) {
+                String []hist = histKey.split(";");
+                if(hist.length < 20) {
+                    histVal += ";" + StringUtils.join(hist,";");                 
+                }else {
+                    hist[(hist.length - 1)] = "";
+                    histVal += ";" + StringUtils.join(hist,";");
+                }
+            }
+             getConfiguration().setKey("helioscope.history",histVal);
         	}
         	submitButton.flip();
         }else if(source == reFocusTopButton) {
@@ -268,6 +286,27 @@ public class HelioScopeLauncherImpl extends UIComponentImpl
             }
             set.clear();
             vizualizations.reDrawGraphs();
+        } else if (source == historyCombo) {
+            if(historyCombo.getSelectedIndex() == 0) {
+                startCal.setEnabled(true);
+                endCal.setEnabled(true);            
+            }else if(historyCombo.getSelectedIndex() == 1) {
+                startCal.setEnabled(true);
+                endCal.setEnabled(true);
+                historyCombo.removeAllItems();
+                historyCombo.insertItemAt("Use Inputs",0);
+                historyCombo.insertItemAt("Clear History",1);
+                historyCombo.setSelectedIndex(0);
+            }
+            else {
+                String histVal = (String) historyCombo.getSelectedItem();
+                String []hist = histVal.split("_");
+                startCal.setEnabled(false);
+                endCal.setEnabled(false);
+                startCal.setSelectedItem((String)hist[0]);
+                endCal.setSelectedItem((String)hist[1]);
+            }
+            
         }
 
         logger.debug("actionPerformed(ActionEvent) - exit actionPerformed");
@@ -419,14 +458,17 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         JPanel scopeMain = new JPanel();
         scopeMain.setLayout(new BorderLayout());
     
-        JPanel searchPanel = new JPanel();
-        searchPanel.setLayout(new BoxLayout(searchPanel,BoxLayout.Y_AXIS));
+        Box searchPanel = Box.createVerticalBox();
+        //JPanel searchPanel = new JPanel();
+        //searchPanel.setLayout(new BoxLayout(searchPanel,BoxLayout.Y_AXIS));
         searchPanel.setBorder(new TitledBorder("1. Search"));
         
         startCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
         startCal.setNullAllowed(false);
         startCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
         startCal.setEditable(true);
+        startCal.setMaximumSize(new Dimension(175,50));
+        startCal.setAlignmentX(LEFT_ALIGNMENT);
         Calendar setStartCal = startCal.getCalendar();
         setStartCal.set(2000,0,1,0,0,0);
         startCal.setDate(setStartCal.getTime());
@@ -435,25 +477,29 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         endCal.setNullAllowed(false);
         endCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
         endCal.setEditable(true);
+        endCal.setMaximumSize(new Dimension(175,50));
+        endCal.setAlignmentX(LEFT_ALIGNMENT);
         Calendar setEndCal = endCal.getCalendar();
         setEndCal.set(2000,0,2,0,0,0);
         endCal.setDate(setEndCal.getTime());
         
         
-        posText = new JTextField();
         /*
-        posText.setToolTipText("Place position or object name e.g. 120,0 (in decimal degrees and no spaces) or M11");
+        posText = new JTextField();
         posText.setAlignmentX(LEFT_ALIGNMENT);
+
+        posText.setToolTipText("Place position or object name e.g. 120,0 (in decimal degrees and no spaces) or M11");        
         posText.setColumns(10);
         posText.setMaximumSize(posText.getPreferredSize());   
         */
-        regionText = new JTextField();
         /*
-        regionText.setToolTipText("Enter region size e.g. 0.1 in decimal degrees");
-        regionText.setAlignmentX(LEFT_ALIGNMENT);
+        regionText = new JTextField();
+        regionText.setAlignmentX(LEFT_ALIGNMENT); 
+        regionText.setToolTipText("Enter region size e.g. 0.1 in decimal degrees");        
         regionText.setColumns(10);
         regionText.setMaximumSize(regionText.getPreferredSize());
         */
+        
         searchPanel.add(new JLabel("Start Date&Time: "));
         searchPanel.add(startCal);
 
@@ -481,7 +527,26 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         JPanel checkPanel = new JPanel();
         checkPanel.add(formatTimeSeriesCheck);
         checkPanel.add(formatGraphicCheck);
+        checkPanel.setAlignmentX(LEFT_ALIGNMENT);
         searchPanel.add(checkPanel);
+        
+        searchPanel.add(new JLabel("Previous searches:"));
+        String histCheck = getConfiguration().getKey("helioscope.history");
+        String []hist = histCheck != null ? histCheck.split(";") : new String[] {"Use Inputs"};
+        if(histCheck != null)
+            historyCombo = new JComboBox(histCheck.split(";"));
+        else
+            historyCombo = new JComboBox();
+        
+        historyCombo.setAlignmentX(LEFT_ALIGNMENT);
+        //historyCombo.setMaximumSize(new Dimension(250,50));        
+        
+        historyCombo.insertItemAt("Use Inputs",0);
+        historyCombo.insertItemAt("Clear History",1);        
+        historyCombo.setSelectedIndex(0);
+        historyCombo.addActionListener(this);        
+        searchPanel.add(historyCombo);
+
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
         scopeMain.getInputMap(scopeMain.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
         scopeMain.getActionMap().put("search",new AbstractAction() {
@@ -491,15 +556,13 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         });                
         submitButton = new FlipButton();
         submitButton.addActionListener(this);
-
-searchPanel.add(submitButton);    
+        searchPanel.add(submitButton);
+        //searchPanel.
         
         // start of tree navigation buttons - maybe add more here later.
-        JPanel navPanel = new JPanel();      
-        navPanel.setLayout(new BoxLayout(navPanel,BoxLayout.Y_AXIS));
-        navPanel.setMinimumSize(searchPanel.getMinimumSize());
-        navPanel.setMaximumSize(searchPanel.getMaximumSize());        
-        navPanel.setPreferredSize(searchPanel.getPreferredSize());
+        Box navPanel = Box.createVerticalBox();
+        //JPanel navPanel = new JPanel();      
+        //navPanel.setLayout(new BoxLayout(navPanel,BoxLayout.Y_AXIS));
         navPanel.setBorder(new TitledBorder("2. Navigate"));
         
         reFocusTopButton = new JButton("Go to Top");
@@ -526,20 +589,29 @@ searchPanel.add(submitButton);
         // make these buttons all the same width - I know clear button is the biggest.
         submitButton.setMaximumSize(clearButton.getPreferredSize());
         reFocusTopButton.setMaximumSize(clearButton.getPreferredSize());
-        
         // start of consumer buttons.
         JScrollPane sp =new JScrollPane(dynamicButtons);
         sp.setBorder(new TitledBorder("3. Process"));
-                
+
+        
+        searchPanel.setMaximumSize(sp.getMaximumSize());
+        navPanel.setMaximumSize(sp.getMaximumSize());        
+
+        /*
+        navPanel.setMinimumSize(searchPanel.getMinimumSize());
+        navPanel.setMaximumSize(searchPanel.getMaximumSize());        
+        navPanel.setPreferredSize(searchPanel.getPreferredSize());
+        */
+        
         // assemble it all together.
-        JPanel bothTop = new JPanel();
-        bothTop.setLayout(new BoxLayout(bothTop,BoxLayout.Y_AXIS));
+        Box bothTop = Box.createVerticalBox();
+        //JPanel bothTop = new JPanel();
+        //bothTop.setLayout(new BoxLayout(bothTop,BoxLayout.PAGE_AXIS));
         bothTop.add(searchPanel);        
         bothTop.add(navPanel);
+        bothTop.setMaximumSize(sp.getMaximumSize());        
         scopeMain.add(bothTop,BorderLayout.NORTH);;
-        scopeMain.add(sp,BorderLayout.CENTER);   
-
-        //scopeMain.setPreferredSize(new Dimension().
+        scopeMain.add(sp,BorderLayout.CENTER);        
         return scopeMain;
     }
     
@@ -585,12 +657,14 @@ searchPanel.add(submitButton);
                 clearTree();
                 reFocusTopButton.setEnabled(true);
                 
-                //  @todo refactor this string-munging methods.                
+                //  @todo refactor this string-munging methods.
+
                 final double ra = getRA();
                 final double dec = getDEC();
-                final String region = regionText.getText().trim();
+                final String region = ""; //regionText.getText().trim();
                 final double raSize = Double.NaN; //needsParsedRegion() ?  getRA(region) : Double.parseDouble(region);
                 final double decSize = Double.NaN;  //needsParsedRegion() ? getDEC(region) : raSize;
+                
                 for (Iterator i = protocols.iterator(); i.hasNext(); ) {
                     final DalProtocol p =(DalProtocol)i.next();
 //                    if (p.getCheckBox().isSelected()) {
@@ -661,6 +735,10 @@ searchPanel.add(submitButton);
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.11  2006/05/11 10:02:45  KevinBenson
+added history to astro and helioscope.  Along with tweaks to alignment and borders
+And changing decimal places to 6 degrees.
+
 Revision 1.10  2006/04/26 15:56:54  nw
 added 'halt query' and 'halt all tasks' functinaltiy.
 
