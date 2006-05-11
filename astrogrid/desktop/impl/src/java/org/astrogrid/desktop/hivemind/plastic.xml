@@ -60,7 +60,7 @@
 			iconName="overview48.gif" after="listPlastic" before="purgePlastic"
 			object="service:system.browser" methodName="openRelative"  >
 			<parameter></parameter> <!-- intentionally blank -->
-			<tooltip>Browse and exectute Plastic functions in a webbrowser</tooltip>
+			<tooltip>Browse and execute Plastic functions in a webbrowser</tooltip>
 		</action>
 	</contribution>			
 	

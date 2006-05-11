@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.41 2006/05/11 12:14:54 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.42 2006/05/11 12:36:57 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -522,9 +522,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         regionText.setColumns(10);
         //regionText.setMaximumSize(regionText.getPreferredSize());
         
-        searchPanel.add(new JLabel("Position/Object: "));
+        searchPanel.add(new JLabel("Position (degs/hms) or Object Name:"));
         searchPanel.add(posText);
-        searchPanel.add(new JLabel("Search Radius (degs or \"): "));
+        searchPanel.add(new JLabel("Search Radius (degs/\"):"));
         searchPanel.add(regionText);
         
         degreesRadio = new JRadioButton("Degrees");        
@@ -753,6 +753,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.42  2006/05/11 12:36:57  KevinBenson
+change tooltip and small label change on astroscope
+
 Revision 1.41  2006/05/11 12:14:54  KevinBenson
 minor tweaks with border colors and labels
 

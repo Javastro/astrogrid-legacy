@@ -157,7 +157,7 @@
 			iconName="overview48.gif"
 			object="service:system.browser" methodName="openRelative" before="*" >
 			<parameter></parameter> <!-- intentionally blank -->
-			<tooltip>Browse and exectute ACR and PLASTIC functions in a webbrowser</tooltip>
+			<tooltip>Browse and execute ACR and PLASTIC functions in a webbrowser</tooltip>
 		</action>
 	</contribution>		
 	
