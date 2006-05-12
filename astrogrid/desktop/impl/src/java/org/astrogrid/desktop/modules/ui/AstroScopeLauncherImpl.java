@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.42 2006/05/11 12:36:57 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.43 2006/05/12 07:00:11 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -274,7 +274,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
             String histVal = posText.getText() + "_" + regionText.getText();
             historyCombo.insertItemAt(histVal,2);
             String histKey = getConfiguration().getKey("astroscope.history");          
-            if(histKey != null) {
+            if(histKey != null  && histKey.trim().length() > 0) {
                 String []hist = histKey.split(";");
                 if(hist.length < 20) {
                     histVal += ";" + StringUtils.join(hist,";");                 
@@ -326,6 +326,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl
                 historyCombo.insertItemAt("Use Inputs",0);
                 historyCombo.insertItemAt("Clear History",1);
                 historyCombo.setSelectedIndex(0);
+                getConfiguration().setKey("astroscope.history","");
             }else {
                 String histVal = (String) historyCombo.getSelectedItem();
                 String []hist = histVal.split("_");
@@ -547,11 +548,12 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         
         searchPanel.add(new JLabel("Previous searches:"));
         String histCheck = getConfiguration().getKey("astroscope.history");
-        String []hist = histCheck != null ? histCheck.split(";") : new String[] {"Use Inputs"};
-        if(histCheck != null)
+        //String []hist = histCheck != null ? histCheck.split(";") : new String[] {"Use Inputs"};
+        if(histCheck != null && histCheck.trim().length() > 0)
             historyCombo = new JComboBox(histCheck.split(";"));
         else
-            historyCombo = new JComboBox();        
+            historyCombo = new JComboBox();
+        
         historyCombo.setAlignmentX(LEFT_ALIGNMENT);
         //historyCombo.setMaximumSize(new Dimension(150,50));                
         historyCombo.insertItemAt("Use Inputs",0);
@@ -753,6 +755,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.43  2006/05/12 07:00:11  KevinBenson
+forgot to zap out things on clear history
+
 Revision 1.42  2006/05/11 12:36:57  KevinBenson
 change tooltip and small label change on astroscope
 

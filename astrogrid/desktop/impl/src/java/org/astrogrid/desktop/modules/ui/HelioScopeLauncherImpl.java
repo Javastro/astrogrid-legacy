@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.11 2006/05/11 10:02:45 KevinBenson Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.12 2006/05/12 07:00:11 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -262,7 +262,7 @@ public class HelioScopeLauncherImpl extends UIComponentImpl
             String histVal = (String)startCal.getSelectedItem() + "_" + (String)endCal.getSelectedItem();
             historyCombo.insertItemAt(histVal,2);
             String histKey = getConfiguration().getKey("helioscope.history");
-            if(histKey != null) {
+            if(histKey != null && histKey.trim().length() > 0) {
                 String []hist = histKey.split(";");
                 if(hist.length < 20) {
                     histVal += ";" + StringUtils.join(hist,";");                 
@@ -297,6 +297,7 @@ public class HelioScopeLauncherImpl extends UIComponentImpl
                 historyCombo.insertItemAt("Use Inputs",0);
                 historyCombo.insertItemAt("Clear History",1);
                 historyCombo.setSelectedIndex(0);
+                getConfiguration().setKey("helioscope.history","");
             }
             else {
                 String histVal = (String) historyCombo.getSelectedItem();
@@ -532,8 +533,8 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
         
         searchPanel.add(new JLabel("Previous searches:"));
         String histCheck = getConfiguration().getKey("helioscope.history");
-        String []hist = histCheck != null ? histCheck.split(";") : new String[] {"Use Inputs"};
-        if(histCheck != null)
+        //String []hist = histCheck != null ? histCheck.split(";") : new String[] {"Use Inputs"};
+        if(histCheck != null && histCheck.trim().length() > 0)
             historyCombo = new JComboBox(histCheck.split(";"));
         else
             historyCombo = new JComboBox();
@@ -735,6 +736,9 @@ sorter.setTableHeader(table.getTableHeader()); //ADDED THIS
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.12  2006/05/12 07:00:11  KevinBenson
+forgot to zap out things on clear history
+
 Revision 1.11  2006/05/11 10:02:45  KevinBenson
 added history to astro and helioscope.  Along with tweaks to alignment and borders
 And changing decimal places to 6 degrees.
