@@ -13,7 +13,25 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2.2-beta-2" date="unreleased">
+<release version="2.2-beta-3" date="2006-05-14">
+	<action dev="nw" type="update">
+		Updated icons for vospec and aladin
+	</action>
+	<action dev="gtr" type="add" issue="1537">
+		Added MyProxy Authentication
+	</action>
+	<action dev="kmb" type="fix">
+		Improved Astroscope and Helioscope window layout
+	</action>
+	<action dev="jdt" type="fix">
+   		HubStopping message is sent. 
+   	</action>
+   	<action dev="jdt" type="update">
+   	 if you now register with an empty list of supported messages then you get what you asked for - ie nothing. 
+   	  In other words, an empty list no-longer means "send me everything"
+	</action>
+</release>
+<release version="2.2-beta-2" date="2006-04-27">
 	<action dev="nw" type="fix">
 		Fixed startup problems with windows webstart version of workbench.
 	</action>
