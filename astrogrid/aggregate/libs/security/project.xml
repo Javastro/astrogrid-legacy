@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../../maven-base/project.xml</extend>
+
+  <currentVersion>${astrogrid.aggregate.version}</currentVersion>
+
+  <id>security</id>
+
+  <name>Security</name>
+
+  <description>Authentication and Authorization libraries</description>
+
+  <shortDescription>Authentication and Authorization libraries</shortDescription>
+
+  <dependencies>
+ <!-- Dependencies introduced by use of MyProxy. -->
+ <dependency>
+ 	<groupId>globus</groupId>
+ 	<artifactId>cog-jglobus</artifactId>
+ 	<version>1.2</version>
+ 	<type>jar</type>
+ 	<properties>
+ 		<jnlp.jar>true</jnlp.jar>
+ 	</properties>
+ </dependency>
+ 
+ <dependency>
+ 	<groupId>globus</groupId>
+ 	<artifactId>cog-jgss</artifactId>
+ 	<version>1.2</version>
+ 	<type>jar</type>
+ 	<properties>
+ 		<jnlp.jar>true</jnlp.jar>
+ 	</properties>
+ </dependency>
+
+ <dependency>
+ 	<groupId>globus</groupId>
+ 	<artifactId>cog-puretls</artifactId>
+ 	<version>1.2</version>
+ 	<type>jar</type>
+ 	<properties>
+ 		<jnlp.jar>true</jnlp.jar>
+ 	</properties> 	
+ </dependency>
+
+ <dependency>
+   <groupId>globus</groupId>
+   <artifactId>cog-cryptix</artifactId>
+   <version>1.2</version>
+   <type>jar</type>
+ 	<properties>
+ 		<jnlp.jar>true</jnlp.jar>
+ 	</properties>   
+ </dependency>
+       
+        	<dependency>
+        		<groupId>globus</groupId>
+        		<artifactId>cog-cryptix32</artifactId>
+        		<version>1.2</version>
+        		<type>jar</type>
+ 	<properties>
+ 		<jnlp.jar>true</jnlp.jar>
+ 	</properties>        		
+        	</dependency>
+        	
+        	<dependency>
+        		<groupId>globus</groupId>
+        		<artifactId>cog-cryptix-asn1</artifactId>
+        		<version>1.2</version>
+        		<type>jar</type>
+ 	<properties>
+ 		<jnlp.jar>true</jnlp.jar>
+ 	</properties>        		
+        	</dependency>
+        	
+        	<dependency>
+        		<groupId>bouncycastle</groupId>
+        		<artifactId>bcprov-jdk14</artifactId>
+        		<version>129</version>
+        		<type>jar</type>
+ 	<properties>
+ 		<jnlp.jar>true</jnlp.jar>
+ 	</properties>        		
+        	</dependency>
+
+        	<!-- dependencies for signatures -->
+        	<dependency>
+        		<groupId>wss4j</groupId>
+        		<artifactId>wss4j</artifactId>
+        		<version>1.0a</version>
+        		<type>jar</type>
+ 	<properties>
+ 		<jnlp.jar>true</jnlp.jar>
+ 	</properties>        		
+        	</dependency>
+    
+<!-- stuff required in maven build -->
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-jsl</artifactId>
+
+      <version>20030211.143151</version>
+
+      <properties />
+    </dependency>
+
+    <dependency>
+      <groupId>commons-jelly</groupId>
+
+      <artifactId>commons-jelly-tags-xml</artifactId>
+
+      <version>20030211.142705</version>
+
+      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
+
+      <properties />
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory />
+
+    <unitTestSourceDirectory />
+
+    <unitTest />
+  </build>
+</project>
+
