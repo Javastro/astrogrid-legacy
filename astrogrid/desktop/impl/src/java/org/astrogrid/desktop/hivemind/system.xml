@@ -286,7 +286,7 @@ System module.
 			object="service:browser" methodName="openURL" >
 			<parameter>http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</parameter>
 		</action>
-		<action parentName="apps" name="aladin" text="Aladin" iconName="aladin.gif"
+		<action parentName="apps" name="aladin" text="Aladin" iconName="aladin_48pix.png"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
 			<html><b>Aladin</b> is an interactive software sky atlas allowing the user to <br>
@@ -329,7 +329,7 @@ System module.
 			  ]]></tooltip>
 			<parameter>http://vo.iucaa.ernet.in/~voi/voplot.htm</parameter>
 		</action>
-		<action parentName="apps" name="vospec" text="VOSpec" iconName="vospec.png"
+		<action parentName="apps" name="vospec" text="VOSpec" iconName="vospecLogo.png"
 			after="voplot"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[

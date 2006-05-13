@@ -1,4 +1,4 @@
-/*$Id: ToolModel.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: ToolModel.java,v 1.3 2006/05/13 16:34:55 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,10 +41,36 @@ public class ToolModel {
         
     private Tool tool;
     private ApplicationInformation info;
+    
+    /**
+     * Identifier for a security action. The action is to be 
+     * performed by the service delegate when the Tool is serialized
+     * in a call to a web service; typically, the action means
+     * "sign the request message". The format of the identifier is
+     * opaque to this class (hence it's stored as a plain String), 
+     * but is likely to be a URI identifiying some security standard.
+     */
+    private String securityMethod;
+    
     /** get a reference to the tool managed by this model */
     public  Tool getTool() {
         return tool;
     }
+    
+    /**
+     * Retrieve the security method.
+     */
+    public String getSecurityMethod() {
+      return this.securityMethod;
+    }
+    
+    /**
+     * Specify the security method.
+     */
+    public void setSecurityMethod(String method) {
+      this.securityMethod = method;
+    }
+    
     /** populate the model, with a tool and it's associated description
      * <p>
      * @fires toolSetEvent
@@ -173,6 +199,9 @@ public class ToolModel {
 
 /* 
 $Log: ToolModel.java,v $
+Revision 1.3  2006/05/13 16:34:55  nw
+merged in wb-gtr-1537
+
 Revision 1.2  2006/04/18 23:25:47  nw
 merged asr development.
 

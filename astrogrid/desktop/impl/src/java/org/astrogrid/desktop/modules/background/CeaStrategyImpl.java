@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.3 2006/04/18 23:25:43 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.4 2006/05/13 16:34:55 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,8 +17,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,6 +59,8 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
 
 
 /** remote process strargey for cea.
@@ -257,15 +262,20 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
      */
     public URI submit(Document doc) throws ServiceException, SecurityException, NotFoundException,
             InvalidArgumentException {
-        // munge name in document, if incorrect..       
-        Tool document;
+            
         ApplicationInformation info;
+      Tool tool;
+      Set securityActions;
         try {
-            document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
-        if (document.getName().startsWith("ivo://")) {
-            document.setName(document.getName().substring(6));
+        tool = (Tool)Unmarshaller.unmarshal(Tool.class, doc);
+        securityActions = this.extractSecurityInstructions(doc);
+        
+        // The application name is supposed to be an IVOID without the
+        // ivo:// prefix. Strip the prefix if it is present.
+        if (tool.getName().startsWith("ivo://")) {
+            tool.setName(tool.getName().substring(6));
         }
-            URI application = new URI("ivo://" + document.getName());
+        URI application = new URI("ivo://" + tool.getName());
             info = apps.getApplicationInformation(application);
         } catch (URISyntaxException e) {
             throw new InvalidArgumentException(e);
@@ -289,7 +299,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
                 Collections.shuffle(l);
                 target = (ResourceInformation)l.get(0);
         }
-        return invoke(info,document,target);            
+        return invoke(info, tool, target, securityActions);            
     }
 
     /**
@@ -299,13 +309,18 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
             NotFoundException, InvalidArgumentException {
         // munge name in document, if incorrect..       
         ApplicationInformation info;
-        Tool document;
+      Tool tool;
+      Set securityActions;
         try {
-            document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
-        if (document.getName().startsWith("ivo://")) {
-            document.setName(document.getName().substring(6));
+        tool = (Tool)Unmarshaller.unmarshal(Tool.class, doc);
+        securityActions = this.extractSecurityInstructions(doc);
+        
+        // The application name is supposed to be an IVOID without the
+        // ivo:// prefix. Strip the prefix if it is present.
+        if (tool.getName().startsWith("ivo://")) {
+            tool.setName(tool.getName().substring(6));
         }
-            URI application = new URI("ivo://" + document.getName());
+        URI application = new URI("ivo://" + tool.getName());
             info = apps.getApplicationInformation(application);
         } catch (URISyntaxException e) {
             throw new InvalidArgumentException(e);
@@ -325,7 +340,53 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         if (target == null) {
             throw new NotFoundException(server + " does not provide application " + info.getName());            
         }        
-       return invoke(info,document,target);
+      return invoke(info, tool, target, securityActions);
+    }
+    
+    /**
+     * actually executes an applicaiton.
+     * first checks whether it can be serviced by the local cea lib.
+     * if not, delegates to a remote cea server 
+     * @param application
+     * @param v1Tool
+     * @param server
+     * @param securityAction The kind of authentication to be performed.
+     * @return
+     * @throws ServiceException
+     */
+    private URI invoke(ApplicationInformation application, 
+                       Tool document, 
+                       ResourceInformation server,
+                       Set securityActions)
+    throws ServiceException {
+        apps.translateQueries(application, document); //@todo - maybe move this into manager too???
+        try {
+        //fudge some kind of job id type. hope this will do.
+            JobIdentifierType jid = new JobIdentifierType(server.getId().toString());
+            if (ceaInternal.getAppLibrary().hasMatch(application)) {           
+                String primId = ceaInternal.getExecutionController().init(document,jid.toString());
+                if (!ceaInternal.getExecutionController().execute(primId)) {
+                    throw new ServiceException("Failed to start application, for unknown reason");
+                }
+                return ceaHelper.mkLocalTaskURI(primId);
+            } else {
+                CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(server);
+                Iterator i = securityActions.iterator();
+                while (i.hasNext()) {
+                  System.out.println("CEA strategy: Security action: " + i.next());
+                }
+                String primId = del.init(document,jid);
+                del.execute(primId);
+                URI id = ceaHelper.mkRemoteTaskURI(primId,server);
+                // notifyy recorder of new remote cea.
+                scheduler.runNow(new RemoteCeaSetup(document,application,id,jid));
+                return id;
+            }
+        } catch (CeaException e) {
+            throw new ServiceException(e);
+        } catch (CEADelegateException e) {
+            throw new ServiceException(e);
+        } 
     }
 
     /**
@@ -349,7 +410,31 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     public void userLogout(UserLoginEvent arg0) {
         poll = false;        
     }
-
+    /**
+     * Handles security annotations in a tool document.
+     * These annotations are processing instructions aimed at the code that
+     * sends the tool to a web service; hence, they are intended for this
+     * class. This method detects all the processing instructions in
+     * the document, deletes those to do with security actions and returns
+     * their values.
+     */
+    private Set extractSecurityInstructions(Document document) {
+      System.out.println(document.toString());
+      Set instructions = new HashSet();
+      NodeList nodes = document.getChildNodes();
+      for (int i = 0; i < nodes.getLength(); i++) {
+        org.w3c.dom.Node n = nodes.item(i);
+        if (n.getNodeType() == org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE) {
+          ProcessingInstruction p = (ProcessingInstruction)n;
+          if ("CEA-strategy-security".equals(p.getTarget())) {
+            instructions.add(p.getData());
+            document.removeChild(n);
+          }
+        }
+      }
+      return instructions;
+    }
+    
     /** check a single cea for updates. to be called within scheduler thread 
      * @throws IOException
      * @throws CEADelegateException
@@ -463,6 +548,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.4  2006/05/13 16:34:55  nw
+merged in wb-gtr-1537
+
 Revision 1.3  2006/04/18 23:25:43  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.17 2006/04/18 23:25:47 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.18 2006/05/13 16:34:55 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,6 +53,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
+import org.w3c.dom.ProcessingInstruction;
 
 /** Tool Editor Panel that composites together a bunch of other ones, and determines which
  * to show.
@@ -81,12 +82,21 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         public void actionPerformed(ActionEvent e) {
             
             final Tool tOrig = getToolModel().getTool();
+            final String securityMethod = getToolModel().getSecurityMethod();
+            System.out.println("Security method = " + securityMethod);
             (new BackgroundWorker(parent,"Executing..") {
 
                 protected Object construct() throws Exception {
                     logger.debug("Executing");
                     Document doc = XMLUtils.newDocument();
                     Marshaller.marshal(tOrig,doc);
+                    if (securityMethod != null) {
+                      System.out.println("Setting security instruction on the tool document");
+                      ProcessingInstruction p 
+                          = doc.createProcessingInstruction("CEA-strategy-security", 
+                                                            securityMethod);
+                      doc.appendChild(p);
+                    }
                     ResourceInformation[] services = apps.listProvidersOf(new URI("ivo://" + tOrig.getName())); 
                     logger.debug("resolved app to " + services.length + " servers");
                     if (services.length > 1) {
@@ -375,6 +385,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.18  2006/05/13 16:34:55  nw
+merged in wb-gtr-1537
+
 Revision 1.17  2006/04/18 23:25:47  nw
 merged asr development.
 

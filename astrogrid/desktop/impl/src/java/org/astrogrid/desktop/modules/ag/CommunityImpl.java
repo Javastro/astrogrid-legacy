@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.5 2006/04/21 13:48:12 nw Exp $
+/*$Id: CommunityImpl.java,v 1.6 2006/05/13 16:34:55 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,10 +48,12 @@ public class CommunityImpl implements Community  {
     /** Construct a new Community
      * 
      */
-    public CommunityImpl(UIInternal ui,LoginDialogue loginDialogue) {       
+    public CommunityImpl(UIInternal ui,LoginDialogue loginDialogue, String trustedCertificates) {       
         this.ui = ui;
         this.loginDialogue = loginDialogue;
         ui.setStatusMessage("Not Logged In");
+        
+        LoginFactory.declareTrustedCertificates(trustedCertificates);
     }
     protected final UIInternal ui;
     protected final LoginDialogue loginDialogue;
@@ -71,6 +73,7 @@ public class CommunityImpl implements Community  {
         ui.setStatusMessage("Not Logged In");
         ui.setLoggedIn(false);
     }
+
     
     public UserInformation getUserInformation()  {
        guiLogin();
@@ -99,39 +102,17 @@ public class CommunityImpl implements Community  {
                 break;
             }
             try {
+            //NWW  - move this to debug, once the novelty wares off :)
+            	logger.info("About to authenticate at the community...");
                 authenticate();
+                logger.info("Authenticated");
             } catch (Exception e) {
+            	logger.info("Authentication failed.");
                 UIComponentImpl.showError(null,"Failed to login",e);
             }
         }                    
     }
-    /** do the authentication to the legacy communiuty service.
-     * in time, this will all be replaced by guy's work.
-     * @param name
-     * @param community
-     * @param password
-     * @return user ivorn (just for convenience, proabbly later will return some kind of credentials)
-     * @throws CommunityResolverException
-     * @throws CommunityServiceException
-     * @throws CommunitySecurityException
-     * @throws CommunityIdentifierException
-     * @throws RegistryException
-     * @throws URISyntaxException
-     */
-    private URI doCommunityLogin(String name,String community,String password) throws CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException, RegistryException, URISyntaxException {
      
-        CommunityPasswordResolver security = new CommunityPasswordResolver();
-        Account acc = new Account();
-        Group group = new Group();
-        group.setName("login-script-env-users");
-        acc.setName(name);
-        acc.setCommunity(community);
-        group.setCommunity(community);
-        Ivorn userIvorn = new Ivorn(community,name,"");
-        security.checkPassword(userIvorn.toString(),password);
-        return new URI(userIvorn.toString());
-    }
-    
     /** uses fields in loginDialogue to autenticate against the server 
      * @throws RegistryException
      * @throws CommunityIdentifierException
@@ -142,14 +123,18 @@ public class CommunityImpl implements Community  {
         logger.info("In authenticate");
         try {
             ui.setStatusMessage("Logging in..");   
-        URI user = doCommunityLogin(loginDialogue.getUser(),loginDialogue.getCommunity(),loginDialogue.getPassword());
+            logger.info("Logging in " + 
+                        loginDialogue.getUser() +
+                        "@" +
+                        loginDialogue.getCommunity());
+        ScriptEnvironment env = LoginFactory.login(loginDialogue.getUser(),loginDialogue.getCommunity(),loginDialogue.getPassword());
         userInformation = new UserInformation(
-                user
+                new URI(env.getUserIvorn().toString())
                 ,loginDialogue.getUser()
                 ,loginDialogue.getPassword()
                 ,loginDialogue.getCommunity()
                );
-        ui.setStatusMessage("Logged in as " + user);
+        ui.setStatusMessage("Logged in as " + env.getUserIvorn());
         ui.setLoggedIn(true);
         notifyListeners(true);
         } catch (CommunityResolverException e) {
@@ -218,6 +203,9 @@ public class CommunityImpl implements Community  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.6  2006/05/13 16:34:55  nw
+merged in wb-gtr-1537
+
 Revision 1.5  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

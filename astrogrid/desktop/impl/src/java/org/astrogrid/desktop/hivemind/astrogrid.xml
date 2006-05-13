@@ -84,6 +84,9 @@
 		<default symbol="astrogrid.loginDialogue.alternative.logger" value="LOGIN" />
 		<default symbol="astrogrid.store.workdir"
 			value="${user.home}${file.separator}.workbench" />	
+			<!-- TODO pity it's not possible to define this in terms of ag.stoe.workdir - maybe should be altered to depend on that in code instead -->
+		<default symbol="trusted.cert.dir"
+			value="${user.home}${file.separator}.workbench${file.separator}trusted-certificates" />
 	</contribution>
 
 	<!-- things to start eager -->	
@@ -229,6 +232,7 @@
 			<construct class="org.astrogrid.desktop.modules.ag.CommunityImpl" >
 				<service>system.ui</service>
 				<service>loginDialogue</service>
+				<string>${trusted.cert.dir}</string>
 			</construct>
 		</invoke-factory>	
 	</service-point>

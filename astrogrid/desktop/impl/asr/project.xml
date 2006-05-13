@@ -86,6 +86,20 @@
 			<dist.bundle>true</dist.bundle>
 		</properties>
 	</dependency>	   
+	
+	<!-- leave the ag security lib inline for now, until things stabilize -->
+        	
+        	<dependency>
+        		<groupId>org.astrogrid</groupId>
+        		<artifactId>astrogrid-security</artifactId>
+        		<version>${astrogrid.security.version}</version>
+        		<type>jar</type>
+	 	<properties>
+ 			<jnlp.jar>true</jnlp.jar>
+ 			<dist.bundle>true</dist.bundle>
+ 		</properties>        		
+        	</dependency>
+        		
 
 <!-- cea server - jnlp extension -->
 	        <dependency>
@@ -267,7 +281,95 @@
 		    <dist.bundle>true</dist.bundle>
 	 </properties>	 	    
  </dependency>    
+<!-- security -->
+ <!-- Dependencies introduced by use of MyProxy. -->
+ <dependency>
+ 	<groupId>globus</groupId>
+ 	<artifactId>cog-jglobus</artifactId>
+ 	<version>1.2</version>
+ 	<type>jar</type>
+ 	<properties>
+		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		 <jnlp.extension.dir>/jnlp/security</jnlp.extension.dir>
+		 <jnlp.extension.jnlp>security.jnlp</jnlp.extension.jnlp> 	
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>
+ </dependency>
+ 
+ <dependency>
+ 	<groupId>globus</groupId>
+ 	<artifactId>cog-jgss</artifactId>
+ 	<version>1.2</version>
+ 	<type>jar</type>
+ 	<properties>
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>
+ </dependency>
 
+ <dependency>
+ 	<groupId>globus</groupId>
+ 	<artifactId>cog-puretls</artifactId>
+ 	<version>1.2</version>
+ 	<type>jar</type>
+ 	<properties>
+	    	<!-- add this aftrer the main javaapp process, as a work-around for package capitalization -->
+			<nww.bundle.later>true</nww.bundle.later>
+		    <uberjar.bundle>false</uberjar.bundle>		  	
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties> 	
+ </dependency>
+
+ <dependency>
+   <groupId>globus</groupId>
+   <artifactId>cog-cryptix</artifactId>
+   <version>1.2</version>
+   <type>jar</type>
+ 	<properties>
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>   
+ </dependency>
+       
+        	<dependency>
+        		<groupId>globus</groupId>
+        		<artifactId>cog-cryptix32</artifactId>
+        		<version>1.2</version>
+        		<type>jar</type>
+ 	<properties>
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>        		
+        	</dependency>
+        	
+        	<dependency>
+        		<groupId>globus</groupId>
+        		<artifactId>cog-cryptix-asn1</artifactId>
+        		<version>1.2</version>
+        		<type>jar</type>
+ 	<properties>
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>        		
+        	</dependency>
+        	
+        	<dependency>
+        		<groupId>bouncycastle</groupId>
+        		<artifactId>bcprov-jdk14</artifactId>
+        		<version>129</version>
+        		<type>jar</type>
+ 	<properties>
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>        		
+        	</dependency>
+
+        	<!-- dependencies for signatures -->
+        	<dependency>
+        		<groupId>wss4j</groupId>
+        		<artifactId>wss4j</artifactId>
+        		<version>1.0a</version>
+        		<type>jar</type>
+ 	<properties>
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>        		
+        	</dependency>
+ 
   <!-- JDIC components - a bit tricky, because of binary nature.. 
 -->
  <dependency>
