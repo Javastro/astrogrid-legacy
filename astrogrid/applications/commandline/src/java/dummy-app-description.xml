@@ -14,11 +14,25 @@
 		   The part before the first slash is the authority ID; the part after
 		   the first slash is the resource key. -->
 	<Application name="org.astrogrid.localhost/Dummy">
-		<ceab:Parameters/>
+		<ceab:Parameters>
+            <CmdLineParameterDefn name="P1" type="text" commandPosition="1" fileRef="false">
+                <agpd:UI_Name>First dummy parameter</agpd:UI_Name>
+                <agpd:UI_Description>This is an example of a parameter that the application expects to be passed by value</agpd:UI_Description>
+            </CmdLineParameterDefn>
+            <CmdLineParameterDefn name="P2" type="text" commandPosition="2" fileRef="true">
+                <agpd:UI_Name>Second dummy parameter</agpd:UI_Name>
+                <agpd:UI_Description>This is an example of a parameter that the application expects to be passed as a path to a file</agpd:UI_Description>
+            </CmdLineParameterDefn>
+        </ceab:Parameters>
 		<ceab:Interfaces>
+            <!-- One or more interfaces may be supplied -->
 			<ceab:Interface name="Dummy">
-				<ceab:input/>
-				<ceab:output/>
+				<ceab:input>
+					<ceab:pref ref="P1"/>
+				</ceab:input>
+				<ceab:output>
+					<ceab:pref ref="P2"/>
+				</ceab:output>
 			</ceab:Interface>
 		</ceab:Interfaces>
 		<ExecutionPath>/nix/nada/not/there</ExecutionPath>
