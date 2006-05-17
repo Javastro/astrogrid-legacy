@@ -57,6 +57,7 @@
 
 <!-- assume that if this module is loaded, we're running as workbench -->
 	<contribution configuration-id="system.uiStructure">
+		<tab name="apps" text="Applications" before="*" />
 		<action parentName="help" name="about" text="About AstroGrid Workbench.."
 			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
 			after="*" > 
@@ -110,7 +111,7 @@
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
 		<action parentName="apps" name="applicationLauncher" text="Launch" iconName="applaunch.png"
-			object="service:applicationLauncher" methodName="show" after="astroscope" before="aladin">
+			object="service:applicationLauncher" methodName="show" after="astroscope">
 			<tooltip><![CDATA[
 		<html>Launches a single task to be executed on the AstroGrid system.<br>
 	A task can be either a Query to a data centre or a noninteractive<br>
@@ -120,8 +121,8 @@
 	</contribution>	
 
 	<contribution configuration-id="system.uiStructure" if="not (property ui.parameterizedWorkflows.disabled)" >	
-		<action parentName="apps" name="parameterizedWorkflows" text="Canned Workflows" iconName="logo48x48.png"
-			object="service:parameterizedWorkflows" methodName="run" after="astroscope,applicationLauncher" before="aladin">
+		<action parentName="apps" name="parameterizedWorkflows" text="Parameterized Workflows" iconName="logo48x48.png"
+			object="service:parameterizedWorkflows" methodName="run" after="astroscope,applicationLauncher">
 			<tooltip><![CDATA[
 		<html>Direct access and editing of pre-canned workflows <br>
 			for commonly required astronomical tasks.			
@@ -131,7 +132,7 @@
 		
 		<contribution configuration-id="system.uiStructure" if="not (property ui.workflowBuilder.disabled)" >	
 		<action parentName="apps" name="workflowBuilder" text="Workflow" iconName="workflow.png"
-			after="parameterizedWorkflows" before="aladin"
+			after="parameterizedWorkflows" 
 			object="service:workflowBuilder" methodName="show" >
 			<tooltip><![CDATA[
 			<html>Interactive GUI workflow builder for sequencing tasks and queries to<br>
@@ -142,7 +143,7 @@
 
 	<contribution configuration-id="system.uiStructure" if="not (property ui.lookout.disabled)" >	
 		<action parentName="apps" name="lookout" text="Lookout" iconName="lookout.png"
-			after="astroscope,applicationLauncher,workflowBuilder" before="aladin"
+			after="astroscope,applicationLauncher,workflowBuilder" 
 			object="service:lookout" methodName="show" >
 			<tooltip><![CDATA[
 		<html>Monitor the progress of Tasks, Queries and Workflows submitted for<br>
@@ -153,7 +154,7 @@
 		
 		<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
 		<action parentName="apps" name="myspaceBrowser" text="Myspace" iconName="myspace.png"
-			object="service:myspaceBrowser" methodName="show" after="lookout" before="aladin">			
+			object="service:myspaceBrowser" methodName="show" after="lookout" >			
 			<tooltip><![CDATA[
 			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
 			queries and workflows in AstroGrid environment.
@@ -163,7 +164,7 @@
 	
 		<contribution configuration-id="system.uiStructure" if="not (property ui.registryBrowser.disabled)" >	
 		<action parentName="apps" name="registryBrowser" text="Resources" iconName="resource.png"
-			object="service:registryBrowser" methodName="show" after="myspaceBrowser" before="aladin">
+			object="service:registryBrowser" methodName="show" after="myspaceBrowser" >
 			<tooltip><![CDATA[
 			<html>Simple text-entry search for available <br>
 			services and archives in the VO registry.
@@ -221,7 +222,6 @@
 				<service>dialogs.resourceChooser</service>
 				<service>astrogrid.registry</service>
 				<service>astrogrid.stap</service>
-				<service>cds.sesame</service>
 				<service>plastic.hub</service>								
 				<event-listener service-id="builtin.shutdown" />																											
 			</construct>

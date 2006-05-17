@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.4 2006/04/21 13:48:11 nw Exp $
+/*$Id: DalProtocol.java,v 1.5 2006/05/17 15:45:17 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,15 +28,13 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  */
 public abstract class DalProtocol {
 
-    public DalProtocol(String name,UIComponent parent) {
+    public DalProtocol(String name) {
         super();
-        this.parent = parent;
         this.name = name;
         this.primaryNode = new DefaultTreeNode();
         this.checkBox = new JCheckBox(name);
         this.checkBox.setSelected(true);
     }
-    protected final UIComponent parent;
     private final String name;
     private final TreeNode primaryNode;
     private final JCheckBox checkBox;
@@ -81,34 +79,15 @@ public abstract class DalProtocol {
      */
     public abstract ResourceInformation[] listServices() throws Exception;
     
-    
-    /** create a retriever to query one service of this protocol
-     * 
-     * @param i the resource information describing this protocol
-     * @param ra right ascension search position
-     * @param dec declination of search position
-     * @param raSize ra size of search
-     * @param decSize dec size of search
-     * @return an initialized, unstarted retriever.
-     */
-    public abstract Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize);
-    
-    /** create a retriever to query one service of this protocol
-     * 
-     * @param i the resource information describing this protocol
-     * @param ra right ascension search position
-     * @param dec declination of search position
-     * @param raSize ra size of search
-     * @param decSize dec size of search
-     * @return an initialized, unstarted retriever.
-     */
-    public abstract Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format);    
-
+   
 }
 
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.5  2006/05/17 15:45:17  nw
+factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
+
 Revision 1.4  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

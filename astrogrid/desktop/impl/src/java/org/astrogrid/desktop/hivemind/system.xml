@@ -256,7 +256,7 @@ System module.
 		<menu name="edit" text="Edit" parentName="menubar" after="file" />
 		<menu name="help" text="Help" parentName="menubar" after="*" />
 		<menu name="projects" text="About Projects" parentName="help" before="about" />
-		<tab name="apps" text="Applications" before="*" />
+		<tab name="links" text="Links" after="*" />
 
 		
 		<action parentName="file" name="close" text="Close" 
@@ -286,7 +286,7 @@ System module.
 			object="service:browser" methodName="openURL" >
 			<parameter>http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</parameter>
 		</action>
-		<action parentName="apps" name="aladin" text="Aladin" iconName="aladin_48pix.png"
+		<action parentName="links" name="aladin" text="Aladin" iconName="aladin_48pix.png"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
 			<html><b>Aladin</b> is an interactive software sky atlas allowing the user to <br>
@@ -296,7 +296,7 @@ System module.
 			]]></tooltip>
 			<parameter>http://aladin.u-strasbg.fr/</parameter>
 		</action>		
-		<action parentName="apps" name="topcat" text="TopCat" iconName="tc3.gif"
+		<action parentName="links" name="topcat" text="TopCat" iconName="tc3.gif"
 			after="aladin"
 			object="service:browser" methodName="openURL" >
 			<tooltip><![CDATA[
@@ -307,7 +307,7 @@ System module.
 			]]></tooltip>
 			<parameter>http://www.starlink.ac.uk/topcat/</parameter>
 		</action>
-		<action parentName="apps" name="visivo" text="VisIVO" iconName="visivo.png"
+		<action parentName="links" name="visivo" text="VisIVO" iconName="visivo.png"
 			after="topcat"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
@@ -318,7 +318,7 @@ System module.
 			  ]]></tooltip>
 			<parameter>http://visivo.cineca.it/</parameter>
 		</action>
-		<action parentName="apps" name="voplot" text="VOPlot" iconName="voplot.png"
+		<action parentName="links" name="voplot" text="VOPlot" iconName="voplot.png"
 			after="visivo"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
@@ -329,7 +329,7 @@ System module.
 			  ]]></tooltip>
 			<parameter>http://vo.iucaa.ernet.in/~voi/voplot.htm</parameter>
 		</action>
-		<action parentName="apps" name="vospec" text="VOSpec" iconName="vospecLogo.png"
+		<action parentName="links" name="vospec" text="VOSpec" iconName="vospecLogo.png"
 			after="voplot"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
@@ -337,7 +337,7 @@ System module.
 			  ]]></tooltip>
 			<parameter>http://esavo.esa.int/vospecapp</parameter>
 		</action>				
-		<action parentName="apps" name="xmdv" text="xmdv-lite" 
+		<action parentName="links" name="xmdv" text="xmdv-lite" 
 			after="vospec" iconName="xmdv.png"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
@@ -348,7 +348,7 @@ System module.
 	</contribution>	
 	<!-- add a link to the workbench if we're not running in workbench mode. -->
 	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled) and ((property hub.mode) or (property acr.mode))">
-		<action parentName="apps" name="workbench" text="Workbench" iconName="logo48x48.png"
+		<action parentName="links" name="workbench" text="Workbench" iconName="logo48x48.png"
 			before="aladin" object="service:browser" methodName="openURL" >
 			<tooltip><![CDATA[
 			<html><b>AstroGrid Workbench</b> is a suite of programs for working with the AstroGrid system<br>

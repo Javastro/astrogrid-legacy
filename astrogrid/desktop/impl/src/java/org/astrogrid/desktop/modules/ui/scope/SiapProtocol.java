@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.4 2006/04/21 13:48:11 nw Exp $
+/*$Id: SiapProtocol.java,v 1.5 2006/05/17 15:45:17 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,13 +21,13 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
  *
  */
-public class SiapProtocol extends DalProtocol {
+public class SiapProtocol extends SpatialDalProtocol {
 
     /** Construct a new SiapProtocol
      * @param name
      */
-    public SiapProtocol(UIComponent parent,Registry reg,Siap siap) {
-        super("Images",parent);
+    public SiapProtocol(Registry reg,Siap siap) {
+        super("Images");
         this.reg =  reg;
         this.siap = siap;
     }
@@ -44,16 +44,10 @@ public class SiapProtocol extends DalProtocol {
     /**
      * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
      */
-    public Retriever createRetriever(ResourceInformation i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
+    public Retriever createRetriever(UIComponent parent,ResourceInformation i, double ra, double dec, double raSize, double decSize) {
         return new SiapRetrieval(parent,i,getPrimaryNode(),getVizModel(),siap,ra,dec,raSize,decSize);
     }
     
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
-     */
-    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
-        return createRetriever(i,start, end, ra,dec,raSize, decSize);
-    }
     
 
 }
@@ -61,6 +55,9 @@ public class SiapProtocol extends DalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.5  2006/05/17 15:45:17  nw
+factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
+
 Revision 1.4  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

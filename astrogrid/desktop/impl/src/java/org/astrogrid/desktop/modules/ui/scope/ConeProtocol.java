@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.6 2006/05/11 10:02:45 KevinBenson Exp $
+/*$Id: ConeProtocol.java,v 1.7 2006/05/17 15:45:17 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,13 +24,13 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
  *
  */
-public class ConeProtocol extends DalProtocol {
+public class ConeProtocol extends SpatialDalProtocol {
 
     /** Construct a new ConeProtocol
      * @param name
      */
-    public ConeProtocol(UIComponent parent,Registry reg, Cone cone) {
-        super("Catalogues",parent);
+    public ConeProtocol(Registry reg, Cone cone) {
+        super("Catalogues");
         this.reg = reg;
         this.cone = cone;
     }
@@ -41,37 +41,20 @@ public class ConeProtocol extends DalProtocol {
      * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#listServices()
      */
     public ResourceInformation[] listServices() throws Exception{
-        /* @todo quick hack to get round memory limitations of current registyr delegate & information parsers.
-        return reg.adqlSearchRI(cone.getRegistryQuery());
-        shold e able to get all this data in one go when I've written a stax client to the registry
-        */
+
         ResourceInformation[] cones = reg.adqlSearchRI("Select * from Registry where @xsi:type like '%ConeSearch'");
         List results = new ArrayList(Arrays.asList(cones));
-        // nnnhg. this is so hacky. I think I'd better take a shower after this.
-        /*
-        char[] c = new char[]{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-        for (int i = 0;i < c.length;i++) { 
-            ResourceInformation[] vizs = reg.adqlSearchRI("Select * from Registry where @xsi:type like '%TabularSkyService' and vr:identifier like 'ivo://CDS/%' and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN' " +
-                    " and vr:title like '" + c[i] + "%' ");
-            results.add(vizs);
-        }
-*/
         return (ResourceInformation[])results.toArray(new ResourceInformation[results.size()]);
     }
 
     /**
      * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
      */
-    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
+    public Retriever createRetriever(UIComponent parent,ResourceInformation i,double ra, double dec, double raSize, double decSize) {
         return new ConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
     }
     
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
-     */
-    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
-        return createRetriever(i,start, end, ra,dec,raSize, decSize);
-    }
+
     
 
 }
@@ -79,6 +62,9 @@ public class ConeProtocol extends DalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.7  2006/05/17 15:45:17  nw
+factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
+
 Revision 1.6  2006/05/11 10:02:45  KevinBenson
 added history to astro and helioscope.  Along with tweaks to alignment and borders
 And changing decimal places to 6 degrees.

@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.4 2006/04/21 13:48:11 nw Exp $
+/*$Id: StapProtocol.java,v 1.5 2006/05/17 15:45:17 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,13 +21,13 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  * @author Kevin Benson
  *
  */
-public class StapProtocol extends DalProtocol {
+public class StapProtocol extends TemporalDalProtocol {
 
     /** Construct a new StapProtocol
      * @param name
      */
-    public StapProtocol(UIComponent parent,Registry reg,Stap stap) {
-        super("Stap",parent);
+    public StapProtocol(     Registry reg,Stap stap) {
+        super("Stap");
         this.reg =  reg;
         this.stap = stap;
     }
@@ -41,19 +41,18 @@ public class StapProtocol extends DalProtocol {
         return reg.adqlSearchRI(stap.getRegistryQuery());
     } 
 
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
-     */
-    public Retriever createRetriever(ResourceInformation i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
-        return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end, ra,dec, raSize, decSize);
-    }
-    
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
-     */
-    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
-        return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end, ra,dec, raSize, decSize, format);
-    }
+
+
+	public Retriever createRetriever(UIComponent parent, ResourceInformation i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
+		return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize,format); 
+				 
+	}
+
+
+	public Retriever createRetriever(UIComponent parent, ResourceInformation i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
+		return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize); 
+				 
+	}
     
 
 }
@@ -61,6 +60,9 @@ public class StapProtocol extends DalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.5  2006/05/17 15:45:17  nw
+factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
+
 Revision 1.4  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

@@ -115,7 +115,7 @@
 	
 	<!-- assume that if this module is loaded, ACR is enabled -->
 	<contribution configuration-id="system.uiStructure">
-		<tab name="acr" text="ACR" after="*"  />	
+		<tab name="acr" text="AR"   />	
 	</contribution>
 	
 	<!-- add login and logout actions -->
@@ -131,7 +131,7 @@
 	</contribution>
 	
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled)">
-		<action text="ACR Help" name="acrHelp"  parentName="help" iconName="java_lib_obj.gif"
+		<action text="AR Help" name="acrHelp"  parentName="help" iconName="java_lib_obj.gif"
 			object="service:system.help" methodName="showHelpForTarget" after="contents">
 					<tooltip>Concepts,  lists available functions, gives examples of their use</tooltip>
 			<parameter>overview</parameter>
@@ -139,13 +139,13 @@
 	</contribution>	
 	
 	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">					
-		<action text="ACR for Java" name="acrJava" parentName="acr" after="*"
+		<action text="AR for Java" name="acrJava" parentName="acr" after="*"
 					iconName="source_java.png"
 					object="service:system.browser" methodName="openURL"	>			
 					<parameter>http://software.astrogrid.org/jnlp/astrogrid-desktop/acr-interface.tar.gz</parameter>
-					<tooltip>Download a zip of interfaces to call ACR from Java using JavaRMI</tooltip>
+					<tooltip>Download a zip of interfaces to call AR from Java using JavaRMI</tooltip>
 		</action>				
-		<action text="ACR for Python" name="acrPython" parentName="acr" before="acrJava"
+		<action text="AR for Python" name="acrPython" parentName="acr" before="acrJava"
 					iconName="source_py.png"
 					object="service:system.browser" methodName="openURL" >
 					<parameter>http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip</parameter>
@@ -156,11 +156,11 @@
 	</contribution>		
 	
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
-		<action parentName="acr" name="htmlACR" text="Open ACR / PLASTIC in Browser"
+		<action parentName="acr" name="htmlACR" text="Browser Interface"
 			iconName="overview48.gif"
 			object="service:system.browser" methodName="openRelative" before="*" >
 			<parameter></parameter> <!-- intentionally blank -->
-			<tooltip>Browse and execute ACR and PLASTIC functions in a webbrowser</tooltip>
+			<tooltip>Browse and execute AR and PLASTIC functions</tooltip>
 		</action>
 	</contribution>		
 	

@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.4 2006/04/21 13:48:11 nw Exp $
+/*$Id: SsapProtocol.java,v 1.5 2006/05/17 15:45:17 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,10 +17,10 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-public class SsapProtocol extends DalProtocol {
+public class SsapProtocol extends SpatialDalProtocol {
 
-    public SsapProtocol(UIComponent parent,Registry reg, Ssap ssap) {
-        super("Spectra",parent);
+    public SsapProtocol(Registry reg, Ssap ssap) {
+        super("Spectra");
         this.reg = reg;
         this.ssap = ssap;
     }
@@ -31,16 +31,10 @@ public class SsapProtocol extends DalProtocol {
         return reg.adqlSearchRI(ssap.getRegistryQuery());
     }
 
-    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
-        return new SsapRetrieval(parent,i,getPrimaryNode(),getVizModel(),ssap,ra,dec,raSize,decSize);
-    }
-    
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
-     */
-    public Retriever createRetriever(ResourceInformation i,Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
-        return createRetriever(i,start, end, ra,dec,raSize, decSize);
-    }
+	public Retriever createRetriever(UIComponent parent, ResourceInformation i, double ra, double dec, double raSize, double decSize) {
+	    return new SsapRetrieval(parent,i,getPrimaryNode(),getVizModel(),ssap,ra,dec,raSize,decSize);
+	    
+	}
     
 
 }
@@ -48,6 +42,9 @@ public class SsapProtocol extends DalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.5  2006/05/17 15:45:17  nw
+factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
+
 Revision 1.4  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

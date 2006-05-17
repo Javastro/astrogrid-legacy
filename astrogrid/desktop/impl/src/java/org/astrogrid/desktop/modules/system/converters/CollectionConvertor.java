@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.Converter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -59,7 +60,7 @@ public class CollectionConvertor implements Converter {
         }
         
         if (arg1.equals("")) return result;//empty List in this case
-        String[] tokenized = (arg1.toString()).split(",");
+        String[] tokenized = StringUtils.split(arg1.toString(),',');
         result.addAll(Arrays.asList(tokenized));
         return result;
     }
@@ -68,6 +69,9 @@ public class CollectionConvertor implements Converter {
 
 /* 
 $Log$
+Revision 1.3  2006/05/17 15:45:17  nw
+factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
+
 Revision 1.2  2006/04/18 23:25:46  nw
 merged asr development.
 

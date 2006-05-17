@@ -29,7 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.math.BigDecimal;
 
-import org.astrogrid.desktop.modules.ui.comp.PositionTextField;
+import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 
 /** base class for something that fetches a resource
  *   extensible for siap, cone, ssap, etc by implementing the abstract {@link #construct} method. This method should
@@ -77,39 +77,7 @@ public abstract class Retriever extends BackgroundWorker {
         this.model = model;
         this.primaryNode = primaryNode;
     }
-    
-    /**
-     * Method scaleValue
-     * Description: scales a value now using BigDecimal.
-     * @param doubleValue string version of a double to be used with the BigDecimal constructor.
-     * @param scale to how many decimal places to be scaled.
-     * @return string version of the value.
-     * @todo there is a chopValue down below that is exactly the same as this method, but overall should probably
-     * not even be in this class and should get removed to some other location.
-     */
-    public static String scaleValue(String doubleValue, int scale) {
-        return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
-        /*
-        int decIndex = doubleValue.indexOf('.');
-        int expIndex = doubleValue.indexOf('E');
-        System.out.println("the doublevalue = " + doubleValue + " with bigdeciaml = " + new BigDecimal(doubleValue).setScale(scale).toString());
-        //we use the scale during the substring process
-        //and to go to scale we need to increment by one character
-        //to include the "." decimal point.
-        scale++;           
-        if(decIndex != -1 && doubleValue.length() > (decIndex + scale)) {
-            if((decIndex + scale) <= (expIndex+1))
-                return doubleValue;
-            
-            String temp = doubleValue.substring(0,(decIndex + scale));
-            if((decIndex = doubleValue.indexOf('E')) != -1) {
-                temp += doubleValue.substring(decIndex);
-            }
-            return temp;
-        }
-        return doubleValue;
-        */
-    }
+
 
     
     /** return a string describing what kind of service this is */
@@ -286,8 +254,8 @@ public abstract class Retriever extends BackgroundWorker {
         StringBuffer tooltip = new StringBuffer();
         tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
         tooltip.append("<br>")
-        .append(PositionTextField.getRASexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))))
-        .append(",").append(PositionTextField.getDECSexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))));
+        .append(PositionUtils.getRASexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))))
+        .append(",").append(PositionUtils.getDECSexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))));
         for (int v = 0; v < row.length; v++) {
             Object o = row[v];
             if (o == null) {

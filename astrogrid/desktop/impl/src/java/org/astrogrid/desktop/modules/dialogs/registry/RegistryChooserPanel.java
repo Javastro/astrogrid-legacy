@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.31 2006/04/18 23:25:47 nw Exp $
+/*$Id: RegistryChooserPanel.java,v 1.32 2006/05/17 15:45:17 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -534,7 +534,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
        String sql = "Select * from Registry where ";
        String joinSQL = " or ";
        boolean shallFilter = filter != null && filter.trim().length() > 0;
-       String []keyword = keywords.split(" ");
+       String []keyword = StringUtils.split(keywords);
        if (keyword.length > 0 && shallFilter) {
            sql += "("; //NWW  - added paren here - makes it easier to glue on filter if needed. or can just query on filter if keywords == ""
        }
@@ -649,6 +649,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.32  2006/05/17 15:45:17  nw
+factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
+
 Revision 1.31  2006/04/18 23:25:47  nw
 merged asr development.
 
