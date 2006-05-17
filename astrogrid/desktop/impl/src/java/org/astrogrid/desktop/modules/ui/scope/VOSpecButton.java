@@ -1,4 +1,4 @@
-/*$Id: VOSpecButton.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: VOSpecButton.java,v 1.3 2006/05/17 23:58:49 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ import esavo.vospec.spectrum.Unit;
 import esavo.vospec.standalone.VoSpec;
 /**
  * node consumer that displays selected spectra in vospec.
-
+@todo replace with plastic buttn asap.
  some services aren't returning the right types - need to check type cast to double[][ in SsapRetrieval.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
  *
@@ -121,6 +121,9 @@ public class VOSpecButton extends NodeConsumerButton {
 
 /* 
 $Log: VOSpecButton.java,v $
+Revision 1.3  2006/05/17 23:58:49  nw
+improvements from jonathan and kevin's feedback.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 
