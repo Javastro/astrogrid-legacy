@@ -23,6 +23,7 @@ private PositionUtils() {
 	 * sesame.
 	 * @param pos a string position that MUST be in the format of "ra,dec"
 	 * @return the ra in a degrees unit.
+	 * @deprecated as uses getPosition
 	 */
 	public static double getRADegrees(String pos) {
 	    if(PositionUtils.hasFullRegion(pos))
@@ -34,7 +35,8 @@ private PositionUtils() {
 	gets the dec from a particular position string.  Performans any conversions if necessary, but does NOT do a object lookup via
 	 * sesame.
 	 * @param pos a string position that MUST be in the format of "ra,dec"
-	 * @return the dec in a degrees unit.
+	 * @return the dec in a degrees unit
+	 * @deprecated as uses getPosition.
 	 */
 	public static double getDECDegrees(String pos) {
 	    if(PositionUtils.hasFullRegion(pos))
@@ -47,6 +49,7 @@ private PositionUtils() {
 	 * sesame.
 	 * @param pos a string position that MUST be in the format of "ra,dec"
 	 * @return the dec in a sexagesimal unit degrees:mm:ss.
+	 * @deprecated as uses getPosition.	 * 
 	 */
 	public static String getDECSexagesimal(String pos) {
 	    if(PositionUtils.hasFullRegion(pos))
@@ -59,6 +62,7 @@ private PositionUtils() {
 	 * sesame.
 	 * @param pos a string position that MUST be in the format of "ra,dec"
 	 * @return the ra in a sexagesimal unit hh:mm:ss.
+	 * @deprecated as uses getPosition.	 * 
 	 */
 	public static String getRASexagesimal(String pos) {
 	    if(PositionUtils.hasFullRegion(pos))
@@ -66,11 +70,12 @@ private PositionUtils() {
 	    throw new NumberFormatException("No number");        
 	}
 	
-	
+	/** convert a single right-ascension from decimal degrees to sexagesimal */
 	public static String decimalRaToSexagesimal(double ra) {
 		return Coords.radiansToHms(Coords.degreesToRadians(ra),2);
 	}
 	
+	/** convert a single declination from decimal degres to sexagesimal */
 	public static String decimalDecToSexagesimal(double dec) {
 		return Coords.radiansToDms(Coords.degreesToRadians(dec),2);
 	}
@@ -86,20 +91,23 @@ private PositionUtils() {
 		return decimalToSexagesimal(Double.parseDouble(arr[0]),Double.parseDouble(arr[1]));
 	}
 	
+	/** convert a decimal degrees position to equivalent sexagesimal position */
 	public static String decimalToSexagesimal(double ra,double dec) {
 		return decimalRaToSexagesimal(ra) + "," 
 		+ decimalDecToSexagesimal(dec);
 	}
 	
-	
+	/** convert a sexagesimal right-ascension to decimal degrees */
 	public static double sexagesimalRaToDecimal(String sexaRa){
 		return Coords.radiansToDegrees(Coords.hmsToRadians(sexaRa));
 	}
 	
+	/** conveert a sexagesimal declination to decimal degrees */
 	public static double sexagesimalDecToDecimal(String sexaDec) {
 		return Coords.radiansToDegrees(Coords.dmsToRadians(sexaDec));		
 	}
 	
+	/** convert a sexagesimal position to a decimal degrees position */
 	public static Point2D sexagesimalToDecimal(String sexa) {
 		String[] arr = sexa.split(",");
 		return new java.awt.geom.Point2D.Double(
@@ -118,7 +126,9 @@ private PositionUtils() {
    * @param raPosition boolean to check if this is the "ra" part of the string. Makes a difference in conversions from
    * sexagesimal dealing with hms (hour-minuts-seconds) and dms (degrees-minutes-seconds) 
    * @return
-   * @todo rename
+   * @deprecated  am wary about this method - it does too much, depending what flags and values are passed into it.
+   * I much prefer methods that do one thing well - then the client can select what is intended to happen by calling specific method names,
+   * rather than relying on internal magic to 'do the right thing'
    */
   public static double getPosition(String pos, int unitType, boolean raPosition) {        
       if(pos.indexOf(':') != -1) {
@@ -146,6 +156,6 @@ private PositionUtils() {
 	    return (pos.indexOf(",") != -1);
 	}
 
-    private static final int DEGREES_TYPE = 1;    
-    private static final int RADIANS_TYPE = 2;
+    public static final int DEGREES_TYPE = 1;    
+    public static final int RADIANS_TYPE = 2;
 }

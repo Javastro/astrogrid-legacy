@@ -16,11 +16,12 @@ import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 
 /**
- * Class that has all the components needed for a Decimal Degreee Sexagesimal
+ * a Decimal Degreee / Sexagesimal
  * Toggle.
  * 
- * provides configured ui components - clients of this class need to access them
+ * provides configured ui components (adio buttons) - clients of this class need to access them
  * and add them into their own ui.
+ * 
  * 
  * @author Noel Winstanley
  * @since May 15, 20066:18:48 PM
@@ -28,19 +29,25 @@ import javax.swing.JRadioButtonMenuItem;
 public class DecSexToggle extends ButtonGroup implements ActionListener {
 
 	public DecSexToggle() {
-		sexaRadio = new JRadioButtonMenuItem("Sexagesimal");
+		sexaRadio = new JRadioButton("Sexagesimal");
 		sexaRadio.addActionListener(this);
-		degreesRadio = new JRadioButtonMenuItem("Degrees");
+		degreesRadio = new JRadioButton("Degrees");
 		degreesRadio.addActionListener(this);
 		add(degreesRadio);
 		add(sexaRadio);
 		setDegrees(true);
 	}
 
+	/** returns true if 'degress' is currently selected */
 	public boolean isDegrees() {
 		return isSelected(getDegreesRadio().getModel());
 	}
 
+	/** set radioGroup value.
+	 * Takes care of firing appropriate notifications to update ui.
+	 * 
+	 * @param isDegrees true for degrees, false for sexagesimal.
+	 */
 	public void setDegrees(boolean isDegrees) {
 		if (isDegrees) {
 			setSelected(degreesRadio.getModel(), true);
@@ -49,21 +56,24 @@ public class DecSexToggle extends ButtonGroup implements ActionListener {
 		}
 	}
 
-	private JRadioButtonMenuItem degreesRadio;
+	private JRadioButton degreesRadio;
 
-	private JRadioButtonMenuItem sexaRadio;
+	private JRadioButton sexaRadio;
 
-	public JRadioButtonMenuItem getDegreesRadio() {
+	/** access the radio button UI component for degrees */
+	public JRadioButton getDegreesRadio() {
 
 		return degreesRadio;
 	}
 
-	public JRadioButtonMenuItem getSexaRadio() {
+	/** access the radio bytton UI component for sexagesimal */
+	public JRadioButton getSexaRadio() {
 
 		return sexaRadio;
 	}
 
-	/** lifts button-clicking events to own listener interface */
+	/** used internall. 
+	 * lifts button-clicking events to own listener interface */
 	
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == degreesRadio) {
@@ -91,21 +101,26 @@ public class DecSexToggle extends ButtonGroup implements ActionListener {
 			((DecSexListener)i.next()).sexaSelected(e);
 		}	
 	}
-	/** listener interface */
+	/** listener interface. Implement and register to be notified when user sleects 'degrees' or 'sexagesimal' */
 	public static  interface DecSexListener extends EventListener {
-		/** called to notify degrees selected */
+		/** called to notify degrees selected
+		 * @param e event object whose source will be this DecSexToggle */
 		public void degreesSelected(EventObject e);
 
-		/** called to notify sexagesimal selected */
+		/** called to notify sexagesimal selected 
+		 * @param e event object whos source will be this dec sex toggle
+		 * */
 		public void sexaSelected(EventObject e);
 	}
 
 	private final Set listeners = new HashSet();
 
+	/** add a listener to the toggle */
 	public void addListener(DecSexListener l) {
 		listeners.add(l);
 	}
 
+	/** remove a listener */
 	public void removeListener(DecSexListener l) {
 		listeners.remove(l);
 	}

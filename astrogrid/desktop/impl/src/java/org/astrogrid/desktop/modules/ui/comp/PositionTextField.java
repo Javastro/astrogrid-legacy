@@ -19,19 +19,23 @@ import uk.ac.starlink.ttools.func.Coords;
 
 /**
  * UI filed that allows input of a point position
- * Description: Overrides TextField in dealing with positions in the sky and converting/finding positions in the sky.
-
+ * 
+ * 
+ * Register this class as a listener on a DecSexToggle for it to automatically adjust <b>input & display</b> 
+ * units between decimal degrees and sexagesimal. The internal model always maintains the value as decimal degrees.
+ * 
  */ 
 public class PositionTextField extends JFormattedTextField implements DecSexToggle.DecSexListener{
 
 
     
-    public class DecimalPositionFormatter extends AbstractFormatter {
+    protected class DecimalPositionFormatter extends AbstractFormatter {
 
     	private NumberFormat nfd = NumberFormat.getNumberInstance();
 		{
 			nfd.setGroupingUsed(false);
 			nfd.setMinimumFractionDigits(3);
+			nfd.setMaximumFractionDigits(6);			
 		}
 		public Object stringToValue(String arg0) throws ParseException {
 			String[] nums = arg0.split(",");
@@ -53,7 +57,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 		}
     }
     
-    public class SexagesimalPositionFormatter extends AbstractFormatter {
+    protected class SexagesimalPositionFormatter extends AbstractFormatter {
 
     	public Object stringToValue(String arg0) throws ParseException {
 			String[] nums = arg0.split(",");
@@ -76,16 +80,20 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
     }
     
     /**
-     * Method: PositionTextField constructor
-     * Description: 
-     *
+	Construct a new position text field, intiialized to 0.0,0.0
      */
     public PositionTextField() {
+    	this(new Point2D.Double(0,0));
+    }
+    
+    /** construct a new position text field
+     * 
+     * @param p value to initialize to (decimal degrees)
+     */
+    public PositionTextField(Point2D p) {
         super();
         degreesSelected(null);
-        Point2D p = new Point2D.Double(0,0);
         setFormatterFactory(new AbstractFormatterFactory() {
-
 			public AbstractFormatter getFormatter(JFormattedTextField tf) {
 				return isDecimal ? decimal : sexa;
 			}
@@ -98,15 +106,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
     protected AbstractFormatter decimal = new DecimalPositionFormatter();
     protected AbstractFormatter sexa = new SexagesimalPositionFormatter();
     
-    /**
-     * Method: PositionTextField constructor
-     * Description: 
-     * @param text initialize the text field with this string.
-     */    
-    public PositionTextField(String text) {
-        this();
-        setText(text);
-    }
+
     
 
     /** return a copy of the position this field currently points at
@@ -118,157 +118,42 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
     	return (Point2D)((Point2D)getValue()).clone();
     }
     
-    
+    /** set the internal model (decimal degrees)
+     * 
+     * @param ra right ascension
+     * @param dec declination
+     */
     public void setPosition(double ra,double dec) {
     	setValue(new Point2D.Double(ra,dec));
     }
     
+    /** set the internal model (decimal degrees) */
     public void setPosition(Point2D pos) {
     	setValue(pos);
     }
+    /** set the internal model (decimal degrees)
+     * 
+     * @param s string in format width,height - where both width and heigt are in decimal degrees
+     * @throws ParseException if string cannot be parsed
+     */
     public void setPosition(String s) throws ParseException {
     	setValue(getFormatter().stringToValue(s));
     }
-    
-//    /**
-//     * Method: getPositionDegrees
-//     * Description: Returns a "ra,dec" type string in degrees format, it will convert and/or find objects if 
-//     * necessary.
-//     * @return a string in a "ra,dec" format in the unit of degrees.
-//     */
-//    private String getPositionDegrees() {
-//        String pos = getText().trim();
-//        if(hasFullRegion()) {        
-//            return getPosition(pos.split(",")[0],DEGREES_TYPE,true) + "," + getPosition(pos.split(",")[1],DEGREES_TYPE,false);
-//        }else {
-//            if(ses != null) {
-//                pos = getPositionFromObject();
-//                if(PositionUtils.hasFullRegion(pos))
-//                    return getPosition(pos.split(",")[0],DEGREES_TYPE,true) + "," + getPosition(pos.split(",")[1],DEGREES_TYPE,false);
-//            }
-//        }
-//        return null;
-//        //throw new IllegalArgumentException("Could not obtain position string with given input");
-//    }
-//   
-//    
-//    /**
-//     * Method: getPositionSexagesimal
-//     * Description: Returns a "ra,dec" type string in sexagesimal format, it will convert and/or find objects if 
-//     * necessary.
-//     * @return a string in a "ra,dec" format in the unit of sexagesimal.
-//     */
-//    private String getPositionSexagesimal() {
-//        String pos = getText().trim();
-//        if(hasFullRegion()) {        
-//            return Coords.radiansToHms(getPosition(pos.split(",")[0],RADIANS_TYPE,true),2) + "," + Coords.radiansToDms(getPosition(pos.split(",")[1],RADIANS_TYPE,false),2);
-//        }else {
-//            if(ses != null) {
-//                pos = getPositionFromObject();
-//                if(PositionUtils.hasFullRegion(pos))
-//                    return Coords.radiansToHms(getPosition(pos.split(",")[0],RADIANS_TYPE,true),2) + "," + Coords.radiansToDms(getPosition(pos.split(",")[1],RADIANS_TYPE,false),2);
-//            }
-//        }
-//        return null;
-//        //throw new IllegalArgumentException("Could not obtain position string with given input");
-//    }
-//    
-//    
-//    /**
-//     * Method: hasFullRegion
-//     * Description: Checks to make sure there is a "ra,dec" text string in that EXACT string format does not matter on the units.
-//     * @return true/false if in that format of "ra,dec"
-//     */
-//    private boolean hasFullRegion() {
-//        return PositionUtils.hasFullRegion(getText());
-//    }
-//    
-//    /**
-//     * Method: getRA()
-//     * Description: get the current RA in the text box or find the object and return the RA in degrees unit.
-//     * Advise to use getRA(getPosition??()) instead of this method, if you will also call getDEC and there
-//     * is a object name to be looked up.
-//     * @return
-//     */
-//    public double getRADegrees() {
-//        String pos = getText().trim();
-//        if(hasFullRegion()) {
-//            return getPosition(pos.split(",")[0],DEGREES_TYPE,true);
-//        }
-//            pos = getPositionFromObject();
-//            return getPosition(pos.split(",")[0],DEGREES_TYPE,true);
-//    }
-//    
-//    /**
-//     * Method: getDECDegrees()
-//     * Description: get the current RA in the text box or find the object and return the RA in degrees unit.
-//     * Advise to use getDEC(getPosition(int unitType)) instead of this method, if you will also call getRA and there
-//     * is a object name or you need converting.
-//     * @return
-//     */    
-//    public double getDECDegrees() {
-//        String pos = getText().trim();
-//        if(hasFullRegion()) {
-//            return getPosition(pos.split(",")[1],DEGREES_TYPE,false);
-//        }
-//            pos = getPositionFromObject();
-//            return getPosition(pos.split(",")[1],DEGREES_TYPE,false);
-//
-//    }
-//    
-//    
-//    
-//    /**
-//     * Method: getRA()
-//     * Description: get the current RA in the text box or find the object and return the RA in sexagesimal hh:mm:ss unit.
-//     * Advise to use getRASexagesimal(getPosition??()) instead of this method, if you will also call getDEC and there
-//     * is a object name to be looked up.
-//     * @return
-//     */
-//    private String getRASexagesimal() {
-//        String pos = getText().trim();
-//        if(hasFullRegion()) {
-//            return Coords.radiansToHms(getPosition(pos.split(",")[0],RADIANS_TYPE,true),2);
-//        }
-//            pos = getPositionFromObject();
-//            return Coords.radiansToHms(getPosition(pos.split(",")[0],RADIANS_TYPE,true),2);
-//
-//    }
-//    
-//    /**
-//     * Method: isSexagesimal
-//     * Description: check if this seems to be in a sexagesimal format, currently just does it by checking if there is a ':' character.
-//     * @return
-//     */
-//    private boolean isSexagesimal() {
-//        return (getText().trim().indexOf(":") != -1);
-//    }
-//    
-//    /**
-//     * Method: getDECSexagesimal()
-//     * Description: get the current dec in the text box or find the object and return the dec in sexagesimal unit degrees:mm:ss.
-//     * Advise to use getDEC(getPosition??) instead of this method, if you will also call getRA and there
-//     * is a object name or you need converting.
-//     * @return
-//     */    
-//    private String getDECSexagesimal() {
-//        String pos = getText().trim();
-//        if(hasFullRegion()) {
-//            return Coords.radiansToDms(getPosition(pos.split(",")[1],RADIANS_TYPE,false),2);
-//        }
-//            pos = getPositionFromObject();
-//            return Coords.radiansToDms(getPosition(pos.split(",")[1],RADIANS_TYPE,false),2);
-//    }        
-//    
-//    
-//        
-//    
-
+   
+    /** listener interface to a DecSexToggle 
+	 * 
+	 * call to set display to degrees
+	 * @param e ignored
+	 * */
 	public void degreesSelected(EventObject e) {
 		isDecimal = true;
 		setValue(getValue()); // forces display to update.
 	}
-
+	/** part of the listener interface to a DecSexToggle 
+	 * 
+	 * call to set display to sexagesimal
+	 * @param e ignored
+	 * */
 	public void sexaSelected(EventObject e) {
 		isDecimal = false;
 		setValue(getValue()); // forces display to update

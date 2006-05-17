@@ -13,15 +13,27 @@ import javax.swing.JFormattedTextField;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 
-/** UI field that allows input of a dimension. May either be 1-D or 2-D
+/** UI field that allows input of a dimension.
+ * 
+ * Input may either be 1-D, or 2-D.
+ * In case of 1-D, the dimension object returned has same value for width and height.
+ * 
+ * Register this class as a listener on a DecSexToggle for it to automatically adjust <b>input & display</b> 
+ * units between decimal degrees and sexagesimal. The internal model always maintains the value as decimal degrees.
+ * 
  * @author Noel Winstanley
  * @since May 16, 20068:41:44 AM
  */
 public class DimensionTextField extends JFormattedTextField implements DecSexListener {
 	
+	/** construct a dimension field, whose value is initialized to 0.1,0.1 */ 
 	public DimensionTextField() {
+		this(new DoubleDimension(0.1,Double.NaN));
+	}
+	
+	/** construct a dimension field, providing a starting value */
+	public DimensionTextField(DoubleDimension dim) {
 		super();
-		DoubleDimension dim = new DoubleDimension(0.1,Double.NaN);
 		setFormatterFactory(new AbstractFormatterFactory() {
 			public AbstractFormatter getFormatter(JFormattedTextField tf) {
 				return isDecimal ? decimal : sexa;
@@ -31,15 +43,16 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	}
 	
 	private boolean isDecimal = true;
-	private final AbstractFormatter decimal = new DecimalDimensionFormatter();
-	private final AbstractFormatter sexa = new SexagesimalDimensionFormatter();
+	protected final AbstractFormatter decimal = new DecimalDimensionFormatter();
+	protected final AbstractFormatter sexa = new SexagesimalDimensionFormatter();
 
-	private class DecimalDimensionFormatter extends AbstractFormatter {
+	protected class DecimalDimensionFormatter extends AbstractFormatter {
 
 		private NumberFormat nfd = NumberFormat.getNumberInstance();
 		{
 			nfd.setGroupingUsed(false);
 			nfd.setMinimumFractionDigits(3);
+			nfd.setMaximumFractionDigits(6);
 		}
 		public Object stringToValue(String arg0) throws ParseException {
 			String[] nums = StringUtils.split(arg0,',');
@@ -62,7 +75,7 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 		}
 	}
 	
-	private class SexagesimalDimensionFormatter extends AbstractFormatter {
+	protected class SexagesimalDimensionFormatter extends AbstractFormatter {
 
 		public Object stringToValue(String arg0) throws ParseException {
 			String[] nums = StringUtils.split(arg0,',');
@@ -100,23 +113,44 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 		}
 		return d;
 	}
+	/** set the internal model (decimal degrees) - same value for width and height */
 	public void setDimension(double single) {
-		setDimension(single,single);
+		setDimension(single,Double.NaN);
 	}
 	
+	/** set the internal model (decimal degrees) */
 	public void setDimension(double x,double y) {
 		setValue(new DoubleDimension(x,y));
 	}
 	
+	/** set the internal model (decimal degrees) */
+	public void setDimension(Dimension2D dim) {
+		setValue(new DoubleDimension(dim.getWidth(),dim.getHeight()));
+	}
+	
+	/** set the internal model (decimal degrees)
+	 * 
+	 * @param s string in format width,height  - where both width and height are decimal degrees.
+	 * @throws ParseException if string cannot be parsed
+	 */
 	public void setDimension(String s) throws ParseException {
 		setValue(getFormatter().stringToValue(s));
 	}
-	
+	/** listener interface to a DecSexToggle 
+	 * 
+	 * call to set display to degrees
+	 * @param e ignored
+	 * */
 	public void degreesSelected(EventObject e) {
 		isDecimal= true;
 		setValue(getValue()); //forces display to update
 	}
 
+	/** part of the listener interface to a DecSexToggle 
+	 * 
+	 * call to set display to sexagesimal
+	 * @param e ignored
+	 * */
 	public void sexaSelected(EventObject e) {
 		isDecimal= false;
 		setValue(getValue()); // forces display to update.
