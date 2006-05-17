@@ -13,7 +13,13 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2.2-beta-3" date="2006-05-14">
+<release version="2.2-beta-3" date="2006-05-18">
+	<action dev="nw" type="add">
+		Added menubar to astroscope and helioscope
+	</action>
+	<action dev="nw" type="fix">
+		Improved handing of name resolving in astroscope
+	</action>
 	<action dev="nw" type="update">
 		Updated icons for vospec and aladin
 	</action>
