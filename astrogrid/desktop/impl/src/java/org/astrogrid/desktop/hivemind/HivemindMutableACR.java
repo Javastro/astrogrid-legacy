@@ -1,4 +1,4 @@
-/*$Id: HivemindMutableACR.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: HivemindMutableACR.java,v 1.3 2006/05/17 23:57:46 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,11 @@ import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 
-/** MutableACR implemenration for hivemind system */
+/** MutableACR implementation for hivemind system
+ * 
+ *  provides access to AR modules by interfacing to hivemind.
+ *  
+ *  */
 public class HivemindMutableACR implements ACRInternal {
     /**
      * Logger for this class
@@ -170,6 +174,9 @@ public class HivemindMutableACR implements ACRInternal {
 
 /* 
 $Log: HivemindMutableACR.java,v $
+Revision 1.3  2006/05/17 23:57:46  nw
+documentation improvements.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

@@ -8,7 +8,7 @@ import org.apache.hivemind.Location;
 import org.apache.hivemind.internal.Module;
 import org.apache.hivemind.service.ObjectProvider;
 
-/**implementation of hte 'missing' object provider.
+/**implementation of hte 'missing' object provider. - used to provide constants within hivemind.
  * @author Noel Winstanley
  * @since Apr 13, 200612:43:25 PM
  */

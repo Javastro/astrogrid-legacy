@@ -4,7 +4,7 @@
 package org.astrogrid.desktop.modules.system.contributions;
 
 
-/**
+/** Contribiution bean for new helpsets.
  * @author Noel Winstanley
  * @since Apr 25, 200612:38:54 PM
  */

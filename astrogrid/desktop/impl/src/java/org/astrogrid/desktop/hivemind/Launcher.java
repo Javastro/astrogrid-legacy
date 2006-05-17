@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.4 2006/04/21 13:48:11 nw Exp $
+/*$Id: Launcher.java,v 1.5 2006/05/17 23:57:46 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- *Basic Launcher - assembles and starts some version of the acr.
+ *Assembles and starts some flavour of AR. Used by the main classes in {@link org.astrogrid}
  *
  *starts with the pre-requisite modules preloaded.
  *clients of this class should call {@link #addModuleURL(URL)}
@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
  *<p>
  *order of adding resources doesn't matter
  *</p>
- *If using system requiredSystemProperties to configure the assembled system, these should be 
+ *If using system properties to configure the assembled system, these should be 
  *loaded before calling <tt>run()</tt>
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2006
@@ -162,6 +162,9 @@ public final class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.5  2006/05/17 23:57:46  nw
+documentation improvements.
+
 Revision 1.4  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

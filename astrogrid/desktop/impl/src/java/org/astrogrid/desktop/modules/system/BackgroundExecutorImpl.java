@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.5 2006/05/17 23:57:46 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,9 @@ import EDU.oswego.cs.dl.util.concurrent.Channel;
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 import EDU.oswego.cs.dl.util.concurrent.SynchronousChannel;
 
-/**
+/** Implementation of the background executor. 
+ * Provides a thread pool (configurable with keys) that processes new background tasks. Appears to be much faster - UI more responsive - than
+ * creating a new background thread for each task.
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Nov-2005
  */
 public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownListener{
@@ -212,6 +214,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.5  2006/05/17 23:57:46  nw
+documentation improvements.
+
 Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 

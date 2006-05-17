@@ -1,4 +1,4 @@
-/*$Id: ResolvingDescriptorParser.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: ResolvingDescriptorParser.java,v 1.3 2006/05/17 23:57:46 nw Exp $
  * Created on 24-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,10 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
-/** extension of the standard hivemind descriptor parser that knows how to resolve external entities in xml - especially thos with the 'classpath:' protocol*/
+/** extension of the standard hivemind descriptor parser that knows how to resolve external entities in xml - especially thos with the 'classpath:' protocol
+ * 
+ * used to allow my hivemind descrptors to include other xml files.
+ * */
 class ResolvingDescriptorParser extends DefaultHandler {
     public void begin(String arg0, Map arg1) {
         this.p.begin(arg0, arg1);
@@ -122,6 +125,9 @@ class ResolvingDescriptorParser extends DefaultHandler {
 
 /* 
 $Log: ResolvingDescriptorParser.java,v $
+Revision 1.3  2006/05/17 23:57:46  nw
+documentation improvements.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

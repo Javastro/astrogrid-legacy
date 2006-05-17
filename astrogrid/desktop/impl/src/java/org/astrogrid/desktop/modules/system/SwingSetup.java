@@ -1,4 +1,4 @@
-/*$Id: SwingSetup.java,v 1.3 2006/04/21 13:48:11 nw Exp $
+/*$Id: SwingSetup.java,v 1.4 2006/05/17 23:57:46 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * simple class that does some global configuration of swing.
+ * @todo add more per-platform setup - e.g. set lookandfeel depending on platform.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
  *
  */
@@ -57,6 +58,9 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
 
 /* 
 $Log: SwingSetup.java,v $
+Revision 1.4  2006/05/17 23:57:46  nw
+documentation improvements.
+
 Revision 1.3  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

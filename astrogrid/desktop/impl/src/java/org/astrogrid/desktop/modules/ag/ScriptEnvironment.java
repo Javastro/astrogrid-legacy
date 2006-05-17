@@ -15,6 +15,7 @@ import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.store.Ivorn;
 
 /** Interface to astrogird scripting environment objects
+ * @todo move to separate subpackage, or refactor away.
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Dec-2004
  *
  */

@@ -19,7 +19,8 @@ import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 
-/** Control system browser using BrowserLauncher library;
+/** Control system browser using BrowserLauncher library.
+ * Fallback for when not using webstart.
  * @author Noel Winstanley
  * @since Apr 25, 200610:54:20 AM
  */

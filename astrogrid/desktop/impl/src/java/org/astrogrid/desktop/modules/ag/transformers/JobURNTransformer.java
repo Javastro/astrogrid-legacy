@@ -6,7 +6,7 @@ package org.astrogrid.desktop.modules.ag.transformers;
 import org.apache.commons.collections.Transformer;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
-/**
+/** transform jobURN to string.
  * @author Noel Winstanley
  * @since Apr 18, 20066:46:25 PM
  */

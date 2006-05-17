@@ -9,7 +9,7 @@ import org.astrogrid.store.Ivorn;
  * root VOSpace of  a user registered at an IVO community. This is a trivial 
  * extension of the base Ivorn class that indicates the usage of the IVORN. 
  * It is useful when IVORNs are stored inside JAAS Subjects.
- *
+ *@todo move to separate subproject
  * @author Guy Rixon
  */
 public class HomeIvorn extends Ivorn implements Principal {

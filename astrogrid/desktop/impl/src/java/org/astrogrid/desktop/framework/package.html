@@ -1,15 +1,9 @@
 <html>
 <body>
-<h1>Framework of the ACR</h1>
+<h1>Interfaces to AR Framework</h1>
 
-The Astrogird Client Runtime is assembled from a set of distinct modules, described by xml <tt>module.xml</tt> files. This package defines the 
-core framework of the runtime, that handles the reading, assembly and instanitation of these modules.
-<p/>
+The Astrogird Client Runtime is assembled from a set of distinct modules, described by hivemind xml files. This package defines the 
+core frameworkinterfaces  of the runtime. The implementation is now in the <tt>hivemind</tt> package.
 
-Each module is represented by an instance of the {@link Module} class - probably the default implementation {@lnk DefaultModule}.
-Module instances are managed in a {@link ModuleRegistry} - again, probably implemented by {@link DefaultMOduleRegistry}.
-
-The registry is populated on startup by {@link Bootloader} which contains a list of module.xml files to parse. In future, this will be extensible, but at the moment 
-it is hard-coded.
 </body>
 </html>

@@ -1,4 +1,4 @@
-/*$Id: UIMenuContribution.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: UIMenuContribution.java,v 1.3 2006/05/17 23:57:46 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import javax.swing.JMenu;
 
 import org.astrogrid.desktop.icons.IconHelper;
 
-/** bean modelling description of user interface structure */
+/** bean modelling a menu in the user interface.*/
 public class UIMenuContribution extends JMenu implements UIStructureContribution {
 
     public UIMenuContribution() {
@@ -68,6 +68,9 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
 
 /* 
 $Log: UIMenuContribution.java,v $
+Revision 1.3  2006/05/17 23:57:46  nw
+documentation improvements.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

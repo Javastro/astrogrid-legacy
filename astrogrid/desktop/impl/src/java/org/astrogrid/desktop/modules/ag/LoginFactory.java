@@ -8,7 +8,7 @@ import org.astrogrid.registry.RegistryException;
 
 /** Class that constructs a scripting environment, from results of logging in.
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Dec-2004
- *
+ *@todo move to separate subproject.
  */
 public class LoginFactory {
   

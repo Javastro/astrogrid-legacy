@@ -1,4 +1,4 @@
-/*$Id: WorkflowDetailsDialog.java,v 1.6 2006/04/18 23:25:44 nw Exp $
+/*$Id: WorkflowDetailsDialog.java,v 1.7 2006/05/17 23:57:45 nw Exp $
  * Created on 29-5-05
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import org.astrogrid.desktop.modules.ui.SpringLayoutHelper;
+import org.astrogrid.desktop.modules.ui.comp.SpringLayoutHelper;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 

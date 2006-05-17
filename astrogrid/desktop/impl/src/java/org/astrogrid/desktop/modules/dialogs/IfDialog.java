@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import org.astrogrid.desktop.modules.ui.SpringLayoutHelper;
+import org.astrogrid.desktop.modules.ui.comp.SpringLayoutHelper;
 import org.astrogrid.workflow.beans.v1.If;
 
 /**

@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.1 2006/04/21 13:48:12 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.2 2006/05/17 23:57:45 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.astrogrid.store.Ivorn;
  * Dialog for logging in to an Astrogrid community.
  * can be used on its own to acquire a logged-in 
  * {@link org.astrogrid.store.tree.TreeClient}.
- *
+ *@todo move to dialogues module.
  * @author   Mark Taylor (Starlink)
  * @since    25 Nov 2004
  * @modified Noel Winstanley - copied across.
@@ -210,6 +210,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.2  2006/05/17 23:57:45  nw
+documentation improvements.
+
 Revision 1.1  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

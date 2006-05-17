@@ -1,4 +1,4 @@
-/*$Id: ScheduledTask.java,v 1.1 2005/11/10 12:05:53 nw Exp $
+/*$Id: ScheduledTask.java,v 1.2 2006/05/17 23:57:46 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop.modules.system;
 
 /** interface to a schedulable task.
- * any instances of this interfae will be automagically registered with the scheduler on startup.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Nov-2005
  *
  */
@@ -23,6 +22,9 @@ public interface ScheduledTask extends Runnable {
 
 /* 
 $Log: ScheduledTask.java,v $
+Revision 1.2  2006/05/17 23:57:46  nw
+documentation improvements.
+
 Revision 1.1  2005/11/10 12:05:53  nw
 big change around for vo lookout
  
