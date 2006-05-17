@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.13 2006/05/17 15:45:17 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.14 2006/05/17 23:59:36 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,54 +10,23 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
-import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.Stap;
-import org.astrogrid.acr.astrogrid.StapInformation;
-import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.HelioScope;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -65,40 +34,15 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
-import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
-import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
 import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.VizModel;
-import org.astrogrid.desktop.modules.ui.scope.Vizualization;
-import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
-import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
 import org.freixas.jcalendar.JCalendarCombo;
-import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
-import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.MessageHandler;
-import org.votech.plastic.incoming.handlers.StandardHandler;
-
-import com.l2fprod.common.swing.JButtonBar;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.event.FocusListener;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 
-/** Implementation of the HelioScope launcher
- * 
- * @todo tidy up scrappy get position code - in particular, report errors from simbad correctly - at moment,
- * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
- * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
+/** Implementation of HelioScope
  */
 public class HelioScopeLauncherImpl extends AbstractScope  
     implements HelioScope{
@@ -129,17 +73,15 @@ public class HelioScopeLauncherImpl extends AbstractScope
         		new StapProtocol(reg,stap)
         });
 
-
-
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
-        setIconImage(IconHelper.loadIcon("search.gif").getImage());
+        setIconImage(IconHelper.loadIcon("helioscope.png").getImage());
     }
     
     protected String getScopeDescription() {
-    	return null;
+    	return "Search and visualise matches in all available solar archives by offset from user defined start and end times";
     }
     protected String getScopeIconURL() {
-    	return null;
+    	return "http://software.astrogrid.org/icons/helioscope.png";
     }
     protected String getScopeName() {
     	return "Helioscope";
@@ -148,6 +90,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
     	return "ivo://org.astrogrid/helioscope";
     }
     
+    /** create a menu item that can populate input fields from a string */
 	protected JMenuItem createHistoryMenuItem(String historyItem) {
 		final String[] times = historyItem.split("_");
 		JMenuItem m = new JMenuItem(times[0] + " to " + times[1]);
@@ -160,6 +103,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
 		return m;
 	}
 
+	/** convert input fields into a string */
 	protected String grabHistoryItem() {
 		return startCal.getSelectedItem() + "_" + endCal.getSelectedItem();
 	}
@@ -245,13 +189,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
      *
      */
     protected void query() {
-        logger.debug("query() - inside query method)");
-        (new BackgroundOperation("Checking Position") {
-            protected Object construct() throws Exception {
-                return null;//getPosition();
-            }
-            protected void doFinished(Object o) {
-                //String position = (String)o;
+    	
                 final Calendar startStapCal = startCal.getCalendar();
                 final Calendar endStapCal = endCal.getCalendar();
                 
@@ -259,7 +197,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
                     showError("Your Start date/time must be before the end date/time");
                     return;
                 }
-                
+                super.storeHistoryItem();
                 if(!formatTimeSeriesCheck.isSelected() && !formatGraphicCheck.isSelected()) {
                     showError("You much have Time Series and/or Graphics checked when doing a search");
                     return;
@@ -267,7 +205,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
                     
                 //setStatusMessage(position);
                 clearTree();
-                reFocusTopButton.setEnabled(true);
+                topAction.setEnabled(true);
                 
                 //  @todo refactor this string-munging methods.
 
@@ -316,8 +254,6 @@ public class HelioScopeLauncherImpl extends AbstractScope
   //                  }
                 }
 
-            }
-        }).start();
     }
 
 
@@ -326,6 +262,9 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.14  2006/05/17 23:59:36  nw
+documentaiton, and tweaks, from feedback by jonathan and kevin.
+
 Revision 1.13  2006/05/17 15:45:17  nw
 factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
 

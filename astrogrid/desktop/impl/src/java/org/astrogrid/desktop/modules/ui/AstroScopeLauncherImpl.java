@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.44 2006/05/17 15:45:17 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.45 2006/05/17 23:59:36 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Dimension2D;
@@ -20,18 +23,14 @@ import java.text.ParseException;
 import java.util.EventObject;
 import java.util.Iterator;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.cds.Sesame;
@@ -48,9 +47,9 @@ import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.DimensionTextField;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
-import org.astrogrid.desktop.modules.ui.comp.PositionTextField;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
+import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
@@ -66,10 +65,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /**AstroScope Implementation.
  * 
- * @todo tidy up scrappy get position code - in particular, report errors from simbad correctly - at moment,
- * if simbad service is down, user is told 'you must enter a name known to simbad' - which is very misleading.
  * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
- * @todo again a position stuff with scaling doing a lot of converting string to double that could get rid of later.
  */
 public class AstroScopeLauncherImpl extends AbstractScope 
     implements AstroScope, DecSexListener {
@@ -107,7 +103,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
         this.ses = ses;
         dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));       
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
-        setIconImage(IconHelper.loadIcon("search.gif").getImage());
+        setIconImage(IconHelper.loadIcon("astroscope.png").getImage());
     }
     protected String getScopeName() {
     	return "Astroscope";
@@ -117,13 +113,11 @@ public class AstroScopeLauncherImpl extends AbstractScope
     }
     
     protected String getScopeDescription() {
-    	//@todo
-    	return null;
+    	return "Search and visualise matches in all available image, catalogue and  spectral archives by offset from user defined sky position and radius.";
     }
     
     protected String getScopeIconURL() {
-    	//@todo
-    	return null;
+    	return "http://software.astrogrid.org/icons/astroscope.png";
     }
     
 
@@ -136,7 +130,12 @@ public class AstroScopeLauncherImpl extends AbstractScope
 		return new HistoryMenuItem(hist[0],hist[1]);
 	}
 	
-	
+	/** implementation of an item in the history menu.
+	 * 
+	 * each listens to decSexToggle - to change representation from one system to other.
+	 * @author Noel Winstanley
+	 * @since May 17, 20067:34:18 PM
+	 */
 	private class HistoryMenuItem extends JMenuItem
 		implements ActionListener, DecSexListener{
 		public HistoryMenuItem(String pos,String size) {
@@ -164,7 +163,22 @@ public class AstroScopeLauncherImpl extends AbstractScope
 		}
 
 		public void degreesSelected(EventObject ignored) {
-			setText("position: " + pos + " radius: " + size);
+			try {
+			String[] posArr = pos.split(",");
+			String[] sizeArr = size.split(",");
+			StringBuffer sb = new StringBuffer("position: ") 
+					.append(nf.format(Double.parseDouble(posArr[0])))
+					.append(',')
+					.append(nf.format(Double.parseDouble(posArr[1])))
+					.append(" radius: ") 
+					.append(nf.format(Double.parseDouble(sizeArr[0])))
+					.append(',')
+					.append(nf.format(Double.parseDouble(sizeArr[1])))
+					;
+			setText(sb.toString());
+			} catch (NumberFormatException e) {
+				// don't care too much.
+			}
 		}
 
 		public void sexaSelected(EventObject ignored) {
@@ -192,7 +206,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
 					
 		}
 	
-	
+	/** coverts contents of text fields to a history string */
 	protected String grabHistoryItem() {
 		Point2D pos = posText.getPosition();
 		Dimension2D dim = regionText.getDimension();
@@ -202,13 +216,13 @@ public class AstroScopeLauncherImpl extends AbstractScope
 		return pos.getX()+ "," + pos.getY() +  "_" + dim.getWidth() + "," + dim.getHeight();
 	}    
     
-	private final NumberFormat nf = NumberFormat.getNumberInstance();
-	{
+	/** safe to share this between astroscope instances - as is only ever used on single event dispatch thread */
+  private final static NumberFormat nf =NumberFormat.getNumberInstance();
+	static {
 		nf.setGroupingUsed(false);
 		nf.setMinimumFractionDigits(3);
 		nf.setMaximumFractionDigits(6);
 	}
-	
 	
     private void toggleAndConvertNodes(TreeNode nd,boolean fromDegrees) {
         String ndVal = null;  
@@ -245,37 +259,42 @@ public class AstroScopeLauncherImpl extends AbstractScope
     }
 
 	/**
-	 * @return
+	 * Builds the custom part of the interface - the search form.
 	 */
 	protected JPanel createSearchPanel() {
 		JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new BoxLayout(searchPanel,BoxLayout.Y_AXIS));
-        //searchPanel.setLayout(new GridLayout(10,1));
 
         posText = new NameResolvingPositionTextField(this);
         posText.setToolTipText("Object name (3c273) or Position (187.27,+2.05 or 12:29:06.00,+02:03:08.60)");
         posText.setAlignmentX(LEFT_ALIGNMENT);
         posText.setColumns(10);
-        //posText.setMaximumSize(posText.getPreferredSize());   
         
         regionText = new DimensionTextField();
         regionText.setToolTipText("Search radius (0.008333 degs or 30.00\")");
         regionText.setAlignmentX(LEFT_ALIGNMENT);
         regionText.setColumns(10);
-        //regionText.setMaximumSize(regionText.getPreferredSize());
         
-        searchPanel.add(new JLabel("Position (degs/hms) or Object Name:"));
+        searchPanel.add(new JLabel("Position or Object Name"));
         searchPanel.add(posText);
-        searchPanel.add(new JLabel("Search Radius (degs/\"):"));
+        searchPanel.add(new JLabel("Search Radius (degs/\")"));
         searchPanel.add(regionText);
      
         dsToggle = new DecSexToggle();
         dsToggle.addListener(posText);
         dsToggle.addListener(regionText);
         dsToggle.addListener(this);
-        getPreferencesMenu().add(dsToggle.getDegreesRadio());
-        getPreferencesMenu().add(dsToggle.getSexaRadio());
-        
+       // JPanel coords = new JPanel();
+       // coords.setLayout(new GridLayout(1,2));
+        Box coords = Box.createHorizontalBox();
+        coords.setAlignmentX(LEFT_ALIGNMENT);
+        coords.add(dsToggle.getDegreesRadio());
+        coords.add(dsToggle.getSexaRadio());
+        dsToggle.getDegreesRadio().setBorder(  BorderFactory.createLineBorder(Color.red));
+        dsToggle.getSexaRadio().setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.red),
+                dsToggle.getSexaRadio().getBorder()));        
+        searchPanel.add(coords);
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();
             searchPanel.add(p.getCheckBox());
@@ -284,12 +303,13 @@ public class AstroScopeLauncherImpl extends AbstractScope
 		return searchPanel;
 	}
 
-
+	/** perform a query */
 	protected void query() {
+		// slightly tricky - what we do depends on whether posText is currently in the middle of resolving a name or not.
 		final String positionString = posText.getObjectName(); // grab this first, in case we need it in a mo.
 		Point2D position = posText.getPosition();	
         if (Double.isNaN(position.getX())) { // position is not a number - indicates that it's currently being resolved.
-        	// so we'll resolve it ourselves.
+        	// so we'll resolve it ourselves - simplest thing to do.
         	(new BackgroundOperation("Resolving object " + positionString) {
         		protected Object construct() throws Exception {
         			return ses.sesame(positionString.trim(),"x");
@@ -305,24 +325,33 @@ public class AstroScopeLauncherImpl extends AbstractScope
     	            	//other resolution thread will report this - so ignore and fail silently
     	            	return;
     	            }
+    	            // now on with the query
         			queryBody(pos);
         		}
         	}).start();
         } else {
+        	// everything is fine - so we'll query directly.
         	queryBody(position);
         }
 	}
 	
+	/** actually do the query */
 	private void queryBody(Point2D position) {  
 
 	            setStatusMessage("" + position.getX() + ',' + position.getY());
 	            clearTree();
-	            reFocusTopButton.setEnabled(true);
+	            topAction.setEnabled(true);
+	            // ok. everything looks valid. add a task to later on storee the history item
+	            // make this a later task, so that resolver thread has chance to return.
+	            SwingUtilities.invokeLater(new Runnable(){
+	            	public void run() {
+	            		storeHistoryItem();
+	            	}
+	            });
 	            
 	            final double ra = position.getX();
 	            final double dec = position.getY();
 	                                      
-
 	            Dimension2D dim = regionText.getDimension();
 	            final double raSize = dim.getWidth();
 	            final double decSize = dim.getHeight();
@@ -348,6 +377,8 @@ public class AstroScopeLauncherImpl extends AbstractScope
 	                }
 	            }
 	}
+	
+	// another listener to the decSex toggle - convert node display
 	public void degreesSelected(EventObject e) {
         toggleAndConvertNodes(vizModel.getRootNode(),false);
         vizualizations.reDrawGraphs();		
@@ -362,6 +393,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.45  2006/05/17 23:59:36  nw
+documentaiton, and tweaks, from feedback by jonathan and kevin.
+
 Revision 1.44  2006/05/17 15:45:17  nw
 factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
 
