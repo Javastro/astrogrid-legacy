@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.45 2006/05/17 23:59:36 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.46 2006/05/18 00:16:34 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -308,31 +308,41 @@ public class AstroScopeLauncherImpl extends AbstractScope
 		// slightly tricky - what we do depends on whether posText is currently in the middle of resolving a name or not.
 		final String positionString = posText.getObjectName(); // grab this first, in case we need it in a mo.
 		Point2D position = posText.getPosition();	
-        if (Double.isNaN(position.getX())) { // position is not a number - indicates that it's currently being resolved.
-        	// so we'll resolve it ourselves - simplest thing to do.
-        	(new BackgroundOperation("Resolving object " + positionString) {
-        		protected Object construct() throws Exception {
-        			return ses.sesame(positionString.trim(),"x");
-        		}
-        		protected void doFinished(Object result) {
-    	            String temp = (String) result;
-    	            Point2D pos;
-    	            try {
-    	                double ra = Double.parseDouble( temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>")));
-    	                double dec = Double.parseDouble( temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>")));
-    	                pos = new Point2D.Double(ra,dec);
-    	            } catch (Throwable t) {
-    	            	//other resolution thread will report this - so ignore and fail silently
-    	            	return;
-    	            }
-    	            // now on with the query
-        			queryBody(pos);
-        		}
-        	}).start();
-        } else {
-        	// everything is fine - so we'll query directly.
-        	queryBody(position);
-        }
+		if (Double.isNaN(position.getX())) { // position is not a number - indicates that it's currently being resolved.
+			// so we'll resolve it ourselves - simplest thing to do - if we've got the position string..
+			// hopefully we've got something we can work with..
+			if (positionString != null) {
+				final String ps = positionString;
+				(new BackgroundOperation("Resolving object " + positionString) {
+					protected Object construct() throws Exception {
+						return ses.sesame(positionString.trim(),"x");
+					}
+					protected void doError(Throwable ex) {
+						showError("Simbad failed to resolve " + positionString);
+					}
+					protected void doFinished(Object result) {
+						String temp = (String) result;
+						Point2D pos;
+						try {
+							double ra = Double.parseDouble( temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>")));
+							double dec = Double.parseDouble( temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>")));
+							pos = new Point2D.Double(ra,dec);
+						} catch (Throwable t) {
+							doError(t);
+							return;
+						}
+						// now on with the query
+						queryBody(pos);
+					}
+				}).start();
+			} else { // no position, and no objectName 
+				//blergh - caught it at just thw wrong time - lets try again.
+				query();
+			}
+		} else {
+			// everything is fine - so we'll query directly.
+			queryBody(position);
+		}
 	}
 	
 	/** actually do the query */
@@ -393,6 +403,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.46  2006/05/18 00:16:34  nw
+improved name resolving code.
+
 Revision 1.45  2006/05/17 23:59:36  nw
 documentaiton, and tweaks, from feedback by jonathan and kevin.
 

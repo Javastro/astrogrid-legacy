@@ -93,7 +93,9 @@ public class NameResolvingPositionTextField extends PositionTextField {
     }
 
     /** business end -
-     * creates a background worker that calls sesame, parses result, zaps result into model 
+     * creates a background worker that calls sesame, parses result, zaps result into model
+     * if sesame fails to resolve, the input is reverted. there's very little we can report to the user - as 
+     * sesame doesn't give anything useful back. 
      * @todo refactor so that this code is reusable - as have almost same routine in astroscope too.
      * */
     private void resolveNameToPosition(final String inputPos) throws ParseException {
@@ -106,7 +108,6 @@ public class NameResolvingPositionTextField extends PositionTextField {
 				objectName=null;
 			}
 			protected void doError(Throwable ex) {
-				super.doError(ex);
 				setText(inputPos); // put things back as they were.
 			}
 			protected void doFinished(Object result) {				
@@ -116,9 +117,7 @@ public class NameResolvingPositionTextField extends PositionTextField {
 	                double dec = Double.parseDouble( temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>")));
 	                setPosition(new Point2D.Double(ra,dec));
 	            } catch (Throwable t) {
-	            	// oh well. report, and put it back as-was.
-	            	parent.showError("Failed to resolve '" + inputPos +"' to a position using Sesame",new Exception());
-	            	setText(inputPos);
+	            	doError(t);
 	            }
 			}
     	}).start();
