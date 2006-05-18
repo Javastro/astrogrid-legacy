@@ -74,15 +74,6 @@
  	</properties>        		
         	</dependency>
         	
-        	<dependency>
-        		<groupId>bouncycastle</groupId>
-        		<artifactId>bcprov-jdk14</artifactId>
-        		<version>129</version>
-        		<type>jar</type>
- 	<properties>
- 		<jnlp.jar>true</jnlp.jar>
- 	</properties>        		
-        	</dependency>
 
         	<!-- dependencies for signatures -->
         	<dependency>
