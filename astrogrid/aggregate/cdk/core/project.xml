@@ -254,7 +254,7 @@
 	 <version>1.4-20050623</version>
 	 <type>jar</type>
 	 <properties>
-      <jnlp.jar>true</jnlp.jar>
+      <dist.bundle>true</dist.bundle>
 	 </properties>		 
  </dependency>
  
