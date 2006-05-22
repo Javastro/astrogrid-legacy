@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.7 2006/04/14 19:41:46 jdt Exp $
+/*$Id: Finder.java,v 1.8 2006/05/22 20:26:52 jdt Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,7 +56,7 @@ import javax.swing.JOptionPane;
  */
 public class Finder {
     /** Webstart URL for the ACR */
-    public static final String ACR_JNLP_URL = "http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp";
+    public static final String ACR_JNLP_URL = "http://software.astrogrid.org/jnlp/beta/workbench/workbench.jnlp";
     /**
      * Commons Logger for this class
      */
@@ -374,6 +374,10 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.8  2006/05/22 20:26:52  jdt
+Updated the auto-start URL.  Will need to think how we now handle
+the multiple AR flavours
+
 Revision 1.7  2006/04/14 19:41:46  jdt
 Added some new features to the Finder and made it more robust.  It's now more of a rats' nest though and so could do with some refactoring.
 
