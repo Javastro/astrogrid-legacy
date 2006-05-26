@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
 import uk.ac.starlink.ttools.func.Coords;

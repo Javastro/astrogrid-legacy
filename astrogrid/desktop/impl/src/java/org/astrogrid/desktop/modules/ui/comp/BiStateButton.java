@@ -1,13 +1,7 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.Action;
-import javax.swing.Icon;
 import javax.swing.JButton;
-
-import org.astrogrid.desktop.icons.IconHelper;
 
 /** 2-state button - when button is pressed, flip states - displaying different
  * text, icon, etc. associated action, etc.

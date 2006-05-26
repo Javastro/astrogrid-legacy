@@ -1,21 +1,11 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.EventObject;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.JTextField;
-import javax.swing.JFormattedTextField.AbstractFormatter;
-import javax.vecmath.Point2d;
-
-import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import uk.ac.starlink.ttools.func.Coords;
 
 /**
  * UI filed that allows input of a point position
@@ -34,7 +24,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
     	private NumberFormat nfd = NumberFormat.getNumberInstance();
 		{
 			nfd.setGroupingUsed(false);
-			nfd.setMinimumFractionDigits(3);
+			nfd.setMinimumFractionDigits(6);
 			nfd.setMaximumFractionDigits(6);			
 		}
 		public Object stringToValue(String arg0) throws ParseException {

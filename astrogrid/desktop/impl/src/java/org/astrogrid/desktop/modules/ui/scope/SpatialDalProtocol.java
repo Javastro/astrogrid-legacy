@@ -3,8 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.util.Calendar;
-
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 

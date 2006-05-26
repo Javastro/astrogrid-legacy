@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
 
 /**
  * a Decimal Degreee / Sexagesimal

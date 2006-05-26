@@ -6,8 +6,6 @@ package org.astrogrid.desktop.modules.ui.comp;
 import java.awt.geom.Point2D;
 import java.text.ParseException;
 
-import javax.swing.SwingUtilities;
-
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;

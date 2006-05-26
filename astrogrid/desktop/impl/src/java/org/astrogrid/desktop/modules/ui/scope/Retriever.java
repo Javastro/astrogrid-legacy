@@ -1,12 +1,19 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URL;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -18,18 +25,6 @@ import uk.ac.starlink.votable.TableHandler;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Map;
-
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import java.math.BigDecimal;
-
-import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 
 /** base class for something that fetches a resource
  *   extensible for siap, cone, ssap, etc by implementing the abstract {@link #construct} method. This method should
@@ -163,23 +158,11 @@ public abstract class Retriever extends BackgroundWorker {
     // column info object - use for extracting other positions.
    protected void startTableExtensionPoint(int col,ColumnInfo columnInfo) {
    }
-   
-   
-   /*
-   protected double hav(double val) {
-        return Math.pow((Math.sin(0.5D * val)),2);    
-       }
-       
-    protected double ahav(double val) {
-           return 2.0D * Math.asin(Math.sqrt(val));
-       }
-       */
-       
+
 
        /**
         * Method getOffset
-        * Description: method to calculate a distance offset between two points in the sky using the 
-        * haversine formula.  Uses the library from Dr Michael Thomas Flanagan at www.ee.ucl.ac.uk/~mflanaga
+        * Description: method to calculate a distance offset between two points 
         * @param queryra known query ra.
         * @param querydec known query dec
         * @param objectra objects ra from results of a service/votable
@@ -189,43 +172,12 @@ public abstract class Retriever extends BackgroundWorker {
        protected double getOffset(double queryra, double querydec, double objectra, double objectdec) {
            
            return uk.ac.starlink.ttools.func.Coords.skyDistanceDegrees(queryra,querydec,objectra,objectdec);
-           /*
-           // gcdist = ahav( hav(dec1-dec2) + cos(dec1)*cos(dec2)*hav(ra1-ra2) )
-           queryra = Math.toRadians(queryra);  
-           querydec = Math.toRadians(querydec);
-           //from the look of the formula I suspect this to be ra1 and dec1 since it should be the greater distance
-           objectra = Math.toRadians(objectra); 
-           objectdec = Math.toRadians(objectdec);
-           //System.out.println("about to run haversine formula with " + queryra + ", " + querydec + ", " + objectra + ", " + objectdec);
-           double result = ahav( hav(objectdec-querydec) + Math.cos(objectdec)*Math.cos(querydec)*hav(objectra-queryra) );
-           //System.out.println("the haversine result = " + result + " throwing it toDegrees = " + Math.toDegrees(result));
-           //return Math.toDegrees(result); NWW: fix accordng to kev.
-           return result;
-           */
        }  
        
        protected String chopValue(String doubleValue, int scale) {
-           //int decIndex = doubleValue.indexOf('.');
-           //int expIndex = doubleValue.indexOf('E');
-           //System.out.println("the doublevalue33 = " + doubleValue + " with bigdeciaml = " + new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString());
-           return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
-           //we use the scale during the substring process
-           //and to go to scale we need to increment by one character
-           //to include the "." decimal point.
-           /*
-           scale++;           
-           if(decIndex != -1 && doubleValue.length() > (decIndex + scale)) {
-               if((decIndex + scale) <= (expIndex+1))
-                   return doubleValue;
-               
-               String temp = doubleValue.substring(0,(decIndex + scale));
-               if((decIndex = doubleValue.indexOf('E')) != -1) {
-                   temp += doubleValue.substring(decIndex);
-               }
-               return temp;
-           }
-           return doubleValue;
-           */
+     	   // @todo would it be more efficient to use a NumberFormatter here? - this has Round_half_up behaviour too.
+    	   return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
+
        }
        
     /** called once for each row in the table
@@ -334,7 +286,7 @@ public abstract class Retriever extends BackgroundWorker {
     }
 
     protected void doAlways() {
-       parent.setProgressValue(parent.getProgressValue() + 1); // @minor sometimes we get a race here, leading to the display being off-by-one.
+       parent.setProgressValue(parent.getProgressValue() + 1); // @todo minor bug -  sometimes we get a race here, leading to the display being off-by-one.
     }
 
     protected void doFinished(Object result) {        

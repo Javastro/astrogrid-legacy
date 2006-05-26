@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.7 2006/05/17 15:45:17 nw Exp $
+/*$Id: ConeProtocol.java,v 1.8 2006/05/26 15:11:58 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import org.astrogrid.acr.astrogrid.Registry;
@@ -62,6 +61,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.8  2006/05/26 15:11:58  nw
+tidied imported.corrected number formatting.
+
 Revision 1.7  2006/05/17 15:45:17  nw
 factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
 

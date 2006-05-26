@@ -51,7 +51,7 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 		private NumberFormat nfd = NumberFormat.getNumberInstance();
 		{
 			nfd.setGroupingUsed(false);
-			nfd.setMinimumFractionDigits(3);
+			nfd.setMinimumFractionDigits(6);
 			nfd.setMaximumFractionDigits(6);
 		}
 		public Object stringToValue(String arg0) throws ParseException {

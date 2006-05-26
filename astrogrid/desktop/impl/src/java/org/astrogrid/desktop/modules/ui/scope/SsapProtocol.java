@@ -1,4 +1,4 @@
-/*$Id: SsapProtocol.java,v 1.5 2006/05/17 15:45:17 nw Exp $
+/*$Id: SsapProtocol.java,v 1.6 2006/05/26 15:11:58 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ui.scope;
-
-import java.util.Calendar;
 
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
@@ -42,6 +40,9 @@ public class SsapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SsapProtocol.java,v $
+Revision 1.6  2006/05/26 15:11:58  nw
+tidied imported.corrected number formatting.
+
 Revision 1.5  2006/05/17 15:45:17  nw
 factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
 
