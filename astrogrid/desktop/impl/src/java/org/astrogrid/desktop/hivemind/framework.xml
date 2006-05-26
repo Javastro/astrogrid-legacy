@@ -119,11 +119,8 @@
 	
 		
 	<!-- configuration of hivemind system -->
-	<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="workbench.version" value="2.0" />	
-		<default symbol="hub.version" value="2.0" />
-		<default symbol="acr.version" value="2.0" />		
-		<default symbol="acr.debug" value="false" />			
+	<contribution configuration-id="hivemind.FactoryDefaults">	
+		<default symbol="acr.debug" value="false" />		
 	</contribution>
 	
 	<contribution configuration-id="hivemind.Startup">
@@ -132,6 +129,7 @@
 	<!-- enable subst symbols from sys properties too -->	
 	<contribution configuration-id="hivemind.SymbolSources">
 		<source name="sysproperties" before="hivemind.ApplicationDefaults" class="org.apache.hivemind.impl.SystemPropertiesSymbolSource" />
+		<source name="manifest" before="hivemind.ApplicationDefaults" class="org.astrogrid.desktop.hivemind.VersionSymbolSource" />
 	</contribution>
 	
 	<contribution configuration-id="hivemind.ObjectProviders">

@@ -46,11 +46,36 @@
 			after="*" > 
 			<parameter><![CDATA[
 			<html>
-			<h1>Astrogrid PLASTIC Hub v${hub.version}</h1>			
+			<h1>Astrogrid PLASTIC Hub v${astrogrid.desktop.version}</h1>			
 			<b>http://software.astrogrid.org</b><br>
-			TODO - fill this in
-		
+			
+			<h1>PLASTIC - Platform for Astronomy Tool InterCommunication</h1>
+			<b>http://plastic.sourceforge.net</b><br>
+			Moulded by 
+			<ul>
+			<li>Thomas Boch
+			<li>Marco Comparato
+			<li>John Taylor
+			<li>Mark Taylor
+			<li>Noel Winstanley
+			</ul>
+			
+			Other Contributors
+			<ul>
+			<li>Alasdair Allan
+			<li>Sebastien Derriere
+			<li>Pierre Fernique
+			<li>Doug Tody
+			</ul>
+			
+			<hr>
+			<h2>Build Information</h2>
+			Built: ${astrogrid.build.date}<br>
+			At: ${astrogrid.build.location}<br>
+			With ${astrogrid.build.jdk}<br>
+			By: ${astrogrid.build.by}
 			</html>
+			
 			]]></parameter>
 		</action>		
 	</contribution>
@@ -95,7 +120,8 @@
 				<service>system.webserver</service>
 				<service>system.systray</service>	
 				<service>prettyPrinter</service>
-				<service>system.configuration</service>							
+				<service>system.configuration</service>		
+				<service>system.snitch</service>				
 			</construct>
 		</invoke-factory>
 	</service-point>
