@@ -23,7 +23,10 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.swing.event.ListSelectionEvent;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpc;
@@ -34,6 +37,7 @@ import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.NameGen;
+import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -59,7 +63,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     private final RmiServer rmiServer;
     private final WebServer webServer;
     private final Executor systemExecutor;
-
+    private final SnitchInternal snitch;
     private final URI hubId;
 
     private File plasticPropertyFile;
@@ -85,14 +89,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     /** constructor selected by pico when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app, RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config) {
-        this(executor,idGenerator,app,rmi, web,null, prettyPrinter, config);
+            MessengerInternal app, RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
+        this(executor,idGenerator,app,rmi, web,null, prettyPrinter, config,snitch);
     }
     
     /** constructor selected by pico when systemtray is available 
      * @param prettyPrinter */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app,RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config) {
+            MessengerInternal app,RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
         this.tray = tray;
         this.rmiServer= rmi;
         this.webServer= web;
@@ -100,6 +104,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.idGenerator = idGenerator;
         this.prettyPrinter = prettyPrinter;
         this.config = config;
+        this.snitch = snitch;
         logger.info("Constructing a PlasticHubImpl");
         hubId = app.registerWith(this); 
     }
@@ -110,23 +115,47 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public URI registerXMLRPC(String name, List supportedOperations, URL callBackURL) {
+    	snitchPlastic("xmlrpc",name,supportedOperations);
         PlasticClientProxy client = new XMLRPCPlasticClient(idGenerator, name, supportedOperations, callBackURL);
         return register(client);
     }
 
     public URI registerRMI(String name, List supportedOperations, PlasticListener caller) {
-        PlasticClientProxy client = new RMIPlasticClient(idGenerator, name, supportedOperations, caller);
+    	snitchPlastic("rmi",name,supportedOperations);
+    	PlasticClientProxy client = new RMIPlasticClient(idGenerator, name, supportedOperations, caller);
         return register(client);
     }
 
     public URI registerNoCallBack(String name) {
+    	snitchPlastic("nocallback",name);
         PlasticClientProxy client = new DeafPlasticClient(idGenerator, name);
         return register(client);
     }
 
 	public URI registerPolling(String name, List supportedMessages) {
+		snitchPlastic("polling",name,supportedMessages);
 		PlasticClientProxy client = new PollingPlasticClient(idGenerator, name, supportedMessages);
 		return register(client);
+	}
+	
+	private void snitchPlastic(String methodName, String appName) {
+		snitchPlastic(methodName, appName, ListUtils.EMPTY_LIST);
+	}
+	
+	private void snitchPlastic(String methodName,String appName, List supportedMessages) {
+		if (snitch == null
+				|| appName.startsWith("Helioscope")
+				|| appName.startsWith("Astroscope") 
+				||appName.equals("ACR-Plastic-Hub")
+				) {
+			return ; 
+		}
+	    	Map m = new HashMap();
+	    	m.put("name",appName);
+	    	m.put("ops",supportedMessages);
+	    	m.put("method",methodName);    	
+	    	snitch.snitch("PLASTIC",m);
+			
 	}
 
 	/**
