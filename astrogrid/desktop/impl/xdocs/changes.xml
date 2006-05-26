@@ -14,6 +14,18 @@
 	</head>
 <body>
 <release version="2.2-beta-3" date="2006-05-18">
+	<action dev="nw" type="fix">
+		Reworked scheduled tasks - all are displayed in UI
+	</action>
+	<action dev="nw" type="add">
+	  added version numbering into system.
+	</action>
+	<action dev="nw" type="add">
+		Implemented snitching
+	</action>
+	<action dev="nw" type="fix">
+		Added back in missing registry chooser
+	</action>
 	<action dev="nw" type="add">
 		Added menubar to astroscope and helioscope
 	</action>
