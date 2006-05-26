@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.14 2006/05/17 23:59:36 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.15 2006/05/26 15:14:56 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,7 +81,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
     	return "Search and visualise matches in all available solar archives by offset from user defined start and end times";
     }
     protected String getScopeIconURL() {
-    	return "http://software.astrogrid.org/icons/helioscope.png";
+    	return "http://software.astrogrid.org/app-icons/helioscope.png";
     }
     protected String getScopeName() {
     	return "Helioscope";
@@ -262,6 +262,9 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.15  2006/05/26 15:14:56  nw
+corrected icon paths.
+
 Revision 1.14  2006/05/17 23:59:36  nw
 documentaiton, and tweaks, from feedback by jonathan and kevin.
 

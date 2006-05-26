@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.46 2006/05/18 00:16:34 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.47 2006/05/26 15:14:56 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,6 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Dimension2D;
@@ -30,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.xml.stream.XMLStreamReader;
 
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
@@ -104,6 +103,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
         dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));       
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
         setIconImage(IconHelper.loadIcon("astroscope.png").getImage());
+      
     }
     protected String getScopeName() {
     	return "Astroscope";
@@ -117,7 +117,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
     }
     
     protected String getScopeIconURL() {
-    	return "http://software.astrogrid.org/icons/astroscope.png";
+    	return "http://software.astrogrid.org/app-icons/astroscope.png";
     }
     
 
@@ -220,7 +220,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
   private final static NumberFormat nf =NumberFormat.getNumberInstance();
 	static {
 		nf.setGroupingUsed(false);
-		nf.setMinimumFractionDigits(3);
+		nf.setMinimumFractionDigits(6);
 		nf.setMaximumFractionDigits(6);
 	}
 	
@@ -403,6 +403,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.47  2006/05/26 15:14:56  nw
+corrected icon paths.
+
 Revision 1.46  2006/05/18 00:16:34  nw
 improved name resolving code.
 
