@@ -1,13 +1,20 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:maven="jelly:maven" >
+<project xmlns:maven="jelly:maven"  xmlns:j="jelly:core" xmlns:util="jelly:util" >
 	<goal name="astrogrid-clean" prereqs="multiproject:clean"
-	description="clean all sub projects - may not be possible if version in maven.base/project.properties has just been changed - clean before doing this"/>
+	description="clean all sub projects - may not be possible if version in maven.base/project.properties has just been changed - clean before doing this">
+	 <maven:maven basedir="site" descriptor="site/project.xml" ignoreFailures="false" goals="clean" />
+		
+	</goal>
 	
 	
 	<goal name="publish-jnlp"
-	description="publish webstart releases for all apps. Requires -Dmaven.username=maven for this to work."
-	prereqs="install-materials">
+	description="publish webstart releases for all apps. Requires -Dmaven.username=maven for this to work. must have run install-materials previously"
+	>
+		<j:set var="maven.scm.cvs.tag">
+			<util:replace  newChar="_" oldChar=".">PUBLISH_JNLP_${astrogrid.desktop.version}</util:replace>
+		</j:set>
+	   <attainGoal name="scm:cvs-tag-project" />
 		<maven:reactor
 			basedir="${basedir}"
 			goals="publish-jnlp"
@@ -17,8 +24,12 @@
 	
 	
 		<goal name="publish-beta-jnlp"
-		description="publish beta webstart releases for all apps. Requires -Dmaven.username=maven"
-		prereqs="install-materials">
+		description="publish beta webstart releases for all apps. Requires -Dmaven.username=maven. must have run install-materials previously"
+		>
+		<j:set var="maven.scm.cvs.tag">
+			<util:replace  newChar="_" oldChar=".">PUBLISH_BETA_JNLP_${astrogrid.desktop.version}</util:replace>
+		</j:set>
+	   <attainGoal name="scm:cvs-tag-project" />		
 		<maven:reactor
 			basedir="${basedir}"
 			goals="publish-beta-jnlp"
@@ -26,8 +37,13 @@
 			includes="${jnlp.ar.projects}"/>
 	</goal>
 	
-		<goal name="publish-alpha-jnlp" description="publish alpha webstart releases for all apps requires -Dmaven.username=maven"
-		prereqs="install-materials">
+		<goal name="publish-alpha-jnlp" 
+		description="publish alpha webstart releases for all apps. requires -Dmaven.username=maven.  must have run install-materials previously"
+		>
+		<j:set var="maven.scm.cvs.tag">
+		<util:replace  newChar="_" oldChar=".">PUBLISH_ALPHA_JNLP_${astrogrid.desktop.version}</util:replace>
+		</j:set>
+	   <attainGoal name="scm:cvs-tag-project" />
 		<maven:reactor
 			basedir="${basedir}"
 			goals="publish-alpha-jnlp"
@@ -36,7 +52,8 @@
 	</goal>
 	
 	
-	<goal name="install-materials" description="build all the pre-requsites (docs, examples, etc)">
+	<goal name="install-materials" 
+	description="build all the pre-requsites (docs, examples, api jars etc)">
 		<maven:reactor
 			basedir="${basedir}"
 			goals="astrogrid-install-artifact"
@@ -44,8 +61,9 @@
 			includes="${supporting.projects}" />
 	</goal>
 	
-	<goal name="install-standalone-apps" description="build all the stand-alone (non-webstart) versions of the apps"
-	prereqs="install-materials">
+	<goal name="install-standalone-apps" 
+	description="build all the stand-alone (non-webstart) versions of the apps. previously must have run install-materials"
+	>
 		<maven:reactor
 			basedir="${basedir}"
 			goals="astrogrid-install-artifact"
@@ -54,26 +72,41 @@
 	</goal>
 	
 	
-	<goal name="publish-site" description="assemble and publish the release site for the stable version of the apps"
-	prereqs="install-standalone-apps">
+	<goal name="publish-site" 
+	description="assemble and publish the release site for the stable version of the apps. requires -Dmaven.username=maven.  must have run install-standalone-apps previously"
+>
 		<!-- at this point, all materials and standalone apps will have been built - site project just needs to grab all these resources -->
+		<j:set var="maven.scm.cvs.tag">
+		<util:replace  newChar="_" oldChar=".">PUBLISH_SITE_${astrogrid.desktop.version}</util:replace>
+		</j:set>
+	   <attainGoal name="scm:cvs-tag-project" />		
 		<maven:maven basedir="site" descriptor="site/project.xml" ignoreFailures="false" goals="publish-site" />
-		<echo>Do you need to republish the webapps too? run 'maven publish-jnlp</echo>
+		<echo>REMINDER: Do you need to republish the webapps too? run 'maven publish-jnlp</echo>
 	</goal>
 	
-	<goal name="publish-beta-site" description="assemble and publish the release site for the beta version of the apps"
-	prereqs="install-standalone-apps">
+	<goal name="publish-beta-site" 
+	description="assemble and publish the release site for the beta version of the apps.  requires -Dmaven.username=maven.  must have run install-standalone-apps previously"
+	>
 		<!-- at this point, all materials and standalone apps will have been built - site project just needs to grab all these resources -->
+		<j:set var="maven.scm.cvs.tag">
+		<util:replace  newChar="_" oldChar=".">PUBLISH_BETA_SITE_${astrogrid.desktop.version}</util:replace>
+		</j:set>
+	   <attainGoal name="scm:cvs-tag-project" />
 		<maven:maven basedir="site" descriptor="site/project.xml" ignoreFailures="false" goals="publish-beta-site" />
-		<echo>Do you need to republish the webapps too? run 'maven publish-beta-jnlp</echo>
+		<echo>REMINDER: Do you need to republish the webapps too? run 'maven publish-beta-jnlp</echo>
 	</goal>
 	
 	
-	<goal name="publish-alpha-site" description="assemble and publish the release site for the alpha version of the apps"
-	prereqs="install-standalone-apps">
+	<goal name="publish-alpha-site" 
+	description="assemble and publish the release site for the alpha version of the apps.  requires -Dmaven.username=maven.  must have run install-standalone-apps previously"
+	>
 		<!-- at this point, all materials and standalone apps will have been built - site project just needs to grab all these resources -->
+		<j:set var="maven.scm.cvs.tag">
+		<util:replace  newChar="_" oldChar=".">PUBLISH_ALPHA_SITE_${astrogrid.desktop.version}</util:replace>
+		</j:set>
+	   <attainGoal name="scm:cvs-tag-project" />
 		<maven:maven basedir="site" descriptor="site/project.xml" ignoreFailures="false" goals="publish-alpha-site" />
-		<echo>Do you need to republish the webapps too? run 'maven publish-alpha-jnlp</echo>
+		<echo>REMINDER: Do you need to republish the webapps too? run 'maven publish-alpha-jnlp</echo>
 	</goal>
 	
 
