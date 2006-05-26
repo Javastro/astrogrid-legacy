@@ -10,6 +10,19 @@
 			<j:set var="ifBuildingASR" value="true" />
 		</goal>
 	
+			<postGoal name="java:jar-resources">
+		<attainGoal name="astrogrid.version" />
+	</postGoal>
+		
+		<goal name="astrogrid.version">
+			<echo file="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/astrogrid.version">
+			astrogrid.desktop.version=${astrogrid.desktop.version}
+			astrogrid.build.date=${maven.jar.manifest.attribute.BuildDate}
+			astrogrid.build.location=${maven.jar.manifest.attribute.BuildLocation}
+			astrogrid.build.by=${user.name}
+			astrogrid.build.jdk=${java.version}
+			</echo>
+		</goal>
 	<!-- do the final tweaks to the javaapp process -->
 		    <!-- work around: javaapp unzips all dependent jars before making one big jar.
 		    this doesn't work on MacOS, as packages named EDU... and edu... get mapped to the

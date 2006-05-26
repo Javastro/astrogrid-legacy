@@ -20,6 +20,7 @@
                       <exclude>org/astrogrid/desktop/*.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/ag/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/ui/**</exclude>
+                      <exclude>org/astrogrid/desktop/modules/ui/comp/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/cds/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/ivoa/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/nvo/**</exclude>

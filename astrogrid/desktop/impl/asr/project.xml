@@ -348,18 +348,7 @@
  		<dist.bundle>true</dist.bundle>
  	</properties>        		
         	</dependency>
-        	
-        	<dependency>
-        		<groupId>bouncycastle</groupId>
-        		<artifactId>bcprov-jdk14</artifactId>
-        		<version>129</version>
-        		<type>jar</type>
- 	<properties>
- 		<dist.bundle>true</dist.bundle>
- 	</properties>        		
-        	</dependency>
-
-        	<!-- dependencies for signatures -->
+     	<!-- dependencies for signatures -->
         	<dependency>
         		<groupId>wss4j</groupId>
         		<artifactId>wss4j</artifactId>
@@ -369,6 +358,21 @@
  		<dist.bundle>true</dist.bundle>
  	</properties>        		
         	</dependency>
+    <!-- crypto provider that myproxy client requires -->
+        	<dependency>
+        		<groupId>bouncycastle</groupId>
+        		<artifactId>bcprov-jdk14</artifactId>
+        		<version>129</version>
+        		<type>jar</type>
+ 	<properties>
+		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
+		 <jnlp.extension.dir>/jnlp/bouncycastle</jnlp.extension.dir>
+		 <jnlp.extension.jnlp>bouncycastle.jnlp</jnlp.extension.jnlp> 	
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>        		
+        	</dependency>
+
+   
  
   <!-- JDIC components - a bit tricky, because of binary nature.. 
 -->
