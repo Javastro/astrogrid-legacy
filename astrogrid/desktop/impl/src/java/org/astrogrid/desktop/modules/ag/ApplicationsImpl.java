@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.11 2006/04/21 13:48:12 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.12 2006/05/26 15:22:30 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,7 +49,6 @@ import org.astrogrid.acr.ivoa.SsapInformation;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
-//import org.astrogrid.desktop.modules.dialogs.editors.DatacenterToolEditorPanel;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -569,6 +568,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.12  2006/05/26 15:22:30  nw
+organized imports.
+
 Revision 1.11  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

@@ -1,8 +1,7 @@
 package org.astrogrid.desktop.modules.ag;
 
-import java.security.Principal;
-import java.util.Set;
 import javax.security.auth.Subject;
+
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;

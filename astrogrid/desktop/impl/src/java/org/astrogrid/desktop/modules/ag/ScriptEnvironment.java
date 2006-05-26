@@ -10,7 +10,6 @@
 
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.community.User;
 import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.store.Ivorn;
 
