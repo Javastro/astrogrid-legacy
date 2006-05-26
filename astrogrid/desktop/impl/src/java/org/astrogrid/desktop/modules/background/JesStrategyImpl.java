@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.5 2006/04/18 23:25:43 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.6 2006/05/26 15:18:43 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.background;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -43,6 +46,8 @@ import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessag
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;
@@ -51,7 +56,10 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.WorkflowSummaryType;
 import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.mortbay.util.MultiException;
 import org.w3c.dom.Document;
 
 
@@ -59,7 +67,7 @@ import org.w3c.dom.Document;
  * remote process strategy for jobs.
  *  - see RemoteProcessManagerImpl
  * periodically poll job service, inject messages into the system
- * temporary , until jes actually passes messages itself.
+ * temporary , until jes supports CEA interface like it should.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Nov-2005
  *
  */
@@ -72,21 +80,21 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     public JesStrategyImpl(MessagingInternal messaging
             , MessageRecorderInternal recorder
             , Community comm
-            , SchedulerInternal scheduler
             , ApplicationsInternal apps
+            , UIInternal ui
             ) {
         super();
         this.messaging = messaging;
         this.comm = comm;    
         this.apps = apps;
-        this.scheduler = scheduler;
-        this.recorder = recorder;      
+        this.recorder = recorder;
+        this.ui = ui;
     }
     final Community comm;
     final MessagingInternal messaging;
     final MessageRecorderInternal recorder;
-    final SchedulerInternal scheduler; 
     final ApplicationsInternal apps;
+    final UIInternal ui;
     private Account acc;      
     boolean poll = false;
     
@@ -114,115 +122,136 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     	this.refreshSeconds = period;
     }
     
-    /** refresh method */    
-    public void run() {
-        if (!poll) { // only run if this flag is set.
-            return;
-        }
-        try {
-            WorkflowSummaryType[] arr = getJes().listJobs(getAccount());
-
-        for (int i = 0 ; i < arr.length; i++) {
-            checkSingleJob(arr[i]);
-        } 
-        } catch (JesDelegateException e) {
-            logger.warn("Failed to refresh jobs progress",e);
-        }       
-    }
     
-   
 
-    /** check a single job for updates.
-     * to be called within shceduler thread.
-     * @param jobSummary
-     * @throws JesDelegateException
-     */
-    private void checkSingleJob(WorkflowSummaryType jobSummary) {
-        try {
-            Folder f= recorder.getFolder(new URI(jobSummary.getJobId().getContent()));
-            String currentStatus;
-            int messageCount;            
-            if (f == null) {
-                // totally new.. upload everything
-                currentStatus = ExecutionInformation.UNKNOWN;
-                messageCount = 0;
-            } else if (f.isDeleted()) {
-            	// don't care about thiis one anymore
-            	return;
-            } else {                    
-                currentStatus = f.getInformation().getStatus();
-                if(isCompletedOrError(currentStatus) ) {
-                   return; // nothing moreto report here.
-                } // otherwise..
-                messageCount = recorder.listFolder(f).length;
-            }
-            String newStatus = jobSummary.getStatus().toString();            
-            if (! currentStatus.equals(newStatus)) {   
-            	ExecutionMessage em = new StatusChangeExecutionMessage(
-            		    jobSummary.getJobId().getContent()
-            			,newStatus
-            			,new Date()
-            			);
-            	SourcedExecutionMessage sem = new SourcedExecutionMessage(
-            			new URI(jobSummary.getJobId().getContent())
-                        ,jobSummary.getWorkflowName()
-            			,em
-            			  ,jobSummary.getStartTime()
-                          ,jobSummary.getFinishTime()
-            			);
-                messaging.injectMessage(sem);   
-            }
-           
-            if (messageCount < jobSummary.getMessageCount()) { // some messages to pass on
-                for (int j = messageCount;  j < jobSummary.getMessageCount(); j++) {
-            		MessageType mt = jobSummary.getMessage(j);
-            		ExecutionMessage em = new ExecutionMessage(
-            				jobSummary.getJobId().getContent()
-            				,mt.getLevel().toString()
-            				,mt.getPhase().toString()
-            				,mt.getTimestamp()
-            				,mt.getContent()
-            		);
-                	SourcedExecutionMessage sem = new SourcedExecutionMessage(
-                			new URI(jobSummary.getJobId().getContent())
-                            ,jobSummary.getWorkflowName()
-                			,em
-                			  ,jobSummary.getStartTime()
-                              ,jobSummary.getFinishTime()
-                			);                    
-                    messaging.injectMessage(sem);
-                }
-            }
-            if (isCompletedOrError(newStatus)) { // emit result message  
-                Workflow wf = getJes().readJob(jobSummary.getJobId());
-                wf.getJobExecutionRecord().clearExtension(); // clears out junk
-                ResultListType results = new ResultListType();
-                ParameterValue v = new ParameterValue();
-                v.setIndirect(false);
-                v.setName("transcript");
-                StringWriter s = new StringWriter();
-                wf.marshal(s);
-                v.setValue(s.toString());
-                results.setResult(new ParameterValue[]{v });
-                ExecutionMessage em = new ResultsExecutionMessage(
-                		jobSummary.getJobId().getContent()
-                		,jobSummary.getFinishTime()
-                		,results
-                		);
-            	SourcedExecutionMessage sem = new SourcedExecutionMessage(
-            			new URI(jobSummary.getJobId().getContent())
-                        ,jobSummary.getWorkflowName()
-            			,em
-            			  ,jobSummary.getStartTime()
-                          ,jobSummary.getFinishTime()
-            			);                   
-                messaging.injectMessage(sem);             
-        }
-        } catch (Exception e) {
-            logger.warn("Failed to process job info for " + jobSummary.getJobId().getContent());
-        } 
-    }
+	public BackgroundWorker createWorker() {
+		return new BackgroundWorker(ui,"Checking for workflow progress") {
+			protected Object construct() throws Exception {
+				List errors = null;
+			       if (!poll) { // only run if this flag is set.
+			            return null;
+			        }
+			       WorkflowSummaryType[] arr = getJes().listJobs(getAccount());
+			        for (int i = 0 ; i < arr.length; i++) {
+			        	try {
+			        		checkSingleJob(arr[i]);
+			        	} catch (Exception e) {
+    						if (errors != null) {
+    							errors = new ArrayList();
+    						}			        		
+			        		errors.add(e);
+			        	}
+			        } 
+			         return errors;
+			    }
+			  		// report any that we failed to refresh.
+		    		protected void doFinished(Object result) {
+		    			List l = (List)result;
+		    			if (l != null && l.size() > 0) {
+		    				MultiException e = new MultiException();
+		    				for (Iterator i = l.iterator(); i.hasNext(); ) {
+		    					e.add((Exception)i.next());
+		    				}
+		    				parent.showError("Failed to check status of some workflows",e);
+		    			}
+		    		}			    
+			    /** check a single job for updates.
+			     * to be called within shceduler thread.
+			     * @param jobSummary
+			     * @throws URISyntaxException 
+			     * @throws IOException 
+			     * @throws JesDelegateException 
+			     * @throws JesDelegateException
+			     * @throws URISyntaxException 
+			     * @throws ValidationException 
+			     * @throws MarshalException 
+			     */
+			    private void checkSingleJob(WorkflowSummaryType jobSummary) throws IOException, JesDelegateException, CastorException, URISyntaxException {			        
+			            Folder f= recorder.getFolder(new URI(jobSummary.getJobId().getContent()));
+			            String currentStatus;
+			            int messageCount;            
+			            if (f == null) {
+			                // totally new.. upload everything
+			                currentStatus = ExecutionInformation.UNKNOWN;
+			                messageCount = 0;
+			            } else if (f.isDeleted()) {
+			            	// don't care about thiis one anymore
+			            	return;
+			            } else {                    
+			                currentStatus = f.getInformation().getStatus();
+			                if(isCompletedOrError(currentStatus) ) {
+			                   return; // nothing moreto report here.
+			                } // otherwise..
+			                messageCount = recorder.listFolder(f).length;
+			            }
+			            String newStatus = jobSummary.getStatus().toString();            
+			            if (! currentStatus.equals(newStatus)) {   
+			            	ExecutionMessage em = new StatusChangeExecutionMessage(
+			            		    jobSummary.getJobId().getContent()
+			            			,newStatus
+			            			,new Date()
+			            			);
+			            	SourcedExecutionMessage sem = new SourcedExecutionMessage(
+			            			new URI(jobSummary.getJobId().getContent())
+			                        ,jobSummary.getWorkflowName()
+			            			,em
+			            			  ,jobSummary.getStartTime()
+			                          ,jobSummary.getFinishTime()
+			            			);
+			                messaging.injectMessage(sem);   
+			            }
+			           
+			            if (messageCount < jobSummary.getMessageCount()) { // some messages to pass on
+			                for (int j = messageCount;  j < jobSummary.getMessageCount(); j++) {
+			            		MessageType mt = jobSummary.getMessage(j);
+			            		ExecutionMessage em = new ExecutionMessage(
+			            				jobSummary.getJobId().getContent()
+			            				,mt.getLevel().toString()
+			            				,mt.getPhase().toString()
+			            				,mt.getTimestamp()
+			            				,mt.getContent()
+			            		);
+			                	SourcedExecutionMessage sem = new SourcedExecutionMessage(
+			                			new URI(jobSummary.getJobId().getContent())
+			                            ,jobSummary.getWorkflowName()
+			                			,em
+			                			  ,jobSummary.getStartTime()
+			                              ,jobSummary.getFinishTime()
+			                			);                    
+			                    messaging.injectMessage(sem);
+			                }
+			            }
+			            if (isCompletedOrError(newStatus)) { // emit result message  
+			                Workflow wf = getJes().readJob(jobSummary.getJobId());
+			                wf.getJobExecutionRecord().clearExtension(); // clears out junk
+			                ResultListType results = new ResultListType();
+			                ParameterValue v = new ParameterValue();
+			                v.setIndirect(false);
+			                v.setName("transcript");
+			                StringWriter s = new StringWriter();
+			                wf.marshal(s);
+			                v.setValue(s.toString());
+			                results.setResult(new ParameterValue[]{v });
+			                ExecutionMessage em = new ResultsExecutionMessage(
+			                		jobSummary.getJobId().getContent()
+			                		,jobSummary.getFinishTime()
+			                		,results
+			                		);
+			            	SourcedExecutionMessage sem = new SourcedExecutionMessage(
+			            			new URI(jobSummary.getJobId().getContent())
+			                        ,jobSummary.getWorkflowName()
+			            			,em
+			            			  ,jobSummary.getStartTime()
+			                          ,jobSummary.getFinishTime()
+			            			);                   
+			                messaging.injectMessage(sem);             
+			        }
+			    }
 
+		};
+	}
+
+ 
     public static boolean isCompletedOrError(String s) {
         return s.equals(ExecutionInformation.COMPLETED) 
         || s.equals(ExecutionInformation.ERROR);
@@ -234,7 +263,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         // enable polling of the server.
         poll = true;
         // do a poll straight away, to get things started.
-        scheduler.runNow(this);
+        createWorker().start();
         
     }
 
@@ -248,12 +277,12 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         return "jes".equals(execId.getScheme());
     }
 
-    public boolean canProcess(Document doc) {    
+    public String canProcess(Document doc) {    
         try {
-            Unmarshaller.unmarshal(Workflow.class,doc);
-            return true;
+            Workflow w = (Workflow)Unmarshaller.unmarshal(Workflow.class,doc);
+            return "workflow: " + w.getName(); 
         } catch (Exception e) {
-            return false;
+            return null;
         }            
     }
 
@@ -276,7 +305,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     // would like to be able to poll a single job - but delegate doesn't provide methods for this
     // so may as well trigger update of whole lot.
     public void triggerUpdate() {
-        scheduler.runNow(this);
+        createWorker().start();
     }
     
     // make the workflow belong to the current user, fiddle the stirng adql, etc.
@@ -347,13 +376,16 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
             throw new ServiceException(e);
         }       
     }
-    
+
 
 }
 
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.6  2006/05/26 15:18:43  nw
+reworked scheduled tasks,
+
 Revision 1.5  2006/04/18 23:25:43  nw
 merged asr development.
 

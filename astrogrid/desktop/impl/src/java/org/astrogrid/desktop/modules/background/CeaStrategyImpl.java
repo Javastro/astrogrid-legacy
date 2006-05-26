@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.4 2006/05/13 16:34:55 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.5 2006/05/26 15:18:43 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.background;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -53,11 +54,15 @@ import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessag
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.mortbay.util.MultiException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
@@ -71,54 +76,18 @@ import org.w3c.dom.ProcessingInstruction;
  *
  */
 public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener {
-    /**run-once class that gets added to the scheduler queue
-     * when a new remote cea is executed - sets up a record of the new app
-     * by injecting messages into the recorder. necessary to do this in a runnable to ensure 
-     * that single-treaded access to messaging resources, no race conditions, etc.
-     * @author Noel Winstanley nw@jb.man.ac.uk 11-Nov-2005
-     *
-     */
-    private class RemoteCeaSetup implements Runnable {
-        private final Tool document;
-        private final URI id;
-        private final ApplicationInformation info;
-        private final JobIdentifierType jid;
-        public RemoteCeaSetup(Tool document,ApplicationInformation info, URI id, JobIdentifierType jid) {
-            this.document = document;
-            this.info = info;
-            this.id = id;
-            this.jid = jid;
-        }
-        // inject a  status change message to cause a new folder to be created
-        public void run() {
-            	ExecutionMessage em = new StatusChangeExecutionMessage(
-            			id.toString()
-            			,ExecutionInformation.PENDING
-            			,new Date()
-            			);
-            	SourcedExecutionMessage sem = new SourcedExecutionMessage(
-            			id
-            			,document.getName()
-            			,em
-            			,new Date()
-            			,null
-            			);
-                messaging.injectMessage(sem);
-     
-        }
-    }
-
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(CeaStrategyImpl.class);
+
+    private long refreshSeconds;
  final ApplicationsInternal apps;
     final CeaHelper ceaHelper;
     final TasksInternal ceaInternal;
     final MessagingInternal messaging;
     boolean poll = false;
     final MessageRecorderInternal recorder;
-    final SchedulerInternal scheduler; // already auto-registered with this.
     
 
     /** Construct a new CeaStrategyImpl
@@ -127,30 +96,29 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
      */
     public CeaStrategyImpl(MessagingInternal messaging
             , MessageRecorderInternal recorder
-            , SchedulerInternal scheduler
             , TasksInternal ceaInternal
             , Registry reg
-            , ApplicationsInternal apps) {
+            , ApplicationsInternal apps
+            , UIInternal ui) {
         super();         
         this.apps = apps;
         this.messaging = messaging;
         this.ceaInternal = ceaInternal;
         this.ceaHelper = new CeaHelper(reg);
-        this.scheduler = scheduler;
         this.recorder = recorder;
-
+        this.ui = ui;
         
     }
 
     /**
      * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#canProcess(org.w3c.dom.Document)
      */
-    public boolean canProcess(Document doc) {
+    public String canProcess(Document doc) {
         try {
-            Unmarshaller.unmarshal(Tool.class,doc);
-            return true;
+            Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
+            return t.getName();
         } catch (Exception e) {
-            return false;
+            return null;
         }         
     }
 
@@ -161,6 +129,123 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         return "ivo".equals(execId.getScheme()) || "local".equals(execId.getScheme());
     }
 
+    private final UIInternal ui;
+    
+    /** creates a worker that will refresh status of all apps */
+    public BackgroundWorker createWorker() {
+    	return new BackgroundWorker(ui,"Checking status of Remote Applications") {
+    		protected Object construct() throws Exception {
+    			List errors = null;
+    			if (!poll) {
+    				logger.debug("run() - bailing out");
+    				return null;
+    			}
+    			List ids = recorder.listLeaves();
+    			for (int i = 0; i < ids.size(); i++) {               
+    				URI uri = ((URI)ids.get(i));
+    				if ("ivo".equals(uri.getScheme())) {
+    					try {
+    						checkSingleApp(uri);
+    					} catch (Exception e) {
+    						if (errors != null) {
+    							errors = new ArrayList();
+    						}
+    						errors.add(e);
+    					}                    
+    				}
+    			}
+    			return errors;
+    		}
+    		// report any that we failed to refresh.
+    		protected void doFinished(Object result) {
+    			List l = (List)result;
+    			if (l != null && l.size() > 0) {
+    				MultiException e = new MultiException();
+    				for (Iterator i = l.iterator(); i.hasNext(); ) {
+    					e.add((Exception)i.next());
+    				}
+    				parent.showError("Failed to check status of some applications",e);
+    			}
+    		}
+    		/** check a single cea for updates. to be called within scheduler thread 
+    	     * @throws IOException
+    	     * @throws CEADelegateException
+    	     * @throws ServiceException
+    	     * @throws NotFoundException
+    	     * @throws JMSException
+    	     * @throws ValidationException
+    	     * @throws MarshalException*/
+    	    private void checkSingleApp(URI executionId) throws IOException, NotFoundException, ServiceException, CEADelegateException, MarshalException, ValidationException {
+    	        if (ceaHelper.isLocal(executionId)) {
+    	            logger.warn("Shouldn't have seen a local id here " + executionId);
+    	            return;            
+    	        }
+    	        Folder f= recorder.getFolder(executionId);
+    	        if (f == null) {
+    	            logger.warn("Odd - can't find folder - must have been there a moment ago" + executionId);
+    	            return;
+    	        }
+    	        if (f.isDeleted()) {
+    	        	// don't care about this folder anymore
+    	        	return;
+    	        }
+    	        String currentStatus = f.getInformation().getStatus().trim();
+    	        logger.debug("Current status is " + currentStatus);
+    	        if (JesStrategyImpl.isCompletedOrError(currentStatus)) {
+    	            logger.debug("checkSingleApp() - end: app already finished.");
+    	            return; // nothing more to see here.
+    	        }
+    	        String ceaId = ceaHelper.getAppId(executionId);
+    	        MessageType mType = ceaHelper.createCEADelegate(executionId).queryExecutionStatus(ceaId);       
+    	        String newStatus = mType.getPhase().toString().trim();
+    	        if  (currentStatus.equals(newStatus)) { // nothing changed.
+
+    	            logger.debug("checkSingleApp() - end: app no change");
+    	            return;
+    	        }
+    	        // ok, send a status-change message
+    	    	ExecutionMessage em = new StatusChangeExecutionMessage(
+    	    			executionId.toString()
+    	    			,newStatus
+    	    			,new Date()
+    	    			);
+    	    	SourcedExecutionMessage sem = new SourcedExecutionMessage(
+    	    			executionId
+    	    			,f.getInformation().getName()
+    	    			,em
+    	    			,new Date()
+    	    			,null
+    	    			);
+    	        messaging.injectMessage(sem);        
+    	               
+    	        if (JesStrategyImpl.isCompletedOrError(newStatus)) { // new status is completion - send a results message        
+    	            ExecutionSummaryType ex =  ceaHelper.createCEADelegate(executionId).getExecutionSumary(ceaId);
+    	            if (ex != null && ex.getResultList() != null) {
+    	    			em = new ResultsExecutionMessage(executionId.toString(),new Date(), ex.getResultList());    		                	
+    	    			sem = new SourcedExecutionMessage(
+    	            			executionId
+    	            			,f.getInformation().getName()
+    	            			,em
+    	            			,new Date()
+    	            			,null
+    	            			);
+    	                messaging.injectMessage(sem);              	  
+    	            }
+    	        }
+
+    	        logger.debug("checkSingleApp() - end");
+    	    }
+    	    
+    	};
+    }
+
+    /**
+     * @see org.astrogrid.desktop.modules.system.ScheduledTask#getPeriod()
+     */
+    public long getPeriod() {
+        return 1000 * refreshSeconds;
+    }
+    
     /**
      * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#delete(java.net.URI)
      */
@@ -198,16 +283,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         }  
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.system.ScheduledTask#getPeriod()
-     */
-    public long getPeriod() {
-        return 1000 * refreshSeconds;
-    }
-    private long refreshSeconds;
-    public void setRefreshSeconds(long period) {
-    	this.refreshSeconds = period;
-    }
+
     /**
      * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#halt(java.net.URI)
      */
@@ -228,33 +304,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         }        
     }
                   
-    /** refresh method
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
-        logger.debug("run() - start");
-      
-        if (!poll) {
-            logger.debug("run() - bailing out");
-            return;
-        }
-        try {
-            List ids = recorder.listLeaves();
-            for (int i = 0; i < ids.size(); i++) {               
-                URI uri = ((URI)ids.get(i));
-                if ("ivo".equals(uri.getScheme())) {
-                    try {
-                    checkSingleApp(uri);
-                } catch (Exception e) {
-                    logger.warn("Failed to refresh cea apps progress - " + uri,e);
-                }                    
-                }
-            }
-        } catch (IOException e) {
-            logger.error("Failed to list folders in recorder",e);
-        }
-
-        logger.debug("run() - end");
+    /** sets update rate. - configuration option */
+    public void setRefreshSeconds(long period) {
+    	this.refreshSeconds = period;
     }
 
     /**
@@ -284,7 +336,6 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         } catch (ValidationException e) {
             throw new InvalidArgumentException(e);
         }
-
         
         ResourceInformation[] arr = apps.listProvidersOf(info.getId());
         ResourceInformation target = null;
@@ -301,7 +352,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         }
         return invoke(info, tool, target, securityActions);            
     }
-
+    
     /**
      * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#submitTo(org.w3c.dom.Document, java.net.URI)
      */
@@ -342,8 +393,105 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         }        
       return invoke(info, tool, target, securityActions);
     }
+
+    /**
+     * @see org.astrogrid.desktop.modules.background.CeaStrategyInternal#triggerUpdate()
+     */
+    public void triggerUpdate() {
+        createWorker().start();
+    }
     
     /**
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.acr.astrogrid.UserLoginEvent)
+     */
+    public void userLogin(UserLoginEvent arg0) {
+        poll = true;
+        createWorker().start();
+    }    
+    
+    /**
+     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.acr.astrogrid.UserLoginEvent)
+     */
+    public void userLogout(UserLoginEvent arg0) {
+        poll = false;        
+    }
+    
+    /**
+     * Handles security annotations in a tool document.
+     * These annotations are processing instructions aimed at the code that
+     * sends the tool to a web service; hence, they are intended for this
+     * class. This method detects all the processing instructions in
+     * the document, deletes those to do with security actions and returns
+     * their values.
+     */
+    private Set extractSecurityInstructions(Document document) {
+      System.out.println(document.toString());
+      Set instructions = new HashSet();
+      NodeList nodes = document.getChildNodes();
+      for (int i = 0; i < nodes.getLength(); i++) {
+        org.w3c.dom.Node n = nodes.item(i);
+        if (n.getNodeType() == org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE) {
+          ProcessingInstruction p = (ProcessingInstruction)n;
+          if ("CEA-strategy-security".equals(p.getTarget())) {
+            instructions.add(p.getData());
+            document.removeChild(n);
+          }
+        }
+      }
+      return instructions;
+    }
+
+    /** *UNUSED* - replaced by variant with security info.
+     * @todo remove once security stuff finalizes.
+     * first checks whether it can be serviced by the local cea lib.
+     * if not, delegates to a remote cea server 
+     * @param application
+     * @param document
+     * @param server
+     * @return
+     * @throws ServiceException
+     */
+//    private URI invoke(ApplicationInformation application, Tool document, ResourceInformation server)
+//    throws ServiceException {
+//        apps.translateQueries(application, document); //@todo - maybe move this into manager too???
+//        try {
+//        //fudge some kind of job id type. hope this will do.
+//            JobIdentifierType jid = new JobIdentifierType(server.getId().toString());
+//            if (ceaInternal.getAppLibrary().hasMatch(application)) {           
+//                String primId = ceaInternal.getExecutionController().init(document,jid.toString());
+//                if (!ceaInternal.getExecutionController().execute(primId)) {
+//                    throw new ServiceException("Failed to start application, for unknown reason");
+//                }
+//                return ceaHelper.mkLocalTaskURI(primId);
+//            } else {
+//                CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(server);
+//                String primId = del.init(document,jid);
+//                del.execute(primId);
+//                URI id = ceaHelper.mkRemoteTaskURI(primId,server);
+//                // notifyy recorder of new remote cea.
+//                ExecutionMessage em = new StatusChangeExecutionMessage(
+//						id.toString()
+//						,ExecutionInformation.PENDING
+//						,new Date()
+//						);
+//				SourcedExecutionMessage sem = new SourcedExecutionMessage(
+//						id
+//						,document.getName()
+//						,em
+//						,new Date()
+//						,null
+//						);
+//				messaging.injectMessage(sem);
+//                return id;
+//            }
+//        } catch (CeaException e) {
+//            throw new ServiceException(e);
+//        } catch (CEADelegateException e) {
+//            throw new ServiceException(e);
+//        } 
+//    }
+
+	/**
      * actually executes an applicaiton.
      * first checks whether it can be serviced by the local cea lib.
      * if not, delegates to a remote cea server 
@@ -379,161 +527,19 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
                 del.execute(primId);
                 URI id = ceaHelper.mkRemoteTaskURI(primId,server);
                 // notifyy recorder of new remote cea.
-                scheduler.runNow(new RemoteCeaSetup(document,application,id,jid));
-                return id;
-            }
-        } catch (CeaException e) {
-            throw new ServiceException(e);
-        } catch (CEADelegateException e) {
-            throw new ServiceException(e);
-        } 
-    }
-
-    /**
-     * @see org.astrogrid.desktop.modules.background.CeaStrategyInternal#triggerUpdate()
-     */
-    public void triggerUpdate() {
-        scheduler.runNow(this);
-    }
-    
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.acr.astrogrid.UserLoginEvent)
-     */
-    public void userLogin(UserLoginEvent arg0) {
-        poll = true;
-        scheduler.runNow(this);
-    }    
-    
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.acr.astrogrid.UserLoginEvent)
-     */
-    public void userLogout(UserLoginEvent arg0) {
-        poll = false;        
-    }
-    /**
-     * Handles security annotations in a tool document.
-     * These annotations are processing instructions aimed at the code that
-     * sends the tool to a web service; hence, they are intended for this
-     * class. This method detects all the processing instructions in
-     * the document, deletes those to do with security actions and returns
-     * their values.
-     */
-    private Set extractSecurityInstructions(Document document) {
-      System.out.println(document.toString());
-      Set instructions = new HashSet();
-      NodeList nodes = document.getChildNodes();
-      for (int i = 0; i < nodes.getLength(); i++) {
-        org.w3c.dom.Node n = nodes.item(i);
-        if (n.getNodeType() == org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE) {
-          ProcessingInstruction p = (ProcessingInstruction)n;
-          if ("CEA-strategy-security".equals(p.getTarget())) {
-            instructions.add(p.getData());
-            document.removeChild(n);
-          }
-        }
-      }
-      return instructions;
-    }
-    
-    /** check a single cea for updates. to be called within scheduler thread 
-     * @throws IOException
-     * @throws CEADelegateException
-     * @throws ServiceException
-     * @throws NotFoundException
-     * @throws JMSException
-     * @throws ValidationException
-     * @throws MarshalException*/
-    private void checkSingleApp(URI executionId) throws IOException, NotFoundException, ServiceException, CEADelegateException, MarshalException, ValidationException {
-        logger.debug("checkSingleApp(executionId = " + executionId + ") - start");
-
-        if (ceaHelper.isLocal(executionId)) {
-            logger.warn("Shouldn't have seen a local id here " + executionId);
-            return;            
-        }
-        Folder f= recorder.getFolder(executionId);
-        if (f == null) {
-            logger.warn("Odd - can't find folder - must have been there a moment ago" + executionId);
-            return;
-        }
-        if (f.isDeleted()) {
-        	// don't care about this folder anymore
-        	return;
-        }
-        String currentStatus = f.getInformation().getStatus().trim();
-        logger.debug("Current status is " + currentStatus);
-        if (JesStrategyImpl.isCompletedOrError(currentStatus)) {
-            logger.debug("checkSingleApp() - end: app already finished.");
-            return; // nothing more to see here.
-        }
-        String ceaId = ceaHelper.getAppId(executionId);
-        MessageType mType = ceaHelper.createCEADelegate(executionId).queryExecutionStatus(ceaId);       
-        String newStatus = mType.getPhase().toString().trim();
-        if  (currentStatus.equals(newStatus)) { // nothing changed.
-
-            logger.debug("checkSingleApp() - end: app no change");
-            return;
-        }
-        // ok, send a status-change message
-    	ExecutionMessage em = new StatusChangeExecutionMessage(
-    			executionId.toString()
-    			,newStatus
-    			,new Date()
-    			);
-    	SourcedExecutionMessage sem = new SourcedExecutionMessage(
-    			executionId
-    			,f.getInformation().getName()
-    			,em
-    			,new Date()
-    			,null
-    			);
-        messaging.injectMessage(sem);        
-               
-        if (JesStrategyImpl.isCompletedOrError(newStatus)) { // new status is completion - send a results message        
-            ExecutionSummaryType ex =  ceaHelper.createCEADelegate(executionId).getExecutionSumary(ceaId);
-            if (ex != null && ex.getResultList() != null) {
-    			em = new ResultsExecutionMessage(executionId.toString(),new Date(), ex.getResultList());    		                	
-    			sem = new SourcedExecutionMessage(
-            			executionId
-            			,f.getInformation().getName()
-            			,em
-            			,new Date()
-            			,null
-            			);
-                messaging.injectMessage(sem);              	  
-            }
-        }
-
-        logger.debug("checkSingleApp() - end");
-    }
-
-    /** actually executes an applicaiton.
-     * first checks whether it can be serviced by the local cea lib.
-     * if not, delegates to a remote cea server 
-     * @param application
-     * @param document
-     * @param server
-     * @return
-     * @throws ServiceException
-     */
-    private URI invoke(ApplicationInformation application, Tool document, ResourceInformation server)
-    throws ServiceException {
-        apps.translateQueries(application, document); //@todo - maybe move this into manager too???
-        try {
-        //fudge some kind of job id type. hope this will do.
-            JobIdentifierType jid = new JobIdentifierType(server.getId().toString());
-            if (ceaInternal.getAppLibrary().hasMatch(application)) {           
-                String primId = ceaInternal.getExecutionController().init(document,jid.toString());
-                if (!ceaInternal.getExecutionController().execute(primId)) {
-                    throw new ServiceException("Failed to start application, for unknown reason");
-                }
-                return ceaHelper.mkLocalTaskURI(primId);
-            } else {
-                CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(server);
-                String primId = del.init(document,jid);
-                del.execute(primId);
-                URI id = ceaHelper.mkRemoteTaskURI(primId,server);
-                // notifyy recorder of new remote cea.
-                scheduler.runNow(new RemoteCeaSetup(document,application,id,jid));
+                ExecutionMessage em = new StatusChangeExecutionMessage(
+						id.toString()
+						,ExecutionInformation.PENDING
+						,new Date()
+						);
+				SourcedExecutionMessage sem = new SourcedExecutionMessage(
+						id
+						,document.getName()
+						,em
+						,new Date()
+						,null
+						);
+				messaging.injectMessage(sem);
                 return id;
             }
         } catch (CeaException e) {
@@ -548,6 +554,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.5  2006/05/26 15:18:43  nw
+reworked scheduled tasks,
+
 Revision 1.4  2006/05/13 16:34:55  nw
 merged in wb-gtr-1537
 

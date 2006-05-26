@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.4 2006/05/26 15:19:31 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,12 +16,15 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.acr.system.UI;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 import EDU.oswego.cs.dl.util.concurrent.ClockDaemon;
 import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
 
 /** implmentation of the scheduler using the oswego clock daemon.
  * 
+ * Just creatres a new backgroundWorker for each task every period seconds..
  * takes a list of services to schedule.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
  *
@@ -47,6 +50,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
                 t.setDaemon(true);
                 t.setName("Scheduled Tasks Thread - " + t.getName());
                 t.setPriority(Thread.MIN_PRIORITY+3);
+                
                 return t;
             }
         });
@@ -59,23 +63,25 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
                logger.error("List of services to schedule contains something that isn't a ScheduledTask - " + o);
            } else {
                ScheduledTask st = (ScheduledTask)o;
-               this.executePeriodically(st.getPeriod(),st);
+               this.executePeriodically(st);
            }
         }          
     }
     // the implementation of the clock.
     final ClockDaemon daemon;
 
-
-    public void executePeriodically(long milliseconds, Runnable task) {
-        daemon.executePeriodically(milliseconds,task,false);
+    public void executePeriodically(final ScheduledTask task) {
+    	//@todo plumb into UI.
+        daemon.executePeriodically(task.getPeriod(),
+        		new Runnable() {
+        	public void run() {
+        		task.createWorker().start();
+        	}
+        }
+        		,false);
     }
 
-       
-    public void runNow(Runnable key) {
-        // assume key is the runnable..
-        daemon.executeAfterDelay(1L,key); // execute as soon as possible
-    }
+ 
 
     public void halting() {
         daemon.shutDown();        
@@ -90,6 +96,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.4  2006/05/26 15:19:31  nw
+reworked scheduled tasks,
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

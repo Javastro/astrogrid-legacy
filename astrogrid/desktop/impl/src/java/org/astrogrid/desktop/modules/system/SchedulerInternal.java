@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.4 2006/05/26 15:19:31 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+
 /** Internal interface to a low-level scheduler.
  * 
  * can also be used as a single-threaded background worker.
@@ -18,22 +20,17 @@ package org.astrogrid.desktop.modules.system;
  *
  */
 public interface SchedulerInternal {
-    /** execute a task periodically 
-     * @return a key for this scheduled task*/
-    public void executePeriodically(long milliseconds, Runnable task);
-    
-    /** execute a task as soon as possible
-     * 
-     *  can be used to ensure tasks are sequentially queued and executed on the same thread
-     *   - this ability isn't possible with the BackgroundExecutor - which will execute tasks in parallel on 
-     *   unspecified threads.
-     *  */
-    public void runNow(Runnable task) ;
+    /** execute a task periodically */
+    public void executePeriodically(ScheduledTask task);
+
 }
 
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.4  2006/05/26 15:19:31  nw
+reworked scheduled tasks,
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

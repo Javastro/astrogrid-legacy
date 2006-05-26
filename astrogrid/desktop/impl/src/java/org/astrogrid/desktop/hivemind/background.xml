@@ -65,9 +65,9 @@ Module of background services
 			<construct class="JesStrategyImpl" >
 				<service>astrogrid.messaging</service>
 				<service>astrogrid.recorder</service>
-				<service>astrogrid.community</service>				
-				<service>system.scheduler</service>
+				<service>astrogrid.community</service>
 				<service>astrogrid.applications</service>
+				<service>system.ui</service>
 				<set property="refreshSeconds" value="${background.jesStrategy.refreshSeconds}" />
 				<event-listener service-id="astrogrid.community" />						
 			</construct>
@@ -84,10 +84,10 @@ Module of background services
 			<construct class="CeaStrategyImpl" >
 				<service>astrogrid.messaging</service>
 				<service>astrogrid.recorder</service>
-				<service>system.scheduler</service>
 				<service>tasks</service>
 				<service>astrogrid.registry</service>
 				<service>astrogrid.applications</service>
+				<service>system.ui</service>
 				<set property="refreshSeconds" value="${background.ceaStrategy.refreshSeconds}" />				
 				<event-listener service-id="astrogrid.community" />				
 			</construct>
