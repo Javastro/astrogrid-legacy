@@ -5,22 +5,32 @@
         <artifactId>astrogrid-desktop-root</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Astronomy Runtimes</name>
-        <description><![CDATA[
-
-	<p>  
-                The Astrogrid Client runtime (ACR) is a desktop service which other client-side applications can connect with
-                to interact with astrogrid. The ACR provides a high-level facade into AstroGrid services, accessible
-		from HTTP / XML-RPC / JavaRmi and Gui interfaces.           
-	</p>
-	<p>
-               The ACR provides a single sign-on, single-configuration, and single cache for interactions with astrogrid servers -
-                making implementation of client-side applications simpler.
-	</p>
-		<p>
-			The Workbench is a suite of client-side applications for accessing AstroGrid services - a registry browser,
-			myspace manager, job controller and application invoker. It is layered upon the AstroGrid Client Runtime (ACR).
-	</p>		
-		  ]]></description>
+        <description>
+        Top Level Project for AR / Workbench
+        
+		Publisher should just run the goals listed in this project - no need to run goals in individual sub-projects.
+		E.g. to build and publish new suite of BETA AR:
+		1 Check all changes into CVS
+		2. Run:
+		% maven astrogrid-clean
+		3. Edit astrogrid.destop.version in maven-base/project.properties
+		4. Run: 
+		% maven install-materials install-standalone-apps
+		% maven -Dmaven.username=maven publish-beta-site
+		% maven -Dmaven.username=maven publish-beta-jnlp
+	
+	
+		To setup workbench for development in eclipse:
+		run steps 1-3 above.
+		4. Run:
+		% maven install-materials
+		5. cd to 'impl', Run: 
+		% maven eclipse
+		6. In eclipse select 'File > Import > Existing Projects into Workspace', and navigate to the impl directory.
+		This works best in Eclipse >= 3.2.0 - although it's still in beta, it works fine.
+		
+		If you need to edit the public api, repeast steps 5,6 for the 'api' directory
+		 </description>
         <shortDescription>Astro Runtimes</shortDescription>
 
    
@@ -29,5 +39,4 @@
                 <unitTestSourceDirectory/>        
         </build>
 
-   
 </project>
