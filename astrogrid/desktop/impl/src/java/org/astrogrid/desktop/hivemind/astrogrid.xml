@@ -174,10 +174,15 @@
 			after="*" > 
 			<parameter><![CDATA[
 			<html>
-			<h1>Astrogrid Astro Runtime v${acr.version}</h1>			
+			<h1>Astrogrid Astro Runtime v${astrogrid.desktop.version}</h1>			
 			<b>http://software.astrogrid.org</b><br>
 			TODO - fill this in
-		
+	<hr>
+			<h2>Build Information</h2>
+			Built: ${astrogrid.build.date}<br>
+			At: ${astrogrid.build.location}<br>
+			With ${astrogrid.build.jdk}<br>
+			By: ${astrogrid.build.by}		
 			</html>
 			]]></parameter>
 		</action>		
@@ -226,12 +231,13 @@
 	</implementation>	
 	
 	<service-point id="community" interface="Community">
-		Community and login.
+		Community and login.	
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.CommunityImpl" >
 				<service>system.ui</service>
 				<service>loginDialogue</service>
+				<service>system.snitch</service>
 				<string>${trusted.cert.dir}</string>
 			</construct>
 		</invoke-factory>	
@@ -295,7 +301,6 @@
 		Internal component - messaging system.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.MessagingImpl">
-				<service>system.scheduler</service>		
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -341,6 +346,7 @@
 				<service>recorder</service>
 				<configuration>processStrategies</configuration>
 				<service>myspace</service>
+				<service>system.snitch</service>				
 				<event-listener service-id="recorder" />
 			</construct>
 		</invoke-factory>	
@@ -384,7 +390,7 @@
 	<service-point id="login" interface="org.apache.hivemind.ServiceInterceptorFactory">
 		Causes login before accessing intercepted services.
 		Keeps service code cleaner, as no need for 'forceLogin' calls.
-		<invoke-factory>
+		<invoke-factory model="primitive">>
 			<construct class="org.astrogrid.desktop.modules.ag.LoginInterceptor">
 				<service>community</service>
 				<service>hivemind.ClassFactory</service>
