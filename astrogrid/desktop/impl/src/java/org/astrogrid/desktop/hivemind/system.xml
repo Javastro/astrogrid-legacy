@@ -454,6 +454,7 @@ System module.
 		<load service-id="scheduler"/>
 		<load service-id="executor" />
 		<load service-id="configuration" />
+		<load service-id="snitch" />
 	</contribution>
 	
 	<!-- start this eager if running under webstart -->
@@ -716,5 +717,30 @@ System module.
 	<implementation service-id="throbber"  if="(property system.ui.disabled) and (property system.systray.disabled)" >
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>	
+	
+	
+	<service-point id="snitch" interface="org.astrogrid.desktop.modules.system.SnitchInternal">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.SnitchImpl">
+				<service>ui</service>
+				<service>configuration</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	<implementation service-id="snitch" if="property system.snitch.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+	
+	<service-point id="snitchInterceptor" 
+		interface="org.apache.hivemind.ServiceInterceptorFactory"
+		parameters-schema-id="hivemind.MethodFilter">
+	  Snitch on usage of AR
+	  <invoke-factory model="primitive">
+	  	<construct class="org.astrogrid.desktop.modules.system.SnitchInterceptorFactory">
+	  		<service>snitch</service>	  	
+			<service>hivemind.ClassFactory</service>	  		
+	  	</construct>
+	  </invoke-factory>
+	</service-point>
 
  </module> 

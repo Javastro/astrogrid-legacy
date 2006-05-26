@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.6 2006/05/13 16:34:55 nw Exp $
+/*$Id: CommunityImpl.java,v 1.7 2006/05/26 15:22:54 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,9 @@ package org.astrogrid.desktop.modules.ag;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,18 +25,14 @@ import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.community.beans.v1.Credentials;
-import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
-import org.astrogrid.community.resolver.CommunityPasswordResolver;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
+import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.store.Ivorn;
 
 /** Community Service implementation
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
@@ -48,14 +46,16 @@ public class CommunityImpl implements Community  {
     /** Construct a new Community
      * 
      */
-    public CommunityImpl(UIInternal ui,LoginDialogue loginDialogue, String trustedCertificates) {       
+    public CommunityImpl(UIInternal ui,LoginDialogue loginDialogue, SnitchInternal snitch, String trustedCertificates) {       
         this.ui = ui;
         this.loginDialogue = loginDialogue;
+        this.snitch = snitch;
         ui.setStatusMessage("Not Logged In");
         
         LoginFactory.declareTrustedCertificates(trustedCertificates);
     }
     protected final UIInternal ui;
+    protected final SnitchInternal snitch;
     protected final LoginDialogue loginDialogue;
     protected UserInformation userInformation;
 
@@ -122,7 +122,10 @@ public class CommunityImpl implements Community  {
     private boolean authenticate() throws SecurityException, ServiceException{
         logger.info("In authenticate");
         try {
-            ui.setStatusMessage("Logging in..");   
+            ui.setStatusMessage("Logging in..");
+            Map m = new HashMap();
+            m.put("username",loginDialogue.getCommunity() + "/" + loginDialogue.getUser());
+            snitch.snitch("LOGIN",m);
             logger.info("Logging in " + 
                         loginDialogue.getUser() +
                         "@" +
@@ -203,6 +206,9 @@ public class CommunityImpl implements Community  {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.7  2006/05/26 15:22:54  nw
+implemented snitching.
+
 Revision 1.6  2006/05/13 16:34:55  nw
 merged in wb-gtr-1537
 

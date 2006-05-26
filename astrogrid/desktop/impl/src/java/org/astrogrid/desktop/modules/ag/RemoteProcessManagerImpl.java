@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.6 2006/04/26 15:55:57 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.7 2006/05/26 15:23:45 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,6 +44,7 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
+import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.w3c.dom.Document;
 
 /** implementation of a remote process manager.
@@ -62,15 +63,17 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
 
     public RemoteProcessManagerImpl(
             MessageRecorderInternal recorder, List strategies, 
-            MyspaceInternal vos ) {
+            MyspaceInternal vos, SnitchInternal snitch ) {
         super();
         this.recorder = recorder;
         this.vos = vos;
         this.strategies = strategies;
+        this.snitch = snitch;
     }
     final MessageRecorderInternal recorder;
     final List strategies;
     final MyspaceInternal vos;
+    final SnitchInternal snitch;
 
     
     private RemoteProcessStrategy selectStrategy(URI uri) throws InvalidArgumentException {
@@ -83,10 +86,17 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
         throw new InvalidArgumentException("Could not find handler for " +uri);
     }
     
-    private RemoteProcessStrategy selectStrategy(Document doc) throws InvalidArgumentException {
+    /** sleect the strategy we're going to use - and snitch what we're doing */
+    private RemoteProcessStrategy selectStrategyAndSnitch(Document doc) throws InvalidArgumentException {
         for (Iterator i = strategies.iterator(); i.hasNext(); ) {
             RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
-            if (s.canProcess(doc)) {
+            String name = s.canProcess(doc);
+            if (name != null) {
+            	if (snitch != null) { // be extra safe..
+                	Map m = new HashMap();
+                	m.put("name",name);
+                	snitch.snitch("SUBMIT",m);            		
+            	}
                 return s;
             }
         }
@@ -109,17 +119,18 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
 
     public URI submit(Document arg0) throws ServiceException, SecurityException, NotFoundException,
             InvalidArgumentException {
-        RemoteProcessStrategy s = selectStrategy(arg0);
+        RemoteProcessStrategy s = selectStrategyAndSnitch(arg0);   
         return s.submit(arg0);
     }
 
 
     public URI submitTo(Document arg0, URI arg1) throws NotFoundException,
             InvalidArgumentException, ServiceException, SecurityException {
-        RemoteProcessStrategy s = selectStrategy(arg0);
+        RemoteProcessStrategy s = selectStrategyAndSnitch(arg0);      
         return s.submitTo(arg0,arg1);
     }
 
+    
 
     private Document loadDocument(URI location) throws NotFoundException, InvalidArgumentException {
         InputStream is = null;
@@ -145,7 +156,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
     public URI submitStored(URI arg0) throws NotFoundException, InvalidArgumentException,
             SecurityException, ServiceException {
         Document doc = loadDocument(arg0);
-        RemoteProcessStrategy s = selectStrategy(doc);
+        RemoteProcessStrategy s = selectStrategyAndSnitch(doc);
         return s.submit(doc);
     }
 
@@ -153,7 +164,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
     public URI submitStoredTo(URI arg0, URI arg1) throws NotFoundException,
             InvalidArgumentException, ServiceException, SecurityException {
         Document doc = loadDocument(arg0);
-        RemoteProcessStrategy s = selectStrategy(doc);
+        RemoteProcessStrategy s = selectStrategyAndSnitch(doc);
         return s.submitTo(doc,arg1);
     }
 
@@ -335,6 +346,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.7  2006/05/26 15:23:45  nw
+implemented snitching.
+
 Revision 1.6  2006/04/26 15:55:57  nw
 fixed jdic-tray bug by refactoring.
 

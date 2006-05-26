@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessStrategy.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: RemoteProcessStrategy.java,v 1.3 2006/05/26 15:23:45 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,12 @@ import org.w3c.dom.Document;
  */
 public interface RemoteProcessStrategy extends ScheduledTask {
     boolean canProcess(URI execId) ;
-    boolean canProcess(Document doc);
+    /** dual-use method, for efficiency.
+     * returns null if can't process. If can process, return value is used for snitching - extract some kind of name from the document
+     * 
+     *  @return the application being invoked / workflow name / somesuch.*/
+    String canProcess(Document doc);
+    
     
     public URI submit(Document doc) throws ServiceException, SecurityException, NotFoundException,
     InvalidArgumentException;
@@ -57,6 +62,9 @@ public interface RemoteProcessStrategy extends ScheduledTask {
 
 /* 
 $Log: RemoteProcessStrategy.java,v $
+Revision 1.3  2006/05/26 15:23:45  nw
+implemented snitching.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 
