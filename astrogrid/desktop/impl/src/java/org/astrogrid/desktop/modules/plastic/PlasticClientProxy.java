@@ -9,7 +9,6 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.common.namegen.NameGen;
-import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.outgoing.PlasticException;
 
 /**
