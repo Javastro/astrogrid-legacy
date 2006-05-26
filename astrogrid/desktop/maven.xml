@@ -110,5 +110,19 @@
 	</goal>
 	
 
+	<goal name="astrogrid-install-artifact"
+		description="runs install-materials and install-standalone-apps"
+		prereqs="install-materials,install-standalone-apps"
+	/>
+	
+	<goal name="astrogrid-deploy-artifact"
+		description="deploys interface jars to central maven repo">
+		<j:set var="maven.scm.cvs.tag">
+		<util:replace  newChar="_" oldChar=".">DEPLOY_ARTIFACT_${astrogrid.desktop.version}</util:replace>
+		</j:set>
+	   <attainGoal name="scm:cvs-tag-project" />		
+		<maven:maven basedir="api" descriptor="api/project.xml" goals="astrogrid-deploy-artifact" />
+	</goal>
+
 </project>
 

@@ -15,9 +15,10 @@
 		% maven astrogrid-clean
 		3. Edit astrogrid.destop.version in maven-base/project.properties
 		4. Run: 
-		% maven install-materials install-standalone-apps
+		% maven astrogrid-install-artifact
 		% maven -Dmaven.username=maven publish-beta-site
 		% maven -Dmaven.username=maven publish-beta-jnlp
+		% maven astrogrid-clean astrogrid-deploy-artifact
 	
 	
 		To setup workbench for development in eclipse:

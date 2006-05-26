@@ -4,6 +4,7 @@
 
 	<goal name="astrogrid-install-artifact" prereqs="javadoc:install,jar:install,dist-install,javahelp-install"/>
 
+	<goal name="astrogrid-deploy-artifact" prereqs="javadoc:deploy,jar:deploy,dist:deploy-bin" />
 
 	<goal name="astrogrid-build-artifact" prereqs="javadoc,jar:jar,dist:build-bin,javahelp-jar">
 	</goal>
