@@ -63,7 +63,7 @@
  	        
 <!-- online help system -->
 
-	<dependency> <!-- no extension - as liable to change -->
+	<dependency> <!-- no extension - as liable to change with acr -->
 		<groupId>org.astrogrid</groupId>
 		<artifactId>acr-interface-javahelp</artifactId>
 		<version>${astrogrid.desktop.version}</version>

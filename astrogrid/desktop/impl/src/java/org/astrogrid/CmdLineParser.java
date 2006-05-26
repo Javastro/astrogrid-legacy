@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -24,15 +22,10 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.hivemind.Element;
 import org.apache.hivemind.ErrorHandler;
-import org.apache.hivemind.Resource;
 import org.apache.hivemind.impl.DefaultErrorHandler;
 import org.apache.hivemind.parse.ContributionDescriptor;
 import org.apache.hivemind.parse.ModuleDescriptor;
 import org.astrogrid.desktop.hivemind.Launcher;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /** Sets up the default commandline parser for all the different app variants.
  * @author Noel Winstanley

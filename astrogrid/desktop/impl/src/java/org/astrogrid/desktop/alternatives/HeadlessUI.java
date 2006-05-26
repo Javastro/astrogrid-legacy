@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 /**
  * Implementation of UI suitable for use in headless environments.
  * @author noel

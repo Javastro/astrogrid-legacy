@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.6 2006/04/21 13:48:11 nw Exp $
+/*$Id: Main.java,v 1.7 2006/05/26 15:08:09 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,8 @@
 **/
 package org.astrogrid.desktop;
 
-import javax.swing.UIManager;
-
 import org.astrogrid.Workbench;
 import org.astrogrid.Workbench1;
-/*
-import com.jgoodies.looks.Options;
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
-*/
 
 /** @deprecated use one of the entry points in package <tt>org.astrogrid</tt>
  * instead.
@@ -48,6 +42,9 @@ public class Main  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.7  2006/05/26 15:08:09  nw
+minor changes.
+
 Revision 1.6  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
