@@ -113,6 +113,7 @@
 				<service>system.systray</service>	
 				<service>prettyPrinter</service>
 				<service>system.configuration</service>							
+				<service>system.snitch</service>				
 			</construct>
 		</invoke-factory>
 	</service-point>
