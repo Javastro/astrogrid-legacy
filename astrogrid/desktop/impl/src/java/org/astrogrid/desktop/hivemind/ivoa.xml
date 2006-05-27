@@ -27,7 +27,7 @@
 		<action parentName="projects" name="ivoaProject" text="IVOA" iconName="ivoa.gif"
 			object="service:system.browser" methodName="openURL"
 			>
-			<tooltip>Home Page for the Internaltion Virtual Observatory Alliance</tooltip>
+			<tooltip>Home Page for the International Virtual Observatory Alliance</tooltip>
 			<parameter>http://www.ivoa.net</parameter>
 		</action>		
 
