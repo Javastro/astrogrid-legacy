@@ -41,13 +41,15 @@
 	</contribution>	
 	
 	<contribution configuration-id="system.uiStructure" if="property hub.mode">
-	<action parentName="help" name="about" text="About AstroGrid PLASTIC Hub.."
+	<action parentName="help" name="about" text="About AstroGrid PLASTIC Hub..."
 			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
 			after="*" > 
 			<parameter><![CDATA[
 			<html>
-			<h1>Astrogrid PLASTIC Hub v${astrogrid.desktop.version}</h1>			
+			<h1>Astrogrid PLASTIC Hub v${hub.version}</h1>			
 			<b>http://software.astrogrid.org</b><br>
+			This is the reference implementation of the Plastic Hub.  PLASTIC is a widely
+            supported specification for connecting client-side astronomical tools together.
 			
 			<h1>PLASTIC - Platform for Astronomy Tool InterCommunication</h1>
 			<b>http://plastic.sourceforge.net</b><br>
@@ -59,15 +61,6 @@
 			<li>Mark Taylor
 			<li>Noel Winstanley
 			</ul>
-			
-			Other Contributors
-			<ul>
-			<li>Alasdair Allan
-			<li>Sebastien Derriere
-			<li>Pierre Fernique
-			<li>Doug Tody
-			</ul>
-			
 			<hr>
 			<h2>Build Information</h2>
 			Built: ${astrogrid.build.date}<br>
@@ -75,7 +68,6 @@
 			With ${astrogrid.build.jdk}<br>
 			By: ${astrogrid.build.by}
 			</html>
-			
 			]]></parameter>
 		</action>		
 	</contribution>
@@ -120,8 +112,7 @@
 				<service>system.webserver</service>
 				<service>system.systray</service>	
 				<service>prettyPrinter</service>
-				<service>system.configuration</service>		
-				<service>system.snitch</service>				
+				<service>system.configuration</service>							
 			</construct>
 		</invoke-factory>
 	</service-point>
