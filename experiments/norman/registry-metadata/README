@@ -1,0 +1,154 @@
+
+I was initially rather indecisive about this, and unable to decide whether to
+stick to RDFS for the RM ontology, or to go with OWL.  Presumably the
+former would give me more flexibility as regards reasoners.  I suppose
+I could switch between them later, with probably equal difficulty, so
+I ended up going with OWL, since that's what I'm marginally more familiar
+with.
+
+In each case there's no natural way of specifying XSchema datatype
+restrictions on classes, but there are notes about this at:
+
+  W3C WG note: XML Schema Datatypes in RDF and OWL
+    http://www.w3.org/TR/swbp-xsch-datatypes/
+
+  User-Defined Datatypes in Protege-OWL
+    http://protege.stanford.edu/plugins/owl/xsp.html
+
+See also the OWL and RDFS ontologies for Atom <http://atomowl.org/ontologies>
+
+
+
+
+I've ended up largely ignoring the XSchema structure, and instead
+re-modelling the semantics from scratch, based on the XSchema, and the
+specification at
+<http://www.ivoa.net/internal/IVOA/VOResourceV10/WD-VOResource-v1.html>,
+with discussion on the wiki at
+<http://www.ivoa.net/twiki/bin/view/IVOA/VOResourceV10>.
+
+
+
+
+* Modifications to the VOResource-1.0.xsd schema.
+
+References to the XSchema are rmt:typename
+
+These have been fairly substantial, in the second or third go I had at
+creating the Ontology.  I've generally been permissive, so that Actor,
+for example, now has a logo, rather than just rmt:Contact
+
+Generally, I haven't included cardinality constraints.
+
+** Actor
+
+This has no counterpart in the .xsd schema, but I've used it to group
+Creator, Contact and Resource.  I've also used it to replace
+rmt:ResourceName.  The logo property has Actor as its domain, so that
+it's not only Creators which can have logos.  Actors also now have
+email addresses and telephone numbers, because I don't see why they shouldn't!
+
+** Resource
+
+Includes Organisation and Service, which are both described in the RM
+WD as being `resources', and both of which have IVOIDs.  They're also
+both now types of Actor.
+
+** ResourceName
+
+This has disappeared, replaced with separate 'name' and 'ivoid'
+properties on Actor.
+
+** Resource and Contentlevel types
+
+Substantial hierarchical structure added.
+
+** Capability
+
+I've just removed this, and added standardID property to the Service
+class.  The .xsd comment says `this type is usually extended and added
+as a child of the specific Service subclass', so I might as well
+support that directly.  The v1.0 VOResource spec has more to say on
+capabilities and Service in Section 2.2.2, so I should examine that
+carefully.
+
+I've made the 'standardID' property have a domain of FullAccessURL,
+rather than be a AnyURI datatype property.
+
+** Identifier
+
+These are formal identifiers.  Holds the AuthorityID and the various
+URIs.  The 1.0 spec defines ResourceKey.
+
+** URIs
+
+This holds IdentifierURI and the various AccessURL subtypes.  The
+rmt:AccessURL 'use' attribute is discarded in favour of a number of
+AccessURL subtypes.
+
+I've modelled various xs:anyURI attributes as object properties, with
+AccessURL as their domain.
+
+** ContentDescription
+
+referenceURL's range is here FullAccessURL (rather than being a
+xs:anyURI datatype property)
+
+** Relationship
+
+This is modelled by a property relatedResource, with multiple
+subproperties mirrorOf, serviceFor, servedBy and derivedFrom.  The
+rmt:related-to relationship is therefore redundant, as the parent
+'relatedResource' property encapsulates that.
+
+** validationLevel
+
+This is also modelled by a set of subproperties.  The specific
+subproperty gives the level, and the object is the validatedBy
+Organisation.  Note that this effectively makes the validatedBy
+attribute required; I should define a dummy/unknown value for the case
+where it's not known.
+
+** Mild renamings
+
+Content -> ContentDescription
+Curation -> CurationDescription
+Date -> DateTime
+
+Date:role property -> Date:dateRole
+Interface:role property -> Interface:interfaceRole
+The two have identical ranges, but come from separate controlled
+vocabularies.  A similar thing could be done with the 'version'
+property, but in that case the two properties have closer semantics.
+
+
+** Value partitions
+
+ContentLevel, Status and ResourceType are value
+partitions, rather than constrained strings.
+
+** PaddedString and PaddedURI
+
+Replaced by simple string and URI -- there's no need for this parsing-specific
+extension in the ontology.
+
+** Simple types
+
+These are not defined in this ontology, but refer to the types in the
+XSchema, as suggested in the swbp-xsch-datatypes reference above.  These
+references are currently illegitimate, since the XSchema doesn't use the
+id attribute on its simple types.
+
+In fact, Protégé 3.1 doesn't allow you to specify user datatypes in
+its interface, so these are generally just string literals.  However
+these should ultimately be changed to:
+
+created rmt:UTCDateTime
+datetime rmt:UTCDateTime
+IdentifierURI restrict uri to rmt:IdentifierURI
+updated rmt:UTCDateTime
+shortname rmt:ShortName
+uri xs:anyURI
+
+AuthorityID and ResourceKey are omitted.  They're defined as utility
+types, but not used, in the VOResource XSchema
