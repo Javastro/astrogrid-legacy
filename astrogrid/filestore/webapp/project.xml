@@ -3,10 +3,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/project.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/11/10 13:59:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2006/06/01 14:53:12 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.11  2006/06/01 14:53:12  clq2
+    |   dave-dev-200605311657 - fix the broken selftests page
+    |
+    |   Revision 1.10.20.2  2006/06/01 13:40:44  dave
+    |   Fixed build dependency
+    |
+    |   Revision 1.10.20.1  2006/06/01 13:01:14  dave
+    |   Fixed self test page in webapp
+    |
     |   Revision 1.10  2005/11/10 13:59:13  clq2
     |   removed astrogrid-filestore-deploy dependency since it's not been built anymore
     |
@@ -138,7 +147,6 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-            	
     	
         <!--+
             | The Registry components.

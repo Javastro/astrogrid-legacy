@@ -1,11 +1,16 @@
 /*
- * <cvs:source>$Source: /devel/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v
- $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/11/04 17:31:05 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:date>$Date: 2006/06/01 14:53:12 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.15  2006/06/01 14:53:12  clq2
+ *   dave-dev-200605311657 - fix the broken selftests page
+ *
+ *   Revision 1.14.20.1  2006/06/01 13:01:14  dave
+ *   Fixed self test page in webapp
+ *
  *   Revision 1.14  2005/11/04 17:31:05  clq2
  *   axis_gtr_1046
  *

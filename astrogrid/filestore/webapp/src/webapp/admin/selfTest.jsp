@@ -1,6 +1,6 @@
 <%@ page import="org.astrogrid.store.Ivorn,
                  org.astrogrid.config.SimpleConfig,
-                 org.astrogrid.filestore.integration.FileStoreIntegrationTest"
+                 org.astrogrid.filestore.webapp.FileStoreSelfTest"
     session="false" %>
 <html>
 <head>
@@ -20,7 +20,7 @@
 String testNow = request.getParameter("testnow");
 if("true".equals(testNow)) {
 
-  FileStoreIntegrationTest fit = new FileStoreIntegrationTest();
+  FileStoreSelfTest fit = new FileStoreSelfTest();
   fit.TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.service";
   SimpleConfig.getSingleton().setProperty("org.astrogrid.filestore.service.data.http.html","http://www.astrogrid.org/maven/");
   SimpleConfig.getSingleton().setProperty("org.astrogrid.filestore.service.data.http.jar","http://www.astrogrid.org/maven/org.astrogrid/jars/astrogrid-common-SNAPSHOT.jar");
