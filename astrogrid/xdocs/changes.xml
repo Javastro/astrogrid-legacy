@@ -26,6 +26,9 @@
         </release>
 		
 		<release version="HEAD">
+            <action dev="dave" type="fix">
+    			<em>Branch dave-dev-200605311657:</em> fix the broken selftest page.
+    		</action>
 			<action dev="gtr" type="add">
     			<em>Branch wb-gtr-1537:</em> Additions to the community/resolver project to allow logging in at a MyProxy service.
     			Please note that there are changes to the security and desktop projects also on these branch and these should <em>not</em>
