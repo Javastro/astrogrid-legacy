@@ -37,7 +37,9 @@ default="astrogrid-build-artifact">
 		/>
 	</goal>
 	
-	<goal name="install-into-taverna" prereqs="astrogrid-build-artifact">
+	<goal name="install-into-taverna" prereqs="astrogrid-build-artifact"
+	description="build plugin jar and copy to ${taverna.lib.dir} - set this propertiy to your taverna installation in build.properties"	
+	>
 		<copy todir="${taverna.lib.dir}">
 			<fileset dir="${maven.dist.bin.assembly.dir}">
 				<include name="*.jar" />
