@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.4 2006/04/18 23:25:47 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,15 +8,16 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.framework.descriptors;
+package org.astrogrid.acr.builtin;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.collections.map.ListOrderedMap;
 
-/** Descriptor for a component
- * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
+/** Descriptor for a component of the AR
+ * @author Noel Winstanley nw@jb.man.ac.uk 
+ * @since 2.2
  *
  */
 public class ComponentDescriptor extends Descriptor{
@@ -27,13 +28,19 @@ public class ComponentDescriptor extends Descriptor{
     public ComponentDescriptor() {
         super();
     }
-    protected final Map methods = new ListOrderedMap();
+    protected final Map methods = new HashMap();
+    	//new ListOrderedMap();
     /** retrieve the descriptor for a named method */
     public MethodDescriptor getMethod(String name) {
         return (MethodDescriptor)methods.get(name);
     }
     
-    /** add a method to the descriptor */
+    /** list the methods of this component */
+    public MethodDescriptor[] getMethods() {
+    	return (MethodDescriptor[])methods.values().toArray(new MethodDescriptor[]{});
+    }
+    
+    /** add a method to the descriptor - used internally. */
     public void addMethod(MethodDescriptor m) {
         methods.put(m.getName(),m);
     }
@@ -51,10 +58,11 @@ public class ComponentDescriptor extends Descriptor{
 
 
 
-   /** return the interface class for this component - which, must be implemented by the class returned by {@link #getImplementationClass()}*/   
+   /** return the interface class for this component */   
     public Class getInterfaceClass() {
         return this.interfaceClass;
     }
+    /** used internally */
     public void setInterfaceClass(Class interfaceClass) {
         this.interfaceClass = interfaceClass;
     }
@@ -78,6 +86,9 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.1  2006/06/02 00:17:10  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.4  2006/04/18 23:25:47  nw
 merged asr development.
 

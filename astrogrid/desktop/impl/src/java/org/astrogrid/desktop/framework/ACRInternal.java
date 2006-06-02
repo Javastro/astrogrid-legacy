@@ -1,4 +1,4 @@
-/*$Id: ACRInternal.java,v 1.2 2006/04/18 23:25:46 nw Exp $
+/*$Id: ACRInternal.java,v 1.3 2006/06/02 00:16:15 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
 
 
 /** (internal interface) Extension to the {@link ACR} interface, that allows new modules to be added to the registry.
@@ -43,6 +43,9 @@ public interface ACRInternal extends ACR {
 
 /* 
 $Log: ACRInternal.java,v $
+Revision 1.3  2006/06/02 00:16:15  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.2  2006/04/18 23:25:46  nw
 merged asr development.
 

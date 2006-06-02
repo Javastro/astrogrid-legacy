@@ -1,4 +1,4 @@
-/*$Id: ValueDescriptor.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: ValueDescriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,10 +8,11 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.framework.descriptors;
+package org.astrogrid.acr.builtin;
 
 /** Descriptor for a value
- * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
+ * @author Noel Winstanley nw@jb.man.ac.uk
+ * @since 2.2
  *
  */
 public class ValueDescriptor extends Descriptor {
@@ -25,10 +26,12 @@ public class ValueDescriptor extends Descriptor {
     private Class type;
     private String uitype;
  
+    /** user-readable type information */
     public String getUitype() {
         return this.uitype;
     }
 
+    /** used internally */
     public void setUitype(String uitype) {
         this.uitype = uitype;
     }
@@ -46,10 +49,12 @@ public class ValueDescriptor extends Descriptor {
         return buffer.toString();
     }
 
+    /** the type of this value */
     public Class getType() {
         return this.type;
     }
 
+    /** used internally */
     public void setType(Class type) {
         this.type = type;
     }
@@ -58,6 +63,9 @@ public class ValueDescriptor extends Descriptor {
 
 /* 
 $Log: ValueDescriptor.java,v $
+Revision 1.1  2006/06/02 00:17:10  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.2  2006/04/18 23:25:47  nw
 merged asr development.
 

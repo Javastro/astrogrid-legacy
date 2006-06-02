@@ -48,7 +48,7 @@
 							<attribute name="description"/>							
 							<attribute name="uitype"/>					
 							<conversion 
-								class="org.astrogrid.desktop.framework.descriptors.ValueDescriptor"
+								class="org.astrogrid.acr.builtin.ValueDescriptor"
 								parent-method="setReturnValue"/>	
 						</element><!--end return -->
 						<element name="param" >
@@ -57,18 +57,18 @@
 							<attribute name="description"/>
 							<attribute name="uitype"/>
 							<conversion 
-								class="org.astrogrid.desktop.framework.descriptors.ValueDescriptor"
+								class="org.astrogrid.acr.builtin.ValueDescriptor"
 								parent-method="addParameter"/>								
 						</element> <!-- end param -->
 					<conversion 
-						class="org.astrogrid.desktop.framework.descriptors.MethodDescriptor" 
+						class="org.astrogrid.acr.builtin.MethodDescriptor" 
 						parent-method="addMethod"/>						
 					</element> <!-- end method -->
 					<conversion 
-						class="org.astrogrid.desktop.framework.descriptors.ComponentDescriptor" 
+						class="org.astrogrid.acr.builtin.ComponentDescriptor" 
 						parent-method="addComponent"/>
 				</element><!-- end component -->
-				<conversion class="org.astrogrid.desktop.framework.descriptors.ModuleDescriptor"/>
+				<conversion class="org.astrogrid.acr.builtin.ModuleDescriptor"/>
 			</element><!-- end acr-module -->
 		</schema>
 	</configuration-point>
@@ -141,8 +141,6 @@
 	</service-point>
 	
 	<!-- setup initial set of convertors and transformers
-	
-	classnames are all over the place here, but still - these things make more sense in the framework module
 	 -->
 	<contribution configuration-id="converters">
 		<register output="java.net.URI" converter="instance:org.astrogrid.desktop.modules.system.converters.URIConverter" />

@@ -619,7 +619,12 @@ System module.
 	<service-point id="apihelp" interface="ApiHelp">
 		Access api help on acr methods
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.ApiHelpImpl"/>
+			<construct class="org.astrogrid.desktop.modules.system.ApiHelpImpl">
+				<service>builtin.acr</service>
+				<service>framework.converter</service>
+				<service>framework.rpcResultTransformer</service>
+				<service>framework.plainResultTransformer</service>				
+			</construct>
 		</invoke-factory>
 	</service-point>		
 

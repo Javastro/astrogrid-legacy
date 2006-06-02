@@ -1,4 +1,4 @@
-/*$Id: ModuleDescriptor.java,v 1.3 2006/04/18 23:25:47 nw Exp $
+/*$Id: ModuleDescriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,15 +8,15 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.framework.descriptors;
+package org.astrogrid.acr.builtin;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.collections.map.ListOrderedMap;
-
-/** Representation of the descriptor for a module.
- * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
+/** Representation of a module of the AR.
+ * @author Noel Winstanley nw@jb.man.ac.uk 
+ * @since 2.2
  *
  */
 public class ModuleDescriptor  extends Descriptor {
@@ -29,12 +29,18 @@ public class ModuleDescriptor  extends Descriptor {
     }
 
     /** components in this module */
-    protected final Map components = new ListOrderedMap();
+    protected final Map components = new HashMap();
+    	//new ListOrderedMap(); - don't think this is necessary anymore.
   /** retreive a named component descriptor */
    public ComponentDescriptor getComponent(String name) {
        return (ComponentDescriptor)components.get(name);
    }
+   /** list all components in this module */
+   public ComponentDescriptor[] getComponents() {
+	   return (ComponentDescriptor[])components.values().toArray(new ComponentDescriptor[]{});
+   }
    
+   /** used internally - not useful for clients */
    public void addComponent(ComponentDescriptor desc) {
        components.put(desc.getName(),desc);
    }
@@ -62,6 +68,9 @@ public class ModuleDescriptor  extends Descriptor {
 
 /* 
 $Log: ModuleDescriptor.java,v $
+Revision 1.1  2006/06/02 00:17:10  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.3  2006/04/18 23:25:47  nw
 merged asr development.
 

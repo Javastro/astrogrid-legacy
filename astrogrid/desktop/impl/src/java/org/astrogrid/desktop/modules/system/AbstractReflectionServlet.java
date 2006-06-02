@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.4 2006/06/02 00:16:15 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,12 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.builtin.ComponentDescriptor;
+import org.astrogrid.acr.builtin.MethodDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 
 /** Abstract servlet class for exposing services.
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
@@ -163,6 +163,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.4  2006/06/02 00:16:15  nw
+ * Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+ *
  * Revision 1.3  2006/04/18 23:25:44  nw
  * merged asr development.
  *

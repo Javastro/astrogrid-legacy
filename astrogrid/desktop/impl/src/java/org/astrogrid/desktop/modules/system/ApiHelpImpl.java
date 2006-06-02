@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.5 2006/06/02 00:16:15 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,24 +10,34 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ComponentDescriptor;
+import org.astrogrid.acr.builtin.MethodDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
+import org.astrogrid.acr.builtin.ValueDescriptor;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.desktop.framework.ACRInternal;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
+import org.astrogrid.desktop.framework.Module;
+import org.astrogrid.desktop.framework.ReflectionHelper;
 
 /** Implementation of the APIHelp component
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Jun-2005
  * @todo strip html tags from responses - this should be text-only.
+ * @todo transform results of invocations.
  */
 public class ApiHelpImpl implements ApiHelp {
     /**
@@ -38,11 +48,23 @@ public class ApiHelpImpl implements ApiHelp {
     /** Construct a new ApiHelpImpl
      * 
      */
-    public ApiHelpImpl(ACRInternal reg) {
+    public ApiHelpImpl(ACRInternal reg, Converter conv, Transformer rpc, Transformer string) {
         super();
         this.reg = reg;
+        this.conv = conv;
+        this.rpc = rpc;
+        this.string = string;
     }
     protected final ACRInternal reg;
+    protected final Converter conv;
+    protected final Transformer rpc;
+    protected final Transformer string;
+    
+    
+    public ModuleDescriptor[] listModuleDescriptors() {
+    	return (ModuleDescriptor[])reg.getDescriptors().values().toArray(new ModuleDescriptor[]{});
+    }
+    
     public String[] listMethods() {
         Vector result = new Vector();
 
@@ -264,6 +286,71 @@ public class ApiHelpImpl implements ApiHelp {
         return result.toString();
         }
 
+    //@todo merge ApiHelp.callFunction,  XMLRPCServlet.execute() and HtmlServlet.callMethod
+	public Object callFunction(String methodName, int returnKind, Object[] args) throws ACRException, InvalidArgumentException, NotFoundException {
+		String[] names = methodName.split("\\.");
+		if (names.length != 3) {
+			throw new InvalidArgumentException("Expected a fully-qualified function name - of format module.component.function");
+		}
+		// this traversal isn't necessary, but is good for error-trapping.
+	      ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
+	        if (m == null) {
+	            throw new NotFoundException( "Unknown module " + names[0]);
+	        }
+	        
+	        ComponentDescriptor cd = m.getComponent(names[1]);
+	        if (cd == null) {
+	            throw new NotFoundException("Unknown component " + names[1]);
+	        }                
+	        MethodDescriptor md = cd.getMethod(names[2]);
+	        if (md == null) {
+	            throw new NotFoundException("Unknown method "+ names[2]);
+	        }		
+
+	        // ok. all should be there. go on and call the method.
+	        Module module = reg.getModule(m.getName());
+	        Object service = module.getComponent(cd.getName());
+	        try {
+				Method method = ReflectionHelper.getMethodByName(service.getClass(),md.getName());
+				Class[] parameterTypes = method.getParameterTypes();
+		        if (parameterTypes.length != args.length) {
+		        	throw new InvalidArgumentException("Function " + methodName + " expects "
+		        			+ parameterTypes.length + " parameters, but " 
+		        			+ args.length + " arguments were provided"
+		        			);
+		        }				
+                // convert parameters to correct types.
+                logger.debug("Converting args...");
+                Object[] realArgs = new Object[parameterTypes.length];
+                Iterator it = md.parameterIterator();
+                for (int i =0; i < parameterTypes.length && it.hasNext(); i++) {
+                    ValueDescriptor vd = (ValueDescriptor)it.next();
+                    realArgs[i] = conv.convert(parameterTypes[i],args[i]);
+                }
+                // call method
+
+                logger.debug("Calling method...");
+                Object result = MethodUtils.invokeMethod(service,md.getName(),realArgs);
+                switch (returnKind) {
+                case DATASTRUCTURE:
+                	return rpc.transform(result);
+                case STRING:
+                	return string.transform(result);
+                case ORIGINAL:
+                default:
+                	return result;
+                }
+            } catch (InvocationTargetException e) {
+            	throw new ACRException(e.getCause());
+           
+			} catch (NoSuchMethodException x) {
+				throw new NotFoundException(x.getMessage());
+			} catch (IllegalAccessException x) {
+				throw new ACRException(x);
+			}
+	        
+	}
+
 
     }        
 
@@ -271,6 +358,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.5  2006/06/02 00:16:15  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 

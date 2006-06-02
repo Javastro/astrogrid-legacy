@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.4 2006/06/02 00:16:15 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,15 +36,15 @@ import org.apache.xmlrpc.XmlRpcHandler;
 import org.apache.xmlrpc.XmlRpcServer;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.builtin.ComponentDescriptor;
+import org.astrogrid.acr.builtin.MethodDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
+import org.astrogrid.acr.builtin.ValueDescriptor;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.ReflectionHelper;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
 /** Implementation of full-featured XMLRPC server that exposes the ACR functions
  * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
  *
@@ -66,9 +66,8 @@ public class XmlRpcServlet extends HttpServlet {
             this.cd = cd;         
         }
         
-        /**
-         * @see org.apache.xmlrpc.XmlRpcHandler#execute(java.lang.String, java.util.Vector)
-         */
+        //@todo merge ApiHelp.callFunction,  XMLRPCServlet.execute() and HtmlServlet.callMethod
+
         public Object execute(String method, Vector inputArgs) throws Exception{
             if (logger.isDebugEnabled()) {
                 logger.debug(m.getDescriptor().getName() + "." + cd.getName() + " - " + method + " - " + inputArgs);
@@ -91,7 +90,7 @@ public class XmlRpcServlet extends HttpServlet {
                 logger.debug("Converting args...");
                 Object[] args = new Object[parameterTypes.length];
                 Iterator it = md.parameterIterator();
-                for (int i =0; i < parameterTypes.length; i++) {
+                for (int i =0; i < parameterTypes.length && it.hasNext(); i++) {
                     ValueDescriptor vd = (ValueDescriptor)it.next();
                     args[i] = conv.convert(parameterTypes[i],inputArgs.get(i));
                 }
@@ -218,6 +217,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.4  2006/06/02 00:16:15  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: HtmlServlet.java,v 1.4 2006/06/02 00:16:15 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import org.astrogrid.acr.builtin.ComponentDescriptor;
+import org.astrogrid.acr.builtin.Descriptor;
+import org.astrogrid.acr.builtin.MethodDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
+import org.astrogrid.acr.builtin.ValueDescriptor;
 import org.astrogrid.desktop.framework.ReflectionHelper;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-import org.astrogrid.desktop.framework.descriptors.Descriptor;
-import org.astrogrid.desktop.framework.descriptors.MethodDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ValueDescriptor;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
@@ -229,9 +229,8 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
   
     
-    /**
-     * @see org.astrogrid.desktop.modules.system.AbstractReflectionServlet#callMethod(java.lang.String, java.lang.String, java.lang.Object, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+    //@todo merge ApiHelp.callFunction,  XMLRPCServlet.execute() and HtmlServlet.callMethod
+
     protected void callMethod(MethodDescriptor md,String resultType, Object component, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (resultType == null || ! resultTypes.contains(resultType.toLowerCase())) {
             throw new ServletException("Unknown result type " + resultType);
@@ -290,6 +289,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.4  2006/06/02 00:16:15  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

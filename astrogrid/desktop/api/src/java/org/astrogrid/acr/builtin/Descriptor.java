@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.3 2006/04/18 23:25:47 nw Exp $
+/*$Id: Descriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,15 +8,16 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.framework.descriptors;
+package org.astrogrid.acr.builtin;
 
 import java.io.Serializable;
 
-/** Base class for all descriptors;
- * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
+/** Base class for all descriptors.
+ * @author Noel Winstanley nw@jb.man.ac.uk
+ * @since 2.2
  *
  */
-public class Descriptor implements Serializable {
+public abstract class Descriptor implements Serializable {
 
     /** Construct a new Descriptor
      * 
@@ -29,18 +30,20 @@ public class Descriptor implements Serializable {
     /** description of hte entity */
     protected String description = "none given";
     
-    
+    /** the description*/
     public String getDescription() {
         return this.description;
     }
+    /** used internally */
     public void setDescription(String description) {
         this.description = description;
     }
+    /** the name */
     public String getName() {
         return this.name;
     }
 
-    
+    /** used internally */
     public void setName(String name) {
         this.name = name;
     }
@@ -80,6 +83,9 @@ public class Descriptor implements Serializable {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.1  2006/06/02 00:17:10  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.3  2006/04/18 23:25:47  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: ApiHelp.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: ApiHelp.java,v 1.4 2006/06/02 00:18:10 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,27 @@
  **/
 package org.astrogrid.acr.system;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
 
 
-/** Access documentation on the functions available in the ACR..
+/** Documents and provides access to functions of AR.
+ * This service provides methods to get XMLRPC-specific type information, and more general metadata.
+ * It also provides a technique for dynamically calling AR methods
  * 
- * Returns type information  applicable for xmlrpc only at moment. For JavaRMI consult the javadoc (available from the workbench in-program help) 
- * @todo generalize to return full type info, etc.
  * @service system.apihelp
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Jun-2005
  *
  */
 public interface ApiHelp {
+	
+	/** List all the module descriptors available in the acr 
+	 * @since 2.2*/
+	ModuleDescriptor[] listModuleDescriptors();
+	
+	
     /**List all methods available in the acr
      * @return array of method names in form <tt><i>module</i>.<i>component</i>.<i>method</i></tt>
      */
@@ -83,10 +92,38 @@ public interface ApiHelp {
      * @throws NotFoundException if the componentName is not a service in this acr.
      */
     String interfaceClassName(String componentName) throws NotFoundException;
+    
+
+    /** Directly call a function on an AR service.
+     * The recommended method of working is to get an instance of a service interface, and call it's strongly-typed methods,
+     * However, <tt>callFunction</tt> can be useful if working with loosely-typed parameters (e.g. inputs from scripts). This method will 
+     * convert string parameters to the correct types as needed, and can return the result in a variety of forms
+     * @param functionName fully qualified name of the function to call - e.g. <tt>system.configuration.getValue</tt>
+     * @param returnKind. An enumeration that controls what kind of object is returned as the result
+     * <ul>
+     * <li>ORIGINAL - the original return type</li>
+     * <li>DATASTRUCTURE - datastructure view of the return type</li>
+     * <li>STRING - stringified view of the return type</li>
+     * @param args argument list - may be correct object types, or strings that can be converted into the correct types.
+     * @return the result of invoking the method.
+     * The result of invoking a void-return method will be a <tt>java.lang.VOID</tt>
+     * @throws ACRException if an exception was thrown when invoking the function
+     * @throws InvalidArgumentException if the arguments are incorrect (wrong number, inconvertable types) for the specified function.
+     * @throws NotFoundException if the function does not exist
+     * @since 2.2
+     */
+    public Object callFunction(String functionName,int returnKind, Object[] args) throws ACRException, InvalidArgumentException, NotFoundException;
+    
+    public static final int ORIGINAL = 0;
+    public static final int DATASTRUCTURE = 1;
+    public static final int STRING = 2;
 }
 
 /* 
  $Log: ApiHelp.java,v $
+ Revision 1.4  2006/06/02 00:18:10  nw
+ Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
  Revision 1.3  2006/02/02 14:19:47  nw
  fixed up documentation.
 

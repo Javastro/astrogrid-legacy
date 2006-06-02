@@ -1,4 +1,4 @@
-/*$Id: HivemindMutableACR.java,v 1.3 2006/05/17 23:57:46 nw Exp $
+/*$Id: HivemindMutableACR.java,v 1.4 2006/06/02 00:16:15 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,10 +21,10 @@ import org.apache.hivemind.ApplicationRuntimeException;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ComponentDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
 
 /** MutableACR implementation for hivemind system
  * 
@@ -174,6 +174,9 @@ public class HivemindMutableACR implements ACRInternal {
 
 /* 
 $Log: HivemindMutableACR.java,v $
+Revision 1.4  2006/06/02 00:16:15  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.3  2006/05/17 23:57:46  nw
 documentation improvements.
 

@@ -1,4 +1,4 @@
-/*$Id: Module.java,v 1.2 2006/04/18 23:25:46 nw Exp $
+/*$Id: Module.java,v 1.3 2006/06/02 00:16:15 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.desktop.framework;
 
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.desktop.framework.descriptors.ModuleDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
 
 
 /** interface to a module - a collection of components
@@ -36,6 +36,9 @@ public interface Module  {
 
 /* 
 $Log: Module.java,v $
+Revision 1.3  2006/06/02 00:16:15  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.2  2006/04/18 23:25:46  nw
 merged asr development.
 

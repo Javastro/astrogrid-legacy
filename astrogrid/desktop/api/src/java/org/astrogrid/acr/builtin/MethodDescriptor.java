@@ -1,4 +1,4 @@
-/*$Id: MethodDescriptor.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: MethodDescriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,14 +8,15 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.framework.descriptors;
+package org.astrogrid.acr.builtin;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/** descriptor for a method.
- * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2005
+/** Description of a method (function) belonging to a component of AR.
+ * @author Noel Winstanley nw@jb.man.ac.uk 
+ * @since 2.2
  *
  */
 public class MethodDescriptor extends Descriptor {
@@ -32,14 +33,18 @@ public class MethodDescriptor extends Descriptor {
     
     protected final List parameterValues = new ArrayList();
         
-    /** get descriptor for the return value of this method */
+    /** description of the return value of this method */
     public ValueDescriptor getReturnValue() {
         return this.returnValue;
     }
+    
+    
+    /** used internally */
     public void setReturnValue(ValueDescriptor returnValue) {
         this.returnValue = returnValue;
     }
     
+    /** used internally */
     public void addParameter(ValueDescriptor desc) {
         parameterValues.add(desc);
     }
@@ -51,6 +56,12 @@ public class MethodDescriptor extends Descriptor {
     public Iterator parameterIterator() {
         return parameterValues.iterator();
     }
+
+    /** list the parameters to this method */
+    public ValueDescriptor[] getParameters() {
+    	return (ValueDescriptor[])parameterValues.toArray(new ValueDescriptor[]{});
+    }
+    	
 
     public String toString() {
         StringBuffer buffer = new StringBuffer();
@@ -70,6 +81,9 @@ public class MethodDescriptor extends Descriptor {
 
 /* 
 $Log: MethodDescriptor.java,v $
+Revision 1.1  2006/06/02 00:17:10  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 

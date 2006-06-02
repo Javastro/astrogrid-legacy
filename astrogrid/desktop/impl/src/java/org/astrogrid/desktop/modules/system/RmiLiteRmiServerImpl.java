@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.6 2006/04/26 15:56:18 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.7 2006/06/02 00:16:15 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,11 +23,11 @@ import net.ladypleaser.rmilite.Server;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.builtin.ComponentDescriptor;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
-import org.astrogrid.desktop.framework.descriptors.ComponentDescriptor;
 
 /** Implementation of the RmiServer using rmi lite.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2005
@@ -127,6 +127,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiSe
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.7  2006/06/02 00:16:15  nw
+Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
+
 Revision 1.6  2006/04/26 15:56:18  nw
 made servers more configurable.added standalone browser launcher
 
