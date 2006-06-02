@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" xmlns:artifact="artifact"
+default="astrogrid-build-artifact">
+
+<!-- standard astrogrid goals -->
+  <goal name="astrogrid-build-artifact" prereqs="dist:build-bin" />
+
+  <goal name="astrogrid-install-artifact" prereqs="install-package" />
+  <goal name="astrogrid-deploy-artifact" prereqs="deploy-package" />
+  <!-- hooks into existing goals -->
+
+	<postGoal name="dist:prepare-bin-filesystem">
+		<!-- now copy in deps -->
+		<j:forEach var="lib" items="${pom.artifacts}">
+                        <j:set var="dep" value="${lib.dependency}"/>
+                                <j:if test="${dep.getProperty('dist.bundle')=='true'}">
+                                        <copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}"/>
+                                </j:if>
+		</j:forEach>
+	</postGoal>
+
+
+    <goal name="install-package" prereqs="astrogrid-build-artifact">
+             <artifact:install
+        artifact="${maven.dist.dir}/${maven.final.name}.zip"
+        type="zip"
+        project="${pom}"
+        /> 
+        </goal>
+
+	<goal name="deploy-package" prereqs="astrogrid-build-artifact">
+		<artifact:deploy
+			artifact="${maven.dist.dir}/${maven.final.name}.zip"
+			type="zip"
+			project="${pom}"
+		/>
+	</goal>
+	
+	<goal name="install-into-taverna" prereqs="astrogrid-build-artifact">
+		<copy todir="${taverna.lib.dir}">
+			<fileset dir="${maven.dist.bin.assembly.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+	</goal>
+  
+
+</project>
