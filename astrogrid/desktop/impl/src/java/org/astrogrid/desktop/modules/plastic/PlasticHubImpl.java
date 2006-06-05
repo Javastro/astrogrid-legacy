@@ -23,8 +23,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.swing.event.ListSelectionEvent;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
