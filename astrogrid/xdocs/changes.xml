@@ -5,6 +5,10 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+    		
+    		<action dev="gtr" type="fix">
+    			<em>Branch apps=gtr-1651:</em> Fixes in astrogrid-applications to allow STILTS to run as a wrapped application.
+    		</action>
 
 			
 			<action dev="kmb" type="add">
