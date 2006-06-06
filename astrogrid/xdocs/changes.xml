@@ -6,6 +6,10 @@
     <body>
     	<release version="(Pending Integration)">
     		
+    		<action dev="gtr" type="add">
+    			<em>Branch security-gtr-1593:</em> major changes to the security facade to support digital signatures.
+    		</action>
+    		
     		<action dev="gtr" type="fix">
     			<em>Branch apps=gtr-1651:</em> Fixes in astrogrid-applications to allow STILTS to run as a wrapped application.
     		</action>
