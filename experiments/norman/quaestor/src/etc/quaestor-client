@@ -54,14 +54,21 @@
                               (preferred-language)))
            ,full-url))))
 
-(define (new-kb-handler kb-name metadata-file)
+(define (new-kb-handler kb-name metadata)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
   (let ((full-url (format #f "~a/kb/~a" (base-url) kb-name)))
-    (check-file-exists metadata-file)
-    (chatter "PUT file ~a to URL ~a" metadata-file full-url)
-    (exec-epf (curl ,@(verbose-option)
-                    --upload-file ,metadata-file
-                    ,full-url))))
+    (if (char=? (string-ref metadata 0) #\@)
+        (let ((metadata-file (substring metadata 0 (string-length metadata))))
+          (check-file-exists metadata-file)
+          (chatter "PUT file ~a to URL ~a" metadata-file full-url)
+          (exec-epf (curl ,@(verbose-option)
+                          --upload-file ,metadata-file
+                          ,full-url)))
+        (begin (chatter "PUT text '~a' to URL ~a" metadata full-url)
+               (exec-epf (curl ,@(verbose-option)
+                               --upload-file -
+                               ,full-url)
+                         (<< ,metadata))))))
 
 ;; Generate a curl header option, representing the given HEADER and VALUE.
 ;; Return either a list of two elements, or an empty list, if value is #f.
@@ -91,17 +98,25 @@
   (let ((full-url (format #f "~a/kb/~a" (base-url) kb-name)))
     (format #t "Delete is not handled by this client.~%You'll have to send the request 'DELETE ~a' to a HTTP server yourself~%" full-url)))
 
-;; Upload code to the server.  The CODE-FILE names a file, or may be '-'
-;; to indicate stdin
-(define (code-handler code-file)
+;; Upload code to the server.  The CODE parameter names a file, or '-'
+;; to indicate stdin, or an expr starting with a left-parenthesis to indicate
+;; a literal expr
+(define (code-handler code)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
   (let ((full-url (format #f "~a/code" (base-url))))
-    (check-file-exists code-file)
-    (chatter "PUT code in ~a to URL ~a" code-file full-url)
-    (exec-epf
-     (curl ,@(verbose-option)
-           --upload-file ,code-file
-           ,full-url))))
+    (if (char=? (string-ref code 0) #\()
+        (begin (chatter "PUT expr '~a' to URL ~a" code full-url)
+               (exec-epf
+                (curl ,@(verbose-option)
+                      --upload-file -
+                      ,full-url)
+                (<< ,code)))
+        (begin (check-file-exists code)
+               (chatter "PUT code in ~a to URL ~a" code full-url)
+               (exec-epf
+                (curl ,@(verbose-option)
+                      --upload-file ,code
+                      ,full-url))))))
 
 ;; POST the contents of the given file (which may be '-') to the
 ;; given model
@@ -182,7 +197,7 @@
     (code
      1
      ,code-handler
-     "code scm-code-file: Upload code to running server; file may be '-'")
+     "code scm-code: Upload code to server; scm-code may be file/'-'/(expr)")
     (delete
      1
      ,delete-handler
@@ -194,11 +209,11 @@
     (get
      #f
      ,get-handler
-     "get kb / get kb submodel: Get model or specific submodel")
+     "get kb [submodel]: Get model or specific submodel")
     (new-kb
      2
      ,new-kb-handler
-     "new-kb name metadata-file: Create a new knowledgebase")
+     "new-kb name descrip/@filename: Create a new knowledgebase")
     (query
      2
      ,query-handler
