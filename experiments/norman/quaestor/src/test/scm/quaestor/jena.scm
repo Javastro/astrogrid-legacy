@@ -9,7 +9,6 @@
           "RDF/XML"
           "RDF/XML"
           "N-TRIPLE"
-          #f
           #f)
         (map rdf:mime-type->language
              '("application/n3"
@@ -17,8 +16,7 @@
                "application/rdf+xml"
                "*/*"
                "text/plain"
-               "wibble"
-               #f)))
+               "wibble")))
 
 ;; Remove this -- rdf:language-ok? is not currently exported from jena.scm
 ;; (expect mime-type-2
@@ -34,11 +32,9 @@
         '("application/rdf+xml"
           "application/n3"
           "text/plain"
-          #f
           #f)
         (map rdf:language->mime-type
              '("RDF/XML"
                "N3"
                "N-TRIPLE"
-               "wibble"
-               #f)))
+               "wibble")))
