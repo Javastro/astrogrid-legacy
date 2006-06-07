@@ -54,8 +54,14 @@ public class SchemeWrapper {
      */
     public static SchemeWrapper getInstance()
             throws IOException {
-        if (instance == null)
+        if (instance == null) {
+            java.lang.System.setProperty("sisc.maxStackTraceDepth", "16");
+            // following should be the defaults            
+            java.lang.System.setProperty("sisc.emitAnnotations", "true");
+            java.lang.System.setProperty("sisc.emitDebuggingSymbols", "true");
+            java.lang.System.setProperty("sisc.stackTraceOnError", "true");
             instance = new SchemeWrapper();
+        }
         return instance;
     }
 
@@ -81,15 +87,19 @@ public class SchemeWrapper {
      * <tr><td>otherwise</td><td>a String representation of the object</td></tr>
      * </table>
      *
-     * @param expr a scheme expression
+     * @param expr a scheme expression, which should not be null
      * @return a Java Object (String, Boolean or null) representing the 
-     * value of the expression 
+     * value of the expression; if <code>expr</code> is null, then return
+     * <code>Boolean.FALSE</code>
      * @throws IOException if there was a problem parsing the expression
      * @throws SchemeException if one there was a problem executing
      * the expression
      */
     public Object eval(final String expr)
             throws IOException, SchemeException {
+        if (expr == null)
+            return Boolean.FALSE;
+        
         Object o = Context.execute
             (new SchemeCaller() {
                  public Object execute(Interpreter i)
@@ -186,7 +196,7 @@ public class SchemeWrapper {
         // since that displays the error-record structure, which takes
         // some parsing by eye.  The following expression evaluates to
         // either #t on success, or a string on error.
-        Object o = eval("(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a (~a)\" (error-location r) (error-message r) (if parent (show-err parent) \"thatsall\")))) (show-err m)) (lambda () (load \"" + loadFile + "\") #t))");
+        Object o = eval("(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a~a\" (error-location r) (error-message r) (if parent (string-append \" :-- \" (show-err parent)) \"\")))) (show-err m)) (lambda () (load \"" + loadFile + "\") #t))");
         if (o instanceof String) {
             // Contains an error message from the failure-continuation.
             // We can't create SchemeExceptions (no useful constructor),
