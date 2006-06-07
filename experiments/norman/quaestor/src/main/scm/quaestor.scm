@@ -22,6 +22,7 @@
 (require-library 'util/sisc-xml)
 (import* sisc-xml
          sisc-xml:sexp->xml)
+(require-library 'util/lambda-contract)
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
@@ -39,7 +40,23 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.27 $ $Date: 2006/06/07 15:19:17 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.28 $ $Date: 2006/06/07 22:15:42 $)")))
+
+;; Predicates for contracts
+(define-java-classes
+  <java.lang.string>)
+(define (request? x)
+  (define-java-class <javax.servlet.servlet-request>)
+  (is-java-type? x <javax.servlet.servlet-request>))
+(define (response? x)
+  (define-java-class <javax.servlet.servlet-response>)
+  (is-java-type? x <javax.servlet.servlet-response>))
+(define (string-or-true? x)
+  (or (string? x)
+      (and (boolean? x) x)))
+(define (string-or-false? x)
+  (or (not x)
+      (string? x)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -49,7 +66,9 @@
 ;; request, and works through a list of handlers.  It may return a
 ;; string, or #t on success; if it returns a string, it is to be
 ;; returned as the response by the caller.
-(define (http-get request response)
+(define/contract (http-get (request  request?)
+                           (response response?)
+                           -> string-or-true?)
   (with-failure-continuation
        (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
     (lambda ()
@@ -253,7 +272,9 @@
 ;; one element in the path), or creates or updates a submodel (if there
 ;; are two elements in the path).  It is an error to create a
 ;; knowledgebase where one of that name exists already.
-(define (http-put request response)
+(define/contract (http-put (request  request?)
+                           (response response?)
+                           -> string-or-true?)
 
   ;; Create a new KB, or manage an existing one.  The knowledgebase is
   ;; called kb-name (a symbol), and the content of the request is read
@@ -359,17 +380,15 @@
 ;; POST support
 
 ;; Handle POST requests.  Return #t on success, or a string response
-(define (http-post request response)
+(define/contract (http-post (request  request?)
+                            (response response?)
+                            -> string-or-true?)
   (with/fc
       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
     (lambda ()
       (define-generic-java-methods
         get-reader
         set-content-type)
-      (if (java-null? response)         ;eh??!
-          (no-can-do response
-                     '|SC_BAD_REQUEST|
-                     "null response!"))
       (let ((path-list (request->path-list request))
             (query-string (request->query-string request))
             (content-type (request->content-type request)))
@@ -407,7 +426,9 @@
 ;; DELETE support
 
 ;; Handle DELETE requests.  Return #t on success, or a string response.
-(define (http-delete request response)
+(define/contract (http-delete (request  request?)
+                              (response response?)
+                              -> string-or-true?)
   (with/fc
       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
     (lambda ()
@@ -678,7 +699,9 @@
 ;;   which will send output to the response output stream.
 ;;
 ;; Handle the pickup functions.  Return whatever the stored function returns.
-(define (pickup-dispatcher request response)
+(define/contract (pickup-dispatcher (request  request?)
+                                    (response response?)
+                                    -> string-or-true?)
   (import f-store)
   (define-generic-java-method
     set-content-type)
@@ -713,7 +736,7 @@
 ;; return an empty list.
 ;; Any zero-length strings are removed (thus "/one//two/" is returned as
 ;; a two-element list).
-(define (request->path-list request)
+(define/contract (request->path-list (request request?) -> list?)
   (define-generic-java-methods
     get-path-info
     split
@@ -725,8 +748,8 @@
            '())
           (else
            (remove (lambda (str) (= (string-length str) 0))
-                (map ->string
-                     (->list (split path-string (->jstring "/")))))))))
+                   (map ->string
+                        (->list (split path-string (->jstring "/")))))))))
 ;; The same, except that the path-list components are URL-decoded
 ;; (which I don't now think is necessary)
 ;; (define (request->path-list-decoded request)
@@ -748,7 +771,7 @@
 
 ;; Extract the query-string from the request, returning it as a (scheme)
 ;; string, or #f if there is no query, or if the query is the empty string.
-(define (request->query-string request)
+(define/contract (request->query-string (request request?) -> string-or-false?)
   (define-generic-java-methods
     get-query-string
     length)
@@ -764,7 +787,7 @@
 ;;
 ;; Given a Java REQUEST, return the request content type as a scheme string,
 ;; or #f if it is not available
-(define (request->content-type request)
+(define/contract (request->content-type (request request?) -> string-or-false?)
   (define-generic-java-method get-content-type)
   (let ((content-jstring (get-content-type request)))
     (if (java-null? content-jstring)
@@ -799,7 +822,7 @@
 ;; Return the set of request headers as an alist, each element of which is
 ;; of the form (header-string . value-string): both are scheme strings,
 ;; and the header-string is lowercased.
-(define (request->header-alist request)
+(define/contract (request->header-alist (request request?) -> list?)
   (define-generic-java-methods
     get-header-names
     get-header
