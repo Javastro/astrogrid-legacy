@@ -4,6 +4,8 @@
 (require-library 'sisc/libs/srfi/srfi-1)
 (require-library 'sisc/libs/srfi/srfi-13)
 
+(require-library 'util/lambda-contract)
+
 
 (module utils
  (;sexp->xml
@@ -17,13 +19,29 @@
   chatter
   parse-http-accept-header
   parse-query-string
+  format-error-message
   )
 
- (import* srfi-1
-          remove)
- (import* srfi-13
-          string-index
-          string-index-right)
+(import* srfi-1
+         remove)
+(import* srfi-13
+         string-index
+         string-index-right)
+
+;; predicates used in contracts
+(define-java-classes
+  <java.lang.string>)
+(define (jiterator? x)
+  (is-java-type? x '|java.util.Iterator|))
+(define (jlist? x)
+  (is-java-type? x '|java.util.List|))
+(define (jenumeration? x)
+  (is-java-type? x '|java.util.Enumeration|))
+(define (jstring? x)
+  (is-java-type? x <java.lang.string>))
+;; (define (jstring-or-null? x) ; null objects are also deemed true
+;;   (or (java-null? x)
+;;       (is-java-type? x <java.lang.string>)))
 
 
  ;; Given a list of SExps, SEXP-LIST, return this translated into a string
@@ -131,31 +149,31 @@
                     content))
         gi)))
 
- ;; Given a Java iterator, JITER, extract each of its contents into a list
- (define (iterator->list jiter)
-   (define-generic-java-methods
-     (has-next? |hasNext|)
-     next)
-   (let loop ((l '()))
-     (if (->boolean (has-next? jiter))
-         (loop (cons (next jiter) l))
-         (reverse l))))
+;; Given a Java iterator, JITER, extract each of its contents into a list
+(define/contract (iterator->list (jiter jiterator?) -> list?)
+  (define-generic-java-methods
+    (has-next? |hasNext|)
+    next)
+  (let loop ((l '()))
+    (if (->boolean (has-next? jiter))
+        (loop (cons (next jiter) l))
+        (reverse l))))
 
- ;; The same, but taking a Java List as input
- (define (jlist->list jlist)
-   (define-generic-java-method iterator)
-   (iterator->list (iterator jlist)))
+;; The same, but taking a Java List as input
+(define/contract (jlist->list (jlist jlist?) -> list?)
+  (define-generic-java-method iterator)
+  (iterator->list (iterator jlist)))
 
- ;; The same, but taking a Java Enumeration as input
- (define (enumeration->list enum)
-   (define-generic-java-methods
-     has-more-elements
-     next-element)
-   (if (->boolean (has-more-elements enum))
-       (let ((n (next-element enum)))
-         (cons n
-               (enumeration->list enum)))
-       '()))
+;; The same, but taking a Java Enumeration as input
+(define/contract (enumeration->list (enum jenumeration?) -> list?)
+  (define-generic-java-methods
+    has-more-elements
+    next-element)
+  (if (->boolean (has-more-elements enum))
+      (let ((n (next-element enum)))
+        (cons n
+              (enumeration->list enum)))
+      '()))
 
  ;; Retrieve a Java static object by its full Java name, which may be a symbol
  ;; such as '|java.lang.System.out|, or a string
@@ -187,15 +205,15 @@
                    jobject))
        #f))
 
- ;; Given a string S, return the URL-decoded string as a jstring
- (define (url-decode-to-jstring s)
-   (define-java-classes
-     (<url-decoder> |java.net.URLDecoder|))
-   (define-generic-java-method
-     decode)
-   (decode (java-null <url-decoder>)
-           (->jstring s)
-           (->jstring "UTF-8")))
+;; Given a string S, return the URL-decoded string as a jstring
+(define/contract (url-decode-to-jstring (s string?) -> jstring?)
+  (define-java-classes
+    (<url-decoder> |java.net.URLDecoder|))
+  (define-generic-java-method
+    decode)
+  (decode (java-null <url-decoder>)
+          (->jstring s)
+          (->jstring "UTF-8")))
 
  ;; Variant of ERROR, which can be called in a region handled by the failure
  ;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
@@ -223,14 +241,39 @@
              ((null? msg)
               (let ((r (reverse l)))
                 (set! l '())
-                (apply string-append r)))
+                r))
              (else
               (set! l
                     (cons (apply format `(#f
-                                          ,(string-append (car msg) "~%")
+                                          ,(car msg) ;,(string-append (car msg) "~%")
                                           ,@(cdr msg)))
                           l)))))))
 
+;; Format the given error record, as passed as the first argument of a
+;; failure-continuation.  This ought to be able to handle most of the
+;; odd things thrown by scheme and the s2j interface.  This should
+;; generally return a string, but if all else fails it returns the
+;; error record object.
+(define (format-error-message rec)
+  (define-java-classes
+    (<throwable> |java.lang.reflect.UndeclaredThrowableException|)
+    (<exception> |java.lang.Exception|))
+  (define-generic-java-methods
+    get-message
+    get-undeclared-throwable
+    to-string)
+  (let ((msg (error-message rec)))
+    (cond ((is-java-type? msg <throwable>)
+           (get-message (get-undeclared-throwable msg)))
+          ((is-java-type? msg <exception>)
+           (to-string msg))
+          (msg)
+          ((error-message (error-parent-error rec)))
+          ((error-message
+            (error-parent-error
+             (error-parent-error rec))))
+          (else
+           rec))))
 
  ;; Parse an HTTP Accept header into a list of acceptable MIME types.
  ;; The JHEADER is a Java string in the format required by RFC 2616, that is,
@@ -331,11 +374,12 @@
 ;;
 ;; Given a query string "keyword=value", parse it into a pair of strings
 ;; representing the text before and after the equals sign.  If either
-;; is missing, replace it with #f.
+;; is missing, replace it with #f.  If the query is #f, return (#f . #f)
 ;;
 ;; Very simple-minded.  Query strings can be more generic than this,
 ;; but they're not, in this application.
-(define (parse-query-string qs)
+(define/contract (parse-query-string (qs (or (not qs) (string? qs)))
+                                     -> pair?)
   (cond ((not qs)
          '(#f . #f))
         ((string-index qs #\=)
