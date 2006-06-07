@@ -6,15 +6,6 @@
     <body>
     	<release version="(Pending Integration)">
     		
-    		<action dev="gtr" type="add">
-    			<em>Branch security-gtr-1593:</em> major changes to the security facade to support digital signatures.
-    		</action>
-    		
-    		<action dev="gtr" type="fix">
-    			<em>Branch apps=gtr-1651:</em> Fixes in astrogrid-applications to allow STILTS to run as a wrapped application.
-    		</action>
-
-			
 			<action dev="kmb" type="add">
     			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
 				Before it was only tied to fits stuff now it is generic to work with any xmldb:api database.  
@@ -29,11 +20,17 @@
         </release>
 
         <release version="(Undertest)">
+            <action dev="gtr" type="fix">
+    			<em>Branch apps=gtr-1651:</em> Fixes in astrogrid-applications to allow STILTS to run as a wrapped application.
+    		</action>
 
 				   
         </release>
 		
 		<release version="HEAD">
+		    <action dev="gtr" type="add">
+    			<em>Branch security-gtr-1593:</em> major changes to the security facade to support digital signatures.
+    		</action>
             <action dev="dave" type="fix">
     			<em>Branch dave-dev-200605311657:</em> fix the broken selftest page.
     		</action>
