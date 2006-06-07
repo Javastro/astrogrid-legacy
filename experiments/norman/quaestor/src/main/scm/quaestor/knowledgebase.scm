@@ -6,6 +6,7 @@
 
 (require-library 'quaestor/jena)
 (require-library 'quaestor/utils)
+(require-library 'util/lambda-contract)
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
@@ -23,6 +24,8 @@
            rdf:get-reasoner
            rdf:merge-models)
   (import* utils is-java-type?)
+  (define (jena-model? x)
+    (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
 
   ;; A `knowledgebase' is a named model, consisting of a number of named
   ;; `submodels'.  When any of these are updated, the new submodel is
@@ -107,19 +110,15 @@
                          (cdr l))))
             ret)))))
 
+  ;; add-submodel list symbol jena-model boolean -> list
   ;; Add a new submodel to the model.  Returns the original or an updated
   ;; submodel list, or #f on any errors (there's nothing which triggers #f
   ;; at present, but it's documented to do this just in case)
-  (define (add-submodel submodel-list
-                        new-submodel-name
-                        new-submodel-model
-                        tbox?)
-    (if (not (and (symbol? new-submodel-name)
-                  (is-java-type?
-                   new-submodel-model
-                   '|com.hp.hpl.jena.rdf.model.Model|)))
-        (error 'make-kb "Bad call (add ~s ~s)"
-               new-submodel-name new-submodel-model))
+  (define/contract (add-submodel (submodel-list      list?)
+                                 (new-submodel-name  symbol?)
+                                 (new-submodel-model jena-model?)
+                                 (tbox?              boolean?)
+                                 -> list?)
     (let ((sm-list (assq new-submodel-name submodel-list)))
       (if sm-list
           (begin (set-cdr! sm-list      ;already exists
@@ -212,11 +211,10 @@
            (java-synchronized sync-object
              (lambda ()
                (set! submodels
-                     (add-submodel      ;model
-                      submodels
-                      (as-symbol (car args))
-                      (cadr args)
-                      (eq? cmd 'add-tbox)))
+                     (add-submodel submodels
+                                   (as-symbol (car args))
+                                   (cadr args)
+                                   (eq? cmd 'add-tbox)))
                (clear-memos)))
            #t)
 
