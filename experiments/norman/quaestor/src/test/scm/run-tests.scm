@@ -13,7 +13,12 @@
                           (if (error-location m)
                               (format #f " in ~a" (error-location m))
                               "")
-                          (error-message m)
+                          (or (error-message m)
+                              (error-message (error-parent-error m))
+                              (error-message
+                               (error-parent-error
+                                (error-parent-error m)))
+                              m)
                           expected)
                 (set! nfails (+ nfails 1)))
        (lambda ()
