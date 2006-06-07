@@ -1,75 +1,57 @@
 package org.astrogrid.security;
 
-import java.io.File;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.CertPath;
+import java.security.cert.X509Certificate;
 import javax.security.auth.Subject;
-import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.components.crypto.CryptoFactory;
+import javax.security.auth.x500.X500Principal;
 
 
 /**
- * Access to the security credentials pertaining web-service operations.
+ * A container for security information.
  *
  * This is a Java-bean class in which the properties are various
- * credentials for secured messaging. It is a standard way, within its
- * package, of passing credentials within the same JVM.
+ * credentials and/or principals for secured messaging. It is a standard way, 
+ * within its package, of passing security information within the same JVM.
  *
  * Applications may use this class directly, but are more likely to
  * use one of the sub-classes that deal with messaging systems.
  *
- * The SecurityGuard maintains two sets of credentials: "single-sign-on"
- * (SSO) and "grid".  The SSO credentials are used to sign on to the
- * grid via some portal that manages user accounts. The grid credentials
- * are used to authenticate messages to services in the grid. A user
- * obtains the grid credentials by signing on with the SSO credentials.
+ * "Principals" are identities that have been authenticated using
+ * credentials. Until authentication succeeds, a SecurityGuard contains
+ * no principals. An object representing an identity may be stored as
+ * a credential before authentication and as both a credential and a 
+ * principal after authentication.
  *
- * The two sets of credentials are stored in a pair of JAAS Subjects.
- * These are available to applications as the properties ssoSubject and
- * gridSubject. Note that this property may be got but not set; a
- * caller is not allowed to impose a complete new subject or to make
- * a subject null.  However, a caller may get a reference to one of the
- * subjects and change that subject's contents.
+ * In the current implementation, the information is stored in a JAAS 
+ * Subject. Special accessors are provided for certain kinds of principals
+ * and credentials. A general accessor is also available to retrieve the
+ * entire Subject, and this serves where dedicated accessors are not yet
+ * available. However, this general accessor may be later be protected
+ * against use from outside the current package; application code should
+ * use the specialized accessors where they are available.
  *
  * @author Guy Rixon
  */
 public class SecurityGuard {
-
+  
   /**
-   * The JAAS subject for grid credentials.
+   * The JAAS Subject for all credentials and principals.
    */
-  protected Subject gridSubject;
-
-  /**
-   * The JAAS subject for single-sign-on credentials.
-   */
-  protected Subject ssoSubject;
-
-
-  /**
-   * A file from which the user's credentials can be read.
-   * The file must yield a java.security.KeyStore, and the
-   * key-store is expected to contain the user's certificate
-   * chain and private key.
-   */
-  protected File keyStoreFile;
-
-  /**
-   * The type of key-store contained in the keyStoreFile property.
-   * Types known to Java are "jks" and "pkcs12", but the latter
-   * should not be used as the JRE fails to read certificate
-   * chains from this type of store.
-   */
-  protected String keyStoreType = "jks";
+  protected Subject subject;
 
   /**
    * Constructs a SecurityGuard with empty
    * JAAS subjects.
    */
   public SecurityGuard () {
-    this.gridSubject = new Subject();
-    this.ssoSubject  = new Subject();
+    this.subject = new Subject();
   }
 
   /**
@@ -78,42 +60,55 @@ public class SecurityGuard {
    * No SSO credentials are set.
    */
   public SecurityGuard (Subject s) {
-    this.gridSubject = s;
-    this.ssoSubject  = new Subject();
+    this.subject = this.cloneSubject(s);
   }
-
+  
   /**
-   * Returns the JAAS Subject for grid credentials.
-   * The Subject contains the credentials and "principals"
-   * (i.e. identities) already set on the SecurityGuard.
-   * If this method is called immediately after construction
-   * then an empty Subject is returned. Note that altering
-   * the returned subject alters the information
-   * inside the SecurityGuard.
+   * Creates a SecurityGuard with credentials.
+   * The credentials are copied from a given SecurityGuard.
    *
-   * @return the subject (never null)
+   * @param sg The source of the credentials.
    */
-  public Subject getGridSubject () {
-    return this.gridSubject;
+   public SecurityGuard (SecurityGuard sg) {
+     this.subject = this.cloneSubject(sg.getSubject());
+  }
+
+  
+  /**
+   * Retrieves the entire JAAS subject.
+   * Software outside the org.astrogrid.security package
+   * should avoid this method.
+   * 
+   * @return - the subject (never null).
+   */
+  public Subject getSubject() {
+    return this.subject;
   }
 
   /**
-   * Returns the JAAS Subject for single-sign-on credentials.
-   * The Subject contains the credentials and "principals"
-   * (i.e. identities) already set on the SecurityGuard.
-   * If this method is called immediately after construction
-   * then an empty Subject is returned. Note that altering
-   * the returned subject alters the information
-   * inside the SecurityGuard.
-   *
-   * @return The subject (never null).
+   * Retrieves the entire JAAS subject.
+   * Provided only for backward compatibility with the workbench.
+   * 
+   * @return - the subject (never null).
+   * @deprecated - Use {@link getSubject} instead.
    */
-  public Subject getSsoSubject () {
-    return this.ssoSubject;
+  public Subject getSsoSubject() {
+    return this.subject;
   }
-
+  
   /**
-   * Sets the account name for single sign on.
+   * Retrieves the entire JAAS subject.
+   * Provided only for backward compatibility with the workbench.
+   * 
+   * @return - the subject (never null).
+   * @deprecated - Use {@link getSubject} instead.
+   */
+  public Subject getGridSubject() {
+    return this.subject;
+  }
+  
+  /**
+   * Sets the account name credential for single sign-on.
    * This account name is used when the user first
    * signs on to the grid. It may be different to the
    * account name used in authenticating to services
@@ -123,11 +118,11 @@ public class SecurityGuard {
    */
   public void setSsoUsername (String name) {
     AccountName account = new AccountName(name);
-    this.ssoSubject.getPrincipals().add(account);
+    this.subject.getPublicCredentials().add(account);
   }
 
   /**
-   * Retrieves the account name for single sign on.
+   * Retrieves the account name credential for single sign on.
    * This account name is used when the user first
    * signs on to the grid. It may be different to the
    * account name used in authenticating to services
@@ -136,17 +131,12 @@ public class SecurityGuard {
    * @return the account name
    */
   public String getSsoUsername () {
-    Set names = this.ssoSubject.getPrincipals();
-    if (names.size() == 0) {
-      return null;
-    }
-    else {
-      return ((Principal) names.iterator().next()).getName();
-    }
+    Set names = this.subject.getPublicCredentials(AccountName.class);
+    return (names.size() > 0)? ((AccountName)(names.iterator().next())).getName() : null;
   }
 
   /**
-   * Sets the password for single sign on.
+   * Sets the password for single sign-on.
    * This password is used when the user first
    * signs on to the grid. It may be different to the
    * account name used in authenticating to services
@@ -155,11 +145,11 @@ public class SecurityGuard {
    * @param word the password
    */
   public void setSsoPassword (String word) {
-    this.ssoSubject.getPrivateCredentials().add(word);
+    this.subject.getPrivateCredentials().add(word);
   }
 
   /**
-   * Retrieves the password for single sign on.
+   * Retrieves the password for single sign-on.
    * This password is used when the user first
    * signs on to the grid. It may be different to the
    * account name used in authenticating to services
@@ -168,7 +158,7 @@ public class SecurityGuard {
    * @return the password
    */
   public String getSsoPassword () {
-    Set passwords = this.ssoSubject.getPrivateCredentials(String.class);
+    Set passwords = this.subject.getPrivateCredentials(String.class);
     if (passwords.size() == 0) {
       return null;
     }
@@ -176,45 +166,159 @@ public class SecurityGuard {
       return (String)(passwords.iterator().next());
     }
   }
-
+  
   /**
-   * Nominates the key-store file from which credentials can be got locally.
+   * Retrieves the X500 distinguished name.
    *
-   * @param keyStoreFile The file from which the java.security.KeyStore can be loaded.
+   * @return - the name (null if not authenticated by signature).
    */
-  public void setSsoKeyStore(File keyStoreFile) {
-    this.keyStoreFile = keyStoreFile;
+  public X500Principal getX500Principal() {
+    Set principals = this.subject.getPrincipals(X500Principal.class);
+    return (principals.size() > 0)? (X500Principal)(principals.iterator().next()) : null;
   }
-
+  
   /**
-   * Retrieves the user identity from the grid Subject.
+   * Records the X500 distinguished name which has been authenticated.
    *
-   * @return The first Principal in the grid subject; null if no Principals are present.
+   * @return - the name (null if not authenticated by signature).
    */
-  public Principal getGridPrincipal() {
-    Set principals = this.gridSubject.getPrincipals();
-    return (Principal)((principals.toArray())[0]);
+  public void setX500Principal(X500Principal p) {
+    this.subject.getPrincipals().add(p);
+  }
+  
+  /**
+   * Gets the certificate-chain public-credential. This is
+   * expressed as an array of X.509 certificates ordered such that
+   * the signature on certificate i may be checked using the public key
+   * in certificate i+1.
+   *
+   * @return - the chain (never null; zero-length array if no certificates).
+   */
+  public X509Certificate[] getCertificateChain() {
+    Set s = this.subject.getPublicCredentials(CertPath.class);
+    CertPath p = (CertPath)(s.iterator().next());
+    List l = p.getCertificates();
+    X509Certificate[] chain = new X509Certificate[l.size()];
+    for (int i = 0; i < chain.length; i++) {
+      chain[i] = (X509Certificate)(l.get(i));
+    }
+    return chain;
+  }
+  
+  /**
+   * Sets the certificate-chain public-credential. This is
+   * expressed as an array of X.509 certificates ordered such that
+   * the signature on certificate i may be checked using the public key
+   * in certificate i+1.
+   *
+   * @param chain - the chain (never null; zero-length array if no certificates).
+   * @throws CertificateException - if the JRE does not support X.509.
+   */
+  public void setCertificateChain(X509Certificate[] chain) throws CertificateException {
+    CertificateFactory f = CertificateFactory.getInstance("X509");
+    List l = new ArrayList(chain.length);
+    for (int i = 0; i < chain.length; i++) {
+      assert chain[i] != null;
+      l.add(chain[i]);
+    }
+    CertPath p = f.generateCertPath(l);
+    this.subject.getPublicCredentials().add(p);
+  }
+  
+  /**
+   * Retreives the private key for signing messages.
+   *
+   * @return - the key (null if no key is present).
+   */
+  public PrivateKey getPrivateKey() {
+    Set s = this.subject.getPrivateCredentials(PrivateKey.class);
+    return (s.size() > 0)? (PrivateKey)(s.iterator().next()) : null;
+  }
+  
+  /**
+   * Defines the private key for signing messages. If a private key
+   * was previously set, then it is replaced by this key. Setting a
+   * null key removes the previous key.
+   *
+   * @param newKey - the new key.
+   */
+  public void setPrivateKey(PrivateKey newKey) {
+    PrivateKey oldKey = this.getPrivateKey();
+    if (oldKey != null) {
+      this.subject.getPrivateCredentials().remove(oldKey);
+    }
+    if (newKey != null) {
+      this.subject.getPrivateCredentials().add(newKey);
+    }
+  }
+  
+  /**
+   * Retrieves the X.509 certificate carrying the authenticated identity.
+   * If the caller has been authenticated using a chain of certificates that
+   * includes limited or impersonation proxy certificates, the identity
+   * certificate is the first non-proxy certificate in the chain.
+   */
+  public X509Certificate getIdentityCertificate() {
+    Set s = this.subject.getPublicCredentials(X509Certificate.class);
+    return (s.size() > 0)? (X509Certificate)(s.iterator().next()) : null;
+  }
+  
+  /**
+   * Records the X.509 certificate carrying the authenticated identity.
+   * If the caller has been authenticated using a chain of certificates that
+   * includes limited or impersonation proxy certificates, the identity
+   * certificate is the first non-proxy certificate in the chain.
+   */
+  public void setIdentityCertificate(X509Certificate newCert) {
+    X509Certificate oldCert = this.getIdentityCertificate();
+    if (oldCert != null) {
+      this.subject.getPublicCredentials().remove(oldCert);
+    }
+    this.subject.getPublicCredentials().add(newCert);
+  }
+  
+  /**
+   * Extracts the first Principal of a given type.
+   * @param clazz - The class of principal required.
+   * @return The Principal, or null if none of the requested type are present.
+   */
+  public Object getFirstPrincipal(Class clazz) {
+    Object[] a = this.subject.getPrincipals(clazz).toArray();
+    return (a.length > 0)? a[0] : null;
   }
 
   /**
-   * Uses the SSO credentials to obtain grid credentials.
+   * Extracts the first private credential of a given type.
+   * @param clazz - The class of credental required.
+   * @return The credential, or null if none of the requested type are present.
    */
-  public void signOn() throws Exception {
-
-    // Set the properties controlling use of the key-store. Several properties
-    // of the store are packaged as one java.util.Properties and that object is
-    // set as a single property of the security handler. Note that the name of
-    // the handler property is defined by AstroGrid and only works with AstroGrid's
-    // sub-class of the handler.
-    Properties p = new Properties();
-    p.setProperty("org.apache.ws.security.crypto.merlin.file", this.keyStoreFile.getCanonicalPath());
-    p.setProperty("org.apache.ws.security.crypto.merlin.keystore.type", this.keyStoreType);
-    p.setProperty("org.apache.ws.security.crypto.merlin.keystore.password", this.getSsoPassword());
-    p.setProperty("org.apache.ws.security.crypto.merlin.keystore.alias", this.getSsoUsername());
-
-    // Create and cache a new Crypto using given properties.
-    Crypto  c = CryptoFactory.getInstance("org.apache.ws.security.components.crypto.Merlin", p);
-    this.gridSubject.getPrivateCredentials().add(c);
+  public Object getFirstPrivateCredential(Class clazz) {
+    Object[] a = this.subject.getPrivateCredentials(clazz).toArray();
+    return (a.length > 0)? a[0] : null;
   }
-
+  
+  /**
+   * Copy the contents of a JAAS Subject. A shallow cloning is performed on the
+   * sets of principals and credentials. After the cloning, operations on the
+   * sets in the original do not affect the sets in the copy (and vice versa);
+   * however, operations on the members of those sets in the original affect
+   * the copy (and vice versa). E.g., replacing a PrivateKey in the original
+   * with a new object will not change the key in the copy; but writing to the
+   * contents of a PrivateKey objecct in the orginal changes both original and 
+   * copy.
+   *
+   * @param given - the subject to be copied.
+   * @return - the copy.
+   */
+  protected Subject cloneSubject(Subject given) {
+    if (given == null) {
+      return null;
+    }
+    else {
+      return new Subject(false,
+                         new HashSet(given.getPrincipals()),
+                         new HashSet(given.getPublicCredentials()), 
+                         new HashSet(given.getPrivateCredentials()));
+    }
+  }
 }

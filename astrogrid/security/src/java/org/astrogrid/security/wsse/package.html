@@ -1,0 +1,16 @@
+<body>
+<p>
+Digital signatures on SOAP messages. This is a facade for
+parts of Apache WSS4J (which deal with the WS-security header-format) and
+parts the Java CoG kit (which deal with chains of trust).
+</p>
+<p>
+The <i>Uther</i> class is a wart caused by the use of Apache WSS4J. It is a replacement
+for the <i>Merlin</i> class in that package that does not force the use of disc files
+to store credentials. It should not be used by classes outside this package.
+</p>
+<p>
+The classes in this package support the main security-facade but are not part of it.
+They should not be used directly by applications.
+</p>
+</body>

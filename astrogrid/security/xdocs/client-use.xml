@@ -10,19 +10,47 @@
   		
   		<subsection name="Background">
   			<p>
-  				The implementation of the facade for Axis uses WSS4J to sign
+  				The implementation of the facade for Axis signs request
   				messages to services. The signatures are created in the client by an Axis
   				handler, and a special sub-class of <i>SecurityGuard</i>,
   				<i>AxisClientSecurityGuard</i> is provided to pass credentials into the handlers.
   				Axis requires that the security handler be created when its 'Axis engine' in
-  				the client is first created.
+  				the client is first created. This means that the handler must set up when
+  				constructing the client-side stub for the service.
   			</p>
   			<p>
-  				The grid credentials used to make the signatures are
-  				read from a local file; community services are not currently
-  				supported as a source of credentials. SSO credentials 
-  				- user-name and password - are
-  				used to access the credentials file.
+  				The grid credentials used to make the signatures are set by
+  				accessor methods on the <i>SecurityGuard</i>. Typically, the
+  				calling code will get credentials by an exchange with a 
+  				community service such as <i>MyProxy</i>.
+  				(This is a change from
+  				earlier versions of this component in which credentials were read
+  				from file or obtained directly from a community service by the
+  				facade classes themselves.) The following credentials are required
+  				for the signature.
+  			</p>
+  			<ul>
+  				<li><strong>A certificate chain:</strong> one or more X.509 certificates
+  				arranged as a chain in which the signature of each certificate is validated
+  				using the public key contained in the following certificate. All the certificates
+  				must be of type X.509v3. IETF RFC3820 governs their use and arrangement. The
+  				trust anchor (i.e. the self-signed, implicitly-trusted certificate that is
+  				logically at the end of the chain) is not used in signing a message and
+  				should not be included in the chain itself. The chain may be added to the
+  				security-guard object either by adding a <i>java.security.cert.certPath</i>
+  				to its JAAS subject or by calling the convenience function <i>setCertificateChain</i>
+  					which accepts an array of certificates.</li>
+  				<li><strong>A private key:</strong> a key with which to sign the message. The
+  				private key must match the public key in the <em>first</em> certificate 
+  				in the chain. The key
+  				is represented as a <i>java.security.PrivateKey</i>.</li>
+  			</ul>
+  			<p>
+  				The private key is used, by the security-facade
+  				classes, actually to sign the message, and it is not sent with the message.
+  				The certificate chain is not needed to derive the cryptographic value of
+  				the signature, but is sent with the
+  				messages in order that the receiving service may verify the signature.
   			</p>
   			<p>
   				Some aspects of the client-side facade are thus specialized
@@ -76,13 +104,14 @@ XyzLocator locator = new XyzLocator(AxisClientSecurityGuard.getEngineConfigurati
   		
   		<subsection name="Creating a security-guard object">
   			<p>
-  				The portable code of the client should instantiate the generic
+  				The portable code of the client (that part that is not specific to Axis)
+  				should instantiate the generic
   				<i>SecurityGuard</i> class. This object will be used to gather
   				the credentials.
   			</p>
   			<pre>
 import org.astrogrid.security.SecurityGuard;
-SecurityGuard sg = new SecurityGuard();
+SecurityGuard guard = new SecurityGuard();
   			</pre>
   			<p>
   			One <i>SecurityGuard</i>
@@ -91,62 +120,38 @@ SecurityGuard sg = new SecurityGuard();
   				</p>
   		</subsection>
   		
-  		<subsection name="Setting SSO credentials">
+  		<subsection name="Setting credentials">
   			<p>
-  				The client code should obtain single sign-on (SSO) credentials from the
-  				user interface. The details of this operation are specific to a particular
-  				UI and the security facade does not support it with code. The credentials
-  				should be passed into the <i>SecurityGuard</i>. 
-  			</p>
-  			<p>
-  				The client code should instantiate a generic <i>SecurityGuard</i> and 
-  				store the credentials in that object by setting Java-bean properties. 
-  			</p>
-  			<p>
-  				In the current implementation of the security facade, grid credentials are
-  				obtained from a Java key-store in a local file, and that store is unlocked
-  				using the SSO credentials. Therefore, the SSO credentials must be set as
-  				follows.
-  			</p>
-  			<dl>
-  				<dt><i>SsoUserName</i></dt>
-  				<dd>The alias under which the grid credentials are filed in the key-store.</dd>
-  				<dt><i>SsoPassword</i></dt>
-  				<dd>The password protecting the key-store and the user's private key.</dd>
-  				<dt><i>SsoKeyStore</i></dt>
-  				<dd>The absolute name of the file holding the keystore.</dd>
-  			</dl>
-  			<p>
-  				The key-store is a local file
-  				holding a Java key-store of type JKS. Please see <i>java.security.KeyStore</i>
-  				for more information on key-stores. Please note that only JKS is supported;
-  				the JDK implemementation of PKCS#12 seems to be too buggy to use.
-  			</p>
-  			<p>
-  				In later versions of the security facade, different sources of grid credentials
-  				may be supported, such as community services. The SSO credentials needed to
-  				access these sources may differ from the current implementation; different
-  				properties may be needed in the <i>SecurityGuard</i>.
-  			</p>
-  		</subsection>
-  		
-  		<subsection name="Setting grid credentials">
-  			<p>
-  				Grid credentials are read from the key-store described in the previous section.
-  				The client should set the SSO credentials and then call the <i>signOn()</i>
-  				method. This loads the grid credentials.
+  				The client application should obtain a certificate chain and matching
+  				private key. These may be had, in exchange for a user name and password,
+  				from the community services. The security facade does not, currently,
+  				interact with the community services on behalf of the application.
   			</p>
   			<pre>
-sg.signOn();
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+X509Certificate[] chain = ...;
+PrivateKey key = ...;
   			</pre>
   			<p>
-  				The <i>signOn()</i> method is intended to be stable across new versions of the 
-  				security facade. The method works out internally which source of grid credentials
-  				to use and which SSO credentials are needed.
+  				The client application should store the credentials in the SecurityGuard.
   			</p>
+  			<pre>
+guard.setCertificateChain(chain);
+guard.setPrivateKey(key);
+  		  </pre>
   		</subsection>
   		
   		<subsection name="Passing grid credentials to the handler">
+  			<p>
+  				The Axis-specific code is assumed to be encapsulated in a delegate class.
+  				The client application should create the delegate and pass to it the
+  				generic security guard.
+  			</p>
+  			<pre>
+XyzDelegate delegate = ...
+delegate.setCreadentials(guard);
+  			</pre>
   			<p>
   			To get the grid credentials into the signature handler, the client must
   			embed them in an instance of <i>AxisClientSecurityGuard</i>. This
@@ -155,7 +160,7 @@ sg.signOn();
   			</p>
   			<pre>
 import org.astrogrid.security.AxisClientSecurityGuard;
-AxisClientSecurityGuard acsg = new AxisClientSecurityGuard(sg);
+AxisClientSecurityGuard axisGuard = new AxisClientSecurityGuard(guard);
   			</pre>
   			<p>
   				The Axis-specific guard must then be told to pass its credentials to
@@ -163,12 +168,18 @@ AxisClientSecurityGuard acsg = new AxisClientSecurityGuard(sg);
   			</p>
   			<pre>
 XyzPortType proxy = locator.getXyzPort(endpoint);
-acsg.configureStub((org.apache.axis.client.Stub)proxy);
+axisGuard.configureStub((org.apache.axis.client.Stub)proxy);
   			</pre>
   			<p>
   				In this example, the locator and proxy classes are those created by WSDL2Java.
   				Once the proxy is configured, all outgoing messages are signed, by the handler,
-  				with the grid credentials in the security-guard object.
+  				with the credentials in the security-guard object.
+  			</p>
+  			<p>
+  				If the client application uses the Axis stubs directly, without a delegate layer,
+  				then the application can create the <i>AxisSecurityGuard</i> directly instead of
+  				creating a generic <i>SecurityGuard</i>. The <i>setCertificateChain</i> and
+  				<i>setPrivateKey</i> methods can then be used on the Axis guard. 
   			</p>
   		</subsection>
  
@@ -179,17 +190,14 @@ acsg.configureStub((org.apache.axis.client.Stub)proxy);
   			<dl>
   				<dt>astrogrid-security.jar</dt>
   				<dd>Contains the security facade including the handler 
-  					<i>org.astrogrid.security.AxisClientCredentialHandler</i>.</dd>
-  				<dt>wss4j.jar (v1.0.1 or later; v1.0 is too buggy)</dt>
-  				<dd>Contains the super-class of <i>org.astrogrid.security.AxisClientCredentialHandler</i>
-  					plus the supporting framework of WSS4J.</dd>
+  					<i>org.astrogrid.security.AxisClientCredentialHandler</i>.
+  				  Also contains the necessary classes from Apache WSS4J.</dd>
   				<dt>xmlsec.jar (version 1.2.1 or later)</dt>
   				<dd>Contains the code for digital signature on XML.</dd>
-  				<dt>bcprov.jar ("the bouncy-castle jar"; version jdk13-128)</dt>
+  				<dt>bcprov.jar ("the bouncy-castle jar"; version jdk13-128 or later)</dt>
   				<dd>Contains the cryptographic algorithms used in digital signature.</dd>
-  				<dt>opensaml.jar (version 1.0.1 or later)</dt>
-  				<dd>Contains SAML classes refered to by WSS4J. Digital signature does
-  					not actually use SAML but WSS4J requires it to be present.</dd>
+  				<dt>cog-jglobus.jar (version 1.2)</dt>
+  				<dd>The Java CoG kit, from which are drawn the classes supporting RFC3820.</dd>
   			</dl>
   		</subsection>
   	</section>

@@ -27,8 +27,7 @@ public class SampleDelegate {
    * @param endpoint The service endpoint.
    */
   public SampleDelegate(URL endpoint) throws Exception {
-    SampleServiceLocator locator
-        = new SampleServiceLocator(AxisClientSecurityGuard.getEngineConfiguration());
+    SampleServiceLocator locator = new SampleServiceLocator(AxisClientSecurityGuard.getEngineConfiguration());
     this.endpoint = endpoint;
     this.proxy = locator.getSamplePort(endpoint);
   }

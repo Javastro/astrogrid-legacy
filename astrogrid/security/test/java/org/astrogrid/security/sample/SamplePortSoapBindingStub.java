@@ -104,7 +104,6 @@ SamplePortType {
         setRequestHeaders(_call);
         setAttachments(_call);
  try {
-        System.out.println("Invoking the Call object...");
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {});
 
         if (_resp instanceof java.rmi.RemoteException) {

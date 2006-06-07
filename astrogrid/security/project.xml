@@ -9,7 +9,7 @@
   <currentVersion>${astrogrid.security.version}</currentVersion>
   <name>AstroGrid security facade</name>
 
-  <shortDescription>A collection of APIs abstracting security in web services.</shortDescription>
+  <shortDescription>APIs abstracting security in web services.</shortDescription>
   
   <description>
     <![CDATA[
@@ -31,11 +31,6 @@
   	facade's APIs, with the Axis-specific security calls encapsulated in the axis-specific
   	delegates.
   	</p>
-  	<p>
-  	At present, this implementation reads in credentials from files local to the
-  	clients. It does not use the AstroGrid community-services and does not
-  	depend on other AstroGrid components.
-  	</p>
     ]]>
   </description>
   
@@ -46,7 +41,7 @@
   		<groupId>axis</groupId>
   		<type>jar</type>
   		<artifactId>axis</artifactId>
-  		<version>1.3</version>
+  		<version>1.2.1</version>
   	</dependency>
   	<dependency>
   		<groupId>axis</groupId>
@@ -58,13 +53,13 @@
   		<groupId>axis</groupId>
   		<type>jar</type>
   		<artifactId>axis-saaj</artifactId>
-  		<version>1.3</version>
+  		<version>1.2.1</version>
   	</dependency>
   	<dependency>
   		<groupId>axis</groupId>
   		<type>jar</type>
   		<artifactId>axis-jaxrpc</artifactId>
-  		<version>1.3</version>
+  		<version>1.2.1</version>
   	</dependency>
   	<dependency>
   		<groupId>axis</groupId>
@@ -107,34 +102,12 @@
       <artifactId>log4j</artifactId>
       <version>1.2.8</version>
     </dependency>
-      
-    <!-- DOM4J is used in the test classes. -->
-    <dependency>
-      <groupId>dom4j</groupId>
-      <type>jar</type>
-      <artifactId>dom4j</artifactId>
-      <version>1.4</version>
-    </dependency>
-  	
-  	<dependency>
-  		<groupId>wss4j</groupId>
-  		<type>jar</type>
-  		<artifactId>wss4j</artifactId>
-  		<version>1.0a</version>
-  	</dependency>
   	
   	<dependency>
   		<groupId>xmlsec</groupId>
   		<type>jar</type>
   		<artifactId>xmlsec</artifactId>
   		<version>1.2.1</version>
-  	</dependency>
-    
-  	<dependency>
-  		<groupId>opensaml</groupId>
-  		<type>jar</type>
-  		<artifactId>opensaml</artifactId>
-  		<version>1.1b</version>
   	</dependency>
   	
   	<dependency>
@@ -145,10 +118,48 @@
   	</dependency>
   	
   	<dependency>
-  		<groupId>xalan</groupId>
+  		<groupId>globus</groupId>
+  		<artifactId>cog-jglobus</artifactId>
+  		<version>1.2</version>
   		<type>jar</type>
-  		<artifactId>xalan</artifactId>
-  		<version>2.6.0</version>
+  		<properties>
+  			<dist.bundle>true</dist.bundle>
+  		</properties>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>globus</groupId>
+  		<artifactId>cog-jgss</artifactId>
+  		<version>1.2</version>
+  		<type>jar</type>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>globus</groupId>
+  		<artifactId>cog-puretls</artifactId>
+  		<version>1.2</version>
+  		<type>jar</type>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>globus</groupId>
+  		<artifactId>cog-cryptix</artifactId>
+  		<version>1.2</version>
+  		<type>jar</type>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>globus</groupId>
+  		<artifactId>cog-cryptix32</artifactId>
+  		<version>1.2</version>
+  		<type>jar</type>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>globus</groupId>
+  		<artifactId>cog-cryptix-asn1</artifactId>
+  		<version>1.2</version>
+  		<type>jar</type>
   	</dependency>
   	
   	<dependency>
@@ -163,6 +174,30 @@
   		<type>jar</type>
   		<artifactId>activation</artifactId>
   		<version>1.0.2</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>org.astrogrid</groupId>
+  		<artifactId>astrogrid-registry-client-lite</artifactId>
+  		<version>${astrogrid.registry.version}</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>org.astrogrid</groupId>
+  		<artifactId>astrogrid-registry-common</artifactId>
+  		<version>${astrogrid.registry.version}</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>org.astrogrid</groupId>
+  		<artifactId>astrogrid-common</artifactId>
+  		<version>${astrogrid.common.version}</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>commons-collections</groupId>
+  		<artifactId>commons-collections</artifactId>
+  		<version>3.1</version>
   	</dependency>
   	
   </dependencies>

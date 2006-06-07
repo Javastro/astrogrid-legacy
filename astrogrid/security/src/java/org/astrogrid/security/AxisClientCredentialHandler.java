@@ -1,15 +1,76 @@
 package org.astrogrid.security;
 
+import java.io.ByteArrayOutputStream;
+import org.apache.axis.AxisFault;
 import org.apache.axis.MessageContext;
-import org.apache.ws.axis.security.WSDoAllSender;
-import org.apache.ws.security.components.crypto.Crypto;
+import org.apache.axis.SOAPPart;
+import org.apache.axis.handlers.BasicHandler;
+import org.apache.log4j.Logger;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.Init;
+import org.astrogrid.security.wsse.WsseSignature;
+import org.w3c.dom.Document;
 
-
-public class AxisClientCredentialHandler extends WSDoAllSender {
-
-  protected Crypto loadSignatureCrypto(RequestData reqData) {
-    MessageContext mc = MessageContext.getCurrentContext();
-    return (Crypto)mc.getProperty("org.astrogrid.security.signature.crypto");
+/**
+ * An Axis message-handler to sign the SOAP body of a message.
+ * It is adapted from the WSDoAllSender class in WSS4J, written by
+ * Werner Dittmann.
+ *
+ * @author Guy Rixon
+ */ 
+public class AxisClientCredentialHandler extends BasicHandler {
+  
+  private static Logger log = 
+      Logger.getLogger("org.astrogrid.security.AxisClientCredentialHandler");
+  
+  public void invoke(MessageContext msgContext) throws AxisFault {
+    
+    // Sign only outgoing messages.
+    if (msgContext.getPastPivot()) {
+      return;
+    }
+    
+    // Turn all exceptions into SOAP faults.
+    try {
+      
+      // Do nothing unless authentication is turned on.
+      Boolean authenticate = (Boolean)msgContext.getProperty("org.astrogrid.security.authenticate");
+      if (authenticate == null || authenticate.booleanValue() == false) {
+        return;
+      }
+      
+      // Retrieve the user credentials set up for this handler.
+      SecurityGuard guard = (SecurityGuard)msgContext.getProperty("org.astrogrid.security.guard");
+      if (guard == null) {
+        throw new Exception("No security information was given.");
+      }
+    
+      // Get the SOAP envelop as a DOM.
+      Document envelope =
+          msgContext.getCurrentMessage().getSOAPEnvelope().getAsDocument();
+      if (envelope == null) {
+        throw new Exception("SOAP Envelope is null");
+      }
+      
+      // Sign the message using WSS4J. By default, the WSSignEnvelope signs the
+      // the SOAP body as a whole, which is correct for this use case.
+      Init.init();
+      WsseSignature signature = new WsseSignature(envelope, null);
+      signature.sign(guard);
+      
+      // Copy the signed message into the Axis engine
+      Canonicalizer canonicalizer 
+          = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+      ByteArrayOutputStream os = new ByteArrayOutputStream();
+      os.write(canonicalizer.canonicalizeSubtree(envelope));
+      SOAPPart sp =
+          (org.apache.axis.SOAPPart)(msgContext.getCurrentMessage().getSOAPPart());
+      sp.setCurrentMessage(os.toByteArray(), SOAPPart.FORM_BYTES);
+    }
+    catch (Throwable t) {
+      t.printStackTrace();
+      log.error(t);
+      throw new AxisFault("Failed to sign a request message", t);
+    }
   }
-
 }

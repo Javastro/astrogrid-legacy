@@ -1,15 +1,8 @@
 package org.astrogrid.security;
 
-import java.security.Principal;
-import java.util.Set;
-import java.util.Vector;
 import javax.security.auth.Subject;
 import org.apache.axis.MessageContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.ws.security.WSSecurityEngineResult;
-import org.apache.ws.security.handler.WSHandlerConstants;
-import org.apache.ws.security.handler.WSHandlerResult;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -25,15 +18,11 @@ import org.apache.ws.security.handler.WSHandlerResult;
  * static method getInstanceFromContext() which
  * initializes the guard from the JAX-RPC message context.
  *
- * This class communications with the security handlers in
- * WSS4J. It is entirely dependent on WSS4J and on Axis 1.2
- * or later.
- *
  * @author Guy Rixon
  */
 public class AxisServiceSecurityGuard extends SecurityGuard {
 
-  static Log log = LogFactory.getLog(AxisServiceSecurityGuard.class.getName());
+  static Logger log = Logger.getLogger("org.astrogrid.security.AxisServiceSecurityGuard");
 
   /**
    * Constructs a ServiceSecurityGuard with an empty JAAS subject.
@@ -54,34 +43,23 @@ public class AxisServiceSecurityGuard extends SecurityGuard {
    * from the message context of the call to the web service.
    */
   public static AxisServiceSecurityGuard getInstanceFromContext () {
-
-    log.debug("AxisServiceSecurityGuard.getInstanceFromContext(): enter.");
+    AxisServiceSecurityGuard guard = null;
 
     // Get the authentication results from the current message context.
+    // There may be no result: the might not be a message context, or
+    // authentication might not have occured.
     MessageContext msgContext = MessageContext.getCurrentContext();
-    Vector results = (msgContext == null)? null :
-        (Vector) msgContext.getProperty(WSHandlerConstants.RECV_RESULTS);
-
-    // Inspect and log the results.
-    // Construct the Subject as part of the inspection: this avoids fetching the results twice.
-    Subject s = new Subject();
-    if (results != null) {
-      log.debug("AxisServiceSecurityGuard.getInstanceFromContext(): Number of results: " + results.size());
-      for (int i = 0; i < results.size(); i++) {
-        WSHandlerResult hResult = (WSHandlerResult)results.get(i);
-        Vector hResults = hResult.getResults();
-        for (int j = 0; j < hResults.size(); j++) {
-          WSSecurityEngineResult eResult = (WSSecurityEngineResult) hResults.get(j);
-          Principal p = eResult.getPrincipal();
-          log.info("ServiceSecurityGuard.getInstanceFromContext(): Authenticated Principal: " +
-                   p.getName());
-          s.getPrincipals().add(p);
-        }
-      }
+    if (msgContext == null) {
+      log.debug("There is no Axis message context, so principals and credentials cannot be retrieved.");
     }
-
-    // Return a SecurityGuard carrying the derived Subject.
-    return new AxisServiceSecurityGuard(s);
+    if (msgContext != null) {
+      guard = (AxisServiceSecurityGuard)(msgContext.getProperty("org.astrogrid.security.guard"));
+    }
+    if (guard == null) {
+      guard = new AxisServiceSecurityGuard();
+    }
+    
+    return guard;
   }
 
 
@@ -93,8 +71,7 @@ public class AxisServiceSecurityGuard extends SecurityGuard {
    * @return true if the call is anonymous
    */
   public boolean isAnonymous () {
-    Set principals = this.getGridSubject().getPrincipals();
-    return (principals.size() == 0);
+    return this.getSubject().getPrincipals().size() == 0;
   }
 
 }

@@ -4,13 +4,14 @@
             xmlns="http://xml.apache.org/axis/wsdd/">
 
   <service name="SamplePort" provider="java:RPC">
+    <parameter name="enableNamespacePrefixOptimization" value="false" />
+    <parameter name="disablePrettyXML" value="true"/>
     <parameter name="className" value="org.astrogrid.security.sample.SampleImpl"/>
-  	<requestFlow>
-  		<handler type="java:org.astrogrid.security.AxisServiceCredentialHandler">
-  			<parameter name="action" value="Signature"/>
-  			<parameter name="signaturePropFile" value="server-crypto.properties" />
-  		</handler>
-  	</requestFlow>
+    <requestFlow>
+      <handler type="java:org.astrogrid.security.AxisServiceCredentialHandler">
+        <parameter name="org.astrogrid.security.trustAnchorDirectory" value="c:\Documents and Settings\gtr\.workbench\trusted-certificates"/>
+      </handler>
+    </requestFlow>
   </service> 
 
 </deployment>

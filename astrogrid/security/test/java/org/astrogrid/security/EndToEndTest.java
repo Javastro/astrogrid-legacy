@@ -1,19 +1,19 @@
 package org.astrogrid.security;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.URL;
-import java.util.Properties;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import javax.security.auth.Subject;
 import junit.framework.TestCase;
-import org.apache.axis.AxisEngine;
-import org.apache.axis.EngineConfiguration;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Stub;
-import org.apache.axis.handlers.soap.SOAPService;
-import org.apache.axis.configuration.XMLStringProvider;
-import org.apache.ws.security.WSConstants;
-import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.components.crypto.CryptoFactory;
-import org.apache.ws.security.handler.WSHandlerConstants;
+//import org.astrogrid.community.resolver.CommunityPasswordResolver;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.sample.SampleDelegate;
 
 
@@ -32,25 +32,27 @@ public class EndToEndTest extends TestCase {
 
     // Make the URI scheme 'local' known to java.net.URL.
     Call.initialize();
-
-    // Sign on to unlock credentials. The guard holds the credentials.
-    SecurityGuard g = new SecurityGuard();
-    g.setSsoUsername("user");
-    g.setSsoPassword("testing");
-    g.setSsoKeyStore(new File("test-user-1-keystore.jks"));
-    g.signOn();
-
+    
+    // Obtain credentials and write to disc.
+    // In routine testing, the credentials are already on disc,
+    // since a copy is kept in CVS. This call is only needed when the
+    // credentials are being replaced.
+    //this.storeCredentials();
+    
+    // Load the credentials from disc.
+    SecurityGuard g2 = this.loadCredentials();
+    
     // Make a delegate using the local transport. The service
     // name SamplePort matches the name declared in
     // server-config.wsdd.
     URL endpoint = new URL("local:///SamplePort");
     SampleDelegate delegate = new SampleDelegate(endpoint);
-    delegate.setCredentials(g);
+    delegate.setCredentials(g2);
 
     // Exercise the delegate, the handler chains and the service
     // implementation.  This simulates a call to a real web-service.
     String name = delegate.whoAmI();
-    System.out.println("Returned name: " + name);
+    System.out.println("Client: returned name: " + name);
   }
 
 
@@ -59,25 +61,83 @@ public class EndToEndTest extends TestCase {
     // Make the URI scheme 'local' known to java.net.URL.
     Call.initialize();
 
-    // Set the username but do not sign on. This causes the
-    // client handlers to be invoked without a Crypto object;
-    // they should deal with this.
+    // Make the guard without any credentials.
     SecurityGuard g = new SecurityGuard();
-    g.setSsoUsername("user");
-    g.setSsoPassword("testing");
 
     // Make a delegate using the local transport. The service
     // name SamplePort matches the name declared in
     // server-config.wsdd.
     URL endpoint = new URL("local:///SamplePort");
     SampleDelegate delegate = new SampleDelegate(endpoint);
-    try {
-      delegate.setCredentials(g);
-      fail("The SUT failed to trap the absence of credentials.");
-    }
-    catch(Exception e) {
-      // This is expected.
-    }
+    String name = delegate.whoAmI();
+    System.out.println("Client: returned name: " + name);
+    assertEquals(name, "anonymous");
   }
-
+  
+  public SecurityGuard loadCredentials() throws Exception {
+    String trustedCertsDirectory
+        = "/C:/Documents and Settings/gtr/.workbench/trusted-certificates";
+    System.setProperty("X509_CERT_DIR", trustedCertsDirectory);
+    
+    SecurityGuard guard = new SecurityGuard();
+    KeyStore store = KeyStore.getInstance("JKS");
+    FileInputStream fis = new FileInputStream("tester.jks");
+    store.load(fis, "testing".toCharArray());
+    fis.close();
+    Certificate[] chain1 = store.getCertificateChain("tester");
+    X509Certificate[] chain2 = new X509Certificate[chain1.length];
+    for (int i = 0; i < chain2.length; i++) {
+      chain2[i] = (X509Certificate)chain1[i];
+    }
+    guard.setCertificateChain(chain2);
+    PrivateKey key = (PrivateKey)store.getKey("tester", "testing".toCharArray());
+    guard.setPrivateKey(key);
+    return guard;
+  }
+  
+  
+  /*
+   * This method is only useful when you need to replace the credentials
+   * used for the test. Normally, the test should use the credentials stored
+   * in CVS. Enabling this method causes a dependency on the client, common
+   * and resolver jars of the community component.
+   *
+  public void storeCredentials() throws Exception {
+    // Configure the registry-query endpoint; the password resolver
+    // needs this. Use the main, production registry in order to see the
+    // right community. 
+    URL registryEndpoint
+        = new URL("http://galahad.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+    SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", 
+                                            registryEndpoint);
+    // Log in at the community and receive credentials.
+    System.out.println("Logging in...");
+    CommunityPasswordResolver resolver
+        = new CommunityPasswordResolver();
+    String account = "ivo://astrogrid.cam/tester";
+    String password = "testing";
+    int durationOfValidity = 3600 * 24 * 365 * 10; // Ten years
+    String trustedCertsDirectory
+        = "/C:/Documents and Settings/gtr/.workbench/trusted-certificates";
+    Subject s = resolver.checkPassword(account, 
+                                       password,
+                                       durationOfValidity,
+                                       trustedCertsDirectory);
+    SecurityGuard g1 = new SecurityGuard(s);
+   
+    // Store the credentials to disc.
+    PrivateKey key = g1.getPrivateKey();
+    X509Certificate[] chain = g1.getCertificateChain();
+    KeyStore keystore1 = KeyStore.getInstance("JKS");
+    keystore1.load(null, null);
+    keystore1.setKeyEntry("tester", key, "testing".toCharArray(), chain);
+    
+    File f = new File("tester.jks");
+    f.createNewFile();
+    assert f.exists();
+    FileOutputStream fos = new FileOutputStream(f);
+    keystore1.store(fos, "testing".toCharArray());
+    fos.close();
+  }
+  */
 }

@@ -25,9 +25,8 @@
 	     CWD when the tests are run. Similarly, the key-store files for
 	     the tests need to be in the CWD. -->
 	<preGoal name="test:test">
-		<copy file="${basedir}/test/wsdd/server-config.wsdd"            todir="${maven.build.dir}" overwrite="true"/>
-		<copy file="${basedir}/test/keystore/test-user-1-keystore.jks"  todir="${maven.build.dir}" overwrite="true"/>
-		<copy file="${basedir}/test/keystore/service-keystore.jks"      todir="${maven.build.dir}" overwrite="true"/>
+		<copy file="${basedir}/test/wsdd/server-config.wsdd"  todir="${maven.build.dir}" overwrite="true"/>
+		<copy file="${basedir}/test/keystore/tester.jks"      todir="${maven.build.dir}" overwrite="true"/>
 	</preGoal>
 	
 </project>

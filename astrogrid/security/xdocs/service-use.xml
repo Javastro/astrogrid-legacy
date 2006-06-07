@@ -17,10 +17,11 @@
   		<subsection name="Background">
   			<p>
   				The implementation of the facade for Axis uses WSS4J to check signatures on
-  				incoming messages. Each signatures is made with X.509 identity-certificate
-  			  that is present in the message. The identities in the certificates need
-  			not be known to the service <i>a priori</i> but the trust anchors (CA
-  			certificates) for these identities must be configured into the service.</p>
+  				incoming messages. The check is made with a certificate chain contained in
+  				the message header and a set of trust-anchor certificates configured into the
+  				service. The service provider knows and trusts the certificate authorities 
+  			  represented by the trust anchors but need not know <i>a priori</i> the names
+  			  of individual users.</p>
   			
   				<p>The signatures are checked by an Axis
   				handler, and a special sub-class of <i>SecurityGuard</i>,
@@ -33,39 +34,17 @@
   		
   		<subsection name="Setting the trust anchors">
   			<p>
-  				The service must be provided with a Java key-store in a local file.
-  				This key-store must contain the trust anchors (trusted, CA certificates)
-  				by which the service can establish trust in the certificates used to sign messages.
+  				The service must be provided with a set of trust-anchor certificates written in
+  				PEM format. Each certificate is stored in a <i>.pem</i> file. There is a naming
+  				convention: the name of each file must be the hash value of the certificate it contains,
+  				suffixed with <i>.0</i>. In the unlikely event of certificates having the same
+  				has value, one should instead be given the suffix <i>.1</i>, <i>.2</i>, etc. as
+  				necessary to produce unique names.
   			</p>
   			<p>
-  				The file must contain a key-store in JKS format; PKCS#12 format is not 
-  				currently usuable due to apparent bugs in the JRE. The file must on the service's
-  				class-path at run time. (In principle, you can put the key-store outside the
-  				class-path and state its fully-qualified file-name in the properties file; in practice
-  				this is unreliable, so the key-store should be kept on the class-path.)
-  			</p>
-  			<p>
-  				Key-stores may have passwords. It is not strictly necessary to set a password on
-  				this key-store as all the trust anchors are public credentials. If a password is
-  				set, then that password must be made available to the service at run-time via
-  				a properties file.
-  			</p>
-  			<p>
-  				The key-store must be described to the service via a properties file that is available
-  				on the service's class-path at run-time. This file must contain properties as follows.
-  			</p>
-  			<pre>
-org.apache.ws.security.crypto.provider=org.apache.ws.security.components.crypto.Merlin
-org.apache.ws.security.crypto.merlin.file=service-keystore.jks
-org.apache.ws.security.crypto.merlin.keystore.type=jks
-org.apache.ws.security.crypto.merlin.keystore.password=testing
-  			</pre>
-  			<p>
-  				In these properties, the keys must be exactly as shown; the value 'jks' for the 
-  				key-store type must not change; the value of the provider must not change;
-  				the key-store file-name and the password should be set to suit the store in
-  				question. If the store has no password, include the password property but leave its 
-  				value blank.
+  				The certificates should be grouped in directories. Ideally, just one directory contains 
+  				all the trust anchors. Grid conventions,
+  				set by the Globus toolkit, say that the directory should be <i>/etc/grid-security/certificates</i>.
   			</p>
   		</subsection>
   		
@@ -78,18 +57,12 @@ org.apache.ws.security.crypto.merlin.keystore.password=testing
 <![CDATA[<service name="SamplePort" provider="java:RPC">
   <parameter name="className" value="org.astrogrid.security.sample.SampleImpl"/>
   	<requestFlow>
-  		<handler type="java:org.astrogrid.security.AxisServiceCredentialHandler">
-  			<parameter name="action" value="Signature"/>
-  			<parameter name="signaturePropFile" value="server-crypto.properties" />
-  		</handler>
+  		<handler type="java:org.astrogrid.security.AxisServiceCredentialHandler"/>
   	</requestFlow>
   </service>]]>
   			</pre>
   			<p>
-  				The type (class) of the handler and the value of the action parameter must
-  				be exactly as shown above. The value of the <i>signaturePropFile</i>
-  				parameter should match the name of the properties file created to describe
-  				the server's key-store.
+  				The type (class) of the handler must be exactly as shown above. 
   			</p>
   		</subsection>
   		
@@ -101,46 +74,46 @@ org.apache.ws.security.crypto.merlin.keystore.password=testing
   				<dt>astrogrid-security.jar</dt>
   				<dd>Contains the security facade including the handler 
   					<i>org.astrogrid.security.AxisServiceCredentialHandler</i> which you declared in the WSDD file.</dd>
-  				<dt>wss4j.jar (v1.0.1 or later; v1.0 is too buggy)</dt>
-  				<dd>Contains the super-class of <i>org.astrogrid.security.AxisServiceCredentialHandler</i>
-  					plus the supporting framework of WSS4J.</dd>
   				<dt>xmlsec.jar (version 1.2.1 or later)</dt>
   				<dd>Contains the code for digital signature on XML.</dd>
   				<dt>bcprov.jar ("the bouncy-castle jar"; version jdk13-128)</dt>
   				<dd>Contains the cryptographic algorithms used in digital signature.</dd>
-  				<dt>opensaml.jar (version 1.0.1 or later)</dt>
-  				<dd>Contains SAML classes refered to by WSS4J. Digital signature does
-  				not actually use SAML but WSS4J requires it to be present.</dd>
+  		
+  				<dt>cog-jglobus.jar (version 1.2)</dt>
+  				<dd>Contains the code from the Java CoG kit for checking certificate chains.</dd>
   			</dl>
   		</subsection>
   			
   		<subsection name="Authentication semantics">
   			<p>Once configured as above, the service attempts to authenticate the sender of
   			each incoming message. It is not possible to apply authentication to a sub-set
-  				of operations on the service.</p>
-  			<p>
-  				If a request is authenticated, then the implementation code for the requested method
-  				is called. When this code runs, there is always an authenticated identity that can
-  				be retrieved.
+  				of operations on the service.
   			</p>
   			<p>
-  				If authentication fails for any reason on any message, then the handler returns
-  				a fault for that request. In this case, the implementation code for the 
-  				requested operation is never called.
+  				If a request is authenticated, then the authenticated identity is logged and stored for the
+  				use of authorization code. If authentication fails, or if the request is anonymous, then the
+  				situation is logged and no fault is thrown. I.e. the handler does not reject requests because
+  				of failed authentication.
   			</p>
+
   		</subsection>
   		
   		<subsection name="Retrieving the authenticated identity">
   			<p>
-  				The authenticated identity can be fetched by obtaining a new security-guard object from
-  				the facade. The implementation of the service operation should include this code.
+  				Authorization code can retrieve the results of authentication by asking for a service
+  				security-guard.
   			</p>
   			<pre>
-import javax.security.Principal;
-import org.astrogrid.security.AxisServiceSecurityGuard;
-
-AxisServiceSecurityGuard sg = AxisServiceSecurityGuard.getInstanceFromContext();
-Principal p = sg.getGridPrincipal();
+ import javax.security.auth.x500.X500Principal;
+ import org.astrogrid.security.AxisServiceSecurityGuard;
+ AxisServiceSecurityGuard guard = AxisServiceSecurityGuard.getInstanceFromContext();
+ if (guard.isAnonymous()) {
+   ...
+ }
+ else {
+   X500Principal p = guard.getX500Principal();
+   ...
+ }
   			</pre>
   		</subsection>
   	</section>
