@@ -4,6 +4,9 @@
 
 (import s2j)
 (import debugging)                      ;for print-stack-trace
+;(emit-annotations #t)                   ;should be default, yes?
+;(emit-debugging-symbols #t)
+
 (import string-io)                      ;for string ports
 
 (require-library 'quaestor/utils)
@@ -36,7 +39,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.26 $ $Date: 2006/04/11 20:13:02 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.27 $ $Date: 2006/06/07 15:19:17 $)")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -296,23 +299,21 @@
                            response)
     (let ((kb (kb:get kb-name))
           (ok-headers '(type length)))
-      (if kb                            ;normal case
-          (let ((submodel (rdf:ingest-from-stream
-                           stream
-                           rdf-mime)))
-            (chatter "rdf-mime=~s => lang=~s"
-                     rdf-mime (rdf:mime-type->language rdf-mime))
-            (if submodel
-                (if (kb (if tbox? 'add-tbox 'add-abox) ;normal case
+      (if kb
+          (with/fc
+              (make-fc request response '|SC_BAD_REQUEST|)
+            (lambda ()
+              (chatter "update-submodel: about to read ~s" submodel-name)
+              (let ((m (rdf:ingest-from-stream stream rdf-mime)))
+                (chatter "update-submodel: kb=~s submodel=~s"
+                         kb submodel-name)
+                (if (kb (if tbox? 'add-tbox 'add-abox)
                         submodel-name
-                        submodel)
+                        m)
                     (set-http-response response '|SC_NO_CONTENT|)
                     (no-can-do response
                                '|SC_INTERNAL_SERVER_ERROR| ;correct?
-                               "Unable to update model!"))
-                (no-can-do response '|SC_BAD_REQUEST|
-                           "Bad RDF MIME type! ~a~%~a"
-                           rdf-mime (chatter))))
+                               "Unable to update model!")))))
           (no-can-do response '|SC_BAD_REQUEST|
                      (format #f "No such knowledgebase ~a"
                              kb-name)))))
@@ -875,13 +876,10 @@
 ;; which can be used as the handler for with-failure-continuation.
 ;; See REPORT-EXCEPTION for an error procedure which allows you to override
 ;; the status given here.
-(define (make-fc request response status)
-  (or (and (java-object? request)
-           (java-object? response)
-           (symbol? status))
-      (error 'make-fc
-             "Bad call: request=~s response=~s status=~s"
-             request response status))
+(define/contract (make-fc (request java-object?)
+                          (response java-object?)
+                          (status symbol?)
+                          -> procedure?)
   (lambda (error-record cont)
     (let* ((msg-or-pair (error-message error-record))
            (show-debugging? (not (pair? msg-or-pair))))
@@ -892,10 +890,13 @@
                          "text/plain")
       (if show-debugging?
           (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
-                  msg-or-pair          ;show-debugging? => this is msg-string
+                  (format-error-message error-record)
+                  ;msg-or-pair          ;show-debugging? => this is msg-string
                   (let ((c (chatter)))
                     (if c
-                        (format #f "[chatter: ~a]" c)
+                        (apply string-append
+                               (map (lambda (x) (format #f "[chatter: ~a]~%" x))
+                                    c))
                         ""))
                   (with-output-to-string
                     (lambda () (print-stack-trace cont))))
