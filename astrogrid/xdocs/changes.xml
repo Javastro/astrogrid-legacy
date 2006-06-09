@@ -5,6 +5,11 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+    	  <action dev="gtr" type="add">
+    	    <em>branch apps-gtr-1617:</em> additions to the CEA infrastructure to support authentication with digital signature.
+    	    In the released configuration, CEA services authenticate and log user identities where signatures are present, but
+    	    do not enforce authorization policy.
+    	  </action>
     		
 			<action dev="kmb" type="add">
     			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
