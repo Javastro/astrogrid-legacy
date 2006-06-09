@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 
 import org.astrogrid.common.namegen.InMemoryNameGen;
 import org.astrogrid.common.namegen.NameGen;
-import org.votech.plastic.CommonMessageConstants;
 
 public class ApplicationStoreTest extends TestCase {
 

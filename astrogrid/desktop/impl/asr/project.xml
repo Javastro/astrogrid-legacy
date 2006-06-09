@@ -76,16 +76,6 @@
 			<dist.bundle>true</dist.bundle>			
 		</properties>						
    </dependency>		
-	<dependency>
-		<groupId>votech-ds6</groupId>
-		<artifactId>plastlets</artifactId>
-		<version>0.4.1</version>
-		<url>http://plastic.sourceforge.net</url>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>
-		</properties>
-	</dependency>	   
 	
 	<!-- leave the ag security lib inline for now, until things stabilize -->
         	

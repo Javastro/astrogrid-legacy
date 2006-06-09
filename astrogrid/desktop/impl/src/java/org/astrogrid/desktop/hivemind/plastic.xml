@@ -8,7 +8,6 @@
 	
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="hub" interface="PlasticHubListener" />
-			<acrService  id="messenger" interface="org.astrogrid.desktop.modules.plastic.MessengerInternal"/>
 	</contribution>
 		
 	<contribution configuration-id="framework.descriptors">
@@ -32,11 +31,6 @@
 			iconName="plastic.gif" before="*"
 			object="service:hub" methodName="prettyPrintRegisteredApps">
 			<tooltip>List details of all registered Applications</tooltip>
-		</action>
-		<action parentName="plastic" name="purgePlastic" text="Purge"
-			iconName="delete_obj.gif" after="listPlastic"
-			object="service:hub" methodName="purgeUnresponsiveApps">
-			<tooltip>Unregister any unresponsive applications from the hub</tooltip>
 		</action>
 	</contribution>	
 	
@@ -107,7 +101,6 @@
 				<event-listener service-id="builtin.shutdown" />					
 				<service>system.executor</service>
 				<service>namegen</service>
-				<service>messenger</service>
 				<service>system.rmi</service>
 				<service>system.webserver</service>
 				<service>system.systray</service>	
@@ -122,18 +115,6 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 			
-	<service-point id="messenger" interface="org.astrogrid.desktop.modules.plastic.MessengerInternal">
-		Messenger component
-		<interceptor service-id="system.throbber" />		
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.plastic.MessengerImpl"/>
-		</invoke-factory>
-	</service-point>	
-
-
-	<implementation service-id="messenger" if="property plastic.messenger.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>
 			
 	<!-- supporting service -->
 	<service-point id="namegen" visibility="private" interface="org.astrogrid.common.namegen.NameGen">

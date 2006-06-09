@@ -74,17 +74,6 @@
 			<dist.bundle>true</dist.bundle>	
 		</properties>						
    </dependency>		
-	<dependency><!-- not very keen on having this one present - necessary to compile, but the 
-	functionality it offers (e.g. save to myspace) isn't present in this incarnation anyhow. -->
-		<groupId>votech-ds6</groupId>
-		<artifactId>plastlets</artifactId>
-		<version>0.4.1</version>
-		<url>http://plastic.sourceforge.net</url>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>
-		</properties>
-	</dependency>	   
 
 <!-- stuff that other variants inherit from CDK, but which 
 we have to add by hand -->

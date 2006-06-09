@@ -49,7 +49,7 @@ abstract class PlasticClientProxy {
 
     public PlasticClientProxy(NameGen gen, String name, List supportedMessages) {
         try {
-            this.id = URI.create("plastic://acr/"+gen.next()); 
+            this.id = URI.create("plastic://acr/"+gen.next()); //TODO something more meaningful?
         }  catch (Exception e) {
             logger.error("Exception in unique name generator ", e);
             // we're going to use the InMemoryNameGen

@@ -15,19 +15,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlrpc.XmlRpc;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.Configuration;
@@ -87,14 +84,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     /** constructor selected by pico when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app, RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
-        this(executor,idGenerator,app,rmi, web,null, prettyPrinter, config,snitch);
+            RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
+        this(executor,idGenerator,rmi, web,null, prettyPrinter, config,snitch);
     }
     
     /** constructor selected by pico when systemtray is available 
      * @param prettyPrinter */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            MessengerInternal app,RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
+            RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
         this.tray = tray;
         this.rmiServer= rmi;
         this.webServer= web;
@@ -104,7 +101,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.config = config;
         this.snitch = snitch;
         logger.info("Constructing a PlasticHubImpl");
-        hubId = app.registerWith(this); 
+        hubId = URI.create("plastic://ar-hub");
     }
 
     public List getRegisteredIds() {
@@ -300,6 +297,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                         rv = CommonMessageConstants.RPCNULL;
                     }
                     if (client.canRespond()) returns.put(client.getId(), rv); //no point in storing nulls from apps that can't respond
+                    
+                    
+                    
                 } catch (PlasticException e) {
                     // Not much to do except log it...
                     // LOW consider sending a message, but beware we don't get
@@ -308,6 +308,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                     logger.warn("There was an exception while messaging " + client.getId() + e);
                 } finally {
                     gate.release();
+                }
+
+                //              Automatic purge of dead applications
+                if (!client.isResponding()) {
+                    logger.debug("Client "+client.getName()+ "("+client.getId()+")"+" is not responding.  Attempting to unregister");
+                    unregister(client.getId());
                 }
             }
 
@@ -442,51 +448,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.votech.plastic.PlasticHub#purgeNonresponsiveApps()
-     */
-    public List purgeUnresponsiveApps() {
-        List nonResponders = getNonResponders();
-        Set deadIds = new HashSet(nonResponders);
-        Iterator it = deadIds.iterator();
-        while (it.hasNext()) {
-            URI id = (URI) it.next();
-            unregister(id);
-        }
-        logger.info("Removed " + nonResponders.size() + " dead applications");
-        return nonResponders;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.votech.plastic.PlasticHubListener#markUnresponsiveApps()
-     */
-    public List markUnresponsiveApps() {
-        // ping them. Applications will automcatically mark themselves as duff.
-        List args = new Vector();
-        args.add("ping");
-        request(hubId, CommonMessageConstants.ECHO, args);
-        return getNonResponders();
-    }
-
-    private List getNonResponders() {
-        List dead = new Vector();
-        List appsIds = clients.getIds();
-        Iterator it = appsIds.iterator();
-        while (it.hasNext()) {
-            URI proxyId = (URI) it.next();
-            PlasticClientProxy proxy = (PlasticClientProxy) clients.get(proxyId);
-            if (!proxy.isResponding()) {
-                URI id = proxy.getId();
-                logger.debug("Application " + id + " is marked as dead.");
-                dead.add(id);
-            }
-        }
-        return dead;
-    }
 
 	public String getName(URI plid) {
 		PlasticClientProxy client = (PlasticClientProxy) clients.get(plid);
@@ -527,14 +488,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			URI plid = (URI) it.next();
 			String name = getName(plid);
 			List messages = getUnderstoodMessages(plid);
-			PlasticClientProxy client = clients.get(plid);
-			boolean alive = client.isResponding();
-			String version = safeStringCast(versions, plid); //avoid casting in case the client's been naughty
+			
+			String version = safeStringCast(versions, plid); //avoid casting in case the client's been naughty and returned a null
 			String icon = safeStringCast(icons, plid);
 			String ivorn = safeStringCast(ivorns, plid);
 			String description = safeStringCast(descriptions, plid);
 			
-			ApplicationDescription desc = new ApplicationDescription(plid.toString(),name,description,messages,version,icon,ivorn,alive);
+			ApplicationDescription desc = new ApplicationDescription(plid.toString(),name,description,messages,version,icon,ivorn);
 			applicationDescriptions.add(desc);
 		}
 		
@@ -564,12 +524,5 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		return null; //returning null indicates we don't care.
 	}
 
-	public void setLoggingLevel(String level) {
-		if (level.equalsIgnoreCase("off")) {
-			XmlRpc.setDebug(false);
-		} else if (level.equalsIgnoreCase("debug")) {
-			XmlRpc.setDebug(true);
-		}
-	}
 
 }

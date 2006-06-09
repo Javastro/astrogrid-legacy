@@ -4,7 +4,6 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.astrogrid.acr.ACRException;
 import org.votech.plastic.PlasticHubListener;
@@ -14,20 +13,7 @@ import org.votech.plastic.PlasticHubListener;
  * @date 22-Nov-2005
  */
 public interface PlasticHubListenerInternal extends PlasticHubListener{//NWW - needs to extend public interface, otherwise won't get found
-    /**
-     * Ping registered applications, mark any that don't respond for potential purging.
-     * 
-     * @return the list ids of dead apps.
-     */
-    List markUnresponsiveApps();
 
-    /**
-     * Unregister any apps marked as unresponsive.
-     * 
-     * @return the list of ids of unregistered apps.
-     */
-    List purgeUnresponsiveApps();
-    
     /**
      * Instruct the hub to open a web page listing details of all the registered apps.
      * This is meant to be a bit more human friendly than the other info methods.
@@ -42,9 +28,5 @@ public interface PlasticHubListenerInternal extends PlasticHubListener{//NWW - n
      */
     void setNotificationsEnabled(boolean enable);
     
-    /**
-     * Set the logging level for the Plastic module XML-RPC calls
-     * @param level can be off, debug.
-     */
-    void setLoggingLevel(String level);
+
 }

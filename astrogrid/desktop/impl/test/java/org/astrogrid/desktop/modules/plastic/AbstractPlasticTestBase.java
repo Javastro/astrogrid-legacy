@@ -29,7 +29,6 @@ public class AbstractPlasticTestBase extends TestCase {
 
 	protected static final URI SENDER_ID = URI.create("ivo://junit");
 
-	protected MessengerImpl messenger;
 
 	protected Executor executor;
 
@@ -46,7 +45,6 @@ public class AbstractPlasticTestBase extends TestCase {
 	protected Shutdown shutdown;
 
 	public void setUp() {
-		messenger = new MessengerImpl();
 		executor = new DirectExecutor();
 		idGenerator = new InMemoryNameGen();
 		web = new WebServer() {

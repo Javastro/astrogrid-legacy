@@ -13,10 +13,9 @@ public class ApplicationDescription {
 	private String version;
 	private String iconUrl;
 	private String ivorn;
-	boolean responding;
 	private String description;
 
-	public ApplicationDescription(String id, String name, String description, List messages, String version, String url, String ivorn, boolean responding) {
+	public ApplicationDescription(String id, String name, String description, List messages, String version, String url, String ivorn) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -24,7 +23,6 @@ public class ApplicationDescription {
 		this.version = version;
 		this.iconUrl = url;
 		this.ivorn = ivorn;
-		this.responding = responding;
 	}
 
 	public String getId() {
@@ -51,9 +49,6 @@ public class ApplicationDescription {
 		return ivorn;
 	}
 
-	public boolean isResponding() {
-		return responding;
-	}
 
 	/**
 	 * @return Returns the description.

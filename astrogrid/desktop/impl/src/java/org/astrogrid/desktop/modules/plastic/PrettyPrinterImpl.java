@@ -16,6 +16,8 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.votech.plastic.PlasticListener;
 //@todo NWW : remove dependency on browser - let infrastructure take care of displaying result instead.
+//TODO JDT: This whole way of displaying the results is pants - it was just quick and easy to do.
+// Topcat's plastic apps window is better, as it responds dynamically to new apps being added.
 public class PrettyPrinterImpl implements PrettyPrinterInternal {
 	/**
 	 * Logger for this class
@@ -42,7 +44,7 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 		writer.println("<body><h2>Plastic-Registered Applications</h2>");
 		writer.println("This ACR\'s hub supports <a href='http://plastic.sourceforge.net'>plastic</a> version "+PlasticListener.CURRENT_VERSION);
 		writer.println("<table border='1'>");
-		writer.println("<tr><th>Icon</th><th>Name</th><th>Description</th><th>Plastic Id</th><th>IVORN</th><th>Supported Messages</th><th>Plastic Version</th><th>Alive?</th></tr>");
+		writer.println("<tr><th>Icon</th><th>Name</th><th>Description</th><th>Plastic Id</th><th>IVORN</th><th>Supported Messages</th><th>Plastic Version</th></tr>");
 
 		
 		Iterator it = nonHubApplications.iterator();
@@ -52,7 +54,6 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 			String name = app.getName();
 			String description = app.getDescription();
 			List messages = app.getUnderstoodMessages();
-			boolean alive = app.isResponding();
 			String version = app.getVersion();
 			String icon = app.getIconUrl();
 			String ivorn = app.getIvorn();
@@ -74,8 +75,6 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 
 				writer.println("</td>");
 				writeIfNonNull(writer, version);
-				writer.println("<td>"+(alive ? "yes":"no")+"</td>");
-
 			writer.println("</tr>");
 			
 		}
@@ -102,7 +101,7 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 		if (icon==null ||  "".equals(icon)) {
 			writer.println("<td/>");
 		} else {
-			writer.println("<td><img src='"+icon+"'/></td>");
+			writer.println("<td><img height='100' src='"+icon+"'/></td>"); //Limit the size of the icons
 		}
 	}
 }

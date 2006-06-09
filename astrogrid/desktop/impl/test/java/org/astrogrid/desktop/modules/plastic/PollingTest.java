@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.votech.plastic.CommonMessageConstants;
-
 /**
  * @author jdt
  *
