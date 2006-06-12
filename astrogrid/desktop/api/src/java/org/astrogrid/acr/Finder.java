@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.8 2006/05/22 20:26:52 jdt Exp $
+/*$Id: Finder.java,v 1.9 2006/06/12 10:10:54 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,27 @@ import javax.swing.JOptionPane;
  *@see org.astrogrid.acr.builtin.ACR
  */
 public class Finder {
-    /** Webstart URL for the ACR */
+    /** Refactored as an static public class - previously was an anonymous class, and RmiLite seemed to be inable to call it
+     *  - producing a nice stack trace on shutdown. Same code, but as a named public static class works fine.
+	 * @author Noel Winstanley
+	 * @since Jun 12, 200611:03:25 AM
+	 */
+	public static final class FinderCleanupShutdownListener implements ShutdownListener {
+		public FinderCleanupShutdownListener(Finder f) {
+			this.f = f;
+		}
+		private final Finder f;
+		public void halting() {
+		    logger.info("Host ACR shutting down");
+		    f.acr = null;
+		}
+
+		public String lastChance() {
+		    return null; // won't ever object.
+		}
+	}
+
+	/** Webstart URL for the ACR */
     public static final String ACR_JNLP_URL = "http://software.astrogrid.org/jnlp/beta/workbench/workbench.jnlp";
     /**
      * Commons Logger for this class
@@ -99,16 +119,9 @@ public class Finder {
 		if (acr == null) {
             acr= createACR(tryToStartIfNotRunning, warnUserBeforeStarting);
             try { // attempt to register a listener, it it'll let me: use it to remove singleton when host vanishes.
-                Shutdown sd = (Shutdown)acr.getService(Shutdown.class);
-                sd.addShutdownListener(new ShutdownListener() {
-                    public void halting() {
-                        logger.info("Host ACR shutting down");
-                        Finder.this.acr = null;
-                    }
-                    public String lastChance() {
-                        return null; // won't ever object.
-                    }
-                });
+                Shutdown sd = (Shutdown)acr.getService(Shutdown.class);               
+                sd.addShutdownListener(new FinderCleanupShutdownListener(this));
+              
             } catch (ACRException e) {
                 logger.warn("Failed to register shutdown listener - no matter",e);
             }
@@ -277,6 +290,7 @@ public class Finder {
     		
     		
     		public Object getService(String componentName) throws ACRException, NotFoundException {
+    			//@todo this doesn't look right to me..
     			String className = api.interfaceClassName(componentName);
     			Class clazz = null;
     			try {
@@ -344,6 +358,7 @@ public class Finder {
                 logger.info("Not running with jdic libs");
             }
         }
+        // @todo add in code for other browser control class here.
         
         if (showMethod == null) {
             throw new ClassNotFoundException("Can't find any class that can control the system browser");
@@ -374,6 +389,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.9  2006/06/12 10:10:54  nw
+fixed shutdown bug.
+
 Revision 1.8  2006/05/22 20:26:52  jdt
 Updated the auto-start URL.  Will need to think how we now handle
 the multiple AR flavours
