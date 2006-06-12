@@ -5,11 +5,7 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-    	  <action dev="gtr" type="add">
-    	    <em>branch apps-gtr-1617:</em> additions to the CEA infrastructure to support authentication with digital signature.
-    	    In the released configuration, CEA services authenticate and log user identities where signatures are present, but
-    	    do not enforce authorization policy.
-    	  </action>
+
     		
 			<action dev="kmb" type="add">
     			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
@@ -19,25 +15,30 @@
 				<b>don't have to merge this branch, merged into PAL_KEA_1612 - 24-April-2006 - Catherine</b>
     		</action>
 			
-			<action dev="jdt" type="fix">
-    			<em>Branch cea-jdt-1639 in astrogrid/cea:</em>  No Hurry.  
-    		</action>
         </release>
 
         <release version="(Undertest)">
-            <action dev="gtr" type="fix">
-    			<em>Branch apps=gtr-1651:</em> Fixes in astrogrid-applications to allow STILTS to run as a wrapped application.
-    		</action>
 
+    	  <action dev="gtr" type="add">
+    	    <em>branch apps-gtr-1617:</em> additions to the CEA infrastructure to support authentication with digital signature.
+    	    In the released configuration, CEA services authenticate and log user identities where signatures are present, but
+    	    do not enforce authorization policy.
+    	  </action>
 				   
         </release>
 		
 		<release version="HEAD">
+            <action dev="gtr" type="fix">
+    			<em>Branch apps=gtr-1651:</em> Fixes in astrogrid-applications to allow STILTS to run as a wrapped application.
+    		</action>		
 		    <action dev="gtr" type="add">
     			<em>Branch security-gtr-1593:</em> major changes to the security facade to support digital signatures.
     		</action>
             <action dev="dave" type="fix">
     			<em>Branch dave-dev-200605311657:</em> fix the broken selftest page.
+    		</action>
+    		<action dev="jdt" type="fix">
+    			<em>Branch cea-jdt-1639 in astrogrid/cea:</em>  No Hurry.  
     		</action>
 			<action dev="gtr" type="add">
     			<em>Branch wb-gtr-1537:</em> Additions to the community/resolver project to allow logging in at a MyProxy service.
