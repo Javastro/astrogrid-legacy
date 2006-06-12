@@ -15,6 +15,9 @@ import org.w3c.dom.Document;
  * @see http://cdsweb.u-strasbg.fr/cdsws/name_resolver.gml
  * @author CDS
  *@service cds.sesame
+ *@todo produce an informationBean variant of these methods?
+ *@see http://vizier.u-strasbg.fr/xml/sesame_1.dtd
+ *@see http://vizier.u-strasbg.fr/xml/sesame_1.xsd
  */
 public interface Sesame {
 
@@ -24,7 +27,7 @@ public interface Sesame {
      * <pre>
      *           u = usual (corresponding to the deprecated Sesame(String name) output)
                 H = html 
-                x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd) 
+                x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd, DTD at http://vizier.u-strasbg.fr/xml/sesame_1.dtd) 
                 p (for plain (text/plain)) and i (for all identifiers) options can be added to H or x
                 </pre>
      * @return
@@ -36,8 +39,8 @@ public interface Sesame {
      * @param resultType      * <pre>
      *           u = usual (corresponding to the deprecated Sesame(String name) output)
                 H = html 
-                x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd) 
-                p (for plain (text/plain)) and i (for all identifiers) options can be added to H or x
+              x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd, DTD at http://vizier.u-strasbg.fr/xml/sesame_1.dtd) 
+               p (for plain (text/plain)) and i (for all identifiers) options can be added to H or x
                 </pre>
 
      * @param all true if all identifiers wanted 
@@ -49,7 +52,7 @@ public interface Sesame {
         A=all
         </pre>
         (examples : S to query in Simbad, NS to query in Ned if not found in Simbad,
-        NSA to query in Ned and Simbad, A to query in Ned, Simbad and VizieR, ...)
+        NS to query in Ned and Simbad, A to query in Ned, Simbad and VizieR, ...)
 
      * @return format depending on the resultTtpe parameter
 
