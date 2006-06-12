@@ -37,13 +37,15 @@
    		
    		String[] inputs = ifc.getArrayofInputs();
    		for (int i=0;i<inputs.length;++i) {
-	   		ParameterValue pv= new ParameterValue();
-	   		pv.setName(inputs[i]);
-	   		pv.setValue(request.getParameter(inputs[i]));
-			String indirectionParameter = inputs[i] + "Indirect";
-			pv.setIndirect(request.getParameter(indirectionParameter) != null);
-                        
-	   		input.addParameter(pv);
+   			String value = request.getParameter(inputs[i]);
+   			if (value != null && !(value.equals(""))) { // Ignore unset parameters
+ 	   			ParameterValue pv = new ParameterValue();
+	   			pv.setName(inputs[i]);
+	   			pv.setValue(value);
+				String indirectionParameter = inputs[i] + "Indirect";
+				pv.setIndirect(request.getParameter(indirectionParameter) != null);
+	   			input.addParameter(pv);
+	   		}
    		}
 
    		String[] outputs = ifc.getArrayofOutputs();

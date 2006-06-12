@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.23 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: CommandLineApplication.java,v 1.24 2006/06/12 13:45:57 clq2 Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -204,7 +204,11 @@ public class CommandLineApplication extends AbstractApplication implements Runna
            process =  runtime.exec(args, envp, applicationEnvironment.getExecutionDirectory());
         }
         catch (IOException e1) {
-           reportError("IOException when running app.", e1);
+           reportError("Failed to run the command " + args[0] + " in a subprocess", e1);
+           File executable = new File(args[0]);
+           if (!executable.exists()) {
+             logger.error(executable + ", the configured executable, does not exist.");
+           }
            throw new ApplicationExecutionException("Cannot create the application process", e1);
         }
       
