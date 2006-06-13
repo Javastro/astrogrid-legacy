@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid-software-site/Attic/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2005/08/19 14:39:28 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2006/06/13 13:53:58 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.9  2006/06/13 13:53:58  clq2
+    |   for updating corrected schemata
+    |
+    |   Revision 1.8.12.1  2006/04/05 11:59:48  gtr
+    |   Enhanced to make absolute the schemaLocation and location attributes in the published schemata.
+    |
     |   Revision 1.8  2005/08/19 14:39:28  dave
     |   Fixed dependency on main project maven-base.
     |   Added some comments.
@@ -97,7 +103,8 @@
 
         <!-- When the site has been built, add to it XML schemata which we need to publish at fixed URLs. -->
         <postGoal name="site">
-                <attainGoal name="unpack-schema"/>
+          <attainGoal name="unpack-schema"/>
+        	<attainGoal name="make-schemaLocation-absolute"/>
         </postGoal>
 
         <!-- Extract the XML schemata from jars specified in the POM and add them to the web site. -->
@@ -113,6 +120,22 @@
                                 </unjar>
                         </j:if>
                 </j:forEach>
-  </goal>
+        </goal>
+	
+	<!-- Go through the tree of schemata changing all the relative
+		hyperlinks (import elements etc.) to be absolute and pointing
+		into the site being built. -->
+	<goal name="make-schemaLocation-absolute">
+		${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+		<xslt style="${basedir}/absolute-location.xsl" basedir="${maven.docs.dest}/schema" 
+			  includes="**/*.xsd" extension=".xsd" destdir="${maven.docs.dest}/absolute-schema">
+		</xslt>
+		<xslt style="${basedir}/absolute-location.xsl" basedir="${maven.docs.dest}/schema" 
+			includes="**/*.wsdl" extension=".wsdl" destdir="${maven.docs.dest}/absolute-schema">
+		</xslt>
+		<move todir="${maven.docs.dest}/schema" overwrite="true">
+			<fileset dir="${maven.docs.dest}/absolute-schema"/>
+		</move>
+	</goal>
 
 </project>
