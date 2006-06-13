@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorClient.java,v 1.2 2004/07/01 11:07:10 nw Exp $
+ * $Id: CommonExecutionConnectorClient.java,v 1.3 2006/06/13 20:33:13 clq2 Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,6 +19,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.common.delegate.Delegate;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.net.URI;
@@ -105,5 +106,12 @@ public interface CommonExecutionConnectorClient extends Delegate {
     * @throws RemoteException
     */
    public String returnRegistryEntry() throws CEADelegateException;
-
+   
+   /**
+    * Sets properties that control the signing of outgoing messages.
+    * This method does not correspond to a method of the web service.
+    *
+    * @param g The guard object holding the credentials.
+    */
+   public void setCredentials(SecurityGuard sg1) throws CEADelegateException;
 }

@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.7 2004/09/17 01:21:20 nw Exp $
+/*$Id: JavaClassApplication.java,v 1.8 2006/06/13 20:33:13 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,6 +49,7 @@ public class JavaClassApplication extends AbstractApplication {
      */
     public JavaClassApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary lib) {
         super(ids, tool, interf,lib);
+       // CeaUser.setUser(ids.getUser()); // Makes the User object available as ThreadLocal - but doesn't work.
     }
     
     /** Starts the application executing.
@@ -120,6 +121,12 @@ public class JavaClassApplication extends AbstractApplication {
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.8  2006/06/13 20:33:13  clq2
+pal_gtr_1671
+
+Revision 1.7.162.1  2006/06/09 17:49:07  gtr
+I added security features.
+
 Revision 1.7  2004/09/17 01:21:20  nw
 altered to work with new threadpool
 

@@ -1,4 +1,4 @@
-/*$Id: SampleJavaClassApplications.java,v 1.5 2005/07/14 13:36:11 jdt Exp $
+/*$Id: SampleJavaClassApplications.java,v 1.6 2006/06/13 20:33:13 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.applications.javaclass;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.service.v1.cea.CeaSecurityGuard;
+
 
 /** Sample class of static methods, to use as java 'applications'
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
@@ -49,12 +51,31 @@ public class SampleJavaClassApplications {
     public static String echoDifferentArgs(String string, int integer) {
         return string + integer;
     }
+    
+    /**
+     * Uses security facade to find the caller's identity.
+     */
+    public static String whoAmI() {
+      CeaSecurityGuard g = CeaSecurityGuard.getInstanceFromContext();
+      if (g.isAuthenticated()) {
+        return g.getX500Principal().getName();
+      }
+      else {
+        return "not authenticated";
+      } 
+    }
         
 }
 
 
 /* 
 $Log: SampleJavaClassApplications.java,v $
+Revision 1.6  2006/06/13 20:33:13  clq2
+pal_gtr_1671
+
+Revision 1.5.50.1  2006/06/09 17:49:07  gtr
+I added security features.
+
 Revision 1.5  2005/07/14 13:36:11  jdt
 merge from  Branch aginab_jdt_1182
 

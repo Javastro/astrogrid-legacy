@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.12 2005/07/05 08:27:01 clq2 Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.13 2006/06/13 20:33:13 clq2 Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -25,6 +25,7 @@ import org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
+import org.astrogrid.security.AxisServiceSecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.axis._tool;
 
@@ -105,6 +106,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
     */
    public boolean execute(String arg0) throws RemoteException, CeaFault {
        try {
+           this.cacheSecurityGuard();
            return cec.execute(arg0);
        } catch (Exception e) {
         logger.error("execute("+ arg0 + ")", e);
@@ -228,6 +230,11 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
          throw CeaFault.makeFault(new Exception("A throwable occured in return registry entry-"+e.getMessage(),e));
      }
   }
+ 
+ private void cacheSecurityGuard() {
+   AxisServiceSecurityGuard g = AxisServiceSecurityGuard.getInstanceFromContext();
+   CeaSecurityGuard.setInstanceInContext(g);
+ }
 
 
 }

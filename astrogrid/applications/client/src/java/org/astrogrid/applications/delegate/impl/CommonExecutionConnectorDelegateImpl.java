@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.4 2004/09/06 15:21:58 nw Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.5 2006/06/13 20:33:13 clq2 Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,13 +22,12 @@ import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.service.v1.cea.CommonExecutionConnector;
-import org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceLocator;
 import org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingStub;
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.security.AxisClientSecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.axis._tool;
 
 import org.apache.axis.types.URI.MalformedURIException;
 
@@ -48,9 +47,16 @@ public class CommonExecutionConnectorDelegateImpl
      */
     private static final Log logger = LogFactory
             .getLog(CommonExecutionConnectorDelegateImpl.class);
+  
+  /**
+   * A container for the cryptographic credentials used
+   * when signing SOAP messages.
+   */ 
+  private AxisClientSecurityGuard axisGuard;
 
-   public CommonExecutionConnectorDelegateImpl(String targetEndPoint) {
+     public CommonExecutionConnectorDelegateImpl(String targetEndPoint) {
       this.targetEndPoint = targetEndPoint;
+      this.axisGuard = null; // No credentials => no message signing.
    }
 
    public CommonExecutionConnectorDelegateImpl(String targetEndPoint, int timeout) {
@@ -60,12 +66,20 @@ public class CommonExecutionConnectorDelegateImpl
 
    private CommonExecutionConnector getBinding() throws CEADelegateException {
       try {
-         CommonExecutionConnectorServiceSoapBindingStub binding =
-            (CommonExecutionConnectorServiceSoapBindingStub)new CommonExecutionConnectorServiceLocator()
-               .getCommonExecutionConnectorService(
-               new URL(this.getTargetEndPoint()));
-         binding.setTimeout(this.getTimeout());
-         return binding;
+        CommonExecutionConnectorLocator locator =
+            new CommonExecutionConnectorLocator(AxisClientSecurityGuard.getEngineConfiguration());
+        URL u = new URL(this.getTargetEndPoint());
+        CommonExecutionConnectorServiceSoapBindingStub binding =
+            (CommonExecutionConnectorServiceSoapBindingStub)locator.getCommonExecutionConnectorService(u);
+        binding.setTimeout(this.getTimeout());
+         
+        // If credentials for message-signing are available, 
+        // apply them to this binding.
+        if (super.axisGuard != null) {
+          super.axisGuard.configureStub(binding);
+        }
+        
+        return binding;
       }
       catch (Exception e) {
          throw new CEADelegateException("cannot create binding", e);
@@ -73,29 +87,31 @@ public class CommonExecutionConnectorDelegateImpl
 
    }
 
-   /* (non-Javadoc)
+   /**
+    * Defines a job-step on this delegate's service.
+    * Passes the tool document defining the step, but does not start
+    * execution of the step.
     * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#execute(org.astrogrid.workflow.beans.v1.Tool, org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, java.lang.String)
     */
    public String init(Tool tool, JobIdentifierType jobstepID)
-      throws CEADelegateException {
-      String result;
-      CommonExecutionConnector cec = getBinding();
-      try {
-         
-         _tool atool = Castor2Axis.convert(tool);
-         
-         result = cec.init(atool, jobstepID);
-      }
-      catch (RemoteException e) {
-         logger.error(e);
-         throw new CEADelegateException("failed to 'init' cea application" + jobstepID, e);
-      }
-
-
-        if (log.isTraceEnabled()) {
-            log.trace("init(Tool, JobIdentifierType) - end - return value = " + result);
-        }
-      return result;
+       throws CEADelegateException {
+     CommonExecutionConnector cec = getBinding();
+     String result;
+     try {
+       result = cec.init(Castor2Axis.convert(tool), jobstepID);
+     }
+     catch (RemoteException e) {
+       String message = "The job-step " + 
+                        jobstepID.toString() + 
+                        "could not be initialized; " +
+                        "the service at " + 
+                        this.targetEndPoint +
+                        " rejected it. ";
+       logger.error(message + e);
+       throw new CEADelegateException(message, e);
+     }
+     log.debug("init(Tool, JobIdentifierType) - end - return value = " + result);
+     return result;
    }
 
    /* (non-Javadoc)
@@ -190,6 +206,7 @@ public void registerResultsListener(String executionId, URI listenerEndpoint) th
  * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#execute(java.lang.String)
  */
 public boolean execute(String executionId) throws CEADelegateException {
+    System.out.println("CEA delegate - running execute()...");
     CommonExecutionConnector cec = getBinding();
     try {
        return cec.execute(executionId);

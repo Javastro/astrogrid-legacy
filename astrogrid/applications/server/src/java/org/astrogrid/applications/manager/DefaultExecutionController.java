@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.9 2004/10/08 20:01:10 pah Exp $
+ * $Id: DefaultExecutionController.java,v 1.10 2006/06/13 20:33:13 clq2 Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 
 package org.astrogrid.applications.manager;
 
+import java.security.Principal;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
@@ -20,6 +21,7 @@ import org.astrogrid.applications.manager.persist.ExecutionHistory;
 import org.astrogrid.applications.manager.persist.PersistenceException;
 import org.astrogrid.community.User;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.security.AxisServiceSecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.util.Observable;
@@ -95,7 +97,7 @@ public String init(Tool tool, String jobstepID) throws CeaException {
           
       try {
           ApplicationDescription descr = applicationDescriptions.getDescription(toolname);
-          User user = new User(); //TODO this needs to be obtained from the context
+          User user = new User();
           Application app = descr.initializeApplication(jobstepID,user,tool);   
           app.checkParameterValues();          
           executionHistory.addApplicationToCurrentSet(app);          
