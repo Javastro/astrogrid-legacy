@@ -5,6 +5,13 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+    		
+    	<action dev="gtr" type="fix">
+    		<em>Branch cea-gtr-1648:</em> fixes to astrogrid/contracts and astrogrid/applications/commandline to make it 
+    		easier to validate application-description files. <strong>NB:</strong> the astrogrid-software-site module is
+    		also updated and should be merged and built. Before building the latter component, its project.properties file
+    		needs to be updated with the version of the contracts jar assigned in this merger.
+    	</action>
 
     		
 			<action dev="kmb" type="add">
