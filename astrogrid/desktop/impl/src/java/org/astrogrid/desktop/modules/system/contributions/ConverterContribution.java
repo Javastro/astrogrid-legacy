@@ -6,12 +6,15 @@ package org.astrogrid.desktop.modules.system.contributions;
 import org.apache.commons.beanutils.Converter;
 
 /** Contribution bean for registering converters.
+ * used to configure how to convert string inputs into objects
+ * biuilds on apache beanutiles converters framework.
  * @author Noel Winstanley
  * @since Apr 14, 20062:22:16 AM
  */
 public class ConverterContribution {
   private Class output;
   private Converter converter;
+  private boolean array;
 /**
  * @return the converter
  */
@@ -24,7 +27,7 @@ public Converter getConverter() {
 public void setConverter(Converter converter) {
 	this.converter = converter;
 }
-/**
+/** set the class of output this converter can produce.
  * @return the output
  */
 public Class getOutput() {
@@ -35,6 +38,14 @@ public Class getOutput() {
  */
 public void setOutput(Class output) {
 	this.output = output;
+}
+
+/** ad-hoc hack - if true, this is hte convertor to Object[]. */
+public boolean isArray() {
+	return this.array;
+}
+public void setArray(boolean array) {
+	this.array = array;
 }
   
 }
