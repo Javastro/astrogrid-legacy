@@ -1,4 +1,4 @@
-/*$Id: ACRTestSetup.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: ACRTestSetup.java,v 1.2 2006/06/15 16:34:50 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,17 +50,10 @@ public class ACRTestSetup extends TestSetup{
         this.doLogin = doLogin;
     }
 
-    /** if this property is set to 'true', this class will assume that some other entity is taking care
-     * of creating, starting and stopping the workbench. otherwise, this class does the donkey work.
-     */
-    public static final String EXTERNALLY_MANAGED_WORKBENCH = "acrtestsetup.externally.managed.workbench";
     protected boolean doLogin;
 
     protected void setUp() throws Exception {
-    	super.setUp();
-    	if (Boolean.getBoolean(EXTERNALLY_MANAGED_WORKBENCH)) {
-    		logger.info("Laving Workbench as is - assume it's being managed by something else");
-    	} else  {
+
     		logger.info("Starting ACR as fixture");
     		try {
     			acrFactory = new BuildInprocessWorkbench();
@@ -71,7 +64,6 @@ public class ACRTestSetup extends TestSetup{
     			logger.error("ACR fixture threw exception on startup",e);
     			fail(e.getMessage());
     		}
-    	}
     	// either way, by now acrFactory != null
     	assertNotNull("No acr factory created",acrFactory);
         logger.info("ACR Fixture started");
@@ -97,15 +89,13 @@ public class ACRTestSetup extends TestSetup{
     }
     
     // static, but don't know how else to do this.
-    public static BuildInprocessACR acrFactory;
+    public static BuildInprocessWorkbench acrFactory;
 
     
     protected void tearDown()  throws Exception{
-    	if (! Boolean.getBoolean(EXTERNALLY_MANAGED_WORKBENCH)) {
     		logger.info("Stopping ACR as fixture");
     		acrFactory.stop();     
     		logger.info("ACR Fixture stopped");
-    	}
         super.tearDown();
 
 
@@ -116,6 +106,9 @@ public class ACRTestSetup extends TestSetup{
 
 /* 
 $Log: ACRTestSetup.java,v $
+Revision 1.2  2006/06/15 16:34:50  nw
+removed cruft.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 
