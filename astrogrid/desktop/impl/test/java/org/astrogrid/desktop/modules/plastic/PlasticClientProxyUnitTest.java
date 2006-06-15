@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import org.astrogrid.common.namegen.InMemoryNameGen;
 
-public class PlasticClientProxyTest extends TestCase {
+public class PlasticClientProxyUnitTest extends TestCase {
 
 	/**
 	 * Test that clients aren't affected by any unexpected changes to their parameters.

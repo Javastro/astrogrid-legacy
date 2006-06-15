@@ -12,7 +12,7 @@ import java.util.Map;
  * @author jdt
  *
  */
-public class PollingTest extends PresetupHub {
+public class PollingUnitTest extends PresetupHub {
 	private URI sender = URI.create("ivo://junit");
 	private List messages;
 	private int MAX=5000;

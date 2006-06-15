@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import org.astrogrid.common.namegen.InMemoryNameGen;
 import org.astrogrid.common.namegen.NameGen;
 
-public class ApplicationStoreTest extends TestCase {
+public class ApplicationStoreUnitTest extends TestCase {
 
 	private ApplicationStore store;
 	

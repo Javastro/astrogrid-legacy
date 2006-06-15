@@ -3,7 +3,7 @@ package org.astrogrid.desktop.modules.plastic;
 import org.astrogrid.acr.system.SystemTray;
 import org.votech.plastic.PlasticHubListener;
 
-public class SysTrayTest extends AbstractPlasticTestBase {
+public class SysTrayUnitTest extends AbstractPlasticTestBase {
 	
 	private final class TestSystemTray implements SystemTray {
 		private String caption;

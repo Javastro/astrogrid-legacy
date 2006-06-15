@@ -12,7 +12,7 @@ import org.votech.plastic.CommonMessageConstants;
  * @author jdt
  *
  */
-public class AdvancedTest extends PresetupHub {
+public class AdvancedUnitTest extends PresetupHub {
 	private URI m1 = URI.create("ivo://mess1");
 	private URI m2 = URI.create("ivo://mess2");
 	private URI m3 = URI.create("ivo://mess3");

@@ -8,7 +8,7 @@ import java.util.List;
 import org.votech.plastic.CommonMessageConstants;
 
 
-public class RegisterNoCallbackTest  extends PresetupHub {
+public class RegisterNoCallbackUnitTest  extends PresetupHub {
 
 	public void testRegisterGoodNames() {
 		URI id = hub.registerNoCallBack("Application1");

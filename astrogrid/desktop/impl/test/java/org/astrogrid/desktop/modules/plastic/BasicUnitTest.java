@@ -11,7 +11,7 @@ import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
 
 
-public class BasicTest  extends AbstractPlasticTestBase {
+public class BasicUnitTest  extends AbstractPlasticTestBase {
 	public void testContructsOK() {
 		File file = new File(System.getProperty("user.home"),".plastic");
 		//System.out.println(file);

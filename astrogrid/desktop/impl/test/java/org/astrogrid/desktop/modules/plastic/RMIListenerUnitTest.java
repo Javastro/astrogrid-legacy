@@ -9,7 +9,7 @@ import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticListener;
 
-public class RMIListenerTest extends PresetupHub {
+public class RMIListenerUnitTest extends PresetupHub {
 	private List sampleArgs;
 	private URI message = URI.create("ivo://message");
 	private URI test = URI.create("ivo://junit");
