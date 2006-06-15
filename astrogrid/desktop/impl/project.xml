@@ -181,10 +181,12 @@
    
 
 <!-- used within development only -->
+<!-- code to unit test xml -->
     <dependency>
       <id>xmlunit</id>
       <version>1.0</version>
     </dependency>		
+    
     <dependency><!-- proper static analysis of code problems -->
     	<artifactId>maven-findbugs-plugin</artifactId>
     	<groupId>maven-plugins</groupId>
@@ -196,7 +198,16 @@
  		<groupId>easymock</groupId>
  		<artifactId>easymock</artifactId>
  		<version>1.2</version>
+ 		<url>http://www.easymock.org/</url>
  	</dependency>
+ 	
+ <!-- swing testing -->
+ <dependency>
+ 	<groupId>uispec4j</groupId>
+ 	<artifactId>uispec4j</artifactId>
+ 	<version>1.1</version>
+ 	<url>http://www.uispec4j.org/</url>
+ </dependency>
 <!-- testing html interface  -->
  <dependency>
                         <groupId>httpunit</groupId>
