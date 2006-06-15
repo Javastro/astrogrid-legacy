@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hivemind.SymbolSource;
 
 /**
- *a hivemind symbol source that retrieves values from a file called 'version.properties'
+ *a hivemind symbol source that retrieves values from a file called 'astrogrid.version'
  * 
  * @author Noel Winstanley
  * @since May 18, 20061:56:57 PM
@@ -46,6 +46,9 @@ public class VersionSymbolSource implements SymbolSource {
 	
 	private final Properties v;
 	public String valueForSymbol(String arg0) {
+		if (arg0 == null) {
+			return null;
+		}
 		return v.getProperty(arg0);
 	}
 
