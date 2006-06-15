@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.3 2006/06/15 09:49:08 nw Exp $
+/*$Id: DALImpl.java,v 1.4 2006/06/15 16:34:04 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +33,6 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
 
-import uk.ac.starlink.util.URLUtils;
 
 /** Abstract class for implemntations of HTTP-GET based DAL standards
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
@@ -181,6 +179,9 @@ public abstract class DALImpl {
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.4  2006/06/15 16:34:04  nw
+fixed built gotcha
+
 Revision 1.3  2006/06/15 09:49:08  nw
 improvements coming from unit testing
 
