@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.4 2006/06/02 00:16:15 nw Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.5 2006/06/15 09:50:01 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletConfig;
@@ -41,9 +43,10 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
     protected ACRInternal reg;
 
-    /** parse the request path, calling a different abstract method to process each level */
+    /** parse the request path, calling a different abstract method to process each level 
+     * @throws IOException */
     protected void navigate(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+            HttpServletResponse response) throws IOException  {
         // tokenize the request path..
         try {
             if (request.getPathInfo() == null || request.getPathInfo().trim().length() < 1) {
@@ -93,6 +96,10 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
             reportError("Failed to access component",t, request, response);
         } catch (RuntimeException t) {
             reportError(t,request,response);
+        } catch(IOException e) {
+        	reportError(e,request,response);
+        } catch (ServletException e) {
+        	reportError(e,request,response);
         }
     }
 
@@ -133,22 +140,30 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
             Object service, HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException;
 
-    /** handle reporting an error  - may be extended.*/
+    /** handle reporting an error  - may be extended.
+     * @throws IOException */
     protected void reportError(Throwable t, HttpServletRequest request,
-            HttpServletResponse response) throws ServletException {
-        throw new ServletException(t);
+            HttpServletResponse response) throws IOException {
+        response.sendError(500,fmt(t));
     }
     
     protected void reportError(String msg, HttpServletRequest request,
-            HttpServletResponse response) throws ServletException {
-        throw new ServletException(msg);
+            HttpServletResponse response) throws IOException {
+        response.sendError(500,msg);
     }
     
     protected void reportError(String msg, Throwable t,HttpServletRequest request,
-            HttpServletResponse response) throws ServletException {
-        throw new ServletException(msg,t);
+            HttpServletResponse response) throws IOException {
+        response.sendError(500,msg + "\n" + fmt(t));
     }
     
+    
+    private String fmt(Throwable t) {
+    	StringWriter sw = new StringWriter();
+    	PrintWriter pw = new PrintWriter(sw);
+    	t.printStackTrace(pw);
+    	return sw.toString();
+    }
     
 
     protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
@@ -163,6 +178,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.5  2006/06/15 09:50:01  nw
+ * fixed so that exceptions are reported to user.
+ *
  * Revision 1.4  2006/06/02 00:16:15  nw
  * Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
  *
