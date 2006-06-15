@@ -1,4 +1,4 @@
-/*$Id: ServletContextContribution.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: ServletContextContribution.java,v 1.3 2006/06/15 09:56:09 nw Exp $
  * Created on 20-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,7 @@
  *
 **/
 package org.astrogrid.desktop.modules.system.contributions;
-/** contribution bean - describes something to stuff in the context of the servlet container */
+/** contribution bean that describes something to stuff in the context of the servlet container */
 public class ServletContextContribution {
 
     public ServletContextContribution() {
@@ -22,12 +22,14 @@ public class ServletContextContribution {
     public String getName() {
         return this.name;
     }
+    /** the name to store {@link #getObject} under in the context */
     public void setName(String name) {
         this.name = name;
     }
     public Object getObject() {
         return this.object;
     }
+    /** the object to store in the context */
     public void setObject(Object object) {
         this.object = object;
     }
@@ -37,6 +39,9 @@ public class ServletContextContribution {
 
 /* 
 $Log: ServletContextContribution.java,v $
+Revision 1.3  2006/06/15 09:56:09  nw
+doc fix
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

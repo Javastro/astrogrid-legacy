@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.5 2006/05/17 23:57:46 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.6 2006/06/15 09:53:37 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -149,7 +149,11 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
         this.ui = ui;        
     }
     
-    // separate initialize method, to start service after it's been configured using setters.
+    /** separate initialize method, to start service after it's been configured using setters.
+     * 
+     * important - call this method before using this component
+     *
+     */
     public void init() {
         this.chan = new BoundedPriorityQueue(queueSize);
         this.exec = new TimeoutPooledExecutor(chan,maxThreads,startThreads);
@@ -214,6 +218,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.6  2006/06/15 09:53:37  nw
+doc fix
+
 Revision 1.5  2006/05/17 23:57:46  nw
 documentation improvements.
 

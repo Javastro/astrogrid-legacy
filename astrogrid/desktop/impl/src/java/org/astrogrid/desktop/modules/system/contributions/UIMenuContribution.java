@@ -1,4 +1,4 @@
-/*$Id: UIMenuContribution.java,v 1.3 2006/05/17 23:57:46 nw Exp $
+/*$Id: UIMenuContribution.java,v 1.4 2006/06/15 09:57:05 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,11 +26,12 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
     private String before;
     private String parentName;
     
+    /** sets the icon to use */
     public void setIconName(String icon) {
         super.setIcon(IconHelper.loadIcon(icon));
     }
 
-    /**
+    /** hivemind ordering constraint
      * @see org.astrogrid.desktop.modules.system.contributions.UIStructureContribution#getAfter()
      */
     public String getAfter() {
@@ -42,7 +43,7 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
     public void setAfter(String followingNames) {
         this.after = followingNames;
     }
-
+    /** hivemind ordering constraint */
     public String getBefore() {
         return this.before;
     }
@@ -50,7 +51,7 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
         this.before = precedingNames;
     }
 
-    /**
+    /** parent ui component for this component 
      * @see org.astrogrid.desktop.modules.system.contributions.UIStructureContribution#getParentName()
      */
     public String getParentName() {
@@ -68,6 +69,9 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
 
 /* 
 $Log: UIMenuContribution.java,v $
+Revision 1.4  2006/06/15 09:57:05  nw
+doc fix
+
 Revision 1.3  2006/05/17 23:57:46  nw
 documentation improvements.
 

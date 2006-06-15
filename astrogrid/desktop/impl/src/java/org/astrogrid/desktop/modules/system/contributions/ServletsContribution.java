@@ -1,4 +1,4 @@
-/*$Id: ServletsContribution.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: ServletsContribution.java,v 1.3 2006/06/15 09:56:22 nw Exp $
  * Created on 16-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,8 @@
  *
 **/
 package org.astrogrid.desktop.modules.system.contributions;
-/**
- * bean to hold details of a servlet to be deployed 
+ /** bean that declares a servlet to be deployed. 
+ * @todo add parameter checking?
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Mar-2006
  *
  */
@@ -23,18 +23,21 @@ public class ServletsContribution {
     private String name;
     private String path;
     private Class servletClass;
+    /** the name of the servlet */
     public String getName() {
         return this.name;
     }
     public void setName(String name) {
         this.name = name;
     }
+    /** path to deploy this servlet to */
     public String getPath() {
         return this.path;
     }
     public void setPath(String path) {
         this.path = path;
     }
+    /** implementation class for this servlet */
     public Class getServletClass() {
         return this.servletClass;
     }
@@ -48,6 +51,9 @@ public class ServletsContribution {
 
 /* 
 $Log: ServletsContribution.java,v $
+Revision 1.3  2006/06/15 09:56:22  nw
+doc fix
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

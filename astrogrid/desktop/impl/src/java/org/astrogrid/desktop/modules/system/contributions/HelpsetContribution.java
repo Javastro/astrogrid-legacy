@@ -14,12 +14,17 @@ public class HelpsetContribution {
 	private Class resourceAnchor;
 	
 	
-	
+	/**( set the path to the helpset index file */
 	public void setPath(String path) {
 		this.path = path;
 
 	}
 	
+	/** sets a class that the {@link #path} should be resolved relative to 
+	 * - this class should be in the <i>same</i> jar file as the helpset - to 
+	 * fix class resolving problems when running under webstart.
+	 * @param cl
+	 */
 	public void setResourceAnchor(Class cl) {
 		this.resourceAnchor = cl;
 	}
