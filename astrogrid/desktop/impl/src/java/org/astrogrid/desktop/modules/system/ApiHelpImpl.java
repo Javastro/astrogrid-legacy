@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.5 2006/06/02 00:16:15 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.6 2006/06/15 09:54:09 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -107,6 +107,10 @@ public class ApiHelpImpl implements ApiHelp {
      * @see org.astrogrid.acr.system.ApiHelp#interfaceClassName(java.lang.String, java.lang.String)
      */
     public String interfaceClassName(String arg0) throws NotFoundException {
+    	if (arg0 == null) {
+    		// should throw some other kind of exception really - but not permitted by the signature
+    		throw new NotFoundException("null parameter");
+    	}
         String[] names = arg0.split("\\.");        
         ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
         if (m == null) {
@@ -140,6 +144,9 @@ public class ApiHelpImpl implements ApiHelp {
     
     public String[][] methodSignature(String methodName) throws NotFoundException {
         Vector sigs = new Vector();
+        if (methodName == null) {
+        	throw new NotFoundException("null");
+        }
 
         String[] names = methodName.split("\\.");
         if (names[0].equalsIgnoreCase("system")) {
@@ -220,6 +227,9 @@ public class ApiHelpImpl implements ApiHelp {
     }
     
     public String componentHelp(String componentName) throws NotFoundException {
+    	if (componentName == null) {
+    		throw new NotFoundException("null");
+    	}
         String[] names = componentName.split("\\.");
         String moduleName=names[0];
             ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(moduleName);
@@ -239,7 +249,13 @@ public class ApiHelpImpl implements ApiHelp {
             .append(cd.getDescription());
             return result.toString();                   
     }
+    
+
+    //@todo improve format - remove cruft - from method & component help.
     public String methodHelp(String methodName) throws NotFoundException {
+    	if (methodName == null) {
+    		throw new NotFoundException("null");
+    	}
         String[] names = methodName.split("\\.");
         ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
         if (m == null) {
@@ -288,6 +304,9 @@ public class ApiHelpImpl implements ApiHelp {
 
     //@todo merge ApiHelp.callFunction,  XMLRPCServlet.execute() and HtmlServlet.callMethod
 	public Object callFunction(String methodName, int returnKind, Object[] args) throws ACRException, InvalidArgumentException, NotFoundException {
+		if (methodName == null) {
+			throw new InvalidArgumentException("null");
+		}
 		String[] names = methodName.split("\\.");
 		if (names.length != 3) {
 			throw new InvalidArgumentException("Expected a fully-qualified function name - of format module.component.function");
@@ -313,10 +332,11 @@ public class ApiHelpImpl implements ApiHelp {
 	        try {
 				Method method = ReflectionHelper.getMethodByName(service.getClass(),md.getName());
 				Class[] parameterTypes = method.getParameterTypes();
-		        if (parameterTypes.length != args.length) {
+		        int argumentCount =  args == null ? 0 : args.length;
+				if (parameterTypes.length != argumentCount) {
 		        	throw new InvalidArgumentException("Function " + methodName + " expects "
 		        			+ parameterTypes.length + " parameters, but " 
-		        			+ args.length + " arguments were provided"
+		        			+ argumentCount + " arguments were provided"
 		        			);
 		        }				
                 // convert parameters to correct types.
@@ -358,6 +378,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.6  2006/06/15 09:54:09  nw
+improvements coming from unit testing
+
 Revision 1.5  2006/06/02 00:16:15  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 

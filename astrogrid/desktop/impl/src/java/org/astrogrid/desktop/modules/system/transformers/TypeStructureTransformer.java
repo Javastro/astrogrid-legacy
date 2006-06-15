@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.3 2006/04/18 23:25:46 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.4 2006/06/15 09:58:18 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,8 @@ import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.WrapDynaBean;
 import org.apache.commons.collections.Transformer;
 
-/** implem,entation of transformer that will render almost any object tree down to types suitable for xmlrpc lib - i.e. type structures - prims, maps, vectors.
+/** implem,entation of transformer that will render almost any object tree down to types suitable for xmlrpc lib.
+ * Output should just be primitives,  maps, vectors.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
  *
  */
@@ -53,7 +54,7 @@ public class TypeStructureTransformer implements Transformer {
         if (arg0 == null) {
             return null;
         }
-
+        // pass thtough these supported types.
         if (arg0 instanceof String 
                 || arg0 instanceof Integer 
                 || arg0 instanceof Double 
@@ -61,9 +62,17 @@ public class TypeStructureTransformer implements Transformer {
                 || arg0 instanceof Hashtable 
                 || arg0 instanceof Date 
                 || arg0 instanceof Boolean 
+                || arg0 instanceof Byte
                 || arg0 instanceof byte[]) {
             return arg0;
         } 
+        
+        if (arg0 instanceof Void) {
+        	return "OK";
+        }
+        if (arg0 instanceof Class) {
+        	return arg0 == null ? "unknown class" : ((Class)arg0).getName();
+        }
         if (arg0 instanceof Calendar) {
             return ((Calendar)arg0).getTime();
         }
@@ -82,6 +91,7 @@ public class TypeStructureTransformer implements Transformer {
                 || arg0 instanceof URI) {
             return arg0.toString();
         }
+        // recursively transform a map.
         if (arg0 instanceof Map) {
             Map m = (Map)arg0;
             Hashtable h = new Hashtable(m.size());
@@ -91,9 +101,11 @@ public class TypeStructureTransformer implements Transformer {
             }
             return h;
         }
+        // convert an array to a collection.
         if (arg0 instanceof Object[]) {
-            arg0 = Arrays.asList((Object[])arg0); // processed by Collection clause.
+            arg0 = Arrays.asList((Object[])arg0); // then processed by Collection clause.
         }        
+        // recursively transform a collection.
         if (arg0 instanceof Collection) {
             Collection col = (Collection)arg0;
             Vector v = new Vector(col.size());
@@ -140,6 +152,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.4  2006/06/15 09:58:18  nw
+improvements coming from unit testing
+
 Revision 1.3  2006/04/18 23:25:46  nw
 merged asr development.
 

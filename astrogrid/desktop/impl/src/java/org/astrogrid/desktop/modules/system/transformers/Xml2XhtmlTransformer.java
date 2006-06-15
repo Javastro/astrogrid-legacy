@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.5 2006/04/21 13:48:11 nw Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.6 2006/06/15 09:58:18 nw Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,9 +28,10 @@ import org.astrogrid.desktop.modules.system.contributions.StylesheetsContributio
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
-/**
+/** Transforms a result by looking through a set of stylesheets.
+ * input is expected to be xml, output is expected to be xhtml
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 11-May-2005
- *@todo find more efficient implementation.
  */
 public class Xml2XhtmlTransformer implements Transformer{
     /**
@@ -55,6 +56,12 @@ public class Xml2XhtmlTransformer implements Transformer{
      * 
      */
     public Object transform(Object arg0) {
+    	if (arg0 == null) {
+    		return "<html><body>null</body></html>";
+    	}
+    	if (! (arg0 instanceof Document)) {
+    		throw new IllegalArgumentException("Can only transform XML Documents: " + arg0.getClass().getName());
+    	}
     	Document d = (Document)arg0;
     	for (int i = 0; i < sheets.length ; i++) {
     		if (sheets[i].isApplicable(d)) {    	
@@ -65,7 +72,7 @@ public class Xml2XhtmlTransformer implements Transformer{
     				sheets[i].createTransformer().transform(source,sink);
     				return sw.toString();
     			} catch (TransformerException e) {
-    				logger.error("TransformerException",e);
+    				logger.error("TransformerException - falling back",e);
     				// will continue iterating - may find a fallback.
     			}
     		}
@@ -81,6 +88,9 @@ public class Xml2XhtmlTransformer implements Transformer{
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.6  2006/06/15 09:58:18  nw
+improvements coming from unit testing
+
 Revision 1.5  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

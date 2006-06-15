@@ -28,30 +28,31 @@ public class StylesheetsContribution {
 	
 
 	/**
-	 * @param name the name to set
+	 * @param name the name of the sheet - resource path, releative to {@link Xml2XhtmlTransformer}
 	 * @throws TransformerConfigurationException 
 	 */
 	public void setSheet(String name) throws TransformerConfigurationException {
 		this.templates = fac.newTemplates(new StreamSource(Xml2XhtmlTransformer.class.getResourceAsStream(name)));
 	}
-	/** pattern that determines wherther this stylesheet is applicable.
-	 * @return the regexp
-	 */
 
-	/**
+
+	/** Configures when this contribution is applicable.
 	 * @param regexp the regexp to set
 	 */
 	public void setRegexp(String regexp) {
 		this.pattern = Pattern.compile(regexp, Pattern.DOTALL);
 	}
 	
-	//@todo find a more efficient way of doing this .
+	/** @see {@link #isApplicable(CharSequence)} */
 	public boolean isApplicable(Document d) {
 		return isApplicable(DomHelper.DocumentToString(d));
 		
 	}
-	
+	/** test if this sheet is applicable to an input by matching the regexp against it */
 	public boolean isApplicable(CharSequence input) {
+		if (pattern == null) {
+			return false;
+		}
 		Matcher m = pattern.matcher(input);
 		return m.lookingAt(); // tests whether a prefix of the pattern matches.
 	}
@@ -61,6 +62,9 @@ public class StylesheetsContribution {
 	private Pattern pattern;
 	/** creates a new transformer from the stylesheet */
 	public Transformer createTransformer() throws TransformerConfigurationException {
+		if (templates == null) {
+			throw new TransformerConfigurationException("No template supplied");
+		}
 		Transformer t =  templates.newTransformer();
 		//t.setOutputProperty(OutputKeys.METHOD,"html");
 		return t;
