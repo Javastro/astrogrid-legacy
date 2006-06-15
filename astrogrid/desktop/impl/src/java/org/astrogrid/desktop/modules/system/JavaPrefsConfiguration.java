@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.5 2006/04/21 13:48:12 nw Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.6 2006/06/15 09:52:48 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ import org.astrogrid.config.SimpleConfig;
  * and keeps astrogrid's configuration system in-synch.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
-public class JavaPrefsConfiguration implements PreferenceChangeListener, Configuration, ConfigurationInternal{
+public class JavaPrefsConfiguration implements PreferenceChangeListener,ConfigurationInternal{
     /**
      * Commons Logger for this class
      */
@@ -152,10 +152,11 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
     }
 
  
+    //unused
 
-    public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
-        this.userPrefs.addPreferenceChangeListener(pcl);
-    }
+//    public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
+ //       this.userPrefs.addPreferenceChangeListener(pcl);
+  //  }
 
 
  
@@ -188,6 +189,9 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener, Configu
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.6  2006/06/15 09:52:48  nw
+cleaned up
+
 Revision 1.5  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
