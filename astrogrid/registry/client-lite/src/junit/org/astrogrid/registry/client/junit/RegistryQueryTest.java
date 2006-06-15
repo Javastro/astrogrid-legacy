@@ -18,7 +18,7 @@ import org.xml.sax.InputSource;
 import junit.framework.*;
 import java.io.File;
 import java.util.Date;
-import org.astrogrid.query.sql.Sql2Adql;
+import org.astrogrid.oldquery.sql.Sql2Adql;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import java.util.*;

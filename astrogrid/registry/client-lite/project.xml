@@ -213,11 +213,18 @@
     	
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-pal-query</artifactId>
+            <artifactId>astrogrid-pal-oldquery</artifactId>
             <version>${astrogrid.pal.version}</version>
             <type>jar</type>
         </dependency>    
     	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-xml</artifactId>
+            <version>${astrogrid.xml.stable}</version>
+            <type>jar</type>
+        </dependency>    
+
         <dependency>
              <artifactId>astrogrid-utils</artifactId>
              <groupId>org.astrogrid</groupId>
