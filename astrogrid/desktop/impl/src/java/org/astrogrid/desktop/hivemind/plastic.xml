@@ -90,6 +90,12 @@
 		<load service-id="namegen" />
 	</contribution>		
 	
+	
+	<contribution configuration-id="system.rmiListenerInterfaces">
+		<service id="hub">
+			<listener interface="org.votech.plastic.PlasticListener" />
+		</service>
+	</contribution>
 	<!-- services and implementations-->	
 	
 	<service-point id="hub" interface="org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal">
@@ -115,7 +121,7 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 			
-			
+
 	<!-- supporting service -->
 	<service-point id="namegen" visibility="private" interface="org.astrogrid.common.namegen.NameGen">
 		Unique name generator

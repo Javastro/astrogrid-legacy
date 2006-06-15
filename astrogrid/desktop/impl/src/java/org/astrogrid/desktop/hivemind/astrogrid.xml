@@ -59,6 +59,9 @@
 		<service id="community">
 			<listener interface="org.astrogrid.acr.astrogrid.UserLoginListener" />
 		</service>
+		<service id="processManager">
+			<listener interface="org.astrogrid.acr.astrogrid.RemoteProcessListener" />
+		</service>
 	</contribution>
 	
 	<contribution configuration-id="framework.descriptors">

@@ -24,6 +24,13 @@ Builtin Components
 		<load service-id="shutdown"/> 
 	</contribution>	
 	
+		
+	<contribution configuration-id="system.rmiListenerInterfaces">
+		<service id="shutdown">
+			<listener interface="org.astrogrid.acr.builtin.ShutdownListener" />
+		</service>
+	</contribution>
+	
 	<!-- set to 'true' to have System.exit() called at end of shutdown
 	 (obvioously not a good idea when running embedded, or in a web container, etc -->
 	<contribution configuration-id="hivemind.FactoryDefaults">
