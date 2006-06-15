@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationDescriptionFactory.java,v 1.4 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: CommandLineApplicationDescriptionFactory.java,v 1.5 2006/06/15 15:26:03 clq2 Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,9 +48,11 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
         if (arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR) != null) {
             id = arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR);
         }
+        if (id.startsWith("ivo://")) {
+          id = id.substring(6);
+        }
         logger.debug("Creating application description for '" + id + "'");
                
-       //return new CommandLineApplicationDescription(id,factory);
        CommandLineApplicationDescription descr = (CommandLineApplicationDescription)factory.getComponentInstance(container);
        descr.setName(id);
        return descr;
@@ -61,6 +63,12 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
 
 /* 
 $Log: CommandLineApplicationDescriptionFactory.java,v $
+Revision 1.5  2006/06/15 15:26:03  clq2
+ea-gtr-1648
+
+Revision 1.4.116.1  2006/06/13 17:08:09  gtr
+It now allows the name attribute for the applications to be given with or without the ivo:// prefix.
+
 Revision 1.4  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 

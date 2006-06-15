@@ -9,11 +9,10 @@
 	xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v1
-	../../../workflow-objects/schema/CEAImplementation.xsd">
-	<!-- The application name is its IVOID with the ivo:// prefix left out.
-		   The part before the first slash is the authority ID; the part after
-		   the first slash is the resource key. -->
-	<Application name="org.astrogrid.localhost/Dummy">
+	                    http://software.astrogrid.org/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd">
+	<!-- The application name is its IVO identifier.
+		   The org.astrogrid.localhost is the authority ID; Dummy is the resource key. -->
+	<Application name="ivo://org.astrogrid.localhost/Dummy">
 		<ceab:Parameters/>
 		<ceab:Interfaces>
 			<ceab:Interface name="Dummy">
