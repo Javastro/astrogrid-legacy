@@ -1,4 +1,4 @@
-/*$Id: SysTrayRemoteProcessListener.java,v 1.3 2006/05/08 15:52:49 nw Exp $
+/*$Id: SysTrayRemoteProcessListener.java,v 1.4 2006/06/15 09:46:07 nw Exp $
  * Created on 03-Apr-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,13 +51,13 @@ public final class SysTrayRemoteProcessListener implements RemoteProcessListener
             if (arg1.equals("ERROR")) {
                 this.tray.displayWarningMessage(name + " ended in error","See VO Lookout for details");
             } else {
-               this.tray.displayInfoMessage(name + " completed successfuly","See VO Lookout for results");
+               this.tray.displayInfoMessage(name + " completed successfully","See VO Lookout for results");
             }                    
             } catch (IOException e) {
-                this.logger.fatal("Failed to find folder for id - " + arg0,e);
+                this.logger.error("Failed to find folder for id - " + arg0,e);
             }
         } else {
-            System.err.println(arg0 + " " + arg1);
+            this.logger.debug(arg0 + " " + arg1);
         }
         
     }
@@ -72,6 +72,9 @@ public final class SysTrayRemoteProcessListener implements RemoteProcessListener
 
 /* 
 $Log: SysTrayRemoteProcessListener.java,v $
+Revision 1.4  2006/06/15 09:46:07  nw
+fixed minor bug
+
 Revision 1.3  2006/05/08 15:52:49  nw
 fixed constructor visibility
 
