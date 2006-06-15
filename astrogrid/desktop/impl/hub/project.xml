@@ -312,6 +312,7 @@ dunno what to do in single-app case - just leave out, i guess.
 		            	<uberjar.bundle>false</uberjar.bundle>
 		            </properties>     		            
 		        </dependency> 	
+    	             
  <dependency>
       <groupId>commons-jelly</groupId>
       <artifactId>commons-jelly-tags-jsl</artifactId>
