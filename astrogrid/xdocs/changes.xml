@@ -14,6 +14,13 @@
 		</action>	
 			
     	<release version="(Pending Integration)">
+
+      <action dev="kea" type="major_release">
+           <em>Branch PAL_KEA_1612 in astrogrid/pal</em>  The initial
+           release of DSA/catalog, a major revamping of PAL with a new
+           Query model and SQL translation mechanism, improved interface
+           and various incidental fixes.
+      </action>
     		
     	<action dev="gtr" type="fix">
     		<em>Branch cea-gtr-1648:</em> fixes to astrogrid/contracts and astrogrid/applications/commandline to make it 
