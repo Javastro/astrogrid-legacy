@@ -48,6 +48,10 @@ public class InThreadExecutor implements BackgroundExecutor {
 		} catch (InterruptedException x) {
 			logger.warn("interrupted", x);
 			
+		} catch (Throwable t) {
+			// catch and log all exceptions - preserves semantics of original background executor, where runnables are run
+			// in separate thread, and so any thrown exceptions are just swallowed.
+			logger.error("Worker Task threw",t);
 		}
 
 	}

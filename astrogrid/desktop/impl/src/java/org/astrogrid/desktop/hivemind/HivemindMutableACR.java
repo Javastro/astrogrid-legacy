@@ -1,4 +1,4 @@
-/*$Id: HivemindMutableACR.java,v 1.4 2006/06/02 00:16:15 nw Exp $
+/*$Id: HivemindMutableACR.java,v 1.5 2006/06/15 09:41:01 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -139,10 +139,9 @@ public class HivemindMutableACR implements ACRInternal {
         return modules.values().iterator();
     }
     
-    public Object getService(Class arg0) throws ACRException, InvalidArgumentException,
-            NotFoundException {
+    public Object getService(Class arg0) throws ACRException,NotFoundException {
         if (!arg0.isInterface()) {
-            throw new InvalidArgumentException("Not a service interface: " + arg0.getName());
+            throw new NotFoundException("Not a service interface: " + arg0.getName());
         }
         if (! servicesByClass.containsKey(arg0)) {
             throw new NotFoundException(arg0.getName());
@@ -174,6 +173,9 @@ public class HivemindMutableACR implements ACRInternal {
 
 /* 
 $Log: HivemindMutableACR.java,v $
+Revision 1.5  2006/06/15 09:41:01  nw
+fixed minor behaviour bug
+
 Revision 1.4  2006/06/02 00:16:15  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 
