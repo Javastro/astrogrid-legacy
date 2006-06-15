@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.2 2006/04/18 23:25:45 nw Exp $
+/*$Id: DALImpl.java,v 1.3 2006/06/15 09:49:08 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,11 +13,15 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
@@ -29,6 +33,8 @@ import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
+
+import uk.ac.starlink.util.URLUtils;
 
 /** Abstract class for implemntations of HTTP-GET based DAL standards
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
@@ -53,15 +59,68 @@ public abstract class DALImpl {
     protected final MyspaceInternal ms;
 
 
-    /**
+    /** utility method for subclasses to use to resolve an abstract service id to url endpoint
+     * 
+     * @param arg0 service id (ivo://) or endpoint (http://)
+     * @return resolved, or pass-thru service endpoint.
+     * @throws InvalidArgumentException if arg0 is an unknown scheme of URI.
+     * @throws NotFoundException if service cannot be resolved
+     */
+    public final URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
+ 
+        if (arg0.getScheme().equals("http")) {
+            try {
+                return arg0.toURL();
+            } catch (MalformedURLException e) {
+                throw new InvalidArgumentException(e);
+            }
+        } else if (arg0.getScheme().equals("ivo")) {
+                try {
+                    //endpoint = reg.resolveIdentifier(arg0); NWW - gets incorrect endpoint sometimes.
+                    return reg.getResourceInformation(arg0).getAccessURL();
+                } catch (ServiceException e) {
+                    throw new NotFoundException(e);
+                }
+        } else {
+            throw new InvalidArgumentException("Don't know what to do with this: " + arg0);
+        }    	
+    }
+    
+    /** Adds an option - safely handling case of nulls, options that already occur, urls ending with ? or &
+     * @todo do we need to handle case of trailing '/' too?? or no filepath at all - just server name? may be this willnever happen 
      * @see org.astrogrid.acr.nvo.Cone#addOption(java.net.URL, java.lang.String, java.lang.String)
      */
-    public URL addOption(URL arg0, String arg1, String arg2) throws InvalidArgumentException{
-        StringBuffer urlSB = new StringBuffer(arg0.toString());
-        try {
-            String encoded = URLEncoder.encode(arg2,"UTF-8");
-            urlSB.append("&").append(arg1).append("=").append(encoded);
-            return new URL(urlSB.toString());
+    public final URL addOption(URL arg0, String arg1, String arg2) throws InvalidArgumentException{
+    	if (arg0 == null || arg1 == null ) {
+    		throw new InvalidArgumentException("Nulls in " + arg0 + " " + arg1 + " " + arg2);
+    	}  
+    	try {
+    	final String encoded = arg2 == null ? "" : URLEncoder.encode(arg2,"UTF-8");
+    	final String query = arg0.getQuery();
+    	if (query == null) {
+    		return new URL(arg0.toString() + "?" + arg1 + "=" + encoded);
+    	} else if (query.length() == 0) { // case for trailing ?
+    			return new URL(arg0.toString() + arg1 + "=" + encoded);
+    	} else {
+    		final String[] params = StringUtils.split(query,"&");
+    		boolean found = false;
+    		for (int i = 0; i < params.length; i++) {
+    			if (params[i].startsWith(arg1)) {
+    				found = true;
+    				params[i] = arg1 + "=" + encoded;
+    			}
+    		}
+    		// there are more efficient ways of doing this in some cases
+    		// but rebuilding query string each time ensures that previous garbage 
+    		// - e.g. extraneous & signs, are filtered out.
+    		String newQuery = StringUtils.join(params,"&");
+    		if (!found) {
+    			newQuery += "&" + arg1 + "=" + encoded;
+    		} 
+    		String preQuery = StringUtils.split(arg0.toString(),'?')[0];
+    		return new URL(preQuery + '?' + newQuery);
+    		
+    	}
         } catch (IOException e) {
             throw new InvalidArgumentException(e);
         } 
@@ -71,7 +130,7 @@ public abstract class DALImpl {
     /**
      * @see org.astrogrid.acr.nvo.Cone#getResults(java.net.URL)
      */
-    public Document getResults(URL arg0) throws ServiceException {
+    public final Document getResults(URL arg0) throws ServiceException {
         try {
             return XMLUtils.newDocument(arg0.toString());
         } catch (Exception e) {
@@ -85,7 +144,7 @@ public abstract class DALImpl {
      * @throws SecurityException
      * @see org.astrogrid.acr.nvo.Cone#saveResults(java.net.URL, java.net.URI)
      */
-    public void saveResults(URL arg0, URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
+    public final void saveResults(URL arg0, URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
         if (arg1.getScheme().equals("ivo")) { // save to myspace - can optimize this
             try {
                 ms.copyURLToContent(arg0,arg1);
@@ -122,6 +181,9 @@ public abstract class DALImpl {
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.3  2006/06/15 09:49:08  nw
+improvements coming from unit testing
+
 Revision 1.2  2006/04/18 23:25:45  nw
 merged asr development.
 

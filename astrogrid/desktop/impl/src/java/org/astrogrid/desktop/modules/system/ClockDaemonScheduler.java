@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.4 2006/05/26 15:19:31 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.5 2006/06/15 09:53:16 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,6 +57,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         // start the daemon running.
         daemon.restart();
         // register all known scheduled tasks.
+        if (tasks != null) {
         for (Iterator i = tasks.iterator(); i.hasNext(); ) {
            Object o = i.next();
            if (! (o instanceof ScheduledTask)) {
@@ -66,12 +67,12 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
                this.executePeriodically(st);
            }
         }          
+        }
     }
     // the implementation of the clock.
     final ClockDaemon daemon;
 
     public void executePeriodically(final ScheduledTask task) {
-    	//@todo plumb into UI.
         daemon.executePeriodically(task.getPeriod(),
         		new Runnable() {
         	public void run() {
@@ -96,6 +97,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.5  2006/06/15 09:53:16  nw
+improvements coming from unit testing
+
 Revision 1.4  2006/05/26 15:19:31  nw
 reworked scheduled tasks,
 

@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.3 2006/04/21 13:48:11 nw Exp $
+/*$Id: SiapImpl.java,v 1.4 2006/06/15 09:49:07 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,46 +36,15 @@ public class SiapImpl extends DALImpl implements Siap {
         
     }
 
-    private URL constructQueryPrim(URI arg0, double ra,double dec) throws InvalidArgumentException, NotFoundException {
-        URL endpoint = null;
-        if (arg0.getScheme().equals("http")) {
-            try {
-                endpoint = arg0.toURL();
-            } catch (MalformedURLException e) {
-                throw new InvalidArgumentException(e);
-            } 
-        } else if (arg0.getScheme().equals("ivo")) {
-            try {
-                endpoint = reg.resolveIdentifier(arg0);
-            } catch (ServiceException e) {
-                throw new NotFoundException(e);
-            } catch (NotApplicableException e) {
-                throw new NotFoundException(e);
-            }
-    } else {
-        throw new InvalidArgumentException("Don't know what to do with this: " + arg0);
-        }
-        // ok. one way or another, we've got an endpoint. now add parameters onto it.
-        String url = endpoint.toString();
-        StringBuffer urlSB = new StringBuffer(url);
-        // add a query part, if not already there
-        char lastch = url.charAt(url.length() - 1);
-        if (lastch != '?' && lastch != '&')
-            urlSB.append((url.indexOf('?') > 0) ? '&' : '?');
-        urlSB.append("POS=").append(Double.toString(ra)).append(",").append(Double.toString(dec));  
-        try {
-            return new URL(urlSB.toString());
-        } catch (MalformedURLException e) {
-            throw new InvalidArgumentException("Failed to construct query URL",e);            
-        }        
-    }
-    
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuery(java.net.URI, double, double, double)
      */
     public URL constructQuery(URI service, double ra, double dec, double size)
             throws InvalidArgumentException, NotFoundException {
-        return addOption(constructQueryPrim(service,ra,dec),"SIZE",Double.toString(size));
+        return addOption(
+        		addOption(
+        				resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
+        			,"SIZE",Double.toString(size));
     }
 
     /**
@@ -95,7 +64,10 @@ public class SiapImpl extends DALImpl implements Siap {
             return constructQuery(service,ra,dec,ra_size);
         } else {
             String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
-            return addOption(constructQueryPrim(service,ra,dec),"SIZE",sizeStr);
+            return addOption(
+            		addOption(
+            				resolveEndpoint(service),"POS",Double.toString(ra) + "," + Double.toString(dec))
+            			,"SIZE",sizeStr);
         }
     }
 
@@ -121,6 +93,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.4  2006/06/15 09:49:07  nw
+improvements coming from unit testing
+
 Revision 1.3  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.3 2006/04/21 13:48:12 nw Exp $
+/*$Id: ConeImpl.java,v 1.4 2006/06/15 09:49:21 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,39 +46,14 @@ public class ConeImpl extends DALImpl implements Cone {
      */
     public URL constructQuery(URI arg0, double arg1, double arg2, double arg3)
             throws InvalidArgumentException, NotFoundException {
-        URL endpoint = null;
-        if (arg0.getScheme().equals("http")) {
-            try {
-                endpoint = arg0.toURL();
-            } catch (MalformedURLException e) {
-                throw new InvalidArgumentException(e);
-            }
-        } else if (arg0.getScheme().equals("ivo")) {
-                try {
-                    //endpoint = reg.resolveIdentifier(arg0); NWW - gets incorrect endpoint sometimes.
-                    endpoint = reg.getResourceInformation(arg0).getAccessURL();
-                } catch (ServiceException e) {
-                    throw new NotFoundException(e);
-                }
-        } else {
-            throw new InvalidArgumentException("Don't know what to do with this: " + arg0);
-        }
-        // ok. one way or another, we've got an endpoint. now add parameters onto it.
-        String url = endpoint.toString();
-        StringBuffer urlSB = new StringBuffer(url);
-        // add a query part, if not already there
-        char lastch = url.charAt(url.length() - 1);
-        if (lastch != '?' && lastch != '&')
-            urlSB.append((url.indexOf('?') > 0) ? '&' : '?');
-        urlSB.append("RA=").append(Double.toString(arg1))
-            .append("&DEC=").append(Double.toString(arg2))
-            .append("&SR=").append(Double.toString(arg3));
-        try {
-            return new URL(urlSB.toString());
-        } catch (MalformedURLException e) {
-            throw new InvalidArgumentException("Failed to construct query URL",e);            
-        }
-       
+        URL endpoint = resolveEndpoint(arg0);
+        endpoint = addOption(
+        					addOption( 
+        							addOption(endpoint,"RA",Double.toString(arg1))
+        						,"DEC",Double.toString(arg2))
+        					,"SR",Double.toString(arg3));
+        return endpoint;
+      
     }
 
 
@@ -100,6 +75,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.4  2006/06/15 09:49:21  nw
+improvements coming from unit testing
+
 Revision 1.3  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
