@@ -1,4 +1,4 @@
-/*$Id: ExecutionMessage.java,v 1.4 2006/04/18 23:25:45 nw Exp $
+/*$Id: ExecutionMessage.java,v 1.5 2006/06/15 09:01:27 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,11 +77,59 @@ public class ExecutionMessage implements Serializable{
         sb.append("]");
         return sb.toString();
     }
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((this.content == null) ? 0 : this.content.hashCode());
+		result = PRIME * result + ((this.level == null) ? 0 : this.level.hashCode());
+		result = PRIME * result + ((this.source == null) ? 0 : this.source.hashCode());
+		result = PRIME * result + ((this.status == null) ? 0 : this.status.hashCode());
+		result = PRIME * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final ExecutionMessage other = (ExecutionMessage) obj;
+		if (this.content == null) {
+			if (other.content != null)
+				return false;
+		} else if (!this.content.equals(other.content))
+			return false;
+		if (this.level == null) {
+			if (other.level != null)
+				return false;
+		} else if (!this.level.equals(other.level))
+			return false;
+		if (this.source == null) {
+			if (other.source != null)
+				return false;
+		} else if (!this.source.equals(other.source))
+			return false;
+		if (this.status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!this.status.equals(other.status))
+			return false;
+		if (this.timestamp == null) {
+			if (other.timestamp != null)
+				return false;
+		} else if (!this.timestamp.equals(other.timestamp))
+			return false;
+		return true;
+	}
 }
 
 
 /* 
 $Log: ExecutionMessage.java,v $
+Revision 1.5  2006/06/15 09:01:27  nw
+provided implementations of equals()
+
 Revision 1.4  2006/04/18 23:25:45  nw
 merged asr development.
 

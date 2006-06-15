@@ -1,4 +1,4 @@
-/*$Id: ExecutionInformation.java,v 1.5 2006/04/18 23:25:45 nw Exp $
+/*$Id: ExecutionInformation.java,v 1.6 2006/06/15 09:01:27 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -99,11 +99,55 @@ public class ExecutionInformation extends AbstractInformation {
         buffer.append("]");
         return buffer.toString();
     }
+
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = super.hashCode();
+		result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
+		result = PRIME * result + ((this.finishTime == null) ? 0 : this.finishTime.hashCode());
+		result = PRIME * result + ((this.startTime == null) ? 0 : this.startTime.hashCode());
+		result = PRIME * result + ((this.status == null) ? 0 : this.status.hashCode());
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final ExecutionInformation other = (ExecutionInformation) obj;
+		if (this.description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!this.description.equals(other.description))
+			return false;
+		if (this.finishTime == null) {
+			if (other.finishTime != null)
+				return false;
+		} else if (!this.finishTime.equals(other.finishTime))
+			return false;
+		if (this.startTime == null) {
+			if (other.startTime != null)
+				return false;
+		} else if (!this.startTime.equals(other.startTime))
+			return false;
+		if (this.status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!this.status.equals(other.status))
+			return false;
+		return true;
+	}
 }
 
 
 /* 
 $Log: ExecutionInformation.java,v $
+Revision 1.6  2006/06/15 09:01:27  nw
+provided implementations of equals()
+
 Revision 1.5  2006/04/18 23:25:45  nw
 merged asr development.
 

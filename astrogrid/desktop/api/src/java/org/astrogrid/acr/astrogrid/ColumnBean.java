@@ -1,4 +1,4 @@
-/*$Id: ColumnBean.java,v 1.4 2006/04/18 23:25:45 nw Exp $
+/*$Id: ColumnBean.java,v 1.5 2006/06/15 09:01:27 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,11 +78,59 @@ public class ColumnBean implements Serializable{
         sb.append("]");
         return sb.toString();
     }
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((this.UCD == null) ? 0 : this.UCD.hashCode());
+		result = PRIME * result + ((this.datatype == null) ? 0 : this.datatype.hashCode());
+		result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
+		result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
+		result = PRIME * result + ((this.unit == null) ? 0 : this.unit.hashCode());
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final ColumnBean other = (ColumnBean) obj;
+		if (this.UCD == null) {
+			if (other.UCD != null)
+				return false;
+		} else if (!this.UCD.equals(other.UCD))
+			return false;
+		if (this.datatype == null) {
+			if (other.datatype != null)
+				return false;
+		} else if (!this.datatype.equals(other.datatype))
+			return false;
+		if (this.description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!this.description.equals(other.description))
+			return false;
+		if (this.name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!this.name.equals(other.name))
+			return false;
+		if (this.unit == null) {
+			if (other.unit != null)
+				return false;
+		} else if (!this.unit.equals(other.unit))
+			return false;
+		return true;
+	}
 }
 
 
 /* 
 $Log: ColumnBean.java,v $
+Revision 1.5  2006/06/15 09:01:27  nw
+provided implementations of equals()
+
 Revision 1.4  2006/04/18 23:25:45  nw
 merged asr development.
 

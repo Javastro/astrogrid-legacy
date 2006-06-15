@@ -1,4 +1,4 @@
-/*$Id: AvailabilityBean.java,v 1.2 2006/04/18 23:25:45 nw Exp $
+/*$Id: AvailabilityBean.java,v 1.3 2006/06/15 09:01:42 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,58 @@ public class AvailabilityBean implements Serializable {
     private final String validTo;
     private final String upTime;
     private final String timeOnServer;
-    /** Construct a new AvailabilityBean
+    public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((this.location == null) ? 0 : this.location.hashCode());
+		result = PRIME * result + ((this.message == null) ? 0 : this.message.hashCode());
+		result = PRIME * result + ((this.serverName == null) ? 0 : this.serverName.hashCode());
+		result = PRIME * result + ((this.timeOnServer == null) ? 0 : this.timeOnServer.hashCode());
+		result = PRIME * result + ((this.upTime == null) ? 0 : this.upTime.hashCode());
+		result = PRIME * result + ((this.validTo == null) ? 0 : this.validTo.hashCode());
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final AvailabilityBean other = (AvailabilityBean) obj;
+		if (this.location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!this.location.equals(other.location))
+			return false;
+		if (this.message == null) {
+			if (other.message != null)
+				return false;
+		} else if (!this.message.equals(other.message))
+			return false;
+		if (this.serverName == null) {
+			if (other.serverName != null)
+				return false;
+		} else if (!this.serverName.equals(other.serverName))
+			return false;
+		if (this.timeOnServer == null) {
+			if (other.timeOnServer != null)
+				return false;
+		} else if (!this.timeOnServer.equals(other.timeOnServer))
+			return false;
+		if (this.upTime == null) {
+			if (other.upTime != null)
+				return false;
+		} else if (!this.upTime.equals(other.upTime))
+			return false;
+		if (this.validTo == null) {
+			if (other.validTo != null)
+				return false;
+		} else if (!this.validTo.equals(other.validTo))
+			return false;
+		return true;
+	}
+	/** Construct a new AvailabilityBean
      * @param location
      * @param message
      * @param serverName
@@ -94,6 +145,9 @@ public class AvailabilityBean implements Serializable {
 
 /* 
 $Log: AvailabilityBean.java,v $
+Revision 1.3  2006/06/15 09:01:42  nw
+provided implementations of equals()
+
 Revision 1.2  2006/04/18 23:25:45  nw
 merged asr development.
 

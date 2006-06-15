@@ -1,4 +1,4 @@
-/*$Id: FunctionBean.java,v 1.2 2006/04/18 23:25:45 nw Exp $
+/*$Id: FunctionBean.java,v 1.3 2006/06/15 09:01:42 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.acr.ivoa;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * description of one ADQL function
@@ -22,7 +23,17 @@ import java.io.Serializable;
  */
 public class FunctionBean implements Serializable{
 
-    /** Construct a new FunctionBean
+    private static int hashCode(Object[] array) {
+		final int PRIME = 31;
+		if (array == null)
+			return 0;
+		int result = 1;
+		for (int index = 0; index < array.length; index++) {
+			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
+		}
+		return result;
+	}
+	/** Construct a new FunctionBean
      * @param name
      * @param description
      * @param parameters
@@ -67,12 +78,45 @@ public class FunctionBean implements Serializable{
         sb.append("]]");
         return sb.toString();
     }
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
+		result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
+		result = PRIME * result + FunctionBean.hashCode(this.parameters);
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final FunctionBean other = (FunctionBean) obj;
+		if (this.description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!this.description.equals(other.description))
+			return false;
+		if (this.name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!this.name.equals(other.name))
+			return false;
+		if (!Arrays.equals(this.parameters, other.parameters))
+			return false;
+		return true;
+	}
 
 }
 
 
 /* 
 $Log: FunctionBean.java,v $
+Revision 1.3  2006/06/15 09:01:42  nw
+provided implementations of equals()
+
 Revision 1.2  2006/04/18 23:25:45  nw
 merged asr development.
 

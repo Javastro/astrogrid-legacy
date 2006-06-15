@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.5 2006/04/18 23:25:45 nw Exp $
+/*$Id: NodeInformation.java,v 1.6 2006/06/15 09:01:27 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,52 @@ import java.util.Map;
 public class NodeInformation extends AbstractInformation {
 
 
-    public NodeInformation(String name,URI node,Long size,Calendar createDate,Calendar modifyDate, Map attributes, boolean file, URI contentLocation) {
+    public int hashCode() {
+		final int PRIME = 31;
+		int result = super.hashCode();
+		result = PRIME * result + ((this.attributes == null) ? 0 : this.attributes.hashCode());
+		result = PRIME * result + ((this.contentLocation == null) ? 0 : this.contentLocation.hashCode());
+		result = PRIME * result + ((this.createDate == null) ? 0 : this.createDate.hashCode());
+		result = PRIME * result + (this.file ? 1231 : 1237);
+		result = PRIME * result + ((this.modifyDate == null) ? 0 : this.modifyDate.hashCode());
+		result = PRIME * result + (int) (this.size ^ (this.size >>> 32));
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final NodeInformation other = (NodeInformation) obj;
+		if (this.attributes == null) {
+			if (other.attributes != null)
+				return false;
+		} else if (!this.attributes.equals(other.attributes))
+			return false;
+		if (this.contentLocation == null) {
+			if (other.contentLocation != null)
+				return false;
+		} else if (!this.contentLocation.equals(other.contentLocation))
+			return false;
+		if (this.createDate == null) {
+			if (other.createDate != null)
+				return false;
+		} else if (!this.createDate.equals(other.createDate))
+			return false;
+		if (this.file != other.file)
+			return false;
+		if (this.modifyDate == null) {
+			if (other.modifyDate != null)
+				return false;
+		} else if (!this.modifyDate.equals(other.modifyDate))
+			return false;
+		if (this.size != other.size)
+			return false;
+		return true;
+	}
+	public NodeInformation(String name,URI node,Long size,Calendar createDate,Calendar modifyDate, Map attributes, boolean file, URI contentLocation) {
         super(name,node);
         this.size = size == null ? 0 : size.longValue();
         this.createDate = createDate;
@@ -120,6 +165,9 @@ public class NodeInformation extends AbstractInformation {
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.6  2006/06/15 09:01:27  nw
+provided implementations of equals()
+
 Revision 1.5  2006/04/18 23:25:45  nw
 merged asr development.
 

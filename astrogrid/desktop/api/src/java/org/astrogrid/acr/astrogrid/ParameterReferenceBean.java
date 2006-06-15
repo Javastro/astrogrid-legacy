@@ -1,4 +1,4 @@
-/*$Id: ParameterReferenceBean.java,v 1.3 2006/04/18 23:25:45 nw Exp $
+/*$Id: ParameterReferenceBean.java,v 1.4 2006/06/15 09:01:27 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,11 +58,41 @@ public class ParameterReferenceBean implements Serializable {
         buffer.append("]");
         return buffer.toString();
     }
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + this.max;
+		result = PRIME * result + this.min;
+		result = PRIME * result + ((this.ref == null) ? 0 : this.ref.hashCode());
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final ParameterReferenceBean other = (ParameterReferenceBean) obj;
+		if (this.max != other.max)
+			return false;
+		if (this.min != other.min)
+			return false;
+		if (this.ref == null) {
+			if (other.ref != null)
+				return false;
+		} else if (!this.ref.equals(other.ref))
+			return false;
+		return true;
+	}
 }
 
 
 /* 
 $Log: ParameterReferenceBean.java,v $
+Revision 1.4  2006/06/15 09:01:27  nw
+provided implementations of equals()
+
 Revision 1.3  2006/04/18 23:25:45  nw
 merged asr development.
 

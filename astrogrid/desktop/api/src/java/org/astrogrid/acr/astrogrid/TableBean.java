@@ -1,4 +1,4 @@
-/*$Id: TableBean.java,v 1.3 2006/04/18 23:25:45 nw Exp $
+/*$Id: TableBean.java,v 1.4 2006/06/15 09:01:27 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /** descripition of a  single table in a TablularDB registry entry
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
@@ -18,7 +19,17 @@ import java.io.Serializable;
  */
 public class TableBean implements Serializable {
 
-    /** Construct a new TableInformation
+    private static int hashCode(Object[] array) {
+		final int PRIME = 31;
+		if (array == null)
+			return 0;
+		int result = 1;
+		for (int index = 0; index < array.length; index++) {
+			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
+		}
+		return result;
+	}
+	/** Construct a new TableInformation
      * 
      */
     public TableBean(String name,String description, ColumnBean[] columns) {
@@ -59,11 +70,44 @@ public class TableBean implements Serializable {
         sb.append("]]");
         return sb.toString();
     }
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + TableBean.hashCode(this.columns);
+		result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
+		result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final TableBean other = (TableBean) obj;
+		if (!Arrays.equals(this.columns, other.columns))
+			return false;
+		if (this.description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!this.description.equals(other.description))
+			return false;
+		if (this.name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!this.name.equals(other.name))
+			return false;
+		return true;
+	}
 }
 
 
 /* 
 $Log: TableBean.java,v $
+Revision 1.4  2006/06/15 09:01:27  nw
+provided implementations of equals()
+
 Revision 1.3  2006/04/18 23:25:45  nw
 merged asr development.
 
