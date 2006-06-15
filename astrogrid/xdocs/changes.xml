@@ -4,6 +4,15 @@
         <author email="jdt@roe.ac.uk">John Taylor</author>
     </properties>
     <body>
+    	<action dev="jl" type="add" issue="1652">
+			Branch contracts-jl-1652
+			Addition of new folder v1.0a1 to cover minor changes to official v1.0 adql schema
+		</action>
+		<action dev="jl" type="add" issue="1496">
+			Branch common-jl-1496
+			Addition of new folder structure to cover xmlbeans generated for v1.0a1 of adql schema
+		</action>	
+			
     	<release version="(Pending Integration)">
     		
     	<action dev="gtr" type="fix">
