@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.4 2006/06/02 00:16:15 nw Exp $
+/*$Id: HtmlServlet.java,v 1.5 2006/06/15 09:50:36 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -249,6 +249,10 @@ public class HtmlServlet extends AbstractReflectionServlet {
         }
 
         Object result = MethodUtils.invokeMethod(component,md.getName(),args);
+        // fix for bz #1647
+        if (m.getReturnType().equals(Void.TYPE)) {
+        	result="OK";
+        } 
         response.setContentType("text/" + resultType.trim().toLowerCase());
         PrintWriter out = response.getWriter();
         if (resultType.equalsIgnoreCase("html")) {
@@ -261,7 +265,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
             throw new IllegalStateException("Really can't get here");
         }
         } catch (Exception e) {
-            throw new ServletException("Could not call method " + md.getName() + ": "  + e.getMessage(),e);
+        	reportError("Exception thrown when calling method " + md.getName(),e,request,response);
         }
     }    
     /**
@@ -289,6 +293,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.5  2006/06/15 09:50:36  nw
+fixed so that exceptions are reported to user.fixed bz #1647
+
 Revision 1.4  2006/06/02 00:16:15  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 
