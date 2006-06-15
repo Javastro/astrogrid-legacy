@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: CeaHelper.java,v 1.3 2006/06/15 09:45:04 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,8 +41,12 @@ public class CeaHelper {
 
 
 
-/** create a delegate to connect tot he server described in a resource information */
+/** create a delegate to connect tot he server described in a resource information
+ * @throws IllegalArgumentException if resource information does not prodvdide an access url */
     public CommonExecutionConnectorClient createCEADelegate(ResourceInformation server) {
+    	if (server == null || server.getAccessURL() == null) {
+    		throw new IllegalArgumentException("invalid resource information: " + server);
+    	}
         return  DelegateFactory.createDelegate(server.getAccessURL().toString());       
      }
     
@@ -106,6 +110,9 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
 /* 
 $Log: CeaHelper.java,v $
+Revision 1.3  2006/06/15 09:45:04  nw
+improvements coming from unit testing
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: MessageContainerImpl.java,v 1.3 2006/04/18 23:25:46 nw Exp $
+/*$Id: MessageContainerImpl.java,v 1.4 2006/06/15 09:48:10 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,16 +45,64 @@ public class MessageContainerImpl implements Serializable, MessageContainer{
     public ExecutionMessage getMessage() {
         return msg;
     }
+    /** key can only be set once. subsequent sets will throw illegalStateException */
     public void setKey(Long key) {
+    	if (key == null) {
+    		throw new IllegalArgumentException("Null key");
+    	}
+    	if (this.key != null) {
+    		throw new IllegalStateException("Key already set");
+    	}
         this.key = key;
     }
     public Long getKey() {
         return key;
     }
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((this.key == null) ? 0 : this.key.hashCode());
+		result = PRIME * result + ((this.msg == null) ? 0 : this.msg.hashCode());
+		result = PRIME * result + ((this.summary == null) ? 0 : this.summary.hashCode());
+		result = PRIME * result + (this.unread ? 1231 : 1237);
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final MessageContainerImpl other = (MessageContainerImpl) obj;
+		if (this.key == null) {
+			if (other.key != null)
+				return false;
+		} else if (!this.key.equals(other.key))
+			return false;
+		if (this.msg == null) {
+			if (other.msg != null)
+				return false;
+		} else if (!this.msg.equals(other.msg))
+			return false;
+		if (this.summary == null) {
+			if (other.summary != null)
+				return false;
+		} else if (!this.summary.equals(other.summary))
+			return false;
+		if (this.unread != other.unread)
+			return false;
+		return true;
+	}
+
+
 }
 
 /* 
 $Log: MessageContainerImpl.java,v $
+Revision 1.4  2006/06/15 09:48:10  nw
+improvements coming from unit testing
+
 Revision 1.3  2006/04/18 23:25:46  nw
 merged asr development.
 

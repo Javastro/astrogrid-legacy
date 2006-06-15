@@ -1,4 +1,4 @@
-/*$Id: FolderImpl.java,v 1.4 2006/04/18 23:25:46 nw Exp $
+/*$Id: FolderImpl.java,v 1.5 2006/06/15 09:47:23 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,16 @@ public class FolderImpl implements Serializable, Folder {
         return info;
     }
 
+    /** if the new execution information has a different id, this is a program
+     * error, and will be rejected with an IllegalArgumentException
+     */
     public void setInformation(ExecutionInformation e) {
+    	if (e == null) {
+    		throw new IllegalArgumentException("null information");
+    	}
+    	if (! this.getKey().equals(e.getId())) {
+    		throw new IllegalArgumentException("New execution information has different id");
+    	}
         this.info = e;
     }
 
@@ -68,12 +77,47 @@ public class FolderImpl implements Serializable, Folder {
     public URI getKey() {
         return info.getId();
     }
+
+
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final FolderImpl other = (FolderImpl) obj;
+		if (this.childKeyList == null) {
+			if (other.childKeyList != null)
+				return false;
+		} else if (!this.childKeyList.equals(other.childKeyList))
+			return false;
+		if (this.deleted != other.deleted)
+			return false;
+		if (this.info == null) {
+			if (other.info != null)
+				return false;
+		} else if (!this.info.equals(other.info))
+			return false;
+		if (this.parentKey == null) {
+			if (other.parentKey != null)
+				return false;
+		} else if (!this.parentKey.equals(other.parentKey))
+			return false;
+		if (this.unread != other.unread)
+			return false;
+		return true;
+	}
     
 
 }
 
 /* 
 $Log: FolderImpl.java,v $
+Revision 1.5  2006/06/15 09:47:23  nw
+improvements coming from unit testing
+
 Revision 1.4  2006/04/18 23:25:46  nw
 merged asr development.
 

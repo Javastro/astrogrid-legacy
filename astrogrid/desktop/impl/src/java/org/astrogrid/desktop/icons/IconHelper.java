@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.4 2006/04/18 23:25:45 nw Exp $
+/*$Id: IconHelper.java,v 1.5 2006/06/15 09:44:37 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,9 @@ public class IconHelper {
      * @return the icon object, or null if not found
      */
     public static ImageIcon loadIcon(String imgName) {
+    	if (imgName == null) {
+    		return null;
+    	}
         if (cache.containsKey(imgName)) {
             return (ImageIcon)cache.get(imgName);
         }
@@ -65,6 +68,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.5  2006/06/15 09:44:37  nw
+improvements coming from unit testing
+
 Revision 1.4  2006/04/18 23:25:45  nw
 merged asr development.
 

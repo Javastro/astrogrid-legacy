@@ -1,4 +1,4 @@
-/*$Id: MessagingImpl.java,v 1.3 2006/05/26 15:23:23 nw Exp $
+/*$Id: MessagingImpl.java,v 1.4 2006/06/15 09:45:21 nw Exp $
  * Created on 28-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,6 +49,10 @@ public class MessagingImpl implements MessagingInternal{
      * @see org.astrogrid.desktop.modules.ag.MessagingInternal#injectMessage(org.astrogrid.desktop.modules.ag.MessagingInternal.Message)
      */
     public void injectMessage(final SourcedExecutionMessage m) {
+    	if (m == null) {
+    		logger.warn("null message injected - ignoring");
+    		return;
+    	}
         // queue can't accept multiple concurrent puts - so need to single-thread these
         //using the scheduler to do this.
             try {
@@ -94,6 +98,9 @@ public class MessagingImpl implements MessagingInternal{
 
 /* 
 $Log: MessagingImpl.java,v $
+Revision 1.4  2006/06/15 09:45:21  nw
+improvements coming from unit testing
+
 Revision 1.3  2006/05/26 15:23:23  nw
 reworked scheduled tasks,
 

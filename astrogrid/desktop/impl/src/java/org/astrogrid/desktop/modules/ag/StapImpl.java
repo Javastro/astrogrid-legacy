@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.3 2006/04/21 13:48:12 nw Exp $
+/*$Id: StapImpl.java,v 1.4 2006/06/15 09:45:39 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,57 +10,40 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
 
 /** Implementaiton of a component that does siap queries.
+ * @todo refine stap interface - loads of similar methods. overloaded methods aren't available via xmlrpc.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
  *
  */
 public class StapImpl extends DALImpl implements Stap {
 
-    /** Construct a new SiapImpl
+    private final SimpleDateFormat dateFormat;
+
+	/** Construct a new SiapImpl
      * 
      */
     public StapImpl(Registry reg, MyspaceInternal ms) {
         super(reg,ms);
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         
     }
     
     private URL constructQueryPrim(URI arg0, Calendar start, Calendar end) throws InvalidArgumentException, NotFoundException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        
-        URL endpoint = null;
-    if (arg0.getScheme().equals("http")) {
-            try {
-                endpoint = arg0.toURL();
-            } catch (MalformedURLException e) {
-                throw new InvalidArgumentException(e);
-            } 
-    } else if (arg0.getScheme().equals("ivo")) {
-            try {
-                endpoint = reg.resolveIdentifier(arg0);
-            } catch (ServiceException e) {
-                throw new NotFoundException(e);
-            } catch (NotApplicableException e) {
-                throw new NotFoundException(e);
-            }
-    } else {
-        throw new InvalidArgumentException("Don't know what to do with this: " + arg0);
-        }
-        // ok. one way or another, we've got an endpoint. now add parameters onto it.
-        String url = endpoint.toString();
+        return addOption(
+        		addOption(resolveEndpoint(arg0),"START",dateFormat.format(start.getTime()))
+        		, "END", dateFormat.format(end.getTime()));
+        /*
         StringBuffer urlSB = new StringBuffer(url);
         // add a query part, if not already there
         char lastch = url.charAt(url.length() - 1);
@@ -72,7 +55,7 @@ public class StapImpl extends DALImpl implements Stap {
             return new URL(urlSB.toString());
         } catch (MalformedURLException e) {
             throw new InvalidArgumentException("Failed to construct query URL",e);            
-        }        
+        } */       
     }
     
 
@@ -149,6 +132,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.4  2006/06/15 09:45:39  nw
+improvements coming from unit testing
+
 Revision 1.3  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
