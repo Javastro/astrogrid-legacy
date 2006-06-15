@@ -82,13 +82,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 
 
-    /** constructor selected by pico when systemtray is not available */
+    /** constructor selected by acrFactory when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
             RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
         this(executor,idGenerator,rmi, web,null, prettyPrinter, config,snitch);
     }
     
-    /** constructor selected by pico when systemtray is available 
+    /** constructor selected by acrFactory when systemtray is available 
      * @param prettyPrinter */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
             RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
@@ -297,9 +297,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                         rv = CommonMessageConstants.RPCNULL;
                     }
                     if (client.canRespond()) returns.put(client.getId(), rv); //no point in storing nulls from apps that can't respond
-                    
-                    
-                    
                 } catch (PlasticException e) {
                     // Not much to do except log it...
                     // LOW consider sending a message, but beware we don't get
@@ -314,7 +311,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 if (!client.isResponding()) {
                     logger.debug("Client "+client.getName()+ "("+client.getId()+")"+" is not responding.  Attempting to unregister");
                     unregister(client.getId());
-                }
+            }
             }
 
         }// end of message class.
