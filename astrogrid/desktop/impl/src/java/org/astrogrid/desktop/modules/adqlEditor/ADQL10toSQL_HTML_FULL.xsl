@@ -11,6 +11,10 @@
 		Version 1.0 - first release - July 8, 2005
 		Aurelien STEBE - ESAC - ESA
 		Aurelien.Stebe@sciops.esa.int
+		
+		Special version amended by Jeff Lusted as a tool used
+		within the Astrogrid Query Builder. June, 2006.
+		jl99@star.le.ac.uk
 	 -->
 	
     <xsl:output method="text" indent="no"/>
@@ -338,7 +342,17 @@
 		<xsl:value-of select="@Name"/>
 		<xsl:text>(</xsl:text>
 		<xsl:apply-templates select="ad:Allow"/>
-		<xsl:apply-templates select="ad:Arg"/>
+		<!-- xsl:apply-templates select="ad:Arg"/ -->
+        <!-- Jeff's change to accommodate function argument cardinalities -->
+			<xsl:variable name="list">
+				<xsl:for-each select="ad:Arg">
+					<xsl:apply-templates select="."/>
+					<xsl:text>,</xsl:text>
+					<xsl:text> </xsl:text>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
+	    <!-- end of Jeff's change to accommodate function argument cardinalities -->			
 		<xsl:text>)</xsl:text>
 		<xsl:text>&#160;</xsl:text>
 	</xsl:template>
@@ -346,7 +360,17 @@
 		<xsl:value-of select="@Name"/>
 		<xsl:text>(</xsl:text>
 		<xsl:apply-templates select="ad:Allow"/>
-		<xsl:apply-templates select="ad:Arg"/>
+		<!-- xsl:apply-templates select="ad:Arg"/ -->
+		<!-- Jeff's change to accommodate function argument cardinalities -->
+			<xsl:variable name="list">
+				<xsl:for-each select="ad:Arg">
+					<xsl:apply-templates select="."/>
+					<xsl:text>,</xsl:text>
+					<xsl:text> </xsl:text>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:value-of select="substring($list, 1, string-length($list)-2)"/>
+	    <!-- end of Jeff's change to accommodate function argument cardinalities -->	
 		<xsl:text>)</xsl:text>
 		<xsl:text>&#160;</xsl:text>
 	</xsl:template>
@@ -354,7 +378,7 @@
 		<xsl:value-of select="@Name"/>
 		<xsl:text>(</xsl:text>
 		<xsl:apply-templates select="ad:Allow"/>
-		<xsl:apply-templates select="ad:Arg"/>
+		<xsl:apply-templates select="ad:Arg"/>		
 		<xsl:text>)</xsl:text>
 		<xsl:text>&#160;</xsl:text>
 	</xsl:template>

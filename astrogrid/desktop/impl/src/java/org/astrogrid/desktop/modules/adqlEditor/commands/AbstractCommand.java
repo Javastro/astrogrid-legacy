@@ -11,19 +11,24 @@
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.ListIterator;
 
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NestingNode;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree ;
 
 //import com.sun.corba.se.connection.GetEndPointInfoAgainException;
 
@@ -36,10 +41,14 @@ import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
  */
 public abstract class AbstractCommand extends AbstractUndoableEdit implements CommandExec, CommandInfo {
 
+    private static final Log log = LogFactory.getLog( AbstractCommand.class ) ;
+    private static final boolean DEBUG_ENABLED = true ;
+    private static final boolean TRACE_ENABLED = true ;
+    
     protected AdqlTree adqlTree ;
     protected UndoManager undoManager ;
-    protected AdqlEntry parent ;
-    protected AdqlEntry child ;
+    //protected AdqlEntry parent ;
+    //protected AdqlEntry child ;
     protected Integer parentToken ;
     protected Integer childToken ;
     protected SchemaProperty childElement ;
@@ -50,22 +59,19 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
      * @param undoManager TODO
      * 
      */
-    public AbstractCommand(  AdqlTree adqlTree, UndoManager undoManager, AdqlEntry child ) {
+    public AbstractCommand(  AdqlTree adqlTree, UndoManager undoManager, AdqlNode child ) {
         this.adqlTree = adqlTree ;
         this.undoManager = undoManager ;
-        this.child = child ;
         this.childToken = addToEditStore( child ) ;
-        this.parent = (AdqlEntry)child.getParent() ;
-        this.parentToken = addToEditStore( parent ) ;
+        this.parentToken = addToEditStore( (AdqlNode)child.getParent() ) ;
         this.childType = child.getSchemaType() ;
         getChildIndex() ;
         initializeElementInfo() ;
     }
     
-    public AbstractCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlEntry parent, SchemaType childType, SchemaProperty childElement ) {
+    public AbstractCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode parent, SchemaType childType, SchemaProperty childElement ) {
         this.adqlTree = adqlTree ;
         this.undoManager = undoManager ;
-        this.parent = parent ;
         this.parentToken = addToEditStore( parent ) ;
         this.childType = childType ;
         this.childElement = childElement ;
@@ -77,9 +83,9 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     private void initializeElementInfo() {
         try {
             if( childElement == null ) {
-                if( child != null ) {
+                if( childToken != null ) {
                     String elementName = AdqlUtils.extractElementLocalName( getChildObject() ) ;
-                    SchemaProperty[] elements = parent.getElementProperties() ;
+                    SchemaProperty[] elements = getParentEntry().getElementProperties() ;
                     for( int i=0; i<elements.length; i++ ) {
                         if( elements[i].getName().getLocalPart().equals( elementName ) ) {
                             this.childElement = elements[i] ;
@@ -88,7 +94,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
                     }
                 }
                 else {
-                    SchemaProperty[] elements = parent.getElementProperties() ;
+                    SchemaProperty[] elements = getParentEntry().getElementProperties() ;
                     for( int i=0; i<elements.length; i++ ) {
                         if( elements[i].getType().isAssignableFrom( childType ) ) {
                             this.childElement = elements[i] ;
@@ -97,12 +103,18 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
                     }
                 }
             }
-            minOccurs = childElement.getMinOccurs().intValue() ;
-            BigInteger biMaxOccurs = childElement.getMaxOccurs() ;
-            maxOccurs = ( biMaxOccurs == null ? -1 : biMaxOccurs.intValue() ) ;
+            if( getParentEntry() instanceof NestingNode ) {
+                minOccurs = childElement.getMinOccurs().intValue() ;
+                maxOccurs = -1 ;
+            }
+            else {
+                minOccurs = childElement.getMinOccurs().intValue() ;
+                BigInteger biMaxOccurs = childElement.getMaxOccurs() ;
+                maxOccurs = ( biMaxOccurs == null ? -1 : biMaxOccurs.intValue() ) ;
+            }          
         }
         catch( Exception ex ) {
-            ;
+            log.debug( ex );
         }
         
     }
@@ -133,15 +145,23 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     
     
 
-    public AdqlEntry getChildEntry() {
-        return child ;
+    public AdqlNode getChildEntry() {
+        return getFromEditStore( childToken ) ;
     }
-    public AdqlEntry getParentEntry() {
+    public AdqlNode getParentEntry() {
         return getFromEditStore( parentToken ) ;
     }
     
+    public XmlObject getParentObject() {
+        return getParentEntry().getXmlObject() ;
+    }
+    
+    public SchemaType getParentType() {
+        return getParentObject().schemaType() ;
+    }
+    
     public XmlObject getChildObject() {
-        return child.getXmlObject() ;
+        return getChildEntry().getXmlObject() ;
     }
     
     public SchemaProperty getChildElement() {
@@ -156,7 +176,8 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     }
     
     public int getChildIndex() {          
-        Enumeration e = parent.children() ;
+        Enumeration e = getParentEntry().children() ;
+        AdqlNode child = getChildEntry() ;
         int index = 0 ;
         while( e.hasMoreElements() ) {
             Object o = e.nextElement() ;
@@ -169,7 +190,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     
     public boolean isChildEnabled() {
         boolean enabled = false ;
-        XmlObject o = parent.getXmlObject() ;
+        XmlObject o = getParentEntry().getXmlObject() ;
         String e = getChildElementName() ;
         if( isChildOptionalSingleton() ) {
             enabled = !AdqlUtils.isSet( o, e ) ;
@@ -184,7 +205,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
             	enabled = true ;
         }
         else {
-            // We should report this.
+            log.debug( "Problems with cardinality in AbstractCommand.isChildEnabled()" ) ;
         }
         return enabled ;
     }
@@ -222,12 +243,13 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     }
      
     public String getParentDisplayName() {
-        return parent.getDisplayName() ;
+        return getParentEntry().getDisplayName() ;
     }
     
     public String getParentElementName() {
         String name = null ;
-        AdqlEntry grandParent = (AdqlEntry)parent.getParent() ;
+        AdqlNode parent = getParentEntry() ;
+        AdqlNode grandParent = (AdqlNode)parent.getParent() ;
         if( grandParent != null ) {
             SchemaProperty[] elements = grandParent.getElementProperties() ;
             // I shouldn't need this defensive test for null.
@@ -281,7 +303,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     public boolean isInsertableIntoArray(int noElementsToInsert) {
         if( isChildHeldInArray() == false )
             return false ;
-        XmlObject o = parent.getXmlObject() ;
+        XmlObject o = getParentEntry().getXmlObject() ;
         String e = getChildElementName() ;
         if( maxOccurs == -1 
                 ||
@@ -292,7 +314,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     }
     
     public boolean isParentSuitablePasteTargetFor( XmlObject clipboardObject ) {
-        return AdqlUtils.isSuitablePasteIntoTarget( parent, clipboardObject ) ;
+        return AdqlUtils.isSuitablePasteIntoTarget( getParentEntry(), clipboardObject ) ;
     }
    
     
@@ -301,7 +323,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
         if( this.getChildElementName().equals( "Pattern" ) ) 
             return true ;
         if( this.getChildElementName().equals( "Literal" ) ) {
-            XmlCursor cursor = parent.getXmlObject().newCursor() ;
+            XmlCursor cursor = getParentEntry().getXmlObject().newCursor() ;
             if( !cursor.currentTokenType().isStart() ) 
                 cursor.toFirstChild(); 
             try {
@@ -317,19 +339,27 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
         return false ; 
     }
     
-    public Integer addToEditStore ( AdqlEntry entry ) {
+    public Integer addToEditStore ( AdqlNode entry ) {
         return adqlTree.getCommandFactory().getEditStore().add( entry ) ;
     }
     
-    public Integer exchangeInEditStore( AdqlEntry in, AdqlEntry out ) {
+    public Integer exchangeInEditStore( AdqlNode in, AdqlNode out ) {
         return adqlTree.getCommandFactory().getEditStore().exchange( in, out ) ;
     }
     
-    public void exchangeInEditStore( Integer token, AdqlEntry in ) {
+    public void exchangeInEditStore( Integer token, AdqlNode in ) {
         adqlTree.getCommandFactory().getEditStore().exchange( token, in ) ;
     }
     
-    public AdqlEntry getFromEditStore( Integer token ) {
+    public AdqlNode getFromEditStore( Integer token ) {
         return adqlTree.getCommandFactory().getEditStore().get( token ) ;
+    }
+    
+    
+    public Integer getChildToken() {
+        return childToken;
+    }
+    public Integer getParentToken() {
+        return parentToken;
     }
 }

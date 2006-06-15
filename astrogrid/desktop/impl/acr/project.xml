@@ -119,9 +119,9 @@
  </dependency>
   <dependency>
      <!-- These are the generated beans for adql -->
-	 <artifactId>astrogrid-adql_v1_0</artifactId>
+	 <artifactId>astrogrid-adql_v1_0a1</artifactId>
 	 <groupId>astrogrid-common</groupId>
-	 <version>${astrogrid.adql_v1_0.version}</version>
+	 <version>${astrogrid.adql_v1_0a1.version}</version>
 	 <type>jar</type>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>

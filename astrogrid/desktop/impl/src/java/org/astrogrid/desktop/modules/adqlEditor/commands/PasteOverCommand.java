@@ -10,13 +10,18 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree ;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
 
 /**
  * @author jl99
@@ -33,9 +38,10 @@ public class PasteOverCommand extends AbstractCommand {
      * @param target
      * @param source
      */
-    public PasteOverCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlEntry target, XmlObject source ) {
+    public PasteOverCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode target, XmlObject source ) {
         super( adqlTree, undoManager, target ) ;
         this.sourceValue = source ;
+        this.previousValue = target.getXmlObject().copy() ;
     }
     
     
@@ -45,18 +51,11 @@ public class PasteOverCommand extends AbstractCommand {
             undoManager.addEdit( this ) ;
         return result ;
     }
-   
-    private Result _execute(  XmlObject srcValue ) {
+    
+    private Result _execute( XmlObject srcValue ) {
         Result result = CommandExec.OK ;
         try {     
-            parent = getFromEditStore( parentToken ) ;
-            child = getFromEditStore( childToken ) ;
-            int[] childIndex = { getChildIndex() } ;	 
-            XmlObject targetObject = child.getXmlObject() ;
-            previousValue = targetObject.copy() ;
-            targetObject = targetObject.set( srcValue ) ;  
-            AdqlEntry.disconnectInstance( parent, child ) ;
-        	child = AdqlEntry.newInstance( parent, targetObject ) ; 
+        	AdqlNode child = getParentEntry().replace( this, srcValue ) ;
         	exchangeInEditStore( childToken, child ) ;
         }
         catch( Exception exception ) {
@@ -69,12 +68,12 @@ public class PasteOverCommand extends AbstractCommand {
     public void die() {
         super.die();
     }
+    
     public void redo() throws CannotRedoException {
         super.redo();
-        if( _execute( previousValue ) == CommandExec.FAILED ) {
+        if( _execute( sourceValue ) == CommandExec.FAILED ) {
             throw new CannotRedoException() ;
-        }
-            
+        }         
     }
     
     public void undo() throws CannotUndoException {

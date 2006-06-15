@@ -9,35 +9,24 @@
  *
 **/
 package org.astrogrid.desktop.modules.adqlEditor ;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import org.apache.xmlbeans.* ;
+
+import java.util.Hashtable ;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.XmlString.Factory;
+
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.SchemaAttributeModel;
-import org.apache.xmlbeans.SchemaLocalAttribute;
-import org.apache.xmlbeans.SchemaParticle;
-import org.apache.xmlbeans.SchemaProperty;
-import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.SchemaTypeSystem;
-import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlDecimal;
-import org.apache.xmlbeans.XmlDouble;
-import org.apache.xmlbeans.XmlFloat;
-import org.apache.xmlbeans.XmlInt;
-import org.apache.xmlbeans.XmlInteger;
-import org.apache.xmlbeans.XmlLong;
-import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.XmlPositiveInteger;
-import org.apache.xmlbeans.XmlString;
-import org.apache.xmlbeans.XmlUnsignedInt;
-import org.apache.xmlbeans.XmlUnsignedLong;
-import org.apache.xmlbeans.XmlUnsignedShort;
+import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 // import org.astrogrid.adql.v1_0.beans.* ;
 
@@ -435,6 +424,15 @@ public final class AdqlUtils {
         return target ;
     }
     
+    static public XmlObject getParent( XmlObject o ) {
+        XmlObject parent = null ;
+        XmlCursor cursor = o.newCursor() ;
+        if( cursor.toParent() == true )
+            parent = cursor.getObject() ;
+        cursor.dispose() ;
+        return parent ;
+    }
+    
     static public boolean areTypesEqual( SchemaType typeOne, SchemaType typeTwo ) {
         return typeOne.getName().equals( typeTwo.getName() ) ;
     }
@@ -632,19 +630,19 @@ public final class AdqlUtils {
     }
     
     
-    public static boolean isSuitablePasteIntoTarget( AdqlEntry entry, XmlObject clipboardObject ) {
+    public static boolean isSuitablePasteIntoTarget( AdqlNode entry, XmlObject clipboardObject ) {
         return isSuitablePasteIntoTarget( entry, clipboardObject.schemaType() ) ;
     }
 
-    public static boolean isSuitablePasteIntoTarget( AdqlEntry entry, SchemaType clipboardType ) {
+    public static boolean isSuitablePasteIntoTarget( AdqlNode entry, SchemaType clipboardType ) {
        return ( findSuitablePasteIntoTarget( entry, clipboardType ) != null ) ;
     }
     
-    public static SchemaType findSuitablePasteIntoTarget( AdqlEntry entry, XmlObject clipboardObject ) {
+    public static SchemaType findSuitablePasteIntoTarget( AdqlNode entry, XmlObject clipboardObject ) {
        return  findSuitablePasteIntoTarget( entry, clipboardObject.schemaType() ) ;
     }
     
-    public static SchemaType findSuitablePasteIntoTarget( AdqlEntry entry, SchemaType clipboardType ) {
+    public static SchemaType findSuitablePasteIntoTarget( AdqlNode entry, SchemaType clipboardType ) {
         SchemaProperty[] elementProperties = entry.getElementProperties() ;
         for ( int i = 0 ; i < elementProperties.length ; i++ ) {
             if( elementProperties[i].getType().isAssignableFrom( clipboardType ) ) { 
@@ -654,11 +652,11 @@ public final class AdqlUtils {
         return null ;
     }
 
-    public static boolean isSuitablePasteOverTarget( AdqlEntry entry, XmlObject pasteObject ) {
+    public static boolean isSuitablePasteOverTarget( AdqlNode entry, XmlObject pasteObject ) {
         return isSuitablePasteOverTarget( entry, pasteObject.schemaType() ) ;
     }
 
-    public static boolean isSuitablePasteOverTarget( AdqlEntry entry, SchemaType pasteType ) {
+    public static boolean isSuitablePasteOverTarget( AdqlNode entry, SchemaType pasteType ) {
         SchemaType entryType = entry.getXmlObject().schemaType() ;
         // Checks that the entry type derives from or is the same type as paste type:
         if( entryType.isAssignableFrom( pasteType ) )
@@ -671,6 +669,25 @@ public final class AdqlUtils {
             return true ;
         }
         return false ;
+    }
+    
+    public static int findChildIndex( XmlObject parent, XmlObject child ) {
+        int index = 0 ;
+        boolean found = false ;
+        XmlCursor cursor = parent.newCursor() ;
+        cursor.toFirstChild() ; // There has to be a first child!
+        do {
+            if( child == cursor.getObject() ) {
+                found = true ;
+                break ;
+            }
+            index++ ;
+        } while( cursor.toNextSibling() ) ;
+        if( found == false ) {
+            index = -1 ;
+        }
+        cursor.dispose() ;
+        return index ;
     }
 
     public static XmlObject setDefaultValue( XmlObject xmlObject ) {

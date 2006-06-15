@@ -11,8 +11,10 @@
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
 import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+;
 
 /**
  * @author jl99
@@ -27,15 +29,21 @@ public interface CommandInfo {
 
     public SchemaProperty getChildElement();
 
-    public AdqlEntry getParentEntry();
-    public AdqlEntry getChildEntry() ;
+    public AdqlNode getParentEntry();
+    public AdqlNode getChildEntry() ;
+    
+    public XmlObject getParentObject() ;
+    public XmlObject getChildObject() ;
     
     public String getChildElementName();
     public String getParentElementName() ;
 
     public int getChildMinOccurs();
     public int getChildMaxOccurs();
-
+    
+    public SchemaType getChildType() ;
+    public int getChildIndex() ;
+    
     public boolean isChildEnabled();
 
     public boolean isParentSuitablePasteTargetFor( XmlObject clipboardObject ) ;
@@ -62,4 +70,11 @@ public interface CommandInfo {
     
     public boolean isChildInPatternContext() ;
 
+    public Integer exchangeInEditStore( AdqlNode in, AdqlNode out ) ;
+    
+    public Integer getChildToken() ;
+    
+    public Integer getParentToken() ;
+
+    public void exchangeInEditStore( Integer token, AdqlNode in ) ;
 }

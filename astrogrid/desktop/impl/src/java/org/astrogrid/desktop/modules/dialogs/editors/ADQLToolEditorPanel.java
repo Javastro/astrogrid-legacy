@@ -10,98 +10,135 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Point;
+import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter ;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowEvent;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Point;
+import java.awt.Dimension;
+import java.io.InputStream;
+import java.io.IOException;
 import java.io.BufferedInputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+
+import javax.swing.event.EventListenerList ;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
+import javax.swing.Action ;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent; 
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.undo.*;
 
-import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaStringEnumEntry;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.SchemaTypeSystem;
+import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlError;
+import org.apache.xmlbeans.XmlDecimal;
+import org.apache.xmlbeans.XmlDouble;
 import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlFloat;
+import org.apache.xmlbeans.XmlInt;
+import org.apache.xmlbeans.XmlInteger;
+import org.apache.xmlbeans.XmlLong;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.XmlPositiveInteger;
+import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlUnsignedInt;
+import org.apache.xmlbeans.XmlUnsignedLong;
+import org.apache.xmlbeans.XmlUnsignedShort;
+import org.apache.xmlbeans.XmlCursor.TokenType ;
+import org.apache.xmlbeans.XmlError ;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
+import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTransformer;
+import org.astrogrid.desktop.modules.adqlEditor.*;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory ;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
-import org.astrogrid.desktop.modules.adqlEditor.TableMetadataPanel;
-import org.astrogrid.desktop.modules.adqlEditor.commands.AbstractCommand;
-import org.astrogrid.desktop.modules.adqlEditor.commands.ColumnInsertCommand;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CutCommand;
-import org.astrogrid.desktop.modules.adqlEditor.commands.EnumeratedInsertCommand;
-import org.astrogrid.desktop.modules.adqlEditor.commands.PasteIntoCommand;
-import org.astrogrid.desktop.modules.adqlEditor.commands.PasteNextToCommand;
-import org.astrogrid.desktop.modules.adqlEditor.commands.PasteOverCommand;
-import org.astrogrid.desktop.modules.adqlEditor.commands.StandardInsertCommand;
-import org.astrogrid.desktop.modules.adqlEditor.commands.TableInsertCommand;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.TableMetadataPanel ;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree.EditPromptAction;
+import org.astrogrid.desktop.modules.adqlEditor.commands.*;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.w3c.dom.Document;
+import org.apache.axis.utils.XMLUtils;
 
 /**
  * @author jl99
@@ -111,8 +148,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     
 
     private static final Log log = LogFactory.getLog( ADQLToolEditorPanel.class ) ;
-    private static final boolean DEBUG_ENABLED = false ;
-    private static final boolean TRACE_ENABLED = false ;
+    private static final boolean DEBUG_ENABLED = true ;
+    private static final boolean TRACE_ENABLED = true ;
    
 
     
@@ -705,14 +742,14 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     private class BranchExpansionListener implements TreeExpansionListener {
         
         public void treeCollapsed( TreeExpansionEvent event ) {
-            AdqlEntry entry = (AdqlEntry)event.getPath().getLastPathComponent() ;
+            AdqlNode entry = (AdqlNode)event.getPath().getLastPathComponent() ;
             entry.setExpanded( false ) ;
 //            AdqlTree.AdqlTreeCellRenderer renderer = adqlTree.getTreeCellRenderer() ;
 //            renderer.unsetNextValue( entry ) ;
         }
     
         public void treeExpanded( TreeExpansionEvent event ) {
-            AdqlEntry entry = (AdqlEntry)event.getPath().getLastPathComponent() ;
+            AdqlNode entry = (AdqlNode)event.getPath().getLastPathComponent() ;
             entry.setExpanded( true ) ;
  //           AdqlTree.AdqlTreeCellRenderer renderer = adqlTree.getTreeCellRenderer() ;
  //           renderer.unsetNextValue( entry ) ;
@@ -740,16 +777,16 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    } // end of Popup.mouseReleased( MouseEvent event )
 	    
 	    private void showPopup( TreePath path, int x, int y ) {
-	        AdqlEntry entry = (AdqlEntry)adqlTree.getLastSelectedPathComponent() ;
+	        AdqlNode entry = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
 		    getPopupMenu( entry ).show( adqlTree, x, y ) ;
 	    }
 	    
-	    private JPopupMenu getPopupMenu( AdqlEntry entry ) {
+	    private JPopupMenu getPopupMenu( AdqlNode entry ) {
 	        return buildPopup( entry ) ;
 	    }
 	    
 	    
-	    private JPopupMenu buildPopup( AdqlEntry entry ) {
+	    private JPopupMenu buildPopup( AdqlNode entry ) {
 	        JPopupMenu popup = new JPopupMenu( "AdqlTreeContextMenu" ) ;
 	        // Place a name tag at the top with a separator.
 	        // This is purely cosmetic. It does nothing.
@@ -824,7 +861,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	private class CutAction extends AbstractAction {
 	    private CutCommand command ;
 	       
-	    public CutAction( AdqlEntry entry ) {
+	    public CutAction( AdqlNode entry ) {
 	        super( "Cut" ) ;
 	        TreePath path = adqlTree.getSelectionPath() ;
 	        // If the path is null or there is no parent
@@ -842,7 +879,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        }
 	        this.command = adqlTree.getCommandFactory().newCutCommand( adqlTree
 	                                                                 , adqlTree.getCommandFactory().getUndoManager()
-	                                                                 , (AdqlEntry)path.getLastPathComponent() ) ;
+	                                                                 , (AdqlNode)path.getLastPathComponent() ) ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
@@ -875,9 +912,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	}
 	
 	private class CopyAction extends AbstractAction {
-	    private AdqlEntry entry ;
+	    private AdqlNode entry ;
 	       
-	    public CopyAction( AdqlEntry entry ) {
+	    public CopyAction( AdqlNode entry ) {
 	        super( "Copy" ) ;
 	        this.entry = entry ;
 	    }
@@ -896,7 +933,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    
 	    private PasteOverCommand command = null ;
 	    
-	    public PasteOverAction( AdqlEntry entry ) {
+	    public PasteOverAction( AdqlNode entry ) {
 	        super( "Paste over" ) ;
 	        if( preConditionsForPaste() == true ) {
 	            this.command = adqlTree.getCommandFactory().newPasteOverCommand( entry, clipBoard );
@@ -918,7 +955,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	private class PasteNextToAction extends AbstractAction {
 	    private PasteNextToCommand command ;
 	    
-	    public PasteNextToAction( AdqlEntry entry, boolean before ) {
+	    public PasteNextToAction( AdqlNode entry, boolean before ) {
 	        super() ;
 	        if( before ) {
 	            super.putValue( Action.NAME, "Paste before" ) ;
@@ -946,7 +983,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	private class PasteIntoAction extends AbstractAction {
 	    private PasteIntoCommand command = null ;
 	       
-	    public PasteIntoAction( AdqlEntry entry ) {
+	    public PasteIntoAction( AdqlNode entry ) {
 	        super( "Paste into" ) ;
 	        if( preConditionsForPaste() == true ) {
 	            this.command = 
@@ -1010,9 +1047,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	}
 	
 	private class EditAction extends AbstractAction {
-	    private AdqlEntry entry ;
+	    private AdqlNode entry ;
 	       
-	    public EditAction( AdqlEntry entry ) {
+	    public EditAction( AdqlNode entry ) {
 	        super( "Edit" ) ;
 	        this.entry = entry ;
 	    }
@@ -1228,7 +1265,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     private void setAdqlParameter() {
         if( queryParam.hasIndirect() == true )
             queryParam.setIndirect( false ) ;
-        AdqlEntry rootEntry = ((AdqlEntry)adqlTree.getModel().getRoot()) ;
+        AdqlNode rootEntry = ((AdqlNode)adqlTree.getModel().getRoot()) ;
         XmlObject xmlRoot =  (XmlObject)rootEntry.getUserObject() ;
         // NOte. I'm not sure the following is adequate.
         XmlOptions options = new XmlOptions() ;
@@ -1381,6 +1418,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
         
         protected void validateAdql() {
+            if( DEBUG_ENABLED ) log.debug( "AdqlXmlView.validateAdql() entry" ) ;
             String text = getXmlTextPane().getText().trim() ;
             if( text.equals( xmlString ) == false ) {
                 try {
@@ -1418,7 +1456,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                        
             scrTree.setViewportView( component ) ;
             adqlTree.openBranches() ;
-            this.controller.updateModel( this, ((AdqlEntry)adqlTree.getModel().getRoot()).getXmlObject() ) ;
+            this.controller.updateModel( this, ((AdqlNode)adqlTree.getModel().getRoot()).getXmlObject() ) ;
             this.setLayout( new BorderLayout() ) ;
             this.add(scrTree, BorderLayout.CENTER );
             this.owner.addTab( "Tree", this ) ; 
@@ -1426,7 +1464,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         
         protected void refreshFromModel() {         
             if( DEBUG_ENABLED ) log.debug( "AdqlTreeView.stateChanged() is resetting adqlTree" ) ;
-            adqlTree.setTree( AdqlEntry.newInstance( this.controller.getRootInstance() ), registry, toolModel.getInfo().getId() );
+            adqlTree.setTree( NodeFactory.newInstance( this.controller.getRootInstance() ), registry, toolModel.getInfo().getId() );
             adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
             setAdqlParameter() ;
             adqlTree.openBranches() ;
@@ -1489,6 +1527,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
         
         protected void validateAdql() {
+            if( DEBUG_ENABLED ) log.debug( "AdqlStringView.validateAdql() entry" ) ;
             //
             // Kludge to replace some form of white space that is screwing up the adql/s
             // parser. This is the simplest solution. And the parser looks like it might
@@ -1500,6 +1539,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                     this.adqlString = text ;
                     Document doc = validator.s2x( text ); 
                     String xmlString = XMLUtils.DocumentToString( doc ) ;
+                    log.debug( "Parser returned: \n" + xmlString ) ; 
                     this.processedRoot = SelectDocument.Factory.parse( adaptToVersion( xmlString ) ) ;
                     diagnostics.setText( "" ) ;                  
                 } 

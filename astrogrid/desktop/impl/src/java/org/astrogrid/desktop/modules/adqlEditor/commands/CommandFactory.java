@@ -10,19 +10,27 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.List ;
+import java.util.ArrayList ;
 import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Random;
+import javax.swing.JMenuItem;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
 
-import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaStringEnumEntry;
 import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.acr.astrogrid.ColumnBean;
+import org.astrogrid.acr.astrogrid.DatabaseBean;
+import org.astrogrid.acr.astrogrid.TableBean;
+import org.astrogrid.desktop.modules.adqlEditor.* ;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
+
+import java.util.Hashtable ;
 /**
  * @author jl99
  *
@@ -47,14 +55,14 @@ public class CommandFactory {
     private CommandFactory() {}
    
     
-    public PasteOverCommand newPasteOverCommand( AdqlEntry targetOfPasteOver, XmlObject pasteObject  ) {
+    public PasteOverCommand newPasteOverCommand( AdqlNode targetOfPasteOver, XmlObject pasteObject  ) {
         if( AdqlUtils.isSuitablePasteOverTarget( targetOfPasteOver, pasteObject ) ) {
             return new PasteOverCommand( adqlTree, undoManager, targetOfPasteOver, pasteObject ) ;
         }
         return null ;
     }
     
-    public PasteIntoCommand newPasteIntoCommand( AdqlEntry targetOfPasteInto, XmlObject pasteObject ) {
+    public PasteIntoCommand newPasteIntoCommand( AdqlNode targetOfPasteInto, XmlObject pasteObject ) {
         SchemaType pastableType = AdqlUtils.findSuitablePasteIntoTarget( targetOfPasteInto, pasteObject ) ;
         if( pastableType != null ) {
             return new PasteIntoCommand( adqlTree, undoManager, targetOfPasteInto, pastableType, pasteObject ) ;
@@ -62,21 +70,21 @@ public class CommandFactory {
         return null ;
     }
     
-    public PasteNextToCommand newPasteNextToCommand( AdqlEntry targetOfNextTo, XmlObject pasteObject, boolean before ) {
+    public PasteNextToCommand newPasteNextToCommand( AdqlNode targetOfNextTo, XmlObject pasteObject, boolean before ) {
         if( AdqlUtils.isSuitablePasteOverTarget( targetOfNextTo, pasteObject ) ) {
             return new PasteNextToCommand( adqlTree, undoManager, targetOfNextTo, pasteObject, before ) ;
         }
         return null ;
     }
     
-    public CutCommand newCutCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlEntry targetOfCut ) {
+    public CutCommand newCutCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode targetOfCut ) {
         return new CutCommand( adqlTree, undoManager, targetOfCut ) ;
     }
     
-    public List newInsertCommands( AdqlEntry parent ) {
+    public List newInsertCommands( AdqlNode parent ) {
         List insertCommands = null ;
         // Not sure whether this test is required:
-        if( !parent.isChildHidingRequired() ) {
+        if( !parent.isHidingRequired() ) {
             // For each distinctive element we build a List
             // corresponding to each type that can be a basis
             // for that element...
@@ -122,7 +130,7 @@ public class CommandFactory {
     }
     
     
-    public MultipleColumnInsertCommand newMultipleColumnInsertCommand( AdqlEntry parent
+    public MultipleColumnInsertCommand newMultipleColumnInsertCommand( AdqlNode parent
                                                                      , SchemaType type ) {
         SchemaType colRefType = AdqlUtils.getType( type, AdqlData.COLUMN_REFERENCE_TYPE ) ;
         if( AdqlUtils.areTypesEqual( type, colRefType )
@@ -137,16 +145,16 @@ public class CommandFactory {
     }
     
     
-    public ColumnInsertCommand newColumnInsertCommand( AdqlEntry parent, SchemaType childType, SchemaProperty childElement ) { 
+    public ColumnInsertCommand newColumnInsertCommand( AdqlNode parent, SchemaType childType, SchemaProperty childElement ) { 
         return new ColumnInsertCommand( adqlTree, undoManager, parent, childType, childElement ) ;
     }
     
     
-    public TableInsertCommand newTableInsertCommand( AdqlEntry parent, SchemaType childType, SchemaProperty childElement ) {
+    public TableInsertCommand newTableInsertCommand( AdqlNode parent, SchemaType childType, SchemaProperty childElement ) {
         return new TableInsertCommand( adqlTree, undoManager, parent, childType, childElement ) ;        
     }
     
-    public EnumeratedInsertCommand newEnumeratedInsertCommand( AdqlEntry parent
+    public EnumeratedInsertCommand newEnumeratedInsertCommand( AdqlNode parent
             											     , SchemaType childType
             											     , SchemaProperty childElement ) { 
         String childTypeName = AdqlUtils.getLocalName( childType );
@@ -162,7 +170,7 @@ public class CommandFactory {
 							              , attributeName ) ;
     }
     
-    public StandardInsertCommand newStandardInsertCommand( AdqlEntry parent
+    public StandardInsertCommand newStandardInsertCommand( AdqlNode parent
             										     , SchemaType childType
             											 , SchemaProperty childElement  ) {
         return new StandardInsertCommand( adqlTree, undoManager, parent, childType, childElement ) ;
@@ -233,7 +241,7 @@ public class CommandFactory {
             return token ;
         }
         
-        public synchronized Integer add( AdqlEntry entry ) {
+        public synchronized Integer add( AdqlNode entry ) {
             Integer token = null ;
             if( entryToTokenStore.containsKey( entry ) ) {
                 token = (Integer)entryToTokenStore.get( entry ) ;
@@ -246,7 +254,7 @@ public class CommandFactory {
             return token ;
         }
         
-        public synchronized Integer exchange( AdqlEntry in, AdqlEntry out ) {
+        public synchronized Integer exchange( AdqlNode in, AdqlNode out ) {
             Integer token = (Integer)entryToTokenStore.get( out ) ;
             if( token == null ) {
                 token = add( in ) ;
@@ -260,7 +268,7 @@ public class CommandFactory {
             return token ;
         }
         
-        public synchronized void exchange( Integer token, AdqlEntry in ) {
+        public synchronized void exchange( Integer token, AdqlNode in ) {
             if( tokenToEntryStore.containsKey( token ) ) {
                 Object out = tokenToEntryStore.get( token ) ;
                 entryToTokenStore.remove( out ) ;
@@ -270,8 +278,8 @@ public class CommandFactory {
             }
         }
         
-        public AdqlEntry get( Integer token ) {
-            return (AdqlEntry)tokenToEntryStore.get( token ) ;
+        public AdqlNode get( Integer token ) {
+            return (AdqlNode)tokenToEntryStore.get( token ) ;
         }
         
     } // end of class EditStore 

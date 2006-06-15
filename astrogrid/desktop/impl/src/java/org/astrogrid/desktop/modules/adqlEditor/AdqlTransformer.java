@@ -30,6 +30,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
 
+import org.astrogrid.desktop.modules.adqlEditor.nodes.*;
+
 /**
  * @author jl99
  *
@@ -99,7 +101,7 @@ public class AdqlTransformer {
     // Some points. I often end up with a negative index. Somehow I get a breakpoint set 
     // to the beginning of a display entry. ie: arraySize comes back with [0]
     
-    public synchronized String transformDisplayValues( AdqlEntry entry
+    public synchronized String transformDisplayValues( AdqlNode entry
                                                      , AdqlTree tree
                                                      , boolean expanded
                                                      , boolean leaf ) {
@@ -162,7 +164,7 @@ public class AdqlTransformer {
         return retVal ;
     }
     
-    private ArrayList getBreakPoints( AdqlEntry entry, AdqlTree tree, String xmlString ) {
+    private ArrayList getBreakPoints( AdqlNode entry, AdqlTree tree, String xmlString ) {
         ArrayList arrayList = null ;
       
         int availablePixels = entry.getUseableWidth() ; 
@@ -212,7 +214,7 @@ public class AdqlTransformer {
       
     }
     
-    private ArrayList getBreakPoints2( AdqlEntry entry, AdqlTree tree, String xmlString ) {
+    private ArrayList getBreakPoints2( AdqlNode entry, AdqlTree tree, String xmlString ) {
         ArrayList arrayList = null ;
         //
         // Not sure when this gets updated (re resizing)

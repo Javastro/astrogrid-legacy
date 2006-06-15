@@ -19,7 +19,8 @@ import org.apache.xmlbeans.XmlString;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 
@@ -41,14 +42,14 @@ public class TableInsertCommand extends StandardInsertCommand {
      */
     public TableInsertCommand( AdqlTree adqlTree
                              , UndoManager undoManager
-                             , AdqlEntry parentTarget
+                             , AdqlNode parentTarget
                              , SchemaType childType
                              , SchemaProperty childElement ) {
         super( adqlTree, undoManager, parentTarget, childType, childElement ) ;
     }
     
     public TableInsertCommand( TableInsertCommand tic ) {
-        super( tic.adqlTree, tic.undoManager, tic.parent, tic.childType, tic.childElement ) ;
+        super( tic.adqlTree, tic.undoManager, tic.getParentEntry(), tic.childType, tic.childElement ) ;
         this.database = tic.database ;
         this.tableName = tic.tableName ;
         this.allocatedAlias = tic.allocatedAlias ;
@@ -102,15 +103,15 @@ public class TableInsertCommand extends StandardInsertCommand {
         if( result != CommandExec.FAILED ) {
             try {          
                 allocatedAlias = adqlTree.popAliasStack() ;
-                AdqlUtils.set( child.getXmlObject()
+                AdqlUtils.set( getChildObject()
                              , "alias"
                              , XmlString.Factory.newValue( allocatedAlias ) ) ;
-                AdqlUtils.set( child.getXmlObject()
+                AdqlUtils.set( getChildObject()
                              , "name"
                              , XmlString.Factory.newValue( tableName ) ) ;
                 String name = childType.getName().getLocalPart() ;
                 if( name.equals( "archiveTableType" ) ) {
-                    AdqlUtils.set( child.getXmlObject()
+                    AdqlUtils.set( getChildObject()
                                  , "archive"
                                  , XmlString.Factory.newValue( database.getName() ) ) ;
                 }
@@ -140,13 +141,13 @@ public class TableInsertCommand extends StandardInsertCommand {
         // This processing attempts the automatic removal of the dummy table 
         // which is included in the initial template for a new query...
         // (Bit of a bind I'm afraid)
-        XmlObject o = parent.getXmlObject() ;
+        XmlObject o = getParentObject() ;
         int arraySize = AdqlUtils.sizeOfArray( o, getChildElementName() ) ;
         if( arraySize == 1 ) {
             Object table = AdqlUtils.getArray( o, getChildElementName(), 0 ) ;
             String name = ((XmlString)AdqlUtils.get( (XmlObject)table, "name" )).getStringValue() ;
             if( name.equals( AdqlData.DUMMY_TABLE_NAME ) ) {
-                AdqlEntry entry = parent.getChild( 0 ) ;           
+                AdqlNode entry = getParentEntry().getChild( 0 ) ;           
 //   	        AdqlEntry.removeInstance( parent, entry ) ;
     	        CutCommand cutCommand = new CutCommand( adqlTree, undoManager, entry ) ;
     	        cutCommand.execute() ;
@@ -155,15 +156,15 @@ public class TableInsertCommand extends StandardInsertCommand {
     }
     
     private void _reinstateDummyTable() {
-        XmlObject o = parent.getXmlObject() ;
-        if( !AdqlUtils.areTypesEqual( parent.getSchemaType()
+        XmlObject o = getParentObject() ;
+        if( !AdqlUtils.areTypesEqual( getParentEntry().getSchemaType()
                                     , AdqlUtils.getType( o, AdqlData.FROM_TYPE ) ) ) 
            return ;
         int arraySize = AdqlUtils.sizeOfArray( o, getChildElementName() ) ;
         if( arraySize == 0 ) {
             XmlObject newObject = AdqlUtils.addNewToEndOfArray( o, getChildElementName() ) ;
             newObject = newObject.changeType( childType ) ;
-            AdqlEntry.newInstance( parent, newObject ) ;
+            NodeFactory.newInstance( getParentEntry(), newObject ) ;
             AdqlUtils.set( newObject
                          , "name"
                          , XmlString.Factory.newValue( AdqlData.DUMMY_TABLE_NAME ) ) ;

@@ -22,6 +22,8 @@ public class AdqlData {
     public static String NAMESPACE_0_74 = "http://www.ivoa.net/xml/ADQL/v0.7.4" ;
     public static String NAMESPACE_1_0 = "http://www.ivoa.net/xml/ADQL/v1.0" ;
     public static final String PI_QB_REGISTRY_RESOURCES = "qb-registry-resources" ;
+    public static final String PI_ADQL_SCHEMA_VERSION_TAG = "ag-adql-schema-version" ;
+    public static final String PI_ADQL_SCHEMA_VERSION_VALUE = "v1.0a1" ;
     
     public static final String DUMMY_ENTRY = "".intern() ;
     public static final String COLUMN_REFERENCE_TYPE = "columnReferenceType" ;
@@ -46,6 +48,8 @@ public class AdqlData {
     public static final String ATOM_TYPE = "atomType" ;
     public static final String ALL_SELECTION_ITEM_TYPE = "allSelectionItemType" ;
     public static final String SELECTION_LIST_TYPE = "selectionListType" ;
+    public static final String INTERSECTION_SEARCH_TYPE = "intersectionSearchType" ;
+    public static final String UNION_SEARCH_TYPE = "unionSearchType" ;
     
     
     public static final String TYPE_ENTRY = "TYPE".intern() ;
@@ -82,8 +86,8 @@ public class AdqlData {
         T2D_NAMES.put( "joinTableType", "Join Table" ) ;
         T2D_NAMES.put( "includeTableType", "Include Table" ) ;
         T2D_NAMES.put( "dropTableType", "Exclude table" ) ;
-        T2D_NAMES.put( "intersectionSearchType", "And" ) ;
-        T2D_NAMES.put( "unionSearchType", "Or" ) ;
+        T2D_NAMES.put( INTERSECTION_SEARCH_TYPE, "And" ) ;
+        T2D_NAMES.put( UNION_SEARCH_TYPE, "Or" ) ;
         T2D_NAMES.put( "xMatchType", "xMatch" ) ;
         T2D_NAMES.put( "likePredType", "Like" ) ;
         T2D_NAMES.put( "notLikePredType", "Not Like" ) ;
@@ -351,6 +355,7 @@ public class AdqlData {
         "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
         "        xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"" +
         "        xsi:type=\"selectType\"> " +
+        "    <?" + PI_ADQL_SCHEMA_VERSION_TAG + " " + PI_ADQL_SCHEMA_VERSION_VALUE + " ?>" +    
         "    <SelectionList xsi:type=\"selectionListType\"> " +
         "        <Item xsi:type=\"allSelectionItemType\"/> " +
         "    </SelectionList> " +

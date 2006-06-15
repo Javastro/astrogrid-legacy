@@ -19,7 +19,8 @@ import org.apache.xmlbeans.XmlString;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 
@@ -43,14 +44,14 @@ public class ColumnInsertCommand extends StandardInsertCommand {
      */
     public ColumnInsertCommand( AdqlTree adqlTree
                               , UndoManager undoManager
-                              , AdqlEntry parentTarget 
+                              , AdqlNode parentTarget 
                               , SchemaType childType
                               , SchemaProperty childElement ) {
         super( adqlTree, undoManager, parentTarget, childType, childElement ) ;
     }
     
     public ColumnInsertCommand( ColumnInsertCommand cic ) {
-        super( cic.adqlTree, cic.undoManager, cic.parent, cic.childType, cic.childElement ) ;
+        super( cic.adqlTree, cic.undoManager, cic.getParentEntry(), cic.childType, cic.childElement ) ;
         this.archive = cic.archive ;
         this.table = cic.table ;
         this.columnName = cic.columnName ;
@@ -105,16 +106,16 @@ public class ColumnInsertCommand extends StandardInsertCommand {
         if( result != CommandExec.FAILED ) {
             try {          
                 if( tableAlias != null ) {
-                    AdqlUtils.set( child.getXmlObject()
+                    AdqlUtils.set( getChildObject()
                                  , "table"
                                  , XmlString.Factory.newValue( tableAlias ) ) ;
                 }
                 else {
-                    AdqlUtils.set( child.getXmlObject()
+                    AdqlUtils.set( getChildObject()
                                  , "table"
                                  , XmlString.Factory.newValue( table.getName() ) ) ;
                 }      
-                AdqlUtils.set( child.getXmlObject()
+                AdqlUtils.set( getChildObject()
                              , "name"
                              , XmlString.Factory.newValue( columnName ) ) ;
             }
@@ -132,8 +133,8 @@ public class ColumnInsertCommand extends StandardInsertCommand {
     }
     
     private void removeAllColumnsOption() { 
-        XmlObject o = parent.getXmlObject() ;
-        if( !AdqlUtils.areTypesEqual( parent.getSchemaType()
+        XmlObject o = getParentObject() ;
+        if( !AdqlUtils.areTypesEqual( getParentEntry().getSchemaType()
                                     , AdqlUtils.getType( o, AdqlData.SELECTION_LIST_TYPE ) ) ) 
            return ;
         int arraySize = AdqlUtils.sizeOfArray( o, "Item" ) ;
@@ -141,7 +142,7 @@ public class ColumnInsertCommand extends StandardInsertCommand {
             XmlObject item = (XmlObject)AdqlUtils.getArray( o, getChildElementName(), 0 ) ;
             String name = item.schemaType().getName().getLocalPart() ;
             if( name.equals( AdqlData.ALL_SELECTION_ITEM_TYPE ) ) {
-                AdqlEntry entry = parent.getChild( 0 ) ;           
+                AdqlNode entry = getParentEntry().getChild( 0 ) ;           
                 CutCommand cutCommand = new CutCommand( adqlTree, undoManager, entry ) ;
                 cutCommand.execute() ;
             }
@@ -149,15 +150,15 @@ public class ColumnInsertCommand extends StandardInsertCommand {
     }
     
     private void _reinstateAllColumnsOption() {
-        XmlObject o = parent.getXmlObject() ;
-        if( !AdqlUtils.areTypesEqual( parent.getSchemaType()
+        XmlObject o = getParentObject() ;
+        if( !AdqlUtils.areTypesEqual( getParentEntry().getSchemaType()
                                     , AdqlUtils.getType( o, AdqlData.SELECTION_LIST_TYPE ) ) ) 
            return ;
         int arraySize = AdqlUtils.sizeOfArray( o, "Item" ) ;
         if( arraySize == 0 ) {
             XmlObject newObject = AdqlUtils.addNewToEndOfArray( o, getChildElementName() ) ;
             newObject = newObject.changeType( AdqlUtils.getType( o, AdqlData.ALL_SELECTION_ITEM_TYPE ) ) ;
-            AdqlEntry.newInstance( parent, newObject ) ;
+            NodeFactory.newInstance( getParentEntry(), newObject ) ;
         }
     }
    

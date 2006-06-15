@@ -24,7 +24,7 @@ import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 //import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel.InsertColumnAction;
@@ -55,7 +55,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
      */
     public MultipleColumnInsertCommand( AdqlTree adqlTree
                                       , UndoManager undoManager
-                                      , AdqlEntry parentTarget
+                                      , AdqlNode parentTarget
                                       , SchemaType childType ) {
         super( adqlTree, undoManager, parentTarget, childType, null ) ;
         this.internalUndoManager = new MCIUndoManager() ;
@@ -201,7 +201,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         ColumnInsertCommand 
         	command = new ColumnInsertCommand( adqlTree
         	                                 , internalUndoManager
-        	                                 , parent
+        	                                 , getParentEntry()
         	                                 , childType
         	                                 , null ) ;
         if( command != null ) {
@@ -234,10 +234,10 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     
     private Result maintainFromTables( TreePath path )  {
         Result result = CommandExec.ERROR ;
-        AdqlEntry fromEntry = findFromClause( path ) ;
-        AdqlEntry[] children = fromEntry.getChildren() ;
+        AdqlNode fromEntry = findFromClause( path ) ;
+        AdqlNode[] children = fromEntry.getChildren() ;
         SchemaType tableType = getTableType() ;
-        AdqlEntry tableEntry = null ;
+        AdqlNode tableEntry = null ;
         XmlString tableName = null ;
         for( int i=0; i<children.length; i++ ) {
             if( children[i].getSchemaType().getName().equals( tableType.getName() ) ) {
@@ -278,10 +278,10 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     
     private TreePath findParentSelect( TreePath path ) {
         TreePath workPath = path ;
-        AdqlEntry entry = null ;
+        AdqlNode entry = null ;
         SchemaType selectType = getSelectType() ;
         for( int i=0; i<path.getPathCount(); i++, workPath = workPath.getParentPath() ) {
-            entry = (AdqlEntry)workPath.getLastPathComponent() ;
+            entry = (AdqlNode)workPath.getLastPathComponent() ;
             if( entry.getSchemaType().getName().equals( selectType.getName() ) ) {
                 break ;
             }
@@ -289,17 +289,17 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         return workPath ;
     }
     
-    public AdqlEntry findFromClause( TreePath path ) {
+    public AdqlNode findFromClause( TreePath path ) {
         //
         // Find the enclosing SELECT clause...
         TreePath selectPath = findParentSelect( path ) ;
         //
         // Find all the child elements of the SELECT clause...
-        AdqlEntry selectEntry = ((AdqlEntry)selectPath.getLastPathComponent()) ;
-        AdqlEntry childEntries[] = selectEntry.getChildren() ;
+        AdqlNode selectEntry = ((AdqlNode)selectPath.getLastPathComponent()) ;
+        AdqlNode childEntries[] = selectEntry.getChildren() ;
         //
         // Go through the children of the SELECT clause looking for the FROM clause...
-        AdqlEntry entry = null ;
+        AdqlNode entry = null ;
         SchemaType fromType = getFromType() ;
         for( int i=0; i<childEntries.length; i++ ) {
             entry = childEntries[i] ;
@@ -324,17 +324,17 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     }
     
     
-    public AdqlEntry findTablesHolder( TreePath path ) {
+    public AdqlNode findTablesHolder( TreePath path ) {
         //
         // Find the enclosing SELECT clause...
         TreePath selectPath = findParentSelect( path ) ;
         //
         // Find all the child elements of the SELECT clause...
-        AdqlEntry selectEntry = ((AdqlEntry)selectPath.getLastPathComponent()) ;
-        AdqlEntry childEntries[] = selectEntry.getChildren() ;
+        AdqlNode selectEntry = ((AdqlNode)selectPath.getLastPathComponent()) ;
+        AdqlNode childEntries[] = selectEntry.getChildren() ;
         //
         // Go through the children of the SELECT clause looking for the FROM clause...
-        AdqlEntry entry = null ;
+        AdqlNode entry = null ;
         SchemaType fromType = getFromType() ;
         for( int i=0; i<childEntries.length; i++ ) {
             entry = childEntries[i] ;

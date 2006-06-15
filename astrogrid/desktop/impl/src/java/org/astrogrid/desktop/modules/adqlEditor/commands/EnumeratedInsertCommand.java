@@ -10,16 +10,23 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaStringEnumEntry;
 import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.SchemaTypeSystem;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
+import org.astrogrid.acr.astrogrid.ColumnBean;
+import org.astrogrid.acr.astrogrid.TableBean;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
 
 /**
  * @author jl99@star.le.ac.uk
@@ -39,7 +46,7 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
      */
     public EnumeratedInsertCommand( AdqlTree adqlTree
                                   , UndoManager undoManager
-                                  , AdqlEntry parentTarget
+                                  , AdqlNode parentTarget
                                   , SchemaType childType 
                                   , SchemaProperty childElement
                                   , SchemaType attrType
@@ -50,7 +57,7 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
     }
     
     public EnumeratedInsertCommand( EnumeratedInsertCommand eic ) {
-        super( eic.adqlTree, eic.undoManager, eic.parent, eic.childType, eic.childElement ) ;
+        super( eic.adqlTree, eic.undoManager, eic.getParentEntry(), eic.childType, eic.childElement ) ;
         this.attrType = eic.attrType ;
         this.attrName = eic.attrName ;
         this.attrValue = eic.attrValue ;
@@ -86,7 +93,7 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
                 XmlObject enumValue = XmlString.Factory.newInstance() ;
                 enumValue = enumValue.set(  XmlString.Factory.newValue( attrValue ) ) ;
                 enumValue = enumValue.changeType( attrType ) ;       
-                AdqlUtils.set( child.getXmlObject()
+                AdqlUtils.set( getChildObject()
                              , attrName
                              , enumValue ) ; 
             }

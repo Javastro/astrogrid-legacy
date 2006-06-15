@@ -10,15 +10,22 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+//import org.astrogrid.desktop.modules.adqlEditor.AdqlCommand;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory ;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree ;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
+
+import sun.rmi.runtime.GetThreadPoolAction;
 
 /**
  * @author jl99@star.le.ac.uk
@@ -34,7 +41,7 @@ public class PasteIntoCommand extends AbstractCommand {
      * @param target
      * @param source
      */
-    public PasteIntoCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlEntry target, SchemaType childType, XmlObject source ) {
+    public PasteIntoCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode target, SchemaType childType, XmlObject source ) {
         super( adqlTree, undoManager, target, childType, null ) ;
         this.sourceValue = source ;
     }
@@ -44,7 +51,6 @@ public class PasteIntoCommand extends AbstractCommand {
         Result result = _execute() ;
         if( result != CommandExec.FAILED ) {
             undoManager.addEdit( this ) ;
-            childToken = addToEditStore( child ) ;
         }         
         return result ;
     }
@@ -52,10 +58,12 @@ public class PasteIntoCommand extends AbstractCommand {
     private Result _execute() {
         Result result = CommandExec.OK ;
         try {    
-            parent = getFromEditStore( parentToken ) ;
+            AdqlNode parent = getFromEditStore( parentToken ) ;
+            AdqlNode child = parent.insert( this, sourceValue ) ;
             if( childToken != null )
-                child = getFromEditStore( childToken ) ;
-        	child = AdqlEntry.newInstance( parent, insertObject().set( sourceValue ) ) ;
+                exchangeInEditStore( childToken, child ) ;
+            else 
+                childToken = addToEditStore( child ) ;       	
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
@@ -66,9 +74,9 @@ public class PasteIntoCommand extends AbstractCommand {
     private Result _unexecute() {
         Result result = CommandExec.OK ;
         try {
-            parent = getFromEditStore( parentToken ) ;
-            child = getFromEditStore( childToken ) ;
-	        AdqlEntry.removeInstance( parent, child ) ;
+            AdqlNode parent = getFromEditStore( parentToken ) ;
+            AdqlNode child = getFromEditStore( childToken ) ;
+	        parent.remove( this ) ;
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
@@ -80,12 +88,12 @@ public class PasteIntoCommand extends AbstractCommand {
     public void die() {
         super.die();
     }
+    
     public void redo() throws CannotRedoException {
         super.redo();
         if( _execute() == CommandExec.FAILED ) {
             throw new CannotRedoException() ;
         }
-        exchangeInEditStore( childToken, child ) ;   
     }
     
     public void undo() throws CannotUndoException {
@@ -97,34 +105,6 @@ public class PasteIntoCommand extends AbstractCommand {
      
     public String getPresentationName() {
         return "Paste into" ;
-    }
-    
-    private XmlObject insertObject() {
-        XmlObject parentObject = parent.getXmlObject() ;
-        XmlObject newObject = null ; 
-        if( isChildHeldInArray() ) {                
-            newObject = AdqlUtils.addNewToEndOfArray( parentObject, getChildElementName() ) ;
-            newObject = newObject.changeType( childType ) ;
-        }
-        else {
-            if( childType.isBuiltinType() ) {
-                newObject = XmlObject.Factory.newInstance().changeType( childType ) ;
-                newObject = AdqlUtils.setDefaultValue( newObject ) ;
-            }
-            else {            
-                newObject = AdqlUtils.addNew( parentObject, getChildElementName() ) ;
-                if( newObject != null ) {
-                    newObject = newObject.changeType( childType ) ;
-                }
-                else {
-                    newObject = XmlObject.Factory.newInstance().changeType( getChildElement().javaBasedOnType() ) ;
-                    newObject = newObject.changeType( childType ) ;
-                    newObject = AdqlUtils.setDefaultValue( newObject ) ;
-                    AdqlUtils.set( parentObject, getChildElementName(), newObject ) ; 
-                }
-            }
-        } 
-        return newObject ;
     }
    
 }

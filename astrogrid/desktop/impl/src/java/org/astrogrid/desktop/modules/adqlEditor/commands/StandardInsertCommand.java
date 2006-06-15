@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -19,9 +20,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+// import org.astrogrid.desktop.modules.adqlEditor.AdqlCommand;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
 
 /**
  * @author jl99@star.le.ac.uk
@@ -41,14 +45,14 @@ public class StandardInsertCommand extends AbstractCommand {
      */
     public StandardInsertCommand( AdqlTree adqlTree
             			        , UndoManager undoManager
-                                , AdqlEntry target
+                                , AdqlNode target
                                 , SchemaType childType
                                 , SchemaProperty childElement ) {
         super( adqlTree, undoManager, target, childType, childElement ) ;
     }
     
     public StandardInsertCommand( StandardInsertCommand sic ) {
-        super( sic.adqlTree, sic.undoManager, sic.parent, sic.childType, sic.childElement ) ;
+        super( sic.adqlTree, sic.undoManager, sic.getParentEntry(), sic.childType, sic.childElement ) ;
 }
     
     protected StandardInsertCommand() {
@@ -61,7 +65,6 @@ public class StandardInsertCommand extends AbstractCommand {
         Result result = _execute() ;
         if( result != CommandExec.FAILED ) {
             undoManager.addEdit( this ) ;
-            childToken = addToEditStore( child ) ;
         }
         return result ;
     }
@@ -70,14 +73,15 @@ public class StandardInsertCommand extends AbstractCommand {
         if( TRACE_ENABLED ) log.debug( "StandardInsertCommand._execute() entry" ) ;
         Result result = CommandExec.OK ;
         try {   
-            parent = getFromEditStore( parentToken ) ;
+            AdqlNode child = getParentEntry().insert( this ) ;  
             if( childToken != null )
-                child = getFromEditStore( childToken ) ;
-            child = AdqlEntry.newInstance( parent, insertObject() ) ;  
+                exchangeInEditStore( childToken, child ) ;
+            else 
+                childToken = addToEditStore( child ) ;       
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
-            log.debug( exception ) ;
+            log.debug( "StandardInsertCommand._execute():", exception ) ;
         }
         finally {
             if( TRACE_ENABLED ) log.debug( "StandardInsertCommand._execute() exit" ) ;
@@ -89,9 +93,7 @@ public class StandardInsertCommand extends AbstractCommand {
         if( TRACE_ENABLED ) log.debug( "StandardInsertCommand._unexecute() entry" ) ;
         Result result = CommandExec.OK ;
         try {
-            parent = getFromEditStore( parentToken ) ;
-            child = getFromEditStore( childToken ) ;
-	        AdqlEntry.removeInstance( parent, child ) ;       
+	        getParentEntry().remove( this ) ;       
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
@@ -107,12 +109,12 @@ public class StandardInsertCommand extends AbstractCommand {
     public void die() {
         super.die();
     }
+    
     public void redo() throws CannotRedoException {
         super.redo();
         if( _execute() == CommandExec.FAILED ) {
             throw new CannotRedoException() ;
         }  
-        exchangeInEditStore( childToken, child ) ;
     }
     
     public void undo() throws CannotUndoException {
@@ -124,36 +126,6 @@ public class StandardInsertCommand extends AbstractCommand {
      
     public String getPresentationName() {
         return "Insert into" ;
-    }
-    
-    private XmlObject insertObject() {
-        XmlObject parentObject = parent.getXmlObject() ;
-        XmlObject newObject = null ; 
-        if( isChildHeldInArray() ) {                
-            newObject = AdqlUtils.addNewToEndOfArray( parentObject, getChildElementName() ) ;
-            newObject = newObject.changeType( childType ) ;
-            newObject = AdqlUtils.setDefaultValue( newObject ) ;
-        }
-        else {
-            if( childType.isBuiltinType() ) {
-                newObject = XmlObject.Factory.newInstance().changeType( childType ) ;
-                newObject = AdqlUtils.setDefaultValue( newObject ) ;
-            }
-            else {            
-                newObject = AdqlUtils.addNew( parentObject, getChildElementName() ) ;
-                if( newObject != null ) {
-                    newObject = newObject.changeType( childType ) ;
-                    newObject = AdqlUtils.setDefaultValue( newObject ) ;
-                }
-                else {
-                    newObject = XmlObject.Factory.newInstance().changeType( getChildElement().javaBasedOnType() ) ;
-                    newObject = newObject.changeType( childType ) ;
-                    newObject = AdqlUtils.setDefaultValue( newObject ) ;
-                    AdqlUtils.set( parentObject, getChildElementName(), newObject ) ; 
-                }
-            }
-        } 
-        return newObject ;
     }
    
 }

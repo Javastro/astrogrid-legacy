@@ -10,16 +10,23 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlEntry;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+// import org.astrogrid.desktop.modules.adqlEditor.AdqlCommand;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory ;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree ;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
+import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 
 /**
  * @author jl99@star.le.ac.uk
@@ -31,7 +38,7 @@ public class CutCommand extends AbstractCommand {
     
     private static final Log log = LogFactory.getLog( CutCommand.class ) ;
     private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = false ;
+    private static final boolean TRACE_ENABLED = true ;
     private XmlObject preservedValue ;
     private int arrayIndex = -1 ;
 
@@ -39,11 +46,13 @@ public class CutCommand extends AbstractCommand {
      * @param target
      * @param source
      */
-    public CutCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlEntry cutTarget ) {
+    public CutCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode cutTarget ) {
         super( adqlTree, undoManager, cutTarget ) ;
-        preservedValue = child.getXmlObject().copy() ;
+        preservedValue = getChildObject().copy() ;
         if( isChildHeldInArray() ) {
-            arrayIndex = AdqlEntry.findChildIndex( parent.getXmlObject(), getChildObject() ) ;
+            AdqlNode parent = getParentEntry() ;
+            AdqlNode child = getChildEntry() ;
+            arrayIndex = parent.getIndex( child ) ;
         }
     }
     
@@ -61,9 +70,9 @@ public class CutCommand extends AbstractCommand {
         // So affects somewhat the integrity of the CommandInfo interface.
         Result result = CommandExec.OK ;
         try {  
-            parent = getFromEditStore( parentToken ) ;
-            child = getFromEditStore( childToken ) ;
-            AdqlEntry.removeInstance( parent, child ) ;
+            AdqlNode parent = getFromEditStore( parentToken ) ;
+            AdqlNode child = getFromEditStore( childToken ) ;
+            parent.remove( this ) ;
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
@@ -81,13 +90,19 @@ public class CutCommand extends AbstractCommand {
         Result result = CommandExec.OK ;
         try {
             // This restores the integrity of the CommandInfo interface.
-            parent = getFromEditStore( parentToken ) ;
-	        child = AdqlEntry.newInstance( parent, insertObject().set( preservedValue ) ) ;
+            AdqlNode parent = getFromEditStore( parentToken ) ;
+            AdqlNode child ;
+            if( isChildHeldInArray() ) {
+                child = parent.insert( this, preservedValue, arrayIndex ) ;
+            }
+            else {
+                child = parent.insert( this, preservedValue ) ;
+            }          
 	        exchangeInEditStore( childToken, child ) ;
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
-            log.debug( exception ) ;
+            log.debug( "CutCommand._unexecute", exception ) ;
         }
         finally {
             if( TRACE_ENABLED ) log.debug( "CutCommand._unexecute() exit " ) ;
@@ -117,34 +132,6 @@ public class CutCommand extends AbstractCommand {
     
     public String getPresentationName() {
         return "Cut" ;
-    }
-    
-    private XmlObject insertObject() {
-        XmlObject parentObject = parent.getXmlObject() ;
-        XmlObject newObject = null ; 
-        if( isChildHeldInArray() ) {                
-            newObject = AdqlUtils.insertNewInArray( parentObject, getChildElementName(), arrayIndex ) ;
-            newObject = newObject.changeType( childType ) ;
-        }
-        else {
-            if( childType.isBuiltinType() ) {
-                newObject = XmlObject.Factory.newInstance().changeType( childType ) ;
-                newObject = AdqlUtils.setDefaultValue( newObject ) ;
-            }
-            else {            
-                newObject = AdqlUtils.addNew( parentObject, getChildElementName() ) ;
-                if( newObject != null ) {
-                    newObject = newObject.changeType( childType ) ;
-                }
-                else {
-                    newObject = XmlObject.Factory.newInstance().changeType( getChildElement().javaBasedOnType() ) ;
-                    newObject = newObject.changeType( childType ) ;
-                    newObject = AdqlUtils.setDefaultValue( newObject ) ;
-                    AdqlUtils.set( parentObject, getChildElementName(), newObject ) ; 
-                }
-            }
-        } 
-        return newObject ;
     }
    
 }

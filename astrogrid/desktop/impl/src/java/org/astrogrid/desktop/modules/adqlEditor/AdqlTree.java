@@ -1,41 +1,50 @@
 package org.astrogrid.desktop.modules.adqlEditor ;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.URI;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Stack;
 import java.util.Vector;
+import java.util.ArrayList; 
+import java.util.ListIterator;
+import javax.swing.event.ChangeEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
+import java.util.Stack;
+
+import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ComboBoxModel;
+import javax.swing.plaf.basic.BasicTreeUI ;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.CellEditor;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JPanel ;
 import javax.swing.JTree;
+import javax.swing.JComboBox ;
 import javax.swing.KeyStroke;
+import javax.swing.CellEditor;
 import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.plaf.basic.BasicTreeUI;
+import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellEditor;
@@ -48,16 +57,18 @@ import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlAnySimpleType;
-import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
-import org.astrogrid.acr.astrogrid.DatabaseBean;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.apache.xmlbeans.XmlCursor;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
+import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
+import org.astrogrid.desktop.modules.adqlEditor.commands.*;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.*;
 /**
  * A tree view on XML, with nodes representing both elements and attributes. See
  * {@link XmlEntry}and {@link XmlModel}for information on how information
@@ -85,6 +96,7 @@ public final class AdqlTree extends JTree
     private boolean editingActive = false ;
     private int availableWidth ;
     private CommandFactory commandFactory ;
+    private String adqlSchemaVersion ;
     
     /**
      * Constructs the tree using <em>xmlFile</em> as an original source of
@@ -113,7 +125,7 @@ public final class AdqlTree extends JTree
         initialize( AdqlTree.parseXml( node ), registry, toolIvorn ) ;
     }
     
-    public void setTree( AdqlEntry rootEntry, Registry registry, URI toolIvorn ) {
+    public void setTree( AdqlNode rootEntry, Registry registry, URI toolIvorn ) {
         this.initialize( rootEntry, registry, toolIvorn ) ;
     }
     
@@ -125,7 +137,7 @@ public final class AdqlTree extends JTree
     public boolean isPathEditable( TreePath path ) {
         boolean result = false ;
         if( path != null && path.getPathCount() > 1) {
-            AdqlEntry entry = (AdqlEntry)path.getLastPathComponent() ;
+            AdqlNode entry = (AdqlNode)path.getLastPathComponent() ;
             result = entry.isBottomLeafEditable() ;
         }
         return result ;
@@ -135,7 +147,7 @@ public final class AdqlTree extends JTree
     public void openBranches() {
         Object[] obj = new Object[2] ;
         obj[0] = getModel().getRoot() ;
-        AdqlEntry childEntries[] = ((AdqlEntry)obj[0]).getChildren() ;
+        AdqlNode childEntries[] = ((AdqlNode)obj[0]).getChildren() ;
         for( int i=0; i<childEntries.length; i++ ) {
             obj[1] = childEntries[i] ;
             TreePath path = new TreePath( obj ) ;
@@ -151,7 +163,7 @@ public final class AdqlTree extends JTree
                                     , boolean leaf
                                     , int row
                                     , boolean hasFocus) {
-        if( value != null && value instanceof AdqlEntry ) {
+        if( value != null && value instanceof AdqlNode ) {
             
             if( debug == true ) {
                 debug = false ;
@@ -159,10 +171,10 @@ public final class AdqlTree extends JTree
             
             String html = null ;
             try {
-                 html = ((AdqlEntry)value).toHtml( expanded, leaf, this ) ;
+                 html = ((AdqlNode)value).toHtml( expanded, leaf, this ) ;
             }
             catch( Exception ex ) {
-                log.debug( "Why?" );
+                log.debug( "AdqlTree.convertValueToText(): ", ex );
             }
             
             //
@@ -196,11 +208,11 @@ public final class AdqlTree extends JTree
      * @param xmlFile The XML file to parse.
      * @return An XmlObject representing the root of the parsed XML.
      */
-    public static AdqlEntry parseXml(File xmlFile)
+    public static AdqlNode parseXml(File xmlFile)
     {
-        AdqlEntry entry = null ;
+        AdqlNode entry = null ;
         try {
-            entry = AdqlEntry.newInstance( SelectDocument.Factory.parse( xmlFile ) ) ;
+            entry = NodeFactory.newInstance( SelectDocument.Factory.parse( xmlFile ) ) ;
         } catch (XmlException xmle) {
             System.err.println(xmle.toString());
         } catch (IOException ioe) {
@@ -209,11 +221,11 @@ public final class AdqlTree extends JTree
         return entry ;
     }
     
-    public static AdqlEntry parseXml( InputStream xmlStream )
+    public static AdqlNode parseXml( InputStream xmlStream )
     {
-        AdqlEntry entry = null ;
+        AdqlNode entry = null ;
         try {
-            entry = AdqlEntry.newInstance( SelectDocument.Factory.parse( xmlStream ) ) ;
+            entry = NodeFactory.newInstance( SelectDocument.Factory.parse( xmlStream ) ) ;
         } catch (XmlException xmle) {
             System.err.println(xmle.toString());
         } catch (IOException ioe) {
@@ -223,22 +235,22 @@ public final class AdqlTree extends JTree
     }
     
     
-    public static AdqlEntry parseXml( String xmlString )
+    public static AdqlNode parseXml( String xmlString )
     {
-        AdqlEntry entry = null ;
+        AdqlNode entry = null ;
         try {
-            entry = AdqlEntry.newInstance( SelectDocument.Factory.parse( xmlString ) ) ;
+            entry = NodeFactory.newInstance( SelectDocument.Factory.parse( xmlString ) ) ;
         } catch (XmlException xmle) {
             System.err.println(xmle.toString());
         }
         return entry ;
     }
     
-    public static AdqlEntry parseXml( org.w3c.dom.Node xmlNode )
+    public static AdqlNode parseXml( org.w3c.dom.Node xmlNode )
     {
-        AdqlEntry entry = null ;
+        AdqlNode entry = null ;
         try {
-            entry = AdqlEntry.newInstance( SelectDocument.Factory.parse( xmlNode ) ) ;
+            entry = NodeFactory.newInstance( SelectDocument.Factory.parse( xmlNode ) ) ;
         } catch (XmlException xmle) {
             System.err.println(xmle.toString());
         }
@@ -250,13 +262,14 @@ public final class AdqlTree extends JTree
      * Sets up the components that make up this tree.
      * 
      */
-    private void initialize( AdqlEntry rootEntry, Registry registry, URI toolIvorn ) {
+    private void initialize( AdqlNode rootEntry, Registry registry, URI toolIvorn ) {
    
         this.commandFactory = new CommandFactory( this ) ;
         setModel( new DefaultTreeModel( rootEntry ) );
         getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION ) ;
         this.registry = registry ;
         this.toolIvorn = toolIvorn ;
+        retrieveAdqlSchemaVersion() ;
         this.resetCatalogueData() ;
         if( catalogueResource != null ){
             reestablishTablesCollection() ;
@@ -287,19 +300,20 @@ public final class AdqlTree extends JTree
         String piValue = null ;
         this.catalogueResource = null ;
         XmlCursor cursor = getRoot().newCursor() ;
-        if( DEBUG_ENABLED ) log.debug( "Searching for PI's..." ) ;
+        if( DEBUG_ENABLED ) log.debug( "Searching for catalogue PI..." ) ;
         while( !cursor.toNextToken().isNone() ) {
             if( cursor.isProcinst() ) {
-                piName = cursor.getName().getLocalPart() ;
-                if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
-                if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
+                piName = cursor.getName().getLocalPart() ;             
             	if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
+            	    if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
+                    if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
             	    piValue = cursor.getTextValue().trim() ;
             	    if( piValue.equals( "none" ) )
             	        break ;
             	    String sql = "Select * from Registry where vr:identifier = '" 
             	               + formatCatalogueId( piValue )
             	               + "'" ; 
+            	    // NB. This query of the registry is currently on the main thread!!!
                     queryRegistry( sql ) ;
                     if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;
                     break ;
@@ -325,6 +339,40 @@ public final class AdqlTree extends JTree
                 if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;              
             }
         }
+    }
+    
+    private void retrieveAdqlSchemaVersion() {
+        String piName = null ;
+        String piValue = null ;
+        adqlSchemaVersion = null ;
+        XmlCursor cursor = getRoot().newCursor() ;
+        if( DEBUG_ENABLED ) log.debug( "Searching for schema version PI..." ) ;
+        while( !cursor.toNextToken().isNone() ) {
+            if( cursor.isStart()
+                &&
+                cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
+            	    cursor.push() ; // remember where the actual Select statement is.
+            }
+            else if( cursor.isProcinst() ) {
+                piName = cursor.getName().getLocalPart() ;
+            	if( piName.equals( AdqlData.PI_ADQL_SCHEMA_VERSION_TAG ) )  {
+            	    if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
+                    if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
+            	    piValue = cursor.getTextValue().trim() ;
+            	    adqlSchemaVersion = piValue ;
+                    break ;
+            	}         	
+            }
+        } // end while
+        if( adqlSchemaVersion == null ) {
+            cursor.pop() ; // position on the Select statement.
+            // We write a version PI to track the version of the ADQL schema used...
+            // This places it immediately before the Select statement.
+            cursor.insertProcInst( AdqlData.PI_ADQL_SCHEMA_VERSION_TAG, AdqlData.PI_ADQL_SCHEMA_VERSION_VALUE ) ;
+        }
+        cursor.dispose();
+        // OK. This is a placeholder for future processing, when some action will be
+        // required to accommodate changes in ADQL between versions.
     }
     
     private String formatCatalogueId ( String piValue ) {
@@ -357,7 +405,7 @@ public final class AdqlTree extends JTree
                 piName = cursor.getName().getLocalPart() ;
                 if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
                 if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
-            	if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
+            	if( piName.equals( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
             	   // OK. There's already one here.
             	   // But does it say "none"?...
             	    if( cursor.getTextValue().trim().equals( "none") ) {
@@ -366,13 +414,13 @@ public final class AdqlTree extends JTree
                         + catalogueResource.getDatabases()[0].getTables()[0].getName() ;
             	        cursor.setTextValue( piValue ) ;
             	    }
-            	   break ;
             	}
             }
             else if( cursor.isStart()
                      &&
                      cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
-                // We need to create the required PI...
+                // We need to create the required PI to track the catalogue resource.
+                // Currently only one catalogue. Soon we will need to cover multiple catalogues...
                 // (I've simply chosen the first table to align it with the portal)
                 piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
                         + '!' 
@@ -455,15 +503,10 @@ public final class AdqlTree extends JTree
     }
    
     public XmlObject getRoot() {
-        return ((AdqlEntry)(getModel().getRoot())).getXmlObject() ;
+        return ((AdqlNode)(getModel().getRoot())).getXmlObject() ;
     }
     
-//  NOte this is duplicated in the ADQLToolEditorPanel
-    private boolean isAttributeDriven( SchemaType type ) {
-        String[] name = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-        return ( name != null && name.length == 1 ) ;
-    }
-    
+
     private String extractAttributeValue( XmlObject xmlObject ) {
         String retVal = null ;
         XmlObject intermediateObject ;         
@@ -545,7 +588,7 @@ public final class AdqlTree extends JTree
             else {
                 TreePath path = getSelectionPath() ;             
                 if( path != null ) {
-                    AdqlEntry selectedEntry = (AdqlEntry)getLastSelectedPathComponent();
+                    AdqlNode selectedEntry = (AdqlNode)getLastSelectedPathComponent();
                     if( selectedEntry.isBottomLeafEditable() ) {
                         startEditingAtPath( path ) ;
                         editingActive = true ;
@@ -586,8 +629,8 @@ public final class AdqlTree extends JTree
                                                      , int row
                                                      , boolean hasFocus) {
             
-            AdqlEntry entry = (AdqlEntry)value ;
-            int level = ((AdqlEntry)value).getLevel() ; 
+            AdqlNode entry = (AdqlNode)value ;
+            int level = ((AdqlNode)value).getLevel() ; 
             // The following 20 pixels is a guess at what a one level displacement
             // should be. Seems to be pretty accurate.
             int displacement = ( level + 1 ) * 20 ;  
@@ -617,7 +660,7 @@ public final class AdqlTree extends JTree
         
         private static final int MINIMUM_WIDTH = 100 ;
         Vector listeners = new Vector() ;
-        AdqlEntry adqlEntry ;
+        AdqlNode adqlNode ;
         EnumeratedEditor enumeratedEditor ;
         SingletonTextEditor singletonTextEditor ;
         TupleTextEditor tupleTextEditor ;
@@ -643,12 +686,12 @@ public final class AdqlTree extends JTree
                                                    , boolean expanded
                                                    , boolean leaf
                                                    , int row ) {
-            this.adqlEntry = (AdqlEntry)value ;
-            if( AdqlUtils.isEnumerated( adqlEntry.getSchemaType() ) ) {
+            this.adqlNode = (AdqlNode)value ;
+            if( AdqlUtils.isEnumerated( adqlNode.getSchemaType() ) ) {
                 currentEditor = enumeratedEditor ;
                 enumeratedEditor.setValue() ;
             }
-            else if( isTupleEditorRequired( this.adqlEntry ) ) {
+            else if( isTupleEditorRequired( this.adqlNode ) ) {
                 currentEditor = tupleTextEditor ;
                 tupleTextEditor.setValue() ;
             }
@@ -712,7 +755,7 @@ public final class AdqlTree extends JTree
             return setBounds( r ) ;
         }
         
-        private boolean isTupleEditorRequired( AdqlEntry entry ) {
+        private boolean isTupleEditorRequired( AdqlNode entry ) {
             String[] names = (String[])AdqlData.EDITABLE.get( entry.getXmlObject().schemaType().getName().getLocalPart() ) ;
             return ( names != null && names.length > 1 ) ;
         }
@@ -736,7 +779,7 @@ public final class AdqlTree extends JTree
             
             public Object getCellEditorValue() {
                 setAttributeValue( (String)getSelectedItem() ) ;
-                return adqlEntry.getXmlObject();
+                return adqlNode.getXmlObject();
             }
             public boolean isCellEditable(EventObject anEvent) {
               return true ;
@@ -762,7 +805,7 @@ public final class AdqlTree extends JTree
             public void setValue() {              
                 DefaultComboBoxModel model = (DefaultComboBoxModel)getModel();
                 model.removeAllElements() ;
-                SchemaType type = adqlEntry.getSchemaType() ;
+                SchemaType type = adqlNode.getSchemaType() ;
                 String attributeTypeName = (String)AdqlData.ENUMERATED_ATTRIBUTES.get( type.getName().getLocalPart() ) ;
                 SchemaProperty[] properties = type.getAttributeProperties() ;
                 XmlAnySimpleType[] enumeratedValues = null ;
@@ -776,7 +819,7 @@ public final class AdqlTree extends JTree
                 String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
                 // Retrieve and remember the attribute object.
                 // This is used when the user has finished editing to set the new value...
-                this.attribObj = AdqlUtils.get( adqlEntry.getXmlObject(), attributeNames[0] ) ;
+                this.attribObj = AdqlUtils.get( adqlNode.getXmlObject(), attributeNames[0] ) ;
                 String currentValue = ((SimpleValue)(this.attribObj)).getStringValue() ;
                 String comboValue = null ;
                 for( int i=0; i<enumeratedValues.length; i++ ) {
@@ -848,7 +891,7 @@ public final class AdqlTree extends JTree
             
             public Object getCellEditorValue() {
                 setElementValue( getText() ) ;
-                return adqlEntry.getXmlObject() ;
+                return adqlNode.getXmlObject() ;
             }
             public boolean isCellEditable(EventObject anEvent) {
                 return true ;
@@ -865,14 +908,17 @@ public final class AdqlTree extends JTree
             
             public void setValue() {
                 String value = null ;
-                XmlObject xmlObject = adqlEntry.getXmlObject() ;
+                XmlObject xmlObject = adqlNode.getXmlObject() ;
                 try {
-                    if( AdqlUtils.localNameEquals( xmlObject, "atomType") ) {
-                        value = (new AdqlEntry.Atom( xmlObject )).formatDisplay() ;
+//                    if( AdqlUtils.localNameEquals( xmlObject, "atomType") ) {
+//                        value = (new AdqlNode.Atom( xmlObject )).formatDisplay() ;
+//                    }
+                    if( adqlNode instanceof AtomNode ) {
+                        value = ((AtomNode)adqlNode).formatDisplay() ;
                     }
-                    else if( isAttributeDriven( xmlObject.schemaType() ) ) {
+                    else if( AdqlUtils.isAttributeDriven( xmlObject.schemaType() ) ) {
                         String[] attributeNames = (String[])AdqlData.EDITABLE.get( xmlObject.schemaType().getName().getLocalPart() ) ;
-                        XmlObject attribObj = AdqlUtils.get( adqlEntry.getXmlObject(), attributeNames[0] ) ;
+                        XmlObject attribObj = AdqlUtils.get( adqlNode.getXmlObject(), attributeNames[0] ) ;
                         value = ((SimpleValue)(attribObj)).getStringValue() ;
                     }
                     else {
@@ -898,17 +944,20 @@ public final class AdqlTree extends JTree
             
             private void setElementValue( String value ) {
                 try {
-                    XmlObject xmlObject = adqlEntry.getXmlObject() ;
+                    XmlObject xmlObject = adqlNode.getXmlObject() ;
                     SchemaType type = xmlObject.schemaType() ;
                     SchemaType listType = type.getListItemType() ;
                     if( listType != null ) {
                         // This surprisingly works for a list...
                         ((XmlAnySimpleType)xmlObject).setStringValue( value )  ;
                     }
-                    else if( AdqlUtils.localNameEquals( xmlObject, "atomType") ) {
-                        (new AdqlEntry.Atom( xmlObject )).setValue( value ) ;
+//                    else if( AdqlUtils.localNameEquals( xmlObject, "atomType") ) {
+//                        (new AdqlNode.Atom( xmlObject )).setValue( value ) ;
+//                    }
+                    else if( adqlNode instanceof AtomNode ) {
+                        ((AtomNode)adqlNode).setValue( value ) ;
                     }
-                    else if( isAttributeDriven( type ) ) {
+                    else if( AdqlUtils.isAttributeDriven( type ) ) {
                         String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
                         XmlObject attr = AdqlUtils.get( xmlObject, attributeNames[0] ) ;
                         if( value == null || value.trim().length() == 0 ) {
@@ -956,7 +1005,7 @@ public final class AdqlTree extends JTree
             
             public Object getCellEditorValue() {
                 setElementValue() ;
-                return adqlEntry.getXmlObject() ;
+                return adqlNode.getXmlObject() ;
             }
             public boolean isCellEditable(EventObject anEvent) {
                 return true ;
@@ -972,7 +1021,7 @@ public final class AdqlTree extends JTree
             }
             
             public void setValue() {
-                XmlObject xmlObject = adqlEntry.getXmlObject() ;
+                XmlObject xmlObject = adqlNode.getXmlObject() ;
                 XmlObject attribute = null ;
                 try {
                     String[] attrNames = (String[])AdqlData.EDITABLE.get( xmlObject.schemaType().getName().getLocalPart() ) ;
@@ -1004,7 +1053,7 @@ public final class AdqlTree extends JTree
                 try {
                     String newValue = null ;
                     String oldValue = null ;
-                    XmlObject element = adqlEntry.getXmlObject() ;
+                    XmlObject element = adqlNode.getXmlObject() ;
                     XmlObject attribute = null ;
                     String[] attributeNames = (String[])AdqlData.EDITABLE.get( AdqlUtils.getLocalName( element ) ) ;
                     
