@@ -1,4 +1,4 @@
-/*$Id: Folders.java,v 1.4 2006/04/18 23:25:46 nw Exp $
+/*$Id: Folders.java,v 1.5 2006/06/15 09:47:51 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,7 @@ public class Folders implements TreeModel {
         }      
 }
 
-    private Folders(BTree tree, RecordManager rec) throws IOException {
+    protected Folders(BTree tree, RecordManager rec) throws IOException {
         this.b = tree;
         this.rec = rec;
         this.root = (FolderImpl)getFolder(MessageRecorderImpl.ROOT); // will return null the first time
@@ -353,6 +353,9 @@ public class Folders implements TreeModel {
 
 /* 
 $Log: Folders.java,v $
+Revision 1.5  2006/06/15 09:47:51  nw
+changed constructor visibility, to ease testing.
+
 Revision 1.4  2006/04/18 23:25:46  nw
 merged asr development.
 
