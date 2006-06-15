@@ -1,4 +1,4 @@
-/*$Id: RegistrySystemTest.java,v 1.3 2006/04/18 23:25:47 nw Exp $
+/*$Id: RegistrySystemTest.java,v 1.4 2006/06/15 09:18:24 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@ package org.astrogrid.desktop.modules.ag;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.framework.ACRTestSetup;
-import org.astrogrid.desktop.modules.system.ApiHelpTest;
+import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
 import org.astrogrid.registry.client.query.ResourceData;
 
 import org.apache.axis.utils.XMLUtils;
@@ -50,7 +50,7 @@ public class RegistrySystemTest extends TestCase {
     protected Registry registry;
     
     protected ACR getACR() throws Exception {
-        return ACRTestSetup.pico.getACR();
+        return ACRTestSetup.acrFactory.getACR();
     }
     
     public static Test suite() {
@@ -69,7 +69,7 @@ public class RegistrySystemTest extends TestCase {
         assertEquals("Resource",doc.getDocumentElement().getLocalName());
     }
 
-    public void testGetResourceData() throws Exception{
+    public void testGetResourceInformation() throws Exception{
         ResourceInformation ri = registry.getResourceInformation(testURI);
         assertNotNull(ri);
         assertEquals(testURI,ri.getId());
@@ -164,6 +164,9 @@ public class RegistrySystemTest extends TestCase {
 
 /* 
 $Log: RegistrySystemTest.java,v $
+Revision 1.4  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.3  2006/04/18 23:25:47  nw
 merged asr development.
 

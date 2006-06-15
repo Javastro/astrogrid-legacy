@@ -1,4 +1,4 @@
-/*$Id: JobsSystemTest.java,v 1.2 2005/09/12 15:21:16 nw Exp $
+/*$Id: JobsSystemTest.java,v 1.3 2006/06/15 09:18:24 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.framework.ACRTestSetup;
+import org.astrogrid.desktop.ACRTestSetup;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.apache.axis.utils.XMLUtils;
@@ -52,7 +52,7 @@ public class JobsSystemTest extends TestCase {
     protected Jobs jobs;
     protected ACR reg;
     protected ACR getACR() throws Exception {
-        return ACRTestSetup.pico.getACR();
+        return ACRTestSetup.acrFactory.getACR();
     }
     
     public static Test suite() {
@@ -189,6 +189,9 @@ public class JobsSystemTest extends TestCase {
 
 /* 
 $Log: JobsSystemTest.java,v $
+Revision 1.3  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.2  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
 

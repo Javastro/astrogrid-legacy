@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcSystemTest.java,v 1.7 2005/11/04 10:14:26 nw Exp $
+/*$Id: MyspaceRpcSystemTest.java,v 1.8 2006/06/15 09:18:24 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.acr.astrogrid.NodeInformation;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.framework.ACRTestSetup;
+import org.astrogrid.desktop.ACRTestSetup;
 
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
@@ -418,6 +418,9 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
 
 /* 
 $Log: MyspaceRpcSystemTest.java,v $
+Revision 1.8  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.7  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present

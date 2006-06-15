@@ -1,4 +1,4 @@
-/*$Id: JobsRpcSystemTest.java,v 1.3 2005/11/24 01:13:24 nw Exp $
+/*$Id: JobsRpcSystemTest.java,v 1.4 2006/06/15 09:18:24 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.framework.ACRTestSetup;
+import org.astrogrid.desktop.ACRTestSetup;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -225,6 +225,9 @@ public class JobsRpcSystemTest extends JobsSystemTest implements Jobs {
 
 /* 
 $Log: JobsRpcSystemTest.java,v $
+Revision 1.4  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.3  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

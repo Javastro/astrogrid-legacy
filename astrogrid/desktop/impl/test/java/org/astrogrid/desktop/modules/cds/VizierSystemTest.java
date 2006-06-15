@@ -1,0 +1,99 @@
+/**
+ * 
+ */
+package org.astrogrid.desktop.modules.cds;
+
+import javax.xml.transform.TransformerException;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.cds.VizieR;
+import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.test.AstrogridAssert;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.w3c.dom.Document;
+
+/**
+ * @author Noel Winstanley
+ * @since Jun 9, 20067:13:58 PM
+ */
+public class VizierSystemTest extends TestCase {
+
+	/*
+	 * @see TestCase#setUp()
+	 */
+	protected void setUp() throws Exception {
+		ACR reg = getACR();
+		assertNotNull(reg);	
+		viz = (VizieR)reg.getService(VizieR.class);
+	
+	}
+	
+	protected VizieR viz;
+
+	protected ACR getACR() throws Exception{
+        return (ACR)ACRTestSetup.acrFactory.getACR();		
+	}
+
+	/*
+	 * Test method for 'org.astrogrid.desktop.modules.cds.VizieRImpl.cataloguesMetaData(String, double, String, String)'
+	 */
+	public void testCataloguesMetaData() throws ServiceException, TransformerException {
+		Document doc = viz.cataloguesMetaData("m32",0.1,"arcmin","");
+		assertIsRoughlyVotable(doc);
+	}
+
+	/*
+	 * Test method for 'org.astrogrid.desktop.modules.cds.VizieRImpl.cataloguesMetaDataWavelength(String, double, String, String, String)'
+	 */
+	public void testCataloguesMetaDataWavelength() throws ServiceException, TransformerException {
+		Document doc = viz.cataloguesMetaDataWavelength("m32",0.1,"arcmin","","optical");
+		assertIsRoughlyVotable(doc);
+	}
+
+	/*
+	 * Test method for 'org.astrogrid.desktop.modules.cds.VizieRImpl.cataloguesData(String, double, String, String)'
+	 */
+	public void testCataloguesData() throws ServiceException, TransformerException {
+		Document doc = viz.cataloguesData("m32",0.1,"arcsec","");
+		assertIsRoughlyVotable(doc);
+	}
+
+	/*
+	 * Test method for 'org.astrogrid.desktop.modules.cds.VizieRImpl.cataloguesDataWavelength(String, double, String, String, String)'
+	 */
+	public void testCataloguesDataWavelength() throws ServiceException, TransformerException {
+		Document doc = viz.cataloguesDataWavelength("m32",0.1,"arcsec","","optical");
+		assertIsRoughlyVotable(doc);
+	}
+
+	/*
+	 * Test method for 'org.astrogrid.desktop.modules.cds.VizieRImpl.metaAll()'
+	 */
+	public void testMetaAll() throws ServiceException, TransformerException {
+		Document doc  = viz.metaAll();
+		// not a schema valid votable. 
+		assertIsRoughlyVotable(doc);
+
+	}
+
+	/** assert a value is roughly a votable.
+	 * the votables returs from cds do not validate against dtd.
+	 * @param doc
+	 * @throws TransformerException
+	 */
+	private void assertIsRoughlyVotable(Document doc) throws TransformerException {
+		assertNotNull(doc);
+		XMLAssert.assertXpathExists("/VOTABLE",doc);
+	}
+	
+    public static Test suite() {
+        return new ACRTestSetup(new TestSuite(VizierSystemTest.class));
+    }
+
+
+}

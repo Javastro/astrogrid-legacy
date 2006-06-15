@@ -1,4 +1,4 @@
-/*$Id: JobsRmiSystemTest.java,v 1.1 2005/08/11 10:15:00 nw Exp $
+/*$Id: JobsRmiSystemTest.java,v 1.2 2006/06/15 09:18:24 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.framework.ACRTestSetup;
+import org.astrogrid.desktop.ACRTestSetup;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -35,6 +35,9 @@ public class JobsRmiSystemTest extends JobsSystemTest {
 
 /* 
 $Log: JobsRmiSystemTest.java,v $
+Revision 1.2  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.1  2005/08/11 10:15:00  nw
 finished split
 

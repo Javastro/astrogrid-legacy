@@ -1,4 +1,4 @@
-/*$Id: ApplicationsRpcSystemTest.java,v 1.5 2005/11/04 10:14:26 nw Exp $
+/*$Id: ApplicationsRpcSystemTest.java,v 1.6 2006/06/15 09:18:24 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.framework.ACRTestSetup;
+import org.astrogrid.desktop.ACRTestSetup;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -453,6 +453,9 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
 
 /* 
 $Log: ApplicationsRpcSystemTest.java,v $
+Revision 1.6  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.5  2005/11/04 10:14:26  nw
 added 'logo' attribute to registry beans.
 added to astroscope so that logo is displayed if present

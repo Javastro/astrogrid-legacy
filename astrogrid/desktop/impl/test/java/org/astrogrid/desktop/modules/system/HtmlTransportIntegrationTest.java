@@ -1,0 +1,216 @@
+/*$Id: HtmlTransportIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+ * Created on 25-Jul-2005
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.desktop.modules.system;
+
+import java.io.IOException;
+
+import net.sourceforge.jwebunit.HttpUnitDialog;
+import net.sourceforge.jwebunit.WebTestCase;
+
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.ACRTestSetup;
+
+import com.meterware.httpunit.WebClient;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+/** tests the html interface;
+ * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ *
+ */
+public class HtmlTransportIntegrationTest extends WebTestCase {
+
+    /*
+     * @see TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+        ACR reg = getACR();
+        serv = (WebServer)reg.getService(WebServer.class);
+        assertNotNull(serv); 
+        getTestContext().setBaseUrl(serv.getUrlRoot());        
+        
+    }
+    protected ACR getACR() throws Exception{
+        return (ACR)ACRTestSetup.acrFactory.getACR();
+    }
+    protected WebServer serv;
+
+    /*
+     * @see TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    public void testRoot() {
+        beginAt("/");
+        assertTextPresent("Modules");
+        assertLinkPresentWithText("builtin");
+        assertLinkPresentWithText("system");
+    }
+    
+    public void testModule() {
+        beginAt("/");
+        assertLinkPresentWithText("system");
+        clickLinkWithText("system");
+        assertLinkPresentWithText("up");
+        clickLinkWithText("up");
+        
+    }
+    
+    public void testComponent() {
+        beginAt("/");
+        assertLinkPresentWithText("system");
+        clickLinkWithText("system");
+        assertLinkPresentWithText("configuration");
+        clickLinkWithText("configuration");
+        assertLinkPresentWithText("up");
+        clickLinkWithText("up");
+        assertLinkPresentWithText("up");
+        clickLinkWithText("up");        
+    }
+    
+    public void testMethod() {
+        beginAt("/");
+        assertLinkPresentWithText("system");
+        clickLinkWithText("system");
+        assertLinkPresentWithText("configuration");
+        clickLinkWithText("configuration");
+        assertLinkPresentWithText("list");
+        clickLinkWithText("list");
+        assertLinkPresentWithText("up");
+        clickLinkWithText("up");
+        assertLinkPresentWithText("up");
+        clickLinkWithText("up");           
+        assertLinkPresentWithText("up");
+        clickLinkWithText("up");      
+    }
+    
+    public void testMethodCall() {
+        beginAt("/");
+        assertLinkPresentWithText("system");
+        clickLinkWithText("system");
+        assertLinkPresentWithText("configuration");
+        clickLinkWithText("configuration");
+        assertLinkPresentWithText("getKey");
+        clickLinkWithText("getKey");
+        assertFormPresent("call");
+        setFormElement("key","org.astrogrid.registry.query.endpoint");
+        submit();
+        assertTextPresent("http://");
+        assertTextNotPresent("ERROR"); // can't find way to test error codes.
+    }
+    
+    // regression test for bz #1647
+    public void testNullReturnMethodCall() {
+    	beginAt("/");
+    	assertLinkPresentWithText("system");
+    	clickLinkWithText("system");
+        assertLinkPresentWithText("configuration");
+        clickLinkWithText("configuration");
+        assertLinkPresentWithText("removeKey");
+        clickLinkWithText("removeKey");
+        assertFormPresent("call");
+        setFormElement("string","fred");
+        submit();
+        assertTextPresent("OK"); 
+    }
+    
+    /** fails - need to find way to get jetty to report exceptioins in error page */
+    public void testCheckedException() {
+    	beginAt("/");
+    	assertLinkPresentWithText("test");
+    	clickLinkWithText("test");
+        assertLinkPresentWithText("transporttest");
+        clickLinkWithText("transporttest");
+        assertLinkPresentWithText("throwCheckedException");
+        clickLinkWithText("throwCheckedException");
+        assertFormPresent("call");
+        // expecting to cause an error now - so need to dive down to lower level api, and disable exceptions on http error.
+        WebClient wc =  getDialog().getWebClient();
+        wc.setExceptionsThrownOnErrorStatus(false);
+        submit();
+        assertEquals(500,wc.getCurrentPage().getResponseCode());
+        assertTextPresent("NotFoundException"); 
+    }
+/*    seems to be a bug in jwebtest - can't invoke the right service. don't care.
+    public void testUncheckedException() throws IOException {
+    	beginAt("/");
+    	assertLinkPresentWithText("test");
+    	clickLinkWithText("test");
+        assertLinkPresentWithText("transporttest");
+        clickLinkWithText("transporttest");
+        assertLinkPresentWithText("throwUncheckedException");
+        clickLinkWithText("throwUncheckedException");
+        assertFormPresent("call");
+        // expecting to cause an error now - so need to dive down to lower level api, and disable exceptions on http error.
+        WebClient wc =  getDialog().getWebClient();
+        wc.setExceptionsThrownOnErrorStatus(false);
+        submit();
+        assertEquals(500,wc.getCurrentPage().getResponseCode());
+        assertTextPresent("NullPointerException");  
+        
+    }
+ */   
+    public void testUncheckedExceptionOfUnknownType() throws IOException {
+    	beginAt("/");
+    	assertLinkPresentWithText("test");
+    	clickLinkWithText("test");
+        assertLinkPresentWithText("transporttest");
+        clickLinkWithText("transporttest");
+        assertLinkPresentWithText("throwUncheckedExceptionOfUnknownType");
+        clickLinkWithText("throwUncheckedExceptionOfUnknownType");
+        assertFormPresent("call");
+        // expecting to cause an error now - so need to dive down to lower level api, and disable exceptions on http error.
+        WebClient wc =  getDialog().getWebClient();
+        wc.setExceptionsThrownOnErrorStatus(false);
+        submit();
+        assertEquals(500,wc.getCurrentPage().getResponseCode());
+        assertTextPresent("AnUnknownRuntimeException");  
+        
+    }
+    
+    public void testByteArrayTransport() {
+    	beginAt("/");
+    	assertLinkPresentWithText("test");
+    	clickLinkWithText("test");
+        assertLinkPresentWithText("transporttest");
+        clickLinkWithText("transporttest");
+        assertLinkPresentWithText("echoByteArray");
+        clickLinkWithText("echoByteArray");
+        assertFormPresent("call");
+        setFormElement("arr","fred"); //can't pass in a byte array - has to be as string.
+        submit();
+        assertTextPresent("fred");  
+    }
+    
+    
+    public static Test suite() {
+        return new ACRTestSetup(new TestSuite(HtmlTransportIntegrationTest.class));
+    }
+}
+
+
+/* 
+$Log: HtmlTransportIntegrationTest.java,v $
+Revision 1.1  2006/06/15 09:18:24  nw
+improved junit tests
+
+Revision 1.1  2005/08/11 10:15:00  nw
+finished split
+
+Revision 1.1  2005/08/05 11:46:55  nw
+reimplemented acr interfaces, added system tests.
+ 
+*/

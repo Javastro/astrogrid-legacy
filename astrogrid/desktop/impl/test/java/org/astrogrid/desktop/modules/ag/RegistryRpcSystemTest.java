@@ -1,4 +1,4 @@
-/*$Id: RegistryRpcSystemTest.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: RegistryRpcSystemTest.java,v 1.5 2006/06/15 09:18:24 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,8 +16,8 @@ import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.framework.ACRTestSetup;
-import org.astrogrid.desktop.modules.system.ApiHelpRpcTest;
+import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.modules.system.ApiHelpRpcIntegrationTest;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -244,6 +244,9 @@ public class RegistryRpcSystemTest extends RegistrySystemTest implements Registr
 
 /* 
 $Log: RegistryRpcSystemTest.java,v $
+Revision 1.5  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

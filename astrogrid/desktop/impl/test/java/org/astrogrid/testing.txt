@@ -1,0 +1,54 @@
+Description of Workbench Testing.
+======================
+
+For efficiencies sake, test are split into 3 sets
+
+Unit
+Integration
+System
+
+Maven project has goals to generate reports for each of these - see 'maven -u' for info.
+
+Rules for writing tests..
+
+Unit Tests
+======
+Tests a single class in isolation.
+ Tests are repeatable
+Named xxxUnitTest.java
+Added to a AllUnitTests.java suite
+Should test a class in isolation, outside the hivemind / workbench framework. 
+No external resources or services should be called.
+Other dependencies should be mocked or stubbed.
+
+
+Integration Tests
+===========
+Tests integration of components within the hivemind container.
+Tests are repeatable.
+Named xxxIntegrationTest.java
+Added to a AllIntegrationTests.java suite
+Should test a class within the hivemind / workbench framework -either via its public interface,
+or other backdoors.
+No external resources  or services to be called.
+Other dependencies should be provided by hivemind
+
+
+System Tests
+=========
+Tests operation of workbench calling remote services.
+Repeatability depends on whether remote services are available.
+Named xxxSystemTest.java
+Added to a AllSystemTests.java suite
+Should test a class within the hivemind / workbench framework.
+
+
+Subdivisions of System Test
+============
+PerformanceSystemTest - a test that loads or times the system (not to destruction)
+UISystemTest - user interface testing
+
+Other Tests
+=========
+Destructive tests - e.g. Stress testing, to be named as such, and kept distinct from other tests
+- as can't really generate reports from these, and will mess up the automated build.

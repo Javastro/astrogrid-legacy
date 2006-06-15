@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.3 2006/06/15 09:18:24 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,9 +14,10 @@ import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
+import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.framework.ACRTestSetup;
+import org.astrogrid.desktop.ACRTestSetup;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -45,11 +46,13 @@ public class ApplicationsSystemTest extends TestCase {
         reg = getACR();
         apps = (Applications)reg.getService(Applications.class);
         assertNotNull(apps);
+        registry = (Registry)reg.getService(Registry.class);
     }
     protected Applications apps;
     protected ACR reg;
+    protected Registry registry;
     protected ACR getACR() throws Exception {
-        return ACRTestSetup.pico.getACR();
+        return ACRTestSetup.acrFactory.getACR();
     }
     
     public static Test suite() {
@@ -64,7 +67,19 @@ public class ApplicationsSystemTest extends TestCase {
         }
     }
 
+    public void testRegistryQuery() throws Exception {
+    	String q= apps.getRegistryQuery();
+    	assertNotNull(q);
+    	ResourceInformation[] ri = registry.adqlSearchRI(q);
+    	assertNotNull(ri);
+    	assertTrue(ri.length > 0);
+    	for (int i = 0; i < ri.length; i++) {
+    		assertNotNull(ri[i]);
+    		assertTrue(ri[i] instanceof ApplicationInformation);
+    	}
+    }
    
+
 
     public void testGetApplicationInformation()  throws Exception {
         URI[] a = apps.list();
@@ -77,6 +92,7 @@ public class ApplicationsSystemTest extends TestCase {
             System.out.println(other); 
     }
 
+    
     public void testGetDocumentation()  throws Exception {
         URI[] u = apps.list();
             String s = apps.getDocumentation(u[0]);
@@ -95,6 +111,7 @@ public class ApplicationsSystemTest extends TestCase {
             apps.validate(d); // the template should be valid.
     }
 
+   
 
 
 
@@ -193,6 +210,9 @@ public class ApplicationsSystemTest extends TestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.3  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

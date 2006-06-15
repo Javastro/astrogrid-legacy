@@ -4,9 +4,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 public class AllTests {
-
+/** tests the features of the plastic hub */
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.astrogrid.desktop.modules.plastic");
+		TestSuite suite = new TestSuite("Test for PLASTIC");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(ApplicationStoreTest.class);
 		suite.addTestSuite(RMIListenerTest.class);

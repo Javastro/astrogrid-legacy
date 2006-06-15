@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.4 2005/10/13 18:33:47 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.5 2006/06/15 09:18:24 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.acr.astrogrid.NodeInformation;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.framework.ACRTestSetup;
+import org.astrogrid.desktop.ACRTestSetup;
 import org.astrogrid.filestore.common.FileStoreInputStream;
 import org.astrogrid.filestore.common.FileStoreOutputStream;
 import org.astrogrid.io.Piper;
@@ -70,7 +70,7 @@ public class MyspaceSystemTest extends TestCase {
    
     
     protected ACR getACR() throws Exception {
-        return ACRTestSetup.pico.getACR();
+        return ACRTestSetup.acrFactory.getACR();
     }
     
     public static Test suite() {
@@ -353,6 +353,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.5  2006/06/15 09:18:24  nw
+improved junit tests
+
 Revision 1.4  2005/10/13 18:33:47  nw
 fixes supporting getWriteContentURL
 
