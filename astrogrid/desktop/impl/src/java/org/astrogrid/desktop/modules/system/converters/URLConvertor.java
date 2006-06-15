@@ -5,7 +5,7 @@ import java.net.URL;
 
 import org.apache.commons.beanutils.Converter;
 
-/**
+/** converts strings to URL objects
  * @author Noel Winstanley
  * @since Apr 14, 20062:33:59 AM
  */
@@ -18,7 +18,7 @@ public  class URLConvertor implements Converter {
 	    try {
 	        return new URL(arg1.toString());
 	    } catch (MalformedURLException e) {
-	        throw new RuntimeException(e);
+	        throw new IllegalArgumentException("Cannot convert " + arg1 + " to URL");
 	    }
 	}
 }

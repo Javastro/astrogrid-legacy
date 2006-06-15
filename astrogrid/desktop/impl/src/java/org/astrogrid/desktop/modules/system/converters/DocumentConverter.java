@@ -10,7 +10,7 @@ import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-/**
+/** Parse a string into a XML DOM Document
  * @author Noel Winstanley
  * @since Apr 14, 20062:34:21 AM
  */
@@ -19,15 +19,12 @@ public  class DocumentConverter implements Converter {
 	   if (arg0 != Document.class) { 
 	       throw new RuntimeException("Can only convert to documents " + arg0.getName());
 	   }
-	   ByteArrayInputStream is= new ByteArrayInputStream(arg1.toString().getBytes());
 	   try {
-	    return DomHelper.newDocument(is);
-	} catch (ParserConfigurationException e) {
-	    throw new RuntimeException(e);
-	} catch (SAXException e) {
-	    throw new RuntimeException(e);
-	} catch (IOException e) {
-	    throw new RuntimeException(e);
+	    return DomHelper.newDocument(arg1.toString());
+	} catch (Exception e) {
+	    RuntimeException ex =  new IllegalArgumentException("Failed to parse " + arg1 + " as XML document");
+	    ex.initCause(e); // is this correct?
+	    throw ex;
 	}
 	       
 	}

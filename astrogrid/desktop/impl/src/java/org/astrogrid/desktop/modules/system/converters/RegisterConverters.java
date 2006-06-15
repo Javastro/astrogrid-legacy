@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.2 2006/04/18 23:25:46 nw Exp $
+/*$Id: RegisterConverters.java,v 1.3 2006/06/15 10:07:18 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
  **/
 package org.astrogrid.desktop.modules.system.converters;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,7 +18,8 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.astrogrid.desktop.modules.system.contributions.ConverterContribution;
 
 /**
- * registers all the result converters used in the ag module.
+ * startup component that  registers all the result converters.
+ * 
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *  
@@ -26,7 +28,7 @@ public class RegisterConverters implements Runnable {
 
     /**
      * Construct a new RegisterConverters
-     *  
+     *  @param converters a list of {@link ConverterContribution} objects 
      */
     public RegisterConverters(List converters) {
         super();
@@ -39,7 +41,13 @@ public class RegisterConverters implements Runnable {
 	public void run() {
 		for (Iterator i = converters.iterator(); i.hasNext() ;) {
 			ConverterContribution c = (ConverterContribution)i.next();
-			ConvertUtils.register(c.getConverter(),c.getOutput());
+			if (c.isArray()) {
+				//necessary to do this as special case - dunno how else to get a class object for array type
+				Class arrayType = Object[].class;
+				ConvertUtils.register(c.getConverter(),arrayType);
+			} else {
+				ConvertUtils.register(c.getConverter(),c.getOutput());
+			}
 		}
 	}
 
@@ -49,6 +57,9 @@ public class RegisterConverters implements Runnable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.3  2006/06/15 10:07:18  nw
+ * improvements coming from unit testingadded new convertors.
+ *
  * Revision 1.2  2006/04/18 23:25:46  nw
  * merged asr development.
  *

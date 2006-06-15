@@ -1,4 +1,4 @@
-/*$Id: URIConverter.java,v 1.3 2006/04/18 23:25:46 nw Exp $
+/*$Id: URIConverter.java,v 1.4 2006/06/15 10:07:18 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 
 import org.apache.commons.beanutils.Converter;
 
-/** convet object to URI
+/** convets strings to URI
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
@@ -44,6 +44,9 @@ public class URIConverter implements Converter {
 
 /* 
 $Log: URIConverter.java,v $
+Revision 1.4  2006/06/15 10:07:18  nw
+improvements coming from unit testingadded new convertors.
+
 Revision 1.3  2006/04/18 23:25:46  nw
 merged asr development.
 

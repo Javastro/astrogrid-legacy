@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,31 +37,40 @@ public class CollectionConvertor implements Converter {
     public Object convert(Class arg0, Object arg1) {
         Collection result;
         Class resultType = arg0;
+        if (!Collection.class.isAssignableFrom(arg0)) {
+        	throw new IllegalArgumentException("Can only convert to collections: " + arg0.getName());
+        }
         //Need to choose default implementations if 
         //we're not given one
         if (arg0.isInterface()) {
             if (List.class.isAssignableFrom(arg0)) {
                 resultType = ArrayList.class;
             } else if (Set.class.isAssignableFrom(arg0)) {
-                resultType = HashMap.class;
+            	//NWW - surely HashSet??
+                //resultType = HashMap.class;
+            	resultType = HashSet.class;
+            } else if (Collection.class.isAssignableFrom(arg0)) { // fallback position.
+            	resultType = ArrayList.class;
             }
             //It could also be something obscure, but we'll
             //let it blow up with a runtimeexception later on
             //if so.
+            
         }
         
         try {
             result = (Collection) resultType.newInstance();
         } catch (InstantiationException e) {
             logger.error("Could not convert object ",e);
-            throw new RuntimeException("Can only convert to Lists" + arg0.getName());
+            throw new IllegalArgumentException("Can't create collection type: " + arg0.getName());
         } catch (IllegalAccessException e) {
             logger.error("Could not convert object ",e);
-            throw new RuntimeException("Could not convert object ");
+            throw new IllegalArgumentException("Can't create collection type : " + arg0.getName());
         }
         
-        if (arg1.equals("")) return result;//empty List in this case
-        String[] tokenized = StringUtils.split(arg1.toString(),',');
+        String s= arg1.toString();
+        if (s.trim().length() == 0) return result;//empty List in this case
+        String[] tokenized = StringUtils.split(s,',');
         result.addAll(Arrays.asList(tokenized));
         return result;
     }
@@ -69,6 +79,9 @@ public class CollectionConvertor implements Converter {
 
 /* 
 $Log$
+Revision 1.4  2006/06/15 10:07:18  nw
+improvements coming from unit testingadded new convertors.
+
 Revision 1.3  2006/05/17 15:45:17  nw
 factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
 

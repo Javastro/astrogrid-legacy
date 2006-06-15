@@ -1,4 +1,4 @@
-/*$Id: DefaultConverter.java,v 1.4 2006/04/18 23:25:46 nw Exp $
+/*$Id: DefaultConverter.java,v 1.5 2006/06/15 10:07:18 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.apache.commons.beanutils.Converter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Default implementation of the converter interface - uses convertUtils.
+/** Default implementation of the converter interface - uses convertUtils, and previously registered convertors.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  *
  */
@@ -44,6 +44,10 @@ public class DefaultConverter implements Converter {
             logger.debug(c.getName() + " " + o.getClass().getName());
         }
         Converter lookup = ConvertUtils.lookup(c);
+        if (lookup == null) {
+        	logger.error("No Convertor able to produce " + c.getName());
+        	throw new IllegalArgumentException("No convertor to produce " + c.getName());
+        }
         return lookup.convert(c,o);
     }
 
@@ -52,6 +56,9 @@ public class DefaultConverter implements Converter {
 
 /* 
 $Log: DefaultConverter.java,v $
+Revision 1.5  2006/06/15 10:07:18  nw
+improvements coming from unit testingadded new convertors.
+
 Revision 1.4  2006/04/18 23:25:46  nw
 merged asr development.
 
