@@ -206,11 +206,11 @@ System module.
 				<attribute name="iconName">
 				unqualified name of the icon file. Must be loadable by IconHelper		
 				</attribute>					
-				<attribute name="before" translator="id-list" >
+				<attribute name="before" >
 		list of names of items that this menu should appear before.
 					Use '*' to indicate all.							
 				</attribute>
-				<attribute name="after" translator="id-list" >		
+				<attribute name="after" >		
 		list of names of items that this menu should appear after.
 					Use '*' to indicate all.		
 				</attribute>					
@@ -250,13 +250,27 @@ System module.
 		<helpset path="acrjavahelp/jhelp.hs"
 		  resourceAnchor="acrjavahelp.ACRJavaHelpResourceAnchor" />
 	</contribution>
+	
+	<!-- always define a tab named advanced, but labelling and placement differs by mode -->
+	<contribution configuration-id="uiStructure" if="property acr.mode">
+		<tab name="advanced" text="Astro Runtime" before="*" />	
+		<tab name="links" text="Links" after="advanced" />			
+	</contribution>
+		<contribution configuration-id="uiStructure" if="property hub.mode">
+		<tab name="advanced" text="Plastic" before="*" />	
+		<tab name="links" text="Links" after="advanced" />			
+	</contribution>
+	<contribution configuration-id="uiStructure" if="property workbench.mode">
+		<tab name="links" text="Visualization" before="advanced" />		
+		<tab name="advanced" text="Advanced" after="*" />	
+	</contribution>
 
+	
 	<contribution configuration-id="uiStructure">
 		<menu name="file" text="File" parentName="menubar" before="*" />
 		<menu name="edit" text="Edit" parentName="menubar" after="file" />
 		<menu name="help" text="Help" parentName="menubar" after="*" />
 		<menu name="projects" text="About Projects" parentName="help" before="about" />
-		<tab name="links" text="Links" after="*" />
 
 		
 		<action parentName="file" name="close" text="Close" 

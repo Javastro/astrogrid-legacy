@@ -115,11 +115,7 @@
 		<load service-id="recorder" />		
 		<load service-id="store" />
 	</contribution>	
-	
-	<!-- assume that if this module is loaded, ACR is enabled -->
-	<contribution configuration-id="system.uiStructure">
-		<tab name="acr" text="AR"   />	
-	</contribution>
+
 	
 	<!-- add login and logout actions -->
 	<contribution configuration-id="system.uiStructure">
@@ -142,26 +138,26 @@
 	</contribution>	
 	
 	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">					
-		<action text="AR for Java" name="acrJava" parentName="acr" after="*"
+		<action text="AR for Java" name="acrJava" parentName="advanced" after="*"
 					iconName="source_java.png"
 					object="service:system.browser" methodName="openURL"	>			
 					<parameter>http://software.astrogrid.org/jnlp/astrogrid-desktop/acr-interface.tar.gz</parameter>
 					<tooltip>Download a zip of interfaces to call AR from Java using JavaRMI</tooltip>
 		</action>				
-		<action text="AR for Python" name="acrPython" parentName="acr" before="acrJava"
+		<action text="AR for Python" name="acrPython" parentName="advanced" before="acrJava"
 					iconName="source_py.png"
 					object="service:system.browser" methodName="openURL" >
 					<parameter>http://software.astrogrid.org/jnlp/astrogrid-desktop/python-scripts.zip</parameter>
 					<tooltip><![CDATA[
-						<html>Download a zip of useful and example python scripts that <br>call VO Services using ACR
+						<html>Download a zip of useful and example python scripts that <br>call VO Services using AR
 						]]></tooltip>
 		</action>
 	</contribution>		
 	
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
-		<action parentName="acr" name="htmlACR" text="Browser Interface"
+		<action parentName="advanced" name="htmlACR" text="AR web interface"
 			iconName="overview48.gif"
-			object="service:system.browser" methodName="openRelative" before="*" >
+			object="service:system.browser" methodName="openRelative" after="listPlastic" >
 			<parameter></parameter> <!-- intentionally blank -->
 			<tooltip>Browse and execute AR and PLASTIC functions</tooltip>
 		</action>

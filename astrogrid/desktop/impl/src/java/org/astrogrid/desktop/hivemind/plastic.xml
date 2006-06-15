@@ -26,11 +26,11 @@
 	</contribution>
 	
 	<contribution configuration-id="system.uiStructure">
-		<tab name="plastic" text="PLASTIC"  iconName="plasticeye.gif" />
-		<action parentName="plastic" name="listPlastic" text="List"
+<!--sigh - giving jonathan's design a go		<tab name="plastic" text="PLASTIC"  iconName="plasticeye.gif" /> -->
+		<action parentName="advanced" name="listPlastic" text="List Plastic Applications"
 			iconName="plastic.gif" before="*"
 			object="service:hub" methodName="prettyPrintRegisteredApps">
-			<tooltip>List details of all registered Applications</tooltip>
+			<tooltip>List details of all connected Plastic Applications</tooltip>
 		</action>
 	</contribution>	
 	
@@ -67,8 +67,8 @@
 	</contribution>
 
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled)) and (property hub.mode)">
-		<action parentName="plastic" name="htmlPLASTIC" text="Open PLASTIC in Browser"
-			iconName="overview48.gif" after="listPlastic" before="purgePlastic"
+		<action parentName="advanced" name="htmlPLASTIC" text="PLASTIC web interface"
+			iconName="overview48.gif" after="listPlastic"
 			object="service:system.browser" methodName="openRelative"  >
 			<parameter></parameter> <!-- intentionally blank -->
 			<tooltip>Browse and execute Plastic functions in a webbrowser</tooltip>
