@@ -179,6 +179,17 @@
         		</properties>
         	</dependency>          	
    
+  <!-- Missed out of the aggregate project -->
+  <dependency>
+    <groupId>xalan</groupId>
+    <artifactId>serializer</artifactId>
+    <version>2.7.0</version>
+    <type>jar</type>
+    <url>http://xml.apache.org/</url>
+    <properties>
+      <dist.bundle>true</dist.bundle>
+    </properties>
+  </dependency>
 
 <!-- used within development only -->
 <!-- code to unit test xml -->

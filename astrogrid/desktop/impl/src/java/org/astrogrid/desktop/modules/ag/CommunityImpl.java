@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.7 2006/05/26 15:22:54 nw Exp $
+/*$Id: CommunityImpl.java,v 1.8 2006/06/15 18:20:54 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,11 +33,12 @@ import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.security.SecurityGuard;
 
 /** Community Service implementation
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  */
-public class CommunityImpl implements Community  {
+public class CommunityImpl implements CommunityInternal {
     /**
      * Commons Logger for this class
      */
@@ -58,6 +59,7 @@ public class CommunityImpl implements Community  {
     protected final SnitchInternal snitch;
     protected final LoginDialogue loginDialogue;
     protected UserInformation userInformation;
+    protected SecurityGuard guard;
 
     public void login(String username,String password, String community) throws SecurityException, ServiceException {
         loginDialogue.setUser(username);
@@ -130,16 +132,17 @@ public class CommunityImpl implements Community  {
                         loginDialogue.getUser() +
                         "@" +
                         loginDialogue.getCommunity());
-        ScriptEnvironment env = LoginFactory.login(loginDialogue.getUser(),loginDialogue.getCommunity(),loginDialogue.getPassword());
-        userInformation = new UserInformation(
+            ScriptEnvironment env = LoginFactory.login(loginDialogue.getUser(),loginDialogue.getCommunity(),loginDialogue.getPassword());
+            this.guard = env.getSecurityGuard();
+            userInformation = new UserInformation(
                 new URI(env.getUserIvorn().toString())
                 ,loginDialogue.getUser()
                 ,loginDialogue.getPassword()
                 ,loginDialogue.getCommunity()
                );
-        ui.setStatusMessage("Logged in as " + env.getUserIvorn());
-        ui.setLoggedIn(true);
-        notifyListeners(true);
+           ui.setStatusMessage("Logged in as " + env.getUserIvorn());
+           ui.setLoggedIn(true);
+           notifyListeners(true);
         } catch (CommunityResolverException e) {
             throw new ServiceException(e);
         } catch (CommunityServiceException e) {
@@ -200,12 +203,33 @@ public class CommunityImpl implements Community  {
         listeners.remove(l);
     }
 
+    /**
+     * Reveals the credentials and principals that were cached when the user 
+     * logged in. Changes to the external copy affect the cached copy. If the
+     * user is not logged in, then the returned object will contain no
+     * credentials or principals; it will never be null.
+     *
+     * @return - The credentials and principals.
+     * @see org.astrogrid.acr.astrogrid.Community#getSecurityGuard()
+     */
+    public SecurityGuard getSecurityGuard() {
+      return (this.guard == null)? new SecurityGuard() : this.guard;
+    }
 
 }
 
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.8  2006/06/15 18:20:54  nw
+merge of desktop-gtr-1537
+
+Revision 1.7.10.2  2006/06/09 17:16:18  gtr
+It has an extra method: getSecurityGuard(). The guard is copied out of the LoginSriptenvironment and cached during CommunityImpl.authenticate();
+
+Revision 1.7.10.1  2006/06/09 11:11:58  gtr
+It implements CommunityInternal instead of just Community. This provides access to credentials for the rest of the implementation without exposing them to AR clients.
+
 Revision 1.7  2006/05/26 15:22:54  nw
 implemented snitching.
 
@@ -219,7 +243,8 @@ Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 
 Revision 1.3.34.2  2006/04/14 02:45:01  nw
-finished code.extruded plastic hub.
+finished code.
+extruded plastic hub.
 
 Revision 1.3.34.1  2006/03/28 13:47:35  nw
 first webstartable version.

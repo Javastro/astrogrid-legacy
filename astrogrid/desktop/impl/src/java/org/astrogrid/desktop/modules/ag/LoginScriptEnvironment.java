@@ -1,7 +1,6 @@
 package org.astrogrid.desktop.modules.ag;
 
 import javax.security.auth.Subject;
-
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
@@ -35,41 +34,34 @@ public class LoginScriptEnvironment implements ScriptEnvironment {
                CommunityIdentifierException,
                RegistryException {
 
+     // Establish grid credentials by logging on at a MyProxy service.
+     // Not all communities have these services yet; trying to use a
+     // non-existant MyProxy service causes a CommunityResolverException.
+     // In this case, use the older method of logging on to a web service
+     // at the community.
+     UserIvorn userIvorn = new UserIvorn(community, name, "");
+     HomeIvorn homeIvorn = new HomeIvorn(community, name, name + "/"); 
+     Subject subject;
+     CommunityPasswordResolver security = new CommunityPasswordResolver(); 
+     try {
+       System.out.println("Logging in using MyProxy...");
+       subject = security.checkPassword(userIvorn.toString(),
+                                        password,
+                                        48*3600, // duration of validity in seconds
+                                        trustAnchors);
+     }
+     catch (CommunityResolverException e) {
+       System.out.println("No MyProxy service found; logging in using the AG web-service...");
+       security.checkPassword(userIvorn.toString(),
+                              password);
+       subject = new Subject(); // empty of credentials
+     }
+     this.guard = new SecurityGuard(subject);
 
-      // Establish grid credentials by logging on at a MyProxy service.
-      // Not all communities have these services yet; trying to use a
-      // non-existant MyProxy service causes a CommunityResolverException.
-      // In this case, use the older method of logging on to a web service
-      // at the community.
-      Subject grid;
-      CommunityPasswordResolver security = new CommunityPasswordResolver();
-      
-      // Collect principals etc. into a JAAS Subject for the SSO credentials.
-      // - nw - moved these variable declarations up, as previously were after first reference to userivorn,
-      
-      UserIvorn userIvorn = new UserIvorn(community, name, "");
-      HomeIvorn homeIvorn = new HomeIvorn(community, name, name + "/");     
-      try {
-        System.out.println("Logging in using MyProxy...");
-        grid = security.checkPassword(userIvorn.toString(),
-                                      password,
-                                      48*3600, // duration of validity in seconds
-                                      trustAnchors);
-      }
-      catch (CommunityResolverException e) {
-        System.out.println("No MyProxy service found; logging in using the AG web-service...");
-        security.checkPassword(userIvorn.toString(),
-                               password);
-        grid = new Subject(); // empty of credentials
-      }
-      this.guard = new SecurityGuard(grid);
-
-
-      Subject sso = this.guard.getSsoSubject();
-      sso.getPrincipals().add(userIvorn);
-      sso.getPrincipals().add(homeIvorn);
-      sso.getPrivateCredentials().add(password);
-    }
+     this.guard.getSubject().getPrincipals().add(userIvorn);
+     this.guard.getSubject().getPrincipals().add(homeIvorn);
+     this.guard.getSubject().getPrivateCredentials().add(password);
+   }
 
     /**
      * The stored credentials.
@@ -80,24 +72,21 @@ public class LoginScriptEnvironment implements ScriptEnvironment {
      * @see org.astrogrid.ui.script.ScriptEnvironment#getUserIvorn()
      */
     public Ivorn getUserIvorn() {
-      return (UserIvorn)this.getFirstPrincipal(this.guard.getSsoSubject(),
-                                               UserIvorn.class);
+      return (UserIvorn)this.guard.getFirstPrincipal(UserIvorn.class);
     }
 
     /**
      * @see org.astrogrid.ui.script.ScriptEnvironment#getHomeIvorn()
      */
     public Ivorn getHomeIvorn() {
-      return (HomeIvorn)this.getFirstPrincipal(this.guard.getSsoSubject(),
-                                               HomeIvorn.class);
+      return (HomeIvorn)this.guard.getFirstPrincipal(HomeIvorn.class);
     }
 
     /**
      * @see org.astrogrid.ui.script.ScriptEnvironment#getPassword()
      */
     public String getPassword() {
-      return (String)this.getFirstPrivateCredential(this.guard.getSsoSubject(),
-                                                    String.class);
+      return (String)this.guard.getFirstPrivateCredential(String.class);
     }
 
   /**
@@ -107,24 +96,6 @@ public class LoginScriptEnvironment implements ScriptEnvironment {
    */
    public SecurityGuard getSecurityGuard() {
      return this.guard;
-   }
-
-   /**
-    * Extract the first Principal of a type from a JAAS subject.
-    * This should be refactored back into SecurityGuard.
-    */
-   private Object getFirstPrincipal(Subject subject, Class clazz) {
-     Object[] a = subject.getPrincipals(clazz).toArray();
-     return (a.length > 0)? a[0] : null;
-   }
-
-   /**
-    * Extract the first rivate credential of a type from a JAAS subject.
-    * This should be refactored back into SecurityGuard.
-    */
-   private Object getFirstPrivateCredential(Subject subject, Class clazz) {
-     Object[] a = subject.getPrivateCredentials(clazz).toArray();
-     return (a.length > 0)? a[0] : null;
    }
 
 }

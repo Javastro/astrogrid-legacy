@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.5 2006/05/26 15:18:43 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.6 2006/06/15 18:21:14 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.Registry;
@@ -46,6 +47,7 @@ import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.CeaHelper;
+import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
 import org.astrogrid.desktop.modules.ag.MessagingInternal;
 import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
@@ -58,6 +60,7 @@ import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
@@ -88,6 +91,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     final MessagingInternal messaging;
     boolean poll = false;
     final MessageRecorderInternal recorder;
+    final CommunityInternal community;
     
 
     /** Construct a new CeaStrategyImpl
@@ -99,7 +103,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
             , TasksInternal ceaInternal
             , Registry reg
             , ApplicationsInternal apps
-            , UIInternal ui) {
+            , UIInternal ui
+            , CommunityInternal community) {
         super();         
         this.apps = apps;
         this.messaging = messaging;
@@ -107,6 +112,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         this.ceaHelper = new CeaHelper(reg);
         this.recorder = recorder;
         this.ui = ui;
+        this.community = community;
+        
         
     }
 
@@ -522,6 +529,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
                 Iterator i = securityActions.iterator();
                 while (i.hasNext()) {
                   System.out.println("CEA strategy: Security action: " + i.next());
+                  // @todo actually react to the name of the action.
+                  SecurityGuard guard = this.community.getSecurityGuard();
+                  del.setCredentials(guard);
                 }
                 String primId = del.init(document,jid);
                 del.execute(primId);
@@ -554,6 +564,12 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.6  2006/06/15 18:21:14  nw
+merge of desktop-gtr-1537
+
+Revision 1.5.10.1  2006/06/09 11:12:33  gtr
+The constructor now takes a CommunityInternal argument.
+
 Revision 1.5  2006/05/26 15:18:43  nw
 reworked scheduled tasks,
 
@@ -564,7 +580,8 @@ Revision 1.3  2006/04/18 23:25:43  nw
 merged asr development.
 
 Revision 1.2.30.3  2006/04/14 02:45:01  nw
-finished code.extruded plastic hub.
+finished code.
+extruded plastic hub.
 
 Revision 1.2.30.2  2006/04/04 10:31:26  nw
 preparing to move to mac.
