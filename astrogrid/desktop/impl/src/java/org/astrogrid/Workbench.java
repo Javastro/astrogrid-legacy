@@ -1,4 +1,4 @@
-/*$Id: Workbench.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: Workbench.java,v 1.3 2006/06/15 09:38:16 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import org.astrogrid.desktop.SplashWindow;
 
 /** Entry point for launching the workbench.
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Jul-2005
- *@todo factor into new start classes.
  */
 public class Workbench {
 
@@ -37,6 +36,9 @@ public class Workbench {
 
 /* 
 $Log: Workbench.java,v $
+Revision 1.3  2006/06/15 09:38:16  nw
+made exeuciton classes more versatile
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

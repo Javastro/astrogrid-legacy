@@ -21,7 +21,19 @@ public class Workbench1 {
 		CommandLine cl = CmdLineParser.parse(args,"workbench",o);
 		if (cl != null) {
     	Launcher l = new Launcher();
-    	System.setProperty("workbench.mode","true");
+    	configureLauncherAsWorkbench(l);
+    	
+    	
+    	CmdLineParser.processCommandLine(cl,l);    	
+    	l.run();
+		}
+	}
+
+	/**
+	 * @param l
+	 */
+	public static void configureLauncherAsWorkbench(Launcher l) {
+		System.setProperty("workbench.mode","true");
     	l.addModuleByName("background");
     	l.addModuleByName("ui");
     	l.addModuleByName("dialogs");
@@ -31,11 +43,6 @@ public class Workbench1 {
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
-    	
-    	
-    	CmdLineParser.processCommandLine(cl,l);    	
-    	l.run();
-		}
 	}
 
 }

@@ -20,9 +20,19 @@ public class AstroRuntime1 {
 		Options o = CmdLineParser.createDefaultOptions();
 		CommandLine cl = CmdLineParser.parse(args,"acr",o);
 		if (cl != null) {
-		System.setProperty("system.configuration.preferenceClass",AstroRuntime.class.getName());
 				
     	Launcher l = new Launcher();
+    	configureLauncherAsACR(l);
+    	CmdLineParser.processCommandLine(cl,l);    	
+    	l.run();
+		}
+	}
+
+	/** Configure a launcher as the ACR variant.
+	 * @param l a fresh launcher that has not yet been 'run'
+	 */
+	public static void configureLauncherAsACR(Launcher l) {
+		System.setProperty("system.configuration.preferenceClass",AstroRuntime.class.getName());
     	System.setProperty("acr.mode","true");
     	// leave logging as-is - can always be overridden by user.
     	l.addModuleByName("background");
@@ -33,9 +43,6 @@ public class AstroRuntime1 {
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
-    	CmdLineParser.processCommandLine(cl,l);    	
-    	l.run();
-		}
 	}
 
 }
