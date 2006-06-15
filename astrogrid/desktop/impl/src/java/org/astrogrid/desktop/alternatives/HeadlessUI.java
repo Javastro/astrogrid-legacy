@@ -85,7 +85,7 @@ public class HeadlessUI implements UIInternal {
 		}
 
 		public int getProgressValue() {
-			return 0;
+			return progress;
 		}
 
 		public UIInternal getUI() {
