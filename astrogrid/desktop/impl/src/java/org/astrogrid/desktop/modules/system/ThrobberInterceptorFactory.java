@@ -1,4 +1,4 @@
-/*$Id: ThrobberInterceptorFactory.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: ThrobberInterceptorFactory.java,v 1.3 2006/06/15 09:51:30 nw Exp $
  * Created on 31-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,7 +93,12 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
         if (!isVoid)  {
             builder.addln("return result;");
         }
-        
+        builder.addln("} catch (RuntimeException e) {"); // catch runtime exceptions that are unknown to the client, and lift to runtime exception.
+        builder.addln(" if (e.getClass().getName().startsWith(\"java.\")) { ");
+        builder.addln(" throw e; ");
+        builder.addln(" } else { ");
+        builder.addln(" throw new RuntimeException(e.getClass().getName() + \" : \" + e.getMessage()); ");
+        builder.addln(" } ");
         builder.addln(" } finally { ");
         builder.addln("_ui.stopThrobbing();");
         builder.addln("_tray.stopThrobbing();");
@@ -254,6 +259,9 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
 
 /* 
 $Log: ThrobberInterceptorFactory.java,v $
+Revision 1.3  2006/06/15 09:51:30  nw
+added code to this interceptor to trap unknown runtime exceptions, and replace them with runtime exceptions whose class is known on the client - otherwise rmi clients will choke.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 
