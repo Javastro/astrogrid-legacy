@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.5 2006/05/17 23:57:46 nw Exp $
+/*$Id: Launcher.java,v 1.6 2006/06/15 09:41:27 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,6 +90,7 @@ public final class Launcher implements Runnable {
         addModuleByName("hivemind-lib");
         addModuleByName("framework");        
         addModuleByName("builtin");
+        addModuleByName("test");
     }
 
     /** add a descriptor to the load set, pointed to by a URL
@@ -162,6 +163,9 @@ public final class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.6  2006/06/15 09:41:27  nw
+added test module
+
 Revision 1.5  2006/05/17 23:57:46  nw
 documentation improvements.
 
