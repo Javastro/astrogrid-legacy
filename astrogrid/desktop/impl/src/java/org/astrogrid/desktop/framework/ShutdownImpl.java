@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.3 2006/04/18 23:25:46 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.4 2006/06/15 09:40:18 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,11 @@
 package org.astrogrid.desktop.framework;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -39,7 +43,15 @@ public class ShutdownImpl implements Shutdown{
     }
     private final boolean callSystemExit;
     private final ShutdownCoordinator coord;
+    private boolean confirmIfObjections = true;
     
+    /** if true (default), user is prompted for confirmation if there's any objections
+     * to shutdown 
+     * @param v
+     */
+    public void setConfirmIfObjections(boolean v) {
+    	this.confirmIfObjections = v;
+    }
 
 
     public void halt() {
@@ -47,9 +59,9 @@ public class ShutdownImpl implements Shutdown{
 
         // tell everyone 
         List objections = new ArrayList();
-        for (int i = 0; i < listeners.size(); i++) {
+        for (Iterator i = listeners.iterator(); i.hasNext(); ) {
             try {
-                ShutdownListener sl = (ShutdownListener)listeners.get(i);
+                ShutdownListener sl = (ShutdownListener)i.next();
                 if (sl != null) {
                   String msg =   sl.lastChance();
                   if (msg != null) {
@@ -63,7 +75,7 @@ public class ShutdownImpl implements Shutdown{
             }
         }
         // go ahead if we've no objections, otherwise prompt the user.       
-        if (objections.size() ==0 || JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,fmt(objections),"Shutting down ACR - are you sure?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE)) {
+        if (objections.size() ==0 || ! confirmIfObjections || JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,fmt(objections),"Shutting down ACR - are you sure?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE)) {
             reallyHalt();
         }
         
@@ -93,9 +105,10 @@ public class ShutdownImpl implements Shutdown{
         logger.debug("reallyHalt() - start");
 
         // tell everyone 
-        for (int i = 0; i < listeners.size(); i++) {
+        List copy = new ArrayList(listeners);
+        for (Iterator i = copy.iterator(); i.hasNext(); ) {
             try {
-                ShutdownListener sl =(ShutdownListener)listeners.get(i);
+                ShutdownListener sl = (ShutdownListener)i.next();
                 if (sl != null) {
                     sl.halting();
                 }
@@ -107,6 +120,7 @@ public class ShutdownImpl implements Shutdown{
         }
         // do the deed
         coord.shutdown();
+        
 
         logger.debug("reallyHalt() - end");
         if (callSystemExit) {
@@ -114,11 +128,15 @@ public class ShutdownImpl implements Shutdown{
         }
     }
 
-    protected List listeners = new ArrayList();
+    protected Set listeners = new HashSet();
     /**
      * @see org.astrogrid.acr.builtin.Shutdown#addShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
      */
     public void addShutdownListener(ShutdownListener arg0) {
+    	if (arg0 == null) {
+    		logger.warn("Attempt to add null listener");
+    		return;
+    	}
         logger.debug("addShutdownListener(ShutdownListener) - start");
         logger.debug(arg0);
         listeners.add(arg0);
@@ -130,6 +148,10 @@ public class ShutdownImpl implements Shutdown{
      * @see org.astrogrid.acr.builtin.Shutdown#removeShutdownListener(org.astrogrid.acr.builtin.ShutdownListener)
      */
     public void removeShutdownListener(ShutdownListener arg0) {
+    	if (arg0 == null) {
+    		logger.warn("Attempt to remove null listener");
+    		return;
+    	}
         logger.debug("removeShutdownListener(ShutdownListener) - start");
         logger.debug(arg0);
         listeners.remove(arg0);
@@ -142,6 +164,9 @@ public class ShutdownImpl implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.4  2006/06/15 09:40:18  nw
+improvements coming from unit testing
+
 Revision 1.3  2006/04/18 23:25:46  nw
 merged asr development.
 

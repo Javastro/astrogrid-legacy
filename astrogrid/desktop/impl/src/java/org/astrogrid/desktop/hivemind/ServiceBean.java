@@ -1,4 +1,4 @@
-/*$Id: ServiceBean.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: ServiceBean.java,v 1.3 2006/06/15 09:42:04 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,18 +26,27 @@ public class ServiceBean {
         return this.id;
     }
     public void setId(String id) {
-        this.id = id;
+    	if (id == null || id.trim().length() == 0) {
+    		throw new IllegalArgumentException("Empty Id");
+    	}
+    	this.id = id;
     }
     public Class getInterface() {
         return this.iface;
     }
     public void setInterface(Class iface) {
+    	if (! iface.isInterface()) {
+    		throw new IllegalArgumentException("Expected an interface, got " + iface.getName());
+    	}
         this.iface = iface;
     }
     public Module getModule() {
         return this.module;
     }
     public void setModule(Module module) {
+    	if (module == null) {
+    		throw new IllegalArgumentException("Null module");
+    	}
         this.module = module;
     }
     
@@ -47,9 +56,9 @@ public class ServiceBean {
         sb.append("id: ");
         sb.append(id);
         sb.append(" interface: ");
-        sb.append(iface.getName());
+        sb.append(iface != null ? iface.getName() : null);
         sb.append(" module: ");
-        sb.append(module.getModuleId());
+        sb.append(module != null ? module.getModuleId() : null);
         sb.append("]");
         
         return sb.toString();
@@ -60,6 +69,9 @@ public class ServiceBean {
 
 /* 
 $Log: ServiceBean.java,v $
+Revision 1.3  2006/06/15 09:42:04  nw
+improvements coming from unit testing
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 
