@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" > 
     <extend>${basedir}/acr/project.xml</extend>
         <artifactId>workbench</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
@@ -30,19 +29,21 @@
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
                 <unitTest>
-                        <includes>								
-                                <include>**/*Test.java</include>
+                        <includes>	
+                        	<include>matches-nothing</include>							
                         </includes>
+                        
 			<excludes>
-				<!-- can't really run these automatically - needs user login -->
-				<exclude>**/*SystemTest.java</exclude>				
 			</excludes>
+			
                         <resources>
                                 <resource>
                                         <directory>${basedir}/test/java</directory>
                                         <includes>
                                                 <include>**/*.properties</include>
                                                 <include>**/*.xml</include>
+                                                <include>**/*.dtd</include>
+                                                <include>**/*.xsd</include>
                                         </includes>
                                 </resource>								
                         </resources>
@@ -57,12 +58,20 @@
                         		<include>**/*.png</include>
                         		<include>**/*.html</include>
                         		<include>**/*.xsl</include>
-                        		<include>**/*.gif</include>
+                        		<include>**/*.gif</include> 
+                        		<include>**/*.dtd</include>
+                                <include>**/*.xsd</include>                        		
                         	</includes>
                         </resource>
 
                 </resources>
         </build>
+
+		<!-- TRIAL - defining my own set of reports.
+			- will have to see if this effects generated jnlp sites too - hope not -->
+		<reports>
+			<report>maven-changes-plugin</report>
+		</reports>
 
         <dependencies>
 <!-- help set for workbench -->
@@ -172,7 +181,23 @@
    
 
 <!-- used within development only -->
-<!-- testing html interface -->
+    <dependency>
+      <id>xmlunit</id>
+      <version>1.0</version>
+    </dependency>		
+    <dependency><!-- proper static analysis of code problems -->
+    	<artifactId>maven-findbugs-plugin</artifactId>
+    	<groupId>maven-plugins</groupId>
+    	<version>1.2</version>
+    	<type>plugin</type>
+    </dependency>
+ <!-- mocks for testing -->
+ 	<dependency>
+ 		<groupId>easymock</groupId>
+ 		<artifactId>easymock</artifactId>
+ 		<version>1.2</version>
+ 	</dependency>
+<!-- testing html interface  -->
  <dependency>
                         <groupId>httpunit</groupId>
                         <artifactId>httpunit</artifactId>
