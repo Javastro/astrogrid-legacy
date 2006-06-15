@@ -15,7 +15,7 @@
 	</postGoal>
 		
 		<goal name="astrogrid.version">
-			<echo file="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/astrogrid.version">
+			<echo file="${maven.build.dest}/org/astrogrid/desktop/hivemind/astrogrid.version">
 			astrogrid.desktop.version=${astrogrid.desktop.version}
 			astrogrid.build.date=${maven.jar.manifest.attribute.BuildDate}
 			astrogrid.build.location=${maven.jar.manifest.attribute.BuildLocation}
