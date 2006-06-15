@@ -1,4 +1,4 @@
-/*$Id: Adql074DynamicImpl.java,v 1.2 2006/04/18 23:25:45 nw Exp $
+/*$Id: Adql074DynamicImpl.java,v 1.3 2006/06/15 09:48:32 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -178,28 +178,15 @@ public class Adql074DynamicImpl implements Adql074 {
                 
     }
     
-public static void main(String[] args) {
-    try {
-        /*
-        InputStream is= Adql074DynamicImpl.class.getResourceAsStream("module.xml");       
-        XPathFactory fac = new XPathFactoryImpl(); //@todo work out why this isn't being auto-located
-        XPath xp = fac.newXPath();
-        System.out.println(xp.evaluate("//description",new InputSource(is)));
-        */
-    Adql074DynamicImpl i = new Adql074DynamicImpl();
-    Document doc = i.s2x("Select * From Tab t"); // returns no result.
-    XMLUtils.PrettyDocumentToStream(doc,System.out);
-    String s= i.x2s(doc);
-    System.out.println(s);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
+
 }
 
 
 /* 
 $Log: Adql074DynamicImpl.java,v $
+Revision 1.3  2006/06/15 09:48:32  nw
+mived testing out into unit test.
+
 Revision 1.2  2006/04/18 23:25:45  nw
 merged asr development.
 

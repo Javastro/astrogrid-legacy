@@ -1,4 +1,4 @@
-/*$Id: SkyNodeImpl.java,v 1.2 2006/04/18 23:25:45 nw Exp $
+/*$Id: SkyNodeImpl.java,v 1.3 2006/06/15 09:48:56 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -114,70 +114,7 @@ public class SkyNodeImpl implements SkyNode {
     private static final String SOAPACTION = "SOAPAction";
     private static final String WS_NAMESPACE = "SkyNode.ivoa.net";
     private static final String VOTABLE_NAMESPACE = "http://www.ivoa.net/xml/VOTable/v1.1";
-    public static void main(String[] args) {
-        try {
-        SkyNode s = new SkyNodeImpl();
-
-        // ESA - both esa services returns result in the WS_namespace,, and expects adql 0.74        
-        // they have a java axis implementation.
-        // * works, with translation and explicit format
-        //URI endpoint = new URI("http://esavo.esa.int/ISOSkyNode/services/SkyNodeSoap");
-        
-        // JHU - similar. .NET impelemtation, 0.74
-        // * works, with query namespace translation, and explicit format declaration.
-        //URI endpoint = new URI("http://openskyquery.net/nodes/usnob/nodeb.asmx");
-        
-        //JVO - different. axis implementation. wsdl states adql 1.0, different namespace for half of it.
-        //obviously expects adql 1.0. but still barfs
-        //URI endpoint = new URI("http://jvo.nao.ac.jp/skynode/services/SkyNodeForQSO");        
-        // doesn't like it. - fails with server-side exception
-        //URI endpoint = new URI("http://jvo.nao.ac.jp/skynode/services/SkyNodeForTWOMASS");
-        // * works - adql 1.0
-        //URI endpoint = new URI("http://jvo.nao.ac.jp/skynode/services/SkyNodeForSubaru");
-        // and there's some OpenSkyNodeJ variants - whatever they are..
-        // too big??
-        //URI endpoint = new URI("http://jvo.nao.ac.jp/skynode/services/SkyNodeForSDSSCatalog");
-        // seems to be down?
-        //URI endpoint = new URI("http://jvoe.dc.nao.ac.jp:8080/skynode/services/SkyNodeSoap");
-                
-        //STSci - .NET, adql 0.74. doesn't support gete availability.
-        URI endpoint = new URI("http://galex.stsci.edu/skynode/ogalex/nodeb.asmx");
-       // need to find how to translate my adql1.0 to 0.74
-        String[] results = s.getFormats(endpoint);
-        System.out.println(Arrays.asList(results));
-        FunctionBean[] functions = s.getFunctions(endpoint);
-        System.out.println(Arrays.asList(functions));
-        //System.out.println(s.getAvailability(endpoint));
-        
-        SkyNodeTableBean[] tables = null; // @todo  s.getMetadata(endpoint);
-        System.out.println(tables[0]);
-        System.err.println("first table is named " + tables[0].getName());
-        SelectDocument query = SelectDocument.Factory.newInstance();
-        SelectType sel = query.addNewSelect();
-        sel.addNewSelectionList()
-            .setItemArray(new SelectionItemType[]{
-                    AllSelectionItemType.Factory.newInstance()});
-        sel.addNewRestrict().xsetTop(XmlUnsignedInt.Factory.newValue(new Integer(100)));
-        TableType t = TableType.Factory.newInstance();
-        t.setAlias("a");
-        t.setName(tables[0].getName());        
-        sel.addNewFrom().setTableArray(new FromTableType[]{t   });
-        if (! query.validate()) {
-            throw new RuntimeException("built query is not valid");
-        }
-        
-        // convert to old version of adql..
-        String a10 = query.xmlText();
-        String a74 = StringUtils.replace(a10,AdqlData.NAMESPACE_1_0,AdqlData.NAMESPACE_0_74);
-        
-      Document votable = s.getResults(endpoint,(Document)query.getDomNode());
-     //  Document doc = XMLUtils.newDocument(new InputSource(new StringReader(a74)));
-       // Document votable = s.getResults(endpoint,doc);
-        XMLUtils.PrettyDocumentToStream(votable,System.out);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+   
     
     private final SOAPConnectionFactory fac;
     private final MessageFactory msgFac;
@@ -703,6 +640,9 @@ private URL resolveService(URI id) throws InvalidArgumentException {
 
 /* 
 $Log: SkyNodeImpl.java,v $
+Revision 1.3  2006/06/15 09:48:56  nw
+mived testing out into unit test.
+
 Revision 1.2  2006/04/18 23:25:45  nw
 merged asr development.
 
