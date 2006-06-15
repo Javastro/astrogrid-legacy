@@ -20,7 +20,7 @@
 
 <body>
 <%@ include file='../header.xml' %>
-<%@ include file='navigationAdmin.xml' %>
+<%@ include file='navigation.xml' %>
 
 <div id='bodyColumn'>
 <h1>Status Log</h1>

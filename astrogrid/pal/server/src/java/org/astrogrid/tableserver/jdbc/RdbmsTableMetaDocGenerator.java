@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.5 2005/06/28 15:56:34 clq2 Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.6 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -124,7 +124,11 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
          while (tables.next()) {
             //ignore all tables beginning with 'sys' as these are standard system tables
             //and we don't want to make these public.  I believe
-            if (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) {
+            // KEA: HSQLDB 8.0 uses SYSTEM_XXX for sys table names
+            if (
+                (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) &&
+                (!getColumnValue(tables, "TABLE_NAME").startsWith("SYSTEM"))
+            ) {
                String tableName = getColumnValue(tables, "TABLE_NAME");
                XmlPrinter tableTag = catTag.newTag("Table", new String[] { "ID='"+tableName+"'"} );
                tableTag.writeTag("Name", tableName );

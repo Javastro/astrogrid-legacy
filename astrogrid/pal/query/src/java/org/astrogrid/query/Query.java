@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
+ * $Id: Query.java,v 1.4 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,264 +7,733 @@
 package org.astrogrid.query;
 
 import java.io.IOException;
-import java.util.Hashtable;
+import java.io.StringWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Vector;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.query.condition.Condition;
+import org.astrogrid.io.Piper;
 import org.astrogrid.query.returns.ReturnSpec;
-import org.astrogrid.query.constraint.ConstraintSpec;
-import org.astrogrid.query.refine.RefineSpec;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.slinger.targets.WriterTarget;
+
+// XMLBeans stuff
+import org.apache.xmlbeans.* ;
+import org.astrogrid.adql.v1_0.beans.*;
+// For validation of beans
+import java.util.ArrayList;
+import java.util.Iterator;
+
+// For legacy DOM interface 
+import org.w3c.dom.Element;
+import org.astrogrid.xml.DomHelper;
+
+/* For xslt */
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 
 /**
- * A full in-memory 'modelled' representation of a query.  Consists of a 'scope',
- * indicating what will be searched, a description of where the results
- * will go, and a 'Condition' which describes the search criteria to be used.
- * 
- * Notes: 
+ * A "native" model of an ADQL query, which includes a representation
+ * of the ADQL/xml query itself in xmlbeans, and information about the
+ * query output (destination for results, format of results etc).
  *
- * ADQL 0.7.4 NOTES: These are the toplevel elements allowed in a Select :
- *  <xs:element name="Allow" type="tns:selectionOptionType" minOccurs="0"/>
- *  <xs:element name="Restrict" type="tns:selectionLimitType" minOccurs="0"/>
- *  <xs:element name="SelectionList" type="tns:selectionListType"/>
- *  <xs:element name="From" type="tns:fromType" minOccurs="0"/>
- *  <xs:element name="Where" type="tns:whereType" minOccurs="0"/>
- *  <xs:element name="GroupBy" type="tns:groupByType" minOccurs="0"/>
- *  <xs:element name="Having" type="tns:havingType" minOccurs="0"/>
- *  <xs:element name="OrderBy" type="tns:orderExpressionType" minOccurs="0"/>
+ * Provides convenience methods for creating cone-search ADQL queries
+ * from simple conesearch parameters.
  *
+ * Provides additional methods allowing a return row limit to be imposed 
+ * on the query.
  *
+ * This replaces the original DSA modelled query which didn't cover 
+ * ADQL fully enough, and allows us to deprecate the old DSA xml parsers.
+ *
+ *  @author K Andrews
+ *
+ *  @TOFIX Need to remove namespace tweak in favour of Jeff's forthcoming
+ *  version translation mechanism.
  */
 
 public class Query  {
 
-   /** search criteria */
-   Condition criteria = null;
-   
-   /** Defines what the results will be and Where they are to be sent */
-   ReturnSpec results = null;
-   
-   /** Not quite sure how this should be described properly */
-   String[] scope = null;
+   /** ADQL query, stored as xmlbeans */
+   private SelectDocument selectDocument = null;
 
-   /** Stores toplevel constrainsts such as row limits, DISTINCT filters etc */
-   ConstraintSpec constraintSpec = null;
+   /** Defines what the results will be and where they are to be sent.
+    * This is logically separate from the actual query itself, 
+    * specifying things like the return format (votable, csv etc)
+    * and where the results are to be put (e.g. location in myspace)*/
+   private ReturnSpec results = null;
 
-   /** Stores toplevel refinements such as GROUP BY, ORDER BY, HAVING */
-   RefineSpec refineSpec = null;
-
-   /** lookup of aliases *by table* if any are given.  This might only be used for human-readable
-    * queries or where we want the exact same output as was input.  */
-   Hashtable aliases = new Hashtable();
-   
-   /** Key used to define maximum number of matches allowed - defaults to 200. 0 or less = no limit */
+   /** Key used to define maximum number of matches allowed - defaults to 200. 
+    * 0 or less = no limit */
    public final static String MAX_RETURN_KEY = "datacenter.max.return";
 
-   public Query(String[] givenScope, Condition someCriteria, ReturnSpec aResultsDef) {
-      this.scope = givenScope;
-      this.criteria = someCriteria;
-      this.results = aResultsDef;
-      this.constraintSpec = new ConstraintSpec();  /* Empty by default */
-      this.refineSpec = new RefineSpec();  /* Empty by default */
+   /** Constant to indicate that number of rows returned should be unlimited */
+   public static final int LIMIT_NOLIMIT = 0; 
+
+   /** Allowed namespaces */
+   private static String NAMESPACE_0_7_4 = 
+            "http://www.ivoa.net/xml/ADQL/v0.7.4";
+   private static String NAMESPACE_1_0 = 
+            "http://www.ivoa.net/xml/ADQL/v1.0";
+
+   // Note: Need to put all the namespace stuff in the ADQL fragments 
+   // to have control over the namespace prefices used, etc (particularly
+   // important for unit testability).
+   // @TOFIX : This isn't maybe the most elegant way to set up the Table
+   // entry using xmlbeans. 
+   private static String FROM_ADQL =
+      "<Table xsi:type=\"tableType\" Alias=\"a\" Name=\"INSERT_TABLE\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"/>";
+   
+
+  /** For xmlbeans validation against schema */
+   private static XmlOptions xmlOptions;
+
+   /** Constructs a Query from a string containing ADQL/xml. 
+    */
+   public Query(String adqlString, ReturnSpec returnSpec) throws QueryException 
+   {
+      if (returnSpec == null) {
+        throw new QueryException("ReturnSpec may not be null");
+      }
+      setSelectDocument(adqlString);   
+      if (returnSpec == null) {
+         this.results = new ReturnTable(new WriterTarget(new StringWriter()));
+      }
+      else {
+         this.results = returnSpec;
+      }
+   }
+   /** Constructs a Query from a string containing ADQL/xml, with
+    * a default StringWriter return type. 
+    */
+   public Query(String adqlString) throws QueryException 
+   {
+      setSelectDocument(adqlString);
+      this.results = new ReturnTable(new WriterTarget(new StringWriter()));
    }
 
-   public Query(String[] givenScope, Condition someCriteria, ReturnSpec aResultsDef, ConstraintSpec constraintSpec, RefineSpec refineSpec) {
-      this.scope = givenScope;
-      this.criteria = someCriteria;
-      this.results = aResultsDef;
-      this.constraintSpec = constraintSpec;  
-      this.refineSpec = refineSpec;  
+   /** Constructs a Query from a stream containing ADQL/xml. 
+    */
+   public Query(InputStream adqlStream, ReturnSpec returnSpec) 
+          throws QueryException 
+   {
+      if (returnSpec == null) {
+        throw new QueryException("ReturnSpec may not be null");
+      }
+      StringWriter sw = new StringWriter();
+      try {
+         Piper.bufferedPipe(new InputStreamReader(adqlStream), sw);
+      }
+      catch (Exception e) {
+        throw new QueryException("Couldn't get ADQL query: "+e, e);
+      }
+      String adqlString = sw.toString();
+      setSelectDocument(adqlString);
+      this.results = returnSpec;
    }
-   
-   public Query(Condition someCriteria, ReturnSpec aResultsDef) {
-      this.criteria = someCriteria;
-      this.results = aResultsDef;
-      this.constraintSpec = new ConstraintSpec();  /* Empty by default */
-   }
-   
-   public void setScope(String[] givenScope) {
-      this.scope = givenScope;
-   }
-   
-   public Condition getCriteria()      { return criteria; }
 
-   public TargetIdentifier getTarget()  { return results.getTarget(); }
-   
-   public String[] getScope()          { return scope; }
+   /** Constructs a Query from a stream containing ADQL/xml. 
+    */
+   public Query(InputStream adqlStream) throws QueryException 
+   {
+      StringWriter sw = new StringWriter();
+      try {
+         Piper.bufferedPipe(new InputStreamReader(adqlStream), sw);
+      }
+      catch (Exception e) {
+        throw new QueryException("Couldn't get ADQL query: "+e, e);
+      }
+      String adqlString = sw.toString();
+      setSelectDocument(adqlString);
+      this.results = new ReturnTable(new WriterTarget(new StringWriter()));
+   }
 
+   /** Constructs a Query from a DOM Element containing ADQL/xml
+    * (to support legacy interfaces - may be removed). 
+    */
+   public Query(Element adqlElement, ReturnSpec returnSpec) 
+          throws QueryException 
+   {
+      if (returnSpec == null) {
+        throw new QueryException("ReturnSpec may not be null");
+      }
+      setSelectDocument(adqlElement);
+      this.results = returnSpec;
+   }
+   /** Constructs a Query from a DOM Element containing ADQL/xml
+    * (to support legacy interfaces - may be removed). 
+    */
+   public Query(Element adqlElement) throws QueryException 
+   {
+      setSelectDocument(adqlElement);
+      this.results = new ReturnTable(new WriterTarget(new StringWriter()));
+   }
+
+   /** Constructs a Query using cone-search parameters and 
+    * explicit table and column names. */
+   public Query(String tableName, String raColName, String decColName,
+       double coneRA, double coneDec, double coneRadius, 
+       ReturnSpec returnSpec) throws QueryException {
+      if (tableName == null) {
+         throw new QueryException("Conesearch table name may not be null");
+      }
+      if (returnSpec == null) {
+         throw new QueryException("ReturnSpec may not be null");
+      }
+      String adqlString = ConeConverter.getAdql(
+          tableName, raColName, decColName, 
+          coneRA, coneDec, coneRadius);
+      setSelectDocument(adqlString);
+      this.results = returnSpec;
+   }
+
+   /** Constructs a Query using cone-search parameters and 
+    * local default table/column names. */
+   public Query(double coneRA, double coneDec, double coneRadius, 
+          ReturnSpec returnSpec) throws QueryException {
+      if (returnSpec == null) {
+        throw new QueryException("ReturnSpec may not be null");
+      }
+      String adqlString = ConeConverter.getAdql(coneRA, coneDec, coneRadius);
+      setSelectDocument(adqlString);
+      this.results = returnSpec;
+   }
+
+   /** Constructs a Query using cone-search parameters and 
+    * local default table/column names, and default return spec. */
+   /*
+   public Query(double coneRA, double coneDec, double coneRadius) throws QueryException
+   {
+      String tableName = 
+        ConfigFactory.getCommonConfig().getString("conesearch.table", null);
+      if (tableName == null) {
+         throw new QueryException("DSA's conesearch.table property was null, but expected valid table name");
+      }
+      ConeConverter converter = 
+          new ConeConverter(coneRA, coneDec, coneRadius, tableName);
+      String adqlString = converter.getADQL();
+      setSelectDocument(adqlString);
+      this.results = new ReturnTable(new WriterTarget(new StringWriter()));
+   }
+   */
+
+   /** Returns the XML query as a string */
+   public String getAdqlString()
+   {
+     return selectDocument.toString();
+   }
+
+   /** Returns the XML query as a string suitable for embedding in HTML */
+   public String getHtmlAdqlString()
+   {
+      String xmlString = selectDocument.toString();
+      //  Make HTML-display-friendly
+      xmlString = xmlString.replaceAll(">", "&gt;");
+      xmlString = xmlString.replaceAll("<", "&lt;");
+      xmlString = xmlString.replaceAll("\n","<br/>");
+      return xmlString;
+   }
+   
+   /**
+    * Returns the current TargetIdentifier specifying the query results 
+    * destination 
+    */
+   public TargetIdentifier getTarget()  
+   { 
+      if (results != null) {
+         return results.getTarget(); 
+      }
+      return null;
+   }
+
+   /**
+    * Returns the current ReturnSpec (which specifies the query results 
+    * destination and return format)
+    */
    public ReturnSpec getResultsDef() { return results; }
 
-   public ConstraintSpec getConstraintSpec() { return constraintSpec; }
-
-   public RefineSpec getRefineSpec() { return refineSpec; }
-   
+   /**
+    * Sets the ReturnSpec (which specifies the query results 
+    * destination and return format)
+    */
    public void setResultsDef(ReturnSpec spec) {
       this.results = spec;
    }
 
    /**
-    * Returns maximum number of results */
+    * Returns maximum number of results specified in the actual query */
    public long getLimit() 
    {      
-     if (constraintSpec != null) {
-       return constraintSpec.getLimit(); 
-     }
-     return ConstraintSpec.LIMIT_NOLIMIT;
+      if (this.selectDocument != null) {
+         SelectType selectType = this.selectDocument.getSelect();
+         if (selectType.isSetRestrict()) {
+            SelectionLimitType restrict = selectType.getRestrict();
+            if (restrict.isSetTop()) {
+               return restrict.getTop();
+            }
+         }
+      }
+      return LIMIT_NOLIMIT;
    }
 
-   /** Sets the row limit constraint */
-   public void setLimit(long limit) 
-   {      
-      if (constraintSpec == null) {
-         constraintSpec = new ConstraintSpec();
-      }
-      constraintSpec.setLimit(limit);
-   }
    
-   /** Returns the lowest of the query limit (stored in ConstraintSpec) 
+   /** Returns the lowest of the query limit (stored in the selectDocument) 
     *  or local limit (configured in DSA setup) */
    public long getLocalLimit() {
-      long queryLimit = ConstraintSpec.LIMIT_NOLIMIT;  
-      long localLimit = ConfigFactory.getCommonConfig().getInt(MAX_RETURN_KEY, 0);
-      if (constraintSpec != null) {
-        queryLimit = constraintSpec.getLimit();
+      long queryLimit = LIMIT_NOLIMIT;  
+      long localLimit = ConfigFactory.getCommonConfig().getInt(
+            MAX_RETURN_KEY, LIMIT_NOLIMIT);
+      SelectType selectType = this.selectDocument.getSelect();
+      if (selectType.isSetRestrict()) {
+         SelectionLimitType restrict = selectType.getRestrict();
+         if (restrict.isSetTop()) {
+            queryLimit = restrict.getTop();
+         }
       }
-      if ((queryLimit == ConstraintSpec.LIMIT_NOLIMIT) || 
+      if ((queryLimit == LIMIT_NOLIMIT) || 
              ((queryLimit > localLimit) && (localLimit > 0))) {
          queryLimit = localLimit;
       }
       return queryLimit;
    }
    
-   /** Sets the allow constraint */
-   public void setAllow(String allowVal) 
-   {      
-      if (constraintSpec == null) {
-         constraintSpec = new ConstraintSpec();
+   /** Returns all UNIQUE table names that are used in the query.
+    *  This can be needed for dealing with VOTable metadata etc.
+    */
+   public String[] getTableReferences() 
+   {
+      // Need to find all From Tables with type tableType
+      // and extract the Name attributes 
+      SelectType selectType = this.selectDocument.getSelect();
+      if (selectType.isSetFrom()) {
+         FromType from = selectType.getFrom();
+         int numTables = from.sizeOfTableArray();
+         //String tableNames[] = new String[numTables];
+         Vector tableNames = new Vector();
+         for (int i = 0; i < numTables; i++) {
+            // Ooh, naughty casting required!  Scandalous!
+            TableType tableType = (TableType)(from.getTableArray(i));
+            String name = tableType.getName();
+            boolean duplicate = false;
+            for (int j = 0; j < tableNames.size(); j++) {
+               if (name.equals((String)(tableNames.elementAt(j)))) {
+                  duplicate = true;
+                  break;
+               }
+            }
+            if (!duplicate) {
+               // Only add hitherto unseen references
+               tableNames.addElement(name);
+            }    
+         }
+         numTables = tableNames.size();
+         String[] tables = new String[numTables];
+         for (int i = 0; i < numTables; i++) {
+           tables[i] = (String)tableNames.elementAt(i);
+         }
+         return tables;
       }
-      constraintSpec.setAllow(allowVal);
+      return new String[0];
+   } 
+
+   /** Returns all column names that are used in the query.
+    *  This can be needed for dealing with VOTable metadata etc.
+    */
+   public String[] getColumnReferences() 
+   {
+     // Need to find all SelectionList Items with type columnReferenceType
+     // and extract the Name attributes 
+      SelectType selectType = this.selectDocument.getSelect();
+      SelectionListType selectionList = selectType.getSelectionList();
+      int numItems = selectionList.sizeOfItemArray();
+      Vector columnNames = new Vector();
+      for (int i = 0; i < numItems; i++) {
+         // Ooh, more casting!  Good thing I'm really a C programmer...
+         SelectionItemType itemType = selectionList.getItemArray(i);
+         if (itemType instanceof ColumnReferenceType) {
+            columnNames.addElement(((ColumnReferenceType)itemType).getName());
+         }
+      }
+      numItems = columnNames.size();
+      String[] cols = new String[numItems];
+      for (int i = 0; i < numItems; i++) {
+        cols[i] = (String)columnNames.elementAt(i);
+      }
+      return cols;
+   } 
+
+   /** Returns all column names from the specified table that are used in 
+    *  the query.
+    *  This can be needed for dealing with VOTable metadata etc.
+    */
+   public String[] getColumnReferences(String tableRef) 
+   {
+      // First, get alias (if any) for this specified table
+      String tableAlias = getTableAlias(tableRef); // May come back null
+
+      // Now to find all SelectionList Items with type columnReferenceType,
+      // and extract the Name attributes for any columns coming from the 
+      // specified table.
+      SelectType selectType = this.selectDocument.getSelect();
+      SelectionListType selectionList = selectType.getSelectionList();
+      int numItems = selectionList.sizeOfItemArray();
+      Vector columnNames = new Vector();
+      for (int i = 0; i < numItems; i++) {
+         SelectionItemType itemType = selectionList.getItemArray(i);
+         if (itemType instanceof ColumnReferenceType) {
+            if (tableRef.equals(
+                  ((ColumnReferenceType)itemType).getTable())) {
+               // Only add columns from the specified table
+               columnNames.addElement(
+                   ((ColumnReferenceType)itemType).getName());
+            }
+            else if (tableAlias != null) {
+              if (tableAlias.equals(
+                    ((ColumnReferenceType)itemType).getTable())) {
+                 // Only add columns from the specified table
+                 columnNames.addElement(
+                     ((ColumnReferenceType)itemType).getName());
+               }
+            }
+         }
+      }
+      numItems = columnNames.size();
+      String[] cols = new String[numItems];
+      for (int i = 0; i < numItems; i++) {
+        cols[i] = (String)columnNames.elementAt(i);
+      }
+      return cols;
+   } 
+
+   /** Returns the alias (if defined) for the specified table name.
+    */
+   public String getTableAlias(String tableRef) 
+   {
+      SelectType selectType = this.selectDocument.getSelect();
+      if (selectType.isSetFrom()) {
+         FromType from = selectType.getFrom();
+         int numTables = from.sizeOfTableArray();
+         String tableNames[] = new String[numTables];
+         for (int i = 0; i < numTables; i++) {
+            // Ooh, naughty casting required!  Scandalous!
+            TableType tableType = (TableType)(from.getTableArray(i));
+            if (tableType.getName().equals(tableRef)) {
+               return tableType.getAlias();
+            }
+         }
+      }
+      return null;  // No alias found for specified table.
    }
 
-   
-   public void addAlias(String table, String alias)
+   /** Returns the real table name for the specified alias (or just 
+    * returns the input value if it is actually a table name, not an alias).
+    */
+   public String getTableName(String tableAlias) 
    {
-      //note that this is indexed *by table*, so that we can look up which alias
-      //to use on writing out
-      aliases.put(table, alias);
+      SelectType selectType = this.selectDocument.getSelect();
+      if (selectType.isSetFrom()) {
+         FromType from = selectType.getFrom();
+         int numTables = from.sizeOfTableArray();
+         String tableNames[] = new String[numTables];
+         for (int i = 0; i < numTables; i++) {
+            // Ooh, naughty casting required!  Scandalous!
+            TableType tableType = (TableType)(from.getTableArray(i));
+            // Check if we have an alias
+            if (tableType.getAlias().equals(tableAlias)) {
+               return tableType.getName();
+            }
+            // Check if the alias is actually a table name
+            if (tableType.getName().equals(tableAlias)) {
+               return tableAlias;
+            }
+         }
+      }
+      return null;  // No name found for specified alias
    }
-   
-   /** Returns the alias of the given table, if any */
-   public String getAlias(String table) {
-      return (String) aliases.get(table);
+
+
+   /** Allows an XSLT stylesheet to be applied against the adql query,
+    * for example to transform it to sql. 
+    * The sql produced reflects the lower of the query row limit and
+    * the local datacenter row limit.
+    *
+    */
+   public String convertWithXslt(InputStream xsltIn) throws QueryException
+   {
+      // Temporarily tweak the limit value in the Query to reflect 
+      // the lower of the query and datacenter limit (we will restore 
+      // it to its original value after the transformation).
+      // It would be more elegant just to twiddle with the temporary
+      // DOM document generated below, but the beans structure is 
+      // just SO much more friendly for these kinds of manipulations...
+      long queryLimit = getLimit();
+      long localLimit = getLocalLimit();
+      boolean changedLimit = false;
+      if (queryLimit == LIMIT_NOLIMIT) {  // Don't have a query limit
+         if (localLimit != LIMIT_NOLIMIT) { // But do have a datacenter limit
+            setLimit(localLimit);
+            changedLimit = true;
+         }
+      }
+      else {   // Do have a local limit
+         if ((localLimit != LIMIT_NOLIMIT) && (localLimit < queryLimit)) {
+            setLimit(localLimit); // Datacenter limit is smaller
+            changedLimit = true;
+         }
+      }
+
+   	TransformerFactory tFactory = TransformerFactory.newInstance();
+      try {
+         tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
+      }
+      catch (IllegalArgumentException iae) {
+         // From MCH:  Ignore - if UseNamespaces is unsupported, 
+         // it will chuck an exception, and we don't want 
+         // to use namespaces anyway so that's fine
+      }
+      try {
+        Transformer transformer = 
+          tFactory.newTransformer(new StreamSource(xsltIn));
+        StringWriter sw = new StringWriter();
+
+        // Extract the query as a Dom document
+        Document beanDom = DomHelper.newDocument(selectDocument.toString());
+
+        // NOTE: Seem to require a DOMSource rather than a StreamSource
+        // here or the transformer barfs - no idea why
+        // StreamSource source = new StreamSource(adqlBeanDoc.toString());
+        DOMSource source = new DOMSource(beanDom);
+
+        // Actually transform the document
+        transformer.transform(source, new StreamResult(sw));
+        String sql = sw.toString();
+        if (changedLimit) { 
+           setLimit(queryLimit); // Restore original limit
+        }  
+        return sql;
+      }
+      catch (SAXException se) {
+         if (changedLimit) { setLimit(queryLimit); }  // Restore original limit
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+se, se);
+      }
+      catch (TransformerConfigurationException tce) {
+         if (changedLimit) { setLimit(queryLimit); }  // Restore original limit
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+tce, tce);
+      }
+      catch (TransformerException te) {
+         if (changedLimit) { setLimit(queryLimit); }  // Restore original limit
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+te, te);
+      }
+      catch (IOException ioe) {
+         if (changedLimit) { setLimit(queryLimit); }  // Restore original limit
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+ioe, ioe);
+      }
    }
    
    /**
-    * For humans/debuggign
+    * For humans/debugging
     */
    public String toString() {
       StringBuffer s = new StringBuffer("{Query: ");
-      if (scope != null) {
-         s.append("In scope ");
-         for (int i = 0; i < scope.length; i++) { s.append(scope[i]+","); }
-      }
-      if (criteria == null) {
-         s.append("find everything, ");
-      }
-      else {
-         s.append("find where "+criteria+", ");
+      if (selectDocument != null) {
+        s.append(getAdqlString());
       }
       s.append(" returning "+results+"}");
       return s.toString();
    }
-   
-   /** Accept Visitor, and pass it down to the appropriate properties */
-   public void acceptVisitor(QueryVisitor visitor)  throws IOException {
-      visitor.visitQuery(this);
+   public String toHTMLString() {
+      StringBuffer s = new StringBuffer("{Query: <br/><tt>");
+      if (selectDocument != null) {
+        s.append(getHtmlAdqlString());
+      }
+      s.append(" </tt><br/>returning "+results+"}");
+      return s.toString();
    }
    
+   /** Sets the row limit (including removing it altogether).
+    * We should not allow the row limit to be publicly manipulated -
+    * this is just for temporarily tweaking the query to reflect the
+    * datacenter row limit (if necessary) when converting to SQL.
+    */
+   private void setLimit(long limit) 
+   {      
+      SelectType selectType = this.selectDocument.getSelect();
+      if (limit == LIMIT_NOLIMIT) { // Remove limit clause altogether
+         if (selectType.isSetRestrict()) {
+            // Already have a restrict clause - remove it
+            selectType.unsetRestrict();
+         }
+      }
+      else {   // Limit is a fixed value
+         if (!selectType.isSetRestrict()) {
+            selectType.addNewRestrict(); // No Restrict set, so create one
+         }
+         selectType.getRestrict().setTop(limit);
+      }
+   }
+   /** Accepts an ADQL/xml query as a string, converts it to xmlbeans
+    * representation (including validation against schema) and stores 
+    * the beans tree within the Query instance.
+    * Includes a botch fix for linux browsers, which have been
+    * known to change closing </Table> and </Select> elements 
+    * to lower case.
+    */
+   private void setSelectDocument(String adqlStringIn) throws QueryException
+   {
+      if (adqlStringIn == null) { 
+         throw new QueryException("Input adql string may not be null");
+      }
+      String adqlString = adqlStringIn.trim();
+      if (adqlString.equals("")) {
+         throw new QueryException("Input adql string may not be null/empty");
+      }
+
+      //botch fix for linux browsers
+      adqlString.replaceAll("</table>", "</Table>");
+      adqlString.replaceAll("</select>", "</Select>");
+
+     // Check for expected namespace before trying to parse
+      if (adqlString.indexOf(NAMESPACE_1_0) == -1) {
+         // Not adql 1.0 
+         if (adqlString.indexOf(NAMESPACE_0_7_4) == -1) {
+            // Not adql 0.7.4 either, barf
+            throw new QueryException(
+                "Unrecognised namespace: expecting either " +
+                NAMESPACE_0_7_4 + " or " +
+                NAMESPACE_1_0);
+         }
+         else {
+            // Move 0.7.4 into 1.0 (TOFIX temporary until we have translator!)
+            adqlString = tweakNamespace(adqlString);
+         }
+      }
+
+      // Now, parse the XML into an xmlbeans structure.  
+      // This step DOESN'T validate against schema.
+      try {
+         this.selectDocument = SelectDocument.Factory.parse(adqlString.trim());
+      }
+      catch (XmlException e) {
+        throw new QueryException("Couldn't parse ADQL: " + e, e);
+      }
+      try {
+        validateAdql();
+      }
+      catch (QueryException e) {
+        this.selectDocument = null; // Kill the adql
+        throw e;
+      }
+      // Make sure a FROM clause is present - add a default one
+      // if none is present, using the default conesearch table.
+      SelectType selectType = this.selectDocument.getSelect();
+      if (!selectType.isSetFrom()) {
+         String defaultTable = 
+            ConfigFactory.getCommonConfig().getString("conesearch.table", null);
+         if (defaultTable == null) {
+           throw new QueryException(
+             "DataCentre is misconfigured - conesearch.table property is null");
+         }
+         String fromString = FROM_ADQL.replaceAll("INSERT_TABLE",defaultTable);
+         try {
+            selectType.setFrom( FromType.Factory.parse(fromString));
+         }
+         catch (org.apache.xmlbeans.XmlException xE) {
+           throw new QueryException("Couldn't parse ADQL: " + xE, xE);
+         }
+         //Check still valid
+         try {
+            validateAdql();
+         }
+         catch (QueryException e) {
+            this.selectDocument = null; // Kill the adql
+            throw e;
+         }
+      }
+   }
+
+   /** Accepts an ADQL/xml query as a DOM Element, converts it to xmlbeans
+    * representation (including validation against schema) and stores 
+    * the beans tree within the Query instance (to support legacy 
+    * interfaces - may be removed). 
+    */
+   private void setSelectDocument(Element adqlElement) throws QueryException
+   {
+      String adqlString;
+      // Extract the XML
+      try {
+         adqlString = 
+            tweakNamespace(DomHelper.ElementToString(adqlElement)); 
+      }
+      catch (IOException e) {
+        throw new QueryException("Failed to process ADQL Document: " + e, e);
+      }
+      setSelectDocument(adqlString);
+   }
+
+   /** Uses xmlbeans functionality to validate the query's current 
+    * contents against schema. */
+   private void validateAdql() throws QueryException
+   {
+      // Validate against schema
+      // Set up the validation error listener.
+      ArrayList validationErrors = new ArrayList();
+      xmlOptions = new XmlOptions();
+      xmlOptions.setErrorListener(validationErrors);
+      if (this.selectDocument == null) {
+         throw new QueryException("Query ADQL was null, can't validate it!");
+      }
+      boolean isValid = this.selectDocument.validate(xmlOptions);
+      if (!isValid) {
+         String errorString = "Input ADQL is invalid: \n";
+         Iterator iter = validationErrors.iterator();
+         while (iter.hasNext()) {
+            errorString = errorString + iter.next() + "\n";
+         }
+         throw new QueryException(errorString);
+      }
+   }
+
+   /** Converts ADQL to expected version by tweaking the namespace 
+    * (temporary hack).
+    * Currently accepts ADQL 0.7.4 and 1.0;  moves 0.7.4 
+    * queries into the 1.0 namespace (to be replaced).
+    * @TOFIX : Replace namespace change with Jeff's translation
+    * mechanism.
+    */
+   private String tweakNamespace(String adqlString) throws QueryException
+   {
+     // Check for expected namespace before trying to parse
+      if (adqlString.indexOf(NAMESPACE_1_0) == -1) {
+         // Not adql 1.0 
+         if (adqlString.indexOf(NAMESPACE_0_7_4) == -1) {
+            // Not adql 0.7.4 either, barf
+            throw new QueryException(
+                "Unrecognised namespace: expecting either " +
+                NAMESPACE_0_7_4 + " or " +
+                NAMESPACE_1_0
+            );
+         }
+         else {
+            // Got 0.7.4, change namespace to 1.0
+            adqlString = adqlString.replaceAll(
+               "http://www\\.ivoa\\.net/xml/ADQL/v0\\.7\\.4",
+               "http://www.ivoa.net/xml/ADQL/v1.0"
+            );
+         }
+      }
+      return adqlString;
+   }
 }
-
-/*
- $Log: Query.java,v $
- Revision 1.3  2006/03/22 15:10:13  clq2
- KEA_PAL-1534
-
- Revision 1.2.82.2  2006/02/20 19:42:08  kea
- Changes to add GROUP-BY support.  Required adding table alias field
- to ColumnReferences, because otherwise the whole Visitor pattern
- falls apart horribly - no way to get at the table aliases which
- are defined in a separate node.
-
- Revision 1.2.82.1  2006/02/16 17:13:04  kea
- Various ADQL/XML parsing-related fixes, including:
-  - adding xsi:type attributes to various tags
-  - repairing/adding proper column alias support (aliases compulsory
-     in adql 0.7.4)
-  - started adding missing bits (like "Allow") - not finished yet
-  - added some extra ADQL sample queries - more to come
-  - added proper testing of ADQL round-trip conversions using xmlunit
-    (existing test was not checking whole DOM tree, only topmost node)
-  - tweaked test queries to include xsi:type attributes to help with
-    unit-testing checks
-
- Revision 1.2  2005/03/21 18:31:50  mch
- Included dates; made function types more explicit
-
- Revision 1.1.1.1  2005/02/17 18:37:34  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:23  mch
- Initial checkin
-
- Revision 1.7.6.4  2004/12/08 23:23:37  mch
- Made SqlWriter and AdqlWriter implement QueryVisitor
-
- Revision 1.7.6.3  2004/12/08 18:36:40  mch
- Added Vizier, rationalised SqlWriters etc, separated out TableResults from QueryResults
-
- Revision 1.7.6.2  2004/11/22 00:57:15  mch
- New interfaces for SIAP etc and new slinger package
-
- Revision 1.7.6.1  2004/11/17 11:15:46  mch
- Changes for serving images
-
- Revision 1.7  2004/11/09 17:42:22  mch
- Fixes to tests after fixes for demos, incl adding closable to targetIndicators
-
- Revision 1.6  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.5.6.2  2004/11/01 16:01:25  mch
- removed unnecessary getLocalLimit parameter, and added check for abort in sqlResults
-
- Revision 1.5.6.1  2004/10/27 00:43:39  mch
- Started adding getCount, some resource fixes, some jsps
-
- Revision 1.5  2004/10/18 13:11:30  mch
- Lumpy Merge
-
- Revision 1.4.2.1  2004/10/15 19:59:05  mch
- Lots of changes during trip to CDS to improve int test pass rate
-
- Revision 1.4  2004/10/12 22:46:42  mch
- Introduced typed function arguments
-
- Revision 1.3  2004/10/08 09:40:52  mch
- Started proper ADQL parsing
-
- Revision 1.2  2004/10/06 21:12:16  mch
- Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
-
- Revision 1.3  2004/08/25 23:38:33  mch
- (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
-
- Revision 1.2  2004/08/18 18:43:01  mch
- Better toString for Query
-
- Revision 1.1  2004/08/18 16:27:15  mch
- Combining ADQL generators from SQL parser and query builder
-
- */
-
-
-

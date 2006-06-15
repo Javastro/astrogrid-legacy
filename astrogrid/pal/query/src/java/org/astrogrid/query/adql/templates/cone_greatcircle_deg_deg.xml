@@ -1,0 +1,72 @@
+<!--
+  This one deals with the following case:
+    - DBMS trig functions in decimal degrees
+    - Database RA and DEC columns in decimal degrees
+  Note that input parameters for the conesearch service are implicitly 
+  assumed to be in decimal degrees.
+-->
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="allSelectionItemType"/>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_NAME_TABLE"/>
+    </From>
+    <Where>
+        <Condition xsi:type="intersectionSearchType">
+            <Condition xsi:type="comparisonPredType" Comparison="&lt;">
+                <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_DEC"/>
+                <Arg xsi:type="atomType">
+                    <Literal xsi:type="realType" Value="INSERT_VALUE_MAX_DEC_DEG"/>
+                </Arg>
+            </Condition>
+            <Condition xsi:type="intersectionSearchType">
+                <Condition xsi:type="comparisonPredType" Comparison=">">
+                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_DEC"/>
+                    <Arg xsi:type="atomType">
+                        <Literal xsi:type="realType" Value="INSERT_VALUE_MIN_DEC_DEG"/>
+                    </Arg>
+                </Condition>
+                <Condition xsi:type="comparisonPredType" Comparison="&lt;=">
+                    <Arg xsi:type="trigonometricFunctionType" Name="ACOS">
+                        <Arg xsi:type="binaryExprType" Oper="+">
+                            <Arg xsi:type="binaryExprType" Oper="*">
+                                <Arg xsi:type="trigonometricFunctionType" Name="SIN">
+                                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_DEC"/>
+                                </Arg>
+                                <Arg xsi:type="trigonometricFunctionType" Name="SIN">
+                                    <Arg xsi:type="atomType">
+                                        <Literal xsi:type="realType" Value="INSERT_VALUE_DEC_DEG"/>
+                                    </Arg>
+                                </Arg>
+                            </Arg>
+                            <Arg xsi:type="binaryExprType" Oper="*">
+                                <Arg xsi:type="trigonometricFunctionType" Name="COS">
+                                    <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_DEC"/>
+                                </Arg>
+                                <Arg xsi:type="binaryExprType" Oper="*">
+                                    <Arg xsi:type="trigonometricFunctionType" Name="COS">
+                                        <Arg xsi:type="atomType">
+                                            <Literal xsi:type="realType" Value="INSERT_VALUE_DEC_DEG"/>
+                                        </Arg>
+                                    </Arg>
+                                    <Arg xsi:type="trigonometricFunctionType" Name="COS">
+                                        <Arg xsi:type="binaryExprType" Oper="-">
+                                            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_RA"/>
+                                            <Arg xsi:type="atomType">
+                                                <Literal xsi:type="realType" Value="INSERT_VALUE_RA_DEG"/>
+                                            </Arg>
+                                        </Arg>
+                                    </Arg>
+                                </Arg>
+                            </Arg>
+                        </Arg>
+                    </Arg>
+                    <Arg xsi:type="atomType">
+                        <Literal xsi:type="realType" Value="INSERT_VALUE_CIRCRADIUS_DEG"/>
+                    </Arg>
+                </Condition>
+            </Condition>
+        </Condition>
+    </Where>
+</Select>

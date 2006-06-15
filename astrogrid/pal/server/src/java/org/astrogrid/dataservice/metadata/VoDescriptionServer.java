@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.13 2006/02/09 09:54:09 clq2 Exp $
+ * $Id: VoDescriptionServer.java,v 1.14 2006/06/15 16:50:10 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -259,7 +259,15 @@ public class VoDescriptionServer {
           {
           checkAndAppendResource(vod, new CeaResources());
           }
-      checkAndAppendResource(vod, new ConeResources());
+
+      // Only add conesearch if the configuration file says to do so.
+      //
+      String s = ConfigFactory.getCommonConfig().getString(
+          "datacenter.implements.conesearch",null);
+      if ( (s != null) && ( s.equals("true") || s.equals("TRUE") ) ) {
+         checkAndAppendResource(vod, new ConeResources());
+      }
+
 //    addResources(vod, new SkyNodeResourceServer());
       
       //finish vod element

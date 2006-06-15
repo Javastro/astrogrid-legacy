@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.9 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: TableResults.java,v 1.10 2006/06/15 16:50:08 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -87,7 +87,7 @@ public abstract class TableResults implements QueryResults
          return new XsvTableWriter(target, "Query Results", "\t", user);
       }
       else if (requestedFormat.equals(ReturnTable.HTML)) {
-         return new HtmlTableWriter(target, "Query Results", querier.getQuery().toString(), user);
+         return new HtmlTableWriter(target, "Query Results", querier.getQuery().toHTMLString(), user);
       }
 //      else if (requestedFormat.equals(ReturnCount.COUNT)) {
 //         return new HtmlTableWriter(target, "Query Results", querier.getQuery().toString(), user);

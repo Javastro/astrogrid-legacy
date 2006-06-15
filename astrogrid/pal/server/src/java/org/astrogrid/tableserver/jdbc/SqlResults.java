@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.9 2005/05/27 16:21:04 clq2 Exp $
+ * $Id: SqlResults.java,v 1.10 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,8 +19,6 @@ import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.TableResults;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.condition.ColumnReference;
-import org.astrogrid.query.condition.Expression;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
@@ -34,6 +32,7 @@ import org.astrogrid.tableserver.out.TableWriter;
  * SQL/JDBC query results.
  *
  * @author M Hill
+ * @author K Andrews
  */
 
 public class SqlResults extends TableResults {
@@ -43,8 +42,8 @@ public class SqlResults extends TableResults {
    
    /**
     * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
-    * know how big this result set will be, so it's likely we'll need a workspace
-    * for any temporary files created when doing conversions
+    * know how big this result set will be, so it's likely we'll need 
+    * a workspace for any temporary files created when doing conversions
     */
    public SqlResults(Querier parentQuerier, ResultSet givenResults)
    {
@@ -90,13 +89,17 @@ public class SqlResults extends TableResults {
          }
       }
    }
-   /* */
+
    /**
     * Writes out results from SQL Result set to given table writer
+    * @TOFIX The metadata stuff in here is still pretty dubious...
+    * can we do it better?
     */
    public void writeTable(TableWriter tableWriter, QuerierStatus statusToUpdate) throws IOException
    {
       
+      int unknownCount = 1;
+
       long localLimit = ConfigFactory.getCommonConfig().getInt(Query.MAX_RETURN_KEY, -1);
       long queryLimit = querier.getQuery().getLimit();
       
@@ -110,66 +113,135 @@ public class SqlResults extends TableResults {
          //NB metadata columns start at 1 (not zero)
          int numCols = metadata.getColumnCount();
          ColumnInfo[] cols = new ColumnInfo[numCols];
-         Expression[] colDefs = ((ReturnTable) querier.getQuery().getResultsDef()).getColDefs(); //columns defined by querier
+
+         //Expression[] colDefs = ((ReturnTable) querier.getQuery().getResultsDef()).getColDefs(); //columns defined by querier
+         String[] colDefs = querier.getQuery().getColumnReferences();
+
          TableMetaDocInterpreter interpreter = new TableMetaDocInterpreter();
-         for (int i=1;i<=numCols;i++)
+         for (int i=1;i<=numCols;i++) // Handle all columns in results
          {
-            //now need to look up other things from resource metadata
-            if (colDefs == null) {
-               //columsn for the result set are not defined (eg select *). So we
-               //must try getting the tablename from the metadata, but this is not
-               //always supported, then guess
-               try {
-                  String table = metadata.getTableName(i);
-                  if (table.trim().length()==0) {
-                     throw new SQLException("metadata returns empty table name");
-                  }
-                  cols[i-1] = interpreter.getColumn(null, table, metadata.getColumnName(i));
+            // We need to know the table and column name to set up the 
+            // relevant column metadata in the output table
+            String columnName = null;
+            String tableName = null;
+
+            try {
+               // First, see if we can get these from the JDBC results
+               columnName = metadata.getColumnName(i).trim();
+               /*
+                * We might have a null/empty column name if the column is a
+                * derived column (math expression or whatever) - e.g.
+                * true for HSQLDB. 
+                */
+               if (columnName.trim().length()==0) {
+                  columnName = null;
+                  /*
+                    throw new SQLException(
+                        "JDBC metadata returns empty column name");
+                        */
                }
-               catch (SQLException se) {
-                  log.debug("Trying to get table name for column "+metadata.getColumnName(i));
+               tableName = metadata.getTableName(i).trim();
+               if (tableName.trim().length()==0) {
+                  tableName = null;
+                 /*
+                  throw new SQLException(
+                      "JDBC metadata returns empty table name");
+                      */
+               }
+               else {
+                  // The table name in the metadata might well be a 
+                  // column alias;  try to get the real table name.
+                  // If the input tableName from the metadata is not
+                  // actually a table name or table alias, the tableName
+                  // variable will be set back to null by the statement
+                  // below.
+                  tableName = querier.getQuery().getTableName(tableName);
+               }
+            }
+            catch (SQLException se) {  // Couldn't get table/column name
+               // No need to do anything here
+            }
+            /*
+            log.debug("=============== Found table name " + tableName);
+            log.debug("=============== Found column name " + columnName);
+            */
+
+            if (tableName == null) {   // Didn't manage to get it from metadata
+                // Try and get table name from interpreteter
+               if (columnName != null) {
+                  log.debug("Trying to guess table name for column "+columnName);
                   try {
-                     cols[i-1] = interpreter.guessColumn(querier.getQuery().getScope(), metadata.getColumnName(i));
+                       cols[i-1] = interpreter.guessColumn(
+                           querier.getQuery().getTableReferences(), columnName);
+                       // Note : If the column isn't found at all,
+                       // cols[i-1] will now be null
+                       // TOFIX Change TableMetaDocInterpreter to throw
+                       // an exception in this case?  
                   }
                   catch (TooManyColumnsException me) {
-                     log.error(me+" guessing which column "+metadata.getColumnName(i)+" belongs to which table");
+                       log.error(me+" guessing which column "+
+                             columnName+" belongs to which table");
+                       //but carry on with a dummy table name
+                       cols[i-1] = new ColumnInfo();
+                       cols[i-1].setName(columnName);
+                       cols[i-1].setId("UNKNOWN."+columnName);
+                       tableName = null; // Just in case
+                  }
+                  if (cols[i-1] == null) {  // Didn't find a column of that name
+                     log.error(" Didn't find column with name '"+
+                           columnName+"' in any table");
                      //but carry on with a dummy table name
                      cols[i-1] = new ColumnInfo();
-                     cols[i-1].setName(metadata.getColumnName(i));
-                     cols[i-1].setId("?."+metadata.getColumnName(i));
+                     cols[i-1].setName(columnName);
+                     cols[i-1].setId("UNKNOWN."+columnName);
+                     tableName = null; // Just in case
                   }
-               }
+                }
+                else {     // Don't have column or table name
+                  // Use unknownCount to ensure unique table names
+                    cols[i-1] = new ColumnInfo();
+                    cols[i-1].setName("UNKNOWN_" + 
+                        Integer.toString(unknownCount));
+                    cols[i-1].setId("UNKNOWN."+"UNKNOWN_"+
+                        Integer.toString(unknownCount));
+                    unknownCount = unknownCount+1;
+                    tableName = null; // Just in case
+                }
             }
-            else if (colDefs[i-1] instanceof ColumnReference) {
-               ColumnReference colRef = (ColumnReference) colDefs[i-1];
-               cols[i-1] = new ColumnInfo();
-               cols[i-1].setName(metadata.getColumnName(i));
-               cols[i-1].setId(colRef.getTableName()+"."+colRef.getColName());
-               cols[i-1].setUcd(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getUcd("1"),"1");
-               cols[i-1].setUnits(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getUnits());
-               cols[i-1].setPublicType(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getPublicType());
+            // When we get here, we have a ColumnInfo structure created
+            // and may or may not have found the table name.
+            if (tableName != null) {   // We found the table
+               // If we have the table name, we can provide proper metadata
+               // from the DSA's own configuration
+               cols[i-1] = interpreter.getColumn(null, tableName, columnName);
+               cols[i-1].setId(tableName+"."+columnName);
+               cols[i-1].setUcd(interpreter.getColumn(
+                     null, tableName, columnName).getUcd("1"),"1");
+               cols[i-1].setUnits(interpreter.getColumn(
+                     null, tableName, columnName).getUnits());
+               cols[i-1].setPublicType(interpreter.getColumn(
+                     null, tableName, columnName).getPublicType());
             }
-            else {
-               //should probably throw an exception...
-               throw new IllegalArgumentException("Column Definition "+colDefs[i-1]+" is not a ColumnReference; don't know how to describe it");
+            // Now try to add some final JDBC metadata
+            //read direct from sql metadata
+            cols[i-1].setBackType(""+metadata.getColumnType(i)); 
+            try {
+               //read from sql metadata and convert
+               //(some dbs don't implement this function)
+               cols[i-1].setJavaType(Class.forName(
+                     metadata.getColumnClassName(i))); 
             }
-
-            //so we've got some metadata information - fill in some other bits
-            if (cols[i-1] != null) {
-               cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
-               try {
-                  //some dbs don't implement this function
-                  cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
-               }
-               catch (ClassNotFoundException cnfe) {
-                  log.error(cnfe+" for column "+i,cnfe);
-               }
-               catch (SQLException se) {
-                  //log but carry on; eg postgres drivers don't seem to have implemented getColumnClassName
-                  log.debug(se+" trying to get column class name for column "+i);
-               }
+            catch (ClassNotFoundException cnfe) {
+               log.error(cnfe+" for column "+columnName,cnfe);
+            }
+            catch (SQLException se) {
+               //log but carry on; eg postgres drivers don't seem to 
+               //have implemented getColumnClassName
+               log.debug(se+" trying to get column class name for column "+
+                   columnName);
             }
          }
+         // Now that we have the metadata, we can start processing the table.
          tableWriter.startTable(cols);
 
          int row = 0;
@@ -182,7 +254,8 @@ public class SqlResults extends TableResults {
 
             for (int i=1;i<=numCols;i++)
             {
-               if (cols[i-1] != null) { //if there is no column metadata, then it wasn't found in the metadoc and shouldn't be displayed
+               if (cols[i-1] != null) { //if there is no column metadata, 
+               //then it wasn't found in the metadoc and shouldn't be displayed
                   try {
                      colValues[i-1] = sqlResults.getString(i);
                   }
@@ -242,13 +315,40 @@ public class SqlResults extends TableResults {
    public static String[] listFormats() {
       return new String[] { ReturnTable.VOTABLE, ReturnTable.CSV, ReturnTable.HTML } ;
    }
-   
-   
-   
 }
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.10  2006/06/15 16:50:09  clq2
+ PAL_KEA_1612
+
+ Revision 1.9.64.7  2006/06/13 21:05:17  kea
+ Getting tests working fully after Jeff's new ADQLbeans jar.
+
+ Revision 1.9.64.6  2006/05/05 09:31:04  kea
+ Syntax translation testing functionality, HSQLDB upgrade.
+
+ Revision 1.9.64.5  2006/04/27 12:52:19  kea
+ Added harness for populating, translating to SQL and running a suite of
+ templated test queries in the live DSA.  (Good for syntax checking of
+ SQL translation against multiple DBMSs).
+
+ Revision 1.9.64.4  2006/04/25 15:37:25  kea
+ Fixing unit tests, except conesearch-related ones (not implemented yet).
+
+ Revision 1.9.64.3  2006/04/21 12:10:37  kea
+ Renamed ReturnSimple back to ReturnTable (since it is indeed intended
+ for returning tables).
+
+ Revision 1.9.64.2  2006/04/20 15:08:28  kea
+ More moving sideways.
+
+ Revision 1.9.64.1  2006/04/19 13:57:32  kea
+ Interim checkin.  All source is now compiling, using the new Query model
+ where possible (some legacy classes are still using OldQuery).  Unit
+ tests are broken.  Next step is to move the legacy classes sideways out
+ of the active tree.
+
  Revision 1.9  2005/05/27 16:21:04  clq2
  mchv_1
 

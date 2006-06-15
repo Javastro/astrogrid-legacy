@@ -12,14 +12,14 @@
 <head>
 <title><%=DataServer.getDatacenterName() %> Metadata pushed</title>
 <style type="text/css" media="all">
-          @import url("./style/astrogrid.css");
+          @import url("../style/astrogrid.css");
 </style>
 </title>
 </head>
 
 <body>
 <%@ include file='../header.xml' %>
-<%@ include file='navigationAdmin.xml' %>
+<%@ include file='navigation.xml' %>
 
 <div id='bodyColumn'>
 

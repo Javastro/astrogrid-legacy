@@ -1,5 +1,5 @@
 /*
- * $Id: SkyNodeService.java,v 1.2 2005/05/27 16:21:01 clq2 Exp $
+ * $Id: SkyNodeService.java,v 1.3 2006/06/15 16:50:10 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.skynode.v074;
@@ -16,7 +16,8 @@ import org.astrogrid.dataservice.service.AxisDataServer;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.io.mime.MimeTypes;
-import org.astrogrid.query.adql.AdqlQueryMaker;
+import org.astrogrid.query.Query;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
@@ -178,7 +179,11 @@ public class SkyNodeService //implements SkyNodeSoap
          }
       
          StringWriter sw = new StringWriter();
-         server.askQuery(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(adqlElement, new WriterTarget(sw), requestedFormat), server.getSource()+" via SkyNode");
+         //server.askQuery(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(adqlElement, new WriterTarget(sw), requestedFormat), server.getSource()+" via SkyNode");
+         server.askQuery(LoginAccount.ANONYMOUS, 
+             new Query(adqlElement, 
+                new ReturnTable(new WriterTarget(sw), requestedFormat)),
+             server.getSource()+" via SkyNode");
          Element votable = DomHelper.newDocument(sw.toString()).getDocumentElement();
          return new Element[] { votable };
       }

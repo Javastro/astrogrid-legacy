@@ -22,31 +22,15 @@
    <handler type="java:org.apache.axis.handlers.http.URLMapper" name="URLMapper"/>
    <handler type="java:org.apache.axis.handlers.SimpleAuthenticationHandler" name="Authenticate"/>
    
-   
-   <!-- Iteration 06 interface -->
-   <service name="AxisDataService06" style="wrapped" use='literal'>
-      <!-- Class that defines the interface -->
-      <parameter name="className" value="org.astrogrid.dataservice.service.soap.AxisDataService_v06"/>
+   <!-- IVO Standard SkyNode v0.7.4 : NOT SUPPORTED, LEFT FOR REFERENCE -->
       <!-- Create one instance for the life of the service -->
-      <parameter name="scope" value="Application"/>
-      <!-- Publish all of the service's methods -->
-      <parameter name="allowedMethods" value="*"/>
-
-<!--
-      <parameter name="wsdlTargetNamespace" value="http://www.astrogrid.org/datacenter/It04/dataserver/v1"/>
-      <parameter name="wsdlServiceElement" value="AxisDataServerService"/>
-      <parameter name="wsdlServicePort" value="AxisDataServer"/>
-      <parameter name="wsdlPortType" value="AxisDataServer"/>
--->
-   </service>
-
-   <!-- IVO Standard SkyNode v0.7.4 -->
+      <!--
    <service name="SkyNode074" style="message" use='literal'>
       <parameter name="className" value="org.astrogrid.dataservice.service.skynode.v074.SkyNodeService"/>
-      <!-- Create one instance for the life of the service -->
       <parameter name="scope" value="Application"/>
       <parameter name="allowedMethods" value="*"/>
    </service>
+   -->
 
    <!-- CEA Service v1 -->
    <service name="CommonExecutionConnectorService" provider="java:RPC" style="wrapped" use="literal">

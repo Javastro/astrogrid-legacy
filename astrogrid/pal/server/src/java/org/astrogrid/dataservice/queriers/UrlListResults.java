@@ -1,5 +1,5 @@
 /*
- * $Id: UrlListResults.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: UrlListResults.java,v 1.6 2006/06/15 16:50:08 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */

@@ -1,0 +1,4 @@
+This directory contains sources and tests that have been moved out of the
+main pal/query tree because they are either out of date or now unsupported.  
+They are here for safekeeping in case any removed functionality needs to 
+be resurrected in the future.

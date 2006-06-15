@@ -1,0 +1,411 @@
+/*
+ * $Id: ConeConverter.java,v 1.2 2006/06/15 16:50:09 clq2 Exp $
+ *
+ * (C) Copyright Astrogrid...
+ */
+
+package org.astrogrid.query;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.InputStreamReader;
+import org.astrogrid.io.Piper;
+import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.cfg.PropertyNotFoundException;
+
+
+/**
+ * Utility class for taking conesearch parameters and converting them
+ * into an ADQL/xml query format.  Note that this class assumes that
+ * the database table stores RA and DEC columns in decimal degrees.
+ *
+ * See notes about conesearch maths appended at end.
+ *
+ * @author K. Andrews, J. Lusted
+ */
+
+public class ConeConverter  {
+
+     static final String TABLE_NAME = "INSERT_NAME_TABLE";
+     static final String RA_NAME = "INSERT_NAME_RA";
+     static final String DEC_NAME = "INSERT_NAME_DEC";
+     static final String RA_VALUE_RAD = "INSERT_VALUE_RA_RAD";
+     static final String DEC_VALUE_RAD = "INSERT_VALUE_DEC_RAD";
+     static final String RADIUS_VALUE_RAD = "INSERT_VALUE_CIRCRADIUS_RAD";
+     static final String RA_VALUE_DEG = "INSERT_VALUE_RA_DEG";
+     static final String DEC_VALUE_DEG = "INSERT_VALUE_DEC_DEG";
+     static final String RADIUS_VALUE_DEG = "INSERT_VALUE_CIRCRADIUS_DEG";
+     static final String DECMIN_VALUE_DEG = "INSERT_VALUE_MIN_DEC_DEG";
+     static final String DECMAX_VALUE_DEG = "INSERT_VALUE_MAX_DEC_DEG";
+     static final String DECMIN_VALUE_RAD = "INSERT_VALUE_MIN_DEC_RAD";
+     static final String DECMAX_VALUE_RAD = "INSERT_VALUE_MAX_DEC_RAD";
+
+     static final double CONVERT_FACTOR = Math.PI/180.0;
+         
+   /** 
+    * Creates an ADQL conesearch query string reflecting specified 
+    * table and column names, and specified search RA, Dec and radius.
+    * This function expects its numeric inputs in decimal degrees.
+    */
+   public static String getAdql(String tableName, 
+       String raColName, String decColName,
+       double coneRA, double coneDec, double coneRadius) throws QueryException 
+   {
+      String adqlString;
+      boolean funcsInRads;
+      boolean colsInDegs;
+
+      // Check all inputs thoroughly
+      if ((coneRA < 0.0) || (coneRA > 360.0)) {
+        throw new QueryException(
+            "Illegal value for conesearch right ascension: " +
+            Double.toString(coneRA)
+        );
+      }
+      if ((coneDec < -90.0) || (coneDec > 90.0)) {
+         throw new QueryException(
+           "Illegal value for conesearch declination: " +
+           Double.toString(coneDec)
+        );
+      }
+      if (coneRadius < 0.0) {
+        throw new QueryException(
+            "Illegal value for conesearch radius (must be positive): " + 
+            Double.toString(coneRadius)
+        );
+      }
+      if ((tableName == null) || (tableName.equals(""))) {
+        throw new QueryException(
+            "Illegal null or empty string for conesearch table name");
+      }
+      if ((raColName == null) || (raColName.equals(""))) {
+        throw new QueryException(
+            "Illegal null or empty string for RA column name");
+      }
+      if ((decColName == null) || (decColName.equals(""))) {
+        throw new QueryException(
+            "Illegal null or empty string for RA column name");
+      }
+
+      try {
+         funcsInRads = ConfigFactory.getCommonConfig().getBoolean(
+            "db.trigfuncs.in.radians");
+      }
+      catch (PropertyNotFoundException nfe) {
+         throw new QueryException(
+            "DSA local property 'db.trigfuncs.in.radians' is not set, " +
+            "please check your configuration");
+      }
+      String colUnits;
+      try {
+         colUnits = ConfigFactory.getCommonConfig().getString("conesearch.columns.units");
+      }
+      catch (PropertyNotFoundException nfe) {
+         throw new QueryException(
+            "DSA local property 'conesearch.columns.units' is not set, " +
+            "please check your configuration");
+      }
+      if (colUnits.equals("deg") || colUnits.equals("degrees")) {
+         colsInDegs = true;
+      }
+      else if (colUnits.equals("rad") || colUnits.equals("radians")) {
+         colsInDegs = false;
+      }
+      else {
+         throw new QueryException(
+            "Unrecognised value " + colUnits + 
+            " for property 'conesearch.columns.units' is not set, " +
+            "should be 'deg' or 'rad'");
+      }
+
+      // These are for use in an initial box-cut filter in the ADQL
+      // (to make for more efficient calculation) - NB IN DEGREES HERE
+      double decMin = coneDec - coneRadius;
+      double decMax = coneDec + coneRadius;
+ 
+      if (coneRadius < 0.167) { // < roughly 10 arcmin
+          // Haversine is more accurate for small circles
+          // (avoids rounding-related errors)
+          if (funcsInRads) {
+             if (colsInDegs) {
+                adqlString = getConeTemplate("adql/templates/cone_haversine_rad_deg.xml");
+             }
+             else {
+               adqlString = getConeTemplate("adql/templates/cone_haversine_rad_rad.xml");
+            }
+          } 
+          else {
+             if (colsInDegs) {
+                adqlString = getConeTemplate("adql/templates/cone_haversine_deg_deg.xml");
+             }
+             else {
+                adqlString = getConeTemplate("adql/templates/cone_haversine_deg_rad.xml");
+            }
+          }
+      }
+      else {
+         // Great circle ok for larger circles
+         if (funcsInRads) {
+            if (colsInDegs) {
+               adqlString = getConeTemplate("adql/templates/cone_greatcircle_rad_deg.xml");
+            }
+            else {
+               adqlString = getConeTemplate("adql/templates/cone_greatcircle_rad_rad.xml");
+            }
+         }
+         else {
+            if (colsInDegs) {
+               adqlString = getConeTemplate("adql/templates/cone_greatcircle_deg_deg.xml");
+            }
+            else {
+               adqlString = getConeTemplate("adql/templates/cone_greatcircle_deg_rad.xml");
+            }
+         }
+      }
+
+      //System.out.println("ADQL BEFORE SUBSTITUTION: ");
+      //System.out.println(adqlString);
+
+      // Perform necessary substitutions
+      // Note that the ADQL trig assumes input values are in radians.
+      adqlString = adqlString.replaceAll(TABLE_NAME,tableName);
+      adqlString = adqlString.replaceAll(RA_NAME,raColName);
+      adqlString = adqlString.replaceAll(DEC_NAME,decColName);
+
+      // These go in as whatever the trig functions require (degrees or rads)
+      if (funcsInRads) {
+        // Convert input values into radians for trig
+        double coneRARad = coneRA * CONVERT_FACTOR;
+        double coneDecRad = coneDec * CONVERT_FACTOR;
+        double coneRadiusRad = coneRadius * CONVERT_FACTOR;
+        adqlString = adqlString.replaceAll(
+            RA_VALUE_RAD, Double.toString(coneRARad));
+        adqlString = adqlString.replaceAll(
+            DEC_VALUE_RAD, Double.toString(coneDecRad));
+        adqlString = adqlString.replaceAll(
+            RADIUS_VALUE_RAD,Double.toString(coneRadiusRad));
+      }
+      else {
+        adqlString = adqlString.replaceAll(
+            RA_VALUE_DEG, Double.toString(coneRA));
+        adqlString = adqlString.replaceAll(
+            DEC_VALUE_DEG, Double.toString(coneDec));
+        adqlString = adqlString.replaceAll(
+            RADIUS_VALUE_DEG, Double.toString(coneRadius));
+      }
+
+      if (colsInDegs) {
+        adqlString = adqlString.replaceAll(
+            DECMIN_VALUE_DEG,Double.toString(decMin));
+        adqlString = adqlString.replaceAll(
+            DECMAX_VALUE_DEG,Double.toString(decMax));
+      }
+      else {
+        double decMinRad = decMin * CONVERT_FACTOR;
+        double decMaxRad = decMin * CONVERT_FACTOR;
+        adqlString = adqlString.replaceAll(
+            DECMIN_VALUE_RAD,Double.toString(decMinRad));
+        adqlString = adqlString.replaceAll(
+            DECMAX_VALUE_RAD,Double.toString(decMaxRad));
+      }
+      //System.out.println("ADQL AFTER SUBSTITUTION: ");
+      //System.out.println(adqlString);
+
+      return adqlString;
+   }
+
+    /** Creates an ADQL conesearch query string reflecting specified 
+    * search RA, Dec and radius, using local config's default 
+    * table and column names.
+    * This function expects its numeric inputs in decimal degrees.
+    */
+   public static String getAdql(double coneRA, double coneDec, double coneRadius) throws QueryException 
+   {
+      String coneTable = ConfigFactory.getCommonConfig().getString(
+            "conesearch.table", null);
+      if ((coneTable == null) || (coneTable.equals(""))) {
+         throw new QueryException(
+           "DSA local property 'conesearch.table' is not set, " +
+           "please check your configuration");
+      }
+      String raColName = ConfigFactory.getCommonConfig().getString(
+            "conesearch.ra.column", null);
+      if ((raColName == null) || (raColName.equals(""))) {
+         throw new QueryException(
+             "DSA local property 'conesearch.ra.column' is not set, " +
+             "please check your configuration");
+      }
+
+      String decColName = ConfigFactory.getCommonConfig().getString(
+            "conesearch.dec.column", null);
+      if ((decColName == null) || (decColName.equals(""))) {
+         throw new QueryException(
+             "DSA local property 'conesearch.dec.column' is not set, " +
+             "please check your configuration");
+      }
+      return getAdql(coneTable, raColName, decColName, 
+          coneRA, coneDec, coneRadius);
+   }
+
+
+   /** 
+    * Extracts the XML template file resources for use in constructing
+    * conesearch queries.
+    */
+   protected static String getConeTemplate(String filename) throws QueryException
+   {
+      InputStream templateIn = null;
+      if ((filename == null) || (filename.trim().equals(""))) {
+         throw new QueryException(
+             "Null/empty name specified for test query to run");
+      }
+      //find specified sheet as resource of this class
+      templateIn = ConeConverter.class.getResourceAsStream(
+          "./" + filename);
+      String whereIsDoc = ConeConverter.class+" resource " +
+          "./" + filename;
+      //System.out.println("Trying to load test query as resource of class: " +whereIsDoc);
+
+      //if above doesn't work, try doing by hand for Tomcat ClassLoader
+      if (templateIn == null) {
+         // Extract the package name, turn it into a filesystem path by 
+         // replacing .'s with /'s, and append the path to the xslt.
+         // Hopefully this will mean tomcat can locate the file within
+         // the bundled jar file.  
+         String path = "java/" + 
+           ConeConverter.class.getPackage().getName().replace('.', '/')
+               + "/" + filename;
+         templateIn = ConeConverter.class.getClassLoader().getResourceAsStream(path);
+         //System.out.println("Trying to load test query via classloader : " +path);
+      }
+
+      //Last ditch, look in class path.  
+      if (templateIn == null) {
+         //System.out.println("Could not find test query '"
+          //   +whereIsDoc+"', looking in classpath...");
+         templateIn = 
+           ConeConverter.class.getClassLoader().getResourceAsStream(filename);
+         whereIsDoc = filename+" in classpath at "+
+           ConeConverter.class.getClassLoader().getResource(filename);
+         //System.out.println("Trying to load test query  via classpath : " +whereIsDoc);
+      }
+      if (templateIn == null) {
+          throw new QueryException(
+              "Could not find conesearch template "+filename);
+      }
+      // Now we have the query, let's get it as a string.
+      String adqlString = null;
+      try {
+         StringWriter sw = new StringWriter();
+         Piper.bufferedPipe(new InputStreamReader(templateIn), sw);
+         adqlString = sw.toString();
+      }
+      catch (IOException e) {
+        throw new QueryException(
+            "Couldn't load conesearch template " + filename +
+            ": " + e.getMessage(), e);
+      }
+      return adqlString;
+   }
+}
+
+/* NOTES ABOUT CONESEARCH MATHS
+ *
+ * SEE http://www2.sjsu.edu/faculty/watkins/sphere.htm
+ * ---------------------------------------------------
+ *
+ *   Standard great circle angular separation formula :
+ *
+ *     cos(A) = sin(DEC_C)*sin(DEC) + (cos(DEC_c)*cos(Dec)*cos(RA_c-RA));
+ *
+ *   Sinnott's haversign formula (for where A is small) :
+ *
+ *    sin(A/2) = sqrt ( sin^2((DEC_C-DEC)/2) + (COS(DEC_C)*COS(DEC)*
+ *       (sin^2((RA_C-RA)/2))) );
+ *
+ *
+ * SEE http://www.cs.nyu.edu/visual/home/proj/tiger/gisfaq.html)
+ * -------------------------------------------------------------
+ *
+ *   Law of Cosines for Spherical Trigonometry
+ *
+ *   a = sin(lat1) * sin(lat2)
+ *   b = cos(lat1) * cos(lat2) * cos(lon2 - lon1)
+ *   c = arccos(a + b)
+ *   d = R * c
+ *
+ *   Although this formula is mathematically exact, it is unreliable for
+ *   small distances because the inverse cosine is ill-conditioned. Sinnott
+ *   (in the article cited above) offers the following table to illustrate
+ *   the point:
+ *   cos (5 degrees) = 0.996194698
+ *   cos (1 degree) = 0.999847695
+ *   cos (1 minute) = 0.9999999577
+ *   cos (1 second) = 0.9999999999882
+ *   cos (0.05 sec) = 0.999999999999971
+ *   A computer carrying seven significant figures cannot distinguish the
+ *   cosines of any distances smaller than about one minute of arc.
+ *   The function min(1,(a + b)) could replace (a + b) as the argument for
+ *   the inverse cosine to guard against possible round-off errors, but
+ *   doing so would be to "polish a cannonball". 
+ *
+ *   Haversine formula again:
+ *    dlon = lon2 - lon1
+ *    dlat = lat2 - lat1
+ *    a = (sin(dlat/2))^2 + cos(lat1) * cos(lat2) * (sin(dlon/2))^2
+ *    c = 2 * arcsin(min(1,sqrt(a)))
+ *    d = R * c 
+ * (the min here prevents arcsin crashing due to sqrt(a) >1 due to rounding
+ *
+ *  The Haversine Formula can be expressed in terms of a two-argument
+ *  inverse tangent function, atan2(y,x), instead of an inverse sine
+ *  as follows (no bulletproofing is needed for an inverse tangent):
+ *
+ *  dlon = lon2 - lon1
+ *  dlat = lat2 - lat1
+ *  a = (sin(dlat/2))^2 + cos(lat1) * cos(lat2) * (sin(dlon/2))^2
+ *  c = 2 * atan2( sqrt(a), sqrt(1-a) )
+ *  d = R * c
+ *
+ *  In this context, a one-argument inverse tangent function would also
+ *  work: replace "atan2( sqrt(a), sqrt(1-a) )" by "arctan( sqrt(a) /
+ *  sqrt(1-a) )", but insert a test to ensure you will not divide by
+ *  zero if a = 1. (In the case a = 1, c = pi radians = 180 degrees,
+ *  and d is halfway around the Earth = 3.14159265... * R.) 
+ *
+ * NOTE THAT mysql (and other DBMSs presumably) EXPECT TRIG FUNCTION
+ * ARGUMENTS IN RADIANS, NOT DEGREES!! 
+ *
+ * DEC BOX:
+ * (cat.DEC <= dec + rad)  and (cat.DEC >= dec-rad) 
+ *
+ * RA BOX 1: (normal case )
+ * (cat.RA <= MIN(ra + rad,360) and (cat.RA >= MAX(0,ra-rad) 
+ *
+ * OR
+ * RA BOX 2: (right straddle)
+ //* (cat.RA >= (ra -rad + 360) and (cat.RA <= MIN(ra+rad,360))) 
+ * (cat.RA >= (ra -rad + 360) and (cat.RA <= MAX(ra+rad,360))) 
+ *
+ * OR
+ * RA BOX 3: (left straddle)
+ * //(cat.RA <= MAX(ra+rad-360,0) and (cat.RA >= ra-rad) 
+ * //(cat.RA <= MIN(ra+rad-360,0) and (cat.RA >= ra-rad) 
+ * (cat.RA <= (ra+rad-360) and (cat.RA >= MIN(ra-rad,0) 
+ *
+  // THESE ARE EXAMPLES FROM THE OLD DSA
+SELECT *
+ FROM RASS_PHOTONS
+ WHERE 2 * ASIN( SQRT(SIN(($DEC_C-DEC)/2) 
+    * SIN(($DEC_C-DEC)/2) + COS($DEC_C) * COS(DEC) 
+    * SIN(($RA_C - RA)/2) * SIN(($RA_C - RA)/2))) <= $SR_C  
+SELECT  *  FROM  catalogue  WHERE (
+    (catalogue.POS_EQ_DEC<2.5)  and
+    (catalogue.  POS_EQ_DEC>1.5) ) AND
+  ((2 * ASIN( SQRT( POWER( SIN( (RADIANS(catalogue.POS_EQ_DEC) -
+  (0.03490658503988659) ) / 2 ) ,2) +
+  COS(0.03490658503988659) * COS(RADIANS(catalogue.POS_EQ_DEC)) *
+  POWER( SIN( (RADIANS(catalogue.POS_EQ_RA) - 0.017453292519943295) / 2 ), 2)
+  )))< 0.008726646259971648)
+*/

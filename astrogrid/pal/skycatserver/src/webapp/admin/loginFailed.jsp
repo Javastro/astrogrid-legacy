@@ -1,4 +1,5 @@
-<%@ page import="org.astrogrid.dataservice.service.DataServer"
+<%@ page import="org.astrogrid.dataservice.service.DataServer,
+  org.astrogrid.cfg.ConfigFactory"
    isThreadSafe="false"
    session="false"
 %>
@@ -18,10 +19,30 @@
 
 <div id='bodyColumn'>
 
-<h1(401) >Failed Login</h1>
+<h1>Login failed!  Please try again.</h1>
+
 <p>
-You need to have permission to access the administration pages.
+This page is only accessible to DSA/catalog administrators.
 </p>
+<p>
+Please log in using your administrator username and password.
+</p>
+
+
+<form method="POST" action="j_security_check">
+   <table>
+   <tr><td>Username</td><td> <input type="text" name="j_username"></td></tr>
+   <tr><td>Password</td><td> <input type="password" name="j_password"></td></tr>
+   <tr><td></td><td><input type="submit" value="Log in"></td></tr>
+   </table>
+</form>
+
+<p>
+If you're uncertain about configuring the administrator username and 
+password,<br/>
+please see <a href="../docs/configure_step1.jsp">Step 1: Check your tomcat user configuration</a> in the <a href="../configure.jsp">Configuration documentation.</a>
+</p>
+
 </body>
 </html>
 

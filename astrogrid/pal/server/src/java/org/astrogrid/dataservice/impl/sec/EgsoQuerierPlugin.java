@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.2 2005/03/10 15:13:48 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.3 2006/06/15 16:50:10 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,9 +24,10 @@ import org.astrogrid.dataservice.queriers.DefaultPlugin;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierPluginException;
 import org.astrogrid.dataservice.queriers.VotableDomResults;
-import org.astrogrid.tableserver.jdbc.StdSqlMaker;
+import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
 import org.astrogrid.query.Query;
+import org.astrogrid.query.QueryException;
 import org.xml.sax.SAXException;
 
 /** Datacenter querier that performs queries against SEC webservice.
@@ -48,12 +49,13 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
    /** Called by the querier plugin mechanism to do the query.
     * The EGSO service takes an SQL string and returns a VOTable.
     */
-   public void askQuery(Principal user, Query query, Querier querier) throws IOException {
+   public void askQuery(Principal user, Query query, Querier querier) throws IOException, QueryException {
 
       //convert query to SQL
-      StdSqlMaker ssm = new StdSqlMaker();
-      
-      String sql = ssm.makeSql(query);
+      //StdSqlMaker ssm = new StdSqlMaker();
+      //String sql = ssm.makeSql(query);
+      AdqlSqlMaker asm = new AdqlSqlMaker();
+      String sql = asm.makeSql(query);
 
       querier.setStatus(new QuerierQuerying(querier.getStatus(), sql));
       
@@ -77,10 +79,12 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
    }
    
    /** Returns just the number of matches rather than the list of matches */
-   public long getCount(Principal user, Query query, Querier querier) throws IOException {
+   public long getCount(Principal user, Query query, Querier querier) throws IOException, QueryException {
       //convert query to SQL
-      StdSqlMaker ssm = new StdSqlMaker();
-      String sql = ssm.makeCountSql(query);
+      //StdSqlMaker ssm = new StdSqlMaker();
+      //String sql = ssm.makeCountSql(query);
+      AdqlSqlMaker asm = new AdqlSqlMaker();
+      String sql = asm.makeCountSql(query);
 
       querier.setStatus(new QuerierQuerying(querier.getStatus(), sql));
 
@@ -116,6 +120,18 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.3  2006/06/15 16:50:10  clq2
+ PAL_KEA_1612
+
+ Revision 1.2.92.2  2006/04/21 11:54:05  kea
+ Changed QueryException from a RuntimeException to an Exception.
+
+ Revision 1.2.92.1  2006/04/19 13:57:31  kea
+ Interim checkin.  All source is now compiling, using the new Query model
+ where possible (some legacy classes are still using OldQuery).  Unit
+ tests are broken.  Next step is to move the legacy classes sideways out
+ of the active tree.
+
  Revision 1.2  2005/03/10 15:13:48  mch
  Seperating out fits, table and xdb servers
 

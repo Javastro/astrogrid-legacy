@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
+/*$Id: InstallationSelfCheck.java,v 1.6 2006/06/15 16:50:09 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.dataservice.service;
 
 
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,26 +20,29 @@ import java.security.Principal;
 import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.dataservice.api.nvocone.NvoConeSearcher;
-import org.astrogrid.dataservice.impl.roe.SssImagePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.QuerierPlugin;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
-import org.astrogrid.dataservice.service.skynode.v074.SkyNodeService;
-import org.astrogrid.dataservice.service.soap.AxisDataService_v06;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.SimpleQueryMaker;
-import org.astrogrid.query.adql.Adql074Writer;
 import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
 import org.astrogrid.xml.Validator;
 import org.xml.sax.SAXException;
+
+ // Just used in testCone debugging
+import java.io.InputStreamReader;
+import org.astrogrid.io.Piper;
+/*
+*/
+
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -50,15 +52,18 @@ import org.xml.sax.SAXException;
  * (MCH Dec ratpak - removed 'fails' so that original exceptions propogate nicely
  * to nice web self-test page)
  */
-public class InstallationSelfCheck extends TestCase {
+public class InstallationSelfCheck extends InstallationPropertiesCheck {
    
    private Principal testPrincipal = new LoginAccount("SelfTest", "localhost");
    
    /** Checks we can create the various interfaces */
+   /*
+    *  Not supporting either of these interfaces now
    public void testInstantiateServer() throws IOException {
       new AxisDataService_v06();
       new SkyNodeService();
    }
+   */
    
    /** Checks the characteristics of the plugin */
    public void testPluginDefinition() throws Exception {
@@ -80,15 +85,22 @@ public class InstallationSelfCheck extends TestCase {
     * Creates a test query from properties, defaulting to cone(30,-80,0.1)
     */
    public Query makeTestQuery(TargetIdentifier target, String format) throws QueryException, ParserConfigurationException, IOException, SAXException {
+     /*
+      * REMOVED BY KEA, WE DON'T PROVIDE SQL TRANSLATION ANYMORE
       String sql = ConfigFactory.getCommonConfig().getString("datacenter.testquery.sql", null);
       if (sql != null) {
          return SqlParser.makeQuery(sql, target, format);
       }
+      */
       //no sql given, make a cone searcher
-      String ra = ConfigFactory.getCommonConfig().getString("datacenter.testquery.ra","30");
-      String dec = ConfigFactory.getCommonConfig().getString("datacenter.testquery.dec","-80");
-      String radius = ConfigFactory.getCommonConfig().getString("datacenter.testquery.radius","0.1");
-      return SimpleQueryMaker.makeConeQuery(Double.parseDouble(ra),Double.parseDouble(dec),Double.parseDouble(radius), target, format);
+      //String ra = ConfigFactory.getCommonConfig().getString("datacenter.testquery.ra","30");
+      //String dec = ConfigFactory.getCommonConfig().getString("datacenter.testquery.dec","-80");
+      //String radius = ConfigFactory.getCommonConfig().getString("datacenter.testquery.radius","0.1");
+      //return SimpleQueryMaker.makeConeQuery(Double.parseDouble(ra),Double.parseDouble(dec),Double.parseDouble(radius), target, format);
+      //return new Query(Double.parseDouble(ra), Double.parseDouble(dec), Double.parseDouble(radius), new ReturnTable(target, format));
+      
+      // Make a standard test query, that's what it's for.
+      return SimpleQueryMaker.makeTestQuery(new ReturnTable(target, format));
    }
 
    /** Checks the querier/plugin operates - runs a test query that will exercise it
@@ -106,35 +118,90 @@ public class InstallationSelfCheck extends TestCase {
    }
 
    /** Checks that we can submit ADQL through the AxisDataService, again an internal check */
+   /*
+    * // No longer supported
    public void testAxisServiceClassAdql() throws Throwable {
       
       AxisDataService_v06 server = new AxisDataService_v06();
       Query testQuery = makeTestQuery(new NullTarget(), ReturnTable.VOTABLE);
-      String adql = Adql074Writer.makeAdql(testQuery);
+      //String adql = Adql074Writer.makeAdql(testQuery);
+      String adql = testQuery.getAdqlString();
       String votable = server.askAdql(DomHelper.newDocument(adql).getDocumentElement(), ReturnTable.VOTABLE);
       assertNotNull(votable);
    }
+   */
 
    /** Checks that we can submit a count query with ADQL through the AxisDataService c*/
+   /*
+    * // No longer supported
    public void testAxisServiceClassCount() throws Throwable {
       
       AxisDataService_v06 server = new AxisDataService_v06();
       Query testQuery = makeTestQuery(new NullTarget(), ReturnTable.VOTABLE);
-      String adql = Adql074Writer.makeAdql(testQuery);
+      //String adql = Adql074Writer.makeAdql(testQuery);
+      String adql = testQuery.getAdqlString();
       long count = server.askCount(DomHelper.newDocument(adql).getDocumentElement());
    }
+   */
 
-   /** Checks that we can a cone search, which only really applies to sky services... */
+   /** Checks that we can a cone search, which only really applies to 
+    * sky services... 
+    *
+    * Also performs a rudimentary check to see if the search failed
+    * (any error message is returned in the stream - so a non-null stream
+    * *doesn't* mean a successful search necessarily).
+    */
    public void testCone() throws Throwable {
       
-      //this test is called as a servlet, so get url stem from servlet context
-      String endpoint = ServletHelper.getUrlStem()+"/SubmitCone";
-      
+      String endpoint;
+      String querierPlugin = ConfigFactory.getCommonConfig().getString(
+          "datacenter.querier.plugin","");
+      String coneEnabled = ConfigFactory.getCommonConfig().getString(
+          "datacenter.implements.conesearch","");
+      if (querierPlugin.equals(
+            "org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+         // Doesn't run conesearch if using samplestars plugin;
+         // this is so that self-tests pass "out of the box" 
+         // without the user having to set the 'datacenter.url'
+         // property (this is reassuring).
+         //
+         // (NB: Tried to get the actual url stem of the installed webapp
+         // into this test, rather than use the datacenter.url property;
+         // However, the JUnitEE test infrastructure that runs the tests
+         // in this class swallows the HttpServletRequest which we might 
+         // have used to extract the installation URL.   After much pain 
+         // with reflection, classloaders and other java jewels, have 
+         // simply disabled this test in the default samplestars config.
+         // Bah.
+         return;
+      }
+      else if (coneEnabled.equals("false") || coneEnabled.equals("FALSE")) {
+        // Don't run conesearch test if conesearch switched off in config
+         return;
+      }
+      else {
+         // Otherwise, use context configured in properties file.
+         // this test is called as a servlet, so get url stem from 
+         // servlet context
+         endpoint = ServletHelper.getUrlStem()+"/SubmitCone";
+      }
       NvoConeSearcher searcher = new NvoConeSearcher(endpoint);
       
       InputStream is = searcher.coneSearch(30, -80, 0.1);
-
       assertNotNull(is);
+
+      // Read first 1000 bytes to look for an error message
+      byte[] block = new byte[1000];
+      int ibytes = 0;
+      int imult = 1;
+      int read = is.read(block);
+      String s = new String(block);
+      //System.out.println("String is ");
+      //System.out.println(s);
+      if (s.indexOf("ASTROGRID DSA ERROR") != -1) {
+        // Got an error message in the stream
+        throw new QueryException(s);
+      }
    }
 
    /** Checks that we can reach the SOAP service
@@ -215,38 +282,16 @@ public class InstallationSelfCheck extends TestCase {
       Validator.isValid(new ByteArrayInputStream(vodesc.getBytes()));
    }
    
-   /** For running standalone, so it can be used from an IDE for quick tests against services */
-   public static void main(String[] args) {
+   /** For running standalone, so it can be used from an IDE for quick tests against services 
+    * @TOFIX Put some kind of runtime test here? */
+   public static void main(String[] args) throws Exception {
+      /*
       //temporary for testing SSA Image Plugin
       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SssImagePlugin.class.getName());
       ServletHelper.setUrlStem("http://localhost.roe.ac.uk:8080/pal-samples");
       
       junit.textui.TestRunner.run(InstallationSelfCheck.class);
+      */
+     throw new Exception("Main routine not defined in InstallationSelfCheck");
    }
 }
-
-
-/*
- $Log: InstallationSelfCheck.java,v $
- Revision 1.5  2005/05/27 16:21:02  clq2
- mchv_1
-
- Revision 1.4.16.2  2005/05/03 14:02:32  mch
- some validating fixes
-
- Revision 1.4.16.1  2005/04/21 17:20:51  mch
- Fixes to output types
-
- Revision 1.4  2005/03/22 12:57:37  mch
- naughty bunch of changes
-
- Revision 1.3  2005/03/21 18:45:55  mch
- Naughty big lump of changes
-
- Revision 1.2  2005/02/18 18:16:54  mch
- Fixed a few compile problems
-
-
- */
-
-

@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTest.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
+ * $Id: AdqlTest.java,v 1.4 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,21 +10,28 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.adql.Adql074Writer;
-import org.astrogrid.query.adql.AdqlXml074Parser;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
-
 
 /* For DOM comparisons */
 import org.custommonkey.xmlunit.*;
 
 /**
- * Round-trip tests - can we accept ADQL queries, parse them & produce matching ADQL?
+ * Round-trip tests - can we accept ADQL queries, parse them 
+ * & produce matching ADQL?
  */
 
 public class AdqlTest extends XMLTestCase   {
+
+   protected void setUp()
+   {
+      // Set property "conesearch.table", needed for handling ADQL 
+      // with missing FROM clause
+      ConfigFactory.getCommonConfig().setProperty(
+          "conesearch.table","catalogue");
+   }
 
    /* Actual tests */
    /* TOFIX PUT THESE BACK BEFORE MERGING!!! */
@@ -49,109 +56,175 @@ public class AdqlTest extends XMLTestCase   {
     * the test functions from a directory of xml files, so I'm doing
     * it the dumb manual way, one explicit test per file. 
     */
+   public void testSelectAll_1_0() throws Exception {
+     suiteTest("selectAll", "v1_0", true);
+   }
+   public void testSelectAll_0_7_4() throws Exception {
+     suiteTest("selectAll", "v074", true);
+   }
+   public void testSelectAllAllow_1_0() throws Exception {
+     suiteTest("selectAllAllow", "v1_0", false);
+   }
+   public void testSelectAllAllow_0_7_4() throws Exception {
+     suiteTest("selectAllAllow", "v074", false);
+   }
+   public void testSelectAllLimit_1_0() throws Exception {
+     suiteTest("selectAllLimit", "v1_0", false);
+   }
+   public void testSelectAllLimit_0_7_4() throws Exception {
+     suiteTest("selectAllLimit", "v074", false);
+   }
+   public void testSelectDictinct_1_0() throws Exception {
+     suiteTest("selectDistinct", "v1_0", true);
+   }
+   public void testSelectDictinct_0_7_4() throws Exception {
+     suiteTest("selectDistinct", "v074", true);
+   }
+   public void testSelectGroupBy_1_0() throws Exception {
+     suiteTest("selectGroupBy", "v1_0", true);
+   }
+   public void testSelectGroupBy_0_7_4() throws Exception {
+     suiteTest("selectGroupBy", "v074", true);
+   }
+   public void testSelectOrderByCol_1_0() throws Exception {
+     suiteTest("selectOrderByCol", "v1_0", true);
+   }
+   public void testSelectOrderByCol_0_7_4() throws Exception {
+     suiteTest("selectOrderByCol", "v074", true);
+   }
+   public void testSelectOrderByComplex_1_0() throws Exception {
+     suiteTest("selectOrderByComplex", "v1_0", true);
+   }
+   public void testSelectOrderByComplex_0_7_4() throws Exception {
+     suiteTest("selectOrderByComplex", "v074", true);
+   }
+   public void testSelectSome_1_0() throws Exception {
+     suiteTest("selectSome", "v1_0", true);
+   }
+   public void testSelectSome_0_7_4() throws Exception {
+     suiteTest("selectSome", "v074", true);
+   }
+   public void testSelectExpr1_1_0() throws Exception {
+     suiteTest("selectExpr1", "v1_0", true);
+   }
+   public void testSelectExpr1_0_7_4() throws Exception {
+     suiteTest("selectExpr1", "v074", true);
+   }
+   public void testSelectExpr2_1_0() throws Exception {
+     suiteTest("selectExpr2", "v1_0", true);
+   }
+   public void testSelectExpr2_0_7_4() throws Exception {
+     suiteTest("selectExpr2", "v074", true);
+   }
+   public void testSelectExprUnary_1_0() throws Exception {
+     suiteTest("selectExprUnary", "v1_0", true);
+   }
+   public void testSelectExprUnary_0_7_4() throws Exception {
+     suiteTest("selectExprUnary", "v074", true);
+   }
+   public void testSelectExprSum_1_0() throws Exception {
+     suiteTest("selectExprSum", "v1_0", true);
+   }
+   public void testSelectExprSum_0_7_4() throws Exception {
+     suiteTest("selectExprSum", "v074", true);
+   }
+   public void testSelectExprMixed1_1_0() throws Exception {
+     suiteTest("selectExprMixed1", "v1_0", true);
+   }
+   public void testSelectExprMixed1_0_7_4() throws Exception {
+     suiteTest("selectExprMixed1", "v074", true);
+   }
+   public void testSelectExprMultiAlias_1_0() throws Exception {
+     suiteTest("selectExprMultiAlias", "v1_0", true);
+   }
+   public void testSelectExprMultiAlias_0_7_4() throws Exception {
+     suiteTest("selectExprMultiAlias", "v074", true);
+   }
+   public void testSelectAliasExpr() throws Exception {
+     suiteTest("selectAliasExpr", "v1_0", true);
+   }
+   public void testSelectOneTableTwoCols() throws Exception {
+     suiteTest("selectOneTableTwoCols", "v1_0", true);
+   }
+   public void testSelectTwoTablesFourCols() throws Exception {
+     suiteTest("selectTwoTablesFourCols", "v1_0", true);
+   }
+   public void testSelectValueTweakMathsFuncs() throws Exception {
+     suiteTest("selectValueTweakMathsFuncs", "v1_0", true);
+   }
+   public void testSelectLogPowMathsFuncs() throws Exception {
+     suiteTest("selectLogPowMathsFuncs", "v1_0", true);
+   }
+   public void testSelectAggregateFuncs() throws Exception {
+     suiteTest("selectAggregateFuncs", "v1_0", true);
+   }
+   public void testSelectUnaries() throws Exception {
+     suiteTest("selectUnaries", "v1_0", true);
+   }
+   public void testSelectBinaries() throws Exception {
+     suiteTest("selectBinaries", "v1_0", true);
+   }
+   public void testSelectTrigFuncsDeg() throws Exception {
+     suiteTest("selectTrigFuncsDeg", "v1_0", true);
+   }
+   public void testSelectTrigFuncsRad() throws Exception {
+     suiteTest("selectTrigFuncsRad", "v1_0", true);
+   }
+   public void testSelectComparisonOps() throws Exception {
+     suiteTest("selectComparisonOps", "v1_0", true);
+   }
+   public void testSelectBetweenOps() throws Exception {
+     suiteTest("selectBetweenOps", "v1_0", true);
+   }
+   public void testSelectBoolOps() throws Exception {
+     suiteTest("selectBoolOps", "v1_0", true);
+   }
 
-   public void testSelectAll() throws Exception {
-     suiteTest("selectAll");
-   }
-   public void testSelectAllAllow() throws Exception {
-     suiteTest("selectAllAllow");
-   }
-   public void testSelectAllLimit() throws Exception {
-     suiteTest("selectAllLimit");
-   }
-   public void testSelectDictinct() throws Exception {
-     suiteTest("selectDistinct");
-   }
-   public void testSelectGroupBy() throws Exception {
-     suiteTest("selectGroupBy");
-   }
-   /*
-   // Not currently working 
-   public void testSelectOrderByCol() throws Exception {
-     suiteTest("selectOrderByCol");
-   }
-   */
-   public void testSelectSome() throws Exception {
-     suiteTest("selectSome");
-   }
-   /*
-   // Not currently working
-   public void testSelectExpr1() throws Exception {
-     suiteTest("selectExpr1");
-   }
-   // Not currently working
-   public void testSelectExpr2() throws Exception {
-     suiteTest("selectExpr2");
-   }
-   */
-
-
-
+   //----------------------------------------------------------------------
    /* Utility functions */
-   /*
-   public void roundParse(Document fileAdqlDom) throws Exception {
-   //public void roundParse(Element fileAdqlDom) throws Exception {
-      Query query = AdqlXml074Parser.makeQuery(
-          fileAdqlDom.getDocumentElement());
 
-      String writtenAdql = Adql074Writer.makeAdql(query);
-      Document writtenAdqlDom = DomHelper.newDocument(writtenAdql);
-
-      // Normalise documents just in case
-      //fileAdqlDom.normalize();
-      //writtenAdqlDom.normalize();
-
-      Element writtenAdqlElement = writtenAdqlDom.getDocumentElement();
-      System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-      System.out.println(fileAdqlDom.getDocumentElement());
-      System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-      System.out.print(writtenAdqlElement);
-      System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-      // Using xmlunit to compare documents
-
-      //assertXMLEqual("Documents are not equal!!",fileAdqlDom, writtenAdqlDom);
-      //new AdqlTestHelper().assertElementsEqual(fileAdqlDom, writtenAdqlDom);
-   }
-   */
-   public void roundParse(Document fileAdqlDom) throws Exception {
-      Element fileAdqlElement = fileAdqlDom.getDocumentElement();
-      Query query = AdqlXml074Parser.makeQuery(fileAdqlElement);
-      String writtenAdql = Adql074Writer.makeAdql(query);
-      System.out.print(writtenAdql);
-      Document writtenAdqlDom = DomHelper.newDocument(writtenAdql);
+   public void roundParse(String adqlString, String comparisonString) throws Exception {
+      System.out.print(adqlString);
+      //Element fileAdqlElement = fileAdqlDom.getDocumentElement();
+      Query query = new Query(adqlString);
+      Document writtenAdqlDom = DomHelper.newDocument(comparisonString);
+      Document queryAdqlDom = DomHelper.newDocument(query.getAdqlString());
 
       // Normalize just to be sure 
-      fileAdqlDom.normalize();
+      queryAdqlDom.normalize();
       writtenAdqlDom.normalize();
 
       // Using xmlunit to compare documents
       setIgnoreWhitespace(true);
-      assertXMLEqual("Documents are not equal!!",fileAdqlDom, writtenAdqlDom);
-
-      /*
-      DifferenceListener myDifferenceListener = new IgnoreTextAndAttributeValuesDifferenceListener();
-      Diff myDiff = new Diff(myControlXML, myTestXML);
-      myDiff.overrideDifferenceListener(myDifferenceListener);
-      assertTrue("test XML matches control skeleton XML " + myDiff, myDiff.similar());
-      */
-
-      //new AdqlTestHelper().assertElementsEqual(fileAdqlDom, writtenAdqlDom);
+      assertXMLEqual("Documents are not equal!!",queryAdqlDom, writtenAdqlDom);
    }
 
+   private void suiteTest(String name, String version, boolean expectIdentical)   throws Exception
+   {
+      AdqlTestHelper helper = new AdqlTestHelper();
+      printHelpfulStuff(name);
 
-   
-   private void printHelpfulStuff(String filename) {
+      String adql = helper.getSuiteAdqlString(name, version); 
+      String compareAdql;
+      if (expectIdentical) {
+         compareAdql = helper.getSuiteAdqlString(name, "v1_0");
+      }
+      else {
+         compareAdql = helper.getSuiteAdqlStringExpected(name, "v1_0");
+      }
+      roundParse(adql, compareAdql);
+   }
+
+   protected void printHelpfulStuff(String filename) {
       System.out.println("------------------------------------------------");
       System.out.println("Testing query " + filename);
       System.out.println("------------------------------------------------");
    }
-   private void suiteTest(String name) throws Exception
-   {
-      AdqlTestHelper helper = new AdqlTestHelper();
-      printHelpfulStuff(name);
-      roundParse(new AdqlTestHelper().getSuiteAdql(name));
+   protected void printHelpfulStuff(String filename, String extraStuff) {
+      System.out.println("------------------------------------------------");
+      System.out.println("Testing query " + filename + " for " + extraStuff);
+      System.out.println("------------------------------------------------");
    }
-   
 
    /* Junit stuff */
 
@@ -167,59 +240,3 @@ public class AdqlTest extends XMLTestCase   {
    }
    
 }
-
-/*
- $Log: AdqlTest.java,v $
- Revision 1.3  2006/03/22 15:10:13  clq2
- KEA_PAL-1534
-
- Revision 1.2.82.2  2006/03/21 11:26:58  kea
- Tweaks to switch off broken unit tests prior to radical revision
- of internal query model.
-
- Revision 1.2.82.1  2006/02/16 17:13:05  kea
- Various ADQL/XML parsing-related fixes, including:
-  - adding xsi:type attributes to various tags
-  - repairing/adding proper column alias support (aliases compulsory
-     in adql 0.7.4)
-  - started adding missing bits (like "Allow") - not finished yet
-  - added some extra ADQL sample queries - more to come
-  - added proper testing of ADQL round-trip conversions using xmlunit
-    (existing test was not checking whole DOM tree, only topmost node)
-  - tweaked test queries to include xsi:type attributes to help with
-    unit-testing checks
-
- Revision 1.2  2005/03/21 18:31:51  mch
- Included dates; made function types more explicit
-
- Revision 1.1  2005/02/28 19:36:39  mch
- Fixes to tests
-
- Revision 1.1.1.1  2005/02/17 18:37:34  mch
- Initial checkin
-
- Revision 1.2  2005/02/17 18:18:59  mch
- Moved in from datacenter project
-
- Revision 1.1.1.1  2005/02/16 17:11:23  mch
- Initial checkin
-
- Revision 1.6.12.1  2004/12/08 18:36:40  mch
- Added Vizier, rationalised SqlWriters etc, separated out TableResults from QueryResults
-
- Revision 1.6  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.2.6.1  2004/10/21 19:10:24  mch
- Removed deprecated translators, moved SqlMaker back to server,
-
- Revision 1.2  2004/10/18 13:11:30  mch
- Lumpy Merge
-
- Revision 1.1.2.1  2004/10/15 19:59:05  mch
- Lots of changes during trip to CDS to improve int test pass rate
-
-
- */
-
-

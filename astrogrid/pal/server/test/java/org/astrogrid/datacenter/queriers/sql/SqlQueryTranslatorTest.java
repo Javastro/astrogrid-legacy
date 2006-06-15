@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.6 2006/06/15 16:50:08 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,9 +15,8 @@ import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.tableserver.jdbc.SqlMaker;
-import org.astrogrid.tableserver.jdbc.StdSqlMaker;
+import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 
 /**
@@ -26,7 +25,8 @@ import org.astrogrid.tableserver.test.SampleStarsPlugin;
  */
 public class SqlQueryTranslatorTest extends TestCase {
 
-    SqlMaker translator = new StdSqlMaker();
+    //SqlMaker translator = new StdSqlMaker();
+    SqlMaker translator = new AdqlSqlMaker();
     Properties correctSql = new Properties();
    
     public SqlQueryTranslatorTest(String arg0) {
@@ -76,7 +76,8 @@ public class SqlQueryTranslatorTest extends TestCase {
        String filename = "sample-"+ver+"-"+testNum+".xml";
        InputStream in = this.getClass().getResourceAsStream(filename);
        assertNotNull(in);
-       Query query = AdqlQueryMaker.makeQuery(in);
+       //Query query = AdqlQueryMaker.makeQuery(in);
+       Query query = new Query(in);
        
        String result = translator.makeSql(query).trim();
        String correct = correctSql.getProperty("sample"+testNum).trim();
@@ -105,6 +106,18 @@ public class SqlQueryTranslatorTest extends TestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.6  2006/06/15 16:50:08  clq2
+PAL_KEA_1612
+
+Revision 1.5.64.2  2006/04/20 15:08:28  kea
+More moving sideways.
+
+Revision 1.5.64.1  2006/04/19 13:57:32  kea
+Interim checkin.  All source is now compiling, using the new Query model
+where possible (some legacy classes are still using OldQuery).  Unit
+tests are broken.  Next step is to move the legacy classes sideways out
+of the active tree.
+
 Revision 1.5  2005/05/27 16:21:02  clq2
 mchv_1
 

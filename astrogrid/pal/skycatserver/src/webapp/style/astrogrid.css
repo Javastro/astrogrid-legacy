@@ -71,11 +71,17 @@ div.clear hr{
 #navcolumn {
   padding: 8px 4px 0 8px;
 }
-#navcolumn h5, #navcolumn ul {
-  margin: 0;
+#navcolumn h5 {
+  margin: 10px 0px 0px 0px;
   padding: 0;
   font-size: small;
 }
+#navcolumn ul {
+  margin: 5px 0px 0px 0px;
+  padding: 0;
+  font-size: small;
+}
+
 #navcolumn li {
   list-style-type: none;
   background-image: none;
@@ -83,7 +89,7 @@ div.clear hr{
   background-position: 0 0.4em;
   padding-left: 16px;
   list-style-position: ouside;
-  line-height: 1.2em;
+  line-height: 1.5em;
   font-size: smaller;
 }
 #navcolumn li.expanded {
@@ -229,4 +235,7 @@ table.bodyTable tr.b {
 .source {
   border: 1px solid #999;
 }
-
+div.boxedCode {
+  background: #EEEEEE;
+  border: 1px solid #999;
+}

@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.10 2005/05/27 16:21:14 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.11 2006/06/15 16:50:08 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -164,7 +164,7 @@ public class TableMetaDocInterpreter
    /** Used by SQL results where only the column name is known. Returns the element
     * corresponding to the only matching column, if there are several or none
     * throws an exception*/
-   public ColumnInfo guessColumn(String[] scope, String column) throws IOException {
+   public ColumnInfo guessColumn(String[] tables, String column) throws IOException {
 
       Element foundCol = null;
       String foundTable = null;
@@ -175,17 +175,17 @@ public class TableMetaDocInterpreter
       
          Element catNode = getCatalogElement(cats[d]);
          
-         //if scope is not given, use all tables
-         if (scope==null) {
-            Element[] tables = DomHelper.getChildrenByTagName(catNode, "Table");
-            scope = new String[tables.length];
-            for (int i = 0; i < scope.length; i++) {
-               scope[i] = DomHelper.getValueOf(DomHelper.getSingleChildByTagName(tables[i], "Name"));
+         //if table(s) not given, use all tables
+         if ((tables==null) || (tables.length == 0)) {
+            Element[] realTables = DomHelper.getChildrenByTagName(catNode, "Table");
+            tables = new String[realTables.length];
+            for (int i = 0; i < tables.length; i++) {
+               tables[i] = DomHelper.getValueOf(DomHelper.getSingleChildByTagName(realTables[i], "Name"));
             }
          }
          
-         for (int t = 0; t < scope.length; t++) {
-            String tableName = scope[t];
+         for (int t = 0; t < tables.length; t++) {
+            String tableName = tables[t];
    
             Element[] cols = DomHelper.getChildrenByTagName(getTableElement(catNode, tableName), "Column");
             for (int c = 0; c < cols.length; c++) {

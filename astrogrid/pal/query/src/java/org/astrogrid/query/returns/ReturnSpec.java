@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnSpec.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
+ * $Id: ReturnSpec.java,v 1.4 2006/06/15 16:50:10 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -54,7 +54,7 @@ public abstract class ReturnSpec  {
 
    /** See class constants for standard compressions, but bear in mind there
     * may be others suported by individual services*/
-   public void setCompression(String aCompression) {
+   public void setCompression(String aCompression) throws QueryException {
       if ((aCompression == null) || aCompression.equals(NONE) || aCompression.toUpperCase().equals("NONE")) {
          compression = NONE;
       }
@@ -109,6 +109,12 @@ public abstract class ReturnSpec  {
 }
 /*
  $Log: ReturnSpec.java,v $
+ Revision 1.4  2006/06/15 16:50:10  clq2
+ PAL_KEA_1612
+
+ Revision 1.3.2.1  2006/04/21 11:54:05  kea
+ Changed QueryException from a RuntimeException to an Exception.
+
  Revision 1.3  2006/03/22 15:10:13  clq2
  KEA_PAL-1534
 

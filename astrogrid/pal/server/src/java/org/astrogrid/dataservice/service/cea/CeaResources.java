@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.11 2006/02/09 09:54:09 clq2 Exp $
+ * $Id: CeaResources.java,v 1.12 2006/06/15 16:50:08 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,7 +29,11 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
     * Returns a CeaServiceType resource element
     */
    public String getVoResource() throws IOException {
-
+      String endpoint = 
+         ConfigFactory.getCommonConfig().getString("datacenter.url");
+      if (!endpoint.endsWith("/")) {
+         endpoint = endpoint + "/";  // Add trailing separator if missing
+      }
       String ceaService =
          makeVoResourceElement(
              "cea:CeaServiceType",
@@ -42,8 +46,8 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
              ) +
          makeCore("ceaService")+
          "<interface xsi:type='vs:WebService'>"+
-            "<accessURL use='full'>"+
-               ConfigFactory.getCommonConfig().getString("datacenter.url")+"services/CommonExecutionConnectorService"+
+            "<accessURL use='full'>"+ endpoint + 
+            "services/CommonExecutionConnectorService"+
             "</accessURL>"+
          "</interface>"+
          //reference to the application that this serves
@@ -129,7 +133,6 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
             "</cea:Interfaces>\n"+
          "</cea:ApplicationDefinition>\n"+
          "</"+VORESOURCE_ELEMENT+">\n";
-
          
       System.out.println(ceaService+ceaApplication);
          return ceaService+ceaApplication;

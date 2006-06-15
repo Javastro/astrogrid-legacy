@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.5 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: Querier.java,v 1.6 2006/06/15 16:50:08 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,7 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
+import org.astrogrid.query.QueryException;
 import org.astrogrid.slinger.Slinger;
 
 /**
@@ -186,8 +187,19 @@ public class Querier implements Runnable, PluginListener {
  //     plugin = QuerierPluginFactory.createPlugin(this);
       
       if (!(getStatus() instanceof QuerierAborted)) { // it may be that the query has been aborted immediately after being created, or while queued, etc
-         plugin.askQuery(user, query, this);
-      
+         try {
+            plugin.askQuery(user, query, this);
+         }
+         catch (QueryException e) {
+            log.error(
+                "Query execution failed for query "+getId()+
+                " from "+status.getSource()+" by "+status.getOwner() + 
+                " : " + e.getMessage());
+            throw new DatacenterException(
+                "Query execution failed for query "+getId()+
+                " from "+status.getSource()+" by "+status.getOwner() + 
+                " : " + e.getMessage(), e);
+         }
          close();
       }
    }
@@ -196,7 +208,19 @@ public class Querier implements Runnable, PluginListener {
     * the given query.  These are asynchronous (blocking)
     */
    public long askCount() throws IOException {
-      return plugin.getCount(user, query, this);
+      try {
+         return plugin.getCount(user, query, this);
+      }
+      catch (QueryException e) {
+         log.error(
+             "askCount execution failed for query "+getId()+
+             " from "+status.getSource()+" by "+status.getOwner() + 
+             " : " + e.getMessage());
+         throw new DatacenterException(
+             "askCount execution failed for query "+getId()+
+             " from "+status.getSource()+" by "+status.getOwner() + 
+             " : " + e.getMessage(), e);
+      }
    }
    
    /** Sets the number of results */

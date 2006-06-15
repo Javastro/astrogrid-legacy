@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleSpectraQuery.java,v 1.2 2005/05/27 16:21:06 clq2 Exp $
+ * $Id: SimpleSpectraQuery.java,v 1.3 2006/06/15 16:50:10 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.ssap;
@@ -11,7 +11,6 @@ import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
@@ -21,7 +20,11 @@ import org.astrogrid.webapp.DefaultServlet;
     * (and awkward) position format for some wierd reason.
     *
  *
- * @author mch
+ * @author M Hill
+ * @author K Andrews
+ * @deprecated  Building separate SSAP tool, not embedded in DSA;  also,
+ * I don't think this does the right thing.
+ *
  */
 public class SimpleSpectraQuery extends DefaultServlet {
    
@@ -30,14 +33,19 @@ public class SimpleSpectraQuery extends DefaultServlet {
    public void doGet(HttpServletRequest request, HttpServletResponse response)  throws IOException {
 
       try {
-         CircleCondition circleCon = ServletHelper.makeCircleCondition(request);
+        // Extract the query parameters
+         double radius = ServletHelper.getRadius(request);
+         double ra = ServletHelper.getRa(request);
+         double dec = ServletHelper.getDec(request);
          String format = request.getParameter("FORMAT");
          if (format == null) format = request.getParameter("format");
-   
          try {
-            server.askQuery(LoginAccount.ANONYMOUS, new Query(circleCon, new ReturnTable(new WriterTarget(response.getWriter()), format)), this);
+            server.askQuery(LoginAccount.ANONYMOUS, 
+                new Query(ra, dec, radius, new ReturnTable(
+                        new WriterTarget(response.getWriter()), format)), 
+                this);
          } catch (Throwable e) {
-            doError(response, "SSAP error (RA="+circleCon.getRa()+", DEC="+circleCon.getDec()+", SIZE="+circleCon.getRadius()+", FORMAT="+format+")", e);
+            doError(response, "SSAP error (RA="+Double.toString(ra)+", DEC="+Double.toString(dec)+", SIZE="+Double.toString(radius)+", FORMAT="+format+")", e);
          }
          
       } catch (NumberFormatException e) {

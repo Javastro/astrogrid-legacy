@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.5 2005/05/27 16:21:01 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.6 2006/06/15 16:50:10 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,7 @@ import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
 import org.astrogrid.tableserver.jdbc.JdbcPlugin;
-import org.astrogrid.tableserver.jdbc.StdSqlMaker;
+import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.metadata.TabularDbResources;
 import org.astrogrid.tableserver.metadata.TabularSkyServiceResources;
@@ -49,24 +49,37 @@ public class SampleStarsPlugin extends JdbcPlugin
       
       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SampleStarsPlugin.class.getName());
 
-      ConfigFactory.getCommonConfig().setProperty(JdbcPlugin.SQL_TRANSLATOR, StdSqlMaker.class.getName());
+      ConfigFactory.getCommonConfig().setProperty(JdbcPlugin.SQL_TRANSLATOR, AdqlSqlMaker.class.getName());
 
-      ConfigFactory.getCommonConfig().setProperty("datacenter.name", "Sample");
       
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_RA_COL_KEY, "RA");
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_DEC_COL_KEY,"DEC");
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_TABLE_KEY,  "SampleStars");
-      
-//      ConfigFactory.getCommonConfig().setProperty(SqlWriter.DB_TRIGFUNCS_IN_RADIANS, "True");
-
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_COL_UNITS_KEY, "deg");
+      ConfigFactory.getCommonConfig().setProperty(
+          "db.trigfuncs.in.radians","true");
+
+      //set up properties so we connect to the db and translate to the correct
+      //flavour of SQL
+      //
+      ConfigFactory.getCommonConfig().setProperty(
+          JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
+      //in memory db - doesn't seem to persist between calls...
+      //ConfigFactory.getCommonConfig().setProperty(
+      //       JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); 
       
-      //set up properties so we connect to the db
-      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver");
-//      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:."); //in memory db - doesn't seem to persist between calls...
-      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb"); //db on disk
-      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_USER_KEY, "sa");
-      ConfigFactory.getCommonConfig().setProperty(JdbcConnections.JDBC_PASSWORD_KEY, "");
+      // This creates db on disk
+      // Need "shutdown=true" to force the DB to shut down when no 
+      // active connections exist (required from v1.7.2 onwards) 
+      ConfigFactory.getCommonConfig().setProperty(
+          JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb;shutdown=true"); 
+      ConfigFactory.getCommonConfig().setProperty(
+          JdbcConnections.JDBC_USER_KEY, "sa");
+      ConfigFactory.getCommonConfig().setProperty(
+          JdbcConnections.JDBC_PASSWORD_KEY, "");
+
+      ConfigFactory.getCommonConfig().setProperty(
+          "datacenter.sqlmaker.xslt","HSQLDB-1.8.0.xsl" );
       
       //it's a bit naughty setting this, but it sorts out most tests
       ConfigFactory.getCommonConfig().setProperty("datacenter.url", ConfigFactory.getCommonConfig().getProperty("datacenter.url", "http://localhost:8080/pal-Sample/"));
@@ -87,26 +100,33 @@ public class SampleStarsPlugin extends JdbcPlugin
 
       //configure which resources to produce
       ConfigFactory.getCommonConfig().setProperties(VoDescriptionServer.RESOURCE_PLUGIN_KEY, new Object[] {
-               TabularSkyServiceResources.class.getName(),
-               TabularDbResources.class.getName(),
+               //TabularSkyServiceResources.class.getName(),
+               TabularDbResources.class.getName()
             });
 
-      
+
       //set up the properties for the authority bit
-      ConfigFactory.getCommonConfig().setProperty("datacenter.name", "SampleStars AstroGrid Datacenter");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.shortname", "PAL-Sample");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.name", "Default Astrogrid DSA/Catalog running test database");
       ConfigFactory.getCommonConfig().setProperty("datacenter.publisher", "AstroGrid");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.description", "An unconfigured datacenter; it contains two tables of sample stars and galaxies for testing and demonstration purposes.");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.contact.name", "Martin Hill");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.contact.email", "mch@roe.ac.uk");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.description", "This is a default (unconfigured) DSA/catalog installation.  It accesses a small HSQLDB database containing fictitious tables of stars and galaxies for testing and demonstration purposes.");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.contact.name", "The AstroGrid Team");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.contact.email", "astrogrid_dsa@star.le.ac.uk");
 
+      // Conesearch and self-test properties
+      ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.table","SampleStars");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column1","RA");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column1","DEC");
+
+      ConfigFactory.getCommonConfig().setProperty("conesearch.table","SampleStars");
+      ConfigFactory.getCommonConfig().setProperty("conesearch.ra.column","RA");
+      ConfigFactory.getCommonConfig().setProperty("conesearch.dec.column","DEC");
+      ConfigFactory.getCommonConfig().setProperty("conesearch.column.units","deg");
+
+      //
       ConfigFactory.getCommonConfig().setProperty("datacenter.authorityId", "astrogrid.org");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.resourceKey", "pal-sample");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.resourceKey", "test-dsa-catalog");
     }
-   
     
-    
-
    public static synchronized void initialise() throws DatabaseAccessException {
       
       if (initialised) return;

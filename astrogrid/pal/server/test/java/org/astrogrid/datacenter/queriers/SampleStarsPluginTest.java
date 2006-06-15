@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.7 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.8 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,6 +23,7 @@ import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.WriterTarget;
@@ -75,12 +76,16 @@ public class SampleStarsPluginTest extends TestCase {
    }
 
    /** Test that we can reach the dummy catalogue through the dummy plugin */
-   public void testDummyPlugin() throws IOException, SQLException, SAXException, ParserConfigurationException {
+   public void testDummyPlugin() throws IOException, SQLException, SAXException, ParserConfigurationException, QueryException {
       
       QuerierManager manager = QuerierManager.getManager("DummyTest");
 
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
+      //Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
+      Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
+          SimpleQueryMaker.makeTestQuery(
+            new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)), 
+          this);
       manager.askQuerier(q);
       String results = sw.toString();
       Document resultsDom = DomHelper.newDocument(sw.toString());

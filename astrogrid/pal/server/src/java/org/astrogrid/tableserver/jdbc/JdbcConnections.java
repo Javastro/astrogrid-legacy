@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcConnections.java,v 1.3 2005/03/31 12:10:28 mch Exp $
+ * $Id: JdbcConnections.java,v 1.4 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -50,7 +50,7 @@ public class JdbcConnections {
    //public static final String JDBC_CONNECTION_PROPERTIES_KEY = "DatabaseQuerier.ConnectionProperties";
 
    /** JNDI key where datasource is expected */
-   public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource";
+   public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/dsa-datasource";
    
    /** JDBC drivers started, also marker for jdbc drivers been started */
    private static Driver[] drivers = null;

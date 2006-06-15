@@ -17,7 +17,6 @@
         <listener-class>org.astrogrid.dataservice.servlet.ContainerListener</listener-class>
     </listener>
     -->
-
     
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
@@ -70,17 +69,21 @@
     <servlet-class>org.astrogrid.dataservice.service.servlet.AttemptAbort</servlet-class>
   </servlet>
 
+  <!--  NO LONGER SUPPORTED
   <servlet>
     <servlet-name>SimpleImageQuery</servlet-name>
     <description>serves using Simple Image Access Protocol</description>
     <servlet-class>org.astrogrid.dataservice.service.siap.SimpleImageQuery</servlet-class>
   </servlet>
+  -->
 
+  <!--  NO LONGER SUPPORTED
   <servlet>
     <servlet-name>SimpleSpectraQuery</servlet-name>
     <description>serves using Simple Spectra Access Protocol</description>
     <servlet-class>org.astrogrid.dataservice.service.ssap.SimpleSpectraQuery</servlet-class>
   </servlet>
+  -->
 
   <!-- Admin servlets -->
   <servlet>
@@ -131,27 +134,27 @@
 
   <servlet-mapping>
     <servlet-name>SubmitQuery</servlet-name>
-    <url-pattern>/SubmitQuery</url-pattern>
+    <url-pattern>SubmitQuery</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>AskQuery</servlet-name>
-    <url-pattern>/AskQuery</url-pattern>
+    <url-pattern>/admin/AskQuery</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>AskCount</servlet-name>
-    <url-pattern>/AskCount</url-pattern>
+    <url-pattern>/admin/AskCount</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>BrowserAskQuery</servlet-name>
-    <url-pattern>/BrowserAskQuery</url-pattern>
+    <url-pattern>/admin/BrowserAskQuery</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>SubmitCone</servlet-name>
-    <url-pattern>/SubmitCone</url-pattern>
+    <url-pattern>SubmitCone</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -164,6 +167,7 @@
     <url-pattern>/admin/Abort</url-pattern>
   </servlet-mapping>
 
+  <!-- THESE ARE NO LONGER SUPPORTED
   <servlet-mapping>
     <servlet-name>SimpleImageQuery</servlet-name>
     <url-pattern>/SIA</url-pattern>
@@ -193,6 +197,7 @@
     <servlet-name>SimpleSpectraQuery</servlet-name>
     <url-pattern>/SSA</url-pattern>
   </servlet-mapping>
+  -->
 
   <!-- Administration type stuff -->
   <servlet-mapping>
@@ -234,7 +239,7 @@
 
  <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
-    <url-pattern>/TestServlet/*</url-pattern>
+    <url-pattern>/admin/TestServlet/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -264,6 +269,7 @@
   </welcome-file-list>
 
   <!-- Security stuff - ensure admin & setup pages are not readily available -->
+  <!-- paladmin is a legacy role, dsaadmin is used in dsa/catalog -->
   <security-constraint>
       <web-resource-collection>
           <web-resource-name></web-resource-name>
@@ -271,6 +277,7 @@
       </web-resource-collection>
       <auth-constraint>
           <role-name>paladmin</role-name>
+          <role-name>dsaadmin</role-name>
       </auth-constraint>
   </security-constraint>
 
@@ -281,6 +288,7 @@
       </web-resource-collection>
       <auth-constraint>
           <role-name>paladmin</role-name>
+          <role-name>dsaadmin</role-name>
       </auth-constraint>
   </security-constraint>
    
@@ -295,7 +303,18 @@
 
   <security-role>
      <role-name>paladmin</role-name>
+     <role-name>dsaadmin</role-name>
   </security-role>
+
+  <!-- This one is required for the CEA server in DSA/catalog.
+       Don't change or remove it. -->
+  <env-entry>
+     <description>Class name of the component manager implementation to use. Don't change this during deployment!</description>
+     <env-entry-name>cea.component.manager.class</env-entry-name>
+     <env-entry-value>org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager</env-entry-value>
+     <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry>
+
 
   <!-- causes Tomcat to throw an exception... fix later
   <resource-ref>
@@ -320,11 +339,5 @@
    <res-auth>Container</res-auth>
   </resource-ref>
 -->
-  <!--CEA - defines which implementaiton of the component manager to use. no need to edit for DSA -->
-  <env-entry>
-        <description>Class name of the CEA component manager implementation to use</description>
-        <env-entry-name>cea.component.manager.class</env-entry-name>
-        <env-entry-value>org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager</env-entry-value>
-        <env-entry-type>java.lang.String</env-entry-type>
-  </env-entry>
+
 </web-app>

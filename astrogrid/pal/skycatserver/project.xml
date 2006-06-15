@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <extend>${basedir}/../webapp-base/project.xml</extend>
-        <id>astrogrid-pal-skycatserver</id>
-        <name>Astrogrid Sky Server WebApp</name>
+        <id>astrogrid-dsa-catalog</id>
+        <name>Astrogrid DSA/Catalog WebApp</name>
   <currentVersion>${astrogrid.pal.latest}</currentVersion>
-  <description>Webapplication for serving sky object catalogues</description>
-  <shortDescription>AstroGrid Sky Server</shortDescription>
+  <description>Webapplication for serving astronomical catalogues in RDBMs</description>
+  <shortDescription>AstroGrid DSA/Catalog web application</shortDescription>
 
    <licenses>
       <license>
@@ -30,7 +30,7 @@
     <!-- HSQLDB for sample & temporary dbs -->
     <dependency>
       <id>hsqldb</id>
-      <version>1.7.1</version>
+      <version>1.8.0</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>

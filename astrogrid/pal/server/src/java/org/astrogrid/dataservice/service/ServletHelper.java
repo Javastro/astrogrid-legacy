@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.4 2006/03/22 15:10:13 clq2 Exp $
+ * $Id: ServletHelper.java,v 1.5 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,11 +19,11 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.io.mime.MimeNames;
-import org.astrogrid.query.condition.CircleCondition;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
-import org.astrogrid.query.returns.ReturnTable;
-import org.astrogrid.query.constraint.ConstraintSpec;
+import org.astrogrid.query.Query;
+import org.astrogrid.query.QueryException;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 
 /**
@@ -112,8 +112,8 @@ public class ServletHelper
     * Convenience routine for JSPs; decides where target should be from
     * the parameters in the given request.  The parameter names should match
     * those assigned in resultsForm.xml 
-    * NOTE:  This CAN'T set the limit on the number of results, which now
-    * happens in ConstraintSpec, not ReturnSpec! */
+    * @TOFIX: LIMIT is currently being ignored, is this problematic? 
+    * Can have a getLimit() method and set limit in actual query instead? */
    public static ReturnSpec makeReturnSpec(HttpServletRequest request)  {
       
       ReturnSpec returnSpec = null;
@@ -124,16 +124,32 @@ public class ServletHelper
             returnSpec = new ReturnImage(null);
          }
       }
-      
       if (returnSpec == null) {
          returnSpec = new ReturnTable(null);
       }
 
       // This is a dummy placeholder
-      ConstraintSpec constraintSpec = new ConstraintSpec();
-      fillReturnSpec(returnSpec, request, constraintSpec);
+      fillReturnSpec(returnSpec, request);
       
       return returnSpec;
+   }
+
+   /**
+    * Convenience routine for JSPs; extracts the limit value from a request
+    * if present. */
+   public static long getLimit(HttpServletRequest request) {
+      String limit = request.getParameter("Limit");
+      long limitVal;
+      if ( (limit != null) && (limit.trim().length()>0)) {
+         try {
+            limitVal = Long.parseLong(limit, 10);
+         }
+         catch(NumberFormatException e) {
+           throw new IllegalArgumentException("Bad value '" + limit + "' for limit, expected valid integer");
+         }
+         return limitVal;
+      }
+      return Query.LIMIT_NOLIMIT;
    }
 
    /**
@@ -153,7 +169,7 @@ public class ServletHelper
     * Convenience routine for JSPs; decides where target should be from
     * the parameters in the given request.  The parameter names should match
     * those assigned in resultsForm.xml */
-   public static void fillReturnSpec(ReturnSpec returnSpec, HttpServletRequest request, ConstraintSpec constraintSpec)  {
+   public static void fillReturnSpec(ReturnSpec returnSpec, HttpServletRequest request)  {
 
       String targetResponse = request.getParameter("TargetResponse");
       if ((targetResponse != null) && targetResponse.trim().toLowerCase().equals("true")) {
@@ -188,20 +204,29 @@ public class ServletHelper
       
       String compression = request.getParameter("Compression");
       if ( (compression != null) && (compression.trim().length()>0)) {
-         returnSpec.setCompression(compression);
+         try {
+            returnSpec.setCompression(compression);
+         }
+         catch (QueryException e) {
+            throw new IllegalArgumentException("Invalid compression: "+
+                compression+" ("+e+")");
+         }
       }
-
+      /*
+      // Limit is no longer part of ReturnSpec, it's managed 
+      // directly by the Query class.
       String limit = request.getParameter("Limit");
       if ( (limit != null) && (limit.trim().length()>0)) {
-         constraintSpec.setLimit(Integer.parseInt(limit));
+        throw new IllegalArgumentException("Limit is ignored!");
       }
-
+      */
    }
    
    /** Creates a Circle function condition from parameters in the given request.
     * Accepts POS=(ra,dec) and RA=ra&DEC=dec, and SIZE and SR for search radius.
     * Accepts all-lower case as well as all-upper case
     */
+   /*
    public static CircleCondition makeCircleCondition(HttpServletRequest request) {
       
       String radiusparam = request.getParameter("SIZE");
@@ -246,7 +271,95 @@ public class ServletHelper
       
       return new CircleCondition(ra, dec, radius);
    }
+   */
    
+   /** Convenience routine for extracting the radius of a conesearch */
+   public static double getRadius(HttpServletRequest request)
+   {
+      String radiusparam = request.getParameter("SIZE");
+      if (radiusparam == null) { radiusparam = request.getParameter("size"); }
+      if (radiusparam == null) { radiusparam = request.getParameter("SR"); }
+      if (radiusparam == null) { radiusparam = request.getParameter("sr"); }
+      if (radiusparam == null) { radiusparam = request.getParameter("RADIUS"); }
+      if (radiusparam == null) { radiusparam = request.getParameter("radius"); }
+      if (radiusparam == null) {
+         throw new IllegalArgumentException("No Radius given as SIZE or SR or RADIUS");
+      }
+      try {
+         return Double.parseDouble(radiusparam);
+      }   
+      catch (NumberFormatException e) {
+         throw new IllegalArgumentException(
+             "Bad search radius '" + radiusparam + 
+             "' given, expected real number");
+      }
+   }
+
+   /** Convenience routine for extracting the RA of a conesearch */
+   public static double getRa(HttpServletRequest request)
+   {
+      String pos = request.getParameter("POS");
+      if (pos == null) {  
+        request.getParameter("pos"); 
+      }
+      if (pos != null) {
+         int comma = pos.indexOf(",");
+         try {
+            return Double.parseDouble(pos.substring(0,comma));
+         }
+         catch (Exception e) {
+            throw new IllegalArgumentException(
+              "Couldn't parse RA value from POS field");
+         }
+      }
+      String raparam = request.getParameter("RA");
+      if (raparam == null) {  
+         raparam = request.getParameter("ra"); 
+      }
+      if (raparam == null) {
+         raparam = request.getParameter("Ra"); 
+      }
+      if (raparam == null) {
+         throw new IllegalArgumentException("No RA given");
+      }
+      try {
+         return Double.parseDouble(raparam);
+      } 
+      catch (NumberFormatException e) {
+         throw new IllegalArgumentException(
+             "Bad RA '" + raparam + "' given, expected real number");
+      }
+
+   }
+   /** Convenience routine for extracting the RA of a conesearch */
+   public static double getDec(HttpServletRequest request)
+   {
+      String pos = request.getParameter("POS");
+      if (pos == null)     {  request.getParameter("pos"); }
+      if (pos != null) {
+         int comma = pos.indexOf(",");
+         try {
+            return Double.parseDouble(pos.substring(comma+1));
+         }
+         catch (Exception e) {
+            throw new IllegalArgumentException(
+               "Couldn't parse Dec value from POS field");
+         }
+      }
+      String decparam = request.getParameter("DEC");
+      if (decparam == null) { decparam = request.getParameter("dec"); }
+      if (decparam == null) { decparam = request.getParameter("Dec"); }
+      if (decparam == null) {
+         throw new IllegalArgumentException("No DEC given");
+      }
+      try {
+         return Double.parseDouble(decparam);
+      }
+      catch (NumberFormatException e) {
+         throw new IllegalArgumentException(
+             "Bad DEC '" + decparam + "' given, expected real number");
+      }
+   }
    
    /** Convenience routine for returning the correct 'HTML' snippet that
     * refreshes the page given by the URL - which should point to the same page
@@ -295,9 +408,10 @@ public class ServletHelper
     * page
     */
    public static String exceptionAsHtmlPage(String title, Throwable th, String details) {
+     // Keep error title in sync with coneSearch test in InstallationSelfCheck
       return
          "<html>\n"+
-         "<head><title>ERROR: "+makeSafeForHtml(title)+"</title></head>\n"+
+         "<head><title>ASTROGRID DSA ERROR: "+makeSafeForHtml(title)+"</title></head>\n"+
          "<body>\n"+
          exceptionAsHtml(title, th, details)+
          "</body>\n"+
@@ -307,8 +421,9 @@ public class ServletHelper
    /** Returns exception suitable for a paragraph in an hmtl page */
    public static String exceptionAsHtml(String title, Throwable th, String details) {
 
+     // Keep error title in sync with coneSearch test in InstallationSelfCheck
       String s =
-         "<h1>ERROR REPORT</h1>\n";
+         "<h1>ASTROGRID DSA ERROR REPORT</h1>\n";
       
       if (th != null) {
          s=s+
@@ -358,15 +473,3 @@ public class ServletHelper
       System.out.println(t);
    }
 }
-
-
-
-
-
-
-
-
-
-
-
-

@@ -12,7 +12,7 @@ package org.astrogrid.query;
 
 /** Created when an error handling a Query has occured - eg parsing ADQL.  */
 
-public class QueryException extends RuntimeException {
+public class QueryException extends Exception {
 
     public QueryException( String message ) {
       super( message ) ;

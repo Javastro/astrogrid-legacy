@@ -48,7 +48,7 @@ public class XqlMaker {
       Element adql = null;
       //get the ADQL from the query
       try {
-         adql = DomHelper.newDocument(Adql074Writer.makeAdql(query, null)).getDocumentElement();
+         adql = DomHelper.newDocument(Adql074Writer.makeAdql(query)).getDocumentElement();
       }
       catch (SAXException e) {
          throw new RuntimeException("Query2Adql074 procuced invalid XML from query "+query,e);
@@ -61,11 +61,8 @@ public class XqlMaker {
             namespaceURI = adql.getAttribute("xmlns");
         }
         if (namespaceURI == null) {
-           //DomHelper.PrettyElementToStream(adql,System.out);
-           DomHelper.ElementToStream(adql,System.out);
             throw new IllegalArgumentException("Query body has no namespace - cannot determine language");
         }
-        
         String xql = useXslt(adql, namespaceURI);
         
         return xql;
@@ -83,28 +80,17 @@ public class XqlMaker {
       //default
       if ((namespaceURI==null) || (namespaceURI.length()==0)) {
          throw new QueryException("No namespace specified in query document, so don't know what it is");
+      } else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
+         xsltDoc = "adql074-2-xql.xsl";
       }
-      else if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
-         xsltDoc = "adql05-2-sql.xsl";
-      }
-      else if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
-         //xsltDoc = "adql073-2-sql.xsl";
-         //xsltDoc = "ADQLToXQL-0_73.xsl";
-        xsltDoc = "adql073-2-xql_fits.xsl";
-      }
-      else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
-         xsltDoc = "adql074-2-xql_fits.xsl";
-      }
-//      else if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
-//         xsltDoc = "adql08-2-sql.xsl";
-//      }
       else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
          xsltDoc = "sadql1.1-2-sql.xsl";
       }
       
       //look up in config but using above softcoded as defaults
-      String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
+      String key = "datacenter.xqlmaker.xslt."+namespaceURI.replaceAll(":","_");
       xsltDoc = ConfigFactory.getCommonConfig().getString(key, xsltDoc);
+      String declaredNS = ConfigFactory.getCommonConfig().getString("datacenter.xqlmaker.namespace.declare", "");
       
       if (xsltDoc == null) {
          throw new RuntimeException("No XSLT sheet given for ADQL (namespace '"+namespaceURI+"'); set configuration key '" + key+"'");
@@ -114,25 +100,11 @@ public class XqlMaker {
       try {
          //look for transformation sheet as resource of this class (for unit tests, etc)
           InputStream xsltIn = null;
-         //InputStream xsltIn = new BufferedInputStream(XqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc));
-          //InputStream xsltIn = new BufferedInputStream(XqlMaker.class.getResourceAsStream("xsl/"+xsltDoc));
-         
-         //if (xsltIn == null) {
-            //if it's in a JAR under tomcat the above won't find it - look for it on class path
-           ClassLoader loader = this.getClass().getClassLoader();
-
-           xsltIn = loader.getResourceAsStream("xslt/" + xsltDoc);
-           if (xsltIn == null) {
-             xsltIn = loader.getResourceAsStream(xsltDoc);
-           }
-           if (xsltIn == null) {
-             xsltIn = loader.getResourceAsStream("xsl/" + xsltDoc);
-           }
-         //}
-      
-         if (xsltIn == null) {
-            throw new QueryException("Could not find/create ADQL->XQL transformer doc "+xsltDoc);
-         }
+          ClassLoader loader = this.getClass().getClassLoader();
+          xsltIn = loader.getResourceAsStream("xsl/" + xsltDoc);
+          if (xsltIn == null) {
+              throw new QueryException("Could not find/create ADQL->XQL transformer doc "+xsltDoc);
+          }
          
          //log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at './xslt/"+xsltDoc+"'");
          log.debug("Transforming ADQL ["+namespaceURI+"] using Xsl doc at 'xslt/"+xsltDoc+"'");
@@ -147,21 +119,21 @@ public class XqlMaker {
          }
          
          StringWriter sw = new StringWriter();
+         transformer.setParameter("declare_elems", declaredNS);         
          transformer.transform(new DOMSource(queryBody), new StreamResult(sw));
          String xql = sw.toString();
         
          //tidy it up - remove new lines and double spaces
          xql = xql.replaceAll("\n","");
          xql = xql.replaceAll("\r","");
-         while (xql.indexOf("  ")>-1) { xql = xql.replaceAll("  ", " "); }
+         //while (xql.indexOf("  ")>-1) { xql = xql.replaceAll("  ", " "); }
          
          //botch botch botch - for some reason transformers sometimes add <?xml tag to beginning
          if (xql.startsWith("<?")) {
             xql = xql.substring(xql.indexOf("?>")+2);
          }
          //botch botch botch - something funny with ADQL 0.7.3 schema to do with comparisons
-         xql = xql.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
-         
+         xql = xql.replaceAll("&gt;", ">").replaceAll("&lt;", "<").replaceAll("&amp;","&");
          log.debug("Used '"+xsltDoc+"' to translate ADQL ("+namespaceURI+") to '"+xql+"'");
          
          return xql;
@@ -172,7 +144,6 @@ public class XqlMaker {
       catch (TransformerException te) {
          throw new QueryException(te+" translating ADQL->SQL using "+xsltDoc,te);
       }
-
    }
    
 }
@@ -180,20 +151,20 @@ public class XqlMaker {
 
 /*
 $Log$
-Revision 1.8  2006/03/22 15:10:13  clq2
-KEA_PAL-1534
+Revision 1.9  2006/06/15 16:50:10  clq2
+PAL_KEA_1612
 
-Revision 1.7.24.1  2006/02/16 17:13:05  kea
-Various ADQL/XML parsing-related fixes, including:
- - adding xsi:type attributes to various tags
- - repairing/adding proper column alias support (aliases compulsory
-    in adql 0.7.4)
- - started adding missing bits (like "Allow") - not finished yet
- - added some extra ADQL sample queries - more to come
- - added proper testing of ADQL round-trip conversions using xmlunit
-   (existing test was not checking whole DOM tree, only topmost node)
- - tweaked test queries to include xsi:type attributes to help with
-   unit-testing checks
+Revision 1.8.2.2  2006/04/24 13:49:59  clq2
+merged with Pal_KMB_XMLDB
+
+Revision 1.7.22.3  2006/02/27 16:45:08  KevinBenson
+get rid of some println statements
+
+Revision 1.7.22.2  2006/02/27 16:41:08  KevinBenson
+some changes on how the xql is generated
+
+Revision 1.7.22.1  2006/02/09 13:30:25  KevinBenson
+adding xmldb type war/service for the dsa
 
 Revision 1.7  2005/11/21 12:54:18  clq2
 DSA_KEA_1451

@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.5 2005/05/27 16:21:21 clq2 Exp $
+/*$Id: DataServiceTest.java,v 1.6 2006/06/15 16:50:10 clq2 Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,6 +44,10 @@ public class DataServiceTest extends TestCase {
    protected Query query2;
    protected Query query3;
    
+   protected StringWriter sw1 = new StringWriter();
+   protected StringWriter sw2 = new StringWriter();
+   protected StringWriter sw3 = new StringWriter();
+
    public Principal TESTPrincipal = new LoginAccount("UnitTester", "test.org");
    
    public DataServiceTest(String arg0) {
@@ -58,35 +62,55 @@ public class DataServiceTest extends TestCase {
        server = new DataServer();
        
 //       query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
-      query1 = SimpleQueryMaker.makeConeQuery(0, 89, 5);
+      //query1 = SimpleQueryMaker.makeConeQuery(0, 89, 5);
+      query1 = SimpleQueryMaker.makeTestQuery(
+         new ReturnTable(new WriterTarget(sw1), ReturnTable.VOTABLE));
        
        //this one needs to be small enough that it does not hit the return-limit
-       query2 = SimpleQueryMaker.makeConeQuery(30,30,3);
-       
-      query1 = SimpleQueryMaker.makeConeQuery(90, -90, 5);
-//       query3 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
+       //query2 = SimpleQueryMaker.makeConeQuery(30,30,3);
+       //
+      query2 = SimpleQueryMaker.makeTestQuery(
+         new ReturnTable(new WriterTarget(sw2), ReturnTable.VOTABLE));
+
+      //query1 = SimpleQueryMaker.makeConeQuery(90, -90, 5);
+       //query2 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
+      
+      query3 = SimpleQueryMaker.makeTestQuery(
+         new ReturnTable(new WriterTarget(sw3), ReturnTable.VOTABLE));
     }
 
-    public void testConeSearch() throws Throwable {
-       
-      StringWriter sw = new StringWriter();
-       query2.setResultsDef(new ReturnTable(new WriterTarget(sw), "VOTABLE"));
-       server.askQuery(TESTPrincipal, query2, this);
+    public void testConeSearch1() throws Throwable 
+    {
+      // This tests a small-radius conesearch
+       StringWriter sw = new StringWriter();
+       Query coneQuery = SimpleQueryMaker.makeConeQuery(50.0, 50.0, 0.1,
+         new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
+       server.askQuery(TESTPrincipal, coneQuery, this);
        String results = sw.toString();
-
+       VoTableTestHelper.assertIsVotable(results);
+    }
+    public void testConeSearch2() throws Throwable 
+    {
+      // This tests a larger-radius conesearch
+       StringWriter sw = new StringWriter();
+       Query coneQuery = SimpleQueryMaker.makeConeQuery(50.0, 50.0, 0.6,
+         new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
+       server.askQuery(TESTPrincipal, coneQuery, this);
+       String results = sw.toString();
        VoTableTestHelper.assertIsVotable(results);
     }
     
+
    /**
     * Tests the query service by itself
     */
    public void testQueryService() throws Throwable
    {
       //submit query
-      StringWriter sw = new StringWriter();
-       query1.setResultsDef(new ReturnTable(new WriterTarget(sw), "VOTABLE"));
+      //StringWriter sw = new StringWriter();
+      //query1.setResultsDef(new ReturnTable(new WriterTarget(sw), "VOTABLE"));
       server.askQuery(TESTPrincipal, query1, this);
-      String result = sw.toString();
+      String result = sw1.toString();
        
       assertNotNull(result);
       VoTableTestHelper.assertIsVotable(result);
@@ -113,8 +137,11 @@ public class DataServiceTest extends TestCase {
    /** Tests the count return */
    public void testCount() throws Throwable {
       
+      long expected = 16232;
       long count = server.askCount(TESTPrincipal, query2, this);
       
+      assertTrue("testCount didn't have expect count of 16232",count == 16232);
+      /*
       //now do same query but get full results (to check count is equal)
       StringWriter sw = new StringWriter();
       query2.setResultsDef(new ReturnTable(new WriterTarget(sw)));
@@ -124,7 +151,7 @@ public class DataServiceTest extends TestCase {
       NodeList rows = votDoc.getElementsByTagNameNS("*", "TR");
       
       assertTrue("askQuery returns different result ("+rows.getLength()+") to askCount ("+count+")", rows.getLength() == count);
-      
+      */
    }
    
     
@@ -161,6 +188,26 @@ public class DataServiceTest extends TestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.6  2006/06/15 16:50:10  clq2
+PAL_KEA_1612
+
+Revision 1.5.64.5  2006/05/30 15:20:52  kea
+Still working.
+
+Revision 1.5.64.4  2006/05/10 13:25:22  kea
+Conesearch and HSQLDB fixes/enhancements;  moving properties to web.xml
+like other AG services.
+
+Revision 1.5.64.3  2006/04/25 15:37:26  kea
+Fixing unit tests, except conesearch-related ones (not implemented yet).
+
+Revision 1.5.64.2  2006/04/21 12:10:37  kea
+Renamed ReturnSimple back to ReturnTable (since it is indeed intended
+for returning tables).
+
+Revision 1.5.64.1  2006/04/20 15:08:28  kea
+More moving sideways.
+
 Revision 1.5  2005/05/27 16:21:21  clq2
 mchv_1
 

@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project
+    xmlns:j="jelly:core"
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:deploy="deploy"
+    xmlns:artifact="artifact"		
+	default="astrogrid-install-snapshot">
+
+
+
+    <!--+
+        | Clean our build target.
+        | (required as a target goal for the reactor)
+        +-->
+    <preGoal name="clean">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Cleaning build target ...."/>
+    </preGoal>
+
+    <!--+
+        | Build and install our component war.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="astrogrid-install-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building component artifact ...."/>
+    	<attainGoal name="war:war"/>
+    	<!--+
+           | Rename our war to include the version.
+        +-->
+        <ant:move
+          file="${maven.build.dir}/${maven.war.final.name}"
+          toFile="${maven.build.dir}/${maven.final.name}.war"
+         />
+         <!--+
+           | Install our artifact war.
+         +-->
+ 		<artifact:install
+ 		artifact="${maven.build.dir}/${maven.final.name}.war"
+ 		project="${pom}"
+ 		type="war"
+ 		/>
+    </goal>
+    
+    <!--+
+        | Build and deploy our artifact war.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact war.
+            +-->
+        <attainGoal name="astrogrid-install-artifact"/>
+        <!--+
+            | Deploy our artifact war.
+            +-->
+		<artifact:deploy
+			artifact="${maven.build.dir}/${maven.final.name}.war"
+			project="${pom}"
+			type="war"
+			/>
+    </goal>
+    
+
+    <!--+
+        | Build and install our snapshot war.
+        | (required as a target goal for the reactor)
+        +-->
+    <goal name="astrogrid-install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Building snapshot artifact ...."/>
+    	
+        <!--+
+            | Create our snapshot name.
+            +-->
+        <maven:snapshot project="${pom}"/>
+        <core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Build our snapshot war.
+            +-->
+        <attainGoal name="war:war"/>
+        <!--+
+            | Rename our war to include the version.
+            +-->
+        <ant:move
+            file="${maven.build.dir}/${maven.war.final.name}"
+            toFile="${maven.build.dir}/${maven.final.name}.war"
+            />
+        <!--+
+            | Install our snapshot war(s).
+            +-->
+        <artifact:install-snapshot
+            artifact="${maven.build.dir}/${maven.final.name}.war"
+            project="${pom}"
+            type="war"
+            />
+    </goal>
+
+    <!--+
+        | Build and deploy our snapshot war(s).
+        +-->
+    <goal name="astrogrid-deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our snapshot war.
+            +-->
+        <attainGoal name="astrogrid-install-snapshot"/>
+        
+		<artifact:deploy-snapshot
+			artifact="${maven.build.dir}/${maven.final.name}.war"
+			project="${pom}"
+			type="war"
+			/>
+    </goal>
+    
+
+   
+ <!-- packaging of the war file
+  need to
+   * grab resources from dependent jars (e.g. schema, wsdd, wsdl, etc)
+   * configure axis service - i.e. create server-config.wsdd
+   * generate war 'site' and include this
+   -->
+   <property name="working.dir" location="${basedir}/target/tmp" />
+   
+   
+       <!--+
+        | Initialise the webapp files.
+
+    <preGoal name="war:init">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Pre-processing for webapp task"/>
+                +-->
+        <!--
+        <attainGoal name="site-webapp"/>
+        <attainGoal name="init.axis"/>
+        <ant:echo message="Modifying war:webapp location"/>
+        <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+        <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.webapp.dir', axisDir)}"/>
+        <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+
+    </preGoal>
+        -->            
+    
+    <!--+
+        | Post-process our webapp.
+     
+    <postGoal name="war:webapp">
+   +-->    
+    <preGoal name="war:init">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Post-processing for webapp task"/>
+            	
+        <!--+
+            | Locate our registry server jar.
+            +-->
+        <core:set var="webappDir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+            
+        <core:set var="webappWarIdent" value="${pom.groupId}:astrogrid-pal-skycatserver"/>
+        <core:forEach var="artifact" items="${pom.getArtifacts()}">
+            <core:if test="${artifact.getDependency().getId().equals(webappWarIdent)}">
+                <ant:echo message="Found skycat war file"/>
+                <ant:echo message="Name     : ${artifact.getName()}"/>
+                <ant:echo message="Path     : ${artifact.getPath()}"/>
+                <core:set var="webappWarPath" value="${artifact.getPath()}"/>
+            </core:if>
+        </core:forEach>
+        
+        <ant:echo message="Lets unzip"/>
+        <!--+
+            | Unpack our service WSDD files.
+            +-->
+        <ant:unzip
+            src="${webappWarPath}"
+            dest="${webappDir}">
+        </ant:unzip>
+
+<!--        
+        <ant:copy toDir="${wsddDir}" flatten="true">
+            <fileset dir="${tempDir}">
+                <include name="**/*.wsdd"/>
+            </fileset>
+        </ant:copy>
+    	
+        <ant:copy verbose="false" todir="${axisDir}/WEB-INF/classes/xsl" overwrite="false">
+        	<fileset dir="${tempDir}/xsl">        
+            </fileset>
+        </ant:copy>
+    	
+        <ant:copy verbose="false" todir="${axisDir}/docs" overwrite="false">
+        	<fileset dir="${webapp.docs}">
+            </fileset>
+        </ant:copy>
+
+    </postGoal>
+-->    	
+	</preGoal>    
+	
+	<postGoal name="test:test">        
+	        <ant:delete dir="${maven.build.dir}/../data" />
+	</postGoal>
+	
+   
+   
+</project>

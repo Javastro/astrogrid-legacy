@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitQuery.java,v 1.3 2006/03/22 15:10:13 clq2 Exp $
+ * $Id: SubmitQuery.java,v 1.4 2006/06/15 16:50:10 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -16,8 +16,6 @@ import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
-import org.astrogrid.query.adql.AdqlQueryMaker;
-import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.webapp.DefaultServlet;
@@ -68,30 +66,25 @@ public class SubmitQuery extends DefaultServlet {
       
       Principal user = ServletHelper.getUser(request);
       
-      
       Query query = null;
       
       //has the adql been given as a URI to read?
       if (adqlUri != null) {
          SourceIdentifier source = URISourceTargetMaker.makeSourceTarget(adqlUri);
-         
-         query = AdqlQueryMaker.makeQuery(source.openInputStream());
+         query = new Query(source.openInputStream());
       }
       else if (adqlSql != null) {
-         query = SqlParser.makeQuery(adqlSql);
+         throw new QueryException("Query creation from adql/sql is not supported");
       }
       else if (adqlXml != null) {
-         query = AdqlQueryMaker.makeQuery(adqlXml);
+         query = new Query(adqlXml);
       }
       else {
-         throw new QueryException("Must specify AdqlUri, AdqlXml or AdqlSql parameter");
+         throw new QueryException("Must specify AdqlUri or AdqlXml parameter");
       }
-      
       if (!ServletHelper.isCountReq(request)) {
-         ServletHelper.fillReturnSpec( query.getResultsDef(), request, 
-             query.getConstraintSpec());
+         ServletHelper.fillReturnSpec(query.getResultsDef(), request ); 
       }
-      
       return query;
    }
 }

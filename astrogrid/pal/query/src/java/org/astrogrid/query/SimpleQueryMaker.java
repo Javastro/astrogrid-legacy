@@ -1,78 +1,114 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.2 2005/03/21 18:31:50 mch Exp $
+ * $Id: SimpleQueryMaker.java,v 1.3 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query;
 
-import org.astrogrid.query.condition.*;
+//import org.astrogrid.query.condition.*;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import org.astrogrid.io.Piper;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
 
+
 /**
  * Used to make simple searches, such as cone, keyword lists, etc.
  *
  * @author M Hill
+ * @author K Andrews
  */
 
-
 public class SimpleQueryMaker  {
-   
+
+  /** A generic ADQL query that should run against any database.
+   * The Query class will auto-populate the actual query to be run
+   * with th name of the table to be queried, using the conesearch.table 
+   * property.
+   */
+  private static final String SIMPLE_QUERY = 
+    "<Select xsi:type=\"selectType\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"> <Restrict xsi:type=\"selectionLimitType\" Top=\"100\"/> <SelectionList xsi:type=\"selectionListType\"> <Item xsi:type=\"allSelectionItemType\"/> </SelectionList> </Select>";
+
+   /** Convenience routine to construct a test query returning 100 entries.
+    * The table to be searched is left unspecified - the Query constructor 
+    * adds the necessary FromType clause, using its own default table).
+    */
+   public static Query makeTestQuery(ReturnSpec returns) throws QueryException {
+      return new Query(SIMPLE_QUERY, returns);
+   }
+
    /** this routine creates an incomplete query (no return specification), but it's left in for backwards
     * compatibility with the older web/etc interfaces that take a query and separate return spec parameters.
     . Used quite a bit in tests - for the real world, you should really use the constructors with ReturnSpecs included
     * ReturnSpec defaults to string writer
     */
-   public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius) {
-      return new Query(new CircleCondition("J2000", givenRa, givenDec, givenRadius),
-                       new ReturnTable(new WriterTarget(new StringWriter())));
+   public static Query makeConeQuery(double givenRa, double givenDec, 
+       double givenRadius) throws QueryException
+   {
+      String coneTable = ConfigFactory.getCommonConfig().getString(
+            "conesearch.table", null);
+      if ((coneTable == null) || (coneTable.equals(""))) {
+         throw new QueryException(
+           "DSA local property 'conesearch.table' is not set, " +
+           "please check your configuration");
+      }
+      String coneRA = ConfigFactory.getCommonConfig().getString(
+            "conesearch.ra.column", null);
+      if ((coneRA == null) || (coneRA.equals(""))) {
+         throw new QueryException(
+             "DSA local property 'conesearch.ra.column' is not set, " +
+             "please check your configuration");
+      }
+
+      String coneDec = ConfigFactory.getCommonConfig().getString(
+            "conesearch.dec.column", null);
+      if ((coneDec == null) || (coneDec.equals(""))) {
+         throw new QueryException(
+             "DSA local property 'conesearch.dec.column' is not set, " +
+             "please check your configuration");
+      }
+      return new Query(coneTable, coneRA, coneDec, 
+          givenRa, givenDec, givenRadius, 
+          new ReturnTable(new WriterTarget(new StringWriter()))
+      );
    }
 
-   /** Convenience routine to constructs a query with a condition 'circle' of the given parameters, returning the given returnspec.
+   /** Convenience routine to constructs a conesearch query of the given 
+    * parameters, returning the given returnspec.
+    * The table and columns to be searched are loaded from the configuration 
+    * file, if given
     */
-   public static Query makeConeQuery(String[] scope, double givenRa, double givenDec, double givenRadius, ReturnSpec returns) {
-      return new Query(scope,
-                       new CircleCondition("J2000", givenRa, givenDec, givenRadius),
-                       returns);
-   }
-
-   /** Constructs a query with a condition 'circle' of the given parameters, returning the given returnspec.
-    * The scope ('FROM') is loaded from the configuration file, if given
-    */
-   public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, ReturnSpec returns) {
-      String coneTable = ConfigFactory.getCommonConfig().getString("conesearch.table", null);
-      if (coneTable != null) {
-         return new Query(new String[] { coneTable },
-                           new CircleCondition("J2000", givenRa, givenDec, givenRadius),
-                           returns);
-      }
-      else {
-         return new Query(new CircleCondition("J2000", givenRa, givenDec, givenRadius), returns);
-      }
+   public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, ReturnSpec returns) throws QueryException {
+      Query query = makeConeQuery(givenRa, givenDec, givenRadius);
+      query.setResultsDef(returns);
+      return query;
    }
 
    /** Convenience method for constructing a cone query returning a VOTable to the given target
     */
-   public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, TargetIdentifier target, String format) {
+   public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, TargetIdentifier target, String format) throws QueryException {
       return makeConeQuery(givenRa, givenDec, givenRadius, new ReturnTable(target, format));
    }
 
    /** Convenience method for constructing a cone query returning a VOTable to the given target
     */
-   public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, TargetIdentifier target) {
+   public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, TargetIdentifier target) throws QueryException {
       return makeConeQuery(givenRa, givenDec, givenRadius, new ReturnTable(target));
    }
 
    /** Constructs condition from a list of keywords and values which will be ANDed
     */
+   /*
    public static Condition makeKeywordCondition(Hashtable keywords) {
       Enumeration keys = keywords.keys();
       Intersection intersection = null;
@@ -92,66 +128,5 @@ public class SimpleQueryMaker  {
       }
       return intersection;
    }
-
+   */
 }
-/*
- $Log: SimpleQueryMaker.java,v $
- Revision 1.2  2005/03/21 18:31:50  mch
- Included dates; made function types more explicit
-
- Revision 1.1.1.1  2005/02/17 18:37:34  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:23  mch
- Initial checkin
-
- Revision 1.10.6.4  2004/12/20 17:14:15  mch
- Fixes to making cone searches form Queryable
-
- Revision 1.10.6.3  2004/12/08 18:36:40  mch
- Added Vizier, rationalised SqlWriters etc, separated out TableResults from QueryResults
-
- Revision 1.10.6.2  2004/11/25 18:33:43  mch
- more status (incl persisting) more tablewriting lots of fixes
-
- Revision 1.10.6.1  2004/11/22 00:57:15  mch
- New interfaces for SIAP etc and new slinger package
-
- Revision 1.10  2004/11/09 17:42:22  mch
- Fixes to tests after fixes for demos, incl adding closable to targetIndicators
-
- Revision 1.9  2004/11/03 05:14:33  mch
- Bringing Vizier back online
-
- Revision 1.8  2004/11/03 00:17:56  mch
- PAL_MCH Candidate 2 merge
-
- Revision 1.4.6.2  2004/10/27 00:43:39  mch
- Started adding getCount, some resource fixes, some jsps
-
- Revision 1.4.6.1  2004/10/21 19:10:24  mch
- Removed deprecated translators, moved SqlMaker back to server,
-
- Revision 1.4  2004/10/18 13:11:30  mch
- Lumpy Merge
-
- Revision 1.3.2.2  2004/10/16 14:28:36  mch
- Fixed recursion problem for some cone generation
-
- Revision 1.3.2.1  2004/10/15 19:59:05  mch
- Lots of changes during trip to CDS to improve int test pass rate
-
- Revision 1.3  2004/10/07 10:34:44  mch
- Fixes to Cone maker functions and reading/writing String comparisons from Query
-
- Revision 1.2  2004/10/06 22:13:45  mch
- Added convenience method
-
- Revision 1.1  2004/10/06 21:12:16  mch
- Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
-
- 
- */
-
-
-

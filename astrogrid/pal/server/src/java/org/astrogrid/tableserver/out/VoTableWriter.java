@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.6 2005/11/21 12:54:18 clq2 Exp $
+ * $Id: VoTableWriter.java,v 1.7 2006/06/15 16:50:10 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -96,10 +96,27 @@ public class VoTableWriter implements TableWriter {
             if (cols[i].getId() != null) printOut.print("ID='"+cols[i].getId()+"' ");
             if (cols[i].getUcd("1") != null) printOut.print(" ucd='"+cols[i].getUcd("1")+"' ");
             
-            //Create the votable type attributes from the metadoc type. Convert using java class as the medium
+            //Create the votable type attributes from the metadoc type. 
+            //Convert using java class as the medium
             if (cols[i].getPublicType() != null) {
                Class colType = StdDataTypes.getJavaType(cols[i].getPublicType());
                printOut.print(VoTypes.getVoTableTypeAttributes(colType));
+            }
+            /*
+            // KEA FUTURE: I added this, but not sure if it should
+            // work or not, needs further investigation.
+            // Try java type if no public type
+            else if (cols[i].getJavaType() != null) { 
+               printOut.print(VoTypes.getVoTableTypeAttributes(
+                     cols[i].getJavaType()));
+            }
+            */
+            else {
+              // Use String type as default, since any real data type
+              // will be parsable as a string.  THis is not ideal; 
+              // hopefully we can fix the problem of not knowing the
+              // type in future.
+               printOut.print(VoTypes.getVoTableTypeAttributes(String.class));
             }
    
             //units
@@ -133,7 +150,15 @@ public class VoTableWriter implements TableWriter {
                printOut.print("<TD>"+ (float) (((Date) colValues[i]).getTime()/1000) +"</TD>");
             }
             else {
-               printOut.print("<TD>"+colValues[i]+"</TD>");
+               if ( (colValues[i] == null) || (colValues[i].equals("null")) ){
+                 //From VOTable spec: "In the TABLEDATA data representation, 
+                 //the default representation of a ``null'' value is an 
+                 //empty column (i.e. <TD></TD>)";
+                 printOut.print("<TD></TD>");
+               }
+               else {
+                 printOut.print("<TD>"+colValues[i]+"</TD>");
+               }
             }
          }
       }
@@ -176,6 +201,15 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.7  2006/06/15 16:50:10  clq2
+ PAL_KEA_1612
+
+ Revision 1.6.26.2  2006/06/15 14:08:04  kea
+ Nearly ready to branch.
+
+ Revision 1.6.26.1  2006/06/13 21:05:17  kea
+ Getting tests working fully after Jeff's new ADQLbeans jar.
+
  Revision 1.6  2005/11/21 12:54:18  clq2
  DSA_KEA_1451
 

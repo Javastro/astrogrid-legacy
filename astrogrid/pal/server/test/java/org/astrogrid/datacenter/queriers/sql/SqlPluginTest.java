@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.6 2005/05/27 16:21:02 clq2 Exp $
+/*$Id: SqlPluginTest.java,v 1.7 2006/06/15 16:50:08 clq2 Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,9 +23,8 @@ import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.SimpleQueryMaker;
-import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.VoTableTestHelper;
 import org.astrogrid.tableserver.jdbc.JdbcPlugin;
@@ -58,6 +57,23 @@ public class SqlPluginTest extends TestCase {
       //set max returns to something reasonably small as some of the results processing is a bit CPU intensive
       ConfigFactory.getCommonConfig().setProperty(Query.MAX_RETURN_KEY, "300");
       
+   }
+   
+   // Do a simple test query
+   public void testTestQuery() throws Exception 
+   {   
+      //make sure the configuration is correct for the plugin
+      SampleStarsPlugin.initConfig();
+      StringWriter sw = new StringWriter();
+      Query q = SimpleQueryMaker.makeTestQuery(
+          new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
+      manager.askQuerier(Querier.makeQuerier(LoginAccount.ANONYMOUS, q, this));
+      log.info("Checking results...");
+      //System.out.println(sw.toString());
+      Document results = VoTableTestHelper.assertIsVotable(sw.toString());
+      long numResults = results.getElementsByTagName("TR").getLength();
+      log.info("Number of results = "+numResults);
+      assert (numResults == 100);
    }
    
    public void testCone1() throws Exception {      askCone(30,30,6);  }
@@ -101,10 +117,13 @@ public class SqlPluginTest extends TestCase {
       askAdqlFromFile("dummydb-adql-simple.xml");
    }
    
+    // Reinstate this one with an up-to-date query eventually. 
+    /*
    public void testAdql2() throws Exception {
       
-      askAdqlFromFile("dummydb-adql-circle.xml");
+      askAdqlFromFile("sample_circle_1_0.xml");
    }
+   */
    
    public void testPleidies() throws Exception {
       askAdqlFromFile("dummydb-adql-pleidies.xml");
@@ -120,7 +139,11 @@ public class SqlPluginTest extends TestCase {
       assertNotNull("Could not open query file :" + queryFile,is);
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(is, new WriterTarget(sw), ReturnTable.VOTABLE), this);
+      //Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(is, new WriterTarget(sw), ReturnTable.VOTABLE), this);
+      Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
+         new Query(is, new ReturnTable(
+             new WriterTarget(sw), ReturnTable.VOTABLE)),
+         this);
       
       manager.askQuerier(q);
       

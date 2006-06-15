@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <Restrict xsi:type="selectionLimitType" Top="100"/>
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="mathFunctionType" Name="EXP">
+           <Arg xsi:type="closedExprType">
+               <Arg xsi:type="binaryExprType" Oper="+">
+                  <Arg xsi:type="mathFunctionType" Name="ABS">
+                     <Arg xsi:type="columnReferenceType" Table="a" Name="POS_RA_MAIN"/>
+                  </Arg>
+                  <Arg xsi:type="atomType">
+                      <Literal xsi:type="realType" Value="1.0"/>
+                  </Arg>
+               </Arg>
+           </Arg>
+        </Item>
+        <Item xsi:type="mathFunctionType" Name="LOG">
+            <Arg xsi:type="mathFunctionType" Name="ABS">
+               <Arg xsi:type="columnReferenceType" Table="a" Name="POS_RA_MAIN"/>
+            </Arg>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="SQRT">
+           <Arg xsi:type="closedExprType">
+              <Arg xsi:type="binaryExprType" Oper="*">
+                 <Arg xsi:type="columnReferenceType" Table="a" Name="POS_RA_MAIN"/>
+                 <Arg xsi:type="columnReferenceType" Table="a" Name="POS_RA_MAIN"/>
+              </Arg>
+           </Arg>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="SQUARE">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="POS_RA_MAIN"/>
+        </Item>
+
+        <Item xsi:type="mathFunctionType" Name="LOG10">
+           <Arg xsi:type="closedExprType">
+               <Arg xsi:type="binaryExprType" Oper="+">
+                  <Arg xsi:type="mathFunctionType" Name="ABS">
+                     <Arg xsi:type="columnReferenceType" Table="a" Name="POS_RA_MAIN"/>
+                  </Arg>
+                  <Arg xsi:type="atomType">
+                      <Literal xsi:type="realType" Value="1.0"/>
+                  </Arg>
+               </Arg>
+           </Arg>
+        </Item>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Name="catalogue" Alias="a"/>
+    </From>
+</Select>

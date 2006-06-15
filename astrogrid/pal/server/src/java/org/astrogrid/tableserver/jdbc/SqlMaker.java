@@ -1,4 +1,4 @@
-/*$Id: SqlMaker.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+/*$Id: SqlMaker.java,v 1.2 2006/06/15 16:50:09 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,29 +12,37 @@ package org.astrogrid.tableserver.jdbc;
 
 import java.io.IOException;
 import org.astrogrid.query.Query;
+import org.astrogrid.query.QueryException;
 
 /**
  * Translates queries into SQL
  */
 public interface SqlMaker  {
    
-
-   /** A temporary key specifying whether the db columns asre in degrees or radians */
-//   public static final String DB_COLS_IN_RADIANS = "conesearch.columns.in.radians";
-
    /**
     * Make an SQL string from the given Query */
-   public String makeSql(Query query) throws IOException;
+   public String makeSql(Query query) throws IOException, QueryException;
 
    /**
     * Make a COUNT SQL string from the given Query */
-   public String makeCountSql(Query query) throws IOException;
-
+   public String makeCountSql(Query query) throws IOException, QueryException;
 }
 
 
 /*
 $Log: SqlMaker.java,v $
+Revision 1.2  2006/06/15 16:50:09  clq2
+PAL_KEA_1612
+
+Revision 1.1.92.2  2006/04/21 11:54:05  kea
+Changed QueryException from a RuntimeException to an Exception.
+
+Revision 1.1.92.1  2006/04/19 13:57:32  kea
+Interim checkin.  All source is now compiling, using the new Query model
+where possible (some legacy classes are still using OldQuery).  Unit
+tests are broken.  Next step is to move the legacy classes sideways out
+of the active tree.
+
 Revision 1.1  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 

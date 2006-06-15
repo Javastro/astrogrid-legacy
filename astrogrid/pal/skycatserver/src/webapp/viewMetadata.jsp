@@ -6,6 +6,7 @@
        org.astrogrid.ucd.Ucd1Dictionary,
        org.astrogrid.units.UnitDictionary,
        org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator,
+       org.astrogrid.cfg.ConfigFactory,
        org.astrogrid.dataservice.metadata.*,
        org.astrogrid.tableserver.metadata.*,
        org.astrogrid.dataservice.service.*"

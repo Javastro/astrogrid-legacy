@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.4 2005/12/07 15:55:21 clq2 Exp $
+ * $Id: JdbcPlugin.java,v 1.5 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,7 +29,7 @@ import org.astrogrid.query.QueryException;
  * realbasic SQL from the ADQL, throwing an exception if it can't be done
  *
  * <p>
- * forms a basis for oter implementations for different db flavours
+ * forms a basis for other implementations for different db flavours
  * <p>
  * NWW: altered to delay creating jdbcConnection until required by {@link #queryDatabase}. DatabaseQueriers are one-shot
  * beasts anyhow, so this isn't a problem, but it fixes problems of moving jdbcConnection across threads when non-blocking querying is done.
@@ -40,11 +40,9 @@ import org.astrogrid.query.QueryException;
 public class JdbcPlugin extends DefaultPlugin {
    
    
-   
-   
    /** Adql -> SQL translator class */
    public static final String SQL_TRANSLATOR = "datacenter.querier.plugin.sql.translator";
-   public static final String DEFAULT_SQL_TRANSLATOR = "org.astrogrid.tableserver.jdbc.StdSqlMaker";
+   public static final String DEFAULT_SQL_TRANSLATOR = "org.astrogrid.tableserver.jdbc.AdqlSqlMaker";
    
    /** execute timeout  */
    public static final String TIMEOUT = "datacenter.sql.timeout";
@@ -57,7 +55,7 @@ public class JdbcPlugin extends DefaultPlugin {
     * in sql form and retiirning the results as a SqlResults wrapper arond the JDBC result set.
     * @param o a string
     */
-   public void askQuery(Principal user, Query query, Querier querier) throws IOException {
+   public void askQuery(Principal user, Query query, Querier querier) throws IOException, QueryException {
 
       validateQuery(query);
       
@@ -83,8 +81,24 @@ public class JdbcPlugin extends DefaultPlugin {
          jdbcConnection = getJdbcConnection();
          Statement statement = jdbcConnection.createStatement();
 
+
          //limit to number of rows returned
-         if (query.getLocalLimit() >0) { statement.setMaxRows((int) query.getLocalLimit()); }
+         // KEA says: This is the WRONG way to set the query limit - it 
+         // doesn't restrict the actual sql query made to the database, it 
+         // just silently drops any excess rows.  So "select *" would cause 
+         // an unrestricted query to be run on the DBMS, even if only the
+         // first 100 rows were actually captured by the JDBC results.
+         // Disastrous!
+         // In the query class, the smaller of the query limit and local
+         // limit is used in the sql translation process, so it produces
+         // a properly restricted query.
+         //
+         // I am leaving this clause in as an extra safety measure, in
+         // case something goes awry with a query and it spews back too
+         // many results.
+         if (query.getLocalLimit() >0) { 
+            statement.setMaxRows((int) query.getLocalLimit()); 
+         }
          
          //set timeout - 0 = no limit
          statement.setQueryTimeout(ConfigFactory.getCommonConfig().getInt(TIMEOUT, 30*60)); //default to half an hour
@@ -130,7 +144,7 @@ public class JdbcPlugin extends DefaultPlugin {
    }
    
    /** Returns just the number of matches rather than the list of matches */
-   public long getCount(Principal user, Query query, Querier querier) throws IOException {
+   public long getCount(Principal user, Query query, Querier querier) throws IOException, QueryException {
 
       validateQuery(query);
       
@@ -194,12 +208,12 @@ public class JdbcPlugin extends DefaultPlugin {
       try {
          TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
          RdbmsQueryValidator validator = new RdbmsQueryValidator(reader);
-         query.acceptVisitor(validator); //throws an IllegalArgumentException if there's something wrong
+         //query.acceptVisitor(validator); //throws an IllegalArgumentException if there's something wrong
+         validator.validateQuery(query);
       }
       catch (IOException ioe) {
          log.warn("No RDBMS Resource found, not validating query");
       }
-      
    }
    
    /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */

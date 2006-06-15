@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleImageQuery.java,v 1.2 2005/05/27 16:21:19 clq2 Exp $
+ * $Id: SimpleImageQuery.java,v 1.3 2006/06/15 16:50:08 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.siap;
@@ -12,7 +12,6 @@ import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
@@ -26,7 +25,11 @@ import org.astrogrid.webapp.DefaultServlet;
  * query
  * @see http://www.ivoa.net/Documents/latest/SIA.html
  *
- * @author mch
+ * @author M Hill
+ * @author K Andrews
+ * @deprecated KEA: I don't believe this is the correct way to do the intial
+ * query in SIAP - it is using the maths for a conesearch, but that isn't
+ * correct for a SIAP image intersection I don't think...
  */
 public class SimpleImageQuery extends DefaultServlet {
    
@@ -35,7 +38,12 @@ public class SimpleImageQuery extends DefaultServlet {
    public void doGet(HttpServletRequest request, HttpServletResponse response)  throws IOException {
 
       try {
-         CircleCondition circleCon = ServletHelper.makeCircleCondition(request);
+         //CircleCondition circleCon = ServletHelper.makeCircleCondition(request);
+         // Extract the query parameters
+         double radius = ServletHelper.getRadius(request);
+         double ra = ServletHelper.getRa(request);
+         double dec = ServletHelper.getDec(request);
+         
          String formatParam = request.getParameter("FORMAT");
          if (formatParam == null) formatParam = request.getParameter("format");
    
@@ -50,7 +58,6 @@ public class SimpleImageQuery extends DefaultServlet {
          //failbacks, teh caller should check the metadata...
          String format = formats[0];
          
-         
          ReturnSpec returnSpec = null;
          boolean isTable = (ReturnTable.isTableFormat(formats));
          boolean isImage = (ReturnImage.isImageFormat(formats));
@@ -64,13 +71,24 @@ public class SimpleImageQuery extends DefaultServlet {
          }
          else {
             //default as well as if format given
-            returnSpec = new ReturnTable(new WriterTarget(response.getWriter()), format);
+            returnSpec = new ReturnTable(
+                new WriterTarget(response.getWriter()), format);
          }
          
          try {
-            server.askQuery(LoginAccount.ANONYMOUS, new Query(circleCon, returnSpec), this);
+            //server.askQuery(LoginAccount.ANONYMOUS, new Query(circleCon, returnSpec), this);
+            server.askQuery(LoginAccount.ANONYMOUS, 
+                new Query(ra, dec, radius, returnSpec), 
+                this
+            );
          } catch (Throwable e) {
-            doError(response, "SIAP error (RA="+circleCon.getRa()+", DEC="+circleCon.getDec()+", SIZE="+circleCon.getRadius()+", FORMAT="+formatParam+")", e);
+             doError(response,
+                 "Pseudo-SIAP RA= " + Double.toString(ra) +
+                 ", Dec = " + Double.toString(dec) +
+                 ", radius = " + Double.toString(radius) +
+                 ", format = " + formatParam, 
+             e);
+
          }
          
       } catch (NumberFormatException e) {

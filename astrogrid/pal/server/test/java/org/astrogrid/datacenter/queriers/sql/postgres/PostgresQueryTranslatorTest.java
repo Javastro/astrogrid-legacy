@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.5 2005/05/27 16:21:17 clq2 Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.6 2006/06/15 16:50:10 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,21 +13,26 @@ package org.astrogrid.datacenter.queriers.sql.postgres;
 import java.io.InputStream;
 import java.util.Properties;
 import junit.framework.TestCase;
+
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslatorTest;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.adql.AdqlQueryMaker;
+//import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.tableserver.jdbc.SqlMaker;
-import org.astrogrid.tableserver.jdbc.postgres.PostgresSqlMaker;
+import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
+//import org.astrogrid.tableserver.jdbc.postgres.PostgresSqlMaker;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 
 /**
  *
  *
+ * @TOFIX Need to load appropriate XSLT here
  */
 public class PostgresQueryTranslatorTest extends TestCase {
 
-    SqlMaker translator = new PostgresSqlMaker();
+    //SqlMaker translator = new PostgresSqlMaker();
+    SqlMaker translator = new AdqlSqlMaker();
     Properties correctSql = new Properties();
    
     public PostgresQueryTranslatorTest(String arg0) {
@@ -35,6 +40,10 @@ public class PostgresQueryTranslatorTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+       // Set up xslt translation
+       ConfigFactory.getCommonConfig().setProperty(
+           "datacenter.sqlmaker.xslt","POSTGRES-7.2.3.xsl" );
+
        //read in sample sql out checks
        InputStream is = this.getClass().getResourceAsStream("samples-postgresSql.properties");
        assertNotNull(is);
@@ -76,9 +85,11 @@ public class PostgresQueryTranslatorTest extends TestCase {
     /** Test makes valid SQL from simple adql */
     public void doFromFile(String ver, int testNum) throws Exception {
 
+       //assert(false);   // FAIL UNTIL WE GET A CHANCE TO FIX THIS
        String filename = "sample-"+ver+"-"+testNum+".xml";
        Document adqlDom = DomHelper.newDocument( SqlQueryTranslatorTest.class.getResourceAsStream(filename));
-       Query adqlQuery = AdqlQueryMaker.makeQuery(adqlDom.getDocumentElement());
+       //Query adqlQuery = AdqlQueryMaker.makeQuery(adqlDom.getDocumentElement());
+       Query adqlQuery = new Query(adqlDom.getDocumentElement());
        
        String result = translator.makeSql(adqlQuery).trim();
        String correct = correctSql.getProperty("sample"+testNum).trim();
@@ -106,6 +117,21 @@ public class PostgresQueryTranslatorTest extends TestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.6  2006/06/15 16:50:10  clq2
+PAL_KEA_1612
+
+Revision 1.5.64.3  2006/05/30 15:20:52  kea
+Still working.
+
+Revision 1.5.64.2  2006/04/25 15:37:26  kea
+Fixing unit tests, except conesearch-related ones (not implemented yet).
+
+Revision 1.5.64.1  2006/04/19 13:57:32  kea
+Interim checkin.  All source is now compiling, using the new Query model
+where possible (some legacy classes are still using OldQuery).  Unit
+tests are broken.  Next step is to move the legacy classes sideways out
+of the active tree.
+
 Revision 1.5  2005/05/27 16:21:17  clq2
 mchv_1
 

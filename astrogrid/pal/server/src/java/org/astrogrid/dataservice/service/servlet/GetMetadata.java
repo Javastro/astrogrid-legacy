@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.4 2005/08/10 13:24:57 clq2 Exp $
+ * $Id: GetMetadata.java,v 1.5 2006/06/15 16:50:10 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -52,7 +52,7 @@ public class GetMetadata extends DefaultServlet {
          }
       }
       catch (Throwable th) {
-         doError(response, "Geting Metadata",th);
+         doError(response, "Getting Metadata",th);
       }
    }
 

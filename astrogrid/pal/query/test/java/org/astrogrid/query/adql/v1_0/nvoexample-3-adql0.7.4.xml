@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- sample3=SELECT t.*, b.* FROM Tab AS t, Bob AS b WHERE t.g <> b.g AND (2 * ASIN( SQRT(SIN((23.0-O.DEC)/2) * SIN((23.0-O.DEC)/2) +COS(23.0) * COS(O.DEC) * SIN((12.5-O.RA)/2) * SIN((12.5-O.RA)/2)  ))) <5.0 ORDER BY t.g - b.g , b.h -->
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+  <SelectionList xsi:type="selectionListType">
+    <Item xsi:type="columnReferenceType" Table="t" Name="*" />
+    <Item xsi:type="columnReferenceType" Table="b" Name="*" />
+  </SelectionList>
+  <From xsi:type="fromType">
+    <Table xsi:type="tableType" Name="Tab" Alias="t" />
+    <Table xsi:type="tableType" Name="Bob" Alias="b" />
+  </From>
+  <Where xsi:type="whereType">
+    <Condition xsi:type="intersectionSearchType">
+      <Condition xsi:type="comparisonPredType" Comparison="&lt;&gt;">
+        <Arg xsi:type="columnReferenceType" Table="t" Name="g" />
+        <Arg xsi:type="columnReferenceType" Table="b" Name="g" />
+      </Condition>
+      <Condition xsi:type="regionSearchType">
+        <Region xmlns:q1="urn:nvo-region" xsi:type="q1:circleType" coord_system_id="">
+          <q1:Center ID="" coord_system_id="">
+            <Pos2Vector xmlns="urn:nvo-coords">
+              <Name>Ra Dec</Name>
+              <CoordValue>
+                <Value>
+                  <double>12.5</double>
+                  <double>23</double>
+                </Value>
+              </CoordValue>
+            </Pos2Vector>
+          </q1:Center>
+          <q1:Radius>5</q1:Radius>
+        </Region>
+      </Condition>
+    </Condition>
+  </Where>
+  <OrderBy>
+    <Item>
+      <Expression xsi:type="binaryExprType" Oper="-">
+        <Arg xsi:type="columnReferenceType" Table="t" Name="g" />
+        <Arg xsi:type="columnReferenceType" Table="b" Name="g" />
+      </Expression>
+    </Item>
+    <Item>
+      <Expression xsi:type="columnReferenceType" Table="b" Name="h" />
+    </Item>
+  </OrderBy>
+</Select>

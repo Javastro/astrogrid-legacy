@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.2 2006/06/15 16:50:08 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ package org.astrogrid.dataservice.queriers;
 import java.io.IOException;
 import java.security.Principal;
 import org.astrogrid.query.Query;
+import org.astrogrid.query.QueryException;
 
 /**
  * Querier Plugins are used to carry out all the database specific backend
@@ -28,21 +29,27 @@ public interface QuerierPlugin  {
      * the parent has methods to help with this.  The plugin should have everyting
      * tidied up and discarded as nec before returning - there is no close() method
      */
-   public void askQuery(Principal user, Query query, Querier querier) throws IOException;
+   public void askQuery(Principal user, Query query, Querier querier) throws IOException, QueryException;
    
    /** Abort - if this is called, try and top the query and tidy up.   */
    public void abort();
    
    /** Returns just the number of matches rather than the list of matches */
-   public long getCount(Principal user, Query query, Querier querier) throws IOException;
+   public long getCount(Principal user, Query query, Querier querier) throws IOException, QueryException;
    
    /** Returns a string array of the formats that can be produced */
    public String[] getFormats();
 }
 /*
  $Log: QuerierPlugin.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2006/06/15 16:50:08  clq2
+ PAL_KEA_1612
+
+ Revision 1.1.1.1.92.1  2006/04/21 11:54:05  kea
+ Changed QueryException from a RuntimeException to an Exception.
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

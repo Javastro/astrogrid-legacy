@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+/*$Id: AdqlSqlMaker.java,v 1.3 2006/06/15 16:50:09 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
  **/
 package org.astrogrid.tableserver.jdbc;
 
-
-
 import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,16 +29,23 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
-import org.astrogrid.query.adql.Adql074Writer;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * A translator that creates ADQL SQL from a query. This might be used to generate
- * SQL for RDBMSs that have the ADQL functions built into them as procedures/etc
+ * A translator that extracts SQL from a query. 
+ * This uses functionality supplied by the Query instance to translate itself
+ * to SQL, using a stylesheet specified by a DSA configuration property.
+ * The AdqlSqlMaker should therefore be a fairly generic RDBMS plugin,
+ * flavoured for particular systems by choice of stylesheet.
  *
+ * For weird RDBMS SQL flavours (where extra tweaking is required that 
+ * can't be done in XSLT), this class can be subclassed.
+ *
+ * @author M Hill
+ * @author K Andrews
  */
 public class AdqlSqlMaker implements SqlMaker {
 
@@ -49,209 +56,144 @@ public class AdqlSqlMaker implements SqlMaker {
     * and XSLT style sheets - there may be a better way of doing this!
     */
    public String makeSql(Query query) throws QueryException {
-      
-      //botch fix for cone searches which don't specify table
-      /* not needed any more
-      if ( ((query.getScope() == null) || (query.getScope().length==0)) && (query.getCriteria() instanceof Function)) {
-         if ( ((Function) query.getCriteria()).getName().toUpperCase().equals("CIRCLE")) {
-            query.setScope(new String[] { ConfigFactory.getCommonConfig().getProperty(StdSqlWriter.CONE_SEARCH_TABLE_KEY) });
-         }
-      }
-       */
+     // Descendant classes might do something extra in here
+      String sql = doXsltTransformation(query);
+     // Or in here
+     return sql;
+   }
 
-      if ((query.getScope() == null) || (query.getScope().length==0)) {
-         throw new QueryException("No scope (FROM) given in query "+query);
+   protected String doXsltTransformation(Query query) throws QueryException
+   {
+      InputStream xsltIn = null;
+      String key = "datacenter.sqlmaker.xslt";
+      String whereIsDoc = "";
+
+      String xsltDoc = ConfigFactory.getCommonConfig().getString(key, null);
+      if ((xsltDoc == null) || (xsltDoc.trim().equals(""))) {
+          throw new QueryException(
+              "Property 'datacenter.sqlmaker.xslt' is not configured,"+
+              " cannot translate to sql.");
       }
-      
+
+      // First try to find file directly (in case it's a filesystem file)
+      log.debug("Trying to load XSLT as filesystem file: " + xsltDoc); 
+      File file = new File(xsltDoc);
+      if (file.exists()) {
+        try {
+          xsltIn = new FileInputStream(xsltDoc);
+        }
+        catch (FileNotFoundException e) {
+        }
+      }
+
+      if (xsltIn == null) {
+         //find specified sheet as resource of this class
+         xsltIn = AdqlSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc);
+         whereIsDoc = AdqlSqlMaker.class+" resource ./xslt/"+xsltDoc;
+         log.debug("Trying to load XSLT as resource of class: " +whereIsDoc);
+      }
+
+      //if above doesn't work, try doing by hand for Tomcat ClassLoader
+      if (xsltIn == null) {
+         // Extract the package name, turn it into a filesystem path by 
+         // replacing .'s with /'s, and append the path to the xslt.
+         // Hopefully this will mean tomcat can locate the file within
+         // the bundled jar file.  
+         // NB: Comment below about tomcat not finding it via this method
+         // *may* be incorrect - previously this bit of code used package's
+         // toString() method, not getName() method, which added
+         // extra stuff like package description into the returned string
+         // and thereby messed up the file path conversion. 
+         String path = 
+           AdqlSqlMaker.class.getPackage().getName().replace('.', '/') +
+               "/xslt/" + xsltDoc;
+         xsltIn = AdqlSqlMaker.class.getClassLoader().getResourceAsStream(path);
+         log.debug("Trying to load XSLT via classloader : " +path);
+      }
+
+      //Sometimes it won't even find it then if it's in a JAR.  
+      //Look in class path.  However *assume* it's in classpath, 
+      //as we don't know what the classpath is during unit tests.
+      if (xsltIn == null) {
+         log.warn("Could not find builtin ADQL->SQL transformer doc '"
+             +whereIsDoc+"', looking in classpath...");
+
+         xsltIn = this.getClass().getClassLoader().getResourceAsStream(
+                "xslt/"+xsltDoc);
+         whereIsDoc = "xslt/" + xsltDoc+" in classpath at "+
+           this.getClass().getClassLoader().getResource(xsltDoc);
+         log.debug("Trying to load XSLT via classpath : " +whereIsDoc);
+      }
+
+      if (xsltIn == null) {
+          throw new QueryException(
+              "Could not find ADQL->SQL transformer doc "+xsltDoc);
+      }
+
+      //use config-specified sheet
+      /*
+      FileInputStream xsltIn;
       try {
-         //Create an ADQL string documnet from the query
-         String adqlTxt = Adql074Writer.makeAdql(query);
-         Document adqlDom = DomHelper.newDocument(adqlTxt);
-         
-         //translate it
-         String sql = useXslt(adqlDom.getDocumentElement());
-         return sql;
-         
+         xsltIn = new FileInputStream(xsltDoc);
       }
-      catch (SAXException e) {
-         throw new RuntimeException("Adql074Writer produced invalid XML from query "+query,e);
+      catch (java.io.FileNotFoundException e) {
+          throw new QueryException(
+              "Unable to open stylesheet file '" + xsltDoc +
+              "', cannot translate to sql.");
       }
-      catch (IOException e) {
-         throw new RuntimeException("Server error:"+e,e);
-      }
-      
+      */
+
+      // Now get the query to convert itself with the stylesheet
+      return query.convertWithXslt(xsltIn);
    }
 
    /**
     * Constructs an SQL count statement for the given Query.
     */
+
+   /**
+    * Constructs an SQL count statement for the given Query.
+    * @TOFIX KEA SAYS: This is a truly disgusting hack which won't
+    * work with ADQL queries with complex expression selections as 
+    * aliased columns.  It may also fail if "select" or "from" appears
+    * in unexpected places (e.g. as part of column / table names).
+    * However, this method is intended for administrative/testing 
+    * use only (I'm going to remove it from the public Datacenter
+    * API) so I will leave it here for now.
+    * @deprecated Because it's horrible/fragile
+    */
    public String makeCountSql(Query query) throws QueryException {
 
       //get ordinary SQL
       String sql = makeSql(query);
+      String lowercaseSql = sql.toLowerCase();
       
       //remove anything between SELECT and FROM and replace with COUNT(*)
-      int selectIdx = sql.indexOf("SELECT");
-      int fromIdx = sql.indexOf("FROM");
+      // Use lowercased sql to find indices
+      int selectIdx = lowercaseSql.indexOf("select");
+      int fromIdx = lowercaseSql.indexOf("from");
       String countSql = sql.substring(0,selectIdx+6)+" COUNT(*) "+sql.substring(fromIdx);
       return countSql;
    }
+   /*
+    * This version will count the rows in a table; it's likely
+    * to be more reliable, but doesn't reflect the original query constraints.
+   public String makeCountSql(Query query) throws QueryException {
 
-   
-   /** Uses Xslt to do the translations */
-   public String useXslt(Element adql) throws QueryException {
-      
-      String namespaceURI = adql.getNamespaceURI();
-      
-      if ((namespaceURI==null) || (namespaceURI.length()==0)) {
-         throw new QueryException("No namespace specified in query document, so don't know what it is");
+      String tableNames[] = query.getTableReferences();
+      if (tableNames.length == 0) {
+         // This should never happen, as Query class creates a default
+         // FROM table if one is not given in the input ADQL.
+         throw new QueryException(
+           "Unexpected error - query contained no table references!");
       }
-      
-      String xsltDoc = null;
-      InputStream xsltIn = null;
-      String whereIsDoc = null; //used for debug/trace/error messages
-      
-      //work out which translator sheet to use
-      
-      //see if there's a config property set
-      String key = "datacenter.sqlmaker.xslt."+namespaceURI.replaceAll(":","_");
-      xsltDoc = ConfigFactory.getCommonConfig().getString(key, null);
-      
-      try {
-         if (xsltDoc != null) {
-            //use config-specified sheet
-            xsltIn = new FileInputStream(xsltDoc);
-            whereIsDoc = "File "+xsltDoc;
-         }
-         else {
-            //not given in configuration file - look in subdirectory of class as resource
-            if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
-               //xsltDoc = "adql05-2-sql.xsl";
-               throw new QueryException("ADQL 0.5 is no longer supported.  Please submit ADQL 0.7.4 documents");
-            }
-            if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
-               xsltDoc = "adql074-2-sql.xsl";
-            }
-            else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.3")) {
-               xsltDoc = "adql073-2-sql.xsl";
-            }
-            else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.8")) {
-               xsltDoc = "adql08-2-sql.xsl";
-            }
-            else if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
-               xsltDoc = "sadql1.1-2-sql.xsl";
-            }
-            
-            if (xsltDoc == null) {
-               throw new RuntimeException("No builtin xslt for ADQL namespace '"+namespaceURI+"'; set configuration key '" + key+"'");
-            }
-            
-            //find specified sheet as resource of this class
-            xsltIn = StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc);
-            whereIsDoc = StdSqlMaker.class+" resource ./xslt/"+xsltDoc;
-            
-            //if above doesn't work, try doing by hand for Tomcat ClassLoader
-            if (xsltIn == null) {
-               String path = StdSqlMaker.class.getPackage().toString().replace('.', '/').substring(8)+"/xslt/"+xsltDoc;
-               xsltIn = StdSqlMaker.class.getClassLoader().getResourceAsStream(path);
-            }
-
-            //sometimes it won't even find it then if it's in a JAR.  Look in class path.  However
-            //*assume* it's in classpath, as we don't know what the classpath is during unit tests.
-            if (xsltIn == null) {
-               log.warn("Could not find builtin ADQL->SQL transformer doc '"+whereIsDoc+"', looking in classpath...");
-               
-               xsltIn = this.getClass().getClassLoader().getResourceAsStream(xsltDoc);
-               whereIsDoc = xsltDoc+" in classpath at "+this.getClass().getClassLoader().getResource(xsltDoc);
-            }
-            
-            if (xsltIn == null) {
-               throw new QueryException("Could not find ADQL->SQL transformer doc "+xsltDoc);
-            }
-         }
-         
-         //create transformer
-         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+whereIsDoc+"'");
-         TransformerFactory tFactory = TransformerFactory.newInstance();
-         try {
-            tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
-         }
-         catch (IllegalArgumentException iae) {
-            //ignore - if UseNamepsaces is unsupported, it will chuck an exception, and
-            //we don't want to use namespaces anyway so taht's fine
-         }
-         Transformer transformer = tFactory.newTransformer(new StreamSource(xsltIn));
-         
-         //transform
-         StringWriter sw = new StringWriter();
-         transformer.transform(new DOMSource(adql), new StreamResult(sw));
-         String sql = sw.toString();
-         
-         //tidy it up - remove new lines and double spaces
-         sql = sql.replaceAll("\n","");
-         sql = sql.replaceAll("\r","");
-         while (sql.indexOf("  ")>-1) { sql = sql.replaceAll("  ", " "); }
-         
-         //botch botch botch - for some reason transformers sometimes add <?xml tag to beginning
-         if (sql.startsWith("<?")) {
-            sql = sql.substring(sql.indexOf("?>")+2);
-         }
-         //botch botch botch - something funny with ADQL 0.7.3 schema to do with comparisons
-         sql = sql.replaceAll("&gt;", ">").replaceAll("&lt;", "<");
-         
-         log.debug("Used '"+xsltDoc+"' to translate ADQL ("+namespaceURI+") to '"+sql+"'");
-         
-         return sql;
+      if (tableNames.length > 1) {
+         throw new QueryException(
+          "Cannot produce count(*) SQL from query referencing multiple tables");
       }
-      catch (TransformerConfigurationException tce) {
-         throw new QueryException(tce+" (using xslt sheet "+xsltDoc+")",tce);
-      }
-      catch (TransformerException te) {
-         throw new QueryException(te+" translating ADQL->SQL using "+xsltDoc,te);
-      }
-      catch (IOException ioe) {
-         throw new QueryException(ioe+" Opening XSLT sheet "+xsltDoc,ioe);
-      }
-      
+      // Once we get here, we have 1 table name only
+      String countSql = "SELECT COUNT(*) FROM " + tableNames[0] + ";";
+      return countSql;
    }
-   
+   */
 }
-
-
-/*
- $Log: AdqlSqlMaker.java,v $
- Revision 1.2  2005/03/21 18:45:55  mch
- Naughty big lump of changes
-
- Revision 1.1  2005/03/10 16:42:55  mch
- Split fits, sql and xdb
-
- Revision 1.1.1.1  2005/02/17 18:37:35  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:24  mch
- Initial checkin
-
- Revision 1.2.12.4  2004/12/10 12:37:13  mch
- Cone searches to look in metadata, lots of metadata interpreterrs
-
- Revision 1.2.12.3  2004/12/08 23:23:37  mch
- Made SqlWriter and AdqlWriter implement QueryVisitor
-
- Revision 1.2.12.2  2004/12/08 18:36:40  mch
- Added Vizier, rationalised SqlWriters etc, separated out TableResults from QueryResults
-
- Revision 1.2.12.1  2004/12/03 11:56:43  mch
- switched from using stylesheet to dedicated SQL maker
-
- Revision 1.2  2004/11/03 01:35:18  mch
- PAL_MCH_Candidate2 merge Part II
-
- Revision 1.1.2.1  2004/10/27 00:43:39  mch
- Started adding getCount, some resource fixes, some jsps
-
- 
- */
-
-
-

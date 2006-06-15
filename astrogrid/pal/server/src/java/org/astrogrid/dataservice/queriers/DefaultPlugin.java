@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultPlugin.java,v 1.3 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: DefaultPlugin.java,v 1.4 2006/06/15 16:50:08 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,7 @@ import java.security.Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.query.Query;
+import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
@@ -36,7 +37,7 @@ public abstract class DefaultPlugin implements QuerierPlugin {
    /** Used by plugins that can't do a proper count, but have to get the results
     * and count them.  Often proxy services where the proxied service doesn't provide
     * the functionality. */
-   public long getCountFromResults(Principal user, Query query, Querier querier) throws IOException {
+   public long getCountFromResults(Principal user, Query query, Querier querier) throws IOException, QueryException {
       StringWriter sw = new StringWriter();
       query.setResultsDef(new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
       askQuery(user, query, querier);
@@ -53,6 +54,19 @@ public abstract class DefaultPlugin implements QuerierPlugin {
 }
 /*
  $Log: DefaultPlugin.java,v $
+ Revision 1.4  2006/06/15 16:50:08  clq2
+ PAL_KEA_1612
+
+ Revision 1.3.64.3  2006/04/21 12:10:37  kea
+ Renamed ReturnSimple back to ReturnTable (since it is indeed intended
+ for returning tables).
+
+ Revision 1.3.64.2  2006/04/21 11:54:05  kea
+ Changed QueryException from a RuntimeException to an Exception.
+
+ Revision 1.3.64.1  2006/04/20 15:08:28  kea
+ More moving sideways.
+
  Revision 1.3  2005/05/27 16:21:02  clq2
  mchv_1
 

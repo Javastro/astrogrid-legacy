@@ -1,64 +1,66 @@
 <div id='leftColumn'>
 <div id='navcolumn'>
    <div id='menuInstall'>
-      <h5>Install</h5>
+      <h5>Installation notes</h5>
       <ul>
-         <li><a href="../docs/release.jsp">Release Notes</a>
-         <li><a href="../docs/configure.jsp">Configure</a>
-         <li><a href="../installChecks.jsp">Installation Checks</a>
-         <li><a href="../TestServlet?suite=org.astrogrid.dataservice.service.InstallationSelfCheck">Self Test</a>
-         <!-- li><a href="../client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a -->
-      </ul>
-   </div>
-   <div id='menuQuery'>
-      <h5>Query</h5>
-      <ul>
-         <li><a href="../coneForm.jsp" >Cone Search</a>
-         <!-- li><a  href="../queryBuilder-1-SelectFrom.jsp" >Build Query</a -->
-         <li><a href="../adqlSqlForm.jsp" >Ask Adql/Sql Query</a>
-         <li><a  href="../adqlXmlForm.jsp" >Ask Adql/Xml Query</a>
-         <!-- li><a  href="../translateAdql.jsp" >Translate ADQL/SQL to XML</a -->
-         <!-- li><a  href="../adql">Examples</a -->
-      </ul>
-   </div>
-   <div id='menuServer'>
-      <h5>Server</h5>
-      <ul>
-         <!-- li><a href="../serverStatus.jsp">Status</a -->
-         <li><a href="../viewMetadata.jsp">Metadata</a> (<a href='GetMetadata'>XML</a>)
-         <li><a href="../admin/fingerprint.jsp">Fingerprint</a>
-         <li><a href="../serverStatus.jsp">Server Status</a>
-         <li><a href="../admin/">Server Administration</a>
-      </ul>
-   </div>
-   <!-- div id='menuStores'>
-      <h5>Stores</h5>
-      <ul>
-         <li><a href="../StoreBrowser">Browse</a>
-      </ul>
-   </div -->
-   <div id='menuDevelop'>
-      <h5>Develop</h5>
-      <ul>
-         <li><a href="../servlet/AxisServlet">SOAP WSDL</a>
-           <!--
-         <li><a href="../services/AxisDataService05">SOAP endpoint (v0.5)</a>
-           -->
-         <li><a href="../docs/" >Server Development Documentation </a>
-         <li><a href="../bugs.jsp" >Report Bugs</a>
-      </ul>
-   </div>
-   <div id='menuCEA'>
-      <h5>CEA</h5>
-      <ul>
-         <li><a href="../cea-fingerprint.jsp" >Fingerprint</a>
-         <li><a href="../TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" >Installation Tests</a>
-           <!--
-         <li><a href="../cec-http?method=returnRegistryEntry" >View VODescription </a>
-           -->
+        <li><a href="../index.jsp">Welcome page</a></li>
+        <li><a href="../release.jsp">Release notes</a></li>
+        <li><a href="../configure.jsp">Configuring your DSA/catalog</a></li>
       </ul>
    </div>
 
+   <div id='menuServer'>
+   <h5>Self-tests</h5>
+     <ul>
+       <li><a href="../admin/happyaxis.jsp">Apache Axis self-check</a></li>
+       <li><a href="../admin/TestServlet?suite=org.astrogrid.dataservice.service.InstallationPropertiesCheck">Initial properties check</a></li>
+       <li><a href="../admin/TestServlet?suite=org.astrogrid.dataservice.service.InstallationSelfCheck">Installation self-test</a></li>
+       <li><a href="../admin/TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory" >CEA interface self-test</a></li>
+      <li><a href="../admin/sqlSyntaxTests.jsp">SQL syntax test</a> (SLOW!)</li>
+     </ul>
+   </div>
+
+   <div id='menuServer'>
+     <h5>Server administration</h5>
+      <ul>
+        <li><a href="../admin/GenerateMetaDoc">Generate template metadoc</a>
+          <li><a href="../viewMetadata.jsp">View metadata table</a> or <a href='../GetMetadata'>XML</a></li>
+          <li><a href="../admin/register.jsp">Register this DSA/catalog</a>
+          <li><a href="../admin/serverStatus.jsp">View server status</a></li>
+          <li><a href="../admin/clearStatusLog.jsp">Clear status log</a>
+     </ul>
+   </div>
+
+   <div id='menuFingerprints'>
+      <h5>Service fingerprints</h5>
+     <ul>
+     <li><a href="../admin/fingerprint.jsp">General service fingerprint</a></li>
+     <li><a href="../admin/cea-fingerprint.jsp" >CEA interface fingerprint</a></li>
+     <li><a href="../servlet/AxisServlet">Axis Webservice WSDLs</a></li>
+      </ul>
+   </div>
+
+   <div id='menuQuery'>
+   <h5>Self-query interface</h5>
+     <ul>
+       <li><a  href="../admin/adqlXmlForm.jsp">Run an ADQL/xml query</a></li>
+       <%
+           // Optionally enabled coneSearch interface
+           String coneEnabled = ConfigFactory.getCommonConfig().getString(
+                   "datacenter.implements.conesearch");
+           if ( (coneEnabled != null) && (coneEnabled.equals("true") || coneEnabled.equals("TRUE")) ) {
+           out.write("<li><a href=\"../admin/coneForm.jsp\">Run a cone search</a></li>");
+           }
+           else {
+              out.write("<li><font color=\"#999999\">Run a cone search</font></li>");
+           }
+       %>
+     </ul>
+   </div>
+
+
+</div>
+</div>
 </div>
 </div>
 

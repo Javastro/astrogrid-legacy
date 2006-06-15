@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+    <SelectionList xsi:type="selectionListType">
+        <Item xsi:type="aggregateFunctionType" Name="SUM">
+            <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
+        </Item>
+    </SelectionList>
+    <From xsi:type="fromType">
+        <Table xsi:type="tableType" Alias="a" Name="catalogue"/>
+    </From>
+</Select>

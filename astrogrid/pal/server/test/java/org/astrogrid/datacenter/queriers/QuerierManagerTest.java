@@ -1,6 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.4 2005/05/27 16:21:02 clq2 Exp $
- * Created on 28-Nov-2003
- *
+/*
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid
@@ -46,9 +44,15 @@ public class QuerierManagerTest extends TestCase {
    }
    public void testHandleUniqueness() throws Exception {
       
-      s1 = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)), this);
+      s1 = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
+          SimpleQueryMaker.makeTestQuery(
+            new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)),
+          this);
       assertNotNull(s1);
-      s2 = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)), this);
+      s2 = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
+          SimpleQueryMaker.makeTestQuery(
+            new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)),
+          this);
       assertNotNull(s2);
       assertNotSame(s1,s2);
       assertFalse(s1.getId().equals(s2.getId()));
@@ -60,91 +64,4 @@ public class QuerierManagerTest extends TestCase {
    public static void main(String[] args) {
       junit.textui.TestRunner.run(QuerierManagerTest.class);
    }
-   
-
 }
-
-
-/*
- $Log: QuerierManagerTest.java,v $
- Revision 1.4  2005/05/27 16:21:02  clq2
- mchv_1
-
- Revision 1.3.24.2  2005/05/03 19:35:01  mch
- fixes to tests
-
- Revision 1.3.24.1  2005/04/21 17:20:51  mch
- Fixes to output types
-
- Revision 1.3  2005/03/10 16:42:55  mch
- Split fits, sql and xdb
-
- Revision 1.2  2005/02/28 18:47:05  mch
- More compile fixes
-
- Revision 1.1.1.1  2005/02/17 18:37:35  mch
- Initial checkin
-
- Revision 1.1.1.1  2005/02/16 17:11:25  mch
- Initial checkin
-
- Revision 1.5.2.2  2004/11/29 21:52:18  mch
- Fixes to skynode, log.error(), getstem, status logger, etc following tests on grendel
-
- Revision 1.5.2.1  2004/11/22 00:57:16  mch
- New interfaces for SIAP etc and new slinger package
-
- Revision 1.5  2004/11/11 20:42:50  mch
- Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
-
- Revision 1.4  2004/11/09 17:42:22  mch
- Fixes to tests after fixes for demos, incl adding closable to targetIndicators
-
- Revision 1.3  2004/10/07 10:34:44  mch
- Fixes to Cone maker functions and reading/writing String comparisons from Query
-
- Revision 1.2  2004/10/06 21:12:17  mch
- Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
-
- Revision 1.1  2004/09/28 15:11:33  mch
- Moved server test directory to pal
-
- Revision 1.12  2004/09/08 16:12:32  mch
- Fix tests to use ADQL 0.7.4
-
- Revision 1.11  2004/09/01 13:19:54  mch
- Added sample stars metadata
-
- Revision 1.10  2004/09/01 12:10:58  mch
- added results.toHtml
-
- Revision 1.9  2004/03/14 04:13:16  mch
- Wrapped output target in TargetIndicator
-
- Revision 1.8  2004/03/13 23:38:56  mch
- Test fixes and better front-end JSP access
-
- Revision 1.7  2004/03/12 20:11:09  mch
- It05 Refactor (Client)
-
- Revision 1.6  2004/03/12 04:54:06  mch
- It05 MCH Refactor
-
- Revision 1.5  2004/02/24 16:03:48  mch
- Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
-
- Revision 1.4  2004/02/16 23:07:05  mch
- Moved DummyQueriers to std server and switched to AttomConfig
-
- Revision 1.3  2003/12/01 20:58:42  mch
- Abstracting coarse-grained plugin
-
- Revision 1.2  2003/12/01 16:44:11  nw
- dropped _QueryId, back to string
-
- Revision 1.1  2003/11/28 16:10:30  nw
- finished plugin-rewrite.
- added tests to cover plugin system.
- cleaned up querier & queriermanager. tested
- 
- */

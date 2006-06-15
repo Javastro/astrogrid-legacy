@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManagerTest.java,v 1.6 2006/01/10 14:12:50 nw Exp $
+/*$Id: DatacenterCEAComponentManagerTest.java,v 1.7 2006/06/15 16:50:09 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,6 +48,11 @@ public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentMana
     protected CEAComponentManager createManager() {
         return new DatacenterCEAComponentManager();
 
+    }
+    // KEA:  I don't think DSA needs this one because it does its 
+    // own self-registration (not using CEA functionality)
+    public void testGetUploader() {
+      return;
     }
 
    /**

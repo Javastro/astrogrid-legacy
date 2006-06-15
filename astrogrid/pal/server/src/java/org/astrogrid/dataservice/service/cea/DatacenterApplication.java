@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.3 2005/05/27 16:21:08 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.4 2006/06/15 16:50:08 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,9 +32,9 @@ import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.query.Query;
+import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.query.QueryException;
 import org.astrogrid.query.QueryState;
-import org.astrogrid.query.SimpleQueryMaker;
-import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.slinger.sourcetargets.HomespaceSourceTarget;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
@@ -52,6 +52,7 @@ import org.astrogrid.slinger.ivo.IVORN;
  * There is one instance of this class for each query
  *
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
+ * @author K Andrews
  *
  */
 public class DatacenterApplication extends AbstractApplication implements QuerierListener {
@@ -90,16 +91,26 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * (mch) not entirely happy with this following changes to Query that include
     * the result spec.  I've set it to table here and hope that targets etc get
     * set properly later (as it would have done before)
+    * FURTHER COMMENT BY KEA:  Explicitly setting the ReturnSpec in the 
+    * CONE_IFACE query now, to a ReturnTable.
     * @param t
     * @return
     */
-   protected final Query buildQuery(ApplicationInterface interf)  throws IOException, CeaException {
+   protected final Query buildQuery(ApplicationInterface interf)  throws IOException, CeaException, QueryException {
 
       if (interf.getName().equals(DatacenterApplicationDescription.CONE_IFACE)) {
+        /*
          return SimpleQueryMaker.makeConeQuery(
             Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process())
                , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.DEC).process())
                , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process())
+         );
+         */
+         return new Query(
+            Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process()),
+            Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.DEC).process()),
+            Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process()),
+            new ReturnTable(new WriterTarget(new StringWriter()))
          );
       }
       else if (interf.getName().equals(DatacenterApplicationDescription.ADQL_IFACE)) {
@@ -109,12 +120,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             throw new IOException("Read empty string at "+querySource);
          }
          logger.debug("Query will be " + queryString);
-         try {
-            return AdqlQueryMaker.makeQuery(queryString);
-         }
-         catch (SAXException e) {
-            throw new IllegalArgumentException(e+", reading Adql at "+querySource);
-         }
+         return new Query(queryString);
       }
       else
       {
@@ -303,6 +309,22 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.4  2006/06/15 16:50:08  clq2
+ PAL_KEA_1612
+
+ Revision 1.3.64.3  2006/05/10 13:25:22  kea
+ Conesearch and HSQLDB fixes/enhancements;  moving properties to web.xml
+ like other AG services.
+
+ Revision 1.3.64.2  2006/04/21 11:54:05  kea
+ Changed QueryException from a RuntimeException to an Exception.
+
+ Revision 1.3.64.1  2006/04/19 13:57:31  kea
+ Interim checkin.  All source is now compiling, using the new Query model
+ where possible (some legacy classes are still using OldQuery).  Unit
+ tests are broken.  Next step is to move the legacy classes sideways out
+ of the active tree.
+
  Revision 1.3  2005/05/27 16:21:08  clq2
  mchv_1
 

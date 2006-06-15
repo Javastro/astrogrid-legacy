@@ -1,5 +1,5 @@
 /*
- * $Id: SolarImageQuery.java,v 1.2 2005/05/27 16:21:13 clq2 Exp $
+ * $Id: SolarImageQuery.java,v 1.3 2006/06/15 16:50:10 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.sol;
@@ -13,7 +13,6 @@ import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.condition.CircleCondition;
 import org.astrogrid.query.returns.ReturnImage;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
@@ -26,7 +25,8 @@ import org.astrogrid.webapp.DefaultServlet;
  * has URLs to the images themselves (depending on the plugin).  This class handles the initial
  * query
  *
- * @author mch
+ * @author M Hill
+ * @author K Andrews
  */
 public class SolarImageQuery extends DefaultServlet {
    
@@ -38,8 +38,10 @@ public class SolarImageQuery extends DefaultServlet {
          String dateParam = request.getParameter("datetime");
          Date date = new Date(Date.parse(dateParam));
          
+         double radius = ServletHelper.getRadius(request);
+         double ra = ServletHelper.getRa(request);
+         double dec = ServletHelper.getDec(request);
          
-         CircleCondition circleCon = ServletHelper.makeCircleCondition(request);
          String formatParam = request.getParameter("FORMAT");
          if (formatParam == null) formatParam = request.getParameter("format");
    
@@ -68,13 +70,15 @@ public class SolarImageQuery extends DefaultServlet {
          }
          else {
             //default as well as if format given
-            returnSpec = new ReturnTable(new WriterTarget(response.getWriter()), format);
+            returnSpec = new ReturnTable(
+                new WriterTarget(response.getWriter()), format);
          }
          
          try {
-            server.askQuery(LoginAccount.ANONYMOUS, new Query(circleCon, returnSpec), this);
+            //server.askQuery(LoginAccount.ANONYMOUS, new Query(circleCon, returnSpec), this);
+            server.askQuery(LoginAccount.ANONYMOUS, new Query(ra, dec, radius, returnSpec), this);
          } catch (Throwable e) {
-            doError(response, "SIAP error (RA="+circleCon.getRa()+", DEC="+circleCon.getDec()+", SIZE="+circleCon.getRadius()+", FORMAT="+formatParam+")", e);
+            doError(response, "SIAP error (RA="+ra+", DEC="+dec+", SIZE="+radius+", FORMAT="+formatParam+")", e);
          }
          
       } catch (NumberFormatException e) {
@@ -82,5 +86,3 @@ public class SolarImageQuery extends DefaultServlet {
       }
    }
 }
-
-

@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.13 2006/02/09 09:54:09 clq2 Exp $
+ * $Id: VoResourceSupport.java,v 1.14 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -67,21 +67,20 @@ public class VoResourceSupport {
          "<identifier>"+id+"</identifier>\n"+
          "<curation>\n"+
            "<publisher>"+publisher+"</publisher>\n"+
-           "<contact>\n"+
-             "<name>"+contactName+"</name>\n"+
-             "<email>"+contactEmail+"</email>\n"+
-           "</contact>\n"+
            "<creator>\n"+
            "<name>"+contactName+" (should really be dataset creator's name!)</name>\n" +
            "<logo>" +refUrl + "/logo.gif</logo>\n" +
            "</creator>\n"+
+           "<contact>\n"+
+             "<name>"+contactName+"</name>\n"+
+             "<email>"+contactEmail+"</email>\n"+
+           "</contact>\n"+
          "</curation>\n"+
          "<content>\n"+
            "<description>"+description+"</description>\n"+
            "<referenceURL>"+refUrl+"</referenceURL>\n"+
            "<type>"+type+"</type>\n"+
          "</content>\n";
-
          
       return core;
    }
@@ -152,7 +151,6 @@ public class VoResourceSupport {
             ConfigFactory.getCommonConfig().getString("datacenter.publisher",null),
             ConfigFactory.getCommonConfig().getString("datacenter.contact.name", ""),
             ConfigFactory.getCommonConfig().getString("datacenter.contact.email", ""),
-            //ConfigFactory.getCommonConfig().getString("datacenter.contact.date", ""));
             ConfigFactory.getCommonConfig().getString("data.description", ""),
             ConfigFactory.getCommonConfig().getString("datacenter.url", ""),
             "Catalog"
@@ -197,11 +195,4 @@ public class VoResourceSupport {
           );
     }
 }
-
-
-
-
-
-
-
 

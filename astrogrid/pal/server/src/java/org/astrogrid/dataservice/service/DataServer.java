@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+ * $Id: DataServer.java,v 1.4 2006/06/15 16:50:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,7 +21,6 @@ import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.dataservice.DatacenterException;
 import org.astrogrid.query.Query;
-import org.astrogrid.query.condition.Condition;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.xml.DomHelper;
 
@@ -61,9 +60,6 @@ public class DataServer
    /** Start Time for status info */
    public final static DataServiceStatus status = new DataServiceStatus();
 
-   /** Configuration setting used to mark whether raw sql is allowed */
-   public final static String SQL_PASSTHROUGH_ENABLED = "datacenter.sql.passthrough.enabled";
-   
    /** Returns the name of this datacenter if it is configured, and 'AstroGrid
     * Datacenter Installation' by default.
     */
@@ -132,10 +128,11 @@ public class DataServer
 
    /**
     * @deprecated convenience method
-    */
+    * NO LONGER DEPRECATED, NOW REMOVED - DON'T SUPPORT CONDITION ANYMORE
    public void askQuery(Principal user, Condition condition, ReturnSpec returns) throws Throwable {
       askQuery(user, new Query(condition, returns), null);
    }
+    */
 
    /**
     * Returns the status object */
@@ -173,10 +170,11 @@ public class DataServer
 
    /**
     * @deprecated convenience method
-    */
+    * NOW REMOVED - DON'T SUPPORT CONDITION ANYMORE
    public String submitQuery(Principal user, Condition condition, ReturnSpec returns) throws Throwable {
       return submitQuery(user, new Query(condition, returns), null);
    }
+    */
 
    /**
     * Returns the number of matches of the given query condition. Source indicates which
