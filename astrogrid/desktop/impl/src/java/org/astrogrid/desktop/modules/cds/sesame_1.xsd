@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--W3C Schema for sesame = CDS Name Resolver
+     See History at      http://vizier.u-strasbg.fr/doc/Sesame
+     See Discussions at  http://archives.us-vo.org/VOTable
+  This XML schema can be referenced by
+       http://cdsweb.u-strasbg.fr/xml/sesame.xsd
+  The DTD is available from
+       http://cdsweb.u-strasbg.fr/xml/sesame.dtd
+.Version 1.0 : 19-Jun-2003
+.Version 1.1 : 21-Sep-2003
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ elementFormDefault="qualified">
+
+<!-- Define a few useful data types -->
+  <xs:simpleType name='lon'>
+    <xs:restriction base='xs:decimal'>
+      <xs:minInclusive value="0"/>
+      <xs:maxExclusive value="360"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name='lat'>
+    <xs:restriction base='xs:decimal'>
+      <xs:minInclusive value="-90"/>
+      <xs:maxInclusive value="90"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name='sexapos'>
+    <xs:restriction base='xs:string'>
+      <xs:pattern value='[0-9: .]*[+-][0-9: .]*'/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name='bibcode'>
+    <xs:restriction base='xs:string'>
+      <xs:pattern value='[12][089][0-9][0-9][A-Za-z][A-Za-z0-9\&amp;.]*'/>
+    </xs:restriction>
+  </xs:simpleType>
+
+<!-- Sesame is the root element -->
+  <xs:element name="Sesame">
+    <xs:complexType>
+      <xs:sequence>
+	<!-- target is simply the input submitted -->
+        <xs:element name="target">
+	  <xs:complexType>
+            <xs:simpleContent><xs:extension base="xs:string">
+              <xs:attribute name="option" type="xs:string"/>
+            </xs:extension></xs:simpleContent>
+	  </xs:complexType>
+	</xs:element>
+        <xs:element name="INFO" minOccurs="0" maxOccurs="unbounded" 
+	    type="xs:string"/>
+        <xs:element name="ERROR" minOccurs="0" maxOccurs="unbounded" 
+	    type="xs:string"/>
+        <xs:element ref="Resolver" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- result contains the sub-elements ra dec name source -->
+  <xs:element name="Resolver">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="INFO" minOccurs="0" maxOccurs="unbounded" 
+	    type="xs:string"/>
+        <xs:element name="ERROR" minOccurs="0" maxOccurs="unbounded" 
+	    type="xs:string"/>
+        <xs:element name="otype" type="xs:token" minOccurs="0"/>
+        <xs:element name="jpos" type="sexapos" minOccurs="0"/>
+        <xs:element name="jradeg" type="lon" minOccurs="0"/>
+        <xs:element name="jdedeg" type="lat" minOccurs="0"/>
+        <xs:element name="refPos" type="bibcode" minOccurs="0"/>
+        <xs:element name="errRAmas" type="xs:decimal" minOccurs="0"/>
+        <xs:element name="errDEmas" type="xs:decimal" minOccurs="0"/>
+        <xs:element name="oname" type="xs:string" minOccurs="0"/>
+        <xs:element name="alias" type="xs:string" minOccurs="0" 
+	    maxOccurs="unbounded"/>
+        <xs:element name="nrefs" type="xs:nonNegativeInteger" 
+	    minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
+      <xs:attribute name="code" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

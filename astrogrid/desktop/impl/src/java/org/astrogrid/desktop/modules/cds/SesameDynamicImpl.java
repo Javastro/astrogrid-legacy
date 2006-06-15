@@ -1,4 +1,4 @@
-/*$Id: SesameDynamicImpl.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: SesameDynamicImpl.java,v 1.3 2006/06/15 09:46:47 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,20 +66,15 @@ public class SesameDynamicImpl implements Sesame {
             throw new ServiceException(e);
         }        
     }
-    
- public static void main(String[] args) {
-     try {
-    SesameDynamicImpl i = new SesameDynamicImpl();
-    System.out.println(i.sesame("m32","x"));
-     } catch (Exception e) {
-         e.printStackTrace();
-     }
-}
+  
 }
 
 
 /* 
 $Log: SesameDynamicImpl.java,v $
+Revision 1.3  2006/06/15 09:46:47  nw
+removed cruft, added schema for result vaidation.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 
