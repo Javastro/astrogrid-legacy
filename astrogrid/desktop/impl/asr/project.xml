@@ -340,13 +340,13 @@
         	</dependency>
      	<!-- dependencies for signatures -->
         	<dependency>
-        		<groupId>wss4j</groupId>
-        		<artifactId>wss4j</artifactId>
-        		<version>1.0a</version>
+        		<groupId>xmlsec</groupId>
+        		<artifactId>xmlsec</artifactId>
+        		<version>1.3.0</version>
         		<type>jar</type>
- 	<properties>
- 		<dist.bundle>true</dist.bundle>
- 	</properties>        		
+ 	          <properties>
+ 		          <dist.bundle>true</dist.bundle>
+ 	          </properties>        		
         	</dependency>
     <!-- crypto provider that myproxy client requires -->
         	<dependency>
