@@ -5,9 +5,10 @@ import java.awt.event.ItemListener;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
@@ -27,7 +28,7 @@ public class SecurityToolEditorPanel
     extends AbstractToolEditorPanel 
     implements UserLoginListener, ItemListener {
   
-  private Community community;
+  private CommunityInternal community;
   
   /**
    * A GUI label that shows whether the user is logged in, and,
@@ -36,6 +37,14 @@ public class SecurityToolEditorPanel
    * and out.
    */
   private JLabel loggedInDisplay;
+
+  /**
+   * A GUI label that shows whether the user has the credentials
+   * needed for digital signature. The text is set in
+   * the constructor and by callbacks as the user logs in
+   * and out.
+   */
+  private JLabel accreditedDisplay; 
   
   /**
    * The control enabling authentication.
@@ -48,10 +57,12 @@ public class SecurityToolEditorPanel
   /** 
    * Constructs a new instance of SecurityToolEditorPanel.
    */
-  public SecurityToolEditorPanel(ToolModel toolModel, Community community) {
+  public SecurityToolEditorPanel(ToolModel toolModel, 
+                                 CommunityInternal community) {
     super(toolModel);
     this.community = community;
     this.loggedInDisplay = new JLabel();
+    this.accreditedDisplay = new JLabel();
     this.securityEnablerControl = new JCheckBox("Identify yourself to the application server?");
     
     // We want to be called back when the user logs in or out,
@@ -75,6 +86,7 @@ public class SecurityToolEditorPanel
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     this.add(this.securityEnablerControl);
     this.add(this.loggedInDisplay);
+    this.add(this.accreditedDisplay);
   }
 
   /**
@@ -95,13 +107,20 @@ public class SecurityToolEditorPanel
    * by the framework if the user later logs in.
    */
   public void userLogin(org.astrogrid.acr.astrogrid.UserLoginEvent e) {
-    String message = "You are logged in as " +
-                     community.getUserInformation().getName() +
-                     " of community " +
-                     community.getUserInformation().getCommunity() +
-                     ".";
-    System.out.println(message);
-    this.loggedInDisplay.setText(message);
+    if(community.isLoggedIn()) {
+      String message1 = "You are logged in as " +
+                        community.getUserInformation().getName() +
+                        " of community " +
+                        community.getUserInformation().getCommunity() +
+                        ".";
+      this.loggedInDisplay.setText(message1);
+      String s = this.hasDigitalSignatureCredentials()? "has " : "has not ";
+      String message2 = "Your community " +
+                        s +
+                        "provided credentials to authenticate " +
+                        "to the server.";
+      this.accreditedDisplay.setText(message2);
+    }
   }
 
   /**
@@ -110,9 +129,12 @@ public class SecurityToolEditorPanel
    * by the framework if the user later logs out.
    */
   public void userLogout(org.astrogrid.acr.astrogrid.UserLoginEvent e) {
-    String message = "You are not logged in.";
-    System.out.println(message);
-    this.loggedInDisplay.setText(message);
+    if (!community.isLoggedIn()) {
+      this.loggedInDisplay.setText("You are not logged in.");
+      this.accreditedDisplay.setText("");
+      this.securityEnablerControl.setSelected(false);
+      this.toolModel.setSecurityMethod(null);
+    }
   }
   
   /**
@@ -123,9 +145,8 @@ public class SecurityToolEditorPanel
     if (e.getSource() == this.securityEnablerControl && 
         e.getStateChange() == ItemEvent.SELECTED) {
       community.guiLogin();
-      if (community.isLoggedIn()) {
+      if (community.isLoggedIn() && this.hasDigitalSignatureCredentials()) {
         this.toolModel.setSecurityMethod("IVOA digital signature");
-        System.out.println("Security method set");
       }
       else {
         this.securityEnablerControl.setSelected(false);
@@ -134,6 +155,24 @@ public class SecurityToolEditorPanel
     }
     else {
       this.toolModel.setSecurityMethod(null);
+    }
+  }
+  
+  /**
+   * Checks that the user has credentials for digital signature
+   * of requests to services.
+   *
+   * @return - true iff correct credentials are held.
+   */
+  private boolean hasDigitalSignatureCredentials() {
+    try {
+      SecurityGuard g = this.community.getSecurityGuard();
+      g.getCertificateChain(); // throws if credentials are absent
+      g.getPrivateKey(); // throws if credentials are absent
+      return true;
+    }
+    catch (Exception e) {
+      return false;
     }
   }
   

@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -13,7 +13,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  */
 public class SecurityToolEditorPanelFactory implements ToolEditorPanelFactory {
 
-	private final Community comm;
+	private final CommunityInternal comm;
 	public AbstractToolEditorPanel create(ToolModel model, UIComponent parent) {
 		return new SecurityToolEditorPanel(model,comm);
 	}
@@ -22,7 +22,7 @@ public class SecurityToolEditorPanelFactory implements ToolEditorPanelFactory {
 		return "Security";
 	}
 
-	public SecurityToolEditorPanelFactory(final Community comm) {
+	public SecurityToolEditorPanelFactory(final CommunityInternal comm) {
 		super();
 		this.comm = comm;
 	}
