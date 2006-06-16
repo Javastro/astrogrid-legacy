@@ -9,7 +9,7 @@
     
     <dependency>
       <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-pal-query</artifactId>
+            <artifactId>astrogrid-pal-oldquery</artifactId>
             <version>${astrogrid.pal.version}</version>
             <type>jar</type>
         </dependency>	  

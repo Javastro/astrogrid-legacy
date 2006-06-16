@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.52 2006/06/13 14:49:12 gtr Exp $ -->
+<!-- $Id: tests-project.xml,v 1.53 2006/06/16 16:08:42 kea Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>${basedir}/../../maven-base/project.xml</extend>
@@ -126,7 +126,7 @@
 			<!--registry query needs this now-->
 			<dependency>
 				<groupId>org.astrogrid</groupId>
-				<artifactId>astrogrid-pal-query</artifactId>
+				<artifactId>astrogrid-pal-oldquery</artifactId>
 				<version>${astrogrid.pal.version}</version>
 				<type>jar</type>
 				<properties>

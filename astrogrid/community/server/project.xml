@@ -2,11 +2,14 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/05/25 16:29:44 $</cvs:date>
-    | <cvs:version>$Revision: 1.22 $</cvs:version>
+    | <cvs:author>$Author: kea $</cvs:author>
+    | <cvs:date>$Date: 2006/06/16 16:08:42 $</cvs:date>
+    | <cvs:version>$Revision: 1.23 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.23  2006/06/16 16:08:42  kea
+    |   Changing dependency on astrogrid-pal-query to astrogrid-pal-oldquery.
+    |
     |   Revision 1.22  2005/05/25 16:29:44  clq2
     |   with doc temp
     |
@@ -181,7 +184,7 @@
     	    	
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-pal-query</artifactId>
+            <artifactId>astrogrid-pal-oldquery</artifactId>
             <version>${astrogrid.pal.version}</version>
             <type>jar</type>
         </dependency>    	
