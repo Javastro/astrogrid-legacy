@@ -48,18 +48,6 @@
       <version>${astrogrid.xml.stable}</version>
     </dependency>
 
-    <dependency>
-      <id>astrogrid-status-api</id>
-      <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.status.version}</version>
-    </dependency>
-
-    <dependency>
-      <id>astrogrid-status-monitor</id>
-      <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.status.version}</version>
-    </dependency>
-
       <dependency>
          <artifactId>astrogrid-pal-geom</artifactId>
          <groupId>org.astrogrid</groupId>

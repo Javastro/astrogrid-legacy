@@ -177,25 +177,6 @@
       </properties>
     </dependency>
 
-    <dependency>
-      <id>astrogrid-status-api</id>
-      <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.status.version}</version>
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <!-- needed for server status page -->
-    <dependency>
-      <id>astrogrid-status-monitor</id>
-      <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.status.version}</version>
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
       <dependency>
          <artifactId>astrogrid-pal-geom</artifactId>
          <groupId>org.astrogrid</groupId>
