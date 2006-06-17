@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.14 2005/06/09 16:33:56 clq2 Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.15 2006/06/17 18:49:25 clq2 Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.registry.beans.resource.ResourceType;
 import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.query.sql.Sql2Adql;
+import org.astrogrid.oldquery.sql.Sql2Adql;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -221,6 +221,9 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.15  2006/06/17 18:49:25  clq2
+to match KEA_PAL_1612 change of package name of org.astrogrid.query.sql.Sql2Adql to org.astrogrid.oldquery.sql.Sql2Adql
+
 Revision 1.14  2005/06/09 16:33:56  clq2
 1120
 

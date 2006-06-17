@@ -1,4 +1,4 @@
-/*$Id: RegistryV10ApplicationRegistry.java,v 1.4 2005/06/23 08:00:32 nw Exp $
+/*$Id: RegistryV10ApplicationRegistry.java,v 1.5 2006/06/17 18:49:25 clq2 Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationDescriptionSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
-import org.astrogrid.query.sql.Sql2Adql;
+import org.astrogrid.oldquery.sql.Sql2Adql;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.cea.ApplicationDefinition;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -194,6 +194,9 @@ public final static String LIST_QUERY_STRING= "Select * from Registry where " +
 
 /* 
 $Log: RegistryV10ApplicationRegistry.java,v $
+Revision 1.5  2006/06/17 18:49:25  clq2
+to match KEA_PAL_1612 change of package name of org.astrogrid.query.sql.Sql2Adql to org.astrogrid.oldquery.sql.Sql2Adql
+
 Revision 1.4  2005/06/23 08:00:32  nw
 fixed error on v10 list applications query - just needed ( )
 
