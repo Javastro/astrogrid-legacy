@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xmlns="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SelectionList>
+    <Item xsi:type="allSelectionItemType"/>
+  </SelectionList>
+  <From>
+    <Table Name="catalogue" xsi:type="tableType" Alias="catalogue"/>
+  </From>
+  <Where>
+    <Condition Comparison="&lt;" xsi:type="comparisonPredType">
+      <Arg Name="POS_EQ_DEC" Table="catalogue" xsi:type="columnReferenceType"/>
+      <Arg xsi:type="atomType"> 
+        <Literal Value="0.0" xsi:type="realType"/>
+      </Arg>
+    </Condition>
+  </Where>
+</Select>
