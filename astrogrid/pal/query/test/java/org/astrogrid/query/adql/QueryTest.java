@@ -235,11 +235,21 @@ public class QueryTest extends XMLTestCase   {
       printHelpfulStuff(name, "testGetTables1");
       String adql = helper.getSuiteAdqlString(name, version); 
       Query query = new Query(adql);
-      assertNull(query.getTableAlias("catalogueA"));
-      assertNull(query.getTableAlias("catalogueB"));
+      // If no alias is given, alias is set to same as table name
+      assert(query.getTableAlias("catalogueA").equals("catalogueA"));
+      assert(query.getTableAlias("catalogueB").equals("catalogueB"));
       assertNull(query.getTableAlias("nosuchtable"));
    }
 
+   public void testNoAlias() throws Exception {
+      String name = "selectFromNoAlias";
+      String version =  "v1_0";
+      printHelpfulStuff(name, "testNoAlias");
+      String adql = helper.getSuiteAdqlString(name, version); 
+      Query query = new Query(adql);
+      query.getTableName("catalogue");
+      query.getTableAlias("catalogue");
+   }
    //----------------------------------------------------------------------
    /* Utility functions */
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTest.java,v 1.4 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: AdqlTest.java,v 1.5 2006/06/22 16:16:23 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -178,6 +178,9 @@ public class AdqlTest extends XMLTestCase   {
    }
    public void testSelectBoolOps() throws Exception {
      suiteTest("selectBoolOps", "v1_0", true);
+   }
+   public void testSelectFromNoAlias() throws Exception {
+     suiteTest("selectFromNoAlias", "v1_0", false);
    }
 
    //----------------------------------------------------------------------

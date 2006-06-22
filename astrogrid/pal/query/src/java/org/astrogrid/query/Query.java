@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.4 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: Query.java,v 1.5 2006/06/22 16:16:23 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -660,6 +660,24 @@ public class Query  {
          catch (QueryException e) {
             this.selectDocument = null; // Kill the adql
             throw e;
+         }
+      }
+      else {
+         // TOFIX BETTER (Later) Check already-present From clauses, and 
+         // add aliases to any that don't have aliases.  This is a quick
+         // fix, find a more flexible solution later?  We have a problem
+         // with resolving aliases/table names when no alias is supplied
+         // in the From clause, leading to a null pointer error.
+         FromType from = selectType.getFrom();
+         int numTables = from.sizeOfTableArray();
+         for (int i = 0; i < numTables; i++) {
+            TableType tableType = (TableType)(from.getTableArray(i));
+            boolean hasAlias = tableType.isSetAlias();
+            if (hasAlias == false) {
+              // If no alias, add one same as table name
+               String name = tableType.getName();
+               tableType.setAlias(name);
+            }
          }
       }
    }
