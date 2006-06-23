@@ -29,7 +29,7 @@ for that sql, for a collection of sample queries.
 
 <div id='bodyColumn'>
 
-<h1>SQL syntaxt test page for <%=DataServer.getDatacenterName() %></h1>
+<h1>SQL syntax test page for <%=DataServer.getDatacenterName() %></h1>
 
 <p> These tests check whether your Datacenter installation is producing
 SQL suited to your RDBMS backend.
