@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.5 2006/06/22 16:16:23 kea Exp $
+ * $Id: Query.java,v 1.6 2006/06/23 09:10:51 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -675,8 +675,25 @@ public class Query  {
             boolean hasAlias = tableType.isSetAlias();
             if (hasAlias == false) {
               // If no alias, add one same as table name
+              // Any column references elsewhere in the query will
+              // be referenced by table name, so the pseudo-alias
+              // will be consistent with this.
                String name = tableType.getName();
                tableType.setAlias(name);
+            }
+            // Check for blank aliases and reject the query if the alias
+            // is set to whitespace or an empty string - because it's not
+            // clear how to interpret any subsequent column references
+            // if there is a blank alias
+            else {
+              String alias = tableType.getAlias();
+              if ((alias == null) || (alias.trim().equals("")) ) {
+                // reject 
+                throw new QueryException(
+                    "Empty alias supplied for table " +
+                    tableType.getName() + 
+                    " - alias must not be empty.");
+              }
             }
          }
       }

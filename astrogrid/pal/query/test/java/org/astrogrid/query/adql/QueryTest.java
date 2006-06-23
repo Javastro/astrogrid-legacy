@@ -250,6 +250,19 @@ public class QueryTest extends XMLTestCase   {
       query.getTableName("catalogue");
       query.getTableAlias("catalogue");
    }
+   public void testEmptyAlias() throws Exception {
+      String name = "BAD_selectEmptyAlias";
+      String version =  "v1_0";
+      printHelpfulStuff(name, "testEmptyAlias");
+      String adql = helper.getSuiteAdqlString(name, version); 
+      try {
+        Query query = new Query(adql);
+      }
+      catch (QueryException e) {
+        return;   //  Error as expected
+      }
+      fail("Query with empty alias should have caused an exception");   
+   }
    //----------------------------------------------------------------------
    /* Utility functions */
 
