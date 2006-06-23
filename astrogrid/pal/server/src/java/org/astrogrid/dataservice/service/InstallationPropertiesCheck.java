@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.2 2006/06/15 16:50:09 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.3 2006/06/23 10:18:29 kea Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
  **/
 package org.astrogrid.dataservice.service;
 
+import java.util.Vector;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
@@ -31,7 +32,7 @@ public class InstallationPropertiesCheck extends TestCase {
    {
       boolean allOK = true;
       String test;
-      String accum = "";
+      Vector accum = new Vector();
 
       // Check all properties are set
       allOK = allOK && checkSet("datacenter.url", accum);
@@ -90,10 +91,14 @@ public class InstallationPropertiesCheck extends TestCase {
         allOK = allOK && checkSet("datacenter.plugin.jdbc.drivers", accum);
         allOK = allOK && checkSet("datacenter.plugin.jdbc.url", accum);
       }
-      assertTrue("SOME PROPERTIES ARE NOT SET!<br/>\n" + accum,allOK);
+      String accumString = "";
+      for (int i = 0; i < accum.size(); i++) {
+        accumString = accumString + (String)accum.elementAt(i);
+      }
+      assertTrue("SOME PROPERTIES ARE NOT SET!<br/>\n" + accumString,allOK);
    }
 
-   protected boolean checkSet(String name, String accum)
+   protected boolean checkSet(String name, Vector accum)
    {
       String property;
       try {
@@ -104,13 +109,14 @@ public class InstallationPropertiesCheck extends TestCase {
         property = null;
       }
       if (property == null) {
-        accum= accum + 
-          "<br/>\nProperty '" + name + "' is not set, please set it!"; 
+        accum.add(
+          "<br/>\nProperty '" + name + "' is not set, please set it!"); 
+
         return false;
       }
       if (property.equals("")) {
-        accum= accum + 
-          "<br/>\nProperty '" + name + "' is not set, please set it!"; 
+        accum.add(
+          "<br/>\nProperty '" + name + "' is not set, please set it!"); 
         return false;
       }
       return true;
