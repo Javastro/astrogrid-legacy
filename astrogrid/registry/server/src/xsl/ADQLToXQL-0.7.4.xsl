@@ -315,12 +315,11 @@
        where 
       </xsl:text>      
 
-<!--
+
       <xsl:text>
-       where 
-       $x/@status='active' and 
+        $x/@status='active' and 
       </xsl:text>      
--->
+
 
       <xsl:apply-templates select="ad:Condition"/>
       <xsl:text> 
