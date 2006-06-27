@@ -171,7 +171,8 @@
 	
 	<contribution configuration-id="stylesheets">
 		<stylesheet regexp=".*&lt;workflow" sheet="workflow.xsl" />
-		<stylesheet regexp=".*&lt;VOTABLE" sheet="VOTable2XHTML.xsl" />
+	<!-- stopped using this one - as doesn't work for all votables. fallback to xml verbatim instead.
+		<stylesheet regexp=".*&lt;VOTABLE" sheet="VOTable2XHTML.xsl" /> -->
 		<stylesheet regexp="." sheet="xmlverbatim.xsl" />
 	</contribution>
 		
