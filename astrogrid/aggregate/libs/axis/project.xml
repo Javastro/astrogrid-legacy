@@ -60,7 +60,16 @@
         <jnlp.jar>true</jnlp.jar>
       </properties>
     </dependency>
-
+  <dependency>
+    <groupId>xalan</groupId>
+    <artifactId>serializer</artifactId>
+    <version>2.7.0</version>
+    <type>jar</type>
+    <url>http://xml.apache.org/</url>
+    <properties>
+        <jnlp.jar>true</jnlp.jar>
+    </properties>
+  </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
 
