@@ -33,6 +33,11 @@ public class Workbench1 {
 	 * @param l
 	 */
 	public static void configureLauncherAsWorkbench(Launcher l) {
+	     // set propeerties for apple - ignored in other contexts, so not a problem..
+	     System.setProperty("apple.laf.useScreenMenuBar","true");
+	     System.setProperty("apple.awt.antialiasing","true");
+	     System.setProperty("apple.awt.textantialiasing","true");
+	     
 		System.setProperty("workbench.mode","true");
     	l.addModuleByName("background");
     	l.addModuleByName("ui");
