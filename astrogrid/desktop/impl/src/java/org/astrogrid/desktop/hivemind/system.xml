@@ -91,6 +91,10 @@ System module.
 			</element>		
 	</schema>	
 	
+	<configuration-point id="plasticMessageHandlers" schema-id="objects">
+	List of handlers to register as processors of plastic messages.
+	Should all be instances of org.votech.plastic.incoming.handlers.MessageHandler
+	</configuration-point>
 	
 	<configuration-point id="uiStructure">
 		Defines menus, tabs, and entries of the user interface.
@@ -261,7 +265,7 @@ System module.
 		<tab name="links" text="Links" after="advanced" />			
 	</contribution>
 	<contribution configuration-id="uiStructure" if="property workbench.mode">
-		<tab name="links" text="Visualization" before="advanced" />		
+		<tab name="links" text="Data Discovery" before="*" />		
 		<tab name="advanced" text="Advanced" after="*" />	
 	</contribution>
 
@@ -332,6 +336,7 @@ System module.
 			  ]]></tooltip>
 			<parameter>http://visivo.cineca.it/</parameter>
 		</action>
+		<!-- not very good
 		<action parentName="links" name="voplot" text="VOPlot" iconName="voplot.png"
 			after="visivo"
 			object="service:browser" methodName="openURL">
@@ -343,14 +348,16 @@ System module.
 			  ]]></tooltip>
 			<parameter>http://vo.iucaa.ernet.in/~voi/voplot.htm</parameter>
 		</action>
+		-->
 		<action parentName="links" name="vospec" text="VOSpec" iconName="vospecLogo.png"
-			after="voplot"
+			after="visivo"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
 			<html><b>VOSpec</b>: A tool to handle VO-compatible spectra
 			  ]]></tooltip>
 			<parameter>http://esavo.esa.int/vospecapp</parameter>
-		</action>				
+		</action>
+		<!-- not very popular				
 		<action parentName="links" name="xmdv" text="xmdv-lite" 
 			after="vospec" iconName="xmdv.png"
 			object="service:browser" methodName="openURL">
@@ -359,6 +366,7 @@ System module.
 			]]></tooltip>
 			<parameter>http://software.astrogrid.org/votech/ds6/xmdv/</parameter>
 		</action>		
+		-->
 	</contribution>	
 	<!-- add a link to the workbench if we're not running in workbench mode. -->
 	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled) and ((property hub.mode) or (property acr.mode))">
@@ -469,11 +477,16 @@ System module.
 		<load service-id="executor" />
 		<load service-id="configuration" />
 		<load service-id="snitch" />
+		<load service-id="tupperware" />
 	</contribution>
 	
 	<!-- start this eager if running under webstart -->
 	<contribution configuration-id="hivemind.EagerLoad" if="class javax.jnlp.ServiceManager">
 		<load service-id="singleInstanceListener" />
+	</contribution>
+	<!-- start this eager if running on a mac -->
+	<contribution configuration-id="hivemind.EagerLoad" if="class com.apple.eawt.Application" >
+		<load service-id="macSetup" />
 	</contribution>
 	<!-- start this eager if we want to display a UI -->
 	<contribution configuration-id="hivemind.EagerLoad" if="property system.ui.visible">
@@ -568,6 +581,7 @@ System module.
 				<service>framework.htmlResultTransformer</service>
 				<configuration>uiStructure</configuration>
 				<error-handler/>
+				<service>plasticList</service>
 				<event-listener service-id="builtin.shutdown" />				
 				<set property="visible" value="${system.ui.visible}" />
 				<set property="title"	value="${system.ui.title}" />
@@ -720,6 +734,23 @@ System module.
 	<implementation service-id="singleInstanceListener"  if="not (class javax.jnlp.ServiceManager)">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>		
+
+
+	<service-point id="macSetup" visibility="private" interface="java.lang.reflect.InvocationHandler">
+	Hook into OSX UI.
+	</service-point>
+	
+	<implementation service-id="macSetup" if="class com.apple.eawt.Application">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.MacSetup">
+				<service>ui</service>
+				<service>builtin.shutdown</service>
+			</construct>
+		</invoke-factory>		
+	</implementation>
+	<implementation service-id="macSetup"  if="not (class com.apple.eawt.Application)">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>		
 	
 	<service-point id="throbber" interface="org.apache.hivemind.ServiceInterceptorFactory">
 		Causes UI to throb to indicate calls to remote services.
@@ -762,4 +793,33 @@ System module.
 	  </invoke-factory>
 	</service-point>
 
+	<service-point id="tupperware"
+		interface="org.astrogrid.desktop.modules.system.TupperwareInternal">
+		Plastic container for rest of workbench.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.TupperwareImpl">
+				<service>ui</service>
+				<service>plastic.hub</service>
+				<string>${system.ui.title}</string>
+				<string>${system.ui.title}</string><!-- todo add a proper descr here -->
+				<configuration>plasticMessageHandlers</configuration>
+				<service>plasticList</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+		
+	<implementation service-id="tupperware"  if="property system.tupperware.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>
+
+
+ <service-point id="plasticList" visibility="private"
+ 	interface="org.astrogrid.desktop.modules.system.ReportingListModel" >
+ 	 shared data model, to remove cycle between UIImpl andTupperwareImpl	
+ 	<create-instance class="org.astrogrid.desktop.modules.system.ReportingListModel" model="primitive" />
+ </service-point>
+
  </module> 
+ 
+ 
+ 
