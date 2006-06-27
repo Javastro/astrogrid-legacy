@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.6 2006/04/18 23:25:43 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.7 2006/06/27 10:36:41 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 {
    
 
-    public RegistryBrowserImpl(Registry reg, HelpServerInternal hs,UIInternal ui,Configuration conf) throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+    public RegistryBrowserImpl(Registry reg, HelpServerInternal hs,UIInternal ui,Configuration conf) {
         super(conf,hs,ui);
         this.reg=reg;
         
@@ -42,7 +42,7 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 	private void initialize() {
 		this.setSize(425, 600); // same proportions as A4, etc., and 600 high.   
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
-        JPanel pane = getJContentPane();
+        JPanel pane = getMainPanel();
         pane.add(getRegistryChooser(),BorderLayout.CENTER); 
 		this.setContentPane(pane);
 		this.setTitle("Registry Browser");
@@ -62,6 +62,9 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.7  2006/06/27 10:36:41  nw
+tweaks
+
 Revision 1.6  2006/04/18 23:25:43  nw
 merged asr development.
 
