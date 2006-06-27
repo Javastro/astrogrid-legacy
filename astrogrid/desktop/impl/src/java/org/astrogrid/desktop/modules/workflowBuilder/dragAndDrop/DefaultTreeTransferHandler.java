@@ -198,7 +198,7 @@ public class DefaultTreeTransferHandler extends AbstractTreeTransferHandler {
 		}
 		if (action == DnDConstants.ACTION_MOVE) {
 			// MOVE: We are dragging within the tree
-			TreePath oldParentPath = new TreePath(((DefaultMutableTreeNode)draggedNode.getParent()).getPath());
+//unused			TreePath oldParentPath = new TreePath(((DefaultMutableTreeNode)draggedNode.getParent()).getPath());
 			//target.collapsePath(oldParentPath); 
 			((DefaultTreeModel)target.getModel()).removeNodeFromParent(draggedNode); 
 			draggedNode.removeFromParent();

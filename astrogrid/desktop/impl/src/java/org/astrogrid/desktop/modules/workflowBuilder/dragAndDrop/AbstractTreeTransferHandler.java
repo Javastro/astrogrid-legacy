@@ -75,7 +75,7 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 	private WorkflowDnDTree tree;
 	private DragSource dragSource; // dragsource
 	private DropTarget dropTarget; // droptarget
-	private static DefaultMutableTreeNode draggedNode;
+	private static DefaultMutableTreeNode draggedNode; //@todo is this intended to be static ? does this mean we can drag nodes between 2 different editors?
 	private DefaultMutableTreeNode draggedNodeParent;
 	private static JLabel draggedLabel;
 	private static JLayeredPane dragPane;
@@ -112,7 +112,7 @@ public abstract class AbstractTreeTransferHandler extends WorkflowTreeModelSuppo
 			for (Enumeration enumeration = draggedNode.depthFirstEnumeration(); enumeration.hasMoreElements(); ) {
 				DefaultMutableTreeNode element = (DefaultMutableTreeNode)enumeration.nextElement();
 				TreePath treePath = new TreePath(element.getPath());
-				expandedStates.add(new Boolean(tree.isExpanded(treePath)));
+				expandedStates.add(Boolean.valueOf(tree.isExpanded(treePath)));
 			}
 			draggedNodeParent = (DefaultMutableTreeNode)draggedNode.getParent();
 			BufferedImage image = null;
