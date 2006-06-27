@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.11 2006/06/27 10:26:55 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.12 2006/06/27 19:12:17 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,6 +46,7 @@ import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 /** Dialog that allows the user to choose a resource in file:// or ivo:// space.
+ * @todo implementation is pretty horrible at the moment - quite unusable. replace with 'file browser' dialog from topcat - much better design.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2005
 
  */
@@ -223,6 +224,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 		if (localPanel == null) {
 			localPanel = new JFileChooser();
 			localPanel.setDialogTitle("Choose file");
+			localPanel.setDialogType(JFileChooser.CUSTOM_DIALOG);
 			localPanel.setControlButtonsAreShown(false);
            localPanel.addPropertyChangeListener("SelectedFileChangedProperty",new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
@@ -398,6 +400,9 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.12  2006/06/27 19:12:17  nw
+tweaked to work better on mac.
+
 Revision 1.11  2006/06/27 10:26:55  nw
 send-to menu
 
