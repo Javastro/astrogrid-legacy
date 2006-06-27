@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.7 2006/06/02 00:16:15 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.8 2006/06/27 10:41:51 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.astrogrid.desktop.framework.Module;
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2005
  
  */
-public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiServer, ShutdownListener {
+public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  ShutdownListener {
 
 
     /**
@@ -127,6 +127,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements RmiSe
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.8  2006/06/27 10:41:51  nw
+findbugs tweaks
+
 Revision 1.7  2006/06/02 00:16:15  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 

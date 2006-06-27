@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.6 2006/06/15 09:53:37 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.7 2006/06/27 10:38:34 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,9 +33,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
      */
     private static final Log logger = LogFactory.getLog(BackgroundExecutorImpl.class);
 
-    public static int QUEUE_SIZE_DEFAULT = 10000; // ten thousand queued tasks.
-    public static int START_THREADS_DEFAULT = 15;
-    public static int MAX_THREADS_DEFAULT = 30;
+    public static final int QUEUE_SIZE_DEFAULT = 10000; // ten thousand queued tasks.
+    public static final int START_THREADS_DEFAULT = 15;
+    public static final int MAX_THREADS_DEFAULT = 30;
     
     int queueSize = QUEUE_SIZE_DEFAULT;
     int startThreads = START_THREADS_DEFAULT; // number of threads to start with
@@ -78,7 +78,7 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
         }
 
         // copied from parent class.
-        protected class TimeoutAwareWorker extends Worker {
+        protected final class TimeoutAwareWorker extends Worker {
             private final class Timer implements Runnable {
 
                 public void run() {
@@ -218,6 +218,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.7  2006/06/27 10:38:34  nw
+findbugs tweaks
+
 Revision 1.6  2006/06/15 09:53:37  nw
 doc fix
 

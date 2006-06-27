@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.4 2006/04/26 15:56:18 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.5 2006/06/27 10:38:34 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,8 +63,8 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
     protected static final Log logger = LogFactory.getLog(AbstractRmiServerImpl.class);
     private int port  = -1;
     private File connectionFile = Finder.configurationFile();
-    public static int SCAN_START_PORT_DEFAULT = Registry.REGISTRY_PORT;
-    public static int SCAN_END_PORT_DEFAULT = SCAN_START_PORT_DEFAULT + 1000;
+    public static final int SCAN_START_PORT_DEFAULT = Registry.REGISTRY_PORT;
+    public static final int SCAN_END_PORT_DEFAULT = SCAN_START_PORT_DEFAULT + 1000;
     private int scanStartPort = SCAN_START_PORT_DEFAULT;
     private int scanEndPort = SCAN_END_PORT_DEFAULT;
     private boolean disableConnectionFile = false;
@@ -160,6 +160,9 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.5  2006/06/27 10:38:34  nw
+findbugs tweaks
+
 Revision 1.4  2006/04/26 15:56:18  nw
 made servers more configurable.added standalone browser launcher
 

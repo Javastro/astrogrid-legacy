@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.4 2006/06/02 00:16:15 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.5 2006/06/27 10:40:26 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,7 @@ public class XmlRpcServlet extends HttpServlet {
                 Object[] args = new Object[parameterTypes.length];
                 Iterator it = md.parameterIterator();
                 for (int i =0; i < parameterTypes.length && it.hasNext(); i++) {
-                    ValueDescriptor vd = (ValueDescriptor)it.next();
+                   // unused ValueDescriptor vd = (ValueDescriptor)it.next();
                     args[i] = conv.convert(parameterTypes[i],inputArgs.get(i));
                 }
                 // call method
@@ -217,6 +217,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.5  2006/06/27 10:40:26  nw
+findbugs tweaks
+
 Revision 1.4  2006/06/02 00:16:15  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 

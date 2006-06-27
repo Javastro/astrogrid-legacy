@@ -52,6 +52,7 @@ import java.util.Properties;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -154,11 +155,21 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
                 return;
             }
             (new BackgroundOperation("Saving") {
-                    protected Object construct() throws Exception {        		
-	                    Writer writer = new OutputStreamWriter(vos.getOutputStream(u));	          
-                        getModel().getWorkflow().marshal(writer); 
-	                    writer.close();     	             
+                    protected Object construct() throws Exception {    
+                    	Writer writer = null;
+                    	try {
+	                    writer = new OutputStreamWriter(vos.getOutputStream(u));	          
+                        getModel().getWorkflow().marshal(writer);      	             
                         return null;
+                    	} finally {
+                    	if (writer != null) {
+                    		try {
+                    			writer.close();
+                    		} catch (IOException ignored) {
+                    		}
+                    	}
+                    	}
+                    		
                      }
                     protected void doFinished(Object o) {
                         locationField.setText(u.toString());
@@ -683,7 +694,7 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
     public WorkflowBuilderImpl(ApplicationsInternal apps, JobsInternal jobs,
     						   Lookout monitor, MyspaceInternal vos, BrowserControl browser,
                                ToolEditorInternal toolEditor,ResourceChooserInternal chooser,
-                               UIInternal ui, HelpServerInternal hs, Configuration conf) throws Exception {
+                               UIInternal ui, HelpServerInternal hs, Configuration conf) {
         super(conf,hs,ui);
         this.browser = browser;
         this.vos = vos;
@@ -833,6 +844,7 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
 		TreePath treePath = new TreePath(getModel().getChild(getModel().getRoot(), 0));
 		tree.scrollPathToVisible(treePath);
 		tree.setSelectionPath(treePath);
+		//@todo wozzis for? doesn't do anything.
 		this.addWindowFocusListener( new WindowFocusListener(){
             public void windowGainedFocus(WindowEvent e) {
                 if(getDialogRef() != null){
@@ -975,6 +987,8 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
 			jJMenuBar = new JMenuBar();
 			jJMenuBar.add(getFileMenu());
 			jJMenuBar.add(getEditMenu());
+            jJMenuBar.add(Box.createHorizontalGlue());
+            jJMenuBar.add(createHelpMenu());			
 		}
 		return jJMenuBar;
 	}
@@ -1061,6 +1075,7 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
 			wastebinLabel.setIcon(IconHelper.loadIcon("delete_obj.gif"));
 			wastebinLabel.setToolTipText("Drop items here to delete");
 			DropTarget dt = new DropTarget(wastebinLabel, new WastebinDropListener(tree));
+		
 		}
 		return wastebinLabel;
 	}

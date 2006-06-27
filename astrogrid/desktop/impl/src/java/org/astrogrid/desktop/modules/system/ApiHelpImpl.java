@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.6 2006/06/15 09:54:09 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.7 2006/06/27 10:38:34 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,7 +78,7 @@ public class ApiHelpImpl implements ApiHelp {
                 }
             }
         }
-        return (String[])result.toArray(new String[]{});
+        return (String[])result.toArray(new String[result.size()]);
     }
 
     public String[] listModules() {
@@ -87,7 +87,7 @@ public class ApiHelpImpl implements ApiHelp {
             ModuleDescriptor md = (ModuleDescriptor)i.next();
             modules.add(md.getName());
         }
-        return (String[])modules.toArray(new String[]{});
+        return (String[])modules.toArray(new String[modules.size()]);
     }
     
     public String[] listComponentsOfModule(String moduleName) throws NotFoundException {
@@ -100,7 +100,7 @@ public class ApiHelpImpl implements ApiHelp {
             ComponentDescriptor cd = (ComponentDescriptor)i.next();
             components.add(m.getName() + "." + cd.getName());
         }
-        return (String[])components.toArray(new String[]{});
+        return (String[])components.toArray(new String[components.size()]);
     }
     
     /**
@@ -139,7 +139,7 @@ public class ApiHelpImpl implements ApiHelp {
             MethodDescriptor md = (MethodDescriptor)i.next();
             methods.add(m.getName() + "." + cd.getName() + "." + md.getName());
         }
-        return (String[])methods.toArray(new String[]{});            
+        return (String[])methods.toArray(new String[methods.size()]);            
     }
     
     public String[][] methodSignature(String methodName) throws NotFoundException {
@@ -152,35 +152,35 @@ public class ApiHelpImpl implements ApiHelp {
         if (names[0].equalsIgnoreCase("system")) {
             if (names[1].equalsIgnoreCase("listMethods")) {
                 sigs.add(new String[]{"array","string"});
-                return(String[][])sigs.toArray(new String[][]{});
+                return(String[][])sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("methodSignature")) {
                 sigs.add(new String[]{"array","string"});
-                return (String[][])sigs.toArray(new String[][]{});
+                return (String[][])sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("listModules")) {
                 sigs.add(new String[]{"array","string"});
-                return (String[][])sigs.toArray(new String[][]{});
+                return (String[][])sigs.toArray(new String[sigs.size()][2]);
             }                
             if (names[1].equalsIgnoreCase("methodHelp")) {
                 sigs.add(new String[]{"string","string"});
-                return (String[][])sigs.toArray(new String[][]{});
+                return (String[][])sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("moduleHelp")) {
                 sigs.add(new String[]{"string","string"});
-                return (String[][])sigs.toArray(new String[][]{});
+                return (String[][])sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("componentHelp")) {
                 sigs.add(new String[]{"string","string"});
-                return (String[][])sigs.toArray(new String[][]{});
+                return (String[][])sigs.toArray(new String[sigs.size()][2]);
             }                
             if (names[1].equalsIgnoreCase("listComponentsOfModule")) {
                 sigs.add(new String[]{"array","string"});
-                return(String[][])sigs.toArray(new String[][]{});
+                return(String[][])sigs.toArray(new String[sigs.size()][2]);
             }
             if (names[1].equalsIgnoreCase("listMethodsOfComponent")) {
                 sigs.add(new String[]{"array","string"});
-                return (String[][])sigs.toArray(new String[][]{});
+                return (String[][])sigs.toArray(new String[sigs.size()][2]);
             }                
         }
             ModuleDescriptor m = (ModuleDescriptor)reg.getDescriptors().get(names[0]);
@@ -200,10 +200,10 @@ public class ApiHelpImpl implements ApiHelp {
             for (Iterator i = md.parameterIterator(); i.hasNext();) {
                 sig.add(getXMLRPCType( ((ValueDescriptor)i.next())));
             }    
-            sigs.add(sig.toArray(new String[]{}));
+            sigs.add(sig.toArray(new String[sig.size()]));
         
             
-        return (String[][])sigs.toArray(new String[][]{});
+        return (String[][])sigs.toArray(new String[sigs.size()][]);
     }
     
     protected String getXMLRPCType(ValueDescriptor vd) {
@@ -344,7 +344,7 @@ public class ApiHelpImpl implements ApiHelp {
                 Object[] realArgs = new Object[parameterTypes.length];
                 Iterator it = md.parameterIterator();
                 for (int i =0; i < parameterTypes.length && it.hasNext(); i++) {
-                    ValueDescriptor vd = (ValueDescriptor)it.next();
+                    //unused.ValueDescriptor vd = (ValueDescriptor)it.next();
                     realArgs[i] = conv.convert(parameterTypes[i],args[i]);
                 }
                 // call method
@@ -378,6 +378,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.7  2006/06/27 10:38:34  nw
+findbugs tweaks
+
 Revision 1.6  2006/06/15 09:54:09  nw
 improvements coming from unit testing
 
