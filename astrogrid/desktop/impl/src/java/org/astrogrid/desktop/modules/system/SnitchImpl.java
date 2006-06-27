@@ -29,12 +29,12 @@ public class SnitchImpl implements SnitchInternal {
 	public SnitchImpl( UIInternal ui, Configuration conf) {
 		super();
 		this.ui = ui;
-		this.snitchDisabled = conf.getKey("astrogrid.version") == null;
+		this.snitchDisabled = conf.getKey("astrogrid.desktop.version") == null;
 		// won't snitch if we're in development mode - as will give meaningless results.
 		// astrogrid.version doesn't seem to be available when running from within eclipse 
 		// -- will test using this.
 		Map m = new HashMap();
-		m.put("app", conf.getKey("astrogrid.version") + " | " + 
+		m.put("app", conf.getKey("astrogrid.desktop.version") + " | " + 
 					(conf.getKey("hub.mode") != null ? "hub" : (
 							conf.getKey("asr.mode") != null ? "asr" : (
 							conf.getKey("acr.mode") != null ? "acr" : (
