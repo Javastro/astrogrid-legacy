@@ -399,11 +399,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // see the Plastic spec http://plastic.sourceforge.net and
         // discussions on the DS6 forum about debranding.
     	weWroteTheConfigFile = false;
+    	OutputStream os = null;
         try {
             int rmiPort = rmiServer.getPort();
             String xmlServer = webServer.getUrlRoot() + "xmlrpc";
             Properties props = new Properties();
-            props.put(PlasticHubListener.PLASTIC_RMI_PORT_KEY, new Integer(rmiPort).toString());
+            props.put(PlasticHubListener.PLASTIC_RMI_PORT_KEY, Integer.toString(rmiPort));
             props.put(PlasticHubListener.PLASTIC_XMLRPC_URL_KEY, xmlServer);
             props.put(PlasticHubListener.PLASTIC_VERSION_KEY, PlasticListener.CURRENT_VERSION);
             String version = System.getProperty("workbench.version","Unknown");
@@ -427,19 +428,34 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             }
             plasticPropertyFile.deleteOnExit();
             weWroteTheConfigFile = true;
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(plasticPropertyFile));
+            os = new BufferedOutputStream(new FileOutputStream(plasticPropertyFile));
             props.store(os, "Plastic Hub Properties.  See http://plastic.sourceforge.net");
-            os.close();
         } catch (IOException e) {
             logger.error("There was a problem creating the Plastic config file .plastic",e);
+        } finally {
+        	if (os != null) {
+        		try {
+        			os.close();
+        		} catch (IOException ignored) {
+        		}
+        	}
         }
     }
 
 	private Properties loadExistingDotPlastic() throws FileNotFoundException, IOException {
 		Properties alreadyPresent = new Properties();
-		InputStream is = new BufferedInputStream(new FileInputStream(plasticPropertyFile));
-		alreadyPresent.load(is);
-		is.close();
+		InputStream is = null; 
+		try {
+			is = new BufferedInputStream(new FileInputStream(plasticPropertyFile));
+			alreadyPresent.load(is);
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+		}
 		return alreadyPresent;
 	}
 
@@ -491,7 +507,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			String ivorn = safeStringCast(ivorns, plid);
 			String description = safeStringCast(descriptions, plid);
 			
-			ApplicationDescription desc = new ApplicationDescription(plid.toString(),name,description,messages,version,icon,ivorn);
+			PlasticApplicationDescription desc = new PlasticApplicationDescription(plid,name,description,messages,version,icon,ivorn);
 			applicationDescriptions.add(desc);
 		}
 		

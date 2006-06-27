@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowTemplate.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: ParameterizedWorkflowTemplate.java,v 1.3 2006/06/27 10:35:42 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -118,7 +118,7 @@ class ParameterizedWorkflowTemplate  {
         AbstractActivity[] acts = wf.getSequence().getActivity();
         newActs.addAll(Arrays.asList(acts));
        wf.getSequence().setActivity(
-               (AbstractActivity[])newActs.toArray(new AbstractActivity[]{})
+               (AbstractActivity[])newActs.toArray(new AbstractActivity[newActs.size()])
                );
         return wf;
     }
@@ -150,6 +150,9 @@ class ParameterizedWorkflowTemplate  {
 
 /* 
 $Log: ParameterizedWorkflowTemplate.java,v $
+Revision 1.3  2006/06/27 10:35:42  nw
+findbugs tweaks
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

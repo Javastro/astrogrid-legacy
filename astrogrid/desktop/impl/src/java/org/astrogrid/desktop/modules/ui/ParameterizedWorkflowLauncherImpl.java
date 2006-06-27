@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.7 2006/04/18 23:25:43 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.8 2006/06/27 10:35:30 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,7 +89,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         if (wft == null) {
             return;
         }
-
+        Writer writer = null;
         try {
             Tool t = apps.createTemplateTool("default",wft.getDesc());
             t = editor.editToolWithDescription(t,wft.getDesc(),null);       
@@ -103,9 +103,8 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,"Do you want to save a copy of the workflow you just built? (Optional)","Save a copy",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE)) {
             URI u = chooser.chooseResource("Save a copy of this workflow",true);
             if (u != null ) {
-                Writer writer = new OutputStreamWriter(vos.getOutputStream(u));
+                writer = new OutputStreamWriter(vos.getOutputStream(u));
                 wf.marshal(writer);
-                writer.close();
             }
         }
         Document doc = XMLUtils.newDocument();
@@ -119,6 +118,13 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
             logger.warn("Failed",e);
             UIComponentImpl.showError(null,"Failed",e);
             
+        } finally {
+        	if (writer != null) {
+        		try {
+        			writer.close();
+        		} catch (IOException ignored) {
+        		}
+        	}
         }
     }
     
@@ -133,7 +139,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
                 logger.warn(arr[i] + " couldn't be parsed",e);
             }
         }
-        return (ParameterizedWorkflowTemplate[])wfts.toArray(new ParameterizedWorkflowTemplate[]{});
+        return (ParameterizedWorkflowTemplate[])wfts.toArray(new ParameterizedWorkflowTemplate[wfts.size()]);
     }
     
 
@@ -156,6 +162,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.8  2006/06/27 10:35:30  nw
+findbugs tweaks
+
 Revision 1.7  2006/04/18 23:25:43  nw
 merged asr development.
 

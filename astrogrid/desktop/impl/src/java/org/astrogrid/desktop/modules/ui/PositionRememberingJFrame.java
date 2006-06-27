@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.8 2006/04/18 23:25:43 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.9 2006/06/27 10:36:13 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -125,7 +125,6 @@ public class PositionRememberingJFrame extends JFrame {
             saveConfiguration();
             super.setVisible(b);
             this.dispose();
-            System.gc();
         }
 
         }
@@ -135,7 +134,6 @@ public class PositionRememberingJFrame extends JFrame {
             saveConfiguration();
             super.hide();
             this.dispose();
-            System.gc();
         }
     }
     public void show() {
@@ -149,6 +147,9 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.9  2006/06/27 10:36:13  nw
+findbugs tweaks
+
 Revision 1.8  2006/04/18 23:25:43  nw
 merged asr development.
 
