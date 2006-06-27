@@ -1,4 +1,4 @@
-/*$Id: UIInternal.java,v 1.4 2006/04/21 13:48:11 nw Exp $
+/*$Id: UIInternal.java,v 1.5 2006/06/27 10:39:33 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,11 +36,17 @@ public interface UIInternal extends UI, UIComponent{
     public BackgroundWorker wrap(Runnable r);
    
 
+  public void showAboutDialog();
+  
+  public void showPreferencesDialog();
 }
 
 
 /* 
 $Log: UIInternal.java,v $
+Revision 1.5  2006/06/27 10:39:33  nw
+added new menus
+
 Revision 1.4  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
