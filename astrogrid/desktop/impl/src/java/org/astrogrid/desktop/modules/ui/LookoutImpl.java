@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.13 2006/04/21 13:48:11 nw Exp $
+/*$Id: LookoutImpl.java,v 1.14 2006/06/27 10:35:11 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,84 +13,37 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.io.Writer;
 import java.net.URI;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
+import javax.swing.Box;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellEditor;
-import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.ExecutionMessage;
+import org.astrogrid.acr.astrogrid.Jobs;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
@@ -98,13 +51,10 @@ import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.acr.ui.WorkflowBuilder;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.JobsInternal;
 import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
@@ -112,133 +62,42 @@ import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.io.Piper;
+import org.astrogrid.desktop.modules.ui.lookout.FolderTreeCellRenderer;
+import org.astrogrid.desktop.modules.ui.lookout.MessageDisplayPane;
+import org.astrogrid.desktop.modules.ui.lookout.MessageTable;
+import org.astrogrid.desktop.modules.ui.lookout.ResultsList;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Oct-2005
- *@todo after release refactor into smaller classes.
  *   
  *
  */
-public class LookoutImpl extends UIComponentImpl implements  Lookout {
-    //forgotten what this is for..
-    public class JComponentCellEditor implements TableCellEditor, TreeCellEditor,
-    Serializable {
-        transient protected ChangeEvent changeEvent = null;
-        protected JComponent container = null;          // Can be tree or table
-        
-        protected JComponent editorComponent = null;
-        
-        protected EventListenerList listenerList = new EventListenerList();
-        
-        public void addCellEditorListener(CellEditorListener l) {
-            listenerList.add(CellEditorListener.class, l);
+public class LookoutImpl extends UIComponentImpl implements  Lookout{
+	
+	/** display a workflow transceript */
+
+    private final class ViewTranscriptAction extends AbstractAction {
+        private final Jobs jobs;
+        private final WorkflowBuilder transcriptViewer;
+        public ViewTranscriptAction(Jobs jobs, WorkflowBuilder transcriptViewer) {
+            super("View Transcript",IconHelper.loadIcon("tree.gif"));
+            this.jobs = jobs;
+            this.transcriptViewer = transcriptViewer;
+            this.putValue(SHORT_DESCRIPTION,"View transcript of selected workflow");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_V));
+            this.setEnabled(false);
         }
-        
-        public void cancelCellEditing() {
-            fireEditingCanceled();
-        }
-        
-        
-        public Object getCellEditorValue() {
-            return editorComponent;
-        }
-        
-        
-        public Component getComponent() {
-            return editorComponent;
-        }
-        
-        // implements javax.swing.table.TableCellEditor
-        public Component getTableCellEditorComponent(JTable table, Object value,
-                boolean isSelected, int row, int column) {
-            
-            editorComponent = (JComponent)value;
-            container = table;
-            return editorComponent;
-        }
-        
-        // implements javax.swing.tree.TreeCellEditor
-        public Component getTreeCellEditorComponent(JTree tree, Object value,
-                boolean isSelected, boolean expanded, boolean leaf, int row) {
-            /*
-            String         stringValue = tree.convertValueToText(value, isSelected,
-                    expanded, leaf, row, false);
-            */
-            editorComponent = (JComponent)value;
-            container = tree;
-            return editorComponent;
-        }
-        
-        public boolean isCellEditable(EventObject anEvent) {
-            return true;
-        }
-        
-        public void removeCellEditorListener(CellEditorListener l) {
-            listenerList.remove(CellEditorListener.class, l);
-        }
-        
-        public boolean shouldSelectCell(EventObject anEvent) {
-            if( editorComponent != null && anEvent instanceof MouseEvent
-                    && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED )
-            {
-                Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3 );
-                MouseEvent e = (MouseEvent)anEvent;
-                MouseEvent e2 = new MouseEvent( dispatchComponent, MouseEvent.MOUSE_RELEASED,
-                        e.getWhen() + 100000, e.getModifiers(), 3, 3, e.getClickCount(),
-                        e.isPopupTrigger() );
-                dispatchComponent.dispatchEvent(e2); 
-                e2 = new MouseEvent( dispatchComponent, MouseEvent.MOUSE_CLICKED,
-                        e.getWhen() + 100001, e.getModifiers(), 3, 3, 1,
-                        e.isPopupTrigger() );
-                dispatchComponent.dispatchEvent(e2); 
-            }
-            return false;
-        }
-        
-        public boolean stopCellEditing() {
-            fireEditingStopped();
-            return true;
-        }
-        
-        protected void fireEditingCanceled() {
-            // Guaranteed to return a non-null array
-            Object[] listeners = listenerList.getListenerList();
-            // Process the listeners last to first, notifying
-            // those that are interested in this event
-            for (int i = listeners.length-2; i>=0; i-=2) {
-                if (listeners[i]==CellEditorListener.class) {
-                    // Lazily create the event:
-                    if (changeEvent == null)
-                        changeEvent = new ChangeEvent(this);
-                    ((CellEditorListener)listeners[i+1]).editingCanceled(changeEvent);
-                }              
-            }
-        }
-        
-        protected void fireEditingStopped() {
-            Object[] listeners = listenerList.getListenerList();
-            // Process the listeners last to first, notifying
-            // those that are interested in this event
-            for (int i = listeners.length-2; i>=0; i-=2) {
-                if (listeners[i]==CellEditorListener.class) {
-                    // Lazily create the event:
-                    if (changeEvent == null)
-                        changeEvent = new ChangeEvent(this);
-                    ((CellEditorListener)listeners[i+1]).editingStopped(changeEvent);
-                }              
-            }
-        }
-        
-    } // End of class JComponentCellEditor
-    
-    class JComponentCellRenderer implements TableCellRenderer
-    {
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            return (JComponent)value;
+        public void actionPerformed(ActionEvent e) {
+            (new BackgroundOperation("Launching transcript viewer") {
+                protected Object construct() throws Exception {
+                	Document doc = jobs.getJobTranscript(getCurrentFolder().getInformation().getId());
+                		transcriptViewer.showTranscript(DomHelper.DocumentToString(doc));     	                	
+                    return null;
+                }
+            }).start();
         }
     }
     
@@ -254,6 +113,8 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
             this.putValue(SHORT_DESCRIPTION,"Delete a task record, or event message");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));
             this.setEnabled(false);            
+            getFolderTree().addTreeSelectionListener(this);
+            getMessageTable().getSelectionModel().addListSelectionListener(this);
         }
         
         public void actionPerformed(ActionEvent e) {   
@@ -304,6 +165,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
             this.putValue(SHORT_DESCRIPTION,"Halt the execution of a task or job");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
             this.setEnabled(false);
+            getFolderTree().addTreeSelectionListener(this);
         }
         
         public void actionPerformed(ActionEvent e) {
@@ -328,6 +190,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
             this.putValue(SHORT_DESCRIPTION,"Mark all messages from this process as read");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_M));
             this.setEnabled(false);
+            getFolderTree().addTreeSelectionListener(this);            
         }
         public void actionPerformed(ActionEvent e) {
             (new BackgroundOperation("Marking messages as read") {// therre's a lot of inefficient IO here, so do in background.
@@ -353,7 +216,27 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
             setEnabled(f != null && isTaskFolder(f.getInformation().getId()));
         }
     }
+
+    private final class RefreshAction extends AbstractAction {
+    	private final List strategies;
+        public RefreshAction(List strategies) {
+            super("Refresh",IconHelper.loadIcon("update.gif"));
+            this.strategies = strategies;
+            this.putValue(SHORT_DESCRIPTION,"Check for new events and messages now");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
+        }
+        public void actionPerformed(ActionEvent e) {
+        	for (Iterator i = strategies.iterator(); i.hasNext(); ) {
+        		RemoteProcessStrategy rps = (RemoteProcessStrategy)i.next();
+        		rps.triggerUpdate();
+        	}
+            //@todo add a 'completed' task that sets the status message.
+            LookoutImpl.this.setStatusMessage("Refreshing..");
+        }
+    }    
     
+
+
     /** close action */
     protected final class CloseAction extends AbstractAction {
 
@@ -367,370 +250,30 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
             dispose();
         }
     }
-    
-    private class MessageDisplayPane extends JTextPane {
-        public MessageDisplayPane() {
-            setContentType("text/html");
-            setEditable(false);
-        }
-        
-        public void clear() {       
-            setText("");
-        }
-        
-        public void setMessage(MessageContainer m) {
-            setText(fmt(m));
-            setCaretPosition(0);
-        }
-        
-        private String fmt(MessageContainer m) {
-            //@todo replace with a better display pane - something that can handle html, xml, plain text sensibly and automatically
-            StringBuffer sb = new StringBuffer();
-            ExecutionMessage message = m.getMessage();
-            sb.append("<html><p bgcolor='#CCDDEE'>")
-            .append("<b>Subject:</b> ").append(m.getSummary()).append("<br>")
-            .append("<b>Date: </b> " ).append(message.getTimestamp()).append("<br>")
-            .append("<b>From: </b> ").append(message.getSource()).append("<br></p><tt>")
-            .append( //@todo - work out how to preserve space indentation here..
-                    
-                    StringUtils.replace(
-                            StringEscapeUtils.escapeHtml(message.getContent())
-                            ,"\n"
-                            ,"<br>"
-                    )
-            )
-            .append("</tt></html>");
-            return sb.toString();
-        }
-    }
-    
-    private final class ParameterizedWorkflowAction extends AbstractAction {
-        public ParameterizedWorkflowAction() {
-            super("Launch a canned workflow",IconHelper.loadIcon("run_tool.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Launch a parameterized workflow");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_L));
-            this.setEnabled(true);
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            pwLauncher.run();
-        }
-    }    
-    
-    private final class RefreshAction extends AbstractAction {
-        public RefreshAction() {
-            super("Refresh",IconHelper.loadIcon("update.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Check for new events and messages now");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
-        }
-        public void actionPerformed(ActionEvent e) {
-        	for (Iterator i = strategies.iterator(); i.hasNext(); ) {
-        		RemoteProcessStrategy rps = (RemoteProcessStrategy)i.next();
-        		rps.triggerUpdate();
-        	}
-            //@todo add a 'completed' task that sets the status message.
-            LookoutImpl.this.setStatusMessage("Refreshing..");
-        }
-    }
-    
-    private final class ViewTranscriptAction extends AbstractAction {
-        public ViewTranscriptAction() {
-            super("View",IconHelper.loadIcon("read_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"View transcript of selected workflow");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_V));
-            this.setEnabled(false);
-        }
-        public void actionPerformed(ActionEvent e) {
-        	setEnabled(false);
-            (new BackgroundOperation("Launching transcript viewer") {
-                protected Object construct() throws Exception {
-                	Document doc = jobs.getJobTranscript(getCurrentFolder().getInformation().getId());
-                	try {
-                		workflowLauncher.showTranscript(XMLUtils.DocumentToString(doc));
-                	} catch (Exception ex) {
-                		showError("Unable to load workflow transcript. ", ex);
-                	}                	                	
-                    return null;
-                }
-            }).start();
-        }
-    }
-    
-    /** class for disoaying a table of resultls - also handles button presses, etc.*/
-    private class ResultListTableModel extends AbstractTableModel implements ActionListener {
-        
-        public final int VALUE_WIDTH = 60;
-        
-        private ParameterValue[] arr = new ParameterValue[]{};        
-        private final String SAVE = "SAVE";
-        private List saveButtonsStore = new ArrayList();
-        // nifty list that creats buttons as needed.
-        private List saveButtons = ListUtils.lazyList(saveButtonsStore, new Factory() {  
-            public Object create() {
-                JButton save = new JButton (IconHelper.loadIcon("fileexport.png"));
-                save.setActionCommand(SAVE);
-                save.setToolTipText("Save this result to myspace or local disk");
-                save.addActionListener(ResultListTableModel.this);
-                return save;
-            }            
-        });
-        //store for buttons
-
-        private final String VIEWTRANS = "VIEWTRANS";
-        private List viewTransButtonsStore = new ArrayList();
-        private List viewTransButtons = ListUtils.lazyList(viewTransButtonsStore, new Factory() {  
-            public Object create() {
-                JButton viewTrans = new JButton (IconHelper.loadIcon("read_obj.gif"));
-                viewTrans.setActionCommand(VIEWTRANS);
-                viewTrans.setToolTipText("View this result");
-                viewTrans.addActionListener(ResultListTableModel.this);
-                return viewTrans;
-            }            
-        });
-        
-        public void actionPerformed(ActionEvent e) {
-            if (SAVE.equals(e.getActionCommand())) {
-                // find the row.
-                int row = saveButtonsStore.indexOf(e.getSource());
-                if (row < 0  || row > arr.length -1) {
-                    return;
-                }
-                final ParameterValue pv = arr[row];
-                final URI u =  chooser.chooseResourceWithParent("Save result: " + pv.getName(),true, true, true,LookoutImpl.this);
-                if (u == null) {
-                    return;
-                }                
-                (new BackgroundOperation("Saving Result") {
-                    
-                    protected Object construct() throws Exception {
-                        Writer w=  null;
-                        try {
-                            w= new OutputStreamWriter(vos.getOutputStream(u)); // @todo could specify size here  
-                            Piper.pipe(new StringReader(pv.getValue()),w);
-                        } finally {
-                            if (w != null) {
-                                try {
-                                    w.close();
-                                } catch (IOException e) {
-                                    logger.warn("error closing write stream",e);
-                                }
-                            } 
-                        }
-                        return null;     
-                    }
-                }).start();
-                
-
-
-            } else if (VIEWTRANS.equals(e.getActionCommand())){
-                int row = viewTransButtonsStore.indexOf(e.getSource());
-                if (row < 0  || row > arr.length -1) {
-                    return;
-                }            
-                final ParameterValue pv = arr[row];    
-                if (pv.getValue().indexOf("<workflow") != -1) {
-                    	  workflowLauncher.showTranscript(pv.getValue());
-                } else { // assume it's some kind of xml or votable.
-                    // determine how to style.
-                    (new BackgroundOperation("Displaying Result") {
-                        protected Object construct() throws Exception {
-                            URL url = displayResult(pv);
-                            browser.openURL(url);
-                            return null;
-                        }                    
-                    }).start();                    
-                }
-            }
-        } 
-        public void clear() {
-            arr = new ParameterValue[]{};
-            fireTableDataChanged();
-        }
-        
-        // table model methods.
-        
-        public Class getColumnClass(int column) {
-            switch(column) {
-                case 0:
-                    return Boolean.class;
-                case 1:
-                    return Object.class;
-                case 2:
-                    return Object.class;
-                case 3:
-                    return JComponent.class;
-                case 4:
-                    return JComponent.class;                    
-                default:
-                    return Object.class;
-                
-            }
-        }
-        
-        public int getColumnCount() {
-            return 5;
-        }
-        public String getColumnName(int column) {
-            switch(column) {
-                case 0:
-                    return "Indirect?";
-                case 1:
-                    return "Name";
-                case 2:
-                    return "Value";
-                case 3:
-                    return "View"; //view trans
-                case 4:
-                    return "Save"; //save
-                default:
-                    return "";
-            }
-        }
-        
-        public int getRowCount() {
-            return arr.length;
-        }
-        
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            if (rowIndex > arr.length -1 || rowIndex < 0) {
-                return null;
-            }
-            ParameterValue pv = arr[rowIndex];
-            JComponent c;
-            switch(columnIndex) {
-                case 0:
-                    return Boolean.valueOf(pv.getIndirect());
-                case 1:
-                    return pv.getName();
-                case 2:
-                    return StringUtils.abbreviate(pv.getValue(),VALUE_WIDTH);
-                case 3:
-                    c = (JComponent) viewTransButtons.get(rowIndex);
-                    c.setEnabled(! pv.getIndirect());
-                    return c;                	
-                case 4:
-                    c = (JComponent)saveButtons.get(rowIndex);
-                    c.setEnabled(! pv.getIndirect());
-                    return c;                         
-                default:
-                    return null;
-            }
-            
-        }
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            if (rowIndex > arr.length -1|| rowIndex < 0) {
-                return false;
-            }
-            return columnIndex  > 2 && ! arr[rowIndex].getIndirect();  
-        }
-        public void setResults(ResultListType results) {
-            arr = results.getResult();
-            fireTableDataChanged();
-        }
-        
-    }
-    
-    private final class SubmitTaskAction extends AbstractAction {
-        public SubmitTaskAction() {
-            super("Submit Task",IconHelper.loadIcon("file_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Submit a saved task or workflow for execution");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
-            this.setEnabled(true);
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            final URI u =  chooser.chooseResourceWithParent("Select document to execute",true, true, true,LookoutImpl.this);
-            if (u == null) {
-                return;
-            }                
-            (new BackgroundOperation("Submitting Document") {
-                
-                protected Object construct() throws Exception {
-                    return manager.submitStored(u);          
-                }
-                protected void doFinished(Object result) {
-                    refresh();
-                }
-            }).start();
-        }
-    }
-    
-    
-    private final class TaskEditorAction extends AbstractAction {
-        public TaskEditorAction() {
-            super("Open task editor",IconHelper.loadIcon("thread_view.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Create and execute a stand-alone query or task");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
-            this.setEnabled(true);
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            appLauncher.show();
-        }
-    }
-    
-    private final class WorkflowEditorAction extends AbstractAction {
-        public WorkflowEditorAction() {
-            super("Open workflow editor",IconHelper.loadIcon("tree.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Create and execute a workflow");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_W));
-            this.setEnabled(true);
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            workflowLauncher.show();
-        }
-    }
-    private static final String MESSAGE_CONTENT = "message_content";
-    private static final String MESSAGE_RESULTS = "message_results";
-    final ApplicationLauncher appLauncher;
-    final ResourceChooserInternal chooser;
-    final RemoteProcessManager manager;
-    final ParameterizedWorkflowLauncher pwLauncher;
-    final MessageRecorderInternal recorder;
-   final MyspaceInternal vos;
-    final WorkflowBuilder workflowLauncher;
-    final BrowserControl browser;
-    final JobsInternal jobs;
-    final org.apache.commons.collections.Transformer trans;
-    
-    final List strategies;
     private MessageDisplayPane contentPane;
-    
     private Folder currentFolder;
-    private DeleteAction deleteAction;
-    
-    private final DateFormat df = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.SHORT,SimpleDateFormat.SHORT);
+   private final DeleteAction deleteAction;
     private JTree folderTree;
-    private HaltAction haltAction;
+    private final HaltAction haltAction;
     private JMenuBar jJMenuBar;
+    private JMenu fileMenu;
+    private final CloseAction closeAction;
     private JMenu manageMenu;
-    
-    private MarkAllReadAction markAllReadAction;
+    private final MarkAllReadAction markAllReadAction;
     
     private JPanel messageDetails;
-    private JTable messageTable;
     
-    private JMenu newMenu;
-    private Action parameteriedWorkflowAction;
-    
-    private RefreshAction refreshAction;
-    
-    private JTable resultsTable;
-    private ResultListTableModel resultsTableModel;
-    
-    private Action submitTaskAction;
-    private Action taskEditorAction;
-    private Action closeAction;
-    
-    private JToolBar toolbar;
-    private Action workflowEditorAction;
+    private MessageTable messageTable;
+    private final RefreshAction refreshAction;
+    private final ViewTranscriptAction transcriptAction;
+    private final ResultsList results;
 
-    
-    private JPopupMenu messageLevelMenu;
-    private String messageLevel = "All";
-    
-    private JCheckBoxMenuItem cbMenuItem1, cbMenuItem2, cbMenuItem3, cbMenuItem4;
+    private JToolBar toolbar;
+
+    private final RemoteProcessManager manager;
+
+
+    private final MessageRecorderInternal recorder;
     
     /** Construct a new Lookout
      * @param conf
@@ -739,553 +282,102 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
      * @throws HeadlessException
      */
     public LookoutImpl(Configuration conf, HelpServerInternal hs, UIInternal ui
-            , MessageRecorderInternal recorder, ResourceChooserInternal chooser
-            ,MyspaceInternal vos, ParameterizedWorkflowLauncher pw
-            ,WorkflowBuilder workflows, ApplicationLauncher appLauncher
+            , MessageRecorderInternal recorder
             , RemoteProcessManager manager
+            ,Myspace vos
             ,List strategies
-            , BrowserControl browser
-			, JobsInternal jobs
-			, org.apache.commons.collections.Transformer trans
+			,SendToMenu sendTo
+			,Jobs jobs
+			,WorkflowBuilder transcriptViewer
+			
     )
     throws HeadlessException {
         super(conf, hs, ui);
-        this.browser = browser;
-        this.strategies = strategies;
         this.manager = manager;
         this.recorder = recorder;
-        this.chooser = chooser;
-        this.vos = vos;
-        this.pwLauncher = pw;
-        this.workflowLauncher = workflows;
-        this.appLauncher = appLauncher;
-        this.jobs = jobs;
-        this.trans = trans;
+        
+        results = new ResultsList(sendTo,vos,this);
+        getHelpServer().enableHelp(results,"lookout.resultsTable");
+        refreshAction = new RefreshAction(strategies);
+        closeAction = new CloseAction();
+        deleteAction = new DeleteAction();
+        haltAction = new HaltAction();
+        markAllReadAction= new MarkAllReadAction();
+        transcriptAction = new ViewTranscriptAction(jobs,transcriptViewer);
         initialize();
     }
-    
+   
     public void refresh() {
-        
-        getRefreshAction().actionPerformed(null); // should make the system refresh.            
+        refreshAction.actionPerformed(null); // should make the system refresh.            
     }
-    
-    private String calcColour(String status) {
-        if ("ERROR".equalsIgnoreCase(status)) {
-            return "red";
-        } else if ("RUNNING".equalsIgnoreCase(status)) {
-            return "green";
-        } else if ("PENDING".equalsIgnoreCase(status) || "INITIALIZING".equalsIgnoreCase(status)) {
-            return "blue";
-        } else {
-            return "black";
-        }
-    }
-    
-    
-    // dislpaying results
-    // later handle indirect too.
-    URL displayResult(ParameterValue pv ) throws TransformerFactoryConfigurationError, IOException, TransformerException, ParserConfigurationException, SAXException {
 
-        File f = File.createTempFile(pv.getName(),".html");
-        Writer out = new FileWriter(f);
-            Document source = XMLUtils.newDocument(new ByteArrayInputStream(pv.getValue().getBytes()));
-            Object result= trans.transform(source);
-            out.write((String)result);
-        out.close();
-        return f.toURL();
-        
-    }
-    Folder getCurrentFolder() {
+    private Folder getCurrentFolder() {
         return currentFolder;
-    }
-    private DeleteAction getDeleteAction() {
-        if (deleteAction == null) {
-            deleteAction = new DeleteAction();
-            getFolderTree().addTreeSelectionListener(deleteAction);
-            getMessageTable().getSelectionModel().addListSelectionListener(deleteAction);
-        }
-        return deleteAction;
-    }
-    JTree getFolderTree() {
-        if (folderTree == null) {                        
-            folderTree = new JTree(recorder.getFolderList());
-            ToolTipManager.sharedInstance().registerComponent(folderTree);
-            getHelpServer().enableHelp(folderTree,"lo.folderTree");
-            folderTree.putClientProperty("JTree.lineStyle", "None");            
-            folderTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-            folderTree.setShowsRootHandles(false);
-            folderTree.addTreeSelectionListener(new TreeSelectionListener() {            	
-                final JPanel p = getMessageDetails();
-                final CardLayout c = (CardLayout)p.getLayout();                
-                // if I _knew_ that listeners were called on order of addition, I could optimize this.
-                public void valueChanged(TreeSelectionEvent e) {
-                	messageLevel = "All";
-                	if (cbMenuItem1 != null)
-                	    cbMenuItem1.setSelected(true);
-                	if (viewTranscriptAction.isEnabled()) {
-                		viewTranscriptAction.setEnabled(false);
-                	}                	
-                    Folder f = (Folder)folderTree.getLastSelectedPathComponent();
-                    if (f != null && folderTree.getModel().isLeaf(f)) {
-                        if (f.getInformation().getId() != null && !viewTranscriptAction.isEnabled()) {
-                        	viewTranscriptAction.setEnabled(true);
-                        }
-                        setCurrentFolder(f);
-                        try {
-                            getMessageTable().clearSelection();
-                            getMessageContentPane().clear();
-                            c.show(p,MESSAGE_CONTENT);
-                            getResultsTableModel().clear();
-                            recorder.displayMessages(f);
-                        } catch (IOException e1) {
-                            showError("Failed to display folder",e1);
-                        }
-                    }
-                }
-            });
-            TreeCellRenderer renderer = new DefaultTreeCellRenderer() {
-                
-                public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                    super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-                    Folder f= (Folder)value;
-                    ExecutionInformation info = f.getInformation();
-                    StringBuffer sb = new StringBuffer();
-                    sb.append("<html><p>").append(info.getDescription()).append("<br>").append(info.getId()).append("<br>");
-                    if (info.getStartTime() != null) {
-                        sb.append(df.format(info.getStartTime()));                        
-                    }
-                    if (info.getFinishTime() != null) {
-                        sb.append(" - ").append(df.format(info.getFinishTime()));
-                    }
-                    sb.append("</p></html>");
-                    setToolTipText(sb.toString());
-                    sb = new StringBuffer();
-                    sb.append("<html><font color='");
-                    sb.append(calcColour(info.getStatus()));
-                    sb.append("'>");
-                    if (f.getUnreadCount() > 0) {
-                        sb.append("<b>");
-                    }
-                    sb.append(info.getName());                    
-                    if (f.getUnreadCount() > 0) {
-                        sb.append(" ");
-                        sb.append(f.getUnreadCount());
-                        sb.append("</b>");
-                    }                    
-                    sb.append("</font></html>");
-                    setText(sb.toString());
-                    // finally set the icon.
-                    if (info.getId().equals(MessageRecorderImpl.JOBS)) {
-                        setIcon(IconHelper.loadIcon("tree.gif"));
-                    } else if (info.getId().equals(MessageRecorderImpl.QUERIES)) {
-                        setIcon(IconHelper.loadIcon("search.gif"));
-                    } else if (info.getId().equals(MessageRecorderImpl.TASKS)) {
-                        setIcon(IconHelper.loadIcon("exec.png"));    
-                    } else if (info.getId().equals(MessageRecorderImpl.ROOT)) {
-                        setIcon(IconHelper.loadIcon("package_network.png"));
-                    } else {
-                        setIcon(IconHelper.loadIcon("thread_view.gif"));
-                    }
-                    return this;
-                }
-                
-            };
-            folderTree.setCellRenderer(renderer);
-            // when things get added, make sure they're displayed         
-            folderTree.getModel().addTreeModelListener(new TreeModelListener() {
-                
-                public void treeNodesChanged(TreeModelEvent e) {
-                }
-                
-                public void treeNodesInserted(TreeModelEvent e) { 
-                    
-                    folderTree.expandPath(e.getTreePath());                    
-                }
-                
-                public void treeNodesRemoved(TreeModelEvent e) {
-                }
-                
-                public void treeStructureChanged(TreeModelEvent e) {
-                }
-            });
-        }
-        return folderTree;
-        
-    }
-    private HaltAction getHaltAction() {
-        if (haltAction == null) {
-            haltAction = new HaltAction();
-            getFolderTree().addTreeSelectionListener(haltAction);
-        }
-        return haltAction;
     }
     private JMenuBar getJJMenuBar() {
         if (jJMenuBar == null) {
             jJMenuBar = new JMenuBar();
-            jJMenuBar.add(getNewMenu());
+            jJMenuBar.add(getFileMenu());
             jJMenuBar.add(getManageMenu());
+            jJMenuBar.add(Box.createHorizontalGlue());
+            jJMenuBar.add(createHelpMenu());
         }
         return jJMenuBar;
     }
+
+    private JMenu getFileMenu() {
+    	if (fileMenu == null) {
+    		fileMenu = new JMenu();
+    		fileMenu.setText("File");
+    		fileMenu.setMnemonic(KeyEvent.VK_F);
+    		fileMenu.add(closeAction);
+    	}
+    	return fileMenu;
+    }
+    
     private JMenu getManageMenu() {
         if (manageMenu == null) {
             manageMenu = new JMenu();
             manageMenu.setText("Manage");
             manageMenu.setMnemonic(KeyEvent.VK_M);
-            manageMenu.add(getRefreshAction());
-            manageMenu.add(getHaltAction());
-            manageMenu.add(getDeleteAction());   
+            manageMenu.add(refreshAction);
+            manageMenu.add(transcriptAction);
+            manageMenu.add(haltAction);
+            manageMenu.add(deleteAction);   
             manageMenu.add(new JSeparator());                        
-            manageMenu.add(getMarkAllReadAction());
-            manageMenu.add(viewTranscriptAction);
-    
+            manageMenu.add(markAllReadAction);
         }
         return manageMenu;        
     }
     
-    private Action getMarkAllReadAction() {
-        if (markAllReadAction == null) {
-            markAllReadAction = new MarkAllReadAction();
-            getFolderTree().addTreeSelectionListener(markAllReadAction);
-        }
-        return markAllReadAction;
-    }
     private MessageDisplayPane getMessageContentPane() {
         if (contentPane == null) {
             contentPane = new MessageDisplayPane();
         }
         return contentPane;
     }
-    JPanel getMessageDetails() {
-        if (messageDetails == null) {
-            messageDetails = new JPanel(new CardLayout());
-            messageDetails.add(new JScrollPane(getMessageContentPane()), MESSAGE_CONTENT);
-            JScrollPane tableScrollPane = new JScrollPane(getResultsTable());
-            tableScrollPane.getViewport().setBackground(Color.WHITE);
-            messageDetails.add(tableScrollPane,MESSAGE_RESULTS); 
-        }
-        return messageDetails;
-    }
     
-    JTable getMessageTable() {
-        if (messageTable == null) {
-            messageTable = new JTable(recorder.getMessageList());
-            MouseListener popupListener = new PopupListener();
-            messageTable.addMouseListener(popupListener);
-            getHelpServer().enableHelp(messageTable,"lo.messageTable");
-            messageTable.setShowVerticalLines(false);
-            messageTable.setShowHorizontalLines(false);
-            messageTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            messageTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {            	
-                final JPanel p = getMessageDetails();
-                final CardLayout c = (CardLayout)p.getLayout();
-                int previous = -1;
-                public void valueChanged(ListSelectionEvent e) {
-                    int index = messageTable.getSelectedRow();
-                    if (index == previous || index < 0 || index >= messageTable.getRowCount()) {
-                        return;
-                    }                                         
-                    previous = index;
-                    try {
-                        MessageContainer m = recorder.getMessage(index);
-                        if (m == null) {
-                            // must be trying to get a message that's not there. no matter.
-                            return;
-                        }
-                        getMessageContentPane().setMessage(m);
-                        if (m.getMessage() instanceof ResultsExecutionMessage) {     	
-                            getResultsTableModel().setResults(((ResultsExecutionMessage)m.getMessage()).getResults());
-                            c.show(p,MESSAGE_RESULTS);
-                        } else {                       	
-                            c.show(p, MESSAGE_CONTENT);
-                            getResultsTableModel().clear();
-                        }
-                        if (m.isUnread()) {
-                            // mark as read.
-                            m.setUnread(false);
-                            recorder.updateMessage(m);
-                            Folder f= getCurrentFolder();
-                            f.setUnreadCount(f.getUnreadCount()-1);
-                            recorder.updateFolder(f);
-                        }
-                    } catch (IOException ex) {
-                        showError("Failed to display message",ex);
-                    }
-                }
-            });
-            
-            messageTable.getTableHeader().setReorderingAllowed(false);
-            TableColumn titleColumn = messageTable.getColumnModel().getColumn(0);
-            titleColumn.setPreferredWidth(150);
-            titleColumn.setCellRenderer(new DefaultTableCellRenderer() {
-                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                    super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
-                    MessageContainer msg = recorder.getMessage(row);                    
-                    if (msg!= null && msg.isUnread() ) { 
-                        setText("<html><b>" + getText() + "</b></html>");
-                    }
-                    return this;
-                }               
-            });
-            
-        }
-        return messageTable;
-    }
-    
-    public void getMessageLevelMenu() {
-    	if (messageLevelMenu == null) {
-    		messageLevelMenu = new JPopupMenu();
-    		cbMenuItem1 = new JCheckBoxMenuItem("All");
-            cbMenuItem1.setToolTipText("Display all messages");
-            cbMenuItem1.setSelected(true);
-            cbMenuItem1.addItemListener(new ItemListener() {
-            	public void itemStateChanged(ItemEvent e) {
-            		if (e.getStateChange() == ItemEvent.SELECTED) {
-                		displayMessageLevel("All");
-            		}
-            	}
-            });
-    		cbMenuItem2 = new JCheckBoxMenuItem("Status change");
-            cbMenuItem2.setToolTipText("Display all status change messages");
-            cbMenuItem2.addItemListener(new ItemListener() {
-            	public void itemStateChanged(ItemEvent e) {
-            		if (e.getStateChange() == ItemEvent.SELECTED) {
-                		displayMessageLevel("STATUS CHANGE");
-            		}
-            	}
-            });
-    		cbMenuItem3 = new JCheckBoxMenuItem("Information");
-            cbMenuItem3.setToolTipText("Display all information level messages");
-            cbMenuItem3.addItemListener(new ItemListener() {
-            	public void itemStateChanged(ItemEvent e) {
-            		if (e.getStateChange() == ItemEvent.SELECTED) {
-            			displayMessageLevel("INFORMATION");
-            		}
-            	}
-            });
-    		cbMenuItem4 = new JCheckBoxMenuItem("Results");
-            cbMenuItem4.setToolTipText("Display all results messages");
-            cbMenuItem4.addItemListener(new ItemListener() {
-            	public void itemStateChanged(ItemEvent e) {
-            		if (e.getStateChange() == ItemEvent.SELECTED) {
-            		displayMessageLevel("RESULTS");
-            		}
-            	}
-            });
-            ButtonGroup group = new ButtonGroup();
-            group.add(cbMenuItem1);
-            group.add(cbMenuItem2);
-            group.add(cbMenuItem3);
-            group.add(cbMenuItem4);
-            messageLevelMenu.add(cbMenuItem1);
-            messageLevelMenu.add(cbMenuItem2);
-            messageLevelMenu.add(cbMenuItem3);
-            messageLevelMenu.add(cbMenuItem4);
-    	}
-    }
-    
-    
-    public void displayMessageLevel(String level) {            
-        for (int i =0; i < getMessageTable().getRowCount(); i++) {
-        	if (getMessageTable().getRowCount() <= 1) { // prevent users being able to hide single row with no way back
-        		cbMenuItem1.setSelected(true);
-        		return;
-        	}
-            if (level.equalsIgnoreCase("ALL")) {
-            	getMessageTable().setRowHeight(i, 16);
-            } else if (!level.equalsIgnoreCase(getMessageTable().getValueAt(i,0).toString())) {
-            	getMessageTable().setRowHeight(i,1);
-            } else {
-            	getMessageTable().setRowHeight(i, 16);
-            }
-            messageLevel = level;
-        }
-    }
-    
-    private JMenu getNewMenu() {
-        if (newMenu == null) {
-            newMenu = new JMenu();
-            newMenu.setText("New");
-            newMenu.setMnemonic(KeyEvent.VK_N);
-            newMenu.add(getParameterizedWorkflowAction());
-            newMenu.add(getWorkflowEditorAction());
-            newMenu.add(getTaskEditorAction());            
-            newMenu.add(new JSeparator());
-            newMenu.add(getSubmitTaskAction());
-            newMenu.add(new JSeparator());
-            newMenu.add(getCloseAction());
-        }
-        return newMenu;
-    }
-    private Action getParameterizedWorkflowAction() {
-        if (parameteriedWorkflowAction == null) {
-            parameteriedWorkflowAction = new ParameterizedWorkflowAction();
-        }
-        return parameteriedWorkflowAction;
-    }
-    private RefreshAction getRefreshAction() {
-        if (refreshAction == null) {
-            refreshAction = new RefreshAction();
-        }
-        return refreshAction;
-    }
-    private JTable getResultsTable() {
-        if (resultsTable == null) {
-            //cribbed from http://www.codeguru.com/java/articles/162.shtml
-            resultsTable = new JTable(getResultsTableModel()) {
-                
-                public TableCellEditor getCellEditor(int row, int column) {
-                    TableColumn tableColumn = getColumnModel().getColumn(column);
-                    TableCellEditor editor = tableColumn.getCellEditor();
-                    if (editor == null) {
-                        Class c = getColumnClass(column);
-                        if( c.equals(Object.class) )
-                        {
-                            Object o = getValueAt(row,column);
-                            if( o != null )
-                                c = getValueAt(row,column).getClass();
-                        }
-                        editor = getDefaultEditor(c);
-                    }
-                    return editor;
-                }                
-                public TableCellRenderer getCellRenderer(int row, int column) {
-                    TableColumn tableColumn = getColumnModel().getColumn(column);
-                    TableCellRenderer renderer = tableColumn.getCellRenderer();
-                    if (renderer == null) {
-                        Class c = getColumnClass(column);
-                        if( c.equals(Object.class) )
-                        {
-                            Object o = getValueAt(row,column);
-                            if( o != null )
-                                c = getValueAt(row,column).getClass();
-                        }
-                        renderer = getDefaultRenderer(c);
-                    }
-                    return renderer;
-                }
-                //Implement table cell tool tips.
-                public String getToolTipText (MouseEvent e) {
-                    String tip = null;
-                    java.awt.Point p = e.getPoint();
-                    int rowIndex = rowAtPoint(p);
-                    if (rowIndex < 0) {
-                        return super.getToolTipText(e);
-                    }
-                    int colIndex = columnAtPoint(p);
-                    int realColumnIndex = convertColumnIndexToModel(colIndex);               
-                    
-                       tip = super.getToolTipText(e);
-                    
-                    return tip;
-                }
-                protected String[] columnToolTips = {
-                		"Indirect?",
-        				"Name",
-        				"Value",
-        				"View this result in the transcript viewer",
-        				//"View this result in a web browser",
-						"Save this result to myspace or local disk"
-                };
-                
-                // Implement column header tool tips
-                protected JTableHeader createDefaultTableHeader() {
-                	return new JTableHeader(columnModel) {
-                		public String getToolTipText(MouseEvent e) {
-                			String tip = null;
-                			java.awt.Point p = e.getPoint();
-                			int index = columnModel.getColumnIndexAtX(p.x);
-                			int realIndex = columnModel.getColumn(index).getModelIndex();
-                			return columnToolTips[realIndex];
-                		}
-                	};
-                }
-                	
-            };
-           
-            resultsTable.setDefaultRenderer(JComponent.class,new JComponentCellRenderer() );
-            resultsTable.setDefaultEditor(JComponent.class,new JComponentCellEditor() );
-            getHelpServer().enableHelp(resultsTable,"lookout.resultsTable");
-            resultsTable.setShowVerticalLines(false);
-            resultsTable.setShowHorizontalLines(false);
-            resultsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);  
-            TableColumnModel columnModel = resultsTable.getColumnModel();
-            columnModel.getColumn(0).setPreferredWidth(10);
-            columnModel.getColumn(1).setPreferredWidth(40);
-            columnModel.getColumn(3).setPreferredWidth(10);
-            columnModel.getColumn(4).setPreferredWidth(10);            
-        }
-        return resultsTable;
-    }
-    private ResultListTableModel getResultsTableModel() {
-        if (resultsTableModel == null) {
-            resultsTableModel = new ResultListTableModel();
-        }
-        return resultsTableModel;
-    }
-    private Action getSubmitTaskAction() {
-        if (submitTaskAction == null) {
-            submitTaskAction = new SubmitTaskAction();
-        }
-        return submitTaskAction;
-    }
-    
-    private Action getTaskEditorAction() {
-        if (taskEditorAction == null) {
-            taskEditorAction = new TaskEditorAction();
-        }
-        return taskEditorAction;
-    }
-    
-    private Action getCloseAction() {
-        if (closeAction == null) {
-            closeAction = new CloseAction();
-        }
-        return closeAction;
-    }
-    
-    ViewTranscriptAction viewTranscriptAction = new ViewTranscriptAction();
     private JToolBar getToolbar() {
         if (toolbar == null) {
             toolbar = new JToolBar();
             toolbar.setFloatable(false);
             toolbar.setRollover(true);
-            toolbar.add(getParameterizedWorkflowAction());
-            toolbar.add(getWorkflowEditorAction());
-            toolbar.add(getTaskEditorAction());
+            toolbar.add(refreshAction);
+            toolbar.add(transcriptAction);
+            toolbar.add(haltAction);
+            toolbar.add(deleteAction);
             toolbar.add(new JToolBar.Separator());
-            toolbar.add(getSubmitTaskAction());
-            toolbar.add(new JToolBar.Separator());
-            toolbar.add(getRefreshAction());
-            toolbar.add(getHaltAction());
-            toolbar.add(getDeleteAction());
-            toolbar.add(new JToolBar.Separator());
-            toolbar.add(getMarkAllReadAction());
-            toolbar.add(viewTranscriptAction);
+            toolbar.add(markAllReadAction);
         }
         return toolbar;
     }
-    
-
-    private Action getWorkflowEditorAction() {
-        if (workflowEditorAction == null) {
-            workflowEditorAction = new WorkflowEditorAction();
-        }
-        return workflowEditorAction;        
-    }
-
-
-    
-    
     private void initialize() {
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.lookout");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setJMenuBar(getJJMenuBar());
-        JPanel pane = getJContentPane();    
+        JPanel pane = getMainPanel();   
         this.setTitle("VO Lookout");
-        
-        
-        
+ 
         JSplitPane leftRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         leftRight.setDividerSize(5);
         leftRight.setDividerLocation(200);
@@ -1306,9 +398,109 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
         setIconImage(IconHelper.loadIcon("thread_and_monitor_view.gif").getImage()); 
     }
     
+    private void setCurrentFolder(Folder f) {
+        this.currentFolder = f;
+    }
+    
+    JTree getFolderTree() {
+        if (folderTree == null) {                        
+            folderTree = new JTree(recorder.getFolderList());
+            ToolTipManager.sharedInstance().registerComponent(folderTree);
+            getHelpServer().enableHelp(folderTree,"lo.folderTree");
+            folderTree.putClientProperty("JTree.lineStyle", "None");            
+            folderTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            folderTree.setShowsRootHandles(false);
+            folderTree.setCellRenderer(new FolderTreeCellRenderer());
+            folderTree.addTreeSelectionListener(new TreeSelectionListener() {            	           
+                // if I _knew_ that listeners were called on order of addition, I could optimize this.
+                public void valueChanged(TreeSelectionEvent e) {     	                	
+                    Folder f = (Folder)folderTree.getLastSelectedPathComponent();
+                    if (f != null && folderTree.getModel().isLeaf(f)) {
+                        getMessageTable().clear();
+                        setCurrentFolder(f);
+                        try {
+                            recorder.displayMessages(f);
+                            int last = getMessageTable().getRowCount() -1;
+                            getMessageTable().getSelectionModel().setSelectionInterval(last,last);
+                            transcriptAction.setEnabled(f.getInformation().getId().getScheme().equals("jes"));
+                              } catch (IOException e1) {
+                            showError("Failed to display folder",e1);
+                        }
+                    }
+                }
+            });
+            // when things get added, make sure they're displayed         
+            folderTree.getModel().addTreeModelListener(new TreeModelListener() {            
+                public void treeNodesChanged(TreeModelEvent e) {
+                }
+                public void treeNodesInserted(TreeModelEvent e) {   
+                    folderTree.expandPath(e.getTreePath());                    
+                }
+                public void treeNodesRemoved(TreeModelEvent e) {
+                }
+                public void treeStructureChanged(TreeModelEvent e) {
+                }
+            });
+        }
+        return folderTree;
+    }
+    
+    JPanel getMessageDetails() {
+        if (messageDetails == null) {
+            messageDetails = new JPanel(new BorderLayout());
+            messageDetails.add(new JScrollPane(getMessageContentPane()),BorderLayout.CENTER);
+            messageDetails.add(results,BorderLayout.SOUTH);
+        }
+        return messageDetails;
+    }        
+    
+    MessageTable getMessageTable() {
+        if (messageTable == null) {
+            messageTable = new MessageTable(recorder);       
+            getHelpServer().enableHelp(messageTable,"lo.messageTable");       
+            messageTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {            	
+                public void valueChanged(ListSelectionEvent e) {
+                    int index = messageTable.getSelectedRow();
+                    if (index >= messageTable.getRowCount()) {
+                    	// ignore
+                    	return;
+                    }
+                    if ( index < 0 ) {// selection cleared
+                        // clear all displays message displays.
+                        results.clear();
+                        getMessageContentPane().clear();                    	
+                    }                        
+                    try {
+                        MessageContainer m = recorder.getMessage(index);
+                        if (m == null) {
+                            // must be trying to get a message that's not there. no matter.
+                            return;
+                        }
+                        getMessageContentPane().setMessage(m);
+                        if (m.getMessage() instanceof ResultsExecutionMessage) {
+                        	results.setResults((ResultsExecutionMessage)m.getMessage());
+                        } else {                       	
+                            results.clear();
+                        }
+                        if (m.isUnread()) {
+                            // mark as read.
+                            m.setUnread(false);
+                            recorder.updateMessage(m);
+                            Folder f= getCurrentFolder();
+                            f.setUnreadCount(f.getUnreadCount()-1);
+                            recorder.updateFolder(f);
+                        }
+                    } catch (IOException ex) {
+                        showError("Failed to display message",ex);
+                    }
+                }
+            });  
+        }
+        return messageTable;
+    }
     boolean isRunning(String status) {
         return ! (status.equals(ExecutionInformation.ERROR) || status.equals(ExecutionInformation.COMPLETED));
-    }        
+    }
     
     boolean isTaskFolder(URI uri) {
         return ! ( uri.equals(MessageRecorderImpl.JOBS)
@@ -1316,26 +508,6 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
                 || uri.equals(MessageRecorderImpl.ROOT)
                 || uri.equals(MessageRecorderImpl.TASKS)
         );
-    }
-    private void setCurrentFolder(Folder f) {
-        this.currentFolder = f;
-    }
-    
-    class PopupListener extends MouseAdapter {
-    	public void mousePressed(MouseEvent e) {
-    		maybeShowPopup(e);
-    	}
-    	public void mouseReleased(MouseEvent e) {
-    		maybeShowPopup(e);
-    	}
-    	
-    	private void maybeShowPopup(MouseEvent e) {
-    		if (e.isPopupTrigger()) {
-    			if (messageLevelMenu == null)
-    				getMessageLevelMenu();
-    		  messageLevelMenu.show(e.getComponent(), e.getX(), e.getY());
-    		}
-    	}
     }
     
     
@@ -1345,6 +517,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout {
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.14  2006/06/27 10:35:11  nw
+refactored into manageable chunks.added send-to menu
+
 Revision 1.13  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
