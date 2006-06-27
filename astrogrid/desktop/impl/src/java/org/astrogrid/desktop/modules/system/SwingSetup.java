@@ -1,4 +1,4 @@
-/*$Id: SwingSetup.java,v 1.4 2006/05/17 23:57:46 nw Exp $
+/*$Id: SwingSetup.java,v 1.5 2006/06/27 10:40:55 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,8 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
      UIManager.put("ToolTip.background",Color.white);
      ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
      ToolTipManager.sharedInstance().setInitialDelay(500);
+     
+
     }
 
 }
@@ -58,6 +60,9 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
 
 /* 
 $Log: SwingSetup.java,v $
+Revision 1.5  2006/06/27 10:40:55  nw
+no change
+
 Revision 1.4  2006/05/17 23:57:46  nw
 documentation improvements.
 
