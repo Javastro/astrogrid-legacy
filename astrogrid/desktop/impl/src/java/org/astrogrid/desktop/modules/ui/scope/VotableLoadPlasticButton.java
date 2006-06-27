@@ -1,4 +1,4 @@
-/*$Id: VotableLoadPlasticButton.java,v 1.3 2006/03/16 18:12:56 jdt Exp $
+/*$Id: VotableLoadPlasticButton.java,v 1.4 2006/06/27 10:19:33 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,8 +22,9 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.PlasticWrapper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.votech.plastic.CommonMessageConstants;
 
@@ -43,8 +44,8 @@ public class VotableLoadPlasticButton extends PlasticButton {
     private static final Log logger = LogFactory.getLog(VotableLoadPlasticButton.class);
 
   
-    public VotableLoadPlasticButton(URI plasticID, String name, String description, URL iconURL, FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
-        super(plasticID, "View tables in " + StringUtils.capitalize( name ), description, iconURL, selectedNodes, ui, wrapper);        
+    public VotableLoadPlasticButton(PlasticApplicationDescription descr,  FocusSet selectedNodes, UIComponent ui, TupperwareInternal tupp) {
+        super(descr, "View tables in " + StringUtils.capitalize( descr.getName() ), descr.getDescription(), selectedNodes, ui, tupp);        
     }
     
     public void focusChanged(FocusEvent arg0) {
@@ -67,7 +68,7 @@ public class VotableLoadPlasticButton extends PlasticButton {
                         URL url = new URL(service.getAttribute(Retriever.SERVICE_URL_ATTRIBUTE));
                         List args = new ArrayList();  
                         args.add(url.toString()); // plastic spec expects parameter types that are strings - but still parse into a url first, to check it's valid.
-                        wrapper.getHub().requestToSubset(wrapper.getPlasticId(),CommonMessageConstants.VOTABLE_LOAD_FROM_URL,args,target);
+                        tupperware.singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,args,targetId);
                         //@todo next send plastic messages to highlight selected rows.
                     }// end if new catalog
                     
@@ -82,6 +83,9 @@ public class VotableLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: VotableLoadPlasticButton.java,v $
+Revision 1.4  2006/06/27 10:19:33  nw
+reworked in tupperware
+
 Revision 1.3  2006/03/16 18:12:56  jdt
 Some bug fixes, and the next version of the plastic library.
 

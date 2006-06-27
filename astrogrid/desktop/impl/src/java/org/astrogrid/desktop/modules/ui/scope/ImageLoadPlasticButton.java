@@ -1,4 +1,4 @@
-/*$Id: ImageLoadPlasticButton.java,v 1.5 2006/04/21 13:48:11 nw Exp $
+/*$Id: ImageLoadPlasticButton.java,v 1.6 2006/06/27 10:19:48 nw Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,8 +20,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.PlasticWrapper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.votech.plastic.CommonMessageConstants;
 
@@ -35,8 +36,8 @@ public class ImageLoadPlasticButton extends PlasticButton {
      */
     private static final Log logger = LogFactory.getLog(ImageLoadPlasticButton.class);
 
-    public ImageLoadPlasticButton(URI plasticID, String name, String description, URL iconURL, FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
-        super(plasticID,"View images in "  +  StringUtils.capitalize( name )+ "", description, iconURL, selectedNodes, ui, wrapper);
+    public ImageLoadPlasticButton(PlasticApplicationDescription descr,  FocusSet selectedNodes, UIComponent ui,TupperwareInternal tupp) {
+        super(descr,"View images in "  +  StringUtils.capitalize( descr.getName() )+ "", descr.getDescription(), selectedNodes, ui,tupp);
     }
 
     public void focusChanged(FocusEvent arg0) {
@@ -62,10 +63,9 @@ public class ImageLoadPlasticButton extends PlasticButton {
                         URL url = new URL(tn.getAttribute(SiapRetrieval.IMAGE_URL_ATTRIBUTE));
                         List args = new ArrayList();
                         args.add(url.toString()); // plastic expects a string, but we first construct a url to ensure it's valid.
-                        wrapper.getHub().requestToSubset(
-                                wrapper.getPlasticId()
-                                ,CommonMessageConstants.FITS_LOAD_FROM_URL
-                                ,args,target);
+                        tupperware.singleTargetPlasticMessage(
+                                CommonMessageConstants.FITS_LOAD_FROM_URL
+                                ,args,targetId);
                         //@todo next send plastic messages to select correct position in image.                    
                 }// end for each child node.
                 return null;
@@ -79,6 +79,9 @@ public class ImageLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: ImageLoadPlasticButton.java,v $
+Revision 1.6  2006/06/27 10:19:48  nw
+reworked in tupperware
+
 Revision 1.5  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

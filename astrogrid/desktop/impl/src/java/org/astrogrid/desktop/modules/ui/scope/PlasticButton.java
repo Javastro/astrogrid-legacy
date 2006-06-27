@@ -1,4 +1,4 @@
-/*$Id: PlasticButton.java,v 1.5 2006/04/21 13:48:11 nw Exp $
+/*$Id: PlasticButton.java,v 1.6 2006/06/27 10:20:57 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,11 +11,7 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +19,9 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.modules.ui.PlasticWrapper;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.io.Piper;
 
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 
@@ -49,40 +45,26 @@ public abstract class PlasticButton extends NodeConsumerButton{
      * @param ui userinterface component
      * @param wrapper wrapper around plasticized UI application
      */
-    public PlasticButton( URI plasticID, String name, String description, URL iconURL,FocusSet selectedNodes, UIComponent ui, PlasticWrapper wrapper) {
+    public PlasticButton( PlasticApplicationDescription descr, String name, String description, FocusSet selectedNodes, UIComponent ui, TupperwareInternal tupp) {
         super(name,description!=null? description: "Display data using PLASTIC",  selectedNodes);
-        if (iconURL != null) {
-            try { //need to do this the long way, rather than just passing the url to ImageIcon, because that seems to 
-                // throw security exceptions when runnning under webstart.
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                InputStream is = iconURL.openStream();
-                Piper.pipe(is,bos);
-                is.close();
-                ImageIcon orig = new ImageIcon(bos.toByteArray());
-                if (orig != null) {
-                    ImageIcon scaled = new ImageIcon(orig.getImage().getScaledInstance(-1,50,Image.SCALE_SMOOTH));
-                    setIcon(scaled);
-                }
-            } catch (IOException e ) {
-                logger.warn("Failed to download icon " + iconURL);
-                
-            }
+        if (descr.getIcon() != null) {
+			//@todo find some way of loading this on background thread.
+            ImageIcon scaled = new ImageIcon(((ImageIcon)descr.getIcon()).getImage().getScaledInstance(-1,32,Image.SCALE_SMOOTH));
+			setIcon(scaled);
             // run rule to enable / disable this button.
             this.focusChanged(null);
         }
         this.ui = ui;
-        this.plasticId = plasticID;
-        target  = new ArrayList();
-        target.add(plasticId);
-        this.wrapper = wrapper;
+        this.targetId = descr.getId();
+        this.tupperware = tupp;
+
     }
     protected final UIComponent ui;
-    protected final PlasticWrapper wrapper;
-    /** singleton list containing only {@link #plasticId} */
-    protected final List target;
     /** id of the plastic application to message */
-    protected final URI plasticId;
-  
+    protected final URI targetId;
+  /** the plastic wrapper *
+   */
+    protected final TupperwareInternal tupperware;
     
     
 
@@ -92,6 +74,9 @@ public abstract class PlasticButton extends NodeConsumerButton{
 
 /* 
 $Log: PlasticButton.java,v $
+Revision 1.6  2006/06/27 10:20:57  nw
+reworked in tupperware
+
 Revision 1.5  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
