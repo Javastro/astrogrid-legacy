@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.14 2006/06/27 10:35:11 nw Exp $
+/*$Id: LookoutImpl.java,v 1.15 2006/06/27 19:14:44 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -449,7 +449,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         if (messageDetails == null) {
             messageDetails = new JPanel(new BorderLayout());
             messageDetails.add(new JScrollPane(getMessageContentPane()),BorderLayout.CENTER);
-            messageDetails.add(results,BorderLayout.SOUTH);
+            messageDetails.add(new JScrollPane(results),BorderLayout.SOUTH);
         }
         return messageDetails;
     }        
@@ -517,6 +517,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.15  2006/06/27 19:14:44  nw
+fixed resuults display
+
 Revision 1.14  2006/06/27 10:35:11  nw
 refactored into manageable chunks.added send-to menu
 
