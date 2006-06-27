@@ -1,0 +1,177 @@
+/**
+ * 
+ */
+package org.astrogrid.desktop.modules.plastic;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.awt.Image;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.astrogrid.io.Piper;
+/**
+ * 
+ * @author John Taylor
+ * @modified Noel Winstanley - renamed to remove ambiguity. added some extra info methods, 
+ * strengthened types (more pressing if used by more clients)
+ * @todo wonder whether its worth merging / extending appicaitonDescription - there's similarites, and differences..
+ * @since Jun 16, 20061:19:37 PM
+ */
+public class PlasticApplicationDescription {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory
+			.getLog(PlasticApplicationDescription.class);
+
+	// member variables never change.
+	// interesting - could there ever be a case where a plastic app changes description / supported methods
+	// whilst it's running. nnng. leave for now..
+	private final URI id;
+	private final String name;
+	private final URI[] messages;
+	private final String version;
+	private final URL iconUrl;
+	private final URI ivorn;
+	private final String description;
+
+	public PlasticApplicationDescription(URI id, String name,String description, List messages, String version, String iconURL, String ivorn) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		if (messages != null) {
+			this.messages = (URI[])messages.toArray(new URI[messages.size()]);
+		} else { // dunno if this is ever going to happen really.
+			this.messages = new URI[]{};
+		}
+		this.version = version;
+		URL u = null;
+		try {
+			u = iconURL == null ? null : new URL(iconURL);
+		} catch (MalformedURLException x) {
+			logger.warn("Malformed Icon URL",x);
+		}
+		this.iconUrl = u;
+		URI uri = null;
+		try {
+			uri = ivorn == null ? null : new URI(ivorn);
+		} catch (URISyntaxException x) {
+			logger.warn("Malformed application ivorn",x);
+		}
+		this.ivorn = uri;
+	}
+	
+	
+	public PlasticApplicationDescription(URI id, String name, String description, URI[] messages, String version, URL iconUrl, URI ivorn) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.messages = messages;
+		this.version = version;
+		this.iconUrl = iconUrl;
+		this.ivorn = ivorn;
+	}
+
+	public URI getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public URI[] getUnderstoodMessages() {
+		return messages;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public URL getIconUrl() {
+		return iconUrl;
+	}
+
+	public URI getIvorn() {
+		return ivorn;
+	}
+
+
+	/**
+	 * @return Returns the description.
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	
+	//NWW additions.
+	/** helper method to quickly check for support of a message 
+	 * @return true if message in {@link #getUnderstoodMessages()} false otherwise, or if
+	 * <tt>message</tt> == null*/
+	public boolean understandsMessage(URI message) {
+		if (message == null) {
+			return false;
+		}
+		return ArrayUtils.contains(getUnderstoodMessages(),message);
+	}
+	
+	private Icon icon = null;
+	/** lazy-load the icon pointed to by {@link #getIconUrl}
+	 * @return icon, or null if getIconUrl() == null */
+	public synchronized Icon getIcon() {
+		if (icon == null && iconUrl != null) {
+		      try { //need to do this the long way, rather than just passing the url to ImageIcon, because that seems to 
+	                // throw security exceptions when runnning under webstart.
+		    	  	// should run this on background thread - dunno how to.
+	                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	                InputStream is = iconUrl.openStream();
+	                Piper.pipe(is,bos);
+	                is.close(); 
+	                icon = new ImageIcon(bos.toByteArray());	               
+	            } catch (IOException e ) {
+	                logger.warn("Failed to download icon " + iconUrl);	                
+	            }
+		}
+		return icon;
+	}
+
+
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((this.id == null) ? 0 : this.id.hashCode());
+		return result;
+	}
+
+	/** equality is defined on {@link #getId} */
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final PlasticApplicationDescription other = (PlasticApplicationDescription) obj;
+		if (this.id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!this.id.equals(other.id))
+			return false;
+		return true;
+	}
+	
+}

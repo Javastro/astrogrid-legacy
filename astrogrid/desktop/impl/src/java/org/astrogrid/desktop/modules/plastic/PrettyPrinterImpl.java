@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,14 +51,14 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 		
 		Iterator it = nonHubApplications.iterator();
 		while (it.hasNext()) {
-			ApplicationDescription app = (ApplicationDescription) it.next();
-			String plid = app.getId();
+			PlasticApplicationDescription app = (PlasticApplicationDescription) it.next();
+			URI plid = app.getId();
 			String name = app.getName();
 			String description = app.getDescription();
-			List messages = app.getUnderstoodMessages();
+			URI[] messages = app.getUnderstoodMessages();
 			String version = app.getVersion();
-			String icon = app.getIconUrl();
-			String ivorn = app.getIvorn();
+			URL icon = app.getIconUrl();
+			URI ivorn = app.getIvorn();
 			
 			writer.println("<tr>");
 				writeImgIfNonNull(writer, icon);
@@ -66,7 +68,7 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 				writeIfNonNull(writer, ivorn);
 				writer.println("<td>");
 				writer.write("<ul>");
-				Iterator mit = messages.iterator();
+				Iterator mit = Arrays.asList(messages).iterator();
 				while (mit.hasNext()) {
 					URI msg = (URI) mit.next();  //TODO
 					writer.write("<li>"+msg+"</li>");
@@ -89,19 +91,23 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 		}		
 	}
 
-	private void writeIfNonNull(PrintWriter writer, String value) {
-		if (value==null ||  "".equals(value)) {
+	private void writeIfNonNull(PrintWriter writer, Object value) {
+		if (value==null ||  value.toString().trim().length() == 0) {
 			writer.println("<td/>");
 		} else {
-			writer.println("<td>"+value+"</td>");
+			writer.print("<td>");
+			writer.print(value);
+			writer.println("</td>");
 		}
 	}
 
-	private void writeImgIfNonNull(PrintWriter writer, String icon) {
-		if (icon==null ||  "".equals(icon)) {
+	private void writeImgIfNonNull(PrintWriter writer, URL icon) {
+		if (icon==null ||  icon.toString().trim().length() == 0) {
 			writer.println("<td/>");
 		} else {
-			writer.println("<td><img height='100' src='"+icon+"'/></td>"); //Limit the size of the icons
+			writer.print("<td><img height='100' src='");
+			writer.print(icon);
+			writer.println("'/></td>"); //Limit the size of the icons
 		}
 	}
 }
