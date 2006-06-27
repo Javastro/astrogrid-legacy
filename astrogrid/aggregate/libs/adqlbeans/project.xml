@@ -14,8 +14,8 @@
 
   <dependencies>
   
-<dependency> 
      <!-- already provided by axis extension.
+<dependency> 
 	 <artifactId>jaxp</artifactId>
 	 <groupId>jaxp</groupId>
 	 <version>1.4-20050623</version>
