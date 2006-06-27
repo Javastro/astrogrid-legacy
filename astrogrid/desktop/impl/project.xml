@@ -152,14 +152,12 @@
 		<groupId>esavo</groupId>
 		<artifactId>vospec</artifactId>
 		<version>1.1</version>
-		<!-- not bundling at the moment - just used to compile against.
 		  <properties>
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		 <jnlp.extension.dir>/jnlp/esavo-vospec</jnlp.extension.dir>
 		 <jnlp.extension.jnlp>esavo-vospec.jnlp</jnlp.extension.jnlp>
 		 <dist.bundle>true</dist.bundle>		 
-	 </properties>	
-	 -->
+	 </properties>
 	</dependency>   
 
 

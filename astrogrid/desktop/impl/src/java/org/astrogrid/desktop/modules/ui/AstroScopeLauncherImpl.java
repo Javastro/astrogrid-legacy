@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.48 2006/06/27 10:34:07 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.49 2006/06/27 19:14:24 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,8 +102,8 @@ public class AstroScopeLauncherImpl extends AbstractScope
         // before we can populate member variables - so need to pass in 'ses' later.
         posText.setSesame(ses);   
         this.ses = ses;
-     // call out to vospec via plastic from now on.   
-     //   dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
+     // @future remove this once proper plasticized vospec comes out.
+        dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
         dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
         setIconImage(IconHelper.loadIcon("astroscope.png").getImage());
@@ -391,6 +391,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.49  2006/06/27 19:14:24  nw
+added vospec back in.
+
 Revision 1.48  2006/06/27 10:34:07  nw
 send-to menu, tupperware actions.
 
