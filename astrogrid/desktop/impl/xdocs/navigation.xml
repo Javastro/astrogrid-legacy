@@ -16,6 +16,12 @@
 	<item name="History" href="/changes-report.html" />
 		
     </menu>
+    <menu name="Testing">
+      <item name="Summary Results"     href="junit-report.html"/>
+      <item name="Detailed Results" href="junit-full/index.html" />
+      <item name="Install AGINAB" href="install.html" />
+      <item name="Deploy Log" href="../log/integration.log"/>
+    </menu>    
  
   </body>
 </project>

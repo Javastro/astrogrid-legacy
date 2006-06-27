@@ -5,7 +5,8 @@
         <title>Astrogrid Client Runtime and Workbench</title>
 </properties>
 <body>
-
+<section name="Needs to be Updated after AR Split">
+</section>
 <section name="Overview">
 	
 	<p>
@@ -37,35 +38,9 @@
 	</p>
 
 	<subsection name="Eclipse"><p>
-		Run <tt>maven eclipse</tt> to set up your classpath from the <tt>impl</tt> sub project. You need to also have the maven-base and aggregate projects checked out at the 
-		correct relative locations.
-		Don't try and assemble the classpath by yourself - it's huge, and doing this most likely will lead to hidden mismatches between library versions.
+		For build instructions, see parent project.
 	</p></subsection>
-	<subsection name="Modules"><p>
-		The workbench is organized internally into modules - these contain components with related functionality.
-		Each module is defined by an xml file - the <i>module descriptor</i> called, by convention <tt>module.xml</tt>. There's an (incomplete) DTD in the source tree for this format - 
-		a schema needs to be written, as some of the module.xml structure (embedded XHTML) can't be easily described in a DTD.
-		</p>
-		<p>
-		The module descriptor defines which components to instantiate, and provides human-readable information about the module and the components within it.
-		This information is used to generate the workbench GUI interface, and also the HTML and XMLRPC interfaces to the components.
-		</p>
-		<p>For each component in the module, it defines the component name, public interface class, implementation class, and then documents the methods available on each component.			
-		</p>
-		<p>
-			In the module descriptor, it's possible to set 'property' keys - for a module, component, method, or parameter. This provided me with a quick-and-dirty way of adding
-			arbitrary metadata to the descriptor while I was prototyping the system. However, property keys defeat the point of a strongly-typed schema - so later I plan to 
-			rework the schema so that the commonest property keys are translated to elements.
-			However, for now be aware that there's some magic keys, concerned mostly with how things are presented in the GUI and XMLRPC interfaces -e.g. icons and titles
-			to use, technique to use to present the results, etc.
-		</p>
-		<p>
-			It's possible to define 'conditional' components in the module descriptor - these only become available when a condition is true (e.g. certain classes are available).
-			Extending on this, it's also possible to define a component that provides more than one implementation class - the correct implementation to use is selected
-			via a condition. See the module descriptor for the <tt>system</tt> module for an example of this.
-			</p>
-	</subsection>
-
+	
 	<subsection name="Components"><p>
 		A component has two parts - a public interface (in the api project) and a private implementation class (in the impl project).
 		</p>
@@ -165,7 +140,7 @@ public class MyComponent {
 		test source tree.
 		</p>
 		<p>
-			The system tests use <tt>org.astrogrid.desktop.framework.ACRTestSetup</tt> to create an in-processes Workbench (ACR). The classes of the public interface - <tt>Finder</tt> and <tt>ACR</tt>
+			The system tests use <tt>org.astrogrid.desktop.framework.ACRTestSetup</tt> to create an in-processes Workbench. The classes of the public interface - <tt>Finder</tt> and <tt>ACR</tt>
 			can then be used to retrive an instance of a component for testing.
 		</p>
 	</subsection>
@@ -175,7 +150,8 @@ public class MyComponent {
 	</p></subsection>
 	
 	<subsection name="Running"><p>
-		To run a local instance of the workbench, run the class <tt>org.astrogrid.desktop.Main</tt> from within eclipse.
+		To run a local instance of the workbench, run the class <tt>org.astrogrid.desktop.Main</tt> from within eclipse, or say <tt>maven javaapp</tt> on the commandline - a standalone-jar
+		will then be present in the <tt>target</tt> directory.
 		When running locally, some features (e.g. JavaWebstart and JDIC integration) won't be available. However, the system should degrade gracefully
 		and use fallbalks (although a few exceptions will be thrown in the logs).  If you want to avoid the exceptions (and have the JDIC integration), here's a tip: 
 		<ul>
