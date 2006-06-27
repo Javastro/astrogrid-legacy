@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.11 2006/04/21 13:48:12 nw Exp $
+/*$Id: VospaceImpl.java,v 1.12 2006/06/27 10:23:51 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,7 +69,7 @@ import org.astrogrid.store.Ivorn;
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
  * @todo aren't always throwing the right kind of exception in all cases - needs testing / inspection of myspace client
  */
-public class VospaceImpl implements UserLoginListener, MyspaceInternal {
+public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     
 
     /**
@@ -907,6 +907,9 @@ public class VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.12  2006/06/27 10:23:51  nw
+findbugs tweaks
+
 Revision 1.11  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

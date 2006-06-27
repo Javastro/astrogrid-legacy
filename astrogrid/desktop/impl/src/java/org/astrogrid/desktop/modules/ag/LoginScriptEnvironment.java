@@ -1,5 +1,8 @@
 package org.astrogrid.desktop.modules.ag;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.security.auth.Subject;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
@@ -17,6 +20,11 @@ import org.astrogrid.store.Ivorn;
  *
  */
 public class LoginScriptEnvironment implements ScriptEnvironment {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory
+			.getLog(LoginScriptEnvironment.class);
 
     /** Construct a new LoginScriptEnvironment
      * @throws RegistryException
@@ -44,14 +52,14 @@ public class LoginScriptEnvironment implements ScriptEnvironment {
      Subject subject;
      CommunityPasswordResolver security = new CommunityPasswordResolver(); 
      try {
-       System.out.println("Logging in using MyProxy...");
+       logger.info("Logging in using MyProxy...");
        subject = security.checkPassword(userIvorn.toString(),
                                         password,
                                         48*3600, // duration of validity in seconds
                                         trustAnchors);
      }
      catch (CommunityResolverException e) {
-       System.out.println("No MyProxy service found; logging in using the AG web-service...");
+       logger.info("No MyProxy service found; logging in using the AG web-service...");
        security.checkPassword(userIvorn.toString(),
                               password);
        subject = new Subject(); // empty of credentials

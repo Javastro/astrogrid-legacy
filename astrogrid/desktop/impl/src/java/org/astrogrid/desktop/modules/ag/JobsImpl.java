@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.6 2006/04/18 23:25:44 nw Exp $
+/*$Id: JobsImpl.java,v 1.7 2006/06/27 10:23:51 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -137,7 +137,7 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
                 return "jes".equals(((URI)arg0).getScheme());
             }
         });
-        return (URI[])c.toArray(new URI[]{});     
+        return (URI[])c.toArray(new URI[c.size()]);     
     }
     
   
@@ -226,7 +226,7 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
 	public void userLogin(UserLoginEvent arg0) {
 	}
 
-	public void userLogout(UserLoginEvent arg0) {
+	public synchronized void userLogout(UserLoginEvent arg0) {
 		this.acc = null;
 		this.fac = null;
 	}
@@ -238,6 +238,9 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.7  2006/06/27 10:23:51  nw
+findbugs tweaks
+
 Revision 1.6  2006/04/18 23:25:44  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.12 2006/05/26 15:22:30 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.13 2006/06/27 10:23:51 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,7 +101,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
                 // oh well, skip it.
             }
         }
-        return (URI[])results.toArray(new URI[]{});
+        return (URI[])results.toArray(new URI[results.size()]);
         } catch (ParserConfigurationException e) {
             throw new ServiceException(e);
         } catch (TransformerException e) {
@@ -428,7 +428,7 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
     private void validateReference(ApplicationInformation desc, ParameterReferenceBean bean, BaseBean searchRoot) throws InvalidArgumentException {
         Iterator results = searchRoot.findXPathIterator("/parameter[name = '" + bean.getRef() +"']");        
-        ParameterBean pb = (ParameterBean)desc.getParameters().get(bean.getRef());
+//unused        ParameterBean pb = (ParameterBean)desc.getParameters().get(bean.getRef());
         int count = 0;
         while (results.hasNext()) {
             count++;
@@ -558,7 +558,7 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 	            results.add(pb.getName());
 	        }
 	    }
-	    return (String[])results.toArray(new String[]{});
+	    return (String[])results.toArray(new String[results.size()]);
 	    
 	}
            
@@ -568,6 +568,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.13  2006/06/27 10:23:51  nw
+findbugs tweaks
+
 Revision 1.12  2006/05/26 15:22:30  nw
 organized imports.
 
