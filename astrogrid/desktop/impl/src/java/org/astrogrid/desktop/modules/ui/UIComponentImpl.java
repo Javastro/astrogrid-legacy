@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.3 2006/04/26 15:56:54 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.4 2006/06/27 10:37:10 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
@@ -28,6 +29,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -36,6 +39,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -482,6 +486,23 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             }
         }
     }
+   
+    /** create an action that will display the help viewer */
+    protected Action createHelpAction() {
+    	return new AbstractAction("Help Contents") {
+    		public void actionPerformed(ActionEvent e) {
+    			getHelpServer().showHelp();
+    		}
+    	};
+    }
+    /** create a help menu, containing a single action */
+    protected JMenu createHelpMenu() {
+    		JMenu helpMenu = new JMenu();
+    		helpMenu.setText("Help");
+    		helpMenu.setMnemonic(KeyEvent.VK_H);
+    		helpMenu.add(createHelpAction());
+    		return helpMenu;
+    }
     
     /** called by a {@link BackgroundWorker} to notify the UI that it's started executing */ 
     public void addBackgroundWorker(final BackgroundWorker w) {        
@@ -528,6 +549,8 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
         return null;
     }
 
+    
+   
 
     
 }
@@ -535,6 +558,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.4  2006/06/27 10:37:10  nw
+added methods to provide a default help menu
+
 Revision 1.3  2006/04/26 15:56:54  nw
 added 'halt query' and 'halt all tasks' functinaltiy.
 
