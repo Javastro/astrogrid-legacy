@@ -99,21 +99,16 @@
 		    <dist.bundle>true</dist.bundle>		    
                 </properties>
         </dependency>
+     
+        	<dependency>
+        		<groupId>starlink</groupId>
+        		<artifactId>stilt_astrogrid_convert</artifactId>
+        		<version>1.0</version>
+        		<properties>
+        			<dist.bundle>true</dist.bundle>
+        		</properties>
+        	</dependency>       
 
-<!-- look and feel  unused at present-->
-<!--   <dependency>
-        <artifactId>looks</artifactId>
-        <groupId>jgoodies</groupId>
-        <version>2.0.1</version>
-        <properties>
-		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		<jnlp.extension.dir>/jnlp/gui</jnlp.extension.dir>
-		<jnlp.extension.jnlp>gui.jnlp</jnlp.extension.jnlp>
-		<dist.bundle>true</dist.bundle>		
-        </properties>
-   </dependency>
-  -->
-  
   <!-- libraries needed for workbench gui - extension -->
  <dependency>
 	 <groupId>prefuse</groupId>
@@ -157,39 +152,16 @@
 		<groupId>esavo</groupId>
 		<artifactId>vospec</artifactId>
 		<version>1.1</version>
+		<!-- not bundling at the moment - just used to compile against.
 		  <properties>
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		 <jnlp.extension.dir>/jnlp/esavo-vospec</jnlp.extension.dir>
 		 <jnlp.extension.jnlp>esavo-vospec.jnlp</jnlp.extension.jnlp>
 		 <dist.bundle>true</dist.bundle>		 
 	 </properties>	
+	 -->
 	</dependency>   
-        	
-        	<!--
-        	A specialized stilt library dealing with conversion of units 
-        	(plus distance between objects)
-        	-->
-        	<dependency>
-        		<groupId>starlink</groupId>
-        		<artifactId>stilt_astrogrid_convert</artifactId>
-        		<version>1.0</version>
-        		<properties>
-        			<jnlp.jar>true</jnlp.jar>
-        			<dist.bundle>true</dist.bundle>
-        		</properties>
-        	</dependency>          	
-   
-  <!-- Missed out of the aggregate project -->
-  <dependency>
-    <groupId>xalan</groupId>
-    <artifactId>serializer</artifactId>
-    <version>2.7.0</version>
-    <type>jar</type>
-    <url>http://xml.apache.org/</url>
-    <properties>
-      <dist.bundle>true</dist.bundle>
-    </properties>
-  </dependency>
+
 
 <!-- used within development only -->
 <!-- code to unit test xml -->
