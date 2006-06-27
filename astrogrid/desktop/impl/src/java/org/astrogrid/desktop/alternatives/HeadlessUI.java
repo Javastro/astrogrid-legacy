@@ -113,5 +113,15 @@ public class HeadlessUI implements UIInternal {
 
 		public void showError(String msg, Throwable e) {
 			logger.error(msg,e);
+		
+		}
+
+		public void showAboutDialog() {
+			// do nothing
+		}
+
+		public void showPreferencesDialog() {
+			// do nothing
 		}
 }
+
