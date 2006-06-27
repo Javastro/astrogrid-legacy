@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.11 2006/04/18 23:25:43 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.12 2006/06/27 10:37:44 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,10 @@
  **/
 package org.astrogrid.desktop.modules.ui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -25,10 +24,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.zip.GZIPInputStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -38,9 +37,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
@@ -53,11 +49,11 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeMetadata;
 import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
-import org.astrogrid.io.Piper;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
 
@@ -109,7 +105,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             VospaceBrowserImpl.this.setStatusMessage("Cut " + n.getName() + " to clipboard");
         }
     }    
-    private class Clipboard {
+    private  static class Clipboard {
         public FileManagerNode node;
         public int action;
         public static final int CUT = 1;
@@ -216,7 +212,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
         }
     }
-
+/* replaced by save on send-to action
     protected final class GetContentAction extends AbstractAction implements FileAction {
         public GetContentAction() {
             super("Export data", IconHelper.loadIcon("export_log.gif"));
@@ -244,7 +240,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
         }
     }
-
+*/
     protected final class RelocateAction extends AbstractAction implements FileAction {
         public RelocateAction() {
             super("Relocate",IconHelper.loadIcon("repo_rep.gif"));
@@ -357,178 +353,10 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             if(node.isFile()) {
                 getVospace().copyURLToContent(url, new URI(node.getIvorn().toString()));
             } else {
-                //must be a directory elected, check if it is compressed and see if they want to
-                //uncompress it
-//NWW removed - was only added for the datascope hack, and is surprising to user - folk at workshops have been caught out by this.                
-//                if(isPackedFile(name) && askDecompressQuestion() == JOptionPane.YES_OPTION) {
-//                    //they want to uncompress it in myspace.
-//                    
-//                    //this is the regular inputstream or a GZipInputStream method call.
-//                    is = decompress(name, url.openStream());
-//
-//                    if(name.toLowerCase().endsWith(ZIP)) {
-//                        //its a Zip file open a ZipInputStream to it and save each named entry into myspace.                        
-//                        ZipEntry ze = null;
-//                        ZipInputStream zis = new ZipInputStream(is);
-//                        while( (ze = zis.getNextEntry()) != null) {
-//                            name = conformToMyspaceName(ze.getName());
-//                            if(!ze.isDirectory()) {  
-//                                writeStream(new URI(node.getIvorn().toString() + "/" + name), zis);
-//                            }
-//                        }
-//                    } else if(name.toLowerCase().endsWith(JAR) || name.toLowerCase().endsWith(WAR)) { 
-//                        //its a Jar file open a JarInputStream to it and save each named entry into myspace.
-//                        JarEntry je = null;
-//                        JarInputStream jis = new JarInputStream(is);
-//                        while( (je = jis.getNextJarEntry()) != null) {
-//                            name = conformToMyspaceName(je.getName());
-//                            if(!je.isDirectory()) {
-//                                writeStream(new URI(node.getIvorn().toString() + "/" + name), jis);
-//                            }
-//                        }
-//                    } else if(name.toLowerCase().endsWith(TAR)  || name.toLowerCase().endsWith(TAR + "." + GZIP)) {
-//                        //Tar or Tar.gz file unarchive the already GzipInputstream(from decompress)
-//                        TarEntry te = null;
-//                        TarInputStream tis = new TarInputStream(new BufferedInputStream(is));
-//                        while( (te = tis.getNextEntry()) != null) {
-//                            name = conformToMyspaceName(te.getName());
-//                            if(!te.isDirectory()) {
-//                                writeStream(new URI(node.getIvorn().toString() + "/" + name), tis);
-//                            }
-//                        }
-//                    } else {
-//                        //must be a gzipstream
-//                        writeStream(new URI(node.getIvorn().toString() + "/" + voName), is);
-//                    }                    
-//                } else {
-                    //user justs wants the raw file into myspace.
                     getVospace().copyURLToContent(url, new URI(node.getIvorn().toString() + "/" + voName));
-//                }
             }//else
     }
-    // moved from MySpaceInternal - redundant there 
-    private void writeStream(URI ivorn,InputStream content) throws ServiceException, SecurityException, InvalidArgumentException {
-        if (! getVospace().exists(ivorn)) {
-            getVospace().createFile(ivorn);
-        }
-        OutputStream w = null;
-        try {
-            w = getVospace().getOutputStream(ivorn);        
-            Piper.pipe(content, w);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (UnsupportedOperationException e) {
-            throw new InvalidArgumentException(e);
-        } catch (NotFoundException e) {
-            throw new ServiceException(e);
-        } finally {
-            if (w != null) {
-                try {
-                    w.close();
-                } catch (IOException e) {
-                }
-            }
-        }        
-    }        
-    /**
-     * Name: isPackedFile
-     * Description: determines by a file name extension if the file is a compressed/archived file that is supported
-     * for decompression.
-     * @param name file name to be checked for the ending extension.
-     * @return true or false if supported file extension.
-     */
-    private boolean isPackedFile(String name) {
-        name = name.toLowerCase();   
-        if(name.endsWith(TAR)  || name.endsWith(GZIP) ||
-           name.endsWith(JAR) || name.endsWith(WAR) ||
-           name.endsWith(ZIP)) {
-            return true;            
-        }
-        return false;        
-    }
-    
-    /**
-     * Name: askDecompressQuestion
-     * Description: A simple question dialog box for decompressing or unarchiving files.
-     * @return Yes/NO int value from JOptionPane is returned.
-     * @see javax.swing.JOptionPane
-     */
-    private int askDecompressQuestion() {
-        return JOptionPane.showOptionDialog(VospaceBrowserImpl.this,
-            "<html>This file seems to be an archive. <br>Would you like it to be   "
-            + " extracted into your myspace?<br>Answer 'No' to upload the archive as-is</html>",
-            "Extract Archive?",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE,
-            null,null,null); // null - rely on defaults.
- 
-    }
-    
-    /**
-     *  No compression
-     */
-    private static final String NONE = "none";
-    /**
-     *  GZIP compression
-     */
-    private static final String GZIP = "gz";
-    
-    /**
-     *  ZIP compression
-     */
-    private static final String ZIP = "zip";
-    
-    /**
-     *  JAR compression
-     */
-    private static final String JAR = "jar";
-    
-    /**
-     *  JAR compression
-     */
-    private static final String WAR = "war";  
-       
-    /**
-     *  TAR compression
-     */
-    private static final String TAR = "tar";          
-    /**
-     *  BZIP2 compression
-     */
-    private static final String BZIP2 = "bzip2";
-    
-    
-    /**
-     *  This method wraps the input stream with the
-     *     corresponding decompression method.  Primarly used for tar.gz type 
-     * files.
-     *
-     *  @param fileName to detect if it is a compressed file.
-     *  @param istream input stream
-     *  @return input stream with on-the-fly decompression
-     *  @exception IOException thrown by GZIPInputStream constructor
-     */
-    private InputStream decompress(final String fileName,
-                                   final InputStream istream)
-        throws IOException {
-        
-        if (fileName.toLowerCase().endsWith(GZIP)) {
-            return new GZIPInputStream(istream);
-        } else if (fileName.endsWith(BZIP2)) {
-            /*@todo return something here.
-                final char[] magic = new char[] {'B', 'Z'};
-                for (int i = 0; i < magic.length; i++) {
-                    if (istream.read() != magic[i]) {
-                        throw new BuildException(
-                            "Invalid bz2 file." + file.toString());
-                    }
-                }
-                return new CBZip2InputStream(istream);
-           */
-        }
-        return istream;
-    }
-    
+   
     } // end of create content action
     
 
@@ -607,31 +435,23 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         }
     }
 
-    protected final class ViewContentAction extends AbstractAction implements FileAction {
+    
+    protected final class SendToAction extends AbstractAction implements FileAction {
 
-        public ViewContentAction() {
-            super("View content", IconHelper.loadIcon("read_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION, "View vospace file contents");
+        public SendToAction() {
+            super("Send To", IconHelper.loadIcon("read_obj.gif"));
+            this.putValue(SHORT_DESCRIPTION, "Send file contents somewhere");
             this.setEnabled(false);
         }
 
+
         public void actionPerformed(ActionEvent e) {
-            final FileManagerNode n = getCurrentNodeManager().getCurrent();
-            if (n == null) {
-                return;
-            }
-            (new BackgroundOperation("Viewing " + n.getName()) {
-                protected Object construct() throws Exception {
-                    URL u = n.contentURL();
-                    browser.openURL(u);
-                    return null;
-                }
-            }).start();
+        	sendTo.show(getPreferredTransferable(),VospaceBrowserImpl.this,(Component)e.getSource(),1,1);
         }
     }
 
     /** pane that displays information about a node */
-    private class InformationPane extends JTaskPane implements Observer {
+    private static class InformationPane extends JTaskPane implements Observer {
 
         private final JLabel furtherInformation;
         private final JLabel information;
@@ -701,7 +521,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         /**
          * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
          */
-        public void update(Observable o, Object arg) {
+        public synchronized void update(Observable o, Object arg) {
             // we've already got a reference to the node we're observing - so just redisplay on update
             // - neatly handles any concurrency issues too.
             displayInformation(watched);
@@ -736,8 +556,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @throws NodeNotFoundFault
      * @throws FileManagerFault
      */
-    public VospaceBrowserImpl(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, BrowserControl browser,ResourceChooserInternal chooser) {
-        super(conf, hs,ui,vos);       
+    public VospaceBrowserImpl(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, SendToMenu sendTo,BrowserControl browser,ResourceChooserInternal chooser) {
+        super(conf, hs,ui,vos, sendTo);       
         this.browser = browser;
         this.chooser =chooser;
         initialize();
@@ -758,7 +578,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     protected Actions getActions() {
         if (actions == null) {
             actions = new Actions(new Action[] { new CreateFileAction(), new CreateFolderAction(),
-                    new ViewContentAction(), new GetContentAction(), /*new PutContentAction(), */
+                    new SendToAction(), /*new GetContentAction(), new PutContentAction(), */
                        new CreateContentAction()
                      , new RenameAction()
                      , new CopyAction()
@@ -784,7 +604,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             fileMenu.setText("File");
             Action[] acts = getActions().list();
             for (int i = 0; i < acts.length; i++) {
-                fileMenu.add(acts[i]);
+            	if (! (acts[i] instanceof SendToAction)) { // skip this one            			
+            		fileMenu.add(acts[i]);
+            	}
             }
         }
         return fileMenu;
@@ -799,9 +621,20 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         if (jJMenuBar == null) {
             jJMenuBar = new JMenuBar();
             jJMenuBar.add(getFileMenu());
+            /** crap - doesn't work. @todo need to find way to splice send-to menu into menu bar
+            Action[] acts = getActions().list();
+            for (int i = 0; i < acts.length; i++) {
+            	if ((acts[i] instanceof SendToAction)) { //splice in the send-to menu  
+            		jJMenuBar.add(new JMenuItem(acts[i]));
+            	}
+            }            */
+            jJMenuBar.add(Box.createHorizontalGlue());
+            jJMenuBar.add(createHelpMenu());            
         }
         return jJMenuBar;
     }
+    
+    
 
     /**
      * This method initializes jSplitPane
@@ -860,6 +693,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.12  2006/06/27 10:37:44  nw
+ * removed unused cruft.added send-to menu
+ *
  * Revision 1.11  2006/04/18 23:25:43  nw
  * merged asr development.
  *
