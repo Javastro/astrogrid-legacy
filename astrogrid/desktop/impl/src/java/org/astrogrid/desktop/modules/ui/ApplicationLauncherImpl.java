@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.10 2006/04/18 23:25:43 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.11 2006/06/27 10:33:29 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,10 +57,10 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
             editor.getToolModel().addToolEditListener(new ToolEditAdapter() {
 
                 public void toolSet(ToolEditEvent te) {
-                    setTitle("Application Launcher - " + editor.getToolModel().getInfo().getName());
+                    setTitle("Task Launcher - " + editor.getToolModel().getInfo().getName());
                 }
                 public void toolCleared(ToolEditEvent te) {
-                    setTitle("Application Launcher");    
+                    setTitle("Task Launcher");    
                 }                
             });
     }
@@ -71,6 +71,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.11  2006/06/27 10:33:29  nw
+labelling fixes
+
 Revision 1.10  2006/04/18 23:25:43  nw
 merged asr development.
 
