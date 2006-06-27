@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.7 2006/04/18 23:25:43 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.8 2006/06/27 10:30:33 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Observable;
@@ -44,6 +46,9 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.sendto.FileManagerNodePreferredTransferable;
+import org.astrogrid.desktop.modules.ui.sendto.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 
 /** Abstract class for displays of myspace - in file chooser dialogues and myspace browser.
@@ -53,7 +58,7 @@ import org.astrogrid.filemanager.client.FileManagerNode;
 public abstract class AbstractVospaceBrowser extends UIComponentImpl implements UserLoginListener {
 
     /** class that manages the currently selected node */
-    protected class CurrentNodeManager implements TreeSelectionListener, ListSelectionListener {
+    public class CurrentNodeManager implements TreeSelectionListener, ListSelectionListener {
         private FileManagerNode current;
 
         public FileManagerNode getCurrent() {
@@ -137,7 +142,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
             }            
         }
         // we know already what we're watching..
-        public void update(Observable o, Object arg) {
+        public synchronized void update(Observable o, Object arg) {
             repopulate(watched);
         }
     }
@@ -193,7 +198,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
     protected abstract Actions getActions() ;
 
     /** class to manage all this application's actions */
-    protected class Actions {
+    protected static class Actions {
         private final Action[] acts;
 
         public Actions(Action[] acts) {
@@ -416,7 +421,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
         }
     }
 
-    private final class FileNodeCellRenderer extends DefaultListCellRenderer {
+    private static final class FileNodeCellRenderer extends DefaultListCellRenderer {
         Icon i = (IconHelper.loadIcon("file_obj.gif"));
 
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -454,9 +459,21 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
     private FolderTreeModel folderTreeModel = null;
 
     private GlassPane glassPane = null;
+    
+    protected final SendToMenu sendTo;
 
+	private  FileManagerNodePreferredTransferable atom ;
 
-
+	/** access a transferable item representing the currently selected file node.
+	 * will not be valid if a folder, or nothing at all, is selected.
+	 * @return
+	 */
+	public PreferredTransferable getPreferredTransferable() {
+		if (atom == null) {
+			atom = new FileManagerNodePreferredTransferable(getCurrentNodeManager(),vos);
+		}
+		return atom;
+	}
     /**
      * Construct a new AbstractVospaceBrowser
      *  - sutable for long-lived windows.
@@ -464,9 +481,11 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos) throws HeadlessException {
+    public AbstractVospaceBrowser(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, SendToMenu sendTo) throws HeadlessException {
         super(conf, hs,ui);
         this.vos = vos;
+        this.sendTo = sendTo;
+
     }
 
     protected abstract CurrentNodeManager createCurrentNodeManager();
@@ -494,6 +513,25 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
             fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             fileList.addListSelectionListener(getCurrentNodeManager());
             fileList.setCellRenderer(new FileNodeCellRenderer());
+            fileList.addMouseListener(new MouseAdapter() {
+            	public void mousePressed(MouseEvent e) {
+            		if (e.isPopupTrigger()) {
+            			processPopup(e);
+            		}
+            	}
+            	public void mouseReleased(MouseEvent e) {
+            		if (e.isPopupTrigger()) {
+            			processPopup(e);
+            		}
+            	}
+            	private void processPopup(MouseEvent e) {
+            		// we want right-clicks to select an item too.
+            		int selectedIndex = fileList.locationToIndex(e.getPoint());
+            		fileList.setSelectedIndex(selectedIndex);
+            		sendTo.show(getPreferredTransferable(),AbstractVospaceBrowser.this,fileList,e.getX(),e.getY());
+            	}
+            });
+            
         }
         return fileList;
     }
@@ -600,6 +638,9 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.8  2006/06/27 10:30:33  nw
+ * findbugs tweaks & send-to actions.
+ *
  * Revision 1.7  2006/04/18 23:25:43  nw
  * merged asr development.
  *
