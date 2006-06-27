@@ -264,63 +264,77 @@ public class TableMetadataPanel extends JPanel {
         
         public void mouseReleased( MouseEvent event ) {
             
-            if( 
-                ( event.isPopupTrigger() || event.getButton() == MouseEvent.BUTTON3 )
-                &&
-                adqlTree.isShowing()
+            if( event.isPopupTrigger()  && adqlTree.isShowing()
             ) {
-    	        TreePath path = adqlTree.getSelectionPath() ;
-    	        // If the path is null or there is no relevant parent
-    	        // Then we cannot do anything with this entry...
-    	        if( path == null || path.getPathCount() < 2 )
-    	            return ;  
-                int count = displayTable.getSelectedRowCount() ;
-                StringBuffer buffer = new StringBuffer( 36 ) ;
-                buffer
-                	.append( "Insert " )
-                	.append( count )
-                	.append( " reference" )
-                	.append( count>1 || count==0 ? "s" : "" )
-                	.append( " into \"" )
-                	.append( ((AdqlNode)path.getLastPathComponent()).getDisplayName() )
-                	.append( "\"" ) ;
-    	        insertAction.putValue( AbstractAction.NAME, buffer.toString() ) ;
-    	        //
-    	        // The mouse position is shown relative to the JTable.
-    	        // As this is in a JScrollPane, it requires adjustment
-    	        // according to what position the JViewport has on the 
-    	        // JTable...
-	            JViewport viewPort = displayTablerScrollPane.getViewport() ;
-    	        Point popupPosition =
-    	            SwingUtilities.convertPoint( displayTable, event.getPoint(), viewPort ) ;
-
-    	        Rectangle rect = adqlTree.getPathBounds( path ) ;   	  
-    	        Rectangle vr = adqlTree.getVisibleRect() ;
-    	        rect = SwingUtilities.computeIntersection( vr.x, vr.y, vr.width, vr.height, rect ) ;
-    	        if( rect.width == 0 ) {
-    	            adqlTree.scrollPathToVisible( path ) ;
-    	            adqlTree.setSelectionPath( path ) ;
-    	            rect = adqlTree.getPathBounds( path ) ;   	  
-        	        vr = adqlTree.getVisibleRect() ;
-        	        rect = SwingUtilities.computeIntersection( vr.x, vr.y, vr.width, vr.height, rect ) ;
-    	        }
-    	        Point rightSideOfPath = rect.getLocation() ;
-    	        rightSideOfPath.x += (rect.width + 1) ;
-    	        rightSideOfPath.y += rect.height / 2 ;
-	            Point[] elastic = new Point[2] ;
-	            elastic[0] = SwingUtilities.convertPoint( displayTable
-	                                                    , event.getPoint()
-	                                                    , adqlToolEditorPanel ) ;
-	            elastic[1] = SwingUtilities.convertPoint( adqlTree
-	                                                    , rightSideOfPath
-	                                                    , adqlToolEditorPanel ) ;
-	            adqlToolEditorPanel.setElastic( elastic ) ;
-	            adqlToolEditorPanel.updateDisplay() ;
-		        insertAction.setEnabled( insertAction.testAndBuildSuitability() ) ;
-	            popup.show( viewPort, popupPosition.x, popupPosition.y ) ;
+    	        processPopupClick(event);
             }
                      
         } // end of ContextPopup.mouseReleased( MouseEvent event )
+        
+        //NWW - fix for mac. for portability, need to check on mousePressed 
+        // and mouseReleased whether it's the 'popupTrigger' event.
+        // onlny way to do it - as a mac CTRL-Cick gives a different event type to a Button-3 click.
+        // complicated, eh?
+        //http://developer.apple.com/documentation/Java/Conceptual/Java14Development/07-NativePlatformIntegration/NativePlatformIntegration.html
+        public void mousePressed(MouseEvent event) {
+        	if (event.isPopupTrigger() && adqlTree.isShowing()) {
+        		processPopupClick(event);
+        	}
+        }
+		/**
+		 * @param event
+		 */
+		private void processPopupClick(MouseEvent event) {
+			TreePath path = adqlTree.getSelectionPath() ;
+			// If the path is null or there is no relevant parent
+			// Then we cannot do anything with this entry...
+			if( path == null || path.getPathCount() < 2 )
+			    return ;  
+			int count = displayTable.getSelectedRowCount() ;
+			StringBuffer buffer = new StringBuffer( 36 ) ;
+			buffer
+				.append( "Insert " )
+				.append( count )
+				.append( " reference" )
+				.append( count>1 || count==0 ? "s" : "" )
+				.append( " into \"" )
+				.append( ((AdqlNode)path.getLastPathComponent()).getDisplayName() )
+				.append( "\"" ) ;
+			insertAction.putValue( AbstractAction.NAME, buffer.toString() ) ;
+			//
+			// The mouse position is shown relative to the JTable.
+			// As this is in a JScrollPane, it requires adjustment
+			// according to what position the JViewport has on the 
+			// JTable...
+			JViewport viewPort = displayTablerScrollPane.getViewport() ;
+			Point popupPosition =
+			    SwingUtilities.convertPoint( displayTable, event.getPoint(), viewPort ) ;
+
+			Rectangle rect = adqlTree.getPathBounds( path ) ;   	  
+			Rectangle vr = adqlTree.getVisibleRect() ;
+			rect = SwingUtilities.computeIntersection( vr.x, vr.y, vr.width, vr.height, rect ) ;
+			if( rect.width == 0 ) {
+			    adqlTree.scrollPathToVisible( path ) ;
+			    adqlTree.setSelectionPath( path ) ;
+			    rect = adqlTree.getPathBounds( path ) ;   	  
+			    vr = adqlTree.getVisibleRect() ;
+			    rect = SwingUtilities.computeIntersection( vr.x, vr.y, vr.width, vr.height, rect ) ;
+			}
+			Point rightSideOfPath = rect.getLocation() ;
+			rightSideOfPath.x += (rect.width + 1) ;
+			rightSideOfPath.y += rect.height / 2 ;
+			Point[] elastic = new Point[2] ;
+			elastic[0] = SwingUtilities.convertPoint( displayTable
+			                                        , event.getPoint()
+			                                        , adqlToolEditorPanel ) ;
+			elastic[1] = SwingUtilities.convertPoint( adqlTree
+			                                        , rightSideOfPath
+			                                        , adqlToolEditorPanel ) ;
+			adqlToolEditorPanel.setElastic( elastic ) ;
+			adqlToolEditorPanel.updateDisplay() ;
+			insertAction.setEnabled( insertAction.testAndBuildSuitability() ) ;
+			popup.show( viewPort, popupPosition.x, popupPosition.y ) ;
+		}
         
     } // end of class ContextPopup
     
