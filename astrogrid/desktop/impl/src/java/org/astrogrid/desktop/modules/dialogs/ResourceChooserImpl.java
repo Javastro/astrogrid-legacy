@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.8 2006/04/18 23:25:44 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.9 2006/06/27 10:27:12 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 /** Implementation of the ResourceChooser component
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
@@ -25,8 +26,8 @@ import org.astrogrid.desktop.modules.system.UIInternal;
  */
 public class ResourceChooserImpl implements ResourceChooserInternal {
 
-    public ResourceChooserImpl(MyspaceInternal vos,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
-        dialog = new ResourceChooserDialog(vos,conf,help,ui, comm) ;
+    public ResourceChooserImpl(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
+        dialog = new ResourceChooserDialog(vos,sendTo,conf,help,ui, comm) ;
         getDialog().pack();
     }
     private final ResourceChooserDialog dialog;
@@ -79,6 +80,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.9  2006/06/27 10:27:12  nw
+send-to menu
+
 Revision 1.8  2006/04/18 23:25:44  nw
 merged asr development.
 

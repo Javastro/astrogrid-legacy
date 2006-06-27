@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.10 2006/04/18 23:25:44 nw Exp $
+/*$Id: ResourceChooserDialog.java,v 1.11 2006/06/27 10:26:55 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,6 +43,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 /** Dialog that allows the user to choose a resource in file:// or ivo:// space.
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2005
@@ -53,7 +54,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     class VospaceChooser extends AbstractVospaceBrowser {
 
         public VospaceChooser() throws HeadlessException {
-            super(conf, ResourceChooserDialog.this.help, ResourceChooserDialog.this.ui, vos); 
+            super(conf, ResourceChooserDialog.this.help, ResourceChooserDialog.this.ui, vos,sendToMenu); 
             // need to disambiguate help and ui, as vospace chooser's parent class has fields of this name too - and it won't compile otherwise
             comm.addUserLoginListener(this);
         }
@@ -111,15 +112,17 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     
     private JTextField urlPanelField = null;
     private final MyspaceInternal vos;  
+    private final SendToMenu sendToMenu;
     private final Configuration conf;
     private final HelpServerInternal help;
     private final UIInternal ui;
     private final Community comm;
     
     
-    public ResourceChooserDialog(MyspaceInternal vos,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
+    public ResourceChooserDialog(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
         super();
         this.vos = vos;
+        this.sendToMenu = sendTo;
         this.conf=conf;
         this.help = help;
         this.ui = ui;
@@ -395,6 +398,9 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 /* 
 $Log: ResourceChooserDialog.java,v $
+Revision 1.11  2006/06/27 10:26:55  nw
+send-to menu
+
 Revision 1.10  2006/04/18 23:25:44  nw
 merged asr development.
 
