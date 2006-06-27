@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.12 2006/04/21 13:48:11 nw Exp $
+/*$Id: UIImpl.java,v 1.13 2006/06/27 10:40:40 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -10,8 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -20,17 +23,27 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
@@ -48,6 +61,7 @@ import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.contributions.UIActionContribution;
 import org.astrogrid.desktop.modules.system.contributions.UIStructureContribution;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -111,11 +125,14 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
     protected final ACRInternal reg;   
 	protected final Shutdown shutdown;  
     protected final Transformer trans;  
-    
+    private final ListModel plasticListModel;
     private JMenuBar appMenuBar;
 	private JLabel loginLabel;  
     
 	private StatusBar statusBar;
+	
+	private Action aboutAction;
+	private Action preferencesAction;
     
     private JTabbedPane tabbedPane;
     // make throbber calls nest.    
@@ -125,7 +142,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
     
     private JLabel throbberLabel;
     /** this is the production constructor */
-    public UIImpl(BrowserControl browser,ACRInternal reg, Shutdown sh, ConfigurationInternal conf, HelpServerInternal help, BackgroundExecutor executor,Converter conv,Transformer trans, Map structures,ErrorHandler err) {     
+    public UIImpl(BrowserControl browser,ACRInternal reg, Shutdown sh, ConfigurationInternal conf, HelpServerInternal help, BackgroundExecutor executor,Converter conv,Transformer trans, Map structures,ErrorHandler err, ListModel model) {     
         super(conf,help,null);
         this.confInternal = conf;
         this.browser = browser;
@@ -135,6 +152,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
         this.conv = conv;
         this.trans = trans;
         this.err = err;
+        this.plasticListModel = model;
         
         this.setJMenuBar(getAppMenuBar());
 
@@ -251,9 +269,49 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 			statusBar = super.getBottomPanel();
             statusBar.addZone("login",getLoginLabel(),"18");
             statusBar.addZone("throbber",getThrobberLabel(),"26");
+            statusBar.addZone("plasticApps",getPlasticApps(),"100");
 		}
 		return statusBar;
 	}
+	
+	private JList plasticApps;
+	protected JList getPlasticApps() {
+		if (plasticApps == null) {
+			plasticApps = new JList(plasticListModel);
+			//plasticApps.setToolTipText("Connected Vizualization Tools");
+			plasticApps.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+			plasticApps.setVisibleRowCount(1);
+			plasticApps.setFocusable(false);
+			plasticApps.setBorder(BorderFactory.createEtchedBorder());
+			plasticApps.setCellRenderer(new ListCellRenderer() {
+					JLabel l = new JLabel();
+				{
+					l.setMaximumSize(new Dimension(16,16));
+					l.setFont(new Font("Dialog",Font.PLAIN,8));
+				}
+				public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+					PlasticApplicationDescription plas = (PlasticApplicationDescription)value;
+					
+					if (plas.getIcon() != null) {
+						//@todo find some way of loading this on background thread.
+	                    ImageIcon scaled = new ImageIcon(((ImageIcon)plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
+						l.setIcon(scaled);
+					} else {
+						l.setIcon(IconHelper.loadIcon("plasticeye.gif"));
+					}
+						l.setToolTipText(StringUtils.capitalize(plas.getName() + " is connected"));
+					
+					
+					return l;
+				}
+			});
+			
+		}
+		return plasticApps;
+	}
+	
+	
+	
 
     /** reads in ui structures, assembling them */
     private void addStructures(Collection structures) {
@@ -287,6 +345,10 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
             if (m instanceof UIActionContribution) {
                 UIActionContribution a = (UIActionContribution)m;
                 a.setUIImpl(this); // pass reference to self into the component.
+                if (a.getName().equals("about")) {
+                	aboutAction = a;
+                }
+                //@todo add similar check for preferences?? or is preferences going to be defined elsewhere?
                 if (current instanceof JMenu) {
                     ((JMenu)current).add(a);
                 } else if (current instanceof JComponent) {                
@@ -325,12 +387,6 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 	private JMenuBar getAppMenuBar() {
         if (appMenuBar == null) {
             appMenuBar = new JMenuBar();
-            // tart it up a bit..
-            
-          //  appMenuBar.putClientProperty(Options.HEADER_STYLE_KEY,HeaderStyle.SINGLE);
-            //appMenuBar.putClientProperty(PlasticLookAndFeel.IS_3D_KEY, Boolean.TRUE);
-            //appMenuBar.putClientProperty(PlasticLookAndFeel.BORDER_STYLE_KEY,BorderStyle.EMPTY);
-            
         }
         return appMenuBar;
     }
@@ -384,11 +440,32 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 	}
 
 
+
+	public void showAboutDialog() {
+		if (aboutAction != null) {
+			aboutAction.actionPerformed(null);
+		}
+	}
+
+
+
+	public void showPreferencesDialog() {
+		if (preferencesAction != null) {
+			preferencesAction.actionPerformed(null);
+		}
+	}
+
+
+
+
 }
 
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.13  2006/06/27 10:40:40  nw
+added new methods
+
 Revision 1.12  2006/04/21 13:48:11  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
