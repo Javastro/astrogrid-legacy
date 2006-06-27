@@ -23,6 +23,18 @@
 		    		<jnlp.jar>true</jnlp.jar>		    
                 </properties>
         </dependency>
+               	<!--
+        	A specialized stilt library dealing with conversion of units 
+        	(plus distance between objects)
+        	-->
+              <dependency>
+        		<groupId>starlink</groupId>
+        		<artifactId>stilt_astrogrid_convert</artifactId>
+        		<version>1.0</version>
+        		<properties>
+        			<jnlp.jar>true</jnlp.jar>
+        		</properties>
+        	</dependency>   
     
 <!-- stuff required in maven build -->
     <dependency>
