@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.workflowBuilder.renderers;
 
 import java.awt.Component;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -134,20 +135,28 @@ public class ActivityListRenderer extends DefaultListCellRenderer {
      * @return String tool tip text
      */
 	private String getToolTipText(String activity) {
-	    String text = "";
+	    StringBuffer text = new StringBuffer();
 	    String str ;
+	    InputStream is = null;
 		try {
-		    InputStream is = this.getClass().getResourceAsStream(helpLocation + "help_"+activity+"_tip.html");
+		    is = this.getClass().getResourceAsStream(helpLocation + "help_"+activity+"_tip.html");
 	        InputStreamReader inputStreamReader = new InputStreamReader(is); 
 	        BufferedReader br = new BufferedReader(inputStreamReader);	    
 	        while ((str = br.readLine()) != null) 
-	    	    text = text + str;
+	    	    text.append(str);
 	        br.close();
 	    } 
 	    catch(Exception ex) {
-	    	text = activity;
+	    	return activity;
+	    } finally {
+	    	if (is != null) {
+	    		try {
+	    			is.close();
+	    		} catch (IOException ignored) {
+	    		}
+	    	}
 	    }
-	    return text;
+	    return text.toString();
 	}
 	
     /** 
