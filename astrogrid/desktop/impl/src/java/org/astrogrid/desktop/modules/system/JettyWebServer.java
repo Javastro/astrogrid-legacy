@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.5 2006/06/15 09:52:06 nw Exp $
+/*$Id: JettyWebServer.java,v 1.6 2006/06/27 10:42:04 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -144,7 +144,7 @@ public class JettyWebServer implements WebServer, ShutdownListener{
         }
         for (Iterator i = servlets.iterator(); i.hasNext(); ) {
             ServletsContribution d = (ServletsContribution)i.next();
-            logger.info("Adding servlet " + d);
+            logger.info("Adding servlet " + d.getName());
             context.addServlet(d.getName(),d.getPath(),d.getServletClass().getName());
         }
         server.start();               
@@ -222,6 +222,9 @@ public void setInetAddress(String netAddress) throws UnknownHostException {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.6  2006/06/27 10:42:04  nw
+minor fix.
+
 Revision 1.5  2006/06/15 09:52:06  nw
 simplified shutdown.
 
