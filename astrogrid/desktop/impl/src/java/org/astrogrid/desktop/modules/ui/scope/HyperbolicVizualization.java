@@ -6,8 +6,12 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Paint;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
+
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.Display;
@@ -47,12 +51,14 @@ import edu.berkeley.guir.prefusex.controls.ZoomControl;
  * */
 public class HyperbolicVizualization extends Vizualization {
         
-    public HyperbolicVizualization(VizualizationManager vizs) {
+    public HyperbolicVizualization(VizualizationManager vizs, SendToMenu sendTo, UIComponent parent) {
             super("Hyperbolic", vizs);    
-            
+            this.parent = parent;
+            this.sendTo = sendTo;
     }
     private Display display;
-    
+    private final UIComponent parent;
+    private SendToMenu sendTo;
     private ActivityMap actmap; 
     private HyperbolicTranslation translation;   
     
@@ -106,6 +112,7 @@ public class HyperbolicVizualization extends Vizualization {
            display.addControlListener(new ZoomControl());
            display.addControlListener(new DoubleClickMultiSelectFocusControl(vizs));
            display.addControlListener(new ToolTipControl(Retriever.TOOLTIP_ATTRIBUTE));
+           display.addControlListener(new SendToMenuControl(sendTo,parent));
             
            // initialize repaint list
            ActionList repaint = new ActionList(registry);
@@ -178,7 +185,11 @@ public class HyperbolicVizualization extends Vizualization {
             // animate a translation when a node is clicked
             int cc = e.getClickCount();
             if ( item instanceof NodeItem ) {
-                if ( cc == 1 ) {
+                if ( cc == 1 && 
+                		!(e.isPopupTrigger() // popup trigger detection don't seem to work. 
+                		|| e.isControlDown()) 
+                		|| e.getButton() == MouseEvent.BUTTON2
+                		|| e.getButton() == MouseEvent.BUTTON3) {
                     TreeNode node = (TreeNode)registry.getEntity(item);
                     if ( node != null ) {                           
                         translation.setStartPoint(e.getX(), e.getY());
@@ -191,7 +202,7 @@ public class HyperbolicVizualization extends Vizualization {
         } //
     } // end of inner class DemoController
     
-    public class DemoRendererFactory implements RendererFactory {
+    public static class DemoRendererFactory implements RendererFactory {
         Renderer nodeRenderer1;
         Renderer nodeRenderer2;
         Renderer edgeRenderer;
@@ -239,7 +250,7 @@ public class HyperbolicVizualization extends Vizualization {
         } //
     } // end of inner class DemoRendererFactory
     
-    public class HyperbolicDemoColorFunction extends ColorFunction {
+    public static class HyperbolicDemoColorFunction extends ColorFunction {
         int  thresh = 5;
         Color graphEdgeColor = Color.LIGHT_GRAY;
         Color selectedColor = Color.YELLOW;

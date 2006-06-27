@@ -2,6 +2,9 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 
 
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
+
 import edu.berkeley.guir.prefuse.Display;
 import edu.berkeley.guir.prefuse.FocusManager;
 import edu.berkeley.guir.prefuse.ItemRegistry;
@@ -44,11 +47,15 @@ public class WindowedRadialVizualization extends Vizualization {
 /** Construct a new Radial
      * @param name
      */
-    public WindowedRadialVizualization(VizualizationManager vizs) {
+    public WindowedRadialVizualization(VizualizationManager vizs, SendToMenu sendTo, UIComponent parent) {
         super("Radial", vizs);
+        this.parent = parent;
+        this.sendTo = sendTo;        
     }
     protected Display display;
     protected ActionList graphLayout;
+    private final UIComponent parent;
+    private SendToMenu sendTo;    
     
     public Display getDisplay() {
             if (display == null) {
@@ -129,6 +136,7 @@ public class WindowedRadialVizualization extends Vizualization {
            display.addControlListener(new ToolTipControl(Retriever.TOOLTIP_ATTRIBUTE));   
            display.addControlListener(new NeighborHighlightControl(update));
            display.addControlListener(new DoubleClickMultiSelectFocusControl(vizs));
+           display.addControlListener(new SendToMenuControl(sendTo,parent));           
            
            registry.getFocusManager().putFocusSet(
                    FocusManager.HOVER_KEY, new DefaultFocusSet());

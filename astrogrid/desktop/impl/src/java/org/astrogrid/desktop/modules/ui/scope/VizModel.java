@@ -20,7 +20,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  *
  */
 public  class VizModel {
-
+	public static final String NOMENU_ATTRIBUTE = "nomenu";
     private final TreeNode rootNode;
     
     private final FocusSet selectionFocusSet;
@@ -34,6 +34,7 @@ public  class VizModel {
         this.selectionFocusSet = new DefaultFocusSet();       
         rootNode = new DefaultTreeNode();
         rootNode.setAttribute(Retriever.LABEL_ATTRIBUTE,"Search Results");
+        rootNode.setAttribute(NOMENU_ATTRIBUTE,"true");
         Font ft = new Font(null,Font.BOLD,14);
         rootNode.setAttribute(Retriever.FONT_ATTRIBUTE,ft.toString());
         
@@ -42,6 +43,7 @@ public  class VizModel {
             p.setVizModel(this);
             TreeNode primary = p.getPrimaryNode();
             primary.setAttribute(Retriever.LABEL_ATTRIBUTE,p.getName());
+            primary.setAttribute(NOMENU_ATTRIBUTE,"true");
            
             DefaultEdge primaryEdge = new DefaultEdge(rootNode,primary);
             primaryEdge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");

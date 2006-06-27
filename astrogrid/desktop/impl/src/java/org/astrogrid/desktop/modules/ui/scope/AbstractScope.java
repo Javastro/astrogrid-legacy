@@ -5,20 +5,23 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.net.URI;
-import java.net.URL;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -31,13 +34,15 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListDataEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.collections.buffer.BoundedFifoBuffer;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
@@ -50,21 +55,17 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ReportingListModel.ReportingListDataListener;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
-import org.astrogrid.desktop.modules.ui.PlasticWrapper;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
-import org.astrogrid.desktop.modules.ui.comp.ApplicationRegisteredPlasticMessageHandler;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.TableSorter;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.votech.plastic.CommonMessageConstants;
-import org.votech.plastic.HubMessageConstants;
-import org.votech.plastic.PlasticHubListener;
-import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.MessageHandler;
-import org.votech.plastic.incoming.handlers.StandardHandler;
 
 import com.l2fprod.common.swing.JButtonBar;
 
@@ -82,8 +83,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel Winstanley
  * @since May 14, 20066:51:20 AM
  */
-public abstract class AbstractScope extends UIComponentImpl implements
-		PlasticWrapper, PlasticListener {
+public abstract class AbstractScope extends UIComponentImpl implements ReportingListDataListener{
 	/** action to clear history menu */
     protected class ClearHistoryAction extends AbstractAction {
 
@@ -162,40 +162,8 @@ public abstract class AbstractScope extends UIComponentImpl implements
 				query();		
         }
     }
-    /** extends the plastic mesagehandler to display new buttons 
-     * @todo make more extensible.
-     * */
-	protected class ScopePlasticMessageHandler extends
-			ApplicationRegisteredPlasticMessageHandler {
 
-		public ScopePlasticMessageHandler(UIComponent parent,
-				PlasticWrapper wrapper, Container container) {
-			super(parent, wrapper, container);
-		}
 
-		/** introspects newly registered applications, and 
-		 * adds a dynamic button to the UI if it supports one of the required messages
-		 * at the moment, only checks for VOTABLE_LOAD and FITS_LOAD 
-		 */
-		protected Component[] buildComponents(URI applicationId, String name,
-				String description, URL iconURL, URI[] messages) {
-			List results = new ArrayList();
-			if (ArrayUtils.contains(messages,
-					CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
-				results.add(new VotableLoadPlasticButton(applicationId, name,
-						description, iconURL, vizModel.getSelectionFocusSet(),
-						AbstractScope.this, AbstractScope.this));
-			}
-			if (ArrayUtils.contains(messages,
-					CommonMessageConstants.FITS_LOAD_FROM_URL)) {
-				results.add(new ImageLoadPlasticButton(applicationId, name,
-						description, iconURL, vizModel.getSelectionFocusSet(),
-						AbstractScope.this, AbstractScope.this));
-			}
-			return (Component[]) results.toArray(new Component[results.size()]);
-
-		}
-	}
     
 
     
@@ -229,24 +197,6 @@ public abstract class AbstractScope extends UIComponentImpl implements
 	 */
 	public static final int TOOLTIP_WRAP_LENGTH = 50;
 
-	/** list of plastic messages astroscope accepts - not very interesting, 
-	 * as it's a producer, not a consumer of messages (well, at least at the moment )
-	 */
-	private static List acceptedMessages = new ArrayList() {
-		{// initializer block.
-			this.add(CommonMessageConstants.ECHO);
-			this.add(CommonMessageConstants.GET_IVORN);
-			this.add(CommonMessageConstants.GET_NAME);
-			this.add(CommonMessageConstants.GET_VERSION);
-			this.add(CommonMessageConstants.GET_ICON); 
-			this.add(HubMessageConstants.APPLICATION_REGISTERED_EVENT);
-			this.add(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT);
-		}
-	};
-
-	// used to generate a new plastic id for each scope window
-	private static int UNQ_ID = 0;
-
 	/**
 	 * Commons Logger for this class
 	 */
@@ -254,7 +204,6 @@ public abstract class AbstractScope extends UIComponentImpl implements
 			.getLog(AstroScopeLauncherImpl.class);
 
 	private JMenu fileMenu;
-	private JMenu helpMenu;
 	/** buffer of history items */
 	private BoundedFifoBuffer historyBuffer = new BoundedFifoBuffer(HISTORY_SIZE);
 	/** key used to store search history in preferences */
@@ -274,13 +223,8 @@ public abstract class AbstractScope extends UIComponentImpl implements
 
 	protected Action haltAction = new HaltAction();
 
-	protected final PlasticHubListener hub;
-
-	protected final URI myPlasticID;
-	
-	protected final MessageHandler plasticHandler;
-
 	protected final DalProtocolManager protocols;
+	protected final TupperwareInternal tupperware;
 
 	protected Action searchAction = new SearchAction();
 	
@@ -300,11 +244,11 @@ public abstract class AbstractScope extends UIComponentImpl implements
 	 */
 	public AbstractScope(Configuration conf, HelpServerInternal hs,
 			UIInternal ui, MyspaceInternal myspace,
-			ResourceChooserInternal chooser, PlasticHubListener hub,
+			ResourceChooserInternal chooser, TupperwareInternal tupp, SendToMenu sendTo, String scopeName,
 			DalProtocol[] p) throws HeadlessException {
 		super(conf, hs, ui);
-		this.hub = hub;
-		this.historyKey = getScopeName() + ".history";
+		this.historyKey = scopeName + ".history";
+		this.tupperware = tupp;
 		this.protocols = new DalProtocolManager();
 		for (int i = 0; i < p.length; i++) {
 			this.protocols.add(p[i]);
@@ -313,33 +257,11 @@ public abstract class AbstractScope extends UIComponentImpl implements
 		vizModel = new VizModel(protocols);
 		// create the vizualizations
 		vizualizations = new VizualizationManager(vizModel);
-		vizualizations.add(new WindowedRadialVizualization(vizualizations));
-		vizualizations.add(new HyperbolicVizualization(vizualizations));
+		vizualizations.add(new WindowedRadialVizualization(vizualizations,sendTo,this));
+		vizualizations.add(new HyperbolicVizualization(vizualizations,sendTo,this));
 
 		dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),
 				this, chooser, myspace));
-
-		// plastic setup.
-		String appName = getScopeName() + "-" + ++UNQ_ID;
-		// standard message handler.
-		this.plasticHandler = new StandardHandler(appName,
-				getScopeDescription(), getScopeRegId(), getScopeIconURL(),
-				PlasticListener.CURRENT_VERSION);
-		// message handler for application add and applcation remove messages.
-		ApplicationRegisteredPlasticMessageHandler dynamicButtonHandler = new ScopePlasticMessageHandler(
-				this, this, dynamicButtons);
-		this.plasticHandler.setNextHandler(dynamicButtonHandler);
-		// register with the hub
-		myPlasticID = hub.registerRMI(appName, acceptedMessages, this);
-		// inspect what applications have already registered .
-		// get what's currently registered there.
-		List ids = hub.getRegisteredIds();
-		for (Iterator i = ids.iterator(); i.hasNext();) {
-			URI id = (URI) i.next();
-			if (!id.equals(myPlasticID)) { // no point looking at my own navel,
-				dynamicButtonHandler.interrogatePlasticApp(id);
-			}
-		}
 
 		// build the ui.
 		this.setSize(1000, 707); // same proportions as A4,
@@ -351,22 +273,23 @@ public abstract class AbstractScope extends UIComponentImpl implements
 		pane.add(searchPanel, BorderLayout.WEST);
 		pane.add(makeCenterPanel(), BorderLayout.CENTER);
 		this.setContentPane(pane);
-		this.setTitle(getScopeName());
+		this.setTitle(scopeName);
 		this.setJMenuBar(getJJMenuBar());
+		
+		this.tupperware.getRegisteredApplicationsModel().addListDataListener(this);
+		// refresh current list of apps.
+		this.contentsChanged(null);
+		
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				// halt all my background processes.
+				AbstractScope.this.haltQuery();
+			}
+		});
 	}
 
-
 	
-		public PlasticHubListener getHub() {
-			return hub;
-		}
-		
-		public URI getPlasticId() {
-			return myPlasticID;
-		}
-		public Object perform(URI sender, URI message, List args) {
-			return plasticHandler.perform(sender, message, args);
-		}
+	
 	/**
 	 * Creates the left/WEST side of the GUI. By creating a small search panel
 	 * at the top(north-west). Then let the rest of the panel be a JTree for the
@@ -395,10 +318,11 @@ public abstract class AbstractScope extends UIComponentImpl implements
 		submitButton = new BiStateButton(searchAction,haltAction);
 		searchPanel.add(submitButton);
 		
-		KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-		scopeMain.getInputMap(scopeMain.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+		//@todo this doesn't work on my mac. dunno if it doesn't work elsewhere too.
+		KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+		searchPanel.getInputMap(searchPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 				.put(enter, "search");
-		scopeMain.getActionMap().put("search", new AbstractAction() {
+		searchPanel.getActionMap().put("search", new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				submitButton.doClick(); 
 			}
@@ -455,14 +379,7 @@ public abstract class AbstractScope extends UIComponentImpl implements
 		}
 		return fileMenu;
 	}
-	
-	protected JMenu getHelpMenu() {
-		if (helpMenu == null) {
-			helpMenu = new JMenu();
-			helpMenu.setText("Help");
-		}
-		return helpMenu;
-	}
+
 	
 	protected JMenu getHistoryMenu() {
 		if (historyMenu == null) {
@@ -502,7 +419,8 @@ public abstract class AbstractScope extends UIComponentImpl implements
 			menuBar = new JMenuBar();
 			menuBar.add(getFileMenu());
 			menuBar.add(getHistoryMenu());
-			menuBar.add(getHelpMenu());
+            menuBar.add(Box.createHorizontalGlue());
+            menuBar.add(createHelpMenu());
 		}
 		return menuBar;
 	}
@@ -513,7 +431,6 @@ public abstract class AbstractScope extends UIComponentImpl implements
 		TableSorter sorter = new TableSorter(protocols.getQueryResultTable());
 		final JTable table = new JTable(sorter);
 		sorter.setTableHeader(table.getTableHeader()); 
-		JScrollPane scroll = new JScrollPane(table);
 		table.setPreferredScrollableViewportSize(new Dimension(700, 550));
 		TableColumnModel tcm = table.getColumnModel();
 		final TableColumn riColumn = tcm.getColumn(0);
@@ -641,34 +558,6 @@ public abstract class AbstractScope extends UIComponentImpl implements
 
 
 
-	/** subclasses should implement to provide a human-readable description of the applicaiton,
-	 * used in plastic protocol 
-	 * @return
-	 */
-	protected abstract String getScopeDescription();
-
-	/** implement to point to a URL of the applicatioin icon.
-	 * used in plastic
-	 * @return
-	 */
-	protected abstract String getScopeIconURL();
-
-	/**
-	 * subclasses should impleemtn this method to return the name of the scope
-	 * application
-	 * 
-	 * @return
-	 */
-	protected abstract String getScopeName();
-
-	/**
-	 * subclasses should implem,ent this method to return the registry id of the
-	 * description of this scope application
-	 * used in plastic protocol.
-	 * @return
-	 */
-	protected abstract String getScopeRegId();
-
 	/**
 	 * Grab a history item string from the current UI. 
 	 * @return a string that can later be used as input to {@link #createHistoryMenuItem(String)}
@@ -727,5 +616,98 @@ public abstract class AbstractScope extends UIComponentImpl implements
 			getConfiguration().setKey(historyKey,items);					
 		}
 	}
+	
+	// plastic integration
+	
+	
+	public void contentsChanged(ListDataEvent e) {
+		// clear, and rebuild.
+		componentMap.clear();
+		dynamicButtons.removeAll();
+		ListModel lm = tupperware.getRegisteredApplicationsModel();
+		for (int i = 0; i < lm.getSize(); i++) {
+			PlasticApplicationDescription plas= (PlasticApplicationDescription)lm.getElementAt(i);
+			addPlasticApp(plas); // nice- loads all in parallel in background thread..
+		}
+	}
+	public void intervalAdded(ListDataEvent e) {
+		ListModel lm = tupperware.getRegisteredApplicationsModel();
+		for (int i = e.getIndex0(); i<= e.getIndex1(); i++) {
+			PlasticApplicationDescription plas = (PlasticApplicationDescription)lm.getElementAt(i);
+			addPlasticApp(plas);
+		}
+	}
+	public void intervalRemoved(ListDataEvent e) {
+// do nothing 
+	}
+	
+	public void objectsRemoved(Object[] obj) {
+	
+		for (int i = 0; i < obj.length; i++) {
+			removePlasticApp((PlasticApplicationDescription)obj[i]);
+		}
+	}
+	
+	/** used to keep track of the buttons we've got present */
+    private final Map componentMap = new HashMap();
 
+    
+    private void addPlasticApp(final PlasticApplicationDescription plas) {
+    	// runs in a background thread, as involved fetching icons from urls.
+    	(new BackgroundOperation("Building Buttons for  "+ plas.getName()) {                     
+    	        protected Object construct() throws Exception {
+    	    		return buildPlasticButtons(plas);
+    	        }
+    	                
+    	        protected void doFinished(Object result) {
+    	            // add the freshly created button to the UI
+    	            Component[] components = (Component[])result;
+    	            if (components == null || components.length == 0) {
+    	                return;
+    	            }
+    	            for (int i = 0; i < components.length; i++) {
+    	                dynamicButtons.add(components[i]);
+    	            }
+    	                	           
+    	            // record what components pertain to this application.
+    	            componentMap.put(plas,components);            
+    	        }
+    	    }).start(); 	
+    }
+    
+    private void removePlasticApp(PlasticApplicationDescription id) {
+        if (! componentMap.containsKey(id)) {
+            return;
+        }
+        final Component[] components = (Component[]) componentMap.get(id);
+        if (components == null || components.length ==0) {
+            return;
+        }
+         SwingUtilities.invokeLater(new Runnable() {
+            public void run() {           
+                for (int i = 0; i < components.length; i++) {
+                    dynamicButtons.remove(components[i]);
+                }
+                dynamicButtons.repaint();
+            }
+         });
+    }
+	
+	/** Builds VOTABLE and FITS load plastic buttons for applications that support this.
+	 * Override this method to add further button types.
+	 * @param plas
+	 * @return
+	 */
+	private Component[] buildPlasticButtons(final PlasticApplicationDescription plas) {
+		List results = new ArrayList();
+		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
+			results.add(new VotableLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),
+					AbstractScope.this,tupperware));
+		}
+		if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
+			results.add(new ImageLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),
+					AbstractScope.this, tupperware));
+		}
+		return (Component[]) results.toArray(new Component[results.size()]);
+	}
 }
