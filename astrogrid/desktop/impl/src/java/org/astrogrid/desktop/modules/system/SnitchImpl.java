@@ -22,7 +22,6 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 public class SnitchImpl implements SnitchInternal {
 
 	private final static String base = "http://software.astrogrid.org/snitch/";
-	private final Configuration conf;
 	private final UIInternal ui;
 	private final boolean snitchDisabled;
 
@@ -30,7 +29,6 @@ public class SnitchImpl implements SnitchInternal {
 	public SnitchImpl( UIInternal ui, Configuration conf) {
 		super();
 		this.ui = ui;
-		this.conf = conf;
 		this.snitchDisabled = conf.getKey("astrogrid.version") == null;
 		// won't snitch if we're in development mode - as will give meaningless results.
 		// astrogrid.version doesn't seem to be available when running from within eclipse 
