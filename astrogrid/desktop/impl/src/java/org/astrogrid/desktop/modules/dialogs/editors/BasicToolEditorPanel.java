@@ -63,7 +63,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
      */
 
 	
-    class DeleteCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ItemListener {
+    private static class DeleteCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ItemListener {
         
         ParameterTableModel pm;
         Boolean delete;
@@ -129,16 +129,17 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         public void itemStateChanged(ItemEvent e) {
             //Now that we know which button was pushed, find out
             //whether it was selected or deselected.
-        	ParameterValue parameter = pm.getRows()[row];
+//unused        	ParameterValue parameter = pm.getRows()[row];
         	if (e.getStateChange() == ItemEvent.DESELECTED) {               
         		fireEditingStopped();
-            } else {                
+            } else {                //@todo both branches are the same here -can't be right.
                 fireEditingStopped();
             }
         }
     }
     
-    class RepeatCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ItemListener {
+    /** todo compare to deleteCellEditor, and collapse the common bits together */
+    static class RepeatCellEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ItemListener {
         
         ParameterTableModel pm;
         Boolean delete;
@@ -208,7 +209,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         	ParameterValue parameter = pm.getRows()[row];
         	if (e.getStateChange() == ItemEvent.SELECTED) {       		
         		fireEditingStopped(); 
-            } else {                
+            } else { //@todo does same om both branches - cant be correct??                
                 fireEditingStopped();
             }
         }
@@ -541,13 +542,13 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
                  	 	for (int i = 0; i< ol.length; i++) { // Add other options
                  	 		options[i+1] = ol[i];
                  	 	}
-                 	 	if (row.getValue() != "") // Parameter already has value entered, set to 1st item in list
+                 	 	if (! "".equals(row.getValue())) // Parameter already has value entered, set to 1st item in list
                       	   options[0] = row.getValue();
                  	 	return options;
                  	 }
                  	 return row.getValue();
                  case 2:
-                     return new Boolean(row.getIndirect());
+                     return Boolean.valueOf(row.getIndirect());
                  case 3:                 	
                  	int max = 1;
                     for (int i = 0; i < intBean.length; i++) { 
@@ -812,6 +813,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.17  2006/06/27 10:28:27  nw
+findbugs tweaks
+
 Revision 1.16  2006/04/18 23:25:47  nw
 merged asr development.
 

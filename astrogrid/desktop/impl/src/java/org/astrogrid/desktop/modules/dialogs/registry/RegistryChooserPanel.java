@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.32 2006/05/17 15:45:17 nw Exp $
+/*$Id: RegistryChooserPanel.java,v 1.33 2006/06/27 10:28:47 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -123,13 +123,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
         /** set the resouce infroatmion to display */
         public void setRows(ResourceInformation[] ri) {
             this.ri = ri;
-            fireTableDataChanged();
-            if(ri.length > 0) {
-                //System.out.println("Number of Results Found: " + ri.length);
-                //parent.setStatusMessage("Number of Results Found: " + ri.length);
-            }else {
-                //parent.setStatusMessage("No Results Found.");
-            }//else            
+            fireTableDataChanged();         
         }
         // makes a checkbox appear in col 1 if parent is application launcher or workflow builder, not registry browser
         public Class getColumnClass(int columnIndex) {
@@ -306,34 +300,32 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
                  if (lsm.isSelectionEmpty()) {
                      if(selectTableModel.getRowCount() > 0) {
                          xmlPane.setText("");
+                         displayingDocumentForRow = -1;
                      }
-                 } else if (selectTable.getSelectedColumn() ==1) {                                            
-                     final int selectedRow = lsm.getMinSelectionIndex();
+                 } else if (selectTable.getSelectedColumn() <= 1 && lsm.getMinSelectionIndex() != displayingDocumentForRow) {                                          
+                     displayingDocumentForRow = lsm.getMinSelectionIndex();
                      (new BackgroundWorker(parent,"Rendering Record") {
 
                         protected Object construct() throws Exception {
-                            Document doc = reg.getRecord(selectTableModel.getRows()[selectedRow].getId());
-                            //return (String)transform(doc);
-                            return doc;
-                        }
-                        protected void doFinished(Object o) {
+                        	// do all document processing on background thead - otherwise ui blocks.
+                            Document doc = reg.getRecord(selectTableModel.getRows()[displayingDocumentForRow].getId());
                         	detailsPane.setEditorKit(new XHTMLEditorKit());
-                        	detailsPane.setText((String)transform((Document)o));
-                        	detailsPane.setCaretPosition(0);
-                            xmlPane.setText(XMLUtils.DocumentToString((Document)o));
-                            xmlPane.setCaretPosition(0);
+                        	detailsPane.setText((String)transform(doc));
+                            xmlPane.setText(XMLUtils.DocumentToString(doc));        
                             try {                            
-                            	//RegistryTree xmltree = new RegistryTree((Document)o);
-                            	RegistryTree xmltree = new RegistryTree((Document)o);
+                            	RegistryTree xmltree = new RegistryTree(doc);
                             	tree.setModel(xmltree.getModel());                            	
                             } catch (Exception e) {
                             	logger.error("Problem creating registry browser tree: " + e.getMessage());
                             	tree.setModel(null);
-                            }
-                            
+                            }                            
+                            return null;
+                        }
+                        protected void doFinished(Object o) {
+                        	detailsPane.setCaretPosition(0);
+                            xmlPane.setCaretPosition(0); 
                         }
                      }).start();                     
-
                  }
              }
          });
@@ -341,6 +333,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
          centerPanel.setPreferredSize(new Dimension(300,200));
          return centerPanel;
     }
+    
+    // tracks selected row of the table;
+    protected int displayingDocumentForRow = -1;
     
     /**
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
@@ -431,6 +426,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         final String keywords = keywordField.getText();
+
         (new BackgroundWorker(parent,"Searching") {
             protected Object construct() throws Exception {        
                     if(exhaustiveCheck.isSelected()) {
@@ -531,12 +527,12 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
    
    // NWW - decided not to add filter to exhaustive query - so that is always brings back everything.
    private ResourceInformation[] exhaustiveQuery(String keywords)  throws NotFoundException, ServiceException {
-       String sql = "Select * from Registry where ";
+       StringBuffer sql = new StringBuffer("Select * from Registry where ");
        String joinSQL = " or ";
        boolean shallFilter = filter != null && filter.trim().length() > 0;
        String []keyword = StringUtils.split(keywords);
        if (keyword.length > 0 && shallFilter) {
-           sql += "("; //NWW  - added paren here - makes it easier to glue on filter if needed. or can just query on filter if keywords == ""
+           sql.append( "("); //NWW  - added paren here - makes it easier to glue on filter if needed. or can just query on filter if keywords == ""
        }
        
        for(int j = 0;j < keyword.length;j++) {
@@ -548,20 +544,20 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
            if(!keyword[j].trim().toLowerCase().equals("and") && 
               !keyword[j].trim().toLowerCase().equals("or")) {
                if(joinSQL == null) joinSQL = " or ";
-               sql += "(* like '" + keyword[j] + "')";
+               sql.append("(* like '").append(keyword[j]).append("')");
                if(j != (keyword.length - 1)) {
-                   sql += " " + joinSQL + " ";
+                   sql.append(" ").append(joinSQL).append( " ");
                }//if
                joinSQL = null;
            }
        }//for
        if (keyword.length > 0 && shallFilter) {
-           sql +=") and ";
+           sql.append(") and ");
        }
     if (shallFilter) {
-           sql += " (" + filter + ")";
+           sql.append(" (").append( filter ).append(")");
        }
-       return reg.adqlSearchRI(sql);
+       return reg.adqlSearchRI(sql.toString());
    }
                     
     /** set an additional result filter
@@ -592,7 +588,8 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
     *
     */
    public void clear() { 
-       selectTableModel.clear();         
+       selectTableModel.clear();    
+       displayingDocumentForRow = -1;
    }
    
 
@@ -616,7 +613,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
      * Simple cell renderer used to wrap cell contents to 
      * sensible length (WRAP_LENGTH)
      */
-    private class RegistryTreeRenderer extends DefaultTreeCellRenderer {
+    private static class RegistryTreeRenderer extends DefaultTreeCellRenderer {
 		public Component getTreeCellRendererComponent(JTree tree, 
 	            Object value,
 				  boolean isSelected,
@@ -649,6 +646,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.33  2006/06/27 10:28:47  nw
+findbugs tweaks
+
 Revision 1.32  2006/05/17 15:45:17  nw
 factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
 

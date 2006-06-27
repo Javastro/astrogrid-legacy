@@ -1,4 +1,4 @@
-/*$Id: MostSuitableBuilder.java,v 1.5 2006/04/21 13:48:12 nw Exp $
+/*$Id: MostSuitableBuilder.java,v 1.6 2006/06/27 10:25:10 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,14 +21,14 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.w3c.dom.Element;
 
 /** aggregating builder which chooses the most suitable builder from a set.
-
+  @todo rework this in hivemind pattern?? - or maybe replace altogether.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
  *
  */
 public class MostSuitableBuilder implements InformationBuilder {
 
     /** tester class */
-    private final class ApplicablePredicate implements Predicate {
+    private static class ApplicablePredicate implements Predicate {
         private CachedXPathAPI xpath;
         private Element el;
 
@@ -76,6 +76,9 @@ public class MostSuitableBuilder implements InformationBuilder {
 
 /* 
 $Log: MostSuitableBuilder.java,v $
+Revision 1.6  2006/06/27 10:25:10  nw
+findbugs tweaks
+
 Revision 1.5  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

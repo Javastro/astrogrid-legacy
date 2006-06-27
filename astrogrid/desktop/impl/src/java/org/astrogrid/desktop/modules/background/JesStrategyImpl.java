@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.6 2006/05/26 15:18:43 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.7 2006/06/27 10:26:11 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -136,7 +136,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 			        	try {
 			        		checkSingleJob(arr[i]);
 			        	} catch (Exception e) {
-    						if (errors != null) {
+    						if (errors == null) {
     							errors = new ArrayList();
     						}			        		
 			        		errors.add(e);
@@ -267,7 +267,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         
     }
 
-    public void userLogout(UserLoginEvent arg0) {
+    public synchronized void userLogout(UserLoginEvent arg0) {
         poll = false;
         acc = null;
     }
@@ -383,6 +383,9 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.7  2006/06/27 10:26:11  nw
+findbugs tweaks
+
 Revision 1.6  2006/05/26 15:18:43  nw
 reworked scheduled tasks,
 

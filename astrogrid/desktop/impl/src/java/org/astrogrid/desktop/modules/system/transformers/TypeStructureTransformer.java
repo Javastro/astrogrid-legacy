@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.4 2006/06/15 09:58:18 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.5 2006/06/27 10:29:36 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,7 @@ public class TypeStructureTransformer implements Transformer {
         	return "OK";
         }
         if (arg0 instanceof Class) {
-        	return arg0 == null ? "unknown class" : ((Class)arg0).getName();
+        	return ((Class)arg0).getName();
         }
         if (arg0 instanceof Calendar) {
             return ((Calendar)arg0).getTime();
@@ -152,6 +152,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.5  2006/06/27 10:29:36  nw
+findbugs tweaks
+
 Revision 1.4  2006/06/15 09:58:18  nw
 improvements coming from unit testing
 

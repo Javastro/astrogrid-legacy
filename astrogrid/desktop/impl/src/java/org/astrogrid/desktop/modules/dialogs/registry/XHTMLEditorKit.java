@@ -48,7 +48,7 @@ public class XHTMLEditorKit extends HTMLEditorKit {
 		};
 	}
 	
-	private class SaxHandler extends DefaultHandler {
+	private static class SaxHandler extends DefaultHandler {
 		private final ParserCallback callback;
 		
 		public SaxHandler(ParserCallback callback) {

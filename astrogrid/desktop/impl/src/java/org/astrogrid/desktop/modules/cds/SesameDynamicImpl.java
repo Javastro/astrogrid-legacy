@@ -1,4 +1,4 @@
-/*$Id: SesameDynamicImpl.java,v 1.3 2006/06/15 09:46:47 nw Exp $
+/*$Id: SesameDynamicImpl.java,v 1.4 2006/06/27 10:26:25 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,7 @@ public class SesameDynamicImpl implements Sesame {
             Call call = (Call)service.createCall();
             call.setTargetEndpointAddress(endpoint);
             call.setOperationName(new QName("urn:Sesame","sesame"));
-            return (String)call.invoke(new Object[]{arg0,arg1,new Boolean(arg2),arg3});
+            return (String)call.invoke(new Object[]{arg0,arg1,Boolean.valueOf(arg2),arg3});
         } catch (javax.xml.rpc.ServiceException e) {
             throw new ServiceException(e);
         } catch (RemoteException e) {
@@ -72,6 +72,9 @@ public class SesameDynamicImpl implements Sesame {
 
 /* 
 $Log: SesameDynamicImpl.java,v $
+Revision 1.4  2006/06/27 10:26:25  nw
+findbugs tweaks
+
 Revision 1.3  2006/06/15 09:46:47  nw
 removed cruft, added schema for result vaidation.
 

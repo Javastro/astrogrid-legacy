@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.6 2006/04/18 23:25:47 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.7 2006/06/27 10:28:27 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,7 +66,6 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
                         if (toolModel.getTool() != null) { // already got some data on the go..
                             int result = JOptionPane.showConfirmDialog(ChooseAToolEditorPanel.this,"Discard the tool currently being edited?","Replace the current tool?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
                             if (result != JOptionPane.OK_OPTION) {
-                                System.out.println("aborted");
                                 return;
                             }
                         }
@@ -109,6 +108,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.7  2006/06/27 10:28:27  nw
+findbugs tweaks
+
 Revision 1.6  2006/04/18 23:25:47  nw
 merged asr development.
 

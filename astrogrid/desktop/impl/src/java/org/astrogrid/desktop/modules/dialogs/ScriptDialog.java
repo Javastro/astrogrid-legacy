@@ -21,6 +21,7 @@ import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -88,15 +89,24 @@ public class ScriptDialog extends BaseBeanEditorDialog {
             if (u == null) {
                 return;
             }
+            Reader reader = null;
             try {
-                Reader reader = new InputStreamReader(myspace.getInputStream(u));		                		         
+                reader = new InputStreamReader(myspace.getInputStream(u));		                		         
                 Script s = (Script)Unmarshaller.unmarshal(Script.class, reader);	                
                 descField.setText(s.getBody());
                 scriptField.setText(s.getBody());
-                reader.close();
             } catch (Exception ex) {
             	showError("An error occured loading script... ", ex);
+            }finally {
+            	if (reader != null) {
+            		try {
+            			reader.close();
+            		} catch (IOException ignored) {
+            			// ignored
+            		}
+            	}
             }
+            
 	    }
 	}	
 	
@@ -133,16 +143,22 @@ public class ScriptDialog extends BaseBeanEditorDialog {
             }
             if (scriptField.getText().length() <= 0 && descField.getText().length() <= 0)
             	return;
-            
+            Writer w = null;
             try {
-                Writer w = new OutputStreamWriter(myspace.getOutputStream(u));
+                w = new OutputStreamWriter(myspace.getOutputStream(u));
                 Script s = new Script();
                 s.setDescription(descField.getText());
                 s.setBody(scriptField.getText());
                 ((AbstractActivity)s).marshal(w);
-                w.close();
             } catch (Exception ex) {
             	showError("An error ocurred saving your script ", ex);
+            } finally {
+            	if (w != null) {
+            		try {
+            			w.close();
+            		} catch (IOException ignored) {
+            		}
+            	}
             }
         }
     }
@@ -158,7 +174,7 @@ public class ScriptDialog extends BaseBeanEditorDialog {
         	try{
         		Binding binding = new Binding();
         		GroovyShell shell = new GroovyShell(binding);
-        		Object value = shell.evaluate(getScriptField().getText());
+        		shell.evaluate(getScriptField().getText()); //@todo is it safe to evaluate all scripts. what about 'rm -rf *' ??
         		JOptionPane.showMessageDialog(null, 
         				                      "Your script appears to be valid",
     										  "Script appears valid", 

@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.18 2006/05/13 16:34:55 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.19 2006/06/27 10:28:27 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -83,7 +85,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
             
             final Tool tOrig = getToolModel().getTool();
             final String securityMethod = getToolModel().getSecurityMethod();
-            System.out.println("Security method = " + securityMethod);
+            logger.info("Security method = " + securityMethod);
             (new BackgroundWorker(parent,"Executing..") {
 
                 protected Object construct() throws Exception {
@@ -91,7 +93,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                     Document doc = XMLUtils.newDocument();
                     Marshaller.marshal(tOrig,doc);
                     if (securityMethod != null) {
-                      System.out.println("Setting security instruction on the tool document");
+                      logger.info("Setting security instruction on the tool document");
                       ProcessingInstruction p 
                           = doc.createProcessingInstruction("CEA-strategy-security", 
                                                             securityMethod);
@@ -99,7 +101,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                     }
                     ResourceInformation[] services = apps.listProvidersOf(new URI("ivo://" + tOrig.getName())); 
                     logger.debug("resolved app to " + services.length + " servers");
-                    if (services.length > 1) {
+                    if (services.length == 0) {// no providing servers found.
+                    	return null;
+                    } else if (services.length > 1) {
                         URI[] names = new URI[services.length];
                         for (int i = 0 ; i < services.length; i++) {
                             names[i] = services[i].getId();
@@ -118,12 +122,18 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                 }
                 
                 protected void doFinished(Object o) {
-                    ResultDialog rd = new ResultDialog(CompositeToolEditorPanel.this,"ExecutionId : " + o);
-                    //rd.show();        
-                    if (lookout != null) {
-                    	lookout.show();
-                    }	
-                    }
+                	if (o == null) { // unable to launch the app
+                		JOptionPane.showMessageDialog(CompositeToolEditorPanel.this,"<b>Failed to launch task</b><br>Could not find any servers that provide the task: " + tOrig.getName()
+                				,"Cannot launch task",JOptionPane.ERROR_MESSAGE);
+                	} else {
+                		// not much point constructing this if we're not going to display it...
+                		//ResultDialog rd = new ResultDialog(CompositeToolEditorPanel.this,"ExecutionId : " + o);
+                		//rd.show();        
+                		if (lookout != null) {
+                			lookout.show();
+                		}
+                	}
+               }
                 
             }).start();
         }
@@ -161,9 +171,11 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                     private ApplicationInformation newApp;
                     private InterfaceBean newInterface;
                     protected Object construct() throws Exception {
-                        Reader fr = new InputStreamReader(myspace.getInputStream(u));
+                    	Reader fr = null;
+                    	try {
+                        fr = new InputStreamReader(myspace.getInputStream(u));
                        Tool t = Tool.unmarshalTool(fr);
-                       fr.close();
+                       
                        newApp = apps.getApplicationInformation(new URI("ivo://" + t.getName()));                       
                        InterfaceBean[] candidates = newApp.getInterfaces();
                        for (int i = 0; i < candidates.length; i++) {
@@ -175,7 +187,14 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                            throw new IllegalArgumentException("Cannot find interface " + t.getInterface() + " in registry entry for " + t.getName());
                        }
                        return t;
-                       
+                    	} finally {
+                    		if (fr != null) {
+                    			try {
+                    				fr.close();
+                    			} catch (IOException ignored) {
+                    			}
+                    		}
+                    	}
                     }
                     protected void doFinished(Object o) {
                         getToolModel().populate((Tool)o,newApp);
@@ -212,11 +231,20 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                 (new BackgroundWorker(parent,"Saving task definition") {
 
                     protected Object construct() throws Exception {
+                    	Writer w = null;
+                    	try {
                         Tool t = getToolModel().getTool();
-                        Writer w = new OutputStreamWriter(myspace.getOutputStream(u));
-                        t.marshal(w);
-                        w.close();
+                         w = new OutputStreamWriter(myspace.getOutputStream(u));
+                        t.marshal(w);                       
                         return null;
+                    	} finally {
+                    		if (w != null) {
+                    			try {
+                    				w.close();
+                    			} catch (IOException ignored) {
+                    			}
+                    		}
+                    	}
                     }
                 }).start();            
             
@@ -366,7 +394,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 	private JMenuBar getJJMenuBar() {
 		if (jJMenuBar == null) {
 			jJMenuBar = new JMenuBar();
-			jJMenuBar.add(getFileMenu());
+			jJMenuBar.add(getFileMenu());		
 		}
 		return jJMenuBar;
 	}
@@ -385,6 +413,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.19  2006/06/27 10:28:27  nw
+findbugs tweaks
+
 Revision 1.18  2006/05/13 16:34:55  nw
 merged in wb-gtr-1537
 

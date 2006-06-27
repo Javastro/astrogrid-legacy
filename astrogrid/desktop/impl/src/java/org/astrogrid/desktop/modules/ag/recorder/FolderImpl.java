@@ -1,4 +1,4 @@
-/*$Id: FolderImpl.java,v 1.5 2006/06/15 09:47:23 nw Exp $
+/*$Id: FolderImpl.java,v 1.6 2006/06/27 10:25:45 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,7 +78,16 @@ public class FolderImpl implements Serializable, Folder {
         return info.getId();
     }
 
-
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((this.childKeyList == null) ? 0 : this.childKeyList.hashCode());
+		result = PRIME * result + (this.deleted ? 1231 : 1237);
+		result = PRIME * result + ((this.info == null) ? 0 : this.info.hashCode());
+		result = PRIME * result + ((this.parentKey == null) ? 0 : this.parentKey.hashCode());
+		result = PRIME * result + this.unread;
+		return result;
+	}
 
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -109,12 +118,17 @@ public class FolderImpl implements Serializable, Folder {
 			return false;
 		return true;
 	}
+
+
     
 
 }
 
 /* 
 $Log: FolderImpl.java,v $
+Revision 1.6  2006/06/27 10:25:45  nw
+findbugs tweaks
+
 Revision 1.5  2006/06/15 09:47:23  nw
 improvements coming from unit testing
 

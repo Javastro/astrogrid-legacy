@@ -1,4 +1,4 @@
-/*$Id: Adql074DynamicImpl.java,v 1.3 2006/06/15 09:48:32 nw Exp $
+/*$Id: Adql074DynamicImpl.java,v 1.4 2006/06/27 10:29:19 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ import org.xml.sax.SAXException;
 public class Adql074DynamicImpl implements Adql074 {
 
     /** namespace translator. */
-    private final class AdqlTranslatorNamespaceContext implements NamespaceContext {
+    private static class AdqlTranslatorNamespaceContext implements NamespaceContext {
         private AdqlTranslatorNamespaceContext() {
             super();
         }
@@ -184,6 +184,9 @@ public class Adql074DynamicImpl implements Adql074 {
 
 /* 
 $Log: Adql074DynamicImpl.java,v $
+Revision 1.4  2006/06/27 10:29:19  nw
+findbugs tweaks
+
 Revision 1.3  2006/06/15 09:48:32  nw
 mived testing out into unit test.
 

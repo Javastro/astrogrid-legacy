@@ -1,4 +1,4 @@
-/*$Id: Messages.java,v 1.3 2006/04/18 23:25:46 nw Exp $
+/*$Id: Messages.java,v 1.4 2006/06/27 10:25:45 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer
  * only needed if called from more than the UI thread.
  * - or if so, maybe passing them onto the scheduler for single threaded calling is faster
  */
-public class Messages extends AbstractTableModel implements TableModel {
+public class Messages extends AbstractTableModel {
 
     public Messages(RecordManager rec) {
         this.rec = rec;
@@ -54,11 +54,15 @@ public class Messages extends AbstractTableModel implements TableModel {
         this.currentFolder = findStoreFor(key);
         messageList.clear();
         populateList(this.currentFolder,messageList);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {               
-         fireTableDataChanged(); 
-            }
-        });
+        if (SwingUtilities.isEventDispatchThread()) {
+        	fireTableDataChanged();
+        } else {
+        	SwingUtilities.invokeLater(new Runnable() {
+        		public void run() {               
+        			fireTableDataChanged(); 
+        		}
+        	});
+        }
      }
             
     private BTree findStoreFor(URI id) throws IOException {
@@ -84,7 +88,7 @@ public class Messages extends AbstractTableModel implements TableModel {
         List l = new ArrayList();
         BTree b = findStoreFor(key);
         populateList(b,l);
-        return (MessageContainer[])l.toArray(new MessageContainer[]{});
+        return (MessageContainer[])l.toArray(new MessageContainer[l.size()]);
     }
 
     public MessageContainer getMessage(int row) {
@@ -178,8 +182,8 @@ public class Messages extends AbstractTableModel implements TableModel {
 
     public Class getColumnClass(int columnIndex) {
         switch (columnIndex) {
-            case 2: return String.class;
-            case 1: return String.class;
+            case 2: // fall thru 
+            case 1: // fall thru
             case 0: return String.class;
             default: return null;
         }
@@ -202,6 +206,9 @@ public class Messages extends AbstractTableModel implements TableModel {
 
 /* 
 $Log: Messages.java,v $
+Revision 1.4  2006/06/27 10:25:45  nw
+findbugs tweaks
+
 Revision 1.3  2006/04/18 23:25:46  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: DatacenterToolEditorPanel.java,v 1.6 2006/04/21 13:48:12 nw Exp $
+/*$Id: DatacenterToolEditorPanel.java,v 1.7 2006/06/27 10:28:27 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -97,7 +97,7 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
                     i.remove();
                 }
             }
-            return (ParameterValue[])p.toArray(new ParameterValue[]{});
+            return (ParameterValue[])p.toArray(new ParameterValue[p.size()]);
         }
        
     }
@@ -399,6 +399,9 @@ public class DatacenterToolEditorPanel extends BasicToolEditorPanel {
 
 /* 
 $Log: DatacenterToolEditorPanel.java,v $
+Revision 1.7  2006/06/27 10:28:27  nw
+findbugs tweaks
+
 Revision 1.6  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

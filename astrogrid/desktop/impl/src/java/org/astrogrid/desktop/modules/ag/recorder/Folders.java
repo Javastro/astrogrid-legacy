@@ -1,4 +1,4 @@
-/*$Id: Folders.java,v 1.5 2006/06/15 09:47:51 nw Exp $
+/*$Id: Folders.java,v 1.6 2006/06/27 10:25:45 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -302,7 +302,7 @@ public class Folders implements TreeModel {
     /**
      * @see javax.swing.tree.TreeModel#getRoot()
      */
-    public Object getRoot() {
+    public synchronized Object getRoot() {
         return root;
     }
 
@@ -353,6 +353,9 @@ public class Folders implements TreeModel {
 
 /* 
 $Log: Folders.java,v $
+Revision 1.6  2006/06/27 10:25:45  nw
+findbugs tweaks
+
 Revision 1.5  2006/06/15 09:47:51  nw
 changed constructor visibility, to ease testing.
 

@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.6 2006/06/15 18:21:14 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.7 2006/06/27 10:26:11 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -154,7 +154,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     					try {
     						checkSingleApp(uri);
     					} catch (Exception e) {
-    						if (errors != null) {
+    						if (errors == null) {
     							errors = new ArrayList();
     						}
     						errors.add(e);
@@ -432,7 +432,6 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
      * their values.
      */
     private Set extractSecurityInstructions(Document document) {
-      System.out.println(document.toString());
       Set instructions = new HashSet();
       NodeList nodes = document.getChildNodes();
       for (int i = 0; i < nodes.getLength(); i++) {
@@ -528,7 +527,6 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
                 CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(server);
                 Iterator i = securityActions.iterator();
                 while (i.hasNext()) {
-                  System.out.println("CEA strategy: Security action: " + i.next());
                   // @todo actually react to the name of the action.
                   SecurityGuard guard = this.community.getSecurityGuard();
                   del.setCredentials(guard);
@@ -564,6 +562,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.7  2006/06/27 10:26:11  nw
+findbugs tweaks
+
 Revision 1.6  2006/06/15 18:21:14  nw
 merge of desktop-gtr-1537
 
