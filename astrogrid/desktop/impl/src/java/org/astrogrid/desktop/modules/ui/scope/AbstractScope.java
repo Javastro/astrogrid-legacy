@@ -318,7 +318,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		submitButton = new BiStateButton(searchAction,haltAction);
 		searchPanel.add(submitButton);
 		
-		//@todo this doesn't work on my mac. dunno if it doesn't work elsewhere too.
+		//@fixme this doesn't work on my mac. dunno if it doesn't work elsewhere too.
 		KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
 		searchPanel.getInputMap(searchPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 				.put(enter, "search");
@@ -481,7 +481,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 					sb.append("Spectra");
 				}
 				sb.append("</html>");
-				// @todo extend ResourceInformation to contain curation details,
+				// @future extend ResourceInformation to contain curation details,
 				// add these in here.
 				return sb.toString();
 			}

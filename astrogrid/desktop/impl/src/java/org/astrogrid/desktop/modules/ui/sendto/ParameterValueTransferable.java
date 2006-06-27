@@ -73,7 +73,7 @@ public class ParameterValueTransferable  implements PreferredTransferable {
 				myFlavours = otherRemoteResult;
 			}
 		} else {
-			if (val.getName().equals("transcript")) { // special case for a transcript..
+			if (val.getName().equals("transcript")) { // HACK - special case for a transcript..
 				myFlavours = transcript;
 			} else {
 				myFlavours = localResult;
@@ -90,7 +90,6 @@ public class ParameterValueTransferable  implements PreferredTransferable {
 	public DataFlavor getPreferredDataFlavor() {
 			return myFlavours[0];
 	}
-	//@todo - need to work out how to implement this - lots of different cases.
 	public Object getTransferData(DataFlavor arg0) throws UnsupportedFlavorException, IOException {
 		if (! ArrayUtils.contains(myFlavours,arg0)) {
 			throw new UnsupportedFlavorException(arg0);
@@ -120,7 +119,7 @@ public class ParameterValueTransferable  implements PreferredTransferable {
 	private Object processLocal(DataFlavor arg0) throws IOException {
 		if (arg0.equals(VoDataFlavour.URL)) {
 			if (tmpLocalURL == null) {
-				File f = File.createTempFile("parameterValue",".result");
+				File f = File.createTempFile("parameterValue",".xml"); // probably xml.
 				//f.deleteOnExit(); not safe - as clients may still be running after we exit.
 				Writer w = null;
 				try {

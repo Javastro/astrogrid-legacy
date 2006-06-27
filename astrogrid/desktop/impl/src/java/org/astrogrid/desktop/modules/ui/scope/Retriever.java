@@ -286,7 +286,7 @@ public abstract class Retriever extends BackgroundWorker {
     }
 
     protected void doAlways() {
-       parent.setProgressValue(parent.getProgressValue() + 1); // @todo minor bug -  sometimes we get a race here, leading to the display being off-by-one.
+       parent.setProgressValue(parent.getProgressValue() + 1); // @bug minor -  sometimes we get a race here, leading to the display being off-by-one.
     }
 
     protected void doFinished(Object result) {        

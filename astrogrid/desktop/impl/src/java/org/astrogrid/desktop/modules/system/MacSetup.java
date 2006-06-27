@@ -24,7 +24,7 @@ import org.astrogrid.desktop.framework.ReflectionHelper;
  * mac, still needs to be written in a reflective kind of way - otherwise devs on
  * other OS would be unable to compile or build.
  * 
- * @todo add the hooks to handle 'file open' events.
+ * @future add the hooks to handle 'file open' events.
  * @author Noel Winstanley
  * @since Jun 21, 200611:31:12 PM
  */

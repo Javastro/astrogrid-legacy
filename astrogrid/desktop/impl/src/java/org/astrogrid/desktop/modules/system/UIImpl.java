@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.13 2006/06/27 10:40:40 nw Exp $
+/*$Id: UIImpl.java,v 1.14 2006/06/27 19:18:32 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -293,7 +293,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 					PlasticApplicationDescription plas = (PlasticApplicationDescription)value;
 					
 					if (plas.getIcon() != null) {
-						//@todo find some way of loading this on background thread.
+						//@bug find some way of loading this on background thread.
 	                    ImageIcon scaled = new ImageIcon(((ImageIcon)plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
 						l.setIcon(scaled);
 					} else {
@@ -463,6 +463,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.14  2006/06/27 19:18:32  nw
+adjusted todo tags.
+
 Revision 1.13  2006/06/27 10:40:40  nw
 added new methods
 

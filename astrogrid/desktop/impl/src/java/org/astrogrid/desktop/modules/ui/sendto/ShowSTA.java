@@ -11,9 +11,6 @@ import org.astrogrid.io.Piper;
 
 
 /** consumer that displays result in a popup
- * @todo handle case of xml  display accordingly - use result transformer -
- * however, need to be able to detect xml reliably in these cases.
- * mebbe it's best just to understand that browser should be used for formatted data.
  * 
  * .*/
 public class ShowSTA extends AbstractSTA {

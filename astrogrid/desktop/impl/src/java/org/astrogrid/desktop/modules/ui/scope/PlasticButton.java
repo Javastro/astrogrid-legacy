@@ -1,4 +1,4 @@
-/*$Id: PlasticButton.java,v 1.6 2006/06/27 10:20:57 nw Exp $
+/*$Id: PlasticButton.java,v 1.7 2006/06/27 19:16:05 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,7 @@ public abstract class PlasticButton extends NodeConsumerButton{
     public PlasticButton( PlasticApplicationDescription descr, String name, String description, FocusSet selectedNodes, UIComponent ui, TupperwareInternal tupp) {
         super(name,description!=null? description: "Display data using PLASTIC",  selectedNodes);
         if (descr.getIcon() != null) {
-			//@todo find some way of loading this on background thread.
+			//@bug find some way of loading this on background thread.
             ImageIcon scaled = new ImageIcon(((ImageIcon)descr.getIcon()).getImage().getScaledInstance(-1,32,Image.SCALE_SMOOTH));
 			setIcon(scaled);
             // run rule to enable / disable this button.
@@ -74,6 +74,9 @@ public abstract class PlasticButton extends NodeConsumerButton{
 
 /* 
 $Log: PlasticButton.java,v $
+Revision 1.7  2006/06/27 19:16:05  nw
+adjusted todo tags.
+
 Revision 1.6  2006/06/27 10:20:57  nw
 reworked in tupperware
 

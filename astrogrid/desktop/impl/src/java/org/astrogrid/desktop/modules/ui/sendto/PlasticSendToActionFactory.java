@@ -129,7 +129,6 @@ public class PlasticSendToActionFactory implements SendToActionFactory, Reportin
 			this.desc = desc;
 			this.setText("To " + StringUtils.capitalize(desc.getName()));
 			if (desc.getIcon() != null) {
-				// @todo - is this the correct scalage?
                 ImageIcon scaled = new ImageIcon(((ImageIcon)desc.getIcon()).getImage().getScaledInstance(-1,20,Image.SCALE_SMOOTH));
 				this.setIcon(scaled);
 			} else {
@@ -144,7 +143,7 @@ public class PlasticSendToActionFactory implements SendToActionFactory, Reportin
 			if (desc.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
 				this.add(new SendPlasticFitsSTA(desc.getId(),tupp));
 			}
-			//@todo add code to disable menu when all items on the menu are disabled.
+			//@future add code to disable menu when all items on the menu are disabled.
 		}
 		private final PlasticApplicationDescription desc;
 		

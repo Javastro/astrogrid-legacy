@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.5 2006/06/27 10:29:36 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.6 2006/06/27 19:13:52 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -134,7 +134,7 @@ public class TypeStructureTransformer implements Transformer {
                     || Writer.class.isAssignableFrom(type)){
                 continue;
             }            
-           //@todo handle indexed and mapped properties, if needed.
+           //@future handle indexed and mapped properties, if needed.
             try {
                 Object value = db.get(name);
                 if (value != null) { // hashtable can't handle nulls..
@@ -152,6 +152,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.6  2006/06/27 19:13:52  nw
+adjusted todo tags.
+
 Revision 1.5  2006/06/27 10:29:36  nw
 findbugs tweaks
 

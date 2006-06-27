@@ -1,4 +1,4 @@
-/*$Id: SaveNodesButton.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: SaveNodesButton.java,v 1.3 2006/06/27 19:16:05 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,6 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** Action that takes a set of nodes and saves to myspace / localspace.
- * @todo improve code.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
  *
  */
@@ -274,6 +273,9 @@ public class SaveNodesButton extends NodeConsumerButton {
 
 /* 
  $Log: SaveNodesButton.java,v $
+ Revision 1.3  2006/06/27 19:16:05  nw
+ adjusted todo tags.
+
  Revision 1.2  2006/04/18 23:25:44  nw
  merged asr development.
 

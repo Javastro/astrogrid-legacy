@@ -39,8 +39,6 @@ import org.w3c.dom.Document;
 
 /** Implementation of a shared 'send-to' menu component - used to pass data to other 
  * uitilies for vieing.
- * @todo assemble via hivemind contribtions. - this would allow other components to 'export' actions - 
- * which might be quite handy.
  * @author Noel Winstanley
  * @since Jun 17, 20062:10:55 AM
  */

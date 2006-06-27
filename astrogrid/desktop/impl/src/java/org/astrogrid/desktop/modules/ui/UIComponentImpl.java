@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.4 2006/06/27 10:37:10 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.5 2006/06/27 19:14:56 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -206,7 +206,6 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
     */
     
     /** access the main panel, where other components can be added..
-     * @todo 
      * @return a JPane with {@link BorderLayout}. The southern segment is already taken by the activity indicator & status message.
      */ 
     public JPanel getMainPanel() {       
@@ -558,6 +557,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.5  2006/06/27 19:14:56  nw
+adjusted todo tags.
+
 Revision 1.4  2006/06/27 10:37:10  nw
 added methods to provide a default help menu
 

@@ -1,4 +1,4 @@
-/*$Id: JavaPrefsConfiguration.java,v 1.6 2006/06/15 09:52:48 nw Exp $
+/*$Id: JavaPrefsConfiguration.java,v 1.7 2006/06/27 19:18:32 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,8 +71,6 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener,Configur
     }
     
     
-    // @todo change preference location to something more meaningful - i.e. start class of system.
-    // need to take care to refer to classes that are always going to be on classpath.
     private Class preferenceClass = Workbench.class;
     
     /**
@@ -189,6 +187,9 @@ public class JavaPrefsConfiguration implements PreferenceChangeListener,Configur
 
 /* 
 $Log: JavaPrefsConfiguration.java,v $
+Revision 1.7  2006/06/27 19:18:32  nw
+adjusted todo tags.
+
 Revision 1.6  2006/06/15 09:52:48  nw
 cleaned up
 

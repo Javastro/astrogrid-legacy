@@ -94,7 +94,6 @@ public class NameResolvingPositionTextField extends PositionTextField {
      * creates a background worker that calls sesame, parses result, zaps result into model
      * if sesame fails to resolve, the input is reverted. there's very little we can report to the user - as 
      * sesame doesn't give anything useful back. 
-     * @todo refactor so that this code is reusable - as have almost same routine in astroscope too.
      * */
     private void resolveNameToPosition(final String inputPos) throws ParseException {
     	objectName = inputPos;

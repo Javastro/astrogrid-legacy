@@ -110,10 +110,10 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 	private final MyspaceInternal vos;
 	/**
 	 * builds the transferable, and populates the map.
-	 * @todo extend to work with local filesystem? 
-	 * @todo get information from mime-type, when available
-	 * @todo integrate with JDIC to get known file-type associations.
-	 * @todo maybe replace this hard-coded map with some kind of hivemind configuration?
+	 * @future extend to work with local filesystem? 
+	 * @future get information from mime-type, when available
+	 * @future integrate with JDIC to get known file-type associations.
+	 * @future maybe replace this hard-coded map with some kind of hivemind configuration?
 	 * @param nodeManager
 	 */
 	public FileManagerNodePreferredTransferable(AbstractVospaceBrowser.CurrentNodeManager nodeManager, MyspaceInternal vos) {
