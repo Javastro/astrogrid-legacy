@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.7 2006/06/27 10:28:27 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.8 2006/06/27 19:12:31 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.desktop.modules.dialogs.editors;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -33,24 +36,19 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
  *
  */
-public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
+public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements PropertyChangeListener {
 
-    public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, Registry reg, final ApplicationsInternal apps, boolean allApps) {
+    private RegistryChooserPanel rcp;
+
+
+	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, Registry reg, final ApplicationsInternal apps) {
         super(tm);
+       
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         add(new JLabel("Select an Application:"));
-       final RegistryChooserPanel rcp = new RegistryChooserPanel( parent,reg) ;
-        rcp.setMultipleResources(false);
-
-        rcp.setFilter(" (@xsi:type like '%CeaApplicationType' " +
-                " or @xsi:type like '%CeaHttpApplicationType' " + 
-                ( allApps ? " or @xsi:type like '%ConeSearch' " + 
-                        " or @xsi:type like '%SimpleImageAccess' "  + 
-			" or @xsi:type like '%SimpleSpectrumAccess' "+ 
-            " or (@xsi:type like '%TabularSkyService' and vr:identifier like 'ivo://CDS/%'" +
-            "   and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN') "
-                        : "")  + ")"); //+ 
-//@todo                " ) and ( not (@status = 'inactive' or @status = 'deleted') )");
+       rcp = new RegistryChooserPanel( parent,reg);
+		rcp.setMultipleResources(false);
+		setChooseCEAOnly(false);
         toolModel.addToolEditListener(new ToolEditAdapter() {
             public void toolCleared(ToolEditEvent te) {
                 rcp.clear();
@@ -96,18 +94,45 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel {
         add(rcp);        
     }
 
-
+    private void setChooseCEAOnly(boolean ceaOnly) {
+    	
+    	   rcp.setFilter(" (@xsi:type like '%CeaApplicationType' " +
+                   " or @xsi:type like '%CeaHttpApplicationType' " + 
+                   ( ! ceaOnly ? " or @xsi:type like '%ConeSearch' " + 
+                           " or @xsi:type like '%SimpleImageAccess' "  + 
+   			" or @xsi:type like '%SimpleSpectrumAccess' "
+        //@future add in cds once we've got an efficient registry client.    +   " or (@xsi:type like '%TabularSkyService' and vr:identifier like 'ivo://CDS/%'" +
+        //       "   and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN') 
+                           : "")  
+                //           + ")"); 
+           +    " ) and  not(@status = 'inactive' or @status = 'deleted') ");    	
+    }
 
     /** applicable always */
     public boolean isApplicable(Tool t, ApplicationInformation info) {
         return true;
     }
+
+
+/** listens for the client property CEA_ONLY - and adjusts reg filter if it sees it
+ * 
+ *  bit of a nasty hack - but works for now.
+ *  */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY)) {
+			Object o = evt.getNewValue();
+			setChooseCEAOnly (o != null && o.equals(Boolean.TRUE));
+		}
+	}
     
 }
 
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.8  2006/06/27 19:12:31  nw
+fixed to filter on cea apps when needed.
+
 Revision 1.7  2006/06/27 10:28:27  nw
 findbugs tweaks
 

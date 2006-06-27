@@ -1,4 +1,4 @@
-/*$Id: ToolEditorInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: ToolEditorInternal.java,v 1.4 2006/06/27 19:11:52 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,7 +49,7 @@ public interface ToolEditorInternal extends ToolEditor {
      */
     Tool editStoredTool(URI toolLocation, Component comp) throws InvalidArgumentException, ServiceException;
     
-    /** prompt the user to select a datacenter and construct a query against it.
+    /** prompt the user to select an application, and build an invocation against it.
      * <p>
      * Internal variant of {@link ToolEditor#selectAndBuild()}
      * @return a new tool document
@@ -57,6 +57,15 @@ public interface ToolEditorInternal extends ToolEditor {
      * @throws ServiceException if any exception occurs during editng.
      */
     Tool selectAndBuildTool(Component comp) throws ServiceException;
+    
+    
+    /** 
+     * variant of {@link ToolEditor#selectAndBuildTool()}, restited to cea apps.
+     * @return a new tool document
+     * @param comp ui component to center this dialog on.     
+     * @throws ServiceException if any exception occurs during editng.
+     */
+    Tool selectAndBuildCEATool(Component comp) throws ServiceException;
     
 
     /**
@@ -73,6 +82,9 @@ public interface ToolEditorInternal extends ToolEditor {
 
 /* 
 $Log: ToolEditorInternal.java,v $
+Revision 1.4  2006/06/27 19:11:52  nw
+fixed to filter on cea apps when needed.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

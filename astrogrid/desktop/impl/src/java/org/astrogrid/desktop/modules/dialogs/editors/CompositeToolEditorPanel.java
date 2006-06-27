@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.19 2006/06/27 10:28:27 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.20 2006/06/27 19:12:31 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -332,7 +333,6 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
             ,ApplicationsInternal apps
             ,MyspaceInternal myspace
             , UIComponentImpl parent
-            , boolean allApps // @todo currenctly allApps is ignored.
             ,HelpServerInternal hs
             ) {        
         this.parent = parent;        
@@ -350,6 +350,10 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         	ToolEditorPanelFactory fac = (ToolEditorPanelFactory)i.next();
         	AbstractToolEditorPanel p = fac.create(getToolModel(),parent);
         	panels.add(p);
+        	// if anyone of them is interested, register as a property change listener..
+        	if (p instanceof PropertyChangeListener) {
+        		this.addPropertyChangeListener((PropertyChangeListener)p);
+        	}
         	tabPane.addTab(fac.getName(),p);
         }   
         views = (AbstractToolEditorPanel[])panels.toArray(new AbstractToolEditorPanel[panels.size()]);
@@ -390,6 +394,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     
     private JMenuBar jJMenuBar;
     private JMenu fileMenu;
+	/** client property set when we want to restrict to only cea apps */
+	public static String CEA_ONLY_CLIENT_PROPERTY = "CEA_ONLY";
     
 	private JMenuBar getJJMenuBar() {
 		if (jJMenuBar == null) {
@@ -413,6 +419,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.20  2006/06/27 19:12:31  nw
+fixed to filter on cea apps when needed.
+
 Revision 1.19  2006/06/27 10:28:27  nw
 findbugs tweaks
 

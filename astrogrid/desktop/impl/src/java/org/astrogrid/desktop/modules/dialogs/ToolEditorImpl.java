@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.8 2006/04/18 23:25:44 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.9 2006/06/27 19:11:52 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -190,6 +190,13 @@ public class ToolEditorImpl implements ToolEditorInternal {
         dialog.setVisible(true);
         return dialog.getTool();   
     }
+    /** variant of {@link #selectAndBuildTool} that only allows CEA apps to be selected */
+    public Tool selectAndBuildCEATool(Component comp) throws ServiceException {
+        dialog.setLocationRelativeTo(comp);
+        dialog.nextDisplayShowCEAOnly();
+        dialog.setVisible(true);
+        return dialog.getTool();   
+    }
 
 
 
@@ -198,6 +205,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.9  2006/06/27 19:11:52  nw
+fixed to filter on cea apps when needed.
+
 Revision 1.8  2006/04/18 23:25:44  nw
 merged asr development.
 

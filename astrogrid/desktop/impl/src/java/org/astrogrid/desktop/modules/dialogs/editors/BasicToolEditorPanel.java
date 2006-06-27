@@ -50,7 +50,6 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 /** A panel for editing tool documents (i.e. sets of input and output parameters)
  * 
- * @todo add support for viewing / editing remote resources? maybe not.
  * @author Noel Winstanley nw@jb.man.ac.uk 13-May-2005
  */
 public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
@@ -132,7 +131,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 //unused        	ParameterValue parameter = pm.getRows()[row];
         	if (e.getStateChange() == ItemEvent.DESELECTED) {               
         		fireEditingStopped();
-            } else {                //@todo both branches are the same here -can't be right.
+            } else {                //@bug both branches are the same here -can't be right.
                 fireEditingStopped();
             }
         }
@@ -209,7 +208,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         	ParameterValue parameter = pm.getRows()[row];
         	if (e.getStateChange() == ItemEvent.SELECTED) {       		
         		fireEditingStopped(); 
-            } else { //@todo does same om both branches - cant be correct??                
+            } else { //@bug does same om both branches - cant be correct??                
                 fireEditingStopped();
             }
         }
@@ -813,6 +812,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.18  2006/06/27 19:12:31  nw
+fixed to filter on cea apps when needed.
+
 Revision 1.17  2006/06/27 10:28:27  nw
 findbugs tweaks
 

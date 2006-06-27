@@ -18,7 +18,7 @@ public class ChooseToolEditorPanelFactory implements ToolEditorPanelFactory {
 	private final Registry registry;
 	private final ApplicationsInternal apps;
 	public AbstractToolEditorPanel create(ToolModel model, UIComponent parent) {
-		return new ChooseAToolEditorPanel(model,parent,registry,apps,false); //@todo necessary to find way to set this to true or false?
+		return new ChooseAToolEditorPanel(model,parent,registry,apps);
 	}
 	public ChooseToolEditorPanelFactory(final Registry registry, final ApplicationsInternal apps) {
 		super();

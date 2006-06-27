@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.11 2006/06/27 10:33:29 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.12 2006/06/27 19:14:10 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,7 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
             ,Configuration conf, HelpServerInternal help, UIInternal ui) {
             super(conf, help, ui);
             editor =  new CompositeToolEditorPanel(
-                    panelFactories,rChooser,apps,myspace,this,false,help);
+                    panelFactories,rChooser,apps,myspace,this,help);
             editor.setLookout(lookout);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
             this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
@@ -71,6 +71,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.12  2006/06/27 19:14:10  nw
+fixed to filter on cea apps when needed.
+
 Revision 1.11  2006/06/27 10:33:29  nw
 labelling fixes
 

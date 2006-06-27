@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.4 2006/04/18 23:25:44 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.5 2006/06/27 19:11:52 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,8 +56,7 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
     private final UIComponentImpl parent;
     
    	private JLabel topLabel = null;
-    
-    public ToolEditorDialog(
+   	public ToolEditorDialog(
     		List panelFactories
             ,ResourceChooserInternal rChooser
             ,ApplicationsInternal apps
@@ -66,8 +65,8 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
             ,Configuration conf, HelpServerInternal help, UIInternal ui) throws HeadlessException {
         super();          
         this.parent = new UIComponentImpl(conf,help,ui);
-   
-        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent,false, help);
+        
+        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent,help);
         this.setTitle("Task Editor");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -95,6 +94,20 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
     
     public Tool getTool() {
         return editedTool;
+    }
+    
+    /** call this before setVisible() to restrict possible selections to only cea apps
+     * only applies to next display of dialog - after which, goes back to 'all'
+     *
+     */
+    public void nextDisplayShowCEAOnly() {
+    	parametersPanel.putClientProperty(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY,Boolean.TRUE);
+    }
+    /** overridden - resets client property */
+    public void setVisible(boolean b) {
+    	super.setVisible(b);
+    	// once we've gotten here, modal dialogue has returned. so safe to remove the client property, if it exists
+    	parametersPanel.putClientProperty(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY,null);
     }
     
     
@@ -165,6 +178,9 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.5  2006/06/27 19:11:52  nw
+fixed to filter on cea apps when needed.
+
 Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 

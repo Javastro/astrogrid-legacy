@@ -1205,7 +1205,7 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
         		newStep.setResultVar(null);
         	if (newStep != null && newStep.getTool() == null) { // no tool selected yet.
                 try {
-                	Tool newTool = toolEditor.selectAndBuildTool(WorkflowBuilderImpl.this);
+                	Tool newTool = toolEditor.selectAndBuildCEATool(WorkflowBuilderImpl.this);
                 	if (newTool != null) {
                 		newStep.setTool(newTool);
                 		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode();
