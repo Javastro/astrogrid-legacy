@@ -1,0 +1,227 @@
+/**
+ * 
+ */
+package org.astrogrid.desktop.modules.system;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.SwingUtilities;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.votech.plastic.CommonMessageConstants;
+import org.votech.plastic.HubMessageConstants;
+import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.PlasticListener;
+import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
+import org.votech.plastic.incoming.handlers.MessageHandler;
+import org.votech.plastic.incoming.handlers.StandardHandler;
+
+/** Implementation of the tupperware container.
+ * @author Noel Winstanley
+ * @since Jun 16, 20061:52:12 PM
+ */
+public class TupperwareImpl implements TupperwareInternal, PlasticListener {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(TupperwareImpl.class);
+
+	
+	
+	private static final String iconURL = "http://www.astrogrid.org/image/AGlogo"; 
+	private static final String id = "ivo://org.astrogrid/ar";
+	/**
+	 * 
+	 * @param hub plastic hub to register to.
+	 * @param applicationName current name of workbench - may change, depending on variant.
+	 * @param description variable description of this workbench.
+	 * @param handlers contribution list of handlers to register. 
+	 */
+	public TupperwareImpl(UIComponent parent,PlasticHubListener hub, String applicationName, String description, List handlers, ReportingListModel model) {
+		super();
+		this.parent = parent;
+		this.model = model;
+		this.hub = hub;
+		Set supportedMessages = new HashSet();
+		// add default handlers to the list.. - contribution list is immutable, so need to take a copy
+		handlers = new ArrayList(handlers);
+		handlers.add(new StandardHandler(applicationName,description,id,iconURL,PlasticListener.CURRENT_VERSION));
+	    ApplicationRegisteredMessageHandler applicationRegisteredMessageHandler = new ApplicationRegisteredMessageHandler();
+		handlers.add(applicationRegisteredMessageHandler);
+		// process contributions..
+		MessageHandler firstHandler = null;
+		MessageHandler lastHandler = null;
+		for (Iterator i = handlers.iterator(); i.hasNext(); ) {
+			MessageHandler mh = (MessageHandler)i.next();
+			List messages = mh.getHandledMessages();
+			logger.debug(messages);
+			if (messages == null || messages.size() ==0) {
+				logger.error("Skipping - No messages registered for handler" + mh);
+				continue;
+			} 
+			supportedMessages.addAll(mh.getHandledMessages());
+			if (firstHandler == null) {
+				firstHandler = mh;
+			} else {
+				lastHandler.setNextHandler(mh);
+			}
+			lastHandler = mh; 
+		}
+		plasticHandler = firstHandler;
+		logger.info("Will handle messages:" + supportedMessages);
+		this.myPlasticId = hub.registerRMI(applicationName,new ArrayList(supportedMessages),this);
+		// now check to see if we've missed any applications already registered (unlikely).
+		List ids = hub.getRegisteredIds();
+		for (Iterator i = ids.iterator(); i.hasNext(); ) {
+			URI uri = (URI)i.next();
+			applicationRegisteredMessageHandler.interrogatePlasticApp(uri);
+		}
+	}
+	private final UIComponent parent;
+	private final URI myPlasticId;
+	private final ReportingListModel model;
+	private final PlasticHubListener hub;
+	private final MessageHandler plasticHandler;
+
+	public ReportingListModel getRegisteredApplicationsModel() {
+		return model;
+	}
+
+
+	// plastic listener interface.
+	public Object perform(URI arg0, URI arg1, List arg2) {
+		return plasticHandler.perform(arg0,arg1,arg2);
+	}
+
+	/** convenience method - calls a single application */
+	public Object singleTargetPlasticMessage(URI message, List args, URI target) {
+	    List targetSet = new ArrayList();
+	    targetSet.add(target);
+	    Map m = hub.requestToSubset(myPlasticId, message, args, targetSet);
+	    if (m == null || ! m.containsKey(target)) {
+	        return null;
+	    } else {
+	        return m.get(target);
+	    }
+	}
+	
+	/** broadcast a message */
+	public Map broadcastPlasticMessage(URI message, List args) {
+		return hub.request(myPlasticId,message,args);
+	}
+	
+	public void  broadcastPlasticMessageAsynch(URI message, List args) {
+		 hub.requestAsynch(myPlasticId,message,args);
+	}
+
+
+public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler {
+
+    /**
+	 * @author Noel Winstanley
+	 * @since Jun 27, 200612:43:43 AM
+	 */
+	private final class PlasticInterrogatorWorker extends BackgroundWorker {
+		/**
+		 * 
+		 */
+		private final URI id;
+
+		/**
+		 * @param parent
+		 * @param msg
+		 * @param id
+		 */
+		private PlasticInterrogatorWorker(UIComponent parent, String msg, URI id) {
+			super(parent, msg);
+			this.id = id;
+		}
+
+		protected Object construct() throws Exception {
+		    List noArgs = new ArrayList();
+		    String name =hub.getName(this.id) ;
+		    String description = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id);
+		    String version = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id);
+		    String icon =  (String)singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id);
+		    String ivorn = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id);
+		    List appMsgList = hub.getUnderstoodMessages(this.id);
+		    return new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,ivorn);
+		}
+
+		protected void doFinished(Object result) {
+			if (! model.contains(result)) {  // would be odd if it did already contain it.
+				model.addElement(result); // this should fire notifications, etc.
+			}          
+		}
+	}
+
+	protected List getLocalMessages() {
+        return dynamicButtonMessages;
+    }
+
+	private final List dynamicButtonMessages = new ArrayList() {
+	    {// init
+	        this.add(HubMessageConstants.APPLICATION_REGISTERED_EVENT);
+	        this.add(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT);
+	    }
+	};
+
+	  /** called to handle messages */
+    public Object perform(URI sender, URI message, List args) {
+        try {
+        if (message.equals(HubMessageConstants.APPLICATION_REGISTERED_EVENT)) {
+            interrogatePlasticApp(new URI(args.get(0).toString())); //redundant, but reliable.
+        }
+        if (message.equals(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT)) {            
+            removePlasticApp(new URI(args.get(0).toString()));
+        }
+        } catch (URISyntaxException e) { // don't care overmuch.
+            logger.warn(e);       
+        }
+        return null;
+    }
+    
+    /**
+     * inspect a plastic application, and create a button for it if it's suitable
+     * @param id plastic id for the application in inspect.
+     */
+    public void interrogatePlasticApp(final URI id) {
+    	if (id.equals(myPlasticId) || id.equals(hub.getHubId())) {
+    		return;
+    	}
+        (new PlasticInterrogatorWorker(parent, "Inspecting Plastic Application " + id, id)).start();
+    }
+
+    /** remove a plastic application from the container.
+     * 
+     * @param id plastic id of the application to remove 
+     */
+    public void removePlasticApp(final URI id) {
+         SwingUtilities.invokeLater(new Runnable() {
+            public void run() {        
+            	for (int i = 0; i < model.size(); i++) {
+            		PlasticApplicationDescription pad = (PlasticApplicationDescription)model.get(i);
+            		if (pad.getId().equals(id)) {
+            			model.remove(i);
+            		}
+            	}
+            }
+         });
+    }
+} // end inner class
+
+
+
+}
+
