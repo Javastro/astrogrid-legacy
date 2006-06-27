@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.47 2006/05/26 15:14:56 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.48 2006/06/27 10:34:07 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.DimensionTextField;
@@ -52,10 +53,12 @@ import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
+import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
 import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.votech.plastic.PlasticHubListener;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
@@ -64,7 +67,6 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /**AstroScope Implementation.
  * 
- * @todo hyperbolic doesn't always update to display nodes-to-download as yellow. need to add a redraw in somewhere. don't want to redraw too often though.
  */
 public class AstroScopeLauncherImpl extends AbstractScope 
     implements AstroScope, DecSexListener {
@@ -89,8 +91,8 @@ public class AstroScopeLauncherImpl extends AbstractScope
      */
     public AstroScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, PlasticHubListener hub) throws URISyntaxException {
-        super(conf,hs,ui,myspace,chooser,hub,
+                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, TupperwareInternal tupp, SendToMenu sendTo)  {
+        super(conf,hs,ui,myspace,chooser,tupp,sendTo,"AstroScope",
         		new DalProtocol[]{
         			new SiapProtocol(reg,siap)
         			, new SsapProtocol(reg,ssap)
@@ -100,26 +102,13 @@ public class AstroScopeLauncherImpl extends AbstractScope
         // before we can populate member variables - so need to pass in 'ses' later.
         posText.setSesame(ses);   
         this.ses = ses;
-        dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));       
+     // call out to vospec via plastic from now on.   
+     //   dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
+        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
         setIconImage(IconHelper.loadIcon("astroscope.png").getImage());
       
     }
-    protected String getScopeName() {
-    	return "Astroscope";
-    }
-    protected String getScopeRegId() {
-    	return "ivo://org.astrogrid/astroscope";
-    }
-    
-    protected String getScopeDescription() {
-    	return "Search and visualise matches in all available image, catalogue and  spectral archives by offset from user defined sky position and radius.";
-    }
-    
-    protected String getScopeIconURL() {
-    	return "http://software.astrogrid.org/app-icons/astroscope.png";
-    }
-    
 
 
 	protected JMenuItem createHistoryMenuItem(String historyItem) {
@@ -312,7 +301,6 @@ public class AstroScopeLauncherImpl extends AbstractScope
 			// so we'll resolve it ourselves - simplest thing to do - if we've got the position string..
 			// hopefully we've got something we can work with..
 			if (positionString != null) {
-				final String ps = positionString;
 				(new BackgroundOperation("Resolving object " + positionString) {
 					protected Object construct() throws Exception {
 						return ses.sesame(positionString.trim(),"x");
@@ -403,6 +391,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.48  2006/06/27 10:34:07  nw
+send-to menu, tupperware actions.
+
 Revision 1.47  2006/05/26 15:14:56  nw
 corrected icon paths.
 

@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.15 2006/05/26 15:14:56 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.16 2006/06/27 10:34:40 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,11 +33,13 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
+import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.freixas.jcalendar.JCalendarCombo;
 import org.votech.plastic.PlasticHubListener;
 
@@ -68,27 +70,15 @@ public class HelioScopeLauncherImpl extends AbstractScope
      */
     public HelioScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Stap stap, PlasticHubListener hub) throws URISyntaxException {
-        super(conf,hs,ui,myspace,chooser,hub, new DalProtocol[]{
+                                  Stap stap,TupperwareInternal tupp, SendToMenu sendTo) {
+        super(conf,hs,ui,myspace,chooser,tupp, sendTo,"HelioScope",new DalProtocol[]{
         		new StapProtocol(reg,stap)
         });
 
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
         setIconImage(IconHelper.loadIcon("helioscope.png").getImage());
     }
-    
-    protected String getScopeDescription() {
-    	return "Search and visualise matches in all available solar archives by offset from user defined start and end times";
-    }
-    protected String getScopeIconURL() {
-    	return "http://software.astrogrid.org/app-icons/helioscope.png";
-    }
-    protected String getScopeName() {
-    	return "Helioscope";
-    }
-    protected String getScopeRegId() {
-    	return "ivo://org.astrogrid/helioscope";
-    }
+   
     
     /** create a menu item that can populate input fields from a string */
 	protected JMenuItem createHistoryMenuItem(String historyItem) {
@@ -211,7 +201,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
                 final double ra = getRA();
                 final double dec = getDEC();
-                final String region = ""; //regionText.getText().trim();
+          //c      final String region = ""; //regionText.getText().trim();
                 final double raSize = Double.NaN; //needsParsedRegion() ?  getRA(region) : Double.parseDouble(region);
                 final double decSize = Double.NaN;  //needsParsedRegion() ? getDEC(region) : raSize;
                 
@@ -262,6 +252,9 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.16  2006/06/27 10:34:40  nw
+send-to menu, tupperware actions.
+
 Revision 1.15  2006/05/26 15:14:56  nw
 corrected icon paths.
 
