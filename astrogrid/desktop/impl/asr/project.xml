@@ -344,9 +344,9 @@
         		<artifactId>xmlsec</artifactId>
         		<version>1.3.0</version>
         		<type>jar</type>
- 	          <properties>
- 		          <dist.bundle>true</dist.bundle>
- 	          </properties>        		
+ 	<properties>
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>        		
         	</dependency>
     <!-- crypto provider that myproxy client requires -->
         	<dependency>
