@@ -1,4 +1,4 @@
-/*$Id: GlassPane.java,v 1.2 2005/09/02 14:03:34 nw Exp $
+/*$Id: GlassPane.java,v 1.3 2006/06/27 10:34:27 nw Exp $
  * Created on 14-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.desktop.modules.ui;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 import java.awt.AWTEvent;
@@ -33,6 +36,11 @@ import javax.swing.SwingUtilities;
  */
 public class GlassPane extends JComponent implements AWTEventListener
 {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(GlassPane.class);
+
     private Window theWindow;
     private Component activeComponent;
 /**
@@ -110,7 +118,7 @@ public synchronized static GlassPane mount(Component startComponent, boolean cre
             GlassPane aGlassPane = new GlassPane(startComponent);
             aContainer.setGlassPane(aGlassPane);
 
-            System.out.println("GlassPane mounted on " + aContainer.getClass());
+            logger.info("GlassPane mounted on " + aContainer.getClass());
             return aGlassPane;
         }
         else
@@ -185,6 +193,9 @@ public void setVisible(boolean value)
 
 /* 
 $Log: GlassPane.java,v $
+Revision 1.3  2006/06/27 10:34:27  nw
+logging fix.
+
 Revision 1.2  2005/09/02 14:03:34  nw
 javadocs for impl
 
