@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.3 2006/06/15 09:57:05 nw Exp $
+/*$Id: UIActionContribution.java,v 1.4 2006/06/27 19:13:37 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,6 @@ import org.astrogrid.desktop.modules.system.UIImpl.InvokerWorker;
  * when the action is triggered.
  * 
  * Method is invoked in a background worker thread.
- * @todo shouild I have any error checking on these setters?
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
  *
  */
@@ -168,6 +167,9 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.4  2006/06/27 19:13:37  nw
+minor tweaks
+
 Revision 1.3  2006/06/15 09:57:05  nw
 doc fix
 

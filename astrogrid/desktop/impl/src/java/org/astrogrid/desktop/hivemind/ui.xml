@@ -77,8 +77,8 @@
 			<parameter><![CDATA[
 			<html>
 			<h1>Astrogrid Workbench v${astrogrid.desktop.version}</h1>			
-			<b>http://software.astrogrid.org</b><br>
-			TODO - fill this in
+			<b>http://www.astrogrid.org/desktop</b><br>
+
 			<h2>Development</h2
 			<ul>
 			<li>Kevin Benson</li>
@@ -90,7 +90,7 @@
 			<li>Noel Winstanley</li>
 			</ul>			
 			<h2>Acknowledgements</h2>
-			CDS, Plastic, NVO services, blah blah.
+			Contains code, or integrates with services, provided by CDS, Starlink, Plastic, ESAVO, NVO..
 			
 			<h2>Copyright</h2>
 			link..

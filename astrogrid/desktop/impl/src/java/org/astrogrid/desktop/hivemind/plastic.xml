@@ -41,7 +41,7 @@
 			<parameter><![CDATA[
 			<html>
 			<h1>Astrogrid PLASTIC Hub v${hub.version}</h1>			
-			<b>http://software.astrogrid.org</b><br>
+			<b>http://www.astrogrid.org/desktop</b><br>
 			This is the reference implementation of the Plastic Hub.  PLASTIC is a widely
             supported specification for connecting client-side astronomical tools together.
 			

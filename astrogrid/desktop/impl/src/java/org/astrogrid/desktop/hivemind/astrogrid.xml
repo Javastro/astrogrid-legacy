@@ -97,7 +97,7 @@
 		<load service-id="messaging" />
 	</contribution>
 	
-	<!-- waiting on the tray remote processListener being sorted out
+	<!-- todo - needs testing 
 	<contribution configuration-id="hivemind.EagerLoad"  if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
 		<load service-id="trayRemoteProcessListener"/>
 	</contribution>
@@ -136,7 +136,7 @@
 			<parameter>overview</parameter>
 		</action>		
 	</contribution>	
-	
+	<!-- decided not to have these on the UI
 	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">					
 		<action text="AR for Java" name="acrJava" parentName="advanced" after="*"
 					iconName="source_java.png"
@@ -153,7 +153,7 @@
 						]]></tooltip>
 		</action>
 	</contribution>		
-	
+	-->
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
 		<action parentName="advanced" name="htmlACR" text="AR web interface"
 			iconName="overview48.gif"
@@ -174,8 +174,8 @@
 			<parameter><![CDATA[
 			<html>
 			<h1>Astrogrid Astro Runtime v${astrogrid.desktop.version}</h1>			
-			<b>http://software.astrogrid.org</b><br>
-			TODO - fill this in
+			<b>http://www.astrogrid.org/desktop</b><br>
+
 	<hr>
 			<h2>Build Information</h2>
 			Built: ${astrogrid.build.date}<br>

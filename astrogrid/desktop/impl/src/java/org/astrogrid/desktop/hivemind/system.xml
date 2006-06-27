@@ -298,7 +298,7 @@ System module.
 	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled)">
 		<action parentName="projects" name="agProject" text="AstroGrid" iconName="logo1.gif"
 			object="service:browser" methodName="openURL" before="*">
-			<parameter>http://software.astrogrid.org</parameter>
+			<parameter>http://www.astrogrid.org/desktop</parameter>
 		</action>		
 		<action parentName="help" name="bugreport" text="Report a bug / Request a feature"
 			object="service:browser" methodName="openURL" >
@@ -377,7 +377,7 @@ System module.
 			and the VO in general. Notable featues include <b>AstroScope</b>, <b>HelioScope</b> <br>
 			<b>Application Launcher</b> and <b>Workflow Editor</b>
 			]]></tooltip>
-			<parameter>http://software.astrogrid.org/userdocs/workbench.html</parameter>
+			<parameter>http://www.astrogrid.org/desktop</parameter>
 		</action>
 	</contribution>
 		
@@ -478,6 +478,7 @@ System module.
 		<load service-id="configuration" />
 		<load service-id="snitch" />
 		<load service-id="tupperware" />
+		<load service-id="update" />
 	</contribution>
 	
 	<!-- start this eager if running under webstart -->
@@ -818,6 +819,24 @@ System module.
  	 shared data model, to remove cycle between UIImpl andTupperwareImpl	
  	<create-instance class="org.astrogrid.desktop.modules.system.ReportingListModel" model="primitive" />
  </service-point>
+
+
+<service-point id="update" visibility="private" interface="java.lang.Runnable">
+ version checker
+</service-point>
+
+	<implementation service-id="update" if="not ((class javax.jnlp.ServiceManager) or (property system.snitch.disabled))">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.UpdateChecker">
+				<service>configuration</service>
+				<service>ui</service>
+				<service>browser</service>
+			</construct>
+		</invoke-factory>		
+	</implementation>
+	<implementation service-id="update"  if="(class javax.jnlp.ServiceManager) or (property system.snitch.disabled)">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>		
 
  </module> 
  

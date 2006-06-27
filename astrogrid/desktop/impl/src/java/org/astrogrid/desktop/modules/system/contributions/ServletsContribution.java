@@ -1,4 +1,4 @@
-/*$Id: ServletsContribution.java,v 1.3 2006/06/15 09:56:22 nw Exp $
+/*$Id: ServletsContribution.java,v 1.4 2006/06/27 19:13:37 nw Exp $
  * Created on 16-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.system.contributions;
  /** bean that declares a servlet to be deployed. 
- * @todo add parameter checking?
+ *
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Mar-2006
  *
  */
@@ -51,6 +51,9 @@ public class ServletsContribution {
 
 /* 
 $Log: ServletsContribution.java,v $
+Revision 1.4  2006/06/27 19:13:37  nw
+minor tweaks
+
 Revision 1.3  2006/06/15 09:56:22  nw
 doc fix
 
