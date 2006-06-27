@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.10 2006/05/17 23:57:45 nw Exp $
+/*$Id: RegistryImpl.java,v 1.11 2006/06/27 19:11:09 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,9 +42,7 @@ import org.w3c.dom.NodeList;
 
 /** implementation of the registry component
  * 
- * @todo optimize to take advantage of new registry delegate not returning 'wrapped' results - so no
- * need to parse doubly at this end. - but test first :)
- * @todo adjust reg dialogue to use keyword search
+ 
  * @todo reimplement usiong more efficient streaming soap toolkit
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
  *
@@ -330,6 +328,9 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.11  2006/06/27 19:11:09  nw
+adjusted todo tags.
+
 Revision 1.10  2006/05/17 23:57:45  nw
 documentation improvements.
 

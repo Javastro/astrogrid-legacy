@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.4 2006/06/15 09:49:08 nw Exp $
+/*$Id: SsapImpl.java,v 1.5 2006/06/27 19:13:07 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
 /** implementation of a component that does ssap queries.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
- * @todo - at moment inherits most of functionality from the siap impl. need to watch when specs diverge.
+ * @future - at moment inherits most of functionality from the siap impl. need to watch when specs diverge.
  */
 public class SsapImpl extends SiapImpl implements Ssap {
 
@@ -34,7 +34,7 @@ public class SsapImpl extends SiapImpl implements Ssap {
     public String getRegistryQuery() {
         return "Select * from Registry where " +
         " @xsi:type like '%SimpleSpectrumAccess'  " ;
-        //@todo        " and (not (@status = 'inactive' or @status='deleted') )";
+        //@fixme        " and (not (@status = 'inactive' or @status='deleted') )";
     }
 
   
@@ -44,6 +44,9 @@ public class SsapImpl extends SiapImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.5  2006/06/27 19:13:07  nw
+adjusted todo tags.
+
 Revision 1.4  2006/06/15 09:49:08  nw
 improvements coming from unit testing
 

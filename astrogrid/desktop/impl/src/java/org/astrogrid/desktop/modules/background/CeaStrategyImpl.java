@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.7 2006/06/27 10:26:11 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.8 2006/06/27 19:11:17 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -448,7 +448,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     }
 
     /** *UNUSED* - replaced by variant with security info.
-     * @todo remove once security stuff finalizes.
+     * @future remove once security stuff finalizes.
      * first checks whether it can be serviced by the local cea lib.
      * if not, delegates to a remote cea server 
      * @param application
@@ -562,6 +562,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.8  2006/06/27 19:11:17  nw
+adjusted todo tags.
+
 Revision 1.7  2006/06/27 10:26:11  nw
 findbugs tweaks
 

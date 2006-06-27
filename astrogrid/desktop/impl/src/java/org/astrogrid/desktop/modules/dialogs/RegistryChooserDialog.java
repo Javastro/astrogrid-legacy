@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserDialog.java,v 1.8 2006/04/18 23:25:44 nw Exp $
+/*$Id: RegistryChooserDialog.java,v 1.9 2006/06/27 19:11:31 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 
 /** wraps a dialogue around a registry chooser pane.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
- * @todo catch 'enter' and pass to search button, instead of 'ok' button. am trying todo this here, but don't seem to be working.
+ * @fixme catch 'enter' and pass to search button, instead of 'ok' button. am trying todo this here, but don't seem to be working.
  *
  */
 public class RegistryChooserDialog extends JDialog implements PropertyChangeListener {
@@ -175,6 +175,9 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
 /* 
 $Log: RegistryChooserDialog.java,v $
+Revision 1.9  2006/06/27 19:11:31  nw
+adjusted todo tags.
+
 Revision 1.8  2006/04/18 23:25:44  nw
 merged asr development.
 

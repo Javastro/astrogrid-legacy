@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.7 2006/05/26 15:23:45 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.8 2006/06/27 19:11:09 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -178,7 +178,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
 
     public void delete(URI arg0) throws NotFoundException, ServiceException, SecurityException, InvalidArgumentException {
         RemoteProcessStrategy s = selectStrategy(arg0);
-        // FIXME - problem here - if we delete a folder, but there's meanwhile polling
+        // @bug - problem here - if we delete a folder, but there's meanwhile polling
         // processes checking for it, a message may well be emitted that creates the folder again.
         // need to keep a temporary list of deleted resources, and filter out any further processing.
         try {
@@ -346,6 +346,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.8  2006/06/27 19:11:09  nw
+adjusted todo tags.
+
 Revision 1.7  2006/05/26 15:23:45  nw
 implemented snitching.
 

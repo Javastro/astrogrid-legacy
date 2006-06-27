@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.33 2006/06/27 10:28:47 nw Exp $
+/*$Id: RegistryChooserPanel.java,v 1.34 2006/06/27 19:12:49 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,7 @@ import org.w3c.dom.Document;
 
 /**
  * Implementation of the registry-google chooser.
- *@todo later add bookmark component. - won't affect public inteface, just implementation
+ * @future replace with a registry google
  */
 public class RegistryChooserPanel extends JPanel implements ActionListener {
     
@@ -485,7 +485,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
        }).start();
     }
-    
+    /** @todo implement using a syntax-tree approach - operator precedence, etc, etc */
    private ResourceInformation[] query(String keywords)  throws NotFoundException, ServiceException {
        String sql = "Select * from Registry where "; 
        boolean shallFilter = filter != null && filter.trim().length() > 0;
@@ -646,6 +646,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.34  2006/06/27 19:12:49  nw
+adjusted todo tags.
+
 Revision 1.33  2006/06/27 10:28:47  nw
 findbugs tweaks
 

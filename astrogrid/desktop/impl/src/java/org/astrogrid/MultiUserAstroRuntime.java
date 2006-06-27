@@ -13,7 +13,7 @@ public class MultiUserAstroRuntime {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-// @todo later
+// @future implement
 	}
 
 }

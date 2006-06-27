@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.13 2006/06/27 10:23:51 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.14 2006/06/27 19:11:09 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -119,7 +119,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
         return "Select * from Registry where " +
     " (@xsi:type like '%CeaApplicationType' or " +
     " @xsi:type like '%CeaHttpApplicationType')" ; //+
-    //@todo" and ( not( @status = 'inactive' or @status = 'deleted') )";
+    //@fixme" and ( not( @status = 'inactive' or @status = 'deleted') )";
     }
     
 
@@ -568,6 +568,9 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.14  2006/06/27 19:11:09  nw
+adjusted todo tags.
+
 Revision 1.13  2006/06/27 10:23:51  nw
 findbugs tweaks
 

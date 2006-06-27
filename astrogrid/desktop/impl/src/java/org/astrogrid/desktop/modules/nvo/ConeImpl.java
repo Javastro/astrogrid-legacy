@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.4 2006/06/15 09:49:21 nw Exp $
+/*$Id: ConeImpl.java,v 1.5 2006/06/27 19:13:17 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ public class ConeImpl extends DALImpl implements Cone {
 		" and vr:identifier like 'ivo://CDS/%' " + 
 		" and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN'  ) " + 
         " )  ";
-        //@todo and (not ( @status = 'inactive' or @status='deleted') )";
+        //@fixme and (not ( @status = 'inactive' or @status='deleted') )";
     }
 
 }
@@ -75,6 +75,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.5  2006/06/27 19:13:17  nw
+adjusted todo tags.
+
 Revision 1.4  2006/06/15 09:49:21  nw
 improvements coming from unit testing
 
