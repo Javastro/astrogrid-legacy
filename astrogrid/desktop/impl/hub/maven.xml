@@ -18,11 +18,11 @@
 		
 		<goal name="astrogrid.version">
 			<echo file="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/astrogrid.version">
-			astrogrid.desktop.version=${astrogrid.desktop.version}
-			astrogrid.build.date=${maven.jar.manifest.attribute.BuildDate}
-			astrogrid.build.location=${maven.jar.manifest.attribute.BuildLocation}
-			astrogrid.build.by=${user.name}
-			astrogrid.build.jdk=${java.version}
+astrogrid.desktop.version=${astrogrid.desktop.version}
+astrogrid.build.date=${maven.jar.manifest.attribute.BuildDate}
+astrogrid.build.location=${maven.jar.manifest.attribute.BuildLocation}
+astrogrid.build.by=${user.name}
+astrogrid.build.jdk=${java.version}
 			</echo>
 		</goal>
 <!-- javaapp -->		
