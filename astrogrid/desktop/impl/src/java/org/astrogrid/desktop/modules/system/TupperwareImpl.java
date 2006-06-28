@@ -39,8 +39,8 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 
 	
 	
-	private static final String iconURL = "http://www.astrogrid.org/image/AGlogo"; 
-	private static final String id = "ivo://org.astrogrid/ar";
+	private static final String ICON_URL = "http://www.astrogrid.org/image/AGlogo"; 
+	private static final String AR_IVORN = "ivo://org.astrogrid/ar";
 	/**
 	 * 
 	 * @param hub plastic hub to register to.
@@ -56,8 +56,8 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 		Set supportedMessages = new HashSet();
 		// add default handlers to the list.. - contribution list is immutable, so need to take a copy
 		handlers = new ArrayList(handlers);
-		handlers.add(new StandardHandler(applicationName,description,id,iconURL,PlasticListener.CURRENT_VERSION));
-	    ApplicationRegisteredMessageHandler applicationRegisteredMessageHandler = new ApplicationRegisteredMessageHandler();
+		handlers.add(new StandardHandler(applicationName,description,AR_IVORN,ICON_URL,PlasticListener.CURRENT_VERSION));
+		ApplicationRegisteredMessageHandler applicationRegisteredMessageHandler = new ApplicationRegisteredMessageHandler();
 		handlers.add(applicationRegisteredMessageHandler);
 		// process contributions..
 		MessageHandler firstHandler = null;
@@ -81,6 +81,8 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 		plasticHandler = firstHandler;
 		logger.info("Will handle messages:" + supportedMessages);
 		this.myPlasticId = hub.registerRMI(applicationName,new ArrayList(supportedMessages),this);
+		// only now enable appRegistered message handler - otherwise we just get notified about ourselves.
+		applicationRegisteredMessageHandler.enable();
 		// now check to see if we've missed any applications already registered (unlikely).
 		List ids = hub.getRegisteredIds();
 		for (Iterator i = ids.iterator(); i.hasNext(); ) {
@@ -128,6 +130,13 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 
 public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler {
 
+	private boolean enabled = false;
+	public void enable() {
+		enabled  = true;
+	}
+		
+	
+	
     /**
 	 * @author Noel Winstanley
 	 * @since Jun 27, 200612:43:43 AM
@@ -150,17 +159,20 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 
 		protected Object construct() throws Exception {
 		    List noArgs = new ArrayList();
+		    String ivorn = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id);
+		    if (AR_IVORN.equals(ivorn)) {
+		    	return null; // it's only ourselves
+		    }
 		    String name =hub.getName(this.id) ;
 		    String description = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id);
 		    String version = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id);
 		    String icon =  (String)singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id);
-		    String ivorn = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id);
 		    List appMsgList = hub.getUnderstoodMessages(this.id);
 		    return new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,ivorn);
 		}
 
 		protected void doFinished(Object result) {
-			if (! model.contains(result)) {  // would be odd if it did already contain it.
+			if (result != null && ! model.contains(result)) {  // would be odd if it did already contain it.
 				model.addElement(result); // this should fire notifications, etc.
 			}          
 		}
@@ -179,6 +191,7 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 
 	  /** called to handle messages */
     public Object perform(URI sender, URI message, List args) {
+    	if (enabled) {
         try {
         if (message.equals(HubMessageConstants.APPLICATION_REGISTERED_EVENT)) {
             interrogatePlasticApp(new URI(args.get(0).toString())); //redundant, but reliable.
@@ -189,6 +202,7 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
         } catch (URISyntaxException e) { // don't care overmuch.
             logger.warn(e);       
         }
+    	}
         return null;
     }
     
@@ -197,7 +211,7 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
      * @param id plastic id for the application in inspect.
      */
     public void interrogatePlasticApp(final URI id) {
-    	if (id.equals(myPlasticId) || id.equals(hub.getHubId())) {
+    	if (!enabled || id.equals(myPlasticId) || id.equals(hub.getHubId())) {
     		return;
     	}
         (new PlasticInterrogatorWorker(parent, "Inspecting Plastic Application " + id, id)).start();

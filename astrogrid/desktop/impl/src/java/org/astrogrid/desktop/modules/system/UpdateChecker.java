@@ -30,21 +30,20 @@ public class UpdateChecker implements Runnable {
 
 	private static final String versionURLString = "http://www.astrogrid.org/desktop/version.txt";
 	private static final String downloadURLString = "http://www.astrogrid.org/desktop";
-	public UpdateChecker(Configuration conf, UIInternal ui, BrowserControl browser) throws MalformedURLException {
+	public UpdateChecker(UIInternal ui, BrowserControl browser, String currentVersion) throws MalformedURLException {
 		versionURL = new URL(versionURLString);
 		downloadURL = new URL(downloadURLString);
-		this.conf = conf;
 		this.ui = ui;
 		this.browser = browser;
+		this.currentVersion = currentVersion;
 	}
+	protected final String currentVersion;
 	protected final URL versionURL;
 	protected final URL downloadURL;
 	protected final UIInternal ui;
-	protected final Configuration conf;
 	protected final BrowserControl browser;
 	public void run() {
-		final String currentVersion = conf.getKey("astrogrid.desktop.version");
-		if (currentVersion != null &&  conf.getKey("asr.mode") == null) { // not in development, and not in headless mode.
+		if (! currentVersion.equals( "${astrogrid.desktop.version}") ) { // not in development mode
 			(new BackgroundWorker(ui,"Checking for software updates") {
 				protected Object construct() throws Exception {
 					
@@ -52,7 +51,9 @@ public class UpdateChecker implements Runnable {
 					try {
 						vr = new BufferedReader(new InputStreamReader(versionURL.openStream()));
 					String newVersion = vr.readLine().trim();
-					return currentVersion.equals(newVersion) ? null : newVersion;
+					logger.info("Current Version: " + currentVersion);
+					logger.info("New Version: " + newVersion);
+					return currentVersion.compareTo(newVersion) < 0 ? newVersion : null;
 					} finally {
 						if (vr != null) {
 							try {
@@ -78,7 +79,7 @@ public class UpdateChecker implements Runnable {
 				}
 				
 				protected void doError(Throwable ex) {
-					// don't matter - fail silently.
+					//logger.error("Failed to check for update",ex);
 				}
 			}).start();
 		}
