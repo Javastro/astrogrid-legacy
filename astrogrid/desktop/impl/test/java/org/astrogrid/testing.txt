@@ -2,6 +2,7 @@ Description of Workbench Testing.
 ======================
 
 For efficiencies sake, test are split into 3 sets
+see also http://www.astrogrid.org/desktop/contributing/testing/
 
 Unit
 Integration
