@@ -478,7 +478,6 @@ System module.
 		<load service-id="configuration" />
 		<load service-id="snitch" />
 		<load service-id="tupperware" />
-		<load service-id="update" />
 	</contribution>
 	
 	<!-- start this eager if running under webstart -->
@@ -504,6 +503,10 @@ System module.
 	<!-- when running in workbench mode, tweak the ui up -->
 	<contribution configuration-id="hivemind.Startup" if="property workbench.mode">
 		<startup object="instance:org.astrogrid.desktop.modules.system.SwingSetup" />
+	</contribution>
+	<!-- check for updates -->
+	<contribution configuration-id="hivemind.Startup" if="not (property asr.mode)">
+		<startup object="service:update" />
 	</contribution>
 	
 	
@@ -771,13 +774,17 @@ System module.
 	
 	
 	<service-point id="snitch" interface="org.astrogrid.desktop.modules.system.SnitchInternal">
+		Reporting Service
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.SnitchImpl">
 				<service>ui</service>
-				<service>configuration</service>
+				<string>${astrogrid.desktop.version}</string>
+				<string>${app.mode}</string>
+				<service>plasticList</service>
 			</construct>
 		</invoke-factory>
 	</service-point>
+	
 	<implementation service-id="snitch" if="property system.snitch.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
@@ -825,16 +832,16 @@ System module.
  version checker
 </service-point>
 
-	<implementation service-id="update" if="not ((class javax.jnlp.ServiceManager) or (property system.snitch.disabled))">
+	<implementation service-id="update" if="not ((class javax.jnlp.ServiceManager) or (property system.update.disabled) or (property asr.mode))">
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.UpdateChecker">
-				<service>configuration</service>
 				<service>ui</service>
 				<service>browser</service>
+				<string>${astrogrid.desktop.version}</string>
 			</construct>
 		</invoke-factory>		
 	</implementation>
-	<implementation service-id="update"  if="(class javax.jnlp.ServiceManager) or (property system.snitch.disabled)">
+	<implementation service-id="update"  if="(class javax.jnlp.ServiceManager) or (property system.update.disabled) or (property asr.mode)">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>		
 
