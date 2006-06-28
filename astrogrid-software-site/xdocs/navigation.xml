@@ -36,24 +36,7 @@
 		  <!-- NWW - not needed. requirements for portal and workbench documented separately.
 			          <item name="Prerequisites" href="/userdocs/prerequisites.html" />
 		  -->			
-          <item name="Portal (web)" href="/userdocs/portal.html" collapse="true">
-		    <item name="User Guide" href="/components/portal/userguide/introduction.html">
-				<item name="Introduction" 
-					href="/components/portal/userguide/introduction.html"/>
-				<item name="Logon" href="/components/portal/userguide/logon.html"/>
-				<item name="Home Page" href="/components/portal/userguide/homepage.html"/>
-				<item name="MySpace Explorer" 
-					href="/components/portal/userguide/myspace-explorer.html"/>
-				<item name="Resource Browser" 
-					href="/components/portal/userguide/resource-browser.html"/>
-				<item name="Query Editor" 
-					href="/components/portal/userguide/query-editor.html"/>
-				<item name="Workflow Editor" 
-					href="/components/portal/userguide/workflow-editor.html"/>
-				<item name="Job Monitor" 
-					href="/components/portal/userguide/job-monitor.html"/>
-			</item>
-		  </item>
+
           <item name="Workbench (GUI)" href="/userdocs/workbench.html" collapse="true">
 	         <item name="Java Web Start Guide" href="/jnlp/userguide.html" />		  			
           </item>
@@ -64,9 +47,9 @@
           <!--item name="What first?" href="/usermanual/whatfirst.html" /-->
           <!--item name="Where next?" href="/usermanual/wherenext.html" /-->
                         <!-- add rest in here - from wiki -->
-          <item name="Tutorials" href="/usermanual/tutorials/index.html">
+          <!--item name="Tutorials" href="/usermanual/tutorials/index.html"-->
                         <!-- add tutorials from wiki in here -->
-          </item><!-- end tutorials -->
+          <!--/item--><!-- end tutorials -->
         </item><!-- end usermanual -->
 
         <!--item name="Reference" href="/usermanual/reference/index.html" collapse="true"--> <!-- CLQ put this back when we have more references in this section-->
@@ -83,8 +66,28 @@
               <item name="JEScript Recipes"   href="/components/jes/userguide-recipes.html" />
             </item><!-- end workflow manual -->
          <!--/item--> <!-- end reference section -->
-
+         
+          <item name="Web portal (depreciated)" href="/userdocs/portal.html" collapse="true">
+		    <item name="User Guide" href="/components/portal/userguide/introduction.html">
+				<item name="Introduction" 
+					href="/components/portal/userguide/introduction.html"/>
+				<item name="Logon" href="/components/portal/userguide/logon.html"/>
+				<item name="Home Page" href="/components/portal/userguide/homepage.html"/>
+				<item name="MySpace Explorer" 
+					href="/components/portal/userguide/myspace-explorer.html"/>
+				<item name="Resource Browser" 
+					href="/components/portal/userguide/resource-browser.html"/>
+				<item name="Query Editor" 
+					href="/components/portal/userguide/query-editor.html"/>
+				<item name="Workflow Editor" 
+					href="/components/portal/userguide/workflow-editor.html"/>
+				<item name="Job Monitor" 
+					href="/components/portal/userguide/job-monitor.html"/>
+			</item>
+		  </item>  
       </item><!-- end information for users -->
+      
+    
     </menu>
 
 <!--

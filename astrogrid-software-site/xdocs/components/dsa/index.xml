@@ -1,42 +1,86 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.1 2005/08/23 15:56:42 clq2 Exp $ -->
+<!-- $Id: index.xml,v 1.2 2006/06/28 16:23:13 clq2 Exp $ -->
 <document>
   <properties>
-    <title>Publisher's AstroGrid Library</title>
+    <title>Astrogrid DSA/Catalog</title>
     <author email="dave@ast.cam.ac.uk">Dave Morris</author>
     <author email="mch@roe.ac.uk">Martin Hill</author>
   </properties>
   <body>
-                <section name="Publisher's AstroGrid Library Overview">
-                <p>
-                This component consists of a set of java library jars to help
-                data owners publish their data to the International Virtual
-                Observatory.
-                </p>
-                <p>
-            So there are libraries for processing ADQL/SQL and ADQL/XML documents, and
-               for managing queries and streaming tables and creating the right SQL for
-               different RDBMSs and so on.
-               </p>
-               <p>There are also two 'ready made' webapps in WAR form for common data forms, including a skycatserver for
-               sky object catalogues stored in RDBMS tables.
-               </p>
-                </section>
-<section name="Introduction">
-               <p>These documents describe how to install these webapps; for
-               details on the libraries, see the javadoc associated with each
-               jar. There is also a <a href='rollyourown.html'>page</a> on building your own webapp from the
-               library.
-                </p>
-<p>Carry out the following steps:
+    <section name="Astrogrid DSA/Catalog Component Overview">
+      <p>
+      This component consists of a set of java library jars to help
+      data owners publish their RDBMS catalog data to the 
+      International Virtual
+      Observatory.
+      </p>
+      <p>
+        It currently provides the following IVOA interfaces:
+      </p>
+        <ul>
+          <li>
+            <a href='services/CommonExecutionConnectorService'>CEA</a> - an AstroGrid Common
+            Execution Architecture interface for use by the AstroGrid Job Execution Service.  This interface accepts incoming queries in the IVOA's
+            <a href="http://www.ivoa.net/Documents/latest/ADQL.html">ADQL</a>
+            query language.
+           </li>
+
+           <li>
+             <a href='SubmitCone'>ConeSearch</a> - An <a href='http://us-vo.org/pubs/files/co
+               nesearch.html'>NVO Cone Search</a>, a simple search on sky position.  <em>(This
+               interface is optional, and can be disabled in your DSA/catalog configuration.)
+             </em>
+           </li>
+        </ul>
+
+      <p>
+        The DSA/Catalog component can be configured to connect to any 
+        RDBMS system for which a 
+        <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver is 
+        provided.
+      </p>
+        
+      <p>
+        It uses an XSLT stylesheet to perform translation from the input
+        ADQL/xml query language to the system-specific SQL required by
+        the RDBMS.  Currently, stylesheets are provided for the following
+        systems:
+      </p>
+  <ul>
+      <li><a href="http://www.mysql.com/">MySQL</a> - Open Source SQL database (version 4.1.16)</li>
+      <li><a href="http://www.postgresql.org/">PostgreSQL</a> - Open Source SQL
+                  database (version 7.2.3)</li>
+      <li><a href="http://www.microsoft.com/sql/">SQL Server</a> - Microsoft SQL Server (version 8.00) </li>
+      <li><a href="http://hsqldb.sourceforge.net/">HSQLDB</a> - pure-Java RDBMS (version 1.8.0). For testing purposes or serving small databases based on textfiles. </li>
+      </ul>
+        
+      <p>
+        We welcome community contributions of stylesheets for other 
+        RDBMS systems.
+     </p>
+     <p>The DSA/Catalog component is downloaded as a "web archive" (WAR) file,
+       which should be installed into a tomcat container.  By default, it
+       is configured to run against a small sample dataset stored in an 
+       embedded HSQLDB RDBMS.
+     </p>
+
+  <p>The documents on this website describe how to obtain and install the 
+    DSA/Catalog web application.  Once installed, the application 
+    provides its own documentation explaining how to configure 
+    the web application to serve your own data.
+      </p>
+
+<p>You will need to do the following:
 </p>
 <ul><li>Install the system <a href='pre-requisites.html'>pre-requisites</a>
-</li><li><a href='download.html'>Download</a> the right PAL webapp
+    </li><li><a href='download.html'>Download</a> the DSA/Catalog web application
 </li><li><a href='deploy.html'>Deploy</a> the webapp in a webservice container (eg Tomcat)
-</li><li><a href='configure.html'>Configure</a> your database and PAL
+</li><li><a href='configure.html'>Configure and register</a> your DSA/Catalog.
+<!--
 </li><li><a href='describe.html'>Describe your data</a>
 </li><li><a href='verify.html'>Verify your installation is OK</a>
 </li><li><a href='register.html'>Register</a> your data service with the Virtual Observatory
+-->
 </li>
 </ul>
 </section>

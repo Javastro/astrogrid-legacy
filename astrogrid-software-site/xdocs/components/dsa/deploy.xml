@@ -1,105 +1,91 @@
 <?xml version="1.0"?>
-<!-- $Id: deploy.xml,v 1.1 2005/08/23 15:56:42 clq2 Exp $ -->
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<!-- $Id: deploy.xml,v 1.2 2006/06/28 16:23:13 clq2 Exp $ -->
 <document>
 	<properties>
-		<title>Deploying a PAL webapp</title>
+     <title>Deploying the DSA/Catalog webapp</title>
 		<author email="dave@ast.cam.ac.uk">Dave Morris</author>
 		<author email="mch@roe.ac.uk">Martin Hill</author>
 	</properties>
 	<body>
-		<section name="Deploy PAL">
+     <section name="Deploy DSA/Catalog">
 			<p>
-				This page describes how to deploy a PAL web application (such as skycatserver) to
-				a Tomcat web service container.  Other web service containers might hopefully hopefully
-				have similar installation procedures.
+           This page describes how to deploy the DSA/Catalog web application 
+           to a Tomcat web service container.  If you are trying DSA/Catalog
+           in a different container (untested and not recommended), follow
+           the installation instructions for that container.
 			</p>
 		</section>
 		<section name='Installing the WAR file'>
 			<p>
-				You can use the Tomcat manager to install a PAL webapp (see the Tomcat manager instructions)
-				or you can do it by hand - For example, copy <code>skycatserver.war</code> to the
-				<code>webapps</code> directory of your tomcat installation and
-				restart tomcat:
-<code>
-    $ cp skycatserver.war ${CATALINA_HOME}/webapps
-    $ ${CATALINA_HOME}/bin/shutdown.sh
-    $ ${CATALINA_HOME}/bin/startup.sh
-</code>
+           You can use the Tomcat manager interface to install the 
+           DSA/Catalog webapp (see the Tomcat manager instructions).
+         </p>
+       <p>
+         Alternatively, you can install it "by hand" by simply copying
+         the DSA/Catalog WAR file into the
+         <code>webapps</code> directory of your tomcat installation.
+         Tomcat should then automatically install the web application.
+         (If it doesn't, try restarting tomcat).
 			</p>
 			<p>
-				We recommend using an unversioned, generic name for the code base, and then using
-				specific contexts (see next section).  That way you can upgrade the code base with
-				newer versions of the webapp without disturbing configurations.
+            We recommend changing the name of the war file from something
+            version-specifig (e.g. <code>astrogrid-dsa-catalog-2006.3pl.war</code>) to something generic (e.g. <code>astrogrid-dsa-catalog.war</code>) to
+            simplify future upgrading.
 			</p>
 			<p>
-				Once tomcat has been restarted, the pal web application will be unpackaged into the directory eg <code>webapps/skycatserver</code>. If installed on your
-				machine in the default location, the web application root will be <a href="http://localhost:8080/skycatserver">http://localhost:8080/skycatserver</a>.
+           Once the web application has been installed, a link to its front
+           page should be visible from within the Tomcat Manager interface
+           , or you can
+           visit 
+           <code>http://&lt;hostname&gt;:&lt;port&gt;/&lt;webapp-name&gt;/</code>,
+           where <code>&lt;hostname&gt;</code> is the fully-qualified 
+           name of the machine where tomcat is installed,
+           <code>&lt;port&gt;</code> is the port on which tomcat is 
+           installed, and <code>&lt;webapp-name&gt;</code> is the name
+           of the war file you installed (minus the <code>.war</code> suffix).  
 			</p>
 		</section>
-		<section name="Recommended Tomcat Configuration">
-			<p>
-				When installing several PALs to connect to several databases from one server,
-				you can add many 'contexts' that actually point to one single webapp.
-				This means you can have many contexts with
-				their own configuration files, with one webapp to update, and updates to that
-				webapp will not disturb any changes you have made to the contexts.
-			</p>
-			<p>
-				For example, in Tomcat add this to your server container's server.xml (or, in
-				later versions, this can be in its own xml file - eg pal-6df-context.xml - and
-				placed in tomcat's conf directory):
-<code>
-    &lt;Context path="/pal-6df"
-             docBase="/usr/bin/tomcat/webapps/skycatserver"
-               debug="9" reloadable="true"&gt;
 
-       &lt;Environment name="org.astrogrid.config.filename"
-                      value="/usr/bin/tomcat/conf/pal-6df.properties"
-                        type="java.lang.String" /&gt;
-        &lt;/Context&gt;
-</code>
+		<section name='Configuring the administrator account'>
+			<p>
+           Most of the web pages in the DSA/Catalog web application's public
+           interface are password-protected, to restrict access to system
+           administrators only.
 			</p>
 			<p>
-				This creates a context 'pal-6df' that actually forwards all requests to the
-				'skycatserver' webapp but with the properties set from the file 'pal-6df.properteis'.  You can
-				then edit the pal-6df context's environment variables with the user-friendly Admin
-				application and/or the pal-6df.properties file, and they will not be overwritten when
-				you update the 'skycatserver' webapp.
-			</p>
-			<p>
-				Similarly you can have many 'virtual contexts' like this that refer to one
-				docbase, and this saves not only disk space and tomcat's runtime memory, but also
-				effort when updating the software.
-			</p>
-		</section>
-		<section name='Configuring the admin account'>
-			<p>
-				The PAL webapp administration pages require a user 'role', as they provide features
-				that should be protected from the general public.
-			</p>
-			<p>
-				For tomcat, edit the tomcat-users.xml file in tomcat's conf directory, and add the following role and user:
+           To set up administrative access to the protected pages, 
+           edit the <code>tomcat-users.xml</code> file in tomcat's 
+           <code>conf</code> directory, and add the following role:
+         </p>
+<p>
 <code>
-    &lt;tomcat-users&gt;
-        ....
-        &lt;role rolename="paladmin"/&gt;
-        ....
-        &lt;user username="eurovo" password="eurovo" roles="paladmin"/&gt;
-        ....
-    &lt;/tomcat-users&gt;
+&lt;tomcat-users&gt;<br/>
+....<br/>
+&lt;role rolename="dsaadmin"/&gt;<br/>
+....<br/>
+&lt;user username="eurovo" password="eurovo" roles="dsaadmin"/&gt;<br/>
+....<br/>
+&lt;/tomcat-users&gt;<br/>
 </code>
-				...and/or you may want to add the role to other users, such as the manager.
-			</p>
+</p>
+<p>
+and then create an administration user who can log in with that role (or
+add the role to an existing admin user's configuration):
+</p>
+<p>
+<code>
+&lt;tomcat-users&gt;<br/>
+....<br/>
+&lt;user username="eurovo" password="eurovo" roles="dsaadmin"/&gt;<br/>
+....<br/>
+&lt;/tomcat-users&gt;<br/>
+</code>
+</p>
 			<p>
-				Tomcat will not automatically load the new user and role information, so you will
+           Tomcat will not automatically load the new user and role 
+           information, so you will
 				need to stop and start Tomcat to get it to recognise the new user account.
-			</p>
-		</section>
-		<section name='Minium properties'>
-			<p>
-				As well as the above, the property 'datacenter.url' must be set before any
-				<a href='verify.html'>verification</a> can be carried out even with the <a href='samplestars.html'>sample dataset </a>.
-				It should be set to the 'root' URL of the webapp; for example <code>http://astrogrid.roe.ac.uk/pal-usnob/</code>.
 			</p>
 		</section>
 		<section name="Logging">
@@ -115,6 +101,116 @@
 				stored in pal.log, and DEBUG and higher messages are stored in a rolling file (it is
 				size limited) called pal-debug.log.  These latter two are found in ${CATALINA_HOME}/logs/ when
 				running under Tomcat.
+			</p>
+		</section>
+
+		<section name="Multiple virtual installations ">
+			<p>
+           When installing several DSA/Catalogs to connect to multiple 
+           databases from one server, you can actually share a single physical
+           DSA/Catalog installation between multiple "virtual" 
+           DSA/Catalog services.
+			</p>
+           <p>
+           Each virtual catalog can have its own configuration file, but 
+           there will only be a single physical web application installation
+           to upgrade and maintain.
+			</p>
+         <h3> Instructions for Tomcat 5.x </h3>
+
+         <p>
+           In Tomcat 5, create a new xml configuration file:
+         </p>
+<pre>
+  $TOMCAT_HOME/conf/Catalina/localhost/$VIRTUAL_DSA.xml
+</pre>
+             <p>
+               (where <tt>$VIRTUAL_DSA</tt> is the name you are giving to
+               this particular virtual DSA installation, and 
+               <tt>$TOMCAT_HOME</tt> is the root of your tomcat installation) 
+                and put the following contents in it:
+              </p>
+
+                <p>
+<tt>
+&lt;?xml version='1.0' encoding='utf-8'?&gt;<br/>
+&lt;Context displayName="(Friendly name for this DSA)" <br/>
+docBase="<font color="green">$TOMCAT_HOME</font>/webapps/<font color="cyan">$ASTROGRID_DSA</font>"<br/>
+path="/<font color="blue">$VIRTUAL_DSA"</font><br/>
+workDir="work/Catalina/localhost/<font color="blue">$VIRTUAL_DSA</font>"&gt;<br/>
+<br/>
+&lt;Environment description="Configuration filename" <br/>
+name="org.astrogrid.config.filename" override="false" type="java.lang.String"<br/>
+value="<font color="red">/path/to/properties/$VIRTUAL_PROPERTIES_FILENAME</font>"&gt;<br/>
+<br/>
+&lt;/Context&gt;
+                </tt>
+              </p>
+
+            <p><strong>IMPORTANT:</strong> Change the 
+              <font color="cyan">cyan element</font> to match the name
+                  of your installed webapp in the $TOMCAT_HOME/webapps directory,
+            the <font color="blue">blue elements</font> to the desired name
+             for your virtual DSA,
+             the <font color="red">red element</font> to match the full path to 
+             the properties file for your new virtual DSA, and the 
+             <font color="green">green</font> element to match the full path 
+             to your tomcat installation).
+            </p>
+
+            <p>Once you have finished, <strong>restart tomcat</strong> 
+              to reload the configuration for your new virtual DSA/catalog 
+              webapp.
+            </p>
+			<p>
+           The new context <code>$VIRTUAL_DSA</code> actually 
+           forwards all requests to the base <code>$ASTROGRID_DSA</code> webapp,
+           but with the configuring properties set from the file 
+           <code>$VIRTUAL_PROPERTIES_FILENAME</code>.  These properties 
+           will not be 
+           overwritten when you update the base <code>$ASTROGRID_DSA</code>
+           webapp.
+			</p>
+			<p>
+           Similarly you can have many 'virtual contexts' like this that 
+           refer to one docbase, and this saves not only disk space and 
+           tomcat's runtime memory, but also
+			effort when updating the software.
+			</p>
+
+         <h3>Instructions for Tomcat 4.x (not recommended - please use 5.x)</h3>
+			<p>
+           In Tomcat 4.x, add this to your server container's server.xml :
+         </p>
+
+<p>
+<tt>
+&lt;Context path="/<font color="blue">$VIRTUAL_DSA</font>"<br/>
+docBase="<font color="green">$TOMCAT_HOME</font>/webapps/<font color="cyan">$ASTROGRID_DSA</font>"<br/>
+  debug="9" reloadable="true"&gt; <br/>
+&lt;Environment name="org.astrogrid.config.filename"<br/>
+value="<font color="red">/path/to/properties/$PROPERTIES_FILENAME</font>" type="java.lang.String" /&gt;<br/>
+&lt;/Context&gt;
+</tt>
+</p>
+            <p><strong>IMPORTANT:</strong> Change the 
+              <font color="cyan">cyan element</font> to match the name
+                  of your installed webapp in the $TOMCAT_HOME/webapps directory,
+            the <font color="blue">blue elements</font> to the desired name
+             for your virtual DSA,
+             the <font color="red">red element</font> to match the full path to 
+             the properties file for your new virtual DSA, and the 
+             <font color="green">green</font> element to match the full path 
+             to your tomcat installation).
+            </p>
+			<p>
+           The above entry creates a context 
+           <code>$VIRTUAL_DSA</code> that actually 
+           forwards all requests to the <code>$ASTROGRID_DSA</code> webapp,
+           but with the configuring properties set from the file 
+           <code>$PROPERTIES_FILENAME</code>.  These properties will not be 
+           overwritten when you update the base <code>$ASTROGRID_DSA</code>
+           webapp.
 			</p>
 		</section>
 	</body>

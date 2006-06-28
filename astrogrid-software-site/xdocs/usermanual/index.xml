@@ -2,14 +2,69 @@
 <document>
     <properties>
         <title>User Manual</title>
-        <author email="enter">Your Name</author>
+        <author email="enter">CLQ</author>
     </properties>
     <body>
-		<section name="User Manual Front Page">
-			<p>
-	This section gives you a kick start on how to use Astrogrid software.
-			</p>
+		<section name="List of tutorials"> 
+		 <!--   <subsection name="Introduction"><p>
+		    <ul>
+		    <li>Workbench(see workbench docs)</li>
+			<li>PLASTIC howto - not ready!</li>
+		    <li><a href="http://software.astrogrid.org/components/portal/userguide/logon.html">Login</a></li>
+		    <li>Myspace - not ready!</li>
+			<li>Configuration - not ready!</li>
+		    <li>Simple Tutorials - not ready!</li>
+		    <li>Links - what's this?</li>	    
+	        </ul>
+			</p></subsection>
+		
+			<subsection name="Data Discovery"><p>
+		    <ul>
+		    <li>AstroScope(see workbench docs)</li>
+			<li>HelioScope(see workbench docs)</li>
+		    <li><a href="http://www.merlin.ac.uk/astrogrid/MerlinImager/MERLINImager.html">MerlinImager</a></li>
+	        </ul>
+			</p></subsection>		
+
+			<subsection name="Workflows"><p>
+		    <ul>
+		    <li><a href="http://personalpages.manchester.ac.uk/staff/s.dalla/astrogrid/documentation/ApplicationLauncher.html">Workflow Builder</a></li>
+			<li><a href="http://personalpages.manchester.ac.uk/staff/s.dalla/astrogrid/documentation/QueryBuilder.html">Query Builder</a></li>
+		    <li><a href="http://personalpages.manchester.ac.uk/staff/s.dalla/astrogrid/documentation/Lookout.html">Look Out</a></li>
+	        </ul>
+			</p></subsection>		
+		-->
+		
+		<p>see <a href="http://cairngorm.star.le.ac.uk:8081/plone/Members/CatherineQin/ag-help-docs/">here</a></p>
+		
+		
+		
+			<subsection name="Astrogrid Key Components"><p>
+		    <ul>
+		    <li><a href="http://personalpages.manchester.ac.uk/staff/s.dalla/astrogrid/documentation/ApplicationLauncher.html">Application Launcher</a></li>
+			<li><a href="http://personalpages.manchester.ac.uk/staff/s.dalla/astrogrid/documentation/QueryBuilder.html">Query Builder</a></li>
+		    <li><a href="http://personalpages.manchester.ac.uk/staff/s.dalla/astrogrid/documentation/Lookout.html">Look Out</a></li>
+	        </ul>
+			</p></subsection>
+ 
+			<subsection name="Parameterized Workflows"><p>
+			<ul>
+			<li><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/MovieMaker">Movie Maker</a></li>
+			<li><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker">RedShift Maker </a></li>
+			<li><a href="http://www.astrogrid.org/maven/docsTemp/usermanual/tutorials/ColourCutter/ColourCutter.html">Colour Cutter</a></li>
+	        </ul>
+			</p></subsection>
+ 
+			<subsection name="Other Helps"><p>			
+			<ul>   
+			<li><a href="http://wiki.astrogrid.org/bin/view/Astrogrid/GettingAndViewingData">Getting and Viewing Data</a></li>
+			<li><a href="http://www.merlin.ac.uk/astrogrid/MerlinImager/MERLINImager.html">MERLIN</a></li>
+		    <li><a href="http://www.merlin.ac.uk/astrogrid/DataAccessWorksheet/DataAccessWorksheet.html">Data Access</a></li>
+	        </ul>
+			</p></subsection>			
 		</section>
+		
+		
          
     </body>
 </document>
