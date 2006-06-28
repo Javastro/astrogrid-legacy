@@ -34,6 +34,7 @@ public class AstroRuntime1 {
 	public static void configureLauncherAsACR(Launcher l) {
 		System.setProperty("system.configuration.preferenceClass",AstroRuntime.class.getName());
     	System.setProperty("acr.mode","true");
+		System.setProperty("app.mode","acr");    	
     	// leave logging as-is - can always be overridden by user.
     	l.addModuleByName("background");
     	l.addModuleByName("dialogs");

@@ -25,6 +25,7 @@ public class HeadlessAstroRuntime {
     	Launcher l = new Launcher();
 
     	System.setProperty("asr.mode","true"); // "@todo unsure whether to use a different key here.  
+		System.setProperty("app.mode","asr");    	
     	System.setProperty("system.ui.disabled","true");
     	System.setProperty("system.systray.disabled","true");
     	System.setProperty("system.help.disabled","true");

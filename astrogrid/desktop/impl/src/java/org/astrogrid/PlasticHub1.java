@@ -22,6 +22,7 @@ public class PlasticHub1 {
 		if (cl != null) {
 		//@todo later process app-specific options here.
 		System.setProperty("hub.mode","true");
+		System.setProperty("app.mode","hub");		
 		System.setProperty("system.help.disabled","true");
 		System.setProperty("system.apihelp.disabled","true");
 		System.setProperty("system.scheduler.disabled","true");
