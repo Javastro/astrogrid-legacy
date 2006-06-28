@@ -132,9 +132,9 @@ and put the following contents in it:
 <p>
 <tt>
 &lt;?xml version='1.0' encoding='utf-8'?&gt;<br/>
-&lt;Context displayName="Astrogrid DSA/catalog" docBase="<font color="green">$TOMCAT_HOME</font>/webapps/</font><font color="blue">$ASTROGRID_DSA"</font> path="/<font color="blue">$ASTROGRID_DSA"</font> workDir="work/Catalina/localhost/<font color="blue">$ASTROGRID_DSA</font>"&gt;<br/>
+&lt;Context displayName="Astrogrid DSA/catalog" docBase="<font color="green">$TOMCAT_HOME</font>/webapps/</font><font color="blue">$ASTROGRID_DSA</font>" path="/<font color="blue">$ASTROGRID_DSA</font>" workDir="work/Catalina/localhost/<font color="blue">$ASTROGRID_DSA</font>"&gt;<br/>
 <br/>
-&lt;Environment description="Configuration filename" name="org.astrogrid.config.filename" override="false" type="java.lang.String" value="<font color="red">/path/to/properties/$PROPERTIES_FILENAME"</font>&gt;<br/>
+&lt;Environment description="Configuration filename" name="org.astrogrid.config.filename" override="false" type="java.lang.String" value="<font color="red">/path/to/properties/$PROPERTIES_FILENAME</font>"&gt;<br/>
 <br/>
 &lt;/Context&gt;
 </tt>
