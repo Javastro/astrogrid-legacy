@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.6 2006/06/15 09:41:27 nw Exp $
+/*$Id: Launcher.java,v 1.7 2006/06/28 11:35:34 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,6 +69,10 @@ public final class Launcher implements Runnable {
         setProperty("java.net.preferIPv4Stack","true");
         setProperty("java.net.preferIPv6Addresses","false");
         setProperty("ivoa.skynode.disabled","true");
+        // properties for apple - ignored in other contexts.
+	    setProperty("apple.laf.useScreenMenuBar","true");
+	    setProperty("apple.awt.antialiasing","true");
+	    setProperty("apple.awt.textantialiasing","true");
     }};    
     
     /** access the hivemind registry. creates acr if necessary */
@@ -163,6 +167,9 @@ public final class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.7  2006/06/28 11:35:34  nw
+added apple properties for all platforms
+
 Revision 1.6  2006/06/15 09:41:27  nw
 added test module
 
