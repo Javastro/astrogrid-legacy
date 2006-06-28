@@ -58,7 +58,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     private final RmiServer rmiServer;
     private final WebServer webServer;
     private final Executor systemExecutor;
-    private final SnitchInternal snitch;
     private final URI hubId;
 
     private File plasticPropertyFile;
@@ -84,14 +83,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     /** constructor selected by acrFactory when systemtray is not available */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
-        this(executor,idGenerator,rmi, web,null, prettyPrinter, config,snitch);
+            RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config) {
+        this(executor,idGenerator,rmi, web,null, prettyPrinter, config);
     }
     
     /** constructor selected by acrFactory when systemtray is available 
      * @param prettyPrinter */
     public PlasticHubImpl(Executor executor, NameGen idGenerator,
-            RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config, SnitchInternal snitch) {
+            RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config) {
         this.tray = tray;
         this.rmiServer= rmi;
         this.webServer= web;
@@ -99,7 +98,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.idGenerator = idGenerator;
         this.prettyPrinter = prettyPrinter;
         this.config = config;
-        this.snitch = snitch;
         logger.info("Constructing a PlasticHubImpl");
         hubId = URI.create("plastic://ar-hub");
     }
@@ -110,48 +108,25 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public URI registerXMLRPC(String name, List supportedOperations, URL callBackURL) {
-    	snitchPlastic("xmlrpc",name,supportedOperations);
         PlasticClientProxy client = new XMLRPCPlasticClient(idGenerator, name, supportedOperations, callBackURL);
         return register(client);
     }
 
     public URI registerRMI(String name, List supportedOperations, PlasticListener caller) {
-    	snitchPlastic("rmi",name,supportedOperations);
     	PlasticClientProxy client = new RMIPlasticClient(idGenerator, name, supportedOperations, caller);
         return register(client);
     }
 
     public URI registerNoCallBack(String name) {
-    	snitchPlastic("nocallback",name);
         PlasticClientProxy client = new DeafPlasticClient(idGenerator, name);
         return register(client);
     }
 
 	public URI registerPolling(String name, List supportedMessages) {
-		snitchPlastic("polling",name,supportedMessages);
 		PlasticClientProxy client = new PollingPlasticClient(idGenerator, name, supportedMessages);
 		return register(client);
 	}
-	
-	private void snitchPlastic(String methodName, String appName) {
-		snitchPlastic(methodName, appName, ListUtils.EMPTY_LIST);
-	}
-	
-	private void snitchPlastic(String methodName,String appName, List supportedMessages) {
-		if (snitch == null
-				|| appName.startsWith("Helioscope")
-				|| appName.startsWith("Astroscope") 
-				||appName.equals("ACR-Plastic-Hub")
-				) {
-			return ; 
-		}
-	    	Map m = new HashMap();
-	    	m.put("name",appName);
-	    	m.put("ops",supportedMessages);
-	    	m.put("method",methodName);    	
-	    	snitch.snitch("PLASTIC",m);
-			
-	}
+
 
 	/**
 	 * Returns empty list if the id isn't for a polling client.
