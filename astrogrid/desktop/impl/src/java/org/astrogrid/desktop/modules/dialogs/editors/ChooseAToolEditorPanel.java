@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.8 2006/06/27 19:12:31 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.9 2006/06/28 11:37:26 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -104,8 +104,8 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
         //@future add in cds once we've got an efficient registry client.    +   " or (@xsi:type like '%TabularSkyService' and vr:identifier like 'ivo://CDS/%'" +
         //       "   and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN') 
                            : "")  
-                //           + ")"); 
-           +    " ) and  not(@status = 'inactive' or @status = 'deleted') ");    	
+                          + ")"); 
+           //@fixme   " ) and  not(@status = 'inactive' or @status = 'deleted') ");    	
     }
 
     /** applicable always */
@@ -130,6 +130,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.9  2006/06/28 11:37:26  nw
+commented out active filter for now - don't work.
+
 Revision 1.8  2006/06/27 19:12:31  nw
 fixed to filter on cea apps when needed.
 
