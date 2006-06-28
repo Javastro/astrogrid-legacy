@@ -28,8 +28,8 @@ public class UpdateChecker implements Runnable {
 	 */
 	private static final Log logger = LogFactory.getLog(UpdateChecker.class);
 
-	private static final String versionURLString = "http://www.astrogrid.org/desktop/version.txt";
-	private static final String downloadURLString = "http://www.astrogrid.org/desktop";
+	private static final String versionURLString = "http://www.astrogrid.org/desktop/Download/version.txt";
+	private static final String downloadURLString = "http://www.astrogrid.org/desktop/Download";
 	public UpdateChecker(UIInternal ui, BrowserControl browser, String currentVersion) throws MalformedURLException {
 		versionURL = new URL(versionURLString);
 		downloadURL = new URL(downloadURLString);
