@@ -7,7 +7,7 @@
 <body>
 
 <section name="Overview"><p>
-This project defines a set of interfaces for calling into the AstroGrid Client Runtime (ACR). Some of the
+This project defines a set of interfaces for calling into the Astro Runtime (AR). Some of the
 interfaces expose internals of the runtime system, while others are used to access remote AstroGrid servers.
 </p>
 <p>
@@ -23,8 +23,10 @@ consistent throughout the interface; and all the required documentation is in on
 </section>
 
 <section name="Documentation"><p>
-		See <a href="./apidocs">javadoc</a> for introduction and examples
+		Refer to the <a href="http://www.astrogrid.org/desktop/astro-runtime">AR site</a>
 	</p>
 </section>
+
+
 </body>
 </document>

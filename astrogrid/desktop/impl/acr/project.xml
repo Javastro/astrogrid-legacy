@@ -6,7 +6,8 @@
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Astro Runtime (UI Client version)</name>
         <description>
-	 Astro Runtime - server version
+	 Astro Runtime -UI Client version
+	 
 	</description>
         <shortDescription>Astro Client Runtime</shortDescription>
  

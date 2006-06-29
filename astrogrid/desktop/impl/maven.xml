@@ -15,19 +15,12 @@
                 </jsl:template>
 		<jsl:template match="information">
 			<jxml:copy>
+
 				<jxml:element name="related-content">
-					<jxml:attribute name="href">index.html</jxml:attribute>
-					<jxml:element name="title">Release Notes</jxml:element>
-				</jxml:element>		
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/maven/docs/HEAD/desktop/multiproject/acr-interface/apidocs/index.html</jxml:attribute>
-					<jxml:element name="title">ACR API Docs</jxml:element>
+					<jxml:attribute name="href">http://www.astrogrid.org/desktop</jxml:attribute>
+					<jxml:element name="title">Hiome Pages</jxml:element>
 				</jxml:element>					
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</jxml:attribute>
-					<jxml:element name="title">Report Bugs</jxml:element>
-				</jxml:element>		
-			
+				
 				<jsl:applyTemplates select="@* | node()" />
 			</jxml:copy>
 		</jsl:template>

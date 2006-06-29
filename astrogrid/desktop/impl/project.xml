@@ -67,10 +67,14 @@
                 </resources>
         </build>
 
-		<!-- TRIAL - defining my own set of reports.
+		<!--  - defining my own set of reports.
+			as don't want to run all tests, etc, etc. when generating sites.
 			- will have to see if this effects generated jnlp sites too - hope not -->
 		<reports>
 			<report>maven-changes-plugin</report>
+        <report>maven-javadoc-plugin</report>		
+        <report>maven-jxr-plugin</report>
+        <report>maven-license-plugin</report>        	
 		</reports>
 
         <dependencies>
