@@ -5,7 +5,7 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.builtin.ACR;
 
-/*$Id: Listener.java,v 1.1 2006/04/22 12:41:55 nw Exp $
+/*$Id: Listener.java,v 1.1 2006/06/29 01:44:23 nw Exp $
  * Created on 13-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,6 +63,9 @@ public class Listener {
 
 /* 
 $Log: Listener.java,v $
+Revision 1.1  2006/06/29 01:44:23  nw
+*** empty log message ***
+
 Revision 1.1  2006/04/22 12:41:55  nw
 refactored workbench into ar.
 
