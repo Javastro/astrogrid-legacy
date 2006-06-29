@@ -200,23 +200,15 @@
 					<item name="Register" href="/components/dsa/register.html"/>
 				</item>
 				<!-- end dsa install doc -->
-				<item name="Applications (CL-CEC)" collapse="true" 
-					href="/components/cea/index.html">
-					<item name="Overview" href="/components/cea/index.html"/>
-					<item name="Download" href="/components/cea/DOWNLOAD.html"/>
-					<item name="Installation" 
-						href="/components/cea/INSTALL.html"/>
-					<item name="Configuration" 
-						href="/components/cea/CONFIGURE.html"/>
-					<item name="Self-testing" 
-						href="/components/cea/SELF-TEST.html"/>
-					<item name="Registration" 
-						href="/components/cea/REGISTER.html"/>
-					<item name="External testing" 
-						href="/components/cea/EXTTEST.html"/>
-					<item name="Upgrading" href="/components/cea/UPGRADE.html"/>
-					<item name="Uninstallation" 
-						href="/components/cea/UNINSTALL.html"/>
+				<item name="Applications " collapse="true" 
+					href="/components/cea/design/index.html">
+					<item name="CEADesign" href="/components/cea/design/CEADesign.html"/>
+					<!--item name="Configuration(Commandline)" href="/components/cea/design/CEAImplementation.html"/-->
+					<item name="IVOSNote" 
+						href="/components/cea/design/CEADesignIVOANote.html"/>
+					<!--item name="implementation" 
+						href="/components/cea/design/CEAImplementation.html"/-->
+					
 				</item>
 				<!-- end cea install doc -->
 				<item name="Workflow (JES)" collapse="true" 

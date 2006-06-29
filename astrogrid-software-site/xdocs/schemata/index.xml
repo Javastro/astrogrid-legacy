@@ -39,7 +39,7 @@ project and are not suitable for use in instance documents.</p>
 		  <h2>Resource-registry documents</h2>
 		  <ul>
 			  <li><a href="../schema/vo-resource-types/AllResourceTypes/v0.2/AllResourceTypes.xsd">urn:astrogrid:schema:vo-resource-types:AllResourceTypes:v0.2</a></li>
-			  <li><a href="../schema/vo-resource-types/AstrogridResource/v0.1/AstroGridResource.xsd">http://www.astrogrid.org/xml/AstrogridResource/v0.1</a></li>
+			  <li><a href="../schema/vo-resource-types/AstroGridResource/v0.1/AstroGridResource.xsd">http://www.astrogrid.org/xml/AstrogridResource/v0.1</a></li>
 			  <li><a href="../schema/vo-resource-types/CEAService/v0.1/CEAService.xsd">http://www.ivoa.net/xml/CEAService/v0.1</a></li>
 			  <li><a href="../schema/vo-resource-types/CEAService/v0.2/CEAService.xsd">http://www.ivoa.net/xml/CEAService/v0.2</a></li>	
 			  <li><a href="../schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd">http://www.ivoa.net/xml/ConeSearch/v0.3</a></li>
@@ -55,7 +55,7 @@ project and are not suitable for use in instance documents.</p>
 			  <li><a href="../schema/vo-resource-types/VORegistry/v0.3/VORegistry.xsd">http://ww.ivoa.net/xml/VORegistry/v0.3</a></li>
 			  <li><a href="../schema/vo-resource-types/VOResource/v0.9/VOResource.xsd">http://ww.ivoa.net/xml/VOResource/v0.9</a></li>
 			  <li><a href="../schema/vo-resource-types/VOResource/v0.10/VOResource.xsd">http://ww.ivoa.net/xml/VOResource/v0.10</a></li>
-			  <li><a href="../schema/vo-resource-types/VOResourceReltype/v0.2/VOResourceReltype.xsd">No namespace (relationship types for VOResource v0.9)</a></li>
+			  <li><a href="../schema/vo-resource-types/VOResourceRelType/v0.2/VOResourceRelType.xsd">No namespace (relationship types for VOResource v0.9)</a></li>
 			  <li><a href="../schema/vo-resource-types/VOResourceRelType/v0.10/VOResourceRelType.xsd">No namespace (relationship types for VOResource v0.10)</a></li>
 		  </ul>
 			
