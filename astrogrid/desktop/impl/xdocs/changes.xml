@@ -13,47 +13,45 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<action dev="jl" type="fix" issue="1664">
-	Query Builder: 
-	Adql/x pane now makes explicit call to org.astrogrid.oldquery.sql.Sql2Adql 
-</action>
-<action dev="jl" type="update" issue="1626">
-	Query Builder: Nesting of logical constructs AND/OR massaged.
-	Plus minor refactoring.
-</action>
-<release version="2.2-beta-3" date="2006-05-18">
-	<action dev="nw" type="fix">
-		Reworked scheduled tasks - all are displayed in UI
-	</action>
+<release version="2006.3.rc1" date="2006-06-28">
 	<action dev="nw" type="add">
-	  added version numbering into system.
+	Implemented a right-click 'Send-To' menu to send a data item to browser, local disk, or PLASTIC application.
+	Send-To menu is available in Lookout, Myspace Browser, Astroscope and Helioscope.
 	</action>
-	<action dev="nw" type="add">
-		Implemented snitching
-	</action>
-	<action dev="nw" type="fix">
-		Added back in missing registry chooser
+		<action dev="nw" type="add">
+		Implemented snitching and update checking.
 	</action>
 	<action dev="nw" type="add">
 		Added menubar to astroscope and helioscope
 	</action>
-	<action dev="nw" type="fix">
-		Improved handing of name resolving in astroscope
-	</action>
-	<action dev="nw" type="update">
-		Updated icons for vospec and aladin
-	</action>
 	<action dev="gtr" type="add" issue="1537">
 		Added MyProxy Authentication
+	</action>
+<action dev="jl" type="update" issue="1626">
+	Query Builder: Nesting of logical constructs AND/OR massaged.
+	Plus minor refactoring.
+</action>	
+<action dev="jl" type="fix" issue="1664">
+	Query Builder: 
+	Adql/x pane now makes explicit call to org.astrogrid.oldquery.sql.Sql2Adql 
+</action>
+	<action dev="nw" type="fix">
+		Reworked scheduled tasks - update of all  are displayed in UI
+	</action>
+	<action dev="nw" type="fix">
+		Added back in missing registry chooser
+	</action>
+	<action dev="nw" type="fix">
+		Improved handing of name resolving in astroscope
 	</action>
 	<action dev="kmb" type="fix">
 		Improved Astroscope and Helioscope window layout
 	</action>
 	<action dev="jdt" type="fix">
-   		HubStopping message is sent. 
+   		Plastic: HubStopping message is sent. 
    	</action>
    	<action dev="jdt" type="update">
-   	 if you now register with an empty list of supported messages then you get what you asked for - ie nothing. 
+   	 Plastic: if you now register with an empty list of supported messages then you get what you asked for - ie nothing. 
    	  In other words, an empty list no-longer means "send me everything"
 	</action>
 </release>
@@ -84,10 +82,8 @@
 	</action>
 </release>
 <release version="2.2-beta-1" date="2006-04-25">
-	<action dev="nw" type="add">
-		Split monolithic Workbench into AR family
-	</action>
 	<action dev="nw" type="update">
+		Split monolithic Workbench into AR family
 		Converted system from picocontainer to hivemind.
 	</action>
 </release>
@@ -97,8 +93,6 @@ Made the Finder more robust to orphaned ACR config files.  Also now can prompt t
 </action>
 <action dev="jdt" type="fix" issue="1624">
 	Plastic: showObjects message wasn't working for xml-rpc.
-</action>
-<action dev="jdt" type="add" issue="1624">
 	Plastic: added an option to show debug information from the workbench
 	console.
 </action>

@@ -2,9 +2,8 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core">
 	
- <goal name="publish-site" prereqs="stable,release,site,site:sshdeploy"/>
- <goal name="publish-alpha-site" prereqs="alpha,release,site,site:sshdeploy" />
- <goal name="publish-beta-site" prereqs="beta,release,site,site:sshdeploy" />
+	
+	<goal name="build-site" prereqs="stable,release,site" />
 	
  <!-- zap values in pom, to adjust publish location -->
 <goal name="release">
@@ -38,14 +37,6 @@
 		<mkdir dir="${maven.docs.src}" />
 		<copy file="../impl/xdocs/changes.xml" todir="${maven.docs.src}" overwrite="true" />
 		<copy file="../api/target/generated-xdocs/xmlrpc.xml" todir="${maven.docs.src}" overwrite="true" />
-		<copy todir="${maven.docs.src}" overwrite="true">
-			<fileset dir="${basedir}/xdocs" />
-			<filterset>
-				<filter token="SUB_PATH" value="${subPath}" />
-				<filter token="VERSION" value="${version}" />
-				<filter token="VERSION_NUMBER" value="${pom.currentVersion}" />
-			</filterset>
-		</copy>
 	</preGoal>
 
 	<!-- generate the mini site into the jnlp bundle -->

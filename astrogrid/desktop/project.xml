@@ -4,20 +4,23 @@
     <extend>${basedir}/../maven-base/project.xml</extend>
         <artifactId>astrogrid-desktop-root</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astronomy Runtimes</name>
+        <name>Top Level Project for AR / Workbenchs</name>
         <description>
-        Top Level Project for AR / Workbench
+        (see also http://www.astrogrid.org/desktop/contributing/using-eclipe )
+        General Build instructions.
+        requires the astrogrid/aggregate and astrogrid/maven-base projects to be checked 
+        out adjacent to this folder.
         
 		Publisher should just run the goals listed in this project - no need to run goals in individual sub-projects.
-		E.g. to build and publish new suite of BETA AR:
+		E.g. to build and publish new suite of AR:
 		1 Check all changes into CVS
 		2. Run:
 		% maven astrogrid-clean
 		3. Edit astrogrid.destop.version in maven-base/project.properties
 		4. Run: 
 		% maven astrogrid-install-artifact
-		% maven -Dmaven.username=maven publish-beta-site
-		% maven -Dmaven.username=maven publish-beta-jnlp
+		% maven build-site
+		% maven -Dmaven.username=maven publish-jnlp
 		% maven astrogrid-clean astrogrid-deploy-artifact
 	
 	

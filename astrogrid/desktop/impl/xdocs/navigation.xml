@@ -5,10 +5,9 @@
 
   <body>
     <links>
-       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
-       <item name="Components"        href="../../../index.html"/>
-       <item name="Workbench"  href="../../index.html"/>
-       <item name="ACR Implementation" href="/index.html" />
+    <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+       <item name="Workbench" href="http://www.astrogrid.org/desktop" />
+       <item name="Astro Runtime" href="http://www.astrogrid.org/desktop/astro-runtime" />
     </links>
 
     <menu name="Navigation">

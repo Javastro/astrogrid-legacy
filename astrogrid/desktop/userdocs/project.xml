@@ -6,7 +6,8 @@
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Workbench User Documentation</name>
         <description>
-Helpfiles, etc for workbench.
+Helpfiles, etc for workbench - to be replaced later by harvesting content
+from the plone site instead.
 	</description>
         <shortDescription>Workbench User Documentation.</shortDescription>
  

@@ -22,8 +22,8 @@ on all of the resources - even if the artifactId is the same -->
 		<version>${astrogrid.desktop.version}</version>
 		<type>javadoc.jar</type>
 		<properties>
-			<position>apidocs</position>
-			<unzip>true</unzip>
+			<position>.</position>
+<!--			<unzip>true</unzip> -->
 		</properties>
 	</dependency>
 
