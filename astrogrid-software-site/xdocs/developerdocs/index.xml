@@ -50,12 +50,12 @@
     	  of the system are omitted or simplified.
     	  </p>
 			<p>
-				Note that AG v1.1 and AG 2006.2 share the same Architecture documentation.
+				Note that AG v1.1 and AG 2006.3 share the same Architecture documentation.
 			</p>
     	</section>
 		
 		<section name="Using or Contributing to AstroGrid Source Code"><p>	
-			See <a href="source.html">Working with AstroGrid Source</a> For AG2006.2 source code quick download, download from  <a href="http://www.astrogrid.org/maven/org.astrogrid/source/astrogrid.source.2006.2.tar.gz"> here </a>
+			See <a href="source.html">Working with AstroGrid Source</a> For AG2006.3 source code quick download, download from  <a href="http://www.astrogrid.org/maven/org.astrogrid/source/astrogrid.source.2006.3.tar.gz"> here </a>
                         </p></section>
     </body>
 </document>

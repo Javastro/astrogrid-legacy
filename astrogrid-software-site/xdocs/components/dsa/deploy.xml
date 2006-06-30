@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE document SYSTEM "xdoc.dtd" >
-<!-- $Id: deploy.xml,v 1.2 2006/06/28 16:23:13 clq2 Exp $ -->
+<!-- $Id: deploy.xml,v 1.3 2006/06/30 12:34:18 clq2 Exp $ -->
 <document>
 	<properties>
      <title>Deploying the DSA/Catalog webapp</title>

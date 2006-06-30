@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.2 2006/06/28 16:23:13 clq2 Exp $ -->
+<!-- $Id: index.xml,v 1.3 2006/06/30 12:34:18 clq2 Exp $ -->
 <document>
   <properties>
     <title>Astrogrid DSA/Catalog</title>
@@ -19,14 +19,14 @@
       </p>
         <ul>
           <li>
-            <a href='services/CommonExecutionConnectorService'>CEA</a> - an AstroGrid Common
+            <!--a href='services/CommonExecutionConnectorService'-->CEA<!--/a--> - an AstroGrid Common
             Execution Architecture interface for use by the AstroGrid Job Execution Service.  This interface accepts incoming queries in the IVOA's
             <a href="http://www.ivoa.net/Documents/latest/ADQL.html">ADQL</a>
             query language.
            </li>
 
            <li>
-             <a href='SubmitCone'>ConeSearch</a> - An <a href='http://us-vo.org/pubs/files/co
+             <!--a href='SubmitCone'-->ConeSearch<!--/a--> - An <a href='http://us-vo.org/pubs/files/co
                nesearch.html'>NVO Cone Search</a>, a simple search on sky position.  <em>(This
                interface is optional, and can be disabled in your DSA/catalog configuration.)
              </em>

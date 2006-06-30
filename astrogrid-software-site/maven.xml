@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid-software-site/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2006/06/13 13:53:58 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Date: 2006/06/30 12:34:18 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.10  2006/06/30 12:34:18  clq2
+    |   2006.3
+    |
+    |   Revision 1.8.14.1  2006/06/22 12:40:44  clq2
+    |   *** empty log message ***
+    |
     |   Revision 1.9  2006/06/13 13:53:58  clq2
     |   for updating corrected schemata
     |
