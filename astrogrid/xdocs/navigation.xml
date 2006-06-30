@@ -38,7 +38,7 @@
                 <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-filestore-*.war"/>
                 <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-jes-*.war"/>
                 <!--item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-mySpace-1.0*-b*.war"/-->
-                <item name="DSA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*pal-*.war"/>
+                <item name="DSA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*dsa-catalog-*.war"/>
                 <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-portal-*.war"/>
                 <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-registry-*.war"/>
             </item>
@@ -61,7 +61,6 @@
                 <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-community-*.jar"/>
                 <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-registry-common-*.jar"/>
                 <item name="Security" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-security-*.jar" />
-                <item name="Slinger" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-slinger-*.jar" />
                 <item name="UI" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-ui-*.jar" />                
                 <item name="Workflow" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?C=M&amp;O=D&amp;P=astrogrid-workflow-*.jar"/>
                 <item name="Workflow Common Objects" 
