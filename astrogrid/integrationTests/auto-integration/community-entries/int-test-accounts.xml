@@ -2,11 +2,14 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/community-entries/int-test-accounts.xml,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/11/04 17:31:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2006/07/03 14:19:13 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: int-test-accounts.xml,v $
+    |   Revision 1.3  2006/07/03 14:19:13  pah
+    |   don't hardwire community
+    |
     |   Revision 1.2  2005/11/04 17:31:05  clq2
     |   axis_gtr_1046
     |
@@ -60,7 +63,7 @@
     | </cvs:log>
     |
     +-->
-<community ident="ivo://org.astrogrid.localhost">
+<community ident="ivo://@COMMUNITYID@">
     <!--+
         | The community Accounts.
         +-->
@@ -68,17 +71,17 @@
         <!--+
             | Test Accounts.
             +-->
-        <account ident="ivo://org.astrogrid.localhost/frog">
+        <account ident="ivo://@COMMUNITYID@/frog">
             <display>Green Frog</display>
             <description>Astrogrid tester</description>
             <email>frog@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.localhost/toad">
+        <account ident="ivo://@COMMUNITYID@/toad">
             <display>Brown Toad</display>
             <description>Astrogrid tester</description>
             <email>toad@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.localhost/newt">
+        <account ident="ivo://@COMMUNITYID@/newt">
             <display>Grey newt</display>
             <description>Astrogrid tester</description>
             <email>newt@mail.astrogrid.org</email>
@@ -86,7 +89,7 @@
         <!--+
             | Anonymous Account.
             +-->
-        <account ident="ivo://org.astrogrid.localhost/anonymous">
+        <account ident="ivo://@COMMUNITYID@/anonymous">
             <display>Anonymous</display>
             <description>Astrogrid anonymous</description>
             <email>anonymous@mail.astrogrid.org</email>
@@ -94,47 +97,47 @@
         <!--+
             | Demo Accounts.
             +-->
-        <account ident="ivo://org.astrogrid.localhost/keith">
+        <account ident="ivo://@COMMUNITYID@/keith">
             <display>Keith Noddle</display>
             <description>Astrogrid demonstrator</description>
             <email>keith@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.localhost/andy">
+        <account ident="ivo://@COMMUNITYID@/andy">
             <display>Andy Lawrence</display>
             <description>Astrogrid demonstrator</description>
             <email>andy@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.localhost/tony">
+        <account ident="ivo://@COMMUNITYID@/tony">
             <display>Tony Linde</display>
             <description>Astrogrid demonstrator</description>
             <email>tony@mail.astrogrid.org</email>
         </account>
-        <account ident="ivo://org.astrogrid.localhost/nic">
+        <account ident="ivo://@COMMUNITYID@/nic">
             <display>Nic Walton</display>
             <description>Astrogrid demonstrator</description>
             <email>nic@mail.astrogrid.org</email>
         </account>
-		<account ident="ivo://org.astrogrid.localhost/sallyhales">
+		<account ident="ivo://@COMMUNITYID@/sallyhales">
             <display>Sally Hales</display>
             <description>Astrogrid demonstrator</description>
             <email>sallyhales@mail.astrogrid.org</email>
         </account>
-		<account ident="ivo://org.astrogrid.localhost/guyrixon">
+		<account ident="ivo://@COMMUNITYID@/guyrixon">
             <display>Guy Rixon</display>
             <description>Astrogrid demonstrator</description>
             <email>guyrixon@mail.astrogrid.org</email>
         </account>
-		<account ident="ivo://org.astrogrid.localhost/davidbarnes">
+		<account ident="ivo://@COMMUNITYID@/davidbarnes">
             <display>David Barnes</display>
             <description>Astrogrid demonstrator</description>
             <email>davidbarnes@mail.astrogrid.org</email>
         </account>
-		<account ident="ivo://org.astrogrid.localhost/anitarichards">
+		<account ident="ivo://@COMMUNITYID@/anitarichards">
             <display>Anita Richards</display>
             <description>Astrogrid demonstrator</description>
             <email>anita.richards@jb.man.ac.uk</email>
         </account>
-		<account ident="ivo://org.astrogrid.localhost/silviadalla">
+		<account ident="ivo://@COMMUNITYID@/silviadalla">
             <display>Silvia Dalla</display>
             <description>Astrogrid demonstrator</description>
             <email>silvia.dalla@manchester.ac.uk</email>
@@ -144,19 +147,19 @@
         | The community Groups.
         +-->
     <groups>
-        <group ident="ivo://org.astrogrid.localhost/public">
+        <group ident="ivo://@COMMUNITYID@/public">
             <description>Public group</description>
 			<display>Public</display>
         </group>
-        <group ident="ivo://org.astrogrid.localhost/users">
+        <group ident="ivo://@COMMUNITYID@/users">
             <description>General users group</description>
 			<display>General Users</display>
         </group>
-        <group ident="ivo://org.astrogrid.localhost/java">
+        <group ident="ivo://@COMMUNITYID@/java">
             <description>Java developers group</description>
 			<display>Java Developers</display>
         </group>
-        <group ident="ivo://org.astrogrid.localhost/astro">
+        <group ident="ivo://@COMMUNITYID@/astro">
             <description>Astronomers group</description>
 			<display>Astronomers</display>
         </group>
@@ -169,25 +172,25 @@
         <!--+
             | Test Accounts.
             +-->
-        <password account="ivo://org.astrogrid.localhost/frog"  password="qwerty"/>
-        <password account="ivo://org.astrogrid.localhost/toad"  password="qwerty"/>
-        <password account="ivo://org.astrogrid.localhost/newt"  password="qwerty"/>
+        <password account="ivo://@COMMUNITYID@/frog"  password="qwerty"/>
+        <password account="ivo://@COMMUNITYID@/toad"  password="qwerty"/>
+        <password account="ivo://@COMMUNITYID@/newt"  password="qwerty"/>
         <!--+
             | Anonymous Account.
             +-->
-        <password account="ivo://org.astrogrid.localhost/anonymous"  password="qwerty"/>
+        <password account="ivo://@COMMUNITYID@/anonymous"  password="qwerty"/>
         <!--+
             | Demo Accounts.
             +-->
-        <password account="ivo://org.astrogrid.localhost/keith"  password="qwerty"/>
-        <password account="ivo://org.astrogrid.localhost/andy"   password="qwerty"/>
-        <password account="ivo://org.astrogrid.localhost/tony"   password="qwerty"/>
-        <password account="ivo://org.astrogrid.localhost/nic"    password="qwerty"/>
-		<password account="ivo://org.astrogrid.localhost/sallyhales"    password="sallyhales"/>
-		<password account="ivo://org.astrogrid.localhost/guyrixon"    password="qwerty"/>
-		<password account="ivo://org.astrogrid.localhost/davidbarnes"    password="davidbarnes"/>
-		<password account="ivo://org.astrogrid.localhost/anitarichards"    password="anitarichards"/>
-		<password account="ivo://org.astrogrid.localhost/silviadalla"    password="silviadalla"/>
+        <password account="ivo://@COMMUNITYID@/keith"  password="qwerty"/>
+        <password account="ivo://@COMMUNITYID@/andy"   password="qwerty"/>
+        <password account="ivo://@COMMUNITYID@/tony"   password="qwerty"/>
+        <password account="ivo://@COMMUNITYID@/nic"    password="qwerty"/>
+		<password account="ivo://@COMMUNITYID@/sallyhales"    password="sallyhales"/>
+		<password account="ivo://@COMMUNITYID@/guyrixon"    password="qwerty"/>
+		<password account="ivo://@COMMUNITYID@/davidbarnes"    password="davidbarnes"/>
+		<password account="ivo://@COMMUNITYID@/anitarichards"    password="anitarichards"/>
+		<password account="ivo://@COMMUNITYID@/silviadalla"    password="silviadalla"/>
     </passwords>
 
 </community>
