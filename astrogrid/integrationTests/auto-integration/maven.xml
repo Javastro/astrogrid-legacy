@@ -402,14 +402,18 @@
     <!--+
         | Load our database tables.
     +-->    
-    <ant
+   <copy todir="${work.dir}" overwrite="false" filtering="true">
+         <fileset dir="community-entries"/>
+    </copy>
+
+   <ant
         target="database.load"
         dir="${temporary.dir}/community/toolkit"
         antfile="${temporary.dir}/community/toolkit/install.xml"
         >        
     	<property name="org.astrogrid.community.ident" value="${communityid}"/>
-    	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>    	
-      <property name="community.xmlfile" value="file:///${basedir}/community-entries/int-test-accounts.xml"/>
+    	<property name="service.url" value="${tomcat.url}/astrogrid-community-SNAPSHOT/services"/>   
+      <property name="community.xmlfile" value="file:///${work.dir}/int-test-accounts.xml"/>
     </ant>
 	
 </goal>
