@@ -14,22 +14,7 @@
 		</action>	
 			
     	<release version="(Pending Integration)">
-
-      <action dev="kea" type="major_release">
-           <em>Branch PAL_KEA_1612 in astrogrid/pal</em>  The initial
-           release of DSA/catalog, a major revamping of PAL with a new
-           Query model and SQL translation mechanism, improved interface
-           and various incidental fixes.
-      </action>
-    		
-    	<action dev="gtr" type="fix">
-    		<em>Branch cea-gtr-1648:</em> fixes to astrogrid/contracts and astrogrid/applications/commandline to make it 
-    		easier to validate application-description files. <strong>NB:</strong> the astrogrid-software-site module is
-    		also updated and should be merged and built. Before building the latter component, its project.properties file
-    		needs to be updated with the version of the contracts jar assigned in this merger.
-    	</action>
-
-    		
+ 		
 			<action dev="kmb" type="add">
     			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
 				Before it was only tied to fits stuff now it is generic to work with any xmldb:api database.  
@@ -41,16 +26,27 @@
         </release>
 
         <release version="(Undertest)">
-
-    	  <action dev="gtr" type="add">
-    	    <em>branch apps-gtr-1617:</em> additions to the CEA infrastructure to support authentication with digital signature.
-    	    In the released configuration, CEA services authenticate and log user identities where signatures are present, but
-    	    do not enforce authorization policy.
-    	  </action>
-				   
+    	<action dev="gtr" type="fix">
+    		<em>Branch cea-gtr-1648:</em> fixes to astrogrid/contracts and astrogrid/applications/commandline to make it 
+    		easier to validate application-description files. <strong>NB:</strong> the astrogrid-software-site module is
+    		also updated and should be merged and built. Before building the latter component, its project.properties file
+    		needs to be updated with the version of the contracts jar assigned in this merger.
+    	</action>
+		   
         </release>
 		
 		<release version="HEAD">
+		   <action dev="gtr" type="add">
+    	    	<em>branch apps-gtr-1617:</em> additions to the CEA infrastructure to support authentication with digital signature.
+    	    	In the released configuration, CEA services authenticate and log user identities where signatures are present, but
+    	    	do not enforce authorization policy.
+    	   </action>
+		   <action dev="kea" type="major_release">
+          	 <em>Branch PAL_KEA_1612 in astrogrid/pal</em>  The initial
+          	 release of DSA/catalog, a major revamping of PAL with a new
+          	 Query model and SQL translation mechanism, improved interface
+         	 and various incidental fixes.
+           </action>
             <action dev="gtr" type="fix">
     			<em>Branch apps=gtr-1651:</em> Fixes in astrogrid-applications to allow STILTS to run as a wrapped application.
     		</action>		
