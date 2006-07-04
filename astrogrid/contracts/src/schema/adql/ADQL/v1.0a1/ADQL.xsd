@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema targetNamespace="http://www.ivoa.net/xml/ADQL/v1.0" 
-           xmlns:tns="http://www.ivoa.net/xml/ADQL/v1.0" 
+<xs:schema targetNamespace="urn:astrogrid:schema:ADQL:v1.0a1" 
+	xmlns:tns="urn:astrogrid:schema:ADQL:v1.0a1" 
            xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:reg="http://www.ivoa.net/xml/STC/STCregion/v1.10" 
            elementFormDefault="qualified">
