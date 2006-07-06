@@ -844,15 +844,6 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
 		TreePath treePath = new TreePath(getModel().getChild(getModel().getRoot(), 0));
 		tree.scrollPathToVisible(treePath);
 		tree.setSelectionPath(treePath);
-		//@todo wozzis for? doesn't do anything.
-		this.addWindowFocusListener( new WindowFocusListener(){
-            public void windowGainedFocus(WindowEvent e) {
-                if(getDialogRef() != null){
-                }
-            } 
-            public void windowLostFocus(WindowEvent e) {           	
-            }            
-        });
 	}
 	
 	/**
