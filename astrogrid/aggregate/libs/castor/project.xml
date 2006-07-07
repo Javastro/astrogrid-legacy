@@ -42,7 +42,7 @@
 			  <jnlp.jar>true</jnlp.jar>			
 		  </properties>
                 </dependency>
-		!-- stuff required in maven build -->
+		<!-- stuff required in maven build -->
 		<dependency>
 			<groupId>commons-jelly</groupId>
 			
