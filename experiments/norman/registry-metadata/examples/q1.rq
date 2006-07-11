@@ -1,0 +1,10 @@
+# list all the contacts who have email addresses ending .ac.uk
+prefix : <http://ns.eurovotech.org/VOResource-1.0.owl#>
+
+select ?n ?e
+where { 
+  ?x :contact ?a.
+  ?a :name ?n.
+  ?a :email ?e.
+  filter regex(?e, "ac.uk$")
+}

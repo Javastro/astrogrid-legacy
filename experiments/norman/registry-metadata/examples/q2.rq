@@ -1,0 +1,12 @@
+# Find the title and reference URL of all resources which are
+# published by ivo://irsa.ipac/IRSA
+prefix : <http://ns.eurovotech.org/VOResource-1.0.owl#>
+prefix x: <http://example.org/dummy#>
+
+construct { ?r x:desc ?title . ?r x:loc ?ref }
+where {
+  ?r :curation [ :publisher [ :identifier [ :uri ?puburi ]]].
+  ?r :title ?title .
+  ?r :content [ :referenceURL [ :uri ?ref ]] .
+  filter (?puburi = "ivo://irsa.ipac/IRSA")
+}
