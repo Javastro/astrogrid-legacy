@@ -1,0 +1,274 @@
+;; Convert an instance of VOResource-0.10 to RDF statements (as
+;; striped RDF/XML) using the
+;; http://ns.eurovotech.org/VOResource-1.0.owl#" ontology.
+
+(lx:let ((namespace (#f "http://www.w3.org/1999/XSL/Transform")
+                    ("ri" "http://www.ivoa.net/xml/RegistryInterface/v0.1")
+                    ("vor" "http://www.ivoa.net/xml/VOResource/v0.10")
+                    ("rmo" "http://ns.eurovotech.org/VOResource-1.0.owl#")
+                    ("rdf" "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                    ("rdfs" "http://www.w3.org/2000/01/rdf-schema#"))
+         (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
+         (dtd (template (match #t) mode)
+              (element (name #t))
+              (attribute (name #t))
+              (value-of (select #t))
+              (when (test #t))
+              (if (test #t))
+              (with-param (name #t))))
+
+(stylesheet version: 1.0
+  (output method: xml
+          version: 1.0
+          indent: yes)
+
+  (template /
+      (rdf:RDF
+       (apply-templates select: "//ri:Resource")))
+
+  (template "ri:Resource"
+      ;; we're making this a rmo:Resource, though if the element contains,
+      ;; for example, an <interface> element (because some xsi:type attribute
+      ;; has sneakily declared it as a subtype of ri:Resource), then
+      ;; when we handle that by putting in the corresponding property,
+      ;; this will in fact be (in this example) a rmo:Service object.
+      ;; I think this is OK -- any reasoner will be happy with that, won't it?
+      (element name: rdf:Description
+               (attribute rdf:about
+                          (apply-templates select: "vor:identifier/text()"))
+               (attribute rdf:type "rmo:Resource")
+               (if @created
+                   (element rmo:created (value-of @created)))
+               (if @updated
+                   (element rmo:updated (value-of @created)))
+               (if @status
+                   (element rmo:status
+                            (element rdf:Description
+                                     (attribute rdf:type
+                                                (choose
+                                                 (when "@status = 'active'"
+                                                   rmo:ActiveStatus)
+                                                 (when "@status = 'inactive'"
+                                                   rmo:InactiveStatus)
+                                                 (when "@status = 'deleted'"
+                                                   rmo:DeletedStatus))))))
+               (apply-templates select: "vor:*")))
+
+  (template vor:title
+      (rmo:title (apply-templates)))
+
+  (template vor:shortName
+      (rmo:shortname (apply-templates)))
+
+  (template vor:date
+      (rmo:date (apply-templates)))
+
+  (template vor:version
+      (rmo:version (apply-templates)))
+
+  (template vor:curation
+      (rmo:curation
+       (rdf:Description rdf:type: rmo:CurationDescription
+                        (apply-templates))))
+
+  (template vor:identifier
+      ;; no content -- handled in rdf:about attribute on containing element
+      )
+
+  ;; various things which map to Actor
+  (template vor:publisher
+      (rmo:publisher
+       (call-template name: resource-name)))
+
+  (template vor:contributor
+      (rmo:contributor
+       (call-template name: resource-name)))
+
+  ;; Creator and contact have similar but not identical contents in the
+  ;; XSchema, but identical allowed properties in the Ontology.
+  ;; Handle them the same way.
+  (template vor:creator
+      (rmo:creator
+       (rdf:Description rdf:type: rmo:Creator
+                        (apply-templates))))
+  ;; Contact
+  (template vor:contact
+      (rmo:contact
+       (rdf:Description rdf:type: rmo:Contact
+                        (apply-templates))))
+  (template vor:name
+      (rmo:name (apply-templates))
+    (if @ivo-id
+        (rmo:identifier (value-of @ivo-id))))
+  (template vor:logo
+      (rmo:logo (apply-templates)))
+  (template vor:address
+      (rmo:address (apply-templates)))
+  (template vor:email
+      (rmo:email (apply-templates)))
+  (template vor:telephone
+      (rmo:telephone (apply-templates)))
+
+  ;; Handle ResourceName elements, which map to Actor or one of its subtypes,
+  ;; optionally given in the 'type' parameter.
+  (lx:dtd ((template #f))
+    (template name: resource-name
+      ;;(param name: type rmo:Actor)
+      (element rdf:Description
+               (attribute rdf:type rmo:Actor)
+               (attribute rmo:name (apply-templates))
+               (if @ivo-id
+                   (element rmo:identifier
+                            (attribute rmo:uri (value-of @ivo-id)))))))
+
+  ;; Content
+  (template vor:content
+      (rmo:content
+       (element rdf:Description
+                (attribute rdf:type rmo:ContentDescription)
+                (apply-templates))))
+  (template vor:subject
+      (rmo:subject (apply-templates)))
+  (template vor:description
+      (rmo:description (apply-templates)))
+  (template vor:source
+      (rdf:Description rdf:type: rmo:Source
+                       (if @format
+                           (rmo:format @format))
+                       (rmo:value (apply-templates))))
+  (template vor:referenceURL
+      (element rmo:referenceURL
+               (attribute rmo:uri (apply-templates))))
+  (template vor:type
+      (rmo:type
+       (element rdf:Description
+                ;; do mild normalisation on the given string
+                (variable name: type
+                          (value-of "translate(text(),
+                                               'ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
+                                               'abcdefghijklmnopqrstuvwxyz')"))
+                (attribute rdf:type
+                           (choose
+                            ;; this list of types is taken from the document
+                            ;; Resource Metadata for the Virtual Observatory,
+                            ;; v1.1, WD 2005 June 21
+                            (when "$type = 'archive'"
+                              rmo:ArchiveType)
+                            (when "$type = 'bibliography'"
+                              rmo:BibliographyType)
+                            (when "$type = 'catalog'"
+                              rmo:CatalogType)
+                            (when "$type = 'journal'"
+                              rmo:JournalType)
+                            (when "$type = 'library'"
+                              rmo:LibraryType)
+                            (when "$type = 'simulation'"
+                              rmo:SimulationType)
+                            (when "$type = 'survey'"
+                              rmo:SurveyType)
+                            (when "$type = 'education'"
+                              rmo:EducationType)
+                            (when "$type = 'outreach'"
+                              rmo:OutreachType)
+                            (when "$type = 'eporesource'"
+                              rmo:EPOResourceType)
+                            (when "$type = 'animation'"
+                              rmo:AnimationType)
+                            (when "$type = 'artwork'"
+                              rmo:ArtworkType)
+                            (when "$type = 'background'"
+                              rmo:BackgroundType)
+                            (when "$type = 'basicdata'"
+                              rmo:BasicDataType)
+                            (when "$type = 'historical'"
+                              rmo:HistoricalType)
+                            (when "$type = 'photographic'"
+                              rmo:PhotographicType)
+                            (when "$type = 'press'"
+                              rmo:PressType)
+                            (when "$type = 'organisation'"
+                              rmo:OrganisationType)
+                            (when "$type = 'project'"
+                              rmo:ProjectType)
+                            (when "$type = 'registry'"
+                              rmo:RegistryType)
+                            (otherwise ;; including matching type 'other'
+                             rmo:OtherType))
+                           ))))
+  (template vor:contentLevel
+      (rmo:contentLevel
+       (element rdf:Description
+                ;; do mild normalisation on the given string
+                (variable name: cl
+                          (value-of "translate(text(),
+                                               'ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
+                                               'abcdefghijklmnopqrstuvwxyz')"))
+                (attribute rdf:type
+                           (choose
+                            (when "$cl = 'general'"
+                              rmo:GeneralContentLevel)
+                            (when "$cl = 'elementaryeducation'"
+                              rmo:ElementaryEducationContentLevel)
+                            (when "$cl = 'middleschooleducation'"
+                              rmo:MiddleSchoolEducationContentLevel)
+                            (when "$cl = 'secondaryeducation'"
+                              rmo:SecondaryEducationContentLevel)
+                            (when "$cl = 'communitycollege'"
+                              rmo:CommunityCollegeContentLevel)
+                            (when "$cl = 'university'"
+                              rmo:UniversityContentLevel)
+                            (when "$cl = 'research'"
+                              rmo:ResearchContentLevel)
+                            (when "$cl = 'amateur'"
+                              rmo:AmateurContentLevel)
+                            (when "$cl = 'informaleducation'"
+                              rmo:InformalEducationContentLevel)
+                            ;; simply ignore this element if its value is not one of the
+                            ;; recognised ones
+                            )))))
+
+  (template vor:relationship
+      (variable name: type
+                (value-of "translate(vor:relationshipType,
+                                     'ABCDEFGHIJKLMNOPQRSTUVWXYZ- ',
+                                     'abcdefghijklmnopqrstuvwxyz')"))
+    (apply-templates select: vor:relatedResource
+                     (with-param rel
+                                 (choose
+                                  (when "$type = 'mirrorof'"    rmo:mirrorOf)
+                                  (when "$type = 'servicefor'"  rmo:serviceFor)
+                                  (when "$type = 'servedby'"    rmo:servedBy)
+                                  (when "$type = 'derivedfrom'" rmo:derivedFrom)
+                                  (otherwise rmo:relatedResource))))
+    ;;     (choose
+    ;;      (when "$type = 'mirrorof'"
+    ;;        (apply-templates vor:relatedResource
+    ;;                         (with-param rel rmo:mirrorOf)))
+    ;;      (when "$type = 'servicefor'"
+    ;;        (apply-templates vor:relatedResource
+    ;;                         (with-param rel rmo:serviceFor)))
+    ;;      (when "$type = 'servedby'"
+    ;;        (apply-templates vor:relatedResource
+    ;;                         (with-param rel rmo:servedBy)))
+    ;;      (when "$type = 'derivedfrom'"
+    ;;        (apply-templates vor:relatedResource
+    ;;                         (with-param rel rmo:derivedFrom)))
+    ;;      (otherwise
+    ;;       (apply-templates vor:relatedResource)))
+    )
+  (template vor:relatedResource
+      (param name: rel rmo:relatedResource)
+    (element {$rel}
+             (element rdf:Description
+                      (attribute rdf:type rmo:Actor)
+                      (if @ivo-id
+                          (rmo:identifier (value-of @ivo-id)))
+                      (rmo:name (apply-templates)))))
+
+  ;; If vor:interface is present here, then we're actually processing
+  ;; a subtype of vor:Resource.
+  (template vor:interface
+      ;; Interface appears not to be valid here, but it's present in the
+      ;; SIAP results.
+      )
+  ))
