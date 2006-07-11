@@ -1,7 +1,7 @@
-; Tue May 30 16:11:52 BST 2006
+; Wed Jun 07 14:15:47 BST 2006
 ; 
 ;+ (version "3.2")
-;+ (build "Build 318")
+;+ (build "Build 321")
 
 ([BROWSER_SLOT_NAMES] of  Property_List
 
@@ -506,7 +506,7 @@
 
 ([OWL_ProjectKB_Instance_3] of  Integer
 
-	(integer_value 311)
+	(integer_value 321)
 	(name "owl_build"))
 
 ([PAL_FORM_WIDGET] of  Widget
@@ -559,6 +559,7 @@
 	(default_instance_widget_class_name "edu.stanford.smi.protegex.owl.ui.widget.OWLFormWidget")
 	(default_slot_metaclass "owl:ObjectProperty")
 	(hidden_classes
+		"meta:hasPatternPart"
 		"xsd:anyURI"
 		"xsd:gYear"
 		"meta:EmptyList"
@@ -566,21 +567,20 @@
 		":OWL-ANONYMOUS-ROOT"
 		"protege:classificationStatus"
 		"meta:isPartOfEnumeration"
-		"@_:A650"
-		"meta:ValuePartition"
+		"@_:A651"
 		"owl:allValuesFrom"
-		"rdfs:member"
 		"protege:inferredSuperclassOf"
+		"rdfs:member"
 		"xsd:base64Binary"
 		"owl:Class"
-		"@_:A660"
-		"rdfs:Container"
+		"@_:A661"
 		"owl:Ontology"
+		"rdfs:Container"
 		"owl:DataRange"
 		"xsd:NMTOKEN"
+		"meta:ValuePartition"
 		"xsd:QName"
 		"xsd:long"
-		"meta:hasPatternPart"
 		"@_:A702"
 		"owl:onProperty"
 		":SYSTEM-CLASS"
@@ -613,8 +613,8 @@
 		"xsd:nonPositiveInteger"
 		"rdfs:Datatype"
 		"xsd:IDREF"
-		"meta:hasContents"
 		"rdf:XMLLiteral"
+		"@_:A658"
 		"rdf:Seq"
 		"xsd:negativeInteger"
 		"xsd:hexBinary"
@@ -629,7 +629,7 @@
 		"xsd:unsignedInt"
 		"meta:hasListProperty"
 		"owl:FunctionalProperty"
-		"@_:A658"
+		"@_:A660"
 		"protege:ExternalResource"
 		"owl:someValuesFrom"
 		"xsd:positiveInteger"
@@ -639,7 +639,7 @@
 		"owl:AnnotationProperty"
 		"xsd:unsignedLong"
 		"rdf:first"
-		"@_:A664"
+		"@_:A666"
 		"rdf:List"
 		"owl:hasValue"
 		"rdf:predicate"
@@ -648,24 +648,24 @@
 		"xsd:decimal"
 		"rdf:subject"
 		"rdf:value"
-		"@_:A663"
+		"@_:A664"
 		"xsd:byte"
 		"owl:differentFrom"
 		"owl:AllDifferent"
-		"@_:A665"
+		"@_:A667"
 		"meta:OWLList"
-		"@_:A661"
+		"@_:A662"
 		"rdf:Statement"
-		":FROM"
 		"rdfs:Literal"
-		"meta:nil"
+		":FROM"
+		"meta:hasContents"
 		"xsd:ID"
 		"@_:A669"
 		"xsd:gYearMonth"
 		"owl:distinctMembers"
 		"xsd:NCName"
 		"@_:A655"
-		"@_:A667"
+		"meta:nil"
 		"xsd:token"
 		":DIRECTED-BINARY-RELATION"
 		"owl:TransitiveProperty"

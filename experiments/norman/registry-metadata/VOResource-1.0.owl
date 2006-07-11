@@ -6,7 +6,9 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:meta="http://www.co-ode.org/ontologies/meta/2005/06/15/meta.owl#"
     xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
     xmlns="http://ns.eurovotech.org/VOResource-1.0.owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
   xml:base="http://ns.eurovotech.org/VOResource-1.0.owl">
   <owl:Ontology rdf:about="">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
@@ -17,6 +19,8 @@
     reference there to
     http://www.ivoa.net/internal/IVOA/VOResourceV10/WD-VOResource-v1.html
     </rdfs:comment>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >$Revision: 1.3 $</owl:versionInfo>
     <owl:imports rdf:resource="http://www.co-ode.org/ontologies/meta/2005/06/15/meta.owl"/>
   </owl:Ontology>
   <owl:Class rdf:ID="SchoolContentLevel">
@@ -99,6 +103,11 @@
       <owl:Class rdf:ID="SimulationType"/>
     </owl:disjointWith>
   </owl:Class>
+  <owl:Class rdf:ID="Creator">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Actor"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="ResourceType">
     <owl:equivalentClass>
       <owl:Class>
@@ -123,11 +132,6 @@
     <owl:disjointWith>
       <owl:Class rdf:ID="Status"/>
     </owl:disjointWith>
-  </owl:Class>
-  <owl:Class rdf:ID="Creator">
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#Actor"/>
-    </rdfs:subClassOf>
   </owl:Class>
   <owl:Class rdf:ID="CommunityCollegeContentLevel">
     <rdfs:subClassOf>
@@ -157,6 +161,10 @@
       <owl:Class rdf:about="#ContentLevel"/>
     </owl:disjointWith>
     <owl:disjointWith rdf:resource="#ResourceType"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="#DELETE-RelationshipType"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf rdf:resource="#ValuePartition"/>
     <owl:equivalentClass>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
@@ -166,10 +174,6 @@
         </owl:unionOf>
       </owl:Class>
     </owl:equivalentClass>
-    <owl:disjointWith>
-      <owl:Class rdf:about="#DELETE-RelationshipType"/>
-    </owl:disjointWith>
-    <rdfs:subClassOf rdf:resource="#ValuePartition"/>
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >An indication of whether this resource is believed to be still actively maintained.
 
@@ -653,6 +657,15 @@ FIXME: believed? Believed by whom?  The authority who validates it?</rdfs:commen
   <owl:Class rdf:about="#Rights">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Information about rights held in and over the resource.</rdfs:comment>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="#PublicRights"/>
+          <owl:Class rdf:about="#SecureRights"/>
+          <owl:Class rdf:about="#ProprietaryRights"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
     <meta:hasPatternPart rdf:resource="#Rights"/>
     <rdfs:subClassOf rdf:resource="#ValuePartition"/>
     <meta:hasPatternPart>
@@ -663,15 +676,6 @@ FIXME: believed? Believed by whom?  The authority who validates it?</rdfs:commen
     <meta:hasPatternPart rdf:resource="#ProprietaryRights"/>
     <meta:isPartOfValuePartition rdf:resource="#Rights"/>
     <meta:hasPatternPart rdf:resource="#PublicRights"/>
-    <owl:equivalentClass>
-      <owl:Class>
-        <owl:unionOf rdf:parseType="Collection">
-          <owl:Class rdf:about="#PublicRights"/>
-          <owl:Class rdf:about="#SecureRights"/>
-          <owl:Class rdf:about="#ProprietaryRights"/>
-        </owl:unionOf>
-      </owl:Class>
-    </owl:equivalentClass>
   </owl:Class>
   <owl:Class rdf:about="#DELETE-RelationshipType">
     <rdfs:subClassOf rdf:resource="#ValuePartition"/>
@@ -774,6 +778,7 @@ FIXME: believed? Believed by whom?  The authority who validates it?</rdfs:commen
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >A URL which provides access to a service or document.  It must be one of the disjoint and complete subtypes.</rdfs:comment>
     <owl:disjointWith rdf:resource="#IdentifierURI"/>
+    <rdfs:subClassOf rdf:resource="#URI"/>
     <owl:equivalentClass>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
@@ -784,7 +789,6 @@ FIXME: believed? Believed by whom?  The authority who validates it?</rdfs:commen
         </owl:unionOf>
       </owl:Class>
     </owl:equivalentClass>
-    <rdfs:subClassOf rdf:resource="#URI"/>
   </owl:Class>
   <owl:Class rdf:about="#ResearchContentLevel">
     <rdfs:subClassOf rdf:resource="#ContentLevel"/>
@@ -895,6 +899,15 @@ Default Value:	1.0</rdfs:comment>
     <rdfs:subClassOf rdf:resource="#DELETE-RelationshipType"/>
     <owl:disjointWith rdf:resource="#RelatedToRelationshipType"/>
   </owl:Class>
+  <owl:Class rdf:about="#PhotographicType">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Publication-quality photographs of astronomical objects</rdfs:comment>
+    <owl:disjointWith rdf:resource="#ArtworkType"/>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#VisualisationType"/>
+    </rdfs:subClassOf>
+    <owl:disjointWith rdf:resource="#AnimationType"/>
+  </owl:Class>
   <owl:Class rdf:about="#ScientificDataType">
     <rdfs:subClassOf rdf:resource="#ResourceType"/>
     <owl:disjointWith rdf:resource="#OtherType"/>
@@ -905,15 +918,6 @@ Default Value:	1.0</rdfs:comment>
     </owl:disjointWith>
     <owl:disjointWith rdf:resource="#EPOResourceType"/>
     <owl:disjointWith rdf:resource="#FunctionalType"/>
-  </owl:Class>
-  <owl:Class rdf:about="#PhotographicType">
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >Publication-quality photographs of astronomical objects</rdfs:comment>
-    <owl:disjointWith rdf:resource="#ArtworkType"/>
-    <rdfs:subClassOf>
-      <owl:Class rdf:about="#VisualisationType"/>
-    </rdfs:subClassOf>
-    <owl:disjointWith rdf:resource="#AnimationType"/>
   </owl:Class>
   <owl:Class rdf:about="#OutreachType">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
@@ -1056,19 +1060,19 @@ FIXME: should this be a functional property?  Cf. the similar indecision about t
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >A unique identifier for the standard that the service complies to.</rdfs:comment>
   </owl:ObjectProperty>
-  <owl:ObjectProperty rdf:ID="derivedFrom">
-    <rdfs:subPropertyOf>
-      <owl:ObjectProperty rdf:about="#relatedResource"/>
-    </rdfs:subPropertyOf>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >The subject resource is derived from another resource</rdfs:comment>
-  </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="contact">
     <rdfs:range rdf:resource="#Actor"/>
     <rdfs:domain rdf:resource="#CurationDescription"/>
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Information that can be used for contacting someone with regard to this resource.
 </rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="derivedFrom">
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="#relatedResource"/>
+    </rdfs:subPropertyOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The subject resource is derived from another resource</rdfs:comment>
   </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="validationLevel4">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
@@ -1107,6 +1111,12 @@ The object of this property is the authority which valididated the subject at th
     >A description of a relationship to another resource</rdfs:comment>
     <rdfs:range rdf:resource="#DELETE-RelationshipType"/>
   </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="curation">
+    <rdfs:range rdf:resource="#CurationDescription"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Information regarding the general curation of the resource</rdfs:comment>
+    <rdfs:domain rdf:resource="#Resource"/>
+  </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="validationLevel2">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >In addition to meeting the level 1 definition, the resource description refers to an existing resource that has demonstrated to be functionally compliant.
@@ -1120,17 +1130,17 @@ When the resource is a service, it is consider to exist and functionally complia
     >Description of the content of the resource</rdfs:comment>
     <rdfs:range rdf:resource="#ContentDescription"/>
   </owl:ObjectProperty>
-  <owl:ObjectProperty rdf:ID="type">
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >Nature or genre of the content of the resource</rdfs:comment>
-    <rdfs:domain rdf:resource="#ContentDescription"/>
-    <rdfs:range rdf:resource="#ResourceType"/>
-  </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="facility">
     <rdfs:domain rdf:resource="#Organisation"/>
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >The observatory or facility used to collect the data contained or managed by this resource.</rdfs:comment>
     <rdfs:range rdf:resource="#Actor"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="type">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nature or genre of the content of the resource</rdfs:comment>
+    <rdfs:domain rdf:resource="#ContentDescription"/>
+    <rdfs:range rdf:resource="#ResourceType"/>
   </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="servedBy">
     <rdfs:subPropertyOf>
@@ -1152,9 +1162,9 @@ When the resource is a service, it is consider to exist and functionally complia
   </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="contentLevel">
     <rdfs:domain rdf:resource="#ContentDescription"/>
-    <rdfs:range rdf:resource="#ContentLevel"/>
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Description of the content level or intended audience</rdfs:comment>
+    <rdfs:range rdf:resource="#ContentLevel"/>
   </owl:ObjectProperty>
   <owl:ObjectProperty rdf:ID="instrument">
     <rdfs:domain rdf:resource="#Organisation"/>
@@ -1202,9 +1212,9 @@ When the resource is a service, it is consider to exist and functionally complia
   </owl:DatatypeProperty>
   <owl:DatatypeProperty rdf:ID="title">
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdfs:domain rdf:resource="#Resource"/>
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >The title of this resource.</rdfs:comment>
+    <rdfs:domain rdf:resource="#Resource"/>
   </owl:DatatypeProperty>
   <owl:DatatypeProperty rdf:ID="interfaceRole">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
@@ -1234,15 +1244,8 @@ This can be a person's name, e.g. "John P. Jones" or a group, "Archive Support T
   <owl:DatatypeProperty rdf:ID="format">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >This indicates the syntactic format of the value of the &lt;source> element. The possible values for this attribute are not controlled; however, applications should recognize a value equal to bibcode as referring to the standard astronomical bibcode format &lt;http://cdsweb.u-strasbg.fr/simbad/refcode/refcode-paper.html></rdfs:comment>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     <rdfs:domain rdf:resource="#Source"/>
-  </owl:DatatypeProperty>
-  <owl:DatatypeProperty rdf:ID="email">
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdfs:domain rdf:resource="#Actor"/>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >The email address of the contact person or organisation.
-</rdfs:comment>
   </owl:DatatypeProperty>
   <owl:DatatypeProperty rdf:ID="updated">
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
@@ -1252,6 +1255,27 @@ This can be a person's name, e.g. "John P. Jones" or a group, "Archive Support T
 
 Restricted to rmt:UTCDateType</rdfs:comment>
     <rdfs:domain rdf:resource="#Resource"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="email">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Actor"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The email address of the contact person or organisation.
+</rdfs:comment>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="value">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The date and time of an event.
+
+Restricted to rmt:UTCDateTime</rdfs:comment>
+    <rdfs:domain rdf:resource="#AnnotatedValue"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="uri">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The URI this object refers to</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#URI"/>
   </owl:DatatypeProperty>
   <owl:DatatypeProperty rdf:ID="telephone">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
@@ -1292,6 +1316,7 @@ Restricted to rmt:UTCDateTime</rdfs:comment>
 rmt:ShortName</rdfs:comment>
   </owl:DatatypeProperty>
   <owl:FunctionalProperty rdf:about="#rights">
+    <meta:isPartOfValuePartition rdf:resource="#Rights"/>
     <rdfs:domain>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
@@ -1300,7 +1325,6 @@ rmt:ShortName</rdfs:comment>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
-    <meta:isPartOfValuePartition rdf:resource="#Rights"/>
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Information about rights held in and over the resource.</rdfs:comment>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
@@ -1322,26 +1346,7 @@ rmt:ShortName</rdfs:comment>
     <rdfs:domain rdf:resource="#Resource"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
   </owl:FunctionalProperty>
-  <owl:FunctionalProperty rdf:ID="value">
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >The date and time of an event.
-
-Restricted to rmt:UTCDateTime</rdfs:comment>
-    <rdfs:domain rdf:resource="#AnnotatedValue"/>
-  </owl:FunctionalProperty>
-  <owl:FunctionalProperty rdf:ID="uri">
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >The URI this object refers to</rdfs:comment>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:domain rdf:resource="#URI"/>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
-  </owl:FunctionalProperty>
   <owl:FunctionalProperty rdf:ID="version">
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     <rdfs:domain>
       <owl:Class>
         <owl:unionOf rdf:parseType="Collection">
@@ -1350,19 +1355,16 @@ Restricted to rmt:UTCDateTime</rdfs:comment>
         </owl:unionOf>
       </owl:Class>
     </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >Label associated with creation or availablilty of a version of a resource.
 </rdfs:comment>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
   </owl:FunctionalProperty>
-  <rdf:Description rdf:ID="__deleted__">
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
-    >A unique identifier for the standard that the service complies to.</rdfs:comment>
-  </rdf:Description>
   <owl:AnnotationProperty rdf:ID="partOfValuePartition">
     <rdfs:subPropertyOf rdf:resource="#partOfPattern"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
   </owl:AnnotationProperty>
 </rdf:RDF>
 
-<!-- Created with Protege (with OWL Plugin 2.2, Build 311)  http://protege.stanford.edu -->
+<!-- Created with Protege (with OWL Plugin 2.2, Build 321)  http://protege.stanford.edu -->
