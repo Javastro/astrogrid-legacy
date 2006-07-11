@@ -1,0 +1,151 @@
+#! /bin/sh -
+#
+# If this script is linked to by a file F, then it will invoke a SISC
+# program F.scm in sisc, with assorted classpath definitions, and passing
+# a --base-uri argument.
+
+########################################
+#
+# Configuration
+
+#JENA=/Volumes/Boltzmann/tools/Jena-2.3
+
+# MySQL connector available from <http://dev.mysql.com/downloads/>
+# Note that the Jena MySQL docs note that the 3.1.x connectors don't work,
+# but the 3.0.x and 3.2-alpha ones do
+#MYSQL_CONNECTOR=/Volumes/Boltzmann/tools/mysql-connector/mysql-connector-java-3.0.17-ga-bin.jar
+
+#SISC=/Volumes/Boltzmann/tools/sisc-1.11.3
+#SISC=/Volumes/Boltzmann/tools/sisc-cvs
+SISC=$T/sisc-1.13.5
+
+#CVS_TOP=/Volumes/Faraday/w/gla
+
+ACR_TOP=$T/astrogrid/acr-2.2-beta-3
+
+##nxg_home=/Volumes/Boltzmann/Norman/nxg.me.uk/main
+
+verbose=false
+
+
+# # Check that there is a --base-uri option being passed, and add one if not
+# base_uri_opt=
+# for o in "$@"; do
+#     case "$o" in
+#         --base-uri=*)
+#             base_uri_opt=$o
+#             break
+#             ;;
+#         *) ;;
+#     esac
+# done
+# if test -z "$base_uri_opt"; then
+# #    if test "$PWD" = $nxg_home; then
+# #        base_uri_opt="--base-uri=http://nxg.me.uk"
+# #    else
+#         base_uri_opt="--base-uri=file:$PWD/"
+# #        echo "Not called in $nxg_home: defaulting $base_uri_opt" >&2
+# #    fi
+# else
+#     # it was given on the command-line, so delete this version
+#     base_uri_opt=
+# fi
+
+PROGRAM_NAME=`basename $0`
+ 
+SCRIPT_HOME=`dirname $0`
+SCRIPT_HOME=`cd $SCRIPT_HOME; pwd`
+
+########################################
+#
+# Find any leading script options
+
+use_repl=false
+while test $# -gt 0; do
+    case $1 in
+        --Xrepl) use_repl=: ;;
+        --X*) echo "Invalid script argument $1" >&2; exit 1;;
+        *) break;;
+    esac
+    shift
+done
+
+
+########################################
+#
+# Path fiddling
+
+# Add my modules for SISC here.
+#CLASSPATH=$CVS_TOP/code/sw/rdfblog/common.jar:$CVS_TOP/code/scm/sisc/mylib.jar
+
+# # Add Jena jars to the classpath
+# arq_jars="arq.jar concurrent.jar"
+# basic_jars="antlr-2.7.5.jar
+#   commons-logging.jar
+#   icu4j_3_4.jar
+#   jakarta-oro-2.0.8.jar
+#   jena.jar
+#   xercesImpl.jar
+#   xml-apis.jar"
+# for j in $basic_jars $arq_jars
+# do
+#     CLASSPATH="${CLASSPATH}:${JENA}/lib/$j"
+# done
+
+# Add ACR files to the classpath
+jars="acr-interface-2.2-beta-3.jar
+      commons-logging-1.0.4.jar
+      rmi-lite-1.0.jar
+      xerces-2.4.0-patched.jar"
+for j in $jars
+do
+    CLASSPATH="${CLASSPATH}:$ACR_TOP/$j"
+done
+
+export CLASSPATH
+
+if test -z "$SISC_HOME"; then
+  if test -f $SISC/sisc.jar; then
+    SISC_HOME=$SISC
+  elif test -f $SISC/lib/sisc/sisc.jar; then
+    SISC_HOME=$SISC/lib/sisc
+  else
+    echo "Can't find sisc in $SISC"
+    exit 1
+  fi
+  export SISC_HOME
+fi
+
+if test -f $SISC_HOME/sisc; then
+    SISC_BIN=$SISC_HOME
+elif test -f $SISC_HOME/../../bin/sisc; then
+    SISC_BIN=`cd $SISC_HOME/../../bin; pwd`
+else
+    echo "Can't find sisc bin in $SISC_HOME"
+    exit 1
+fi
+
+########################################
+#
+# Go
+
+if $use_repl; then
+    call_args=
+else
+    call_args='--no-repl --call-with-args main'
+fi
+
+PATH=$SISC_BIN:$PATH
+if test -r $SCRIPT_HOME/$PROGRAM_NAME.scm; then
+    $verbose && echo sisc $SCRIPT_HOME/$PROGRAM_NAME.scm \
+        $call_args \
+        -- \
+        $PROGRAM_NAME "$@"
+    exec sisc $SCRIPT_HOME/$PROGRAM_NAME.scm \
+        $call_args \
+        -- \
+        $PROGRAM_NAME "$@"
+else
+    echo "No SISC program $SCRIPT_HOME/$PROGRAM_NAME.scm found"
+    exit 1
+fi
