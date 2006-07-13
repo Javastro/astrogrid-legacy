@@ -14,6 +14,19 @@
 		</action>	
 			
     	<release version="(Pending Integration)">
+    		<action dev="kmb" type="add">
+    		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
+    		  has a lot of changes mainly targeting 1.0 VOResources and multiple contract ability.  I believe I have it though
+    		  that everything can be copied/replaced into HEAD hence this branch can overwrite anything in HEAD even if there are
+    		  merge conflicts.
+    		  It needs to go with the
+    		  contracts branch Contracts_KMB_XForms (which needs Guy's approval).
+    		</action>
+    		<action dev="kmb" type="add">
+    		  <em>Branch Contracts_KMB_XForms n astrogrid/contracts:</em>  Only merge in src/java and src/schema stuff.  Originally
+    		  this branch was for Xforms stuff, but that has not gone through, but still added a lot of new schemas 1.0.
+    		  This needs Guy Rixon approval though.
+    		</action>
  		
 			<action dev="kmb" type="add">
     			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
