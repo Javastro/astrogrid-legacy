@@ -30,10 +30,11 @@ public class BroadcastPlasticFitsSTA extends AbstractSTA {
 	        	 if (getAtom().isDataFlavorSupported(VoDataFlavour.URL)) { // other remote
 	            		URL url = (URL)getAtom().getTransferData(VoDataFlavour.URL);
 	            		List l = new ArrayList();
-	            		l.add(url);
+	            		l.add(url.toString()); //JDT - Plastic args need to be xml-rpc types
 	            		sendLoadMethod(l);
 	            	} else { // retrieve data, then send the message.
 	            		// no message exists - ho hum.
+                        // JDT - but it could if you wanted...just need to decide how to send the binary
 	            	}
 	            	return null;
 			}

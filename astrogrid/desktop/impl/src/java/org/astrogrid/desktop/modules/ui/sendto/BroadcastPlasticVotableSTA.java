@@ -55,7 +55,7 @@ public class BroadcastPlasticVotableSTA extends AbstractSTA {
             	 } else { 
             		URL url = (URL)getAtom().getTransferData(VoDataFlavour.URL);
             		List l = new ArrayList();
-            		l.add(url);
+            		l.add(url.toString()); //JDT plastic message arguments need to be xml-rpc types
             		sendLoadURLMessage(l);
             	} 
             	return null;
