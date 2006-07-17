@@ -90,7 +90,7 @@ public  class  SQLGenerator {
 		  value = null;
 
 		  key=header.getKey(i).trim();
-
+		  if(key != null && key.trim().length() > 0) {
 		  if(props.getProperty("nameuppercasecolumns").equals("true")) {
 	          key = key.toUpperCase();
           }  
@@ -177,6 +177,7 @@ public  class  SQLGenerator {
 	              this.colMap.put(key,null);
 	            }
 	    	}
+		  }
 	        i=i+1;
         }
         
@@ -273,13 +274,7 @@ public  class  SQLGenerator {
           String keys = props.getProperty("indexed.keys");
           String keysql = "";
           if(keys != null) {
-        	  keysql += ", ";
-	          String []keysArray = keys.split(",");
-	          for(int j = 0;j < keysArray.length;j++) {
-	           keysql += " KEYS(" + keysArray[j] + ")";
-	           if(j != (keysArray.length - 1))
-	        	   keysql += ", ";
-	          }//for
+        	  keysql = ", KEY(" + keys + ")";
 	      }//if
           while(iter.hasNext())
           {
