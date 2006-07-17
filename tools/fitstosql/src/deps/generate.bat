@@ -1,0 +1,1 @@
+java -classpath .;stil-2.3-1.jar org.astrogrid.fitstosql.SQLGenerator

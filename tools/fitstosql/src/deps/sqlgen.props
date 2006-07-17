@@ -1,0 +1,54 @@
+
+
+#Upper case column names (hence header keys) in the sql.  By default it is set to false, but it could be a
+#good idea considering how most fits headers can go wild with the names.
+#Note if set to true then on other column properties below be sure to uppercase example column.RA.datatype instead of column.ra.datatype.
+nameuppercasecolumns=false
+
+#default varchar size for any string columns.
+default.varcharsize=50
+
+#date and datetime syntax used on any of your specified columns for date or datetime.
+#several db's tend to be able to convert if necessary.
+#Currently you must use the java paattern/syntax found at: http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html
+datetime.syntax=yyyy-MM-dd'T'HH:mm:ss
+date.syntax=yyyy-MM-DD
+
+#varchar size of your longest url to a fits file.
+fitslocation.size=150
+
+#comma seperated list of columns you wish to have as Keys.
+indexed.keys=DATE_OBS
+#the primary key which by default is FitsLocation since it is guranteed to be unique.
+primary.key=FitsLocation
+
+#special column properties, be sure the column is uppercased if your above nameuppercasecolumns  is set to true.
+#one exception is the 'translate' property that value is what will be used in the sql.
+#also be sure that if you use the translate ability that you use its value for any other properties see below for
+#example.
+
+#set columns you would like to ignore.  Typically END is set to ignore.
+column.END.ignore=true
+
+###Translate a column name to a more meaningful name.
+###Use this if your Fits files has special sql keywords as the column name or has characters that should not be used in the db.
+#column.RA.translate=RightAccess
+
+###Specify datatypes. You can use:
+###int,float, double, varchar, char, datetime, date
+###You can use length values if desired such as varchar(20) or Double(2)...
+###hint if you need support for one of the other datatypes you can specify it here ex: TinyInt, Int8 but a 
+###string value 'value' will be placed in the inserts relying on the db to convert during inserts.
+#column.RightAccess.datatype=Double
+
+
+###Nulls can be tricky for certain datatypes.  Currently ints, longs, floats, double 
+#will be written as 0 or 0.0 if the key is empty.  If you are certain that you cannot have a 0 or 0.0 you may
+#set this value to true and a proper NULL is written in the SQL.
+#column.RightAccess.numval0nullable=true
+
+#Some db's do not like dashes '-' so lets translate it and DATE_OBS is typical it should be a datetime.
+#column.DATE-OBS.translate=DATE_OBSTEST
+#column.DATE_OBSTEST.datatype=DATETIME
+
+
