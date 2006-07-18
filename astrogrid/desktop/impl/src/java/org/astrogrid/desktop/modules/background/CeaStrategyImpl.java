@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.8 2006/06/27 19:11:17 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.9 2006/07/18 08:59:59 gtr Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -527,7 +527,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
                 CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(server);
                 Iterator i = securityActions.iterator();
                 while (i.hasNext()) {
-                  // @todo actually react to the name of the action.
+                  i.next(); // Read the items so that the loop terminates, but discard the result.
+                            // @todo actually react to the name of the action.
                   SecurityGuard guard = this.community.getSecurityGuard();
                   del.setCredentials(guard);
                 }
@@ -562,6 +563,12 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.9  2006/07/18 08:59:59  gtr
+Fix for BZ1717.
+
+Revision 1.8.8.1  2006/07/13 16:56:33  gtr
+Fix for BZ1717: I added a next() call on an iterator that lacked one, thereby avoiding an infinite loop.
+
 Revision 1.8  2006/06/27 19:11:17  nw
 adjusted todo tags.
 
