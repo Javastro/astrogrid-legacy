@@ -173,9 +173,9 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
     
     protected class TopAction extends AbstractAction {
         public TopAction() {
-            super("To To Top",IconHelper.loadIcon("top.png"));
+            super("Go To Top",IconHelper.loadIcon("top.png"));
             this.putValue(SHORT_DESCRIPTION,"Focus display to 'Search Results'");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_G));
             this.setEnabled(false);
         }
         public void actionPerformed(ActionEvent e) {
