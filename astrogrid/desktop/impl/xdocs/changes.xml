@@ -16,7 +16,7 @@
 	<action dev="kmb" type="fix">
 		Fixed helioscope to have a save button that was mising see bugzilla ticket 1719
 		Fixed 'enter' or 'return' to work on Registry panel for workflow see bugzilla ticket 1366
-		Changed 'To To Top' to 'Go To Top' and set shortcut key to 'G' for Astro&helioscope.
+		Changed 'To To Top' to 'Go To Top' and set shortcut key to 'G' for Astro and helioscope.
 	</action>
 <release version="2006.3.rc1" date="2006-06-28">
 	<action dev="nw" type="add">
