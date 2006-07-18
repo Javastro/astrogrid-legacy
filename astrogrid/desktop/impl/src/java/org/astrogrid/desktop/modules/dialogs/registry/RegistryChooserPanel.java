@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserPanel.java,v 1.34 2006/06/27 19:12:49 nw Exp $
+/*$Id: RegistryChooserPanel.java,v 1.35 2006/07/18 13:12:08 KevinBenson Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -411,7 +411,7 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
             goButton.addActionListener(this);
             //parent.setDefaultButton(goButton);
             KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-            this.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(enter,"search");
+            this.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
             this.getActionMap().put("search",new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
                     RegistryChooserPanel.this.actionPerformed(e);
@@ -646,6 +646,9 @@ public class RegistryChooserPanel extends JPanel implements ActionListener {
 
 /* 
 $Log: RegistryChooserPanel.java,v $
+Revision 1.35  2006/07/18 13:12:08  KevinBenson
+placed the action map to WHEN_ANCESTOR_OF_FOCUSED_COMPONENT so the go button is searched when a user hits return/enter
+
 Revision 1.34  2006/06/27 19:12:49  nw
 adjusted todo tags.
 
