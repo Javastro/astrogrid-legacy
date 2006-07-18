@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.16 2006/06/27 10:34:40 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.17 2006/07/18 10:41:02 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,7 @@ import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
+import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
 import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.freixas.jcalendar.JCalendarCombo;
@@ -75,7 +76,10 @@ public class HelioScopeLauncherImpl extends AbstractScope
         		new StapProtocol(reg,stap)
         });
 
+        
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
+        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
+        
         setIconImage(IconHelper.loadIcon("helioscope.png").getImage());
     }
    
@@ -252,6 +256,9 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.17  2006/07/18 10:41:02  KevinBenson
+small fix to add savenode button to the dynamicbar after the super() called.
+
 Revision 1.16  2006/06/27 10:34:40  nw
 send-to menu, tupperware actions.
 
