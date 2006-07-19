@@ -35,6 +35,7 @@ public class BroadcastPlasticFitsSTA extends AbstractSTA {
 	            	} else { // retrieve data, then send the message.
 	            		// no message exists - ho hum.
                         // JDT - but it could if you wanted...just need to decide how to send the binary
+	            		// NWW - look into this.
 	            	}
 	            	return null;
 			}
