@@ -1,4 +1,4 @@
-/*$Id: URIConverter.java,v 1.4 2006/06/15 10:07:18 nw Exp $
+/*$Id: URIConverter.java,v 1.5 2006/07/19 15:48:15 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,9 +30,12 @@ public class URIConverter implements Converter {
     public Object convert(Class arg0, Object arg1) {
         if (arg0 != URI.class) {
             throw new RuntimeException("Can only convert to URI" + arg0.getName());
-        }        
+        }      
+        if (arg0 == null) {
+        	throw new RuntimeException("Null argument");
+        }
         try {
-            return new URI(arg1.toString());
+            return new URI(arg1.toString().trim());
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Cannot convert " + arg1 + " to URI");
         }
@@ -44,6 +47,9 @@ public class URIConverter implements Converter {
 
 /* 
 $Log: URIConverter.java,v $
+Revision 1.5  2006/07/19 15:48:15  nw
+improved error capture.
+
 Revision 1.4  2006/06/15 10:07:18  nw
 improvements coming from unit testingadded new convertors.
 

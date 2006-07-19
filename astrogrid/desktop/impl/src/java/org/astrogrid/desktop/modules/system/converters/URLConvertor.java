@@ -15,8 +15,11 @@ public  class URLConvertor implements Converter {
 	    if (arg0 != URL.class) {
 	        throw new RuntimeException("Can only convert to URLs " + arg0.getName());
 	    }
+        if (arg0 == null) {
+        	throw new RuntimeException("Null argument");
+        }	    
 	    try {
-	        return new URL(arg1.toString());
+	        return new URL(arg1.toString().trim());
 	    } catch (MalformedURLException e) {
 	        throw new IllegalArgumentException("Cannot convert " + arg1 + " to URL");
 	    }
