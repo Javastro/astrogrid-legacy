@@ -44,11 +44,12 @@ public class PlasticApplicationDescription {
 	private final String name;
 	private final URI[] messages;
 	private final String version;
-	private final URL iconUrl;
 	private final URI ivorn;
+	private final URL iconURL;
+	private final ImageIcon icon;
 	private final String description;
 
-	public PlasticApplicationDescription(URI id, String name,String description, List messages, String version, String iconURL, String ivorn) {
+	public PlasticApplicationDescription(URI id, String name,String description, List messages, String version, ImageIcon icon, URL iconURL, String ivorn) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -58,13 +59,8 @@ public class PlasticApplicationDescription {
 			this.messages = new URI[]{};
 		}
 		this.version = version;
-		URL u = null;
-		try {
-			u = iconURL == null ? null : new URL(iconURL);
-		} catch (MalformedURLException x) {
-			logger.warn("Malformed Icon URL",x);
-		}
-		this.iconUrl = u;
+		this.icon = icon;
+		this.iconURL = iconURL;
 		URI uri = null;
 		try {
 			uri = ivorn == null ? null : new URI(ivorn);
@@ -75,14 +71,15 @@ public class PlasticApplicationDescription {
 	}
 	
 	
-	public PlasticApplicationDescription(URI id, String name, String description, URI[] messages, String version, URL iconUrl, URI ivorn) {
+	public PlasticApplicationDescription(URI id, String name, String description, URI[] messages, String version, ImageIcon icon, URL iconURL, URI ivorn) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.messages = messages;
 		this.version = version;
-		this.iconUrl = iconUrl;
+		this.icon = icon;
 		this.ivorn = ivorn;
+		this.iconURL = iconURL;
 	}
 
 	public URI getId() {
@@ -101,12 +98,13 @@ public class PlasticApplicationDescription {
 		return version;
 	}
 
-	public URL getIconUrl() {
-		return iconUrl;
-	}
 
 	public URI getIvorn() {
 		return ivorn;
+	}
+	
+	public URL getIconUrl() {
+		return iconURL;
 	}
 
 
@@ -128,24 +126,8 @@ public class PlasticApplicationDescription {
 		}
 		return ArrayUtils.contains(getUnderstoodMessages(),message);
 	}
-	
-	private Icon icon = null;
-	/** lazy-load the icon pointed to by {@link #getIconUrl}
-	 * @return icon, or null if getIconUrl() == null */
-	public synchronized Icon getIcon() {
-		if (icon == null && iconUrl != null) {
-		      try { //need to do this the long way, rather than just passing the url to ImageIcon, because that seems to 
-	                // throw security exceptions when runnning under webstart.
-		    	  	// should run this on background thread - dunno how to.
-	                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	                InputStream is = iconUrl.openStream();
-	                Piper.pipe(is,bos);
-	                is.close(); 
-	                icon = new ImageIcon(bos.toByteArray());	               
-	            } catch (IOException e ) {
-	                logger.warn("Failed to download icon " + iconUrl);	                
-	            }
-		}
+
+	public ImageIcon getIcon() {
 		return icon;
 	}
 
