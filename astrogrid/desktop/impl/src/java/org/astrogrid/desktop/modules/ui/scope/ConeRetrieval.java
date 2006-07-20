@@ -25,16 +25,21 @@ public class ConeRetrieval extends Retriever {
     private final Cone cone;
     private final double sz;
     protected Object construct() throws Exception {
-        URL coneURL = cone.constructQuery(new URI(information.getAccessURL().toString()),ra,dec,sz);          
+        URL coneURL = cone.constructQuery(new URI(information.getAccessURL().toString()),ra,dec,sz);        
+        // construct 2 urls - one that returns minimal results to query on to get data for astroscope.
+        // other - with fullest data -  to use as the url passed to plastic apps / saved to disk
+        final URL prelimURL = cone.addOption(coneURL,"VERB","1"); // least verbose.
+        final URL fullURL = cone.addOption(coneURL,"VERB","3"); // most verbose
         StringBuffer sb = new StringBuffer();
         sb.append("<html>Title: ").append(information.getTitle())
             .append("<br>ID: ").append(information.getId())
             .append("<br>Description: <p>")
             .append(information.getDescription()!= null ?   WordUtils.wrap(information.getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "")
-            .append("</p></html>");                        
-        TreeNode serviceNode = createServiceNode(coneURL, sb.toString());
+            .append("</p></html>");                     
         
-        InputSource source = new InputSource(coneURL.openStream());
+        TreeNode serviceNode = createServiceNode(fullURL, sb.toString());
+        
+        InputSource source = new InputSource(prelimURL.openStream());
         SummarizingTableHandler th = new BasicTableHandler(serviceNode);
         parseTable(source, th);
         return th;
