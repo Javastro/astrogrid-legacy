@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.20 2006/06/27 19:12:31 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.21 2006/07/20 12:30:59 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,9 @@
 package org.astrogrid.desktop.modules.dialogs.editors;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
@@ -27,7 +29,11 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -50,6 +56,7 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -65,6 +72,57 @@ import org.w3c.dom.ProcessingInstruction;
  */
 public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     
+   /** listen to changes, display icon and metadata */
+	protected final class ProviderCreditsButton extends JButton {
+		public ProviderCreditsButton() {
+			super();
+			setEnabled(toolModel.getTool() != null);
+			setBackground(Color.WHITE);
+			setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			ToolEditListener listener = new ToolEditAdapter() {
+				public void toolCleared(ToolEditEvent ignored) {
+					setEnabled(false);
+					setIcon(null);
+					setText("");
+					setToolTipText("");
+				}
+				public void toolSet(ToolEditEvent ignored) {
+					setEnabled(true);
+					final ApplicationInformation info = toolModel.getInfo();
+					if (info.getLogoURL() == null) {
+						setIcon(null);
+					} else {
+						(new BackgroundWorker(parent,"Fetching Creator Icon") {
+							protected Object construct() throws Exception {
+								return new ImageIcon(IconHelper.loadIcon(info.getLogoURL()).getImage().getScaledInstance(-1,48,Image.SCALE_SMOOTH));
+							}
+							protected void doFinished(Object result) {
+								setIcon((Icon)result);
+							}
+							protected void doError(Throwable ex) {//ignore
+							}
+						}).start();
+					}
+					String creatorName = "todo" ; //@FIXME fil in from rsource/curartion/creator/name - once have improved reg entry parsing in general.
+					setText( creatorName);
+					setToolTipText("<html>This service: " + info.getName() + " <br>provides access to materials created by<br>" + creatorName);
+					//@todo on  button click launch browser to go to homepage. - can't find suitable url in current schema.
+				}
+			};
+			
+			toolModel.addToolEditListener(listener);
+			// finally, trigger the listener to setup 
+			if (toolModel.getTool() == null) {
+				listener.toolCleared(null);
+			} else {
+				listener.toolSet(null);
+			}
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+		}
+	}
+	
     protected final class ExecuteAction extends AbstractAction {
 
         public ExecuteAction() {
@@ -319,6 +377,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected final  JTabbedPane tabPane;
     protected final AbstractToolEditorPanel[] views;
     protected Action newAction, saveAction, openAction, executeAction, closeAction;
+    protected final JButton creditsButton;
    
 
     /** set the lookout reference - not passed into constructor, as may not always be available*/
@@ -364,6 +423,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         saveAction = new SaveAction();
         executeAction = new ExecuteAction();
         closeAction = new CloseAction();
+        creditsButton = new ProviderCreditsButton();
         
         JToolBar tb = new JToolBar();
         tb.setRollover(true);
@@ -372,7 +432,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         tb.add(openAction);
         tb.add(saveAction);
         tb.add(executeAction);
-            
+        tb.add(Box.createHorizontalGlue());
+        tb.add(creditsButton);
+        
         fileMenu.add(newAction);
         fileMenu.add(openAction);
         fileMenu.add(saveAction);
@@ -419,6 +481,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.21  2006/07/20 12:30:59  nw
+added display of tool creator's logo.
+
 Revision 1.20  2006/06/27 19:12:31  nw
 fixed to filter on cea apps when needed.
 

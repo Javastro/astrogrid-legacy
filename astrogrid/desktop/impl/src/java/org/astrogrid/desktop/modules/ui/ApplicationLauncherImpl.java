@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.12 2006/06/27 19:14:10 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.13 2006/07/20 12:32:12 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.Lookout;
@@ -48,19 +54,37 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
             editor.setLookout(lookout);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
             this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
-            setIconImage(IconHelper.loadIcon("thread_view.gif").getImage());                
+            final Image defaultImage = IconHelper.loadIcon("thread_view.gif").getImage();
+			setIconImage(defaultImage);                
             JPanel pane = getMainPanel();
              pane.add(editor, java.awt.BorderLayout.CENTER);
             this.setContentPane(pane);
-            this.setTitle("Application Launcher");
+            this.setTitle("Task Launcher");
             getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.applicationLauncher");        
             editor.getToolModel().addToolEditListener(new ToolEditAdapter() {
 
                 public void toolSet(ToolEditEvent te) {
-                    setTitle("Task Launcher - " + editor.getToolModel().getInfo().getName());
+                    final ApplicationInformation info = editor.getToolModel().getInfo();
+					setTitle("Task Launcher - " + info.getName());
+					
+					if (info.getLogoURL() != null) {
+						(new BackgroundOperation("Fetching Creator Icon") {
+							protected Object construct() throws Exception {
+								return IconHelper.loadIcon(info.getLogoURL()).getImage();
+							}
+							protected void doFinished(Object result) {
+								setIconImage((Image)result);
+							}
+							protected void doError(Throwable ex) {//ignore
+							};
+						}).start();
+					} else {
+						setIconImage(defaultImage);
+					}
                 }
                 public void toolCleared(ToolEditEvent te) {
-                    setTitle("Task Launcher");    
+                    setTitle("Task Launcher");   
+                    setIconImage(defaultImage);
                 }                
             });
     }
@@ -71,6 +95,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.13  2006/07/20 12:32:12  nw
+added display of tool creator's logo.
+
 Revision 1.12  2006/06/27 19:14:10  nw
 fixed to filter on cea apps when needed.
 
