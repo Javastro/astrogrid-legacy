@@ -41,7 +41,9 @@
 	
 	
 	<contribution configuration-id="sendToItems">
+		<!-- too likely to fail (large data, or poor job of displaying) so will comment out
 		<object>instance:org.astrogrid.desktop.modules.ui.sendto.ShowSTA</object>
+		-->
 		<object>service:saveSTA</object>
 		<object>service:viewBrowserSTA</object>
 		<object>service:viewTranscriptSTA</object>
