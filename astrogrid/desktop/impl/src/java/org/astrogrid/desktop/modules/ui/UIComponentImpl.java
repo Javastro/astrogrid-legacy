@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.5 2006/06/27 19:14:56 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.6 2006/07/20 12:32:56 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -290,8 +290,8 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             bottomPanel.setZoneBorder(EMPTY_BORDER);            
             bottomPanel.addZone("status",getBottomLabel(),"*");
             bottomPanel.addZone("background tasks",getTasksButton(),"20");
-            bottomPanel.addZone("progress",getProgressBar(),"60");
             bottomPanel.addZone("help",getHelpButton(),"20");
+            bottomPanel.addZone("progress",getProgressBar(),"60");
     	}
     	return bottomPanel;
     }
@@ -557,6 +557,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.6  2006/07/20 12:32:56  nw
+altered position of help button, so is visible on mac.
+
 Revision 1.5  2006/06/27 19:14:56  nw
 adjusted todo tags.
 
