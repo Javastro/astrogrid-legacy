@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.8 2006/06/27 10:35:30 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.9 2006/07/20 12:32:34 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -109,9 +109,11 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         }
         Document doc = XMLUtils.newDocument();
         Marshaller.marshal(wf,doc);
+        /* don't bother displaying this popup.
         URI id = jobs.submitJob(doc);
         ResultDialog rd = new ResultDialog(null,"Workflow Submitted \nJob ID is \n" + id);
         rd.show();
+        */
         monitor.show(); // brings monitor to the front, if not already there.
 
         } catch (Exception e) {
@@ -162,6 +164,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.9  2006/07/20 12:32:34  nw
+removed jobid popup.
+
 Revision 1.8  2006/06/27 10:35:30  nw
 findbugs tweaks
 
