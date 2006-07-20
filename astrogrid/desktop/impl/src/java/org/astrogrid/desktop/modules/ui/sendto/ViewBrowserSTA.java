@@ -24,7 +24,7 @@ public class ViewBrowserSTA extends AbstractSTA {
 	 * 
 	 */
 	public ViewBrowserSTA(BrowserControl browser, Transformer trans) {
-		super("Browser","View in system web browser","Resource.gif");
+		super("View in Browser","View in your system web browser","Resource.gif");
 		this.browser = browser;
 		this.trans = trans;
 	}
