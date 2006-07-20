@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.9 2006/07/18 08:59:59 gtr Exp $
+/*$Id: CeaStrategyImpl.java,v 1.10 2006/07/20 12:30:15 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -171,7 +171,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     				for (Iterator i = l.iterator(); i.hasNext(); ) {
     					e.add((Exception)i.next());
     				}
+    				/*@fixme popping up a modal error dialog everytime a service is unavailable is too intrusive.
+    				especially as it happens as a regular scheduled task. will just log for now, and work out what to do later.
     				parent.showError("Failed to check status of some applications",e);
+    				*/
+    				logger.warn("Failed to check status of some applications",e);
     			}
     		}
     		/** check a single cea for updates. to be called within scheduler thread 
@@ -563,6 +567,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.10  2006/07/20 12:30:15  nw
+fixed to not display errors if refresh fails.
+
 Revision 1.9  2006/07/18 08:59:59  gtr
 Fix for BZ1717.
 

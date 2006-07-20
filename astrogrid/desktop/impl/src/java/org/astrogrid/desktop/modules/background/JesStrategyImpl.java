@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.7 2006/06/27 10:26:11 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.8 2006/07/20 12:30:15 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -152,7 +152,11 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 		    				for (Iterator i = l.iterator(); i.hasNext(); ) {
 		    					e.add((Exception)i.next());
 		    				}
+		    				/*@fixme popping up a modal error dialog everytime a service is unavailable is too intrusive.
+		    				especially as it happens as a regular scheduled task. will just log for now, and work out what to do later.		    				
 		    				parent.showError("Failed to check status of some workflows",e);
+		    				*/
+		    				logger.warn("Failed to check status of some workflows",e);
 		    			}
 		    		}			    
 			    /** check a single job for updates.
@@ -383,6 +387,9 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.8  2006/07/20 12:30:15  nw
+fixed to not display errors if refresh fails.
+
 Revision 1.7  2006/06/27 10:26:11  nw
 findbugs tweaks
 
