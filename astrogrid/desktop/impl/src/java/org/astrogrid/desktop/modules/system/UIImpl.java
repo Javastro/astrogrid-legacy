@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.14 2006/06/27 19:18:32 nw Exp $
+/*$Id: UIImpl.java,v 1.15 2006/07/20 12:33:28 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -293,8 +293,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 					PlasticApplicationDescription plas = (PlasticApplicationDescription)value;
 					
 					if (plas.getIcon() != null) {
-						//@bug find some way of loading this on background thread.
-	                    ImageIcon scaled = new ImageIcon(((ImageIcon)plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
+	                    ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
 						l.setIcon(scaled);
 					} else {
 						l.setIcon(IconHelper.loadIcon("plasticeye.gif"));
@@ -463,6 +462,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.15  2006/07/20 12:33:28  nw
+changed to use image fetching library.
+
 Revision 1.14  2006/06/27 19:18:32  nw
 adjusted todo tags.
 

@@ -1,4 +1,4 @@
-/*$Id: PlasticButton.java,v 1.7 2006/06/27 19:16:05 nw Exp $
+/*$Id: PlasticButton.java,v 1.8 2006/07/20 12:31:36 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,8 +48,7 @@ public abstract class PlasticButton extends NodeConsumerButton{
     public PlasticButton( PlasticApplicationDescription descr, String name, String description, FocusSet selectedNodes, UIComponent ui, TupperwareInternal tupp) {
         super(name,description!=null? description: "Display data using PLASTIC",  selectedNodes);
         if (descr.getIcon() != null) {
-			//@bug find some way of loading this on background thread.
-            ImageIcon scaled = new ImageIcon(((ImageIcon)descr.getIcon()).getImage().getScaledInstance(-1,32,Image.SCALE_SMOOTH));
+            ImageIcon scaled = new ImageIcon((descr.getIcon()).getImage().getScaledInstance(-1,32,Image.SCALE_SMOOTH));
 			setIcon(scaled);
             // run rule to enable / disable this button.
             this.focusChanged(null);
@@ -74,6 +73,9 @@ public abstract class PlasticButton extends NodeConsumerButton{
 
 /* 
 $Log: PlasticButton.java,v $
+Revision 1.8  2006/07/20 12:31:36  nw
+changed to use image fetching library.
+
 Revision 1.7  2006/06/27 19:16:05  nw
 adjusted todo tags.
 
