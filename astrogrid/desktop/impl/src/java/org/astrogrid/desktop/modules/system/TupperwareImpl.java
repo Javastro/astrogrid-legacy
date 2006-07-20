@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.system;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,10 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -166,9 +170,11 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		    String name =hub.getName(this.id) ;
 		    String description = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id);
 		    String version = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id);
-		    String icon =  (String)singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id);
+		    String iconURLString =  (String)singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id);
+		    URL iconUrl = new URL(iconURLString);
+			ImageIcon icon = IconHelper.loadIcon(iconUrl);
 		    List appMsgList = hub.getUnderstoodMessages(this.id);
-		    return new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,ivorn);
+		    return new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
 		}
 
 		protected void doFinished(Object result) {
