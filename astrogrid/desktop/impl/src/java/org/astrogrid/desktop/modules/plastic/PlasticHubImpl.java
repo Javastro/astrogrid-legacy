@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
@@ -32,6 +34,7 @@ import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.NameGen;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
@@ -478,11 +481,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			List messages = getUnderstoodMessages(plid);
 			
 			String version = safeStringCast(versions, plid); //avoid casting in case the client's been naughty and returned a null
-			String icon = safeStringCast(icons, plid);
+			String iconUrlString = safeStringCast(icons, plid);
 			String ivorn = safeStringCast(ivorns, plid);
 			String description = safeStringCast(descriptions, plid);
-			
-			PlasticApplicationDescription desc = new PlasticApplicationDescription(plid,name,description,messages,version,icon,ivorn);
+			URL iconUrl = new URL(iconUrlString);
+			ImageIcon icon = IconHelper.loadIcon(iconUrl);
+			PlasticApplicationDescription desc = new PlasticApplicationDescription(plid,name,description,messages,version,icon,iconUrl,ivorn);
 			applicationDescriptions.add(desc);
 		}
 		
