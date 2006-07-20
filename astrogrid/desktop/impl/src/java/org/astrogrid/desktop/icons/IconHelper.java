@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.5 2006/06/15 09:44:37 nw Exp $
+/*$Id: IconHelper.java,v 1.6 2006/07/20 12:29:38 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.desktop.icons;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
@@ -18,6 +21,7 @@ import javax.swing.ImageIcon;
 import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.io.Piper;
 
 /** class of helper methods for locating and loading icons.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Apr-2005
@@ -34,6 +38,45 @@ public class IconHelper {
      */
     private IconHelper() {
         super();
+    }
+    
+    /** load an icon from a url.
+     * use this method in preference to <tt>new ImageIcon(url)</tt>, as this seems to cause security exceptions when running under webstart 
+     * @param url
+     * @return the icon object, or null if not found.
+     */
+    public static ImageIcon loadIcon(URL iconUrl) {
+    	if (iconUrl!= null) {
+    		InputStream is = null;
+    		ByteArrayOutputStream bos = null;
+		      try { //need to do this the long way, rather than just passing the url to ImageIcon, because that seems to 
+	                // throw security exceptions when runnning under webstart.
+		    	  	// should run this on background thread - dunno how to.
+	                bos = new ByteArrayOutputStream();
+	                is = iconUrl.openStream();
+	                Piper.pipe(is,bos); 
+	                return  new ImageIcon(bos.toByteArray());	               
+	            } catch (IOException e ) {
+	                logger.warn("Failed to download icon " + iconUrl);	                
+	            }  finally {
+	            	if (is != null) {
+	            		try {
+	            			is.close();
+	            		} catch (IOException e) {
+	            			logger.warn("Failed to close stream",e);
+	            		}
+	            	}
+	            	if (bos != null) {
+	            		try {
+	            			bos.close();
+	            		} catch (IOException e) {
+	            			logger.warn("Failed to close stream",e);
+	            		}
+	            	}
+	            }
+    	}
+    	return null;
+    	
     }
     
     /** load an icon,
@@ -68,6 +111,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.6  2006/07/20 12:29:38  nw
+added method to load remote icons.
+
 Revision 1.5  2006/06/15 09:44:37  nw
 improvements coming from unit testing
 
