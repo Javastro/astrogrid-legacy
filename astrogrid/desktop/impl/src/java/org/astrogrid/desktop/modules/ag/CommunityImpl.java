@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.8 2006/06/15 18:20:54 nw Exp $
+/*$Id: CommunityImpl.java,v 1.9 2006/07/20 12:29:54 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -125,9 +125,7 @@ public class CommunityImpl implements CommunityInternal {
         logger.info("In authenticate");
         try {
             ui.setStatusMessage("Logging in..");
-            Map m = new HashMap();
-            m.put("username",loginDialogue.getCommunity() + "/" + loginDialogue.getUser());
-            snitch.snitch("LOGIN",m);
+
             logger.info("Logging in " + 
                         loginDialogue.getUser() +
                         "@" +
@@ -142,6 +140,10 @@ public class CommunityImpl implements CommunityInternal {
                );
            ui.setStatusMessage("Logged in as " + env.getUserIvorn());
            ui.setLoggedIn(true);
+           // snitch now they've successfully logged in.
+           Map m = new HashMap();
+           m.put("username",loginDialogue.getCommunity() + "/" + loginDialogue.getUser());
+           snitch.snitch("LOGIN",m);           
            notifyListeners(true);
         } catch (CommunityResolverException e) {
             throw new ServiceException(e);
@@ -221,6 +223,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.9  2006/07/20 12:29:54  nw
+fixed to snitch only when login is successful.
+
 Revision 1.8  2006/06/15 18:20:54  nw
 merge of desktop-gtr-1537
 
