@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.15 2006/06/27 19:14:44 nw Exp $
+/*$Id: LookoutImpl.java,v 1.16 2006/07/20 12:33:10 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -144,10 +144,12 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
                     }).start();
                 }
         }
-        
+        //@todo check this works - that we can delete individual entries.
         public void valueChanged(ListSelectionEvent e) {
-            folderMode=false;
-            setEnabled(false) ;            
+        	folderMode = false;
+            int index = getMessageTable().getSelectedRow();
+            setEnabled ( index >= 0 && index < getMessageTable().getRowCount() ) ;
+            
         }
         
         public void valueChanged(TreeSelectionEvent e) {
@@ -517,6 +519,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.16  2006/07/20 12:33:10  nw
+re-enabled the delete button.
+
 Revision 1.15  2006/06/27 19:14:44  nw
 fixed resuults display
 
