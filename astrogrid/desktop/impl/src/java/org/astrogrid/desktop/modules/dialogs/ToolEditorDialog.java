@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.5 2006/06/27 19:11:52 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.6 2006/07/24 09:51:00 KevinBenson Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,8 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
+
+import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -82,6 +84,32 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
         this.setModal(true);
         this.setContentPane(getJOptionPane());   
     }
+   	
+   	public ToolEditorDialog(
+    		List panelFactories
+    		,ResourceChooserInternal rChooser 
+            ,ApplicationsInternal apps
+            ,MyspaceInternal myspace
+            ,Configuration conf, HelpServerInternal help, UIInternal ui) throws HeadlessException {
+        super();          
+        this.parent = new UIComponentImpl(conf,help,ui);
+        
+        parametersPanel = new BasicToolEditorPanel(rChooser);
+        this.setTitle("Task Editor");
+        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+            /*
+             * Instead of directly closing the window,
+             * we're going to change the JOptionPane's
+             * value property.
+             */
+                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
+        }
+    });                
+        this.setModal(true);
+        this.setContentPane(getJOptionPane());   
+    }   	
     
     public void resetAndHide() {
         setVisible(false);
@@ -178,6 +206,9 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.6  2006/07/24 09:51:00  KevinBenson
+having the parameterized workflow just use the basiceditor for input.
+
 Revision 1.5  2006/06/27 19:11:52  nw
 fixed to filter on cea apps when needed.
 

@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.9 2006/06/27 19:11:52 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.10 2006/07/24 09:51:00 KevinBenson Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,6 +62,22 @@ public class ToolEditorImpl implements ToolEditorInternal {
         this.apps = apps;
         this.myspace =myspace;
     }
+    
+    /** Construct a new ToolEditorImpl
+     * 
+     */
+    public ToolEditorImpl(
+    		List panelFactories, ResourceChooserInternal rChooser          
+            , Configuration conf, HelpServerInternal help, UIInternal ui
+            , ApplicationsInternal apps, MyspaceInternal myspace) {
+        super(); 
+        dialog = new ToolEditorDialog(panelFactories, rChooser,apps,myspace,conf,help,ui);
+        //dialog.setSize(600,425);
+        dialog.pack();      
+        
+        this.apps = apps;
+        this.myspace =myspace;
+    }    
     
 
     /**
@@ -205,6 +221,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.10  2006/07/24 09:51:00  KevinBenson
+having the parameterized workflow just use the basiceditor for input.
+
 Revision 1.9  2006/06/27 19:11:52  nw
 fixed to filter on cea apps when needed.
 

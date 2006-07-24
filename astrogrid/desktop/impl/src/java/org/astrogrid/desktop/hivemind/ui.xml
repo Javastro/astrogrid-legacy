@@ -290,7 +290,7 @@
 				<service>astrogrid.jobs</service>
 				<service>astrogrid.myspace</service>
 				<service>astrogrid.applications</service>
-				<service>dialogs.toolEditor</service>
+				<service>dialogs.toolEditorBasic</service>
 				<service>dialogs.resourceChooser</service>		
 				<configuration>workflowTemplates</configuration>
 			</construct>
