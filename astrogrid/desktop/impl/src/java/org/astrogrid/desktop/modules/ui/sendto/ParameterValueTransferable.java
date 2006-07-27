@@ -119,7 +119,7 @@ public class ParameterValueTransferable  implements PreferredTransferable {
 	private Object processLocal(DataFlavor arg0) throws IOException {
 		if (arg0.equals(VoDataFlavour.URL)) {
 			if (tmpLocalURL == null) {
-				File f = File.createTempFile("parameterValue",".xml"); // probably xml.
+				File f = File.createTempFile("parameterValue",".txt"); // lowest common denominator
 				//f.deleteOnExit(); not safe - as clients may still be running after we exit.
 				Writer w = null;
 				try {
