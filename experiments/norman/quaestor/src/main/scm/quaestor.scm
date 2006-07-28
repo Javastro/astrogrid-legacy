@@ -40,7 +40,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.28 $ $Date: 2006/06/07 22:15:42 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.29 $ $Date: 2006/07/28 16:11:57 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -104,23 +104,32 @@
 ;; Display an HTML page reporting on the knowledgebases available
 (define (get-knowledgebase-list path-info-list query-string request response)
   (define (display-kb-info kb-name)
+    (define-generic-java-methods
+      (get-request-uri |getRequestURI|))
     (let* ((info ((kb:get kb-name) 'info))
+           (base-uri (->string (get-request-uri request)))
            (submodel-pair (assq 'submodels info))) ;cdr is list of alists
       `(li "Knowledgebase "
-           (strong ,kb-name)
+           (a (@ (href ,(format #f "~a/~a" base-uri kb-name)))
+              (strong ,kb-name))
            ", submodels:"
            (ul ,@(map (lambda (sm-alist)
                         (let ((name-pair (assq 'name sm-alist))
                               (tbox-pair (assq 'tbox sm-alist)))
-                          (list 'li
-                                (format #f "~a (~a)"
-                                        (if name-pair (cdr name-pair) "???")
-                                        (cond ((not tbox-pair)
-                                               "???")
-                                              ((cdr tbox-pair)
-                                               "tbox")
-                                              (else
-                                               "abox"))))))
+                          `(li
+                            (a (@ (href ,(format #f
+                                                 "~a/~a/~a"
+                                                 base-uri
+                                                 kb-name
+                                                 (cdr name-pair))))
+                               ,(cdr name-pair))
+                            ,(format #f " (~a)"
+                                     (cond ((not tbox-pair)
+                                            "???")
+                                           ((cdr tbox-pair)
+                                            "tbox")
+                                           (else
+                                            "abox"))))))
                       (cdr submodel-pair))))))
   (if (= (length path-info-list) 0)     ;we handle this one
       (let ((namelist (kb:get-names)))
