@@ -25,7 +25,7 @@
 		</action>		
 	</contribution>
 	
-	<contribution configuration-id="system.uiStructure">
+	<contribution configuration-id="system.uiStructure" if="property hub.mode">
 <!--sigh - giving jonathan's design a go		<tab name="plastic" text="PLASTIC"  iconName="plasticeye.gif" /> -->
 		<action parentName="advanced" name="listPlastic" text="List Plastic Applications"
 			iconName="plastic.gif" before="*"
