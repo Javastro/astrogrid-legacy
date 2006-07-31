@@ -31,6 +31,8 @@ abstract class PlasticClientProxy {
 
     protected List supportedMessages;
 
+    private boolean registerSilently;
+
     public boolean isResponding() {
         return responding;
     }
@@ -48,6 +50,17 @@ abstract class PlasticClientProxy {
     }
 
     public PlasticClientProxy(NameGen gen, String name, List supportedMessages) {
+        this(gen, name, supportedMessages, false);
+    }
+    
+    /**
+     * Ctor
+     * @param gen
+     * @param name
+     * @param supportedMessages
+     * @param registerSilently If true, then no notification is sent to the user, or other apps, that an app has registered.
+     */
+    public PlasticClientProxy(NameGen gen, String name, List supportedMessages, boolean registerSilently) {
         try {
             this.id = URI.create("plastic://acr/"+gen.next()); //TODO something more meaningful?
         }  catch (Exception e) {
@@ -72,6 +85,7 @@ abstract class PlasticClientProxy {
     		this.supportedMessages = new Vector(supportedMessages); //take a copy in case someone pulls the list from under our feet.
     	}
         this.name = name;
+        this.registerSilently = registerSilently;
     }
 
 /*    public PlasticClientProxy(NameGen gen, String name) {
@@ -108,4 +122,8 @@ abstract class PlasticClientProxy {
      * @return
      */
 	public abstract boolean canRespond();
+
+    public boolean isSilent() {
+        return registerSilently;
+    }
 }

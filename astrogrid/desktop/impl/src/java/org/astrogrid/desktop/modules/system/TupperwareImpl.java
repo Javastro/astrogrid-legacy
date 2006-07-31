@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.votech.plastic.CommonMessageConstants;
@@ -52,7 +53,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 	 * @param description variable description of this workbench.
 	 * @param handlers contribution list of handlers to register. 
 	 */
-	public TupperwareImpl(UIComponent parent,PlasticHubListener hub, String applicationName, String description, List handlers, ReportingListModel model) {
+	public TupperwareImpl(UIComponent parent, PlasticHubListenerInternal hub, String applicationName, String description, List handlers, ReportingListModel model) {
 		super();
 		this.parent = parent;
 		this.model = model;
@@ -84,7 +85,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 		}
 		plasticHandler = firstHandler;
 		logger.info("Will handle messages:" + supportedMessages);
-		this.myPlasticId = hub.registerRMI(applicationName,new ArrayList(supportedMessages),this);
+		this.myPlasticId = hub.registerSelf(applicationName,new ArrayList(supportedMessages),this);
 		// only now enable appRegistered message handler - otherwise we just get notified about ourselves.
 		applicationRegisteredMessageHandler.enable();
 		// now check to see if we've missed any applications already registered (unlikely).
@@ -171,8 +172,17 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		    String description = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id);
 		    String version = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id);
 		    String iconURLString =  (String)singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id);
-		    URL iconUrl = new URL(iconURLString);
-			ImageIcon icon = IconHelper.loadIcon(iconUrl);
+		    URL iconUrl;
+            ImageIcon icon;
+            try {
+                iconUrl = new URL(iconURLString);
+                icon = IconHelper.loadIcon(iconUrl);
+            } catch (MalformedURLException e) {
+                //Cannot rely on the client returning a well-formed URL, or indeed any URL.
+                iconUrl = null;
+                icon = null; //TODO default?
+            }
+			
 		    List appMsgList = hub.getUnderstoodMessages(this.id);
 		    return new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
 		}

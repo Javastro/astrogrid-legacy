@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     private final RmiServer rmiServer;
     private final WebServer webServer;
     private final Executor systemExecutor;
-    private final URI hubId;
+    private  URI hubId;
 
     private File plasticPropertyFile;
 
@@ -100,7 +101,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.prettyPrinter = prettyPrinter;
         this.config = config;
         logger.info("Constructing a PlasticHubImpl");
-        hubId = URI.create("plastic://ar-hub");
     }
 
     public List getRegisteredIds() {
@@ -114,7 +114,33 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public URI registerRMI(String name, List supportedOperations, PlasticListener caller) {
-    	PlasticClientProxy client = new RMIPlasticClient(idGenerator, name, supportedOperations, caller);
+    	return registerJava(name, supportedOperations, caller,false);
+    }
+    
+    /**
+     * Internal method used by the AstroRuntime to register itself.
+     * @param name
+     * @param supportedOperations
+     * @param caller
+     * @return
+     */
+    public URI registerSelf(String name, List supportedOperations, PlasticListener caller) {
+        hubId = registerJava(name, supportedOperations, caller,true);
+        return hubId;
+    }
+
+    /**
+     * Register an application running in the same JVM.  This is not part of the public API - such applications
+     * might have special privs, such as not notifying the user when they register, or not appearing in the list
+     * of registered applications.
+     * @param name human readable name
+     * @param supportedOperations a List<URI> of arguments
+     * @param caller the registering app
+     * @param silent true if the user shouldn't be notified on registration
+     * @return
+     */
+    private URI registerJava(String name, List supportedOperations, PlasticListener caller, boolean silent) {
+        PlasticClientProxy client = new RMIPlasticClient(idGenerator, name, supportedOperations, caller, silent);
         return register(client);
     }
 
@@ -143,6 +169,11 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	
 	
     // TODO - think about synch issues
+    /**
+     * Register an plastic-aware application.
+     * @param client the application (proxy) to register
+     * @param silent if true, don't pop up a notification or broadcast a message
+     */
     private synchronized URI register(PlasticClientProxy client) {
         URI id = client.getId();
 
@@ -152,13 +183,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         List args = new Vector();
         args.add(id.toString());
         logger.info(id + " has registered");
-        requestAsynch(hubId, HubMessageConstants.APPLICATION_REGISTERED_EVENT, args);
+        
 
         // Only display this if it's not the hub itself that's registering
-        // todo this is a bit of a hack...relies on the hubId not having been
-        // set yet.
-        if (hubId != null) {
-            displayInfoMessage("Plastic", client.getName()+" has registered with Id " +id);
+        if (!client.isSilent()) {
+            requestAsynch(hubId, HubMessageConstants.APPLICATION_REGISTERED_EVENT, args);
+            displayInfoMessage("Plastic", client.getName()+" has connected.");
         }
 
         return id;
@@ -194,12 +224,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         clients.remove(id);
         
         //Tell the world
-        Vector args = new Vector(); //TODO jdt why am I using vector?
+        Vector args = new Vector(); //TODO jdt why am I using vector?  A: restrictions in the current xml-rpc library
         args.add(id.toString());
         requestAsynch(hubId, HubMessageConstants.APPLICATION_UNREGISTERED_EVENT, args);
         logger.info(id + " has unregistered");
 
-        displayInfoMessage("Plastic", client.getName()+" has unregistered.");
+        if (!client.isSilent()) displayInfoMessage("Plastic", client.getName()+" has disconnected.");
     }
 
     /**
@@ -239,7 +269,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         } else {
         	clientsToMessage = CollectionUtils.intersection(clientsSupportingMessage, recipients);
         }
-        clientsToMessage.remove(sender); //don't message the sender
+        if (!sender.equals(hubId)) {
+            clientsToMessage.remove(sender); //don't message the sender _unless_ we are the hub. (The AstroRuntime Tupperware class appears to the outside world to be the hub, but relies on getting messages from this class.
+        }
 
         final CountDown gate = new CountDown(clientsToMessage.size());
 
@@ -371,6 +403,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public void start() {
+        
         // Write out connection properties in a non-astrogriddy way
         // see the Plastic spec http://plastic.sourceforge.net and
         // discussions on the DS6 forum about debranding.
@@ -418,7 +451,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         }
     }
 
-	private Properties loadExistingDotPlastic() throws FileNotFoundException, IOException {
+ 
+
+    private Properties loadExistingDotPlastic() throws FileNotFoundException, IOException {
 		Properties alreadyPresent = new Properties();
 		InputStream is = null; 
 		try {
@@ -441,7 +476,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	public String getName(URI plid) {
 		PlasticClientProxy client = (PlasticClientProxy) clients.get(plid);
 		if (client==null) {
-			return ""; //TODO CommonMessageConstants.RPCNULL; 
+			return CommonMessageConstants.RPCNULL; 
 		}
 		return client.getName(); 
 	}
@@ -461,6 +496,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		return client.getMessages();
 	}
 	
+    /**
+     * Display registered application metadata to the user.
+     */
 	public void prettyPrintRegisteredApps() throws IOException, ACRException {
 		List applicationDescriptions = new Vector();
 		List apps = getRegisteredIds();
@@ -482,8 +520,17 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			String iconUrlString = safeStringCast(icons, plid);
 			String ivorn = safeStringCast(ivorns, plid);
 			String description = safeStringCast(descriptions, plid);
-			URL iconUrl = new URL(iconUrlString);
-			ImageIcon icon = IconHelper.loadIcon(iconUrl);
+			
+            URL iconUrl;
+            ImageIcon icon;
+            try {
+                iconUrl = new URL(iconUrlString);
+                icon = IconHelper.loadIcon(iconUrl);
+            } catch (MalformedURLException e) {
+                //Cannot rely on the client returning a well-formed URL, or indeed any URL.
+                iconUrl = null;
+                icon = null; //TODO default?
+            }
 			PlasticApplicationDescription desc = new PlasticApplicationDescription(plid,name,description,messages,version,icon,iconUrl,ivorn);
 			applicationDescriptions.add(desc);
 		}
@@ -513,6 +560,11 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	public String lastChance() {
 		return null; //returning null indicates we don't care.
 	}
+
+    public void registerSelf() {
+        // TODO Auto-generated method stub
+        
+    }
 
 
 }

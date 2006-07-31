@@ -25,8 +25,8 @@ class RMIPlasticClient extends PlasticClientProxy {
 
     private PlasticListener remoteClient;
 
-    public RMIPlasticClient(NameGen gen, String name, List supportedMessages, PlasticListener plastic) {
-        super(gen, name, supportedMessages);
+    public RMIPlasticClient(NameGen gen, String name, List supportedMessages, PlasticListener plastic, boolean registerSilently) {
+        super(gen, name, supportedMessages, registerSilently);
         logger.debug("Ctor: RMIPlasticClient supports messages: " + supportedMessages);
         this.remoteClient = plastic;
     }
