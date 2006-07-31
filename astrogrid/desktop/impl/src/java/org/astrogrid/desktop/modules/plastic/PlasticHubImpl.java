@@ -24,7 +24,6 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
@@ -35,7 +34,6 @@ import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
