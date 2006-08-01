@@ -14,8 +14,9 @@
 	</head>
 <body>
 <release version="2006.3.rc2" date="unreleased">
-	<action dev="pjn" type="fix" issue="1760">
-		Reorganised front UI tabs
+	<action dev="pjn" type="fix" issue="1760,1754">
+		Reorganised front UI tabs 
+		Corrected list of parameterised workflows
 	</action>
 	<action dev="kmb" type="fix" issue="1719">
 		Fixed helioscope to have a save button that was mising

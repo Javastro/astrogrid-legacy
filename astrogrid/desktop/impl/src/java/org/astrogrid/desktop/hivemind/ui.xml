@@ -32,11 +32,11 @@
 	<!-- contributions to existing configurations -->
 	<contribution configuration-id="workflowTemplates">
 		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/timemovimakernew.wf</workflow-template>
-		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/redshiftmaker.xml</workflow-template>
 		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/redshiftmakerng.xml</workflow-template>
 		<workflow-template>http://www.merlin.ac.uk/astrogrid/colourcutter.xml</workflow-template>
 		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/ctipmodeA.xml</workflow-template>
-		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/sdss-dr3.xml</workflow-template>		
+		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/sdss-dr4.xml</workflow-template>	
+		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/conesearchlist.wf</workflow-template>	
 	</contribution>
 	
 	
