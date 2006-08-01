@@ -72,7 +72,7 @@
 
 <!-- assume that if this module is loaded, we're running as workbench -->
 	<contribution configuration-id="system.uiStructure">
-		<tab name="workflow" text="Workflows" after="links" before="advanced" />
+		<tab name="workflow" text="Data Analysis" after="discovery" before="services" />
 		<action parentName="help" name="about" text="About AstroGrid Workbench.."
 			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
 			after="*" > 
@@ -108,7 +108,7 @@
 	</contribution>
 
 	<contribution configuration-id="system.uiStructure" if="not (property ui.astroscope.disabled)" >
-		<action parentName="links" name="astroscope" text="AstroScope" before="aladin" iconName="astroscope.png"
+		<action parentName="discovery" name="astroscope" text="AstroScope" before="helioscope" iconName="astroscope.png"
 			object="service:astroscope" methodName="show">
 			<tooltip><![CDATA[
 				<html>Search and visualise matches in all <br>
@@ -119,7 +119,7 @@
 	</contribution>
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ui.helioscope.disabled)" >	
-		<action parentName="links" name="helioscope" text="HelioScope" after="astroscope" before="aladin"  iconName="helioscope.png"
+		<action parentName="discovery" name="helioscope" text="HelioScope" after="astroscope" before="applicationLauncher1"  iconName="helioscope.png"
 			object="service:helioscope" methodName="show">
 			<tooltip><![CDATA[
 			<html>Search and visualise matches in all <br>
@@ -140,9 +140,20 @@
 			]]></tooltip>			
 			</action>			
 	</contribution>	
+	
+		<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
+		<action parentName="discovery" name="applicationLauncher1" text="Task Launcher" iconName="applaunch.png"
+			object="service:applicationLauncher1" methodName="show" after="*">
+			<tooltip><![CDATA[
+		<html>Launches a single task to be executed on the AstroGrid system.<br>
+	A task can be either a Query to a data centre or a noninteractive<br>
+	Application that, e.g. operates on data files or runs a model.
+			]]></tooltip>			
+			</action>			
+	</contribution>
 
 	<contribution configuration-id="system.uiStructure" if="not (property ui.parameterizedWorkflows.disabled)" >	
-		<action parentName="workflow" name="parameterizedWorkflows" text="Science Examples" iconName="logo48x48.png"
+		<action parentName="workflow" name="parameterizedWorkflows" text="Science Workflows" iconName="logo48x48.png"
 			object="service:parameterizedWorkflows" methodName="run" after="applicationLauncher">
 			<tooltip><![CDATA[
 		<html>Direct access and editing of pre-canned workflows <br>
@@ -163,8 +174,8 @@
 	</contribution>	
 
 	<contribution configuration-id="system.uiStructure" if="not (property ui.lookout.disabled)" >	
-		<action parentName="workflow" name="lookout" text="Lookout" iconName="lookout.png"
-			after="applicationLauncher,workflowBuilder" 
+		<action parentName="services" name="lookout" text="Lookout" iconName="lookout.png"
+			before="*" 
 			object="service:lookout" methodName="show" >
 			<tooltip><![CDATA[
 		<html>Monitor the progress of Tasks, Queries and Workflows submitted for<br>
@@ -173,18 +184,29 @@
 		</action>					
 	</contribution>		
 		
-		<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
-		<action parentName="workflow" name="myspaceBrowser" text="Myspace" iconName="myspace.png"
-			object="service:myspaceBrowser" methodName="show" after="lookout" >			
+	<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
+		<action parentName="workflow"  name="myspaceBrowser" text="Myspace" iconName="myspace.png"
+			object="service:myspaceBrowser" methodName="show" after="*" >			
 			<tooltip><![CDATA[
 			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
 			queries and workflows in AstroGrid environment.
 			]]></tooltip>
 		</action>
-	</contribution>	
-		<contribution configuration-id="system.uiStructure" if="not (property ui.registryBrowser.disabled)" >	
-		<action parentName="advanced" name="registryBrowser" text="Resources" iconName="resource.png"
-			object="service:registryBrowser" methodName="show" before="htmlACR" >
+	</contribution>
+	
+	<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
+		<action parentName="services"  name="myspaceBrowser1" text="Myspace" iconName="myspace.png"
+			object="service:myspaceBrowser1" methodName="show" after="lookout" >			
+			<tooltip><![CDATA[
+			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
+			queries and workflows in AstroGrid environment.
+			]]></tooltip>
+		</action>
+	</contribution>		
+		
+	<contribution configuration-id="system.uiStructure" if="not (property ui.registryBrowser.disabled)" >	
+		<action parentName="services" name="registryBrowser" text="Resources" iconName="resource.png"
+			object="service:registryBrowser" methodName="show" after="*" >
 			<tooltip><![CDATA[
 			<html>Simple text-entry search for available <br>
 			services and archives in the VO registry.
@@ -323,6 +345,28 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 
+	<service-point id="applicationLauncher1" interface="ApplicationLauncher">
+		<interceptor service-id="system.snitchInterceptor" />
+		<invoke-factory>
+			<!--<construct class="org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl" >-->
+			<construct class="org.astrogrid.desktop.modules.ui.ApplicationLauncherFactory">
+				<configuration>dialogs.toolEditors</configuration>
+				<service>dialogs.resourceChooser</service>
+				<service>astrogrid.applications</service>
+				<service>astrogrid.myspace</service>
+				<service>lookout</service>		
+				<service>system.configuration</service>
+				<service>system.help</service>
+				<service>system.ui</service>
+<!--				<event-listener service-id="builtin.shutdown" />						-->
+			</construct>
+		</invoke-factory>	
+	</service-point>
+
+	<implementation service-id="applicationLauncher1" if="property ui.applicationLauncher.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>
+
 	<service-point id="workflowBuilder" interface="WorkflowBuilder">
 		<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
@@ -372,6 +416,31 @@
 	<implementation service-id="myspaceBrowser" if="property ui.myspaceBrowser.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
+	
+	<service-point id="myspaceBrowser1" interface="MyspaceBrowser">
+		<interceptor service-id="system.snitchInterceptor" />
+		<interceptor service-id="astrogrid.login" />
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" > 
+<!--don't think it's safe to run multiple myspace browser yet
+		<construct class="org.astrogrid.desktop.modules.ui.VoSpaceBrowserFactory"> -->
+				<service>system.configuration</service>
+				<service>system.help</service>
+				<service>system.ui</service>
+				<service>astrogrid.myspace</service>
+				<service>ui.sendTo</service>
+				<service>system.browser</service>
+				<service>dialogs.resourceChooser</service>			
+			<!--	<service>astrogrid.community</service>-->
+				<event-listener service-id="builtin.shutdown" />	
+				<event-listener service-id="astrogrid.community" />						
+			</construct>
+		</invoke-factory>	
+	</service-point>
+
+	<implementation service-id="myspaceBrowser1" if="property ui.myspaceBrowser.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>	
 	
 	<!-- for backwards compatabiltiy - delegates to lookout -->		
 	<service-point id="jobMonitor" interface="JobMonitor">

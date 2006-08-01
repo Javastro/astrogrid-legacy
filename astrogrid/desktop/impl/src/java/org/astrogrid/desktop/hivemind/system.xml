@@ -265,8 +265,10 @@ System module.
 		<tab name="links" text="Links" after="advanced" />			
 	</contribution>
 	<contribution configuration-id="uiStructure" if="property workbench.mode">
-		<tab name="links" text="Data Discovery" before="*" />		
-		<tab name="advanced" text="Advanced" after="*" />	
+		<tab name="discovery" text="Data Discovery" before="*" />		
+		<tab name="services" text="System Services" after="workflow" />
+		<tab name="links" text="Helper Applications" after="services" />		
+		<tab name="advanced" text="Advanced" after="*" />
 	</contribution>
 
 	
