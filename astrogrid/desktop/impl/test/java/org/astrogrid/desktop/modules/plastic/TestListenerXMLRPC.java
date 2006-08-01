@@ -31,35 +31,9 @@ import org.votech.plastic.outgoing.policies.StandardXmlRpcPolicy;
  */
 public class TestListenerXMLRPC implements TestPlasticApplication{
 
-    /**
-     * @param args
-     * @throws IOException 
-     */
-    public static void main(String[] args) throws IOException {
-        // Create a new listener and register it
-        TestListenerXMLRPC listener = new TestListenerXMLRPC(null);
-        listener.connect();
-     
-    }
+
 
     boolean connected = false;
-    private URI plid;
-    public synchronized void connect() throws IOException {
-        if (connected) return;
-        URL listeningOn = getCallBackURL();
-        StandardXmlRpcPolicy policy = new StandardXmlRpcPolicy();
-        hub = policy.getHub();
-        if (hub==null) throw new IOException("No hub is running");
-        List messages = handler.getHandledMessages();
-        plid = hub.registerXMLRPC("TestListenerXMLRPC", messages,listeningOn);
-        connected=true;
-    }
-    
-    public synchronized void disconnect() throws IOException {
-        if (!connected) return;
-        hub.unregister(plid);
-        connected=false;
-    }
 
     private Server server;
 
@@ -91,7 +65,6 @@ public class TestListenerXMLRPC implements TestPlasticApplication{
     }
     
     MessageHandler handler;
-    private PlasticHubListener hub;
     
     /** Add a new message handler to the start of the chain */
     public synchronized void addHandler(MessageHandler h) {
