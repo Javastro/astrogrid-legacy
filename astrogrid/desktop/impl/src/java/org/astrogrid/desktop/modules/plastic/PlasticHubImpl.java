@@ -60,7 +60,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     private final RmiServer rmiServer;
     private final WebServer webServer;
     private final Executor systemExecutor;
-    private  URI hubId;
+    private  URI hubId = URI.create("file://hub_not_set_up");  //A PlasticListener should be registered through registerSelf() to "be" the hub for the outside world.
 
     private File plasticPropertyFile;
 
@@ -269,7 +269,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         } else {
         	clientsToMessage = CollectionUtils.intersection(clientsSupportingMessage, recipients);
         }
-        if (!sender.equals(hubId)) {
+        if (hubId!=null && !sender.equals(hubId)) {
             clientsToMessage.remove(sender); //don't message the sender _unless_ we are the hub. (The AstroRuntime Tupperware class appears to the outside world to be the hub, but relies on getting messages from this class.
         }
 
@@ -561,10 +561,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		return null; //returning null indicates we don't care.
 	}
 
-    public void registerSelf() {
-        // TODO Auto-generated method stub
-        
-    }
-
+   
 
 }
