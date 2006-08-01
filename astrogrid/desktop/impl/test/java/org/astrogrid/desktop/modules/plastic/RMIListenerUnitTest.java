@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Vector;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.Shutdown;
@@ -32,7 +33,7 @@ public class RMIListenerUnitTest extends AbstractPlasticBase {
         
         
         hub1 = createHubWithMocks();
-        ((PlasticHubImpl)hub1).start();  
+        ((PlasticHubImpl)hub1).start(); 
         
         sampleArgs = new ArrayList();
         sampleArgs.add("a");
@@ -124,8 +125,16 @@ public class RMIListenerUnitTest extends AbstractPlasticBase {
             }
             
         };
+        PlasticHubImpl impl = new PlasticHubImpl(executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), config);
+        final MessageHandler internalhandler = new StandardHandler("Astro Runtime","description","ivo://foo","http://news.bbc.co.uk",PlasticListener.CURRENT_VERSION);
+        impl.registerSelf("Astro Runtime", internalhandler.getHandledMessages(), new PlasticListener() {
+           public Object perform(URI arg0, URI arg1, List arg2) {
+                return internalhandler.perform(arg0,arg1,arg2);
+            }
+            
+        });
         
-        return new PlasticHubImpl(executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), config);
+        return impl;
     }
     
     

@@ -74,10 +74,10 @@ public abstract class AbstractPlasticBase extends TestCase {
         //clear up as best as we can
         List plids = hub.getRegisteredIds();
         URI hubId = hub.getHubId();
-        plids.remove(hubId.toString()); //TODO change type
+        plids.remove(hubId); 
         for (Iterator it = plids.iterator();it.hasNext();) {
-            String plid = (String) it.next(); //TODO change type to URI
-            hub.unregister(URI.create(plid));
+            URI plid = (URI) it.next(); 
+            hub.unregister(plid);
         }
         List newPlids = hub.getRegisteredIds();
         if (newPlids.size()!=1) {
@@ -112,7 +112,7 @@ public abstract class AbstractPlasticBase extends TestCase {
     private String basicHubMetadataCheck(URI message, URI appId) {
         URI hubId = hub.getHubId();
         Map names = hub.request(appId, message ,new Vector());
-        String hubResponse = (String) names.get(hubId.toString());
+        String hubResponse = (String) names.get(hubId);
         //we should at least get something back
         assertNotNull(hubResponse);
         assertFalse(CommonMessageConstants.RPCNULL.equals(hubResponse));
@@ -181,9 +181,9 @@ public abstract class AbstractPlasticBase extends TestCase {
         //broadcast the message from app1
         Map results = hub.request(plid1, CommonMessageConstants.GET_NAME, new Vector());
         
-        String name1 = (String) results.get(plid1.toString());
-        String name2 = (String) results.get(plid2.toString()); //TODO fix types
-        String name3 = (String) results.get(plid3.toString());
+        String name1 = (String) results.get(plid1);
+        String name2 = (String) results.get(plid2); 
+        String name3 = (String) results.get(plid3);
         
         assertNull(name1);// no result returned for sender
         assertEquals("Application 2", name2);
