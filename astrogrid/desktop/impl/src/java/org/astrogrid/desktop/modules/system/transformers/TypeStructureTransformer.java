@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.6 2006/06/27 19:13:52 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.7 2006/08/01 23:27:30 jdt Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,8 +58,6 @@ public class TypeStructureTransformer implements Transformer {
         if (arg0 instanceof String 
                 || arg0 instanceof Integer 
                 || arg0 instanceof Double 
-                || arg0 instanceof Vector 
-                || arg0 instanceof Hashtable 
                 || arg0 instanceof Date 
                 || arg0 instanceof Boolean 
                 || arg0 instanceof Byte
@@ -152,6 +150,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.7  2006/08/01 23:27:30  jdt
+bugfix for 1762
+
 Revision 1.6  2006/06/27 19:13:52  nw
 adjusted todo tags.
 
