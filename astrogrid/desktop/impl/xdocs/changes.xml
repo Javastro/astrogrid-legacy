@@ -25,6 +25,20 @@
 	<action dev="kmb" type="fix" issue="1366">
 		Fixed 'enter' or 'return' to work on Registry panel for workflow see bugzilla ticket 1366
 	</action>
+    <action dev="jdt" type="fix" issue="1734">
+        Rephrased pop-up text on plastic registration.
+    </action>
+    <action dev="jdt" type="fix" issue="1757">
+        Removed "list" plastic applications button from all variants except plastic hub-only AR.
+    </action>    
+    <action dev="jdt" type="fix" issue="">
+        Assorted other fixes: hub now self registers properly and responds to messages such as getName.
+        
+    </action>
+    <action dev="jdt" type="fix" issue="1762">
+        XML-RPC return type conversion would fail in certain situations.
+        XML-RPC plastic clients couldn't use getRegisteredIds for example.
+    </action>
 </release>
 <release version="2006.3.rc1" date="2006-06-28">
 	<action dev="nw" type="add">
