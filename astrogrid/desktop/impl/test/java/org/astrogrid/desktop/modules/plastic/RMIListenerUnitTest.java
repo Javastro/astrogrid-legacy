@@ -2,15 +2,134 @@ package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.system.RmiServer;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.common.namegen.InMemoryNameGen;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
+import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.PlasticListener;
+import org.votech.plastic.incoming.handlers.EchoHandler;
+import org.votech.plastic.incoming.handlers.MessageHandler;
+import org.votech.plastic.incoming.handlers.StandardHandler;
 
-public class RMIListenerUnitTest extends PresetupHub {
-	private List sampleArgs;
+import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
+// TODO refactor this
+public class RMIListenerUnitTest extends AbstractPlasticBase {
+
+    protected PlasticHubListener hub1;
+
+    public void setUp() throws Exception {
+        
+        
+        hub1 = createHubWithMocks();
+        ((PlasticHubImpl)hub1).start();  
+        
+        sampleArgs = new ArrayList();
+        sampleArgs.add("a");
+        sampleArgs.add(new Object());
+        oneMessage = new ArrayList();
+        oneMessage.add(message);
+        super.setUp();
+    }
+    
+    public void tearDown() throws Exception {
+        super.tearDown();
+        ((PlasticHubImpl)hub1).halting();
+        hub1 = null;
+    }
+    
+    
+    // TODO stick this somewhere else
+    private PlasticHubListener createHubWithMocks() {
+        DirectExecutor executor = new DirectExecutor();
+        InMemoryNameGen idGenerator = new InMemoryNameGen();
+        WebServer web = new WebServer() {
+
+            public String getUrlRoot() {
+                return "http://127.0.0.1:" + getPort() + "/" + getKey() + "/";
+            }
+
+            public String getKey() {
+                return "foobar";
+            }
+
+            public int getPort() {
+                return 8001;
+            }
+
+        };
+        RmiServer rmi = new RmiServer() {
+
+            public int getPort() {
+                return 1234;
+            }
+
+        };
+
+        Configuration config = new Configuration() {
+            Map store = new HashMap();
+            public boolean setKey(String arg0, String arg1) {
+                store.put(arg0,arg1);
+                return true;
+            }
+
+            public String getKey(String arg0) {
+                return (String) store.get(arg0);
+            }
+
+            public String[] listKeys() throws ACRException {
+                return (String[]) store.keySet().toArray(new String[]{});
+            }
+
+            public Map list() throws ACRException {
+                return store;
+            }
+
+            public void removeKey(String arg0) {
+                store.remove(arg0);
+            }
+            
+        };
+        
+        Shutdown shutdown = new Shutdown() {
+
+            public void halt() {
+                // TODO Auto-generated method stub
+                
+            }
+
+            public void reallyHalt() {
+                // TODO Auto-generated method stub
+                
+            }
+
+            public void addShutdownListener(ShutdownListener arg0) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            public void removeShutdownListener(ShutdownListener arg0) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+        };
+        
+        return new PlasticHubImpl(executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), config);
+    }
+    
+    
+    private List sampleArgs;
 	private URI message = URI.create("ivo://message");
 	private URI test = URI.create("ivo://junit");
 	private List oneMessage;
@@ -21,15 +140,15 @@ public class RMIListenerUnitTest extends PresetupHub {
 		
 		PlasticListener listener = new TestListener("listener1");
 
-		URI listenerId = hub.registerRMI("listener1", oneMessage, listener);
+		URI listenerId = hub1.registerRMI("listener1", oneMessage, listener);
 		
 
-		Map results = (Map) hub.request(test, message, sampleArgs);
+		Map results = (Map) hub1.request(test, message, sampleArgs);
 		Object result = results.get(listenerId);
 		assertEquals(result,"listener1"+test+message+"2");
 		
 		//test new getMessages method
-		assertEquals(oneMessage, hub.getUnderstoodMessages(listenerId));
+		assertEquals(oneMessage, hub1.getUnderstoodMessages(listenerId));
 	}
 	
 	public void testSelectiveListeners() {
@@ -38,23 +157,23 @@ public class RMIListenerUnitTest extends PresetupHub {
 		URI message2 = URI.create("ivo://message2");
 		
 		PlasticListener listener1 = new TestListener("listener1");
-		URI listenerId1 = hub.registerRMI("listener1", CommonMessageConstants.EMPTY, listener1);
+		URI listenerId1 = hub1.registerRMI("listener1", CommonMessageConstants.EMPTY, listener1);
 		PlasticListener listener2 = new TestListener("listener2");
 		List messages = new ArrayList();
 		messages.add(message1);
-		URI listenerId2 = hub.registerRMI("listener2", messages, listener2);		
+		URI listenerId2 = hub1.registerRMI("listener2", messages, listener2);		
 		
 		//test new getMessages method
-		assertEquals(messages, hub.getUnderstoodMessages(listenerId2));
+		assertEquals(messages, hub1.getUnderstoodMessages(listenerId2));
 
-		Map results = (Map) hub.request(test, message1, sampleArgs);
+		Map results = (Map) hub1.request(test, message1, sampleArgs);
 		assertEquals(1, results.size());
 		Object result1 = results.get(listenerId1);
 		assertNull(result1);
 		Object result2 = results.get(listenerId2);
 		assertEquals(result2,"listener2"+test+message1+"2");
 		
-		Map results2 = (Map) hub.request(test, message2, sampleArgs);
+		Map results2 = (Map) hub1.request(test, message2, sampleArgs);
 		assertEquals(0, results2.size());
 		assertFalse(results2.containsKey(listenerId2));
 	}
@@ -62,21 +181,21 @@ public class RMIListenerUnitTest extends PresetupHub {
 	public void testGetMessagesForUnknownId() {
 		//Expect an empty list back if the app isn't registered
 		URI listenerId = URI.create("ivo://imadethisup");
-		assertEquals(CommonMessageConstants.EMPTY, hub.getUnderstoodMessages(listenerId ));
+		assertEquals(CommonMessageConstants.EMPTY, hub1.getUnderstoodMessages(listenerId ));
 	}
 	
 	public void testSendToSubset() {
 		
 		PlasticListener listener1 = new TestListener("listener1");
-		URI listenerId1 = hub.registerRMI("listener1", oneMessage, listener1);
+		URI listenerId1 = hub1.registerRMI("listener1", oneMessage, listener1);
 		PlasticListener listener2 = new TestListener("listener2");
-		URI listenerId2 = hub.registerRMI("listener2", oneMessage, listener2);		
+		URI listenerId2 = hub1.registerRMI("listener2", oneMessage, listener2);		
 		
 
 		List recipients = new ArrayList();
 		recipients.add(listenerId1);
 		
-		Map results = (Map) hub.requestToSubset(test, message, sampleArgs, recipients);
+		Map results = (Map) hub1.requestToSubset(test, message, sampleArgs, recipients);
 		assertEquals(1, results.size());
 		Object result1 = results.get(listenerId1);
 		assertEquals(result1,"listener1"+test+message+"2");
@@ -88,12 +207,12 @@ public class RMIListenerUnitTest extends PresetupHub {
 
 		
 		TestListener2 listener = new TestListener2();
-		URI listenerId = hub.registerRMI("listener2", oneMessage, listener);
+		URI listenerId = hub1.registerRMI("listener2", oneMessage, listener);
 		
-		assertEquals("listener2", hub.getName(listenerId));
+		assertEquals("listener2", hub1.getName(listenerId));
 		
 
-		hub.requestAsynch(test, message, sampleArgs);
+		hub1.requestAsynch(test, message, sampleArgs);
 
 		assertEquals(message, listener.getMessage());
 	}
@@ -102,27 +221,20 @@ public class RMIListenerUnitTest extends PresetupHub {
 
 		
 		TestListener2 listener1 = new TestListener2();
-		hub.registerRMI("listener1", oneMessage, listener1);
+		hub1.registerRMI("listener1", oneMessage, listener1);
 		
 		TestListener2 listener2 = new TestListener2();
-		URI listenerId2 = hub.registerRMI("listener2", oneMessage, listener2);
+		URI listenerId2 = hub1.registerRMI("listener2", oneMessage, listener2);
 		
 		List subset = new ArrayList();
 		subset.add(listenerId2);
-		hub.requestToSubsetAsynch(test, message, sampleArgs, subset);
+		hub1.requestToSubsetAsynch(test, message, sampleArgs, subset);
 
 		assertNotSame(message, listener1.getMessage());
 		assertEquals(message, listener2.getMessage());
 	}
 	
-	public void setUp() {
-		super.setUp();
-		sampleArgs = new ArrayList();
-		sampleArgs.add("a");
-		sampleArgs.add(new Object());
-		oneMessage = new ArrayList();
-		oneMessage.add(message);
-	}
+
 	
 	public void testGetRegUnregMessage() {
 		TestListener2 listener1 = new TestListener2();
@@ -133,19 +245,66 @@ public class RMIListenerUnitTest extends PresetupHub {
 		messages.add(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT);
 		
 		
-		URI id1 = hub.registerRMI("listener1", messages, listener1);
-		URI id2 = hub.registerRMI("listener2", messages, listener2);
+		URI id1 = hub1.registerRMI("listener1", messages, listener1);
+		URI id2 = hub1.registerRMI("listener2", messages, listener2);
 		
 		assertEquals(HubMessageConstants.APPLICATION_REGISTERED_EVENT, listener1.getMessage());
 		assertEquals(id2.toString(), listener1.getArgs().get(0));
-		assertEquals(hub.getHubId(), listener1.getSender());
+		assertEquals(hub1.getHubId(), listener1.getSender());
 		
-		hub.unregister(id1);
+		hub1.unregister(id1);
 		
 		assertEquals(HubMessageConstants.APPLICATION_UNREGISTERED_EVENT, listener2.getMessage());
 		assertEquals(id1.toString(), listener2.getArgs().get(0));
-		assertEquals(hub.getHubId(), listener2.getSender());
+		assertEquals(hub1.getHubId(), listener2.getSender());
 	}
+
+    protected PlasticHubListener getHub() throws Exception {
+        return hub1;
+    }
+
+    protected TestPlasticApplication getApplication(Properties appData) {
+        return new TestListenerRMI(appData);
+    }
+    
+    private static class TestListenerRMI implements TestPlasticApplication, PlasticListener {
+
+        private MessageHandler handler;
+
+        public URI registerWith(PlasticHubListener hub, String name) {
+            return hub.registerRMI(name, getMessages(), this);
+        }
+
+        public TestListenerRMI(Properties metaData) {
+            if (metaData==null) metaData = new Properties();
+            final String name = metaData.getProperty(NAME,"TestListenerRMI");
+            final String desc = metaData.getProperty(DESC,"A testing client that uses rmi for comms");
+            final String ivorn = metaData.getProperty(IVORN,"");
+            final String logoUrl = metaData.getProperty(LOGOURL,"");
+            final String version = metaData.getProperty(VERSION,PlasticListener.CURRENT_VERSION);
+            
+            handler = new EchoHandler();
+            MessageHandler handler1= new StandardHandler(name,desc,ivorn,logoUrl,version);
+            handler.setNextHandler(handler1);
+     
+        }
+        public List getMessages() {
+            return handler.getHandledMessages();
+        }
+
+        public void addHandler(MessageHandler h) {
+            h.setNextHandler(handler);
+            handler=h;
+            
+        }
+
+        public Object perform(URI arg0, URI arg1, List arg2) {
+            return handler.perform(arg0,arg1,arg2);
+        }
+
+ 
+        
+    }
 	
 	
 

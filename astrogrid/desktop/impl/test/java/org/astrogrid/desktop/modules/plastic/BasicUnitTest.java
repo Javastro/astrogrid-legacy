@@ -13,8 +13,15 @@ import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.PlasticListener;
 
-
+/**
+ * Test that the hub implementation class contructs, and stops and starts OK.
+ * @author jdt
+ *
+ */
 public class BasicUnitTest  extends AbstractPlasticTestBase {
+    /**
+     * The hub needs a "proxy" to receive messages from the outside world such as "getName" etc.  This is it.
+     */
 	private PlasticListener pretendHub = new PlasticListener() {
         
         public Object perform(URI arg0, URI arg1, List arg2) {
@@ -22,7 +29,7 @@ public class BasicUnitTest  extends AbstractPlasticTestBase {
         }
         
         
-    }; //The hub needs a "proxy" to receive messages from the outside world such as "getName" etc.  This is it.
+    }; 
 
     public void testContructsOK() {
 		File file = new File(System.getProperty("user.home"),".plastic");
@@ -45,7 +52,7 @@ public class BasicUnitTest  extends AbstractPlasticTestBase {
 		URI hubId = hub.getHubId();
 		Collection allIds = hub.getRegisteredIds();
 		assertNotNull("hub is registered", hubId);
-		assertTrue("Hub is regisered", allIds.contains(hubId));
+		assertTrue("Hub is registered", allIds.contains(hubId));
 		assertEquals("Nothing else is registered", 1, allIds.size());
 		listener.halting();
 	}

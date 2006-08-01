@@ -7,7 +7,11 @@ import java.util.List;
 
 import org.votech.plastic.CommonMessageConstants;
 
-
+/**
+ * Test basic registration functionality, using the simple "no callback" application.
+ * @author jdt
+ *
+ */
 public class RegisterNoCallbackUnitTest  extends PresetupHub {
 
 	public void testRegisterGoodNames() {
@@ -43,9 +47,10 @@ public class RegisterNoCallbackUnitTest  extends PresetupHub {
 		
 	}
 	
-    /*
+    /**
      * 
      * No longer true, since the hub doesn't self register, as such
+     */
 	public void testHubRegistration() {
 		hub.registerNoCallBack("Application1");
 
@@ -54,7 +59,7 @@ public class RegisterNoCallbackUnitTest  extends PresetupHub {
 		assertTrue(registered.contains(hub.getHubId()));
 		
 	}
-	*/
+	
 	/**
 	 * This used to fail since the name became part of the URI.  Now should be OK...
 	 *
