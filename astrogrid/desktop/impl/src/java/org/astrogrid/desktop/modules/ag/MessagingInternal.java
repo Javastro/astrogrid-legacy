@@ -1,4 +1,4 @@
-/*$Id: MessagingInternal.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: MessagingInternal.java,v 1.3 2006/08/02 13:28:28 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,12 +29,10 @@ public interface MessagingInternal {
     /** add a consumer for messages
      * @param condition a filter for events. may be null to indicate (all events)
      * @param l a listener 
-     * @throws JMSException
      */
     void addEventProcessor(MessageListener l); 
     /**
      * @param l
-     * @throws JMSException
      */
     void removeEventProcessor(MessageListener l) ;
     
@@ -87,6 +85,9 @@ public interface MessagingInternal {
 
 /* 
 $Log: MessagingInternal.java,v $
+Revision 1.3  2006/08/02 13:28:28  nw
+doc fix
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 
