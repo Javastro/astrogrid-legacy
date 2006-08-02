@@ -140,10 +140,10 @@
 			]]></tooltip>			
 			</action>			
 	</contribution>	
-	
+
 		<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
 		<action parentName="discovery" name="applicationLauncher1" text="Task Launcher" iconName="applaunch.png"
-			object="service:applicationLauncher1" methodName="show" after="*">
+			object="service:applicationLauncher" methodName="show" after="*">
 			<tooltip><![CDATA[
 		<html>Launches a single task to be executed on the AstroGrid system.<br>
 	A task can be either a Query to a data centre or a noninteractive<br>
@@ -184,19 +184,19 @@
 		</action>					
 	</contribution>		
 		
-	<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
-		<action parentName="workflow"  name="myspaceBrowser" text="Myspace" iconName="myspace.png"
+		<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
+		<action parentName="workflow" name="myspaceBrowser" text="Myspace" iconName="myspace.png"
 			object="service:myspaceBrowser" methodName="show" after="*" >			
 			<tooltip><![CDATA[
 			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
 			queries and workflows in AstroGrid environment.
 			]]></tooltip>
 		</action>
-	</contribution>
+	</contribution>	
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
 		<action parentName="services"  name="myspaceBrowser1" text="Myspace" iconName="myspace.png"
-			object="service:myspaceBrowser1" methodName="show" after="lookout" >			
+			object="service:myspaceBrowser" methodName="show" after="lookout" >			
 			<tooltip><![CDATA[
 			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
 			queries and workflows in AstroGrid environment.
@@ -204,7 +204,7 @@
 		</action>
 	</contribution>		
 		
-	<contribution configuration-id="system.uiStructure" if="not (property ui.registryBrowser.disabled)" >	
+		<contribution configuration-id="system.uiStructure" if="not (property ui.registryBrowser.disabled)" >	
 		<action parentName="services" name="registryBrowser" text="Resources" iconName="resource.png"
 			object="service:registryBrowser" methodName="show" after="*" >
 			<tooltip><![CDATA[
@@ -246,6 +246,7 @@
 				<service>cds.sesame</service>
 				<service>system.tupperware</service>	
 				<service>ui.sendTo</service>
+				<service>system.snitch</service>
 <!--				<event-listener service-id="builtin.shutdown" />		-->																															
 			</construct>
 		</invoke-factory>	
@@ -268,7 +269,8 @@
 				<service>astrogrid.registry</service>
 				<service>astrogrid.stap</service>
 				<service>system.tupperware</service>
-				<service>ui.sendTo</service>									
+				<service>ui.sendTo</service>	
+				<service>system.snitch</service>								
 <!--				<event-listener service-id="builtin.shutdown" />		-->																									
 			</construct>
 		</invoke-factory>	
@@ -312,7 +314,7 @@
 				<service>astrogrid.jobs</service>
 				<service>astrogrid.myspace</service>
 				<service>astrogrid.applications</service>
-				<service>dialogs.toolEditorBasic</service>
+				<service>dialogs.toolEditor</service><!-- TODO dialogs.tooEditorBasic -->
 				<service>dialogs.resourceChooser</service>		
 				<configuration>workflowTemplates</configuration>
 			</construct>
@@ -344,28 +346,6 @@
 	<implementation service-id="applicationLauncher" if="property ui.applicationLauncher.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
-
-	<service-point id="applicationLauncher1" interface="ApplicationLauncher">
-		<interceptor service-id="system.snitchInterceptor" />
-		<invoke-factory>
-			<!--<construct class="org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl" >-->
-			<construct class="org.astrogrid.desktop.modules.ui.ApplicationLauncherFactory">
-				<configuration>dialogs.toolEditors</configuration>
-				<service>dialogs.resourceChooser</service>
-				<service>astrogrid.applications</service>
-				<service>astrogrid.myspace</service>
-				<service>lookout</service>		
-				<service>system.configuration</service>
-				<service>system.help</service>
-				<service>system.ui</service>
-<!--				<event-listener service-id="builtin.shutdown" />						-->
-			</construct>
-		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="applicationLauncher1" if="property ui.applicationLauncher.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>
 
 	<service-point id="workflowBuilder" interface="WorkflowBuilder">
 		<interceptor service-id="system.snitchInterceptor" />
@@ -416,31 +396,6 @@
 	<implementation service-id="myspaceBrowser" if="property ui.myspaceBrowser.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-	
-	<service-point id="myspaceBrowser1" interface="MyspaceBrowser">
-		<interceptor service-id="system.snitchInterceptor" />
-		<interceptor service-id="astrogrid.login" />
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" > 
-<!--don't think it's safe to run multiple myspace browser yet
-		<construct class="org.astrogrid.desktop.modules.ui.VoSpaceBrowserFactory"> -->
-				<service>system.configuration</service>
-				<service>system.help</service>
-				<service>system.ui</service>
-				<service>astrogrid.myspace</service>
-				<service>ui.sendTo</service>
-				<service>system.browser</service>
-				<service>dialogs.resourceChooser</service>			
-			<!--	<service>astrogrid.community</service>-->
-				<event-listener service-id="builtin.shutdown" />	
-				<event-listener service-id="astrogrid.community" />						
-			</construct>
-		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="myspaceBrowser1" if="property ui.myspaceBrowser.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
 	
 	<!-- for backwards compatabiltiy - delegates to lookout -->		
 	<service-point id="jobMonitor" interface="JobMonitor">
