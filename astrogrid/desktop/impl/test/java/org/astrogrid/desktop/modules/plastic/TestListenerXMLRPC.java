@@ -13,7 +13,6 @@ import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.xmlrpc.WebServer;
-import org.astrogrid.desktop.modules.plastic.AbstractPlasticBase.TestPlasticApplication;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.PlasticHubListener;
 

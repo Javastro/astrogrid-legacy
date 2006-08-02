@@ -43,27 +43,6 @@ public abstract class AbstractPlasticBase extends TestCase {
      */
     protected abstract TestPlasticApplication getApplication(Properties appData);
 
-    public interface TestPlasticApplication {
-        /**
-         * Keys into the properties file to define application metadata
-         */
-        public static final String NAME="NAME";
-        public static final String DESC="DESC";
-        public static final String IVORN="IVORN";
-        public static final String LOGOURL="LOGOURL";
-        public static final String VERSION="VERSION";
-        /**
-         * Different clients will have slightly different registration methods,
-         * so we leave the registration to them.
-         * @param hub
-         * @return
-         */
-        public URI registerWith(PlasticHubListener hub, String name);
-        public List getMessages();
-        public void addHandler(MessageHandler h) ;
-    }
-    
-    
     public void setUp() throws Exception {
         // Any subclasses that override this method, must delegate to us too.
         hub = getHub();

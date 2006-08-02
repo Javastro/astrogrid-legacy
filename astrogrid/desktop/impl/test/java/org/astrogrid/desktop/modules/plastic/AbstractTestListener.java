@@ -7,7 +7,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Properties;
 
-import org.astrogrid.desktop.modules.plastic.AbstractPlasticBase.TestPlasticApplication;
 import org.votech.plastic.PlasticListener;
 import org.votech.plastic.incoming.handlers.EchoHandler;
 import org.votech.plastic.incoming.handlers.MessageHandler;

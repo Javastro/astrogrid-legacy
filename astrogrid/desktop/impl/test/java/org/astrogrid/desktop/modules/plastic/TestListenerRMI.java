@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.plastic;
 import java.net.URI;
 import java.util.Properties;
 
-import org.astrogrid.desktop.modules.plastic.AbstractPlasticBase.TestPlasticApplication;
 import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.PlasticListener;
 
