@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.2 2006/05/17 23:57:45 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.3 2006/08/02 13:27:57 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,21 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.prefs.Preferences;
 
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -25,9 +33,13 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.store.Ivorn;
+
+import com.l2fprod.common.swing.JLinkButton;
 
 /**
  * Dialog for logging in to an Astrogrid community.
@@ -39,17 +51,21 @@ import org.astrogrid.store.Ivorn;
  * @modified Noel Winstanley - copied across.
  */
 public class SwingLoginDialogue extends JPanel implements LoginDialogue {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory
+			.getLog(SwingLoginDialogue.class);
 
     private final JTextField commField_;
     private final JTextField userField_;
     private final JPasswordField passField_;
     private final JOptionPane opane_;
-
     /**
      * Constructs a new dialog.
+     * @throws MalformedURLException 
      */
-    public SwingLoginDialogue() {
-
+    public SwingLoginDialogue(final BrowserControl browser, String registerLink) throws MalformedURLException {
         /* Create query components. */
         commField_ = new JTextField();
         userField_ = new JTextField();
@@ -62,15 +78,29 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
         stack.addItem( "Password", passField_ );
 
         Component strut = Box.createHorizontalStrut( 300 );
+        final URL registerURL = new URL(registerLink);
 
-
+        JButton registerButton = new JLinkButton("Not got an account? Register..");
+        registerButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+					browser.openURL(registerURL);
+				} catch (ACRException x) {
+					// not expected to fail.
+					logger.error("Failed to open register link",x);
+				}
+				//@todo close the dialog.
+        	}
+        });
+        
+        
         /* The main panel will be a JOptionPane since it has icons and
          * layout set up for free.  We won't be using its various
          * static show methods though. */
         opane_ = new JOptionPane();
         opane_.setMessageType( JOptionPane.QUESTION_MESSAGE );
         opane_.setOptionType( JOptionPane.OK_CANCEL_OPTION );
-        opane_.setMessage( new Component[] { stack, strut } );
+        opane_.setMessage( new Component[] { stack, strut ,registerButton} );
         prefs = Preferences.userNodeForPackage(SwingLoginDialogue.class);
         userField_.setText(prefs.get("username",""));
         commField_.setText(prefs.get("community",""));
@@ -210,6 +240,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.3  2006/08/02 13:27:57  nw
+added 'register' link.
+
 Revision 1.2  2006/05/17 23:57:45  nw
 documentation improvements.
 
