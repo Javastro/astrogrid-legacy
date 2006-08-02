@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.7 2006/08/01 23:27:30 jdt Exp $
+/*$Id: TypeStructureTransformer.java,v 1.8 2006/08/02 13:12:49 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class TypeStructureTransformer implements Transformer {
         if (arg0 == null) {
             return null;
         }
-        // pass thtough these supported types.
+        // pass thtough these supported primitive types.
         if (arg0 instanceof String 
                 || arg0 instanceof Integer 
                 || arg0 instanceof Double 
@@ -64,7 +65,7 @@ public class TypeStructureTransformer implements Transformer {
                 || arg0 instanceof byte[]) {
             return arg0;
         } 
-        
+
         if (arg0 instanceof Void) {
         	return "OK";
         }
@@ -89,7 +90,26 @@ public class TypeStructureTransformer implements Transformer {
                 || arg0 instanceof URI) {
             return arg0.toString();
         }
-        // recursively transform a map.
+
+       
+       // special case for hashtable - as it's a supported type, we don't need to 
+       // change it - - just transform the contents (which hopefully is more efficient than creating a whole new structure)
+       
+       if (arg0 instanceof Hashtable) {
+    	   Hashtable t = (Hashtable)arg0;
+    	   for (Iterator  i = t.keySet().iterator(); i.hasNext(); ) {
+    		   Object key = i.next();
+    		   Object value = t.get(key);
+    		   Object tranKey = trans.transform(key);
+    		   if (tranKey != key) { // intentional - not using equals(). want to see whether key has been passed through unchanged
+    			   // transformed key is different - so better remove old binding.
+    			   i.remove(); // will remove that key.
+    		   }
+    		   t.put(tranKey,trans.transform(value)); // depending on whether tranKey!=key, this will either overwrite the old binding, or create a new one.
+    	   }
+    	   return t;
+       }
+        // case for all other map types..
         if (arg0 instanceof Map) {
             Map m = (Map)arg0;
             Hashtable h = new Hashtable(m.size());
@@ -102,7 +122,18 @@ public class TypeStructureTransformer implements Transformer {
         // convert an array to a collection.
         if (arg0 instanceof Object[]) {
             arg0 = Arrays.asList((Object[])arg0); // then processed by Collection clause.
-        }        
+        }      
+        
+        // special case for vector - as it's a supported type, transform it's contents in-place.
+        if (arg0 instanceof Vector) {
+        	Vector v = (Vector)arg0;
+        	for (int i = 0; i < v.size(); i++) {
+        		Object o = v.get(i);
+        		v.set(i,trans.transform(o));
+        	}
+        	return v;
+        }
+        
         // recursively transform a collection.
         if (arg0 instanceof Collection) {
             Collection col = (Collection)arg0;
@@ -150,6 +181,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.8  2006/08/02 13:12:49  nw
+added more efficient transformation code for vector and hashtable.
+
 Revision 1.7  2006/08/01 23:27:30  jdt
 bugfix for 1762
 
