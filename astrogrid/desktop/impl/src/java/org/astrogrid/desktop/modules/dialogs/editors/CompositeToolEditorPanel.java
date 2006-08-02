@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.21 2006/07/20 12:30:59 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.22 2006/08/02 13:30:09 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,6 +65,8 @@ import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.ProcessingInstruction;
 
+import com.l2fprod.common.swing.JLinkButton;
+
 /** Tool Editor Panel that composites together a bunch of other ones, and determines which
  * to show.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
@@ -73,12 +75,12 @@ import org.w3c.dom.ProcessingInstruction;
 public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     
    /** listen to changes, display icon and metadata */
-	protected final class ProviderCreditsButton extends JButton {
+	protected final class ProviderCreditsButton extends JLinkButton {
 		public ProviderCreditsButton() {
 			super();
 			setEnabled(toolModel.getTool() != null);
-			setBackground(Color.WHITE);
-			setBorder(BorderFactory.createLineBorder(Color.BLACK));
+//			setBackground(Color.WHITE);
+//			setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			ToolEditListener listener = new ToolEditAdapter() {
 				public void toolCleared(ToolEditEvent ignored) {
 					setEnabled(false);
@@ -481,6 +483,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.22  2006/08/02 13:30:09  nw
+improved presentation of provider logo.
+
 Revision 1.21  2006/07/20 12:30:59  nw
 added display of tool creator's logo.
 
