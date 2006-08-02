@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.17 2006/07/18 10:41:02 KevinBenson Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.18 2006/08/02 13:31:20 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
@@ -71,8 +72,8 @@ public class HelioScopeLauncherImpl extends AbstractScope
      */
     public HelioScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Stap stap,TupperwareInternal tupp, SendToMenu sendTo) {
-        super(conf,hs,ui,myspace,chooser,tupp, sendTo,"HelioScope",new DalProtocol[]{
+                                  Stap stap,TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch) {
+        super(conf,hs,ui,myspace,chooser,tupp, sendTo, snitch,"HelioScope",new DalProtocol[]{
         		new StapProtocol(reg,stap)
         });
 
@@ -256,6 +257,9 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.18  2006/08/02 13:31:20  nw
+added snitching for each scope search.
+
 Revision 1.17  2006/07/18 10:41:02  KevinBenson
 small fix to add savenode button to the dynamicbar after the super() called.
 

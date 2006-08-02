@@ -57,6 +57,7 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.system.ReportingListModel.ReportingListDataListener;
@@ -159,6 +160,9 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 
         public void actionPerformed(ActionEvent e) {
 	        	submitButton.enableB();
+	        	Map m = new HashMap();
+	        	m.put("name",scopeName);
+	        	snitch.snitch("SUBMIT",m);
 				query();		
         }
     }
@@ -226,11 +230,13 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	protected final DalProtocolManager protocols;
 	protected final TupperwareInternal tupperware;
 
-	protected Action searchAction = new SearchAction();
+	protected final Action searchAction = new SearchAction();
 	
 	protected Action topAction = new TopAction();
 	protected final VizModel vizModel;
 	protected final VizualizationManager vizualizations;
+	private final SnitchInternal snitch;
+	private final String scopeName;
 
 	private BiStateButton submitButton;
 	
@@ -244,10 +250,14 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	 */
 	public AbstractScope(Configuration conf, HelpServerInternal hs,
 			UIInternal ui, MyspaceInternal myspace,
-			ResourceChooserInternal chooser, TupperwareInternal tupp, SendToMenu sendTo, String scopeName,
+			ResourceChooserInternal chooser, TupperwareInternal tupp, SendToMenu sendTo, 
+			SnitchInternal snitch,
+			String scopeName,
 			DalProtocol[] p) throws HeadlessException {
 		super(conf, hs, ui);
+		this.scopeName = scopeName;
 		this.historyKey = scopeName + ".history";
+		this.snitch = snitch;
 		this.tupperware = tupp;
 		this.protocols = new DalProtocolManager();
 		for (int i = 0; i < p.length; i++) {

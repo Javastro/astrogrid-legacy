@@ -18,6 +18,7 @@ import org.astrogrid.acr.ui.HelioScope;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
@@ -39,7 +40,7 @@ public class HelioScopeFactory implements HelioScope {
 	 * @param tupp
 	 * @throws URISyntaxException
 	 */
-	public HelioScopeFactory(UIInternal ui, Configuration conf, HelpServerInternal hs, MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Stap stap, TupperwareInternal tupp, SendToMenu sendTo) throws URISyntaxException {
+	public HelioScopeFactory(UIInternal ui, Configuration conf, HelpServerInternal hs, MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Stap stap, TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch) throws URISyntaxException {
 		this.ui = ui;
 		this.conf = conf;
 		this.hs = hs;
@@ -49,6 +50,7 @@ public class HelioScopeFactory implements HelioScope {
 		this.stap = stap;
 		this.tupp = tupp;
 		this.sendTo = sendTo;
+		this.snitch = snitch;
 	}
 	
 	private final UIInternal ui;
@@ -60,9 +62,9 @@ public class HelioScopeFactory implements HelioScope {
 	private final Stap stap;
 	private final TupperwareInternal tupp;
 	private final SendToMenu sendTo;
-
+	private final SnitchInternal snitch;
 	public void show() {
-		HelioScope i = new HelioScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, stap, tupp, sendTo);
+		HelioScope i = new HelioScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, stap, tupp, sendTo,snitch);
 
 		i.show();		
 	}

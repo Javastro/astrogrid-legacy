@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.49 2006/06/27 19:14:24 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.50 2006/08/02 13:31:20 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
@@ -91,8 +92,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
      */
     public AstroScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, TupperwareInternal tupp, SendToMenu sendTo)  {
-        super(conf,hs,ui,myspace,chooser,tupp,sendTo,"AstroScope",
+                                  Siap siap, Cone cone, Ssap ssap,Sesame ses, TupperwareInternal tupp, SendToMenu sendTo,
+                                  SnitchInternal snitch)  {
+        super(conf,hs,ui,myspace,chooser,tupp,sendTo,snitch,"AstroScope",
         		new DalProtocol[]{
         			new SiapProtocol(reg,siap)
         			, new SsapProtocol(reg,ssap)
@@ -391,6 +393,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.50  2006/08/02 13:31:20  nw
+added snitching for each scope search.
+
 Revision 1.49  2006/06/27 19:14:24  nw
 added vospec back in.
 

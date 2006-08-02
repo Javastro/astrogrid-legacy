@@ -16,6 +16,7 @@ import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
@@ -44,7 +45,7 @@ public class AstroScopeFactory implements AstroScope {
 	 * @param tupp
 	 * @throws URISyntaxException
 	 */
-	public AstroScopeFactory(UIInternal ui, Configuration conf, HelpServerInternal hs, MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Siap siap, Cone cone, Ssap ssap, Sesame ses, TupperwareInternal tupp, SendToMenu sendTo) throws URISyntaxException {
+	public AstroScopeFactory(UIInternal ui, Configuration conf, HelpServerInternal hs, MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Siap siap, Cone cone, Ssap ssap, Sesame ses, TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch) throws URISyntaxException {
 		this.ui = ui;
 		this.conf = conf;
 		this.hs = hs;
@@ -57,6 +58,7 @@ public class AstroScopeFactory implements AstroScope {
 		this.ses = ses;
 		this.tupp = tupp;
 		this.sendTo = sendTo;
+		this.snitch = snitch;
 	}
 	private final UIInternal ui;
 	private final Configuration conf;
@@ -70,9 +72,10 @@ public class AstroScopeFactory implements AstroScope {
 	private final Sesame ses;
 	private final TupperwareInternal tupp;
 	private final SendToMenu sendTo;
-
+	private final SnitchInternal snitch;
+	
 	public void show() {
-		AstroScope	i = new AstroScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo);
+		AstroScope	i = new AstroScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch);
 		i.show();
 
 	}
