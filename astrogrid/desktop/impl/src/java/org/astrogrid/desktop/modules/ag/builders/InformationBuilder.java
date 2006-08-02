@@ -1,4 +1,4 @@
-/*$Id: InformationBuilder.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: InformationBuilder.java,v 1.3 2006/08/02 13:29:19 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 
 /** interface to something that will build some kind of information bean from a reg entry
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
- *
+ * * @deprecated part of the obsolete registry infrastructure
  */
 public interface InformationBuilder {
     /**
@@ -40,6 +40,9 @@ public interface InformationBuilder {
 
 /* 
  $Log: InformationBuilder.java,v $
+ Revision 1.3  2006/08/02 13:29:19  nw
+ marked all as obsolete.
+
  Revision 1.2  2006/04/18 23:25:47  nw
  merged asr development.
 

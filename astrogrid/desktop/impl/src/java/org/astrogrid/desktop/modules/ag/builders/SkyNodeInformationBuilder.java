@@ -1,4 +1,4 @@
-/*$Id: SkyNodeInformationBuilder.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: SkyNodeInformationBuilder.java,v 1.3 2006/08/02 13:29:19 nw Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 /**
  * builder of a skynode information bean
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Feb-2006
- *
+ * * @deprecated part of the obsolete registry infrastructure
  */
 public class SkyNodeInformationBuilder extends ResourceInformationBuilder {
     /**
@@ -79,6 +79,9 @@ public class SkyNodeInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: SkyNodeInformationBuilder.java,v $
+Revision 1.3  2006/08/02 13:29:19  nw
+marked all as obsolete.
+
 Revision 1.2  2006/04/18 23:25:47  nw
 merged asr development.
 

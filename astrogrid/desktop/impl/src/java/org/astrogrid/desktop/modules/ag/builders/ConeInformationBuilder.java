@@ -1,4 +1,4 @@
-/*$Id: ConeInformationBuilder.java,v 1.4 2006/04/18 23:25:47 nw Exp $
+/*$Id: ConeInformationBuilder.java,v 1.5 2006/08/02 13:29:19 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Oct-2005
  *
+  * @deprecated part of the obsolete registry infrastructure
  */
 public class ConeInformationBuilder extends ResourceInformationBuilder {
  
@@ -94,6 +95,9 @@ public class ConeInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ConeInformationBuilder.java,v $
+Revision 1.5  2006/08/02 13:29:19  nw
+marked all as obsolete.
+
 Revision 1.4  2006/04/18 23:25:47  nw
 merged asr development.
 

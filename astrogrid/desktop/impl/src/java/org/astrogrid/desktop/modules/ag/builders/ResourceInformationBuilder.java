@@ -1,4 +1,4 @@
-/*$Id: ResourceInformationBuilder.java,v 1.6 2006/04/18 23:25:47 nw Exp $
+/*$Id: ResourceInformationBuilder.java,v 1.7 2006/08/02 13:29:19 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 /** builder for a vanilla resource information bean. 
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
- *
+ * * @deprecated part of the obsolete registry infrastructure
  */
 public class ResourceInformationBuilder implements InformationBuilder {
     /**
@@ -147,6 +147,9 @@ public class ResourceInformationBuilder implements InformationBuilder {
 
 /* 
 $Log: ResourceInformationBuilder.java,v $
+Revision 1.7  2006/08/02 13:29:19  nw
+marked all as obsolete.
+
 Revision 1.6  2006/04/18 23:25:47  nw
 merged asr development.
 

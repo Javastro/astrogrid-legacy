@@ -1,4 +1,4 @@
-/*$Id: MostSuitableBuilder.java,v 1.6 2006/06/27 10:25:10 nw Exp $
+/*$Id: MostSuitableBuilder.java,v 1.7 2006/08/02 13:29:19 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 /** aggregating builder which chooses the most suitable builder from a set.
   @todo rework this in hivemind pattern?? - or maybe replace altogether.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
- *
+ * * @deprecated part of the obsolete registry infrastructure
  */
 public class MostSuitableBuilder implements InformationBuilder {
 
@@ -76,6 +76,9 @@ public class MostSuitableBuilder implements InformationBuilder {
 
 /* 
 $Log: MostSuitableBuilder.java,v $
+Revision 1.7  2006/08/02 13:29:19  nw
+marked all as obsolete.
+
 Revision 1.6  2006/06/27 10:25:10  nw
 findbugs tweaks
 

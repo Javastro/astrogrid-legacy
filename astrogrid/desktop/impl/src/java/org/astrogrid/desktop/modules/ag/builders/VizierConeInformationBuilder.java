@@ -1,4 +1,4 @@
-/*$Id: VizierConeInformationBuilder.java,v 1.2 2006/04/21 13:48:12 nw Exp $
+/*$Id: VizierConeInformationBuilder.java,v 1.3 2006/08/02 13:29:19 nw Exp $
  * Created on 13-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,11 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.w3c.dom.Element;
-
+/**
+ *  * @deprecated part of the obsolete registry infrastructure
+ * @author Noel Winstanley
+ * @since Jul 31, 200611:48:06 PM
+ */
 public class VizierConeInformationBuilder extends ConeInformationBuilder {
 
     public VizierConeInformationBuilder() {
@@ -80,6 +84,9 @@ public class VizierConeInformationBuilder extends ConeInformationBuilder {
 
 /* 
 $Log: VizierConeInformationBuilder.java,v $
+Revision 1.3  2006/08/02 13:29:19  nw
+marked all as obsolete.
+
 Revision 1.2  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformationBuilder.java,v 1.8 2006/04/21 13:48:12 nw Exp $
+/*$Id: ApplicationInformationBuilder.java,v 1.9 2006/08/02 13:29:19 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.w3c.dom.NodeList;
 
 /** Information Builder for Application Registry Entries.
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
- *
+ * @deprecated part of the obsolete registry infrastructure
  */
 public class ApplicationInformationBuilder extends ResourceInformationBuilder {
 
@@ -140,6 +140,9 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ApplicationInformationBuilder.java,v $
+Revision 1.9  2006/08/02 13:29:19  nw
+marked all as obsolete.
+
 Revision 1.8  2006/04/21 13:48:12  nw
 mroe code changes. organized impoerts to reduce x-package linkage.
 
