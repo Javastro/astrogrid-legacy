@@ -136,6 +136,7 @@ public abstract class AbstractPlasticBase extends TestCase {
         
     }
     
+    private Map createdAppCaches = new HashMap() ;
     private Map createdApps = new HashMap() ;
     private URI  createAndRegisterCleanApp(int i, MessageHandler handler) {
         String name = "Application "+i;
@@ -147,7 +148,8 @@ public abstract class AbstractPlasticBase extends TestCase {
         if (handler!=null) app.addHandler(handler);
         
         URI plid = app.registerWith(hub, name);
-        createdApps.put(plid, cache);
+        createdAppCaches.put(plid, cache);
+        createdApps.put(plid, app);
 //      Just check there's nothing cached
         cache.clearMessages();
         return plid;
@@ -156,7 +158,11 @@ public abstract class AbstractPlasticBase extends TestCase {
         URI plid1 = createAndRegisterCleanApp(1,null);
         URI plid2 = createAndRegisterCleanApp(2,null);
         URI plid3 = createAndRegisterCleanApp(3,null);
-        
+
+        TestPlasticApplication app1 = (TestPlasticApplication) createdApps.get(plid1);
+        TestPlasticApplication app2 = (TestPlasticApplication) createdApps.get(plid2);
+        TestPlasticApplication app3 = (TestPlasticApplication) createdApps.get(plid3);
+
         //broadcast the message from app1
         Map results = hub.request(plid1, CommonMessageConstants.GET_NAME, new Vector());
         
@@ -165,12 +171,21 @@ public abstract class AbstractPlasticBase extends TestCase {
         String name3 = (String) results.get(plid3);
         
         assertNull(name1);// no result returned for sender
-        assertEquals("Application 2", name2);
-        assertEquals("Application 3", name3);
+        if (!app2.isDeaf()) {
+            assertEquals("Application 2", name2);
+        } else {
+            assertNull(name2); //cannot hear you!
+        }
         
-        CachingMessageHandler cache1 = (CachingMessageHandler) createdApps.get(plid1);
-        CachingMessageHandler cache2 = (CachingMessageHandler) createdApps.get(plid2);
-        CachingMessageHandler cache3 = (CachingMessageHandler) createdApps.get(plid3);
+        if (!app3.isDeaf()) {
+            assertEquals("Application 3", name3);
+        } else {
+            assertNull(name3); //cannot hear you!
+        }
+         
+        CachingMessageHandler cache1 = (CachingMessageHandler) createdAppCaches.get(plid1); //TODO build the cache into the test app...we use it all the time
+        CachingMessageHandler cache2 = (CachingMessageHandler) createdAppCaches.get(plid2);
+        CachingMessageHandler cache3 = (CachingMessageHandler) createdAppCaches.get(plid3);
       
         CachingMessageHandler.Message sentMessage = new CachingMessageHandler.Message(plid1, CommonMessageConstants.GET_NAME, new Vector());
         
@@ -178,9 +193,9 @@ public abstract class AbstractPlasticBase extends TestCase {
         Collection app1Messages = cache1.getMessages();
         assertFalse(app1Messages.contains(sentMessage));
         Collection app2Messages = cache2.getMessages();
-        assertTrue(app2Messages.contains(sentMessage));
+        assertTrue(app2.isDeaf() != app2Messages.contains(sentMessage));
         Collection app3Messages = cache3.getMessages();
-        assertTrue(app3Messages.contains(sentMessage));
+        assertTrue(app3.isDeaf() != app3Messages.contains(sentMessage));
         
     }
     

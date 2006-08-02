@@ -27,4 +27,5 @@ public interface TestPlasticApplication {
     public URI registerWith(PlasticHubListener hub, String name);
     public List getMessages();
     public void addHandler(MessageHandler h) ;
+    public boolean isDeaf();
 }

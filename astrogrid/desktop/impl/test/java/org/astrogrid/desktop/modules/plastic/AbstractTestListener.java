@@ -17,7 +17,7 @@ import org.votech.plastic.incoming.handlers.StandardHandler;
  * @author jdt
  *
  */
-public class AbstractTestListener {
+public abstract class AbstractTestListener implements TestPlasticApplication {
 
     public AbstractTestListener(Properties metaData, String comms) {
         if (metaData==null) metaData = new Properties();
@@ -54,6 +54,13 @@ public class AbstractTestListener {
 
     public List getMessages() {
         return handler.getHandledMessages();
+    }
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.desktop.modules.plastic.TestPlasticApplication#isDeaf()
+     */
+    public boolean isDeaf() {
+        return false;
     }
 
 }
