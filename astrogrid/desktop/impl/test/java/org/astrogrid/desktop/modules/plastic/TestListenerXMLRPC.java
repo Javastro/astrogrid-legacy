@@ -9,7 +9,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -17,11 +16,6 @@ import org.apache.xmlrpc.WebServer;
 import org.astrogrid.desktop.modules.plastic.AbstractPlasticBase.TestPlasticApplication;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.PlasticHubListener;
-import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.EchoHandler;
-import org.votech.plastic.incoming.handlers.MessageHandler;
-import org.votech.plastic.incoming.handlers.StandardHandler;
-import org.votech.plastic.outgoing.policies.StandardXmlRpcPolicy;
 
 
 /**
@@ -29,11 +23,9 @@ import org.votech.plastic.outgoing.policies.StandardXmlRpcPolicy;
  * @author jdt
  *
  */
-public class TestListenerXMLRPC implements TestPlasticApplication{
+public class TestListenerXMLRPC extends AbstractTestListener implements TestPlasticApplication{
 
 
-
-    boolean connected = false;
 
     private Server server;
 
@@ -49,57 +41,31 @@ public class TestListenerXMLRPC implements TestPlasticApplication{
     }
 
     /**
-     * The usual plastic client method.
-     * @param sender
-     * @param message
-     * @param args
-     * TODO this whole class will need an overhaul when we update xml-rpc libs.  In particular, the Vector should => a List
-     */
-    public Object perform(String sender, String message, Vector args) {
-        try {
-            return handler.perform(new URI(sender), new URI(message), args);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return CommonMessageConstants.RPCNULL;
-        }
-    }
-    
-    MessageHandler handler;
-    
-    /** Add a new message handler to the start of the chain */
-    public synchronized void addHandler(MessageHandler h) {
-        h.setNextHandler(handler);
-        handler = h;
-    }
-    
-    /**
      * Construct a new Test listener, with the given metadata if desired.  
      * @param metaData meta data about the app...see the keys in the TestPlasticApplication interface.  If null or empty then defaults are used.
      * 
      */
     public TestListenerXMLRPC(Properties metaData) {
-        if (metaData==null) metaData = new Properties();
-        final String name = metaData.getProperty(NAME,"TestListenerXMLRPC");
-        final String desc = metaData.getProperty(DESC,"A testing client that uses XMLRPC for comms");
-        final String ivorn = metaData.getProperty(IVORN,"");
-        final String logoUrl = metaData.getProperty(LOGOURL,"");
-        final String version = metaData.getProperty(VERSION,PlasticListener.CURRENT_VERSION);
-        
+        super(metaData, "XMLRPC");
         server = new Server(this);
-        handler = new EchoHandler();
-        MessageHandler handler1= new StandardHandler(name,desc,ivorn,logoUrl,version);
-        handler.setNextHandler(handler1);
     }
 
     public URI registerWith(PlasticHubListener hub, String name) {
         return hub.registerXMLRPC(name, getMessages(), getCallBackURL());
     }
-
-    public List getMessages() {
-        return handler.getHandledMessages();
+    
+    public Object perform(String sender, String message, Vector args) {
+        // a little annoying, but the xml-rpc lib won't recognise this if the
+        // third arg is a List.
+        try {
+            return super.perform(new URI(sender), new URI(message), args);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return CommonMessageConstants.RPCNULL;
+        }
     }
-}
 
+}
 class Server {
     
     public int getPort() {
