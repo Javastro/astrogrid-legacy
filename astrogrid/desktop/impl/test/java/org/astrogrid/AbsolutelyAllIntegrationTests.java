@@ -23,6 +23,7 @@ public class AbsolutelyAllIntegrationTests {
 		suite.addTest(org.astrogrid.desktop.modules.ag.AllIntegrationTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.system.AllIntegrationTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.system.transformers.AllIntegrationTests.suite());
+        suite.addTest(org.astrogrid.desktop.modules.plastic.AllIntegrationTests.suite());
 		return suite;
 	}
 
