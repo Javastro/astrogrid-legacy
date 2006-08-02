@@ -51,14 +51,14 @@ public class RegisterNoCallbackUnitTest  extends PresetupHub {
      * 
      * No longer true, since the hub doesn't self register, as such
      */
-	public void testHubRegistration() {
+	/*public void testHubRegistration() {
 		hub.registerNoCallBack("Application1");
 
 		List registered = hub.getRegisteredIds();
 		assertEquals("Expect two applications, the hub and application 1", 2, registered.size());
 		assertTrue(registered.contains(hub.getHubId()));
 		
-	}
+	}*/
 	
 	/**
 	 * This used to fail since the name became part of the URI.  Now should be OK...
