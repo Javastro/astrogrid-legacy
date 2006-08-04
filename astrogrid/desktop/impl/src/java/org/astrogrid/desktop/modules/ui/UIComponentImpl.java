@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.6 2006/07/20 12:32:56 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.7 2006/08/04 15:30:22 jdt Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -168,7 +168,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             pw.println(bos.toString());
         
             pw.println();
-            pw.println("If you think this is a bug in the Workbench1, please email this transcript to");
+            pw.println("If you think this is a bug in the Workbench, please email this transcript to");
             pw.println("astrogrid_help@star.le.ac.uk, along with details of your username and a description");
             pw.println("of what was happening at the time of the error");
             
@@ -557,6 +557,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.7  2006/08/04 15:30:22  jdt
+typo
+
 Revision 1.6  2006/07/20 12:32:56  nw
 altered position of help button, so is visible on mac.
 
