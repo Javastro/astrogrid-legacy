@@ -107,10 +107,16 @@
       <groupId>junit</groupId>
       <version>3.8</version>
       <properties>
-		    <dist.bundle>true</dist.bundle>		    
+		    <dist.bundle>true</dist.bundle>	<!--  TODO should this be in the dist? JDT -->	    
       </properties>
     </dependency>
- 
+    <!-- Mark Taylor's plaskit, for testing only -->
+     <dependency>
+      <artifactId>plastic</artifactId>
+      <groupId>starlink</groupId>
+      <version>04082006</version>
+      <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
+    </dependency>
   
   <!-- storage - jnlp extension -->
 <dependency>

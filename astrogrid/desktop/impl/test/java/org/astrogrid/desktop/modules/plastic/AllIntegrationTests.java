@@ -10,6 +10,7 @@ public class AllIntegrationTests {
         //$JUnit-BEGIN$
         suite.addTestSuite(XMLRPCListenerIntegrationTest.class);
         suite.addTestSuite(DeafListenerIntegrationTest.class);
+        suite.addTestSuite(PlaskitIntegrationTest.class);
         //$JUnit-END$
         return suite;
     }
