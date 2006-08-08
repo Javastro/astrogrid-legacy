@@ -1,6 +1,9 @@
 #! /usr/bin/env scsh \
--o srfi-37 -e main -s
+-o srfi-37 -o srfi-8 -e main -s
 !#
+
+; SRFI-8: receive
+; SRFI-37: args-fold
 
 (define (main args)
   (let ((inputs (args-fold (cdr args)
@@ -93,10 +96,31 @@
                               #f))
            ,full-url))))
 
+;; Delete a knowledgebase from the server.
+;; This isn't handled by curl, so we have to do it by hand.
 (define (delete-handler kb-name)
-  (define (verbose-option) (if (chatter) '("--verbose") '()))
-  (let ((full-url (format #f "~a/kb/~a" (base-url) kb-name)))
-    (format #t "Delete is not handled by this client.~%You'll have to send the request 'DELETE ~a' to a HTTP server yourself~%" full-url)))
+  (define read-from-socket              ;return string, or #f on EOF
+    (let ((buf (make-string 128)))
+      (lambda (sock)
+        (receive (count-or-false address)
+                 (receive-message!/partial sock buf)
+           (and count-or-false
+                buf)))))
+  (let ((server-url (format #f "~a/kb/~a" (server-context) kb-name))
+        (crlf (list->string (list (ascii->char #o15) (ascii->char #o12))))
+        (sock (socket-connect protocol-family/internet
+                              socket-type/stream
+                              (server-hostname)
+                              (server-port))))
+    (if (chatter) (format #t "DELETE ~a HTTP/1.0 ...~%" server-url))
+    (send-message sock
+                  (format #f "DELETE ~a HTTP/1.0~a~a" server-url crlf crlf))
+    (let loop ((resp (read-from-socket sock))) ;read/clear the server response
+      (if resp
+          (begin (if (chatter) (format #t "~a" resp));possibly echoing
+                 (loop (read-from-socket sock)))
+          #f))
+    (close-socket sock)))
 
 ;; Upload code to the server.  The CODE parameter names a file, or '-'
 ;; to indicate stdin, or an expr starting with a left-parenthesis to indicate
@@ -143,6 +167,23 @@
   (let ((full-url (format #f "~a/kb/~a?sparql=~a"
                           (base-url)
                           kb-name
+                          (url-encode (read-file-into-string query-file)))))
+    (chatter "GET query in ~a to URL ~a" query-file full-url)
+    (exec-epf
+     (curl ,@(verbose-option)
+           ,@(make-header "Accept" 
+                          (or (acceptable-mime-types)
+                              (preferred-language)))
+           ,full-url))))
+
+;; As with QUERY-GET-HANDLER, but this time with a generic URL
+;; (that is, this one is not just for Quaestor, but for sending queries
+;; to an arbitrary SPARQL endpoint using GET).  The TEMPLATE must have a
+;; single '~a' in it.
+(define (query-get-generic-handler template query-file)
+  (define (verbose-option) (if (chatter) '("--verbose") '()))
+  (check-file-exists query-file)
+  (let ((full-url (format #f template
                           (url-encode (read-file-into-string query-file)))))
     (chatter "GET query in ~a to URL ~a" query-file full-url)
     (exec-epf
@@ -222,6 +263,13 @@
      2
      ,query-get-handler
      "query-get kb query-file: as with 'query', but using the GET interface")
+    (sparql-query
+     2
+     ,(lambda (template query-file)
+        (query-get-generic-handler
+         (regexp-substitute/global #f (rx "%") template 'pre "~a" 'post)
+         query-file))
+     "sparql-query template file: GET SPARQL query (template has % for query pos)")
     (xmlrpc
      #f
      ,xmlrpc-handler
@@ -412,7 +460,12 @@
           (set! v (car o))))))
 
 ;; Define the context URL for the Quaestor service
-(define base-url (create-option "http://localhost:8080/quaestor"))
+(define server-hostname (create-option "localhost"))
+(define server-port     (create-option 8080))
+(define server-context  (create-option "/quaestor"))
+(define (base-url)
+  (format #f "http://~a:~a~a" (server-hostname) (server-port) (server-context)))
+;(define base-url (create-option "http://localhost:8080/quaestor"))
 
 ;; Preferred language for receiving responses.  Fallback language for uploading.
 (define preferred-language (create-option #f))
@@ -488,9 +541,18 @@
   (declare-option "n3"
                   "set preferred language to N3 for upload and download"
                   #f (preferred-language (get-language-from-extension "x.n3")))
-  (declare-option "base-url"
-                  "set context URL to arg for Quaestor service"
-                  base-url)
+  (declare-option "server-hostname"
+                  "Set host name of Quaestor service"
+                  server-hostname)
+  (declare-option "server-port"
+                  "Set the port number for the Quaestor service"
+                  server-port)
+  (declare-option "server-path"
+                  "Set the path to the Quaestor service"
+                  server-context)
+;;   (declare-option "base-url"
+;;                   "set context URL to arg for Quaestor service"
+;;                   base-url)
   (declare-option "tbox"
                   "uploaded RDF represents a TBOX"
                   #f (model-is-tbox? #t))
