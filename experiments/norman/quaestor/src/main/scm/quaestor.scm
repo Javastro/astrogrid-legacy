@@ -40,7 +40,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.29 $ $Date: 2006/07/28 16:11:57 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.30 $ $Date: 2006/08/09 15:53:35 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -115,21 +115,32 @@
            ", submodels:"
            (ul ,@(map (lambda (sm-alist)
                         (let ((name-pair (assq 'name sm-alist))
-                              (tbox-pair (assq 'tbox sm-alist)))
+                              (tbox-pair (assq 'tbox sm-alist))
+                              (namespaces (assq 'namespaces sm-alist)))
                           `(li
-                            (a (@ (href ,(format #f
-                                                 "~a/~a/~a"
-                                                 base-uri
-                                                 kb-name
-                                                 (cdr name-pair))))
-                               ,(cdr name-pair))
-                            ,(format #f " (~a)"
-                                     (cond ((not tbox-pair)
-                                            "???")
-                                           ((cdr tbox-pair)
-                                            "tbox")
-                                           (else
-                                            "abox"))))))
+                            (p
+                             (a (@ (href ,(format #f
+                                                  "~a/~a/~a"
+                                                  base-uri
+                                                  kb-name
+                                                  (cdr name-pair))))
+                                ,(cdr name-pair))
+                             ,(format #f " (~a)"
+                                      (cond ((not tbox-pair)
+                                             "???")
+                                            ((cdr tbox-pair)
+                                             "tbox")
+                                            (else
+                                             "abox"))))
+                            (p "Namespaces")
+                            (table
+                             (tr (th "prefix") (th "namespace"))
+                             ,@(map (lambda (ns)
+                                      `(tr (td (@ (style "text-align: right"))
+                                               ,(string-append (car ns) ":"))
+                                           (td ,(cdr ns))))
+                                   (cdr namespaces)))
+                            )))
                       (cdr submodel-pair))))))
   (if (= (length path-info-list) 0)     ;we handle this one
       (let ((namelist (kb:get-names)))

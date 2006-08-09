@@ -26,6 +26,13 @@
   (import* utils is-java-type?)
   (define (jena-model? x)
     (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
+  (define (is-alist? x)
+    (and (list? x)
+         (let loop ((l x))
+           (if (null? l)
+               #t
+               (and (pair? (car l))
+                    (loop (cdr l)))))))
 
   ;; A `knowledgebase' is a named model, consisting of a number of named
   ;; `submodels'.  When any of these are updated, the new submodel is
@@ -325,10 +332,13 @@
            myname)
 
           ((info)
-           (list (cons 'submodels (map (lambda (sm)
-                                         `((name . ,(car sm))
-                                           (tbox . ,(cadr sm))))
-                                       submodels))))
+           (list (cons 'submodels
+                       (map (lambda (sm)
+                              `((name . ,(car sm))
+                                (tbox . ,(cadr sm))
+                                (namespaces
+                                 . ,(get-model-namespaces (cddr sm)))))
+                            submodels))))
 
           (else
            (error 'make-kb "impossible command for knowledgebase: ~s" cmd))))))
@@ -343,5 +353,19 @@
            (lambda ()
              (let ((name (object 'get-name)))
                (symbol? name))))))
+
+  ;; Return an alist consisting of (prefix . namespace) mappings for
+  ;; the given model.
+  (define/contract (get-model-namespaces (model jena-model?)
+                                         -> is-alist?)
+    (define-generic-java-methods
+      get-ns-prefix-map
+      entry-set
+      get-key
+      get-value)
+    (map (lambda (mapentry)
+           (cons (->string (get-key mapentry))
+                 (->string (get-value mapentry))))
+         (collection->list (entry-set (get-ns-prefix-map model)))))
 
   )
