@@ -9,6 +9,7 @@
 
 (module utils
  (;sexp->xml
+  collection->list
   iterator->list
   jlist->list
   enumeration->list
@@ -149,6 +150,18 @@
                     content))
         gi)))
 
+;; Given a Java colllection, extract its contents into a list.
+;; Return the empty list if the input collection is (Java) null.
+(define/contract (collection->list
+                  (coll (or (java-null? coll)
+                            (is-java-type? coll '|java.util.Collection|)))
+                  -> list?)
+  (define-generic-java-methods
+    iterator)
+  (if (java-null? coll)
+      '()
+      (iterator->list (iterator coll))))
+
 ;; Given a Java iterator, JITER, extract each of its contents into a list
 (define/contract (iterator->list (jiter jiterator?) -> list?)
   (define-generic-java-methods
@@ -232,6 +245,7 @@
  ;;     (chatter fmt . args)  ; Format a message.
  ;;     (chatter)             ; return list of messages, or #f if none,
  ;;                           ; and clear list
+ ;; Return #t
  (define chatter
    (let ((l '()))
      (lambda msg
@@ -247,7 +261,8 @@
                     (cons (apply format `(#f
                                           ,(car msg) ;,(string-append (car msg) "~%")
                                           ,@(cdr msg)))
-                          l)))))))
+                          l))))
+       #t)))
 
 ;; Format the given error record, as passed as the first argument of a
 ;; failure-continuation.  This ought to be able to handle most of the
@@ -395,7 +410,5 @@
         ((= (string-length qs) 0)
          '(#f . #f))
         (else
-         (cons qs #f))))
+         (cons qs #f)))))
 
-
-)
