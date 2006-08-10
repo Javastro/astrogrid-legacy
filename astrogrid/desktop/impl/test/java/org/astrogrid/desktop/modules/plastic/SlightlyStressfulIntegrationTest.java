@@ -29,6 +29,7 @@ public class SlightlyStressfulIntegrationTest extends TestCase {
         hub = getHub();
     }
     public void testRegUnReg() {
+        //TODO this needs completing
         AbstractTestListener monitor = new TestListenerRMI(null);
         monitor.registerWith(hub,"monitor");
         

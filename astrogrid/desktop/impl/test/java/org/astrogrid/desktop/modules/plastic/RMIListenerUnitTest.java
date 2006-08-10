@@ -23,7 +23,7 @@ import org.votech.plastic.incoming.handlers.StandardHandler;
 
 import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 // TODO refactor this
-public class RMIListenerUnitTest extends AbstractPlasticBase {
+public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
 
     protected PlasticHubListener hub1;
 

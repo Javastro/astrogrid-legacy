@@ -14,7 +14,7 @@ import org.votech.plastic.outgoing.policies.StandardXmlRpcPolicy;
  * @author jdt
  *
  */
-public class XMLRPCListenerIntegrationTest extends AbstractPlasticBase {
+public class XMLRPCListenerIntegrationTest extends AbstractPlasticBaseNotDeaf {
 
     protected PlasticHubListener getHub() throws Exception {
         ACR acr = new Finder().find();

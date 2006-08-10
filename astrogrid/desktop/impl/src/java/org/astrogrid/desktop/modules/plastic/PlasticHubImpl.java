@@ -105,7 +105,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     public List getRegisteredIds() {
         List ids = clients.getIds();
-        return ids;
+        return new ArrayList(ids);  //Copy to ensure clients don't modify
     }
 
     public URI registerXMLRPC(String name, List supportedOperations, URL callBackURL) {
@@ -149,6 +149,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         return register(client);
     }
 
+    /**
+     * @deprecated this is not part of the plastic spec
+     */
 	public URI registerPolling(String name, List supportedMessages) {
 		PlasticClientProxy client = new PollingPlasticClient(idGenerator, name, supportedMessages);
 		return register(client);
@@ -157,6 +160,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	/**
 	 * Returns empty list if the id isn't for a polling client.
+     * @deprecated this method is not in the PlasticSpec
 	 */
 	public List pollForMessages(URI id) {
 		PlasticClientProxy client = (PlasticClientProxy) clients.get(id);
@@ -164,7 +168,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		if (!(client instanceof PollingPlasticClient)) return CommonMessageConstants.EMPTY; //always disliked instanceof, but it's that or maintain a separate list
 		List messages = ((PollingPlasticClient)client).getStoredMessages();
 		((PollingPlasticClient)client).flush();
-		return messages;
+		return new ArrayList(messages); //Copy to ensure clients don't change
 	}
 	
 	
@@ -317,7 +321,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
                 //              Automatic purge of dead applications
                 if (!client.isResponding()) {
-                    logger.debug("Client "+client.getName()+ "("+client.getId()+")"+" is not responding.  Attempting to unregister");
+                    logger.info("Client "+client.getName()+ "("+client.getId()+")"+" is not responding.  Attempting to unregister");
                     unregister(client.getId());
             }
             }
@@ -363,6 +367,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 			toReturn = (Vector) args;
 		}
 		for (int i=0;i<toReturn.size();++i) {
+            
 			Object item = toReturn.get(i);
 			if (item instanceof List) {
 				toReturn.set(i, sanitizeXmlRpcTypes((List)item));
@@ -485,7 +490,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	 * Return all applications that have registered for a particular message.
 	 */
 	public List getMessageRegisteredIds(URI message) {
-		return clients.getClientIdsSupportingMessage(message);
+		return new ArrayList(clients.getClientIdsSupportingMessage(message)); //Copy to ensure clients don't change
 	}
 
 	public List getUnderstoodMessages(URI plid) {
@@ -493,7 +498,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 		if (client==null) {
 			return CommonMessageConstants.EMPTY;   
 		}
-		return client.getMessages();
+		return new ArrayList(client.getMessages()); //Copy to ensure clients don't change
 	}
 	
     /**

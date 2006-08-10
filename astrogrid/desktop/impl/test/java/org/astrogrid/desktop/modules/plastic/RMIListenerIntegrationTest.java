@@ -33,7 +33,7 @@ import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
  * @author jdt
  *
  */
-public class RMIListenerIntegrationTest extends AbstractPlasticBase {
+public class RMIListenerIntegrationTest extends AbstractPlasticBaseNotDeaf {
 
     
 
