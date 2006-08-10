@@ -18,6 +18,9 @@ import org.votech.plastic.outgoing.PlasticException;
  * @date 01-Nov-2005
  */
 abstract class PlasticClientProxy {
+    public String toString() {
+        return getClass().getSimpleName()+":"+name+"("+id+")";   
+     }
     /**
      * Logger for this class
      */
@@ -57,10 +60,10 @@ abstract class PlasticClientProxy {
      * Ctor
      * @param gen
      * @param name
-     * @param supportedMessages
+     * @param understoodMessages
      * @param registerSilently If true, then no notification is sent to the user, or other apps, that an app has registered.
      */
-    public PlasticClientProxy(NameGen gen, String name, List supportedMessages, boolean registerSilently) {
+    public PlasticClientProxy(NameGen gen, String name, List understoodMessages, boolean registerSilently) {
         try {
             this.id = URI.create("plastic://acr/"+gen.next()); //TODO something more meaningful?
         }  catch (Exception e) {
@@ -70,9 +73,9 @@ abstract class PlasticClientProxy {
         }
     	//Gotcha.  The supportedMessages are in a List of URIs from Java, but a List of Strings from xml-rpc
         //Hopefully will go away in java1.5 when we have generics and can type the lists
-    	if (supportedMessages.size()!=0 && supportedMessages.get(0).getClass()==String.class) {
+    	if (understoodMessages.size()!=0 && understoodMessages.get(0).getClass()==String.class) {
     		this.supportedMessages = new Vector();
-    		for (Iterator it = supportedMessages.iterator();it.hasNext();) {
+    		for (Iterator it = understoodMessages.iterator();it.hasNext();) {
     			String m = (String) it.next();
     			try {
 					this.supportedMessages.add(new URI(m));
@@ -82,7 +85,7 @@ abstract class PlasticClientProxy {
     		}
     		//Now we can carry on with our List of URIs....
     	} else {       
-    		this.supportedMessages = new Vector(supportedMessages); //take a copy in case someone pulls the list from under our feet.
+    		this.supportedMessages = new Vector(understoodMessages); //take a copy in case someone pulls the list from under our feet.
     	}
         this.name = name;
         this.registerSilently = registerSilently;
