@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.plastic;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
 import org.astrogrid.common.namegen.NameGen;
 import org.votech.plastic.outgoing.PlasticException;
 
@@ -51,9 +53,12 @@ class XMLRPCPlasticClient extends PlasticClientProxy {
             xmlrpcArgs.add(args); 
             setResponding(true);
             return xmlrpc.execute(PLASTIC_CLIENT_PERFORM, xmlrpcArgs);
-        } catch (Exception e) {
+        } catch (IOException e) {
             setResponding(false);
-            logger.warn("Got " + e + " trying to send message to " + getId());
+            logger.warn("Application "+getName()+"("+getId()+") is not responding",e);
+            throw new PlasticException(e);
+        } catch (XmlRpcException e) {
+            logger.warn("Application "+getName()+"("+getId()+") reported an error",e);
             throw new PlasticException(e);
         }
     }
