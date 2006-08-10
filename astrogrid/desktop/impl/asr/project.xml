@@ -114,7 +114,7 @@
      <dependency>
       <artifactId>plastic</artifactId>
       <groupId>starlink</groupId>
-      <version>04082006</version>
+      <version>20060808</version>
       <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
     </dependency>
   

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.Shutdown;

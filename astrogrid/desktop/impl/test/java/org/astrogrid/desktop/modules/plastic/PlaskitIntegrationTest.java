@@ -26,7 +26,7 @@ public class PlaskitIntegrationTest extends TestCase {
     public void testPlaskit() {
 
         try {
- //not yet visible TODO           HubTester.testHub();
+            HubTester.testHub();
             
         } catch (Throwable e) {
             assertTrue("One of the plaskit tests failed with error "+e.getMessage(), false);
