@@ -8,7 +8,7 @@
          reduce)
 
 (require-library 'quaestor/utils)
-(import* utils report-exception)
+(import* utils report-exception format-error-record)
 
 (require-library 'util/lambda-contract)
 
@@ -87,7 +87,7 @@
 (define (rdf:merge-models models)
   (define (model-union m1 m2)           ; union of two models
     ((generic-java-method 'union) m1 m2))
-  (reduce model-union
+  (reduce model-union ; or ModelFactory.createUnion -- 'dynamic union'?
           (rdf:new-empty-model)
           models))
 
@@ -235,7 +235,7 @@
                             '|SC_BAD_REQUEST|
                             "Error reading ~a (~a)~%Other details:~%~a~%"
                             reference-uri
-                            (format-error-message m)
+                            (format-error-record m)
                             (apply string-append (logger))))
       (lambda ()
         (chatter "rdf:ingest-from-stream ~s (URI=~a, language=~a)"
@@ -270,7 +270,7 @@
         (else
          #f)))
 
-;; Return a new Reasoner object
+;; Return a new Reasoner object, or #f on error
 (define (rdf:get-reasoner)
 
   (define (get-dig-reasoner)
@@ -305,22 +305,37 @@
          '|com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory.URI|))
        conf)))
 
-  (define (get-owl-reasoner)
+  (define (get-named-reasoner name)
     (define-java-classes
       (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
     (define-generic-java-methods
-      (get-owl-reasoner |getOWLReasoner|))
-    ;(chatter "Creating OWL reasoner")
-    (get-owl-reasoner (java-null <registry>)))
+      (get-owl-reasoner |getOWLReasoner|)
+      (get-rdfs-reasoner |getRDFSReasoner|)
+      get-transitive-reasoner)
+    (let ((getter (assoc name `(("owl" . ,get-owl-reasoner)
+                                ("rdfs" . ,get-rdfs-reasoner)
+                                ("transitive" . ,get-transitive-reasoner)))))
+      (and getter
+           (chatter "Creating ~a reasoner" name)
+           ((cdr getter) (java-null <registry>)))))
 
-  (define (get-rdfs-reasoner)
-    (define-java-class
-      <com.hp.hpl.jena.reasoner.reasoner-registry>)
-    (define-generic-java-methods
-      (get-rdfs-reasoner |getRDFSReasoner|))
-    ;(chatter "Creating RDFS reasoner")
-    (get-rdfs-reasoner (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>)))
+;;   (define (get-owl-reasoner)
+;;     (define-java-classes
+;;       (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
+;;     (define-generic-java-methods
+;;       (get-owl-reasoner |getOWLReasoner|))
+;;     ;(chatter "Creating OWL reasoner")
+;;     (get-owl-reasoner (java-null <registry>)))
 
-  (get-owl-reasoner))
+;;   (define (get-rdfs-reasoner)
+;;     (define-java-class
+;;       <com.hp.hpl.jena.reasoner.reasoner-registry>)
+;;     (define-generic-java-methods
+;;       (get-rdfs-reasoner |getRDFSReasoner|))
+;;     ;(chatter "Creating RDFS reasoner")
+;;     (get-rdfs-reasoner (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>)))
+
+  (get-named-reasoner "rdfs")
+  )
 
 )
