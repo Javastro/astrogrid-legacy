@@ -15,10 +15,6 @@
 			
     	<release version="(Pending Integration)">
     	
-	   	<action dev="kea" type="fix">
-           <em>Branch PAL_KEA_1716 in astrogrid/pal:</em>  Fixes for bug 1701 (broken query abort links), bug 1698 (enhanced error reporting in case of sql translator misconfiguration), bug 1704/1705 (more explicit configuration of default table for queries not specifying target table and related fixes).
-      	</action>
-
     		<action dev="gtr" type="fix">
     		  <em>Branch security-gtr-1717</em>: fixes for BZ1717 "Digital signature does not work".
     		  There are changes to astrogrid/security and a one-line change in astrogrid/desktop/impl. These
