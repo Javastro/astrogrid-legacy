@@ -20,7 +20,7 @@
   chatter
   parse-http-accept-header
   parse-query-string
-  format-error-message
+  format-error-record
   )
 
 (import* srfi-1
@@ -44,111 +44,6 @@
 ;;   (or (java-null? x)
 ;;       (is-java-type? x <java.lang.string>)))
 
-
- ;; Given a list of SExps, SEXP-LIST, return this translated into a string
- ;; Takes two optional arguments: the first specifies a list of
- ;; elements which are to be formatted (ie, have linebreaks inserted)
- ;; as `block' elements (like <div> in HTML), and the second a list
- ;; which should be formatted as `para' elements (like HTML <p>).
- ;; Either may be given as 'ALL to format all like this.
- ;;
- ;; If the second element of the list is of the form (@ LIST ...), then the
- ;; LIST is a two-element list of (ATTRIBUTE VALUE)
- (define (not-sexp->xml s . opts)
-   (let ((block-elems (and (> (length opts) 0)
-                           (car opts)))
-         (para-elems  (and (> (length opts) 1)
-                           (cadr opts))))
-     (cond
-      ((string? s)
-       s)
-
-      ((symbol? s)
-       (symbol->string s))
-
-      ((number? s)
-       (format #f "~a" s))
-
-      ((list? s)
-       (if (and (> (length s) 1)
-                (list? (cadr s))
-                (eq? (caadr s) '@))
-           (sexp->xml-write* (car s)
-                             (cdadr s)
-                             (cddr s)
-                             block-elems
-                             para-elems)
-           (sexp->xml-write* (car s)
-                             #f
-                             (cdr s)
-                             block-elems
-                             para-elems)))
-      (else
-       (error (format #f
-                      "Unrecognised type of object (~s) in sexp->str"
-                      s))))))
-
- ;; Write out an element with attributes, and formatting depending on the
- ;; element `type'.
- ;; GI: a symbol containing the name of the element to be written
- ;; ATTLIST: a list of two-element lists, each containing (attribute value),
- ;;     as either symbols or strings
- ;; CONTENT: a sexp representing the element content
- ;; BLOCK-ELEMENT-LIST and PARA-ELEMENT-LIST: either a list of symbols
- ;;     or the symbol 'ALL.  If the GI is found in one of the lists, or the
- ;;     relevant variable has the value 'ALL, then the element is formatted
- ;;     as a block element, a paragraph element, or an inline element if it
- ;;     is in neither list.
- ;; Internal function
- (define (sexp->xml-write* gi attlist content
-                           block-element-list para-element-list)
-   (define block-elements
-     (or block-element-list
-         '(html head body div ul ol)))
-   (define para-style
-     (or para-element-list
-         '(p title link h1 h2 h3 h4 h5 h6 li)))
-   (if (null? content)
-       (format
-        #f
-        (cond
-         ((or (eq? block-elements 'ALL)
-              (memq gi block-elements)
-              (eq? para-style 'ALL)
-              (memq gi para-style))
-          "<~a~a/>~%")
-         (else
-          "<~a~a/>"))
-        gi
-        (if attlist
-            (apply string-append
-                   (map (lambda (p)
-                          (format #f " ~a='~a'" (car p) (cadr p)))
-                        attlist))
-            ""))
-       (format
-        #f
-        (cond
-         ((or (eq? block-elements 'ALL)
-              (memq gi block-elements))
-          "<~a~a>~%~a</~a>~%~%")
-         ((or (eq? para-style 'ALL)
-              (memq gi para-style))
-          "<~a~a>~a</~a>~%")
-         (else
-          "<~a~a>~a</~a>"))
-        gi
-        (if attlist
-            (apply string-append
-                   (map (lambda (p)
-                          (format #f " ~a='~a'" (car p) (cadr p)))
-                        attlist))
-            "")
-        (apply string-append
-               (map (lambda (x)
-                      (sexp->xml x block-elements para-style))
-                    content))
-        gi)))
 
 ;; Given a Java colllection, extract its contents into a list.
 ;; Return the empty list if the input collection is (Java) null.
@@ -228,48 +123,70 @@
           (->jstring s)
           (->jstring "UTF-8")))
 
- ;; Variant of ERROR, which can be called in a region handled by the failure
- ;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
- ;; with a message formatted with the given FMT and ARGS.  However instead
- ;; of exiting with the status code defaulted when the fc was created
- ;; by MAKE-FC, use the given NEW-STATUS.  When the MAKE-FC handler
- ;; processes this, it will _not_ output debugging information.  That is,
- ;; this is for throwing `normal' errors.
- (define (report-exception location new-status fmt . args)
-   (let ((msg (apply format `(#f ,fmt ,@args))))
-     (error location (cons new-status msg))))
+;; Variant of ERROR, which can be called in a region handled by the failure
+;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
+;; with a message formatted with the given FMT and ARGS.  However instead
+;; of exiting with the status code defaulted when the fc was created
+;; by MAKE-FC, use the given NEW-STATUS.
+;;
+;; The returned `message' consists of a pair of integer status and the
+;; message, and when the MAKE-FC handler processes this particular structure,
+;; it will _not_ output debugging information.  That is,
+;; this is for throwing `normal' errors.
+(define (report-exception location new-status fmt . args)
+  (let ((msg (apply format `(#f ,fmt ,@args))))
+    (error location (cons new-status msg))))
 
 
- ;; Mostly for debugging.
- ;; Accumulate remarks, to supply later.
- ;;     (chatter fmt . args)  ; Format a message.
- ;;     (chatter)             ; return list of messages, or #f if none,
- ;;                           ; and clear list
- ;; Return #t
- (define chatter
-   (let ((l '()))
-     (lambda msg
-       (cond ((and (null? msg)
-                   (null? l))
-              #f)
-             ((null? msg)
-              (let ((r (reverse l)))
-                (set! l '())
-                r))
-             (else
-              (set! l
-                    (cons (apply format `(#f
-                                          ,(car msg) ;,(string-append (car msg) "~%")
-                                          ,@(cdr msg)))
-                          l))))
-       #t)))
+;; Mostly for debugging.
+;; Accumulate remarks, to supply later.
+;;     (chatter fmt . args)  ; Format a message and return #t.
+;;     (chatter)             ; return list of messages, or #f if none,
+;;                           ; and clear list.
+(define chatter
+  (let ()
+    (define (make-circular-list n)
+      (if (> n 0)
+          (let* ((init (list #f))
+                 (l (let loop ((ln (- n 1))
+                               (res init))
+                      (if (<= ln 0)
+                          (set-cdr! init res)
+                          (loop (- ln 1) (cons #f res))))))
+            init)
+          '()))
+    (define (append-circular-list l x)
+      (if (null? l)
+          l
+          (begin (set-car! l x)
+                 (cdr l))))
+    (define (reduce-circular-list kons init l)
+      (if (not (null? l))
+          (kons (car l)
+                (let loop ((i (cdr l)))
+                  (if (eqv? i l)
+                      init
+                      (kons (car i) (loop (cdr i))))))))
+
+    (let ((chatter-list (make-circular-list 8)))
+      (lambda msg
+        (if (null? msg)                 ;retrieve messages
+            (let ((r (reduce-circular-list (lambda (l r) (if l (cons l r) r))
+                                           '()
+                                           chatter-list)))
+              (set! chatter-list (make-circular-list 8)) ; new clear list
+              (and (not (null? r)) r))  ;return list or #f
+            (begin (set! chatter-list   ;append a new message
+                         (append-circular-list chatter-list
+                                               (apply format (cons #f msg))))
+                   #t))))))             ;return true
 
 ;; Format the given error record, as passed as the first argument of a
 ;; failure-continuation.  This ought to be able to handle most of the
 ;; odd things thrown by scheme and the s2j interface.  This should
 ;; generally return a string, but if all else fails it returns the
 ;; error record object.
-(define (format-error-message rec)
+(define (format-error-record rec)
   (define-java-classes
     (<throwable> |java.lang.reflect.UndeclaredThrowableException|)
     (<exception> |java.lang.Exception|))
@@ -277,16 +194,31 @@
     get-message
     get-undeclared-throwable
     to-string)
+  ;; Return the concatenation of the error messages of this error and all its
+  ;; ancestors.  If none of these have error messages, return #f.
+  (define (format-error-ancestors rec)
+    (and rec
+         (let ((msg (error-message rec))
+               (parent-msg (format-error-ancestors (error-parent-error rec))))
+           (if msg                      ;found a message: return a string
+               (format #f "error at ~a: ~a~a"
+                       (error-location rec)
+                       msg
+                       (if parent-msg
+                           (string-append " :-- " parent-msg)
+                           ""))
+               parent-msg))))
   (let ((msg (error-message rec)))
     (cond ((is-java-type? msg <throwable>)
            (get-message (get-undeclared-throwable msg)))
           ((is-java-type? msg <exception>)
            (to-string msg))
-          (msg)
-          ((error-message (error-parent-error rec)))
-          ((error-message
-            (error-parent-error
-             (error-parent-error rec))))
+          ((format-error-ancestors rec))
+;;           (msg)
+;;           ((error-message (error-parent-error rec)))
+;;           ((error-message
+;;             (error-parent-error
+;;              (error-parent-error rec))))
           (else
            rec))))
 
@@ -410,5 +342,7 @@
         ((= (string-length qs) 0)
          '(#f . #f))
         (else
-         (cons qs #f)))))
+         (cons qs #f))))
+
+)
 
