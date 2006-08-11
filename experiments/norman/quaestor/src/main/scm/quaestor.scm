@@ -40,7 +40,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.30 $ $Date: 2006/08/09 15:53:35 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.31 $ $Date: 2006/08/11 14:14:25 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -57,6 +57,48 @@
 (define (string-or-false? x)
   (or (not x)
       (string? x)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Implementation
+
+;; APPLY-WITH-TOP-FC procedure args... -> object
+;; This is intended to be a main entry point for the functions here.
+;; Call the given procedure with the given arguments, in the context
+;; of a suitable failure-continuation.
+;;
+;; Since the functions which are called via this typically have their
+;; own error handlers, this failure-continuation will generally only
+;; be called if something quite bad has gone wrong; therefore the
+;; failure-continuation shows debugging information and chatter, and
+;; returns a Java excaption.
+(define (apply-with-top-fc proc . args)
+  (with/fc
+      (lambda (m kontinuation)
+        (define-java-class <javax.servlet.servlet-exception>)
+        (java-new
+         <javax.servlet.servlet-exception>
+         (->jstring
+          (format #f "Top-level error: ~a~%~a~%~%Stack trace: ~a~%"
+                  (format-error-record m)
+                  (let ((c (chatter)))
+                    (cond ((list? c)    ;normal case
+                           (apply string-append
+                                  (map (lambda (x)
+                                         (format #f "[chatter: ~a]~%" x))
+                                       c)))
+                          ((not c)      ;no chatter
+                           "")
+                          (else         ;can't happen!
+                           (format #f
+                                   "[Can't happen: (chatter) produced ~s]" c))))
+                  (with-output-to-string
+                    (lambda () (print-stack-trace kontinuation)))))))
+    (lambda ()
+      (chatter "Applying proc ~s..." proc)
+      (parameterize ((suppressed-stack-trace-source-kinds '()))
+                    (apply proc args)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -422,8 +464,13 @@
                  (string=? content-type "application/sparql-query"))
             (let ((kb (kb:get (car path-list))))
               (or kb
-                  (error 'http-post
-                         "don't know about knowledgebase ~a" (car path-list)))
+                  (report-exception
+                   'http-post
+                   '|SC_BAD_REQUEST|
+                   "don't know about knowledgebase ~a" (car path-list))
+                  ;; (error 'http-post
+;;                          "don't know about knowledgebase ~a" (car path-list))
+                  )
               (let ((runner
                      (sparql:make-query-runner
                       kb
@@ -933,14 +980,18 @@
                          "text/plain")
       (if show-debugging?
           (format #f "~%Error: ~a~%~a~%~%Stack trace:~%~a~%"
-                  (format-error-message error-record)
-                  ;msg-or-pair          ;show-debugging? => this is msg-string
+                  (format-error-record error-record)
                   (let ((c (chatter)))
-                    (if c
-                        (apply string-append
-                               (map (lambda (x) (format #f "[chatter: ~a]~%" x))
-                                    c))
-                        ""))
+                    (cond ((list? c)    ;normal case
+                           (apply string-append
+                                  (map (lambda (x)
+                                         (format #f "[chatter: ~a]~%" x))
+                                       c)))
+                          ((not c)      ;no chatter
+                           "")
+                          (else         ;can't happen!
+                           (format #f
+                                   "[Can't happen: (chatter) produced ~s]" c))))
                   (with-output-to-string
                     (lambda () (print-stack-trace cont))))
           (format #f "~%Error: ~a~%" (cdr msg-or-pair))))))
