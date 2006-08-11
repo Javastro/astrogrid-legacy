@@ -4,6 +4,8 @@ import java.lang.ClassNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 
+import javax.servlet.ServletException;
+
 import sisc.REPL;
 import sisc.data.Value;
 import sisc.data.Procedure;
@@ -35,18 +37,30 @@ public class SchemeWrapper {
      */
     private SchemeWrapper()
             throws IOException {
-        // There's nothing to do here, because we rely on the
-        // Context.execute() method to find the default heap.  This
-        // will only work if the heap is included in the SISC library
-        // directory wrapped in a .jar file.  This was not the case in
-        // SISC 1.13.4 at least, and so it had to be added there by
-        // hand.
+        // All we need do here is set the default application context
+        // to one which has the non-default parameters we want.  If we
+        // didn't (or don't, in the future) need this, then we don't
+        // need anything at all in this method, as the
+        // Context.execute() method will use the SISC-default
+        // application context, which automatically loads the default
+        // heap.
         //
-        // An alternative is to have the caller identify the location
-        // of the heap as a servlet resource, pass it in here, and
-        // then open and add it in this constructor.  That was
-        // implemented in revision 1.8 of this file, but removed
-        // because it was messy and adding the heap .jar file seemed neater.
+        // The maxStackTraceDepth parameter requires SISC 1.15.1 at least.
+
+        java.util.Properties props = new java.util.Properties();
+        // Set the maximum stack-trace depth to 16.  This causes a
+        // performance hit which is reportedly about 30%: see
+        // <http://sourceforge.net/mailarchive/forum.php?thread_id=21786623&forum_id=7422>
+        props.setProperty("sisc.maxStackTraceDepth", "16");
+
+        // The following should be the defaults            
+        //         props.setProperty("sisc.emitAnnotations", "true");
+        //         props.setProperty("sisc.emitDebuggingSymbols", "true");
+        //         props.setProperty("sisc.stackTraceOnError", "true");
+        
+        AppContext ctx = new AppContext(props);
+        ctx.addDefaultHeap();
+        Context.setDefaultAppContext(ctx);
     }
 
     /**
@@ -55,11 +69,6 @@ public class SchemeWrapper {
     public static SchemeWrapper getInstance()
             throws IOException {
         if (instance == null) {
-            java.lang.System.setProperty("sisc.maxStackTraceDepth", "16");
-            // following should be the defaults            
-            java.lang.System.setProperty("sisc.emitAnnotations", "true");
-            java.lang.System.setProperty("sisc.emitDebuggingSymbols", "true");
-            java.lang.System.setProperty("sisc.stackTraceOnError", "true");
             instance = new SchemeWrapper();
         }
         return instance;
@@ -75,7 +84,11 @@ public class SchemeWrapper {
     }
 
     /**
-     * Evaluates the string, returning the value as a String.
+     * Evaluates the string, returning the value as a String.  This is
+     * not (currently) wrapped in the error-handling code of
+     * {@link #eval(String,Object[])}.
+     * (XXX It's not currently used by Quaestor.java, which is why the
+     * 'public' declaration is commented out)
      *
      * <p>The value returned is converted from a Scheme value to a Java value
      * as follows:
@@ -95,7 +108,7 @@ public class SchemeWrapper {
      * @throws SchemeException if one there was a problem executing
      * the expression
      */
-    public Object eval(final String expr)
+    /* public */ private Object eval(final String expr)
             throws IOException, SchemeException {
         if (expr == null)
             return Boolean.FALSE;
@@ -112,7 +125,7 @@ public class SchemeWrapper {
                  }
              });
         if (o instanceof Exception) {
-            assert(o instanceof IOException);
+            assert o instanceof IOException;
             throw (IOException)o;
         }
         return o;
@@ -120,7 +133,10 @@ public class SchemeWrapper {
 
     /**
      * Evaluates a named procedure, with arguments.  This is
-     * equivalent to the expr <code>proc args...</code>.
+     * equivalent to the expr <code>proc args...</code>, but wrapped
+     * in an error-handler (procedure <code>APPLY-WITH-TOP-FC</code>
+     * which translates errors and exceptions to a suitable string,
+     * which it returns.
      *
      * @param proc the name of a Scheme procedure defined in the top level
      * @param args an array of Java objects
@@ -129,29 +145,39 @@ public class SchemeWrapper {
      * @throws IOException if there was a problem parsing the expression
      * @throws SchemeException if one there was a problem executing
      * the expression
+     * @throws ServletException if the SISC procedure returns one
      */
     public Object eval(final String proc, final Object[] args)
-            throws IOException, SchemeException {
+            throws IOException, SchemeException, ServletException {
         Object o = Context.execute
             (new SchemeCaller() {
                  public Object execute(Interpreter r)
                          throws SchemeException {
+                     Procedure apply =
+                             (Procedure)r.eval(Symbol.get("apply-with-top-fc"));
                      Procedure p = (Procedure)r.eval(Symbol.get(proc));
-                     Value[] v = r.createValues(args.length);
+                     Value[] v = r.createValues(args.length+1);
+                     v[0] = p;
                      for (int i=0; i<args.length; i++)
-                         v[i] = new sisc.modules.s2j.JavaObject(args[i]);
-                     return schemeToJava(r.eval(p, v));
+                         v[i+1] = new sisc.modules.s2j.JavaObject(args[i]);
+                     return schemeToJava(r.eval(apply, v));
                  }
-             });
+                });
         if (o instanceof Exception) {
-            assert(o instanceof IOException);
-            throw (IOException)o;
+            if (o instanceof IOException)
+                throw (IOException)o;
+            else if (o instanceof ServletException)
+                throw (ServletException)o;
+            else
+                assert false : "Impossible assertion from SchemeCaller: " + o;
         }
         return o;
     }
 
     /**
-     * Evals the given input stream.
+     * Evals the given input stream.  This is not (currently) wrapped
+     * in the error-handling code of {@link #eval(String,Object[])}.
+     *
      * @return a Java Object (String, Boolean or null) representing the
      * value of the expression
      * @throws IOException if the input stream cannot be parsed
@@ -194,8 +220,15 @@ public class SchemeWrapper {
         // whereas this will throw a SchemeException if there's a problem
         // loading the file.  It's also different from just "(load loadFile)",
         // since that displays the error-record structure, which takes
-        // some parsing by eye.  The following expression evaluates to
-        // either #t on success, or a string on error.
+        // some parsing by eye.
+        //
+        // The following expression evaluates to either #t on success,
+        // or a string on error.
+        //
+        // We use the elaborate eval, rather than using
+        // eval(String,Object[]), because this is used to load
+        // quaestor.scm, before which the APPLY-WITH-TOP-FC procedure
+        // is not defined.
         Object o = eval("(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a~a\" (error-location r) (error-message r) (if parent (string-append \" :-- \" (show-err parent)) \"\")))) (show-err m)) (lambda () (load \"" + loadFile + "\") #t))");
         if (o instanceof String) {
             // Contains an error message from the failure-continuation.
@@ -240,11 +273,18 @@ public class SchemeWrapper {
      * <dl>
      * <dt>(scheme) boolean</dt>
      * <dd>return a Java {@link Boolean}</dd>
+     *
      * <dt>{@link SchemeString}</dt>
      * <dd>return a Java String using the {@link SchemeString#asString}
      * method, which does suitable conversions of newlines</dd>
+     *
      * <dt>scheme void</dt>
      * <dd>return null</dd>
+     *
+     * <dt>a Java Exception, which will be wrapped in a
+     * {@sisc.modules.s2j.JavaObject}</dt>
+     * <dd>return the Exception</dd>
+     *
      * <dt>otherwise</dt>
      * <dd>convert it to a String value in the usual way,
      * with {@link java.lang.Object#toString}.</dd>
@@ -256,7 +296,7 @@ public class SchemeWrapper {
      */
     private Object schemeToJava(Value v) {
         Object ret;
-        
+
         if (v instanceof SchemeString) {
             ret = ((SchemeString)v).asString();
         } else if (v instanceof SchemeBoolean) {
@@ -264,6 +304,8 @@ public class SchemeWrapper {
             ret = Boolean.valueOf(sb.equals(sisc.data.SchemeBoolean.TRUE));
         } else if (v instanceof SchemeVoid) {
             ret = null;
+        } else if (v instanceof sisc.modules.s2j.JavaObject) {
+            ret = ((sisc.modules.s2j.JavaObject)v).get();
         } else {
             ret = v.toString();
         }
