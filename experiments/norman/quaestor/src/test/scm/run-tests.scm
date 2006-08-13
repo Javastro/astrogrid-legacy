@@ -44,7 +44,7 @@
                         "quaestor/knowledgebase.scm"
                         "quaestor/jena.scm"
                         "quaestor/sparql.scm"
-                        "util/sisc-xml.scm"
+                        "util/sexp-xml.scm"
                         "util/xmlrpc.scm"
                         ))
 
