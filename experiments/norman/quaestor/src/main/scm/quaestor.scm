@@ -19,9 +19,10 @@
 (import sparql)
 (require-library 'util/xmlrpc)
 (import xmlrpc)
-(require-library 'util/sisc-xml)
-(import* sisc-xml
-         sisc-xml:sexp->xml)
+(require-library 'util/sexp-xml)
+(import* sexp-xml
+         sexp-xml:sexp->xml
+         sexp-xml:xml->sexp/reader)
 (require-library 'util/lambda-contract)
 
 (require-library 'sisc/libs/srfi/srfi-1)
@@ -40,7 +41,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.31 $ $Date: 2006/08/11 14:14:25 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.32 $ $Date: 2006/08/13 15:53:44 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -677,7 +678,7 @@
   ;; XML, and a URL, which is the base URI of the service.  Return a sexp
   ;; which is to be turned into XML.
   (define (do-xmlrpc-call my-url reader)
-    (let ((call (xmlrpc:new-call reader)))
+    (let ((call (xmlrpc:new-call (sexp-xml:xml->sexp/reader reader))))
       (call-with-values (lambda ()
                           (method-name->handler (xmlrpc:method-name call)))
         (lambda (nargs h)
@@ -713,7 +714,7 @@
     ;; pre-emptively set the response status and content-type
     ;; (error handlers may change this)
     (set-http-response response '|SC_OK| "text/xml")
-    (sisc-xml:sexp->xml
+    (sexp-xml:sexp->xml
      (with/fc 
          (make-fc-xmlrpc 'protocol-error "malformed request")
        (lambda ()
@@ -1045,7 +1046,7 @@
                                    (href /quaestor/base.css))))
                     (body (h1 ,title-string)
                           ,@body-sexp))))
-    (sisc-xml:sexp->xml s)))
+    (sexp-xml:sexp->xml s)))
 
 ;; set-http-response java-response symbol -> #t
 ;; set-http-response java-response symbol string -> #t
