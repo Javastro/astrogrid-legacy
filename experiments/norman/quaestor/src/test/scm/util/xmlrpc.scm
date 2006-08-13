@@ -4,16 +4,15 @@
 
 (require-library 'util/xmlrpc)
 (import xmlrpc)
+(require-library 'util/sexp-xml)
+(import sexp-xml)
 
-;; Create a Java Reader which returns the contents of the given string.
-(define (string-reader str)
-  (define-java-class <java.io.string-reader>)
-  (java-new <java.io.string-reader> (->jstring str)))
+(define (new-call s)
+  (xmlrpc:new-call (sexp-xml:xml->sexp/string s)))
 
 ;; A call which is tested below
 (define simple-call
-  (xmlrpc:new-call
-   (string-reader
+  (new-call
 "<methodCall>
   <methodName>examples.getStateName</methodName>
   <params>
@@ -37,7 +36,7 @@
       <value><i4>-31</i4></value>
     </data></array></value></param>                         
   </params>
-</methodCall>")))
+</methodCall>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -86,9 +85,8 @@
 
 ;; Procedure to call xmlrpc:new-call with the given <param> content string
 (define (make-with-param-value param-content-string)
-  (xmlrpc:new-call
-   (string-reader (format #f "<methodCall><methodName>x</methodName><params><param><value>~a</value></param></params></methodCall>"
-                          param-content-string))))
+  (new-call (format #f "<methodCall><methodName>x</methodName><params><param><value>~a</value></param></params></methodCall>"
+                    param-content-string)))
 (expect-failure xmlrpc-fail-badboolean  ;2 is not a boolean
                 (make-with-param-value "<boolean>2</boolean>"))
 (expect-failure xmlrpc-fail-badname     ;struct member name must be a string
