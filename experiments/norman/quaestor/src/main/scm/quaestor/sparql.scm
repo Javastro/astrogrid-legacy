@@ -22,6 +22,7 @@
          rdf:mime-type-list
          rdf:mime-type->language)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; SPARQL stuff
@@ -191,7 +192,13 @@
                        ("text/csv" .
                         ,(lambda (result stream set-type)
                            (set-type "text/csv;header=present")
-                           (output-as-csv stream result))))))
+                           (output-as-csv stream result)))
+                       ("text/tab-separated-values" .
+                        ,(lambda (result stream set-type)
+                           ;; we include the line of headers, but TSV
+                           ;; doesn't specify the header=present parameter
+                           (set-type "text/tab-separated-values")
+                           (output-as-tab-separated-values stream result))))))
        (let ((best-type (find-in-list (map car handlers)
                                       mime-types)))
          (cond ((not best-type)
@@ -263,18 +270,8 @@
 ;; Given a ResultSet and an output stream, write the result as CSV, following
 ;; the spec in RFC 4180.  Include a header.
 (define (output-as-csv stream result)
-  (define-generic-java-methods
-    get-result-vars
-    has-next
-    next-solution
-    get
-    to-string
-    print
-    flush)
-  (define-java-classes
-    <java.io.print-writer>
-    <java.io.output-stream-writer>)
   (define (write-list-with-commas print-list pw)
+    (define-generic-java-methods print)
     (let ((jcomma (->jstring ","))
           (jcrlf (->jstring (list->string (list (integer->char 13)
                                                 (integer->char 10))))))
@@ -287,21 +284,60 @@
               (print pw jcrlf)
               (begin (print pw jcomma)
                      (loop next)))))))
+  (output-with-formatter stream result write-list-with-commas))
+
+;; The format of TSV files is specified rather informally at
+;; <http://www.iana.org/assignments/media-types/text/tab-separated-values>.
+;; The MIME type is "text/tab-separated-values".
+(define (output-as-tab-separated-values stream result)
+  (define (tsv-output print-list pw)
+    (define-generic-java-methods print println)
+    (let ((jtab (->jstring (list->string (list (integer->char 9))))))
+      (if (null? print-list)
+          (error 'output-as-tab-separated-values "can't output null list"))
+      (let loop ((l print-list))
+        (print pw (car l))
+        (let ((next (cdr l)))
+          (if (null? next)
+              (println pw)
+              (begin (print pw jtab)
+                     (loop next)))))))
+  (output-with-formatter stream result tsv-output))
+
+;; OUTPUT-WITH-FORMATTER java-stream java-result-set procedure -> void
+;; side-effect: write the given result-set to the stream
+;;
+;; The formatter is a procedure with the prototype
+;;     (formatter output-list printwriter)
+;; The output-list is a list of Java objects which are to be sent to the
+;; given PrintStream.
+(define (output-with-formatter stream result formatter)
+  (define-generic-java-methods
+    get-result-vars
+    has-next
+    next-solution
+    get
+    to-string
+    flush)
+  (define-java-classes
+    <java.io.print-writer>
+    <java.io.output-stream-writer>)
+
   (let ((result-vars (jlist->list (get-result-vars result)))
         (pw (java-new <java.io.print-writer>
                       (java-new <java.io.output-stream-writer>
                                 stream
                                 (->jstring "UTF-8")))))
-    (write-list-with-commas result-vars pw)
+    (formatter result-vars pw)
     (let loop ()
       (if (->boolean (has-next result))
           (let ((qs (next-solution result)))
-            (write-list-with-commas (map (lambda (var)
-                                           (to-string (get qs var)))
-                                         result-vars)
-                                    pw)
+            (formatter (map (lambda (var)
+                              (to-string (get qs var)))
+                            result-vars)
+                       pw)
             (loop))))
-    (flush pw)))                        ;flush is necessary
+    (flush pw))) ; flush is necessary
 
 ;; find-query-executor java-string -> java-method
 ;;
