@@ -71,6 +71,10 @@ abstract class PlasticClientProxy {
             // we're going to use the InMemoryNameGen
             // class, so this shouldn't happen.  
         }
+        if (understoodMessages==null) {
+            logger.warn("Attempt to register with a null list of understood messages - assuming you meant zero understood.  If that's the case, consider registering with registerNoCallback instead");
+            understoodMessages = new Vector();
+        }
     	//Gotcha.  The supportedMessages are in a List of URIs from Java, but a List of Strings from xml-rpc
         //Hopefully will go away in java1.5 when we have generics and can type the lists
     	if (understoodMessages.size()!=0 && understoodMessages.get(0).getClass()==String.class) {

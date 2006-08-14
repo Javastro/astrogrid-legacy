@@ -125,6 +125,37 @@ public abstract class AbstractPlasticBase extends TestCase {
         assertFalse("App hasn't unregistered",regIds.contains(plid)); //currently fails for the xml-rpc version due to type conversion problems
     }
     
+    /**
+     * Check how vulnerable we are to
+     * badly written clients.
+     *
+     */
+    public void testHardened() {
+        hub.unregister(hub.getHubId());
+        hub.unregister(null);
+        hub.unregister(URI.create("http://news.bbc.co.uk"));
+        
+        hub.getName(null);
+        hub.getName(URI.create("http://foo"));
+        
+        hub.getMessageRegisteredIds(null);
+        hub.getMessageRegisteredIds(URI.create("http://foo"));
+        
+        hub.getUnderstoodMessages(null);
+        hub.getUnderstoodMessages(URI.create("http://foo"));
+        
+        hub.registerNoCallBack(null);
+        hub.registerRMI(null,null,null);
+        hub.registerXMLRPC(null,null,null);
+        
+        hub.requestToSubset(null,null,null,null);
+        
+        //test that registering these items doesn't screw things up
+        hub.getRegisteredIds();
+        hub.request(hub.getHubId(), CommonMessageConstants.GET_NAME, new Vector());
+        
+    }
+    
     public void testApplicationsUnderstoodMessages() {
         TestPlasticApplication app = getApplication(null);
         final String TESTAPPNAME = "Test Application";

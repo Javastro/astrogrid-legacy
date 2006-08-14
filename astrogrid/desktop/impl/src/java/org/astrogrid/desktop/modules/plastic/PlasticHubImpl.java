@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -72,8 +73,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	private Executor sequentialExecutor = new DirectExecutor();
 
-
-
 	/**
 	 * The keys used to identify this hub
 	 * @see PlasticHubListener#PLASTIC_CONFIG_FILENAME
@@ -104,8 +103,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public List getRegisteredIds() {
-        List ids = clients.getIds();
-        return new ArrayList(ids);  //Copy to ensure clients don't modify
+        List ids = clients.getAppIds();
+        return ids;  //No need to copy as the ApplicationStore will return a copy.
     }
 
     public URI registerXMLRPC(String name, List supportedOperations, URL callBackURL) {
@@ -172,13 +171,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 	
 	
-    // TODO - think about synch issues
     /**
      * Register an plastic-aware application.
      * @param client the application (proxy) to register
      * @param silent if true, don't pop up a notification or broadcast a message
      */
-    private synchronized URI register(PlasticClientProxy client) {
+    private URI register(PlasticClientProxy client) {
         URI id = client.getId();
 
         clients.add(client);
@@ -216,6 +214,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     }
 
     public void unregister(URI id) {
+        if (id==null) return;
         if (id.equals(hubId)) {
             logger.warn("A client is attempting to unregister the hub itself - not allowed");
             return;
@@ -251,6 +250,12 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      */
     private Map send(final URI sender, final URI message, final List args, List recipients,
             boolean shouldWaitForResults, boolean singleThreaded) {
+        
+        if (recipients==null) {
+            logger.warn("Null recipients list.  By rights you should pass in an empty List, not a null if that's what you meant.");
+            return new Hashtable();
+        }
+        
     	//xmlrpc<->Java gotchas
     	//Gotcha 1.  The recipients are in a List of URIs from Java, but a List of Strings from xml-rpc
     	// TODO JDK1.5 this should go away with Java 5
@@ -264,8 +269,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     	//version of the xml-rpc library, they must be Vectors.  This will go away with version 3.
     	final Vector safeArgs = sanitizeXmlRpcTypes(args);
     	
-        final Map returns = Collections.synchronizedMap(new HashMap());
-        
         List clientsSupportingMessage = clients.getClientIdsSupportingMessage(message);
         Collection clientsToMessage;
         if (recipients==EVERYONE) {
@@ -278,13 +281,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         }
 
         final CountDown gate = new CountDown(clientsToMessage.size());
-
+        
         //
         // Local worker class to send the message, and add the result to our
         // list.
         // We use a gate to wait for all the threads to finish before exiting
         // the method.
         //
+        final Map returns = new HashMap(); //Doesn't need synchronization as it's not read until all writes are done.
         class Messager implements Runnable {
 
             private PlasticClientProxy client;
@@ -319,7 +323,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                     gate.release();
                 }
 
-                //              Automatic purge of dead applications
+                // Automatic purge of dead applications
                 if (!client.isResponding()) {
                     logger.info("Client "+client.getName()+ "("+client.getId()+")"+" is not responding.  Attempting to unregister");
                     unregister(client.getId());
@@ -350,6 +354,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         }
         return returns;
     }
+    
 
     /**
      * With the current version of xmlrpc libraries, only Vectors are compatible with xml-rpc arrays.
@@ -399,6 +404,13 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         send(sender, message, args, EVERYONE, false, false);
     }
 
+    /**
+     * Just like request, but done without spawning a new thread.  This is necessary during shutdown to make sure
+     * that the message gets sent before the framework shuts down.
+     * @param sender
+     * @param message
+     * @param args
+     */
     private void requestSingleThreaded(URI sender, URI message, List args) {
     	send(sender, message, args, EVERYONE, false, true);
     }

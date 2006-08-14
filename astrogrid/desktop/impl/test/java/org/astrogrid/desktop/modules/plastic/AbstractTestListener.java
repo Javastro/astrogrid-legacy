@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.votech.plastic.PlasticListener;
-import org.votech.plastic.incoming.handlers.EchoHandler;
 import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.incoming.handlers.StandardHandler;
 
@@ -28,9 +27,9 @@ public abstract class AbstractTestListener implements TestPlasticApplication {
         final String version = metaData.getProperty(TestPlasticApplication.VERSION,PlasticListener.CURRENT_VERSION);
         
         
-        handler = new EchoHandler();
-        MessageHandler handler1= new StandardHandler(name,desc,ivorn,logoUrl,version);
-        handler.setNextHandler(handler1);
+       // handler = new EchoHandler();
+        handler= new StandardHandler(name,desc,ivorn,logoUrl,version);
+        //handler.setNextHandler(handler1);
     }
 
     /**
@@ -38,7 +37,6 @@ public abstract class AbstractTestListener implements TestPlasticApplication {
      * @param sender
      * @param message
      * @param args
-     * TODO this whole class will need an overhaul when we update xml-rpc libs.  In particular, the Vector should => a List
      */
     public Object perform(URI sender, URI message, List args) {
         return handler.perform(sender, message, args);
