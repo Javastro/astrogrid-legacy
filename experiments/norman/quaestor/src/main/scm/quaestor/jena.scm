@@ -84,10 +84,10 @@
                                      (java-null <java.lang.string>)))))
 
 ;; Given a list of RDF models, merge them into a single one, and return it
-(define (rdf:merge-models models)
-  (define (model-union m1 m2)           ; union of two models
-    ((generic-java-method 'union) m1 m2))
-  (reduce model-union ; or ModelFactory.createUnion -- 'dynamic union'?
+(define/contract (rdf:merge-models (models list?) -> jena-model?)
+  (define-generic-java-method add)
+  (reduce (lambda (new result)
+            (add result new))
           (rdf:new-empty-model)
           models))
 
@@ -104,15 +104,17 @@
 (define mime-lang-mappings
   '( ;; default type -- leave this first, so rdf:mime-type-list can strip it
     ("*/*"                 . "RDF/XML")
-    ("application/n3"      . "N3")
-    ;; http://infomesh.net/2002/notation3/#mimetype
     ("text/rdf+n3"         . "N3")
-    ;; http://www.w3.org/DesignIssues/Notation3.html
+    ;; ...http://www.w3.org/DesignIssues/Notation3
+    ;; (and there's apparently an IANA registration pending)
+    ("application/n3"      . "N3")
+    ;; ...http://infomesh.net/2002/notation3/#mimetype
+    ;; (but deprecated in the Notation3 page above)
     ("application/rdf+xml" . "RDF/XML")
-    ;; http://www.w3.org/TR/rdf-syntax-grammar/#section-MIME-Type
+    ;; ...http://www.w3.org/TR/rdf-syntax-grammar/#section-MIME-Type
     ;; Generic RDF MIME type: http://www.ietf.org/rfc/rfc3870.txt
     ("text/plain"          . "N-TRIPLE")
-    ;; http://www.dajobe.org/2001/06/ntriples/
+    ;; ...http://www.dajobe.org/2001/06/ntriples/
     ))
 
 ;; Given a MIME type (a non-null string), return an RDF language, as
@@ -305,19 +307,29 @@
          '|com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory.URI|))
        conf)))
 
-  (define (get-named-reasoner name)
-    (define-java-classes
-      (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
-    (define-generic-java-methods
-      (get-owl-reasoner |getOWLReasoner|)
-      (get-rdfs-reasoner |getRDFSReasoner|)
-      get-transitive-reasoner)
-    (let ((getter (assoc name `(("owl" . ,get-owl-reasoner)
-                                ("rdfs" . ,get-rdfs-reasoner)
-                                ("transitive" . ,get-transitive-reasoner)))))
-      (and getter
-           (chatter "Creating ~a reasoner" name)
-           ((cdr getter) (java-null <registry>)))))
+  (define get-named-reasoner
+    (let ()
+      (define-java-classes
+        (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
+      (define-generic-java-methods
+        (get-owl-reasoner |getOWLReasoner|)
+        (get-rdfs-reasoner |getRDFSReasoner|)
+        get-transitive-reasoner)
+      (let ((reasoner-list (list (cons "owl" get-owl-reasoner)
+                                 (cons "rdfs" get-rdfs-reasoner)
+                                 (cons "transitive" get-transitive-reasoner))))
+        (lambda (name)
+          (let ((getter (assoc name reasoner-list)))
+            (cond ((not getter)
+                   #f)                       ;error
+                  ((procedure? (cdr getter)) ;not cached yet
+                   (chatter "Creating ~a reasoner" name)
+                   ;; get a reasoner and cache it
+                   (set-cdr! getter ((cdr getter) (java-null <registry>)))
+                   (cdr getter))
+                  (else                 ;already cached
+                   (chatter "Retrieving ~a reasoner" name)
+                   (cdr getter))))))))
 
 ;;   (define (get-owl-reasoner)
 ;;     (define-java-classes
