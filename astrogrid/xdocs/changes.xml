@@ -47,6 +47,16 @@
     		  is to avoid future problems. However, the astrogrid/desktop/impl changes were tested with the astrogrid/security
     		  changes so the two should be merged at the same time.
     		</action>
+    		
+    		<action dev="gtr" type="fix">
+    		  <em>Branch community-gtr-1722</em>: This updates the community project and introduces two new features: 
+    		  1. ability for users to change their own password, requested by John in support of ROE installations;
+    		  2. a prototype of the certificate authority that we need for secured access to service. 
+    		  I haven't changed the web-service contracts, so I expect it to pass the integration tests as well as the last one. 
+    		  The certificate-authority stuff is dormant in this version.  If people want to wake it up then they can configure it and experiment. 
+    		  Otherwise, it doesn't get in the way of traditional operations. -- community is not deploying - clq 14th Aug.2006
+    		</action>
+
 		   
         </release>
 		
