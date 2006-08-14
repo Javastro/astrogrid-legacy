@@ -23,25 +23,23 @@ currently available.</dd>
 
 <dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>[/<em>sm-name</em>]</code></dt>
 <dd><p>Retrieve either the complete <code><em>kb-name</em></code> model, or
-the named <code><em>sm-name</em></code>.  The format is obtained from the
-<code>Accept</code> header, which must contain one of the following
-MIME types:</p>
+the named <code><em>sm-name</em></code>.  The format of the response
+is controlled by the <code>Accept</code> header, which if present must
+contain one of the following MIME types:</p>
 <ul>
-  <li><code>text/rdf+n3</code> for n3.</li>
-  <li><code>application/rdf+xml</code> for RDF/XML</li>
-  <li><code>text/plain</code> for N-Triples</li>
+  <li><code>application/xml</code> (default)</li>
+  <li><code>text/rdf+n3</code></li>
+  <li><code>text/plain</code></li>
+  <li><code>text/csv</code></li>
+  <li><code>text/tab-separated-values</code></li>
   <li><code>*/*</code> to accept any format (the default is currently
   RDF/XML)</li>
 </ul>
+
 <p>You can add an optional query <code>?model</code> or
 <code>?metadata</code> to retrieve the appropriate thing; the default
 is to retrieve the model.</p>
-<p>The <code>application/n3</code> MIME type is recognised but
-deprecated (see <a href='http://www.w3.org/DesignIssues/Notation3' >W3
-discussion</a>), since its IANA registration was never completed;
-<code>text/rdf+n3</code> is the preferred MIME type for Notation3, and
-if <code>application/n3</code> is requested, it is
-<code>text/rdf+n3</code> which will be returned.</p>
+
 <p>This method returns status 200 (OK) on success, or a 4xx code on
 error.</p></dd>
 
@@ -55,24 +53,9 @@ error.</p></dd>
 posted with the <code>Content-Type</code> set to
 <code>application/sparql-query</code>.  The request may be
 accompanied by an <code>Accept</code> header to control the format of
-the returned data.  The following formats are recognised:</p>
-<dl>
-<dt><code>application/xml</code></dt>
-<dd>This produces a response in XML, using the SPARQL
-<a href="http://www.w3.org/TR/rdf-sparql-XMLres/" >response XML
-schema</a>.  This is the default.</dd>
-<dt><code>text/plain</code></dt>
-<dd>A human-readable format, intended to look roughly like the usual
-result of a SQL query.  It is not intended to be
-machine-parseable.</dd>
-<dt><code>text/csv</code> (SELECT queries only)</dt>
-<dd>Comma-separated-value output, conforming to RFC 4180.  The
-<code>Content-Type</code> of the response is
-<code>text/csv;header=present</code>, indicating that the first line
-of the response consists of 'column headings', consisting of the
-substitution variables in the input query.  These are not guaranteed
-to be in the same order as they were listed in the input query.</dd>
-</dl>
+the returned data; the MIME types recognised are the same as for the
+GET request above.</p>
+
 <p>Returns status 200 (OK) on success, and 4xx otherwise.</p>
 </dd>
 
@@ -91,7 +74,7 @@ request may have a <code>Content-Type</code> header indicating the
 format of the body, which, if it is present, <em>must</em> be one of
 the following MIME types:</p>
 <ul>
-  <li><code>application/n3</code> and <code>text/rdf+n3</code> for n3.</li>
+  <li><code>text/rdf+n3</code> for n3.</li>
   <li><code>application/rdf+xml</code> for RDF/XML</li>
   <li><code>text/plain</code> for N-Triples</li>
 </ul>
@@ -112,6 +95,61 @@ the server has been configured to permit it.</dd>
 if it successfully removed the knowledgebase, or a 4xx response if
 there was no such knowledgebase to remove.</dd>
 
+</dl>
+
+<h2>Note on MIME types</h2>
+
+<p>The following MIME types are usable at one point or another when
+interacting with Quaestor:</p>
+
+<dl>
+
+<dt><code>application/xml</code></dt>
+<dd>When annotating a SPARQL response, this produces a response in
+XML, using the SPARQL
+<a href="http://www.w3.org/TR/rdf-sparql-XMLres/" >response XML 
+schema</a>.</dd>
+
+<dt><code>application/sparql-query</code></dt>
+<dd>This is the MIME type which should accompany a POSTed SPARQL
+query.  See the <a href='http://www.w3.org/TR/rdf-sparql-query/'
+>specification</a> for more details.</dd>
+
+<dt><code>text/rdf+n3</code></dt>
+<dd>This indicates that the content (upload or response) is formatted in
+<a href='http://www.w3.org/DesignIssues/Notation3' >Notation-3</a>.
+The <code>application/n3</code> MIME type is recognised but
+deprecated (see <a href='http://www.w3.org/DesignIssues/Notation3' >W3
+discussion</a>), since its IANA registration was never completed;
+<code>text/rdf+n3</code> is the preferred MIME type for Notation3, and
+if <code>application/n3</code> is requested, it is
+<code>text/rdf+n3</code> which will be returned.</dd>
+
+<dt><code>text/plain</code></dt>
+<dd>Annotating a response, this indicates that the content is in a
+human-readable format, intended to look roughly like the usual 
+result of a SQL query.  It is not intended to be
+machine-parseable.  Note: the MIME type of the <a
+href='http://www.w3.org/TR/rdf-testcases/#ntriples' >N-triple
+format</a> is also <code>text/plain</code>; however N-triple format is
+intended only for the RDF test cases, and is not expected to be useful
+otherwise.  On upload (that is, the <code>PUT</code> HTTP method), you
+can use <code>text/plain</code> to indicate N-triples, if you really must.</dd>
+
+<dt><code>text/csv</code> (SELECT query responses only)</dt>
+<dd>Comma-separated-value output, conforming to RFC 4180.  The
+<code>Content-Type</code> of the response is
+<code>text/csv;header=present</code>, indicating that the first line
+of the response consists of 'column headings', consisting of the
+substitution variables in the input query.  These are not guaranteed
+to be in the same order as they were listed in the input query.</dd>
+
+<dt><code>text/tab-separated-values</code> (SELECT query responses only)</dt>
+<dd>Tab-separated-value output, conforming to the (rather informal)
+specification
+<a href='http://www.iana.org/assignments/media-types/text/tab-separated-values'
+>at IANA</a>.  The first line will include a row of 'column headings'
+as above.</dd>
 </dl>
 
 <h2>XML-RPC interface</h2>
