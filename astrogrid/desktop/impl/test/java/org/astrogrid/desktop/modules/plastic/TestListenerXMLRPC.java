@@ -66,7 +66,7 @@ public class TestListenerXMLRPC extends AbstractTestListener implements TestPlas
 
 }
 class Server {
-    
+    private static PortFinder portFinder = new PortFinder(9000,9999);
     public int getPort() {
         return port;
     }
@@ -74,7 +74,7 @@ class Server {
 
     public Server(Object handler) {
         try {
-            port = new PortFinder(8000,9999).getFreePort();
+            port = portFinder.getFreePort();
         } catch (Exception e) {
             throw new RuntimeException("Problem getting free port for XML-RPC server",e);
         } 
@@ -104,7 +104,7 @@ class PortFinder {
      * @throws NoFreePortException if there's none available in the range selected
      * @throws UnknownHostException can't see how this could happen unless you don't have a network card
      */
-    public int getFreePort() throws NoFreePortException, UnknownHostException {
+    public synchronized int getFreePort() throws NoFreePortException, UnknownHostException {
 
         InetAddress local;
 
