@@ -27,7 +27,7 @@ the named <code><em>sm-name</em></code>.  The format is obtained from the
 <code>Accept</code> header, which must contain one of the following
 MIME types:</p>
 <ul>
-  <li><code>application/n3</code> and <code>text/rdf+n3</code> for n3.</li>
+  <li><code>text/rdf+n3</code> for n3.</li>
   <li><code>application/rdf+xml</code> for RDF/XML</li>
   <li><code>text/plain</code> for N-Triples</li>
   <li><code>*/*</code> to accept any format (the default is currently
@@ -36,6 +36,12 @@ MIME types:</p>
 <p>You can add an optional query <code>?model</code> or
 <code>?metadata</code> to retrieve the appropriate thing; the default
 is to retrieve the model.</p>
+<p>The <code>application/n3</code> MIME type is recognised but
+deprecated (see <a href='http://www.w3.org/DesignIssues/Notation3' >W3
+discussion</a>), since its IANA registration was never completed;
+<code>text/rdf+n3</code> is the preferred MIME type for Notation3, and
+if <code>application/n3</code> is requested, it is
+<code>text/rdf+n3</code> which will be returned.</p>
 <p>This method returns status 200 (OK) on success, or a 4xx code on
 error.</p></dd>
 
