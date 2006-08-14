@@ -71,7 +71,7 @@ public class PrettyPrinterImpl implements PrettyPrinterInternal {
 				writer.write("<ul>");
 				Iterator mit = Arrays.asList(messages).iterator();
 				while (mit.hasNext()) {
-					URI msg = (URI) mit.next();  //TODO
+					URI msg = (URI) mit.next();  
 					writer.write("<li>"+msg+"</li>");
 				}
 				writer.write("</ul>");
