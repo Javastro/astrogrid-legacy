@@ -29,7 +29,7 @@
     (let ((model (rdf:ingest-from-stream
                   (java-new <java.io.string-reader>
                             (->jstring "<urn:example#i1> a <urn:example#c1>."))
-                  "application/n3"))
+                  "text/rdf+n3"))
           (kb (kb:new "sparql-test-kb")))
       (kb 'add-abox "abox" model)       ;just abox
       kb)))
