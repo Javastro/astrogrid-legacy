@@ -19,7 +19,7 @@ import org.votech.plastic.outgoing.PlasticException;
  */
 abstract class PlasticClientProxy {
     public String toString() {
-        return getClass().getSimpleName()+":"+name+"("+id+")";   
+        return getClass().getName()+":"+name+"("+id+")";   
      }
     /**
      * Logger for this class
