@@ -41,7 +41,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.32 $ $Date: 2006/08/13 15:53:44 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.33 $ $Date: 2006/08/14 16:36:13 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -456,13 +456,13 @@
             (query-string (request->query-string request))
             (content-type (request->content-type request)))
         ;; First, insist that there's just one element in the path-list.
-        ;; We should check also that the content-type of the incoming
-        ;; SPARQL query is application/sparql-query
+        ;; If there is a content type on the incoming query, we check
+        ;; that it is application/sparql-query
         ;; (see <http://www.w3.org/TR/rdf-sparql-query/>)
         (if (and (= (length path-list) 1)
                  (not query-string)
-                 content-type
-                 (string=? content-type "application/sparql-query"))
+                 (or (not content-type)
+                     (string=? content-type "application/sparql-query")))
             (let ((kb (kb:get (car path-list))))
               (or kb
                   (report-exception

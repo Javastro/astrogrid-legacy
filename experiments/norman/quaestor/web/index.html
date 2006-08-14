@@ -51,7 +51,8 @@ error.</p></dd>
 <dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
 <dd><p>Takes a SPARQL query as the request body, which should be
 posted with the <code>Content-Type</code> set to
-<code>application/sparql-query</code>.  The request may be
+<code>application/sparql-query</code> (if there is no
+<code>Content-Type</code>, then this type is assumed).  The request may be
 accompanied by an <code>Accept</code> header to control the format of
 the returned data; the MIME types recognised are the same as for the
 GET request above.</p>
