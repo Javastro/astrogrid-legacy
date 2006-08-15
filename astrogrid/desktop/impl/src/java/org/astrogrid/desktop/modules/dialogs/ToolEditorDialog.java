@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.6 2006/07/24 09:51:00 KevinBenson Exp $
+/*$Id: ToolEditorDialog.java,v 1.7 2006/08/15 10:21:34 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,15 +25,16 @@ import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
-
-import org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel;
+import org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory;
+import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -46,7 +47,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Mar-2005
  *
  */
-class ToolEditorDialog extends JDialog implements PropertyChangeListener {
+public class ToolEditorDialog extends JDialog implements PropertyChangeListener {
     /**
      * Commons Logger for this class
      */
@@ -58,44 +59,35 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
     private final UIComponentImpl parent;
     
    	private JLabel topLabel = null;
+   
+   	
    	public ToolEditorDialog(
     		List panelFactories
             ,ResourceChooserInternal rChooser
             ,ApplicationsInternal apps
             ,MyspaceInternal myspace
             ,Registry reg
-            ,Configuration conf, HelpServerInternal help, UIInternal ui) throws HeadlessException {
+            ,Configuration conf, HelpServerInternal help, UIInternal ui
+            ,BrowserControl browser) throws HeadlessException {
         super();          
-        this.parent = new UIComponentImpl(conf,help,ui);
-        
-        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent,help);
-        this.setTitle("Task Editor");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
-        this.setContentPane(getJOptionPane());   
+        this.parent = new UIComponentImpl(conf,help,ui);        
+        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent,help,browser);
+        init();
     }
-   	
-   	public ToolEditorDialog(
-    		List panelFactories
-    		,ResourceChooserInternal rChooser 
-            ,ApplicationsInternal apps
-            ,MyspaceInternal myspace
+    
+   	public ToolEditorDialog(ToolEditorPanelFactory panelFactory
             ,Configuration conf, HelpServerInternal help, UIInternal ui) throws HeadlessException {
         super();          
-        this.parent = new UIComponentImpl(conf,help,ui);
-        
-        parametersPanel = new BasicToolEditorPanel(rChooser);
-        this.setTitle("Task Editor");
+        this.parent = new UIComponentImpl(conf,help,ui);        
+        parametersPanel =panelFactory.create(new ToolModel(),parent);
+        init();   
+    }
+
+	/**
+	 * 
+	 */
+	private void init() {
+		this.setTitle("Task Editor");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
@@ -108,8 +100,8 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
         }
     });                
         this.setModal(true);
-        this.setContentPane(getJOptionPane());   
-    }   	
+        this.setContentPane(getJOptionPane());
+	}   	
     
     public void resetAndHide() {
         setVisible(false);
@@ -139,12 +131,15 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
     }
     
     
-    public void populate(Tool t, ApplicationInformation desc) {
+    public void populate(Tool t, CeaApplication desc) {
         editedTool = null;
         parametersPanel.getToolModel().populate(t,desc);
-        getTopLabel().setText(desc.getName());
-        getTopLabel().setToolTipText(desc.getDescription());
+        getTopLabel().setText(desc.getTitle());
+        getTopLabel().setToolTipText(desc.getContent().getDescription());
     }
+
+    
+    
     public void propertyChange(PropertyChangeEvent e) {
         String prop = e.getPropertyName();
         if (isVisible()
@@ -206,6 +201,9 @@ class ToolEditorDialog extends JDialog implements PropertyChangeListener {
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.7  2006/08/15 10:21:34  nw
+added constructor that specifies tool editor to use.upgraded to use new reg model.
+
 Revision 1.6  2006/07/24 09:51:00  KevinBenson
 having the parameterized workflow just use the basiceditor for input.
 

@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.10 2006/07/24 09:51:00 KevinBenson Exp $
+/*$Id: ToolEditorImpl.java,v 1.11 2006/08/15 10:21:14 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,12 +21,14 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
@@ -53,9 +55,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
             ,ResourceChooserInternal rChooser
             ,Registry reg           
             , Configuration conf, HelpServerInternal help, UIInternal ui
-            , ApplicationsInternal apps, MyspaceInternal myspace) {
+            , ApplicationsInternal apps, MyspaceInternal myspace, BrowserControl browser) {
         super(); 
-        dialog = new ToolEditorDialog(panelFactories,rChooser,apps,myspace,reg,conf,help,ui);
+        dialog = new ToolEditorDialog(panelFactories,rChooser,apps,myspace,reg,conf,help,ui,browser);
         //dialog.setSize(600,425);
         dialog.pack();      
         
@@ -63,15 +65,11 @@ public class ToolEditorImpl implements ToolEditorInternal {
         this.myspace =myspace;
     }
     
-    /** Construct a new ToolEditorImpl
-     * 
-     */
-    public ToolEditorImpl(
-    		List panelFactories, ResourceChooserInternal rChooser          
+    public ToolEditorImpl(ToolEditorPanelFactory panelFactory         
             , Configuration conf, HelpServerInternal help, UIInternal ui
             , ApplicationsInternal apps, MyspaceInternal myspace) {
         super(); 
-        dialog = new ToolEditorDialog(panelFactories, rChooser,apps,myspace,conf,help,ui);
+        dialog = new ToolEditorDialog(panelFactory,conf,help,ui);
         //dialog.setSize(600,425);
         dialog.pack();      
         
@@ -140,7 +138,7 @@ public class ToolEditorImpl implements ToolEditorInternal {
     public Tool editTool(Tool t,Component comp) throws InvalidArgumentException {
         try {
         URI uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
-        ApplicationInformation desc = apps.getApplicationInformation(uri);
+        CeaApplication desc = apps.getCeaApplication(uri);
         Tool t1 = editToolWithDescription(t, desc,comp);
         return t1;
         } catch (URISyntaxException e) {
@@ -152,12 +150,7 @@ public class ToolEditorImpl implements ToolEditorInternal {
         } 
     }
 
-    /**
-     * @param t
-     * @param desc
-     * @return
-     */
-    public Tool editToolWithDescription(Tool t, ApplicationInformation desc,Component comp) {        
+    public Tool editToolWithDescription(Tool t, CeaApplication desc,Component comp) {        
         dialog.populate(t,desc);
         dialog.setLocationRelativeTo(comp);
         dialog.setVisible(true);
@@ -166,20 +159,6 @@ public class ToolEditorImpl implements ToolEditorInternal {
         return dialog.getTool();
     }
 
-    public Document editWithDescription(Document doc,ApplicationInformation desc) throws InvalidArgumentException{
-        try {
-            Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
-            Tool t1 = editToolWithDescription(t,desc,null);
-            if (t1 == null) {
-                return null;
-            }
-            Document doc1 = XMLUtils.newDocument();            
-            Marshaller.marshal(t1,doc1);
-            return doc1;
-            } catch (Exception e) {
-                throw new InvalidArgumentException(e);
-            }
-        }        
 
     /**
      * @see org.astrogrid.acr.dialogs.ToolEditor#selectAndBuild()
@@ -221,8 +200,8 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
-Revision 1.10  2006/07/24 09:51:00  KevinBenson
-having the parameterized workflow just use the basiceditor for input.
+Revision 1.11  2006/08/15 10:21:14  nw
+added constructor that specifies tool editor to use.upgraded to use new reg model.
 
 Revision 1.9  2006/06/27 19:11:52  nw
 fixed to filter on cea apps when needed.
