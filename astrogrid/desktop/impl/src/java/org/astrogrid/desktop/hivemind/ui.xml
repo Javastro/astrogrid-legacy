@@ -239,7 +239,7 @@
 				<service>system.help</service>
 				<service>astrogrid.myspace</service>
 				<service>dialogs.resourceChooser</service>
-				<service>astrogrid.registry</service>
+				<service>ivoa.registry</service>
 				<service>ivoa.siap</service>
 				<service>nvo.cone</service>
 				<service>ivoa.ssap</service>
@@ -247,6 +247,7 @@
 				<service>system.tupperware</service>	
 				<service>ui.sendTo</service>
 				<service>system.snitch</service>
+				<service>ui.registryBrowser</service>
 <!--				<event-listener service-id="builtin.shutdown" />		-->																															
 			</construct>
 		</invoke-factory>	
@@ -266,11 +267,12 @@
 				<service>system.help</service>
 				<service>astrogrid.myspace</service>
 				<service>dialogs.resourceChooser</service>
-				<service>astrogrid.registry</service>
+				<service>ivoa.registry</service>
 				<service>astrogrid.stap</service>
 				<service>system.tupperware</service>
 				<service>ui.sendTo</service>	
-				<service>system.snitch</service>								
+				<service>system.snitch</service>			
+				<service>ui.registryBrowser</service>									
 <!--				<event-listener service-id="builtin.shutdown" />		-->																									
 			</construct>
 		</invoke-factory>	
@@ -314,9 +316,10 @@
 				<service>astrogrid.jobs</service>
 				<service>astrogrid.myspace</service>
 				<service>astrogrid.applications</service>
-				<service>dialogs.toolEditor</service><!-- TODO dialogs.tooEditorBasic -->
+				<service>dialogs.simpleToolEditor</service>
 				<service>dialogs.resourceChooser</service>		
 				<configuration>workflowTemplates</configuration>
+				<service>system.cache</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -338,6 +341,7 @@
 				<service>system.configuration</service>
 				<service>system.help</service>
 				<service>system.ui</service>
+				<service>system.browser</service>
 <!--				<event-listener service-id="builtin.shutdown" />						-->
 			</construct>
 		</invoke-factory>	
@@ -361,7 +365,7 @@
 				<service>dialogs.resourceChooser</service>
 				<service>system.ui</service>
 				<service>system.help</service>
-				<service>system.configuration</service>				
+				<service>system.configuration</service>	
 <!--				<event-listener service-id="builtin.shutdown" />						-->
 			</construct>
 		</invoke-factory>	
@@ -413,10 +417,12 @@
 		<invoke-factory>
 		<!--	<construct class="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" >-->
 		<construct class="org.astrogrid.desktop.modules.ui.RegistryBrowserFactory" >
-				<service>astrogrid.registry</service>
+				<service>ivoa.registry</service>
 				<service>system.help</service>
 				<service>system.ui</service>
 				<service>system.configuration</service>
+				<service>system.browser</service>
+				<service>system.cache</service>
 				<!--<event-listener service-id="builtin.shutdown" />						-->
 			</construct>
 		</invoke-factory>	
@@ -492,6 +498,7 @@
 				<service>system.tupperware</service>
 			</construct>
 		</invoke-factory>
-	</service-point>					
+	</service-point>		
+
  </module>
  
