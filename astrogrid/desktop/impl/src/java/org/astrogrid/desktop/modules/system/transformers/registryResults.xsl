@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
+<!--  obsolete - done within code in RrgistryGoogle now. -->
   <xsl:stylesheet
     version="1.0"
     xmlns="http://www.astrogrid.org/portal"
