@@ -1,4 +1,4 @@
-/*$Id: AbstractToolEditorPanel.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: AbstractToolEditorPanel.java,v 1.3 2006/08/15 10:22:06 nw Exp $
  * Created on 06-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.desktop.modules.dialogs.editors;
 
 import javax.swing.JPanel;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -58,7 +58,7 @@ public abstract class AbstractToolEditorPanel extends JPanel {
      * @return true if the editor is happy to handle this kind of tool
      */
      
-    public abstract boolean isApplicable(Tool t, ApplicationInformation info); 
+    public abstract boolean isApplicable(Tool t, CeaApplication info); 
     
     
 }
@@ -66,6 +66,9 @@ public abstract class AbstractToolEditorPanel extends JPanel {
 
 /* 
 $Log: AbstractToolEditorPanel.java,v $
+Revision 1.3  2006/08/15 10:22:06  nw
+migrated from old to new registry models.
+
 Revision 1.2  2006/04/18 23:25:47  nw
 merged asr development.
 

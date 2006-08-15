@@ -21,6 +21,8 @@
 			<acrService id="siap" interface="Siap" />
 			<acrService id="skyNode" interface="SkyNode"/>
 			<acrService id="adql074" interface="Adql074" />
+			<acrService id="registry" interface="Registry" />
+			<acrService id="externalRegistry" interface="ExternalRegistry" />
 	</contribution>
 	
 	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">
@@ -36,6 +38,14 @@
 		<!-- factory defaults for enabled services and config properties -->
 	<contribution configuration-id="hivemind.FactoryDefaults">
 		<default symbol="ivoa.adql074.endpoint" value="http://openskyquery.net/AdqlTranslator/ADQLTrans.asmx"/>			
+		<default symbol="ivoa.registry.of.registries.endpoint" value="http://FILL.ME.IN" />
+		
+		<!-- astrogrid prefix, but in this descriptor - as used within the registry component -->
+		<default symbol="org.astrogrid.registry.query.endpoint" 
+			value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery" />
+		<default symbol="org.astrogrid.registry.query.altendpoint"
+			value="http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery" />
+		
 	</contribution>
 
 	
@@ -45,15 +55,52 @@
 		<load service-id="siap" />
 		<load service-id="skyNode" />
 		<load service-id="adql074" />
+		<load service-id="registry" />
+		<load service-id="externalRegistry" />
 	</contribution>	
 	
 	<!-- services and implementations -->
+	
+	<service-point id="registry" interface="org.astrogrid.desktop.modules.ivoa.RegistryInternal">
+		System Registry
+		<interceptor service-id="system.throbber" />
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ivoa.StreamingRegistryImpl" >
+				<service>externalRegistry</service>
+				<string>${org.astrogrid.registry.query.endpoint}</string>
+				<string>${org.astrogrid.registry.query.altendpoint}</string>
+				<service>system.cache</service>				
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<implementation service-id="registry" if="property ivoa.registry.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>	
+	
+	<service-point id="externalRegistry" interface="org.astrogrid.desktop.modules.ivoa.ExternalRegistryInternal">
+		External Registries.
+		<!-- todo add a cache interceptor, before the throbber -->
+		<interceptor service-id="system.throbber" />
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl" >
+				<string>${ivoa.registry.of.registries.endpoint}</string>
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+		<implementation service-id="externalRegistry" if="property ivoa.externalRegistry.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>
 	
 	<service-point id="ssap" interface="Ssap">
 		Simple Spectral Access Protocol
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ivoa.SsapImpl" />
+			<construct class="org.astrogrid.desktop.modules.ivoa.SsapImpl" >
+				<service>ivoa.registry</service>
+				<service>astrogrid.myspace</service>
+			</construct>
 		</invoke-factory>	
 	</service-point>
 
@@ -77,7 +124,10 @@
 		Simple Image Access Protocol
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ivoa.SiapImpl"/>
+			<construct class="org.astrogrid.desktop.modules.ivoa.SiapImpl">
+				<service>ivoa.registry</service>
+				<service>astrogrid.myspace</service>
+			</construct>			
 		</invoke-factory>			
 	</service-point>
 	

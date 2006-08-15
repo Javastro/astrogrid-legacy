@@ -1,4 +1,4 @@
-/*$Id: RawXMLToolEditorPanel.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: RawXMLToolEditorPanel.java,v 1.3 2006/08/15 10:22:06 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,8 +26,8 @@ import jedit.SyntaxDocument;
 import jedit.XMLTokenMarker;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
@@ -171,7 +171,7 @@ public class RawXMLToolEditorPanel extends AbstractToolEditorPanel {
     }
     
     /** suitable (just about) for any non-null tool */
-    public boolean isApplicable(Tool t, ApplicationInformation info) {
+    public boolean isApplicable(Tool t, CeaApplication info) {
         return t != null;
     }
 
@@ -180,6 +180,9 @@ public class RawXMLToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: RawXMLToolEditorPanel.java,v $
+Revision 1.3  2006/08/15 10:22:06  nw
+migrated from old to new registry models.
+
 Revision 1.2  2006/04/18 23:25:47  nw
 merged asr development.
 

@@ -64,17 +64,19 @@ import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
-import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
-import org.astrogrid.acr.dialogs.RegistryChooser;
+import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.Adql074;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Catalog;
+import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
@@ -94,6 +96,7 @@ import org.astrogrid.desktop.modules.adqlEditor.commands.StandardInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.TableInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
+import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
@@ -120,7 +123,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     
     protected final MyspaceInternal myspace ;  
     protected final UIComponent parent;
-    protected final RegistryChooser regChooser;
+    protected final RegistryGoogle regChooser;
     protected final Adql074 validator;
     protected final ResourceChooserInternal resourceChooser;
     protected final Registry registry ;
@@ -162,7 +165,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
        
     public ADQLToolEditorPanel( ToolModel toolModel
                               , ResourceChooserInternal resourceChooser
-                              , RegistryChooser regChooser
+                              , RegistryGoogle regChooser
                               , Adql074 adql
                               , UIComponent parent
                               , MyspaceInternal myspace
@@ -221,7 +224,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     
     public void toolSet(ToolEditEvent te) {
         if( TRACE_ENABLED ) log.debug( "toolCleared(ToolEditEvent te)"  ) ;
-        String[] toks = listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
+        String[] toks = ApplicationsImpl.listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
         if (toks.length > 0) {
             setEnabled(true);
             queryParam = (ParameterValue)toolModel.getTool().findXPathValue("input/parameter[name='" + toks[0] +"']");
@@ -542,36 +545,10 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
         
-    /** returns true if this app has an adql parameter */
-    public static String[] listADQLParameters(String interfaceName,ApplicationInformation info) {
-        InterfaceBean ib = null;
-        List results = new ArrayList();
-        for (int i = 0; i < info.getInterfaces().length; i++) {        
-            if (info.getInterfaces()[i].getName().equals(interfaceName)) {
-                ib = info.getInterfaces()[i];
-            }            
-        }
-        if (ib == null) {
-            return new String[]{};
-        }
-        for (int i =0; i < ib.getInputs().length; i++) {
-            ParameterReferenceBean prb = ib.getInputs()[i];
-            ParameterBean pb = (ParameterBean)info.getParameters().get(prb.getRef());
-            if (pb == null) {
-                return new String[]{};
-            }
-            if (pb.getType().equalsIgnoreCase("adql")) {
-                results.add(pb.getName());
-            }
-        }
-        return (String[])results.toArray(new String[]{});
-        
-    }
-    
 
     /** applicable when it's a dsa-style tool - ie. has an ADQL parameter*/
-    public boolean isApplicable(Tool t, ApplicationInformation info) {
-        return t != null && info != null && listADQLParameters(t.getInterface(),info).length > 0;
+    public boolean isApplicable(Tool t, CeaApplication info) {
+        return t != null && info != null && ApplicationsImpl.listADQLParameters(t.getInterface(),info).length > 0;
     }
 
     
@@ -1111,12 +1088,14 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             chooseResourceButton = new JButton("Set Archive Definition..");
             chooseResourceButton.addActionListener(new ActionListener() {               
                 public void actionPerformed(ActionEvent e) {
-                   Object obj = regChooser.chooseResourceWithFilter( "Select Catalogue description for " 
-                                                                   + toolModel.getInfo().getName()
-                                                                   , "(@xsi:type like '%TabularDB')") ;
-                   if( obj != null ) {
-                       if( DEBUG_ENABLED ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + obj.getClass().getName() ) ; 
-                       adqlTree.setCatalogueResource( (TabularDatabaseInformation)obj ) ;
+                   Resource[] selection = regChooser.selectResourcesXQueryFilter( "Select Catalogue description for " 
+                                                                   + toolModel.getInfo().getTitle()
+                                                                   ,false
+                                                                   , "(@xsi:type &= '*TabularDB')"
+                                                                   ) ;
+                   if( selection != null && selection.length > 0 ) {
+                       if( DEBUG_ENABLED ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + selection[0].getClass().getName() ) ; 
+                       adqlTree.setCatalogueResource( (DataCollection)selection[0]) ;
                        chooseResourceButton.setEnabled( false ) ;
                        formatCatalogTab() ;
                    }
@@ -1127,15 +1106,15 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
     private void formatCatalogTab() {
-        TabularDatabaseInformation catalogueResource = adqlTree.getCatalogueResource() ;
+    	DataCollection catalogueResource = adqlTree.getCatalogueResource() ;
         String title = null ;
         String description = null ;
         if( tabbedMetadataPane.getTabCount() == 1 ) {
-            DatabaseBean[] dbs = catalogueResource.getDatabases();           
-            if( dbs != null && dbs[0] != null ) {
-                title = dbs[0].getName() ; 
+            Catalog dbs = catalogueResource.getCatalog();           
+            if( dbs != null ) {
+                title = dbs.getName() ; 
                 if( title == null || title.trim().length() == 0 ); {
-                    title = catalogueResource.getName() ;
+                    title = catalogueResource.getTitle() ;
                 }
                 tabbedMetadataPane.setTitleAt( 0, title );
                 
@@ -1148,9 +1127,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                 JScrollPane scrollCatalogDetails = new JScrollPane();
                 JTextPane catalogDetailsTextPane = new JTextPane();
                 scrollCatalogDetails.setViewportView( catalogDetailsTextPane ) ;
-                description = dbs[0].getDescription() ;
+                description = dbs.getDescription() ;
                 if( description == null || description.trim().length() == 0 ) {
-                    description = catalogueResource.getDescription() ;
+                    description = catalogueResource.getContent().getDescription() ;
                 }                   
                 if( description == null || description.trim().length() == 0 ) {
                     description = "No description available" ;
@@ -1158,12 +1137,12 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                 catalogDetailsTextPane.setText( description ) ;
                 tabbedCatalogPane.addTab( "Overview", scrollCatalogDetails ) ;
 
-                final TableBean[] tables = dbs[0].getTables();
+                final TableBean[] tables = dbs.getTables();
                 for( int j=0; j<tables.length; j++) {
                     tabbedCatalogPane.addTab( tables[j].getName()
                                             , new TableMetadataPanel( ADQLToolEditorPanel.this
                                                                     , adqlTree
-                                                                    , dbs[0]
+                                                                    , dbs
                                                                     , tables[j] ) ) ;
                 }
                 catalog1.setLayout( new GridBagLayout() ) ;
@@ -1197,7 +1176,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         // For each table ...
         while( it.hasNext() ) {
             if( cicForTable == null ) {
-                cic.setArchive( adqlTree.getCatalogueResource().getDatabases()[0] ) ;
+                cic.setArchive( adqlTree.getCatalogueResource().getCatalog() ) ;
                 cicForTable = cic ;
                 insertMenu.setEnabled( true ) ;
             }
@@ -1227,9 +1206,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     private JMenu getInsertTableMenu( StandardInsertCommand command ) {
         TableInsertCommand tic= (TableInsertCommand)command ;       
         JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
-        TabularDatabaseInformation tdb = adqlTree.getCatalogueResource() ;
+        DataCollection tdb = adqlTree.getCatalogueResource() ;
         if( tdb != null ) {
-            DatabaseBean db = tdb.getDatabases()[0] ;
+            Catalog db = tdb.getCatalog();
             tic.setDatabase( db ) ;
             TableBean[] tables = db.getTables() ;
             for( int i=0; i<tables.length; i++ ){            

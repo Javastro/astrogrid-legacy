@@ -35,11 +35,12 @@ import javax.swing.table.TableCellRenderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
@@ -394,7 +395,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             int realColumnIndex = convertColumnIndexToModel(colIndex);               
             if (realColumnIndex == 0) { //Namecolumn..
                 final String parameterName = ((ParameterTableModel)getModel()).getRows()[rowIndex].getName();            
-                ParameterBean d = (ParameterBean)toolModel.getInfo().getParameters().get(parameterName);                                       
+                 ParameterBean d = ApplicationsImpl.findParameter(toolModel.getInfo().getParameters(),parameterName);
                 tip= mkToolTip(d); 
             } else if (realColumnIndex == 1) { // value column - show a popup if it's tool long to fit.
                 Object value = getValueAt(rowIndex,colIndex);
@@ -521,7 +522,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
             if (rowIndex >= 1) {
             	previousRow =  rows[rowIndex-1];
             }
-            ParameterBean d = (ParameterBean)toolModel.getInfo().getParameters().get(row.getName());
+            ParameterBean d = ApplicationsImpl.findParameter(toolModel.getInfo().getParameters(),row.getName());
             ParameterReferenceBean[] paramRef;
             InterfaceBean intBean[] = toolModel.getInfo().getInterfaces();
             switch (columnIndex) {
@@ -800,7 +801,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     }
 
     /** applicable to any kind of tool */
-    public boolean isApplicable(Tool t, ApplicationInformation info) {
+    public boolean isApplicable(Tool t, CeaApplication info) {
         return t != null;
     }    
 }
@@ -812,6 +813,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.19  2006/08/15 10:22:06  nw
+migrated from old to new registry models.
+
 Revision 1.18  2006/06/27 19:12:31  nw
 fixed to filter on cea apps when needed.
 

@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.22 2006/08/02 13:30:09 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.23 2006/08/15 10:22:05 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -45,9 +46,13 @@ import javax.swing.SwingConstants;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Creator;
+import org.astrogrid.acr.ivoa.resource.Curation;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
@@ -79,8 +84,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 		public ProviderCreditsButton() {
 			super();
 			setEnabled(toolModel.getTool() != null);
-//			setBackground(Color.WHITE);
-//			setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			setBackground(Color.WHITE);
+			setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			ToolEditListener listener = new ToolEditAdapter() {
 				public void toolCleared(ToolEditEvent ignored) {
 					setEnabled(false);
@@ -90,27 +95,51 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 				}
 				public void toolSet(ToolEditEvent ignored) {
 					setEnabled(true);
-					final ApplicationInformation info = toolModel.getInfo();
-					if (info.getLogoURL() == null) {
-						setIcon(null);
-					} else {
-						(new BackgroundWorker(parent,"Fetching Creator Icon") {
-							protected Object construct() throws Exception {
-								return new ImageIcon(IconHelper.loadIcon(info.getLogoURL()).getImage().getScaledInstance(-1,48,Image.SCALE_SMOOTH));
-							}
-							protected void doFinished(Object result) {
-								setIcon((Icon)result);
-							}
-							protected void doError(Throwable ex) {//ignore
-							}
-						}).start();
+					setIcon(null);
+					setText(null);
+					setToolTipText(null);
+					final Resource info = toolModel.getInfo();
+					if (info.getCuration().getCreators().length ==0) {
+						return;
 					}
-					String creatorName = "todo" ; //@FIXME fil in from rsource/curartion/creator/name - once have improved reg entry parsing in general.
-					setText( creatorName);
-					setToolTipText("<html>This service: " + info.getName() + " <br>provides access to materials created by<br>" + creatorName);
-					//@todo on  button click launch browser to go to homepage. - can't find suitable url in current schema.
+					if (info.getCuration().getCreators().length > 0) {
+
+						final Creator c = info.getCuration().getCreators()[0];
+						if (c.getLogo() != null) {
+							(new BackgroundWorker(parent,"Fetching Creator Icon") {
+								protected Object construct() throws Exception {
+									return new ImageIcon(IconHelper.loadIcon(c.getLogo()).getImage().getScaledInstance(-1,48,Image.SCALE_SMOOTH));
+								}
+								protected void doFinished(Object result) {
+									setIcon((Icon)result);
+								}
+								protected void doError(Throwable ex) {//ignore
+								}
+							}).start();
+						}
+						final String creatorName = c.getName().getValue();
+						if (creatorName != null && creatorName.trim().length() > 0) {
+								
+						setText( "Created by " + creatorName);
+						setToolTipText("<html>This service: " + info.getTitle() + " <br>provides access to materials created by<br>" 
+								+ creatorName);
+						} else {
+							setText("");
+							setToolTipText("");
+						}
+					}
 				}
 			};
+			addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					try {
+						browser.openURL(toolModel.getInfo().getContent().getReferenceURL());
+					} catch (Exception ex) {
+						// no matter..
+					}
+				}
+			});
 			
 			toolModel.addToolEditListener(listener);
 			// finally, trigger the listener to setup 
@@ -160,14 +189,14 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                                                             securityMethod);
                       doc.appendChild(p);
                     }
-                    ResourceInformation[] services = apps.listProvidersOf(new URI("ivo://" + tOrig.getName())); 
+                    Service[] services = apps.listServersProviding(new URI("ivo://" + tOrig.getName())); 
                     logger.debug("resolved app to " + services.length + " servers");
                     if (services.length == 0) {// no providing servers found.
                     	return null;
                     } else if (services.length > 1) {
                         URI[] names = new URI[services.length];
                         for (int i = 0 ; i < services.length; i++) {
-                            names[i] = services[i].getId();
+                            names[i] = services[i].getId(); //@todo should be titile here really.
                         }
                     URI chosen = (URI)JOptionPane.showInputDialog(CompositeToolEditorPanel.this
                             ,"More than one CEA server provides this application - please choose one"
@@ -229,7 +258,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                 return;
             }                   
                 (new BackgroundWorker(parent,"Opening task definition") {
-                    private ApplicationInformation newApp;
+                    private CeaApplication newApp;
                     private InterfaceBean newInterface;
                     protected Object construct() throws Exception {
                     	Reader fr = null;
@@ -237,7 +266,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                         fr = new InputStreamReader(myspace.getInputStream(u));
                        Tool t = Tool.unmarshalTool(fr);
                        
-                       newApp = apps.getApplicationInformation(new URI("ivo://" + t.getName()));                       
+                       newApp = apps.getCeaApplication(new URI("ivo://" + t.getName()));                       
                        InterfaceBean[] candidates = newApp.getInterfaces();
                        for (int i = 0; i < candidates.length; i++) {
                            if (candidates[i].getName().equalsIgnoreCase(t.getInterface().trim())) {
@@ -258,6 +287,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                     	}
                     }
                     protected void doFinished(Object o) {
+                    	//FIXME - find the resource object.
                         getToolModel().populate((Tool)o,newApp);
                     }
                 }).start();
@@ -349,7 +379,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }
                
         
-        private void enableApplicable(Tool t, ApplicationInformation info) {
+        private void enableApplicable(Tool t, CeaApplication info) {
                     int firstApplicable = 0;
                     for (int i = 1; i < views.length; i++ ) { 
                     	// start at 1, as 0 is hte chooser - always applicable, but other applicable should take precedence
@@ -380,6 +410,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected final AbstractToolEditorPanel[] views;
     protected Action newAction, saveAction, openAction, executeAction, closeAction;
     protected final JButton creditsButton;
+    protected final BrowserControl browser;
    
 
     /** set the lookout reference - not passed into constructor, as may not always be available*/
@@ -395,8 +426,10 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
             ,MyspaceInternal myspace
             , UIComponentImpl parent
             ,HelpServerInternal hs
+            ,BrowserControl browser
             ) {        
         this.parent = parent;        
+        this.browser = browser;
         this.rChooser = rChooser;
         this.apps = apps;
         this.myspace = myspace;
@@ -452,7 +485,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     }
 
     /** able to handle everything */
-    public boolean isApplicable(Tool t, ApplicationInformation info) {
+    public boolean isApplicable(Tool t, CeaApplication info) {
         return true;
     }
     
@@ -483,6 +516,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.23  2006/08/15 10:22:05  nw
+migrated from old to new registry models.
+
 Revision 1.22  2006/08/02 13:30:09  nw
 improved presentation of provider logo.
 

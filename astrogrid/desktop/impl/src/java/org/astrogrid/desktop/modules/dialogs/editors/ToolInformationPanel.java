@@ -1,4 +1,4 @@
-/*$Id: ToolInformationPanel.java,v 1.5 2006/04/18 23:25:47 nw Exp $
+/*$Id: ToolInformationPanel.java,v 1.6 2006/08/15 10:22:06 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,8 +16,8 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
@@ -71,7 +71,7 @@ public class ToolInformationPanel extends AbstractToolEditorPanel {
                     protected void doFinished(Object result) {
                         ed.setText(result.toString());
                         if (getToolModel().getInfo() != null) {
-                            label.setText(getToolModel().getInfo().getName());
+                            label.setText(getToolModel().getInfo().getTitle());
                         }
                     }
                 }).start();
@@ -85,7 +85,7 @@ public class ToolInformationPanel extends AbstractToolEditorPanel {
     }
 
 
-    public boolean isApplicable(Tool t, ApplicationInformation info) {
+    public boolean isApplicable(Tool t, CeaApplication info) {
         return t != null;
     }
 
@@ -94,6 +94,9 @@ public class ToolInformationPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ToolInformationPanel.java,v $
+Revision 1.6  2006/08/15 10:22:06  nw
+migrated from old to new registry models.
+
 Revision 1.5  2006/04/18 23:25:47  nw
 merged asr development.
 

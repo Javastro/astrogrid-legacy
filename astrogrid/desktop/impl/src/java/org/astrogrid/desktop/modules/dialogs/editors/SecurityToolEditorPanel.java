@@ -5,7 +5,10 @@ import java.awt.event.ItemListener;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.security.SecurityGuard;
@@ -97,8 +100,11 @@ public class SecurityToolEditorPanel
    * @return true if the editor is happy to handle this kind of tool
    * 
    */
-  public boolean isApplicable(Tool t, org.astrogrid.acr.astrogrid.ApplicationInformation info) {
-    return (t != null); // Security works for all CEA applications.
+  public boolean isApplicable(Tool t, CeaApplication info) {
+    return t != null && ! (info instanceof Service); 
+    // Security works for all real CEA application 
+    //- not mock-up of CEA for cone, siap, other services.
+    // these mock-ups also provide their original 'service' interfaces.
   }
 
   /**
