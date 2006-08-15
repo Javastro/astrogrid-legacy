@@ -25,12 +25,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-/**
+/**@todo delete? not used anymore?
  * @author pjn3
  * Extends HTMLEditorKit to improve how JEditorPanel renders XHTML.
  * @see javax.swing.text.html.HTMLEditorKit
  */
-public class XHTMLEditorKit extends HTMLEditorKit {
+class XHTMLEditorKit extends HTMLEditorKit {
 	protected Parser getParser() {
 		return new Parser() {
 			public void parse(Reader reader, ParserCallback callback, boolean ignoreCharSet) throws IOException {
