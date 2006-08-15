@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.23 2006/08/15 10:22:05 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.24 2006/08/15 16:16:49 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,7 +49,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.ivoa.resource.Creator;
-import org.astrogrid.acr.ivoa.resource.Curation;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
@@ -58,11 +57,11 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -163,7 +162,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
             this.setEnabled(toolModel.getTool() != null);
             toolModel.addToolEditListener(new ToolEditAdapter() {
                 public void toolSet(ToolEditEvent te) {
-                    setEnabled(toolModel.getTool() != null);
+                    setEnabled(toolModel.getTool() != null && parent instanceof ApplicationLauncherImpl);
                 }
                 public void toolCleared(ToolEditEvent te) {
                     setEnabled(false);
@@ -516,6 +515,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.24  2006/08/15 16:16:49  pjn3
+Minor change to prevent execute button being enabled when parent is workflow builder
+
 Revision 1.23  2006/08/15 10:22:05  nw
 migrated from old to new registry models.
 
