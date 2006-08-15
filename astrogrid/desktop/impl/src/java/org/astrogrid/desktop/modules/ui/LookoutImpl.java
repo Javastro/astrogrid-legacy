@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.16 2006/07/20 12:33:10 nw Exp $
+/*$Id: LookoutImpl.java,v 1.17 2006/08/15 10:05:28 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -22,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -45,21 +43,16 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.Lookout;
-import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.acr.ui.WorkflowBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.JobsInternal;
 import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
 import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.lookout.FolderTreeCellRenderer;
@@ -103,14 +96,16 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
     
     /** delete an alert message, or a task folder
      * listens to both tree and list to work out whether enabled or not.
+     * 
+     * changed - will now delete the whole record.
      */
     private final class DeleteAction extends AbstractAction implements TreeSelectionListener, ListSelectionListener {
         
-        private boolean folderMode;
+        private boolean folderMode = true;
         
         public DeleteAction() {
             super("Delete", IconHelper.loadIcon("delete_obj.gif"));
-            this.putValue(SHORT_DESCRIPTION,"Delete a task record, or event message");
+            this.putValue(SHORT_DESCRIPTION,"Delete this task record");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));
             this.setEnabled(false);            
             getFolderTree().addTreeSelectionListener(this);
@@ -120,6 +115,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         public void actionPerformed(ActionEvent e) {   
                 if (folderMode) { // delete a task            
                     final Folder f = getCurrentFolder();
+                    final int row = getFolderTree().getSelectionRows()[0];
                     (new BackgroundOperation("Deleting Process Record") {
                         protected Object construct() throws Exception {
                             if (isRunning(f.getInformation().getStatus())) {
@@ -132,8 +128,10 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
                             manager.delete(f.getInformation().getId()); // this in turn fires a table update event, in the swing thread.
                             return null;
                         }
+                        protected void doFinished(Object result) {
+                        	getFolderTree().setSelectionRow(row);
+                        }
                     }).start();
-               
                 } else { // delete an alert message
                     (new BackgroundOperation("Deleting Message") {
                         protected Object construct() throws Exception {                    
@@ -144,12 +142,13 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
                     }).start();
                 }
         }
-        //@todo check this works - that we can delete individual entries.
+        // commented out - always deletes folders for now.
+        // don't know any other way around this - as selecting a folder selects messages, and so both listeners fire.
         public void valueChanged(ListSelectionEvent e) {
-        	folderMode = false;
-            int index = getMessageTable().getSelectedRow();
-            setEnabled ( index >= 0 && index < getMessageTable().getRowCount() ) ;
-            
+//        	folderMode = false;
+//            int index = getMessageTable().getSelectedRow();
+//            setEnabled ( index >= 0 && index < getMessageTable().getRowCount() ) ;
+//            
         }
         
         public void valueChanged(TreeSelectionEvent e) {
@@ -519,6 +518,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.17  2006/08/15 10:05:28  nw
+fixed 'delete task' button.
+
 Revision 1.16  2006/07/20 12:33:10  nw
 re-enabled the delete button.
 
