@@ -276,6 +276,78 @@
                         tofile="${basedir}/target/TESTS-TestSuites-Annotated.xml" overwrite="true"/>
         </j:forEach>
 </goal>
+
+
+<goal name="jar-strip" prereqs="jar:jar">
+	<taskdef name="yguard"
+      classname="com.yworks.yguard.YGuardTask"
+      classpathref="maven.dependency.classpath"/>
+      <j:set var="shrinkDir" value="${basedir}/target/shrink" />
+      <mkdir dir="${shrinkDir}" />
+    <yguard>
+    <!--  list of libs to shrink -->
+    	<j:forEach var="lib" items="${pom.artifacts}">
+    		<j:set var="dep" value="${lib.dependency}"/>
+    		<j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') == 'true'}">
+    		<inoutpair in="${lib.path}" 
+    		out="${shrinkDir}/${lib.name}" />
+    	</j:if>
+    	</j:forEach>
+    	<!--  list of libs to preserve -->
+    	<externalClasses>
+    	<j:forEach var="lib" items="${pom.artifacts}">
+    		<j:set var="dep" value="${lib.dependency}"/>
+    		<j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') != 'true'}">
+    		<pathelement location="${lib.path}" />
+    	</j:if>
+    	</j:forEach>    	
+    	</externalClasses>
+    	<!--  keep debugging for all astrogrid classes. -->
+    	<attribute name="SourceFile, LineNumberTable, LocalVariableTable, Deprecated">
+    		<patternset>
+    			<include name="org.astrogrid.**" />
+    		</patternset>
+    	</attribute>
+    	<shrink createStubs="true">
+    		<!--  entry points - anything reachable from this is preserved. -->
+    		<entrypointjar name="${basedir}/target/workbench-${astrogrid.desktop.version}.jar" />
+    		<keep>
+    			<class classes="private" methods="private" fields="private">	
+    				<!--  also preserve the following classes -->
+    				<patternset>
+    					<include name="org.astrogrid.acr.**" />
+    					<include name="org.votech.**" />
+    					<include name="org.apache.hivemind.**" />
+    					<include name="org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary"/>
+    					<include name="org.astrogrid.applications.manager.**" />
+    					<include name="org.apache.commons.collections.map.ListOrderedMap" />
+    					<include name="javax.servlet.ServletInputStream" />
+    				</patternset>
+    			</class>
+    		</keep>
+    	</shrink> 	
+    </yguard>
+</goal>
+
+<goal name="run-stripped">
+
+	<java classname="org.astrogrid.Workbench"
+		fork="true">
+		<classpath>
+			<pathelement
+				location="${basedir}/target/workbench-${astrogrid.desktop.version}.jar" />
+			<fileset dir="${basedir}/target/shrink">
+				<include name="**/*.jar" />
+			</fileset>
+			<j:forEach var="lib" items="${pom.artifacts}">
+				<j:set var="dep" value="${lib.dependency}" />
+				<j:if test="${dep.getProperty('strip') != 'true'}">
+					<pathelement location="${lib.path}" />
+				</j:if>
+			</j:forEach>
+		</classpath>
+	</java>
+</goal>
 	
 </project>
 

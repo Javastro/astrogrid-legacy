@@ -70,7 +70,8 @@
 		<version>${astrogrid.desktop.version}</version>
 		<properties>
 			<jnlp.jar>true</jnlp.jar>			
-			<dist.bundle>true</dist.bundle>			
+			<dist.bundle>true</dist.bundle>	
+			<strip>false</strip> <!--  all needed -->				
 		</properties>
 	</dependency>
 	
@@ -83,6 +84,7 @@
 		 <jnlp.extension.dir>/jnlp/javahelp</jnlp.extension.dir>
 	<jnlp.extension.jnlp>javahelp.jnlp</jnlp.extension.jnlp>
 	<dist.bundle>true</dist.bundle>	
+				    <strip>false</strip><!--  can't strip easily - as is driven by another xml config --> 
 	 </properties>
 	 <jar>jhall.jar</jar>
  </dependency>
@@ -99,6 +101,7 @@
 		 <jnlp.extension.dir>/jnlp/editor</jnlp.extension.dir>
 	<jnlp.extension.jnlp>editor.jnlp</jnlp.extension.jnlp>	 
 		 <dist.bundle>true</dist.bundle>
+				    <strip>true</strip> 	 
 	 </properties>
 	</dependency>
  
@@ -112,6 +115,7 @@
 	 <version>2.0.0</version>
 	 <type>jar</type>
  <properties>
+ 			    <strip>false</strip> <!--  TODO verify it still works if stripped -->
 		 <dist.bundle>true</dist.bundle>
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		 <jnlp.extension.dir>/jnlp/adqlbeans</jnlp.extension.dir>
@@ -125,6 +129,7 @@
 	 <version>${astrogrid.adql_v1_0a1.version}</version>
 	 <type>jar</type>
 	 <properties>
+				    <strip>false</strip>  <!--  schema generated, so all needed -->
 		 <dist.bundle>true</dist.bundle>
 	 </properties>		 
  </dependency>

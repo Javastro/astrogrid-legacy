@@ -62,7 +62,7 @@
 		<version>${astrogrid.desktop.version}</version>
 		<properties>
 			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
+			<dist.bundle>true</dist.bundle>		
 		</properties>
 	</dependency>
 
@@ -99,15 +99,20 @@
                 <properties>
                 <!-- defined in an extension , but inserted by 
                 stylesheet - so we can munge path for alpha, etc -->
-				    <dist.bundle>true</dist.bundle>		    
+				    <dist.bundle>true</dist.bundle>	
+				    <strip>true</strip> <!--  too much hassle - and still causing problems. -->  
                 </properties>
         </dependency>
+        
     <dependency>
       <artifactId>junit</artifactId>
       <groupId>junit</groupId>
       <version>3.8</version>
-      <properties>
-		    <dist.bundle>true</dist.bundle>	<!--  TODO should this be in the dist? JDT -->	    
+      <properties>        
+		    <dist.bundle>true</dist.bundle>	<!--  TODO should this be in the dist? JDT 
+												NWW- yep - required by embedded CEA server, funnily enough.
+-->
+		    <strip>false</strip> <!--  causes a build error  -->
       </properties>
     </dependency>
     <!-- Mark Taylor's plaskit, for testing only -->
@@ -117,6 +122,7 @@
       <version>20060808</version>
       <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
     </dependency>
+ 
   
   <!-- storage - jnlp extension -->
 <dependency>
@@ -127,11 +133,14 @@
 		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		<jnlp.extension.dir>/jnlp/file</jnlp.extension.dir>
 		<jnlp.extension.jnlp>file.jnlp</jnlp.extension.jnlp>			
-		<dist.bundle>true</dist.bundle>			
+		<dist.bundle>true</dist.bundle>	
+		<strip>false</strip><!--  uses a provider pattern.  -->		
 	</properties>
 </dependency>
 
  <!-- jakarta commons - jnlp extension -->
+ 
+ <!--  issue - this is in the core cdk too. -->
        <dependency>
                 <artifactId>commons-collections</artifactId>            
                 <groupId>commons-collections</groupId>          
@@ -142,6 +151,7 @@
 			<jnlp.extension.dir>/jnlp/jakarta-commons</jnlp.extension.dir>
 			<jnlp.extension.jnlp>jakarta-commons.jnlp</jnlp.extension.jnlp>                             
                         <dist.bundle>true</dist.bundle>
+                        <strip>true</strip>
                 </properties>
     </dependency> 
   
@@ -152,6 +162,7 @@
 	 <type>jar</type>
 	 <properties>		 
 		 <dist.bundle>true</dist.bundle>
+		 <strip>true</strip>
 	 </properties>		 
  </dependency>
  
@@ -162,6 +173,7 @@
 	 <type>jar</type>
 	 <properties>		 
 		 <dist.bundle>true</dist.bundle>
+		 <strip>true</strip>
 	 </properties>		 
         </dependency>  
         
@@ -171,11 +183,12 @@
 	  	<version>1.0</version>
 	  	<properties>			
 		<dist.bundle>true</dist.bundle>			
+		<strip>true</strip>
 	  	</properties>
 	  </dependency>
 
 <!-- container system - hivemind     -->
-
+<!--  don't plan to mess with these - too important.-->
 <dependency>
 	<groupId>hivemind</groupId>
 	<artifactId>hivemind</artifactId>
@@ -201,13 +214,15 @@
 	<artifactId>javassist</artifactId>
 	<version>3.0</version>
 	<properties>
-		<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		<dist.bundle>true</dist.bundle>	
 	</properties>
 </dependency>
  <dependency>
 	 <id>oro</id>
 	 <version>2.0.7</version>
 	 <properties>
+	 		<strip>true</strip>
 		 <dist.bundle>true</dist.bundle>
 	 </properties>	 
  </dependency>
@@ -217,12 +232,14 @@
 	 <groupId>jetty</groupId>
 	 <artifactId>org.mortbay.jetty</artifactId>
 	 <version>5.1.2</version>
+	 <!-- upgrade to 5.1.11 ? -->
 	 <type>jar</type>
 	 <properties>
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		 <jnlp.extension.dir>/jnlp/jetty</jnlp.extension.dir>
 		 <jnlp.extension.jnlp>jetty.jnlp</jnlp.extension.jnlp>
 		 <dist.bundle>true</dist.bundle>
+		 <strip>true</strip>
 	 </properties>
  </dependency>
  <dependency>
@@ -230,7 +247,8 @@
 	 <groupId>servletapi</groupId>
 	 <version>2.3</version>	
 	 <properties>
-		 <dist.bundle>true</dist.bundle>
+		 <dist.bundle>true</dist.bundle>	
+		 <strip>true</strip>
 	 </properties>	 
     </dependency>
     
@@ -239,7 +257,8 @@
 	    <groupId>rmilite</groupId>
 	    <version>1.0</version>
 	    <properties>
-		    <dist.bundle>true</dist.bundle>		
+		    <dist.bundle>true</dist.bundle>	
+		    <strip>false</strip> <!--  breaks -->
 	    </properties>
 </dependency> 
 <dependency> 
@@ -248,7 +267,9 @@
 	<version>1.2-b1</version>
 	<type>jar</type>
 	<properties>
-		<dist.bundle>true</dist.bundle>			
+		<dist.bundle>true</dist.bundle>		
+		<strip>true</strip>
+			
 	</properties>
 </dependency>
 <!-- end of jetty servers -->
@@ -257,13 +278,14 @@
    <dependency>
         <groupId>l2fprod</groupId>
         <artifactId>l2fprod-common-all</artifactId>
-        <version>6.2</version> 
+        <!--<version>6.2</version> -->
+        <version>6.5</version>
 	<properties>
 		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		 <jnlp.extension.dir>/jnlp/gui-basics</jnlp.extension.dir>
 		 <jnlp.extension.jnlp>gui-basics.jnlp</jnlp.extension.jnlp>	
 		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
+		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>			
 	 </properties>	 	
     </dependency>    
     <dependency>
