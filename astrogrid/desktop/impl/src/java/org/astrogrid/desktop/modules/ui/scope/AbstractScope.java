@@ -5,13 +5,15 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +40,7 @@ import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListDataEvent;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -47,11 +50,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.astrogrid.StapInformation;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -237,6 +239,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	protected final VizualizationManager vizualizations;
 	private final SnitchInternal snitch;
 	private final String scopeName;
+	private final RegistryBrowser browser;
 
 	private BiStateButton submitButton;
 	
@@ -246,6 +249,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	 * @param hs
 	 * @param ui
 	 * @param p list of dal protocols to query.
+	 * @param browser todo
 	 * @throws HeadlessException
 	 */
 	public AbstractScope(Configuration conf, HelpServerInternal hs,
@@ -253,7 +257,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 			ResourceChooserInternal chooser, TupperwareInternal tupp, SendToMenu sendTo, 
 			SnitchInternal snitch,
 			String scopeName,
-			DalProtocol[] p) throws HeadlessException {
+			DalProtocol[] p, RegistryBrowser browser) throws HeadlessException {
 		super(conf, hs, ui);
 		this.scopeName = scopeName;
 		this.historyKey = scopeName + ".history";
@@ -263,6 +267,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		for (int i = 0; i < p.length; i++) {
 			this.protocols.add(p[i]);
 		}
+		this.browser = browser;
 		// create the shared model
 		vizModel = new VizModel(protocols);
 		// create the vizualizations
@@ -435,67 +440,52 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		return menuBar;
 	}
 	
+	private static final String KEY_LINK = "KEY_LINK";
 	/** panel containing summary of search results */
 	private JPanel makeServicesPanel() {
 		JPanel servicesPanel = new JPanel();
-		TableSorter sorter = new TableSorter(protocols.getQueryResultTable());
+		final TableSorter sorter = new TableSorter(protocols.getQueryResultTable());
 		final JTable table = new JTable(sorter);
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent e) {
+				int column = table.convertColumnIndexToModel(table.columnAtPoint(e.getPoint()));
+				if (column == 0) {
+					table.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));					
+				} else {
+					table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				}
+			}
+			public void mouseExited(MouseEvent e) {
+				int column = table.convertColumnIndexToModel(table.columnAtPoint(e.getPoint()));
+				if (column == 0) {
+					table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				}
+			}
+			public void mouseClicked(MouseEvent e) {
+				int column = table.convertColumnIndexToModel(table.columnAtPoint(e.getPoint()));
+				int row = sorter.modelIndex(table.rowAtPoint(e.getPoint()));
+				if (column == 0 && row > -1 && row < sorter.getRowCount()) {
+					Resource ri = (Resource)sorter.getTableModel().getValueAt(row,column);
+					browser.open(ri.getId());
+				}
+			}
+		});
 		sorter.setTableHeader(table.getTableHeader()); 
 		table.setPreferredScrollableViewportSize(new Dimension(700, 550));
 		TableColumnModel tcm = table.getColumnModel();
 		final TableColumn riColumn = tcm.getColumn(0);
 		riColumn.setPreferredWidth(150);
-		// decorate the renderer for resource information (objects) to display a
-		// nice tooltip, etc.
-		riColumn.setCellRenderer(new TableCellRenderer() {
-			private final TableCellRenderer original = table
-					.getDefaultRenderer(ResourceInformation.class);
 
-			public Component getTableCellRendererComponent(JTable table,
-					Object value, boolean isSelected, boolean hasFocus,
-					int row, int column) {
-				JLabel c = (JLabel) original.getTableCellRendererComponent(
-						table, value, isSelected, hasFocus, row, column);
-				if (value instanceof ResourceInformation) {
-					ResourceInformation ri = (ResourceInformation) value;
-					c.setText(ri.getTitle());
-					c.setToolTipText(mkToolTip(ri));
-				}
-				return c;
+		riColumn.setCellRenderer(new DefaultTableCellRenderer() {
+			protected void setValue(Object value) {
+				Resource ri = (Resource)value;
+		    	String link= "<html><a href='" + ri.getId() + "'>" + ri.getTitle() + "</a>";
+				setText(link);
+				putClientProperty(KEY_LINK,ri.getId());
 			}
-
-			/**
-			 * builds a tool tip from a resource information object
-			 * 
-			 * @todo refactor so it works in a general way - not hardcoded.
-			 */
-			private String mkToolTip(ResourceInformation ri) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("<html>");
-				sb.append(ri.getId());
-				sb.append("<br>Service Type: ");
-
-				if (ri instanceof SiapInformation) { // nasty little hack for
-														// now. - later find a
-														// way of getting this
-														// info from the
-														// protocol object..
-					sb.append("Image");
-				} else if (ri instanceof ConeInformation) {
-					sb.append("Catalogue");
-				} else if (ri instanceof StapInformation) {
-					sb.append("Stap");
-
-				} else { // no special type for ssap at the moment, and have
-							// to assume that any other ri is a ssap
-					sb.append("Spectra");
-				}
-				sb.append("</html>");
-				// @future extend ResourceInformation to contain curation details,
-				// add these in here.
-				return sb.toString();
-			}
+			
 		});
+		
 		final TableColumn countColumn = tcm.getColumn(1);
 		countColumn.setPreferredWidth(60);
 		countColumn.setMaxWidth(60);
@@ -533,6 +523,8 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 				if (s != null && s.length() > 0) {
 					c.setToolTipText("<html>"
 							+ WordUtils.wrap(s, 50, "<br>", false) + "</html>");
+				} else {
+					c.setToolTipText("");
 				}
 				return c;
 			}
