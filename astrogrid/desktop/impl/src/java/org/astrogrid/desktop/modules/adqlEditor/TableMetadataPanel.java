@@ -35,7 +35,6 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JTable;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.* ;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -52,6 +51,7 @@ import org.apache.xmlbeans.* ;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean ;
 import org.astrogrid.acr.astrogrid.ColumnBean ;
+import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 import org.astrogrid.desktop.modules.adqlEditor.commands.*;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
@@ -76,7 +76,7 @@ public class TableMetadataPanel extends JPanel {
     	DESCRIPTION = "Description" ;
     
     private TableBean astroTable ;
-    private DatabaseBean databaseBean ;
+    private Catalog databaseBean ;
     // private int tableIndex ;
     private JTable displayTable ;
     private JScrollPane displayTablerScrollPane ;
@@ -104,7 +104,7 @@ public class TableMetadataPanel extends JPanel {
      */
     public TableMetadataPanel( ADQLToolEditorPanel adqlToolEditorPanel
                              , AdqlTree adqlTree
-                             , DatabaseBean databaseBean 
+                             , Catalog databaseBean 
                              , TableBean tableBean ) {
         super();
         this.adqlToolEditorPanel = adqlToolEditorPanel ;

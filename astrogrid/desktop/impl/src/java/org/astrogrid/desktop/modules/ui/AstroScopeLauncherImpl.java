@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.50 2006/08/02 13:31:20 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.51 2006/08/15 10:10:20 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,16 +28,16 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.xml.stream.XMLStreamReader;
 
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.AstroScope;
+import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -60,7 +60,6 @@ import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
-import org.votech.plastic.PlasticHubListener;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
@@ -85,21 +84,22 @@ public class AstroScopeLauncherImpl extends AbstractScope
      * @param myspace
      * @param chooser
      * @param reg
-     * @param rci
      * @param siap
      * @param cone
+     * @param browser todo
+     * @param rci
      * @throws URISyntaxException 
      */
     public AstroScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
                                   Siap siap, Cone cone, Ssap ssap,Sesame ses, TupperwareInternal tupp, SendToMenu sendTo,
-                                  SnitchInternal snitch)  {
+                                  SnitchInternal snitch, RegistryBrowser browser)  {
         super(conf,hs,ui,myspace,chooser,tupp,sendTo,snitch,"AstroScope",
         		new DalProtocol[]{
         			new SiapProtocol(reg,siap)
         			, new SsapProtocol(reg,ssap)
         			,new ConeProtocol(reg,cone)        		
-        });
+        }, browser);
         // work-around for architectural glitch - posText is created by super constructore
         // before we can populate member variables - so need to pass in 'ses' later.
         posText.setSesame(ses);   
@@ -364,13 +364,11 @@ public class AstroScopeLauncherImpl extends AbstractScope
 	                            return p.listServices();
 	                        }
 	                        protected void doFinished(Object result) {
-	                            ResourceInformation[] services = (ResourceInformation[])result;
+	                            Service[] services = (Service[])result;
 	                            logger.info(services.length + " " + p.getName() + " services found");
 	                            for (int i = 0; i < services.length; i++) {
-	                                if (services[i].getAccessURL() != null) {
 	                                    setProgressMax(getProgressMax()+1); // should give a nice visual effect.
 	                                    p.createRetriever(AstroScopeLauncherImpl.this,services[i],ra,dec,raSize,decSize).start();
-	                                 }
 	                            }                            
 	                        }                            
 	                    }).start();
@@ -393,6 +391,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.51  2006/08/15 10:10:20  nw
+migrated from old to new registry models.
+
 Revision 1.50  2006/08/02 13:31:20  nw
 added snitching for each scope search.
 

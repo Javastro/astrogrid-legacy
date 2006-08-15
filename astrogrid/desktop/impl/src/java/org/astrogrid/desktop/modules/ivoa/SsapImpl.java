@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.5 2006/06/27 19:13:07 nw Exp $
+/*$Id: SsapImpl.java,v 1.6 2006/08/15 10:13:50 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
@@ -31,10 +31,18 @@ public class SsapImpl extends SiapImpl implements Ssap {
     /**
      * @see org.astrogrid.acr.ivoa.Ssap#getRegistryQuery()
      */
-    public String getRegistryQuery() {
+    public String getRegistryAdqlQuery() {
         return "Select * from Registry where " +
         " @xsi:type like '%SimpleSpectrumAccess'  " ;
         //@fixme        " and (not (@status = 'inactive' or @status='deleted') )";
+    }
+    public String getRegistryQuery() {
+    	return getRegistryAdqlQuery();
+    }
+    
+    public String getRegistryXQuery() {
+		return "//vor:Resource[@xsi:type &= '*SimpleSpectrumAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
+    	
     }
 
   
@@ -44,6 +52,9 @@ public class SsapImpl extends SiapImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.6  2006/08/15 10:13:50  nw
+migrated from old to new registry models.
+
 Revision 1.5  2006/06/27 19:13:07  nw
 adjusted todo tags.
 

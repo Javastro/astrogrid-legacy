@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.5 2006/06/27 19:13:07 nw Exp $
+/*$Id: SiapImpl.java,v 1.6 2006/08/15 10:13:50 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
@@ -83,16 +83,28 @@ public class SiapImpl extends DALImpl implements Siap {
      * @see org.astrogrid.acr.ivoa.Siap#getRegistryQueryToListSiap()
      */
     public String getRegistryQuery() {
+    	return getRegistryAdqlQuery();
+    }
+
+	public String getRegistryAdqlQuery() {
         return "Select * from Registry where " +
         " @xsi:type like '%SimpleImageAccess'  " ;
 //@fixme        " and ( not (@status = 'inactive' or @status='deleted') )";
-    }
+	}
+
+	public String getRegistryXQuery() {
+		return "//vor:Resource[@xsi:type &= '*SimpleImageAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
+
+	}
 
 }
 
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.6  2006/08/15 10:13:50  nw
+migrated from old to new registry models.
+
 Revision 1.5  2006/06/27 19:13:07  nw
 adjusted todo tags.
 

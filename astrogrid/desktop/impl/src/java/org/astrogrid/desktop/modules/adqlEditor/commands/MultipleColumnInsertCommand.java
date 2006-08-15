@@ -23,6 +23,7 @@ import org.apache.xmlbeans.XmlString;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean;
+import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
@@ -42,7 +43,7 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
     private static final boolean DEBUG_ENABLED = false ;
     private static final boolean TRACE_ENABLED = false ;
     
-    protected DatabaseBean database ;
+    protected Catalog database ;
     protected TableBean table ;
     protected ColumnBean[] columns ;
     protected String tableAlias ;
@@ -77,11 +78,11 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         this.tableAlias = alias ;
     }
     
-    public DatabaseBean getArchive(){
+    public Catalog getArchive(){
         return database ;
     }
     
-    public void setArchive( DatabaseBean archive ) {
+    public void setArchive( Catalog archive ) {
         this.database = archive ;
     }
     

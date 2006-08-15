@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.5 2006/06/27 19:13:17 nw Exp $
+/*$Id: ConeImpl.java,v 1.6 2006/08/15 10:12:27 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
@@ -61,20 +61,31 @@ public class ConeImpl extends DALImpl implements Cone {
      * @see org.astrogrid.acr.nvo.Cone#getRegistryQueryToListCone()
      */
     public String getRegistryQuery() {
-        return "Select * from Registry where ( " +
-        " @xsi:type like '%ConeSearch'  " +
-        " or ( @xsi:type like '%TabularSkyService' " + 
-		" and vr:identifier like 'ivo://CDS/%' " + 
-		" and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN'  ) " + 
-        " )  ";
-        //@fixme and (not ( @status = 'inactive' or @status='deleted') )";
+       return getRegistryAdqlQuery();
     }
+
+	public String getRegistryAdqlQuery() {
+		 return "Select * from Registry where ( " +
+	        " @xsi:type like '%ConeSearch'  " +
+	        " or ( @xsi:type like '%TabularSkyService' " + 
+			" and vr:identifier like 'ivo://CDS/%' " + 
+			" and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN'  ) " + 
+	        " )  ";
+	        //@fixme and (not ( @status = 'inactive' or @status='deleted') )";
+	}
+//@todo add in the cds stuff.
+	public String getRegistryXQuery() {
+		return "//vor:Resource[@xsi:type &= '*ConeSearch' and ( not ( @status = 'inactive' or @status='deleted'))]";
+	}
 
 }
 
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.6  2006/08/15 10:12:27  nw
+migrated from old to new registry models.
+
 Revision 1.5  2006/06/27 19:13:17  nw
 adjusted todo tags.
 

@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.4 2006/06/15 16:34:04 nw Exp $
+/*$Id: DALImpl.java,v 1.5 2006/08/15 10:13:50 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,9 @@ import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
@@ -36,7 +38,7 @@ import org.w3c.dom.Document;
 
 /** Abstract class for implemntations of HTTP-GET based DAL standards
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
- *
+ *@todo move to new registry
  */
 public abstract class DALImpl {
     /**
@@ -75,7 +77,16 @@ public abstract class DALImpl {
         } else if (arg0.getScheme().equals("ivo")) {
                 try {
                     //endpoint = reg.resolveIdentifier(arg0); NWW - gets incorrect endpoint sometimes.
-                    return reg.getResourceInformation(arg0).getAccessURL();
+                    Resource r=  reg.getResource(arg0);
+                    // hope for now we've only got one service capability.
+                    if (! (r instanceof Service)) {
+                    	throw new InvalidArgumentException(arg0 + " is not a known type of service");
+                    }
+                    Service s = (Service)r;
+                    if (s.getCapabilities().length == 0 || s.getCapabilities()[0].getInterfaces().length == 0 || s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0){
+                    	throw new InvalidArgumentException(arg0 + " does not provide an access URL");
+                    }
+                    return s.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
                 } catch (ServiceException e) {
                     throw new NotFoundException(e);
                 }
@@ -179,6 +190,9 @@ public abstract class DALImpl {
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.5  2006/08/15 10:13:50  nw
+migrated from old to new registry models.
+
 Revision 1.4  2006/06/15 16:34:04  nw
 fixed built gotcha
 

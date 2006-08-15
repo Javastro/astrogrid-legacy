@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.util.List;
 
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.Lookout;
@@ -30,7 +31,7 @@ public class ApplicationLauncherFactory implements ApplicationLauncher {
 	 * @param help
 	 * @param ui
 	 */
-	public ApplicationLauncherFactory(List panelFactories, ResourceChooserInternal rChooser, ApplicationsInternal apps, MyspaceInternal myspace, Lookout lookout, Configuration conf, HelpServerInternal help, UIInternal ui) {
+	public ApplicationLauncherFactory(List panelFactories, ResourceChooserInternal rChooser, ApplicationsInternal apps, MyspaceInternal myspace, Lookout lookout, Configuration conf, HelpServerInternal help, UIInternal ui, BrowserControl browser) {
 		this.panelFactories = panelFactories;
 		this.rChooser = rChooser;
 		this.apps = apps;
@@ -39,8 +40,9 @@ public class ApplicationLauncherFactory implements ApplicationLauncher {
 		this.ui = ui;
 		this.conf = conf;
 		this.help = help;
-		
+		this.browser = browser;
 	}
+	private final BrowserControl browser;
 	private final List panelFactories;
 	private final ResourceChooserInternal rChooser;
 	private final ApplicationsInternal apps;
@@ -54,7 +56,7 @@ public class ApplicationLauncherFactory implements ApplicationLauncher {
 	}
 
 	public void show() {
-		ApplicationLauncher app = new ApplicationLauncherImpl(panelFactories, rChooser, apps, myspace, lookout, conf, help, ui);
+		ApplicationLauncher app = new ApplicationLauncherImpl(panelFactories, rChooser, apps, myspace, lookout, conf, help, ui,browser);
 		app.show();
 	}
 

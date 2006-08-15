@@ -1,4 +1,4 @@
-/*$Id: ToolModel.java,v 1.3 2006/05/13 16:34:55 nw Exp $
+/*$Id: ToolModel.java,v 1.4 2006/08/15 10:14:23 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -40,7 +40,7 @@ public class ToolModel {
     }
         
     private Tool tool;
-    private ApplicationInformation info;
+    private CeaApplication info;
     
     /**
      * Identifier for a security action. The action is to be 
@@ -77,7 +77,7 @@ public class ToolModel {
      * @param t
      * @param info
      */
-    public void populate(Tool t, ApplicationInformation info) {
+    public void populate(Tool t,CeaApplication info) {
         this.tool = t;
         this.info = info;
         fireToolSetEvent();
@@ -190,15 +190,19 @@ public class ToolModel {
         }        
     }
 
-    public ApplicationInformation getInfo() {
+    public CeaApplication getInfo() {
         return this.info;
     }
 
+   
 }
 
 
 /* 
 $Log: ToolModel.java,v $
+Revision 1.4  2006/08/15 10:14:23  nw
+migrated from old to new registry models.
+
 Revision 1.3  2006/05/13 16:34:55  nw
 merged in wb-gtr-1537
 

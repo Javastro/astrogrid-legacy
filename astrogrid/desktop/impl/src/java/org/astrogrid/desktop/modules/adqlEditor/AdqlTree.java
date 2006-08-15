@@ -62,9 +62,11 @@ import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
 import org.apache.xmlbeans.XmlCursor;
 import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
-import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Catalog;
+import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 import org.astrogrid.desktop.modules.adqlEditor.commands.*;
@@ -89,7 +91,7 @@ public final class AdqlTree extends JTree
     private Registry registry ;
     private URI toolIvorn ;
     private AliasStack aliasStack ;
-    private TabularDatabaseInformation catalogueResource = null ;
+    private DataCollection catalogueResource = null ;
     private HashMap fromTables = new HashMap() ;
     private XmlObject xmlFrom ;
     
@@ -310,11 +312,14 @@ public final class AdqlTree extends JTree
             	    piValue = cursor.getTextValue().trim() ;
             	    if( piValue.equals( "none" ) )
             	        break ;
-            	    String sql = "Select * from Registry where vr:identifier = '" 
-            	               + formatCatalogueId( piValue )
-            	               + "'" ; 
+            	    
+            	    	String id = formatCatalogueId(piValue);
+            	    	try {
+            	            catalogueResource = (DataCollection) registry.getResource(new URI(id));
+            	    	} catch (Throwable e) {
+            	    		log.info("searching for table definition using " + id + " failed");
+            	    	}
             	    // NB. This query of the registry is currently on the main thread!!!
-                    queryRegistry( sql ) ;
                     if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;
                     break ;
             	}
@@ -329,13 +334,12 @@ public final class AdqlTree extends JTree
             String ivorn = toolIvorn.toString() ;
             int index = ivorn.lastIndexOf( "ceaApplication" ) ;
             if( index != -1 ) {
-                StringBuffer buffer = new StringBuffer( ivorn.length() ) ;
-                buffer
-                	.append( "Select * from Registry where vr:identifier = '" )
-                	.append( ivorn.substring( 0, index ) )
-                	.append( "TDB" )
-                	.append( "'" ) ;
-                queryRegistry( buffer.toString() ) ;
+            	String id= ivorn.substring(0,index) + "TDB";
+                try {
+                	catalogueResource = (DataCollection)registry.getResource(new URI(id));
+                } catch (Throwable e) {
+                	log.info("searching for table definition using " + id + " failed");
+                }
                 if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;              
             }
         }
@@ -386,14 +390,7 @@ public final class AdqlTree extends JTree
         return ivornString ;
     }
     
-    private void queryRegistry( String searchString ) {
-        try {
-            catalogueResource = (TabularDatabaseInformation)registry.adqlSearchRI( searchString )[0] ;
-        }
-        catch ( Exception ex )  {
-            log.error( "Failed to find catalogue entry using: \n" + searchString ) ;
-        }
-    }
+
     
     private void writeResourceProcessingInstruction() {
         String piName = null ;
@@ -411,7 +408,7 @@ public final class AdqlTree extends JTree
             	    if( cursor.getTextValue().trim().equals( "none") ) {
             	        piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
                         + '!' 
-                        + catalogueResource.getDatabases()[0].getTables()[0].getName() ;
+                        + catalogueResource.getCatalog().getTables()[0].getName() ;
             	        cursor.setTextValue( piValue ) ;
             	    }
             	}
@@ -424,7 +421,7 @@ public final class AdqlTree extends JTree
                 // (I've simply chosen the first table to align it with the portal)
                 piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
                         + '!' 
-                        + catalogueResource.getDatabases()[0].getTables()[0].getName() ;
+                        + catalogueResource.getCatalog().getTables()[0].getName() ;
                 if( DEBUG_ENABLED ) log.debug( "new PI Text: " +piValue ) ;
                 cursor.insertProcInst( AdqlData.PI_QB_REGISTRY_RESOURCES, piValue ) ;
                 break ;               
@@ -440,7 +437,7 @@ public final class AdqlTree extends JTree
         XmlString xAlias = null ;
         String alias = null ;
 //        String greatestAlias = null ;
-        DatabaseBean db = catalogueResource.getDatabases()[0] ;
+        Catalog db = catalogueResource.getCatalog() ;
         //
         // Loop through the whole of the query looking for table types....
         // (JL: This is somewhat weak. I think there may be complications
@@ -479,7 +476,7 @@ public final class AdqlTree extends JTree
 //        }
     }
     
-    private int findTableIndex( DatabaseBean db, String tableName ) {
+    private int findTableIndex( Catalog db, String tableName ) {
         TableBean[] tables = db.getTables() ;
         for( int i=0; i<tables.length; i++ ) {
             if( tables[i].getName().equals( tableName ) ) {
@@ -537,11 +534,11 @@ public final class AdqlTree extends JTree
         return tableData ;
     }
     
-    public TabularDatabaseInformation getCatalogueResource() {
+    public DataCollection getCatalogueResource() {
         return catalogueResource;
     }
     
-    public void setCatalogueResource( TabularDatabaseInformation tdbInfo ) {
+    public void setCatalogueResource( DataCollection tdbInfo ) {
         this.catalogueResource = tdbInfo ;
         this.writeResourceProcessingInstruction() ;
     }
@@ -1295,17 +1292,17 @@ public final class AdqlTree extends JTree
     
     public class TableData {
         
-        public DatabaseBean database ;
+        public Catalog database ;
         public int tableIndex ;
         public String alias ;
         
-        public TableData( DatabaseBean database, int tableIndex, String alias ) {
+        public TableData( Catalog database, int tableIndex, String alias ) {
             this.database = database ;
             this.tableIndex = tableIndex ;
             this.alias = alias ;
         }
         
-        public TableData( DatabaseBean database, TableBean table, String alias ) {
+        public TableData( Catalog database, TableBean table, String alias ) {
             this.database = database ;
             this.alias = alias ;
             final TableBean[] tables = database.getTables() ;

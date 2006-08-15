@@ -1,4 +1,4 @@
-/*$Id: SkyNodeImpl.java,v 1.3 2006/06/15 09:48:56 nw Exp $
+/*$Id: SkyNodeImpl.java,v 1.4 2006/08/15 10:13:50 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -72,7 +72,7 @@ import org.xml.sax.InputSource;
 /** implementation of the skynode interface
  * 
  *  error-tolerant - ini particular, tries to be forgiving of namespace differences between us and japan services
- *  @todo finish implementation.
+ *  @todo reimplement using xfire.
  *  */
 public class SkyNodeImpl implements SkyNode {
     /**
@@ -365,9 +365,17 @@ public class SkyNodeImpl implements SkyNode {
                 throw new ServiceException("Failed to parse response",e);
             }
     }
-    public String getRegistryQuery() {
-        return "select * from Registry where @xsi:type like '%OpenSkyNode' ";
-    }
+
+	public String getRegistryAdqlQuery() {
+		return "select * from Registry where @xsi:type like '%OpenSkyNode' ";
+		 
+	}
+
+
+	public String getRegistryXQuery() {
+		return "//vor:Resource[@xsi:type &= '*OpenSkyNode' and ( not ( @status = 'inactive' or @status='deleted'))]";
+
+	}
 
     public Document getResults(URI arg0, Document arg1) throws InvalidArgumentException,
             NotFoundException, ServiceException {
@@ -635,11 +643,17 @@ private URL resolveService(URI id) throws InvalidArgumentException {
     public float estimateQueryCost(long arg0, Document arg1) throws InvalidArgumentException, NotFoundException, ServiceException {
         return 0;
     }
+
+
+
 }
 
 
 /* 
 $Log: SkyNodeImpl.java,v $
+Revision 1.4  2006/08/15 10:13:50  nw
+migrated from old to new registry models.
+
 Revision 1.3  2006/06/15 09:48:56  nw
 mived testing out into unit test.
 
