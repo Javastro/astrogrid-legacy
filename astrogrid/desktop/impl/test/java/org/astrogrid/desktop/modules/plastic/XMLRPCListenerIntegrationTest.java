@@ -11,6 +11,7 @@ import org.votech.plastic.outgoing.policies.StandardXmlRpcPolicy;
 /**
  * System tests for interacting with a hub via xml-rpc
  * @author jdt
+ * TODO these tests are currently failing due to errors in the plastic library
  *
  */
 public class XMLRPCListenerIntegrationTest extends AbstractPlasticBaseNotDeaf {
