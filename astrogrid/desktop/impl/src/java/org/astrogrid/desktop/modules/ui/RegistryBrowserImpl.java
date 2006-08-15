@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.7 2006/06/27 10:36:41 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.8 2006/08/15 10:04:11 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,16 +11,19 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.BorderLayout;
+import java.net.URI;
 
 import javax.swing.JPanel;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
+import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
+import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel.ResourceTableModel;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.system.CacheFactory;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 /** Implementation of the registry browser component.
@@ -31,14 +34,18 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 {
    
 
-    public RegistryBrowserImpl(Registry reg, HelpServerInternal hs,UIInternal ui,Configuration conf) {
+    public RegistryBrowserImpl(RegistryInternal reg, HelpServerInternal hs,UIInternal ui,Configuration conf, BrowserControl browser, RegistryBrowser factory, CacheFactory cache) {
         super(conf,hs,ui);
         this.reg=reg;
-        
+        this.browser =browser;
+        this.factory = factory;
+        this.cache = cache;
         initialize();        
     }
-    protected final Registry reg;
-
+    protected final RegistryInternal reg;
+    protected final BrowserControl browser;
+    protected final RegistryBrowser factory;
+    protected final CacheFactory cache;
 	private void initialize() {
 		this.setSize(425, 600); // same proportions as A4, etc., and 600 high.   
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
@@ -49,19 +56,31 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
         setIconImage(IconHelper.loadIcon("java_lib_obj.gif").getImage());        
 	}
     
-    private RegistryChooserPanel regChooser;
-    private RegistryChooserPanel getRegistryChooser() {
+    private RegistryGooglePanel regChooser;
+    private RegistryGooglePanel getRegistryChooser() {
         if (regChooser == null) {
-            regChooser = new RegistryChooserPanel(this,reg);
+            regChooser = new RegistryGooglePanel(this,reg,browser,factory,cache);
         }
         return regChooser;
     }
+	public void search(String arg0) {
+		RegistryGooglePanel panel = getRegistryChooser();
+		panel.doSearch(arg0);
+	}
+	
+	public void open(final URI ivorn) {
+		RegistryGooglePanel panel = getRegistryChooser();
+		panel.doOpen(ivorn);
+	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"
 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.8  2006/08/15 10:04:11  nw
+migrated from old to new registry models.added methods to do a specific search / display a particular record
+
 Revision 1.7  2006/06/27 10:36:41  nw
 tweaks
 
