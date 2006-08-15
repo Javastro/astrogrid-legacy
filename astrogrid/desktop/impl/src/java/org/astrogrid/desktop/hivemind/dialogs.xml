@@ -32,6 +32,7 @@
 			<acrService id="resourceChooser" interface="ResourceChooser"/>
 			<acrService id="toolEditor" interface="ToolEditor" />
 			<acrService id="registryChooser" interface="RegistryChooser" />
+			<acrService id="registryGoogle" interface="RegistryGoogle" />
 	</contribution>
 
 	<contribution configuration-id="system.uiStructure" if="property acr.debug">
@@ -43,7 +44,7 @@
 		<action parentName="debug" name="driveToolEditor" text="Launch ToolEditor"
 			object="service:toolEditor" methodName="selectAndBuild" />
 		<action parentName="debug" name="driveRegistryChooser" text="Launch RegistryChooser"
-			object="service:registryChooser" methodName="chooseResource" >		
+			object="service:registryGoogle" methodName="chooseResource" >		
 			<parameter>Choose a resource!</parameter>
 		</action>
 	</contribution>		
@@ -52,6 +53,7 @@
 		<load service-id="resourceChooser" />
 		<load service-id="toolEditor" />
 		<load service-id="registryChooser" />
+		<load service-id="registryGoogle" />
 	</contribution>	
 	
 	<!-- services and implementations -->
@@ -84,43 +86,66 @@
 			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
 				<configuration>toolEditors</configuration>
 				<service>resourceChooser</service>
-				<service>astrogrid.registry</service>
+				<service>ivoa.registry</service>
 				<service>system.configuration</service>
 				<service>system.help</service>
 				<service>system.ui</service>
 				<service>astrogrid.applications</service>
-				<service>astrogrid.myspace</service>								
+				<service>astrogrid.myspace</service>	
+				<service>system.browser</service>							
 			</construct>
 		</invoke-factory>	
 	</service-point>
-	
-	<service-point id="toolEditorBasic" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
-		Edit a remote application invocation.
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
-				<configuration>toolEditors</configuration>
-				<service>resourceChooser</service>
-				<service>system.configuration</service>
-				<service>system.help</service>
-				<service>system.ui</service>
-				<service>astrogrid.applications</service>
-				<service>astrogrid.myspace</service>								
-			</construct>
-		</invoke-factory>	
-	</service-point>	
 
 	<implementation service-id="toolEditor" if="property dialogs.toolEditor.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-
-		<!-- todo: make non-singleton -->
-	<service-point id="registryChooser" interface="RegistryChooser">
-		Select a registry resource
+	
+	<service-point id="simpleToolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
+		Edit a remote application invocation in a very simple tool editor
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryChooserImpl" >
+			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
+				<service>basicPanel</service>
 				<service>system.configuration</service>
 				<service>system.help</service>
 				<service>system.ui</service>
+				<service>astrogrid.applications</service>
+				<service>astrogrid.myspace</service>						
+			</construct>
+		</invoke-factory>	
+	</service-point>
+
+	<implementation service-id="simpleToolEditor" if="property dialogs.toolEditor.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>	
+
+		<!-- todo: make non-singleton -->
+	<service-point id="registryGoogle" interface="RegistryGoogle">
+		Select a registry resource
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryGoogleImpl" >
+				<service>system.configuration</service>
+				<service>system.help</service>
+				<service>system.ui</service>
+				<service>ivoa.registry</service>
+				<service>system.browser</service>
+				<service>ui.registryBrowser</service>
+				<service>system.cache</service>
+			</construct>
+		</invoke-factory>	
+	</service-point>
+
+	<implementation service-id="registryGoogle" if="property dialogs.registryGoogle.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+	
+	<!-- obsolete version - only present for backwards compat. -->
+<service-point id="registryChooser" interface="RegistryChooser">
+		Select a registry resource (obsolete)
+		<interceptor service-id="system.deprecation"/>
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryChooserImpl" >
+				<service>dialogs.registryGoogle</service>
 				<service>astrogrid.registry</service>
 			</construct>
 		</invoke-factory>	
@@ -129,6 +154,7 @@
 	<implementation service-id="registryChooser" if="property dialogs.registryChooser.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
+	
 	
 	
 	<!-- tool editor factories -->
@@ -149,8 +175,11 @@
 	<service-point id="chooserPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.ChooseToolEditorPanelFactory">
-				<service>astrogrid.registry</service>
+				<service>ivoa.registry</service>
 				<service>astrogrid.applications</service>
+				<service>system.browser</service>
+				<service>ui.registryBrowser</service>
+				<service>system.cache</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	
@@ -165,10 +194,10 @@
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanelFactory">
 				<service>resourceChooser</service>
-				<service>registryChooser</service>
+				<service>registryGoogle</service>
 				<service>ivoa.adql074</service>
 				<service>astrogrid.myspace</service>
-				<service>astrogrid.registry</service>
+				<service>ivoa.registry</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	

@@ -71,22 +71,17 @@
 	</contribution>
 	
 	<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="org.astrogrid.registry.query.endpoint" 
-			value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery" />
 		<default symbol="org.astrogrid.registry.admin.endpoint"
 			value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryAdmin" />
-		<default symbol="org.astrogrid.registry.query.altendpoint"
-			value="http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery" />
 		<default symbol="jes.job.controller.endpoint"
 			value="http://galahad.star.le.ac.uk:8080/astrogrid-jes/services/JobControllerService" />
 
-
+		<default symbol="astrogrid.community.register" value="mailto:astrogrid_signup@star.le.ac.uk?subject=New%20Account%20Request&amp;body=Name:%0D%0AInstitute:"/>
 		<default symbol="astrogrid.myspace.fetchParents" value="true" />
 		<default symbol="astrogrid.myspace.maxExtraNodes" value="200" />
 		<default symbol="astrogrid.myspace.prefetchDepth" value="3" />
 		<default symbol="astrogrid.loginDialogue.alternative.logger" value="LOGIN" />
-		<default symbol="astrogrid.store.workdir"
-			value="${user.home}${file.separator}.workbench" />	
+
 			<!-- TODO pity it's not possible to define this in terms of ag.stoe.workdir - maybe should be altered to depend on that in code instead -->
 		<default symbol="trusted.cert.dir"
 			value="${user.home}${file.separator}.workbench${file.separator}trusted-certificates" />
@@ -191,6 +186,7 @@
 	
 	<service-point id="registry" interface="Registry">
 		VO Registry
+		<interceptor service-id="system.deprecation" />
 		<interceptor service-id="system.throbber" />
 		<invoke-factory>			
 			<construct class="org.astrogrid.desktop.modules.ag.RegistryImpl" />
@@ -247,7 +243,12 @@
 	
 
 	<service-point id="loginDialogue" visibility="private" interface="org.astrogrid.desktop.modules.ag.LoginDialogue">
-		<create-instance class="org.astrogrid.desktop.modules.ag.SwingLoginDialogue" />
+		<invoke-factory>
+			<construct  class="org.astrogrid.desktop.modules.ag.SwingLoginDialogue">
+				<service>system.browser</service>
+				<string>${astrogrid.community.register}</string>
+			</construct>
+		</invoke-factory>
 	</service-point>
 	
 	<!-- alternative implementation of the login dialogue, when running in headless mode -->
@@ -262,11 +263,19 @@
 		
 	<service-point id="applications" interface="org.astrogrid.desktop.modules.ag.ApplicationsInternal">
 		Run remote applications.
+		<interceptor service-id="system.deprecation">
+			<include method="getQueryToListApplications" />
+			<include method="getRegistryQuery" />
+			<include method="getApplicationInformation" />
+			<include method="listProvidersOf" />
+			<exclude method="*" />
+		</interceptor>
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.ApplicationsImpl" >
 				<service>processManager</service>
 				<service>myspace</service>
+				<service>ivoa.registry</service>
 				<service>registry</service>
 				<service>ivoa.adql074</service>
 			</construct>
@@ -311,7 +320,10 @@
 		Client for STAP services.
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ag.StapImpl" />
+			<construct class="org.astrogrid.desktop.modules.ag.StapImpl" >
+				<service>ivoa.registry</service>
+				<service>astrogrid.myspace</service>
+			</construct>			
 		</invoke-factory>	
 	</service-point>
 	
@@ -326,7 +338,7 @@
 			<construct class="org.astrogrid.desktop.modules.ag.MessageRecorderImpl" >
 				<service>messaging</service>
 				<service>store</service>
-				<service>registry</service>
+				<service>ivoa.registry</service>
 				<event-listener service-id="community" />
 			</construct>
 		</invoke-factory>	
