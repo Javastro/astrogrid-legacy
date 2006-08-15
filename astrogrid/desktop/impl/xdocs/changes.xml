@@ -62,6 +62,10 @@
         XML-RPC return type conversion would fail in certain situations.
         XML-RPC plastic clients couldn't use getRegisteredIds for example.
     </action>
+    <action dev="jdt" type="fix">
+        Improved concurrency behaviour of Plastic hub, added more tests.  Made hub more robust to duff clients.  Hub now only unregisters xmlrpc clients when there's an
+        IOException, not if the client faults.
+    </action>
 </release>
 <release version="2006.3.rc1" date="2006-06-28">
 	<action dev="nw" type="add">
