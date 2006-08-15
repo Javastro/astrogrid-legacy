@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.18 2006/08/02 13:31:20 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.19 2006/08/15 10:09:04 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,11 +24,12 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.HelioScope;
+import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -38,12 +39,11 @@ import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
+import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.freixas.jcalendar.JCalendarCombo;
-import org.votech.plastic.PlasticHubListener;
 
 
 /** Implementation of HelioScope
@@ -65,6 +65,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
      * @param myspace
      * @param chooser
      * @param reg
+     * @param browser todo
      * @param rci
      * @param siap
      * @param cone
@@ -72,10 +73,10 @@ public class HelioScopeLauncherImpl extends AbstractScope
      */
     public HelioScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
-                                  Stap stap,TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch) {
+                                  Stap stap,TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch, RegistryBrowser browser) {
         super(conf,hs,ui,myspace,chooser,tupp, sendTo, snitch,"HelioScope",new DalProtocol[]{
         		new StapProtocol(reg,stap)
-        });
+        }, browser);
 
         
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
@@ -218,7 +219,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
                                 return p.listServices();
                             }
                             protected void doFinished(Object result) {
-                                ResourceInformation[] services = (ResourceInformation[])result;
+                                Service[] services = (Service[])result;
                                 logger.info(services.length + " " + p.getName() + " services found");
                                 
                                 if(formatTimeSeriesCheck.isSelected() && formatGraphicCheck.isSelected()) {
@@ -231,7 +232,6 @@ public class HelioScopeLauncherImpl extends AbstractScope
                                     p.setPrimaryNodeLabel("Images");
                                 }                                
                                 for (int i = 0; i < services.length; i++) {
-                                    if (services[i].getAccessURL() != null) {
                                         setProgressMax(getProgressMax()+1); // should give a nice visual effect.
                                         if(formatTimeSeriesCheck.isSelected() && formatGraphicCheck.isSelected()) {
                                             p.createRetriever(HelioScopeLauncherImpl.this,services[i],startStapCal,endStapCal, ra,dec,raSize,decSize).start();
@@ -242,7 +242,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
                                         else if(formatGraphicCheck.isSelected()) {
                                             p.createRetriever(HelioScopeLauncherImpl.this,services[i],startStapCal,endStapCal, ra,dec,raSize,decSize,"GRAPHICS").start();
                                         }
-                                         }
+                                         
                                 }                            
                             }                            
                         }).start();
@@ -257,6 +257,9 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.19  2006/08/15 10:09:04  nw
+migrated from old to new registry models.
+
 Revision 1.18  2006/08/02 13:31:20  nw
 added snitching for each scope search.
 

@@ -5,16 +5,11 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.net.URISyntaxException;
 
-import org.apache.hivemind.ApplicationRuntimeException;
-import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.Stap;
-import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.acr.nvo.Cone;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.HelioScope;
+import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
@@ -40,7 +35,7 @@ public class HelioScopeFactory implements HelioScope {
 	 * @param tupp
 	 * @throws URISyntaxException
 	 */
-	public HelioScopeFactory(UIInternal ui, Configuration conf, HelpServerInternal hs, MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Stap stap, TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch) throws URISyntaxException {
+	public HelioScopeFactory(UIInternal ui, Configuration conf, HelpServerInternal hs, MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Stap stap, TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch, RegistryBrowser browser) throws URISyntaxException {
 		this.ui = ui;
 		this.conf = conf;
 		this.hs = hs;
@@ -51,6 +46,7 @@ public class HelioScopeFactory implements HelioScope {
 		this.tupp = tupp;
 		this.sendTo = sendTo;
 		this.snitch = snitch;
+		this.browser = browser;
 	}
 	
 	private final UIInternal ui;
@@ -63,8 +59,9 @@ public class HelioScopeFactory implements HelioScope {
 	private final TupperwareInternal tupp;
 	private final SendToMenu sendTo;
 	private final SnitchInternal snitch;
+	private final RegistryBrowser browser;
 	public void show() {
-		HelioScope i = new HelioScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, stap, tupp, sendTo,snitch);
+		HelioScope i = new HelioScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, stap, tupp, sendTo,snitch, browser);
 
 		i.show();		
 	}

@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.9 2006/07/20 12:32:34 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.10 2006/08/15 10:04:54 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
@@ -20,6 +21,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.xml.stream.XMLInputFactory;
+
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -32,8 +38,8 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
+import org.astrogrid.desktop.modules.system.CacheFactory;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.exolab.castor.xml.Marshaller;
@@ -57,13 +63,13 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     // not used - now list is passed in by hivemind.
    // public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
 /** construct a new launcher, specifying the index url to use */
-    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,List templateURLs) throws IOException, SAXException{ 
+    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,List templateURLs, CacheFactory cacheFac) throws IOException, SAXException{ 
         URL[] list = new URL[templateURLs.size()];
         Iterator i = templateURLs.iterator();
         for (int ix = 0; i.hasNext(); ix++) {
             list[ix] = new URL((String)i.next());
         }
-    templates = loadWorkflows(list);        
+    templates = loadWorkflows(cacheFac.getManager().getCache(CacheFactory.PW_CACHE),list);        
     this.community = community;
     this.editor = editor;
     this.monitor = monitor;
@@ -71,6 +77,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     this.apps = apps;
     this.vos = vos;
     this.chooser = chooser;
+    
 }
        
     protected final ApplicationsInternal apps;
@@ -92,6 +99,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         Writer writer = null;
         try {
             Tool t = apps.createTemplateTool("default",wft.getDesc());
+            //@todo merge in kevin's work that uses a simpler tool editor here.
             t = editor.editToolWithDescription(t,wft.getDesc(),null);       
         if (t == null) {
             return;
@@ -109,8 +117,8 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         }
         Document doc = XMLUtils.newDocument();
         Marshaller.marshal(wf,doc);
-        /* don't bother displaying this popup.
         URI id = jobs.submitJob(doc);
+        /* don't bother displaying this popup.
         ResultDialog rd = new ResultDialog(null,"Workflow Submitted \nJob ID is \n" + id);
         rd.show();
         */
@@ -132,13 +140,23 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     
     
     /** construct a list of workflow documents from an array of urls , silently handle any errors.*/
-    protected ParameterizedWorkflowTemplate[] loadWorkflows(URL[] arr) {
+    protected ParameterizedWorkflowTemplate[] loadWorkflows(Ehcache cache,URL[] arr) {
+        XMLInputFactory fac = XMLInputFactory.newInstance();
         List wfts= new ArrayList(arr.length); // using a list, rather than array, incase we end up with less than we expected..
         for (int i = 0; i < arr.length; i++) {
-            try {
-                wfts.add(new ParameterizedWorkflowTemplate(arr[i].openStream()));
-            } catch (Exception e) {
-                logger.warn(arr[i] + " couldn't be parsed",e);
+            final URL url = arr[i];
+            Element e = cache.get(url);
+            if (e != null) {
+            	wfts.add(e.getValue());
+            } else {
+            
+			try {
+                Serializable s = new ParameterizedWorkflowTemplate(fac,url.openStream());
+                cache.put(new Element(url,s));
+                wfts.add(s);
+            } catch (Exception ex) {
+                logger.warn(url + " couldn't be parsed",ex);
+            }
             }
         }
         return (ParameterizedWorkflowTemplate[])wfts.toArray(new ParameterizedWorkflowTemplate[wfts.size()]);
@@ -164,6 +182,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.10  2006/08/15 10:04:54  nw
+migrated from old to new registry models.
+
 Revision 1.9  2006/07/20 12:32:34  nw
 removed jobid popup.
 

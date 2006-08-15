@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowTemplate.java,v 1.3 2006/06/27 10:35:42 nw Exp $
+/*$Id: ParameterizedWorkflowTemplate.java,v 1.4 2006/08/15 10:04:30 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.ui;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -21,15 +22,19 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.dom.DOMSource;
+
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.CachedXPathAPI;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.desktop.modules.ag.builders.ApplicationInformationBuilder;
-import org.astrogrid.desktop.modules.ag.builders.InformationBuilder;
+import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 import org.astrogrid.workflow.beans.v1.AbstractActivity;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -47,14 +52,20 @@ import org.w3c.dom.ProcessingInstruction;
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
  *
  */
-class ParameterizedWorkflowTemplate  {
+class ParameterizedWorkflowTemplate implements Serializable  {
 
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6375562251306686656L;
+
+
+	/**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(ParameterizedWorkflowTemplate.class);
-    public ParameterizedWorkflowTemplate(InputStream is)  throws Exception{
+    public ParameterizedWorkflowTemplate(XMLInputFactory fac,InputStream is)  throws Exception{
         Document dom = XMLUtils.newDocument(is);           
         this.theWorkflow = (Workflow)Unmarshaller.unmarshal(Workflow.class,dom);     
         NodeList l = dom.getChildNodes();
@@ -72,20 +83,20 @@ class ParameterizedWorkflowTemplate  {
         }
         logger.debug(pi.getData());
         Document regEntry = XMLUtils.newDocument(new ByteArrayInputStream(pi.getData().getBytes()));
-        CachedXPathAPI xpath = new CachedXPathAPI();
-        desc =(ApplicationInformation)builder.build(xpath,regEntry.getDocumentElement());
-        
+        XMLStreamReader in = fac.createXMLStreamReader(new DOMSource(regEntry));
+        ResourceStreamParser p = new ResourceStreamParser(in);
+        desc = (CeaApplication)p.next();
+              
     }
     
     private static final String VR_NAMESPACE = "http://www.ivoa.net/xml/VOResource/v0.10";
-    private final InformationBuilder builder = new ApplicationInformationBuilder();
-
+  
     
-    private final ApplicationInformation desc;
+    private final CeaApplication desc;
     private final Workflow theWorkflow;
    
   
-    public ApplicationInformation getDesc() {
+    public CeaApplication getDesc() {
         return this.desc;
     }
     /**
@@ -144,12 +155,15 @@ class ParameterizedWorkflowTemplate  {
     }
  
     public String toString() {
-        return desc.getName() + " : " +desc.getDescription(); 
+        return desc.getTitle() + " : " +desc.getContent().getDescription(); 
     }
 }
 
 /* 
 $Log: ParameterizedWorkflowTemplate.java,v $
+Revision 1.4  2006/08/15 10:04:30  nw
+migrated from old to new registry models.
+
 Revision 1.3  2006/06/27 10:35:42  nw
 findbugs tweaks
 
