@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.2 2006/08/15 10:30:58 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.ACRTestSetup;
-import org.astrogrid.desktop.framework.ACRInternal;
-
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -33,6 +20,12 @@ import java.util.Vector;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.ACRTestSetup;
 
 /** tests xmlrpc transport
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
@@ -145,7 +138,15 @@ public class XmlRpcTransportIntegrationTest extends TestCase {
         assertTrue(Arrays.equals(bytes,(byte[])o));
     }
     
-    
+    public void testTransportProxy() throws Exception {
+        Object o = client.execute("test.transporttest.transportProxy",v);
+    	assertNotNull(o);
+    	assertTrue(o instanceof Map);
+    	Map m = (Map)o;
+    	System.out.println(m);
+    	assertEquals("boo",m.get("a"));
+    	assertEquals(Boolean.FALSE, m.get("c"));
+    }    
 
     public void testCallUnknownMethod() throws  IOException {
     	try {    		
@@ -166,6 +167,9 @@ public class XmlRpcTransportIntegrationTest extends TestCase {
         }
 
     }
+    
+
+    
     
     /* not really possible - as makes a best effort to convert
     public void testMethodWithWrongTypeOfParams() throws XmlRpcException, IOException {
@@ -189,6 +193,9 @@ public class XmlRpcTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.2  2006/08/15 10:30:58  nw
+tests related to new registry objects.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

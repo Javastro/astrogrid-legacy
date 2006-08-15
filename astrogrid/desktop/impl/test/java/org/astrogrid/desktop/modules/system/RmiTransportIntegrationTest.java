@@ -1,4 +1,4 @@
-/*$Id: RmiTransportIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: RmiTransportIntegrationTest.java,v 1.2 2006/08/15 10:31:09 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,35 +10,20 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.util.Arrays;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.test.TransportTest;
 import org.astrogrid.desktop.ACRTestSetup;
-import org.astrogrid.desktop.framework.ACRInternal;
-
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Vector;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** tests rmi transport - whether certain classes are serializable etc.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
@@ -100,6 +85,8 @@ public class RmiTransportIntegrationTest extends TestCase {
     	assertNotSame(bytes,other);
     	assertTrue(Arrays.equals(bytes,other));
     }
+    
+
 
     public static Test suite() {
         return new ACRTestSetup(new TestSuite(RmiTransportIntegrationTest.class));
@@ -109,6 +96,9 @@ public class RmiTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: RmiTransportIntegrationTest.java,v $
+Revision 1.2  2006/08/15 10:31:09  nw
+tests related to new registry objects.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 
