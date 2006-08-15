@@ -1,4 +1,4 @@
-/*$Id: ToolEditorInternal.java,v 1.4 2006/06/27 19:11:52 nw Exp $
+/*$Id: ToolEditorInternal.java,v 1.5 2006/08/15 10:20:24 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.net.URI;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.dialogs.ToolEditor;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -24,6 +24,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  *
  */
 public interface ToolEditorInternal extends ToolEditor {
+
     /** prompt the user to edit a tool document
      * <p>
      * Internal variant on {@link ToolEditor#edit(org.w3c.dom.Document)}
@@ -72,9 +73,8 @@ public interface ToolEditorInternal extends ToolEditor {
      * Internal variant on {@link ToolEditor#editWithDescription(org.w3c.dom.Document, org.astrogrid.acr.astrogrid.ApplicationInformation)}
      * @param t
      * @param desc
-     * @return
      */
-    public Tool editToolWithDescription(Tool t, ApplicationInformation desc,Component comp) ;
+    public Tool editToolWithDescription(Tool t, CeaApplication desc,Component comp) ;
         
 
 }
@@ -82,6 +82,9 @@ public interface ToolEditorInternal extends ToolEditor {
 
 /* 
 $Log: ToolEditorInternal.java,v $
+Revision 1.5  2006/08/15 10:20:24  nw
+migrated from old to new registry models.
+
 Revision 1.4  2006/06/27 19:11:52  nw
 fixed to filter on cea apps when needed.
 

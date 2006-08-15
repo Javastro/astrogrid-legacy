@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.8 2006/07/20 12:30:15 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.9 2006/08/15 10:15:34 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
@@ -45,7 +45,6 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
-import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.jes.delegate.JesDelegateException;
@@ -321,7 +320,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         while(i.hasNext()) {
             Tool t = (Tool)i.next();
             try {
-            ApplicationInformation info =apps.getInfoForTool(t);
+            CeaApplication info =apps.getInfoForTool(t);
             apps.translateQueries(info,t);
             } catch (NotFoundException e) {
                 throw new InvalidArgumentException("Workflow contains unknown tool " + t.getName(),e);
@@ -387,6 +386,9 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.9  2006/08/15 10:15:34  nw
+migrated from old to new registry models.
+
 Revision 1.8  2006/07/20 12:30:15  nw
 fixed to not display errors if refresh fails.
 

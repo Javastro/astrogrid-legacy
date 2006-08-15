@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInternal.java,v 1.4 2006/04/18 23:25:44 nw Exp $
+/*$Id: ApplicationsInternal.java,v 1.5 2006/08/15 10:15:59 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,40 +15,47 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Internal interface to further applications operations.
  * 
  * move stuff here that is too low-level for public interface, or which can't be easily remoted.
- *x @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
- *
+ * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
+ * 
  */
 public interface ApplicationsInternal extends Applications {
-    /** get the application descrption for a named application 
-     * @deprecated soon to be removed - phil -stop using ApplicationDescription, and use methods in {@link org.astrogrid.acr.astrogrid.Applications} instead.
- **/
- //   public ApplicationDescription getApplicationDescription(URI name) throws WorkflowInterfaceException ;
-/** hook specially for the parametweized workflow launcher */
+
+/** hook specially for the parametweized workflow launcher
+ * @deprecated do not use in any other circumstance. */
     public Tool createTemplateTool(String interfaceName, ApplicationInformation descr) throws IllegalArgumentException;
-     
+    
+    
+    public Tool createTemplateTool(String interfaceName, CeaApplication descr) throws IllegalArgumentException;
+    
+    
     
     /** shortcut to quickly get the info for a tool 
      * @throws InvalidArgumentException
      * @throws NotFoundException
-     * @throws ServiceException*/
-    public ApplicationInformation getInfoForTool(Tool t) throws ServiceException, NotFoundException, InvalidArgumentException ;
+     * @throws ServiceException.*/
+    public CeaApplication getInfoForTool(Tool t) throws ServiceException, NotFoundException, InvalidArgumentException ;
    /** translate any parameters containing adql/s queries to adql/x queries   
     * @param application descrption of the application
     * @param document tool object - changes will be made in-place.
     * @throws ServiceException
     */
-   public void translateQueries(ApplicationInformation application, Tool document) throws ServiceException ;
+   public void translateQueries(Resource application, Tool document) throws ServiceException ;
    
 }
 
 
 /* 
 $Log: ApplicationsInternal.java,v $
+Revision 1.5  2006/08/15 10:15:59  nw
+migrated from old to new registry models.
+
 Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 

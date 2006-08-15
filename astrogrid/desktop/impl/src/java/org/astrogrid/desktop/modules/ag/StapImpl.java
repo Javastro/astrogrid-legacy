@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.4 2006/06/15 09:45:39 nw Exp $
+/*$Id: StapImpl.java,v 1.5 2006/08/15 10:16:24 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,12 +17,12 @@ import java.util.Calendar;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
 
 /** Implementaiton of a component that does siap queries.
- * @todo refine stap interface - loads of similar methods. overloaded methods aren't available via xmlrpc.
+ * @todo refine stap interface - simplify - there's loads of similar methods. overloaded methods aren't available via xmlrpc.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
  *
  */
@@ -118,20 +118,26 @@ public class StapImpl extends DALImpl implements Stap {
             return addOption(constructQueryS(service, start, end, ra, dec, ra_size, dec_size),"FORMAT",format);        
     }    
 
-    /**
-     * @see org.astrogrid.acr.ivoa.Siap#getRegistryQueryToListSiap()
-     */
-    public String getRegistryQuery() {
+ 
+	public String getRegistryAdqlQuery() {
         return "Select * from Registry where " +
         " @xsi:type like '%SimpleTimeAccess'  " +
         " and @status = 'active'";
-    }
+	}
+
+	public String getRegistryXQuery() {
+		return "//vor:Resource[@xsi:type &= '*SimpleTimeAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
+
+	}
 
 }
 
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.5  2006/08/15 10:16:24  nw
+migrated from old to new registry models.
+
 Revision 1.4  2006/06/15 09:45:39  nw
 improvements coming from unit testing
 

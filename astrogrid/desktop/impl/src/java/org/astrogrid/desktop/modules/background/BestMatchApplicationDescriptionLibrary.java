@@ -1,4 +1,4 @@
-/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.3 2006/04/18 23:25:43 nw Exp $
+/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.4 2006/08/15 10:15:34 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,10 +14,11 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.ConeService;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
@@ -25,8 +26,8 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
 
 /** customized app description library that tries to bridge gap between cea and acr systems.
  * also fits applications to descriptions in a more general way than just name matching
- *  - works based on the class of application description.
- * 
+ *  - works based on the kind of service being invoked.
+ * @FIXME HARD-CODED for now - will come up with a better solution later.
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Oct-2005
  *
  */
@@ -49,8 +50,8 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
     /**
      * @see org.astrogrid.desktop.modules.background.IBestMatchApplicationDescriptionLibrary#hasMatch(org.astrogrid.acr.astrogrid.ApplicationInformation)
      */
-    public boolean hasMatch(ApplicationInformation info) {
-        return ArrayUtils.contains(getApplicationNames(),info.getClass().getName());
+    public boolean hasMatch(CeaApplication info) {
+    	return (info instanceof ConeService || info instanceof SiapService);
     } 
     
     
@@ -58,20 +59,29 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
     public ApplicationDescription getDescription(String arg1)
             throws ApplicationDescriptionNotFoundException {
        // bah - got to back-track a little here. irritating..
-        ResourceInformation info = null;
+        Resource info = null;
         try {
             URI uri = new URI(( arg1.startsWith("ivo://") ? "" : "ivo://" ) + arg1);
-            info = reg.getResourceInformation(uri);
+            info = reg.getResource(uri);
         } catch (Exception e) { // badly-propagated exceptions, but all pretty unlikely - as we've checked it exists first.
             throw new ApplicationDescriptionNotFoundException(e.getMessage());
         }
-        return super.getDescription(info.getClass().getName());     
+        if (info instanceof ConeService ) {
+        	return super.getDescription(ConeService.class.getName());
+        } else if (info instanceof SiapService) {
+        	return super.getDescription(SiapService.class.getName());        	
+        } else {
+        	throw new ApplicationDescriptionNotFoundException(arg1);
+        }  
     }
 }
 
 
 /* 
 $Log: BestMatchApplicationDescriptionLibrary.java,v $
+Revision 1.4  2006/08/15 10:15:34  nw
+migrated from old to new registry models.
+
 Revision 1.3  2006/04/18 23:25:43  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: MessagingExecutionController.java,v 1.6 2006/04/18 23:25:43 nw Exp $
+/*$Id: MessagingExecutionController.java,v 1.7 2006/08/15 10:15:34 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.util.Observable;
 
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
@@ -108,14 +108,19 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
         if (executionHistory.isApplicationInCurrentSet(execId)) {
             return; // not finished yet.
         }
-        ManagingFileStoreExecutionHistory f = (ManagingFileStoreExecutionHistory)executionHistory;
-        f.delete(execId);
+        if (executionHistory instanceof ManagingFileStoreExecutionHistory) {
+        	ManagingFileStoreExecutionHistory f = (ManagingFileStoreExecutionHistory)executionHistory;
+        	f.delete(execId);
+        }
     }
 }
 
 
 /* 
 $Log: MessagingExecutionController.java,v $
+Revision 1.7  2006/08/15 10:15:34  nw
+migrated from old to new registry models.
+
 Revision 1.6  2006/04/18 23:25:43  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.3 2006/06/15 09:45:04 nw Exp $
+/*$Id: CeaHelper.java,v 1.4 2006/08/15 10:15:59 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,8 +17,9 @@ import java.net.URL;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.astrogrid.CeaService;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
 
@@ -26,7 +27,6 @@ import org.astrogrid.applications.delegate.DelegateFactory;
  * <P>
  * tries to hid difference between local and remote cea apps.
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Oct-2005
- *
  */
 public class CeaHelper {
 
@@ -43,11 +43,15 @@ public class CeaHelper {
 
 /** create a delegate to connect tot he server described in a resource information
  * @throws IllegalArgumentException if resource information does not prodvdide an access url */
-    public CommonExecutionConnectorClient createCEADelegate(ResourceInformation server) {
-    	if (server == null || server.getAccessURL() == null) {
+    public CommonExecutionConnectorClient createCEADelegate(CeaService server) {
+		if (server == null 
+				|| server.getCapabilities().length == 0 
+				|| server.getCapabilities()[0].getInterfaces().length == 0
+				|| server.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length == 0) { //@todo need to check this still works in reg v1.0
     		throw new IllegalArgumentException("invalid resource information: " + server);
     	}
-        return  DelegateFactory.createDelegate(server.getAccessURL().toString());       
+		final URL endpoint = server.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
+        return  DelegateFactory.createDelegate(endpoint.toString());       
      }
     
     /** create a delegate to connect to a server descried in an exec Id 
@@ -57,15 +61,15 @@ public class CeaHelper {
      * @throws NotFoundException*/
 public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws NotFoundException, ServiceException {
     try {    
-    URL url = reg.resolveIdentifier(
-                    new URI(executionId.getScheme(),executionId.getSchemeSpecificPart(),null)
-                    );
-        return DelegateFactory.createDelegate(url.toString());
+    final URI ivorn = new URI(executionId.getScheme(),executionId.getSchemeSpecificPart(),null);
+    Resource r = reg.getResource(ivorn);
+    if (! (r instanceof CeaService)) {
+    	throw new ServiceException(ivorn.toString() + " is not a cea server");
+    }
+    return createCEADelegate((CeaService)r);
     } catch (URISyntaxException e) {
         throw new ServiceException(e);
-    } catch (NotApplicableException e) {
-        throw new ServiceException(e);
-    }
+    } 
   }
 
 
@@ -78,7 +82,7 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
         }
     }
     /** create an exec Id from an appId from a remote server */
-    public  URI mkRemoteTaskURI(String ceaid, ResourceInformation server) throws ServiceException {
+    public  URI mkRemoteTaskURI(String ceaid, CeaService server) throws ServiceException {
         try {
             return new URI(server.getId().getScheme(),server.getId().getSchemeSpecificPart(),ceaid);
         } catch (URISyntaxException e) {
@@ -110,6 +114,9 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
 /* 
 $Log: CeaHelper.java,v $
+Revision 1.4  2006/08/15 10:15:59  nw
+migrated from old to new registry models.
+
 Revision 1.3  2006/06/15 09:45:04  nw
 improvements coming from unit testing
 

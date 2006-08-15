@@ -1,4 +1,4 @@
-/*$Id: SiapApplicationDescription.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: SiapApplicationDescription.java,v 1.3 2006/08/15 10:15:34 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -57,7 +57,7 @@ public class SiapApplicationDescription extends AbstractApplicationDescription {
         super(arg0);
         this.siap = siap;
         this.ms = ms;
-        setName(SiapInformation.class.getName());
+        setName(SiapService.class.getName());
         iface = new BaseApplicationInterface("default",this);
     }
     final Siap siap;
@@ -175,6 +175,9 @@ public class SiapApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: SiapApplicationDescription.java,v $
+Revision 1.3  2006/08/15 10:15:34  nw
+migrated from old to new registry models.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

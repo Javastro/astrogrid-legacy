@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderImpl.java,v 1.6 2006/04/18 23:25:44 nw Exp $
+/*$Id: MessageRecorderImpl.java,v 1.7 2006/08/15 10:16:24 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,19 +23,15 @@ import javax.swing.tree.TreeModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.ParameterBean;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.astrogrid.StapInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.ivoa.SkyNodeInformation;
-import org.astrogrid.acr.ivoa.SsapInformation;
-import org.astrogrid.acr.nvo.ConeInformation;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MessagingInternal.MessageListener;
 import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.FolderImpl;
@@ -51,6 +47,7 @@ import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
  * datastructures used are in the 'recorder' sub-package. this class defines the message listeners
  * that receive the messages, and the public api.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Oct-2005
+ * @todo implement against new registry.
  */
 public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInternal{
 
@@ -135,13 +132,13 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
     /** records all events on the user's queue */
     private class NotificationRecorder implements MessageListener {
 
-        private boolean isAdqlApplication(ResourceInformation ri) {
-            if (! (ri.getClass() ==  ApplicationInformation.class) ) { // has to be an exact match, not a subclass.
+        private boolean isAdqlApplication(Resource ri) {
+            if (! (ri instanceof CeaApplication) ) { // has to be an exact match, not a subclass.
                 return false;
             }
-            ApplicationInformation app = (ApplicationInformation)ri;
-            for (Iterator i = app.getParameters().values().iterator(); i.hasNext(); ) {
-                ParameterBean pb = (ParameterBean)i.next();
+            CeaApplication app = (CeaApplication)ri;
+            for (int i = 0; i <  app.getParameters().length; i++ ) {
+                ParameterBean pb = app.getParameters()[i];
                 if ("adql".equalsIgnoreCase(pb.getType())) {
                     return true;
                 }
@@ -153,7 +150,7 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
             // a little hacky - relies on parsing the uri to know what kind of thing we're dealing with.
             // so only works for known uri types.
             URI parent = TASKS;
-            ResourceInformation ri = null;
+            Resource ri = null;
                     String name= msg.getProcessName();
             if ("jes".equals(id.getScheme())) {
                 parent = JOBS;
@@ -161,12 +158,8 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
                 // assume it's a cea id...               
                 try {   
                     URI uri = new URI (name.startsWith("ivo") ? name : "ivo://" + name);
-                ri = reg.getResourceInformation(uri);
-                if (ri instanceof SiapInformation 
-                        || ri instanceof ConeInformation
-                        || ri instanceof SsapInformation
-                        || ri instanceof SkyNodeInformation
-                        || ri instanceof StapInformation
+                ri = reg.getResource(uri);
+                if (ri instanceof Service
                         || isAdqlApplication(ri)) {
                     parent = QUERIES;
                 }
@@ -185,7 +178,7 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
             ExecutionInformation nfo = new ExecutionInformation(
                     id
                     ,name
-                    ,ri != null ? ri.getDescription() :   "" //@todo get descirption for workfow and local app.
+                    ,ri != null && ri.getContent() != null ? ri.getContent().getDescription() :   "" //@todo get descirption for workfow and local app.
                     , ExecutionInformation.UNKNOWN
                     ,startDate
                     ,endDate);
@@ -289,6 +282,9 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
 
 /* 
 $Log: MessageRecorderImpl.java,v $
+Revision 1.7  2006/08/15 10:16:24  nw
+migrated from old to new registry models.
+
 Revision 1.6  2006/04/18 23:25:44  nw
 merged asr development.
 

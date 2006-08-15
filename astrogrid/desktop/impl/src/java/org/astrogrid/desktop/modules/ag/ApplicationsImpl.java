@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.14 2006/06/27 19:11:09 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.15 2006/08/15 10:15:59 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,6 +36,8 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
@@ -46,9 +48,15 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.acr.ivoa.SsapInformation;
+import org.astrogrid.acr.ivoa.resource.ConeService;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.KnowledgeAddingResourceArrayBuilder;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -74,12 +82,14 @@ public class ApplicationsImpl implements ApplicationsInternal {
     /** 
      * 
      */
-    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, Registry reg, Adql074 adql) throws  ACRException{
+    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, RegistryInternal nuReg,Registry reg, Adql074 adql) throws  ACRException{
         this.manager = manager;
         this.vos = vos;
         this.reg = reg;
         this.adql = adql;
+        this.nuReg = nuReg;
     }
+    protected final RegistryInternal nuReg;
     protected final RemoteProcessManager manager;
     private final MyspaceInternal vos;
     protected final Registry reg;
@@ -87,26 +97,13 @@ public class ApplicationsImpl implements ApplicationsInternal {
 
    
     public URI[] list() throws ServiceException {   
-        try {
-            Document doc = reg.adqlSearch(getQueryToListApplications());
-            NodeList l = doc.getElementsByTagNameNS(XPathHelper.VOR_NS,"Resource");  
-            List results = new ArrayList();
-            CachedXPathAPI xpath = new CachedXPathAPI();
-            Element namespaceNode = XPathHelper.createNamespaceNode();
-            for (int i= 0;i < l.getLength(); i++) {
-            try {
-                Element el = (Element)l.item(i);                
-                results.add(new URI(xpath.eval(el,"vr:identifier",namespaceNode).str()));
-            } catch (URISyntaxException e) {
-                // oh well, skip it.
+        	Resource[] arr = nuReg.xquerySearch(getRegistryXQuery()); 
+            URI[] results = new URI[arr.length];
+            for (int i= 0;i < arr.length; i++) {
+              results[i] = arr[i].getId();
             }
-        }
-        return (URI[])results.toArray(new URI[results.size()]);
-        } catch (ParserConfigurationException e) {
-            throw new ServiceException(e);
-        } catch (TransformerException e) {
-            throw new ServiceException(e);
-        }              
+            return results;
+    
     }
     
 
@@ -116,29 +113,23 @@ public class ApplicationsImpl implements ApplicationsInternal {
     }
     
     public String getRegistryQuery() {
-        return "Select * from Registry where " +
-    " (@xsi:type like '%CeaApplicationType' or " +
-    " @xsi:type like '%CeaHttpApplicationType')" ; //+
-    //@fixme" and ( not( @status = 'inactive' or @status = 'deleted') )";
+    	return getRegistryAdqlQuery();
     }
-    
+   
+	public String getRegistryAdqlQuery() {
+	     return "Select * from Registry where " +
+	     " (@xsi:type like '%CeaApplicationType' or " +
+	     " @xsi:type like '%CeaHttpApplicationType')" ; //+
+	     //@fixme" and ( not( @status = 'inactive' or @status = 'deleted') )";
+	}
+	
+	public String getRegistryXQuery() {
+		return "//vor:Resource[(@xsi:type &= '*CeaApplicationType' or @xsi:type &= '*CeaHttpApplicationType')" +
+				" and ( not ( @status = 'inactive' or @status='deleted'))]";
 
-    
-    /**
-     * @throws InvalidArgumentException
-     * @throws NotFoundException
-     * @throws ServiceException
-     * @see org.astrogrid.desktop.modules.ag.ApplicationsInternal#getInfoForTool(org.astrogrid.workflow.beans.v1.Tool)
-     */
-    public ApplicationInformation getInfoForTool(Tool t) throws ServiceException, NotFoundException, InvalidArgumentException {
-        URI uri;
-        try {
-            uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
-        } catch (URISyntaxException e) {
-            throw new InvalidArgumentException(e);
-        }
-        return getApplicationInformation(uri);
-    }
+	}
+
+
     
     public ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException{
         ResourceInformation ri = reg.getResourceInformation(applicationName);
@@ -150,25 +141,57 @@ public class ApplicationsImpl implements ApplicationsInternal {
        
     }
     
+    public CeaApplication getInfoForTool(Tool t) throws ServiceException, NotFoundException, InvalidArgumentException {
+        URI uri;
+        try {
+            uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
+        } catch (URISyntaxException e) {
+            throw new InvalidArgumentException(e);
+        }
+        return getCeaApplication(uri);
+    }
+    
+	public CeaApplication getCeaApplication(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
+		KnowledgeAddingResourceArrayBuilder proc = new KnowledgeAddingResourceArrayBuilder();
+		//@todo cache this in a separate store??
+		nuReg.getResourceStream(arg0,proc );
+		Resource[] arr = proc.getResult();
+		if (arr == null || arr.length < 1) {
+			throw new NotFoundException(arg0.toString());
+		}
+		Resource r = arr[0];
+		if (r instanceof CeaApplication) { // anything else that can be made to look like a cea app - cone, siap, etc, will be packaged as one too.
+			return (CeaApplication)r;
+		} else {
+			throw new InvalidArgumentException("Not a recognized kind of application: " + arg0);
+		}			
+			
+	}
+
+    
+ 
+
+
+
  
     
     
   public String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException {
-        ApplicationInformation descr = getApplicationInformation(applicationName);
-        return getInfoFor(descr);
+	  return getInfoFor(getCeaApplication(applicationName));
   }
   
 
-  public String getInfoFor(ApplicationInformation descr) {      
+  private String getInfoFor(CeaApplication descr) {      
         StringBuffer result = new StringBuffer();
          result.append("Application: ")
-                .append(descr.getName())
+                .append(descr.getTitle())
                 .append("\n")
-                .append(descr.getDescription())
+                .append(descr.getContent().getDescription())
                 .append("\n");
          logger.debug("Added name and description");
-         for(Iterator i = descr.getParameters().values().iterator(); i.hasNext(); ) {
-             ParameterBean param = (ParameterBean)i.next();
+         ParameterBean[] params = descr.getParameters();
+         for(int i = 0; i < params.length; i++ ) {
+             ParameterBean param = params[i];
             result.append("\nParameter ")
                 .append("\n")
                 .append(param.getUiName())
@@ -210,7 +233,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
    
   public Document createTemplateDocument(URI applicationName, String interfaceName) throws ServiceException, NotFoundException, InvalidArgumentException {
         try {
-            ApplicationInformation descr = getApplicationInformation(applicationName);
+        	CeaApplication descr = getCeaApplication(applicationName);
         Tool t = createTemplateTool(interfaceName, descr);
         Document doc = XMLUtils.newDocument();
         Marshaller.marshal(t,doc);
@@ -231,6 +254,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
  * @param descr
  * @return
  * @throws IllegalArgumentException
+ * @todo remove
  */
 public Tool createTemplateTool(String interfaceName, ApplicationInformation descr) throws IllegalArgumentException {
     if (interfaceName != null && (! interfaceName.equals("default"))) {
@@ -250,6 +274,24 @@ public Tool createTemplateTool(String interfaceName, ApplicationInformation desc
     }
 }
 
+public Tool createTemplateTool(String interfaceName, CeaApplication descr) throws IllegalArgumentException {
+    if (interfaceName != null && (! interfaceName.equals("default"))) {
+        InterfaceBean[] ifaces = descr.getInterfaces();
+        InterfaceBean iface = null;
+        for (int i = 0; i < ifaces.length; i++) {
+            if (ifaces[i].getName().equals(interfaceName)) {
+                iface =ifaces[i];
+            }
+        }
+        if (iface == null) {
+            throw new IllegalArgumentException("Cannot find interface named " + interfaceName );
+        }
+         return createTool(descr,iface);
+    } else {
+        return createTool(descr,null);
+    }
+}
+//@todo remove
 private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
       if (iface == null) {
           iface = descr.getInterfaces()[0];
@@ -284,6 +326,52 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
       // fill in the blanks.
       return t;
   }
+
+private Tool createTool(CeaApplication descr,InterfaceBean iface) {
+    if (iface == null) {
+        iface = descr.getInterfaces()[0];
+    }
+    Tool t = new Tool();
+    t.setInterface(iface.getName());
+    t.setName(descr.getId().getAuthority() + descr.getId().getPath()); //@todo should I drop the 'ivo' part.? - yes. for now. until cea accept this
+    Input input = new Input();
+    Output output = new Output();
+    t.setInput(input);
+    t.setOutput(output);
+    
+    // populate inputs
+    ParameterReferenceBean[] refs = iface.getInputs();
+    ParameterBean[] parameters = descr.getParameters();
+    ParameterValue[] arr = new ParameterValue[refs.length];
+    for (int i = 0; i < refs.length; i++) {
+        ParameterBean pb =findParameter(parameters,refs[i].getRef());
+        arr[i] = createParameterValue(pb);         
+    }
+    input.setParameter(arr);
+    
+    // populate outputs.
+    refs = iface.getOutputs();
+    arr = new ParameterValue[refs.length];
+    for (int i = 0; i < refs.length; i++) {
+        ParameterBean pb =findParameter(parameters,refs[i].getRef());
+        arr[i] = createParameterValue(pb);
+        
+    }   
+    output.setParameter(arr);
+    
+    // fill in the blanks.
+    return t;
+}
+
+public static ParameterBean findParameter(ParameterBean[] arr,String name) {
+	for (int i =0; i < arr.length; i++) {
+		if (arr[i].getName().equals(name)){
+			return arr[i];
+		}
+	}
+	return null;
+}
+
   
   private ParameterValue createParameterValue(ParameterBean pb) {
       ParameterValue pv = new ParameterValue();
@@ -392,10 +480,10 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
         } catch (MarshalException e) {
             throw new InvalidArgumentException(e);
         }
-        ApplicationInformation desc;
+        CeaApplication desc;
         try {
         URI uri = new URI("ivo://" + t.getName());
-        desc = getApplicationInformation(uri);
+        desc = getCeaApplication(uri);
         } catch(URISyntaxException e) {
             throw new InvalidArgumentException(e);
         } catch (NotFoundException e) {
@@ -416,17 +504,17 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
             ParameterReferenceBean[] refs = iface.getInputs();            
             BaseBean searchRoot = t.getInput();
             for (int i = 0; i < refs.length; i++) {
-                validateReference(desc,refs[i],searchRoot);
+                validateReference(refs[i],searchRoot);
             }
             // now the outputs.
             refs = iface.getOutputs();
             searchRoot = t.getOutput();
             for (int i = 0; i < refs.length; i++) {
-                validateReference(desc,refs[i],searchRoot);
+                validateReference(refs[i],searchRoot);
             }           
     }
 
-    private void validateReference(ApplicationInformation desc, ParameterReferenceBean bean, BaseBean searchRoot) throws InvalidArgumentException {
+    private void validateReference( ParameterReferenceBean bean, BaseBean searchRoot) throws InvalidArgumentException {
         Iterator results = searchRoot.findXPathIterator("/parameter[name = '" + bean.getRef() +"']");        
 //unused        ParameterBean pb = (ParameterBean)desc.getParameters().get(bean.getRef());
         int count = 0;
@@ -476,7 +564,26 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
            }
   
     }
-        
+    //@todo return service info for other kinds of server.
+	public Service[] listServersProviding(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
+		CeaApplication c = getCeaApplication(arg0);
+		if (c instanceof Service) { // it's already a service - this is a 'fake' cea application on a different protocol.
+			return new Service[]{(Service)c};
+		}
+			
+		Resource[] res =  nuReg.xquerySearch("//vor:Resource[not (@status='inactive' or @status='deleted') " +
+				"and cea:ManagedApplications/cea:ApplicationReference='"+ arg0 +"']");
+		List result = new ArrayList();
+		// check ttypes.
+		for (int i = 0; i < res.length; i++) {
+			if (res[i] instanceof CeaService) {
+				result.add(res[i]);
+			}
+		}
+		return (CeaService[])result.toArray(new CeaService[result.size()]);
+	}           
+    
+
     public URI submitStored(URI documentLocation) throws NotFoundException, InvalidArgumentException, SecurityException, ServiceException {
         return manager.submitStored(documentLocation);       
     }
@@ -501,7 +608,7 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
      * @param document
      * @throws ServiceException
      */
-    public void translateQueries(ApplicationInformation application, Tool document) throws ServiceException {
+    public void translateQueries(Resource application, Tool document) throws ServiceException {
         // fiddle any embedded queries..
         String[] adqlParameters = listADQLParameters(document.getInterface(),application);
         if (adqlParameters.length > 0) {            
@@ -537,7 +644,11 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 
 
 	/** returns true if this app has an adql parameter */
-	public static String[] listADQLParameters(String interfaceName,ApplicationInformation info) {
+	public static String[] listADQLParameters(String interfaceName,Resource r) {
+		if (! (r instanceof CeaApplication)) {
+			return new String[0];
+		}
+		CeaApplication info = (CeaApplication)r;
 	    InterfaceBean ib = null;
 	    List results = new ArrayList();
 	    for (int i = 0; i < info.getInterfaces().length; i++) {        
@@ -548,9 +659,10 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 	    if (ib == null) {
 	        return new String[]{};
 	    }
+	    ParameterBean[] arr = info.getParameters();
 	    for (int i =0; i < ib.getInputs().length; i++) {
 	        ParameterReferenceBean prb = ib.getInputs()[i];
-	        ParameterBean pb = (ParameterBean)info.getParameters().get(prb.getRef());
+	        ParameterBean pb = findParameter(arr,prb.getRef());
 	        if (pb ==null) {
 	            return new String[]{};
 	        }
@@ -561,13 +673,21 @@ private Tool createTool(ApplicationInformation descr,InterfaceBean iface) {
 	    return (String[])results.toArray(new String[results.size()]);
 	    
 	}
-           
-    
+
+
+
+
+
+
+
 }
 
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.15  2006/08/15 10:15:59  nw
+migrated from old to new registry models.
+
 Revision 1.14  2006/06/27 19:11:09  nw
 adjusted todo tags.
 

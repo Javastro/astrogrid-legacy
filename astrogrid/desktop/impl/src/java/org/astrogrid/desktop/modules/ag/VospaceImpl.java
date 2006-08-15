@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.12 2006/06/27 10:23:51 nw Exp $
+/*$Id: VospaceImpl.java,v 1.13 2006/08/15 10:16:24 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,6 +49,7 @@ import org.astrogrid.acr.astrogrid.NodeInformation;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
@@ -896,7 +897,12 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
            } catch (IOException e) {
                throw new ServiceException(e);
            }
-    }    
+    }
+
+	public Service listStores() throws ServiceException {
+		return null;
+		//@todo implement this as part of the myspace makeover.
+	}    
 
 
 
@@ -907,6 +913,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.13  2006/08/15 10:16:24  nw
+migrated from old to new registry models.
+
 Revision 1.12  2006/06/27 10:23:51  nw
 findbugs tweaks
 

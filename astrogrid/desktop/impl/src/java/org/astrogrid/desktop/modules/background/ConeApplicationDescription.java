@@ -1,4 +1,4 @@
-/*$Id: ConeApplicationDescription.java,v 1.4 2006/04/18 23:25:43 nw Exp $
+/*$Id: ConeApplicationDescription.java,v 1.5 2006/08/15 10:15:34 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.nvo.Cone;
-import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -54,7 +54,7 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
         super(arg0);
         this.cone = cone;
         this.ms = ms;
-        setName(ConeInformation.class.getName());
+        setName(ConeService.class.getName());
         iface = new BaseApplicationInterface("default",this);
     }
     final Cone cone;
@@ -166,6 +166,9 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: ConeApplicationDescription.java,v $
+Revision 1.5  2006/08/15 10:15:34  nw
+migrated from old to new registry models.
+
 Revision 1.4  2006/04/18 23:25:43  nw
 merged asr development.
 
