@@ -1,4 +1,4 @@
-/*$Id: SsapInformation.java,v 1.3 2006/04/18 23:25:45 nw Exp $
+/*$Id: SsapInformation.java,v 1.4 2006/08/15 09:48:55 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import java.util.Map;
  * no additional information here at present - as standard has not been agreed.
  * - so just the information for a standard application information. 
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jan-2006
+ * @deprecated prefer the v1.0 registry object model
  *
  */
 public class SsapInformation extends ApplicationInformation {
@@ -122,6 +123,9 @@ public class SsapInformation extends ApplicationInformation {
 
 /* 
 $Log: SsapInformation.java,v $
+Revision 1.4  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.3  2006/04/18 23:25:45  nw
 merged asr development.
 

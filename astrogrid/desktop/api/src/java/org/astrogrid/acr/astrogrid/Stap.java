@@ -1,4 +1,4 @@
-/*$Id: Stap.java,v 1.3 2006/03/21 10:49:33 nw Exp $
+/*$Id: Stap.java,v 1.4 2006/08/15 09:48:55 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -135,19 +135,30 @@ public interface Stap {
     */
    void saveResults(URL siapQuery, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
    
-   /** helper method - returns an ADQL query that should be passed to a registry to list all 
+   /** helper method - returns an ADQL/s query that should be passed to a registry to list all 
     * available siap services. 
     * <br/>
     * can be used as a starting point for filters, etc.
     * @return an adql query string
     */
-   String getRegistryQuery();
+   String getRegistryAdqlQuery();
+   
+   /** helper method - returns an xquery that should be passed to a registry to list all 
+    * available siap services. 
+    * <br/>
+    * can be used as a starting point for filters, etc.
+    * @return an xquery string
+    */
+   String getRegistryXQuery();
    
 }
 
 
 /* 
 $Log: Stap.java,v $
+Revision 1.4  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.3  2006/03/21 10:49:33  nw
 replaced & with 'and' - xml gets generated from the javadoc, and loose '&' make the build break
 

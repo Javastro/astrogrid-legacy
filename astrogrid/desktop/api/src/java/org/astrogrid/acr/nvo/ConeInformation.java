@@ -1,4 +1,4 @@
-/*$Id: ConeInformation.java,v 1.5 2006/04/18 23:25:47 nw Exp $
+/*$Id: ConeInformation.java,v 1.6 2006/08/15 09:48:56 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import java.util.Map;
  * @see http://www.ivoa.net/xml/ConeSearch/v0.3 for definition of this information
  * @xmlrpc returned as a struct, with keys corresponding to bean names.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Oct-2005
+ * @deprecated prefer the v1.0 registry object model
  *
  */
 public class ConeInformation extends ApplicationInformation {
@@ -108,6 +109,9 @@ public class ConeInformation extends ApplicationInformation {
 
 /* 
 $Log: ConeInformation.java,v $
+Revision 1.6  2006/08/15 09:48:56  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.5  2006/04/18 23:25:47  nw
 merged asr development.
 

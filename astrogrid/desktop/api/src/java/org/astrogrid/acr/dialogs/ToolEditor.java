@@ -1,4 +1,4 @@
-/*$Id: ToolEditor.java,v 1.5 2006/02/02 14:19:47 nw Exp $
+/*$Id: ToolEditor.java,v 1.6 2006/08/15 09:48:55 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,15 +48,6 @@ public interface ToolEditor {
      */
     Document   edit(Document t) throws InvalidArgumentException, ServiceException;
 
-    /** Prompt the user to edit a tool document
-     * @param t document conforming to Tool schema
-     * @param desc description of the application this tool document is to be built for (rather than querying registry)
-     * @return an edited copy of this document
-     * @throws InvalidArgumentException if the document passed in is not schema-valid
-     * @throws ServiceException if any other failure occurs during editing.
-     * @xmlrpc takes a xml document string as a parameter, and returns another xml document string
-     */    
-    public Document editWithDescription(Document t,ApplicationInformation desc) throws InvalidArgumentException, ServiceException ;
 
     /** prompt the user to edit a tool document stored elsewhere
      * @param documentLocation location the tool document is stored at (http://, ftp://, ivo://)
@@ -79,6 +70,9 @@ public interface ToolEditor {
 
 /* 
 $Log: ToolEditor.java,v $
+Revision 1.6  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.5  2006/02/02 14:19:47  nw
 fixed up documentation.
 

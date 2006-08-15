@@ -19,9 +19,9 @@ Splits xmlized javadoc into separate files for each module, summarizing the serv
 <!-- list of service interfaces -->
 <xsl:variable name="services" select="/jel/jelclass[@interface='true' 
 		and comment/attribute[@name='@service']
-		and not ( comment/attribute[@name='@deprecated'])
 		]"/>
 		
+<!--  		and not ( comment/attribute[@name='@deprecated']) -->
 
 
 <!-- generate package descriptions -->
@@ -56,8 +56,9 @@ Splits xmlized javadoc into separate files for each module, summarizing the serv
   <component interface-class="{@fulltype}"  name="{$name}" description="{comment/description}">
 	<!-- todo put in useful @attributes - e.g. singleton? -->
 	<xsl:for-each select="methods/method[@visibility='public' 
-			and not ( comment/attribute[@name='@deprecated'] 
-				or contains(@name, 'Listener')) ]">
+			and not (contains(@name, 'Listener')) ]">
+			<!--  comment/attribute[@name='@deprecated'] 
+				or  -->
 		<method name="{@name}" description="{comment/description}">
 			<xsl:variable name="uitype">
 				<xsl:call-template name="convert-type">

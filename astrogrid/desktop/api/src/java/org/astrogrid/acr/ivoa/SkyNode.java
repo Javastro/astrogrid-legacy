@@ -1,4 +1,4 @@
-/*$Id: SkyNode.java,v 1.2 2006/04/18 23:25:45 nw Exp $
+/*$Id: SkyNode.java,v 1.3 2006/08/15 09:48:55 nw Exp $
  * Created on 21-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import java.net.URI;
 /** Query for data from SkyNode services 
  * @see http://www.ivoa.net/Documents/latest/SkyNodeInterface.html
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2006
- * @since 1.9
+ * @since 2006.03
  * @service ivoa.skyNode
  *
  */
@@ -35,7 +35,14 @@ public interface SkyNode {
      * 
      * @return an adql query string
      */
-    public String getRegistryQuery();
+    public String getRegistryAdqlQuery();
+    
+    
+    /** returns an xquery that should be passed to a registry to list all known skynode services
+     * @return an xquery string
+     */
+    public String getRegistryXQuery();
+    
   // basic - tables, columns, column, formas, functions, perform query
     /**
      * interrogate skynode for  complete metadata about it's database
@@ -159,6 +166,9 @@ public interface SkyNode {
 
 /* 
 $Log: SkyNode.java,v $
+Revision 1.3  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.2  2006/04/18 23:25:45  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.6 2006/02/02 14:19:48 nw Exp $
+/*$Id: Registry.java,v 1.7 2006/08/15 09:48:55 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,6 +35,7 @@ import java.net.URL;
  * @service astrogrid.registry
  * @see org.astrogrid.acr.ui.RegistryBrowser
  * @see org.astrogrid.acr.astrogrid.ResourceInformation
+ * @deprecated use {@link org.astrogrid.acr.ivoa.Registry}
  */
 public interface Registry {
     /**Resolve a registry identifier to an endpoint.
@@ -63,7 +64,7 @@ public interface Registry {
      * 
      * @param ivorn identifier of the registry entry to retrrieve
      * @return xml document of the registry entry - a <tt>Resource</tt> document i
-     * n the <tt>http://www.ivoa.net/xml/RegistryInterface/v0.1</tt> namespace
+     * in the <tt>http://www.ivoa.net/xml/VOResource/v1.0</tt> namespace
      * @throws NotFoundException if this resource does not exist
      * @throws ServiceException if an error occurs talking to the service
      * @xmlrpc will return a string containing the xml document
@@ -195,6 +196,9 @@ public interface Registry {
 
 /* 
  $Log: Registry.java,v $
+ Revision 1.7  2006/08/15 09:48:55  nw
+ added new registry interface, and bean objects returned by it.
+
  Revision 1.6  2006/02/02 14:19:48  nw
  fixed up documentation.
 

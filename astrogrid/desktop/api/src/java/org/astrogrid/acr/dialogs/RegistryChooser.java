@@ -1,4 +1,4 @@
-/*$Id: RegistryChooser.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: RegistryChooser.java,v 1.4 2006/08/15 09:48:55 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,32 +11,43 @@
 package org.astrogrid.acr.dialogs;
 
 import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Resource;
 
 /**prompt the user to select a registry resource by displaying  a  registry chooser dialogue.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
- * * @service  dialogs.registryChooser
+ * @service dialogs.registryChooser
+ * @deprecated use dialogs.RegistryGoogle.
  */
 public interface RegistryChooser {
     /** display the registry chooser dialogue, 
      * @param prompt message to prompt user
-     * @return selected resgistry resource */
+     * @return selected resgistry resource 
+     * */
     ResourceInformation chooseResource(String prompt);
    /** display the resource chooser dialogue, and enable resources that only match the filter 
  * @param prompt message to prompt user
  * @param filter adql-like 'where' clause.
- * @return selected registry resource*/
+ * @return selected registry resource
+ * */
     ResourceInformation chooseResourceWithFilter(String prompt, String filter);
 
 
-    /** multiple selection variant of {@link #chooseResource} */
+    /** multiple selection variant of {@link #chooseResource}
+     * 
+     *  */
     ResourceInformation[] chooseResources(String prompt);
-    /** multiple selection variant of {@link #chooseResourceWith Filter} */
+    /** multiple selection variant of {@link #chooseResourceWith Filter}
+     * 
+     *  */
     ResourceInformation[] chooseResourcesWithFilter(String prompt,String filter);
-}
+    }
 
 
 /* 
 $Log: RegistryChooser.java,v $
+Revision 1.4  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.3  2006/02/02 14:19:47  nw
 fixed up documentation.
 

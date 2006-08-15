@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowser.java,v 1.4 2006/02/02 14:19:48 nw Exp $
+/*$Id: RegistryBrowser.java,v 1.5 2006/08/15 09:48:56 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,14 @@
  **/
 package org.astrogrid.acr.ui;
 
+import java.net.URI;
+
+
 /** Control the registry browser UI
  * 
  * <img src="doc-files/registry.png"/>
  * @todo UI is pretty simple at present. needs a lot of improvements
  * @todo improve browsing and linking methods - maybe easier once integrate JDIC.
- * @todo add 'show resource' methods.
  * @service userInterface.registryBrowser
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Mar-2005
  *@see org.astrogrid.acr.astrogrid.Registry
@@ -23,12 +25,22 @@ package org.astrogrid.acr.ui;
 public interface RegistryBrowser {
     /**show a new instance of registry browser ui*/
     public void show();
-    /** hide the registry browser ui*/
+    /** hide the registry browser ui
+     * @deprecated.*/
     public void hide();
+    
+    /** show an new instance of the registry browser, and perform the requiested search (keywords) */
+    public  void search(String s) ;
+    
+    /** display a particular record in a new instacne of the browser */
+    public void open(URI uri);
 }
 
 /* 
  $Log: RegistryBrowser.java,v $
+ Revision 1.5  2006/08/15 09:48:56  nw
+ added new registry interface, and bean objects returned by it.
+
  Revision 1.4  2006/02/02 14:19:48  nw
  fixed up documentation.
 

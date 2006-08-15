@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.6 2006/02/02 14:19:48 nw Exp $
+/*$Id: Applications.java,v 1.7 2006/08/15 09:48:55 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.resource.Service;
 
 import org.w3c.dom.Document;
 
@@ -69,15 +70,37 @@ public interface Applications {
     /** @deprecated - use {@link #getRegistryQuery} */
     String getQueryToListApplications(); 
     
-    /** helper method - returns the ADQL query that should be passed to the registry to
+    /** helper method - returns the ADQL/s query that should be passed to the registry to
      * list all available applications.
      * 
      * can be used as a starting point to build up filters, etc.
      * @return an adql query string.
      * @see Registry
      * @since 1.3
+     * @deprecated use getRegistryAdqlQuery
      */ 
     String getRegistryQuery();
+    
+    
+    /** helper method - returns the ADQL/s query that should be passed to the registry to
+     * list all available applications.
+     * 
+     * can be used as a starting point to build up filters, etc.
+     * @return an adql query string.
+     * @see Registry
+     * @since 2006.3
+     */ 
+    String getRegistryAdqlQuery();    
+    
+    /** helper method - returns the Xquery that should be passed to the registry to
+     * list all available applications.
+     * 
+     * can be used as a starting point to build up filters, etc.
+     * @return an xquery string.
+     * @see Registry
+     * @since 2006.3
+     */ 
+    String getRegistryXQuery();       
        
     /** get information for a specific application from the registry. 
      * @param applicationName name of the application to hunt for
@@ -86,9 +109,21 @@ public interface Applications {
      * @throws NotFoundException if this application could not be found
      * @throws InvalidArgumentException if the application name is malformed
      * @xmlrpc returns a structure containing attributes of {@link ApplicationInformation}
+     * @deprecated use getCeaApplication()
      * */
     ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
    
+    
+    /** get information for a specific application from the registry. 
+     * @param applicationName name of the application to hunt for
+     * @return details of this application
+     * @throws ServiceException if error occurs when talking to the sever
+     * @throws NotFoundException if this application could not be found
+     * @throws InvalidArgumentException if the application name is malformed, or is not a CeaApplication, or can not be transformed into one.
+     * @xmlrpc returns a structure containing attributes of {@link CeaApplication}
+     * */
+    CeaApplication getCeaApplication(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
+    
     /** get formatted information about an application 
  * @param applicationName
  * @return formatted, human-readable information about the application
@@ -183,9 +218,20 @@ public interface Applications {
      * @return list of registry summaries of cea servers that support this application
      * @throws ServiceException if fail to communicate with server
      * @throws NotFoundException if this application cannot be found
-     * @throws InvalidArgumentException if the appication id is malformed in some way.*/
+     * @throws InvalidArgumentException if the appication id is malformed in some way.
+     * @deprecated old reg model.*/
     ResourceInformation[] listProvidersOf(URI applicationId) throws ServiceException, NotFoundException, InvalidArgumentException;
      
+    
+    /** list the remote servers that provides a particular application.
+     * 
+     *  (It's possible, for CEA especially, that an application may be provided by multiple servers)
+     * @param applicationId registry identifier of the application to search servers for.
+     * @return list of registry summaries of cea servers that support this application
+     * @throws ServiceException if fail to communicate with server
+     * @throws NotFoundException if this application cannot be found
+     * @throws InvalidArgumentException if the appication id is malformed in some way.*/
+    Service[] listServersProviding(URI applicationId) throws ServiceException, NotFoundException, InvalidArgumentException;
     
     /** submit an invocation document for execution..
      * 
@@ -272,6 +318,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.7  2006/08/15 09:48:55  nw
+ added new registry interface, and bean objects returned by it.
+
  Revision 1.6  2006/02/02 14:19:48  nw
  fixed up documentation.
 

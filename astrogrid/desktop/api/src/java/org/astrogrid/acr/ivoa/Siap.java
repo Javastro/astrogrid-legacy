@@ -1,4 +1,4 @@
-/*$Id: Siap.java,v 1.3 2006/02/24 12:17:52 nw Exp $
+/*$Id: Siap.java,v 1.4 2006/08/15 09:48:55 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -103,13 +103,32 @@ public interface Siap {
  */
 void saveResults(URL siapQuery, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
    
-   /** helper method - returns an ADQL query that should be passed to a registry to list all 
+   /** helper method - returns an ADQL/s query that should be passed to a registry to list all 
     * available siap services. 
     * <br/>
     * can be used as a starting point for filters, etc.
     * @return an adql query string
+    * @deprecated use getRegistryAdqlQuery
     */
    String getRegistryQuery();
+   
+   /** helper method - returns an ADQL/s query that should be passed to a registry to list all 
+    * available siap services. 
+    * <br/>
+    * can be used as a starting point for filters, etc.
+    * @return an adql query string
+    * @since 2006.03
+    */
+   String getRegistryXQuery();
+   
+   /** helper method - returns an Xquery that should be passed to a registry to list all 
+    * available siap services. 
+    * <br/>
+    * can be used as a starting point for filters, etc.
+    * @return an xquery string
+    * @since 2006.03
+    */
+   String getRegistryAdqlQuery();
    
    
    
@@ -118,6 +137,9 @@ void saveResults(URL siapQuery, URI saveLocation) throws SecurityException, Serv
 
 /* 
 $Log: Siap.java,v $
+Revision 1.4  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.3  2006/02/24 12:17:52  nw
 added interfaces for skynode
 

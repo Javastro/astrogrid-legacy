@@ -1,4 +1,4 @@
-/*$Id: Cone.java,v 1.2 2006/02/02 14:19:48 nw Exp $
+/*$Id: Cone.java,v 1.3 2006/08/15 09:48:55 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,18 +69,28 @@ public interface Cone {
      */
     void saveResults(URL coneQuery, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
     
-    /** helper method - returns an ADQL query that should be passed to a registry to list all available 
-     * siap services.
+    /** helper method - returns an ADQL/s query that should be passed to a registry to list all available cone services.
      *
      * Can be used as a starting point for building filters, etc
      * @return an adql query string
+     * @deprecated use getRegistryAdqlQuery()
      */
     String getRegistryQuery();
+    
+    /** returns an ADQL/s query that should be passed to a registry to list all available cone services
+     * @since 2006.03*/
+    String getRegistryAdqlQuery();
+    /** returns an xquery that should be passed to a registry to list all available cone services 
+     * @since 2006.03*/
+    String getRegistryXQuery();
 }
 
 
 /* 
 $Log: Cone.java,v $
+Revision 1.3  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.2  2006/02/02 14:19:48  nw
 fixed up documentation.
 

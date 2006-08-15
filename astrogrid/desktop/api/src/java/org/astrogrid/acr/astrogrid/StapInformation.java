@@ -1,4 +1,4 @@
-/*$Id: StapInformation.java,v 1.3 2006/04/18 23:25:45 nw Exp $
+/*$Id: StapInformation.java,v 1.4 2006/08/15 09:48:55 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,6 +27,7 @@ import java.util.Map;
  * @see http://software.astrogrid.org/schema/vo-resource-types/Stap/v0.1/Stap.xsd for definition of this information
  * @xmlrpc returned as a struct, with keys corresponding to bean names.
  * @author Kevin Benson
+ * @deprecated prefer objects in ivoa.resource model
  *
  */
 public class StapInformation extends ApplicationInformation {
@@ -96,6 +97,9 @@ public class StapInformation extends ApplicationInformation {
 
 /* 
 $Log: StapInformation.java,v $
+Revision 1.4  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.3  2006/04/18 23:25:45  nw
 merged asr development.
 

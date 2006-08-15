@@ -1,4 +1,4 @@
-/*$Id: SiapInformation.java,v 1.5 2006/04/18 23:25:45 nw Exp $
+/*$Id: SiapInformation.java,v 1.6 2006/08/15 09:48:55 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import java.util.Map;
  * Adds fields for the extra service information provided by a SIAP registry entry. 
  * @see http://www.ivoa.net/xml/SIA/v0.7 for definition of this information
  * @xmlrpc returned as a struct, with keys corresponding to bean names.
+ * @deprecated prefer the v1.0 registry object model
  
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Oct-2005
  *
@@ -199,6 +200,9 @@ public class SiapInformation extends ApplicationInformation {
 
 /* 
 $Log: SiapInformation.java,v $
+Revision 1.6  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.5  2006/04/18 23:25:45  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.9 2006/02/02 14:19:48 nw Exp $
+/*$Id: Myspace.java,v 1.10 2006/08/15 09:48:55 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.resource.Service;
 
 import java.net.URI;
 import java.net.URL;
@@ -434,13 +435,26 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
      * @return an array of resource information
      * @throws ServiceException if an error occurs while retreiveing the list of stores
      * @see #changeStore
+     * @deprecated use listStores();
      */
     ResourceInformation[] listAvailableStores() throws ServiceException;
+
+    /** 
+     * List the available filestores
+     * @return an array of service descriptions.
+     * @throws ServiceException if an error occurs while retreiveing the list of stores
+     * @see #changeStore
+     * @todo maybe refine type to a subclass of capability?
+     */
+    Service listStores()  throws ServiceException;
 
 }
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.10  2006/08/15 09:48:55  nw
+ added new registry interface, and bean objects returned by it.
+
  Revision 1.9  2006/02/02 14:19:48  nw
  fixed up documentation.
 

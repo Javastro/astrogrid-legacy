@@ -1,4 +1,4 @@
-/*$Id: Ssap.java,v 1.2 2006/02/24 12:17:52 nw Exp $
+/*$Id: Ssap.java,v 1.3 2006/08/15 09:48:55 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,20 +83,41 @@ public interface Ssap {
   */
  void saveResults(URL ssapQuery, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
     
-    /** helper method - returns an ADQL query that should be passed to a registry to list all 
+    /** helper method - returns an ADQL/s query that should be passed to a registry to list all 
      * available siap services. 
      *
      * Can be used as a starting point for filters, etc.
      * @return an adql query string
+     * @deprecated use getRegistryAdqlQuery();
      */
     String getRegistryQuery();
     
+    /** helper method - returns an ADQL/s query that should be passed to a registry to list all 
+     * available siap services. 
+     *
+     * Can be used as a starting point for filters, etc.
+     * @return an adql query string
+     * @since 2006.03
+     */
+    String getRegistryAdqlQuery();
+    
+    /** helper method - returns an Xquery that should be passed to a registry to list all 
+     * available siap services. 
+     *
+     * Can be used as a starting point for filters, etc.
+     * @return an Xquery string
+     * @since 2006.03
+     */
+    String getRegistryXQuery();
   
 }
 
 
 /* 
 $Log: Ssap.java,v $
+Revision 1.3  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.2  2006/02/24 12:17:52  nw
 added interfaces for skynode
 

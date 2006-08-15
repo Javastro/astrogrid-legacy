@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.8 2006/04/18 23:25:45 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.9 2006/08/15 09:48:55 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,9 +21,9 @@ import java.util.Map;
  * definition
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
   * @xmlrpc returned as a struct, with keys corresponding to bean names
- * @todo should this contain description too?
  * @see org.astrogrid.acr.astrogrid.Applications
  * @since 1.2 extends ResourceInformation
+ * @deprecated prefer the ivoa.resource object model
  */
 public class ApplicationInformation extends ResourceInformation{
 
@@ -83,6 +83,9 @@ public class ApplicationInformation extends ResourceInformation{
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.9  2006/08/15 09:48:55  nw
+added new registry interface, and bean objects returned by it.
+
 Revision 1.8  2006/04/18 23:25:45  nw
 merged asr development.
 
