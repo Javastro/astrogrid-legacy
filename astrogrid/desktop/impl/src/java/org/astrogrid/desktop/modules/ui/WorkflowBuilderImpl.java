@@ -32,8 +32,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;

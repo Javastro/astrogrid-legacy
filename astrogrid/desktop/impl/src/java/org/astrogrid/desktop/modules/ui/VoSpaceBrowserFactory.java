@@ -4,8 +4,6 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.MyspaceBrowser;
