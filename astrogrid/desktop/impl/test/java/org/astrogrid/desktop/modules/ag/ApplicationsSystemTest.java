@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.3 2006/06/15 09:18:24 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.4 2006/08/15 10:28:48 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
@@ -17,6 +20,9 @@ import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.ACRTestSetup;
 
 import org.apache.axis.utils.XMLUtils;
@@ -67,8 +73,8 @@ public class ApplicationsSystemTest extends TestCase {
         }
     }
 
-    public void testRegistryQuery() throws Exception {
-    	String q= apps.getRegistryQuery();
+    public void testRegistryAdqlQueryOldReg() throws Exception {
+    	String q= apps.getRegistryAdqlQuery();
     	assertNotNull(q);
     	ResourceInformation[] ri = registry.adqlSearchRI(q);
     	assertNotNull(ri);
@@ -78,6 +84,38 @@ public class ApplicationsSystemTest extends TestCase {
     		assertTrue(ri[i] instanceof ApplicationInformation);
     	}
     }
+
+	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
+		String q = apps.getRegistryAdqlQuery();
+		assertNotNull(q);
+		org.astrogrid.acr.ivoa.Registry reg = (org.astrogrid.acr.ivoa.Registry)getACR().getService(org.astrogrid.acr.ivoa.Registry.class);
+		Resource[] arr = reg.adqlsSearch(q);
+		assertNotNull(arr);
+		assertTrue(arr.length > 0);
+		// just services for now..
+		for (int i = 0; i < arr.length; i++) {
+			checkCeaResource(arr[i]);
+		}
+	}
+	
+	public void testGetXQueryRegistryQuery() throws Exception {
+		String xq = apps.getRegistryXQuery();
+		assertNotNull(xq);
+		org.astrogrid.acr.ivoa.Registry reg = (org.astrogrid.acr.ivoa.Registry)getACR().getService(org.astrogrid.acr.ivoa.Registry.class);
+		Resource[] arr = reg.xquerySearch(xq);
+		assertNotNull(arr);
+		assertTrue(arr.length > 0);
+		// just services for now..
+		for (int i = 0; i < arr.length; i++) {
+			checkCeaResource(arr[i]);
+		}		
+		
+	}
+
+	
+	private void checkCeaResource(Resource r) {
+		//@todo refine this later..
+	}	
    
 
 
@@ -210,6 +248,9 @@ public class ApplicationsSystemTest extends TestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.4  2006/08/15 10:28:48  nw
+migrated from old to new registry models.
+
 Revision 1.3  2006/06/15 09:18:24  nw
 improved junit tests
 

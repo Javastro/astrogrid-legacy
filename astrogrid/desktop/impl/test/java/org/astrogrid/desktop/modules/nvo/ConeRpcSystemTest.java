@@ -121,4 +121,26 @@ public class ConeRpcSystemTest extends ConeRmiSystemTest implements Cone{
 			}
 		}
 
+		public String getRegistryAdqlQuery() {
+
+			v.clear();
+			try {
+				return  (String)client.execute("nvo.cone.getRegistryAdqlQuery",v);
+			} catch (Exception e) {
+				fail(e.getMessage());
+				throw new RuntimeException("never reached");
+			}
+		}
+
+		public String getRegistryXQuery() {
+
+			v.clear();
+			try {
+				return  (String)client.execute("nvo.cone.getRegistryXQuery",v);
+			} catch (Exception e) {
+				fail(e.getMessage());
+				throw new RuntimeException("never reached");
+			}
+		}
+
 }

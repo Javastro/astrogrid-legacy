@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
 import org.easymock.MockControl;
 
 import junit.framework.TestCase;

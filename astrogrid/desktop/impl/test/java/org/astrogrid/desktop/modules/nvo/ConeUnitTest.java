@@ -9,7 +9,7 @@ import java.net.URL;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.easymock.MockControl;
@@ -52,6 +52,14 @@ public class ConeUnitTest extends TestCase {
 		assertNotNull(cone.getRegistryQuery());
 	}
 
+	public void testGetAdqlRegistryQuery() {
+		assertNotNull(cone.getRegistryAdqlQuery());
+	}
+	
+	
+	public void testGetlRegistryXQuery() {
+		assertNotNull(cone.getRegistryXQuery());
+	}
 	
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.nvo.ConeImpl.constructQuery(URI, double, double, double)'

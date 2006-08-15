@@ -7,8 +7,8 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ivoa.SiapUnitTest;
 import org.easymock.MockControl;
 
@@ -80,11 +80,12 @@ public class StapUnitTest extends TestCase {
 		fail("implement me");
 	}
 
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ag.StapImpl.getRegistryQuery()'
-	 */
-	public void testGetRegistryQuery() {
-		assertNotNull(stap.getRegistryQuery());
+
+	public void testGetRegistryAdqlQuery() {
+		assertNotNull(stap.getRegistryAdqlQuery());
+	}
+	public void testGetRegistryXQuery() {
+		assertNotNull(stap.getRegistryXQuery());
 	}
 
 }

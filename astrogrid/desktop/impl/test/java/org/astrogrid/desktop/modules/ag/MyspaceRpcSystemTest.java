@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcSystemTest.java,v 1.8 2006/06/15 09:18:24 nw Exp $
+/*$Id: MyspaceRpcSystemTest.java,v 1.9 2006/08/15 10:28:48 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.NodeInformation;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ACRTestSetup;
 
@@ -343,6 +344,10 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
             throw new ServiceException(e);
         } 
     }
+    
+	public Service listStores() throws ServiceException {
+		throw new ServiceException("Realy can't be bothered to pass this through xmlrpc");
+	}
 
     /**
      * @see org.astrogrid.acr.astrogrid.Myspace#read(java.net.URI)
@@ -413,11 +418,16 @@ public class MyspaceRpcSystemTest extends MyspaceSystemTest implements Myspace{
     }
 
 
+
+
 }
 
 
 /* 
 $Log: MyspaceRpcSystemTest.java,v $
+Revision 1.9  2006/08/15 10:28:48  nw
+migrated from old to new registry models.
+
 Revision 1.8  2006/06/15 09:18:24  nw
 improved junit tests
 

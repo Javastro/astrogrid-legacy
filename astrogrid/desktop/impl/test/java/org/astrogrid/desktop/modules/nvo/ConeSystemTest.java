@@ -13,6 +13,8 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.desktop.ACRTestSetup;
@@ -20,7 +22,7 @@ import org.astrogrid.desktop.ACRTestSetup;
 /** System test for the cone search interface.
  * @author Noel Winstanley
  * @since Jun 10, 200610:18:51 AM
- * @todo implement
+ * @todo implement rest
  */
 public class ConeSystemTest extends TestCase {
 
@@ -52,28 +54,6 @@ public class ConeSystemTest extends TestCase {
 	}
 	
 
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.nvo.ConeImpl.getRegistryQuery()'
-	 */
-	public void testGetRegistryQuery() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
-		String q = cone.getRegistryQuery();
-		assertNotNull(q);
-		Registry reg = (Registry)getACR().getService(Registry.class);
-		ResourceInformation[] arr = reg.adqlSearchRI(q);
-		assertNotNull(arr);
-		assertTrue(arr.length > 0);
-		for (int i = 0; i < arr.length; i++) {
-			assertTrue(arr[i] instanceof ConeInformation);
-			checkConeInformation((ConeInformation)arr[i]);
-		}
-	}
-	
-	private void checkConeInformation(ConeInformation ci) {
-		//@todo any further data validation to do here??
-		assertNotNull(ci.getAccessURL());
-	}
-
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.DALImpl.getResults(URL)'
 	 */
@@ -87,5 +67,60 @@ public class ConeSystemTest extends TestCase {
 	public void testSaveResults() {
 		fail("implement me");
 	}
+
+
+
+	/*@todo remove - really slow.
+	 * Test method for 'org.astrogrid.desktop.modules.nvo.ConeImpl.getRegistryQuery()'
+	 */
+	public void testGetAdqlRegistryQueryOldReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
+		String q = cone.getRegistryAdqlQuery();
+		assertNotNull(q);
+		Registry reg = (Registry)getACR().getService(Registry.class);
+		ResourceInformation[] arr = reg.adqlSearchRI(q);
+		assertNotNull(arr);
+		assertTrue(arr.length > 0);
+		for (int i = 0; i < arr.length; i++) {
+			assertTrue(arr[i] instanceof ConeInformation);
+			checkConeInformation((ConeInformation)arr[i]);
+		}
+	}
+	
+	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
+		String q = cone.getRegistryAdqlQuery();
+		assertNotNull(q);
+		org.astrogrid.acr.ivoa.Registry reg = (org.astrogrid.acr.ivoa.Registry)getACR().getService(org.astrogrid.acr.ivoa.Registry.class);
+		Resource[] arr = reg.adqlsSearch(q);
+		assertNotNull(arr);
+		assertTrue(arr.length > 0);
+		// just services for now..
+		for (int i = 0; i < arr.length; i++) {
+			checkConeResource(arr[i]);
+		}
+	}
+	
+	public void testGetXQueryRegistryQuery() throws Exception {
+		String xq = cone.getRegistryXQuery();
+		assertNotNull(xq);
+		org.astrogrid.acr.ivoa.Registry reg = (org.astrogrid.acr.ivoa.Registry)getACR().getService(org.astrogrid.acr.ivoa.Registry.class);
+		Resource[] arr = reg.xquerySearch(xq);
+		assertNotNull(arr);
+		assertTrue(arr.length > 0);
+		// just services for now..
+		for (int i = 0; i < arr.length; i++) {
+			checkConeResource(arr[i]);
+		}		
+		
+	}
+	
+	private void checkConeInformation(ConeInformation ci) {
+		assertNotNull(ci.getAccessURL());
+	}
+	
+	private void checkConeResource(Resource r) {
+		//@todo refine this later..
+		assertTrue(r instanceof Service);
+	}	
+	
 
 }

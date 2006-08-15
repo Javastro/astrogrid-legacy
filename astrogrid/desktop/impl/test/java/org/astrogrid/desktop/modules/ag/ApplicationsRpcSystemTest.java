@@ -1,4 +1,4 @@
-/*$Id: ApplicationsRpcSystemTest.java,v 1.6 2006/06/15 09:18:24 nw Exp $
+/*$Id: ApplicationsRpcSystemTest.java,v 1.7 2006/08/15 10:28:48 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,11 +16,14 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ACRTestSetup;
 
@@ -177,6 +180,10 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
             throw new ServiceException(e);
         }   
     }
+    
+	public CeaApplication getCeaApplication(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
+		throw new ServiceException("Not implemented - can't be arsed");
+	}
 
     /**
      * @see org.astrogrid.acr.astrogrid.Applications#getDocumentation(java.net.URI)
@@ -304,6 +311,11 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
             throw new ServiceException(e);
         }   
     }
+    
+	public Service[] listServersProviding(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
+		throw new ServiceException("Can't be bothered to implemnt");
+	}
+
 
     /**
      * @see org.astrogrid.acr.astrogrid.Applications#submit(org.w3c.dom.Document)
@@ -447,12 +459,32 @@ public class ApplicationsRpcSystemTest extends ApplicationsSystemTest implements
             throw new RuntimeException(e);
         }
     }
+    public String getRegistryAdqlQuery() {
+        v.clear();
+        try {
+            return (String)client.execute("astrogrid.applications.getRegistryAdqlQuery",v);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public String getRegistryXQuery() {
+        v.clear();
+        try {
+            return (String)client.execute("astrogrid.applications.getRegistryXQuery",v);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
 
 
 /* 
 $Log: ApplicationsRpcSystemTest.java,v $
+Revision 1.7  2006/08/15 10:28:48  nw
+migrated from old to new registry models.
+
 Revision 1.6  2006/06/15 09:18:24  nw
 improved junit tests
 
