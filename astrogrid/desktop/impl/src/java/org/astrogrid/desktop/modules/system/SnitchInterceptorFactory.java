@@ -21,7 +21,6 @@ import org.apache.hivemind.service.MethodContribution;
 import org.apache.hivemind.service.MethodFab;
 import org.apache.hivemind.service.MethodIterator;
 import org.apache.hivemind.service.MethodSignature;
-import org.astrogrid.acr.astrogrid.Community;
 
 /** Interceptor that 'snitches' - calls a http service for profiling of usage of AR
  * @author Noel Winstanley
@@ -203,7 +202,7 @@ public class SnitchInterceptorFactory implements ServiceInterceptorFactory {
         catch (Exception ex)
         {
             throw new ApplicationRuntimeException(
-                    "Couldn't produce login interceptor",ex);
+                    "Couldn't produce snitch interceptor",ex);
         }
     }
 
