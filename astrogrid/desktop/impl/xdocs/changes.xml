@@ -14,6 +14,30 @@
 	</head>
 <body>
 <release version="2006.3.rc2" date="unreleased">
+	<action dev="kmb, pjn, nw" type="fix" issue="1505">
+	  Fixed parameterized workflow dialogue, and got workflows running again.
+	</action>
+	<action dev="nw" type="update">
+	Improved formatting of registry entries
+	</action>
+	<action dev="nw" type="update">
+	Reworked registry google / application launcher / astroscope components to use new
+	registry interface. Deleted applications and services aren't displayed anymore.
+	</action>
+	<action dev="nw" type="add">
+		Added a generic disk-caching component. Use it to cache registry resource objects
+		and documents for a day or so.
+	</action>
+	<action dev="nw" type="fix" issue="1574">
+		Optimized registry interface - uses a streaming parser, improved data model.
+		Marked old implementation as deprecated.
+	</action>
+	<action dev="nw" type="add" issue="1413">
+		Implemented standard IVOA registry interface.
+	</action>
+	<action dev="nw" type="fix" issue="1710">
+		can now delete from list of workfows
+	</action>
 	<action dev="pjn" type="fix" issue="1760,1754">
 		Reorganised front UI tabs 
 		Corrected list of parameterised workflows
@@ -33,7 +57,6 @@
     </action>    
     <action dev="jdt" type="fix" issue="">
         Assorted other fixes: hub now self registers properly and responds to messages such as getName.
-        
     </action>
     <action dev="jdt" type="fix" issue="1762">
         XML-RPC return type conversion would fail in certain situations.
