@@ -1,4 +1,4 @@
-/*$Id: VotableLoadPlasticButton.java,v 1.4 2006/06/27 10:19:33 nw Exp $
+/*$Id: VotableLoadPlasticButton.java,v 1.5 2006/08/15 09:59:58 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.event.ActionEvent;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -83,6 +82,9 @@ public class VotableLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: VotableLoadPlasticButton.java,v $
+Revision 1.5  2006/08/15 09:59:58  nw
+migrated from old to new registry models.
+
 Revision 1.4  2006/06/27 10:19:33  nw
 reworked in tupperware
 

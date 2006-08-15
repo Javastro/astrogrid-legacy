@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.5 2006/05/17 15:45:17 nw Exp $
+/*$Id: StapProtocol.java,v 1.6 2006/08/15 09:59:58 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,9 +12,10 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.util.Calendar;
 
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
@@ -37,19 +38,22 @@ public class StapProtocol extends TemporalDalProtocol {
     /**
      * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#listServices()
      */
-    public ResourceInformation[] listServices() throws Exception{
-        return reg.adqlSearchRI(stap.getRegistryQuery());
+    public Service[] listServices() throws Exception{
+        Resource[] rs = reg.xquerySearch(stap.getRegistryXQuery());
+        Service[] result = new Service[rs.length];
+        System.arraycopy(rs,0,result,0,rs.length);
+        return result;        
     } 
 
 
 
-	public Retriever createRetriever(UIComponent parent, ResourceInformation i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
+	public Retriever createRetriever(UIComponent parent, Service i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
 		return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize,format); 
 				 
 	}
 
 
-	public Retriever createRetriever(UIComponent parent, ResourceInformation i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
+	public Retriever createRetriever(UIComponent parent, Service i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
 		return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize); 
 				 
 	}
@@ -60,6 +64,9 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.6  2006/08/15 09:59:58  nw
+migrated from old to new registry models.
+
 Revision 1.5  2006/05/17 15:45:17  nw
 factored common base class out of astroscope and helioscope.improved error-handline on astroscope input.
 

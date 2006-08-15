@@ -1,4 +1,4 @@
-/*$Id: PlasticButton.java,v 1.8 2006/07/20 12:31:36 nw Exp $
+/*$Id: PlasticButton.java,v 1.9 2006/08/15 10:01:12 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,8 +12,6 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Image;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 
@@ -73,6 +71,9 @@ public abstract class PlasticButton extends NodeConsumerButton{
 
 /* 
 $Log: PlasticButton.java,v $
+Revision 1.9  2006/08/15 10:01:12  nw
+migrated from old to new registry models.
+
 Revision 1.8  2006/07/20 12:31:36  nw
 changed to use image fetching library.
 

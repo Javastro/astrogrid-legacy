@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.6 2006/05/26 15:11:58 nw Exp $
+/*$Id: SiapProtocol.java,v 1.7 2006/08/15 09:59:58 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
@@ -35,14 +36,17 @@ public class SiapProtocol extends SpatialDalProtocol {
     /**
      * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#listServices()
      */
-    public ResourceInformation[] listServices() throws Exception{
-        return reg.adqlSearchRI(siap.getRegistryQuery());
+    public Service[] listServices() throws Exception{
+        Resource[] rs = reg.xquerySearch(siap.getRegistryXQuery());
+        Service[] result = new Service[rs.length];
+        System.arraycopy(rs,0,result,0,rs.length);
+        return result;        
     } 
 
     /**
      * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
      */
-    public Retriever createRetriever(UIComponent parent,ResourceInformation i, double ra, double dec, double raSize, double decSize) {
+    public Retriever createRetriever(UIComponent parent,Service i, double ra, double dec, double raSize, double decSize) {
         return new SiapRetrieval(parent,i,getPrimaryNode(),getVizModel(),siap,ra,dec,raSize,decSize);
     }
     
@@ -53,6 +57,9 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.7  2006/08/15 09:59:58  nw
+migrated from old to new registry models.
+
 Revision 1.6  2006/05/26 15:11:58  nw
 tidied imported.corrected number formatting.
 

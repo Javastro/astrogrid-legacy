@@ -1,4 +1,4 @@
-/*$Id: QueryResultSummarizer.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+/*$Id: QueryResultSummarizer.java,v 1.2 2006/08/15 10:01:12 nw Exp $
  * Created on 30-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,8 @@
  **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Service;
+
 
 public interface QueryResultSummarizer {
 
@@ -20,7 +21,7 @@ public interface QueryResultSummarizer {
      * @param resultCount number of result returned (-1 indicates error)
      * @param message optional message
      */
-    public void addQueryResult(ResourceInformation ri, int resultCount, String message);
+    public void addQueryResult(Service ri, int resultCount, String message);
 
     
 /** resultCount constant indicating 'error' */
@@ -29,6 +30,9 @@ public interface QueryResultSummarizer {
 
 /* 
  $Log: QueryResultSummarizer.java,v $
+ Revision 1.2  2006/08/15 10:01:12  nw
+ migrated from old to new registry models.
+
  Revision 1.1  2006/02/02 14:51:11  nw
  components of astroscope, plus new ssap component.
  

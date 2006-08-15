@@ -8,8 +8,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.Stap;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.xml.sax.InputSource;
@@ -34,7 +34,7 @@ public class StapRetrieval extends Retriever {
     private final Calendar end;
     private final String format;
 
-    public StapRetrieval(UIComponent comp,ResourceInformation information,TreeNode primaryNode,VizModel model, 
+    public StapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model, 
                          Stap stap, Calendar start, Calendar end, double ra, double dec, double raSize,double decSize)  {
         super(comp,information,primaryNode,model,ra,dec);
         this.raSize = raSize;
@@ -45,7 +45,7 @@ public class StapRetrieval extends Retriever {
         this.format = null;
     }
     
-    public StapRetrieval(UIComponent comp,ResourceInformation information,TreeNode primaryNode,VizModel model, 
+    public StapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model, 
             Stap stap, Calendar start, Calendar end, double ra, double dec, double raSize,double decSize, String format)  {
         super(comp,information,primaryNode,model,ra,dec);
         this.raSize = raSize;
@@ -62,26 +62,30 @@ public class StapRetrieval extends Retriever {
     private final Stap stap;
     protected Object construct() throws Exception{
             URL stapURL = null;
-            //check if there is a ra,dec and construct a stap query accordingly.
+            final URI endpoint = new URI(getFirstEndpoint(information).toString());
+			//check if there is a ra,dec and construct a stap query accordingly.
             if(Double.isNaN(ra) || Double.isNaN(dec)) {
                 if(format != null)
-                    stapURL = stap.constructQueryF(new URI(information.getAccessURL().toString()),start, end, format);
+                    stapURL = stap.constructQueryF(endpoint,start, end, format);
                 else
-                    stapURL = stap.constructQuery(new URI(information.getAccessURL().toString()),start, end);
+                    stapURL = stap.constructQuery(endpoint,start, end);
             }
             else {
                 if(format != null)
-                    stapURL = stap.constructQuerySF(new URI(information.getAccessURL().toString()),start, end, ra, dec, raSize, decSize, format);
+                    stapURL = stap.constructQuerySF(endpoint,start, end, ra, dec, raSize, decSize, format);
                 else
-                    stapURL = stap.constructQueryS(new URI(information.getAccessURL().toString()),start, end, ra, dec, raSize, decSize);
+                    stapURL = stap.constructQueryS(endpoint,start, end, ra, dec, raSize, decSize);
             }
             
             StringBuffer sb = new StringBuffer();
             sb.append("<html>Title: ").append(information.getTitle())
-                .append("<br>ID: ").append(information.getId())
-                .append("<br>Description: <p>")
-                .append(information.getDescription()!= null ?   WordUtils.wrap(information.getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "")
-                .append("</html>");
+                .append("<br>ID: ").append(information.getId());
+            if (information.getContent() != null) {
+               sb.append("<br>Description: <p>")
+                .append(information.getContent().getDescription()!= null 
+                			?   WordUtils.wrap(information.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+            }
+                sb.append("</html>");
                 //.append("</p><br>Service Type: ").append(((StapInformation)information).getImageServiceType())
                                         
             TreeNode serviceNode = createServiceNode(stapURL, sb.toString());

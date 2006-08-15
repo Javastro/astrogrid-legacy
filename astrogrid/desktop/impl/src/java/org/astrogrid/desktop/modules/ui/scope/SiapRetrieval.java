@@ -7,9 +7,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.SiapInformation;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.xml.sax.InputSource;
@@ -26,7 +25,7 @@ public class SiapRetrieval extends Retriever {
      */
     static final Log logger = LogFactory.getLog(SiapRetrieval.class);
 
-    public SiapRetrieval(UIComponent comp,ResourceInformation information,TreeNode primaryNode,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
+    public SiapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
         super(comp,information,primaryNode,model,ra,dec);
         this.raSize = raSize;
         this.decSize = decSize;
@@ -36,14 +35,19 @@ public class SiapRetrieval extends Retriever {
     private final double decSize;
     private final Siap siap;
     protected Object construct() throws Exception{
-            URL siapURL = siap.constructQueryS(new URI(information.getAccessURL().toString()),ra, dec,raSize,decSize);
+            URL siapURL = siap.constructQueryS(new URI(getFirstEndpoint(information).toString()),ra, dec,raSize,decSize);
             StringBuffer sb = new StringBuffer();
             sb.append("<html>Title: ").append(information.getTitle())
-                .append("<br>ID: ").append(information.getId())
-                .append("<br>Description: <p>")
-                .append(information.getDescription()!= null ?   WordUtils.wrap(information.getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "")                
-                .append("</p><br>Service Type: ").append(((SiapInformation)information).getImageServiceType())
-                .append("</html>");                        
+                .append("<br>ID: ").append(information.getId());
+            if (information.getContent() != null) {
+               sb.append("<br>Description: <p>")
+                .append(information.getContent().getDescription()!= null 
+                			?   WordUtils.wrap(information.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+            }
+                sb.append("</html>");
+                //@todo when we get more metadata parsed in new model.
+                //.append("</p><br>Service Type: ").append(((SiapInformation)information).getImageServiceType())
+                  
             TreeNode serviceNode = createServiceNode(siapURL,sb.toString());
             // build subtree for this service
 

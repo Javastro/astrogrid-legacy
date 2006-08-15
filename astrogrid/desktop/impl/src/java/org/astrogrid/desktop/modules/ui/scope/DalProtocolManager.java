@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.3 2006/08/15 10:01:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.collections.iterators.UnmodifiableIterator;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Service;
 
 /**
  * aggregates a set of retreivers together - so they can be operated as a whole.
@@ -35,7 +35,11 @@ public class DalProtocolManager implements QueryResultSummarizer {
     private final List l;
     private final DefaultTableModel table = new DefaultTableModel(
             new Object[]{"Service","Results","Message"}
-            ,0);
+            ,0) {
+    	public boolean isCellEditable(int i,int j) {
+    		return false;
+    	}
+    };
     
     /** add a protocol to the manager */
     public void add(DalProtocol r) {
@@ -58,7 +62,8 @@ public class DalProtocolManager implements QueryResultSummarizer {
     /**
      * @see org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer#addQueryResult(org.astrogrid.acr.astrogrid.ResourceInformation, java.lang.String, int, java.lang.String)
      */
-    public void addQueryResult(ResourceInformation ri,int result, String message) {
+    public void addQueryResult(Service ri,int result, String message) {
+
        table.addRow(new Object[]{ri, new Integer(result),message == null ? "" : message});
     }
 
@@ -75,6 +80,9 @@ public class DalProtocolManager implements QueryResultSummarizer {
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.3  2006/08/15 10:01:12  nw
+migrated from old to new registry models.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 

@@ -27,7 +27,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
@@ -154,7 +154,7 @@ public class WorkflowTreeCellRenderer extends DefaultTreeCellRenderer {
                         try {
                             //the application info should already be in the cache - as it'll be there if the user has just added a tool by hand,
                             // while on loading a new workkflow, we pre-populate the cache with all the applicatiton descriptions it contains.
-                            ApplicationInformation info = apps.getInfoForTool(t);
+                            CeaApplication info = apps.getInfoForTool(t);
                             toolPanel.getToolModel().populate(t,info);
                             rendererPanel.add(toolPanel);
                             } catch (ACRException e) {

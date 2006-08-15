@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** Base class for dal protocols that query on position.
@@ -20,7 +20,7 @@ public abstract class SpatialDalProtocol extends DalProtocol {
 	}
 
 	public abstract Retriever createRetriever(UIComponent parent,
-			ResourceInformation i, double ra, double dec, double raSize, double decSize);
+			Service i, double ra, double dec, double raSize, double decSize);
 	
 
 

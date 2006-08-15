@@ -10,7 +10,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
@@ -60,11 +61,11 @@ public abstract class Retriever extends BackgroundWorker {
   //  private static final int MAX_INLINE_IMAGE_SIZE = 100000;
     protected final double ra;
     protected final double dec;
-    protected final ResourceInformation information;
+    protected final Service information;
     protected final VizModel model;
     protected final TreeNode primaryNode;
     
-    public Retriever(UIComponent comp,ResourceInformation information,TreeNode primaryNode,VizModel model,double ra, double dec) {
+    public Retriever(UIComponent comp,Service information,TreeNode primaryNode,VizModel model,double ra, double dec) {
         super(comp,information.getTitle(),1000*60L,Thread.MIN_PRIORITY+3); // make low priority, timeout after 1 min.
         this.ra = ra;
         this.dec = dec;
@@ -270,7 +271,7 @@ public abstract class Retriever extends BackgroundWorker {
 
 
     protected void doError(Throwable ex) {
-        parent.setStatusMessage(information.getName() + " : Service Failed  : " + ex.getMessage());
+        parent.setStatusMessage(information.getTitle() + " : Service Failed  : " + ex.getMessage());
         model.getProtocols().addQueryResult(information,QueryResultSummarizer.ERROR,fmt(ex));
     }
     
@@ -315,9 +316,19 @@ public abstract class Retriever extends BackgroundWorker {
         serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE, information.getId().toString());
         serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL.toString());
         serviceNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip);        
-        if (information.getLogoURL() != null) {
-            serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,information.getLogoURL().toString());                    
+        if (information.getCuration() != null && information.getCuration().getCreators().length != 0 && information.getCuration().getCreators()[0].getLogo() != null) {
+            serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,information.getCuration().getCreators()[0].getLogo().toString());                    
         }
         return serviceNode;
     }
+    
+    protected URL getFirstEndpoint(Service s) throws NotFoundException {
+    	if (s.getCapabilities().length != 0 
+    			&& s.getCapabilities()[0].getInterfaces().length != 0
+    			&& s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length != 0) {
+    		return s.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
+    	}
+    	throw new NotFoundException(s.getId() + " has no access URL");
+    }
+    
 }

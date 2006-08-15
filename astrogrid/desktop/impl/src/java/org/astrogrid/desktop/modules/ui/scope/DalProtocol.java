@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.6 2006/05/26 15:11:58 nw Exp $
+/*$Id: DalProtocol.java,v 1.7 2006/08/15 10:01:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import javax.swing.JCheckBox;
 
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Service;
 
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
@@ -74,7 +74,7 @@ public abstract class DalProtocol {
      *  -- typically by querying the registry
      * @return
      */
-    public abstract ResourceInformation[] listServices() throws Exception;
+    public abstract Service[] listServices() throws Exception;
     
    
 }
@@ -82,6 +82,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.7  2006/08/15 10:01:12  nw
+migrated from old to new registry models.
+
 Revision 1.6  2006/05/26 15:11:58  nw
 tidied imported.corrected number formatting.
 

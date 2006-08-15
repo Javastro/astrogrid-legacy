@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.4 2006/08/15 09:59:58 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,8 +15,8 @@ import java.net.URL;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.xml.sax.InputSource;
@@ -26,7 +26,7 @@ import uk.ac.starlink.table.ColumnInfo;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 public class SsapRetrieval extends Retriever {
-    public SsapRetrieval(UIComponent comp,ResourceInformation information,TreeNode primaryNode,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
+    public SsapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
         super(comp,information,primaryNode,model,ra,dec);
         this.ssap = ssap;
         this.raSize= raSize;
@@ -36,14 +36,16 @@ public class SsapRetrieval extends Retriever {
     protected final double raSize;
     protected final double decSize;
     protected Object construct() throws Exception {
-        URL ssapURL =  ssap.constructQueryS(new URI(information.getAccessURL().toString()),ra,dec,raSize,decSize);
+        URL ssapURL =  ssap.constructQueryS(new URI(getFirstEndpoint(information).toString()),ra,dec,raSize,decSize);
         StringBuffer sb = new StringBuffer();
         sb.append("<html>Title: ").append(information.getTitle())
-            .append("<br>ID: ").append(information.getId())
-            .append("<br>Description: <p>")
-            .append(information.getDescription()!= null ?   WordUtils.wrap(information.getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "")                
-            .append("</html>");                        
-        TreeNode serviceNode = createServiceNode(ssapURL,sb.toString());
+            .append("<br>ID: ").append(information.getId());
+                if (information.getContent() != null) {
+               sb.append("<br>Description: <p>")
+                .append(information.getContent().getDescription()!= null 
+                			?   WordUtils.wrap(information.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+            }
+                sb.append("</html>");        TreeNode serviceNode = createServiceNode(ssapURL,sb.toString());
         // build subtree for this service
 
         InputSource source = new InputSource(ssapURL.openStream());
@@ -169,6 +171,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.4  2006/08/15 09:59:58  nw
+migrated from old to new registry models.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

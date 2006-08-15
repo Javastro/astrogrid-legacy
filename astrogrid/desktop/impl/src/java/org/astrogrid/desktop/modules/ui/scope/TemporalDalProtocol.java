@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.util.Calendar;
 
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** Base class for dal protocols that query on time.
@@ -24,12 +24,12 @@ public abstract class TemporalDalProtocol extends DalProtocol {
 	}
 
 	public abstract Retriever createRetriever(UIComponent parent,
-			ResourceInformation i, Calendar start, Calendar end,
+			Service i, Calendar start, Calendar end,
 			 double ra, double dec, double raSize, double decSize,String format);
 
 	
 	public abstract Retriever createRetriever(UIComponent parent,
-			ResourceInformation i, Calendar start, Calendar end,
+			Service i, Calendar start, Calendar end,
 			 double ra, double dec, double raSize, double decSize);
 
 

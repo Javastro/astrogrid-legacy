@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.8 2006/05/26 15:11:58 nw Exp $
+/*$Id: ConeProtocol.java,v 1.9 2006/08/15 10:01:12 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -32,24 +29,24 @@ public class ConeProtocol extends SpatialDalProtocol {
         super("Catalogues");
         this.reg = reg;
         this.cone = cone;
-    }
+    } 
     private final Registry reg;
     private final Cone cone;
 
     /**
      * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#listServices()
      */
-    public ResourceInformation[] listServices() throws Exception{
-
-        ResourceInformation[] cones = reg.adqlSearchRI("Select * from Registry where @xsi:type like '%ConeSearch'");
-        List results = new ArrayList(Arrays.asList(cones));
-        return (ResourceInformation[])results.toArray(new ResourceInformation[results.size()]);
+    public Service[] listServices() throws Exception{
+    	Resource[] rs= reg.xquerySearch(cone.getRegistryXQuery());
+        Service[] result = new Service[rs.length];
+        System.arraycopy(rs,0,result,0,rs.length);
+        return result;
     }
 
     /**
      * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
      */
-    public Retriever createRetriever(UIComponent parent,ResourceInformation i,double ra, double dec, double raSize, double decSize) {
+    public Retriever createRetriever(UIComponent parent,Service i,double ra, double dec, double raSize, double decSize) {
         return new ConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
     }
     
@@ -61,6 +58,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.9  2006/08/15 10:01:12  nw
+migrated from old to new registry models.
+
 Revision 1.8  2006/05/26 15:11:58  nw
 tidied imported.corrected number formatting.
 
