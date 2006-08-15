@@ -27,5 +27,6 @@ public class TransportTestImpl implements TransportTest {
 	public void throwUncheckedExceptionOfUnknownType() {
 		throw new AnUnknownRuntimeException("from throwUncheckedExceptionOfUnknownType");
 	}
+	
 
 }
