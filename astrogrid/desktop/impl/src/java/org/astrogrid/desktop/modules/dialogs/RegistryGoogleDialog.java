@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserDialog.java,v 1.9 2006/06/27 19:11:31 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.1 2006/08/15 10:19:53 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,35 +29,38 @@ import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.desktop.modules.dialogs.registry.RegistryChooserPanel;
+import org.astrogrid.acr.ui.RegistryBrowser;
+import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
+import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.system.CacheFactory;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 
 /** wraps a dialogue around a registry chooser pane.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
- * @fixme catch 'enter' and pass to search button, instead of 'ok' button. am trying todo this here, but don't seem to be working.
  *
  */
-public class RegistryChooserDialog extends JDialog implements PropertyChangeListener {
+public class RegistryGoogleDialog extends JDialog implements PropertyChangeListener {
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(RegistryChooserDialog.class);
+    private static final Log logger = LogFactory.getLog(RegistryGoogleDialog.class);
 
     private JOptionPane jOptionPane = null;
-    private final RegistryChooserPanel chooserPanel;
+    private final RegistryGooglePanel chooserPanel;
     private final UIComponentImpl parent;
     /** Construct a new RegistryChooserDialog
      * @throws java.awt.HeadlessException
      */
-    public RegistryChooserDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,Registry reg) throws HeadlessException {
+    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache) throws HeadlessException {
         super();
         this.parent = new UIComponentImpl(conf,help,ui);
-        this.chooserPanel = new RegistryChooserPanel(parent,reg);
+        this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache);
         this.setContentPane(getJOptionPane());           
      
         this.setTitle("Resource Chooser");
@@ -76,8 +79,8 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
         this.setSize(425,600);        
     }
     
-    public RegistryChooserDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,Registry reg) throws HeadlessException {
-        this(conf,help,ui,reg);
+    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser,CacheFactory cache) throws HeadlessException {
+        this(conf,help,ui,reg,browser, regBrowser,cache);
         setLocationRelativeTo(parentComponent);
     }
     
@@ -94,11 +97,11 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
         chooserPanel.clear();
     }
     
-    public ResourceInformation[] getSelectedResources() {
+    public Resource[] getSelectedResources() {
         return selectedResources;
     }
     
-    private ResourceInformation[] selectedResources = null;
+    private Resource[] selectedResources = null;
     
     public void propertyChange(PropertyChangeEvent e) {
         String prop = e.getPropertyName();
@@ -174,7 +177,10 @@ public class RegistryChooserDialog extends JDialog implements PropertyChangeList
 
 
 /* 
-$Log: RegistryChooserDialog.java,v $
+$Log: RegistryGoogleDialog.java,v $
+Revision 1.1  2006/08/15 10:19:53  nw
+implemented new registry google dialog.
+
 Revision 1.9  2006/06/27 19:11:31  nw
 adjusted todo tags.
 

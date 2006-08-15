@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserImpl.java,v 1.5 2006/04/18 23:25:44 nw Exp $
+/*$Id: RegistryChooserImpl.java,v 1.6 2006/08/15 10:19:53 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,44 @@
 **/
 package org.astrogrid.desktop.modules.dialogs;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.dialogs.RegistryChooser;
+import org.astrogrid.acr.dialogs.RegistryGoogle;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
-/** Impleentaito of the registry chooser component.
+/** Impleentaitn of the obsolete registry chooser component.
+ * It's an inefficent stop-gap in terms of RegistryGoogle, and then selected
+ * resources are looked up in obsolete registry interface.
+ * @deprecated
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
  *
  */
 public class RegistryChooserImpl implements RegistryChooser {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory
+			.getLog(RegistryChooserImpl.class);
 
     /** Construct a new RegistryChooserImpl
      * 
      */
-    public RegistryChooserImpl( Configuration conf, HelpServerInternal help, UIInternal ui,Registry reg) {
+    public RegistryChooserImpl( RegistryGoogle g,Registry reg) {
         super();
-        dialog = new RegistryChooserDialog(conf,help,ui,reg);
-        dialog.pack();
-        // set size..
+        this.dialog = g;
+        this.reg = reg;
     }
-    private final RegistryChooserDialog dialog;
-
+    private final RegistryGoogle dialog;
+    private final Registry reg;
     /**
      * @see org.astrogrid.acr.dialogs.RegistryChooser#chooseResource(java.lang.String)
      */
@@ -46,14 +60,18 @@ public class RegistryChooserImpl implements RegistryChooser {
      * @see org.astrogrid.acr.dialogs.RegistryChooser#chooseResourceWithFilter(java.lang.String, java.lang.String)
      */
     public ResourceInformation chooseResourceWithFilter(String arg0, String arg1) {
-        dialog.setPrompt(arg0);
-        dialog.setFilter(arg1);
-        dialog.setMultipleResources(false);
-        dialog.setVisible(true);
-        dialog.toFront();
-        dialog.requestFocus();
-        ResourceInformation[] arr = dialog.getSelectedResources();
-        return arr == null || arr.length < 1 ? null : arr[0]; 
+    	Resource[] arr = dialog.selectResourcesAdqlFilter(arg0,false,arg1);
+        return arr == null || arr.length < 1 ? null : cvt(arr[0]); 
+    }
+    
+    private ResourceInformation cvt(Resource r) {
+    	try {
+			return reg.getResourceInformation(r.getId());
+		} catch (Exception x) {
+			logger.error("Didn't expect to get null here - the resouce was here a moment ago..",x);
+			return null;
+			
+		} 
     }
 
     /**
@@ -67,13 +85,15 @@ public class RegistryChooserImpl implements RegistryChooser {
      * @see org.astrogrid.acr.dialogs.RegistryChooser#chooseResourcesWithFilter(java.lang.String, java.lang.String)
      */
     public ResourceInformation[] chooseResourcesWithFilter(String arg0, String arg1) {
-        dialog.setPrompt(arg0);
-        dialog.setFilter(arg1);
-        dialog.setMultipleResources(true);
-        dialog.setVisible(true);
-        dialog.toFront();
-        dialog.requestFocus();        
-        return dialog.getSelectedResources();
+    	Resource[] arr = dialog.selectResourcesAdqlFilter(arg0,false,arg1);
+    	if (arr == null) {
+    		return new ResourceInformation[0];
+    	}
+    	ResourceInformation[] result = new ResourceInformation[arr.length];
+    	for (int i = 0; i < arr.length; i++) {
+    		result[i] = cvt(arr[i]);
+    	}
+    	return result;
     }
 
 }
@@ -81,6 +101,9 @@ public class RegistryChooserImpl implements RegistryChooser {
 
 /* 
 $Log: RegistryChooserImpl.java,v $
+Revision 1.6  2006/08/15 10:19:53  nw
+implemented new registry google dialog.
+
 Revision 1.5  2006/04/18 23:25:44  nw
 merged asr development.
 
