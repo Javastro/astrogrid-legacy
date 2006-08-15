@@ -81,6 +81,8 @@
   		
   				<dt>cog-jglobus.jar (version 1.2)</dt>
   				<dd>Contains the code from the Java CoG kit for checking certificate chains.</dd>
+  				<dt>cog-puretls.jar (version 1.2)</dt>
+  				<dd>Supports cog-jglobus.jar.</dd>
   			</dl>
   		</subsection>
   			

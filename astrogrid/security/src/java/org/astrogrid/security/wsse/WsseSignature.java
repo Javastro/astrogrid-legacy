@@ -288,7 +288,7 @@ public class WsseSignature {
     // Creating this object validates some of the internal structure of the signature element.
     // Invalid structures cause exceptions to be thrown here.
     XMLSignature signature = new XMLSignature(element, null);
-    signature.addResourceResolver(EnvelopeIdResolver.getInstance(this.wssConfig));
+    signature.addResourceResolver(new EnvelopeIdResolver(this.wssConfig, this.message));
 
     // The signature element must include a ds:keyInfo child that specifies
     // where in the security header lies the public key for verifying the

@@ -88,7 +88,7 @@ public class AxisServiceCredentialHandler extends BasicHandler {
     }
     catch (Exception e) {
       log.info("The digital-signature-checking handler failed" + e);
-      throw new AxisFault("The digital-signature-checking handler failed: ", e);
+      throw new AxisFault("The digital-signature-checking handler failed", e);
     }
   }
   

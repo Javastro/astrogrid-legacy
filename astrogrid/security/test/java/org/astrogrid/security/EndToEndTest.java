@@ -1,7 +1,7 @@
 package org.astrogrid.security;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.security.KeyStore;
@@ -81,9 +81,10 @@ public class EndToEndTest extends TestCase {
     
     SecurityGuard guard = new SecurityGuard();
     KeyStore store = KeyStore.getInstance("JKS");
-    FileInputStream fis = new FileInputStream("tester.jks");
-    store.load(fis, "testing".toCharArray());
-    fis.close();
+    InputStream is = this.getClass().getResourceAsStream("/tester.jks");
+    assertNotNull(is);
+    store.load(is, "testing".toCharArray());
+    is.close();
     Certificate[] chain1 = store.getCertificateChain("tester");
     X509Certificate[] chain2 = new X509Certificate[chain1.length];
     for (int i = 0; i < chain2.length; i++) {

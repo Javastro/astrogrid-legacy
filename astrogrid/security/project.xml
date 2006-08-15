@@ -83,13 +83,6 @@
     </dependency>
     
     <dependency>
-      <groupId>xml-apis</groupId>
-      <type>jar</type>
-      <artifactId>xml-apis</artifactId>
-      <version>2.0.2</version>
-    </dependency>
-    
-    <dependency>
       <groupId>wsdl4j</groupId>
       <type>jar</type>
       <artifactId>wsdl4j</artifactId>
@@ -129,35 +122,7 @@
   	
   	<dependency>
   		<groupId>globus</groupId>
-  		<artifactId>cog-jgss</artifactId>
-  		<version>1.2</version>
-  		<type>jar</type>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>globus</groupId>
   		<artifactId>cog-puretls</artifactId>
-  		<version>1.2</version>
-  		<type>jar</type>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>globus</groupId>
-  		<artifactId>cog-cryptix</artifactId>
-  		<version>1.2</version>
-  		<type>jar</type>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>globus</groupId>
-  		<artifactId>cog-cryptix32</artifactId>
-  		<version>1.2</version>
-  		<type>jar</type>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>globus</groupId>
-  		<artifactId>cog-cryptix-asn1</artifactId>
   		<version>1.2</version>
   		<type>jar</type>
   	</dependency>
@@ -219,6 +184,12 @@
  	    			<include>*.properties</include>
           </includes>
         </resource>
+      	<resource>
+      		<directory>${basedir}/test/keystore</directory>
+      		<includes>
+      			<include>tester.jks</include>
+      		</includes>
+      	</resource>
       </resources>
     </unitTest>
 

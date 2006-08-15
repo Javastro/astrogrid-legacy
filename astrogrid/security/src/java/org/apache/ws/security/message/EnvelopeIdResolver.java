@@ -52,6 +52,8 @@ public class EnvelopeIdResolver extends ResourceResolverSpi {
     private WSSConfig wssConfig;
 
     private boolean doDebug = false;
+    
+    private Document document;
 
     /**
      * Singleton instance of the resolver.
@@ -70,6 +72,11 @@ public class EnvelopeIdResolver extends ResourceResolverSpi {
 
     private EnvelopeIdResolver(WSSConfig wssConfig) {
         this.wssConfig = wssConfig;
+    }
+    
+    public EnvelopeIdResolver(WSSConfig wssConfig, Document document) {
+        this.wssConfig = wssConfig;
+        this.document = document;
     }
 
     /**
@@ -96,8 +103,11 @@ public class EnvelopeIdResolver extends ResourceResolverSpi {
         if (doDebug) {
             log.debug("enter engineResolve, look for: " + uriNodeValue);
         }
-
-        Document doc = uri.getOwnerDocument();
+    
+        Document doc = (this.document == null)? uri.getOwnerDocument() : this.document;
+        if (doc == null) {
+          throw new RuntimeException("No DOM Document is associated with the signature.");
+        }
 
         // Xalan fix for catching all namespaces
         XMLUtils.circumventBug2650(doc);

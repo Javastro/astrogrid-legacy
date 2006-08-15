@@ -26,7 +26,6 @@
 	     the tests need to be in the CWD. -->
 	<preGoal name="test:test">
 		<copy file="${basedir}/test/wsdd/server-config.wsdd"  todir="${maven.build.dir}" overwrite="true"/>
-		<copy file="${basedir}/test/keystore/tester.jks"      todir="${maven.build.dir}" overwrite="true"/>
 	</preGoal>
 	
 </project>

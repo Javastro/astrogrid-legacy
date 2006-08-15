@@ -198,6 +198,8 @@ axisGuard.configureStub((org.apache.axis.client.Stub)proxy);
   				<dd>Contains the cryptographic algorithms used in digital signature.</dd>
   				<dt>cog-jglobus.jar (version 1.2)</dt>
   				<dd>The Java CoG kit, from which are drawn the classes supporting RFC3820.</dd>
+  				<dt>cog-puretls.jar (version 1.2)</dt>
+  				<dd>Supports cog-jglobus.jar.</dd>
   			</dl>
   		</subsection>
   	</section>
