@@ -71,11 +71,11 @@ public class SlightlyStressfulIntegrationTest extends TestCase {
             }
             
             private int registeredAppsThatIKnowAbout = 0;
-            public void applicationRegistered(URI plid) {
+            public void applicationRegistered(String plid) {
                 // Can't actually do much ... just want to receive the message
                 registeredAppsThatIKnowAbout++; //no need for synch...atomic
             }
-            public void applicationUnregistered(URI plid) {
+            public void applicationUnregistered(String plid) {
                 // Can't actually do much ... just want to receive the message
                 registeredAppsThatIKnowAbout--;
             }
