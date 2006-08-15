@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.easymock.MockControl;
@@ -89,5 +89,13 @@ public class SiapUnitTest extends TestCase {
 	
 		assertNotNull(siap.getRegistryQuery());
 	}
-
+	
+	public void testGetAdqlRegistryQuery() {
+		assertNotNull(siap.getRegistryAdqlQuery());
+	}
+	
+	
+	public void testGetlRegistryXQuery() {
+		assertNotNull(siap.getRegistryXQuery());
+	}
 }

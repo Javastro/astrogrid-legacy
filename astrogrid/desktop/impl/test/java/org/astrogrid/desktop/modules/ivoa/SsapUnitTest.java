@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -73,6 +73,14 @@ public class SsapUnitTest extends TestCase {
 	public void testGetRegistryQuery() {
 	
 		assertNotNull(ssap.getRegistryQuery());
+	}
+	public void testGetRegistryXQuery() {
+		
+		assertNotNull(ssap.getRegistryXQuery());
+	}
+	public void testGetRegistryAdqlQuery() {
+		
+		assertNotNull(ssap.getRegistryAdqlQuery());
 	}
 
 }

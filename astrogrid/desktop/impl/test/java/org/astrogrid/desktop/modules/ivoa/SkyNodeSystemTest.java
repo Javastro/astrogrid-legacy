@@ -9,19 +9,30 @@ import java.util.Arrays;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xmlbeans.XmlUnsignedInt;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.FunctionBean;
+import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.acr.ivoa.SkyNode;
 import org.astrogrid.acr.ivoa.SkyNodeTableBean;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.adql.v1_0.beans.AllSelectionItemType;
 import org.astrogrid.adql.v1_0.beans.FromTableType;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.adql.v1_0.beans.SelectionItemType;
 import org.astrogrid.adql.v1_0.beans.TableType;
+import org.astrogrid.desktop.ACRTestSetup;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.w3c.dom.Document;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * @author Noel Winstanley
@@ -34,8 +45,22 @@ public class SkyNodeSystemTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
+		ACR reg = getACR();
+		assertNotNull(reg);
+		skynode = (SkyNode)reg.getService(SkyNode.class);
+		assertNotNull(skynode);
 	}
+	
+	protected SkyNode skynode;
+	   protected ACR getACR() throws Exception{
+	        return (ACR)ACRTestSetup.acrFactory.getACR();
+	    }    
+	    public static Test suite() {
+	        return new ACRTestSetup(new TestSuite(SkyNodeSystemTest.class));
+	    }    
 
+
+	//@todo transcribe this into tests.
 	 public static void main(String[] args) {
 	        try {
 	        SkyNode s = new SkyNodeImpl();
@@ -143,12 +168,7 @@ public class SkyNodeSystemTest extends TestCase {
 		fail("implement me");
 	}
 
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getRegistryQuery()'
-	 */
-	public void testGetRegistryQuery() {
-		fail("implement me");
-	}
+
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getResults(URI, Document)'
@@ -185,4 +205,35 @@ public class SkyNodeSystemTest extends TestCase {
 		fail("implement me");
 	}
 
+	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
+		String q = skynode.getRegistryAdqlQuery();
+		assertNotNull(q);
+		org.astrogrid.acr.ivoa.Registry reg = (org.astrogrid.acr.ivoa.Registry)getACR().getService(org.astrogrid.acr.ivoa.Registry.class);
+		Resource[] arr = reg.adqlsSearch(q);
+		assertNotNull(arr);
+		assertTrue(arr.length > 0);
+		// just services for now..
+		for (int i = 0; i < arr.length; i++) {
+			checkSiapResource(arr[i]);
+		}
+	}
+	
+	public void testGetXQueryRegistryQuery() throws Exception {
+		String xq = skynode.getRegistryXQuery();
+		assertNotNull(xq);
+		org.astrogrid.acr.ivoa.Registry reg = (org.astrogrid.acr.ivoa.Registry)getACR().getService(org.astrogrid.acr.ivoa.Registry.class);
+		Resource[] arr = reg.xquerySearch(xq);
+		assertNotNull(arr);
+		assertTrue(arr.length > 0);
+		// just services for now..
+		for (int i = 0; i < arr.length; i++) {
+			checkSiapResource(arr[i]);
+		}		
+		
+	}
+
+	private void checkSiapResource(Resource r) {
+		//@todo refine this later..
+		assertTrue(r instanceof Service);
+	}	
 }

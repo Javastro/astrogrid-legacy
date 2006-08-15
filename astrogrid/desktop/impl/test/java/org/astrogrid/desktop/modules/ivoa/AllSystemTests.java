@@ -14,9 +14,16 @@ public class AllSystemTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
-				"Test for org.astrogrid.desktop.modules.ivoa");
+				"System Tests for ivoa module.");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(Adql074SystemTest.class);
+		suite.addTestSuite(ExternalRegistryBasicsSystemTest.class);
+		suite.addTestSuite(ExternalRegistryKeywordSystemTest.class);
+		suite.addTestSuite(ExternalRegistryADQLSystemTest.class);
+		suite.addTestSuite(ExternalRegistryXQuerySystemTest.class);		
+		suite.addTestSuite(SiapSystemTest.class);
+		suite.addTestSuite(SkyNodeSystemTest.class);
+		suite.addTestSuite(SsapSystemTest.class);
 		//$JUnit-END$
 		return suite;
 	}
