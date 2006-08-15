@@ -12,6 +12,7 @@ public class AllIntegrationTests {
         suite.addTestSuite(DeafListenerIntegrationTest.class);
         suite.addTestSuite(PlaskitIntegrationTest.class);
         suite.addTestSuite(RMIListenerIntegrationTest.class);
+        suite.addTestSuite(SlightlyStressfulIntegrationTest.class);
         //$JUnit-END$
         return suite;
     }
