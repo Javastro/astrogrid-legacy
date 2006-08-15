@@ -61,14 +61,19 @@
   (define (verbose-option) (if (chatter) '("--verbose") '()))
   (let ((full-url (format #f "~a/kb/~a" (base-url) kb-name)))
     (if (char=? (string-ref metadata 0) #\@)
-        (let ((metadata-file (substring metadata 0 (string-length metadata))))
+        (let ((metadata-file (substring metadata 1 (string-length metadata)))
+              (mime-type (get-language-from-extension metadata)))
           (check-file-exists metadata-file)
+          (if (not mime-type)
+              (formatted-error "Can't determine type of file ~a" metadata-file))
           (chatter "PUT file ~a to URL ~a" metadata-file full-url)
           (exec-epf (curl ,@(verbose-option)
+                          ,@(make-header "Content-Type" mime-type)
                           --upload-file ,metadata-file
                           ,full-url)))
         (begin (chatter "PUT text '~a' to URL ~a" metadata full-url)
                (exec-epf (curl ,@(verbose-option)
+                               ,@(make-header "Content-Type" "text/plain")
                                --upload-file -
                                ,full-url)
                          (<< ,metadata))))))
@@ -285,10 +290,12 @@
   (let ((ext (file-name-extension filename))
         (ext-map '((".n3"  . "text/rdf+n3")
                    (".rdf" . "application/rdf+xml")
-                   (".owl" . "application/rdf+xml"))))
-    (if (assoc ext ext-map)
-        (cdr (assoc ext ext-map))
-        #f)))
+                   (".owl" . "application/rdf+xml")
+                   (".txt" . "text/plain"))))
+    (cond ((assoc ext ext-map)
+           => cdr)
+          (else
+           #f))))
 
 ;; Call error with implicit formatting
 (define (formatted-error . fmt-and-args)
