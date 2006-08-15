@@ -40,13 +40,7 @@
         </release>
 
         <release version="(Undertest)">
-    		<action dev="gtr" type="fix">
-    		  <em>Branch security-gtr-1717</em>: fixes for BZ1717 "Digital signature does not work".
-    		  There are changes to astrogrid/security and a one-line change in astrogrid/desktop/impl. These
-    		  may be independent; the fix fof the current bug is in astrogrid/desktop/impl and the astrogrid/security change
-    		  is to avoid future problems. However, the astrogrid/desktop/impl changes were tested with the astrogrid/security
-    		  changes so the two should be merged at the same time.
-    		</action>
+ 
     		
     		<action dev="gtr" type="fix">
     		  <em>Branch community-gtr-1722</em>: This updates the community project and introduces two new features: 
@@ -61,6 +55,13 @@
         </release>
 		
 		<release version="HEAD">
+   		<action dev="gtr" type="fix">
+    		  <em>Branch security-gtr-1717</em>: fixes for BZ1717 "Digital signature does not work".
+    		  There are changes to astrogrid/security and a one-line change in astrogrid/desktop/impl. These
+    		  may be independent; the fix fof the current bug is in astrogrid/desktop/impl and the astrogrid/security change
+    		  is to avoid future problems. However, the astrogrid/desktop/impl changes were tested with the astrogrid/security
+    		  changes so the two should be merged at the same time.
+    		</action>		
     	<action dev="gtr" type="fix">
     		<em>Branch cea-gtr-1648:</em> fixes to astrogrid/contracts and astrogrid/applications/commandline to make it 
     		easier to validate application-description files. <strong>NB:</strong> the astrogrid-software-site module is
