@@ -1,4 +1,4 @@
-/*$Id: Messages.java,v 1.4 2006/06/27 10:25:45 nw Exp $
+/*$Id: Messages.java,v 1.5 2006/08/15 10:15:16 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -172,7 +172,7 @@ public class Messages extends AbstractTableModel {
         MessageContainer m = (MessageContainer)messageList.get(rowIndex);
         switch (columnIndex) {
             case 2: return m.getMessage().getSource();
-            case 1: return df.format(m.getMessage().getTimestamp());
+            case 1: return m.getMessage().getTimestamp() != null ?  df.format(m.getMessage().getTimestamp()) : "";
             case 0:return m.getSummary();
            default:
                return null;
@@ -206,6 +206,9 @@ public class Messages extends AbstractTableModel {
 
 /* 
 $Log: Messages.java,v $
+Revision 1.5  2006/08/15 10:15:16  nw
+minor bugfix.
+
 Revision 1.4  2006/06/27 10:25:45  nw
 findbugs tweaks
 
