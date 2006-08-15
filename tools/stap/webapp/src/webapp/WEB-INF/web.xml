@@ -18,23 +18,33 @@
     </context-param>
 
     <servlet>
-        <servlet-name>SolarSearch</servlet-name>
-        <servlet-class>org.astrogrid.solarsearch.http.servlets.SolarSearch</servlet-class>
+        <servlet-name>StapSearch</servlet-name>
+        <servlet-class>org.astrogrid.stapsearch.http.servlets.StapSearch</servlet-class>
     </servlet>
 
     <servlet>
-        <servlet-name>SolarFetch</servlet-name>
-        <servlet-class>org.astrogrid.solarsearch.http.servlets.SolarFetch</servlet-class>
+        <servlet-name>StapFetch</servlet-name>
+        <servlet-class>org.astrogrid.stapsearch.http.servlets.StapFetch</servlet-class>
     </servlet>
 
 
 	<servlet-mapping>
-   		<servlet-name>SolarSearch</servlet-name>
+   		<servlet-name>StapSearch</servlet-name>
+   		<url-pattern>/StapSearch</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+   		<servlet-name>StapFetch</servlet-name>
+   		<url-pattern>/StapFetch</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+   		<servlet-name>StapSearch</servlet-name>
    		<url-pattern>/SolarSearch</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
-   		<servlet-name>SolarFetch</servlet-name>
+   		<servlet-name>StapSearch</servlet-name>
    		<url-pattern>/SolarFetch</url-pattern>
 	</servlet-mapping>
 
