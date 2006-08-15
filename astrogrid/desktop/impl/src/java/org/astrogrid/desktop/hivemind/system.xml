@@ -392,6 +392,13 @@ System module.
 				Proceed?
 			]]></confirmMessage>
 		</action>
+		<action parentName="edit" name="cacheClear" text="Flush Cache"
+			object="service:cache" methodName="flush" after="*" >
+			<confirmMessage><![CDATA[<html>
+				Remove all cached registry documents?
+				Proceed?
+			]]></confirmMessage>
+		</action>		
 	</contribution>	
 
 		
@@ -465,6 +472,10 @@ System module.
 		<!-- configuration for alternatives -->
 		<default symbol='system.systray.alternative.logger' value='SYSTRAY' />
 		<default symbol='system.ui.alternative.logger' value='UI' />
+		
+		<!--  storage directory - used for various components -->
+		<default symbol="astrogrid.store.workdir"
+			value="${user.home}${file.separator}.workbench" />	
 
 	</contribution>
 	
@@ -480,6 +491,7 @@ System module.
 		<load service-id="configuration" />
 		<load service-id="snitch" />
 		<load service-id="tupperware" />
+		<load service-id="cache" />
 	</contribution>
 	
 	<!-- start this eager if running under webstart -->
@@ -490,6 +502,7 @@ System module.
 	<contribution configuration-id="hivemind.EagerLoad" if="class com.apple.eawt.Application" >
 		<load service-id="macSetup" />
 	</contribution>
+	
 	<!-- start this eager if we want to display a UI -->
 	<contribution configuration-id="hivemind.EagerLoad" if="property system.ui.visible">
 		<load service-id="ui"/>
@@ -802,6 +815,17 @@ System module.
 	  	</construct>
 	  </invoke-factory>
 	</service-point>
+	
+	<service-point id="deprecation"
+		interface="org.apache.hivemind.ServiceInterceptorFactory"
+		parameters-schema-id="hivemind.MethodFilter">
+		Warn on using deprecated methods
+		<invoke-factory model="primitive">
+			<construct class="org.astrogrid.desktop.modules.system.DeprecationInterceptorFactory">
+				<service>hivemind.ClassFactory</service>
+			</construct>
+		</invoke-factory>
+		</service-point>
 
 	<service-point id="tupperware"
 		interface="org.astrogrid.desktop.modules.system.TupperwareInternal">
@@ -847,6 +871,16 @@ System module.
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>		
 
+
+<!--  result cache. -->
+	<service-point id="cache" interface="org.astrogrid.desktop.modules.system.CacheFactory">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.CacheFactoryImpl">
+				<string>${astrogrid.store.workdir}</string>
+				<event-listener service-id="builtin.shutdown" />			
+			</construct>
+		</invoke-factory>
+	</service-point>
  </module> 
  
  
