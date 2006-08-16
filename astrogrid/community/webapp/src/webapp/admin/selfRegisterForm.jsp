@@ -20,20 +20,20 @@
 <h1>Registration</h1>
 
 <p>
-When setting up community for the first time, you need to register your resources to a registry.  Fill in the 
-details below and hit submit.
+When setting up community for the first time, you need to register 
+it in an IVO resource-registry. The form on this page generates
+the registration documents. 
 </p>
 <p>
 
 <form action="selfRegisterCheck.jsp" method="post">
 <p>
-<select name="version">
-	<option value="0.9">0.9</option>
-	<option selected="true" value="0.10">0.10</option>
-</select>
+<!-- The registration documents should be generated according
+     to this version of the XML schema. -->
+<input type="hidden" value="0.10"/>
 <table>
  <tr><td>Contact Name <td> <input type="text" name="ContactName">
- <tr><td>Contact Email        <td> <input type="text" name="ContactEmail">
+ <tr><td>Contact Email<td> <input type="text" name="ContactEmail">
 </table>
 <p>
 <input type="checkbox" name="AuthorityResourceAdd"/>Add Authority Resource

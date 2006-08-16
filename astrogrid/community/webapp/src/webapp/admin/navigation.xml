@@ -24,6 +24,7 @@
          <li><a href="GroupMemberAdmin.jsp" >Group Members</a></li>
          <li><a href="ResourceAdmin.jsp" >Resource</a></li>
          <li><a href="PermissionAdmin.jsp" >Permission</a></li>
+         <li><a href="CaEnablementForm.jsp">Enable the certificate authority</a></li>
       </ul>
    </div>
    <div id='menuRegister'>

@@ -12,18 +12,16 @@
 
 <div id='bodyColumn'>
 
-<h1>AstroGrid Community Index</h1>
+<h1>AstroGrid Community</h1>
 
-<p>Normal operation of the community:</p>
-<ul>
-  <li><a href="admin/index.jsp">Community Administration</a></li>
-  <li><a href="axis.index.jsp">Apache Axis Index</a></li>  
-</ul>
-
-<i>To enter the Administration pages you will need a username and password for the servlet containers <strong>manager</strong> role</i>
-<br />
-<strong>Read the <a href='configure.jsp'>Configure</a> if this  is the first time setting up a community.</strong>
-
+<p>
+This AstroGrid component allows user accounts to be registered and made
+known to the AstroGrid workbench and other client tools.
+</p>
+<p>
+Administration of the community and user accounts should be done through
+the pages of this web-application.
+</p>
 
 </body>
 </html>

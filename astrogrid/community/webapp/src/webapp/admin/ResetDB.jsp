@@ -1,7 +1,7 @@
 <%@ page import="org.astrogrid.community.common.ivorn.CommunityIvornParser,
                  org.astrogrid.store.Ivorn,                 
                  org.astrogrid.community.server.database.manager.DatabaseManagerImpl"
-    session="false" %>
+    session="true" %>
 <%
 	DatabaseManagerImpl dmi = new DatabaseManagerImpl();
     String resetdb = request.getParameter("resetdb");
@@ -16,7 +16,7 @@
 %>
 <html>
     <head>
-        <title>Database admin</title>
+        <title>Initializing the community database</title>
         <style type="text/css" media="all">
             @import url("../style/astrogrid.css");
         </style>
@@ -25,27 +25,34 @@
         <%@ include file="header.xml" %>
         <%@ include file="navigation.xml" %>
         <div id='bodyColumn'>
-            <p>
-                <h1>
-                    <font color="red">WARNING</font>
-                </h1>
-                <font color="red">This will reset the database tables, deleting any existing data in the database.</font>
-                <br>
-                <font color="red">This should only be used during initial installation and setup.</font>
-            </p>
-            <p>
-                Current database status : [<%= (status) %>]
-                <br>
-                <font size="-2">
-                    <i>*The health check looks for a known set of test data in the database, if the test data has not been added, then the health check will fail.</i>
-                </font>
-            </p>
-            <p>
-                <form name="resetdatabaseform" method="post">
-                    <input type="hidden" name="resetdb" value="true" />
-                    <input type="submit" name="resetdbsubmit" value="Reset"/>
-                </form>
-            </p>
+          <h1>Initializing the community database</h1>
+          
+          <p>
+          Use the "Initialize DB" button below to create empty database tables 
+          for a <em>new</em> community.
+          </p>
+          
+          <p>
+          <strong>This will delete all data already in the database, destroying 
+          all records of users. Don't press the button unless you are prepared
+          to lose your user-data.</strong>
+          </p>
+
+          <p>
+          If you have just installed the community
+          software, initializing the database should check the "health"
+          indication from "not useable" to "OK". If the "health" indication
+          doesn't change to "OK" after initialization, then the connection
+          between this web application and the database is suspect: check the
+          configuration of the JEE DataSource.
+          </p>
+          
+          <p>
+            <form name="resetdatabaseform" method="post">
+              <input type="hidden" name="resetdb" value="true" />
+              <input type="submit" name="resetdbsubmit" value="Initialize DB"/>
+            </form>
+          </p>
         </div>
     </body>  
 </html>    

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/manager/Attic/SecurityManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2006/08/16 09:44:17 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManagerImpl.java,v $
+ *   Revision 1.10  2006/08/16 09:44:17  clq2
+ *   gtr_community_1722
+ *
+ *   Revision 1.9.114.1  2006/08/13 17:05:40  gtr
+ *   This was changed as part of the big update to introduce a certificate authority.
+ *
  *   Revision 1.9  2005/01/07 14:14:25  jdt
  *   merged from Reg_KMB_787
  *
@@ -154,6 +160,7 @@ public class SecurityManagerImpl
             //log.debug("  PASS : found account") ;
             //
             // Try loading the PasswordData.
+            log.debug("Loading PasswordData with JDO identity " + ident.getAccountIdent());
             PasswordData data = null ;
             try {
                 data = (PasswordData) database.load(PasswordData.class, ident.getAccountIdent()) ;

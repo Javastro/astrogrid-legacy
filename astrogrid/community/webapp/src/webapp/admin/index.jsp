@@ -1,14 +1,8 @@
-<%@ page import="org.astrogrid.community.common.ivorn.CommunityIvornParser,
-                 org.astrogrid.store.Ivorn,                 
-                 org.astrogrid.community.server.database.manager.DatabaseManagerImpl"
-    session="false" %>
-<%
-	DatabaseManagerImpl dmi = new DatabaseManagerImpl();
-	boolean health = dmi.checkDatabaseTables();
-%>
+<%@ page session="false" %>
+
 <html>
 <head>
-      <title>Community Administration</title>
+      <title>Administration commands</title>
 <style type="text/css" media="all">
           @import url("../style/astrogrid.css");
 </style>
@@ -20,18 +14,18 @@
 
 <div id='bodyColumn'>
 
-This section is for the Administration of the Community.  See the menus on the left for particular administration tasks.
-<br />
-<i>*The health check is by looking for a small amount of test data in the database, if the sql scripts have been changed to not insert this test data, then the health check will always be false.</i>
-<br />
-<%
-  if(!health) {
-  	out.write("<font color='red'>A health check on the database is not good, if this is your first time please go to Reset DB for setting up the database.</font>");
-  }else {
-  	out.write("<font color='blue'>A current health check on the database says the database is good.</font>");
-  }
+<h1>Administration commands</h1>
 
-%>
+<p>
+Using the menu on this page, you can use all the administration
+functions of the community.
+However, functions <em>only</em> accessible from this page are 
+experimental and you should not need to use them on a production community.
+The functions recommended for regular use are all accessible from the
+front page of the community.
+</p>
+
+</div>
 
 </body>
 </html>

@@ -28,16 +28,16 @@ AccountData changeAccount = null;
 boolean passwordSet = false;
 String passwordTemp = null;
 if(removeAccount != null && removeAccount.trim().length() > 0) {
-   ident = request.getParameter("ident");
+   ident = request.getParameter("userLoginName");
    ident = ident.trim();      
    ami.delAccount(ident);
    info = "Account was deleted for id = " + ident; 
 }else if(addAccount != null && addAccount.trim().length() > 0) {
-   ident = request.getParameter("ident");
-   passwordTemp = request.getParameter("password");
+   ident = request.getParameter("userLoginName");
+   passwordTemp = request.getParameter("userPassword");
    if(ident == null || ident.trim().length() <= 0 ||
-       request.getParameter("displayName") == null || 
-       request.getParameter("displayName").trim().length() <= 0 ||
+       request.getParameter("userCommonName") == null || 
+       request.getParameter("userCommonName").trim().length() <= 0 ||
        passwordTemp == null || passwordTemp.trim().length() <= 0) {   
       info = "Could not add an account no username, password or display name was provided.";
    }else {
@@ -48,7 +48,7 @@ if(removeAccount != null && removeAccount.trim().length() > 0) {
       }
       changeAccount = new AccountData(currentCommunity + "/" + ident);
       changeAccount.setEmailAddress(request.getParameter("email"));     
-      changeAccount.setDisplayName(request.getParameter("displayName"));
+      changeAccount.setDisplayName(request.getParameter("userCommonName"));
       changeAccount.setDescription(request.getParameter("description"));
       changeAccount.setHomeSpace(homespace);    
       ami.addAccount(changeAccount);
@@ -61,16 +61,16 @@ if(removeAccount != null && removeAccount.trim().length() > 0) {
       }
    }
 }else if(editAccount != null && editAccount.trim().length() > 0) {
-   ident = request.getParameter("ident");
+   ident = request.getParameter("userLoginName");
    ident = ident.trim();      
    changeAccount = new AccountData(ident);
    changeAccount.setEmailAddress(request.getParameter("email"));
-   changeAccount.setDisplayName(request.getParameter("displayName"));
+   changeAccount.setDisplayName(request.getParameter("userCommonName"));
    changeAccount.setDescription(request.getParameter("description"));
    changeAccount.setHomeSpace(request.getParameter("homespace"));    
    ami.setAccount(changeAccount);   
    info = "Account was updated for id = " + ident;
-   passwordTemp = request.getParameter("password");
+   passwordTemp = request.getParameter("userPassword");
    if(passwordTemp != null && passwordTemp.trim().length() > 0) {
       passwordSet = smi.setPassword(ident,passwordTemp.trim());
       if(passwordSet) {
@@ -101,6 +101,7 @@ else
 <%@ include file="navigation.xml" %>
 
 <div id='bodyColumn'>
+
 	<p>
          <strong><font color="blue"><%=info%></font></strong><br />
          Account administration page, here you can add, edit, or delete accounts.<br />
@@ -139,13 +140,13 @@ else
          <tr>
             <form method="get" />
                <td>
-                  <input type="text" name="ident" />
+                  <input type="text" name="userLoginName" />
                </td>
                <td>
-                  <input type="text" name="displayName" />
+                  <input type="text" name="userCommonName" />
                </td>
                <td>
-                  <input type="password" name="password" />
+                  <input type="password" name="userPassword" />
                </td>             
                <td>
                   <input type="text" name="description" />
@@ -203,17 +204,18 @@ else
          if(accounts != null && accounts.length > 0)
          for(int i = 0;i < accounts.length;i++) {
             ad = (AccountData)accounts[i];
+            String userLoginName = ad.getIdent().substring((currentCommunity.length()+1));
       %>
          <tr>
             <form method="get">
                <td>
-                  <%=ad.getIdent().substring((currentCommunity.length()+1))%>
+                  <%=userLoginName%>
                </td>
                <td>
-                  <input type="text" name="displayName" value="<%=ad.getDisplayName()%>" />
+                  <input type="text" name="userCommonName" value="<%=ad.getDisplayName()%>" />
                </td>
                <td>
-                  <input type="password" name="password" />
+                  <input type="password" name="userPassword" />
                </td>             
                <td>
                   <input type="text" name="description" value="<%=ad.getDescription()%>" />
@@ -225,7 +227,7 @@ else
                   <input type="text" name="homespace" value="<%=ad.getHomeSpace()%>" />
                </td>
                <td>
-                  <input type="hidden" name="ident" value="<%=ad.getIdent()%>" />               
+                  <input type="hidden" name="userLoginName" value="<%=ad.getIdent()%>" />               
                   <input type="hidden" name="EditAccount" value="true" />
                   <input type="submit" name="EditAccountSubmit" value="Edit" />
                </td>
@@ -234,17 +236,20 @@ else
                <td>
 
                   <input type="hidden" name="RemoveAccount" value="true" />
-                  <input type="hidden" name="ident" value="<%=ad.getIdent()%>" />
+                  <input type="hidden" name="userLoginName" value="<%=ad.getIdent()%>" />
                   <input type="submit" name="RemoveAccountSubmit" value="Remove" />
                </td>
-            </form>           
+            </form>
+            <form method="post" action="UserInitiationResult.jsp">
+              <td>
+                <input type="hidden" name="userLoginName" value="<%=userLoginName%>"/>
+                <input type="submit" name="GenerateCredentialsSubmit" value="Issue ID certificate"/>
+              </td>
+            </form>
          </tr> 
       <%
          }
       %>
       </table>
-      <br />
-      <a href="index.jsp">Administration Index</a>
-      </p>  
    </body>  
 </html>

@@ -1,21 +1,24 @@
 <!-- admin navigation -->
 <div id='leftColumn'>
-<div id='navcolumn'>
-   <div id='menuServer'>
-      <h5>Server</h5>
-      <ul>
-         <li><a href="./" >Home</a>
-         <li><a href='configure.jsp'>Configure/Install</a>         
-         <li><a href='admin/index.jsp'>Admin</a>
-         <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a>
-      </ul>
-   </div>
-   <div id='menuDocs'>
-      <h5>Documentation</h5>
-      <ul>
-         <li><a href="docs/index.html" >Docs</a>
-      </ul>
-   </div>   
-</div>
+  <div id='navcolumn'>
+    <h5>Navigation</h5>
+    <ul>
+      <li><a href="./" >Community home page</a></li>
+      <li><a href="docs/index.html">Document index</a></li>
+      <li><a href="docs/release-notes.html">Release notes</a></li>
+    </ul>
+    <h5>For community members</h5>
+    <ul>
+      <li><a href="UserPasswordChangeForm.jsp">Change your password</a></li>
+    </ul>
+    <h5>For community managers</h5>
+    <ul>
+      <li><a href='configure.jsp'>Configuration instructions</a></li>
+      <li><a href="admin/ResetDB.jsp">Initialize the database</a></li>
+      <li><a href="admin/selfRegisterForm.jsp">Register the community</a></li>
+      <li><a href="admin/AccountAdmin.jsp">View or change user accounts</a></li>       
+      <li><a href='admin/index.jsp'>Other operations</a></li>
+    </ul>  
+  </div>
 </div>
 

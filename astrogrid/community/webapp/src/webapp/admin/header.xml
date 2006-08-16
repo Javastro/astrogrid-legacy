@@ -1,20 +1,7 @@
-<div id='banner'>
-    <table border='0' width='100%' cellpadding='8' cellspacing='0'><tr>
-      <td>
-         <a href='http://www.astrogrid.org'>
-         <img border='0' alt='AstroGrid' src='http://www.astrogrid.org/images/AGlogo' align='left'></img>
-         </a>
-      </td><td>
-         <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/registry/index.html' id='projectLogo'>
-         <img border='0' alt='Publishers Astrogrid Library' src='http://www.astrogrid.org/images/AGlogo' align='right'></img>
-         </a>
-      </td>
-   </tr></table>
-</div>
 <div id='breadcrumbs'>
-  <div class='xleft'>AstroGrid Community</div>
-  <div class='xright'>
-    <a href='http://www.astrogrid.org'>AstroGrid</a>
-  </div>
-  <div class='clear'></div> <!-- switch off left right stuff -->
+  <jsp:useBean class="org.astrogrid.community.webapp.CommunityDbBean"
+    id="db" scope="page"/>
+  <p><a href="http://www.astrogrid.org/"><img src="../style/AGlogo.png"/></a>
+  AstroGrid Community: administration.
+  Database "health": <jsp:getProperty name="db" property="briefStatus"/>.</p>
 </div>

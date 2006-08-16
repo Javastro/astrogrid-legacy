@@ -35,28 +35,40 @@
          </p>
          <subsection name="Properties">
          <p>
+           These are required for the community to function.
+         </p>
            <ul>
                <li>org.astrogrid.community.ident - community identifier, must be changed.</li>
                <li>org.astrogrid.community.default.vospace - default vospace identifier (normally a filemanger)</li>
                <li>org.astrogrid.registry.query.endpoint - regustry query endpoint normally.</li>
                <li>org.astrogrid.registry.admin.endpoint - your publishing registry to send your registry. (may be or may not be the same as the query endpoint)</li>
-           </ul>         
-         </p>
-         </subsection>
-         <subsection name="Customize">
+           </ul>
          <p>
-            See the "{context app location}/WEB-INF/classes" directory
-              for configuration files if you need to change the sql used to create tables, or possibly even the JDO mapping.  The sql file below is for hsqldb sql syntax which is 
-              slightly different than other databases hence it is expected you will need to change the sql file.  You should find a "mysql" example file in this directory
-              where by you could copy it over the original "astrogrid-community-database.sql" if you have mysql.
-            There are 3 files.
-            <ul>
-               <li> astrogrid-community-database.sql -- SQL used to create table data. </li>
-               <li> astrogrid-community-database.xml -- By default this is setup for hsqldb, but for other databases change the engine type attribute, a list of the engine types are given below.</li>
-               <li> astrogrid-community-mapping.xml -- most likely no need to change -- JDO mapping for Castor.  See <a href="http://www.castor.org/">Castor</a> for more information on the mapping. </li>
-            </ul>
-         </p>  
+           These are to do with the certificate authority and MyProxy service, which are experimental.
+           Don't bother setting these in a production community.
+         </p>
+         <dl>
+           <dt>org.astrogrid.community.cacert</dt>
+           <dd>The absolute name of the file containing the certificate authority's root certificate.
+               The file should be a PEM file.</dd>
+           <dt>org.astrogrid.community.cakey</dt>
+           <dd>The absolute name of the file containing the certificate authority's private key.
+               The file should be a PEM file. Don't make this file world-readable.</dd>
+           <dt>org.astrogrid.community.caserial</dt>
+           <dd>The absolute name of the file containing the certificate authority's serial-number
+               record. The file should be a text file containing one line. That line contains the
+               last serial number to be used in an issued certificate (which is zero for a new
+               certificate authority, since the authority's own certificate is number zero).
+               The number must be written as hexidecimal digits, padded on the left with zeros
+               to make an even number of digits. E.g., 00, 01, 42 and 0fff are all valid;
+               1 and 123 are not as they have odd numbers of digits.</dd>
+           <dt>org.astrogrid.community.myproxy</dt>
+           <dd>The absolute name of the directory in which MyProxy keeps its records. By
+               convention, this is /var/myproxy for a MyProxy installation owned by root
+               or $GLOBUS_LOCATION/var/myproxy for a MyProxy installation owned by another user.</dd>
+         </dl>
          </subsection>
+         
          <subsection name="Sample Database Config">
          <p>
            <strong>Sample DataSource Config for hsqldb</strong><br />
@@ -145,6 +157,20 @@
             </tr>
            </table>         
          </p>      
+         </subsection>
+         <subsection name="Customize">
+         <p>
+            See the "{context app location}/WEB-INF/classes" directory
+              for configuration files if you need to change the sql used to create tables, or possibly even the JDO mapping.  The sql file below is for hsqldb sql syntax which is 
+              slightly different than other databases hence it is expected you will need to change the sql file.  You should find a "mysql" example file in this directory
+              where by you could copy it over the original "astrogrid-community-database.sql" if you have mysql.
+            There are 3 files.
+            <ul>
+               <li> astrogrid-community-database.sql -- SQL used to create table data. </li>
+               <li> astrogrid-community-database.xml -- By default this is setup for hsqldb, but for other databases change the engine type attribute, a list of the engine types are given below.</li>
+               <li> astrogrid-community-mapping.xml -- most likely no need to change -- JDO mapping for Castor.  See <a href="http://www.castor.org/">Castor</a> for more information on the mapping. </li>
+            </ul>
+         </p>  
          </subsection>
     </section>
    </body>

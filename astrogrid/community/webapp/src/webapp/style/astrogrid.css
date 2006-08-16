@@ -188,6 +188,8 @@ p {
   border-top: 1px solid #aaa;
   border-bottom: 1px solid #aaa;
   background-color: #ccc;
+  padding: 0px;
+  margin: 0px;
 }
 #leftColumn {
   margin: 10px 0 0 5px;
@@ -223,3 +225,14 @@ table.bodyTable tr.b {
   border: 1px solid #999;
 }
 
+
+#breadcrumbs p {
+  margin-left: 0.1ex;
+  margin-top: 0px;
+  margin-bottom: 0.1ex;
+}
+
+#breadcrumbs p img {
+  height: 4ex;
+  width: 6ex;
+}
