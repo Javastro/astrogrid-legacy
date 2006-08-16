@@ -14,6 +14,11 @@
 		</action>	
 			
     	<release version="(Pending Integration)">
+    		<action dev="kea" type="add">
+           <em>Branch PAL_KEA_1771 in astrogrid/contracts (NB contracts
+             project, NOT pal project!!!):</em>  Added two DSA metadoc
+           schemata, and added entries for these in the SchemaMap.
+    		</action>
     	  	
     		<action dev="kmb" type="add">
     		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
