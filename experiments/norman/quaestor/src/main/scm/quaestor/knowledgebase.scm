@@ -20,10 +20,13 @@
    kb:knowledgebase?)
 
   (import* jena
-           rdf:ingest-from-stream
+           rdf:ingest-from-stream/language
            rdf:get-reasoner
+           rdf:new-empty-model
            rdf:merge-models)
-  (import* utils is-java-type?)
+  (import* utils
+           is-java-type?)
+
   (define (jena-model? x)
     (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
   (define (is-alist? x)
@@ -33,6 +36,8 @@
                #t
                (and (pair? (car l))
                     (loop (cdr l)))))))
+  (define (jstring? x)
+    (is-java-type? x '|java.lang.String|))
 
   ;; A `knowledgebase' is a named model, consisting of a number of named
   ;; `submodels'.  When any of these are updated, the new submodel is
@@ -154,22 +159,24 @@
   ;;        SUBMODEL-NAME may be a symbol or a string.
   ;;    (kb 'get-model-abox/tbox)
   ;;        Return the merged abox/tbox submodels, or #f if there are none.
-  ;;    (kb 'get-metadata-as-string)
-  ;;    (kb 'get-metadata-as-jstring)
-  ;;        Return the model's metadata, if any, as a Scheme or Java string
+  ;;    (kb 'get-metadata)
+  ;;        Return the model's metadata, as a Jena Model.
+  ;;    ;(kb 'get-metadata-as-string)
+  ;;    ;(kb 'get-metadata-as-jstring)
+  ;;    ;    Return the model's metadata, if any, as a Scheme or Java string
   ;;    (kb 'get-name)
   ;;        Return the knowledgebase's name, as a symbol
   ;;    (kb 'has-model [SUBMODEL-NAME])
   ;;        Return true if the named (sub)model exists, that is, if
   ;;        (kb 'get-model [SUBMODEL-NAME]) would succeed.  Return #f otherwise.
-  ;;    (kb 'set-metadata INFO)
+  ;;    (kb 'set-metadata jstream base-uri content-type)
   ;;        Set the metadata to the arbitrary string INFO.
   ;;    (kb 'info)
   ;;        Return alist with info
   (define (make-kb kb-name)
-    (let ((submodels '())     ;a list of (name tbox? . submodel) pseudo-lists
+    (let ((submodels '()) ;a list of (name tbox? . submodel) pseudo-lists
           (myname kb-name)
-          (metadata #f)
+          (metadata #f)                 ;a Model
           (merged-model #f)
           (merged-tbox #f)
           (merged-abox #f)
@@ -226,15 +233,22 @@
            #t)
 
           ((set-metadata)
-           ;; (kb 'set-metadata INFO)
-           ;; Set model metadata to INFO
-           (if (not (= (length args) 1))
+           ;; (kb 'set-metadata jinput-stream base-uri content-type-string)
+           ;; (kb 'set-metadata jstring base-uri <anything>)
+           ;; Set model metadata to the Model read from the given reader.
+           ;; If the first argument is a string, then create a model with
+           ;; this as a dc:description.
+           (if (not (= (length args) 3))
                (error 'make-kb
                       "bad call to set-metadata: wrong number of args in ~s"
                       args))
-           (java-synchronized sync-object
-             (lambda ()
-               (set! metadata (car args)))))
+           (let ((input (car args))
+                 (base-uri (cadr args))
+                 (content-type (caddr args)))
+             (let ((m (get-metadata-from-source input base-uri content-type)))
+               (java-synchronized sync-object
+                 (lambda ()
+                   (set! metadata m))))))
 
           ;;;;;;;;;;
           ;; Commands which implicitly mutate the knowledgebase, via memoisation
@@ -312,21 +326,23 @@
                   (error 'make-kb
                          "Bad call to has-model: wrong no. args ~s" args))))
 
-          ((get-metadata-as-string)
-           (cond ((is-java-type? metadata '|java.lang.String|)
-                  (->string metadata))
-                 ((string? metadata)
-                  metadata)
-                 (else
-                  (error "Impossible -- kb metadata isn't a string"))))
+          ((get-metadata)
+           metadata)
+;;           ((get-metadata-as-string)
+;;            (cond ((is-java-type? metadata '|java.lang.String|)
+;;                   (->string metadata))
+;;                  ((string? metadata)
+;;                   metadata)
+;;                  (else
+;;                   (error "Impossible -- kb metadata isn't a string"))))
 
-          ((get-metadata-as-jstring)
-           (cond ((is-java-type? metadata '|java.lang.String|)
-                  metadata)
-                 ((string? metadata)
-                  (->jstring metadata))
-                 (else
-                  (error "Impossible -- kb metadata isn't a string"))))
+;;           ((get-metadata-as-jstring)
+;;            (cond ((is-java-type? metadata '|java.lang.String|)
+;;                   metadata)
+;;                  ((string? metadata)
+;;                   (->jstring metadata))
+;;                  (else
+;;                   (error "Impossible -- kb metadata isn't a string"))))
 
           ((get-name)
            myname)
@@ -353,6 +369,39 @@
            (lambda ()
              (let ((name (object 'get-name)))
                (symbol? name))))))
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;
+  ;; Helpers used above
+
+  ;; get-metadata-from-source jinput-stream base-uri content-type
+  ;; get-metadata-from-source jstring base-uri <ignored>
+  ;;
+  ;; Given an input stream, read a model from it; given a string, make
+  ;; a model which has this as a dc:description.
+  (define/contract (get-metadata-from-source
+                    (source (or (jstring? source)
+                                (is-java-type? source '|java.io.InputStream|)))
+                    (base-uri string?)
+                    content-type
+                    -> jena-model?)
+    (if (jstring? source)
+        (let ((new-model (rdf:new-empty-model))) ;content is string
+          (define-generic-java-methods
+            create-resource create-statement
+            create-literal add)
+          (add new-model
+               (create-statement new-model
+                                 (create-resource new-model
+                                                  (->jstring base-uri))
+                                 (java-retrieve-static-object
+                                  '|com.hp.hpl.jena.vocabulary.DC.description|)
+                                 (create-literal new-model
+                                                 source
+                                                 (->jstring "en")))))
+        (rdf:ingest-from-stream/language source ;content is model
+                                         base-uri
+                                         content-type)))
 
   ;; Return an alist consisting of (prefix . namespace) mappings for
   ;; the given model.
