@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.7 2006/08/15 10:21:34 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.8 2006/08/16 11:10:23 pjn3 Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -133,7 +135,7 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
     
     public void populate(Tool t, CeaApplication desc) {
         editedTool = null;
-        parametersPanel.getToolModel().populate(t,desc);
+        parametersPanel.getToolModel().populate(t,desc);        
         getTopLabel().setText(desc.getTitle());
         getTopLabel().setToolTipText(desc.getContent().getDescription());
     }
@@ -179,7 +181,10 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
            parent.remove(main);
            main.add(getTopLabel(),BorderLayout.NORTH);
            main.add(parametersPanel,BorderLayout.CENTER);
-           jOptionPane = new JOptionPane(main,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
+           JScrollPane detailsPane =  new JScrollPane(main);
+           detailsPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+           jOptionPane = new JOptionPane(detailsPane,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
+           //jOptionPane = new JOptionPane(main,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
            jOptionPane.addPropertyChangeListener(this);
        }
        return jOptionPane;
@@ -201,6 +206,9 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.8  2006/08/16 11:10:23  pjn3
+Possible resolution to OK/Cancl bug #1505
+
 Revision 1.7  2006/08/15 10:21:34  nw
 added constructor that specifies tool editor to use.upgraded to use new reg model.
 
