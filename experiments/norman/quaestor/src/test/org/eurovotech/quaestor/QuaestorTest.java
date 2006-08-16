@@ -91,8 +91,8 @@ public class QuaestorTest
         kbURL = makeKbUrl("?metadata");
         r = httpGet(kbURL);
         assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "text/plain");
-        assertEquals("My test knowledgebase\r\n", r.getContent());
+        assertContentType(r, "text/rdf+n3");
+        //assertEquals("My test knowledgebase\r\n", r.getContent());
     }
 
     // try that one again -- should fail, since we can't create 
@@ -123,7 +123,7 @@ public class QuaestorTest
         HttpResult r = httpGet(makeKbUrl("ontology"),
                                new String[] {"Accept", "*/*"});
         assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "application/rdf+xml");
+        assertContentType(r, "text/rdf+n3");
         assertNotNull(r.getContent());
         // the actual content is a bit of a fuss to check
 
