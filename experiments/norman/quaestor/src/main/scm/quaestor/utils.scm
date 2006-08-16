@@ -16,6 +16,7 @@
   java-retrieve-static-object
   is-java-type?
   url-decode-to-jstring
+  reader->jstring
   report-exception
   chatter
   parse-http-accept-header
@@ -31,7 +32,8 @@
 
 ;; predicates used in contracts
 (define-java-classes
-  <java.lang.string>)
+  <java.lang.string>
+  <java.io.reader>)
 (define (jiterator? x)
   (is-java-type? x '|java.util.Iterator|))
 (define (jlist? x)
@@ -103,14 +105,18 @@
  ;; can be a class, a string, or a symbol).  Returns true if so, #f it
  ;; it's not, or if it's not a Java object at all.
  (define (is-java-type? jobject class)
+   (define-generic-java-method is-instance)
    (if (java-object? jobject)
-       (->boolean ((generic-java-method '|isInstance|)
-                   (if (java-class? class)
-                       class
-                       (java-class (if (string? class)
-                                       (string->symbol class)
-                                       class)))
-                   jobject))
+       (->boolean
+        (is-instance (cond ((java-class? class)
+                            class)
+                           ((string? class)
+                            (java-class (string->symbol class)))
+                           ((symbol? class)
+                            (java-class class))
+                           (else
+                            (error "Bad class in is-java-type?: ~s" class)))
+                     jobject))
        #f))
 
 ;; Given a string S, return the URL-decoded string as a jstring
@@ -122,6 +128,29 @@
   (decode (java-null <url-decoder>)
           (->jstring s)
           (->jstring "UTF-8")))
+
+;; READER->JSTRING reader -> jstring
+;;
+;; Given an SOURCE which is a Java Reader
+;; return a Java string containing the contents of the stream.
+(define/contract (reader->jstring
+                  (source (is-java-type? source <java.io.reader>))
+                  -> jstring?)
+  (define-java-classes
+    <java.io.buffered-reader>
+    <java.lang.string-buffer>)
+  (define-generic-java-methods
+    read
+    append
+    to-string)
+  (let ((buffered-reader (java-new <java.io.buffered-reader> source))
+        (carr (java-array-new <jchar> 512))
+        (zo (->jint 0)))
+    (let loop ((sb (java-new <java.lang.string-buffer>)))
+      (let ((rlen (read buffered-reader carr zo (->jint 512))))
+        (if (< (->number rlen) 0)
+            (to-string sb)
+            (loop (append sb carr zo rlen)))))))
 
 ;; Variant of ERROR, which can be called in a region handled by the failure
 ;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
