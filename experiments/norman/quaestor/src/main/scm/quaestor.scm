@@ -41,7 +41,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.33 $ $Date: 2006/08/14 16:36:13 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.34 $ $Date: 2006/08/16 12:52:50 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -150,7 +150,7 @@
     (define-generic-java-methods
       (get-request-uri |getRequestURI|))
     (let* ((info ((kb:get kb-name) 'info))
-           (base-uri (->string (get-request-uri request)))
+           (base-uri (request->url request #t))
            (submodel-pair (assq 'submodels info))) ;cdr is list of alists
       `(li "Knowledgebase "
            (a (@ (href ,(format #f "~a/~a" base-uri kb-name)))
@@ -251,15 +251,17 @@
     <java.lang.string>)
 
   ;; Examine any Accept headers in the request.  Return #f if there were
-  ;; Accept headers and we can't satisfy them;
-  ;; return (mime-string . rdf-language) if we can satisfy a request;
-  ;; return (mime-string . "RDF/XML") if there were no Accept headers.
+  ;; Accept headers and we can't satisfy them.
+  ;; Return (mime-string . rdf-language) if we can satisfy a request.
+  ;; Return a default pair (the language which MIME type */* maps to)
+  ;; if there were no Accept headers.
   (define (find-ok-language rq)
     (let ((lang-mime-list (request->accept-mime-types rq)))
       (chatter (format #f "lang-mime-list=~s" lang-mime-list))
       (if (null? lang-mime-list)
-          (cons (rdf:language->mime-type "RDF/XML")
-                "RDF/XML")              ;explicit default language
+          (let ((deflang (rdf:mime-type->language #f)))
+            (cons (rdf:language->mime-type deflang)
+                  deflang))             ;use the default language
           (let loop ((ml lang-mime-list))
             (if (null? ml)
                 #f                      ;ooops
@@ -286,11 +288,16 @@
                      (eq? query 'model)
                      mime-and-lang) ;normal case
                 (set-http-response response '|SC_OK| (car mime-and-lang))
-                (write (if submodel-name
-                           (kb 'get-model submodel-name)
-                           (kb 'get-model))
-                       (get-output-stream response)
-                       (->jstring (cdr mime-and-lang)))
+                (let ((m (if submodel-name
+                             (kb 'get-model submodel-name)
+                             (kb 'get-model))))
+                  (if m
+                      (write m
+                             (get-output-stream response)
+                             (->jstring (cdr mime-and-lang)))
+                      (no-can-do response
+                                 '|SC_NOT_FOUND|
+                                 "There is no model to return")))
                 #t)
 
                ((and kb
@@ -301,12 +308,26 @@
                            (chatter)))
 
                ((and kb
-                     (eq? query 'metadata))
-                (set-http-response response '|SC_OK| "text/plain")
-                (println (get-writer response)
-                         (or (kb 'get-metadata-as-jstring)
-                             (->jstring "")))
+                     (eq? query 'metadata)
+                     mime-and-lang)
+                (set-http-response response '|SC_OK| (car mime-and-lang))
+                ((generic-java-method '|write|)
+                 (kb 'get-metadata)
+                 (get-writer response)
+                 (->jstring (cdr mime-and-lang)))
+;;                 (for-each (lambda (c) ; XXX
+;;                             ((generic-java-method '|println|)
+;;                              (get-writer response)
+;;                              (->jstring c)))
+;;                           (chatter))
                 #t)
+
+               ((and kb (eq? query 'metadata))
+                (no-can-do
+                 response
+                 '|SC_NOT_ACCEPTABLE|
+                 "Can't return metadata as acceptable type (requested ~a)"
+                 (request->accept-mime-types request)))
 
                (kb
                 (no-can-do response
@@ -342,13 +363,30 @@
   ;; Create a new KB, or manage an existing one.  The knowledgebase is
   ;; called kb-name (a symbol), and the content of the request is read
   ;; from the given reader.
-  (define (manage-knowledgebase kb-name reader query response)
-    (let ((kb (kb:get kb-name)))
+  (define (manage-knowledgebase kb-name query)
+     (define-generic-java-methods
+       get-reader
+       get-input-stream)
+    (let ((kb (kb:get kb-name))
+          (content-type (request->content-type request)))
       (cond ((and kb
                   query
                   (string=? query "metadata")) ;update metadata
-             (kb 'set-metadata
-                 (reader->jstring reader))
+             (if (not content-type)
+                 (report-exception 'http-put
+                                   '|SC_BAD_REQUEST|
+                                   "Can't post metadata without a content-type"))
+             (let ((kb-uri (string-append (request->url request #t)
+                                          "/" kb-name)))
+               (if (string=? content-type "text/plain")
+                   (kb 'set-metadata
+                       (reader->jstring (get-reader request))
+                       kb-uri      
+                       #f)
+                   (kb 'set-metadata
+                       (get-input-stream request)
+                       kb-uri
+                       content-type)))
              (set-http-response response '|SC_NO_CONTENT|))
 
             ((and kb query)             ;unrecognised query
@@ -366,10 +404,23 @@
                         "Knowledgebase ~a does not exist, so query ~a is not allowed"
                         kb-name query))
 
-            (else                        ;normal case
-             (let ((nkb (kb:new kb-name))) ;normal case
-               (nkb 'set-metadata
-                    (reader->jstring reader))
+             ((not content-type)
+              (no-can-do '|SC_BAD_REQUEST|
+                         "Can't post metadata without a content-type"))
+
+            (else                         ;normal case
+             (let ((nkb (kb:new kb-name))
+                   (kb-uri (string-append (request->url request #t)
+                                          "/" kb-name)))
+               (if (string=? content-type "text/plain")
+                   (nkb 'set-metadata
+                        (reader->jstring (get-reader request))
+                        kb-uri
+                        #f)
+                   (nkb 'set-metadata
+                        (get-input-stream request)
+                        kb-uri
+                        content-type))
                (set-http-response response '|SC_NO_CONTENT|))))))
 
   ;; Given a knowledgebase called KB-NAME, upload a RDF/XML submodel called
@@ -406,7 +457,6 @@
       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
    (lambda ()
      (define-generic-java-methods
-       get-reader
        get-input-stream)
      (let ((path-list (request->path-list request))
            (query-string (request->query-string request)))
@@ -418,9 +468,7 @@
 
              ((= (length path-list) 1)
               (manage-knowledgebase (car path-list)
-                                    (get-reader request)
-                                    query-string
-                                    response))
+                                    query-string))
 
              ((= (length path-list) 2)
               (update-submodel (car path-list)
@@ -735,10 +783,7 @@
                  ;; Now do the actual work of reading the method
                  ;; call from the input reader.
                  (do-xmlrpc-call
-                  (format #f "http://~a:~a~a"
-                          (->string (get-local-name request))
-                          (->number (get-local-port request))
-                          (->string (get-context-path request)))
+                  (request->url request)
                   (get-reader request)))
 
                 (else
@@ -862,6 +907,28 @@
         #f
         (->string content-jstring))))
 
+;; request->url java-request optional-bool -> string
+;;
+;; Given a Java REQUEST, return the URL for the webapp
+;; (for example http://localhost:8080/quaestor).  If the optional boolean
+;; argument is true, include the servlet path (producing for example
+;; http://localhost:8080/quaestor/kb)
+;;
+;; This is different from request.getRequestURI(), as this synthesises
+;; the base URI, and so (a) is independent of the servlet invoked, and
+;; (b) avoids issues with trailing slashes and so on.
+(define (request->url request . with-servlet?)
+  (define-generic-java-methods
+    get-local-name get-local-port get-context-path get-servlet-path)
+  (format #f "http://~a:~a~a~a"
+          (->string (get-local-name request))
+          (->number (get-local-port request))
+          (->string (get-context-path request))
+          (if (or (null? with-servlet?)
+                  (not (car with-servlet?)))
+              ""
+              (->string (get-servlet-path request)))))
+
 ;; Called with one argument, verify that the "Content-*" headers are
 ;; all in the allowed set, returning #t if so.  Otherwise, return #f.
 ;; Called with no arguments, return the set of allowed headers.
@@ -918,24 +985,6 @@
                    (append (append res (->jstring ", "))
                            (car headers))
                    (car headers)))))))
-
-;; Given a READER, return a Java string containing the contents of the stream.
-(define (reader->jstring reader)
-  (define-java-classes
-    <java.io.buffered-reader>
-    <java.lang.string-buffer>)
-  (define-generic-java-methods
-    read
-    append
-    to-string)
-  (let ((buffered-reader (java-new <java.io.buffered-reader> reader))
-        (carr (java-array-new <jchar> 512))
-        (zo (->jint 0)))
-    (let loop ((sb (java-new <java.lang.string-buffer>)))
-      (let ((rlen (read buffered-reader carr zo (->jint 512))))
-        (if (< (->number rlen) 0)
-            (to-string sb)
-            (loop (append sb carr zo rlen)))))))
 
 ;; response->lazy-output-stream http-response -> java-output-stream
 ;;
@@ -1008,7 +1057,9 @@
     get-query-string
     get-method
     get-header
-    get-header-names)
+    get-header-names
+    get-local-name
+    get-local-port)
   (define (->string-or-empty js)
     (if (java-null? js)
         "EMPTY"
@@ -1023,8 +1074,9 @@
                        ("context path" . ,(get-context-path request))
                        ("servlet path" . ,(get-servlet-path request))
                        ("path info"    . ,(get-path-info request))
-
-                       ("query string" . ,(get-query-string request)))))
+                       ("query string" . ,(get-query-string request))
+                       ("local name"   . ,(get-local-name request))
+                       ("local port"   . ,(get-local-port request)))))
 
         '(h2 "Request headers")
         (append (list 'table
