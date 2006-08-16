@@ -3,14 +3,19 @@
 (require-library 'quaestor/jena)
 (import jena)
 
+(require-library 'quaestor/utils)
+(import* utils iterator->list)
+
 (require-library 'util/misc)
 (import* misc sort-list)
+
 
 (expect mime-type-1
         '("N3"
           "N3"
           "RDF/XML"
-          "RDF/XML"
+          "N3"
+          "N3"
           "N-TRIPLE"
           #f)
         (map rdf:mime-type->language
@@ -18,6 +23,7 @@
                "text/rdf+n3"
                "application/rdf+xml"
                "*/*"
+               #f
                "text/plain"
                "wibble")))
 
@@ -48,21 +54,38 @@
   (rdf:ingest-from-stream (java-new <java.io.string-reader> (->jstring n3))
                           "text/rdf+n3"))
 
+(define (print-model-statements model)
+  (let ((pu (java-null (java-class '|com.hp.hpl.jena.util.PrintUtil|))))
+    (define-generic-java-methods
+      list-statements
+      print)
+    (sort-list
+     (map (lambda (stmt)
+            (->string (print pu stmt)))
+          (iterator->list (list-statements model)))
+     string<=?)))
+
+(expect ingest
+        '("(urn:example#MyClass rdf:type rdfs:Class)"
+          "(urn:example#MyClass rdfs:subClassOf urn:example#MySuperClass)"
+          "(urn:example#norman http://purl.org/dc/elements/1.1/name 'Norman')")
+        (print-model-statements
+         (n3->model
+          "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MyClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperClass>. <urn:example#norman> <http://purl.org/dc/elements/1.1/name> \"Norman\".")))
+
+(expect-failure ingest-error
+                (n3->model "prefix : <urn:example>.")) ;missing '@' -- invalid
+
 (expect merge
         '("(urn:example#MyClass rdf:type rdfs:Class)"
+          "(urn:example#MyClass rdfs:subClassOf urn:example#MySuperClass)"
           "(urn:example#MySuperClass rdf:type rdfs:Class)"
+          "(urn:example#MySuperClass rdfs:subClassOf urn:example#MySuperDuperClass)"
           "(urn:example#MySuperDuperClass rdf:type rdfs:Class)")
         (let ((models (map n3->model
-                           '("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MyClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperClass."
-                             "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MySuperClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperDuperClass."
+                           '("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MyClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperClass>."
+                             "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MySuperClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperDuperClass>."
                              "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MySuperDuperClass> a rdfs:Class."
                              ))))
-          (define-generic-java-methods
-            list-statements
-            print)
-          (let ((pu (java-null (java-class '|com.hp.hpl.jena.util.PrintUtil|))))
-            (sort-list
-             (map (lambda (stmt)
-                    (->string (print pu stmt)))
-                  (iterator->list (list-statements (rdf:merge-models models))))
-             string<=?))))
+          (print-model-statements (rdf:merge-models models))))
+
