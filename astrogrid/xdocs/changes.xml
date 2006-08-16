@@ -14,11 +14,7 @@
 		</action>	
 			
     	<release version="(Pending Integration)">
-    		<action dev="kea" type="add">
-           <em>Branch PAL_KEA_1771 in astrogrid/contracts (NB contracts
-             project, NOT pal project!!!):</em>  Added two DSA metadoc
-           schemata, and added entries for these in the SchemaMap.
-    		</action>
+
     	  	
     		<action dev="kmb" type="add">
     		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
@@ -46,7 +42,15 @@
 
         <release version="(Undertest)">
  
-    		
+     		<action dev="kea" type="add">
+           <em>Branch PAL_KEA_1771 in astrogrid/contracts (NB contracts
+             project, NOT pal project!!!):</em>  Added two DSA metadoc
+           schemata, and added entries for these in the SchemaMap.
+    		</action>   		
+		   
+        </release>
+		
+		<release version="HEAD">
     		<action dev="gtr" type="fix">
     		  <em>Branch community-gtr-1722</em>: This updates the community project and introduces two new features: 
     		  1. ability for users to change their own password, requested by John in support of ROE installations;
@@ -54,12 +58,7 @@
     		  I haven't changed the web-service contracts, so I expect it to pass the integration tests as well as the last one. 
     		  The certificate-authority stuff is dormant in this version.  If people want to wake it up then they can configure it and experiment. 
     		  Otherwise, it doesn't get in the way of traditional operations. -- community is not deploying - clq 14th Aug.2006
-    		</action>
-
-		   
-        </release>
-		
-		<release version="HEAD">
+    		</action>		
    		<action dev="gtr" type="fix">
     		  <em>Branch security-gtr-1717</em>: fixes for BZ1717 "Digital signature does not work".
     		  There are changes to astrogrid/security and a one-line change in astrogrid/desktop/impl. These
