@@ -42,15 +42,16 @@
 
         <release version="(Undertest)">
  
-     		<action dev="kea" type="add">
-           <em>Branch PAL_KEA_1771 in astrogrid/contracts (NB contracts
-             project, NOT pal project!!!):</em>  Added two DSA metadoc
-           schemata, and added entries for these in the SchemaMap.
-    		</action>   		
+	
 		   
         </release>
 		
 		<release version="HEAD">
+     		<action dev="kea" type="add">
+           <em>Branch PAL_KEA_1771 in astrogrid/contracts (NB contracts
+             project, NOT pal project!!!):</em>  Added two DSA metadoc
+           schemata, and added entries for these in the SchemaMap.
+    		</action>   			
     		<action dev="gtr" type="fix">
     		  <em>Branch community-gtr-1722</em>: This updates the community project and introduces two new features: 
     		  1. ability for users to change their own password, requested by John in support of ROE installations;
