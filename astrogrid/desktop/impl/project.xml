@@ -130,18 +130,17 @@
 		 <strip>false</strip><!--  don't strip this one - breaks it.-->
 	 </properties>
  </dependency>
- 
-<dependency>
-	<artifactId>jcalendar</artifactId>
-	<groupId>flib</groupId>
-	<version>1.1.1</version>
-	<properties>		
-		<dist.bundle>true</dist.bundle>
-			    <strip>true</strip>    	                  
-	</properties>
-</dependency>  	
-	
-	<!-- groovy - extension -->
+
+ <dependency>
+ 	<artifactId>jcalendar</artifactId>
+ 	<groupId>flib</groupId>
+ 	<version>1.1.1</version>
+ 	<properties>
+ 		<dist.bundle>true</dist.bundle>
+ 		<strip>true</strip>
+ 		</properties>
+ </dependency>
+ <!-- groovy - extension -->
 	<dependency>
 	 <groupId>groovy</groupId>
 	 <artifactId>groovy-all</artifactId>
