@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>STAP Protocol</title>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />  
+	<meta name="keywords" content="IVOA, International, Virtual, Observatory, Alliance" />
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta name="author" content="Marco C. Leoni" />
+	<meta name="maintainedBy" content="IVOA Document Coordinator, ivoadoc@ivoa.net" />
+	<link rel="stylesheet" href="http://ivoa.net/misc/ivoa_wg.css" type="text/css" />
+</head>
+    	
+<body>
+<div class="head">
+<table><tr> <td><a href="http://www.ivoa.net/"><img alt="IVOA" src="http://ivoa.net/icons/ivoa_logo_small.jpg" border="0" alt="IVOA logo"/></a></td> </tr></table>
+
+<h1>Proposal for a Simple Time-range Access Protocol (STAP)<br/>
+Version 0.1</h1>
+<h2>Working Draft 2006 March 28 </h2>
+
+<dl>
+	<dt>Working Group:</dt>
+		<dd><a> n/a </a></dd>
+	<dt>Author(s):</dt>
+		<dd><a
+		href="http://www.ivoa.net/twiki/bin/view/IVOA/SilviaDalla">Silvia
+		Dalla</a>, <a href="http://www.ivoa.net/twiki/bin/view/IVOA/KevinBenson">Kevin
+		Benson</a><br/>
+			<a href="http://www.ivoa.net/twiki/bin/view/IVOA/"></a>
+		</dd>
+</dl>
+<hr></div>
+
+<h2><a name="abstract" id="abstract">Abstract</a></h2>
+We propose a Simple Time-range Access Protocol (STAP) for accessing data from archives 
+in which the main coordinate identifying data is time.
+This proposal arises from the need to provide simple access to a variety of
+Solar System datasets. The proposed protocol is modelled upon the
+<a href="http://www.ivoa.net/Documents/latest/SIA.html">
+Simple Image Access Protocol (SIAP)</a> specification.
+A query defining the time range of interest is constructed to search for data.
+The STAP service returns a VOTable listing data available in the time
+range. The protocol is intended for both time-series data and images:
+if only data of a specified format is required, this can be specified
+in the query using the FORMAT parameter.
+
+<div class="status">
+<h2><a name="status" id="status">Status of this Document</a></h2>
+This is an IVOA Working Draft for review by IVOA members and other interested parties.
+<p></p><br />
+
+<!-- Choose one of the following (and remove the rest)-->
+<!--Note-->
+<!--
+<p>This is an IVOA Note expressing suggestions from and opinions of the authors.<br/>
+It is intended to share best practices, possible approaches, or other perspectives on interoperability with the Virtual Observatory. 
+It should not be referenced or otherwise interpreted as a standard specification.</p>
+-->
+<!--Working Draft
+<p>This is an IVOA Working Draft for review by IVOA members and other interested parties.<br/>
+It is a draft document and may be updated, replaced, or obsoleted by other documents at any time. 
+It is inappropriate to use IVOA Working Drafts as reference materials or to cite them as other than "work in progress.</p>
+-->
+<!--Proposed Recommendation
+<p>This is an IVOA Proposed Recommendation made available for public review.<br/>
+It is appropriate to reference this document only as a recommended standard that is under review and which may be changed 
+before it is accepted as a full recommendation.</p>
+-->
+<!--Recommendation
+<p>This document has been produced by the IVOA "WG Name"  Working Group.<br/>
+It has been reviewed by IVOA Members and other interested parties, and has been endorsed by the IVOA Executive Committee as an IVOA Recommendation. 
+It is a stable document and may be used as reference material or cited as a normative reference from another document. IVOA's role in making the Recommendation is to draw attention to the specification and to promote its widespread deployment. 
+This enhances the functionality and interoperability inside the Astronomical Community.</p>
+-->
+
+A list of <a href="http://www.ivoa.net/Documents/">current IVOA Recommendations and other technical documents</a> can be found at http://www.ivoa.net/Documents/.
+
+</div><br />
+
+<h2><a name="acknowledgments" id="acknowledgments">Acknowledgments</a></h2>
+
+
+<h2><a id="contents" name="contents">Contents</a></h2>
+<div class="head">
+<ul class="toc">
+<li><a href="#abstract">Abstract</a></li>
+<li><a href="#status">Status</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#sec1">1. Introduction</a></li>
+
+<li><a href="#sec2">2. Parameters</a></li>
+	<ul class="toc">
+	<li><a href="#sec2_1">2.1 Mandatory parameters</a></li>
+	<li><a href="#sec2_2">2.2 Optional parameters</a></li>
+<!--	<ul class="toc">
+			<li><a href="#sec2_2_1">2.2.1 ..</a></li>
+		</ul> 
+-->
+	</ul>
+<li><a href="#sec3">3. Querying a STAP service</a></li>
+
+<li><a href="#sec4">4. Output of a STAP query</a></li>
+
+<br/>
+<li><a href="#appA">Appendix A: ...</a></li>
+<br/>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+<hr/>
+
+
+<br/>
+<h2><a name="sec1">1. Introduction</a></h2>
+<p>The Simple Image Access Protocol (SIAP) is a very useful means for querying
+repositories of Astronomical images and allowing image retrieval. This
+protocol has POS and SIZE (POS = ra, dec ; SIZE = size of the search box) as
+mandatory parameters for the query. 
+</p>
+
+<p>
+A variety of Solar System datasets exist and are being integrated into the
+Virtual Observatory. SIAP is however not suitable for Solar System
+observations. In Solar System datasets, the most important coordinate is time.
+</p>
+
+<p>
+Solar System datasets typically include images, for example solar images, and 
+time series, for example measurements of the interplanetary magnetic field
+taken by a spacecraft.
+</p>
+
+<p>
+The protocol we propose is for simple access to data, and does not attempt
+to capture the complexity and wide variety of data products and their metadata
+that characterise Solar System datasets. The <a href="http://www.igpp.ucla.edu/spase/">
+SPASE data model</a> is currently being developed with that objective.
+</p>
+
+<p>
+The implementation of the protocol is URL based.
+</p>
+
+<br/>
+<h2><a name="sec2">2. Parameters</a></h2>
+
+ 
+
+<h3><a name="sec2_1">2.1 Mandatory parameters</a></h3>
+
+<p>
+A STAP service MUST support the following parameters:
+
+<p>START = start time of the interval. This should be specified in IS0-8601
+format, eg. '2006-02-08T00:00:00'. Times are expressed in
+UTC. Although this is not a particularly astronomy-friendly time format, it is
+typically the one used to time-stamp data in archives.</p>
+<p>END = end time of the interval, in the same format as START.</p>
+<p>FORMAT = the desired format of the data. The value is a comma-delimited
+list, where each element can be either a recognised MIME type (eg
+"image/fits"), 
+or one of the following special values: 
+"ALL" -- to indicate that any format is ok; 
+"GRAPHIC" -- to restrict the search to FITS images, JPEG, PNG, GIF formats; 
+"GRAPHIC-FITS" for FITS images; 
+"TIME_SERIES", to restrict the search to time series data.
+Allowed formats for time series are: "TIME_SERIES-ASCII", "TIME_SERIES-CDF",
+"TIME_SERIES-VOT".
+In cases where no FORMAT is specified in the STAP request,  "ALL" will be assumed.
+</p>
+
+
+
+<h3><a name="sec2_2">2.2 Optional parameters</a></h3>
+
+<p>
+A STAP service MAY support the following optional parameters:
+
+<p>INSTRUMENT_ID = ID of instrument to be retrieved.</p>
+<p>TIME_RESOLUTION = for time series data, the resolution at which data are
+required. The way in which time resolution is specified needs to be agreed
+upon. Within the <a href="http://www.igpp.ucla.edu/spase/">
+SPASE data model</a>, developed to describe space physics data, 
+time resolutions are expressed
+as eg '00:01:00' for 1 minute resolution, but this seems hardly general
+enough.
+ 
+<p>POS = position ra, dec. This and the next parameter aim at allowing usage
+of this protocol also for astronomy objects for which time is an important coordinate.</p> 
+<p>SIZE = size of search box around POS</p>
+
+
+<br/>
+<h2><A name="sec3">3. Querying a STAP service</h2>
+
+The query input is transmitted as an HTTP GET request represented by a URL with two parts: 
+    <P> 
+    <UL>
+
+      <LI>A base URL of the form: <BR>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+	<B>http://</B><I>&lt;server-address&gt;</I><B>/</B><I>&lt;path&gt;</I><B>?</B><I>[&lt;extra 
+        GET arg&gt;</I><B>&amp;</B><I>[...]]</I> 
+        <P> 
+
+	<TABLE cellPadding=5 bgColor=#dddddd border=2>
+
+          <TBODY> 
+          <TR> 
+            <TD> 
+              <DL> 
+                <DT><STRONG>Examples:</STRONG> 
+                <DD><TT>http://www.solarimg.org/cgi-bin/VOstapq? <BR>
+                  http://www.mytimeseries.org/VOstapquery?resolv&amp;mission=ace&amp;</TT> 
+                </DD>
+              </DL>
+            </TD>
+
+          </TR>
+          </TBODY>
+        </TABLE>
+
+        <P>Note that when it contains extra GET arguments, the base URL ends in 
+          an ampersand, <B>&amp;</B>; if there are no extra arguments, then it 
+          ends in a question mark, <B>?</B>. 
+
+	<P>Every query to a given STAP service uses the same base URL.</P>
+
+      <LI>Constraints expressed as a list of ampersand-delimited GET arguments,
+	each of the form: <BR>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+	<I>&lt;name&gt;</I><B>=</B><I>&lt;value&gt;</I> 
+        <P> 
+
+        <TABLE cellPadding=5 bgColor=#dddddd border=2>
+          <TBODY> 
+          <TR> 
+            <TD> 
+              <DL> 
+                <DT><STRONG>Examples:</STRONG> 
+                <DD><TT>START=2005-07-28T00:00:00&amp;END=2005-07-28T12:00:00
+                  </tt></DD>
+              </DL>
+            </TD>
+          </TR>
+          </TBODY>
+        </TABLE>
+
+        <P>The constraints represent the query parameters which can vary for
+	each successive query.  </P>
+
+	<P>The baseURL and constraint list are concatenated to form
+	the query.  <P>
+
+	<TABLE cellPadding=5 bgColor=#dddddd border=2>
+	  <TBODY> 
+	  <TR> 
+	    <TD> 
+	      <DL> 
+		<DT><STRONG>Example:</STRONG> 
+		<DD><TT>http://www.solarimg.org/cgi-bin/VOstapq?START=2005-07-28T00:00:00&amp;END=2005-07-28T12:00:00&amp;FORMAT=GRAPHIC-FITS
+		  </tt></DD>
+
+	      </DL>
+	    </TD>
+	  </TR>
+	  </TBODY>
+	</TABLE>
+	<P></P>
+</UL>
+ 
+<br/>
+<h2><a name="sec4">4. Output of a STAP query</a></h2>
+<p>The data archive receives a STAP request and returns a Votable
+describing data files that match the query. This
+Votable can have multiple TABLE elements, to allow for results from
+several instruments on the same mission to be returned within a 
+single votable.
+</p>
+
+<p>
+The RESOURCE element in the Votable SHOULD contain an INFO with 
+name="QUERY_STATUS". Its value attribute should set to "OK" if the query 
+executed successfully, regardless of whether any matching files were found.
+</p>
+
+<p>
+Each table row represents a different data file available.
+</p>
+
+<p>
+The Votable MUST contain the following fields (all strings of datatype="char", arraysize="*"):
+</p>
+<P>
+<A NAME="STAP Output Votable"></A>
+<center><TABLE BORDER=1 CELLSPACING=4 CELLPADDING=4>
+
+  <TR><TD ALIGN=LEFT NOWRAP><TT><FONT COLOR='#8B0000'>Suggested name of VOT field</FONT></TT> </TD> <TD ALIGN=LEFT NOWRAP><FONT COLOR='#8B0000'>UCD (mandatory)</FONT> </TD> <TD ALIGN=LEFT NOWRAP><TT><FONT COLOR='#8B0000'>Description</FONT></TT> </TD>
+      <TD ALIGN=LEFT NOWRAP><FONT COLOR='#8B0000'> Comments </FONT></TD></TR>
+
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>PROVIDER</FONT>"      </TD> <TD ALIGN=LEFT NOWRAP>'meta.curation' 	</TD><TD ALIGN=LEFT NOWRAP>The archive (STAP service) providing the data</TD> <TD ALIGN=LEFT NOWRAP> </TD></TR>
+
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>DATA_ID</FONT>"  </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>'meta.title'</TD>
+                                  <TD ALIGN=LEFT NOWRAP>Short description of the measurement </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>Eg: 'ACE Solar Wind Experiment 5-Minute Key Parameters [PRELIM]' </TD>
+ </TR>
+
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>INSTRUMENT_ID</FONT>"  </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>'INST_ID'  		</TD>
+                                  <TD ALIGN=LEFT NOWRAP>A string specifiying the mission and instrument </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>Eg: 'ACE_SWE' for ACE/SWEPAM </TD>
+</TR>
+
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>TIME_START</FONT>"  </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>'time.obs.start'</TD>
+                                  <TD ALIGN=LEFT NOWRAP>Start time of data in the file </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>In UTC</TD>
+</TR>
+            
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>TIME_END</FONT>"  </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>'time.obs.end'</TD>
+                                  <TD ALIGN=LEFT NOWRAP>End time of data in the file </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>In UTC</TD>
+</TR>
+
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>ACCESS_URL</FONT>"  </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>'VOX:AccessReference'</TD>
+                                  <TD ALIGN=LEFT NOWRAP>Url pointing to data file</TD> 
+                                  <TD ALIGN=LEFT NOWRAP>See example URLs below</TD>
+</TR>
+
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>FORMAT</FONT>"  </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>'VOX:Format'</TD>
+                                  <TD ALIGN=LEFT NOWRAP>Format of the data file</TD> 
+                                  <TD ALIGN=LEFT NOWRAP>This is to allow discriminating between time series and images</TD>
+</TR>
+
+<TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>DESCRIPTION</FONT>"  </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>'meta'</TD>
+                                  <TD ALIGN=LEFT NOWRAP>A string containing supplemental information on the data file</TD> 
+                                  <TD ALIGN=LEFT NOWRAP></TD>
+</TR>
+
+<TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>DESCRIPTION_URL</FONT>"  </TD> 
+                                  <TD ALIGN=LEFT NOWRAP>'meta.ref.url'</TD>
+                                  <TD ALIGN=LEFT NOWRAP>A URL pointing to information on the data product</TD> 
+                                  <TD ALIGN=LEFT NOWRAP>Typically a web site for the specific instrument</TD>
+</TR>
+
+</TABLE></center>
+
+<p>
+Notes:
+
+<li> DESCRIPTION_URL =  This is different from the reference URL of the data archive 
+(STAP service) supplying the data, as specified in the registry.
+</p>
+<p></p>
+
+<li>
+The DESCRIPTION item is intended to provide a free format string containing
+the most essential metadata for the file. For solar images, it should 
+contain the wavelength of the measurements. For time series data, a brief
+description of the data product and time resolution.
+We do not want to prescribe a strict format for how the metadata should be
+specified, to be able to accomodate different Solar System data products.
+</p>
+<p></p>
+
+<li>
+Since the ACCESS_URL will often contain metacharacters
+the URL is normally enclosed in an XML CDATA section
+(<CODE>&lt;![CDATA[...]]&gt;</CODE>) or otherwise encoded to
+escape any embedded metacharacters.  
+</p>
+<p></p>
+
+
+        <table border="2" bgcolor="#dddddd" cellpadding="5">
+        <tr><td> <dl>
+
+          <dt> <strong>Examples:</strong>
+
+          <dd>
+<tt>&lt;![CDATA[http://www.solarimg.org/cgi-bin/extract?img=2se22eesx3.fts]]&gt;</tt><br>
+<tt>&lt;![CDATA[http://www.mytimeseries.org/cgi-bin/extract?timeseries=acemag0233.cdf]]&gt;</tt>
+          </dl>
+        </td></tr>
+
+        </table>
+
+<p>
+Optional fields for the Votable output of a STAP query are as follows (all strings of datatype="char", arraysize="*"):
+</p>
+<P>
+<A NAME="STAP Output Votable Optional fields"></A>
+<center><TABLE BORDER=1 CELLSPACING=4 CELLPADDING=4>
+
+  <TR><TD ALIGN=LEFT NOWRAP><TT><FONT COLOR='#8B0000'>Suggested name of VOT field</FONT></TT> </TD> <TD ALIGN=LEFT NOWRAP><FONT COLOR='#8B0000'>UCD (mandatory)</FONT> </TD> <TD ALIGN=LEFT NOWRAP><TT><FONT COLOR='#8B0000'>Description</FONT></TT> </TD>
+      <TD ALIGN=LEFT NOWRAP><FONT COLOR='#8B0000'> Comments </FONT></TD></TR>
+
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>RA</FONT>"      </TD> <TD
+ ALIGN=LEFT NOWRAP>'pos.eq.ra' 	</TD><TD ALIGN=LEFT NOWRAP>Right Ascension</TD> <TD ALIGN=LEFT NOWRAP> </TD></TR>
+
+ <TR><TD ALIGN=LEFT NOWRAP>"<FONT COLOR='#8B008B'>DEC</FONT>"      </TD> <TD ALIGN=LEFT NOWRAP>'pos.eq.dec' 	</TD><TD ALIGN=LEFT NOWRAP>Declination</TD> <TD ALIGN=LEFT NOWRAP> </TD></TR>
+
+</TABLE></center>
+
+
+<br/>
+<h2><a name="appA">Appendix A:  ...</a></h2>
+<p>If you have an appendix, put content here</p>
+
+
+
+<br/>
+<h2><a name="references">References</a></h2>
+
+<p>[1] Author(s), <i>Title</i>
+<br/><a href="http://">http://</a>
+</p>
+
+
+
+</body></html>
