@@ -1,4 +1,4 @@
-/*$Id: SchemaMap.java,v 1.2 2006/02/07 14:45:52 clq2 Exp $
+/*$Id: SchemaMap.java,v 1.3 2006/08/17 09:50:33 clq2 Exp $
  * Created on 01-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,6 +63,11 @@ public class SchemaMap {
         //oai shemas
         ALL.put("http://www.openarchives.org/OAI/2.0/",SchemaMap.class.getResource("/schema/oai/OAI/v2.0/OAI.xsd"));
         
+        //dsa schemas
+        ALL.put("urn:astrogrid:schema:dsa:TableMetaDoc:v0.2",SchemaMap.class.getResource("/schema/dsa/DSAMetadoc/v0.2/TableMetaDoc.xsd"));
+        // (this one's namespace ought to have included *:dsa:*, but it
+        //  was originally defined as shown below so I'm not changing it now)
+        ALL.put("urn:astrogrid:schema:TableMetaDoc:v1",SchemaMap.class.getResource("/schema/dsa/DSAMetadoc/v1.0/TableMetaDoc.xsd"));
         
         
         //stc schemas (go with adql imports usually)
@@ -102,6 +107,14 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.3  2006/08/17 09:50:33  clq2
+PAL_KEA_1771
+
+Revision 1.2.20.1  2006/08/16 09:09:49  kea
+Added DSA metadoc schemata, and adjusted SchemaMap to include these.
+The v1.0 schema is new;  note that the namespace had been pre-defined
+(although the schema didn't exist).
+
 Revision 1.2  2006/02/07 14:45:52  clq2
 Kevin's KMB_WSDL bunch
 
