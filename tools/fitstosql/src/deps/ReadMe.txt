@@ -1,6 +1,6 @@
 This program is desiged to generate simple sql from a list of fits files 
 to be used to insert into a database.  You will find in this same directory a 
-sqlgen.props that has a few properties to customize the sql.
+sqlgen.props that has properties to customize the sql.
 To run the program:
 Unix/Linux/Max
 ./generate.sh -file {filename} {tablename}
