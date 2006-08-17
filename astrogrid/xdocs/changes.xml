@@ -4,40 +4,29 @@
         <author email="jdt@roe.ac.uk">John Taylor</author>
     </properties>
     <body>
-    	<action dev="jl" type="add" issue="1652">
-			Branch contracts-jl-1652
-			Addition of new folder v1.0a1 to cover minor changes to official v1.0 adql schema
-		</action>
+			
+    	<release version="(Pending Integration)">
 		<action dev="jl" type="add" issue="1496">
 			Branch common-jl-1496
 			Addition of new folder structure to cover xmlbeans generated for v1.0a1 of adql schema
+			1496 was regarding the autogeneration of xmlbeans using maven build. the jar is currently hand generate, 
+			ignore this branch until Jeff's update - CLQ
 		</action>	
-			
-    	<release version="(Pending Integration)">
 
-    	  	
     		<action dev="kmb" type="add">
     		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
     		  has a lot of changes mainly targeting 1.0 VOResources and multiple contract ability.  I believe I have it though
     		  that everything can be copied/replaced into HEAD hence this branch can overwrite anything in HEAD even if there are
     		  merge conflicts.
     		  It needs to go with the
-    		  contracts branch Contracts_KMB_XForms (which needs Guy's approval).
+    		  contracts branch Contracts_KMB_XForms (which needs Guy's approval). - Kev will let me know when this is ready - CLQ
     		</action>
     		<action dev="kmb" type="add">
     		  <em>Branch Contracts_KMB_XForms n astrogrid/contracts:</em>  Only merge in src/java and src/schema stuff.  Originally
     		  this branch was for Xforms stuff, but that has not gone through, but still added a lot of new schemas 1.0.
-    		  This needs Guy Rixon approval though.
-    		</action>
- 		
-			<action dev="kmb" type="add">
-    			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
-				Before it was only tied to fits stuff now it is generic to work with any xmldb:api database.  
-				Still lacks some commenting and docs but doubt anybody 
-				will try to use this for awhile, I will try to add the docs at some other time. 
-				<b>don't have to merge this branch, merged into PAL_KEA_1612 - 24-April-2006 - Catherine</b>
-    		</action>
-			
+    		  This needs Guy Rixon approval though. - Kev will let me know when this is ready - CLQ
+    		</action> 	  	
+	
         </release>
 
         <release version="(Undertest)">
@@ -47,6 +36,17 @@
         </release>
 		
 		<release version="HEAD">
+			<action dev="kmb" type="add">
+    			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
+				Before it was only tied to fits stuff now it is generic to work with any xmldb:api database.  
+				Still lacks some commenting and docs but doubt anybody 
+				will try to use this for awhile, I will try to add the docs at some other time. 
+				<b>don't have to merge this branch, merged into PAL_KEA_1612 - 24-April-2006 - Catherine</b>
+    		</action>		
+    	<action dev="jl" type="add" issue="1652">
+			Branch contracts-jl-1652
+			Addition of new folder v1.0a1 to cover minor changes to official v1.0 adql schema
+		</action>		
      		<action dev="kea" type="add">
            <em>Branch PAL_KEA_1771 in astrogrid/contracts (NB contracts
              project, NOT pal project!!!):</em>  Added two DSA metadoc
