@@ -6,20 +6,12 @@
     <body>
 			
     	<release version="(Pending Integration)">
-		<action dev="jl" type="add" issue="1496">
-			Branch common-jl-1496
-			Addition of new folder structure to cover xmlbeans generated for v1.0a1 of adql schema
-			1496 was regarding the autogeneration of xmlbeans using maven build. the jar is currently hand generate, 
-			ignore this branch until Jeff's update - CLQ
-		</action>	
-
-      <action dev="kea" type="add">
-        <em>Branch PAL_KEA_1716 in astrogrid/pal AND ALSO astrogrid/xml:</em>
-        Fixes and enhancements
-        for bugzilla tickets referenced in placeholder ticket 1716. 
-        NOTE THAT THE astrogrid/xml BRANCH WAS CREATED SEPARATELY AND SHOULD
-        PROBABLY BE MERGED SEPARATELY, AFTER THE MAIN astrogrid/pal BRANCH.
-       </action>
+			<action dev="jl" type="add" issue="1496">
+				Branch common-jl-1496
+				Addition of new folder structure to cover xmlbeans generated for v1.0a1 of adql schema
+				1496 was regarding the autogeneration of xmlbeans using maven build. the jar is currently hand generate, 
+				ignore this branch until Jeff's update - CLQ
+			</action>	
 
     		<action dev="kmb" type="add">
     		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
@@ -38,9 +30,13 @@
         </release>
 
         <release version="(Undertest)">
- 
-	
-		   
+      	 	<action dev="kea" type="add">
+        		<em>Branch PAL_KEA_1716 in astrogrid/pal AND ALSO astrogrid/xml:</em>
+        		Fixes and enhancements
+        		for bugzilla tickets referenced in placeholder ticket 1716. 
+        		NOTE THAT THE astrogrid/xml BRANCH WAS CREATED SEPARATELY AND SHOULD
+        		PROBABLY BE MERGED SEPARATELY, AFTER THE MAIN astrogrid/pal BRANCH.
+       		</action>
         </release>
 		
 		<release version="HEAD">
