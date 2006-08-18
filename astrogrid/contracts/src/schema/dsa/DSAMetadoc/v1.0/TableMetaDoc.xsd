@@ -86,10 +86,27 @@
 		</xs:annotation>
 		<xs:simpleType>
 			<xs:restriction base="xs:string">
+       <!-- This is the original set of types used by DSA -->
 				<xs:enumeration value="float"/>
 				<xs:enumeration value="int"/>
 				<xs:enumeration value="string"/>
 				<xs:enumeration value="dateTime"/>
+
+       <!-- These are an extended list from the ScalarDataTypes in
+            VOTable / VOResource schemas;  not all may yet be in use 
+            within DSA, but are put here for future schema validation
+            compatibility. -->
+            <xs:enumeration value="boolean"/>    
+            <xs:enumeration value="bit"/>
+            <xs:enumeration value="unsignedByte"/>    
+            <xs:enumeration value="short"/>
+            <xs:enumeration value="long"/>
+            <xs:enumeration value="char"/>
+            <xs:enumeration value="unicodeChar"/>
+            <xs:enumeration value="double"/>
+            <xs:enumeration value="floatComplex"/>
+            <xs:enumeration value="doubleComplex"/>
+
 			</xs:restriction>
 		</xs:simpleType>
 	</xs:element>
