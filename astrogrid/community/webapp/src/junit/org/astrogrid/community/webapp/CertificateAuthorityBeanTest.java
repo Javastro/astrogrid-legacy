@@ -1,27 +1,20 @@
-/*
- * CertificateAuthorityBeanTest.java
- * JUnit based test
- *
- * Created on August 11, 2006, 1:52 PM
- */
-
-package org.astrogrid.community.webapp;
+package org.astrogrid.community.server.ca;
 
 import junit.framework.*;
 import java.io.File;
-import org.apache.log4j.Logger;
-import org.astrogrid.community.server.ca.CertificateAuthority;
-import org.astrogrid.community.server.ca.UserFiles;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 /**
+ * JUnit tests for org.astrogrid.community.server.ca.CertificateAuthority.
  *
- * @author guy
+ * @author Guy Rixon
  */
-public class CertificateAuthorityBeanTest extends TestCase {
+public class CertificateAuthorityTest extends TestCase {
   
-  public CertificateAuthorityBeanTest(String testName) {
+  public CertificateAuthorityTest(String testName) {
     super(testName);
   }
 
@@ -32,117 +25,117 @@ public class CertificateAuthorityBeanTest extends TestCase {
   }
 
   public static Test suite() {
-    TestSuite suite = new TestSuite(CertificateAuthorityBeanTest.class);
+    TestSuite suite = new TestSuite(CertificateAuthorityTest.class);
     
     return suite;
   }
 
-  /**
-   * Test of getEnablementResult method, of class org.astrogrid.community.webapp.CertificateAuthorityBean.
-   */
-  public void testGetEnablementResult() {
-    System.out.println("getEnablementResult");
+  public void testCreateCa() throws Exception {
+    System.out.println("constructor that creates CA files");
     
-    CertificateAuthorityBean instance = new CertificateAuthorityBean();
+    File caKeyFile = this.createFreshFile("ca.key");
+    File caCertificateFile = this.createFreshFile("ca.crt");
+    File caSerialFile = this.createFreshFile("ca.srl");
+    File myProxyDirectory = new File(".");
     
-    String expResult = "";
-    String result = instance.getEnablementResult();
-    assertEquals(expResult, result);
-    
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertFalse(caKeyFile.exists());
+    assertFalse(caCertificateFile.exists());
+    assertFalse(caSerialFile.exists());
+    CertificateAuthority instance = 
+        new CertificateAuthority("/O=foo/OU=bar baz",
+                                 "fubar",
+                                 caKeyFile,
+                                 caCertificateFile,
+                                 caSerialFile,
+                                 myProxyDirectory);
+    assertTrue(caKeyFile.exists());
+    assertTrue(caCertificateFile.exists());
+    assertTrue(caSerialFile.exists());
   }
-
-
+  
+  
   /**
-   * Test of setUserLoginName method, of class org.astrogrid.community.webapp.CertificateAuthorityBean.
+   * Test of generateKeyPair method, of class ca.CertificateAuthority.
    */
-  public void testSetUserLoginName() {
-    System.out.println("setUserLoginName");
+  public void testGenerateKeyPair() throws Exception {
+    System.out.println("generateKeyPair");
     
-    String name = "fred";
-    CertificateAuthorityBean instance = new CertificateAuthorityBean();
+    String password = "fubar";
+    File keyFile = this.createFreshFile("ca.key");
+    File certificateFile = this.createFreshFile("ca.crt");
+    File serialFile = this.createFreshFile("ca.srl");
+    File myProxyDirectory = new File("/opt/globus4.0.2/var/myproxy");
+    CertificateAuthority instance = 
+        new CertificateAuthority("/O=foo/OU=bar",
+                                 password,
+                                 keyFile,
+                                 certificateFile,
+                                 serialFile,
+                                 myProxyDirectory);
     
-    instance.setUserLoginName(name);
+    instance.generateKeyPair(password, keyFile);
     
-    assertEquals(name, instance.getUserLoginName());
+    assertTrue("Key file was created", keyFile.exists());
   }
-
-
-  /**
-   * Test of setUserCommonName method, of class org.astrogrid.community.webapp.CertificateAuthorityBean.
-   */
-  public void testSetUserCommonName() {
-    System.out.println("setUserCommonName");
-    
-    String name = "Bill Gates";
-    CertificateAuthorityBean instance = new CertificateAuthorityBean();
-    
-    instance.setUserCommonName(name);
-    
-    assertEquals(name, instance.getUserCommonName());
-  }
-
-  /**
-   * Test of setUserNewPassword method, of class org.astrogrid.community.webapp.CertificateAuthorityBean.
-   */
-  public void testSetUserNewPassword() {
-    System.out.println("setUserNewPassword");
-    
-    String password = "";
-    CertificateAuthorityBean instance = new CertificateAuthorityBean();
-    
-    instance.setUserNewPassword(password);
-    
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+  
+  private File createFreshFile(String fileName) throws Exception {
+    File f = new File(fileName);
+    if (f.exists()) {
+      f.delete();
+    }
+    return f;
   }
 
   /**
-   * Test of setUserOldPassword method, of class org.astrogrid.community.webapp.CertificateAuthorityBean.
+   * Test of generateUserCredentials method, of class ca.CertificateAuthority.
    */
-  public void testSetUserOldPassword() {
-    System.out.println("setUserOldPassword");
+  public void testGenerateUserCredentials() throws Exception {
+    System.out.println("generateUserCredentials");
     
-    String password = "";
-    CertificateAuthorityBean instance = new CertificateAuthorityBean();
+    CertificateAuthority instance = 
+        new CertificateAuthority("/O=foo/OU=bar baz", 
+                                 "fubar",
+                                 new File("ca.key"),
+                                 new File("ca.crt"),
+                                 new File("ca.srl"),
+                                 new File("."));
+    instance.generateCa();
     
-    instance.setUserOldPassword(password);
+    this.createUser(instance, "fred");
+    this.createUser(instance, "bill");
     
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+  }
+  
+  public void testChangePassword() throws Exception {
+    CertificateAuthority instance = 
+        new CertificateAuthority("/O=foo/OU=bar baz", 
+                                 "fubar",
+                                 new File("ca.key"),
+                                 new File("ca.crt"),
+                                 new File("ca.srl"),
+                                 new File("/opt/globus4.0.2/var/myproxy"));
+    instance.generateCa();
+    
+    this.createUser(instance, "fred");
+    instance.changePasswordInMyProxy("fred", "fredfred", "frederick");
   }
 
-  /**
-   * Test of getInitiationResult method, of class org.astrogrid.community.webapp.CertificateAuthorityBean.
-   */
-  public void testGetInitiationResult() {
-    System.out.println("getInitiationResult");
+  private void createUser(CertificateAuthority instance,
+                          String commonName) throws Exception {
     
-    CertificateAuthorityBean instance = new CertificateAuthorityBean();
+    String loginName = commonName;
+    String password = commonName + commonName;
+    UserFiles userFiles = new UserFiles(new File("."), loginName);
+    userFiles.deleteUserFiles();
     
-    String expResult = "";
-    String result = instance.getInitiationResult();
-    assertEquals(expResult, result);
+    instance.setUserCredentialsInMyProxy(loginName, 
+                                         commonName, 
+                                         password, 
+                                         userFiles);
     
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    assertTrue(userFiles.getKeyFile().exists());
+    assertTrue(userFiles.getCertificateFile().exists());
   }
 
-  /**
-   * Test of getPasswordChangeResult method, of class org.astrogrid.community.webapp.CertificateAuthorityBean.
-   */
-  public void testGetPasswordChangeResult() throws Exception {
-    System.out.println("getPasswordChangeResult");
-    
-    CertificateAuthorityBean instance = new CertificateAuthorityBean();
-    
-    String expResult = "";
-    String result = instance.getPasswordChangeResult();
-    assertEquals(expResult, result);
-    
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
   
 }
