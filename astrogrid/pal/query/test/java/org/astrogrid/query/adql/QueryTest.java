@@ -29,10 +29,10 @@ public class QueryTest extends XMLTestCase   {
    
    protected void setUp()
    {
-      // Set property "conesearch.table", needed for handling ADQL 
+      // Set property "default.table", needed for handling ADQL 
       // with missing FROM clause
       ConfigFactory.getCommonConfig().setProperty(
-          "conesearch.table","catalogue");
+          "default.table","catalogue");
    }
 
    /* 

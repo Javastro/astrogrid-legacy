@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConfigQueryableResource.java,v 1.5 2005/03/21 18:45:55 mch Exp $
+ * $Id: ConeConfigQueryableResource.java,v 1.6 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.dataservice.metadata.MetadataException;
 
 /**
  * An implementation of QueryableResourceReader that looks in the config file
@@ -47,9 +48,14 @@ public class ConeConfigQueryableResource extends TableMetaDocInterpreter {
    {
       if (parent.getId().equals(ConfigFactory.getCommonConfig().getString(CONE_SEARCH_TABLE_KEY))) {
          //get which columns given RA & DEC for cone searches
+         String[] catalogNames = getCatalogs();
+         if (catalogNames.length == 0) {
+           throw new MetadataException("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!");
+         }
+         // Got at least one catalog (NB only one expected at present)
          SearchField[] fields = {
-            getColumn(getCatalogs()[0], parent.getName(), ConfigFactory.getCommonConfig().getString(CONE_SEARCH_RA_COL_KEY)),
-            getColumn(getCatalogs()[0], parent.getName(), ConfigFactory.getCommonConfig().getString(CONE_SEARCH_DEC_COL_KEY))
+            getColumn(catalogNames[0], parent.getName(), ConfigFactory.getCommonConfig().getString(CONE_SEARCH_RA_COL_KEY)),
+            getColumn(catalogNames[0], parent.getName(), ConfigFactory.getCommonConfig().getString(CONE_SEARCH_DEC_COL_KEY))
          };
          return fields;
       }

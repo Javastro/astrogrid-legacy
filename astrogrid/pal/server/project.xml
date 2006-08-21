@@ -41,6 +41,13 @@
          <version>1.2.4</version>
      </dependency>
 
+    <dependency>
+         <groupId>org.astrogrid</groupId>
+         <artifactId>astrogrid-contracts</artifactId>
+         <version>${astrogrid.contracts.version}</version>
+         <type>jar</type>
+    </dependency>
+
 
     <dependency>
       <id>astrogrid-xml</id>

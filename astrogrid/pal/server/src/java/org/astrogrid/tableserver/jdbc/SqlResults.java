@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.10 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: SqlResults.java,v 1.11 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -99,6 +99,7 @@ public class SqlResults extends TableResults {
    {
       
       int unknownCount = 1;
+      int dummyColIndex = 1;
 
       long localLimit = ConfigFactory.getCommonConfig().getInt(Query.MAX_RETURN_KEY, -1);
       long queryLimit = querier.getQuery().getLimit();
@@ -116,7 +117,12 @@ public class SqlResults extends TableResults {
 
          //Expression[] colDefs = ((ReturnTable) querier.getQuery().getResultsDef()).getColDefs(); //columns defined by querier
          String[] colDefs = querier.getQuery().getColumnReferences();
-
+         /*
+         for (int i = 0; i < colDefs.length; i++) {
+           System.out.println("Column " + Integer.toString(i) +
+                 " is " + colDefs[i]);
+         }
+         */
          TableMetaDocInterpreter interpreter = new TableMetaDocInterpreter();
          for (int i=1;i<=numCols;i++) // Handle all columns in results
          {
@@ -190,10 +196,32 @@ public class SqlResults extends TableResults {
                   if (cols[i-1] == null) {  // Didn't find a column of that name
                      log.error(" Didn't find column with name '"+
                            columnName+"' in any table");
-                     //but carry on with a dummy table name
+
                      cols[i-1] = new ColumnInfo();
-                     cols[i-1].setName(columnName);
-                     cols[i-1].setId("UNKNOWN."+columnName);
+
+                     // Sanify column name if necessary
+                     //(some JDBC drivers return column names like ?column?
+                     //for derived columns which will break VOTable validity 
+                     //if used directly.
+                     if (columnName.matches("\\w+") == false) {
+                       // Column name contains other than alphanumeric and
+                       // underscore characters
+                       String newColumnName = "UNKNOWN_" +
+                           Integer.toString(unknownCount);
+                       unknownCount = unknownCount+1;
+                       cols[i-1].setName(newColumnName);
+                       cols[i-1].setId("UNKNOWN."+newColumnName);
+                       log.info("Got dubious unmatched column name " +
+                           columnName + " from JDBC, replacing it with " +
+                           newColumnName);
+                       columnName = newColumnName;
+                     }
+                     else {
+                       // JDBC column name is OK to use
+                       cols[i-1] = new ColumnInfo();
+                       cols[i-1].setName(columnName);
+                       cols[i-1].setId("UNKNOWN."+columnName);
+                     }
                      tableName = null; // Just in case
                   }
                 }
@@ -319,6 +347,17 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.11  2006/08/21 15:39:30  clq2
+ PAL_KEA_1716
+
+ Revision 1.10.6.2  2006/08/18 15:20:46  kea
+ Preparing for final checkin.  Added some extra types to DSA metadoc
+ schema, and added test column of type boolean to SampleStars plugin
+ (we can handle boolean data).
+
+ Revision 1.10.6.1  2006/08/17 14:51:29  kea
+ Final checkins for placeholder bugzilla ticket 1716.
+
  Revision 1.10  2006/06/15 16:50:09  clq2
  PAL_KEA_1612
 

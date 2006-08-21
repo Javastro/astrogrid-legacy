@@ -6,4 +6,7 @@
         <Item xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
         <Item xsi:type="columnReferenceType" Table="a" Name="INSERT_DEC"/>
     </SelectionList>
+    <From>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE"/>
+    </From>
 </Select>

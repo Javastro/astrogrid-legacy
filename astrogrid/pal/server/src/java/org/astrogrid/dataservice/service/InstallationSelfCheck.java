@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.6 2006/06/15 16:50:09 clq2 Exp $
+/*$Id: InstallationSelfCheck.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,8 +34,12 @@ import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
-import org.astrogrid.xml.Validator;
 import org.xml.sax.SAXException;
+
+// For validation
+import org.w3c.dom.Document;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.contracts.SchemaMap;
 
  // Just used in testCone debugging
 import java.io.InputStreamReader;
@@ -113,36 +117,18 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       DataServer server = new DataServer();
       server.askQuery(testPrincipal,makeTestQuery(new WriterTarget(sw), ReturnTable.VOTABLE), this);
 
-      //check that the response is a valid votable
-      Validator.isValid(new ByteArrayInputStream(sw.toString().getBytes()));
+      // Check that the VOTable response is schema-valid XML 
+      // NB: This doesn't actually test that the returned VOTable 
+      // contains real data rather than e.g. an error message
+      // or no data
+      Document doc = DomHelper.newDocument(sw.toString());
+      String rootElement = doc.getDocumentElement().getLocalName();
+      if(rootElement == null) {
+         rootElement = doc.getDocumentElement().getNodeName();
+      }
+      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
    }
 
-   /** Checks that we can submit ADQL through the AxisDataService, again an internal check */
-   /*
-    * // No longer supported
-   public void testAxisServiceClassAdql() throws Throwable {
-      
-      AxisDataService_v06 server = new AxisDataService_v06();
-      Query testQuery = makeTestQuery(new NullTarget(), ReturnTable.VOTABLE);
-      //String adql = Adql074Writer.makeAdql(testQuery);
-      String adql = testQuery.getAdqlString();
-      String votable = server.askAdql(DomHelper.newDocument(adql).getDocumentElement(), ReturnTable.VOTABLE);
-      assertNotNull(votable);
-   }
-   */
-
-   /** Checks that we can submit a count query with ADQL through the AxisDataService c*/
-   /*
-    * // No longer supported
-   public void testAxisServiceClassCount() throws Throwable {
-      
-      AxisDataService_v06 server = new AxisDataService_v06();
-      Query testQuery = makeTestQuery(new NullTarget(), ReturnTable.VOTABLE);
-      //String adql = Adql074Writer.makeAdql(testQuery);
-      String adql = testQuery.getAdqlString();
-      long count = server.askCount(DomHelper.newDocument(adql).getDocumentElement());
-   }
-   */
 
    /** Checks that we can a cone search, which only really applies to 
     * sky services... 
@@ -204,6 +190,83 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       }
    }
 
+   /** Would check the CEA Interface, but the CEA stuff is very clever and so
+    completely obscure for all practical purposes  *
+   public void testCea() throws IOException {
+      new DatacenterApplication();
+   }
+    */
+
+   /**
+    * Checks Metadoc file is schema-valid
+    */
+   public void testMetadocValidity() throws IOException, SAXException, ParserConfigurationException {
+      String vodesc = VoDescriptionServer.makeVoDescription();
+      Document doc = DomHelper.newDocument(vodesc);
+      String rootElement = doc.getDocumentElement().getLocalName();
+      if(rootElement == null) {
+         rootElement = doc.getDocumentElement().getNodeName();
+      }
+      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
+   }
+   /**
+    * Checks metadata is OK.
+    * NB This test will not pick up empty metadata 
+    */
+   public void testMetadata() throws IOException, SAXException, ParserConfigurationException {
+      String vodesc = VoDescriptionServer.makeVoDescription();
+      Document doc = DomHelper.newDocument(vodesc);
+      String rootElement = doc.getDocumentElement().getLocalName();
+      if(rootElement == null) {
+         rootElement = doc.getDocumentElement().getNodeName();
+      }
+      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
+   }
+   
+   /** For running standalone, so it can be used from an IDE for quick tests against services 
+    * @TOFIX Put some kind of runtime test here? */
+   public static void main(String[] args) throws Exception {
+      /*
+      //temporary for testing SSA Image Plugin
+      ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SssImagePlugin.class.getName());
+      ServletHelper.setUrlStem("http://localhost.roe.ac.uk:8080/pal-samples");
+      
+      junit.textui.TestRunner.run(InstallationSelfCheck.class);
+      */
+     throw new Exception("Main routine not defined in InstallationSelfCheck");
+   }
+
+
+
+   /* ---------------------------------------------------------------------*/
+   /* LEGACY TESTS BELOW HERE, NO LONGER USED */
+
+   /** Checks that we can submit ADQL through the AxisDataService, again an internal check */
+   /*
+    * // No longer supported
+   public void testAxisServiceClassAdql() throws Throwable {
+      
+      AxisDataService_v06 server = new AxisDataService_v06();
+      Query testQuery = makeTestQuery(new NullTarget(), ReturnTable.VOTABLE);
+      //String adql = Adql074Writer.makeAdql(testQuery);
+      String adql = testQuery.getAdqlString();
+      String votable = server.askAdql(DomHelper.newDocument(adql).getDocumentElement(), ReturnTable.VOTABLE);
+      assertNotNull(votable);
+   }
+   */
+
+   /** Checks that we can submit a count query with ADQL through the AxisDataService c*/
+   /*
+    * // No longer supported
+   public void testAxisServiceClassCount() throws Throwable {
+      
+      AxisDataService_v06 server = new AxisDataService_v06();
+      Query testQuery = makeTestQuery(new NullTarget(), ReturnTable.VOTABLE);
+      //String adql = Adql074Writer.makeAdql(testQuery);
+      String adql = testQuery.getAdqlString();
+      long count = server.askCount(DomHelper.newDocument(adql).getDocumentElement());
+   }
+   */
    /** Checks that we can reach the SOAP service
    public void testSoapv06() throws Throwable {
       
@@ -265,33 +328,4 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       assertNotNull(vodata);
    }
     */
-   
-   
-   /** Would check the CEA Interface, but the CEA stuff is very clever and so
-    completely obscure for all practical purposes  *
-   public void testCea() throws IOException {
-      new DatacenterApplication();
-   }
-    */
-
-   /**
-    * Checks metadata is OK
-    */
-   public void testMetadata() throws IOException, SAXException, ParserConfigurationException {
-      String vodesc = VoDescriptionServer.makeVoDescription();
-      Validator.isValid(new ByteArrayInputStream(vodesc.getBytes()));
-   }
-   
-   /** For running standalone, so it can be used from an IDE for quick tests against services 
-    * @TOFIX Put some kind of runtime test here? */
-   public static void main(String[] args) throws Exception {
-      /*
-      //temporary for testing SSA Image Plugin
-      ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SssImagePlugin.class.getName());
-      ServletHelper.setUrlStem("http://localhost.roe.ac.uk:8080/pal-samples");
-      
-      junit.textui.TestRunner.run(InstallationSelfCheck.class);
-      */
-     throw new Exception("Main routine not defined in InstallationSelfCheck");
-   }
 }

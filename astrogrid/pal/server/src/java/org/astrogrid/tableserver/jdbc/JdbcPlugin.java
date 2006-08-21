@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.5 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: JdbcPlugin.java,v 1.6 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -154,7 +154,7 @@ public class JdbcPlugin extends DefaultPlugin {
       try {
          //convert to SQL
          SqlMaker sqlMaker = makeSqlMaker();
-                  
+
          sql = sqlMaker.makeCountSql(query);
 
          querier.setStatus(new QuerierQuerying(querier.getStatus(), sql));
@@ -242,14 +242,27 @@ public class JdbcPlugin extends DefaultPlugin {
          return (SqlMaker) o;
       }
       catch (ClassCastException cce) {
-         throw new QuerierPluginException("SQL plugin maker given in config ("+makerClass+") is not a "+SqlMaker.class.getName()+" subclass ");
+         String msg = "The class '"+makerClass+
+           "' (specified in configuration key '"+SQL_TRANSLATOR+
+           "') is not a subclass of " + SqlMaker.class.getName()+
+           "; please check your configuration";
+         log.error(msg, cce);
+         throw new QuerierPluginException(msg, cce);
+      }
+      catch (ClassNotFoundException e) {
+         String msg = "Could not find class '"+makerClass+
+           "' (specified in configuration key '"+SQL_TRANSLATOR+
+           "'); please check your configuration.";
+         log.error(msg, e);
+         throw new QuerierPluginException(msg, e.getCause());
       }
       catch (Throwable th) {
          if (th instanceof InvocationTargetException) {
             th = th.getCause();  //extract cause - don't care about the invocation bit
          }
-         String msg = "Instantiating SQL Maker "+makerClass+", config key="+SQL_TRANSLATOR;
+         String msg = "Problem instantiating SQL Maker "+makerClass+", config key="+SQL_TRANSLATOR+", please see logs for more information";
          log.error(msg, th);
+         log.error(msg, th.getCause());
          throw new QuerierPluginException(msg, th);
       }
    }

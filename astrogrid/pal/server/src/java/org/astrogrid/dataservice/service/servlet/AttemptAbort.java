@@ -1,5 +1,5 @@
 /*
- * $Id: AttemptAbort.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: AttemptAbort.java,v 1.2 2006/08/21 15:39:30 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -35,7 +35,13 @@ public class AttemptAbort extends DefaultServlet {
          server.abortQuery(ServletHelper.getUser(request), queryId);
          
          //forward to the status pages
-         request.getRequestDispatcher("http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/queryStatus.jsp?"+queryId).forward(request, response);
+         
+         // CAN'T USE ABSOLUTE PATH NOW THAT THE AttemptAbort IS NOT AT 
+         // THE CONTEXT ROOT
+         //request.getRequestDispatcher("http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/admin/queryStatus.jsp?"+queryId).forward(request, response);
+         
+         // USE RELATIVE PATH INSTEAD
+         request.getRequestDispatcher("/admin/queryStatus.jsp?"+queryId).forward(request, response);
       }
       catch (Throwable th) {
          LogFactory.getLog(request.getContextPath()).error(th+" aborting query "+queryId,th);

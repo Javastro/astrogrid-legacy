@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.6 2006/06/23 09:10:51 kea Exp $
+ * $Id: Query.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -637,14 +637,15 @@ public class Query  {
         throw e;
       }
       // Make sure a FROM clause is present - add a default one
-      // if none is present, using the default conesearch table.
+      // if none is present and "default.table" property is set,
+      // otherwise reject query.
       SelectType selectType = this.selectDocument.getSelect();
       if (!selectType.isSetFrom()) {
          String defaultTable = 
-            ConfigFactory.getCommonConfig().getString("conesearch.table", null);
+            ConfigFactory.getCommonConfig().getString("default.table", null);
          if (defaultTable == null) {
            throw new QueryException(
-             "DataCentre is misconfigured - conesearch.table property is null");
+             "No default table specified in DSA configuration - please specify in your ADQL query which table you wish to use");
          }
          String fromString = FROM_ADQL.replaceAll("INSERT_TABLE",defaultTable);
          try {

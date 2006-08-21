@@ -46,4 +46,7 @@
            </Arg>
         </Item>
     </SelectionList>
+    <From>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE"/>
+    </From>
 </Select>

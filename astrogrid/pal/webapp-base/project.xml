@@ -44,6 +44,17 @@
       </properties>
     </dependency>
 
+    <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-contracts</artifactId>
+       <version>${astrogrid.contracts.version}</version>
+       <type>jar</type>
+       <properties>
+          <war.bundle>true</war.bundle>
+       </properties>
+    </dependency>
+
+
     <!-- library for resolving IDs, accessing storepoints, etc -->
     <dependency>
       <id>astrogrid-slinger</id>

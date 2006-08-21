@@ -1,5 +1,5 @@
 /*
- * $Id: ServerStatusHtmlRenderer.java,v 1.1 2006/06/16 14:50:06 kea Exp $
+ * $Id: ServerStatusHtmlRenderer.java,v 1.2 2006/08/21 15:39:30 clq2 Exp $
  */
 
 package org.astrogrid.monitor;
@@ -121,7 +121,7 @@ public class ServerStatusHtmlRenderer   {
 
          //add abort button if it's still running
          if (!task.isFinished()) {
-            out.write("<td class='button'><a href='admin/AttemptAbort?ID="+task.getId()+"'>Abort</a></td>");
+            out.write("<td class='button'><a href='./AttemptAbort?ID="+task.getId()+"'>Abort</a></td>");
          }
          out.write("</tr>\n");
    }

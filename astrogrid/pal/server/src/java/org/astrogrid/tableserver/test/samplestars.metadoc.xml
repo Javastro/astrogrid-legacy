@@ -1,29 +1,29 @@
-<DatasetDescription targetNamespace='urn:astrogrid:schema:TableMetaDoc_v1'
+<DatasetDescription xmlns='urn:astrogrid:schema:TableMetaDoc:v1'
                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
 
    <!-- Note that this is in TWO places - in the classes directory for deployment, and
    also the package with SampleStarsMetaServer in, for unit tests -->
 <Catalog>
    <Name>SampleStars</Name>
-   <Table>
+   <Table ID="SampleStars">
       <Name>SampleStars</Name>
       <Description>A table of artifically placed stars.  There is a general spread of background
       stars, and a smiley face around where the pleidies are on the real sky</Description>
-      <Column  name="ID">
+      <Column  ID="SampleStars.ID" indexed="false">
          <Name>ID</Name>
          <Datatype>int</Datatype>
          <Description>IDENTITY</Description>
          <UCD version='1'>ID_CATALOG</UCD>
          <UCD version='1+'>meta.id</UCD>
       </Column>
-      <Column  name="NAME">
+      <Column  ID="SampleStars.NAME" indexed="false">
          <Name>Name</Name>
          <Datatype>string</Datatype>
          <Description>Made up name</Description>
          <UCD version='1'> </UCD>
          <UCD version='1+'> </UCD>
       </Column>
-      <Column  name="RA">
+      <Column  ID="SampleStars.RA" indexed="false">
          <Name>RA</Name>
          <Datatype>float</Datatype>
          <Description>Right Ascension (left-rightness)</Description>
@@ -31,9 +31,9 @@
          <UCD version='1'>POS_EQ_RA_MAIN</UCD>
          <UCD version='1+'>pos.eq.ra</UCD>
          <ErrorColumn> </ErrorColumn>
-         <SkyPolarCoord epoch='J2000'>RA</SkyPolarCoord>
+         <SkyPolarCoord>RA</SkyPolarCoord>
       </Column>
-      <Column  name="DEC">
+      <Column  ID="SampleStars.DEC" indexed="false">
          <Name>DEC</Name>
          <Datatype>float</Datatype>
          <Description>Declination (up-downness)</Description>
@@ -41,9 +41,9 @@
          <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
          <UCD version='1+'>pos.eq.dec</UCD>
          <ErrorColumn> </ErrorColumn>
-         <SkyPolarCoord epoch='J2000'>DEC</SkyPolarCoord>
+         <SkyPolarCoord>DEC</SkyPolarCoord>
       </Column>
-      <Column  name="MAG">
+      <Column  ID="SampleStars.MAG" indexed="false">
          <Name>Mag</Name>
          <Datatype>float</Datatype>
          <Description>Magnitude at some arbitrary wavelength</Description>
@@ -52,18 +52,27 @@
          <UCD version='1+'> </UCD>
          <ErrorColumn> </ErrorColumn>
       </Column>
+      <Column  ID="SampleStars.FLAG" indexed="false">
+         <Name>Flag</Name>
+         <Datatype>boolean</Datatype>
+         <Description>Test field of boolean type</Description>
+         <Units></Units>
+         <UCD version='1'></UCD>
+         <UCD version='1+'> </UCD>
+         <ErrorColumn> </ErrorColumn>
+      </Column>
    </Table>
-   <Table>
+   <Table ID="SampleGalaxies">
       <Name>SampleGalaxies</Name>
       <Description>A table of artifically placed galaxies</Description>
-      <Column  name="ID">
+      <Column  ID="SampleGalaxies.ID" indexed="false">
          <Name>ID</Name>
          <Datatype>int</Datatype>
          <Description>IDENTITY</Description>
          <UCD version='1'>ID_CATALOG</UCD>
          <UCD version='1+'>meta.id</UCD>
       </Column>
-      <Column  name="RA">
+      <Column  ID="SampleGalaxies.RA" indexed="false">
          <Name>RA</Name>
          <Datatype>float</Datatype>
          <Description>Right Ascension (left-rightness)</Description>
@@ -71,9 +80,9 @@
          <UCD version='1'>POS_EQ_RA_MAIN</UCD>
          <UCD version='1+'>pos.eq.ra</UCD>
          <ErrorColumn> </ErrorColumn>
-         <SkyPolarCoord epoch='J2000'>RA</SkyPolarCoord>
+         <SkyPolarCoord>RA</SkyPolarCoord>
       </Column>
-      <Column  name="DEC">
+      <Column  ID="SampleGalaxies.DEC" indexed="false">
          <Name>DEC</Name>
          <Datatype>float</Datatype>
          <Description>Declination (up-downness)</Description>
@@ -81,9 +90,9 @@
          <UCD version='1'>POS_EQ_DEC_MAIN</UCD>
          <UCD version='1+'>pos.eq.dec</UCD>
          <ErrorColumn> </ErrorColumn>
-         <SkyPolarCoord epoch='J2000'>DEC</SkyPolarCoord>
+         <SkyPolarCoord>DEC</SkyPolarCoord>
       </Column>
-      <Column  name="SHAPE">
+      <Column  ID="SampleGalaxies.SHAPE" indexed="false">
          <Name>Shape</Name>
          <Datatype>string</Datatype>
          <Description>Rough shape (type) of galaxy; eg elliptical, spherical, barred etc </Description>
@@ -91,17 +100,17 @@
          <UCD version='1+'>src.morph</UCD>
       </Column>
    </Table>
-   <Table>
+   <Table ID="Plates">
       <Name>Plates</Name>
       <Description>Details of the plates behind the observations</Description>
-      <Column  name="ID">
+      <Column  ID="Plates.ID" indexed="false">
          <Name>ID</Name>
          <Datatype>int</Datatype>
          <Description>IDENTITY</Description>
          <UCD version='1'>ID_CATALOG</UCD>
          <UCD version='1+'>meta.id</UCD>
       </Column>
-      <Column  >
+      <Column ID="Plates.CENTERRA" indexed="false">
          <Name>CENTERRA</Name>
          <Datatype>float</Datatype>
          <Description>Right Ascension (left-rightness)</Description>
@@ -110,7 +119,7 @@
          <UCD version='1+'>pos.eq.ra</UCD>
          <ErrorColumn> </ErrorColumn>
       </Column>
-      <Column  >
+      <Column ID="Plates.CENTERDEC" indexed="false" >
          <Name>CENTERDEC</Name>
          <Datatype>float</Datatype>
          <Description>Declination (up-downness)</Description>
@@ -119,10 +128,11 @@
          <UCD version='1+'>pos.eq.dec</UCD>
          <ErrorColumn> </ErrorColumn>
       </Column>
-      <Column >
+      <Column ID="Plates.ObsTime" indexed="false">
          <Name>ObsTime</Name>
          <Datatype>dateTime</Datatype>
          <Description>Date plate was taken</Description>
+         <UCD version='1'></UCD>
       </Column>
    </Table>
 </Catalog>

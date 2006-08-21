@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.11 2006/06/15 16:50:08 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.12 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,6 +19,9 @@ import org.astrogrid.xml.DomHelper;
 import org.astrogrid.xml.XmlTypes;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.contracts.SchemaMap;
+
 
 /**
  * Provides a set of convenience routines for accessing the TableMetaDoc that
@@ -66,8 +69,35 @@ public class TableMetaDocInterpreter
       catch (SAXException e) {
          throw new MetadataException("Server's TableMetaDoc at "+url+" is invalid XML: "+e);
       }
+      // We have loaded it, so it's syntactically valid at least.
+      // First, bugfix check - a couple of DSA releases produced template
+      // metadoc with "targetNamespace" instead of "xmlns" attributes
+      // for the document namespace, so report this issue.
+      // This is a bugfix which shouldn't need to be updated further for
+      // subsequent schema changes.
+      String nodeName = metadoc.getNodeName();
+      if ("DataDescription".equals(nodeName) || 
+          "DatasetDescription".equals(nodeName)) {
+         String attrVal = metadoc.getAttribute("targetNamespace");
+         if (attrVal != null && (!attrVal.equals("")) ) { 
+            if (attrVal.equals("urn:astrogrid:schema:dsa:TableMetaDoc:v0.2") || 
+                attrVal.equals("urn:astrogrid:schema:TableMetaDoc:v1")) {
+               throw new MetadataException("Resource metadoc file is invalid; please change the attribute name 'targetNamespace' to 'xmlns' for the attribute with value '" + attrVal + "' in the toplevel tag named " + nodeName + ".");
+            }
+         }
+      }
+      // Now validate it against its schema
+      String rootElement = metadoc.getLocalName();
+      if(rootElement == null) {
+         rootElement = metadoc.getNodeName();
+      }
+      try {
+         AstrogridAssert.assertSchemaValid(metadoc,rootElement,SchemaMap.ALL);
+      }
+      catch (Throwable th) {
+         throw new MetadataException("Resource metadoc file is invalid: "+th.getMessage(), th);
+      }
    }
-   
    
 
    /** Returns the element describing the catalog (group of tables, not necessarily
@@ -80,12 +110,11 @@ public class TableMetaDocInterpreter
       Element[] cats = DomHelper.getChildrenByTagName(metadoc, "Catalog");
 
       //assertions
-      if (catalogName == null) {
+      if ((catalogName == null) || ("".equals(catalogName.trim()))) {
          //for now, if no catalog name is given we just take the first one...
-         log.warn("Catalog name is null, assuming first one");
+         log.warn("Requested catalog name is null or empty: defaulting to first catalog specified in metadoc");
          return cats[0];
       }
-      
       for (int i = 0; i < cats.length; i++) {
          String catId = cats[i].getAttribute("ID");
          if ((catId == null) || (catId.length()==0)) { //no ID, use name

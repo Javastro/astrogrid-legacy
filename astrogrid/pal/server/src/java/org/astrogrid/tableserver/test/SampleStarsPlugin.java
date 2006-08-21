@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.6 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -112,10 +112,11 @@ public class SampleStarsPlugin extends JdbcPlugin
       ConfigFactory.getCommonConfig().setProperty("datacenter.contact.name", "The AstroGrid Team");
       ConfigFactory.getCommonConfig().setProperty("datacenter.contact.email", "astrogrid_dsa@star.le.ac.uk");
 
+      ConfigFactory.getCommonConfig().setProperty("default.table","SampleStars");
       // Conesearch and self-test properties
       ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.table","SampleStars");
       ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column1","RA");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column1","DEC");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column2","DEC");
 
       ConfigFactory.getCommonConfig().setProperty("conesearch.table","SampleStars");
       ConfigFactory.getCommonConfig().setProperty("conesearch.ra.column","RA");
@@ -167,7 +168,7 @@ public class SampleStarsPlugin extends JdbcPlugin
          //populate stars
          //create table
          connection.createStatement().execute(
-            "CREATE TABLE SampleStars (Id INTEGER IDENTITY,  Name VARCHAR(30), Ra DOUBLE,  Dec DOUBLE,  Mag DOUBLE)  "
+            "CREATE TABLE SampleStars (Id INTEGER IDENTITY,  Name VARCHAR(30), Ra DOUBLE,  Dec DOUBLE,  Mag DOUBLE, Flag BOOLEAN)  "
          );
 
          //create index on table
@@ -178,34 +179,41 @@ public class SampleStarsPlugin extends JdbcPlugin
          
          //add some stars
          for (int i=0;i<20;i++) {
+            String flag;
+            if (i/2 == 0) {
+               flag="true";
+            }
+            else {
+               flag="false";
+            }
             connection.createStatement().execute(
-               "INSERT INTO SampleStars VALUES ("+i+", 'A star', "+(30+i*2)+", "+(30-i*2)+", "+i+")"
+               "INSERT INTO SampleStars VALUES ("+i+", 'A star', "+(30+i*2)+", "+(30-i*2)+", "+i+","+flag+")"
             );
          }
 
          //add false pleidies.  These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
          int id=21;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies LE', 56.6, 23.65, 10)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies RE', 56.9, 23.65, 10)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Nose', 56.75, 23.87, 8)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.5, 23.9, 12)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.7, 24.0, 12)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.8, 24.0, 12)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 57.0, 23.9, 12)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies LE', 56.6, 23.65, 10, false)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies RE', 56.9, 23.65, 10, true)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Nose', 56.75, 23.87, 8, false)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.5, 23.9, 12, true)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.7, 24.0, 12, false)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 56.8, 24.0, 12, true)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Pleidies Grin', 57.0, 23.9, 12, false)"); id++;
 
          //add stars that are outside the above group but nearby
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56.6, 23.6, 10)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 23, 5)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 24.5, 5)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 24.5, 5)"); id++;
-         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 23, 5)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56.6, 23.6, 10, true)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 23, 5, false)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 24.5, 5, true)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 56, 24.5, 5, false)"); id++;
+         connection.createStatement().execute("INSERT INTO SampleStars VALUES ("+id+", 'Not Pleidies', 58, 23, 5, true)"); id++;
          
          //add even spread (in coordinate space) of background stars
          for (double ra=0;ra<360;ra=ra+2) {
 //            StringBuffer sql = new StringBuffer("INSERT INTO SampleStars VALUES ");
             for (double dec=-90;dec<90;dec=dec+2) {
 //               sql.append(" ("+id+", 'Background', "+ra+", "+dec+", 20) "); id++;
-               connection.createStatement().execute("INSERT INTO SampleStars VALUES  ("+id+", 'Background', "+ra+", "+dec+", 20)"); id++;
+               connection.createStatement().execute("INSERT INTO SampleStars VALUES  ("+id+", 'Background', "+ra+", "+dec+", 20, false)"); id++;
             }
 //           connection.createStatement().execute(sql.toString());
             System.out.print(".");

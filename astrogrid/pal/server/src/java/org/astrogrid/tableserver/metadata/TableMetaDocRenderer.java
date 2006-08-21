@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocRenderer.java,v 1.5 2005/05/27 16:21:13 clq2 Exp $
+ * $Id: TableMetaDocRenderer.java,v 1.6 2006/08/21 15:39:30 clq2 Exp $
  */
 package org.astrogrid.tableserver.metadata;
 
@@ -35,13 +35,16 @@ public class TableMetaDocRenderer {
 
          String[] catalogs = interpreter.getCatalogs();
          
+         if (catalogs.length == 0) {
+           html.append(ServletHelper.exceptionAsHtml("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!", new MetadataException("Metadata configuration error"), null));
+            return html.toString();
+         }
          for (int cat = 0; cat < catalogs.length; cat++) {
             TableInfo[] tables = interpreter.getTables(catalogs[cat]);
             for (int table=0;table<tables.length;table++) {
                renderTable(html, interpreter, tables[table]);
             }
          }
-         
          return html.toString();
       }
       catch (IOException ioe) {

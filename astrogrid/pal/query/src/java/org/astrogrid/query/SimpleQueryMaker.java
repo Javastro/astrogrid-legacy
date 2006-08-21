@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.3 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: SimpleQueryMaker.java,v 1.4 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,19 +32,39 @@ import org.astrogrid.slinger.targets.WriterTarget;
 public class SimpleQueryMaker  {
 
   /** A generic ADQL query that should run against any database.
-   * The Query class will auto-populate the actual query to be run
-   * with th name of the table to be queried, using the conesearch.table 
-   * property.
    */
   private static final String SIMPLE_QUERY = 
-    "<Select xsi:type=\"selectType\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"> <Restrict xsi:type=\"selectionLimitType\" Top=\"100\"/> <SelectionList xsi:type=\"selectionListType\"> <Item xsi:type=\"allSelectionItemType\"/> </SelectionList> </Select>";
+    "<Select xsi:type=\"selectType\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\">\n  <Restrict xsi:type=\"selectionLimitType\" Top=\"100\"/>\n  <SelectionList xsi:type=\"selectionListType\">\n     <Item xsi:type=\"allSelectionItemType\"/> </SelectionList>\n  <From xsi:type=\"fromType\">\n    <Table xsi:type=\"tableType\" Alias=\"a\" Name=\"INSERT_TABLE\"/>\n  </From>\n</Select>";
 
    /** Convenience routine to construct a test query returning 100 entries.
-    * The table to be searched is left unspecified - the Query constructor 
-    * adds the necessary FromType clause, using its own default table).
+    * The table to be searched is specified using the 
+    * "datacenter.self-test.table" property.
     */
    public static Query makeTestQuery(ReturnSpec returns) throws QueryException {
-      return new Query(SIMPLE_QUERY, returns);
+      String tableName = ConfigFactory.getCommonConfig().getString(
+            "datacenter.self-test.table", null);
+      if ((tableName == null) || (tableName.equals(""))) {
+         throw new QueryException(
+           "DSA local property 'datacenter.self-test.table' is not set, " +
+           "please check your configuration");
+      }
+      String queryString = SIMPLE_QUERY.replaceAll("INSERT_TABLE",tableName);
+      return new Query(queryString, returns);
+   }
+   /** Convenience routine to construct a test query returning 100 entries,
+    * and return it as an ADQL/xml string.
+    * The table to be searched is specified using the 
+    * "datacenter.self-test.table" property.
+    */
+   public static String makeTestQueryString() throws QueryException {
+      String tableName = ConfigFactory.getCommonConfig().getString(
+            "datacenter.self-test.table", null);
+      if ((tableName == null) || (tableName.equals(""))) {
+         throw new QueryException(
+           "DSA local property 'datacenter.self-test.table' is not set, " +
+           "please check your configuration");
+      }
+      return SIMPLE_QUERY.replaceAll("INSERT_TABLE",tableName);
    }
 
    /** this routine creates an incomplete query (no return specification), but it's left in for backwards

@@ -29,6 +29,9 @@
             </Arg>
         </Item>
     </SelectionList>
+    <From>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE"/>
+    </From>
     <Where>
         <Condition xsi:type="intersectionSearchType">
             <Condition xsi:type="comparisonPredType" Comparison="&gt;">

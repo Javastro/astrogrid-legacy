@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.14 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: VoResourceSupport.java,v 1.15 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -158,8 +158,49 @@ public class VoResourceSupport {
    }
    
    /** Constructs an IVORN ID from an authority key and a resource key and the given extension */
-   public String makeId(String idEnd) {
-      return "ivo://"+ConfigFactory.getCommonConfig().getString(AUTHID_KEY)+"/"+ConfigFactory.getCommonConfig().getString(RESKEY_KEY)+"/"+idEnd;
+   public String makeId(String idEnd) throws IOException {
+      // KEA: Need to check for rogue "/"
+      String authID = ConfigFactory.getCommonConfig().getString(AUTHID_KEY);
+      String resKey = ConfigFactory.getCommonConfig().getString(RESKEY_KEY);
+      if ( (authID == null) || ("".equals(authID)) ) {
+        throw new IOException("Expected configuration key " + AUTHID_KEY +
+              " is not set, please check your configuration.");
+      }
+      if ( (resKey == null) || ("".equals(resKey)) ) {
+        throw new IOException("Expected configuration key " + RESKEY_KEY +
+              " is not set, please check your configuration.");
+      }
+      // The checking for '/' below is probably unnecessary, but best
+      // to be sure.
+      String ivornID = "ivo://" + authID;
+      if (authID.charAt(authID.length()-1) != '/') {
+        ivornID = ivornID + "/"; // Append a '/' if not present
+      }
+      ivornID = ivornID + resKey;
+      if (resKey.charAt(resKey.length()-1) != '/') {
+        ivornID = ivornID + "/"; // Append a '/' if not present
+      }
+      ivornID = ivornID + idEnd;
+      return ivornID;
+   }
+
+   /** Constructs an IVORN ID for the corresponding Authority ID registration
+    * from an authority key */
+   public static String makeAuthorityId() throws IOException {
+      // KEA: Need to check for rogue "/"
+      String authID = ConfigFactory.getCommonConfig().getString(AUTHID_KEY);
+      if ( (authID == null) || ("".equals(authID)) ) {
+        throw new IOException("Expected configuration key " + AUTHID_KEY +
+              " is not set, please check your configuration.");
+      }
+      // The checking for '/' below is probably unnecessary, but best
+      // to be sure.
+      String ivornID = "ivo://" + authID;
+      if (authID.charAt(authID.length()-1) != '/') {
+        ivornID = ivornID + "/"; // Append a '/' if not present
+      }
+      ivornID = ivornID + "authority";
+      return ivornID;
    }
    
    

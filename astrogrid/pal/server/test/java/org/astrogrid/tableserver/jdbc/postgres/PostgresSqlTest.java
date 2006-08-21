@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlTest.java,v 1.2 2005/05/27 16:21:21 clq2 Exp $
+/*$Id: PostgresSqlTest.java,v 1.3 2006/08/21 15:39:30 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import junit.framework.TestSuite;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.slinger.targets.ByteArrayTarget;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
-import org.astrogrid.xml.Validator;
 import org.xml.sax.SAXException;
 
 /**

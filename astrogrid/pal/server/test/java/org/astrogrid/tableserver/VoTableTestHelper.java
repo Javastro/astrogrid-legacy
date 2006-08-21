@@ -1,4 +1,4 @@
-/*$Id: VoTableTestHelper.java,v 1.3 2005/11/21 12:54:18 clq2 Exp $
+/*$Id: VoTableTestHelper.java,v 1.4 2006/08/21 15:39:30 clq2 Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,9 +15,11 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.astrogrid.xml.DomHelper;
 import org.astrogrid.xml.ErrorRecorder;
-import org.astrogrid.xml.Validator;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.contracts.SchemaMap;
+
 
 /** Helper for testing votables
  *
@@ -26,17 +28,23 @@ public class VoTableTestHelper extends TestCase {
 
    public static Document assertIsVotable(String candidate) throws IOException, SAXException {
 
-      //temporary to ignore this assertion failure while we look for other errors
-      //return DomHelper.newDocument(candidate);
-
-      ErrorRecorder recorder = Validator.isValid(new ByteArrayInputStream(candidate.getBytes()));
-      if ((recorder != null ) && (recorder.hasErrors())) {
-            fail("VOTable produced is not valid: "+recorder.listErrors());
-      }
-      Document doc = DomHelper.newDocument(candidate);
-      assertTrue("Root element of results is not VOTABLE", doc.getDocumentElement().getLocalName().equals("VOTABLE"));
-      return doc;
-      /**/
+     // Check that the VOTable response is schema-valid XML
+     // NB: This doesn't actually test that the returned VOTable
+     // contains real data rather than e.g. an error message
+     // or no data
+     Document doc = DomHelper.newDocument(candidate);
+     String rootElement = doc.getDocumentElement().getLocalName();
+     if(rootElement == null) {
+        rootElement = doc.getDocumentElement().getNodeName();
+     }
+     try {
+       AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
+     }
+     catch (Exception e) {
+        fail("VOTable produced is not valid: "+e.getMessage());
+     }
+     assertTrue("Root element of results is not VOTABLE", doc.getDocumentElement().getLocalName().equals("VOTABLE"));
+     return doc;
    }
 }
 

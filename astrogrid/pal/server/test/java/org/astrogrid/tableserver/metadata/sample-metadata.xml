@@ -16,12 +16,6 @@
 
             <type>Catalog</type>
         </content>
-        <cs:capability>
-            <cs:maxSR>180</cs:maxSR>
-            <cs:maxRecords>2000</cs:maxRecords>
-            <cs:verbosity>false</cs:verbosity>
-        </cs:capability>
-
         <vr:interface qtype="GET" xmlns="http://www.ivoa.net/xml/VODataService/v0.5" xsi:type="vs:ParamHTTP">
             <vr:accessURL use="base">http://adil.ncsa.uiuc.edu/vocone?survey=f&amp;</vr:accessURL>
             <resultType>text/xml+votable</resultType>
@@ -50,6 +44,11 @@
                 <ucd>POS_ANG_DIST_REL</ucd>
             </param>
         </vr:interface>
+        <cs:capability>
+            <cs:maxSR>180</cs:maxSR>
+            <cs:maxRecords>2000</cs:maxRecords>
+            <cs:verbosity>false</cs:verbosity>
+        </cs:capability>
     </vor:Resource>
 </vor:VOResources>
 

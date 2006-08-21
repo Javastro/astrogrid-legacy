@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyResourceSupport.java,v 1.6 2005/12/07 15:55:21 clq2 Exp $
+ * $Id: ProxyResourceSupport.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -114,7 +114,19 @@ public class ProxyResourceSupport extends VoResourceSupport {
          String remoteId = DomHelper.getValueOf(remoteIdNode);
          String newId = localStem;
          int i = remoteId.lastIndexOf("/");
-         if (i>-1) newId = newId + remoteId.substring(i);
+         if (i>-1) {
+            // If we have a trailing part, append it
+            if ((localStem.lastIndexOf("/")) != (localStem.length()-1)) {
+              // Include trailing "/" if not present in local stem
+              newId = newId + remoteId.substring(i);
+            }
+            else {
+              // Remove extra trailing "/" from local stem
+              newId = newId.substring(0,localStem.length()-1) + 
+               remoteId.substring(i);
+            }
+         }
+
          DomHelper.setElementValue(remoteIdNode, newId);
          
          //set reference url

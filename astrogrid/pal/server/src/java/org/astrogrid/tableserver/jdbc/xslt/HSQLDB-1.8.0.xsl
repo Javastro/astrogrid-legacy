@@ -215,7 +215,7 @@
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'closedSearchType'] | *[@xsi:type = 'closedSearchType']">
 		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition"/>
-		<xsl:value-of select="$spaceCharacter"/>
+      <xsl:text>) </xsl:text>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'comparisonPredType'] | *[@xsi:type = 'comparisonPredType']">
 		<xsl:apply-templates select="ad:Arg[1]"/>

@@ -1,6 +1,7 @@
 <%@ page import="java.io.*,
          java.net.*,
          org.astrogrid.dataservice.service.*,
+         org.astrogrid.query.SimpleQueryMaker,
          org.astrogrid.cfg.ConfigFactory"
    isThreadSafe="false"
    session="false"
@@ -32,8 +33,9 @@
         <% 
             String adql = request.getParameter("AdqlXml");
             if ((adql == null) || adql.trim().equals("")) {
-              adql = InstallationSyntaxCheck.getTestSuiteAdql(
-                  "selectAllLimit.xml");
+              //adql = InstallationSyntaxCheck.getTestSuiteAdql(
+               //   "selectAllLimit.xml");
+               adql = SimpleQueryMaker.makeTestQueryString();
             }
         %>
         <!-- Don't get whitespace in the textbox! -->

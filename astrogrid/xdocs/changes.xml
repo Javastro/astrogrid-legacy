@@ -30,16 +30,17 @@
         </release>
 
         <release version="(Undertest)">
+
+        </release>
+		
+		<release version="HEAD">
       	 	<action dev="kea" type="add">
         		<em>Branch PAL_KEA_1716 in astrogrid/pal AND ALSO astrogrid/xml:</em>
         		Fixes and enhancements
         		for bugzilla tickets referenced in placeholder ticket 1716. 
         		NOTE THAT THE astrogrid/xml BRANCH WAS CREATED SEPARATELY AND SHOULD
         		PROBABLY BE MERGED SEPARATELY, AFTER THE MAIN astrogrid/pal BRANCH.
-       		</action>
-        </release>
-		
-		<release version="HEAD">
+       		</action>		
 			<action dev="kmb" type="add">
     			<em>Branch Pal_KMB_XMLDB in astrogrid/pal:</em>  No Hurry.  Added back the xmldb but tried to make it more generic.  
 				Before it was only tied to fits stuff now it is generic to work with any xmldb:api database.  

@@ -1,4 +1,4 @@
-/*$Id: ValidatorTest.java,v 1.4 2006/01/10 12:23:10 kea Exp $
+/*$Id: ValidatorTest.java.DONTUSE,v 1.2 2006/08/21 15:39:44 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,48 +27,72 @@ import org.xml.sax.SAXException;
 public class ValidatorTest extends TestCase  {
    
    /** Checks that the catalog is valid */
-   public void testCatalog() throws IOException, SAXException {
+   public void testCatalog1() throws IOException, SAXException {
       URL cat = Validator.class.getResource("catalog.xml");
 
       assert cat != null : "Catalog not found";  //throws error rather than fail
       
+      // This throws an exception if invalid
+      Validator.isValid(cat.openStream());
+      /*
       if (Validator.isValid(cat.openStream()) != null) {
+         throw new SAXException("Catalog is invalid");
+      }
+      */
+   }
+   public void testCatalog2() throws IOException, SAXException {
+      URL cat = Validator.class.getResource("catalog.xml");
+
+      assert cat != null : "Catalog not found";  //throws error rather than fail
+      
+      // This throws an exception if invalid
+      ErrorRecorder recorder = Validator.analyseValidity(cat.openStream());
+      if (recorder != null) {
          throw new SAXException("Catalog is invalid");
       }
    }
    
    
    /** checks that valid votable parses OK */
-   public void testValid() throws IOException, SAXException {
+   public void testValid1() throws IOException, SAXException {
       
       URL okVoTable = ValidatorTest.class.getResource("valid.vot.xml");
-      
       assert okVoTable != null : "Test votable not found"; //throws error rather than fail
       
-      assertNull("Validator incorrectly finds errors in "+okVoTable, Validator.isValid(okVoTable.openStream()));
+      //assertNull("Validator incorrectly finds errors in "+okVoTable, Validator.isValid(okVoTable.openStream()));
+      Validator.isValid(okVoTable.openStream());
    }
-
-   /** checks that valid votable parses OK */
-   /*
    public void testValid2() throws IOException, SAXException {
       
-      URL okVoTable = ValidatorTest.class.getResource("sample-metadata.xml");
-      
-      assert okVoTable != null : "Test metadata not found"; //throws error rather than fail
-      
-      assertNull("Validator incorrectly finds errors in "+okVoTable, Validator.isValid(okVoTable.openStream()));
+      URL okVoTable = ValidatorTest.class.getResource("valid.vot.xml");
+      assert okVoTable != null : "Test votable not found"; //throws error rather than fail
+      assertNull("Validator incorrectly finds errors in "+okVoTable, Validator.analyseValidity(okVoTable.openStream()));
    }
-   */
-   
+
    
    /** checks that invalid votable fails */
-   public void testInvalid() throws IOException, SAXException {
+   public void testInvalid1() throws IOException, SAXException {
       
       URL badVoTable = ValidatorTest.class.getResource("invalid.vot.xml");
       
       assert badVoTable != null : "Test votable not found"; //throws error rather than fail
       
-      assertNotNull("Validator incorrectly finds no errors in invalid xml document at "+badVoTable, Validator.isValid(badVoTable.openStream()));
+     // assertNotNull("Validator incorrectly finds no errors in invalid xml document at "+badVoTable, Validator.isValid(badVoTable.openStream()));
+     try {
+        Validator.isValid(badVoTable.openStream());
+        fail("Validator incorrectly finds no errors in invalid xml document at "+badVoTable); 
+     }
+     catch (Exception e) {
+         //OK, found the errors
+     }
+   }
+   public void testInvalid2() throws IOException, SAXException {
+      
+      URL badVoTable = ValidatorTest.class.getResource("invalid.vot.xml");
+      
+      assert badVoTable != null : "Test votable not found"; //throws error rather than fail
+      
+     assertNotNull("Validator incorrectly finds no errors in invalid xml document at "+badVoTable, Validator.analyseValidity(badVoTable.openStream()));
    }
    
    /** checks that badly formed votable fails */

@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.14 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: VoDescriptionServer.java,v 1.15 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,6 +27,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.astrogrid.slinger.ivo.IVORN;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.contracts.SchemaMap;
+
 
 /**
  * Assembles the various VoResource elements provided by the plugins, and
@@ -85,6 +88,20 @@ public class VoDescriptionServer {
          throw new RuntimeException(e);
       }
       
+      // Added by KEA: validate the VODescription against schema
+      String rootElement = root.getLocalName();
+      if(rootElement == null) {
+         rootElement = root.getNodeName();
+      }
+      try {
+         AstrogridAssert.assertSchemaValid(root,rootElement,SchemaMap.ALL);
+      }
+      catch (Throwable th) {
+         throw new MetadataException("Resource VODescription does not validate against its schema: "+th.getMessage(), th);
+      }
+
+
+      // Perform some manual checks (KEA: remove these?)
       NodeList children = root.getChildNodes();
       
       for (int i = 0; i < children.getLength(); i++) {
@@ -116,7 +133,6 @@ public class VoDescriptionServer {
             }
          }
       }
-      
    }
 
    /** Instantiates the class with the given name.  This is useful for things
@@ -282,8 +298,6 @@ public class VoDescriptionServer {
       String resources = plugin.getVoResource();
 
       try {
-        //System.out.println("Resource is:");
-        //System.out.println(VODESCRIPTION_ELEMENT+resources+VODESCRIPTION_ELEMENT_END);
          validateDescription(VODESCRIPTION_ELEMENT+resources+VODESCRIPTION_ELEMENT_END);
       
          vod.append(resources+"\n\n");
@@ -343,11 +357,4 @@ public class VoDescriptionServer {
       VoDescriptionServer.pushToRegistry(new URL("http://galahad.star.le.ac.uk:8080/galahad-registry/services/AdminService"));
    }
 }
-
-
-
-
-
-
-
 

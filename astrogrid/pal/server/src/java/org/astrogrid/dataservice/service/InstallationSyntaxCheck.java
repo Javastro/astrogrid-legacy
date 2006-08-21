@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.3 2006/06/23 10:18:29 kea Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.4 2006/08/21 15:39:30 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,8 +23,14 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
-import org.astrogrid.xml.Validator;
 import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
+
+// For validation
+import org.astrogrid.xml.DomHelper;
+import org.w3c.dom.Document;
+import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.contracts.SchemaMap;
+
 
 
 /** Unit test for checking an installation - runs a number of sample queries
@@ -142,9 +148,13 @@ public class InstallationSyntaxCheck {
 
       server.askQuery(testPrincipal, query, this);
 
+      Document doc = DomHelper.newDocument(sw.toString());
+      String rootElement = doc.getDocumentElement().getLocalName();
+      if(rootElement == null) {
+        rootElement = doc.getDocumentElement().getNodeName();
+      }
       // This throws an exception if the returned votable is invalid
-      // (the validator was primarily intended for unit tests I think)
-      Validator.isValid(new ByteArrayInputStream(sw.toString().getBytes()));
+      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
    }
 
    protected Query getTestSuiteQuery(int i, ReturnTable returns) throws QueryException

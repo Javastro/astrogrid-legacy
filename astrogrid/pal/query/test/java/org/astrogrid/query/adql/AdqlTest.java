@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTest.java,v 1.5 2006/06/22 16:16:23 kea Exp $
+ * $Id: AdqlTest.java,v 1.6 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,10 +27,10 @@ public class AdqlTest extends XMLTestCase   {
 
    protected void setUp()
    {
-      // Set property "conesearch.table", needed for handling ADQL 
+      // Set property "default.table", needed for handling ADQL 
       // with missing FROM clause
       ConfigFactory.getCommonConfig().setProperty(
-          "conesearch.table","catalogue");
+          "default.table","catalogue");
    }
 
    /* Actual tests */

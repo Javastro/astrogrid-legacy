@@ -1,0 +1,186 @@
+/**
+ * $Id: Validator.java.DONT_USE,v 1.2 2006/08/21 15:39:44 clq2 Exp $
+ *
+ */
+
+package org.astrogrid.xml;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Vector;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import org.apache.xerces.parsers.SAXParser;
+import org.apache.xerces.util.XMLCatalogResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.ParserAdapter;
+
+/** Parsers a document to see if it is well formed and/or valid.  Throws exceptions
+ * when not.  This could eb written as unit test helper, but there are issues then
+ * about including unit test code in the main source code. */
+
+public class Validator  {
+   
+   
+   /** A convenience routine for checking that the given stream contains a
+    * well-formed XML document - ie it is parsable - but does not check against schema.
+    * Throws exceptions if there is a problem. */
+   public static void isWellFormed(InputStream xml) throws SAXException, IOException {
+      try {
+         SAXParserFactory spf = SAXParserFactory.newInstance();
+         spf.setValidating(false);
+         XMLReader parser = new ParserAdapter(spf.newSAXParser().getParser());
+   
+         parser.parse(new InputSource(xml));
+      }
+      catch (ParserConfigurationException pce) {
+         throw new RuntimeException("JRE not configured correctly; "+pce, pce);
+      }
+   }
+
+   /** A convenience routine for checking that the given stream contains a
+    * valid xml document - ie it conforms to its schema.  
+    * Returns null if it is fine, otherwise the error recorder that 
+    * contains the list of errors/warnings that resulted from parsing.
+    * This is useful in main code where you want to provide detailed 
+    * feedback about what is wrong with the document.
+    */
+   public static ErrorRecorder analyseValidity(InputStream xml) 
+            throws IOException, SAXException {
+
+      ErrorRecorder recorder;
+
+     // Validate the XML, but don't throw an exception if it is invalid
+     // (NOTE: Exceptions may still be thrown if the parser cannot be 
+     // configured successfully, or if the XML cannot be accessed.
+     // However, pure parse/validation errors will not result in an exception.)
+      recorder = isValidUsingXerces(xml, false);
+      if (recorder.hasErrors() || recorder.hasWarnings()) {
+         return recorder;
+      } 
+      return null;
+   }
+
+   /** A convenience routine for checking that the given stream contains a
+    * valid xml document - ie it conforms to its schema.  
+    * This throws an exception if the document is not valid;  it's a useful
+    * method for unit tests but not so helpful in main code as it doesn't
+    * provide much detail of the validation errors.
+    */
+   public static void isValid(InputStream xml) throws SAXException, IOException {
+      // Validate the XML, and throw an exception if it is invalid
+      // (the recorder here is just a placeholder)
+      ErrorRecorder recorder = isValidUsingXerces(xml, true);
+   }
+   
+   /** NOW DISABLED: This validates the given stream using the JAXP version
+    * - ie it uses the parserfactory, however this just seems to give a
+    * DTD validator */
+   /*
+   private static ErrorRecorder isValidUsingFactory(InputStream xml) throws SAXException, IOException {
+
+      try {
+         // set up catalog so that local schema copies are used instead of remote ones
+         // if possible
+         String[] catalogs = new String[] { ""+Validator.class.getResource("catalog.xml") };
+         XMLCatalogResolver resolver = new XMLCatalogResolver();
+         resolver.setPreferPublic(true);
+         resolver.setCatalogList(catalogs);
+         
+         SAXParserFactory spf = SAXParserFactory.newInstance();
+         spf.setValidating(true);
+         
+         XMLReader parser = new ParserAdapter(spf.newSAXParser().getParser());
+
+         parser.setEntityResolver(resolver);
+         
+         ErrorRecorder recorder = new ErrorRecorder();
+         parser.setErrorHandler(recorder);
+         parser.parse(new InputSource(xml));
+         
+         return recorder;
+      }
+      catch (ParserConfigurationException pce) {
+         throw new RuntimeException("JRE not configured correctly; "+pce, pce);
+      }
+
+   }
+   */
+
+   /** This validates the given stream using the Xerces library.
+    * Note that schema validation (rather than DTD validation) is used. 
+    * The throwException parameter specifies whether exceptions should
+    * be thrown or not on parse/validation errors.
+    * NOTE: Exceptions may still be thrown if the parser cannot be 
+    * configured successfully, or if the XML cannot be accessed.
+    */
+   private static ErrorRecorder isValidUsingXerces(
+     InputStream xml, boolean throwException) throws SAXException, IOException {
+
+      ErrorRecorder recorder = new ErrorRecorder();
+      SAXParser parser = configureXercesParser(recorder);
+      try {
+         // This throws a sax exception if the input is badly-formed or invalid
+         // against schema
+         parser.parse(new InputSource(xml));
+      }
+      catch (SAXException e) {
+        if (throwException) {
+          // Throw the SAX error as an exception
+          throw e;
+        }
+        // Return the ErrorRecorder if the exception is undesired
+        return recorder;   // Return the error recorder
+      }
+      catch (IOException e2) {
+      // If we had an IO exception instead, throw it
+         throw e2;
+      }
+      // If we got here, basic SAX parsing was OK, but need to check
+      // for schema-validation errors in the recorder
+      if (throwException) {
+        if (recorder.hasErrors()) {
+          // Throw an exception if there were schema validation errors
+          throw new SAXException("Document failed validation against schema:" + recorder.listErrors());
+        }
+      }
+      // Return the recorder (which may contain no errors)
+      return recorder;
+   }
+
+
+   /** Convenience method to set up Xerces validating parser 
+    * @TOFIX: Work out why the CatalogResolver isn't working. */
+   private static SAXParser configureXercesParser(ErrorRecorder recorder)
+     throws SAXException
+   {
+      // set up catalog so that local schema copies are used instead of 
+      // remote ones if possible (NOTE - actual use disabled below)
+      String[] catalogs = new String[] { ""+Validator.class.getResource("catalog.xml") };
+      XMLCatalogResolver resolver = new XMLCatalogResolver();
+      resolver.setPreferPublic(false);
+      resolver.setCatalogList(catalogs);
+      
+      SAXParser parser = new SAXParser();
+      parser.setFeature("http://xml.org/sax/features/validation", true);
+      // Use schema (rather than DTD) validation
+      parser.setFeature ("http://apache.org/xml/features/validation/schema", 
+          true);
+      // This actually validates the schema itself, not just the xml file;
+      // leave it switched off
+      //parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true); 
+
+      parser.setErrorHandler(recorder);
+
+      // Disabled by KEA because of need to store resolver jar in 
+      // common/endorsed in tomcat
+      parser.setProperty("http://apache.org/xml/properties/internal/entity-resolver", resolver);
+
+      return parser;
+   }
+}

@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.10 2006/02/09 09:54:09 clq2 Exp $
+ * $Id: TabularDbResources.java,v 1.11 2006/08/21 15:39:30 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,10 +43,15 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
          "<tdb:db>\n"
       );
       
-      //only one catalog in resource at the moment
-      String catalog = reader.getCatalogs()[0];
+      String[] catalogNames = reader.getCatalogs();
+      if (catalogNames.length == 0) {
+         throw new MetadataException("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!");
+      }
+      // If we get here, have at least one catalog.  NB At present
+      // there should be only one.
+      String catalog = catalogNames[0];
       if (catalog == null) {
-         throw new MetadataException("No Catalog found in metadoc");
+         throw new MetadataException("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!");
       }
       tabularDb.append(
          "<tdb:name>"+catalog+"</tdb:name>\n"+
