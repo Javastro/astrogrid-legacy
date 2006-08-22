@@ -6,6 +6,11 @@
     <body>
 			
     	<release version="(Pending Integration)">
+    	<action dev="gtr" type="fix" issue="1789, 1793">
+          Branch community-gtr-1722-2. The password-change code does better
+          checks on the old password. The registration type is pinned to use
+          the v0.10 schema. There are also some fixes to the experimental CA.
+    	</action>
 			<action dev="jl" type="add" issue="1496">
 				Branch common-jl-1496
 				Addition of new folder structure to cover xmlbeans generated for v1.0a1 of adql schema
