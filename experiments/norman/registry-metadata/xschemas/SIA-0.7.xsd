@@ -3,6 +3,7 @@
             xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
             xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
             xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+            xmlns:x2s="http://ns.eurovotech.org/registry-metadata"
             targetNamespace="http://www.ivoa.net/xml/SIA/v0.7"
             elementFormDefault="qualified" attributeFormDefault="unqualified"
             version="0.7">
@@ -186,14 +187,14 @@
 
    <xs:complexType name="ImageSize">
       <xs:sequence>
-         <xs:element name="long" type="xs:int">
+         <xs:element name="long" type="xs:int" x2s:propertyName="pixelLongitude">
            <xs:annotation>
               <xs:documentation>
                  The image size in the longitude (R.A.) direction in pixels
               </xs:documentation>
            </xs:annotation>
          </xs:element>
-         <xs:element name="lat" type="xs:int">
+         <xs:element name="lat" type="xs:int" x2s:propertyName="pixelLatitude">
            <xs:annotation>
               <xs:documentation>
                  The image size in the latitdude (Dec.) direction in pixels

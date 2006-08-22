@@ -4,6 +4,7 @@
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
            xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
            xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata"
            elementFormDefault="qualified" attributeFormDefault="unqualified"
            version="0.5">
 
@@ -43,7 +44,8 @@
             <xs:sequence>
  
               <xs:element name="facility" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded">
+                          minOccurs="0" maxOccurs="unbounded"
+                          x2s:multipleDomains="yes">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
@@ -56,7 +58,8 @@
               </xs:element>
 
               <xs:element name="instrument" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded">
+                          minOccurs="0" maxOccurs="unbounded"
+                          x2s:multipleDomains="yes">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
@@ -69,7 +72,8 @@
                 </xs:annotation>
               </xs:element>
 
-              <xs:element name="coverage" type="vs:Coverage" minOccurs="0">
+              <xs:element name="coverage" type="vs:Coverage" minOccurs="0"
+                          x2s:multipleDomains="yes">
                 <xs:annotation>
                    <xs:documentation>
                      Extent of the content of the resource over space, time, 
@@ -185,7 +189,8 @@
          <xs:extension base="vr:Service">
             <xs:sequence>
               <xs:element name="facility" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded">
+                          minOccurs="0" maxOccurs="unbounded"
+                          x2s:multipleDomains="yes">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
@@ -198,7 +203,8 @@
               </xs:element>
 
               <xs:element name="instrument" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded">
+                          minOccurs="0" maxOccurs="unbounded"
+                          x2s:multipleDomains="yes">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
@@ -211,7 +217,8 @@
                 </xs:annotation>
               </xs:element>
 
-              <xs:element name="coverage" type="vs:Coverage" minOccurs="0">
+              <xs:element name="coverage" type="vs:Coverage" minOccurs="0"
+                          x2s:multipleDomains="yes">
                 <xs:annotation>
                    <xs:documentation>
                      Extent of the content of the resource over space, time, 
@@ -359,7 +366,8 @@
 
    <xs:complexType name="Table">
       <xs:sequence>
-         <xs:element name="name" type="xs:string" minOccurs="0">
+         <xs:element name="name" type="xs:string" minOccurs="0"
+                     x2s:multipleDomains="yes">
             <xs:annotation>
                <xs:documentation>
                   the name of the table 
@@ -367,7 +375,8 @@
             </xs:annotation>
          </xs:element>
 
-         <xs:element name="description" type="xs:string" minOccurs="0">
+         <xs:element name="description" type="xs:string" minOccurs="0"
+                     x2s:multipleDomains="yes">
             <xs:annotation>
                <xs:documentation>
                   a description of the tables contents
@@ -398,7 +407,8 @@
 
    <xs:complexType name="Param">
       <xs:sequence>
-         <xs:element name="name" type="xs:string" minOccurs="0">
+         <xs:element name="name" type="xs:string" minOccurs="0"
+                     x2s:multipleDomains="yes">
             <xs:annotation>
                <xs:documentation>
                   the name of the column
@@ -406,7 +416,8 @@
             </xs:annotation>
          </xs:element>
 
-         <xs:element name="description" type="xs:string" minOccurs="0">
+         <xs:element name="description" type="xs:string" minOccurs="0"
+                     x2s:multipleDomains="yes">
             <xs:annotation>
                <xs:documentation>
                   a description of the column's contents
