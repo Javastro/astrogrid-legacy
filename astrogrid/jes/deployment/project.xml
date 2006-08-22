@@ -43,6 +43,15 @@
             <version>5.0.18</version>
             <properties/>
         </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-security</artifactId>
+            <version>${astrogrid.security.version}</version>
+            <properties>
+                    <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
         <!--required to use the Ant 1.6 input task instead of the Ant 1.5.3
 			one...this requirement will probably go away come Maven 1.1-->
         <dependency>
