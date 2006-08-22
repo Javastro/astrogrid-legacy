@@ -20,12 +20,23 @@ See also the OWL and RDFS ontologies for Atom <http://atomowl.org/ontologies>
 
 
 
-I've ended up largely ignoring the XSchema structure, and instead
-re-modelling the semantics from scratch, based on the XSchema, and the
-specification at
+I've ended up largely ignoring the XSchema structure for the main
+VOResource schema, and instead re-modelling the semantics from
+scratch, based on the XSchema, and the specification at
 <http://www.ivoa.net/internal/IVOA/VOResourceV10/WD-VOResource-v1.html>,
 with discussion on the wiki at
 <http://www.ivoa.net/twiki/bin/view/IVOA/VOResourceV10>.
+
+However, for the simpler XSchemas, it seems reasonable to do this
+mechanically, and that's done in xschemas/Makefile
+
+
+
+There are plenty of frustrations arising from my use of XSLT to do
+this.  There's a useful description of prefix->namespace mapping in
+XSL at
+<http://www.biglist.com/lists/xsl-list/archives/200412/msg00043.html>,
+and the messages following it.
 
 
 
@@ -152,3 +163,30 @@ uri xs:anyURI
 
 AuthorityID and ResourceKey are omitted.  They're defined as utility
 types, but not used, in the VOResource XSchema
+
+
+* Generation of Schemas from XSchemas
+
+I think this will work for the simpler schemas, with a few
+qualifications.  Eyeball complains about references to classes which
+aren't imported.
+
+SIA-0.7: seems OK
+
+VODataService-v0.5: seems broadly OK, though eyeball notices that the
+Coverage type is referenced in this schema but not used.  I think this
+is an error in the .xsd file, as it should be referring to te
+VODataServiceCoverage schema, which has now been merged in to VODataService
+
+When I combine together all of 'SIA-v1.0.rdfs VODataService-v1.0.rdfs
+VORegistry-v1.0.rdfs' with cwm, and ./eyeball the result:
+
+% cwm -pipe -rdf SIA-v1.0.rdfs VODataService-v1.0.rdfs VORegistry-v1.0.rdfs >all.rdf
+% ../eyeball.sh -check all.rdf -assume owl 
+
+the only things it objects to are references to the VOResource
+schema.  If I additionally '-assume ../rdfschemas/VOResource-1.0.owl',
+then it objects to fewer things, but these are things I've
+renamed in the VOResource schema: ResourceName has changed; the range
+of SIA/v1.0#validationLevel is no longer VOResource/v1.0#Validation;
+and I seem to have removed AuthorityID.  So I'll need to rethink those.
