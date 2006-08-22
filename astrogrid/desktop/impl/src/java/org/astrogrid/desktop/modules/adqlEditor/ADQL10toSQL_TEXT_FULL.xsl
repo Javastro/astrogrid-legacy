@@ -217,6 +217,7 @@
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'closedSearchType'] | *[@xsi:type = 'closedSearchType']">
 		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition"/>
+		<xsl:text> )</xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'comparisonPredType'] | *[@xsi:type = 'comparisonPredType']">
@@ -253,6 +254,7 @@
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'closedExprType'] | *[@xsi:type = 'closedExprType']">
 		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Arg"/>
+		<xsl:text> )</xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
 	
