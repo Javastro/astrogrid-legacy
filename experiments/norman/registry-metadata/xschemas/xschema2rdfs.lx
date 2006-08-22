@@ -1,0 +1,201 @@
+;; Convert an instance of VOResource-0.10 to RDF statements (as
+;; striped RDF/XML) using the
+;; http://ns.eurovotech.org/VOResource-1.0.owl#" ontology.
+;;
+;; Uses attributes in the x2s="http://ns.eurovotech.org/registry-metadata"
+;; namespace to provide hints to the conversion:
+;;     x2s:propertyName="<name>"
+;;         Attribute on an element or attribute declaration, which
+;;         indicates that the property name generated for this
+;;         element/attribute should be the given <name>, and not
+;;         simply the same as the element/attribute name -- this is
+;;         for the case where there are multiple element/attributes
+;;         with the same name but different meanings.
+;;
+;;     x2s:multipleDomains="yes|no"
+;;         If present on an element/attribute, and if it has the value
+;;         "yes", then the element/attribute will have multiple
+;;         domains, and therefore be declared more than once in the
+;;         generated RDFS.  Thus it should not be declared using rdf:ID.
+
+(lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
+;;                     (ri   "http://www.ivoa.net/xml/RegistryInterface/v0.1")
+;;                     (vor  "http://www.ivoa.net/xml/VOResource/v0.10")
+;;                     ;("rmo" "http://ns.eurovotech.org/VOResource-1.0.owl#")
+;;                     (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
+
+;;                     (vs "http://www.ivoa.net/xml/VODataService/v0.5")
+;;                     (xsi "http://www.w3.org/2001/XMLSchema-instance")
+                    (xs "http://www.w3.org/2001/XMLSchema")
+                    (x2s "http://ns.eurovotech.org/registry-metadata")
+
+                    ;;(vm "http://www.ivoa.net/xml/VOMetadata/v0.1")
+                    ;;(dc "http://purl.org/dc/elements/1.1/")
+
+                    (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                    (rdfs "http://www.w3.org/2000/01/rdf-schema#")
+                    (owl  "http://www.w3.org/2002/07/owl#"))
+         (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
+         (dtd (template (match #t) mode)
+              (element (name #t))
+              (attribute (name #t))
+              (value-of (select #t))
+              (when (test #t))
+              (if (test #t))
+              (with-param (name #t) select)))
+
+(stylesheet version: 1.0 exclude-result-prefixes: "x2s"
+  (output method: xml
+          version: 1.0
+          indent: yes)
+
+  (template /
+      (apply-templates select: xs:schema))
+
+  (template xs:schema
+      (rdf:RDF
+       (attribute name: xml:base (value-of @targetNamespace))
+       (owl:Ontology (attribute rdf:about (value-of @targetNamespace))
+                     (if @version
+                         (owl:versionInfo (value-of @version)))
+                     (rdfs:comment "Generated from XSchema by xschema2rdfs.lx")
+                     (apply-templates select: xs:annotation)
+                     (apply-templates select: xs:import))
+       (apply-templates select: "xs:complexType|xs:simpleType")))
+
+  (template xs:import
+      (owl:imports
+       (attribute rdf:resource (value-of @namespace))))
+
+  (template xs:complexType
+      (choose
+       (when descendant::xs:complexType
+         (x2s:ERROR "complexType " (value-of @name)
+                       " contains anonymous complexType"))
+       (when descendant::xs:simpleType
+         (x2s:ERROR "complexType " (value-of @name)
+                       " contains anonymous simpleType"))
+       (otherwise
+        (rdfs:Class (attribute rdf:ID (value-of @name))
+                    (apply-templates select: xs:annotation)
+                    (apply-templates select: xs:complexContent/xs:extension))
+        (apply-templates select: .//xs:element)
+        (apply-templates select: .//xs:attribute))))
+
+  (template xs:simpleType
+      (choose
+       (when .//xs:enumeration          ;OK
+         (rdfs:Class (attribute rdf:ID (value-of @name))
+                     (apply-templates select: xs:annotation))
+         ;; If and when I decide to generate OWL here, then produce
+         ;; something like the following:
+         ;;   <owl:Class rdf:ID="ResourceType">
+         ;;     <owl:equivalentClass>
+         ;;       <owl:Class>
+         ;;         <owl:unionOf rdf:parseType="Collection">
+         ;;           <owl:Class rdf:ID="EPOResourceType"/>
+         ;; ...but that has implications for the OWL language level, I think.
+         (apply-templates select: .//xs:enumeration))
+       (when .//xs:restriction           ;OK
+         (rdfs:Class (attribute rdf:ID (value-of @name))
+                     (apply-templates select: xs:annotation)
+                     (apply-templates select: xs:restriction)))
+       (otherwise
+        (x2s:ERROR "simpleType " (value-of @name)
+                      " contains no xs:restriction"))))
+
+  (template "xs:extension|xs:restriction"
+      (rdfs:subClassOf
+       (attribute rdf:resource
+                  (call-template name: expand-namespace
+                                 (with-param name: type
+                                             select: @base)))))
+
+  (template xs:enumeration
+      (rdfs:Class (attribute rdf:ID
+                             (apply-templates select: . mode: generate-name))
+                  (rdfs:subClassOf
+                   (attribute rdf:resource
+                              "#"
+                              (value-of ancestor::xs:simpleType/@name)))
+                  (for-each select: "preceding-sibling::*|following-sibling::*"
+                            (owl:disjointWith
+                             (attribute rdf:resource
+                                        "#"
+                                        (apply-templates select: .
+                                                         mode: generate-name))))
+                  (apply-templates select: xs:annotation)))
+  (template xs:enumeration mode: generate-name
+            (value-of ancestor::xs:simpleType/@name)
+            (value-of @value))
+
+  (template "xs:element|xs:attribute"
+      (choose
+       (when @ref                       ;declare this type as an additional
+         (rdf:Property                  ;domain of the named property
+          (attribute rdf:about
+                     (call-template name: expand-namespace
+                                    (with-param name: type
+                                                (value-of @ref))))
+          (choose
+           (when ancestor::xs:complexType/@name
+             (rdfs:domain
+              (attribute rdf:resource
+                         "#"
+                         (value-of ancestor::xs:complexType/@name))))
+           (otherwise
+            (x2s:ERROR "ref=" (value-of @ref) " not in complexType!")))))
+       (when @type
+         (rdf:Property (choose
+                        (when @x2s:multipleDomains
+                          (attribute rdf:about
+                                     "#"
+                                     (choose
+                                      (when @x2s:propertyName
+                                        (value-of @x2s:propertyName))
+                                      (otherwise
+                                       (value-of @name)))))
+                        (otherwise
+                         (attribute rdf:ID
+                                    (choose
+                                     (when @x2s:propertyName
+                                       (value-of @x2s:propertyName))
+                                     (otherwise
+                                      (value-of @name))))))
+                       (choose
+                        (when ancestor::xs:complexType/@name
+                          (rdfs:domain
+                           (attribute rdf:resource
+                                      "#"
+                                      (value-of ancestor::xs:complexType/@name))))
+                        (otherwise
+                         (x2s:ERROR
+                          "type=" (value-of @type) " not within complexType")))
+                       (rdfs:range
+                        (attribute rdf:resource
+                                   (call-template name: expand-namespace
+                                                  (with-param name: type
+                                                              (value-of @type)))))
+                       (apply-templates select: xs:annotation)))
+       (otherwise
+        (x2s:ERROR
+         "Element " (value-of @name) " declared without type or ref"))))
+
+  (template xs:annotation
+      ;; Skip xs:appinfo for now, though there's been some experimentation
+      ;; with vm:dcterm, so that might be worth tying in in the future.
+      (rdfs:comment (apply-templates select: xs:documentation)))
+
+  (template xs:documentation
+      (apply-templates))
+
+  ;; Named templates
+  (lx:dtd ((template (name #t)))
+    (template expand-namespace
+        (param name: type)
+      (variable name: prefix select: "substring-before($type,':')")
+      (value-of select: "namespace::*[name()=$prefix]")
+      "#"
+      (value-of select: "substring-after($type,':')")))
+
+))
