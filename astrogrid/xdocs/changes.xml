@@ -25,6 +25,10 @@
     		  <em>Branch Contracts_KMB_XForms n astrogrid/contracts:</em>  Only merge in src/java and src/schema stuff.  Originally
     		  this branch was for Xforms stuff, but that has not gone through, but still added a lot of new schemas 1.0.
     		  This needs Guy Rixon approval though. - Kev will let me know when this is ready - CLQ
+                  I have modified Kevin's branch slightly in the light of discussions: CEAService v0.3 instead of the more-ambitious
+                  v1.0; astrogrid-software-site added to branch and schemata index updated; maven-base added to branch and version
+                  of contracts raised to 2006.3.02. Note that astrogrid-software-site needs to be built after contracts. The branch is now
+                  ready to merge - GTR
     		</action> 	  	
 	
         </release>
