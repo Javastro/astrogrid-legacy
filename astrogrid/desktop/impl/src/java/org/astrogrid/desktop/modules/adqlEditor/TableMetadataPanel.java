@@ -79,7 +79,7 @@ public class TableMetadataPanel extends JPanel {
     private Catalog databaseBean ;
     // private int tableIndex ;
     private JTable displayTable ;
-    private JScrollPane displayTablerScrollPane ;
+    private JScrollPane displayTableScrollPane ;
     private AdqlTree adqlTree ;
     private ADQLToolEditorPanel adqlToolEditorPanel ;
     private SchemaType columnReferenceType ;
@@ -169,11 +169,11 @@ public class TableMetadataPanel extends JPanel {
         JTableHeader header = displayTable.getTableHeader() ;
         header.setUpdateTableInRealTime( false ) ;
         
-        displayTablerScrollPane = new JScrollPane() ; 
-        displayTablerScrollPane.getViewport().setBackground( displayTable.getBackground() ) ;
-        displayTablerScrollPane.getViewport().add( displayTable ) ;
+        displayTableScrollPane = new JScrollPane() ; 
+        displayTableScrollPane.getViewport().setBackground( displayTable.getBackground() ) ;
+        displayTableScrollPane.getViewport().add( displayTable ) ;
         displayTable.addMouseListener( new ContextPopup() ) ;
-        return displayTablerScrollPane ;
+        return displayTableScrollPane ;
     }
     
     class DisplayColumnData {
@@ -306,7 +306,7 @@ public class TableMetadataPanel extends JPanel {
 			// As this is in a JScrollPane, it requires adjustment
 			// according to what position the JViewport has on the 
 			// JTable...
-			JViewport viewPort = displayTablerScrollPane.getViewport() ;
+			JViewport viewPort = displayTableScrollPane.getViewport() ;
 			Point popupPosition =
 			    SwingUtilities.convertPoint( displayTable, event.getPoint(), viewPort ) ;
 
