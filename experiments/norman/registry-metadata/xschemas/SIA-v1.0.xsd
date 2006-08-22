@@ -3,6 +3,7 @@
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
            xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0"
            xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata"
            targetNamespace="http://www.ivoa.net/xml/SIA/v1.0"
            elementFormDefault="unqualified" attributeFormDefault="unqualified"
            version="1.0wd">
@@ -137,14 +138,16 @@
 
    <xs:complexType name="SkySize">
       <xs:sequence>
-         <xs:element name="long" type="xs:float">
+         <xs:element name="long" type="xs:float"
+                     x2s:propertyName="skySizeLongitude">
            <xs:annotation>
               <xs:documentation>
                  The maximum size in the longitude (R.A.) direction 
               </xs:documentation>
            </xs:annotation>
          </xs:element>
-         <xs:element name="lat" type="xs:float">
+         <xs:element name="lat" type="xs:float"
+                     x2s:propertyName="skySizeLatitude">
            <xs:annotation>
               <xs:documentation>
                  The maximum size in the latitdude (Dec.) direction 
@@ -175,14 +178,16 @@
 
    <xs:complexType name="ImageSize">
       <xs:sequence>
-         <xs:element name="long" type="xs:int">
+         <xs:element name="long" type="xs:int"
+                     x2s:propertyName="pixelLongitude">
            <xs:annotation>
               <xs:documentation>
                  The image size in the longitude (R.A.) direction in pixels
               </xs:documentation>
            </xs:annotation>
          </xs:element>
-         <xs:element name="lat" type="xs:int">
+         <xs:element name="lat" type="xs:int"
+                     x2s:propertyName="pixelLatitude">
            <xs:annotation>
               <xs:documentation>
                  The image size in the latitdude (Dec.) direction in pixels
