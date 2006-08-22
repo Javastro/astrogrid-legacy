@@ -43,6 +43,7 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 	<mapID target="pw.movieMaker" 	url="pw-SolarMovie/SolarMovie.html" />
 	<mapID target="pw.redshiftMaker" 	url="http://wiki.astrogrid.org/bin/view/Astrogrid/RedshiftMaker"/>
 	<mapID target="pw.ctip" url="pw-ctip/CTIP_mode_A.html" />
+	<mapID target="pw.colourCutter" url="pw-ColourCutter/ColourCutter.html" />
 
 	<!-- application launcher -->
 	<mapID target="userInterface.applicationLauncher" url="applauncher/index.html" />
@@ -77,12 +78,21 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
 
 	<!-- volookout -->
 	<mapID target="userInterface.lookout" url="lookout/index.html" />
+	
+	<!-- usage -->
+	<mapID target="userInterface.merlinImager" url="merlin/MERLINImager.html" />
+	<mapID target="userInterface.merlinData" url="merlin/DataAccessWorksheet.html" />
+	
+	<mapID target="userInterface.timeCrossMatcher" url="txm/TimeCrossMatcher.html" />
+	<mapID target="userInterface.helioScope" url="helioscope/HelioScope.html" />
 
 <!-- 
 	information about astrogird	
 	-->
 	<mapID target="astrogrid.about" url="about-astrogrid.html" />
 	<mapID target="astrogrid.release" url="http://software.astrogrid.org" />
+	
+	<mapID target="astrogrid.Data" url="http://wiki.astrogrid.org/bin/view/Astrogrid/GettingAndViewingData" />
 	<!-- add links to user forums, etc once they're defined -->
 	
 

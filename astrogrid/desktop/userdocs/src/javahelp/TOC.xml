@@ -4,40 +4,86 @@ PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
 "toc_1_0.dtd">
 <!-- defines the table of contents view of the data -->
 <toc version="1.0" topicimage="topicIcon" categoryopenimage="openFolderIcon" categoryclosedimage="closedFolderIcon" >
-	<tocitem text="Workbench" target="top" image="toplevelfolder">
-		<!-- add children to each of these headings, once they're written -->
-		<tocitem text="Main Window" target="workbench.main" />
-
+    
+	<tocitem text="Introduction" target="astrogrid.intro" image="toplevelfolder">
+		<tocitem text="Workbench" target="top" />
+		<tocitem text="Login" target="astrogrid.login" />
+		<tocitem text="Myspace Browser" target="userInterface.myspaceBrowser" />
+		<tocitem text="Configuration" target="astrogrid.config" />
+		<tocitem text="Links" target="astrogrid.links" />
+	</tocitem>
+	
+	<tocitem text="Data Explore" target="astrogrid.dataexplore" image="toplevelfolder">
 		<tocitem text="Astroscope" target="userInterface.astroscopeLauncher" />
-		
-		<tocitem text="Lookout" target="userInterface.lookout" />
-		
-		<tocitem text="Parameterized Workflows" target="userInterface.parameterizedWorkflows">
-			<tocitem text="Solar Movie Maker" target="pw.movieMaker" />
-			<tocitem text="Redshift Maker" target="pw.redshiftMaker" />
-			<tocitem text="CTIP" target="pw.ctip" />
-		</tocitem>
-		
-		<tocitem text="Application Launcher" target="userInterface.applicationLauncher">
-			<tocitem text="Available Applications" target="al.list" />
-		</tocitem>
-		
+		<tocitem text="HelioScope" target="userInterface.helioScope" />
+	</tocitem>
+	
+	<tocitem text="Astro Tools" target="astrogrid.tools" image="toplevelfolder">
+		<tocitem text="VO Resources" target="userInterface.registryBrowser" />
+	</tocitem>	
+	
+	<tocitem text="Workflows" target="astrogrid.main" image="toplevelfolder">
 		<tocitem text="Workflow Builder" target="userInterface.workflowBuilder.introduction" >
 			<tocitem text="Workflow overview" target="userInterface.workflowBuilder.workflow" />
 		    <tocitem text="Builder overview" target="userInterface.workflowBuilder.top" />
 		    <tocitem text="Tree view" target="userInterface.workflowBuilder.treePanel" />
 	        <tocitem text="Document view" target="userInterface.workflowBuilder.docPanel" />
-	        <tocitem text="Activity list" target="userInterface.workflowBuilder.activityList" />	        		    
+	        <tocitem text="Activity list" target="userInterface.workflowBuilder.activityList" />
+	        <tocitem text="Task Launcher" target="userInterface.applicationLauncher" />	 
+	        <tocitem text="Query Builder" target="userInterface.querybuilder" />	    
 		</tocitem>
+		<tocitem text="Science Examples">
+			<tocitem text="Solar Movie Maker" target="pw.movieMaker" />
+			<tocitem text="Redshift Maker" target="pw.redshiftMaker" />
+			<tocitem text="ColourCutter" target="pw.colourCutter" />
+			<tocitem text="CTIP" target="pw.ctip" />
+			<tocitem text="SDSS DR3 Image Query" target="pw.dr3" />
+		</tocitem>
+		<tocitem text="Lookout" target="userInterface.lookout" />
+	</tocitem>	
+	
+	<tocitem text="Technical" target="astrogrid.tech" image="toplevelfolder">
+		<tocitem text="AR" target="tech.ar" />
+		<tocitem text="PLASTIC" target="tech.plastic" />
+		<tocitem text="Advanced Config" target="tech.adconfig" />
+	</tocitem>
 
-		<tocitem text="Myspace Browser" target="userInterface.myspaceBrowser" />
-		<tocitem text="Registry Browser" target="userInterface.registryBrowser" />
+    <tocitem text="About AstroGrid" target="astrogrid.about" image="toplevelfolder">
+		<tocitem text="AstroGrid Release 2006.3" target="astrogrid.release" />
+	</tocitem>
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	<tocitem text="Workbench" target="top" image="toplevelfolder">
+		<!-- add children to each of these headings, once they're written -->
+		<!--tocitem text="Main Window" target="workbench.main" /-->
+		<tocitem text="Application Launcher" target="userInterface.applicationLauncher">
+			<tocitem text="Available Applications" target="al.list" />
+		</tocitem>
 		<tocitem text="Datascope Launcher" target="userInterface.datascopeLauncher" />
 	</tocitem>
 	
-	<tocitem text="About AstroGrid" target="astrogrid.about" image="toplevelfolder">
-		<tocitem text="AstroGrid Release 1.1" target="astrogrid.release" />
-	</tocitem>	
+		
+	
+	<tocitem text="Linking Astrogrid with Science">
+		<tocitem text="Parameterized Workflows" target="userInterface.parameterizedWorkflows">
+			<tocitem text="Solar Movie Maker" target="pw.movieMaker" />
+			<tocitem text="Redshift Maker" target="pw.redshiftMaker" />
+			<tocitem text="CTIP" target="pw.ctip" />
+			<tocitem text="ColourCutter" target="pw.colourCutter" />			
+		</tocitem>
+		
+		<!-- Merlin -->
+			<tocitem text="Merlin Imager" target="userInterface.merlinImager" />
+		    <tocitem text="Merlin DataAccess" target="userInterface.merlinData" />
+		<tocitem text="TimeCrossMatcher" target="userInterface.timeCrossMatcher" />		
+	</tocitem>
 	
 
 

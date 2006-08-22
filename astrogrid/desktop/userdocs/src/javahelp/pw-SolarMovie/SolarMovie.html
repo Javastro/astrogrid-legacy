@@ -26,12 +26,11 @@ page (so not a good place to store your credit card details).
 <h2>Summary</h2>
 <p>
 This Astrogrid science service allows a user to make a movie of solar 
-images by means of a simple interface. It is available via the Workbench 
-on the Portal home page.
+images by means of a simple interface. It is available via the Workbench.
 </p>
 
 <p>
-Datasets are: 
+Datasets are:  
 </p>
 
 <ul>
@@ -44,29 +43,18 @@ Currently the movie maker takes as input an instrument name and a time
 interval for the movie.
 </p>
 
-<p>
-We plan to develop also an Event-based movie maker (See MovieMakerNext 
-for details).
-</p>
-
 <h2>How to run the Solar Movie Maker</h2> 
 
 <p>
-From the portal Home, launch the AstroGrid Dashboard and click on 
-<tt>User Interface</tt>. Click on <tt>Parameterised Workflow</tt> and 
-<tt>Run</tt>.
+Launch the AstroGrid Workbench and  
+click on <tt>Parameterised Workflows</tt>. You will be asked for your
+Astrogrid login details, unless you are already logged in.
+Choose the Solar Movie Maker. 
 </p>
 
-<center>
 <p>
-  <img src="Dashboard.gif" width="500" height="600" alt="AstroGrid Dashboard"/>
-</p>
-</center>
-
-<p>
-Type in login details (same as the ones used to log into the portal), 
-then choose the Solar Movie Maker (Time) template workflow. Now specify 
-your input parameters:
+A new window will open: here you can specify the input parameters
+(double-click on boxes under <tt>Value</tt> to type in): 
 </p>
 
 <h3>Input parameters</h3>
@@ -77,30 +65,36 @@ your input parameters:
 </ul>
 
 <center>
-  <img src="MovieInput.gif" width="300" height="333" alt="Input dialog box"/>
+  <img src="MovieInput.gif" alt="Input dialog box"/>
 </center>
 
 <p>
-Click on <tt>Execute</tt>. This launches the workflow. You will be asked 
+Click on the green circular icon to execute. This launches the workflow. You will be asked 
 if you want to save the workflow document - saving the document into 
-myspace allows to load the workflow inside the portal, to view it / modify it.
+MySpace will allow you to load the workflow in the Workflow Builder 
+to view it / modify it.
 </p>
 
 <p>
-The Job Monitor window opens: 
+The Lookout window opens: 
 </p>
 
 <center>
 <p>
-  <img src="Jobsmonitor.gif" width="730" height="350" alt="Jobs Monitor Window"/>
+  <img src="Jobsmonitor.gif"  alt="Jobs Monitor Window"/>
 </p>
 </center>
 
 <p>
-When the status of the job changes to 'COMPLETED' you can donwload 
-the output movie from myspace, from the votable directory. The name of 
+Under <tt>Workflows</tt> you will see an entry for your movie workflow.
+The entry will be green while the job is running and will become black
+when it has completed. 
+At this point go to the MySpace Browser in the Workbench: in
+the directory called 'votable' you will find the output movie
+that you can download to your local machine.
+The name of 
 the output movie will depend on your input parameters, e.g. for the ones 
-in the picture above it will be: eit2002-07-28T01:00:00.000.mpg .
+in the screenshot above it will be: eit2002-07-28T01:00:00.000.mpg .
 </p>
 
 <h2>
@@ -108,13 +102,6 @@ Usage Notes:
 </h2>
 
 <ul>
-  <li>
-  Currently the source of TRACE data is the MSSL/SURF archive, which holds 
-  a subset of the complete TRACE archive. Therefore, depending on the input 
-  start/end times, in some cases no movie is produced and the workflow will 
-  terminate in 'ERROR'. We are in the process of linking with the RAL TRACE 
-  archive.
-  </li>
   <li>     
   TRACE data are archived in hourly files (also called 'tri' files). At 
   present the movie maker produces TRACE movies of minimum duration 1 hour.
@@ -138,18 +125,13 @@ Usage Notes:
   </li>
 </ul>
 
-<h3>Workflow returns no movie if:</h3>
-<ul>
-  <li>End time is before start time</li>
-  <li>Input start and end time would result in a huge movie</li>
-  <li>Query to instrument dataset returns no files</li>
-</ul>
+
 
 <!-- Put author information here -->
 <hr/>
 <p>
 <em>Author: Silvia Dalla, s.dalla@manchester.ac.uk</em><br/>
-<em>Last revised : 23 May 2005</em>
+<em>Last revised : 8 June 2006</em>
 </p>
 
 </div>
