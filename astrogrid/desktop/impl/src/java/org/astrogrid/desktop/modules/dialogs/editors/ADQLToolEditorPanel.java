@@ -29,6 +29,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Arrays ;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -71,6 +72,7 @@ import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.TableBean;
+import org.astrogrid.acr.astrogrid.TableBeanComparator;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.acr.ivoa.Registry;
@@ -699,7 +701,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
  
 	private class Popup extends MouseAdapter {
 	    	    
-	    private Hashtable popupMenus = new Hashtable() ;
+//	    private Hashtable popupMenus = new Hashtable() ;
 	    
         //NWW - fix for mac. for portability, need to check on mousePressed 
         // and mouseReleased whether it's the 'popupTrigger' event.
@@ -1138,6 +1140,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                 tabbedCatalogPane.addTab( "Overview", scrollCatalogDetails ) ;
 
                 final TableBean[] tables = dbs.getTables();
+                // JBL sort tables here.
+                TableBeanComparator comparator = new TableBeanComparator() ;
+                Arrays.sort( tables, comparator ) ;
                 for( int j=0; j<tables.length; j++) {
                     tabbedCatalogPane.addTab( tables[j].getName()
                                             , new TableMetadataPanel( ADQLToolEditorPanel.this
