@@ -432,7 +432,7 @@ public final class AdqlTree extends JTree
     
     
     private void reestablishTablesCollection() {
-        aliasStack = new AliasStack() ;
+        // JBL aliasStack = new AliasStack() ;
         XmlString xTableName = null ;
         XmlString xAlias = null ;
         String alias = null ;
@@ -552,10 +552,16 @@ public final class AdqlTree extends JTree
     }
     
     public String popAliasStack() {
+    	if( aliasStack == null ) {
+    		aliasStack = new AliasStack() ;
+    	}
         return aliasStack.pop() ;
     }
     
     public void pushAliasStack( String alias ) {
+    	if( aliasStack == null ) {
+    		aliasStack = new AliasStack() ;
+    	}
         aliasStack.push( alias ) ;
     }
     
