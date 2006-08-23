@@ -2,14 +2,13 @@
 ;; striped RDF/XML) using the
 ;; http://ns.eurovotech.org/VOResource-1.0.owl#" ontology.
 ;;
-;; Uses xs:appinfo elements in the
+;; Uses elements in the
 ;; x2s="http://ns.eurovotech.org/registry-metadata"
-;; namespace to provide hints to the conversion:
-;;     <xs:appinfo>
+;; namespace to provide hints to the conversion.  These are expected to be
+;; children of an <xs:appinfo> element within the element/attribute declaration.
+;;
 ;;     <x2s:propertyName>[name]</x2s:propertyName>
-;;     </xs:appinfo>
-;;         Annotation on an element or attribute declaration, which
-;;         indicates that the property name generated for this
+;;         Indicates that the property name generated for this
 ;;         element/attribute should be the given <name>, and not
 ;;         simply the same as the element/attribute name -- this is
 ;;         for the case where there are multiple element/attributes
@@ -20,19 +19,31 @@
 ;;         will have multiple domains, and therefore be declared more than
 ;;         once in the generated RDFS.  Thus it should not be declared
 ;;         using rdf:ID.  Any content is ignored.
+;;
+;;     <x2s:propertyRange>[type]</x2s:propertyRange>
+;;         The range of the corresponding type should be the given
+;;         type, and not the type which would be derived from the
+;;         @type attribute.  This can also be used to force the range
+;;         of a property derived from an xs:attribute, which would
+;;         normally be presumed to be a datatype property rather than
+;;         (as might well be the case) an enumeration.
+;;
+;;     <x2s:datatypeRange/>
+;;         If present, this is to be regarded as an XSchema datatype property.
+;;         That means that we should declare the range of the property
+;;         to be an XSCD reference.  The discussion of how to do this
+;;         is at <http://www.w3.org/TR/swbp-xsch-datatypes/>, but the
+;;         examples it gives are in the context of instances rather
+;;         than schemas.  So use both the XSCD reference and the
+;;         rdfs:Datatype as the range.  We'll have to do other things
+;;         when and if I start generating OWL here.
+
+
 
 (lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
-;;                     (ri   "http://www.ivoa.net/xml/RegistryInterface/v0.1")
-;;                     (vor  "http://www.ivoa.net/xml/VOResource/v0.10")
-;;                     ;("rmo" "http://ns.eurovotech.org/VOResource-1.0.owl#")
-;;                     (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
-
-;;                     (vs "http://www.ivoa.net/xml/VODataService/v0.5")
-;;                     (xsi "http://www.w3.org/2001/XMLSchema-instance")
                     (xs "http://www.w3.org/2001/XMLSchema")
                     (x2s "http://ns.eurovotech.org/registry-metadata")
 
-                    ;;(vm "http://www.ivoa.net/xml/VOMetadata/v0.1")
                     ;;(dc "http://purl.org/dc/elements/1.1/")
 
                     (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
@@ -53,7 +64,7 @@
           indent: yes)
 
   (template /
-      (apply-templates select: xs:schema))
+    (apply-templates select: xs:schema))
 
   (template xs:schema
       (rdf:RDF
@@ -64,7 +75,14 @@
                      (rdfs:comment "Generated from XSchema by xschema2rdfs.lx")
                      (apply-templates select: xs:annotation)
                      (apply-templates select: xs:import))
-       (apply-templates select: "xs:complexType|xs:simpleType")))
+       (apply-templates select: "xs:complexType|xs:simpleType")
+;;         The following isn't necessary -- see comments before
+;;         x2s:datatypeRange below
+;;        ;; don't _really_ need the following to have a mode, but it helps
+;;        ;; document that we don't call it in the normal processing order
+;;        (apply-templates select: "//x2s:datatypeRange"
+;;                         mode: declare-datatypes)
+       ))
 
   (template xs:import
       (owl:imports
@@ -78,18 +96,27 @@
        (when descendant::xs:simpleType
          (x2s:ERROR "complexType " (value-of @name)
                        " contains anonymous simpleType"))
+       (when xs:simpleContent
+         (apply-templates select: xs:simpleContent))
        (otherwise
         (rdfs:Class (attribute rdf:ID (value-of @name))
                     (apply-templates select: xs:annotation)
-                    (apply-templates select: xs:complexContent/xs:extension))
+                    (apply-templates select: "xs:complexContent/xs:extension|xs:complexContent/xs:restriction"
+                                     mode: complex-content))
         (apply-templates select: .//xs:element)
         (apply-templates select: .//xs:attribute))))
 
+  ;; A simpleType is either an enumeration, in which case we generate
+  ;; a ValuePartition pattern, or it's not, in which case we generate
+  ;; a type consisting of an XSCD reference
+  ;; <http://www.w3.org/TR/xmlschema-ref/> to the simpleType in the
+  ;; input .xsd file.
   (template xs:simpleType
       (choose
        (when .//xs:enumeration          ;OK
          (rdfs:Class (attribute rdf:ID (value-of @name))
-                     (apply-templates select: xs:annotation))
+                     (apply-templates select: xs:annotation)
+                     (rdfs:comment "Enumeration"))
          ;; If and when I decide to generate OWL here, then produce
          ;; something like the following:
          ;;   <owl:Class rdf:ID="ResourceType">
@@ -99,22 +126,62 @@
          ;;           <owl:Class rdf:ID="EPOResourceType"/>
          ;; ...but that has implications for the OWL language level, I think.
          (apply-templates select: .//xs:enumeration))
-       (when .//xs:restriction           ;OK
-         (rdfs:Class (attribute rdf:ID (value-of @name))
-                     (apply-templates select: xs:annotation)
-                     (apply-templates select: xs:restriction)))
+       (when "xs:restriction|xs:extension"           ;OK
+         (rdfs:Class
+          (attribute rdf:about
+                     "#xscd(/type::" (value-of @name) ")")
+          (rdfs:subClassOf
+           (attribute rdf:resource
+                      "http://www.w3.org/2000/01/rdf-schema#Datatype"))
+          (rdfs:comment
+           "Literal XSchema datatype property: see http://www.w3.org/TR/swbp-xsch-datatypes/")
+          (apply-templates select: xs:annotation)
+          (apply-templates select: "xs:restriction|xs:extension"
+                           mode: simple-content))
+;;          (rdfs:Class (attribute rdf:ID (value-of @name))
+;;                      (apply-templates select: xs:annotation)
+;;                      (apply-templates select: xs:restriction))
+         )
        (otherwise
         (x2s:ERROR "simpleType " (value-of @name)
                       " contains no xs:restriction"))))
 
-  (template "xs:extension|xs:restriction"
+  (template xs:simpleContent
+      (variable name: n select: ../@name)
+    (rdfs:Class (attribute rdf:ID (value-of ../@name))
+                (apply-templates select: xs:annotation))
+    (rdf:Property (attribute rdf:ID
+                             (value-of "translate(substring($n,1,1),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')")
+                             (value-of "substring($n,2)")
+                             "Value")
+                  (rdfs:domain
+                   (attribute rdf:resource "#" (value-of ../@name)))
+                  (rdfs:range
+                   ;; be vague about the exact type, for the moment
+                   (attribute rdf:resource
+                              "http://www.w3.org/2000/01/rdf-schema#Datatype"))
+                  (apply-templates select: "xs:extension|xs:restriction"
+                                   mode: simple-content))
+    (apply-templates select: .//xs:attribute)   ;only attributes below
+    )
+
+  (template "xs:extension|xs:restriction" mode: complex-content
       (rdfs:subClassOf
        (attribute rdf:resource
                   (call-template name: expand-namespace
                                  (with-param name: type
-                                             select: @base)))))
+                                             select: @base)))
+       (apply-templates select: xs:annotation)))
+
+  (template "xs:extension" mode: simple-content
+      (rdfs:comment "Extension of " (value-of @base)))
+  (template "xs:restriction" mode: simple-content
+      (rdfs:comment "Restriction of " (value-of @base)
+                    (if xs:pattern
+                        ", pattern " (value-of xs:pattern/@value))))
 
   (template xs:enumeration
+      ;; Implement an enumeration using the ValuePartition pattern.
       (rdfs:Class (attribute rdf:ID
                              (apply-templates select: . mode: generate-name))
                   (rdfs:subClassOf
@@ -129,12 +196,16 @@
                                                          mode: generate-name))))
                   (apply-templates select: xs:annotation)))
   (template xs:enumeration mode: generate-name
+            ;; Create an enumeration class name from the parent type plus
+            ;; the @value, with the first letter uppercased.
+            (variable name: v select: @value)
             (value-of ancestor::xs:simpleType/@name)
-            (value-of @value))
+            (value-of "translate(substring($v,1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')")
+            (value-of "substring($v,2)"))
 
   (template "xs:element|xs:attribute"
       (choose
-       (when @ref                       ;declare this type as an additional
+       (when @ref                  ;declare this type as an additional
          (rdf:Property                  ;domain of the named property
           (attribute rdf:about
                      (call-template name: expand-namespace
@@ -149,37 +220,58 @@
            (otherwise
             (x2s:ERROR "ref=" (value-of @ref) " not in complexType!")))))
        (when @type
-         (rdf:Property (choose
-                        (when xs:annotation/xs:appinfo/x2s:multipleDomains
-                          (attribute rdf:about
-                                     "#"
-                                     (choose
-                                      (when xs:annotation/xs:appinfo/x2s:propertyName
-                                        (value-of xs:annotation/xs:appinfo/x2s:propertyName))
-                                      (otherwise
-                                       (value-of @name)))))
-                        (otherwise
-                         (attribute rdf:ID
-                                    (choose
-                                      (when xs:annotation/xs:appinfo/x2s:propertyName
-                                        (value-of xs:annotation/xs:appinfo/x2s:propertyName))
-                                     (otherwise
-                                      (value-of @name))))))
+         (rdf:Property
+          (choose
+           (when xs:annotation/xs:appinfo/x2s:multipleDomains
+             (attribute rdf:about
+                        "#"
+                        (choose
+                         (when xs:annotation/xs:appinfo/x2s:propertyName
+                           (value-of xs:annotation/xs:appinfo/x2s:propertyName))
+                         (otherwise
+                          (value-of @name)))))
+           (otherwise
+            (attribute rdf:ID
                        (choose
-                        (when ancestor::xs:complexType/@name
-                          (rdfs:domain
-                           (attribute rdf:resource
-                                      "#"
-                                      (value-of ancestor::xs:complexType/@name))))
+                        (when xs:annotation/xs:appinfo/x2s:propertyName
+                          (value-of xs:annotation/xs:appinfo/x2s:propertyName))
                         (otherwise
-                         (x2s:ERROR
-                          "type=" (value-of @type) " not within complexType")))
-                       (rdfs:range
-                        (attribute rdf:resource
-                                   (call-template name: expand-namespace
-                                                  (with-param name: type
-                                                              (value-of @type)))))
-                       (apply-templates select: xs:annotation)))
+                         (value-of @name))))))
+          (choose
+           (when ancestor::xs:complexType/@name
+             (rdfs:domain
+              (attribute rdf:resource
+                         "#"
+                         (value-of ancestor::xs:complexType/@name))))
+           (otherwise
+            (x2s:ERROR
+             "type=" (value-of @type) " not within complexType")))
+          (rdfs:range
+           (attribute rdf:resource
+                      (choose
+                       (when xs:annotation/xs:appinfo/x2s:datatypeRange
+                         ;; forced to be a datatype range
+                         (call-template
+                          name: expand-xscd-namespace
+                          (with-param name: type
+                                      (value-of @type))))
+                       (when xs:annotation/xs:appinfo/x2s:propertyRange
+                         (call-template
+                          name: expand-namespace
+                          (with-param name: type
+                                      (value-of xs:annotation/xs:appinfo/x2s:propertyRange))))
+                       (when self::xs:attribute
+                         ;; this can only be a datatype range
+                         (call-template
+                          name: expand-xscd-namespace
+                          (with-param name: type
+                                      (value-of @type))))
+                       (otherwise
+                        (call-template
+                         name: expand-namespace
+                         (with-param name: type
+                                     (value-of @type)))))))
+          (apply-templates select: xs:annotation)))
        (otherwise
         (x2s:ERROR
          "Element " (value-of @name) " declared without type or ref"))))
@@ -192,6 +284,21 @@
   (template xs:documentation
       (apply-templates))
 
+  ;; I don't think the following is necessary, since the relevant types will
+  ;; be declared in the .rdfs files generated from the target .xsd file,
+  ;; (see handling of xs:attribute above).
+  (template x2s:datatypeRange mode: declare-datatypes
+      (rdfs:Class
+       (attribute rdf:about
+                  (call-template name: expand-xscd-namespace
+                                 (with-param name: type
+                                             (value-of "ancestor::xs:element/@type|ancestor::xs:attribute/@type"))))
+       (rdfs:subClassOf
+        (attribute rdf:resource
+                   "http://www.w3.org/2000/01/rdf-schema#Datatype"))
+       (rdfs:comment
+        "Literal XSchema datatype property: see http://www.w3.org/TR/swbp-xsch-datatypes/")))
+
   ;; Named templates
   (lx:dtd ((template (name #t)))
     (template expand-namespace
@@ -199,6 +306,23 @@
       (variable name: prefix select: "substring-before($type,':')")
       (value-of select: "namespace::*[name()=$prefix]")
       "#"
-      (value-of select: "substring-after($type,':')")))
+      (value-of select: "substring-after($type,':')"))
+
+    ;; Expand a datatype class reference, into an XSCD type reference.
+    ;; Special-case the xsd: namespace
+    (template expand-xscd-namespace
+        (param name: type)
+      (variable name: prefix select: "substring-before($type,':')")
+      (variable name: ns select: "namespace::*[name()=$prefix]")
+      (choose
+       (when "$ns = 'http://www.w3.org/2001/XMLSchema'"
+         "http://www.w3.org/2001/XMLSchema#"
+         (value-of select: "substring-after($type,':')"))
+       (otherwise
+        (value-of select: "$ns")
+        "#xscd(/type::"
+        (value-of select: "substring-after($type,':')")
+        ")"
+        ))))
 
 ))
