@@ -14,6 +14,28 @@
 
 <p>This is Quaestor version @VERSION@</p>
 
+<p>Quaestor is a generic SPARQL endpoint, which allows you to upload
+ontology and instance data (also known as `TBox' and `ABox',
+respectively), and query the result.</p>
+
+<p>You interact with Quaestor as follows.</p>
+<ol>
+<li>Create a `knowledgebase'.</li>
+<li>Add one or more `submodels' consisting of ontology or instance data
+formatted as RDF/XML or Notation3.</li>
+<li>Query the knowledgebase -- the union of the submodels -- using
+SPARQL.</li>
+</ol>
+
+<p>All the interaction with Quaestor is via HTTP, and the HTTP
+<code>GET</code>, <code>PUT</code>, <code>POST</code> and
+<code>DELETE</code> verbs.  There is also a preliminary XML-RPC
+interface.</p>
+
+<p>In the documentation below, <code>hostport</code> refers to the
+machine and port number hosting the Quaestor service, such as
+<code>localhost:8080</code>.</p>
+
 <h2>HTTP-based interface</h2>
 
 <dl>
@@ -23,17 +45,17 @@ currently available.</dd>
 
 <dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>[/<em>sm-name</em>]</code></dt>
 <dd><p>Retrieve either the complete <code><em>kb-name</em></code> model, or
-the named <code><em>sm-name</em></code>.  The format of the response
+the named <code><em>sm-name</em></code> submodel.  The format of the response
 is controlled by the <code>Accept</code> header, which if present must
-contain one of the following MIME types:</p>
+contain one of the following MIME types (see <a href='#mimetypes'
+>note</a> below):</p>
 <ul>
-  <li><code>application/xml</code> (default)</li>
-  <li><code>text/rdf+n3</code></li>
-  <li><code>text/plain</code></li>
-  <li><code>text/csv</code></li>
+  <li><code>text/rdf+n3</code> : Notation3 (default)</li>
+  <li><code>application/xml</code> : RDF/XML serialisation</li>
+  <li><code>text/plain</code> : N-triples format</li>
+  <li><code>text/csv</code> : comma-separated values</li>
   <li><code>text/tab-separated-values</code></li>
-  <li><code>*/*</code> to accept any format (the default is currently
-  RDF/XML)</li>
+  <li><code>*/*</code> to accept any format (the default is Notation3)</li>
 </ul>
 
 <p>You can add an optional query <code>?model</code> or
@@ -61,31 +83,47 @@ GET request above.</p>
 </dd>
 
 <dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
-<dd>Create a new knowledgebase named `<em>kb-name</em>'.  The request content
-contains the metadata for the knowledgebase, which is at present just
-a string, but will eventually be RDF.  It is an error if the
+<dd><p>Create a new knowledgebase named `<em>kb-name</em>'.  The
+request content contains the metadata for the knowledgebase.  This can
+be expressed as RDF (with MIME types <code>text/rdf+n3</code> or
+<code>application/rdf+xml</code>).  For example the body might be:</p>
+<pre>
+@prefix dc: &lt;http://purl.org/dc/elements/1.1/&gt;.
+&lt;&gt; dc:description "My knowledgebase";
+    dc:creator "Norman".
+</pre>
+<p>Alternatively, the content can have a <code>text/plain</code> MIME
+type, which in this context means that the knowledgebase will be given
+a <code>dc:description</code> whose subject is the given text.</p>
+
+<p>It is an error if the
 knowledgebase already exists.  Returns status 204 (No Content) on success,
 and a 4xx error message if the knowledgebase already exists or if
-there is some other error.</dd>
+there is some other error.</p>
+</dd>
 
 <dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em>/<em>sm-name</em></code></dt>
 <dd><p>Upload the request body as the content of the submodel named
 <em>sm-name</em>.  The
 request may have a <code>Content-Type</code> header indicating the
 format of the body, which, if it is present, <em>must</em> be one of
-the following MIME types:</p>
+the following MIME types (see <a href='#mimetypes' >note</a> below):</p>
 <ul>
-  <li><code>text/rdf+n3</code> for n3.</li>
-  <li><code>application/rdf+xml</code> for RDF/XML</li>
-  <li><code>text/plain</code> for N-Triples</li>
+  <li><code>text/rdf+n3</code> : Notation3.</li>
+  <li><code>application/rdf+xml</code> : RDF/XML</li>
+  <li><code>text/plain</code> : N-Triples</li>
 </ul>
 <!-- defaults -->
-<p>The request may have a <em>query</em> attached, which may be
-<code>abox</code>, <code>instances</code> (which is equivalent to
-<code>abox</code>) or <code>tbox</code>.  This indicates the type of
+<p>The request may have a <em>query</em> appended, which may be
+<code>?abox</code>, <code>?instances</code> (which is equivalent to
+<code>?abox</code>) or <code>?tbox</code>.  This indicates the type of
 the corresponding model.  The default, if no such query is given, is
 <code>tbox</code> (I'm not sure how legit this use of query is -- this
-might change).</p></dd>
+might change).</p>
+
+<p>Notation3 may also  be uploaded using the deprecated MIME type
+<code>application/n3</code>.</p>
+</dd>
 
 <dt><code>PUT http://hostport/quaestor/code</code></dt>
 <dd>Eval the request body as Scheme code.  This is only possible if
@@ -98,17 +136,22 @@ there was no such knowledgebase to remove.</dd>
 
 </dl>
 
-<h2>Note on MIME types</h2>
+<h2><a name='mimetypes'>Note on MIME types</a></h2>
 
 <p>The following MIME types are usable at one point or another when
 interacting with Quaestor:</p>
 
 <dl>
 
+<dt><code>application/rdf+xml</code></dt>
+<dd>This indicates that the content (upload or response) is formatted
+in the standard <a href='http://www.w3.org/TR/rdf-syntax-grammar/'
+>RDF/XML</a> serialisation.</dd>
+
 <dt><code>application/xml</code></dt>
 <dd>When annotating a SPARQL response, this produces a response in
-XML, using the SPARQL
-<a href="http://www.w3.org/TR/rdf-sparql-XMLres/" >response XML 
+XML, using the
+<a href="http://www.w3.org/TR/rdf-sparql-XMLres/" >SPARQL response XML 
 schema</a>.</dd>
 
 <dt><code>application/sparql-query</code></dt>
@@ -127,15 +170,23 @@ if <code>application/n3</code> is requested, it is
 <code>text/rdf+n3</code> which will be returned.</dd>
 
 <dt><code>text/plain</code></dt>
-<dd>Annotating a response, this indicates that the content is in a
+<dd><p>This MIME type means various different things in different
+contexts.</p>
+
+<p>Annotating a SPARQL response, this indicates that the content is in a
 human-readable format, intended to look roughly like the usual 
 result of a SQL query.  It is not intended to be
-machine-parseable.  Note: the MIME type of the <a
+machine-parseable.</p>
+
+<p>The MIME type of the <a
 href='http://www.w3.org/TR/rdf-testcases/#ntriples' >N-triple
 format</a> is also <code>text/plain</code>; however N-triple format is
 intended only for the RDF test cases, and is not expected to be useful
-otherwise.  On upload (that is, the <code>PUT</code> HTTP method), you
-can use <code>text/plain</code> to indicate N-triples, if you really must.</dd>
+otherwise.  When retrieving an ontology (using the <code>GET</code>
+HTTP method) or uploading one (using <code>PUT</code>), you can use
+<code>text/plain</code> to indicate N-triples, if you really
+must.</p>
+</dd>
 
 <dt><code>text/csv</code> (SELECT query responses only)</dt>
 <dd>Comma-separated-value output, conforming to RFC 4180.  The
