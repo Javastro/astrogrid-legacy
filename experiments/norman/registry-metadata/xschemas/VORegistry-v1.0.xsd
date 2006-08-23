@@ -4,6 +4,7 @@
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
            xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" 
            xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata"
            elementFormDefault="unqualified" attributeFormDefault="unqualified"
            version="1.0wd">
 
@@ -52,6 +53,9 @@
                        only one registry can lay claim to an AuthorityID via
                        this element at a time.   
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:datatypeRange/>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
             </xs:sequence>
@@ -272,6 +276,9 @@
                      <xs:documentation>
                        In most cases, this will be the same as the Publisher.
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:propertyRange>vr:Organization</x2s:propertyRange>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
 
