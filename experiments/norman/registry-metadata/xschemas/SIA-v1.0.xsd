@@ -138,20 +138,24 @@
 
    <xs:complexType name="SkySize">
       <xs:sequence>
-         <xs:element name="long" type="xs:float"
-                     x2s:propertyName="skySizeLongitude">
+         <xs:element name="long" type="xs:float">
            <xs:annotation>
               <xs:documentation>
                  The maximum size in the longitude (R.A.) direction 
               </xs:documentation>
+              <xs:appinfo>
+                <x2s:propertyName>skySizeLongitude</x2s:propertyName>
+              </xs:appinfo>
            </xs:annotation>
          </xs:element>
-         <xs:element name="lat" type="xs:float"
-                     x2s:propertyName="skySizeLatitude">
+         <xs:element name="lat" type="xs:float">
            <xs:annotation>
               <xs:documentation>
                  The maximum size in the latitdude (Dec.) direction 
               </xs:documentation>
+              <xs:appinfo>
+                <x2s:propertyName>skySizeLatitude</x2s:propertyName>
+              </xs:appinfo>
            </xs:annotation>
          </xs:element>
       </xs:sequence>
@@ -178,20 +182,24 @@
 
    <xs:complexType name="ImageSize">
       <xs:sequence>
-         <xs:element name="long" type="xs:int"
-                     x2s:propertyName="pixelLongitude">
+         <xs:element name="long" type="xs:int">
            <xs:annotation>
               <xs:documentation>
                  The image size in the longitude (R.A.) direction in pixels
               </xs:documentation>
+              <xs:appinfo>
+                <x2s:propertyName>pixelLongitude</x2s:propertyName>
+              </xs:appinfo>
            </xs:annotation>
          </xs:element>
-         <xs:element name="lat" type="xs:int"
-                     x2s:propertyName="pixelLatitude">
+         <xs:element name="lat" type="xs:int">
            <xs:annotation>
               <xs:documentation>
                  The image size in the latitdude (Dec.) direction in pixels
               </xs:documentation>
+              <xs:appinfo>
+                <x2s:propertyName>pixelLatitude</x2s:propertyName>
+              </xs:appinfo>
            </xs:annotation>
          </xs:element>
       </xs:sequence>

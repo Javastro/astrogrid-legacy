@@ -44,11 +44,11 @@
             <xs:sequence>
  
               <xs:element name="facility" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded"
-                          x2s:multipleDomains="yes">
+                          minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
+                     <x2s:multipleDomains/>
                    </xs:appinfo>
                    <xs:documentation>
                      the observatory or facility used to collect the data 
@@ -58,12 +58,12 @@
               </xs:element>
 
               <xs:element name="instrument" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded"
-                          x2s:multipleDomains="yes">
+                          minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
                      <vm:dcterm>Subject.Instrument</vm:dcterm>
+                     <x2s:multipleDomains/>
                    </xs:appinfo>
                    <xs:documentation>
                      the Instrument used to collect the data contain or 
@@ -103,8 +103,7 @@
                  </xs:annotation>
               </xs:element>
 
-              <xs:element name="coverage" type="vs:Coverage" minOccurs="0"
-                          x2s:multipleDomains="yes">
+              <xs:element name="coverage" type="vs:Coverage" minOccurs="0">
                 <xs:annotation>
                    <xs:documentation>
                      Extent of the content of the resource over space, time, 
@@ -121,6 +120,9 @@
                      us to illustrate several approaches without modification
                      to this schema.
                    </xs:documentation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains/>
+                   </xs:appinfo>
                 </xs:annotation>
               </xs:element>
 
@@ -305,12 +307,14 @@
 
       <xs:sequence>
          <xs:element name="table" type="vs:Table" 
-                     minOccurs="0" maxOccurs="unbounded"
-                     x2s:multipleDomains="yes">
+                     minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
                <xs:documentation>
                   a description of a table and its columns.
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
       </xs:sequence>
@@ -341,11 +345,11 @@
          <xs:extension base="vr:Service">
             <xs:sequence>
               <xs:element name="facility" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded"
-                          x2s:multipleDomains="yes">
+                          minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
+                     <x2s:multipleDomains/>
                    </xs:appinfo>
                    <xs:documentation>
                      the observatory or facility used to collect the data 
@@ -355,12 +359,12 @@
               </xs:element>
 
               <xs:element name="instrument" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded"
-                          x2s:multipleDomains="yes">
+                          minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
                      <vm:dcterm>Subject.Instrument</vm:dcterm>
+                     <x2s:multipleDomains/>
                    </xs:appinfo>
                    <xs:documentation>
                      the Instrument used to collect the data contain or 
@@ -370,8 +374,7 @@
               </xs:element>
 
 <!-- still in development -->
-              <xs:element name="coverage" type="vs:Coverage" minOccurs="0"
-                          x2s:multipleDomains="yes">
+              <xs:element name="coverage" type="vs:Coverage" minOccurs="0">
                 <xs:annotation>
                    <xs:documentation>
                      Extent of the content of the resource over space, time, 
@@ -384,6 +387,9 @@
                      this expected to be the case for the final STC-based 
                      version.
                    </xs:documentation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains/>
+                   </xs:appinfo>
                 </xs:annotation>
               </xs:element>
 
@@ -468,12 +474,14 @@
          <xs:extension base="vs:DataService">
             <xs:sequence>
                <xs:element name="table" type="vs:Table" 
-                           minOccurs="0" maxOccurs="unbounded"
-                           x2s:multipleDomains="yes">
+                           minOccurs="0" maxOccurs="unbounded">
                   <xs:annotation>
                      <xs:documentation>
                         a description of a table and its columns.
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:multipleDomains/>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
             </xs:sequence>
@@ -499,11 +507,11 @@
          <xs:extension base="vr:Service">
             <xs:sequence>
                <xs:element name="facility" type="vr:ResourceName" 
-                           minOccurs="0" maxOccurs="unbounded"
-                           x2s:multipleDomains="yes">
+                           minOccurs="0" maxOccurs="unbounded">
                  <xs:annotation>
                     <xs:appinfo>
                       <vm:dcterm>Subject</vm:dcterm>
+                      <x2s:multipleDomains/>
                     </xs:appinfo>
                     <xs:documentation>
                       the observatory or facility used to collect the data 
@@ -513,12 +521,12 @@
                </xs:element>
 
                <xs:element name="instrument" type="vr:ResourceName" 
-                           minOccurs="0" maxOccurs="unbounded"
-                           x2s:multipleDomains="yes">
+                           minOccurs="0" maxOccurs="unbounded">
                  <xs:annotation>
                     <xs:appinfo>
                       <vm:dcterm>Subject</vm:dcterm>
                       <vm:dcterm>Subject.Instrument</vm:dcterm>
+                      <x2s:multipleDomains/>
                     </xs:appinfo>
                     <xs:documentation>
                       the Instrument used to collect the data contain or 
@@ -528,12 +536,14 @@
                </xs:element>
 
                <xs:element name="table" type="vs:Table" 
-                           minOccurs="0" maxOccurs="unbounded"
-                           x2s:multipleDomains="yes">
+                           minOccurs="0" maxOccurs="unbounded">
                   <xs:annotation>
                      <xs:documentation>
                         a description of a table and its columns.
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:multipleDomains/>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
             </xs:sequence>
@@ -543,21 +553,25 @@
 
    <xs:complexType name="Table">
       <xs:sequence>
-         <xs:element name="name" type="xs:string" minOccurs="0"
-                     x2s:multipleDomains="yes">
+         <xs:element name="name" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   the name of the table 
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
 
-         <xs:element name="description" type="xs:string" minOccurs="0"
-                     x2s:multipleDomains="yes">
+         <xs:element name="description" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   a description of the tables contents
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
 
@@ -596,21 +610,25 @@
       </xs:annotation>
 
       <xs:sequence>
-         <xs:element name="name" type="xs:string" minOccurs="0"
-                     x2s:multipleDomains="yes">
+         <xs:element name="name" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   the name of the column
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
 
-         <xs:element name="description" type="xs:string" minOccurs="0"
-                     x2s:multipleDomains="yes">
+         <xs:element name="description" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   a description of the column's contents
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
 
@@ -647,18 +665,19 @@
          <xs:extension base="vs:BaseParam">
             <xs:sequence>
                <xs:element name="dataType" type="vs:TableDataType" 
-                           minOccurs="0"
-                           x2s:multipleDomains="yes">
+                           minOccurs="0">
                   <xs:annotation>
                      <xs:documentation>
                         a type of data contained in the column
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:multipleDomains/>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
             </xs:sequence>
 
-            <xs:attribute name="std" type="xs:boolean"
-                          x2s:multipleDomains="yes">
+            <xs:attribute name="std" type="xs:boolean">
                <xs:annotation>
                   <xs:documentation>
                      If true, the meaning and use of this parameter is
@@ -667,6 +686,9 @@
                      that effectively extends beyond the standard.  If
                      not provided, then the value is unknown.
                   </xs:documentation>
+                  <xs:appinfo>
+                    <x2s:multipleDomains/>
+                  </xs:appinfo>
                </xs:annotation>
             </xs:attribute>
          </xs:extension>
@@ -691,12 +713,14 @@
          <xs:extension base="vs:BaseParam">
             <xs:sequence>
                <xs:element name="dataType" type="vs:SimpleDataType" 
-                           minOccurs="0"
-                           x2s:multipleDomains="yes">
+                           minOccurs="0">
                   <xs:annotation>
                      <xs:documentation>
                         a type of data contained in the column
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:multipleDomains/>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
             </xs:sequence>
@@ -711,8 +735,7 @@
                </xs:annotation>
             </xs:attribute>
 
-            <xs:attribute name="std" type="xs:boolean" default="true"
-                          x2s:multipleDomains="yes">
+            <xs:attribute name="std" type="xs:boolean" default="true">
                <xs:annotation>
                   <xs:documentation>
                      If true, the meaning and behavior of this parameter is
@@ -721,6 +744,9 @@
                      parameter that effectively extends the behavior of the 
                      service or application.  
                   </xs:documentation>
+                  <xs:appinfo>
+                    <x2s:multipleDomains/>
+                  </xs:appinfo>
                </xs:annotation>
             </xs:attribute>
 
@@ -765,8 +791,7 @@
       </xs:annotation>
       <xs:simpleContent>
          <xs:extension base="vs:SimpleScalarDataType">
-            <xs:attribute name="arraysize" type="vs:ArrayShape" default="1"
-                          x2s:multipleDomains="yes">
+            <xs:attribute name="arraysize" type="vs:ArrayShape" default="1">
                <xs:annotation>
                   <xs:documentation>
                      the shape of the array that constitutes the value
@@ -774,6 +799,9 @@
                   <xs:documentation>
                      the default is "1"; i.e. the value is a scalar.
                   </xs:documentation>
+                  <xs:appinfo>
+                    <x2s:multipleDomains/>
+                  </xs:appinfo>
                </xs:annotation>
             </xs:attribute>
          </xs:extension>
@@ -788,8 +816,7 @@
       </xs:annotation>
       <xs:simpleContent>
          <xs:extension base="vs:VOTScalarDataType">
-            <xs:attribute name="arraysize" type="vs:ArrayShape" default="1"
-                          x2s:multipleDomains="yes">
+            <xs:attribute name="arraysize" type="vs:ArrayShape" default="1">
                <xs:annotation>
                   <xs:documentation>
                      the shape of the array that constitutes the value
@@ -797,6 +824,9 @@
                   <xs:documentation>
                      the default is "1"; i.e. the value is a scalar.
                   </xs:documentation>
+                  <xs:appinfo>
+                    <x2s:multipleDomains/>
+                  </xs:appinfo>
                </xs:annotation>
             </xs:attribute>
          </xs:extension>

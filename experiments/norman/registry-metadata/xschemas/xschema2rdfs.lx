@@ -2,21 +2,24 @@
 ;; striped RDF/XML) using the
 ;; http://ns.eurovotech.org/VOResource-1.0.owl#" ontology.
 ;;
-;; Uses attributes in the x2s="http://ns.eurovotech.org/registry-metadata"
+;; Uses xs:appinfo elements in the
+;; x2s="http://ns.eurovotech.org/registry-metadata"
 ;; namespace to provide hints to the conversion:
-;;     x2s:propertyName="<name>"
-;;         Attribute on an element or attribute declaration, which
+;;     <xs:appinfo>
+;;     <x2s:propertyName>[name]</x2s:propertyName>
+;;     </xs:appinfo>
+;;         Annotation on an element or attribute declaration, which
 ;;         indicates that the property name generated for this
 ;;         element/attribute should be the given <name>, and not
 ;;         simply the same as the element/attribute name -- this is
 ;;         for the case where there are multiple element/attributes
 ;;         with the same name but different meanings.
 ;;
-;;     x2s:multipleDomains="yes|no"
-;;         If present on an element/attribute, and if it has the value
-;;         "yes", then the element/attribute will have multiple
-;;         domains, and therefore be declared more than once in the
-;;         generated RDFS.  Thus it should not be declared using rdf:ID.
+;;     <x2s:multipleDomains/>
+;;         If present on an element/attribute, then the element/attribute
+;;         will have multiple domains, and therefore be declared more than
+;;         once in the generated RDFS.  Thus it should not be declared
+;;         using rdf:ID.  Any content is ignored.
 
 (lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
 ;;                     (ri   "http://www.ivoa.net/xml/RegistryInterface/v0.1")
@@ -147,19 +150,19 @@
             (x2s:ERROR "ref=" (value-of @ref) " not in complexType!")))))
        (when @type
          (rdf:Property (choose
-                        (when @x2s:multipleDomains
+                        (when xs:annotation/xs:appinfo/x2s:multipleDomains
                           (attribute rdf:about
                                      "#"
                                      (choose
-                                      (when @x2s:propertyName
-                                        (value-of @x2s:propertyName))
+                                      (when xs:annotation/xs:appinfo/x2s:propertyName
+                                        (value-of xs:annotation/xs:appinfo/x2s:propertyName))
                                       (otherwise
                                        (value-of @name)))))
                         (otherwise
                          (attribute rdf:ID
                                     (choose
-                                     (when @x2s:propertyName
-                                       (value-of @x2s:propertyName))
+                                      (when xs:annotation/xs:appinfo/x2s:propertyName
+                                        (value-of xs:annotation/xs:appinfo/x2s:propertyName))
                                      (otherwise
                                       (value-of @name))))))
                        (choose

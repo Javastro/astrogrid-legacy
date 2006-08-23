@@ -44,11 +44,11 @@
             <xs:sequence>
  
               <xs:element name="facility" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded"
-                          x2s:multipleDomains="yes">
+                          minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
+                     <x2s:multipleDomains/>
                    </xs:appinfo>
                    <xs:documentation>
                      the observatory or facility used to collect the data 
@@ -58,12 +58,12 @@
               </xs:element>
 
               <xs:element name="instrument" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded"
-                          x2s:multipleDomains="yes">
+                          minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
                      <vm:dcterm>Subject.Instrument</vm:dcterm>
+                     <x2s:multipleDomains/>
                    </xs:appinfo>
                    <xs:documentation>
                      the Instrument used to collect the data contain or 
@@ -72,8 +72,7 @@
                 </xs:annotation>
               </xs:element>
 
-              <xs:element name="coverage" type="vs:Coverage" minOccurs="0"
-                          x2s:multipleDomains="yes">
+              <xs:element name="coverage" type="vs:Coverage" minOccurs="0">
                 <xs:annotation>
                    <xs:documentation>
                      Extent of the content of the resource over space, time, 
@@ -89,6 +88,9 @@
                    <xs:documentation>
                      Diff 0.2 - 0.1: corrected definition of CircleRegionType
                    </xs:documentation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains/>
+                   </xs:appinfo>
                 </xs:annotation>
               </xs:element>
 
@@ -189,11 +191,11 @@
          <xs:extension base="vr:Service">
             <xs:sequence>
               <xs:element name="facility" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded"
-                          x2s:multipleDomains="yes">
+                          minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
+                     <x2s:multipleDomains/>
                    </xs:appinfo>
                    <xs:documentation>
                      the observatory or facility used to collect the data 
@@ -203,12 +205,12 @@
               </xs:element>
 
               <xs:element name="instrument" type="vr:ResourceName" 
-                          minOccurs="0" maxOccurs="unbounded"
-                          x2s:multipleDomains="yes">
+                          minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
                      <vm:dcterm>Subject.Instrument</vm:dcterm>
+                     <x2s:multipleDomains/>
                    </xs:appinfo>
                    <xs:documentation>
                      the Instrument used to collect the data contain or 
@@ -217,8 +219,7 @@
                 </xs:annotation>
               </xs:element>
 
-              <xs:element name="coverage" type="vs:Coverage" minOccurs="0"
-                          x2s:multipleDomains="yes">
+              <xs:element name="coverage" type="vs:Coverage" minOccurs="0">
                 <xs:annotation>
                    <xs:documentation>
                      Extent of the content of the resource over space, time, 
@@ -234,6 +235,9 @@
                    <xs:documentation>
                      Diff 0.2 - 0.1: corrected definition of CircleRegionType
                    </xs:documentation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains/>
+                   </xs:appinfo>
                 </xs:annotation>
               </xs:element>
 
@@ -366,21 +370,25 @@
 
    <xs:complexType name="Table">
       <xs:sequence>
-         <xs:element name="name" type="xs:string" minOccurs="0"
-                     x2s:multipleDomains="yes">
+         <xs:element name="name" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   the name of the table 
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
 
-         <xs:element name="description" type="xs:string" minOccurs="0"
-                     x2s:multipleDomains="yes">
+         <xs:element name="description" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   a description of the tables contents
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
 
@@ -407,21 +415,25 @@
 
    <xs:complexType name="Param">
       <xs:sequence>
-         <xs:element name="name" type="xs:string" minOccurs="0"
-                     x2s:multipleDomains="yes">
+         <xs:element name="name" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   the name of the column
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
 
-         <xs:element name="description" type="xs:string" minOccurs="0"
-                     x2s:multipleDomains="yes">
+         <xs:element name="description" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   a description of the column's contents
                </xs:documentation>
+               <xs:appinfo>
+                 <x2s:multipleDomains/>
+               </xs:appinfo>
             </xs:annotation>
          </xs:element>
 

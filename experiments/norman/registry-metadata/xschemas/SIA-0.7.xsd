@@ -187,18 +187,24 @@
 
    <xs:complexType name="ImageSize">
       <xs:sequence>
-         <xs:element name="long" type="xs:int" x2s:propertyName="pixelLongitude">
+         <xs:element name="long" type="xs:int">
            <xs:annotation>
               <xs:documentation>
                  The image size in the longitude (R.A.) direction in pixels
               </xs:documentation>
+              <xs:appinfo>
+                <x2s:propertyName>pixelLongitude</x2s:propertyName>
+              </xs:appinfo>
            </xs:annotation>
          </xs:element>
-         <xs:element name="lat" type="xs:int" x2s:propertyName="pixelLatitude">
+         <xs:element name="lat" type="xs:int">
            <xs:annotation>
               <xs:documentation>
                  The image size in the latitdude (Dec.) direction in pixels
               </xs:documentation>
+              <xs:appinfo>
+                <x2s:propertyName>pixelLatitude</x2s:propertyName>
+              </xs:appinfo>
            </xs:annotation>
          </xs:element>
       </xs:sequence>
