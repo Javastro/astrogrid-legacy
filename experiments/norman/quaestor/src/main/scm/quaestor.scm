@@ -41,7 +41,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.34 $ $Date: 2006/08/16 12:52:50 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.35 $ $Date: 2006/08/23 11:11:35 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -139,7 +139,8 @@
   (define-generic-java-method
     set-content-type)
   (set-content-type response (->jstring "text/html"))
-  (response-page "Quaestor"
+  (response-page request response
+                 "Quaestor"
                  `((p "I don't recognise that URL.")
                    (p "The details of the request follow:")
                    ,@(tabulate-request-information request))))
@@ -188,7 +189,8 @@
   (if (= (length path-info-list) 0)     ;we handle this one
       (let ((namelist (kb:get-names)))
         (set-http-response response '|SC_OK| "text/html")
-        (response-page "Quaestor: list of knowledgebases"
+        (response-page request response
+                       "Quaestor: list of knowledgebases"
                        (if (null? namelist)
                            `((p "No knowledgebases available"))
 
@@ -232,7 +234,7 @@
          (if (cdr qp)
              (sparql-encoded-query (car path-info-list)
                                    (cdr qp))
-             (no-can-do response
+             (no-can-do request response
                         '|SC_BAD_REQUEST|
                         "found empty SPARQL query in GET request")))))
 
@@ -295,14 +297,14 @@
                       (write m
                              (get-output-stream response)
                              (->jstring (cdr mime-and-lang)))
-                      (no-can-do response
+                      (no-can-do request response
                                  '|SC_NOT_FOUND|
                                  "There is no model to return")))
                 #t)
 
                ((and kb
                      (eq? query 'model))
-                (no-can-do response
+                (no-can-do request response
                            '|SC_NOT_ACCEPTABLE|
                            "Cannot generate requested content-type:~%~a"
                            (chatter)))
@@ -324,18 +326,18 @@
 
                ((and kb (eq? query 'metadata))
                 (no-can-do
-                 response
+                 request response
                  '|SC_NOT_ACCEPTABLE|
                  "Can't return metadata as acceptable type (requested ~a)"
                  (request->accept-mime-types request)))
 
                (kb
-                (no-can-do response
+                (no-can-do request response
                            '|SC_BAD_REQUEST|
                            "bad query: ~a" query-string))
 
                (else
-                (no-can-do response
+                (no-can-do request response
                            '|SC_NOT_FOUND|
                            "No such knowledgebase: ~a" kb-name))))))
 
@@ -390,22 +392,24 @@
              (set-http-response response '|SC_NO_CONTENT|))
 
             ((and kb query)             ;unrecognised query
-             (no-can-do response '|SC_BAD_REQUEST|
+             (no-can-do request response '|SC_BAD_REQUEST|
                         "Unrecognised query ~a?~a"
                         kb-name query))
 
             (kb                                ;already exists
-             (no-can-do response '|SC_FORBIDDEN| ;correct? or SC_CONFLICT?
+             (no-can-do request response
+                        '|SC_FORBIDDEN| ;correct? or SC_CONFLICT?
                         "Knowledgebase ~a already exists"
                         kb-name))
 
             (query             ;no knowledgebase, but there is a query
-             (no-can-do response '|SC_BAD_REQUEST|
+             (no-can-do request response '|SC_BAD_REQUEST|
                         "Knowledgebase ~a does not exist, so query ~a is not allowed"
                         kb-name query))
 
              ((not content-type)
-              (no-can-do '|SC_BAD_REQUEST|
+              (no-can-do request response
+                         '|SC_BAD_REQUEST|
                          "Can't post metadata without a content-type"))
 
             (else                         ;normal case
@@ -446,10 +450,11 @@
                         submodel-name
                         m)
                     (set-http-response response '|SC_NO_CONTENT|)
-                    (no-can-do response
+                    (no-can-do request response
                                '|SC_INTERNAL_SERVER_ERROR| ;correct?
                                "Unable to update model!")))))
-          (no-can-do response '|SC_BAD_REQUEST|
+          (no-can-do request response
+                     '|SC_BAD_REQUEST|
                      (format #f "No such knowledgebase ~a"
                              kb-name)))))
 
@@ -462,7 +467,8 @@
            (query-string (request->query-string request)))
        (cond ((not (content-headers-ok? request))
               (no-can-do
-               response '|SC_NOT_IMPLEMENTED|
+               request response
+               '|SC_NOT_IMPLEMENTED|
                "Found unexpected content-* header; allowed ones are ~a"
                (content-headers-ok?)))
 
@@ -482,7 +488,7 @@
              (else                      ;ooops
               (let ()
                 (define-generic-java-method get-path-info)
-                (no-can-do response '|SC_BAD_REQUEST|
+                (no-can-do request response '|SC_BAD_REQUEST|
                            "The request path ~a has the wrong number of elements (1 or 2)"
                            (->string (get-path-info request))))))))))
 
@@ -530,7 +536,7 @@
                           (set-content-type response
                                             (->jstring mimetype))))
                 #t))
-            (no-can-do response
+            (no-can-do request response
                        '|SC_BAD_REQUEST|
                        "POST SPARQL request must have one path element, no query, and content-type application/sparql-query~%(path=~s, query=~a, content-type=~a)"
                        path-list query-string content-type))
@@ -552,11 +558,11 @@
         (if (= (length path-list) 1)
             (if (kb:discard (car path-list))
                 (set-http-response response '|SC_NO_CONTENT|)
-                (no-can-do response
+                (no-can-do request response
                            '|SC_NOT_FOUND| ;correct?
                            "There was no knowledgebase ~a to delete"
                            (car path-list)))
-            (no-can-do response
+            (no-can-do request response
                        '|SC_BAD_REQUEST|
                        "The request path has too many elements"))))))
 
@@ -769,7 +775,8 @@
          (cond  ((not (content-headers-ok? request))
                  ;; Unexpected Content-* header found
                  (no-can-do
-                  response '|SC_NOT_IMPLEMENTED|
+                  request response
+                  '|SC_NOT_IMPLEMENTED|
                   "Found unexpected content-* header; allowed ones are ~a"
                   (content-headers-ok?)))
 
@@ -832,10 +839,10 @@
                             (lambda (mimetype)
                               (set-content-type response
                                                 (->jstring mimetype))))
-                  (no-can-do response
+                  (no-can-do request response
                              '|SC_BAD_REQUEST|
                              "can't find callback for token ~a (have you called this more than once?)" (car path-list))))
-            (no-can-do response
+            (no-can-do request response
                        '|SC_BAD_REQUEST|
                        "found multiple path elements in pickup URL: ~s"
                        path-list))))))
@@ -1005,10 +1012,11 @@
 ;; Given a RESPONSE, set the response status to the given RESPONSE-CODE,
 ;; and produce a status page using the given format and arguments.
 ;; This expects to be called before there has been any other output.
-(define (no-can-do response response-code fmt . args)
+(define (no-can-do request response response-code fmt . args)
   (let ((msg (apply format `(#f ,fmt ,@args))))
     (set-http-response response response-code "text/html")
-    (response-page "Quaestor: no can do" `((p ,msg)))))
+    (response-page request response
+                   "Quaestor: no can do" `((p ,msg)))))
 
 ;; make-fc java-request java-response symbol -> procedure
 ;;
@@ -1091,11 +1099,14 @@
 
 ;; Evaluates to a string corresponding to a HTML page.  The TITLE-STRING
 ;; is a string containing a page title, and the BODY-SEXP is a list of sexps.
-(define (response-page title-string body-sexp)
+(define (response-page request response title-string body-sexp)
+  (define-generic-java-method get-context-path)
   (let ((s `(html (head (title ,title-string)
                           (link (@ (rel stylesheet)
                                    (type text/css)
-                                   (href /quaestor/base.css))))
+                                   (href ,(string-append
+                                           (->string (get-context-path request))
+                                           "/base.css")))))
                     (body (h1 ,title-string)
                           ,@body-sexp))))
     (sexp-xml:sexp->xml s)))
