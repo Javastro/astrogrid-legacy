@@ -2,11 +2,15 @@ package org.astrogrid.community.server.ca;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import javax.security.auth.x500.X500Principal;
 import org.apache.log4j.Logger;
 
 /**
@@ -75,7 +79,10 @@ public class CertificateAuthority {
   protected CertificateAuthority() {}
   
   /**
-   * Constructs a CertificateAuthority.
+   * Constructs a CertificateAuthority. This constructor creates the CA files,
+   * including the CA certificate and key-pair, from scratch, based on the
+   * given root DN. C.f. the constructor without the dnRoot parameter which
+   * reconstructs the CA from existing files.
    */
   public CertificateAuthority(String dnRoot,
                               String password,
@@ -86,11 +93,8 @@ public class CertificateAuthority {
     assert dnRoot != null;
     assert password != null;
     assert keyFile != null;
-    assert keyFile.exists();
     assert certificateFile != null;
-    assert certificateFile.exists();
     assert serialFile != null;
-    assert serialFile.exists();
     assert myProxyDirectory != null;
     assert myProxyDirectory.exists();
     
@@ -100,6 +104,49 @@ public class CertificateAuthority {
     this.caCertificateFile = certificateFile;
     this.caSerialFile = serialFile;
     this.myProxyDirectory = myProxyDirectory;
+    
+    this.generateCa();
+    log.info("The CA with root DN " + this.rootDn + " is active.");
+  }
+  
+  /**
+   * Constructs a CertificateAuthority. This constructor uses an existing
+   * set of CA files and deduces the root DN from the CA certificate. C.f.
+   * the constructor with the dnRoot parameter which creates the CA files
+   * from scratch.
+   */
+  public CertificateAuthority(String password,
+                              File   keyFile,
+                              File   certificateFile,
+                              File   serialFile,
+                              File   myProxyDirectory) throws Exception {
+    assert password != null;
+    assert keyFile != null;
+    assert keyFile.exists();
+    assert certificateFile != null;
+    assert certificateFile.exists();
+    assert serialFile != null;
+    assert serialFile.exists();
+    assert myProxyDirectory != null;
+    assert myProxyDirectory.exists();
+    
+    this.caKeyPassphrase = password;
+    this.caKeyFile = keyFile;
+    this.caCertificateFile = certificateFile;
+    this.caSerialFile = serialFile;
+    this.myProxyDirectory = myProxyDirectory;
+    
+    this.deduceRootDnFromCaCertificate();
+    log.info("The CA with root DN " + this.rootDn + " is active.");
+  }
+  
+  /**
+   * Reveals the root DN for the CA.
+   * This is the part of the DNs common to all the certificates
+   * issued by the CA.
+   */
+  public String getRootDn() {
+    return this.rootDn;
   }
   
   /**
@@ -176,6 +223,14 @@ public class CertificateAuthority {
                                       String    commonName,
                                       String    password,
                                       UserFiles userFiles) throws Exception {
+    assert this.caKeyFile != null;
+    assert this.caKeyFile.exists();
+    assert this.caCertificateFile != null;
+    assert this.caCertificateFile.exists();
+    assert this.caSerialFile != null;
+    assert this.caSerialFile.exists();
+    assert this.caKeyPassphrase != null;
+    
     String dn = this.rootDn + "/CN=" + commonName;
     String kp = userFiles.getKeyFile().getAbsolutePath();
     String rp = userFiles.getCertificateRequestFile().getAbsolutePath();
@@ -198,8 +253,8 @@ public class CertificateAuthority {
     
     // Sign the certificate request.
     String ckp = this.caKeyFile.getAbsolutePath();
-    String ccp = caCertificateFile.getAbsolutePath();
-    String csp = caSerialFile.getAbsolutePath();
+    String ccp = this.caCertificateFile.getAbsolutePath();
+    String csp = this.caSerialFile.getAbsolutePath();
     String cp = userFiles.getCertificateFile().getAbsolutePath();
     String[] signCommand = {
         "openssl",    // Invoke openssl
@@ -300,10 +355,6 @@ public class CertificateAuthority {
     
     // The command takes the current password (to unlock the private key)
     // plus the new password, on two sucessive lines of input.
-    System.out.println("MyProxy storage should be in " + mp);
-    System.out.println("User: " + loginName);
-    System.out.println("Old password: " + oldPassword);
-    System.out.println("New password: " + newPassword);
     String passwords = oldPassword + "\n" + newPassword;
     this.runCommandWithStdinPassword(command, passwords);
   }
@@ -392,4 +443,35 @@ public class CertificateAuthority {
       throw new Exception(whinge.toString());
     }
   }
+  
+  /**
+   * Determines the root of the distinguished names for the users.
+   * The root DN is the CA's DN with the /CN field removed.
+   */
+  protected void deduceRootDnFromCaCertificate() throws Exception {
+    assert this.caCertificateFile != null;
+    assert this.caCertificateFile.exists();
+    
+    // Read the CA's certificate.
+    // Extract the subject.
+    CertificateFactory factory = CertificateFactory.getInstance("X509");
+    InputStream is = new FileInputStream(this.caCertificateFile);
+    X509Certificate certificate = (X509Certificate)factory.generateCertificate(is);
+    is.close();      
+    X500Principal principal = certificate.getSubjectX500Principal();
+      
+    // Parse the CA's subject. The root DN is the CA's subject with the
+    // CN field(s) stripped out.
+    String dnWithCommas = principal.getName(X500Principal.RFC2253);
+    String[] elements = dnWithCommas.split(",");
+    StringBuffer dnWithSlashes = new StringBuffer();
+    for (int i = 0; i < elements.length; i++) {
+      if (!elements[i].startsWith("CN")) {
+        dnWithSlashes.append("/");
+        dnWithSlashes.append(elements[i]);
+      }
+    }
+    this.rootDn = dnWithSlashes.toString();
+  }
+  
 }

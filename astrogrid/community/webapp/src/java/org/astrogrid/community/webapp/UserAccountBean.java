@@ -83,6 +83,15 @@ public class UserAccountBean {
   }
   
   /**
+   * Sets the user's existing password.
+   * This is used for validation when changing the password.
+   * It sets the property of this bean but does not change the community DB.
+   */
+  public void setUserOldPassword(String password) {
+    this.oldPassword = password;
+  }
+  
+  /**
    * The user's password, to be set in the next password change.
    */
   protected String newPassword;
@@ -117,9 +126,9 @@ public class UserAccountBean {
    */
   public String getPasswordChangeResult() throws Exception {
     if (this.newPassword == null
-    ||  this.newPassword.length() < 6) {
+    ||  this.newPassword.length() < 7) {
       return "Password change failed: the new password must be " +
-             "at least six characters long.";
+             "at least seven characters long.";
     }
     try {
       this.changePassword();
@@ -156,8 +165,15 @@ public class UserAccountBean {
     // The query is contained in a transaction: this is mandatory in JDO.
     db.begin();
     PasswordData pwd = (PasswordData)db.load(PasswordData.class, accountName);
-    pwd.setPassword(this.newPassword);
-    db.commit();
+    if (this.oldPassword != null
+    &&  this.oldPassword.equals(pwd.getPassword())) {
+      pwd.setPassword(this.newPassword);
+      db.commit();
+    }
+    else {
+      db.rollback();
+      throw new Exception("The given, old password does not match that in the database.");
+    }
   }
   
   /**

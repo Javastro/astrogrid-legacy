@@ -12,6 +12,8 @@
 <jsp:useBean class="org.astrogrid.community.webapp.UserAccountBean"
     id="account" scope="page"/>
 <jsp:setProperty name="account" property="userLoginName"/>
+<jsp:setProperty name="account" property="userOldPassword" value=""/>
+<jsp:setProperty name="account" property="userOldPassword"/>
 <jsp:setProperty name="account" property="userNewPassword"/>
 
 <html>

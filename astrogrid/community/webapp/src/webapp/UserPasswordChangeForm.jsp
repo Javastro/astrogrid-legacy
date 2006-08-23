@@ -23,7 +23,7 @@
       <td><input type="password" name="userOldPassword"/>
     </tr>
     <tr>
-      <td>Your new password (must be at least six characters long)</td>
+      <td>Your new password (at least seven characters long)</td>
       <td><input type="password" name="userNewPassword"/>
     </tr>
     <tr>

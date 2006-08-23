@@ -30,7 +30,7 @@ the registration documents.
 <p>
 <!-- The registration documents should be generated according
      to this version of the XML schema. -->
-<input type="hidden" value="0.10"/>
+<input type="hidden" name="version" value="0.10"/>
 <table>
  <tr><td>Contact Name <td> <input type="text" name="ContactName">
  <tr><td>Contact Email<td> <input type="text" name="ContactEmail">

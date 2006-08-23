@@ -34,7 +34,6 @@ public class CertificateAuthorityBean {
   
     // Determine the details of the CA.
     this.findCaFilesFromConfiguration();
-    this.deduceRootDnFromCaCertificate();
   }
   
   private static Logger log =
@@ -49,7 +48,8 @@ public class CertificateAuthorityBean {
   /**
    * A message describing the result of enabling the CA.
    */
-  protected String enablementResult;
+  protected String enablementResult =
+      "The certificate authority has not been enabled.";
   
   /**
    * Gets the message describing the enablement of the CA.
@@ -95,13 +95,13 @@ public class CertificateAuthorityBean {
    */
   public void setCaPassword(String password) throws Exception {
     try {
-      this.ca = new CertificateAuthority(this.rootDn,
-                                         password,
+      this.ca = new CertificateAuthority(password,
                                          this.caKeyFile,
                                          this.caCertificateFile,
                                          this.caSerialFile,
                                          this.myProxyDirectory);
-      this.enablementResult = "Enabling the certificate authority succeded.";
+      this.rootDn = this.ca.getRootDn();
+      this.enablementResult = "The certificate authority is enabled.";
     }
     catch (Exception e) {
       this.enablementResult = "Enabling the certificate authority failed: " + 
@@ -197,8 +197,7 @@ public class CertificateAuthorityBean {
     }
     
     try {
-      //String workingDirectoryName = System.getProperty("java.io.tmpdir");
-      String workingDirectoryName = "/Users/guy/ca";
+      String workingDirectoryName = System.getProperty("java.io.tmpdir");
       UserFiles userFiles = new UserFiles(new File(workingDirectoryName),
                                           this.userLoginName);
       log.debug("Initiating the user " + 
@@ -215,6 +214,7 @@ public class CertificateAuthorityBean {
       return context + "succeeded.";
     }
     catch (Exception e) {
+      e.printStackTrace();
       return context + "failed. The CA reports: " + e.getMessage();
     }
   }
@@ -233,11 +233,10 @@ public class CertificateAuthorityBean {
     }
     String context = "Password change for " + this.userLoginName + " ";
     try {
-      this.ca = new CertificateAuthority(null,
-                                         null,
-                                         null,
-                                         null,
-                                         null,
+      this.ca = new CertificateAuthority("",
+                                         this.caKeyFile,
+                                         this.caCertificateFile,
+                                         this.caSerialFile,
                                          this.myProxyDirectory);
       this.ca.changePasswordInMyProxy(this.userLoginName,
                                       this.userOldPassword, 
@@ -245,6 +244,7 @@ public class CertificateAuthorityBean {
       return context + "succeeded.";
     }
     catch (Exception e) {
+      e.printStackTrace();
       return context + "failed. The CA reports: " + e.getMessage();
     }
   }
@@ -293,40 +293,4 @@ public class CertificateAuthorityBean {
     }
   }
   
-  /**
-   * Determines the root of the distinguished names for the users.
-   * The root DN is the CA's DN with the /CN field removed.
-   */
-  protected void deduceRootDnFromCaCertificate() {
-    
-    
-    if (this.caCertificateFile == null) {
-      return;
-    }
-    try {
-      // Read the CA's certificate.
-      // Extract the subject.
-      CertificateFactory factory = CertificateFactory.getInstance("X509");
-      InputStream is = new FileInputStream(this.caCertificateFile);
-      X509Certificate certificate = (X509Certificate)factory.generateCertificate(is);
-      is.close();      
-      X500Principal principal = certificate.getSubjectX500Principal();
-      
-      // Parse the CA's subject. The root DN is the CA's subject with the
-      // CN field(s) stripped out.
-      String dnWithCommas = principal.getName(X500Principal.RFC2253);
-      String[] elements = dnWithCommas.split(",");
-      StringBuffer dnWithSlashes = new StringBuffer();
-      for (int i = 0; i < elements.length; i++) {
-        if (!elements[i].startsWith("CN")) {
-          dnWithSlashes.append("/");
-          dnWithSlashes.append(elements[i]);
-        }
-      }
-      this.rootDn = dnWithSlashes.toString();
-    }
-    catch (Exception e) {
-      return; // Ignore it.
-    }
-  }
 }
