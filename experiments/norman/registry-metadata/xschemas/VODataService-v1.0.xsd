@@ -732,6 +732,10 @@
                      or service to which it applies to work properly.  If
                      false, the parameter can be considered optional.
                   </xs:documentation>
+                  <xs:appinfo>
+                    <!-- Range is an enumeration, not datatype -->
+                    <x2s:propertyRange>vs:ParamUse</x2s:propertyRange>
+                  </xs:appinfo>
                </xs:annotation>
             </xs:attribute>
 
