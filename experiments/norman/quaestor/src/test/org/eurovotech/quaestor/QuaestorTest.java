@@ -92,7 +92,6 @@ public class QuaestorTest
         r = httpGet(kbURL);
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/rdf+n3");
-        //assertEquals("My test knowledgebase\r\n", r.getContent());
     }
 
     // try that one again -- should fail, since we can't create 
@@ -147,6 +146,17 @@ public class QuaestorTest
         HttpResult r = httpTransaction
                 (METHOD_PUT,
                  makeKbUrl("instances"),
+                 "<urn:example#i2> a <urn:example#c2>.",
+                 new String[] { "Content-Type", "text/rdf+n3" });
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        assertNull(r.getContent());
+
+        // Test the deprecated, but admissable, application/n3 MIME type.
+        // Note that we must leave the 'instances' KB holding this triple,
+        // for the following test to work.
+        r = httpTransaction
+                (METHOD_PUT,
+                 makeKbUrl("instances"),
                  "<urn:example#i1> a <urn:example#c1>.",
                  new String[] { "Content-Type", "application/n3" });
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
@@ -155,6 +165,7 @@ public class QuaestorTest
 
     public void testSparqlQueriesSelect() 
             throws Exception {
+        // note: this query depends on the previous test making it satisfiable
         String query = "SELECT ?i where { ?i a <urn:example#c1>}";
         HttpResult r;
 
@@ -202,6 +213,8 @@ public class QuaestorTest
         assertNotNull(r.getContent());
 
         // ...and requesting CSV
+        // Note that we actually test the content, here, so are coupled to
+        // testAddInstances.
         r = httpGet(makeKbUrl("?sparql="+encodedQuery),
                     new String[] {"Accept", "text/csv"});
         assertStatus(r, HttpURLConnection.HTTP_OK);
