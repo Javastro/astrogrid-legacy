@@ -9,13 +9,17 @@ I've only tried it with Jena 2.3 -- other versions may or may not
 work.  See <http://jena.sourceforge.net>.
 
 SISC is available from <http://sisc.sourceforge.net>.  Quaestor works
-with sisc-1.13.5 at least, and probably later versions also.  It
+with sisc-1.15.x at least, and probably later versions also.  It
 requires a little bit of post-installation configuration.  Download
-sisc-1.13.5 (or later, presumably):
+sisc-1.15.x:
   % cd .../sisc-x.y.z ;installation directory
   % ./install-srfi22.sh $PWD
   % chmod +x srfi-22.sh
   % PATH=.:$PATH scheme-src/build-heapjar.scm
+
+The first version which was released to anyone else was 0.3.  I'll
+follow the common practice and have even-numbered versions as beta
+releases, and odd-numbered ones as rather stable (-ish).
 
 Building Quaestor
 -----------------
