@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Quaestor: The RESTful HTTP interface</title>
+<link rel='stylesheet'
+      type='text/css'
+      href='base.css'/>
+</head>
+
+<body>
+
+<h1>Quaestor: The RESTful HTTP interface</h1>
+
+<p><a href='index.html' >Quaestor</a> has two interfaces, this RESTful
+HTTP one, which is the main one, and a separate <a href='xmlrpc.html'
+>XML-RPC interface</a> (still rather preliminary).</p>
+
+<p>In the documentation below, <code>hostport</code> refers to the
+machine and port number hosting the Quaestor service, such as
+<code>localhost:8080</code>.</p>
+
+<p>You interact with Quaestor by creating a knowledgebase with a
+<code>PUT</code> command, then <code>PUT</code>ting ontologies into
+the knowledgebase, then <code>POST</code>ing SPARQL queries.  The <a
+href='index.html' >front page</a> points to a demo/walkthrough.</p>
+
+<h2>The HTTP verbs</h2>
+
+<dl>
+<dt><code>GET http://hostport/quaestor/kb</code></dt>
+<dd>Retrieve an information page, reporting on the knowledgebases
+currently available.</dd>
+
+<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>[/<em>sm-name</em>]</code></dt>
+<dd><p>Retrieve either the complete <code><em>kb-name</em></code> model, or
+the named <code><em>sm-name</em></code> submodel.  The format of the response
+is controlled by the <code>Accept</code> header, which if present must
+contain one of the following MIME types (see <a href='mime.html'
+>note</a>):</p>
+<ul>
+  <li><code>text/rdf+n3</code> : Notation3 (default)</li>
+  <li><code>application/rdf+xml</code> : RDF/XML serialisation</li>
+  <li><code>text/plain</code> : N-triples format</li>
+  <li><code>text/csv</code> : comma-separated values</li>
+  <li><code>text/tab-separated-values</code></li>
+  <li><code>*/*</code> to accept any format (the default is Notation3)</li>
+</ul>
+
+<p>You can add an optional query <code>?model</code> or
+<code>?metadata</code> to retrieve the appropriate thing; the default
+is to retrieve the model.</p>
+
+<p>This method returns status 200 (OK) on success, or a 4xx code on
+error.</p></dd>
+
+<dt><code>GET http://hostport/quaestor/kb/<em>kb-name</em>?sparql=<em>query</em></code></dt>
+<dd>Perform the SPARQL query which is URL-encoded in the string
+<em>query</em>.  This has the same response codes and
+<code>accept</code> headers as the <code>POST</code> method below.</dd>
+
+<dt><code>POST http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
+<dd><p>Takes a SPARQL query as the request body, which should be
+posted with the <code>Content-Type</code> set to
+<code>application/sparql-query</code> (if there is no
+<code>Content-Type</code>, then this type is assumed).  The request may be
+accompanied by an <code>Accept</code> header to control the format of
+the returned data; the MIME types recognised are the same as for the
+GET request above.</p>
+
+<p>Returns status 200 (OK) on success, and 4xx otherwise.</p>
+</dd>
+
+<dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
+<dd><p>Create a new knowledgebase named `<em>kb-name</em>'.  The
+request content contains the metadata for the knowledgebase.  This can
+be expressed as RDF (with MIME types <code>text/rdf+n3</code> or
+<code>application/rdf+xml</code>).  For example the body might be:</p>
+<pre>
+@prefix dc: &lt;http://purl.org/dc/elements/1.1/&gt;.
+&lt;&gt; dc:description "My knowledgebase";
+    dc:creator "Norman".
+</pre>
+<p>Alternatively, the content can have a <code>text/plain</code> MIME
+type, which in this context means that the knowledgebase will be given
+a <code>dc:description</code> whose subject is the given text.</p>
+
+<p>It is an error if the
+knowledgebase already exists.  Returns status 204 (No Content) on success,
+and a 4xx error message if the knowledgebase already exists or if
+there is some other error.</p>
+</dd>
+
+<dt><code>PUT http://hostport/quaestor/kb/<em>kb-name</em>/<em>sm-name</em></code></dt>
+<dd><p>Upload the request body as the content of the submodel named
+<em>sm-name</em>.  The
+request may have a <code>Content-Type</code> header indicating the
+format of the body, which, if it is present, <em>must</em> be one of
+the following MIME types (see <a href='mime.html' >note</a>):</p>
+<ul>
+  <li><code>text/rdf+n3</code> : Notation3.</li>
+  <li><code>application/rdf+xml</code> : RDF/XML</li>
+  <li><code>text/plain</code> : N-Triples</li>
+</ul>
+<!-- defaults -->
+<p>The request may have a <em>query</em> appended, which may be
+<code>?abox</code>, <code>?instances</code> (which is equivalent to
+<code>?abox</code>) or <code>?tbox</code>.  This indicates the type of
+the corresponding model.  The default, if no such query is given, is
+<code>tbox</code> (I'm not sure how legit this use of query is -- this
+might change).</p>
+
+<p>Notation3 may also  be uploaded using the deprecated MIME type
+<code>application/n3</code>.</p>
+</dd>
+
+<dt><code>PUT http://hostport/quaestor/code</code></dt>
+<dd>Eval the request body as Scheme code.  This is only possible if
+the server has been configured to permit it.</dd>
+
+<dt><code>DELETE http://hostport/quaestor/kb/<em>kb-name</em></code></dt>
+<dd>Remove the named knowledgebase.  Returns status 204 (No Content)
+if it successfully removed the knowledgebase, or a 4xx response if
+there was no such knowledgebase to remove.</dd>
+
+</dl>
+
+
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Quaestor: The XML-RPC interface</title>
+<link rel="stylesheet"
+      type="text/css"
+      href="base.css"/>
+</head>
+
+<body>
+
+<h1>The XML-RPC interface</h1>
+
+<p>In the documentation below, <code>hostport</code> refers to the
+machine and port number hosting the Quaestor service, such as
+<code>localhost:8080</code>.</p>
+
+<p>The XML-RPC endpoint is <code>http://hostport/quaestor/xmlrpc</code></p>
+
+<h2>Methods</h2>
+
+<p>There are only two methods defined at present; more might appear
+in future.</p>
+
+<dl>
+<dt><code>get-model(<em>knowledgebase</em>:string 
+[,<em>submodel</em>:string])</code> : <em>URL</em></dt>
+<dd>Retrieve a URL from which the client can obtain the full
+knowledgebase, or just a submodel.  This is just a convenience method,
+since the URL returned is just the one described in the HTTP-interface
+above.</dd>
+
+<dt><code>query-model(<em>knowledgebase</em>:string,
+<em>sparql-query</em>:string
+[,<em>mime-type</em>:string])</code> : <em>URL</em></dt>
+<dd>Sends a SPARQL query to the server, and return a URL from which
+the results can be retrieved.  Although this returns promptly, after
+having done all required checking and parsing, the query is not
+actually run until the returned URL is dereferenced.</dd>
+</dl>
+
+<h2>XML-RPC fault codes</h2>
+<dl>
+<dt>0</dt>
+<dd>Protocol error, such as mangled XML, or invalid
+request headers</dd>
+
+<dt>1</dt>
+<dd>Unrecognised method</dd>
+
+<dt>2</dt>
+<dd>Malformed request: the method was syntactically valid and
+intelligible, but had the wrong number or type of arguments</dd>
+
+<dt>10</dt>
+<dd>get-model, query-model: Unknown object requested, either an invalid
+knowledgebase or submodel</dd>
+
+<dt>20</dt>
+<dd>query-model: bad query, either unparseable SPARQL or an
+unsupported MIME type</dd>
+</dl>
+
+</body>
+</html>
