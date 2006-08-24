@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 
-<!-- $Id: demo.xml,v 1.1 2006/04/13 17:26:50 norman Exp $ -->
+<!-- $Id: demo.xml,v 1.2 2006/08/24 18:01:09 norman Exp $ -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ng="http://ns.nxg.me.uk/myxml">
@@ -10,7 +10,7 @@
 <link rel='stylesheet'
       type='text/css'
       href='base.css'/>
-<ng:rcsdate>$Date: 2006/04/13 17:26:50 $</ng:rcsdate>
+<ng:rcsdate>$Date: 2006/08/24 18:01:09 $</ng:rcsdate>
 <ng:rdf/>
 </head>
 
@@ -23,7 +23,7 @@
 <p>This is a demo of the reasoning capabilities described <a
 href='http://nxg.me.uk/note/2006/access-control/' >elsewhere</a>.  To
 work through the demo, you need to have a Quaestor service running
-inside a Tomcat server: I'll take that to be running at <code>http://localhost:8080/quaestor</code>.</p>
+inside a Tomcat server: I'll take that to be running at <code>http://localhost:8080/quaestor</code>.  You need at least Quaestor v0.3.</p>
 
 <p>The Quaestor interface is documented on the front page of the
 Quaestor server.  It uses the HTTP protocol commands to manipulate
@@ -40,11 +40,16 @@ HTTP yourself, using telnet.</p>
 command.  Call the knowledgebase `testing', and read a simple metadata
 string from stdin:</p>
 <pre>
-% curl --upload-file - http://localhost:8080/quaestor/kb/testing
+% curl --upload-file - \
+    --header content-type:text/plain \
+    http://localhost:8080/quaestor/kb/testing
 My test knowledgebase
 ^D
 %
 </pre>
+<p>Note that we have to tell Quaestor that the input is plain text.
+As an alternative, you can describe the new knowledgebase using RDF.</p>
+
 <p>If you add the <code>--verbose</code> flag to the <code>curl</code>
 command line, you will see (instructive?) protocol chatter, as well as
 the 204 (no content) return code from the server.</p>
@@ -76,19 +81,21 @@ the knowledgebase <em>submodels</em> <code>ontology</code>,
 names are arbitrary, and you can use alternatives if you wish).</p>
 <pre>
 % curl --upload-file access-control.owl \
-    http://localhost:8080/quaestor/kb/testing/ontology
+    http://localhost:8080/quaestor/kb/testing/ontology \
+    --header content-type:application/rdf+xml
 % curl --upload-file instances.n3 \
-    'http://localhost:8080/quaestor/kb/testing/people?instances' \
-    --header content-type:application/n3
+    'http://localhost:8080/quaestor/kb/testing/people?instances'
 % curl --upload-file identity.n3 \
-    http://localhost:8080/quaestor/kb/testing/identities \
-    --header content-type:application/n3
+    http://localhost:8080/quaestor/kb/testing/identities
 %
 </pre>
-<p>Since the two <code>.n3</code> files are written in <a
-href='http://www.w3.org/DesignIssues/Notation3' >Notation 3</a>, we
-have to add an appropriate <code>Content-Type</code> header to the
-upload.  The <code>instances.n3</code> file is uploaded with a
+<p>The two <code>.n3</code> files are written in <a
+href='http://www.w3.org/DesignIssues/Notation3' >Notation 3</a>; this
+is the default MIME type which Quaestor expects.  The
+<code>access-control.owl</code> file, however, is written in the
+RDF/XML serialisation, and so we must add an appropriate
+<code>Content-Type</code> header to the upload.
+The <code>instances.n3</code> file is uploaded with a
 <code>?instances</code> query attached -- this tells the reasoner that
 these are assertions about individuals rather than types; this
 distinction is currently important.</p>
@@ -103,14 +110,15 @@ service:</p>
 % curl http://localhost:8080/quaestor/kb/testing/people
 </pre>
 <p>will respond with the contents of the <code>people</code> submodel
-in the default RDF/XML format, and if you add <code>--header
-accept:application/n3</code> to the <code>curl</code> command, you'll
-get it in N3 again.  If you retrieve
+in the default Notation3 format (MIME type <code>text/rdf+n3</code>),
+and if you add <code>--header accept:application/rdf+xml</code> to the
+<code>curl</code> command, you'll 
+get it in RDF/XML again.  If you retrieve
 <code>http://localhost:8080/quaestor/kb/testing</code> you'll get the
 union of the three submodels.</p>
 
 <p>There are several SPARQL queries in the demo for you to try.  The
-query <code>access-all.rq</code> is:</p>
+query <a href='access-all.rq' ><code>access-all.rq</code></a> is:</p>
 <pre>
 prefix : &lt;http://eurovotech.org/access-control.owl#&gt;
 select ?person
@@ -132,18 +140,18 @@ command, the reasoner will produce a response in the corresponding
 format.  There are several other queries you can try:</p>
 <dl>
 
-<dt>access-flagged.rq</dt>
+<dt><a href='access-flagged.rq' >access-flagged.rq</a></dt>
 <dd>This query asks which individuals are in the flagged-data group</dd>
 
-<dt>ask-norman.rq</dt>
+<dt><a href='ask-norman.rq' >ask-norman.rq</a></dt>
 <dd>This query asks the yes/no question of whether
 <code>norman@astro.gla.ac.uk</code> is allowed to see all the data.</dd>
 
-<dt>construct-accessers.rq</dt>
+<dt><a href='construct-accessers.rq' >construct-accessers.rq</a></dt>
 <dd>This uses a SPARQL <code>construct</code> query to obtain a query
 result in RDF.</dd>
 
-<dt>ask-badly.rq</dt>
+<dt><a href='ask-badly.rq' >ask-badly.rq</a></dt>
 <dd>This query is malformed (there's a missing angle bracket).  The
 reasoner responds with an HTTP 400 status.</dd>
 </dl>
@@ -159,8 +167,8 @@ reasoner responds with an HTTP 400 status.</dd>
 <code>http://localhost:8080/quaestor/xmlrpc</code>, though it has
 rather less functionality at present.</p>
 
-<p>The file <code>xmlrpc-get.xml</code> contains an XML-RPC method
-call:</p>
+<p>The file <code><a href='xmlrpc-get-model.xml' >xmlrpc-get-model.xml</a></code>
+contains an XML-RPC method call:</p>
 <pre>
 &lt;methodCall&gt;
 &lt;methodName&gt;get-model&lt;/methodName&gt;
@@ -180,7 +188,8 @@ call:</p>
 dereference another URL.</p>
 
 <p>Slightly more useful is the <code>query-model</code> method,
-illustrated in <code>xmlrpc-query-model.xml</code>.  This makes a
+illustrated in <code><a href='xmlrpc-query-model.xml'
+>xmlrpc-query-model.xml</a></code>.  This makes a 
 SPARQL query against the model, and returns a URL which can be
 dereferenced to pick up the query results.</p>
 </div>
@@ -202,7 +211,7 @@ and
 
 <div class="signature">
 <a href='http://nxg.me.uk' >Norman Gray</a><br/>
-<ng:rcsdate format="standard">$Date: 2006/04/13 17:26:50 $</ng:rcsdate>
+<ng:rcsdate format="standard">$Date: 2006/08/24 18:01:09 $</ng:rcsdate>
 </div>
 
 </body>
