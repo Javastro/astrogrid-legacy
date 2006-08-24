@@ -2,10 +2,11 @@
 ;; striped RDF/XML) using the
 ;; http://ns.eurovotech.org/VOResource-1.0.owl#" ontology.
 ;;
-;; Uses elements in the
-;; x2s="http://ns.eurovotech.org/registry-metadata"
-;; namespace to provide hints to the conversion.  These are expected to be
-;; children of an <xs:appinfo> element within the element/attribute declaration.
+;; The stylesheet generally makes the correct guesses about property
+;; types and ranges, but in some cases it needs hints.  To give these,
+;; use elements in the x2s="http://ns.eurovotech.org/registry-metadata"
+;; namespace.  These are expected to be children of an <xs:appinfo>
+;; element within the element/attribute declaration to which they refer.
 ;;
 ;;     <x2s:propertyName>[name]</x2s:propertyName>
 ;;         Indicates that the property name generated for this
@@ -25,8 +26,17 @@
 ;;         type, and not the type which would be derived from the
 ;;         @type attribute.  This can also be used to force the range
 ;;         of a property derived from an xs:attribute, which would
-;;         normally be presumed to be a datatype property rather than
+;;         otherwise be presumed to be a datatype property rather than
 ;;         (as might well be the case) an enumeration.
+;;
+;;     <x2s:objectRange/>
+;;         If present, the associated property should be regarded as
+;;         having an object range of the same type as is declared in
+;;         the XSchema.  This is necessary in a few cases where an
+;;         attribute's range has been modelled as an object rather
+;;         than a datatype.  The same effect could be achieved by
+;;         using <x2s:propertyRange> and repeating the XSD type, but
+;;         this seems to document the intent more clearly.
 ;;
 ;;     <x2s:datatypeRange/>
 ;;         If present, this is to be regarded as an XSchema datatype property.
@@ -250,9 +260,17 @@
            (attribute rdf:resource
                       (choose
                        (when xs:annotation/xs:appinfo/x2s:datatypeRange
-                         ;; forced to be a datatype range
+                         ;; forced to be a datatype range, in a context
+                         ;; where we'd guess otherwise
                          (call-template
                           name: expand-xscd-namespace
+                          (with-param name: type
+                                      (value-of @type))))
+                       (when xs:annotation/xs:appinfo/x2s:objectRange
+                         ;; forced to be an object range, in a context
+                         ;; where we'd guess otherwise
+                         (call-template
+                          name: expand-namespace
                           (with-param name: type
                                       (value-of @type))))
                        (when xs:annotation/xs:appinfo/x2s:propertyRange

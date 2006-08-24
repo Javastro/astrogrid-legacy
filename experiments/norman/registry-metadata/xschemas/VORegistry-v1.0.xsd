@@ -54,7 +54,7 @@
                        this element at a time.   
                      </xs:documentation>
                      <xs:appinfo>
-                       <x2s:datatypeRange/>
+                       <x2s:propertyRange>xs:string</x2s:propertyRange>
                      </xs:appinfo>
                   </xs:annotation>
                </xs:element>
@@ -77,14 +77,26 @@
          <xs:restriction base="vr:Capability">
             <xs:sequence>
                <xs:element name="validationLevel" type="vr:Validation"
-                           minOccurs="0" maxOccurs="unbounded"/>
+                           minOccurs="0" maxOccurs="unbounded">
+                 <xs:annotation>
+                   <xs:appinfo>
+                     <x2s:propertyRange>vr:Organization</x2s:propertyRange>
+                   </xs:appinfo>
+                 </xs:annotation>
+               </xs:element>
                <xs:element name="description" type="xs:token" 
                            minOccurs="0"/>
                <xs:element name="interface" type="vr:Interface" 
                            minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="standardID" type="vr:IdentifierURI"
-                          use="required" fixed="ivo://ivoa.net/std/Registry"/>
+                          use="required" fixed="ivo://ivoa.net/std/Registry">
+              <xs:annotation>
+                <xs:appinfo>
+                  <x2s:objectRange/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:attribute>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>
@@ -276,9 +288,6 @@
                      <xs:documentation>
                        In most cases, this will be the same as the Publisher.
                      </xs:documentation>
-                     <xs:appinfo>
-                       <x2s:propertyRange>vr:Organization</x2s:propertyRange>
-                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
 

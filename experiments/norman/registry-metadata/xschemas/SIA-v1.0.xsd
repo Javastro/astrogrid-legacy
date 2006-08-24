@@ -35,14 +35,26 @@
          <xs:restriction base="vr:Capability">
             <xs:sequence>
                <xs:element name="validationLevel" type="vr:Validation"
-                           minOccurs="0" maxOccurs="unbounded"/>
+                           minOccurs="0" maxOccurs="unbounded">
+                 <xs:annotation>
+                   <xs:appinfo>
+                     <x2s:propertyRange>vr:Organization</x2s:propertyRange>
+                   </xs:appinfo>
+                 </xs:annotation>
+               </xs:element>
                <xs:element name="description" type="xs:token" 
                            minOccurs="0"/>
                <xs:element name="interface" type="vr:Interface" 
                            minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="standardID" type="vr:IdentifierURI"
-                          use="required" fixed="ivo://ivoa.net/std/SIA"/>
+                          use="required" fixed="ivo://ivoa.net/std/SIA">
+              <xs:annotation>
+                <xs:appinfo>
+                  <x2s:objectRange/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:attribute>
          </xs:restriction>
       </xs:complexContent>
    </xs:complexType>

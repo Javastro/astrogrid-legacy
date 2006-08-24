@@ -67,8 +67,10 @@ both now types of Actor.
 
 ** ResourceName
 
-This has disappeared, replaced with separate 'name' and 'ivoid'
-properties on Actor.
+This has become a subclass of AnnotatedValue, so that it has a 'value'
+and an ivo-id (???yes) property.  This is for resources which are
+only _potentially_ registered, and that's why it's distinct from
+Actor.  Hmmm.
 
 ** Resource and Contentlevel types
 
@@ -160,9 +162,28 @@ IdentifierURI restrict uri to rmt:IdentifierURI
 updated rmt:UTCDateTime
 shortname rmt:ShortName
 uri xs:anyURI
+authorityID rmt:AuthorityID
+resourceKey rmt:ResourceKey
 
-AuthorityID and ResourceKey are omitted.  They're defined as utility
-types, but not used, in the VOResource XSchema
+These types could be best handled with XSCD types, perhaps by
+making the appropriate declarations in a separate short file.
+
+
+The simple types defined in VOResource-v1.0.xsd are:
+    PaddedString, PaddedURI, ShortName: ignored -- modelled as just strings
+    UTCDateTime: see Date
+    ValidationLevel: replaced with a partition of properties
+    AuthorityID, ResourceKey and IdentifierURI: these are modelled
+        with IdentifierURI being a subclass of URI, and authorityID
+        and resourceKey being properties of that.
+    Type, ContentLevel, Rights: modelled as value partitions
+
+Complex types with simple content:
+    Validation: modelled with ValidationLevel partition properties
+    ResourceName, Date, Source: subclasses of AnnotatedValue
+    AccessURL: modelled as a number of subclasses of AccessURL, with
+        the subclass representing the 'use' XSchema attribute
+
 
 
 * Generation of Schemas from XSchemas

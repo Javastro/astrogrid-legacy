@@ -1,4 +1,4 @@
-; Wed Jun 07 14:15:47 BST 2006
+; Thu Aug 24 17:08:48 BST 2006
 ; 
 ;+ (version "3.2")
 ;+ (build "Build 321")
@@ -6,11 +6,11 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[VOResource-1.0_ProjectKB_Instance_10048]
-		[VOResource-1.0_ProjectKB_Instance_10049]
-		[VOResource-1.0_ProjectKB_Instance_10050]
-		[VOResource-1.0_ProjectKB_Instance_20051]
-		[VOResource-1.0_ProjectKB_Instance_20052]))
+		[VOResource-1.0_ProjectKB_Instance_30053]
+		[VOResource-1.0_ProjectKB_Instance_30054]
+		[VOResource-1.0_ProjectKB_Instance_30055]
+		[VOResource-1.0_ProjectKB_Instance_30056]
+		[VOResource-1.0_ProjectKB_Instance_30057]))
 
 ([CLSES_TAB] of  Widget
 
@@ -528,12 +528,12 @@
 		[KB_713803_Instance_693]
 		[KB_313796_Instance_943]
 		[KB_938545_Instance_495]
-		[KB_713803_Instance_303]
 		[STANDARD_CLASS_FORM_WIDGET]
+		[KB_713803_Instance_303]
 		[KB_313796_Instance_852]
 		[Instance_1005]
-		[Instance_581]
 		[KB_301165_Instance_1013]
+		[Instance_581]
 		[KB_938545_Instance_412]
 		[KB_764103_Instance_545]
 		[KB_713803_Instance_390]
@@ -560,122 +560,93 @@
 	(default_slot_metaclass "owl:ObjectProperty")
 	(hidden_classes
 		"meta:hasPatternPart"
+		"rdf:XMLLiteral"
 		"xsd:anyURI"
 		"xsd:gYear"
-		"meta:EmptyList"
-		"meta:isPartOfNaryRelation"
+		"rdf:Seq"
+		"xsd:negativeInteger"
+		"xsd:hexBinary"
+		"xsd:NOTATION"
 		":OWL-ANONYMOUS-ROOT"
+		"rdf:Bag"
 		"protege:classificationStatus"
-		"meta:isPartOfEnumeration"
-		"@_:A651"
+		"xsd:integer"
+		"xsd:unsignedShort"
 		"owl:allValuesFrom"
 		"protege:inferredSuperclassOf"
 		"rdfs:member"
 		"xsd:base64Binary"
 		"owl:Class"
-		"@_:A661"
 		"owl:Ontology"
 		"rdfs:Container"
+		"xsd:gMonthDay"
+		":TO"
 		"owl:DataRange"
 		"xsd:NMTOKEN"
-		"meta:ValuePartition"
-		"xsd:QName"
-		"xsd:long"
-		"@_:A702"
-		"owl:onProperty"
-		":SYSTEM-CLASS"
-		"xsd:language"
-		"owl:DeprecatedClass"
-		"meta:hasNext"
-		"@_:A704"
-		"owl:DeprecatedProperty"
-		"xsd:unsignedByte"
-		"meta:isPartOfValuePartition"
-		"rdfs:Class"
-		"protege:inferredSubclassOf"
-		"xsd:short"
-		"meta:Enumeration"
-		"xsd:Name"
-		"owl:SymmetricProperty"
-		"owl:sameAs"
-		"owl:Nothing"
-		"meta:"
-		"owl:InverseFunctionalProperty"
-		"owl:cardinality"
-		"xsd:nonNegativeInteger"
-		"@_:A706"
-		"meta:NaryRelation"
-		"@_:A708"
-		"xsd:anySimpleType"
-		"owl:disjointWith"
-		"owl:minCardinality"
-		"xsd:gDay"
-		"xsd:nonPositiveInteger"
-		"rdfs:Datatype"
-		"xsd:IDREF"
-		"rdf:XMLLiteral"
-		"@_:A658"
-		"rdf:Seq"
-		"xsd:negativeInteger"
-		"xsd:hexBinary"
-		"xsd:NOTATION"
-		"rdf:Bag"
-		"meta:hasBeenClassified"
-		"xsd:integer"
-		"xsd:unsignedShort"
-		"meta:isPartOfPattern"
-		":TO"
-		"xsd:gMonthDay"
 		"xsd:unsignedInt"
-		"meta:hasListProperty"
+		"xsd:QName"
+		"meta:ValuePartition"
 		"owl:FunctionalProperty"
-		"@_:A660"
+		"xsd:long"
+		"owl:onProperty"
 		"protege:ExternalResource"
-		"owl:someValuesFrom"
+		"xsd:language"
+		":SYSTEM-CLASS"
 		"xsd:positiveInteger"
+		"owl:someValuesFrom"
+		"owl:DeprecatedClass"
 		"xsd:duration"
 		"rdf:Alt"
-		"meta:hasRest"
+		"owl:DeprecatedProperty"
 		"owl:AnnotationProperty"
 		"xsd:unsignedLong"
+		"xsd:unsignedByte"
+		"meta:isPartOfValuePartition"
+		"protege:inferredSubclassOf"
+		"rdfs:Class"
 		"rdf:first"
-		"@_:A666"
+		"xsd:short"
 		"rdf:List"
-		"owl:hasValue"
 		"rdf:predicate"
-		"rdf:rest"
+		"owl:hasValue"
 		"xsd:double"
+		"rdf:rest"
 		"xsd:decimal"
 		"rdf:subject"
 		"rdf:value"
-		"@_:A664"
+		"xsd:Name"
+		"owl:SymmetricProperty"
+		"owl:sameAs"
 		"xsd:byte"
-		"owl:differentFrom"
 		"owl:AllDifferent"
-		"@_:A667"
-		"meta:OWLList"
-		"@_:A662"
+		"owl:differentFrom"
+		"owl:Nothing"
+		"owl:InverseFunctionalProperty"
+		"owl:cardinality"
+		"xsd:nonNegativeInteger"
 		"rdf:Statement"
-		"rdfs:Literal"
 		":FROM"
-		"meta:hasContents"
+		"rdfs:Literal"
+		"xsd:anySimpleType"
+		"owl:disjointWith"
+		"owl:minCardinality"
 		"xsd:ID"
-		"@_:A669"
+		"xsd:gDay"
 		"xsd:gYearMonth"
-		"owl:distinctMembers"
 		"xsd:NCName"
-		"@_:A655"
-		"meta:nil"
-		"xsd:token"
-		":DIRECTED-BINARY-RELATION"
+		"owl:distinctMembers"
+		"xsd:nonPositiveInteger"
+		"rdfs:Datatype"
 		"owl:TransitiveProperty"
-		"xsd:ENTITY"
+		":DIRECTED-BINARY-RELATION"
+		"xsd:token"
 		"xsd:normalizedString"
-		"@_:A656"
+		"xsd:ENTITY"
+		"xsd:IDREF"
 		"xsd:gMonth"
-		"owl:maxCardinality"
-		"owl:oneOf"
 		"rdf:type"
+		"owl:oneOf"
+		"owl:maxCardinality"
 		"rdf:object")
 	(journaling_enabled FALSE)
 	(next_frame_number 0)
@@ -986,21 +957,6 @@
 ([VOResource-1.0_ProjectKB_Instance_10047] of  Property_List
 )
 
-([VOResource-1.0_ProjectKB_Instance_10048] of  String
-
-	(name "owl:Class")
-	(string_value "%3ANAME"))
-
-([VOResource-1.0_ProjectKB_Instance_10049] of  String
-
-	(name ":INSTANCE-ANNOTATION")
-	(string_value "%3AANNOTATION-TEXT"))
-
-([VOResource-1.0_ProjectKB_Instance_10050] of  String
-
-	(name ":PAL-CONSTRAINT")
-	(string_value "%3APAL-NAME"))
-
 ([VOResource-1.0_ProjectKB_Instance_10051] of  Widget
 
 	(is_hidden FALSE)
@@ -1102,16 +1058,6 @@
 		[VOResource-1.0_ProjectKB_Instance_24]
 		[VOResource-1.0_ProjectKB_Instance_25]
 		[VOResource-1.0_ProjectKB_Instance_26]))
-
-([VOResource-1.0_ProjectKB_Instance_20051] of  String
-
-	(name "owl:Thing")
-	(string_value "%3ANAME"))
-
-([VOResource-1.0_ProjectKB_Instance_20052] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
 
 ([VOResource-1.0_ProjectKB_Instance_20053] of  Widget
 
@@ -9215,6 +9161,31 @@
 
 	(boolean_value TRUE)
 	(name "ButtonDisplayed-Create Instance"))
+
+([VOResource-1.0_ProjectKB_Instance_30053] of  String
+
+	(name "owl:Class")
+	(string_value "%3ANAME"))
+
+([VOResource-1.0_ProjectKB_Instance_30054] of  String
+
+	(name ":INSTANCE-ANNOTATION")
+	(string_value "%3AANNOTATION-TEXT"))
+
+([VOResource-1.0_ProjectKB_Instance_30055] of  String
+
+	(name ":PAL-CONSTRAINT")
+	(string_value "%3APAL-NAME"))
+
+([VOResource-1.0_ProjectKB_Instance_30056] of  String
+
+	(name "owl:Thing")
+	(string_value "%3ANAME"))
+
+([VOResource-1.0_ProjectKB_Instance_30057] of  String
+
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
 
 ([VOResource-1.0_ProjectKB_Instance_31] of  Boolean
 

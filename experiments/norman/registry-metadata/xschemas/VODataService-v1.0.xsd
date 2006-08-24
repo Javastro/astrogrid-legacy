@@ -223,6 +223,9 @@
                    The URI form of the IVOA identifier for the service 
                    describing the capability refered to by this element.
                  </xs:documentation>
+                 <xs:appinfo>
+                   <x2s:objectRange/>
+                 </xs:appinfo>
                </xs:annotation>
             </xs:attribute>
 
@@ -734,7 +737,7 @@
                   </xs:documentation>
                   <xs:appinfo>
                     <!-- Range is an enumeration, not datatype -->
-                    <x2s:propertyRange>vs:ParamUse</x2s:propertyRange>
+                    <x2s:objectRange/>
                   </xs:appinfo>
                </xs:annotation>
             </xs:attribute>
