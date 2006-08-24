@@ -4,7 +4,7 @@ include $(CVS_TOP)/text/webpages/misc/Makefile.webpages
 PNG=asserted-hierarchy.png inferred-hierarchy.png
 # include base.css, because the access-control-demo.html refers to a relative
 # copy, so that the demo files can be standalone
-EXTRA_FILES=access-control-demo.html $(PNG) demo.tar.gz quaestor-0.1.war \
+EXTRA_FILES=access-control-demo.html $(PNG) demo.tar.gz quaestor-0.3.war \
 	base.css
 
 
@@ -15,8 +15,9 @@ demo/demo.html: demo/demo.xml
 	rm -f $@
 	gzip --best $<
 
+# star is a tar which doesn't include OS X file metadata
 demo.tar: access-control-demo
-	tar cf $@ access-control-demo
+	star cf $@ access-control-demo
 
 access-control-demo: demo/demo.html
 	rm -Rf access-control-demo
