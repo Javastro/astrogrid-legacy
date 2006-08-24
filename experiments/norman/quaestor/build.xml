@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.21 2006/08/23 11:28:15 norman Exp $
+     $Id: build.xml,v 1.22 2006/08/24 18:19:01 norman Exp $
 -->
 
 
@@ -115,8 +115,9 @@
        ones intermediate beta releases. -->
   <property name="app.version"   value="0.4"/>
   <property name="build.home"    value="${basedir}/build"/>
-  <property name="build.classes" value="${build.home}/WEB-INF/classes"/>
-  <property name="build.lib"     value="${build.home}/WEB-INF/lib"/>
+  <property name="build.war"     value="${build.home}/war"/>
+  <property name="build.classes" value="${build.war}/WEB-INF/classes"/>
+  <property name="build.lib"     value="${build.war}/WEB-INF/lib"/>
   <property name="build.tests"   value="${build.home}/tests"/>
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
@@ -463,7 +464,7 @@
 
     <!-- Create application WAR file -->
     <jar jarfile="${dist.home}/${app.name}-${app.version}.war"
-         basedir="${build.home}"/> <!-- XXX: this scoops up .../scc/, too -->
+         basedir="${build.war}"/> <!-- XXX: this scoops up .../scc/, too -->
 
     <!-- Copy additional files to ${dist.home} as necessary -->
 
@@ -499,7 +500,7 @@
        username="${manager.username}"
        password="${manager.password}"
            path="${app.path}"
-       localWar="file://${build.home}"/>
+       localWar="file://${build.war}"/>
 
   </target>
 
@@ -566,15 +567,15 @@
 
   -->
 
-  <target name="prepare">
+  <target name="prepare" depends='prepare-static'>
 
     <!-- Create build directories as needed -->
-    <mkdir  dir="${build.home}"/>
-    <mkdir  dir="${build.home}/WEB-INF"/>
-    <mkdir  dir="${build.classes}"/>
+    <mkdir dir="${build.war}"/>
+    <mkdir dir="${build.lib}"/>
+    <mkdir dir="${build.classes}"/>
 
     <!-- Copy static content of this web application -->
-    <copy todir="${build.home}">
+    <copy todir="${build.war}">
       <fileset dir="${web.home}"
                excludes="generate/**"/>
       <filterset>
@@ -589,13 +590,22 @@
       <fileset refid="jena.support"/>
     </copy>
 
-    <copy todir="${build.home}/WEB-INF">
+    <copy todir="${build.war}/WEB-INF">
       <fileset file="${scm.src.home}/quaestor.scm"/>
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
       </filterset>
     </copy>
 
+  </target>
+
+  <target name='prepare-static'
+          description='Prepare the static content of the webapp'>
+    <!-- This demo.tar.gz comes from Norman's repository, in the 
+         directory votech/access-control -->
+    <untar src='web/demo.tar.gz'
+           dest='web'
+           compression='gzip'/>
   </target>
 
   <!-- ========= Test targets ========= -->
