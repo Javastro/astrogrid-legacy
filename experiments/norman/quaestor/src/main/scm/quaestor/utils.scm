@@ -170,8 +170,8 @@
 ;; Mostly for debugging.
 ;; Accumulate remarks, to supply later.
 ;;     (chatter fmt . args)  ; Format a message and return #t.
-;;     (chatter)             ; return list of messages, or #f if none,
-;;                           ; and clear list.
+;;     (chatter)             ; return list of messages, or #f if none.
+;;     (chatter #t)          ; ditto, but additionally clear the list.
 (define chatter
   (let ()
     (define (make-circular-list n)
@@ -199,16 +199,23 @@
 
     (let ((chatter-list (make-circular-list 8)))
       (lambda msg
-        (if (null? msg)                 ;retrieve messages
-            (let ((r (reduce-circular-list (lambda (l r) (if l (cons l r) r))
-                                           '()
-                                           chatter-list)))
-              (set! chatter-list (make-circular-list 8)) ; new clear list
-              (and (not (null? r)) r))  ;return list or #f
-            (begin (set! chatter-list   ;append a new message
-                         (append-circular-list chatter-list
-                                               (apply format (cons #f msg))))
-                   #t))))))             ;return true
+        (cond ((null? msg)                 ;retrieve messages
+               (let ((r (reduce-circular-list (lambda (l r) (if l (cons l r) r))
+                                              '()
+                                              chatter-list)))
+                 (and (not (null? r)) r)))  ;return list or #f
+              ((boolean? (car msg))
+               (let ((r (reduce-circular-list (lambda (l r) (if l (cons l r) r))
+                                              '()
+                                              chatter-list)))
+                 (if (car msg)
+                     (set! chatter-list (make-circular-list 8))) ; new clear list
+                 (and (not (null? r)) r)))  ;return list or #f
+              (else
+               (set! chatter-list   ;append a new message
+                     (append-circular-list chatter-list
+                                           (apply format (cons #f msg))))
+               #t))))))             ;return true
 
 ;; Format the given error record, as passed as the first argument of a
 ;; failure-continuation.  This ought to be able to handle most of the
