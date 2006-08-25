@@ -162,5 +162,22 @@ change).</p>
 <p>If no <code>level</code> property is available, the default
 reasoner is (currently) <code>defaultOWL</code>.</p>
 
+<p>For example a configuration file such as the following would set up
+the knowledgebase with a reasoner that could process a useful subset
+of RDFS.  See the <a
+href='http://jena.sourceforge.net/inference/index.html#rdfs' >Jena
+inference documentation</a> for more discussion.</p>
+
+<pre>
+@prefix dc: &lt;http://purl.org/dc/elements/1.1/&gt;.
+@prefix quaestor: &lt;http://ns.nxg.me.uk/quaestor#&gt;.
+
+&lt;&gt; dc:description "UCD knowledgebase";
+    dc:creator "Norman";
+    quaestor:requiredReasoner [
+        quaestor:level "simpleRDFS"
+    ].
+</pre>
+
 </body>
 </html>
