@@ -6,12 +6,16 @@
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
          reduce)
+(require-library 'sisc/libs/srfi/srfi-26)
+(import* srfi-26
+         cut cute)
 
 (require-library 'quaestor/utils)
 (import* utils
          report-exception
          format-error-record
-         is-java-type?)
+         is-java-type?
+         iterator->list)
 
 (require-library 'util/lambda-contract)
 
@@ -25,13 +29,19 @@
   rdf:mime-type->language
   rdf:language->mime-type
   rdf:mime-type-list
-  rdf:get-reasoner)
+  rdf:get-reasoner
+  rdf:property-on-resource
+  rdf:properties-on-resource
+  rdf:select-statements)
 
 ;; heavily used classes
 (define-java-classes
   <java.lang.string>
   <java.io.input-stream>
-  <java.io.reader>)
+  <java.io.reader>
+  <com.hp.hpl.jena.rdf.model.resource>
+  <com.hp.hpl.jena.rdf.model.property>
+  (<rdfnode> |com.hp.hpl.jena.rdf.model.RDFNode|))
 
 ;; contract assertions
 
@@ -51,6 +61,12 @@
   (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
 (define (jena-model-or-false? x)
   (or (not x) (jena-model? x)))
+(define (jena-resource? x)
+  (is-java-type? x <com.hp.hpl.jena.rdf.model.resource>))
+(define (jena-property? x)
+  (is-java-type? x <com.hp.hpl.jena.rdf.model.property>))
+(define (jena-rdfnode? x)
+  (is-java-type? x <rdfnode>))
 
 ;; Return a new empty model
 (define/contract (rdf:new-empty-model -> jena-model?)
@@ -239,7 +255,7 @@
       (lambda ()
         (read reader model stream (->jstring base-uri))))
     ;; we might as well add any logger warnings to the (chatter)
-    (chatter (apply string-append (logger)))
+    (chatter (apply string-append (cons "Logger warnings: " (logger))))
     model))
 
 ;; Return the object S, which should be either a Java or Scheme string,
@@ -252,8 +268,109 @@
         (else
          #f)))
 
+;; RDF:PROPERTY-ON-RESOURCE resource property-or-string -> rdfnode-or-false
+;;
+;; Return a single object (RDFNode), or #f if there is no such property
+;; Equivalent to (car (RDF:PROPERTIES-ON-RESOURCE resource property)),
+;; except that it returns #f if the list is null
+(define (rdf:property-on-resource resource property)
+    (let ((l (rdf:properties-on-resource resource property)))
+      (if (null? l)
+          #f
+          (car l))))
+
+;; RDF:PROPERTIES-ON-RESOURCE resource property-or-string -> list-of-objects
+;;
+;; Return list of objects corresponding to the given property, on the given
+;; resource.  The property may be a Java Property or a (scheme) string.
+(define/contract (rdf:properties-on-resource (resource jena-resource?)
+                                             (property (or (string? property)
+                                                           (jena-property? property)))
+                                             -> list?)
+  (define-generic-java-methods
+    get-model list-properties create-property get-object)
+  (let ((model (get-model resource)))
+    (map get-object
+         (iterator->list
+          (list-properties
+           resource
+           (if (jena-property? property)
+               property
+               (create-property model (->jstring property))))))))
+
+;; RDF:SELECT-STATEMENTS model subject predicate object -> list-of-rdfnode
+;;
+;; Query a model, matching the specified patterns.
+;;
+;; SUBJECT and PREDICATE may be scheme strings, or Java objects of type
+;; Resource and Property respectively.  In the latter cases, they are
+;; transformed into the appropriate Java objects.
+;;
+;; OBJECT may be either an RDFNode or a _Java_ object.  In the latter case,
+;; it is transformed to an RDF literal of the appropriate Datatype, based on
+;; its Java type.
+;;
+;; Precisely one of SUBJECT, PREDICATE and OBJECT must be #f: we return a list
+;; of RDFNode objects, one for each of the statements which matches the pattern.
+(define/contract (rdf:select-statements (model     jena-model?)
+                                        (subject   (or (not subject)
+                                                       (jena-resource? subject)
+                                                       (string? subject)))
+                                        (predicate (or (not predicate)
+                                                       (jena-property? predicate)
+                                                       (string? predicate)))
+                                        (object    (or (not object)
+                                                       (jena-rdfnode? object)
+                                                       (java-object? object)))
+                                        -> list?)
+    (define-generic-java-methods
+      list-statements
+      create-resource
+      create-property
+      create-typed-literal
+      get-subject
+      get-predicate
+      get-object)
+    (define (jobj-or-null x class constructor)
+      (cond ((is-java-type? x class)
+             x)
+            (x
+             (constructor x))
+            (else                       ;#f
+             (java-null class))))
+    (define-java-classes
+      <com.hp.hpl.jena.rdf.model.resource>
+      <com.hp.hpl.jena.rdf.model.property>
+      (<rdf-node> |com.hp.hpl.jena.rdf.model.RDFNode|))
+    (let ((accessor (cond ((not subject)   get-subject)
+                          ((not predicate) get-predicate)
+                          ((not object)    get-object)
+                          (else
+                           (error "Bad call to rdf:select-statements")))))
+      (map accessor
+           (iterator->list
+            (list-statements model
+                             (jobj-or-null subject
+                                           <com.hp.hpl.jena.rdf.model.resource>
+                                           (lambda (subj)
+                                             (create-resource model
+                                                              (->jstring subj))))
+                             (jobj-or-null predicate
+                                           <com.hp.hpl.jena.rdf.model.property>
+                                           (lambda (pred)
+                                             (create-property model
+                                                              (->jstring pred)
+                                                              (->jstring ""))))
+                             (jobj-or-null object ;presume it's a literal
+                                           <rdf-node>
+                                           (cut create-typed-literal
+                                                model <>)))))))
+
 ;; Return a new Reasoner object, or #f on error
-(define (rdf:get-reasoner)
+;; The optional KEY parameter is one of the strings transitive,
+;; simpleRDFS, defaultRDFS, 
+;; fullRDFS, defaultOWL=fullOWL (not yet miniOWL or microOWL).
+(define (rdf:get-reasoner . key)
 
   (define (get-dig-reasoner)
     (define-java-classes
@@ -293,11 +410,25 @@
         (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
       (define-generic-java-methods
         (get-owl-reasoner |getOWLReasoner|)
-        (get-rdfs-reasoner |getRDFSReasoner|)
+        ;;(get-rdfs-reasoner |getRDFSReasoner|)
         get-transitive-reasoner)
-      (let ((reasoner-list (list (cons "owl" get-owl-reasoner)
-                                 (cons "rdfs" get-rdfs-reasoner)
-                                 (cons "transitive" get-transitive-reasoner))))
+      (let ((reasoner-list (list (cons "defaultOWL"
+                                       (lambda ()
+                                         (get-owl-reasoner
+                                          (java-null <registry>))))
+                                 (cons "defaultRDFS"
+                                       (lambda ()
+                                         (config-rdfs-reasoner "default")))
+                                 (cons "simpleRDFS"
+                                       (lambda ()
+                                         (config-rdfs-reasoner "simple")))
+                                 (cons "fullRDFS"
+                                       (lambda ()
+                                         (config-rdfs-reasoner "full")))
+                                 (cons "transitive"
+                                       (lambda ()
+                                         (get-transitive-reasoner
+                                          (java-null <registry>)))))))
         (lambda (name)
           (let ((getter (assoc name reasoner-list)))
             (cond ((not getter)
@@ -305,19 +436,27 @@
                   ((procedure? (cdr getter)) ;not cached yet
                    (chatter "Creating ~a reasoner" name)
                    ;; get a reasoner and cache it
-                   (set-cdr! getter ((cdr getter) (java-null <registry>)))
+                   (set-cdr! getter ((cdr getter)))
                    (cdr getter))
                   (else                 ;already cached
                    (chatter "Retrieving ~a reasoner" name)
                    (cdr getter))))))))
 
-;;   (define (get-owl-reasoner)
-;;     (define-java-classes
-;;       (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
-;;     (define-generic-java-methods
-;;       (get-owl-reasoner |getOWLReasoner|))
-;;     ;(chatter "Creating OWL reasoner")
-;;     (get-owl-reasoner (java-null <registry>)))
+  (define (config-rdfs-reasoner level)
+    (define-java-classes
+      (<rdfs-factory> |com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory|)
+      (<model-factory> |com.hp.hpl.jena.rdf.model.ModelFactory|)
+      (<vocabulary> |com.hp.hpl.jena.vocabulary.ReasonerVocabulary|))
+    (define-generic-java-methods
+      create-default-model create-resource add-property the-instance create)
+    (define-generic-java-field-accessors
+      (:prop-set-rdfs-level |PROPsetRDFSLevel|))
+    (chatter "Creating an RDFSReasoner with level ~s" level)
+    (create (the-instance (java-null <rdfs-factory>))
+            (add-property (create-resource
+                           (create-default-model (java-null <model-factory>)))
+                          (:prop-set-rdfs-level (java-null <vocabulary>))
+                          (->jstring level))))
 
 ;;   (define (get-rdfs-reasoner)
 ;;     (define-java-class
@@ -327,7 +466,9 @@
 ;;     ;(chatter "Creating RDFS reasoner")
 ;;     (get-rdfs-reasoner (java-null <com.hp.hpl.jena.reasoner.reasoner-registry>)))
 
-  (get-named-reasoner "rdfs")
-  )
+  (get-named-reasoner (if (or (null? key)
+                              (not (car key)))
+                          "defaultOWL"
+                          (car key))))
 
 )

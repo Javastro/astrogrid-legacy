@@ -89,3 +89,85 @@
                              ))))
           (print-model-statements (rdf:merge-models models))))
 
+(let ((test-model
+       (n3->model "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <urn:example#MyClass> a rdfs:Class; rdfs:subClassOf <urn:example#MySuperClass>. <urn:example#norman> <http://purl.org/dc/elements/1.1/name> \"Norman\".")))
+  (define-generic-java-methods
+    create-resource create-property create-typed-literal to-string)
+  (define (node->string n)
+    (->string (to-string n)))
+  (let ((res  (create-resource test-model
+                               (->jstring "urn:example#norman")))
+        (name (create-property test-model
+                               (->jstring "http://purl.org/dc/elements/1.1/name")))
+        (norman (create-typed-literal test-model
+                                      (->jstring "Norman"))))
+
+    (expect-failure select-failure      ;error: no #f slot
+                    (rdf:select-statements test-model res name norman))
+
+    (expect select-subjects
+            '("urn:example#norman")
+            (map node->string
+                 (rdf:select-statements test-model #f name norman)))
+    (expect select-subjects-literal     ;predicate is string, object is jstring
+            '("urn:example#norman")
+            (map node->string
+                 (rdf:select-statements test-model
+                                        #f
+                                        "http://purl.org/dc/elements/1.1/name"
+                                        (->jstring "Norman"))))
+    (expect-failure select-subjects-bad ;object is scheme string
+                    (map node->string
+                         (rdf:select-statements test-model
+                                                #f
+                                                "http://purl.org/dc/elements/1.1/name"
+                                                "Norman")))
+    (expect select-predicates
+            '("http://purl.org/dc/elements/1.1/name")
+            (map node->string
+                 (rdf:select-statements test-model res #f norman)))
+    (expect select-predicates-literal   ;subject is string and object is jstring
+            '("http://purl.org/dc/elements/1.1/name")
+            (map node->string
+                 (rdf:select-statements test-model
+                                        "urn:example#norman"
+                                        #f
+                                        (->jstring "Norman"))))
+    (expect select-objects              ;subject and predicate are RDFNodes
+            '("Norman")
+            (map node->string
+                 (rdf:select-statements test-model res name #f)))
+    (expect select-objects-literal      ;subject and predicate are strings
+            '("Norman")
+            (map node->string
+                 (rdf:select-statements test-model
+                                        "urn:example#norman"
+                                        "http://purl.org/dc/elements/1.1/name"
+                                        #f)))
+
+    (expect select-objects-none         ;no matches
+            '()
+            (rdf:select-statements test-model
+                                   "urn:example#norman"
+                                   "http://example.org/wibble"
+                                   #f))
+
+    (expect select-properties-property  ;predicate is Property
+            '("Norman")
+            (map node->string
+                 (rdf:properties-on-resource res name)))
+    (expect select-properties-string    ;predicate is string
+            '("Norman")
+            (map node->string
+                 (rdf:properties-on-resource res
+                                             "http://purl.org/dc/elements/1.1/name")))
+    (expect select-properties-none      ;no matches
+            '()
+            (rdf:properties-on-resource res "http://example.org/wibble"))
+
+    (expect select-property             ;object is RDFNode
+            "Norman"
+            (node->string (rdf:property-on-resource res name)))
+    (expect select-property-none        ;object is string
+            #f
+            (rdf:property-on-resource res "http://example.org/wibble"))))
