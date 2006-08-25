@@ -22,7 +22,8 @@
 (require-library 'util/sexp-xml)
 (import* sexp-xml
          sexp-xml:sexp->xml
-         sexp-xml:xml->sexp/reader)
+         sexp-xml:xml->sexp/reader
+         sexp-xml:escape-string-for-xml)
 (require-library 'util/lambda-contract)
 
 (require-library 'sisc/libs/srfi/srfi-1)
@@ -41,7 +42,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.35 $ $Date: 2006/08/23 11:11:35 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.36 $ $Date: 2006/08/25 01:59:10 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -150,7 +151,15 @@
   (define (display-kb-info kb-name)
     (define-generic-java-methods
       (get-request-uri |getRequestURI|))
-    (let* ((info ((kb:get kb-name) 'info))
+    (define (model-to-string model)
+      (define-generic-java-methods write to-string)
+      (define-java-class <java.io.string-writer>)
+      (let ((sw (java-new <java.io.string-writer>)))
+        (write model sw (->jstring "N3"))
+        (->string (to-string sw))))
+
+    (let* ((kb (kb:get kb-name))
+           (info (kb 'info))
            (base-uri (request->url request #t))
            (submodel-pair (assq 'submodels info))) ;cdr is list of alists
       `(li "Knowledgebase "
@@ -183,9 +192,16 @@
                                       `(tr (td (@ (style "text-align: right"))
                                                ,(string-append (car ns) ":"))
                                            (td ,(cdr ns))))
-                                   (cdr namespaces)))
-                            )))
-                      (cdr submodel-pair))))))
+                                   (cdr namespaces))))))
+                      (cdr submodel-pair)))
+           (p "Knowledgebase metadata...")
+           (pre
+            ,(sexp-xml:escape-string-for-xml
+              (model-to-string (kb 'get-metadata))))
+           ;; Is this the best thing?  Perhaps better would be to iterate
+           ;; through the predicates on the model and list them in some
+           ;; semi-readable fashion.
+           )))
   (if (= (length path-info-list) 0)     ;we handle this one
       (let ((namelist (kb:get-names)))
         (set-http-response response '|SC_OK| "text/html")
