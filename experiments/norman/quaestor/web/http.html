@@ -83,7 +83,8 @@ be expressed as RDF (with MIME types <code>text/rdf+n3</code> or
 </pre>
 <p>Alternatively, the content can have a <code>text/plain</code> MIME
 type, which in this context means that the knowledgebase will be given
-a <code>dc:description</code> whose subject is the given text.</p>
+a <code>dc:description</code> whose subject is the given text.  For
+fuller details see <a href='#config-metadata' >below</a>.</p>
 
 <p>It is an error if the
 knowledgebase already exists.  Returns status 204 (No Content) on success,
@@ -125,7 +126,41 @@ there was no such knowledgebase to remove.</dd>
 
 </dl>
 
+<h3><a name='config-metadata' >Knowledgebase metadata</a></h3>
 
+<p>When you create a knowledgebase with a <code>PUT
+http://hostport/quaestor/kb/<em>kb-name</em></code>, as shown above,
+you can include metadata to describe and configure it.  The resources
+are resolved using the knowledgebase's own URI as the base-URI.</p>
+
+<p>You can add any metadata you like, but some properties are treated
+specially.  The following properties are in the namespace
+<code>http://ns.nxg.me.uk/quaestor#</code> (at present, this might
+change).</p>
+
+<pre>
+@prefix : &lt;http://ns.nxg.me.uk/quaestor#&gt;.
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+
+:ReasonerSpecification a rdfs:Class;
+    rdfs:comment """Specification of the reasoner required to handle
+        a knowledgebase""".
+:requiredReasoner a rdf:Property;
+    rdfs:range :ReasonerSpecification;
+    rdfs:comment "The reasoner required to process a specific knowledgebase".
+:level a rdf:Property;
+    rdfs:domain :ReasonerSpecification;
+    rdfs:range xsd:string;
+    rdfs:comment """A string indicating reasoning capability.  It may
+        be one of the strings:
+        simpleRDFS, defaultRDFS, fullRDFS: three Jena reasoners; or
+        defaultOWL: the default Jena OWL reasoner""" .
+</pre>
+
+<p>If no <code>level</code> property is available, the default
+reasoner is (currently) <code>defaultOWL</code>.</p>
 
 </body>
 </html>
