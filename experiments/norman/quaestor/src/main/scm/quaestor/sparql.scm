@@ -172,7 +172,6 @@
           (else
            (find-in-list want (cdr possibilities)))))
 
-  (chatter)                             ;clear
   (chatter "make-result-set-handler: caller-name=~s mime-types=~s query-type=~s"
            caller-name mime-types query-type)
 
