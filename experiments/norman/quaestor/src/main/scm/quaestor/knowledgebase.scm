@@ -19,13 +19,10 @@
    kb:get-names
    kb:knowledgebase?)
 
-  (import* jena
-           rdf:ingest-from-stream/language
-           rdf:get-reasoner
-           rdf:new-empty-model
-           rdf:merge-models)
+  (import jena)
   (import* utils
-           is-java-type?)
+           is-java-type?
+           chatter)
 
   (define (jena-model? x)
     (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
@@ -176,6 +173,7 @@
   (define (make-kb kb-name)
     (let ((submodels '()) ;a list of (name tbox? . submodel) pseudo-lists
           (myname kb-name)
+          (myuri #f)
           (metadata #f)                 ;a Model
           (merged-model #f)
           (merged-tbox #f)
@@ -248,6 +246,7 @@
              (let ((m (get-metadata-from-source input base-uri content-type)))
                (java-synchronized sync-object
                  (lambda ()
+                   (set! myuri base-uri)
                    (set! metadata m))))))
 
           ;;;;;;;;;;
@@ -285,20 +284,35 @@
                          (abox (get-abox-or-tbox #f)))
                      (define-java-classes
                        (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
-                     (define-generic-java-method
-                       create-inf-model)
-                     (set! inferencing-model
-                           (cond ((and tbox abox)
-                                  (create-inf-model (java-null <factory>)
-                                                    (rdf:get-reasoner)
-                                                    tbox
-                                                    abox))
-                                 (tbox
-                                  (create-inf-model (java-null <factory>)
-                                                    (rdf:get-reasoner)
-                                                    tbox))
-                                 (else
-                                  #f)))))))
+                     (define-generic-java-methods
+                       create-inf-model to-string)
+                     (let* ((levelres
+                             (and metadata
+                                  myuri
+                                  (rdf:select-statements metadata
+                                                         myuri
+                                                         "http://ns.nxg.me.uk/quaestor#requiredReasoner"
+                                                         #f)))
+                            (levelp (and levelres
+                                         (not (null? levelres))
+                                         (rdf:property-on-resource
+                                          (car levelres)
+                                          "http://ns.nxg.me.uk/quaestor#level")))
+                            (level (and levelp
+                                        (->string (to-string levelp)))))
+                       (chatter "Level for ~s is ~s" myuri level)
+                       (set! inferencing-model
+                             (cond ((and tbox abox)
+                                    (create-inf-model (java-null <factory>)
+                                                      (rdf:get-reasoner level)
+                                                      tbox
+                                                      abox))
+                                   (tbox
+                                    (create-inf-model (java-null <factory>)
+                                                      (rdf:get-reasoner level)
+                                                      tbox))
+                                   (else
+                                    #f))))))))
            inferencing-model)
 
           ((get-model-tbox get-model-abox)
