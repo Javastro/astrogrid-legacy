@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.22 2006/08/24 18:19:01 norman Exp $
+     $Id: build.xml,v 1.23 2006/08/25 09:39:45 norman Exp $
 -->
 
 
@@ -113,7 +113,7 @@
   <property name="app.path"      value="/${app.name}"/>
   <!-- Versions: make odd-numbered versions stable (-ish), and even-numbered
        ones intermediate beta releases. -->
-  <property name="app.version"   value="0.4"/>
+  <property name="app.version"   value="0.4.0-beta"/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
   <property name="build.classes" value="${build.war}/WEB-INF/classes"/>
