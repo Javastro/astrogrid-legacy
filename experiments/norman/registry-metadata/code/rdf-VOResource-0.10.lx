@@ -14,12 +14,13 @@
                     (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
                     (rdfs "http://www.w3.org/2000/01/rdf-schema#"))
          (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
-         (dtd (template (match #t) mode)
+         (dtd (template (match #t) mode name)
               (element (name #t))
               (attribute (name #t))
               (value-of (select #t))
               (when (test #t))
               (if (test #t))
+              (for-each (select #t))
               (with-param (name #t) select)))
 
 (stylesheet version: 1.0 exclude-result-prefixes: "ri vor vs xsi"
@@ -27,32 +28,30 @@
           version: 1.0
           indent: yes)
 
-  (variable name: voro-namespace
-            "http://www.ivoa.net/xml/VOResource/v1.0#")
+;;   (variable name: voro-namespace
+;;             "http://www.ivoa.net/xml/VOResource/v1.0#")
 
 ;;   (template /
 ;;       (rdf:RDF
 ;;        (apply-templates select: "//ri:Resource")))
 
-  (template "ri:Resource"
+  (template "ri:Resource" name: ri:Resource
       ;; we're making this a voro:Resource, though if the element contains,
       ;; for example, an <interface> element (because some xsi:type attribute
       ;; has sneakily declared it as a subtype of ri:Resource), then
       ;; when we handle that by putting in the corresponding property,
       ;; this will in fact be (in this example) a voro:Service object.
       ;; I think this is OK -- any reasoner will be happy with that, won't it?
-      (element name: rdf:Description
+      (element name: "voro:Resource"
                (attribute rdf:about
                           (apply-templates select: "vor:identifier/text()"))
-               (attribute rdf:type
-                          (value-of $voro-namespace)
-                         "Resource")
                ;;(attribute rdf:type "voro:Resource")
 ;;                (call-template name: emit-rdf-type
 ;;                               (with-param name: type
 ;;                                           voro:Resource))
-               (if @xsi:type
-                   (call-template name: process-xsi-type))
+
+;;                (if @xsi:type
+;;                    (call-template name: process-xsi-type))
 ;;                (if @xsi:type
 ;;                    (call-template name: emit-rdf-type
 ;;                                   (with-param name: type
@@ -63,34 +62,38 @@
                    (voro:updated (value-of @created)))
                (if @status
                    (voro:status
-                    (element rdf:Description
-                             (attribute rdf:type
-                                        (choose
+                    (element (choose
                                          (when "@status = 'active'"
                                            voro:ActiveStatus)
                                          (when "@status = 'inactive'"
                                            voro:InactiveStatus)
                                          (when "@status = 'deleted'"
-                                           voro:DeletedStatus))))))
+                                           voro:DeletedStatus))
+;; rdf:Description
+;;                              (attribute rdf:type
+;;                                         )
+                             )))
                (apply-templates)
                ))
 
-  (template vor:title
-      (voro:title (apply-templates)))
+  ;; elements for which we can use the default template:
+  ;; vor:title
+  ;; vor:date
+  ;; vor:version
+  ;; Creator and contact have similar but not identical contents in the
+  ;; XSchema, but identical allowed properties in the Ontology.
+  ;; Handle them the same way.
+  ;; vor:logo
+  ;; vor:address
+  ;; vor:telephone
+  ;; vor:subject
+  ;; vor:description
+  (template vor:*
+      (element name: "voro:{local-name()}"
+               (apply-templates)))
 
   (template vor:shortName
       (voro:shortname (apply-templates)))
-
-  (template vor:date
-      (voro:date (apply-templates)))
-
-  (template vor:version
-      (voro:version (apply-templates)))
-
-  (template vor:curation
-      (voro:curation
-       (rdf:Description rdf:type: voro:CurationDescription
-                        (apply-templates))))
 
   (template vor:identifier
       ;; no content -- handled in rdf:about attribute on containing element
@@ -110,53 +113,64 @@
   ;; Handle them the same way.
   (template vor:creator
       (voro:creator
-       (rdf:Description rdf:type: voro:Creator
-                        (apply-templates))))
+       (voro:Creator
+        (apply-templates))))
+
   ;; Contact
   (template vor:contact
       (voro:contact
-       (rdf:Description rdf:type: voro:Contact
-                        (apply-templates))))
+       (voro:Contact
+        (apply-templates))))
+
+  (template vor:curation
+      (voro:curation rdf:parseType: Resource
+        (apply-templates)))
+
   (template vor:name
       (voro:name (apply-templates))
     (if @ivo-id
         (voro:identifier (value-of @ivo-id))))
-  (template vor:logo
-      (voro:logo (apply-templates)))
-  (template vor:address
-      (voro:address (apply-templates)))
-  (template vor:email
-      (voro:email (apply-templates)))
-  (template vor:telephone
-      (voro:telephone (apply-templates)))
 
   ;; Content
   (template vor:content
       (voro:content
-       (element rdf:Description
-                (attribute rdf:type voro:ContentDescription)
+       (element voro:ContentDescription
                 (apply-templates))))
-  (template vor:subject
-      (voro:subject (apply-templates)))
-  (template vor:description
-      (voro:description (apply-templates)))
+
   (template vor:source
-      (rdf:Description rdf:type: voro:Source
-                       (if @format
-                           (voro:format @format))
-                       (voro:value (apply-templates))))
+      (element voro:Source
+               (if @format
+                   (voro:format @format))
+               (voro:value (apply-templates))))
+
   (template vor:referenceURL
       (element voro:referenceURL
-               (rdf:Description (attribute voro:uri (apply-templates)))))
+               (voro:FullAccessURL
+                (attribute voro:uri (apply-templates)))))
+
+  (template vor:accessURL
+      (variable name: access-url-type
+                (choose
+                 (when "@use = 'base'"
+                   voro:BaseAccessURL)
+                 (when "@use = 'full'"
+                   voro:FullAccessURL)
+                 (when "@use = 'dir'"
+                   voro:DirectoryAccessURL)
+                 (otherwise ;; eh?
+                  voro:AccessURL)))
+      (voro:accessURL
+       (element "{$access-url-type}"
+                (attribute voro:uri (apply-templates)))))
+
   (template vor:type
-      (voro:type
-       (element rdf:Description
                 ;; do mild normalisation on the given string
                 (variable name: type
                           (value-of "translate(text(),
                                                'ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
                                                'abcdefghijklmnopqrstuvwxyz')"))
-                (attribute rdf:type
+                ;;(attribute rdf:type
+                (variable name: propertyname
                            (choose
                             ;; this list of types is taken from the document
                             ;; Resource Metadata for the Virtual Observatory,
@@ -203,38 +217,41 @@
                               voro:RegistryType)
                             (otherwise ;; including matching type 'other'
                              voro:OtherType))
-                           ))))
+                           )
+       (voro:type
+               (element "{$propertyname}")))
+
   (template vor:contentLevel
-      (voro:contentLevel
-       (element rdf:Description
-                ;; do mild normalisation on the given string
-                (variable name: cl
-                          (value-of "translate(text(),
+      ;; do mild normalisation on the given string
+      (variable name: cl
+                (value-of "translate(text(),
                                                'ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
                                                'abcdefghijklmnopqrstuvwxyz')"))
-                (attribute rdf:type
-                           (choose
-                            (when "$cl = 'general'"
-                              voro:GeneralContentLevel)
-                            (when "$cl = 'elementaryeducation'"
-                              voro:ElementaryEducationContentLevel)
-                            (when "$cl = 'middleschooleducation'"
-                              voro:MiddleSchoolEducationContentLevel)
-                            (when "$cl = 'secondaryeducation'"
-                              voro:SecondaryEducationContentLevel)
-                            (when "$cl = 'communitycollege'"
-                              voro:CommunityCollegeContentLevel)
-                            (when "$cl = 'university'"
-                              voro:UniversityContentLevel)
-                            (when "$cl = 'research'"
-                              voro:ResearchContentLevel)
-                            (when "$cl = 'amateur'"
-                              voro:AmateurContentLevel)
-                            (when "$cl = 'informaleducation'"
-                              voro:InformalEducationContentLevel)
-                            ;; simply ignore this element if its value is not one of the
-                            ;; recognised ones
-                            )))))
+    (variable name: cltype
+              (choose
+               (when "$cl = 'general'"
+                 voro:GeneralContentLevel)
+               (when "$cl = 'elementaryeducation'"
+                 voro:ElementaryEducationContentLevel)
+               (when "$cl = 'middleschooleducation'"
+                 voro:MiddleSchoolEducationContentLevel)
+               (when "$cl = 'secondaryeducation'"
+                 voro:SecondaryEducationContentLevel)
+               (when "$cl = 'communitycollege'"
+                 voro:CommunityCollegeContentLevel)
+               (when "$cl = 'university'"
+                 voro:UniversityContentLevel)
+               (when "$cl = 'research'"
+                 voro:ResearchContentLevel)
+               (when "$cl = 'amateur'"
+                 voro:AmateurContentLevel)
+               (when "$cl = 'informaleducation'"
+                 voro:InformalEducationContentLevel)
+               ;; simply ignore this element if its value is not one of the
+               ;; recognised ones
+               ))
+    (voro:contentLevel
+     (element "{$cltype}")))
 
   (template vor:relationship
       (variable name: type
@@ -265,11 +282,11 @@
     ;;      (otherwise
     ;;       (apply-templates vor:relatedResource)))
     )
+
   (template vor:relatedResource
       (param name: rel voro:relatedResource)
     (element {$rel}
-             (element rdf:Description
-                      (attribute rdf:type voro:Actor)
+             (element voro:Actor
                       (if @ivo-id
                           (voro:identifier (value-of @ivo-id)))
                       (voro:name (apply-templates)))))
@@ -277,24 +294,28 @@
   ;; If vor:interface is present here, then we're actually processing
   ;; a subtype of vor:Resource.  Since interface is `abstract' in XSchema terms,
   ;; there should be an xsi:type attribute.
+;;   (template vor:interface
   (template vor:interface
-      (voro:interface
-       (rdf:Description
-        (if @xsi:type
-            (call-template name: process-xsi-type))
-        (for-each "@*[not(namespace-uri())]"
-                  XXX)))
-    (apply-templates))
+      ;; empty, for the moment
+      )
+;;       (voro:interface
+;;        (rdf:Description
+;;         (if @xsi:type
+;;             (call-template name: process-xsi-type))
+;;         (for-each "@*[not(namespace-uri())]"
+;;                   XXX)))
+;;     (apply-templates))
 
   ;; Named templates
   (lx:dtd ((template (name #t)))
     ;; Handle ResourceName elements, which map to Actor or one of its subtypes,
     ;; optionally given in the 'type' parameter.
     (template resource-name
-      ;;(param name: type voro:Actor)
-      (element rdf:Description
-               (attribute rdf:type voro:Actor)
-               (attribute voro:name (apply-templates))
+      (param name: type voro:Actor)
+      (element "{$type}"
+               (element voro:name
+                        (apply-templates))
+               ;(attribute voro:name (apply-templates))
                (if @ivo-id
                    (element voro:identifier
                             (attribute voro:uri (value-of @ivo-id))))))
@@ -312,19 +333,14 @@
 ;;         (call-template name: emit-rdf-type
 ;;                        (with-param name: type
 ;;                                    select: @xsi:type)))
-    (template process-xsi-type
-      (variable name: prefix select: "substring-before(@xsi:type, ':')")
-      (rdf:type
-       (attribute name: rdf:resource
-                  (value-of select: "namespace::*[name()=$prefix]")
-                  "#"
-                  (value-of select: "substring-after(@xsi:type,':')"))))
+
+;;     (template process-xsi-type
+;;       (variable name: prefix select: "substring-before(@xsi:type, ':')")
+;;       (rdf:type
+;;        (attribute name: rdf:resource
+;;                   (value-of select: "namespace::*[name()=$prefix]")
+;;                   "#"
+;;                   (value-of select: "substring-after(@xsi:type,':')"))))
     )
 
-  ;; Fallback template handler -- it's an error for any of these to apper
-  ;; in the output
-  (template "*"
-      (voro:UNKNOWN (apply-templates)))
-
-  )
-)
+  ))

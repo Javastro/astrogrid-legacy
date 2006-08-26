@@ -1,0 +1,33 @@
+;; Convert an instance of RegistryInterface-0.1 to RDF
+
+(lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
+                    (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                    (rdfs "http://www.w3.org/2000/01/rdf-schema#")
+                    (ri   "http://www.ivoa.net/xml/RegistryInterface/v0.1")
+                    ;;(vr   "http://www.ivoa.net/xml/VOResource/v0.10")
+                    ;; voro: not used in this script, but declaring it here
+                    ;; means that it'll be declared in the RDF element
+                    (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
+                    )
+         (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
+         (dtd (template (match #t) mode)
+              (element (name #t))
+              (attribute (name #t))
+              (value-of (select #t))
+              (when (test #t))
+              (if (test #t))
+              (with-param (name #t))))
+
+(stylesheet version: 1.0
+
+  (output method: xml
+          version: 1.0
+          indent: yes)
+
+  (template ri:VOResources
+      ;; Note that, although ri:Resource is in the namespace this script `owns',
+      ;; it's actually processed by the script which owns the VOResource
+      ;; namespace, as that's where it more naturally belongs.
+      (apply-templates select: ri:Resource))
+
+  ))

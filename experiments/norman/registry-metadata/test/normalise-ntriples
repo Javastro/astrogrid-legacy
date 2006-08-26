@@ -1,0 +1,155 @@
+#! /opt/local/bin/scsh \
+-e main -s
+!#
+
+;; Reads in a file in Ntriples format, and normalises it.  That means
+;; imposing a consistent ordering on it (by predicate, then subject,
+;; then object, with blank nodes being ordered after everything), and
+;; then renumbering the blank nodes.
+
+(define (main args)
+  (let ((triples (sort-list (if (< (length args) 2)
+                                (read-triples (current-input-port))
+                                (call-with-input-file (cadr args)
+                                  read-triples))
+                            triple<=?)))
+    (for-each (lambda (t)
+                (let ((subj (car t))
+                      (pred (cadr t))
+                      (obj  (caddr t)))
+                  (format #t "~a ~a ~a .~%"
+                          (if (symbol? subj)
+                              (get-new-blank-node subj)
+                              subj)
+                          pred
+                          (if (symbol? obj)
+                              (get-new-blank-node obj)
+                              obj))))
+              triples)))
+
+;; READ-TRIPLES port -> list
+;; Read triples from a port, parsing them to three-element lists, with
+;; all blank nodes represented by symbols.
+(define (read-triples port)
+  (define (parse-line line triples)
+    (cond ((regexp-search? (rx (: bos
+                                  (* whitespace)
+                                  (? #\# (* any))
+                                  eos))
+                           line)
+           triples)
+          ((regexp-search (rx (: (submatch (or (: #\< (* (~ #\>)) #\>)
+                                               (: #\_ #\: (* alphanumeric))))
+                                 (+ whitespace)
+                                 (submatch (: #\< (* (~ #\>)) #\>))
+                                 (+ whitespace)
+                                 (submatch (or (: #\< (* (~ #\>)) #\>)
+                                               (: #\_ #\: (* alphanumeric))
+                                               (: #\" (* (~ #\")) #\")))))
+                          line)
+           => (lambda (m)
+                (let ((subj (match:substring m 1))
+                      (obj  (match:substring m 3)))
+                (cons (list (if (eq? (string-ref subj 0) #\_)
+                                (string->symbol subj)
+                                subj)
+                            (match:substring m 2)
+                            (if (eq? (string-ref obj 0) #\_)
+                                (string->symbol obj)
+                                obj))
+                      triples))))
+          (else
+           (format #t "Unmatched line: ~a~%" line))))
+  (port-fold port read-line parse-line '()))
+
+;; GET-NEW-BLANK-NODE symbol -> string
+;; Given a symbol, return a new blank-node string (ie, "_:nnn") for
+;; it; but if we've seen this symbol before, return the same string as before.
+(define get-new-blank-node
+  (let ((known-nodes '()))
+    (lambda (bnode-name)
+      (cond ((assv bnode-name known-nodes)
+             => cdr)
+            (else
+             (let ((new-node-name (format #f "_:~a" (length known-nodes))))
+               (set! known-nodes (cons (cons bnode-name new-node-name)
+                                       known-nodes))
+               new-node-name))))))
+
+;; TRIPLE<=? triple triple -> boolean
+;; Given two triples, return #t if the first is <= the second.  The
+;; ordering is by predicate, then subject, then object, with a symbol
+;; in any position ordering after all strings.
+(define (triple<=? a b)
+  ;; CMP: return -1/0/+1 if a </=/> b.  Order symbols later than all
+  ;; strings, and equal to each other.
+  (define (cmp a b)
+    (cond ((and (symbol? a) (symbol? b))
+           0)
+          ((symbol? a)
+           -1)
+          ((symbol? b)
+           +1)
+          ((string<=? a b)
+           -1)
+          (else
+           +1)))
+  (let ((propa (cadr a))
+        (propb (cadr b)))
+    (if (string=? propa propb)
+        (let ((subja (car a))           ;same property
+              (obja  (caddr a))
+              (subjb (car b))
+              (objb  (caddr b)))
+          (case (cmp subja subjb)
+            ((-1) #t)
+            ((+1) #f)
+            ((0)
+             (case (cmp obja objb)
+               ((-1) #t)
+               ((+1) #f)
+               ((0)
+                (string<=? (symbol->string obja)
+                           (symbol->string objb)))))))
+        (string<=? propa propb))))
+
+(define (sort-list l <=)
+  (define (merge-lists ina inb)
+    (let loop ((res '())
+               (a ina)
+               (b inb))
+      (cond
+       ((null? a)
+        (append (reverse res) b))
+       ((null? b)
+        (append (reverse res) a))
+       (else
+        (if (<= (car a) (car b))
+            (loop (cons (car a) res)
+                  (cdr a)
+                  b)
+            (loop (cons (car b) res)
+                  a
+                  (cdr b)))))))
+
+  (define (partition-list pe inl)
+    (let loop ((pa '())
+               (pb '())
+               (l inl))
+      (if (null? l)
+          (values pa pb)
+          (if (<= (car l) pe)
+              (loop (cons (car l) pa) pb (cdr l))
+              (loop pa (cons (car l) pb) (cdr l))))))
+
+  (case (length l)
+    ((0 1) l)
+    ((2) (if (<= (car l) (cadr l))
+             l
+             (list (cadr l) (car l))))
+    (else
+     (let ((pe (car l)))
+       (call-with-values
+           (lambda () (partition-list pe (cdr l)))
+         (lambda (left right)
+           (merge-lists (sort-list left <=) (cons pe (sort-list right <=)))))))))

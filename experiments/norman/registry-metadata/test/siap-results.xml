@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:VOResources
+    xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
+    xmlns:exist="http://exist.sourceforge.net/NS/exist"
+    xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.ivoa.net/xml/VOResource/v0.10 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v0.10/VOResource.xsd http://www.ivoa.net/xml/RegistryInterface/v0.1 http://software.astrogrid.org/schema/registry/RegistryInterface/v0.1/RegistryInterface.xsd "
+                 >
+
+    <vor:Resource
+        xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+        xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
+        xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+        xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+        xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3"
+        xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+        xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"
+        xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2"
+        xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
+        xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+        created="2004-01-06T18:55:10Z"
+        status="deleted"
+        updated="2004-04-21T18:56:29Z"
+        xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd http://www.ivoa.net/xml/SIA/v0.7 http://software.astrogrid.org/schema/vo-resource-types/SIA/v0.7/SIA.xsd "
+        xsi:type="sia:SimpleImageAccess">
+        <title>The IRAS Galaxy Atlas</title>
+        <shortName>IGA</shortName>
+        <identifier>ivo://irsa.ipac.caltech.edu/IGA</identifier>
+        <curation>
+            <publisher ivo-id="ivo://irsa.ipac/IRSA">NASA/IPAC Infrared Science Archive</publisher>
+            <creator>
+                <name>HIRES Project at IRSA</name>
+            </creator>
+            <contact>
+                <name>Anastasia Alexov</name>
+                <email>aalexov@ipac.caltech.edu</email>
+            </contact>
+        </curation>
+        <content>
+            <description>The IRAS Galaxy Atlas (IGA) is a high resolution image atlas of the Galactic plane at 60 and 100 microns, it has been produced using the IRAS satellite data. The HIRES program was developed by the Infrared Processing and Analysis Center (IPAC) to produce high resolution (~ 1 arcmin) images from IRAS data using the Maximum Correlation Method (H.H. Aumann, J.W. Fowler and M. Melnyk, 1990,  Astronomical Journal, 99, 1674).</description>
+            <referenceURL>http://irsa.ipac.caltech.edu/data/IGA</referenceURL>
+            <type>Archive</type>
+            <contentLevel>Research</contentLevel>
+        </content>
+        <interface qtype="GET" xsi:schemaLocation="" xsi:type="vs:ParamHTTP">
+            <accessURL use="base">http://irsa.ipac.caltech.edu/cgi-bin/Atlas/nph-atlas?mission=IGA&amp;hdr_location=%5CIGADataPath%5C&amp;SIAP_ACTIVE=1&amp;collection_desc=The+IRAS+Galaxy+Atlas+%28IGA%29&amp;</accessURL>
+            <vs:resultType>application/xml+votable</vs:resultType>
+        </interface>
+        <vs:facility>Infrared Astronomical Satellite  (IRAS)</vs:facility>
+        <coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+            <spectral>
+                <waveband>Infrared</waveband>
+            </spectral>
+        </coverage>
+        <capability xmlns="http://www.ivoa.net/xml/SIA/v0.7">
+            <imageServiceType>Atlas</imageServiceType>
+            <maxQueryRegionSize>
+                <long>12.5</long>
+                <lat>12.5</lat>
+            </maxQueryRegionSize>
+            <maxImageExtent>
+                <long>12.5</long>
+                <lat>12.5</lat>
+            </maxImageExtent>
+            <maxImageSize>
+                <long>1000</long>
+                <lat>1000</lat>
+            </maxImageSize>
+            <maxFileSize>1500000</maxFileSize>
+            <maxRecords>3000</maxRecords>
+        </capability>
+    </vor:Resource>
+</vor:VOResources>

@@ -37,4 +37,4 @@ all-schemas.rdfs: $(AUTOCONVERTIBLE:=.rdfs)
 	$(CWM) -pipe -rdf $(AUTOCONVERTIBLE:=.rdfs) >$@.tmp && mv $@.tmp $@
 
 clean:
-	rm -f $(AUTOCONVERTIBLE:=.rdfs)
+	rm -f $(AUTOCONVERTIBLE:=.rdfs) all-schemas.*
