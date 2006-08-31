@@ -1,63 +1,12 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
-
+<project xmlns:j="jelly:core"   xmlns:wb="workbench" >
+   
   		<goal name="setup">
 			<j:set var="ifBuildingASR" value="java.lang.Object" />
 			<j:set var="ifBuildingACR" value="true" />			
 		</goal>
-	<goal name="astrogrid-build-site" prereqs="site" />
-	
-	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
-		<attainGoal name="site:sshdeploy" />
-	</goal>
-	
 
 	
-        <goal name="define-stylesheet">
-             <jsl:stylesheet var="patch">
-                <jsl:template match=
-		  "jar|security|extension|application-desc|j2se|property|title|vendor|description|homepage|icon|offline-allowed|shortcut|association|related-content">
-                        <jxml:copyOf select="." />
-                </jsl:template>
-		<jsl:template match="information">
-			<jxml:copy>
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/desktop</jxml:attribute>
-					<jxml:element name="title">Hiome Pages</jxml:element>
-				</jxml:element>	
-			
-				<jsl:applyTemplates select="@* | node()" />
-			</jxml:copy>
-		</jsl:template>
-                <jsl:template match="jnlp">
-					<jxml:copy>
-  								<jsl:applyTemplates select="@* | information | security | resources "/>																
-								<jxml:copyOf select="application-desc" />
-                            </jxml:copy>
-                </jsl:template>
-				
-				<jsl:template match="@*">
-                                <jxml:copy>
-                                        <jsl:applyTemplates select="@* | node()" />
-                                </jxml:copy>				
-				</jsl:template>
-                <jsl:template match="resources">
-                        <jxml:copy>
-                                <jxml:element name="extension">
-                                        <jxml:attribute name="name">Astrogrid Workflow CDK${jnlpVersion}</jxml:attribute>
-                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
-                                </jxml:element>
-                                <jxml:element name="extension">
-                                        <jxml:attribute name="name">CEA Server${jnlpVersion}</jxml:attribute>
-                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}cea-server/cea-server.jnlp</jxml:attribute>
-                                </jxml:element>         
-                                <jsl:applyTemplates select="@* | node()" />
-                        </jxml:copy>
-                </jsl:template>
-             </jsl:stylesheet>
-        </goal>
-
-
 </project>
 

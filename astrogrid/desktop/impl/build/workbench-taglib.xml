@@ -1,0 +1,401 @@
+<?xml version="1.0" ?>
+<project xmlns:j="jelly:core" xmlns:define="jelly:define"    xmlns:artifact="artifact" xmlns:u="jelly:util">
+<!-- 
+    this taglib thingie (mostly a set of hooks) 
+    captures commonality between the 4 different impl projects
+    
+    it's included in each project - which really simplifies the project.xml themselves.
+ -->
+
+
+	
+<!--  hooks -->
+	
+	<!--  record version infromation. -->
+	<postGoal name="java:jar-resources">
+	<echo>Setting Version Information</echo>
+		<echo file="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/astrogrid.version">
+astrogrid.desktop.version=${astrogrid.desktop.version}
+astrogrid.build.date=${maven.jar.manifest.attribute.BuildDate}
+astrogrid.build.location=${maven.jar.manifest.attribute.BuildLocation}
+astrogrid.build.by=${user.name}
+astrogrid.build.jdk=${java.version}
+			</echo>	
+	</postGoal>
+	
+	
+
+<!-- javaapp  - only used for convenience now, not for final packaging 
+
+  packaging controlled by properties 'uberjar.bundle' and 'bundle.later'
+-->		
+	<postGoal name="javaapp:jar">
+	<!-- do the final tweaks to the javaapp process 
+	splice in any 'stripped' jars, plus any other that need to be added in later -->
+	<!-- splice in any problematic jars -->	
+   <j:forEach var="lib" items="${pom.artifacts}">
+      <j:set var="dep" value="${lib.dependency}"/>     
+      <j:if test="${dep.getProperty('bundle.later')=='true'}">
+      	<echo>Splicing in ${lib.name}</echo>
+		<jar update="true" destfile="${maven.javaapp.final.name}"
+			filesetmanifest="skip" duplicate="fail">
+			<zipfileset src="${lib.path}" />
+		</jar>
+	  </j:if>
+    </j:forEach>
+	</postGoal>
+	
+<!--  
+	real packaging routine. - hangs off back of 'dist' goal-
+-->
+
+
+
+<!--  makes an all-in-one executable jar - replacement for javaapp goal -->
+  <goal name="app-jar"
+  description="build an all-in-one executable jar: depends on dist:build-bin">
+  <echo>Building Application Jar: ${maven.final.name}-app.jar</echo>
+  <!--  first extract the existing manifest -->
+	<unjar src="${maven.dist.bin.assembly.dir}/${maven.final.name}.jar"
+		dest="${maven.dist.bin.assembly.dir}">
+		<patternset>
+			<include name="META-INF/MANIFEST.MF" />
+		</patternset>
+	</unjar>
+	<!-- then merge all jars together, splicing in the previously extracted manifest, 
+	and a main-class attribute. -->
+	<jar destfile="${maven.build.dir}/${maven.final.name}-app.jar"
+	 	filesetmanifest="skip" update="false" duplicate="preserve"
+	 	manifest="${maven.dist.bin.assembly.dir}/META-INF/MANIFEST.MF">
+	 	<!--  generate a zipfileset for each jar in the folder - necessary to do it this way so I can specify excludes for 'within' the zipfileset-->
+	 	<u:file var="d" name="${maven.dist.bin.assembly.dir}" />
+	 	<j:forEach var="j" items="${d.listFiles()}">
+	 		<j:if test="${j.getAbsolutePath().endsWith('.jar')}">
+		 		<zipfileset src="${j.getAbsolutePath()}" 
+		 		excludes="META-INF/*.SF META-INF/*.RSA META-INF/*.DSA META-INF/INDEX.LIST doc/** **/*.wsdd **/*.wsdl **/*.xsd **/*.txt log4j.properties simplelog.properties" />
+	 		</j:if>
+	 	</j:forEach>
+		<manifest>
+			<attribute name="Main-Class" value="${maven.javaapp.mainclass}" />
+		</manifest>
+	</jar>  
+  </goal>	
+
+
+
+<!-- package as an osx app - build only works on osx -->
+	<goal name="osx"  
+	description="builds an osx-specific app. depends on dist:build-bin, and requires osx to run">
+	  <echo>Building OSX Install Image: ${maven.final.name}.dmg</echo>
+	<!--  remove if already there - otherwise task won't proceed -->
+	<delete dir="${maven.build.dir}/osx" quiet ="true" />
+	<mkdir dir="${maven.build.dir}/osx"	/>
+    <jarbundler 
+    	dir="${maven.build.dir}/osx"
+    	name="${pom.name}"
+         version="${astrogrid.desktop.version}"
+         bundleid="${maven.javaapp.mainclass}"
+         jvmversion="1.4+"
+         icon="${osx.icon}"         
+         aboutmenuname="${pom.name}"
+         smalltabs="true"
+    	mainclass="${maven.javaapp.mainclass}"
+    	screenmenu="true"
+    	vmoptions="-Xmx512m"
+    	jars="${maven.build.dir}/${maven.final.name}-app.jar">
+    </jarbundler>
+    <!--  package it up as a osx disk image.-->
+    <exec executable="/usr/bin/hdiutil" dir="${maven.build.dir}" os="Mac OS X">
+      <arg value="create"/>
+      <arg value="-srcfolder"/>
+      <arg value="${maven.build.dir}/osx"/>
+      <arg value="-volname"/>
+      <arg value="${maven.final.name}"/>
+      <arg value="-ov"/>
+      <arg value="${maven.final.name}.dmg"/>
+    </exec>    
+</goal>
+
+
+
+<!--  try running stripped - testing / development only -->
+<goal name="run" 
+	description="run the application from within the dist/bin directory - useful for testing stripping. Depends on dist:build-bin"
+	>
+	<echo>Running ${maven.javaapp.mainclass}</echo>
+	<java classname="${maven.javaapp.mainclass}"
+		fork="true">
+		<classpath>
+			<fileset dir="${maven.dist.bin.assembly.dir}" >
+				<include name="*.jar" />
+			</fileset>
+		</classpath>
+	</java>
+</goal>
+
+<goal name="run-jar"
+	description="run the application from within the dist/bin directory - useful for testing stripping. Depends on dist:build-bin"
+	>
+	<echo>Running ${maven.javaapp.mainclass}</echo>
+	<java classname="${maven.javaapp.mainclass}"
+		fork="true">
+<!--  		<arg value="-debug" />-->
+		<classpath>
+			<pathelement location="${maven.build.dir}/${maven.final.name}-app.jar" />
+			<pathelement location="debug" />
+		</classpath>
+	</java>
+</goal>
+
+
+<goal name="webstart" 
+	description="build zip containing jnlp and appllication. depends on dist:build-bin">
+  <echo>Building Webstart Zip: ${maven.final.name}-jnlp.zip</echo>
+	<mkdir dir="${maven.build.dir}/jnlp" />
+<!--  copy requirements into dir -->
+	<copy todir="${maven.build.dir}/jnlp">
+		<fileset dir="${basedir}/src/webapp" />
+		<fileset dir="${maven.build.dir}" includes="${maven.final.name}-app.jar" />
+	</copy>
+<!-- write out jnlp file - from inline template. -->
+	<j:file name="${maven.build.dir}/jnlp/${pom.artifactId}.jnlp" omitXmlDeclaration="false"  trim="true" xmlns="dummy">
+	<jnlp href="${pom.artifactId}.jnlp" spec="1.0+" 
+	codebase="http://software.astrogrid.org/jnlp/${pom.artifactId}">
+	<information>
+		<title>${pom.name}</title>
+		<vendor>AstroGrid Consortium</vendor>
+		<homepage href="http://www.astrogrid.org/desktop" />
+		<icon href="logo.gif" />
+		<icon href="plastic-splash.png" kind="splash" />
+		<description>${pom.description}</description>
+		<description kind="short">${pom.shortDescription}</description>
+		<description kind="tooltip">${pom.description}</description>
+		<offline-allowed />
+	</information>
+	<security>
+		<all-permissions />
+	</security>
+	<resources>
+		<j2se version="14+" max-heap-side="512m" initial-heap-size="32m" />
+		<jar href="${maven.final.name}-app.jar" />
+		<extension href="/jnlp/desktop-integration/desktop-integration.jnlp" name="Java Desktop Integration Components" />
+	</resources>
+	<application-desc main-class="${maven.javaapp.mainclass}" />
+</jnlp>
+	</j:file>
+	<zip destfile="${maven.build.dir}/${maven.final.name}-jnlp.zip" 
+		basedir="${maven.build.dir}/jnlp"
+		update="false"/>
+</goal>
+
+	
+	<!-- strip unused classes, and optimize the rest
+	
+	load of rules here - some not relevant to smaller packagings - but this isn't a problem,
+	as jars aren't available in these cases.
+	-->
+<goal name="jar-strip"
+	description="strip and optimize the jars. depends on dist:build-bin">
+	<echo>Stripping Jar: ${maven.final.name}-app.jar</echo>
+	<!--  very twitchy about whitespace inside loops and between tags. - need to pass in args directly for it to work. -->
+    <proguard  printseeds="false"
+    	skipnonpubliclibraryclasses="true"
+    	skipnonpubliclibraryclassmembers="true"
+    	ignorewarnings="true" warn="false"
+    	shrink="true" optimize="true" obfuscate="false" >
+     	-injars ${maven.build.dir}/${maven.final.name}.jar
+     	<j:forEach var="lib" items="${pom.artifacts}">
+    		<j:set var="dep" value="${lib.dependency}"/>
+    		<j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') == 'true'}" trim="false">
+ 		-injars ${lib.path}
+ 		</j:if>
+ 		</j:forEach> 
+    	-outjars ${maven.dist.bin.assembly.dir}
+    	<!--  list of libs to preserve -->
+     	<j:forEach var="lib" items="${pom.artifacts}">
+    		<j:set var="dep" value="${lib.dependency}" />
+    		<j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') != 'true'}" trim="false">
+    		-libraryjars ${lib.path}
+    	</j:if>
+    	</j:forEach>
+    	-libraryjars ${sun.boot.class.path} <!--  Sun implementation dependent - but can't find any other way round. ${java.home}/lib/rt.jar don't work on OSX -->
+  	<!--  main classes -->	
+    	-keep public class ${maven.javaapp.mainclass}* {
+    		public static void main(java.lang.String[]);
+    	}	
+  	<!--  keep all astrogrid desktop classes visibly the same from outside - necessary for hivemind assembly -->
+    	-keep public class org.astrogrid.desktop.** {
+    		public protected *;
+    		}	
+	<!--  leave public class and method names unadjusted, for all required classes and methods -->
+	-keepnames public class * {
+		public *;
+		}
+    	<!--  preserve naming and serialization code  , in any serializable classes that are required -->
+	-keepnames class * implements java.io.Serializable
+	-keepclassmembers class * implements java.io.Serializable {
+			*;
+    		static final long serialVersionUID;
+    		private void writeObject(java.io.ObjectOutputStream);
+    		private void readObject(java.io.ObjectInputStream);
+    		java.lang.Object writeReplace();
+    		java.lang.Object readResolve();
+		}		
+	<!--  preserve commons logging factory -->
+	-keep class org.apache.commons.logging.impl.LogFactoryImpl {
+		public *;
+		}
+	-keep class org.apache.commons.logging.impl.Log4JLogger {
+		public *;
+		}
+	-keep class org.apache.commons.logging.Log {
+		public  *;
+	}	
+	<!--  fallback - and used within plastic hub variant. -->
+	-keep class org.apache.commons.logging.impl.SimpleLog {
+		public *;
+	}
+	-keep class org.apache.log4j.ConsoleAppender {
+		public *;
+		}
+	-keep class org.apache.log4j.PatternLayout {
+		public *;
+		}		
+	-keep class org.apache.log4j.Category {
+		public *;
+	}		
+    	<!--  things required from ag commons -->
+    	-keep public class org.astrogrid.common.namegen.InMemoryNameGen {
+	    	public *;
+    	}
+		<!--  preserve UI look and feel - always dynamically loaded-->			
+	-keep class com.l2fprod.**.* extends javax.swing.plaf.ComponentUI {
+    	public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
+	}    
+	<!-- cea components-->
+	-keep class org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever {
+		public *;
+	}	
+	-keep class org.astrogrid.applications.manager.DefaultQueryService {
+		public *;
+		}
+	<!--  security -->
+	-keep class org.globus.myproxy.MyProxy {
+		public *;
+		}	
+	<!--  don't know where the reference to the missing dep is in all this 
+	- so keep all this code for now, and use it as root for the globus jars. -->	
+	-keep class org.astrogrid.community.**.* {
+		public *;
+	}
+	-keep class org.astrogrid.security.**.* {
+		public *;
+		}
+	-keep class org.apache.ws.security.**.* {
+		public *;
+		}
+	<!--  jdbm -->
+	-keep class jdbm.recman.Provider {
+		public *;
+		}
+	<!--  groovy -->
+	-keep class groovyjarjarantlr.CommonToken {
+		public *;
+		}
+		<!--  adql beans - keep as is. -->		
+	-keep class org.astrogrid.adql.**.* {
+		*;
+		}
+	<!--  xmlbeans -->
+	-keep class org.apache.xmlbeans.impl.schema.SchemaTypeLoaderImpl {
+		public *;
+		}
+	-keep class org.apache.xmlbeans.impl.schema.BuiltinSchemaTypeSystem {
+		public *;
+		}	
+	-keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemCompiler {
+		public *;
+	}
+	-keep class org.apache.xmlbeans.impl.store.Locale {
+		public *;
+		}
+	-keep class org.apache.xmlbeans.impl.schema.PathResourceLoader {
+		public *;
+		}	
+	-keep class org.apache.xmlbeans.impl.store.Path {
+		public *;
+		}
+	-keep class org.apache.xmlbeans.impl.store.Query {
+		public *;
+		}	
+	-keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl {
+		public *;
+		}
+	<!--  castor beans - keep these classes -->
+	-keep class org.astrogrid.workflow.beans.**.* {
+		*;
+		}
+	-keep class org.astrogrid.applications.beans.**.* {
+		*;
+		}		
+	<!--  castor - preserve all for the moment, else seems to fail - but include in strip path, so dependencies are processed. -->
+	-keep class org.exolab.castor.**.* {
+		*;
+		}
+	<!--  for jxpath (used within castor) -->
+	-keep public class * implements org.apache.commons.jxpath.ri.model.NodePointerFactory {
+		public *;
+		}
+	-keep class org.apache.commons.jxpath.ri.JXPathContextFactoryReferenceImpl {
+		public *;
+		}
+	<!--  axis, and dependent jars--> 
+	-keep class org.apache.axis.transport.http.HTTPSender {
+		public *;
+		}
+	-keep class org.apache.axis.transport.local.LocalSender {
+		public *;
+	}
+	-keep class org.apache.axis.transport.java.JavaSender {
+		public *;
+	}
+	-keep class * implements org.apache.axis.EngineConfiguration{
+		public *;
+	}
+	-keep class org.apache.axis.configuration.DefaultEngineConfigurationFactory {
+		public *;
+	}
+	-keep class org.apache.axis.configuration.EngineConfigurationFactoryDefault {
+		public *;
+	}
+	-keep class * implements org.apache.axis.components.net.SocketFactory {
+		public *;
+	}
+    </proguard>	
+	</goal>
+	
+<define:taglib uri="workbench">
+	<!--  simple tag that signs the build product. 
+	
+	don't think there was much point doing this as a taglib - seemed a good idea at the time,
+	but might as well be another goal.
+	-->
+	<define:tag name="sign">
+	<echo>Signing Jar: ${maven.final.name}-app.jar</echo>
+<signjar alias="astrogrid" storepass="qwertyuiop" jar="${maven.build.dir}/${maven.final.name}-app.jar"/>
+	</define:tag>
+</define:taglib>
+
+<!--  definitions of custom ant tasks. -->
+
+	<!--  strips unused classes and methods from a jar -->
+	<taskdef resource="proguard/ant/task.properties"
+      classpathref="maven.dependency.classpath"/>
+      
+      <!--  packages jars into an OSX application bundle -->
+	<taskdef name="jarbundler" 
+		classname="com.loomcom.ant.tasks.jarbundler.JarBundler"
+         classpathref="maven.dependency.classpath" />
+
+	
+</project>

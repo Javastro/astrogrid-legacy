@@ -1,54 +1,24 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml">
-	
+<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml" xmlns:wb="workbench" >
+
+	<!--  indicates we're building the workbench -->
 	  	<goal name="setup">
 			<j:set var="ifBuildingASR" value="java.lang.Object" />
 			<j:set var="ifBuildingACR" value="java.lang.Object" />			
 		</goal>
 	
-        <goal name="define-stylesheet">
-             <jsl:stylesheet var="patch">
-                <jsl:template match=
-		  "jar|security|extension|application-desc|j2se|property|title|vendor|description|homepage|icon|offline-allowed|shortcut|association|related-content">
-                        <jxml:copyOf select="." />
-                </jsl:template>
-		<jsl:template match="information">
-			<jxml:copy>
+	<!--  generates an anouncement.txt after all other things have been built -->
+	<postGoal name="dist:build-bin">
+		<attainGoal name="announcement:generate" />
+	</postGoal>
 
-				<jxml:element name="related-content">
-					<jxml:attribute name="href">http://www.astrogrid.org/desktop</jxml:attribute>
-					<jxml:element name="title">Hiome Pages</jxml:element>
-				</jxml:element>					
-				
-				<jsl:applyTemplates select="@* | node()" />
-			</jxml:copy>
-		</jsl:template>
-                <jsl:template match="jnlp">
-					<jxml:copy>
-  								<jsl:applyTemplates select="@* | information | security | resources "/>																
-								<jxml:copyOf select="application-desc" />
-                            </jxml:copy>
-                </jsl:template>
-				
-				<jsl:template match="@*">
-                                <jxml:copy>
-                                        <jsl:applyTemplates select="@* | node()" />
-                                </jxml:copy>				
-				</jsl:template>
-                <jsl:template match="resources">
-                        <jxml:copy>
-                                <jxml:element name="extension">
-                                        <jxml:attribute name="name">Astrogrid Script CDK${jnlpVersion}</jxml:attribute>
-                                        <jxml:attribute name="href">http://software.astrogrid.org/jnlp/${subPath}astrogrid-cdk-scripting/astrogrid-cdk-scripting.jnlp</jxml:attribute>
-                                </jxml:element>
-                                <jsl:applyTemplates select="@* | node()" />
-                        </jxml:copy>
-                </jsl:template>
-             </jsl:stylesheet>
-        </goal>
+<!--  site deployment. -->
+	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+		<attainGoal name="site:sshdeploy" />
+	</goal>
 
-<!-- testing goals -->
+<!-- stand-alone testing goals -->
 
 <goal name="unit-tests" description="cleans, runs all unit tests, produce results and coverage report">
 	<!-- run this load of tests in same vm, for speed -->
@@ -58,7 +28,9 @@
 		<j:arg value="**/*UnitTest.java" />
 	</j:invoke>
 	<attainGoal name="clean" />
-	<attainGoal name="clover" />
+	<!--  todo find a suitabe replacement for this. 
+	<attainGoal name="clover" /> -->
+	<attainGoal name="test" />
 	<attainGoal name="full-junit-report" />
     <attainGoal name="produce-baseline-summary" />	
     <attainGoal name="annotate-report" />	
@@ -95,19 +67,19 @@
 	<attainGoal name="integration-tests" />
 </goal>
 
+<!-- todo add a packaging  acceptance test here too -->
+
 <goal name="findbugs-report" description="generate a find bugs report">
 	<attainGoal name="findbugs" />
 	<attainGoal name="xdoc:transform" />
 </goal>
 
-
 	<!-- 
-	
-	extra junit reports
-	
+	extra junit reporting	
 	copied from auto integration project.
 	-->
-<postGoal name="maven-junit-report-plugin:report"><!-- basically a hook into regression tests -->
+<postGoal name="maven-junit-report-plugin:report">
+	<!-- basically a hook into regression tests -->
         <attainGoal name="full-junit-report" />
         <attainGoal name="produce-baseline-summary" />
         <attainGoal name="annotate-report" />
@@ -133,16 +105,6 @@
                 <include name="TESTS-TestSuites-Annotated.xml" />
                 <param name="output.dir" expression="${basedir}/target/docs/junit-full" />
         </style>
-
-      <!-- now the workflow documents-->
-<!--
-      <style basedir="${basedir}/target/docs/junit-full" destdir="${basedir}/target/docs/junit-full"
-        style="${basedir}/build/workflow.xsl">
-                <include name="**/*-workflow.xml" />
-        </style>
-        
--->
-
 </goal>
 
 
@@ -278,76 +240,6 @@
 </goal>
 
 
-<goal name="jar-strip" prereqs="jar:jar">
-	<taskdef name="yguard"
-      classname="com.yworks.yguard.YGuardTask"
-      classpathref="maven.dependency.classpath"/>
-      <j:set var="shrinkDir" value="${basedir}/target/shrink" />
-      <mkdir dir="${shrinkDir}" />
-    <yguard>
-    <!--  list of libs to shrink -->
-    	<j:forEach var="lib" items="${pom.artifacts}">
-    		<j:set var="dep" value="${lib.dependency}"/>
-    		<j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') == 'true'}">
-    		<inoutpair in="${lib.path}" 
-    		out="${shrinkDir}/${lib.name}" />
-    	</j:if>
-    	</j:forEach>
-    	<!--  list of libs to preserve -->
-    	<externalClasses>
-    	<j:forEach var="lib" items="${pom.artifacts}">
-    		<j:set var="dep" value="${lib.dependency}"/>
-    		<j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') != 'true'}">
-    		<pathelement location="${lib.path}" />
-    	</j:if>
-    	</j:forEach>    	
-    	</externalClasses>
-    	<!--  keep debugging for all astrogrid classes. -->
-    	<attribute name="SourceFile, LineNumberTable, LocalVariableTable, Deprecated">
-    		<patternset>
-    			<include name="org.astrogrid.**" />
-    		</patternset>
-    	</attribute>
-    	<shrink createStubs="true">
-    		<!--  entry points - anything reachable from this is preserved. -->
-    		<entrypointjar name="${basedir}/target/workbench-${astrogrid.desktop.version}.jar" />
-    		<keep>
-    			<class classes="private" methods="private" fields="private">	
-    				<!--  also preserve the following classes -->
-    				<patternset>
-    					<include name="org.astrogrid.acr.**" />
-    					<include name="org.votech.**" />
-    					<include name="org.apache.hivemind.**" />
-    					<include name="org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary"/>
-    					<include name="org.astrogrid.applications.manager.**" />
-    					<include name="org.apache.commons.collections.map.ListOrderedMap" />
-    					<include name="javax.servlet.ServletInputStream" />
-    				</patternset>
-    			</class>
-    		</keep>
-    	</shrink> 	
-    </yguard>
-</goal>
-
-<goal name="run-stripped">
-
-	<java classname="org.astrogrid.Workbench"
-		fork="true">
-		<classpath>
-			<pathelement
-				location="${basedir}/target/workbench-${astrogrid.desktop.version}.jar" />
-			<fileset dir="${basedir}/target/shrink">
-				<include name="**/*.jar" />
-			</fileset>
-			<j:forEach var="lib" items="${pom.artifacts}">
-				<j:set var="dep" value="${lib.dependency}" />
-				<j:if test="${dep.getProperty('strip') != 'true'}">
-					<pathelement location="${lib.path}" />
-				</j:if>
-			</j:forEach>
-		</classpath>
-	</java>
-</goal>
 	
 </project>
 

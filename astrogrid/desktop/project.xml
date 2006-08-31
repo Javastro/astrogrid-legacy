@@ -6,34 +6,33 @@
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Top Level Project for AR / Workbenchs</name>
         <description>
-        (see also http://www.astrogrid.org/desktop/contributing/using-eclipe )
-        General Build instructions.
-        requires the astrogrid/aggregate and astrogrid/maven-base projects to be checked 
-        out adjacent to this folder.
-        
+        Workbench and AR requires the astrogrid/aggregate and astrogrid/maven-base projects to be checked out adjacent to this folder.
+      	---
+        You may wish to increase the memory maven runs with. create a '~/.mavenrc' which contains the line 
+        	MAVEN_OPTS="-Xmx1024m"
+        ---
 		Publisher should just run the goals listed in this project - no need to run goals in individual sub-projects.
 		E.g. to build and publish new suite of AR:
-		1 Check all changes into CVS
-		2. Run:
-		% maven astrogrid-clean
-		3. Edit astrogrid.destop.version in maven-base/project.properties
-		4. Run: 
-		% maven astrogrid-install-artifact
-		% maven build-site
-		% maven -Dmaven.username=maven publish-jnlp
-		% maven astrogrid-clean astrogrid-deploy-artifact
-	
-	
+		1. % maven astrogrid-clean
+		2. Edit astrogrid.destop.version in maven-base/project.properties
+		3. % maven astrogrid-build-artifact
+		---
+		Build products are then left in ${basedir}/target/artifacts directory, from where they 
+		(for now) have to be uploaded to the plone site by hand.
+		---
 		To setup workbench for development in eclipse:
-		run steps 1-3 above.
-		4. Run:
-		% maven install-materials
-		5. cd to 'impl', Run: 
-		% maven eclipse
-		6. In eclipse select 'File > Import > Existing Projects into Workspace', and navigate to the impl directory.
-		This works best in Eclipse >= 3.2.0 - although it's still in beta, it works fine.
-		
+		run steps 1-2 above.
+		3. % maven install-materials
+		4. % cd impl; maven eclipse
+		5. In Eclipse select 'File > Import > Existing Projects into Workspace', and navigate to the impl directory.
+		This works best in Eclipse >= 3.2 and above.
+		---
 		If you need to edit the public api, repeast steps 5,6 for the 'api' directory
+		---
+		For instructions on testing and building project documentation, run 
+		% cd impl; maven -u
+		---
+        (see also http://www.astrogrid.org/desktop/contributing/using-eclipe )		
 		 </description>
         <shortDescription>Astro Runtimes</shortDescription>
 

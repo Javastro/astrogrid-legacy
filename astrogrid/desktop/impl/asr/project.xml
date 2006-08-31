@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 
-    <extend>${basedir}/../../../aggregate/cdk/workflow/project.xml</extend>
+    <extend>${basedir}/../../../aggregate/cdk/script/project.xml</extend>
         <artifactId>asr</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Astro Runtime (Server version)</name>
@@ -39,6 +39,7 @@
                                 <includes>
                                         <include>**/hivemind/*.xml</include>
                                         <include>astrogrid.properties</include>
+                                        <include>default-log4j.properties</include>
                                         <include>org/astrogrid/desktop/modules/system/transformers/*.xsl</include>
                                 </includes>
                         </resource>
@@ -51,6 +52,13 @@
                 </resources>
         </build>
 
+        <!--  defines reports to place in the distro -->
+    <reports>
+        <report>maven-javadoc-plugin</report>
+        <report>maven-jxr-plugin</report>
+        <report>maven-license-plugin</report>
+    </reports>
+
         <dependencies>
 
 
@@ -61,8 +69,8 @@
 		<artifactId>acr-interface</artifactId>
 		<version>${astrogrid.desktop.version}</version>
 		<properties>
-			<jnlp.jar>true</jnlp.jar>
 			<dist.bundle>true</dist.bundle>		
+			<strip>false</strip>
 		</properties>
 	</dependency>
 
@@ -72,89 +80,47 @@
 		<version>0.4.1</version>
                         <url>http://plastic.sourceforge.net</url>
 		<properties>
-			<jnlp.jar>true</jnlp.jar>
-			<dist.bundle>true</dist.bundle>			
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>			
 		</properties>						
    </dependency>		
 	
-	<!-- leave the ag security lib inline for now, until things stabilize -->
-        	
+
         	<dependency>
         		<groupId>org.astrogrid</groupId>
         		<artifactId>astrogrid-security</artifactId>
         		<version>${astrogrid.security.version}</version>
         		<type>jar</type>
 	 	<properties>
- 			<jnlp.jar>true</jnlp.jar>
  			<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>
  		</properties>        		
         	</dependency>
-        		
-
-<!-- cea server - jnlp extension -->
-	        <dependency>
-                <groupId>org.astrogrid</groupId>
-                <artifactId>astrogrid-cea-server</artifactId>
-                <version>${astrogrid.applications.version}</version>
-                <properties>
-                <!-- defined in an extension , but inserted by 
-                stylesheet - so we can munge path for alpha, etc -->
-				    <dist.bundle>true</dist.bundle>	
-				    <strip>true</strip> <!--  too much hassle - and still causing problems. -->  
-                </properties>
-        </dependency>
-        
-    <dependency>
-      <artifactId>junit</artifactId>
-      <groupId>junit</groupId>
-      <version>3.8</version>
-      <properties>        
-		    <dist.bundle>true</dist.bundle>	<!--  TODO should this be in the dist? JDT 
-												NWW- yep - required by embedded CEA server, funnily enough.
--->
-		    <strip>false</strip> <!--  causes a build error  -->
-      </properties>
-    </dependency>
-    <!-- Mark Taylor's plaskit, for testing only -->
-     <dependency>
-      <artifactId>plastic</artifactId>
-      <groupId>starlink</groupId>
-      <version>20060808</version>
-      <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
-    </dependency>
- 
-  
-  <!-- storage - jnlp extension -->
+        		  
+  <!-- storage -->
 <dependency>
 	<artifactId>jdbm</artifactId>
 	<groupId>jdbm</groupId>
 	<version>1.0</version>
-	<properties>
-		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		<jnlp.extension.dir>/jnlp/file</jnlp.extension.dir>
-		<jnlp.extension.jnlp>file.jnlp</jnlp.extension.jnlp>			
+	<properties>		
 		<dist.bundle>true</dist.bundle>	
-		<strip>false</strip><!--  uses a provider pattern.  -->		
+		<strip>true</strip>	
 	</properties>
 </dependency>
 
- <!-- jakarta commons - jnlp extension -->
- 
- <!--  issue - this is in the core cdk too. -->
-       <dependency>
-                <artifactId>commons-collections</artifactId>            
-                <groupId>commons-collections</groupId>          
-                <version>3.1</version>          
-                <url>http://jakarta.apache.org/commons/</url>           
-                <properties>       
-			<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-			<jnlp.extension.dir>/jnlp/jakarta-commons</jnlp.extension.dir>
-			<jnlp.extension.jnlp>jakarta-commons.jnlp</jnlp.extension.jnlp>                             
-                        <dist.bundle>true</dist.bundle>
-                        <strip>true</strip>
-                </properties>
-    </dependency> 
-  
+<!--  cache - -->
+	<dependency>
+		<groupId>ehcache</groupId>
+		<artifactId>ehcache</artifactId>
+		<version>1.2.2</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+					    <strip>true</strip>    
+		</properties>
+	</dependency>
+
+ <!-- jakarta commons -->
+
  <dependency>
 	 <artifactId>commons-beanutils</artifactId>
 	 <groupId>commons-beanutils</groupId>
@@ -193,11 +159,9 @@
 	<groupId>hivemind</groupId>
 	<artifactId>hivemind</artifactId>
 	<version>1.1.1</version>
-	<properties>
-		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		<jnlp.extension.dir>/jnlp/jakarta-hivemind</jnlp.extension.dir>
-		<jnlp.extension.jnlp>jakarta-hivemind.jnlp</jnlp.extension.jnlp>			
+	<properties>			
 		<dist.bundle>true</dist.bundle>	
+				 <strip>false</strip> <!--  too precious, not much to remove -->		
 	</properties>
 </dependency>
 <dependency>
@@ -206,6 +170,7 @@
 	<version>1.1.1</version>
 	<properties>
 		<dist.bundle>true</dist.bundle>
+				 <strip>false</strip> <!--  too precious and xml driven -->			
 	</properties>	
 </dependency>
 
@@ -214,7 +179,7 @@
 	<artifactId>javassist</artifactId>
 	<version>3.0</version>
 	<properties>
-			<strip>true</strip>
+				 <strip>false</strip> <!--  not worth stripping. -->	
 		<dist.bundle>true</dist.bundle>	
 	</properties>
 </dependency>
@@ -222,7 +187,7 @@
 	 <id>oro</id>
 	 <version>2.0.7</version>
 	 <properties>
-	 		<strip>true</strip>
+				 <strip>false</strip> <!--  too hard to strip. -->		
 		 <dist.bundle>true</dist.bundle>
 	 </properties>	 
  </dependency>
@@ -235,9 +200,6 @@
 	 <!-- upgrade to 5.1.11 ? -->
 	 <type>jar</type>
 	 <properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/jetty</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>jetty.jnlp</jnlp.extension.jnlp>
 		 <dist.bundle>true</dist.bundle>
 		 <strip>true</strip>
 	 </properties>
@@ -258,7 +220,7 @@
 	    <version>1.0</version>
 	    <properties>
 		    <dist.bundle>true</dist.bundle>	
-		    <strip>false</strip> <!--  breaks -->
+		    <strip>false</strip><!--small and perfectly formed -->
 	    </properties>
 </dependency> 
 <dependency> 
@@ -268,35 +230,56 @@
 	<type>jar</type>
 	<properties>
 		<dist.bundle>true</dist.bundle>		
-		<strip>true</strip>
-			
+		<strip>false</strip><!-- true causes a NPE, and only saves 30K -->
 	</properties>
 </dependency>
 <!-- end of jetty servers -->
 
- <!-- concurrent stuff-->
+    <!-- extra widgets: statusBar and ButtonBar . -->
    <dependency>
         <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-all</artifactId>
-        <!--<version>6.2</version> -->
-        <version>6.5</version>
+        <artifactId>l2fprod-common-buttonbar</artifactId>
+        <version>6.5.1</version> 
 	<properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/gui-basics</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>gui-basics.jnlp</jnlp.extension.jnlp>	
 		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>			
+		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
+		<strip>true</strip>	
+	 </properties>	 	
+    </dependency>
+    
+   <dependency>
+        <groupId>l2fprod</groupId>
+        <artifactId>l2fprod-common-tasks</artifactId>
+        <version>6.5.1</version> 
+	<properties>
+		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
+		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
+		<strip>true</strip>	
+	 </properties>	 	
+    </dependency>   
+    
+       <dependency>
+        <groupId>l2fprod</groupId>
+        <artifactId>l2fprod-common-shared</artifactId>
+        <version>6.5.1</version> 
+	<properties>
+		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
+		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
+		<strip>true</strip>	
 	 </properties>	 	
     </dependency>    
+      
+ <!-- concurrent stuff-->
     <dependency>
 	    <artifactId>concurrent</artifactId>
 	    <groupId>concurrent</groupId>
 	    <version>1.3.4</version>
 	    <properties>
 	    	<!-- add this aftrer the main javaapp process, as a work-around for package capitalization -->
-			<nww.bundle.later>true</nww.bundle.later>
+			<bundle.later>true</bundle.later>
 		    <uberjar.bundle>false</uberjar.bundle>		    
 		    <dist.bundle>true</dist.bundle>
+			<strip>true</strip>    
 	 </properties>	 	    
  </dependency>    
 <!-- security -->
@@ -307,10 +290,8 @@
  	<version>1.2</version>
  	<type>jar</type>
  	<properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/security</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>security.jnlp</jnlp.extension.jnlp> 	
  		<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>
  	</properties>
  </dependency>
  
@@ -321,6 +302,7 @@
  	<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>
  	</properties>
  </dependency>
 
@@ -331,9 +313,10 @@
  	<type>jar</type>
  	<properties>
 	    	<!-- add this aftrer the main javaapp process, as a work-around for package capitalization -->
-			<nww.bundle.later>true</nww.bundle.later>
+			<bundle.later>true</bundle.later>
 		    <uberjar.bundle>false</uberjar.bundle>		  	
  		<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>
  	</properties> 	
  </dependency>
 
@@ -344,6 +327,7 @@
    <type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>
  	</properties>   
  </dependency>
        
@@ -354,6 +338,7 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>
  	</properties>        		
         	</dependency>
         	
@@ -364,6 +349,7 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>	
  	</properties>        		
         	</dependency>
      	<!-- dependencies for signatures -->
@@ -374,23 +360,105 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>
  	</properties>        		
         	</dependency>
+        	
     <!-- crypto provider that myproxy client requires -->
         	<dependency>
         		<groupId>bouncycastle</groupId>
         		<artifactId>bcprov-jdk14</artifactId>
         		<version>129</version>
         		<type>jar</type>
- 	<properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/bouncycastle</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>bouncycastle.jnlp</jnlp.extension.jnlp> 	
+ 	<properties> 	
  		<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>		
  	</properties>        		
         	</dependency>
 
-   
+
+	<dependency>
+		<groupId>xfire</groupId>
+		<artifactId>xfire-core</artifactId>
+		<version>1.2-RC</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		</properties>
+	</dependency>
+	
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+		<version>1.3</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		</properties>		
+	</dependency>
+	
+	<dependency>
+		<groupId>commons-httpclient</groupId>
+		<artifactId>commons-httpclient</artifactId>
+		<version>3.0</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		</properties>		
+	</dependency>
+
+	<dependency>
+		<groupId>jdom</groupId>
+		<artifactId>jdom</artifactId>
+		<version>1.0</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		</properties>		
+	</dependency>
+	
+	<dependency>
+		<groupId>stax</groupId>
+		<artifactId>stax-api</artifactId>
+		<version>1.0.1</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		</properties>		
+	</dependency>
+	
+	<dependency>
+		<groupId>woodstox</groupId>
+		<artifactId>wstx-asl</artifactId>
+		<version>2.9.3</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>false</strip><!--  all spi driven - a nightmare to strip --> 
+		</properties>		
+	</dependency>
+	
+	<dependency>
+		<groupId>activation</groupId>
+		<artifactId>activation</artifactId>
+		<version>1.0.2</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip> 
+		</properties>		
+	</dependency>
+	
+    <!-- table manipulation  -->
+  
+     
+        	<dependency>
+        		<groupId>starlink</groupId>
+        		<artifactId>stilt_astrogrid_convert</artifactId>
+        		<version>1.0</version>
+        		<properties>
+        			<dist.bundle>true</dist.bundle>
+        					    <strip>true</strip>    
+        		</properties>
+        	</dependency>       
  
   <!-- JDIC components - a bit tricky, because of binary nature.. 
 -->
@@ -399,11 +467,9 @@
 	 <groupId>jdic</groupId>
 	 <version>0.9.1</version>
 	 <properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/desktop-integration</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>desktop-integration.jnlp</jnlp.extension.jnlp>
 		 <dist.bundle>true</dist.bundle>
 		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
+		 <strip>true</strip>
 	 </properties>
  </dependency>
  <!--NB: comment out following two when generating dependencies on macosx -->
@@ -435,7 +501,7 @@
   
 
 <!-- used within development only -->
-
+ 
                 <!-- plugins -->
     	         <dependency>
 		            <groupId>maven-plugins</groupId>
@@ -445,25 +511,27 @@
 		            <properties>
 		            	<uberjar.bundle>false</uberjar.bundle>
 		            </properties>
-		        </dependency> 	
-    	       
- <dependency>
-      <groupId>commons-jelly</groupId>
-      <artifactId>commons-jelly-tags-jsl</artifactId>
-      <version>20030211.143151</version>
-		            <properties>
-		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>      
-    </dependency>
-    <dependency>
-      <groupId>commons-jelly</groupId>
-      <artifactId>commons-jelly-tags-xml</artifactId>
-      <version>20030211.142705</version>
-      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
-		            <properties>
-		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>      
-    </dependency>
-		        
+		        </dependency> 
+	<!--  jar shrinking -->
+    	    <dependency>
+	<groupId>proguard</groupId>
+	<artifactId>proguard</artifactId>
+	<version>3.6</version>
+	<properties>
+		<uberjar.bundle>false</uberjar.bundle>
+	</properties>
+</dependency>	         
+<!-- make an OSX app -->
+	<dependency>
+		<groupId>jarbundler</groupId>
+		<artifactId>jarbundler</artifactId>
+		<version>1.4</version><!--  more recent versions don't seem to work
+		 with the version of ant inside maven - and this does the job  -->
+		<properties>
+			<uberjar.bundle>false</uberjar.bundle>
+		</properties>
+		<url>http://informagen.com/JarBundler/</url>
+	</dependency>	        	
+    	      		        
     </dependencies>
 </project>

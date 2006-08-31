@@ -5,7 +5,12 @@
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Workbench</name>
         <description>
-	  AstroGrid Workbench.
+	  This project builds and packages the entire workbench sourcebase, and also contains goals to test and produce reports.
+	  ---
+	  The subprojects hub, asr, acr build and package controlled subsets of the workbench sources  - these are use to create the cut-down versions of the workbench. No testing or reporting is done in those projects.
+	  ---
+	  Testing - run the goals unit-tests, integration-tests or system-tests, etc to exercise the workbench
+	  using different levels of testing
 	</description>
   <packageGroups>
     <packageGroup>
@@ -29,11 +34,15 @@
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
                 <unitTest>
+                <!--  explicitly disable tests here - by using a pattern that will match nothing.
+                		then later, we define our own set of tests to run.
+                 -->
                         <includes>	
                         	<include>matches-nothing</include>							
                         </includes>
                         
 			<excludes>
+				<!--  needed? -->
 			</excludes>
 			
                         <resources>
@@ -67,9 +76,9 @@
                 </resources>
         </build>
 
-		<!--  - defining my own set of reports.
-			as don't want to run all tests, etc, etc. when generating sites.
-			- will have to see if this effects generated jnlp sites too - hope not -->
+		<!--  - definin small set of reports to place in distro.
+			as don't want to run all tests, etc, etc. when generating a project site.
+			 -->
 		<reports>
 			<report>maven-changes-plugin</report>
         <report>maven-javadoc-plugin</report>		
@@ -80,214 +89,74 @@
         <dependencies>
 <!-- help set for workbench -->
 
-	<dependency> <!-- no extension - as liable to change -->
+	<dependency>
 		<groupId>org.astrogrid</groupId>
 		<artifactId>workbench-userdocs-javahelp</artifactId>
 		<version>${astrogrid.desktop.version}</version>
-		<properties>
-			<jnlp.jar>true</jnlp.jar>			
+		<properties>		
 			<dist.bundle>true</dist.bundle>
 			<strip>false</strip>	
 		</properties>
 	</dependency>
 
-    <!-- table manipulation - as an extension -->
-            <dependency>
-                <groupId>starlink</groupId>
-                <artifactId>stil</artifactId>
-                <version>2.3-1</version>
-                <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
-                <properties>
-    			<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-				<jnlp.extension.dir>/jnlp/tables</jnlp.extension.dir>
-				<jnlp.extension.jnlp>tables.jnlp</jnlp.extension.jnlp>
-		    <dist.bundle>true</dist.bundle>		
-		    <strip>true</strip>    
-                </properties>
-        </dependency>
-     
-        	<dependency>
-        		<groupId>starlink</groupId>
-        		<artifactId>stilt_astrogrid_convert</artifactId>
-        		<version>1.0</version>
-        		<properties>
-        			<dist.bundle>true</dist.bundle>
-        					    <strip>true</strip>    
-        		</properties>
-        	</dependency>       
 
-  <!-- libraries needed for workbench gui - extension -->
+  <!-- libraries needed for workbench gui -->
  <dependency>
 	 <groupId>prefuse</groupId>
 	 <artifactId>prefuse</artifactId>
 	 <version>1.0-alpha</version>
 	 <type>jar</type>
 	 <properties>
-			<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		<jnlp.extension.dir>/jnlp/gui-workbench</jnlp.extension.dir>
-		<jnlp.extension.jnlp>gui-workbench.jnlp</jnlp.extension.jnlp>
 		 <dist.bundle>true</dist.bundle>		
-		 <strip>false</strip><!--  don't strip this one - breaks it.-->
+		 <strip>${strip.prefuse}</strip>  
 	 </properties>
  </dependency>
-
- <dependency>
- 	<artifactId>jcalendar</artifactId>
- 	<groupId>flib</groupId>
- 	<version>1.1.1</version>
- 	<properties>
- 		<dist.bundle>true</dist.bundle>
- 		<strip>true</strip>
- 		</properties>
- </dependency>
- <!-- groovy - extension -->
+ 
+<dependency>
+	<artifactId>jcalendar</artifactId>
+	<groupId>flib</groupId>
+	<version>1.1.1</version>
+	<properties>		
+		<dist.bundle>true</dist.bundle>
+			    <strip>true</strip>    	                  
+	</properties>
+</dependency>  	
+	
+	<!-- groovy -->
 	<dependency>
 	 <groupId>groovy</groupId>
 	 <artifactId>groovy-all</artifactId>
-	 <version>1.0-jsr-04</version>
+	 <version>1.0-jsr-06</version>
 	 <type>jar</type>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
-		 		    <strip>true</strip>    			
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/scripting-groovy</jnlp.extension.dir>
-	<jnlp.extension.jnlp>scripting-groovy.jnlp</jnlp.extension.jnlp>
+		 		    <strip>true</strip>    
 	 </properties>
     </dependency>
     
- <!-- vospec as plugin
-   - temporary extensioin, until plastic version is ready -->
+ <!-- vospec as plugin - temporary bundled untill we can replace with a plastic version -->
 	<dependency>
 		<groupId>esavo</groupId>
 		<artifactId>vospec</artifactId>
 		<version>1.1</version>
 		  <properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/esavo-vospec</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>esavo-vospec.jnlp</jnlp.extension.jnlp>
 		 <dist.bundle>true</dist.bundle>
-		 <strip>false</strip>	<!--  breaks the stripping - and is probablyu compressed already -->
+		 <strip>false</strip>	<!--  treat it as a black box -->
 	 </properties>
 	</dependency>   
 
-<!--  cache trial -->
-	<dependency>
-		<groupId>ehcache</groupId>
-		<artifactId>ehcache</artifactId>
-		<version>1.2.2</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-					    <strip>true</strip>    
-		</properties>
-	</dependency>
-<!--
-  xfire trial - need to copy all these across into global repo later.
-  
-  todo - make a jnlp extenion, etc etc.
--->
-	<dependency>
-		<groupId>xfire</groupId>
-		<artifactId>xfire-core</artifactId>
-		<version>1.2-RC</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-			<strip>true</strip>
-		</properties>
-	</dependency>
-	
-	<dependency>
-		<groupId>commons-codec</groupId>
-		<artifactId>commons-codec</artifactId>
-		<version>1.3</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-			<strip>false</strip> <!--  vanishes completely - odd -->
-		</properties>		
-	</dependency>
-	
-	<dependency>
-		<groupId>commons-httpclient</groupId>
-		<artifactId>commons-httpclient</artifactId>
-		<version>3.0</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-			<strip>true</strip> <!--  vanishes completely - odd -->
-		</properties>		
-	</dependency>
-
-	<dependency>
-		<groupId>jdom</groupId>
-		<artifactId>jdom</artifactId>
-		<version>1.0</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-			<strip>true</strip>
-		</properties>		
-	</dependency>
-	
-	<dependency>
-		<groupId>stax</groupId>
-		<artifactId>stax-api</artifactId>
-		<version>1.0.1</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-			<strip>false</strip>
-		</properties>		
-	</dependency>
-	
-	<dependency>
-		<groupId>woodstox</groupId>
-		<artifactId>wstx-asl</artifactId>
-		<version>2.9.3</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-			<strip>false</strip> <!--  leave this -->
-		</properties>		
-	</dependency>
-	
-	<dependency>
-		<groupId>activation</groupId>
-		<artifactId>activation</artifactId>
-		<version>1.0.2</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-			<strip>false</strip> <!-- leave -->
-		</properties>		
-	</dependency>
-		<!--  in my limited usage of xfire, these aren't needed.
-	
-	
-	wsdl4j - requires 1.5.2 - we have 1.5.1
-	
-	
-	<dependency>
-		<groupId>ws-commons</groupId>
-		<artifactId>XmlSchema</artifactId>
-		<version>1.0.3</version>
-	</dependency>
-
-	<dependency>
-		<groupId>org.astrogrid</groupId>
-		<artifactId>astrogrid-contracts</artifactId>
-		<version>${astrogrid.contracts.version}</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>xfire</groupId>
-		<artifactId>xfire-aegis</artifactId>
-		<version>1.2-RC</version>
-	</dependency>
-	-->
-
-
 <!-- used within development only -->
+    <!-- Mark Taylor's plaskit, for testing only -->
+     <dependency>
+      <artifactId>plastic</artifactId>
+      <groupId>starlink</groupId>
+      <version>20060808-unsigned</version>
+      <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
+		<properties>
+			<uberjar.bundle>false</uberjar.bundle>
+		</properties>
+    </dependency>
 
-<!--  todo move elsewhere -->
-<dependency>
-	<groupId>yguard</groupId>
-	<artifactId>yguard</artifactId>
-	<version>2.0.2</version>
-</dependency>
 <!-- code to unit test xml -->
     <dependency>
       <id>xmlunit</id>
@@ -299,23 +168,34 @@
     	<groupId>maven-plugins</groupId>
     	<version>1.2</version>
     	<type>plugin</type>
+           	            <properties>
+		            		<uberjar.bundle>false</uberjar.bundle>
+		            	</properties>     	
     </dependency>
+
  <!-- mocks for testing -->
  	<dependency>
  		<groupId>easymock</groupId>
  		<artifactId>easymock</artifactId>
  		<version>1.2</version>
  		<url>http://www.easymock.org/</url>
+           	            <properties>
+		            		<uberjar.bundle>false</uberjar.bundle>
+		            	</properties>  		
  	</dependency>
  	
- <!-- swing testing -->
+ <!-- swing testing - todo verify whether this is actually useful. -->
  <dependency>
  	<groupId>uispec4j</groupId>
  	<artifactId>uispec4j</artifactId>
  	<version>1.1</version>
  	<url>http://www.uispec4j.org/</url>
+           	            <properties>
+		            		<uberjar.bundle>false</uberjar.bundle>
+		            	</properties>  	
  </dependency>
-<!-- testing html interface  -->
+ 
+<!-- testing html interface  - only used a little -->
  <dependency>
                         <groupId>httpunit</groupId>
                         <artifactId>httpunit</artifactId>

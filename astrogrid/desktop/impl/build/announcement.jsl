@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<!--  
+
+stylesheet used to generate the announcement.txt
+Hacked by NWW to do something sensible for AstroGrid
+ -->
+<!--
+ * ========================================================================
+ * 
+ * Copyright 2004 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * ========================================================================
+-->
+    
+<jsl:stylesheet
+    select="$doc"
+    xmlns:j="jelly:core"
+    xmlns:jsl="jelly:jsl"
+    xmlns:x="jelly:xml"
+    xmlns:u="jelly:util"
+    xmlns:maven="jelly:maven"
+    xmlns="dummy" trim="true">
+
+  <!-- This stylesheet expects the versionVariable to be defined before calling it -->
+  <jsl:template match="document/body/release">
+
+    <x:set var="version" select="string(@version)"/>
+    <j:if test="${versionVariable.equals(version)}">
+
+      <j:useBean var="formatter" class="org.apache.maven.announcement.Formatter"/>
+
+      <j:set var="header" trim="true">
+        The AstroGrid Team is pleased to announce the  ${versionVariable} release of Workbench and Astro Runtime.
+      </j:set>
+
+      <j:forEach var="line" items="${formatter.format(header,78)}">
+         <j:whitespace trim="false">${line}
+</j:whitespace>
+      </j:forEach>
+      <j:whitespace trim="false">
+	http://www.astrogrid.org/desktop
+
+</j:whitespace>
+<!--  unnecessary 
+      <j:set var="description" trim="true">
+	The Astro Runtime (AR) simplifies access to all Virtual Observatory (VO) services.
+	This component provides an API that is simple, consistent and self-contained
+	 - making the VO more accessible.
+     </j:set>
+      <j:forEach var="line" items="${formatter.format(description,78)}">
+        <j:whitespace>${line}
+</j:whitespace>
+      </j:forEach>
+      -->
+      <j:whitespace trim="false">
+Changes in this version include:</j:whitespace>
+
+      <x:set var="actions" select="action[@type='add']" sort="@type" />
+        <j:if test="${!empty(actions)}">
+<j:whitespace trim="false">
+
+  New Features:
+</j:whitespace>
+        <j:forEach var="action" items="${actions}">
+          <x:set var="item" select="."/><jsl:applyTemplates select="$action"/>
+        </j:forEach>
+      </j:if>
+      <x:set var="actions" select="action[@type='fix']" sort="@type" />
+        <j:if test="${!empty(actions)}">
+<j:whitespace trim="false">
+
+  Fixed bugs:
+</j:whitespace>
+        <j:forEach var="action" items="${actions}">
+          <x:set var="item" select="."/><jsl:applyTemplates select="$action"/>
+        </j:forEach>
+      </j:if>
+      <x:set var="actions" select="action[@type='update']" sort="@type" />
+        <j:if test="${!empty(actions)}">
+<j:whitespace trim="false">
+
+  Changes:
+</j:whitespace>
+        <j:forEach var="action" items="${actions}">
+          <x:set var="item" select="."/><jsl:applyTemplates select="$action"/>
+        </j:forEach>
+      </j:if>
+      <x:set var="actions" select="action[@type='remove']" sort="@type" />
+        <j:if test="${!empty(actions)}">
+<j:whitespace trim="false">
+
+  Removed features:
+</j:whitespace>
+        <j:forEach var="action" items="${actions}">
+          <x:set var="item" select="."/><jsl:applyTemplates select="$action"/>
+        </j:forEach>
+      </j:if>
+
+
+      <j:whitespace trim="false"> 
+
+Enjoy!
+-The AstroGrid Team
+      </j:whitespace>
+    </j:if>
+
+  </jsl:template>
+  
+  <jsl:template match="action" trim="true">
+    <x:set var="body" select="string(.)"/>
+    <j:set var="counter" value=""/>
+        
+    <j:set var="issue"><x:expr select="@issue"/></j:set>
+    <j:set var="dueto"><x:expr select="@due-to"/></j:set>
+        
+    <j:set var="text" trim="true">
+      ${body}
+      <j:if test="${issue != ''}"><j:whitespace> Issue: ${issue}.</j:whitespace></j:if>
+      <j:if test="${dueto != ''}"><j:whitespace> Thanks to ${dueto}.</j:whitespace></j:if>
+    </j:set>
+        
+    <j:forEach var="line" items="${formatter.format(text,75)}">
+      <j:choose>
+        <j:when test="${counter.length() == '0'}">
+          <j:whitespace trim="false">
+o ${line}</j:whitespace>
+        </j:when>
+        <j:otherwise>
+          <j:whitespace trim="false">
+  ${line}</j:whitespace>
+        </j:otherwise>
+      </j:choose>
+      <j:set var="counter" value="${counter}X"/>
+    </j:forEach>
+  </jsl:template>
+
+  <jsl:template match="@*"/>
+
+  <jsl:template match="text()"/>
+
+</jsl:stylesheet>

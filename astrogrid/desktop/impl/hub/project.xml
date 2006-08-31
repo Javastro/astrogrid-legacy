@@ -21,6 +21,7 @@
                       <exclude>org/astrogrid/desktop/modules/ag/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/ui/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/ui/comp/**</exclude>
+                      <exclude>org/astrogrid/desktop/modules/util/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/cds/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/ivoa/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/nvo/**</exclude>
@@ -40,6 +41,7 @@
                                 <!-- todo: trim these more -->
                                 <includes>
                                         <include>**/hivemind/*.xml</include>
+                                        <include>default-log4j.properties</include>                                        
                                         <include>org/astrogrid/desktop/icons/*.png</include>
                                         <include>org/astrogrid/desktop/modules/system/transformers/xmlverbatim.xsl</include>
                                         <include>org/astrogrid/plastic-splash.png</include>
@@ -48,7 +50,15 @@
                         </resource>
                 </resources>
         </build>
-
+        <!--  just defines reports to place in the distro -->
+    <reports>
+    <!--  this project doesn't have a separate changelog 
+        <report>maven-changes-plugin</report>
+        -->
+        <report>maven-javadoc-plugin</report>
+        <report>maven-jxr-plugin</report>
+        <report>maven-license-plugin</report>
+    </reports>
         <dependencies>
 
 <!-- public interfaces of the acr - all liable to change, so not in extension
@@ -59,8 +69,8 @@
 		<artifactId>acr-interface</artifactId>
 		<version>${astrogrid.desktop.version}</version>
 		<properties>
-			<jnlp.jar>true</jnlp.jar>
 			<dist.bundle>true</dist.bundle>
+			<strip>false</strip> <!--  public interface - although these could be sliced, think it's best to leave all unchanged -->
 		</properties>
 	</dependency>
 
@@ -70,8 +80,8 @@
 		<version>0.4.1</version>
                         <url>http://plastic.sourceforge.net</url>
 		<properties>
-			<jnlp.jar>true</jnlp.jar>
 			<dist.bundle>true</dist.bundle>	
+			<strip>true</strip> 
 		</properties>						
    </dependency>		
 
@@ -83,8 +93,8 @@ we have to add by hand -->
       <version>${astrogrid.common.version}</version>
       <url>http://www.astrogrid.org/</url>
       <properties>
-        <jnlp.jar>true</jnlp.jar>
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
        </properties>
     </dependency>
     
@@ -94,34 +104,32 @@ we have to add by hand -->
       <version>1.0.3</version>
       <url>http://jakarta.apache.org/commons/</url>
       <properties>
-      	<jnlp.jar>true</jnlp.jar>
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>       
       </properties>
     </dependency>
  
- <!-- brower control - only use for non-jnlp distribution -->
+ <!-- brower control -->
  	<dependency>
  		<artifactId>BrowserLauncher2</artifactId>
  		<groupId>BrowserLauncher2</groupId>
  		<version>10rc4</version>
  		<url>http://browserlaunch2.sourceforge.net/</url>
  		<properties>
- 		<!-- don't jnlp.jar -->
  			<dist.bundle>true</dist.bundle>
+ 			<strip>true</strip>			
  		</properties>
  	</dependency>
  
- <!-- jakarta commons - jnlp extension -->
+ <!-- jakarta commons  -->
        <dependency>
                 <artifactId>commons-collections</artifactId>            
                 <groupId>commons-collections</groupId>          
                 <version>3.1</version>          
                 <url>http://jakarta.apache.org/commons/</url>           
-                <properties>       
-			<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-			<jnlp.extension.dir>/jnlp/jakarta-commons</jnlp.extension.dir>
-			<jnlp.extension.jnlp>jakarta-commons.jnlp</jnlp.extension.jnlp>                             
-                        <dist.bundle>true</dist.bundle>
+                <properties>                                   
+                        <dist.bundle>true</dist.bundle>                     
+                        <strip>true</strip>
                 </properties>
     </dependency> 
   
@@ -131,7 +139,8 @@ we have to add by hand -->
 	 <version>1.6</version>
 	 <type>jar</type>
 	 <properties>		 
-		 <dist.bundle>true</dist.bundle>
+		 <dist.bundle>true</dist.bundle>		 
+		 <strip>true</strip>		 
 	 </properties>		 
  </dependency>
  
@@ -141,7 +150,8 @@ we have to add by hand -->
 	 <version>2.0</version>
 	 <type>jar</type>
 	 <properties>		 
-		 <dist.bundle>true</dist.bundle>
+		 <dist.bundle>true</dist.bundle>		 
+		 <strip>true</strip>
 	 </properties>		 
         </dependency>  
         
@@ -150,23 +160,23 @@ we have to add by hand -->
 	  	<groupId>commons-cli</groupId>
 	  	<version>1.0</version>
 	  	<properties>			
-		<dist.bundle>true</dist.bundle>			
+		<dist.bundle>true</dist.bundle>					
+		<strip>true</strip>
 	  	</properties>
 	  </dependency>
 
 
-<!-- container system - hivemind    
+<!-- container system - hivemind  
+  
 -->
 
 <dependency>
 	<groupId>hivemind</groupId>
 	<artifactId>hivemind</artifactId>
 	<version>1.1.1</version>
-	<properties>
-		<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		<jnlp.extension.dir>/jnlp/jakarta-hivemind</jnlp.extension.dir>
-		<jnlp.extension.jnlp>jakarta-hivemind.jnlp</jnlp.extension.jnlp>			
+	<properties>		
 		<dist.bundle>true</dist.bundle>	
+				 <strip>false</strip> <!--  too precious, not much to remove -->
 	</properties>
 </dependency>
 <dependency>
@@ -175,6 +185,7 @@ we have to add by hand -->
 	<version>1.1.1</version>
 	<properties>
 		<dist.bundle>true</dist.bundle>
+				 <strip>false</strip> <!--  too precious and xml driven -->		
 	</properties>	
 </dependency>
 
@@ -184,6 +195,7 @@ we have to add by hand -->
 	<version>3.0</version>
 	<properties>
 		<dist.bundle>true</dist.bundle>
+				 <strip>false</strip> <!--  not worth stripping. -->		
 	</properties>
 </dependency>
  <dependency>
@@ -191,6 +203,7 @@ we have to add by hand -->
 	 <version>2.0.7</version>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
+				 <strip>false</strip> <!--  too hard to strip. -->		 
 	 </properties>	 
  </dependency>
  
@@ -201,10 +214,8 @@ we have to add by hand -->
 	 <version>5.1.2</version>
 	 <type>jar</type>
 	 <properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/jetty</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>jetty.jnlp</jnlp.extension.jnlp>
-		 <dist.bundle>true</dist.bundle>
+		 <dist.bundle>true</dist.bundle>		 
+		    <strip>true</strip>		 
 	 </properties>
  </dependency>
  <dependency>
@@ -212,7 +223,8 @@ we have to add by hand -->
 	 <groupId>servletapi</groupId>
 	 <version>2.3</version>	
 	 <properties>
-		 <dist.bundle>true</dist.bundle>
+		 <dist.bundle>true</dist.bundle>		 
+		    <strip>true</strip>		 
 	 </properties>	 
     </dependency>
     
@@ -222,6 +234,7 @@ we have to add by hand -->
 	    <version>1.0</version>
 	    <properties>
 		    <dist.bundle>true</dist.bundle>		
+		    <strip>false</strip> <!--small and perfectly formed -->
 	    </properties>
 </dependency> 
 <dependency>
@@ -231,34 +244,43 @@ we have to add by hand -->
 	<type>jar</type>
 	<properties>
 		<dist.bundle>true</dist.bundle>			
+		<strip>false</strip><!-- true causes a NPE, and only saves 30K -->
 	</properties>
 </dependency>
 <!-- end of jetty servers -->
 
 
 <!-- web start extension - gui-basics -->
-   <!-- extra widgets: statusBar and ButtonBar - 440K mb could package smaller. -->
+   <!-- extra widgets: statusBar and ButtonBar . -->
    <dependency>
         <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-all</artifactId>
-        <version>6.2</version> 
+        <artifactId>l2fprod-common-buttonbar</artifactId>
+        <version>6.5.1</version> 
 	<properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/gui-basics</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>gui-basics.jnlp</jnlp.extension.jnlp>	
-		<dist.bundle>true</dist.bundle>
+		<dist.bundle>true</dist.bundle>	
+		<strip>true</strip>	
 	 </properties>	 	
     </dependency>
+    
+   <dependency>
+        <groupId>l2fprod</groupId>
+        <artifactId>l2fprod-common-shared</artifactId>
+        <version>6.5.1</version> 
+	<properties>
+		<dist.bundle>true</dist.bundle>	
+		<strip>true</strip>	
+	 </properties>	 	
+    </dependency>    
     
     <dependency><!-- contains SwingWorker class, for executing things in background threads -->
 	    <artifactId>concurrent</artifactId>
 	    <groupId>concurrent</groupId>
 	    <version>1.3.4</version>
 	    <properties>
-    	<!-- add this aftrer the main javaapp process, as a work-around for package capitalization -->
-			<nww.bundle.later>true</nww.bundle.later>
 		    <uberjar.bundle>false</uberjar.bundle>		    
-		    <dist.bundle>true</dist.bundle>	    
+		    <bundle.later>true</bundle.later>
+		    <dist.bundle>true</dist.bundle>	 
+		    <strip>true</strip>
 	 </properties>	 	    
  </dependency>    
    
@@ -268,16 +290,15 @@ we have to add by hand -->
  <!-- JDIC components - a bit tricky, because of binary nature.. 
   
 dunno what to do in single-app case - just leave out, i guess.
+is referenced as an extension for webstart version.
       -->
  <dependency>
 	 <artifactId>jdic</artifactId>
 	 <groupId>jdic</groupId>
 	 <version>0.9.1</version>
 	 <properties>
-		 <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-		 <jnlp.extension.dir>/jnlp/desktop-integration</jnlp.extension.dir>
-		 <jnlp.extension.jnlp>desktop-integration.jnlp</jnlp.extension.jnlp>
-		 <dist.bundle>true</dist.bundle>		 
+		 <dist.bundle>true</dist.bundle>	
+		 <strip>true</strip>	 
 	 </properties>
  </dependency>
  <!--NB: comment out following two when generating dependencies on macosx -->
@@ -302,7 +323,7 @@ dunno what to do in single-app case - just leave out, i guess.
 
 <!-- used within development only -->
 
-                <!-- plugins -->
+                <!--convenience plugin to make a standalone app - not used in production. -->
     	         <dependency>
 		            <groupId>maven-plugins</groupId>
 		            <artifactId>maven-javaapp-plugin</artifactId>
@@ -312,24 +333,27 @@ dunno what to do in single-app case - just leave out, i guess.
 		            	<uberjar.bundle>false</uberjar.bundle>
 		            </properties>     		            
 		        </dependency> 	
-    	             
- <dependency>
-      <groupId>commons-jelly</groupId>
-      <artifactId>commons-jelly-tags-jsl</artifactId>
-      <version>20030211.143151</version>
-		            <properties>
-		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>           
-    </dependency>
-    <dependency>
-      <groupId>commons-jelly</groupId>
-      <artifactId>commons-jelly-tags-xml</artifactId>
-      <version>20030211.142705</version>
-      <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
-		            <properties>
-		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>           
-    </dependency>
-		        
+	<!--  jar shrinking -->
+    	    <dependency>
+	<groupId>proguard</groupId>
+	<artifactId>proguard</artifactId>
+	<version>3.6</version>
+	<properties>
+		<uberjar.bundle>false</uberjar.bundle>
+	</properties>
+</dependency>	         
+<!-- make an OSX app -->
+	<dependency>
+		<groupId>jarbundler</groupId>
+		<artifactId>jarbundler</artifactId>
+		<version>1.4</version><!--  more recent versions don't seem to work
+		 with the version of ant inside maven - and this does the job  -->
+		<properties>
+			<uberjar.bundle>false</uberjar.bundle>
+		</properties>
+		<url>http://informagen.com/JarBundler/</url>
+	</dependency>
+
+   
     </dependencies>
 </project>

@@ -1,59 +1,35 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml"  xmlns:artifact="artifact">
+<project xmlns:j="jelly:core"  xmlns:wb="workbench" >
+   <j:import inherit="true" file="${buildlib}/workbench-taglib.xml"/>
 
-         <goal name="astrogrid-build-artifact" prereqs="setup,javaapp,dist:build-bin"/>
-<goal name="astrogrid-install-artifact" prereqs="setup,javaapp:install,dist-install" />
+         <goal name="astrogrid-build-artifact" prereqs="setup,dist:build-bin"
+		    description="Build the artifacts and leave in the target directory"                  
+         />
 		
 		<!--overridable goal, to zap appropriate settings (necessary when running in multiproject mode -->
 		<goal name="setup">
-			<j:set var="ifBuildingASR" value="true" />
+			<j:set var="ifBuildingASR" scope="parent" value="true" />
 		</goal>
 	
-			<postGoal name="java:jar-resources">
-		<attainGoal name="astrogrid.version" />
-	</postGoal>
-		
-		<goal name="astrogrid.version">
-			<echo file="${maven.build.dest}/org/astrogrid/desktop/hivemind/astrogrid.version">
-astrogrid.desktop.version=${astrogrid.desktop.version}
-astrogrid.build.date=${maven.jar.manifest.attribute.BuildDate}
-astrogrid.build.location=${maven.jar.manifest.attribute.BuildLocation}
-astrogrid.build.by=${user.name}
-astrogrid.build.jdk=${java.version}
-			</echo>
-		</goal>
-	<!-- do the final tweaks to the javaapp process -->
-		    <!-- work around: javaapp unzips all dependent jars before making one big jar.
-		    this doesn't work on MacOS, as packages named EDU... and edu... get mapped to the
-		    same folder - which then results in a 'class not found' exception.
-		    Concurrent is the only one that uses non-standard capitalization, that falls foul of this
-		    so exclude it from the javaaapp process, and stuff it in later ourseleves using a maven 
-		    post goal.
-		    -->	
-	<postGoal name="javaapp:jar">
-   <j:forEach var="lib" items="${pom.artifacts}">
-      <j:set var="dep" value="${lib.dependency}"/>     
-      <j:if test="${dep.getProperty('nww.bundle.later')=='true'}">
-		<jar update="true" destfile="${maven.javaapp.final.name}"
-			filesetmanifest="skip" duplicate="fail">
-			<zipfileset src="${lib.path}" />
-		</jar>
-	  </j:if>
-    </j:forEach>
-	</postGoal>
-	
-	
-    <goal name="dist-install" prereqs="dist:build-bin">
-             <artifact:install
-        artifact="${maven.dist.dir}/${maven.final.name}.zip"
-        type="zip"
-        project="${pom}"
-        /> 
-        </goal>
-         
-
-
+<!--  all the libs are now in maven.dist.bin.assembly.dir -here we list all the other things we're going to do with them-->
+<postGoal name="dist:build-bin">
+<!--  strip surplus classes -->
+	<attainGoal name="jar-strip" />
+<!--  package as a jar file -->
+	<attainGoal name="app-jar" />
+	<!--  sign this jar .-->	
+		<wb:sign />
+	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
+	<!--  package as a webstart app -->
+		<attainGoal name="webstart" />
+	</j:if>
+<!--  package as an osx app -->
+	<j:set var="tmpVar" value="${os.name}" />
+   <j:if test="${tmpVar == 'Mac OS X'}">
+	<attainGoal name="osx" />
+	</j:if>	
+</postGoal>
 
 </project>
 

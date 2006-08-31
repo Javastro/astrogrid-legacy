@@ -4,16 +4,16 @@
 	<!-- 
 	cleaning 
 	-->
-	<goal name="astrogrid-clean" prereqs="multiproject:clean"
-	description="clean all sub projects - may not be possible if version in maven.base/project.properties has just been changed - clean before doing this">
+	<goal name="astrogrid-clean" prereqs="multiproject:clean,clean:clean"
+	description="clean this project and  all sub projects - may not be possible if version in maven.base/project.properties has just been changed - clean before doing this">
 	</goal>
 	
 	<!--
 	 building stuff 
 	-->
-	<goal name="astrogrid-install-artifact"
-		description="runs install-materials and install-standalone-apps"
-		prereqs="install-materials,install-standalone-apps"
+	<goal name="astrogrid-build-artifact"
+		description="runs install-materials, then build-artifacts. Gathers results in target/artifacts. "
+		prereqs="install-materials,build-artifacts,gather"
 	/>
 	
  <goal name="install-materials" 
@@ -25,56 +25,45 @@
 			includes="${supporting.projects}" />
 	</goal>
 	
-	<goal name="install-standalone-apps" 
-	description="build all the stand-alone (non-webstart) versions of the apps. previously must have run install-materials"
+	<goal name="build-artifacts" 
+	description="build all the different versions of the application. Previously must have run install-materials."
 	>
 		<maven:reactor
 			basedir="${basedir}"
-			goals="astrogrid-install-artifact"
+			goals="astrogrid-build-artifact"
 			ignoreFailures="false"
 			includes="${ar.projects}" />
+	</goal>
+	
+	
+	<goal name="gather"
+		description="collects together artifacts build by subprojects into a single directory">
+		<mkdir dir="${basedir}/target/artifacts"/>
+		<copy todir="${basedir}/target/artifacts" flatten="true">
+			<fileset dir="${basedir}">
+				<include name="**/target/*.dmg" /><!--  os images -->
+				<include name="**/target/*-app.jar" /><!--  standalone apps -->
+				<include name="**/target/*-jnlp.zip" /><!--  webstart -->
+				<include name="**/target/distributions/*.zip" /> <!--  distribuitions -->
+				<include name="**/target/**/announcement*.txt" /> <!--  release announcement -->
+				<!--  specials -->
+				<include name="**/target/ar-script-examples*.jar" />
+				<!-- api/docs, api/generated-xdocs/xmlrpc doc- already in the api distrubution zip-->
+			</fileset>
+		</copy>
 	</goal>
 	
 	<!-- 
 	deploying stuff
 	-->
 	<goal name="astrogrid-deploy-artifact"
-		description="deploys api jars to central maven repo">
+		description="deploys only the api jars to central maven repo">
 		<j:set var="maven.scm.cvs.tag">
 		<util:replace  newChar="_" oldChar=".">DEPLOY_ARTIFACT_${astrogrid.desktop.version}</util:replace>
 		</j:set>
 	   <attainGoal name="scm:cvs-tag-project" />		
 		<maven:maven basedir="api" descriptor="api/project.xml" goals="astrogrid-deploy-artifact" />
 	</goal>
-	
-	<goal name="publish-jnlp"
-	description="publish webstart releases for all apps. Requires -Dmaven.username=maven for this to work. must have run install-materials previously"
-	>
-		<j:set var="maven.scm.cvs.tag">
-			<util:replace  newChar="_" oldChar=".">PUBLISH_JNLP_${astrogrid.desktop.version}</util:replace>
-		</j:set>
-	   <attainGoal name="scm:cvs-tag-project" />
-		<maven:reactor
-			basedir="${basedir}"
-			goals="publish-jnlp"
-			ignoreFailures="false"
-			includes="${jnlp.ar.projects}"/>
-	</goal>
-	
-	
-	<goal name="build-site" 
-	description="assemble  the release site for the newly built apps.  must have run 'astrogid-install-artifact' (or install-materials and install-standalone-apps ) previously"
->
-		<j:set var="maven.scm.cvs.tag">
-		<util:replace  newChar="_" oldChar=".">PUBLISH_SITE_${astrogrid.desktop.version}</util:replace>
-		</j:set>
-	   <attainGoal name="scm:cvs-tag-project" />		
-		<maven:maven basedir="site" descriptor="site/project.xml" ignoreFailures="false" goals="build-site" />
-		<echo>The results in site/target/docs now need to be uploaded to the plone site</echo>
-		<echo>REMINDER: Do you need to republish the webapps too? run 'maven publish-jnlp</echo>
-	</goal>
-
-
 
 
 </project>
