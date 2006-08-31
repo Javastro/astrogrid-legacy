@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.9 2006/06/12 10:10:54 nw Exp $
+/*$Id: Finder.java,v 1.10 2006/08/31 20:20:42 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -290,14 +290,13 @@ public class Finder {
     		
     		
     		public Object getService(String componentName) throws ACRException, NotFoundException {
-    			//@todo this doesn't look right to me..
-    			String className = api.interfaceClassName(componentName);
     			Class clazz = null;
     			try {
-    				clazz = Class.forName(componentName); // makes the interface more user friendly.
+    				clazz = Class.forName(componentName); // makes the interface more user friendly - can take either a short name of fully-qualified name.
     			} catch (ClassNotFoundException e) {
-    				// try to resolve on the server
+    				// try to resolve o
     				try {
+    					String className = api.interfaceClassName(componentName);
     					clazz = Class.forName(className);
     				} catch (ClassNotFoundException e1) {
     					throw new NotFoundException(e1);
@@ -328,7 +327,7 @@ public class Finder {
      * blechh.
      * for now, only create an external acr if running under javaws.
      * @todo add browser control lib to do this in other circumstances.
-     * @todo think about using jnlp installer extensions to do this?
+
      * @return
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -389,6 +388,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.10  2006/08/31 20:20:42  nw
+minor tweak
+
 Revision 1.9  2006/06/12 10:10:54  nw
 fixed shutdown bug.
 
