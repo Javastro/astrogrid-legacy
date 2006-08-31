@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.6 2006/07/20 12:29:38 nw Exp $
+/*$Id: IconHelper.java,v 1.7 2006/08/31 21:12:06 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.io.Piper;
 
 /** class of helper methods for locating and loading icons.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Apr-2005
- *
+ *@todo integrate with new cache system - means making this a service, rather than an object. but then could cache remote icons to disk.
  */
 public class IconHelper {
     /**
@@ -111,6 +111,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.7  2006/08/31 21:12:06  nw
+doc fix.
+
 Revision 1.6  2006/07/20 12:29:38  nw
 added method to load remote icons.
 
