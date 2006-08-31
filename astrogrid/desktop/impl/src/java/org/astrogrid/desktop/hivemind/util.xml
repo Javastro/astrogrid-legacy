@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE module  [
+	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/util-descriptors.xml">
+	]>
+<module id="util" version="1.0.0" package="org.astrogrid.acr.util">
+Builtin Components
+	
+	<!-- contributions -->
+	<contribution configuration-id="framework.acrServices">
+			<acrService id="tables" interface="Tables" />
+	</contribution>
+		
+	<contribution configuration-id="framework.descriptors">
+		<acr-module name="util" description="useful utility services">
+		&descriptors;
+		</acr-module>
+	</contribution>
+	
+	<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="tables"/> <!--  as it configures stil -->
+	</contribution>
+	
+	<!--  
+	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
+		<load service-id="shutdown"/> 
+	</contribution>	
+	-->
+		
+	<contribution configuration-id="system.rmiListenerInterfaces">
+		<service id="shutdown">
+			<listener interface="org.astrogrid.acr.builtin.ShutdownListener" />
+		</service>
+	</contribution>
+	
+	<service-point id="tables" interface="Tables">
+		Table Manipulation Utilities (STIL)
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.util.TablesImpl" >
+				<!--  todo - should I pass in config params - e.g. tmp spool to disk, etc..s -->
+			</construct>
+		</invoke-factory>	
+	</service-point>
+	
+
+ </module>
+ 

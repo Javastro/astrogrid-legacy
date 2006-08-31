@@ -44,6 +44,7 @@ public class Workbench1 {
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
+        l.addModuleByName("util");    	
 	}
 
 }
