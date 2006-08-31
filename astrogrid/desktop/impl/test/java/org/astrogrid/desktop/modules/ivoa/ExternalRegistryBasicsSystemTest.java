@@ -36,7 +36,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /** System tests for Basic parts of the External Registry Component.
- * @todo implement RoR, and Identitiy.
+ * @implement implement RoR, and Identitiy.
  * @author Noel Winstanley
  * @since Aug 3, 20062:20:00 AM
  */

@@ -36,7 +36,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /** System tests for ADQL querying part of External Registry Component.
- * @todo implement
+ * @implement
  * @author Noel Winstanley
  * @since Aug 3, 20062:20:00 AM
  */

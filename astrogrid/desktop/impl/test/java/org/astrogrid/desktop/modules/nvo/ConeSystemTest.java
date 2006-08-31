@@ -22,7 +22,7 @@ import org.astrogrid.desktop.ACRTestSetup;
 /** System test for the cone search interface.
  * @author Noel Winstanley
  * @since Jun 10, 200610:18:51 AM
- * @todo implement rest
+ * @implement
  */
 public class ConeSystemTest extends TestCase {
 

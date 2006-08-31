@@ -19,7 +19,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.ACRTestSetup;
 
-/** @todo implement some test queries.
+/** @implement some test queries.
  * @author Noel Winstanley
  * @since Jun 13, 20062:22:58 PM
  */
