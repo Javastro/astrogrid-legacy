@@ -25,8 +25,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>
       </properties>
     </dependency>
 
@@ -40,8 +40,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -54,8 +54,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -73,8 +73,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -91,8 +91,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -110,8 +110,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>${strip.security}</strip>        
       </properties>
     </dependency>
 
@@ -128,8 +128,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>${strip.security}</strip>        
       </properties>
     </dependency>
 
@@ -146,8 +146,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>${strip.security}</strip>    
       </properties>
     </dependency>
 
@@ -162,8 +162,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -178,8 +178,8 @@
 
       <properties>
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
-
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -198,6 +198,7 @@
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -213,6 +214,7 @@
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -228,6 +230,7 @@
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -243,6 +246,7 @@
         <jnlp.jar>${shall.bundle.core}</jnlp.jar>
 
         <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
       </properties>
     </dependency>
 
@@ -253,8 +257,9 @@
 	 <groupId>jaxp</groupId>
 	 <version>1.4-20050623</version>
 	 <type>jar</type>
-	 <properties>
+	 <properties>    	 
       <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
 	 </properties>		 
  </dependency>
  
@@ -272,8 +277,9 @@
 
       <url>http://xml.apache.org/</url>
 
-      <properties>
+      <properties>     
         <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
       </properties>
     </dependency>
 
@@ -288,9 +294,9 @@
 
       <url>http://xml.apache.org/</url>
 
-      <properties>
-
+      <properties>   
         <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
       </properties>
     </dependency>
     
@@ -300,8 +306,9 @@
     <version>2.7.0</version>
     <type>jar</type>
     <url>http://xml.apache.org/</url>
-    <properties>
+    <properties>    
       <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
     </properties>
   </dependency>
     
@@ -316,135 +323,18 @@
 
       <url>http://xml.apache.org/</url>
 
-      <properties>
-
+      <properties>   
         <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
       </properties>
     </dependency>
-<!-- this is what I had for axis 1.1
-    <dependency>
-      <artifactId>axis</artifactId>
-
-      <groupId>axis</groupId>
-
-      <version>1.1</version>
-
-      <url>http://ws.apache.org/axis/</url>
-
-      <properties>
-	      <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
-	      <jnlp.extension.dir>/jnlp/soap</jnlp.extension.dir>
-	<jnlp.extension.jnlp>soap.jnlp</jnlp.extension.jnlp>
-        <dist.bundle>true</dist.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <artifactId>jax-qname</artifactId>
-
-      <groupId>jax-qname</groupId>
-
-      <version>UNKNOWN</version>
-
-      <jar>jax-qname.jar</jar>
-
-      <url>http://ws.apache.org/axis/</url>
-
-      <properties>
-
-        <dist.bundle>true</dist.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <artifactId>jaxrpc-api</artifactId>
-
-      <groupId>jaxrpc-api</groupId>
-
-      <version>1.0.3</version>
-
-      <url>http://ws.apache.org/axis/</url>
-
-      <properties>
-
-        <dist.bundle>true</dist.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <artifactId>saaj-api</artifactId>
-
-      <groupId>saaj-api</groupId>
-
-      <version>1.1.1</version>
-
-      <url>http://ws.apache.org/axis/</url>
-
-      <properties>
-
-        <dist.bundle>true</dist.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <artifactId>wsdl4j</artifactId>
-
-      <groupId>wsdl4j</groupId>
-
-      <jar>wsdl4j.jar</jar>
-
-      <url>http://ws.apache.org/axis/</url>
-
-      <properties>
-
-        <dist.bundle>true</dist.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <artifactId>commons-discovery</artifactId>
-
-      <groupId>commons-discovery</groupId>
-
-      <version>20030211.213356fixed1</version>
-
-      <url>http://jakarta.apache.org/commons/</url>
-
-      <properties>
-
-        <dist.bundle>true</dist.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <artifactId>commons-logging</artifactId>
-
-      <groupId>commons-logging</groupId>
-
-      <version>1.0.3</version>
-
-      <url>http://jakarta.apache.org/commons/</url>
-
-      <properties>
-
-        <dist.bundle>true</dist.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <id>log4j</id>
-
-      <version>1.2.8</version>
-
-      <properties>
-
-        <dist.bundle>true</dist.bundle>
-      </properties>
-    </dependency>
--->
 
     
-    <!-- axis, and the jars it relies upon -->
+    <!-- axis, and the jars it relies upon
+    
+    can't get this to strip correctly.
+    
+     -->
     <dependency>
 	    <groupId>axis</groupId>
 	    <type>jar</type>
@@ -454,7 +344,8 @@
 		    <jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 		    <jnlp.extension.dir>/jnlp/soap</jnlp.extension.dir>
 		    <jnlp.extension.jnlp>soap.jnlp</jnlp.extension.jnlp>
-        	<dist.bundle>true</dist.bundle>		    
+        	<dist.bundle>true</dist.bundle>     			    
+	    		 <strip>true</strip>	 	
 	    </properties>
     </dependency>
     <dependency>
@@ -463,7 +354,8 @@
 	    <artifactId>wsdl4j</artifactId>
 	    <version>1.5.1</version>
 	    <properties>
-		    <dist.bundle>true</dist.bundle>	
+	    		 <strip>true</strip>			    
+		    <dist.bundle>true</dist.bundle>	    	
 	    </properties>
     </dependency>
     <dependency>
@@ -472,7 +364,8 @@
 	    <artifactId>axis-saaj</artifactId>
 	    <version>1.3</version>
 	    <properties>
-		    <dist.bundle>true</dist.bundle>	
+	    		 <strip>true</strip>	   
+		    <dist.bundle>true</dist.bundle>		    
 	    </properties>
     </dependency>
     <dependency>
@@ -481,7 +374,8 @@
 	    <artifactId>axis-jaxrpc</artifactId>
 	    <version>1.3</version>
 	    <properties>
-		    <dist.bundle>true</dist.bundle>	
+	    		 <strip>true</strip>	    
+		    <dist.bundle>true</dist.bundle>	    
 	    </properties>
     </dependency>
     <dependency>
@@ -490,6 +384,7 @@
 	    <artifactId>commons-logging</artifactId>
 	    <version>1.0.4</version>
 	    <properties>
+	    		 <strip>true</strip>	  	    
 		    <dist.bundle>true</dist.bundle>	
 	    </properties>
     </dependency>
@@ -499,7 +394,8 @@
 	    <artifactId>commons-discovery</artifactId>
 	    <version>0.2</version>
 	    <properties>
-		    <dist.bundle>true</dist.bundle>	
+	    		 <strip>false</strip>	<!--  causes evil errors - related to missing static methods -->    
+		    <dist.bundle>true</dist.bundle>		    
 	    </properties>
     	</dependency>    
 	<dependency>
@@ -509,12 +405,15 @@
 		<url>http://jakarta.apache.org/commons/</url>		
 		<properties>			
 			<dist.bundle>true</dist.bundle>
+	    		 <strip>true</strip>	
 		</properties>
     </dependency>	
+    <!--  don't want this , but required by globus. -->
     <dependency>
 	    <id>log4j</id>	    
 	    <version>1.2.8</version>	    
-	    <properties>		    
+	    <properties>		     
+	    		 <strip>true</strip>
 		    <dist.bundle>true</dist.bundle>
 	    </properties>
     </dependency>    

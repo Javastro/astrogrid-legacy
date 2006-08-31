@@ -13,7 +13,8 @@
        <version>${astrogrid.scripting.version}</version>
                 <properties>
                     <jnlp.jar>${shall.bundle.script}</jnlp.jar>
-		    <dist.bundle>true</dist.bundle>		    
+		    <dist.bundle>true</dist.bundle>		
+		    <strip>true</strip>    
                 </properties>
     </dependency>
     <!-- scripting uses externalValue classes - currently in cea server. will factor out later into a smaller package -->
@@ -24,17 +25,20 @@
                 <properties>
                     <jnlp.jar>${shall.bundle.script}</jnlp.jar>
 		    <dist.bundle>true</dist.bundle>		    
+		    <strip>true</strip>
                 </properties>
         </dependency>
         <!-- helper libraries -->
         <dependency>
                 <groupId>starlink</groupId>
                 <artifactId>stil</artifactId>
-                <version>2.3-1</version>
+               <!--   <version>2.3-1</version>-->
+               <version>2.6</version>
                 <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
                 <properties>
                     <jnlp.jar>${shall.bundle.script}</jnlp.jar>
 		    <dist.bundle>true</dist.bundle>		    
+		    <strip>true</strip>
                 </properties>
         </dependency>
     <dependency>
@@ -44,6 +48,7 @@
       <properties>
                     <jnlp.jar>${shall.bundle.script}</jnlp.jar>
 		    <dist.bundle>true</dist.bundle>		    
+		    <strip>true</strip>
       </properties>
     </dependency>
 

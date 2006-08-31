@@ -15,6 +15,7 @@
                         <properties>
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
 				<dist.bundle>true</dist.bundle>
+				<strip>true</strip>
                         </properties>
                 </dependency>
         <!-- jes -->
@@ -25,7 +26,8 @@
                         <url>http://www.astrogrid.org/</url>
                         <properties>
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
-				<dist.bundle>true</dist.bundle>				
+				<dist.bundle>true</dist.bundle>		
+				<strip>true</strip>						
                         </properties>
                     </dependency>
                 <dependency>
@@ -36,6 +38,7 @@
                         <properties>
 				<dist.bundle>true</dist.bundle>			
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+				<strip>${strip.castor}</strip>                            
                         </properties>
                 </dependency>
         <!-- cea client -->
@@ -47,6 +50,7 @@
                         <properties>
 				<dist.bundle>true</dist.bundle>	
                                 <jnlp.jar>${shall.bundle.workflow}</jnlp.jar>
+				<strip>true</strip>                                
                         </properties>
                 </dependency>
 	  
@@ -59,7 +63,8 @@
                         <url>http://jakarta.apache.org/commons/</url>
                         <version>1.1-patched</version>
                         <properties>
-				<dist.bundle>true</dist.bundle>
+				<dist.bundle>true</dist.bundle>		
+				<strip>${strip.castor}</strip>				
                         </properties>
                 </dependency>
                 <!-- required by castor -->
@@ -69,10 +74,11 @@
                         <version>0.9.5-xml</version>
                         <url>http://castor.exolab.org/</url>
                         <properties>
-				<dist.bundle>true</dist.bundle>	
+				<dist.bundle>true</dist.bundle>			
 				<jnlp.extension.site>software.astrogrid.org</jnlp.extension.site>
 				<jnlp.extension.dir>/jnlp/object-models</jnlp.extension.dir>
 				<jnlp.extension.jnlp>object-models.jnlp</jnlp.extension.jnlp>				
+				<strip>${strip.castor}</strip>				
                         </properties>
                 </dependency>
                <dependency>
@@ -80,7 +86,8 @@
                 <version>1.3</version>
                 <url>http://jakarta.apache.org/commons/</url>
                         <properties>
-				<dist.bundle>true</dist.bundle>			
+				<dist.bundle>true</dist.bundle>				
+				<strip>${strip.castor}</strip>			
                         </properties>
                 </dependency>
     </dependencies>
