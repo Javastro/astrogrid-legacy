@@ -3,7 +3,7 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-/**
+/** Describes the capabilities of a cone search service.
  * @author Noel Winstanley
  * @since Aug 5, 20069:52:40 PM
  */
@@ -51,48 +51,49 @@ public class ConeCapability extends Capability {
 			return false;
 		return true;
 	}
+	/** details the maximum number of records this service will return */
 	public int getMaxRecords() {
 		return this.maxRecords;
 	}
 	public void setMaxRecords(int maxRecords) {
 		this.maxRecords = maxRecords;
 	}
+	/** the maximum search radius accepted by this service */
 	public float getMaxSR() {
 		return this.maxSR;
 	}
 	public void setMaxSR(float maxSR) {
 		this.maxSR = maxSR;
 	}
+	/** access a test parameter */
 	public float getTestDec() {
 		return this.testDec;
 	}
 	public void setTestDec(float testDec) {
 		this.testDec = testDec;
 	}
+	/** access a test parameter */
 	public float getTestRA() {
 		return this.testRA;
 	}
 	public void setTestRA(float testRA) {
 		this.testRA = testRA;
 	}
+	/** access a test parameter */
 	public float getTestSR() {
 		return this.testSR;
 	}
 	public void setTestSR(float testSR) {
 		this.testSR = testSR;
 	}
+	/** determines whether this service accepts the VERB parameter */
 	public boolean isVerbosity() {
 		return this.verbosity;
 	}
 	public void setVerbosity(boolean verbosity) {
 		this.verbosity = verbosity;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
+
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("ConeCapability[");

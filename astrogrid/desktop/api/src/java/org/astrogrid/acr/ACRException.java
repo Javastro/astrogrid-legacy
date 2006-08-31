@@ -1,4 +1,4 @@
-/*$Id: ACRException.java,v 1.4 2006/04/18 23:25:45 nw Exp $
+/*$Id: ACRException.java,v 1.5 2006/08/31 20:20:50 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr;
 
 import java.lang.reflect.Constructor;
 
-/** Base exception type for all exceptions thrown by the ACR interface.
+/** Base exception type for all exceptions thrown by the AR interface.
  * 
  * This type is rarely thrown - usualy more specific subtypes are thrown. However, it's convenient to catch all exceptions in one place
  * by matching against this type in a <tt>catch</tt> clause.
@@ -93,6 +93,9 @@ public class ACRException extends Exception {
 
 /* 
 $Log: ACRException.java,v $
+Revision 1.5  2006/08/31 20:20:50  nw
+doc fix.
+
 Revision 1.4  2006/04/18 23:25:45  nw
 merged asr development.
 

@@ -21,9 +21,11 @@ public class Creator implements Serializable {
 	private  ResourceName name;
 	private  URL logo;
 	
+	/** url pointing to a logo for this entity */
 	public URL getLogo() {
 		return this.logo;
 	}
+	/** name of the creator */
 	public ResourceName getName() {
 		return this.name;
 	}
@@ -60,12 +62,7 @@ public class Creator implements Serializable {
 			return false;
 		return true;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
+
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Creator[");

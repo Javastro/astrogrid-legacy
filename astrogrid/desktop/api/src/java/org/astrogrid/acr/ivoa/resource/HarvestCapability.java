@@ -3,7 +3,7 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-/**
+/** Capability of registries that can be harvested.
  * @author Noel Winstanley
  * @since Aug 5, 200610:22:56 PM
  */
@@ -14,7 +14,7 @@ public class HarvestCapability extends Capability {
 	private static final long serialVersionUID = 5596947048291053986L;
 	private int maxRecords;
 
-	
+	/** maximum number of records that this service will supply to a harvest request */
 	public int getMaxRecords() {
 		return this.maxRecords;
 	}
@@ -43,12 +43,6 @@ public class HarvestCapability extends Capability {
 		return true;
 	}
 
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("HarvestCapability[");

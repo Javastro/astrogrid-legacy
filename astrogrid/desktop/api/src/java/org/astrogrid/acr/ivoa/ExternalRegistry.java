@@ -147,7 +147,6 @@ public interface ExternalRegistry {
 	Resource getResource(URI registry,URI id) throws NotFoundException, ServiceException;
 	
     /** perform an XQuery 
-     * @todo fix this documentation - treament of wrapped/unwrapped queries
 	 * @param registry identifier or endpoint of the registry to connect to
      * @param xquery the query to perform. Must return a well-formed xml document - i.e. starting with a single root element.
      * @return the result of executing this xquery over the specified registry - a document of arbitrary structure.

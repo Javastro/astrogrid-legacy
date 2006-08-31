@@ -55,30 +55,28 @@ public class SearchCapability extends Capability {
 			return false;
 		return true;
 	}
+	/** dont know what this is */
 	public String getExtensionSearchSupport() {
 		return this.extensionSearchSupport;
 	}
 	public void setExtensionSearchSupport(String extensionSearchSupport) {
 		this.extensionSearchSupport = extensionSearchSupport;
 	}
+	/** returns the maximum number of records this service will return in response to a query */
 	public int getMaxRecords() {
 		return this.maxRecords;
 	}
 	public void setMaxRecords(int maxRecords) {
 		this.maxRecords = maxRecords;
 	}
+	/** access a list of additional optional search protocols this registry provides */
 	public String[] getOptionalProtocol() {
 		return this.optionalProtocol;
 	}
 	public void setOptionalProtocol(String[] optionalProtocol) {
 		this.optionalProtocol = optionalProtocol;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
+
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("SearchCapability[");

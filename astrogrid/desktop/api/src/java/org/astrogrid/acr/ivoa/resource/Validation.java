@@ -19,9 +19,11 @@ public class Validation implements Serializable {
 	private static final long serialVersionUID = 7087731844708485379L;
 	private URI validatedBy;
 	private  int validationLevel;
+	/** the name of the authority that has validated this record */
 	public URI getValidatedBy() {
 		return this.validatedBy;
 	}
+	/** the validation level this record has attained */
 	public int getValidationLevel() {
 		return this.validationLevel;
 	}
@@ -55,12 +57,6 @@ public class Validation implements Serializable {
 			return false;
 		return true;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Validation[");

@@ -122,16 +122,9 @@ public class Interface implements Serializable {
 			return false;
 		return true;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Interface[");
-			buffer.append("serialVersionUID = ").append(serialVersionUID);
 			buffer.append(", version = ").append(version);
 			buffer.append(", role = ").append(role);
 			if (accessUrls == null) {

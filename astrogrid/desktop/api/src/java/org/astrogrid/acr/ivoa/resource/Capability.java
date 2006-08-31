@@ -123,16 +123,10 @@ public class Capability implements Serializable {
 			return false;
 		return true;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
+
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Capability[");
-			buffer.append("serialVersionUID = ").append(serialVersionUID);
 			if (validationLevel == null) {
 				buffer.append(", validationLevel = ").append("null");
 			} else {

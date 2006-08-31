@@ -3,7 +3,7 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-/**
+/** Descripiton of the Capabilities of a Simple Image Access Service.
  * @author Noel Winstanley
  * @since Aug 5, 20069:57:07 PM
  */
@@ -22,54 +22,63 @@ public class SiapCapability extends Capability {
     protected int maxImageSizeDec;
     protected int maxFileSize;
     protected int maxRecords;
+    /** describes what kind of service this is - cutout, etc */
 	public String getImageServiceType() {
 		return this.imageServiceType;
 	}
 	public void setImageServiceType(String imageServiceType) {
 		this.imageServiceType = imageServiceType;
 	}
+	/** access the maximum size for returned files */
 	public int getMaxFileSize() {
 		return this.maxFileSize;
 	}
 	public void setMaxFileSize(int maxFileSize) {
 		this.maxFileSize = maxFileSize;
 	}
+	/** access the maximum image extent (declination) for returned files */
 	public float getMaxImageExtentDec() {
 		return this.maxImageExtentDec;
 	}
 	public void setMaxImageExtentDec(float maxImageExtentDec) {
 		this.maxImageExtentDec = maxImageExtentDec;
 	}
+	/** access the maximum image extent (right ascension) for returned files */
 	public float getMaxImageExtentRa() {
 		return this.maxImageExtentRa;
 	}
 	public void setMaxImageExtentRa(float maxImageExtentRa) {
 		this.maxImageExtentRa = maxImageExtentRa;
 	}
+	/** access the maximum image size  (declination) for returned files */
 	public int getMaxImageSizeDec() {
 		return this.maxImageSizeDec;
 	}
 	public void setMaxImageSizeDec(int maxImageSizeDec) {
 		this.maxImageSizeDec = maxImageSizeDec;
 	}
+	/** access the maximum image size (right ascension) for returned files */
 	public int getMaxImageSizeRa() {
 		return this.maxImageSizeRa;
 	}
 	public void setMaxImageSizeRa(int maxImageSizeRa) {
 		this.maxImageSizeRa = maxImageSizeRa;
 	}
+	/** access the maximum query size (declination) for returned files */
 	public float getMaxQueryRegionSizeDec() {
 		return this.maxQueryRegionSizeDec;
 	}
 	public void setMaxQueryRegionSizeDec(float maxQueryRegionSizeDec) {
 		this.maxQueryRegionSizeDec = maxQueryRegionSizeDec;
 	}
+	/** access the maximum query size (right ascencion) for returned files */
 	public float getMaxQueryRegionSizeRa() {
 		return this.maxQueryRegionSizeRa;
 	}
 	public void setMaxQueryRegionSizeRa(float maxQueryRegionSizeRa) {
 		this.maxQueryRegionSizeRa = maxQueryRegionSizeRa;
 	}
+	/** access the maximum number of records returned by a query */
 	public int getMaxRecords() {
 		return this.maxRecords;
 	}
@@ -121,12 +130,7 @@ public class SiapCapability extends Capability {
 			return false;
 		return true;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
+
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("SiapCapability[");

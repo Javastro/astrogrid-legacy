@@ -1,4 +1,4 @@
-/*$Id: SkyNode.java,v 1.3 2006/08/15 09:48:55 nw Exp $
+/*$Id: SkyNode.java,v 1.4 2006/08/31 20:22:13 nw Exp $
  * Created on 21-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -105,7 +105,7 @@ public interface SkyNode {
      * @param service identifier of the service to execute query on     
      * @param adqlx the query to execute
      * @param format required format for results (one of the results returned from {@link #getFormats()}
-     * @return a string of results @todo consider whether byte[] is a safer bet here. - test byte[] first
+     * @return a string of results @todo consider whether byte[] is a safer bet here. 
 * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// identifier, or <tt>adqlx</tt> is not a valid ADQL query
      * @throws NotFoundException of the service does not exist (i.e. cannot be resolved in registry) ,
      * @throws ServiceException if the service cannot be connected to, or fails in some way.       
@@ -166,6 +166,9 @@ public interface SkyNode {
 
 /* 
 $Log: SkyNode.java,v $
+Revision 1.4  2006/08/31 20:22:13  nw
+doc fix.
+
 Revision 1.3  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

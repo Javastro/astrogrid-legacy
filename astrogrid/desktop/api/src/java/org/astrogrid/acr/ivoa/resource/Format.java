@@ -5,7 +5,7 @@ package org.astrogrid.acr.ivoa.resource;
 
 import java.io.Serializable;
 
-/**
+/** Describes a data format that a service can return
  * @author Noel Winstanley
  * @since Aug 5, 20069:42:45 PM
  */
@@ -16,12 +16,14 @@ public class Format implements Serializable{
 	private static final long serialVersionUID = -1809580501692644534L;
 	private String value;
 	private boolean mimeType;
+	/** true if this format is described as a mime type */
 	public boolean isMimeType() {
 		return this.mimeType;
 	}
 	public void setMimeType(boolean mimeType) {
 		this.mimeType = mimeType;
 	}
+	/** the name of this data format */
 	public String getValue() {
 		return this.value;
 	}
@@ -52,12 +54,7 @@ public class Format implements Serializable{
 			return false;
 		return true;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
+
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Format[");

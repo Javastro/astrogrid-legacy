@@ -1,4 +1,4 @@
-/*$Id: BrowserControl.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: BrowserControl.java,v 1.4 2006/08/31 20:23:09 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,10 +27,6 @@ import java.net.URL;
  *
  */
 public interface BrowserControl {
-    /*
-     *  * @todo implement using JDIC, or for platforms that don't support thisimplement a browser control that fires off http://jrex.mozdev.org/ - java implementaiton of mozilla.
-     *  - launch this as an optional plugin in jnlp.
-     */
     /**Display a page in the system webbrowser
  * @param url URL of the resource to display
  * @throws ACRException if the system webbrowser cannot be launched. Will not throw if the webbrowser then fails to 
@@ -53,6 +49,9 @@ public interface BrowserControl {
 
 /* 
 $Log: BrowserControl.java,v $
+Revision 1.4  2006/08/31 20:23:09  nw
+doc fix.
+
 Revision 1.3  2006/02/02 14:19:47  nw
 fixed up documentation.
 

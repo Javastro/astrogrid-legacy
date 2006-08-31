@@ -59,12 +59,7 @@ public class Date implements Serializable {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	/**
-		 * toString methode: creates a String representation of the object
-		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
-	
-		 */
+
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Date[");

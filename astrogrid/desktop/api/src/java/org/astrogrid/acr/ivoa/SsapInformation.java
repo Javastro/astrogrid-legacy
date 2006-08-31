@@ -1,4 +1,4 @@
-/*$Id: SsapInformation.java,v 1.4 2006/08/15 09:48:55 nw Exp $
+/*$Id: SsapInformation.java,v 1.5 2006/08/31 20:22:13 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,6 @@ public class SsapInformation extends ApplicationInformation {
     static final long serialVersionUID = -4375801957623175156L;
     private static Map parameters;
     private static InterfaceBean[] ifaces;
-    //@todo copied from siap at the moment.
     static { // build static app info for a ssap application
         // missing paramers are ucd, default value, units, type, subtype,options
         ParameterBean pos = new ParameterBean("POS","Position",
@@ -123,6 +122,9 @@ public class SsapInformation extends ApplicationInformation {
 
 /* 
 $Log: SsapInformation.java,v $
+Revision 1.5  2006/08/31 20:22:13  nw
+doc fix.
+
 Revision 1.4  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

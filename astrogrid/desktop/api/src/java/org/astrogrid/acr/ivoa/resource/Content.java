@@ -138,12 +138,7 @@ public boolean equals(Object obj) {
 		return false;
 	return true;
 }
-/**
-	 * toString methode: creates a String representation of the object
-	 * @return the String representation
-	 * @author info.vancauwenberge.tostring plugin
 
-	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Content[");

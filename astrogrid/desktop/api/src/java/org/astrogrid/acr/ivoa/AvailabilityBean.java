@@ -1,4 +1,4 @@
-/*$Id: AvailabilityBean.java,v 1.3 2006/06/15 09:01:42 nw Exp $
+/*$Id: AvailabilityBean.java,v 1.4 2006/08/31 20:22:13 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * description of the availability of a server
+ * Description of the availability of a server
  * @since 1.9
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Feb-2006
  *
@@ -145,6 +145,9 @@ public class AvailabilityBean implements Serializable {
 
 /* 
 $Log: AvailabilityBean.java,v $
+Revision 1.4  2006/08/31 20:22:13  nw
+doc fix.
+
 Revision 1.3  2006/06/15 09:01:42  nw
 provided implementations of equals()
 
