@@ -8,7 +8,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 
 
 /** registry entry for a cea application
- * @todo implement new details.
+ * @bean
  * @author Noel Winstanley
  * @since Jul 31, 20066:03:15 PM
  */

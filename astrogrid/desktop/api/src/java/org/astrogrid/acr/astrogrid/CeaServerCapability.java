@@ -8,7 +8,9 @@ import java.util.Arrays;
 
 import org.astrogrid.acr.ivoa.resource.Capability;
 
-/**
+/**Registry description of a CEA server.
+ * @bean
+ * 
  * @author Noel Winstanley
  * @since Aug 5, 200610:01:00 PM
  */
@@ -51,6 +53,7 @@ public class CeaServerCapability extends Capability {
 		return true;
 	}
 
+	/** access a list of the identifiers of the applications this server provides */
 	public URI[] getManagedApplications() {
 		return this.managedApplications;
 	}

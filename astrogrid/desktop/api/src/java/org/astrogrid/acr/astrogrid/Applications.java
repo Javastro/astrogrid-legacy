@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.7 2006/08/15 09:48:55 nw Exp $
+/*$Id: Applications.java,v 1.8 2006/08/31 20:21:16 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -130,7 +130,6 @@ public interface Applications {
      * @throws ServiceException if error occurs when talking to the sever
      * @throws NotFoundException if this application could not be found
      * @throws InvalidArgumentException if the application name is malformed
-     * @todo make more configurable.
      * */
     String getDocumentation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
     
@@ -318,6 +317,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.8  2006/08/31 20:21:16  nw
+ removed obsolete @todos
+
  Revision 1.7  2006/08/15 09:48:55  nw
  added new registry interface, and bean objects returned by it.
 
