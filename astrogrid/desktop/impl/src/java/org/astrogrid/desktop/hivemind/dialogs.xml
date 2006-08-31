@@ -130,7 +130,7 @@
 				<service>ivoa.registry</service>
 				<service>system.browser</service>
 				<service>ui.registryBrowser</service>
-				<service>system.cache</service>
+				<service>ivoa.cache</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -179,7 +179,7 @@
 				<service>astrogrid.applications</service>
 				<service>system.browser</service>
 				<service>ui.registryBrowser</service>
-				<service>system.cache</service>
+				<service>ivoa.cache</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	

@@ -35,6 +35,15 @@
 
 	</contribution>	
 	
+	<contribution configuration-id="system.uiStructure" if="not (property ivoa.cache.disabled)">
+		<action parentName="edit" name="cacheClear" text="Flush Cache"
+			object="service:cache" methodName="flush" before="configreset" >
+			<confirmMessage><![CDATA[<html>
+				Remove all cached registry documents?
+				Proceed?
+			]]></confirmMessage>
+		</action>		
+	</contribution>		
 		<!-- factory defaults for enabled services and config properties -->
 	<contribution configuration-id="hivemind.FactoryDefaults">
 		<default symbol="ivoa.adql074.endpoint" value="http://openskyquery.net/AdqlTranslator/ADQLTrans.asmx"/>			
@@ -57,6 +66,7 @@
 		<load service-id="adql074" />
 		<load service-id="registry" />
 		<load service-id="externalRegistry" />
+		<load service-id="cache" />		
 	</contribution>	
 	
 	<!-- services and implementations -->
@@ -69,7 +79,7 @@
 				<service>externalRegistry</service>
 				<string>${org.astrogrid.registry.query.endpoint}</string>
 				<string>${org.astrogrid.registry.query.altendpoint}</string>
-				<service>system.cache</service>				
+				<service>ivoa.cache</service>				
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -80,7 +90,6 @@
 	
 	<service-point id="externalRegistry" interface="org.astrogrid.desktop.modules.ivoa.ExternalRegistryInternal">
 		External Registries.
-		<!-- todo add a cache interceptor, before the throbber -->
 		<interceptor service-id="system.throbber" />
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl" >
@@ -148,7 +157,22 @@
 	<implementation service-id="adql074" if="property ivoa.adql074.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
+<!--  result cache. -->
+	<service-point id="cache" interface="org.astrogrid.desktop.modules.ivoa.CacheFactory">
+	Result Cache. Would fit more logically in the system module, but then causes build
+	problems for the hub. so it's better suited here - as it's used mostly in the ivoa.registry
+	clients anyhow.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ivoa.CacheFactoryImpl">
+				<string>${astrogrid.store.workdir}</string>
+				<event-listener service-id="builtin.shutdown" />			
+			</construct>
+		</invoke-factory>
+	</service-point>
 	
+		<implementation service-id="cache"  if="property ivoa.cache.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
+	</implementation>			
 	
  </module>
  

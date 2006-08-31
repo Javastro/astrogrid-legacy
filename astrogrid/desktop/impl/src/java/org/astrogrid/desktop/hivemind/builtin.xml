@@ -18,11 +18,9 @@ Builtin Components
 	
 	<contribution configuration-id="hivemind.EagerLoad">
 		<load service-id="acr"/> 
-	</contribution>
-	
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
 		<load service-id="shutdown"/> 
-	</contribution>	
+	</contribution>
+
 	
 		
 	<contribution configuration-id="system.rmiListenerInterfaces">

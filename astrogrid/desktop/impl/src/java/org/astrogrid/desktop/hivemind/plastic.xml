@@ -86,7 +86,6 @@
 	</contribution>
 	<!-- everything else - eager when testing -->
 	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="messenger"/>
 		<load service-id="namegen" />
 	</contribution>		
 	

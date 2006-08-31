@@ -319,7 +319,7 @@
 				<service>dialogs.simpleToolEditor</service>
 				<service>dialogs.resourceChooser</service>		
 				<configuration>workflowTemplates</configuration>
-				<service>system.cache</service>
+				<service>ivoa.cache</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -422,7 +422,7 @@
 				<service>system.ui</service>
 				<service>system.configuration</service>
 				<service>system.browser</service>
-				<service>system.cache</service>
+				<service>ivoa.cache</service>
 				<!--<event-listener service-id="builtin.shutdown" />						-->
 			</construct>
 		</invoke-factory>	

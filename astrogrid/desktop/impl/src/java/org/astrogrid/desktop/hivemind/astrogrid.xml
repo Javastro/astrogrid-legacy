@@ -77,12 +77,13 @@
 			value="http://galahad.star.le.ac.uk:8080/astrogrid-jes/services/JobControllerService" />
 
 		<default symbol="astrogrid.community.register" value="mailto:astrogrid_signup@star.le.ac.uk?subject=New%20Account%20Request&amp;body=Name:%0D%0AInstitute:"/>
+		<default symbol="astrogrid.community.defaultCommunity" value="uk.ac.le.star" />
 		<default symbol="astrogrid.myspace.fetchParents" value="true" />
 		<default symbol="astrogrid.myspace.maxExtraNodes" value="200" />
 		<default symbol="astrogrid.myspace.prefetchDepth" value="3" />
 		<default symbol="astrogrid.loginDialogue.alternative.logger" value="LOGIN" />
 
-			<!-- TODO pity it's not possible to define this in terms of ag.stoe.workdir - maybe should be altered to depend on that in code instead -->
+			<!-- TODO pity it's not possible to define this in terms of ag.store.workdir - maybe should be altered to depend on that in code instead -->
 		<default symbol="trusted.cert.dir"
 			value="${user.home}${file.separator}.workbench${file.separator}trusted-certificates" />
 	</contribution>
@@ -92,7 +93,7 @@
 		<load service-id="messaging" />
 	</contribution>
 	
-	<!-- todo - needs testing 
+	<!-- FIXME - needs testing 
 	<contribution configuration-id="hivemind.EagerLoad"  if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
 		<load service-id="trayRemoteProcessListener"/>
 	</contribution>
@@ -152,7 +153,7 @@
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
 		<action parentName="advanced" name="htmlACR" text="AR web interface"
 			iconName="overview48.gif"
-			object="service:system.browser" methodName="openRelative" after="listPlastic" >
+			object="service:system.browser" methodName="openRelative" after="*" >
 			<parameter></parameter> <!-- intentionally blank -->
 			<tooltip>Browse and execute AR and PLASTIC functions</tooltip>
 		</action>
@@ -246,7 +247,9 @@
 		<invoke-factory>
 			<construct  class="org.astrogrid.desktop.modules.ag.SwingLoginDialogue">
 				<service>system.browser</service>
+				<service>ivoa.registry</service>
 				<string>${astrogrid.community.register}</string>
+				<string>$[astrogrid.community.defaultCommunity}</string>
 			</construct>
 		</invoke-factory>
 	</service-point>
