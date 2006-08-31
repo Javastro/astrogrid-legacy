@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.15 2006/07/20 12:33:28 nw Exp $
+/*$Id: UIImpl.java,v 1.16 2006/08/31 21:32:09 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -352,8 +352,11 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
                     ((JMenu)current).add(a);
                 } else if (current instanceof JComponent) {                
                     JButton b = new JButton(a);
-                    b.setText("<html><center>" + StringUtils.replace(a.getText()," ","<br>"));
-                    b.setPreferredSize(new Dimension(96,96));
+                    b.setText("<html><center>" + a.getText()); // StringUtils.replace(a.getText()," ","<br>"));
+                    // fix for bz 1735
+                    b.setHorizontalTextPosition(JButton.CENTER);
+                    b.setVerticalTextPosition(JButton.BOTTOM);
+                    b.setPreferredSize(new Dimension(120,96));
                     b.setAlignmentY(JButton.TOP_ALIGNMENT);
                     ((JComponent)current).add(b);
                 } else {
@@ -462,6 +465,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.16  2006/08/31 21:32:09  nw
+fixed osx button clipping bug.
+
 Revision 1.15  2006/07/20 12:33:28  nw
 changed to use image fetching library.
 
