@@ -18,7 +18,6 @@ import org.apache.commons.logging.LogFactory;
  * @author John Taylor
  * @modified Noel Winstanley - renamed to remove ambiguity. added some extra info methods, 
  * strengthened types (more pressing if used by more clients)
- * @todo wonder whether its worth merging / extending appicaitonDescription - there's similarites, and differences..
  * @since Jun 16, 20061:19:37 PM
  */
 public class PlasticApplicationDescription {

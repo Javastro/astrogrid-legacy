@@ -15,7 +15,7 @@ import org.votech.plastic.PlasticListener;
  * @author jdt@roe.ac.uk
  * @date 22-Nov-2005
  */
-public interface PlasticHubListenerInternal extends PlasticHubListener{//NWW - needs to extend public interface, otherwise won't get found
+public interface PlasticHubListenerInternal extends PlasticHubListener{//- needs to extend public interface, otherwise won't get found
 
     /**
      * Instruct the hub to open a web page listing details of all the registered apps.

@@ -17,10 +17,10 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.votech.plastic.PlasticListener;
-//@todo NWW : remove dependency on browser - let infrastructure take care of displaying result instead.
+//@todo  remove dependency on browser - let infrastructure take care of displaying result instead.
 //TODO JDT: This whole way of displaying the results is pants - it was just quick and easy to do.
 // Topcat's plastic apps window is better, as it responds dynamically to new apps being added.
-//@todo NWW: add this info into tooltips in the 'registered applications' status bar at bottom of main window??
+//@todo  add this info into tooltips in the 'registered applications' status bar at bottom of main window??
 public class PrettyPrinterImpl implements PrettyPrinterInternal {
 	/**
 	 * Logger for this class
