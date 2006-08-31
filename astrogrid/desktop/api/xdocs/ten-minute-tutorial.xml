@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        <title>Ten Minute Tutorial</title>
+</properties>
+<body>
+
+	<section name="10 Minute Tutorial">
+		<p>
+			It's quite straightforward to connect to the Astro Runtime
+			and start calling functions. This tutorial covers that first step.
+		</p>
+
+		<subsection name="Architecture">
+			<p>
+				The architecture of a system that uses AR to access VO
+				services looks something like this:
+			</p>
+			<img  src="acr-schematic.gif" border="1" />
+			<p>
+				The left of the figure lists the different kinds of client that might use the
+				AR (there's some overlap between application and
+				scripting).
+			</p>
+			<p>
+				Client call the AR API
+				using one of four possible access methods (green circles). The feature set provided by each access method
+				is identical wherever possible. (Some technical limitations apply to
+				XMLRPC, and in particular to REST)
+			</p>
+			<p>
+				No matter what the access method, the same
+				implemementation of the function is called.
+			</p>
+			<!--  expand and improv e this list -->
+			<p>
+				Related functions are gathered into <b>components</b>. Related components are in turn gathered into
+				<b>modules</b>. The modules present in the AR shown in the figure as blue boxes. They are"
+				<dl>
+					<dt>
+						<tt>astrogrid</tt>
+					</dt>
+					<dd>
+						access AstroGrid services: Myspace filestorage, CEA task servers,
+						DSA asynchronous catalog query, JES Workflow engine.
+					</dd>
+					<dt><tt>cds</tt></dt>
+					<dd>
+						access CDS services: e.g. Vizier, Simbad name resolved)
+					</dd>
+					<dt>
+						<tt>dialogs</tt>
+					</dt>
+					<dd>gui dialogs that prompt for input, and larger UI components (e.g. myspace browser)</dd>
+					<dt>
+						<tt>system</tt>
+						<!--  down to here. need to get the rest of this done. -->
+					</dt>
+					<dd>
+						Configuration of the ACR, and management of the
+						access methods
+					</dd>
+					<dt>
+						{@linkplain org.astrogrid.acr.builtin Builtin}
+					</dt>
+					<dd>Internals of the ACR</dd>
+				</dl>
+			</p>
+		</subsection>
+
+		<subsection name="Choosing an Access Method">
+			<p>
+				The access method you choose to call the ACR depends on
+				a few factors:
+				<ul>
+					<li>
+						If you're coding in Java, you've the most
+						choice. Choose
+						<b>RMI</b>
+						if you want all the features and type safety of
+						the API while keeping your code out of the ACR;
+						choose
+						<b>XMLRPC</b>
+						if you prefer something more lightweight, but
+						less typed; Choose
+						<b>Direct</b>
+						if you're implementing a new component that's
+						going to be plugged into the ACR.
+					</li>
+					<li>
+						If you're coding in another language,
+						<b>XMLRPC</b>
+						is the best choice. Most popular languages
+						provide an XMLRPC client library - if your
+						chosen language lacks once, fall back to
+						<b>HTTP</b>
+						(or consider writing the xmlrpc client yourself)
+					</li>
+				</ul>
+			</p>
+		</subsection>
+
+		<subsection name="RMI">
+			<p>
+				You need the following jars on the classpath (all
+				bundled in the ACR distribution -
+				<a
+					href="http://software.astrogrid.org/jnlp/astrogrid-desktop/acr-interface.tar.gz">
+					Download
+				</a>
+				)
+				<ul>
+					<li>
+						<tt>acr-interface-*.jar</tt>
+						- the interfaces documented in this javadoc
+					</li>
+					<li>
+						<tt>rmi-lite-1.0.jar</tt>
+						- (
+						<a href="http://rmi-lite.sourceforge.net/">
+							http://rmi-lite.sourceforge.net/
+						</a>
+						) - simplifies Java RMI by generating stub
+						classes via reflection
+					</li>
+					<li>
+						<tt>commons-logging-1.0.3.jar</tt>
+						- (
+						<a
+							href="http://jakarta.apache.org/commons/logging/">
+							http://jakarta.apache.org/commons/logging/
+						</a>
+						) - interface to various logging libraries
+					</li>
+					<li>
+						<tt>xerces-2.4.0.jar</tt>
+						- (
+						<a href="http://xml.apache.org">
+							http://xml.apache.org
+						</a>
+						) - xml parser - to ensure that
+						<tt>Document</tt>
+						objects can be transported via RMI
+					</li>
+					<li>
+						<tt>xml-apis-1.0.b2</tt>
+						- (
+						<a href="http://xml.apache.org">
+							http://xml.apache.org
+						</a>
+						) - supporting interfaces for the xml parser
+					</li>
+				</ul>
+
+				Use the following code to access the ACR:
+				<source>
+					import org.astrogrid.acr.builtin.ACR; import
+					org.astrogrid.acr.Finder; Finder f = new Finder();
+					ACR acr = f.find();
+				</source>
+
+				{@link org.astrogrid.acr.Finder} takes care of
+				connecting to the ACR server. If it can't find a running
+				service, it'll attempt to create one - either in-process
+				or externally. Although the finder will make best
+				efforts to create an ACR if needed, at the moment it's
+				best to pre-start the ACR Workbench. It can be launched
+				using the following Java Webstart URL
+			</p>
+			<br></br>
+			<p>
+				<a
+					href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp">
+					<b>
+						http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp
+					</b>
+				</a>
+			</p>
+			<p></p>
+			<tt>Finder</tt>
+			<p>
+				returns an instance of {@link
+				org.astrogrid.acr.builtin.ACR} . This allows you to
+				retreive components (services) from the ACR, which you
+				can then call methods on. The components of the acr are
+				arranged into modules, which correspond to
+				<i>packages</i>
+				in this javadoc. For example, to write some data to
+				myspace, first retreive the {@link
+				org.astrogrid.acr.astrogrid.Myspace} component, and then
+				call the methods on it.
+
+				<source>
+					import org.astrogrid.acr.astrogrid.Myspace; import
+					java.net.URI; ... Myspace ms =
+					(Myspace)acr.getService(Myspace.class); URI file =
+					new URI("#votable/results.txt"); String data= "some
+					data"; if (!ms.exists(file)) { ms.createFile(file);
+					} ms.write(file, data);
+				</source>
+
+				See the javadoc of individual components for examples of
+				their use.
+			</p>
+			<p>
+
+				The RMI access method can also be used from other
+				JVM-based programming languages, provided the jars are
+				added to the classpath. See
+				<a
+					href="org/astrogrid/acr/astrogrid/doc-files/runAppDemo.groovy">
+					runAppDemo.groovy
+				</a>
+				for an example of calling the ACR interface from Groovy
+				(
+				<a href="http://groovy.codehaus.org/">
+					http://groovy.codehaus.org/
+				</a>
+				).
+			</p>
+		</subsection>
+		<subsection name="Direct">
+			<p>
+				Very similar to RMI, but running in the same JVM as the
+				ACR. You need all the jars in the acr-implementation
+				distribution (
+				<a
+					href="http://www.astrogrid.org/maven/org.astrogrid/distributions/?P=astrogrid-desktop-1.1*.tar.gz*">
+					astrogrid-desktop-1.1*.tar.gz
+				</a>
+				) on your classpath. Then access the ACR in the same way
+				as for RMI - create a
+				<tt>Finder</tt>
+				, and from this get an
+				<tt>ACR</tt>
+				object. If there's no ACR already running and the
+				implementation classes are on the classpath, an
+				in-process acr will be created. There's no difference to
+				the programming api.
+			</p>
+			<p>
+				If you're implementing a new component for inclusion in
+				the ACR, you should follow the same programming style as
+				the other components - constructor injection. Wrap the
+				returned
+				<tt>ACR</tt>
+				object in a {@link
+				org.astrogrid.acr.opt.AcrPicoContainer}, and use this to
+				inject dependencies into your new component.
+				<!-- TODO - add link to development docs on dev site -->
+			</p>
+		</subsection>
+
+		<subsection name="XMLRPC">
+			<p>
+				There's XMLRPC libraries for a range of languages. See
+				<a href="http://www.xmlrpc.com/">
+					http://www.xmlrpc.com/
+				</a>
+				for a list.
+			</p>
+			<p></p>
+			<p>
+
+				The details of how to create and configure the xmlrpc
+				client vary between language and library. The general
+				method of connecting to the ACR is the same however:
+				<ul>
+					<li>
+						a running ACR will write a file in the user's
+						home directory called
+						<tt>.astrogrid-desktop</tt>
+						. This contains a single line like
+						<br></br>
+						<tt>http://localhost:8001/a6d4c15eaaefe3c/</tt>
+						<br></br>
+						This is the address of the ACR's internal
+						webserver - the file changes each time the ACR
+						is run, and is deleted when the ACR exits.
+					</li>
+					<li>
+						In your program, read the line from the file,
+						and append
+						<tt>xmlrpc</tt>
+						to it. This gives the URL of the XMLRPC server
+					</li>
+					<li>
+						Pass this url to the xmlrpc client library to
+						configure it
+					</li>
+					<li>
+						Functions of the api can be called using the
+						form
+						<tt>
+							module-name.component-name.function-name
+						</tt>
+						. The javadoc for each component states the
+						module-name and component-name to use. Function
+						names are the same as in the javadoc
+					</li>
+					<li>
+						Documentation for individual functions may
+						contain further notes about how to call the
+						function via xmlrpc. The most significant change
+						is that it's mostly strings that are passed as
+						inputs and outputs - the javadoc should note
+						when this is not the case
+					</li>
+					<li>
+						make sure the acr is running before you attempt
+						to run your program - there's not way for the
+						program to start an ACR if it needs it. Launch
+						the ACR using the following Webstart URL:
+						<br></br>
+						<a
+							href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp">
+							<b>
+								http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp
+							</b>
+						</a>
+					</li>
+					<li>
+						use the standard xmlrpc methods
+						<tt>system.listMethods</tt>
+						,
+						<tt>system.methodHelp</tt>
+						, and
+						<tt>system.methodSignature</tt>
+						to get information on methods at runtime -
+						although this information is not as detailed as
+						this Javadoc.
+					</li>
+				</ul>
+			</p>
+		</subsection>
+		<subsection name="Python Example">
+			<p>
+				Here's the equivalent of the previous RMI example in
+				Python, using the XMLRPC access method. Python comes
+				bundled with an xmlrpc library, so nothing needs to be
+				installed.
+				<source>
+					import xmlrpclib as x import os #boilerplate - read
+					the info file and configure the xmlrpc server prefix
+					=
+					file(os.path.expanduser("~/.astrogrid-desktop")).next().rstrip()
+					server = x.Server(prefix + "xmlrpc") #now create
+					some parameters and call some ACR methods file =
+					"#votable/results.txt" data= "some data" if not
+					server.astrogrid.myspace.exists(file) :
+					server.astrogrid.myspace.createFile(file)
+					server.astrogrid.myspace.write(file, data)
+				</source>
+
+				See
+				<a
+					href="org/astrogrid/acr/astrogrid/doc-files/run-app-demo.py">
+					run-app-demo.py
+				</a>
+				for a larger example of working with the ACR in python
+				via XMLRPC
+
+			</p>
+		</subsection>
+		<subsection name="Perl Example">
+			<p>
+				Perl doesn't ship with an XMLRPC client by default, but
+				the
+				<a
+					href="http://search.cpan.org/~kmacleod/Frontier-RPC-0.07b4/lib/Frontier/Client.pm">
+					Frontier XMLRPC client
+				</a>
+				can be downloaded from CPAN.
+			</p>
+			<p></p>
+			<p>
+				Perl isn't my strong point, so this is less slick
+				<source>
+					use Frontier::Client;
+
+					# create the server # don't know how to find current
+					user's home dir, or how to read in files nicely -
+					hopefuly someone can show me how to do this
+					open(CONFIG_FILE,"/home/noel/.astrogrid-desktop") ||
+					die("Could not open acr config - check ACR is
+					running"); $prefix=&lt;CONFIG_FILE&gt;
+					close(CONFIG_FILE); chomp $prefix; $url = $prefix .
+					"xmlrpc"; $server = Frontier::Client-&gt;new(url
+					=&gt; $url); $file = "#votable/results.txt"; $data =
+					"some data"; if
+					($server-&gt;call('astrogrid.myspace.exists',$file))
+					{
+					$server-&gt;call('astrogrid.myspace.createFile',$file);
+					}
+					$server-&gt;call('astrogrid.myspace.write',$file,$data);
+
+				</source>
+
+			</p>
+		</subsection>
+		<subsection name="C++ Example">
+			<p>
+				See
+				<a
+					href="org/astrogrid/acr/doc-files/talk_to_acr_server.cpp">
+					talk_to_acr_server.cpp
+				</a>
+				(thanks to Richard Holbrey)
+
+			</p>
+		</subsection>
+
+		<subsection name="HTTP-GET">
+			<p>
+				If your language of choice lacks an XMLRPC library, but
+				has a way to fetch a HTTP url, this interface can be
+				used as a fallback. Starting from the URL given in the
+				<tt>.astrogrid-desktop</tt>
+				file (or choosing the option 'Modules &gt; Html
+				Interface' in the Workbench), there's a series of web
+				pages that can be explored in a web browser, or called
+				programatically.
+			</p>
+			<p></p>
+			<p>
+				The pages are arranged into a hierarchy of
+				<i>module</i>
+				:
+				<i>component</i>
+				:
+				<i>function</i>
+				:
+				<i>result-type</i>
+				. Modules, components and function were introduced
+				previously. The result-type is a choice between
+				<ul>
+					<li>
+						<tt>html</tt>
+						- which will return an html-formatted result
+						(possibly styling xml into html)
+					</li>
+					<li>
+						<tt>plain</tt>
+						- which will return a plain-text result
+					</li>
+				</ul>
+			</p>
+			<p></p>
+			<p>
+				When exploring in a web browser, on function pages there
+				are forms to enter parameters and execute the function.
+				The same can be done programatically by constructing
+				URLs of the form
+				<source>////?</source>
+				For example, the following URL retreives information
+				about the job
+				<tt>
+					jes:galahad.star.le.ac.uk/143.210.36.238/noelwinstanley@uk.ac.le.star/1441
+				</tt>
+				, displaying the result as plain text.
+				<source>
+					http://localhost:8001/a6d4c15eaaefe3c/astrogrid/jobs/getJobInformation/plain?jobURN=jes:galahad.star.le.ac.uk/143.210.36.238/noelwinstanley@uk.ac.le.star/1441
+				</source>
+				The parameter names to use are documented on the
+				function pages. It is also possible to perform a
+				HTTP-POST of the parameters - this is better suited when
+				the parameters are large (e.g documents)
+			</p>
+		</subsection>
+	</section>
+
+	<section name="The Next Step">
+		<p>
+		This tutorial showed how to connect to the Astro Runtime and call some functions.
+		</p>
+		<p>
+		The next step is to explore the functions of the different
+		parts of the AR API (and the VO services behind them), and begin to 
+		understand how they interrelate and what can be done with each of them.
+		</p>
+		<p>
+				A good starting point is the <a href="/apidocs/index.html">javadoc</a>.
+	 Where possible, the documentation for each service contains
+		references to the relevant standards, plus examples of how to
+		use the api. 
+		</p>
+	</section>
+</body>
+</document>

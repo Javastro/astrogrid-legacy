@@ -2,31 +2,57 @@
 <document>
 <properties>
         <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
-        <title>AstroGrid Client Runtime - Interface</title>
+        <title>Introduction</title>
 </properties>
 <body>
-
-<section name="Overview"><p>
-This project defines a set of interfaces for calling into the Astro Runtime (AR). Some of the
-interfaces expose internals of the runtime system, while others are used to access remote AstroGrid servers.
+	<section name="Astro Runtime : Client-Side Middleware for the VO"><p>
+	The Astro Runtime (AR) simplifies access to all Virtual Observatory (VO) services.
+	This component provides an API that is simple, consistent and self-contained
+	 - making the VO more accessible.
 </p>
+
 <p>
-The set of interfaces form a <a href="http://c2.com/cgi/wiki?FacadePattern">Facade</a> infront of the more complex service delegates - 
-this facade is in a single project and is self-contained - there's no dependencies on
-other AstroGrid libraries or delegates; naming conventions, parameters and exception types are
-consistent throughout the interface; and all the required documentation is in one place.
-</p>
-<p>
-  These interfaces can be accessed directly by classes running within the ACR; they can be accessed 
-  via JavaRMI by external Java code; and can be accessed via XMLRPC from other programming languages.
-</p>
+			Some current or potential uses of the AR are
+			<!--  check for concrete examples of these. -->
+			<ul>
+				<li>as  infrastructure for new VO clients and services.</li>
+				<li>to VO-integrate existing desktop applications</li>
+				<li>to provide VO functionality to existing packages (PyRaf, Parceltongue/AIPS) </li>
+				<li> simplify science scripting: e.g. programmatic access to VO
+					services from Python and IDL
+				</li>
+				<li>to provide a commandline interface to the VO</li>
+			</ul>
+		</p>
 </section>
-
-<section name="Documentation"><p>
-		Refer to the <a href="http://www.astrogrid.org/desktop/astro-runtime">AR site</a>
-	</p>
-</section>
-
-
+	<section name="Motivation">
+		<p>
+			Virtual Observatory technology is becoming complex -
+			partly through necessity, and partly because of growing
+			pains. This complexity is challenging and time-consuming to
+			learn and may be a barrier to entry for some. Amongst the
+			causes of the complexity are:
+			<ul>
+				<li>growing number of standards</li>
+				<li>interaction between standards</li>
+				<li>variation between standard versions</li>
+				<li>non-compliance of service implementations</li>
+				<li>
+					use of existing computer-science technologies -
+					WS-*, SOAP, XML Schema
+				</li>
+				<li>
+					variation between implementations of these
+					technologies
+				</li>
+			</ul>
+		</p>
+		<p>
+			We hope that the Astro Runtime (AR) hides enough of this complexity
+			so that the VO becomes accessible to more developers - from professional
+			programmers to casual shell scripters.
+			</p>
+		
+	</section>
 </body>
 </document>

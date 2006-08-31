@@ -1,4 +1,4 @@
-/*$Id: RegistryChooser.java,v 1.4 2006/08/15 09:48:55 nw Exp $
+/*$Id: RegistryChooser.java,v 1.5 2006/08/31 20:21:39 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 /**prompt the user to select a registry resource by displaying  a  registry chooser dialogue.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
  * @service dialogs.registryChooser
- * @deprecated use dialogs.RegistryGoogle.
+ * @deprecated use dialogs.registryGoogle.
  */
 public interface RegistryChooser {
     /** display the registry chooser dialogue, 
@@ -45,6 +45,9 @@ public interface RegistryChooser {
 
 /* 
 $Log: RegistryChooser.java,v $
+Revision 1.5  2006/08/31 20:21:39  nw
+improved documentation
+
 Revision 1.4  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 
