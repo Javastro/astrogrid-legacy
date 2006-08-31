@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.7 2006/06/28 11:35:34 nw Exp $
+/*$Id: Launcher.java,v 1.8 2006/08/31 21:11:10 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.UIManager;
 import javax.xml.parsers.SAXParser;
 
 import org.apache.hivemind.ApplicationRuntimeException;
@@ -61,18 +62,31 @@ public final class Launcher implements Runnable {
     private Registry reg;
     // runtime defaults. - can be overridden by things in system properties
     public static final Properties defaults = new Properties(){{
-        setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.SimpleLog");
-   //     setProperty("org.apache.commons.logging.simplelog.defaultlog","error");
-            setProperty("org.apache.commons.logging.simplelog.defaultlog","info");        
-        setProperty("org.apache.commons.logging.simplelog.showlogname","true");
-        setProperty("org.apache.commons.logging.simplelog.showShortLogname","true");
-        setProperty("java.net.preferIPv4Stack","true");
+    	setProperty("java.net.preferIPv4Stack","true");
         setProperty("java.net.preferIPv6Addresses","false");
         setProperty("ivoa.skynode.disabled","true");
+        // log4j
+        setProperty("log4j.configuration","default-log4j.properties");
+        // l & f
+        String lafName = UIManager.getSystemLookAndFeelClassName();
+        // for linux... see if we can do better than the Motif..
+        if (lafName.equals("com.sun.java.swing.plaf.motif.MotifLookAndFeel")) {// yo mamma's so ugly.
+        	try {
+        		// see if GTK  is available.. java 1.4+
+        		Class.forName("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+        		lafName = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+        	} catch (Exception noMatter) {
+        	}
+        } 
+//        lafName = UIManager.getCrossPlatformLookAndFeelClassName();
+        setProperty("swing.defaultlaf",lafName);
         // properties for apple - ignored in other contexts.
-	    setProperty("apple.laf.useScreenMenuBar","true");
-	    setProperty("apple.awt.antialiasing","true");
-	    setProperty("apple.awt.textantialiasing","true");
+        if (! System.getProperty("java.specification.version").equals("1.4")) {
+        	// under java 1.4 on macs, I keep getting odd 3 > 2 errors.
+        	setProperty("apple.laf.useScreenMenuBar","true");
+        }
+//	    setProperty("apple.awt.antialiasing","true");
+//	    setProperty("apple.awt.textantialiasing","true");
     }};    
     
     /** access the hivemind registry. creates acr if necessary */
@@ -167,6 +181,9 @@ public final class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.8  2006/08/31 21:11:10  nw
+improved look and feel usage.
+
 Revision 1.7  2006/06/28 11:35:34  nw
 added apple properties for all platforms
 
