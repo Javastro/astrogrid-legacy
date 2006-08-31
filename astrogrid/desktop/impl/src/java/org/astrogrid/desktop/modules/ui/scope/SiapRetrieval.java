@@ -70,6 +70,7 @@ public class SiapRetrieval extends Retriever {
         int formatCol = -1;
         int sizeCol = -1;
         int titleCol = -1;   
+        int dataLinkCol = -1;
         
         protected void startTableExtensionPoint(int col,ColumnInfo columnInfo) {
             String ucd = columnInfo.getUCD();
@@ -84,7 +85,9 @@ public class SiapRetrieval extends Retriever {
             sizeCol = col;
         } else if (ucd.equalsIgnoreCase("VOX:Image_Title")) {
             titleCol = col;
-        }            
+        } else if (ucd.equalsIgnoreCase("DATA_LINK")) { // non-srtandard, but seen occasionally
+        	dataLinkCol = col;
+        }
      }
 protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
         String imgURL = row[imgCol].toString();
@@ -108,6 +111,9 @@ protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
         }        
         
     protected boolean isWorthProceeding() {
+    	if (imgCol == -1) {// maybe it's a non-standard service - give it a second chance.
+    		imgCol = dataLinkCol;
+    	}
         return super.isWorthProceeding() && imgCol >= 0;
     }  
     
@@ -118,6 +124,7 @@ protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
         formatCol = -1;
         sizeCol = -1;
         titleCol = -1;           
+        dataLinkCol = -1;
     }
         
     } // end table handler class.
