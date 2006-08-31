@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.6 2006/08/15 10:12:27 nw Exp $
+/*$Id: ConeImpl.java,v 1.7 2006/08/31 21:32:49 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,11 +71,17 @@ public class ConeImpl extends DALImpl implements Cone {
 			" and vr:identifier like 'ivo://CDS/%' " + 
 			" and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN'  ) " + 
 	        " )  ";
-	        //@fixme and (not ( @status = 'inactive' or @status='deleted') )";
+	        //@issue and (not ( @status = 'inactive' or @status='deleted') )";
 	}
-//@todo add in the cds stuff.
+	
 	public String getRegistryXQuery() {
-		return "//vor:Resource[@xsi:type &= '*ConeSearch' and ( not ( @status = 'inactive' or @status='deleted'))]";
+		return "//vor:Resource[" +
+				"(" +
+				"@xsi:type &= '*ConeSearch' " +
+				// @future - find out how to add CDS in.
+				//" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" + 
+				") " +
+				"and ( not ( @status = 'inactive' or @status='deleted'))]";
 	}
 
 }
@@ -83,6 +89,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.7  2006/08/31 21:32:49  nw
+doc fixes.
+
 Revision 1.6  2006/08/15 10:12:27  nw
 migrated from old to new registry models.
 

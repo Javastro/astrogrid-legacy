@@ -1,4 +1,4 @@
-/*$Id: SwingSetup.java,v 1.6 2006/06/27 19:18:32 nw Exp $
+/*$Id: SwingSetup.java,v 1.7 2006/08/31 21:32:49 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.awt.Color;
 
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * simple class that does some global configuration of swing.
- * @future add more per-platform setup - e.g. set lookandfeel depending on platform.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
  *
  */
@@ -36,17 +36,6 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
     }
 
     public void run()   {
-    	/*
-        try {
-        PlasticLookAndFeel feel = new PlasticXPLookAndFeel();
-        // stick to default font policy - looks good.
-        feel.setTabStyle(PlasticLookAndFeel.TAB_STYLE_METAL_VALUE);
-        UIManager.setLookAndFeel(feel);    
-     } catch (Exception e) {
-         logger.warn("Failed to install plastic look and feel - oh well");
-         }  
-         */ 
-     
      // configure tooltip behaviour.
      UIManager.put("ToolTip.background",Color.white);
      ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
@@ -60,6 +49,9 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
 
 /* 
 $Log: SwingSetup.java,v $
+Revision 1.7  2006/08/31 21:32:49  nw
+doc fixes.
+
 Revision 1.6  2006/06/27 19:18:32  nw
 adjusted todo tags.
 

@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.7 2006/06/27 19:18:32 nw Exp $
+/*$Id: JettyWebServer.java,v 1.8 2006/08/31 21:32:49 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Iterator;
@@ -65,13 +66,24 @@ public class JettyWebServer implements WebServer, ShutdownListener{
     
     private File connectionFile = new File(System.getProperty("user.home") , ".astrogrid-desktop");
     private InetAddress inetAddress;
-    public JettyWebServer(List servlets,List contextObjects) throws UnknownHostException  {
+    public JettyWebServer(List servlets,List contextObjects)  {
         super();
         this.server = new Server();
        // this.server.setStopGracefully(true); 
         this.servlets = servlets;
         this.contextObjects = contextObjects;
-        inetAddress = InetAddress.getLocalHost(); // default, but can be overridden.
+        
+        try {
+			inetAddress = InetAddress.getLocalHost(); // default, but can be overridden later using setter.
+		} catch (UnknownHostException x) {
+			logger.warn("Failed to resolve local ip - falling back to loopback address");
+			logger.debug("Cause was",x);
+			try {
+				inetAddress = InetAddress.getByName("127.0.0.1");
+			} catch (UnknownHostException x1) {
+				logger.fatal("Loopback address considered invalid",x1); 
+			} 
+		} 
     }
    
     public String getKey() {
@@ -115,7 +127,7 @@ public class JettyWebServer implements WebServer, ShutdownListener{
 
     }
 
-    public void init() throws Exception {
+    public void init() throws Exception  {
         if (port < 1) { // not been set.
             port = AbstractRmiServerImpl.findSparePort(scanStartPort,scanEndPort,inetAddress);
         } else {
@@ -222,6 +234,9 @@ public void setInetAddress(String netAddress) throws UnknownHostException {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.8  2006/08/31 21:32:49  nw
+doc fixes.
+
 Revision 1.7  2006/06/27 19:18:32  nw
 adjusted todo tags.
 

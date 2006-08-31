@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.5 2006/06/15 09:50:36 nw Exp $
+/*$Id: HtmlServlet.java,v 1.6 2006/08/31 21:32:49 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -260,9 +260,8 @@ public class HtmlServlet extends AbstractReflectionServlet {
         } else if (resultType.equalsIgnoreCase("plain")) {
             out.println( plain.transform(result));
         } else {
-        	
-        	//@todo - maybe fall back to plain??
-            throw new IllegalStateException("Really can't get here");
+        	// fall back to plain.
+        	out.println(plain.transform(result));
         }
         } catch (Exception e) {
         	reportError("Exception thrown when calling method " + md.getName(),e,request,response);
@@ -293,6 +292,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.6  2006/08/31 21:32:49  nw
+doc fixes.
+
 Revision 1.5  2006/06/15 09:50:36  nw
 fixed so that exceptions are reported to user.fixed bz #1647
 
