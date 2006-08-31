@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.1 2006/08/15 10:14:14 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.2 2006/08/31 21:33:38 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,18 +58,19 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.DocumentBuilderStreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
-import org.astrogrid.desktop.modules.system.CacheFactory;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.ExternalViewerHyperlinkListener;
 import org.astrogrid.desktop.modules.ui.RegistryBrowserImpl;
@@ -93,7 +94,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
 		 */
 		private final AbstractQuery q;
 	    private final Builder briefXQueryBuilder = new SummaryXQueryVisitor();
-	    private final Builder fullTextXQueryBuilder = new FullTextXQueryVisitor();	
+	    private final Builder fullTextXQueryBuilder = new FullTextXQueryVisitor();
 		/**
 		 * @param parent
 		 * @param msg
@@ -165,16 +166,23 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
 			} 
 		}
 
+		//caching takes place on the main ui thread. which is a bit of a nusciance, but otherwise might not 
+		// end up caching the full set of results - as there's a race condition.
 		private void cacheResult( final String key) {
-			List resultList = selectTableModel.getRows();					
-			Resource[] arr = (Resource[])resultList.toArray(new Resource[resultList.size()]);
-			Element el = new Element(key,arr);
-			bulk.put(el);
-			for (int i = 0; i < arr.length; i++) {
-				if (resources.get(arr[i].getId()) == null) {
-					resources.put(new Element(arr[i].getId(),arr));
+			SwingUtilities.invokeLater(
+			new Runnable() {
+				public void run() {
+					List resultList = selectTableModel.getRows();
+					Resource[] arr = (Resource[]) resultList.toArray(new Resource[resultList.size()]);
+					Element el = new Element(key,arr);
+					bulk.put(el);
+					for (int i = 0; i < arr.length; i++) {
+						if (resources.get(arr[i].getId()) == null) {
+							resources.put(new Element(arr[i].getId(),  arr));
+						}
+					}
 				}
-			}							
+			});									
 		}
 
 		protected void doAlways() {     
@@ -478,10 +486,18 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
         final String searchTerm = keywordField.getText();
         selectTableModel.clear();
         QueryParser qp = new QueryParser(searchTerm);
-        final AbstractQuery q = qp.parse();
-        (new SearchWorker(parent, "Searching", q)).start();
+        AbstractQuery q;
+		try {
+			q = qp.parse();
+        String summary =(String) q.accept(feedbackVisitor);
+        (new SearchWorker(parent, "Searching for: " + summary, q)).start();
+		} catch (InvalidArgumentException x) {
+			parent.showError("Failed to parse search expression",x);
+		}
     }
     
+
+    private final QueryVisitor feedbackVisitor = new KeywordQueryVisitor();
     /** access the resources selected by the user
 	    * @return
 	    */
@@ -664,6 +680,9 @@ public void clear() {
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.2  2006/08/31 21:33:38  nw
+finsihed query parser
+
 Revision 1.1  2006/08/15 10:14:14  nw
 supporting classes for new registry google UI
 

@@ -3,6 +3,10 @@
  */
 package org.astrogrid.desktop.modules.dialogs.registry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.InvalidArgumentException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,12 +27,15 @@ import java.util.Stack;
  * term ::= any string of letters and digits
  * 			 |  any string in double or single quotes  
  *          | some notation for wildcards.
-
-@todo still not fully working -  expressions with parens break. - but will do for now.
- * @author Noel Winstanley
+* @author Noel Winstanley
  * @since Aug 9, 20062:47:14 PM
  */
 class QueryParser {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(QueryParser.class);
+
 	public QueryParser(String s) {
 		if (s == null) {
 			throw new IllegalArgumentException("null not allowed");
@@ -48,21 +55,20 @@ class QueryParser {
 	protected final StreamTokenizer st;
 	
 	
-	public AbstractQuery parse() {
+	public AbstractQuery parse() throws InvalidArgumentException{
 		try {
 		st.nextToken();
 		return query();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new InvalidArgumentException("Failed to parse search expression",e);
 		}
-		return null;
 	}
 	
-	private AbstractQuery query() throws IOException {
+	private AbstractQuery query() throws IOException, InvalidArgumentException {
 		AbstractQuery result = null;
 		OrQuery accum = null;
 		AbstractQuery latest = null;
-		while (st.ttype != StreamTokenizer.TT_EOF) {
+		while (st.ttype != StreamTokenizer.TT_EOF && st.ttype != ')') {
 			if (st.ttype == StreamTokenizer.TT_WORD && st.sval.equals("or")) {
 				st.nextToken();//flush
 				continue;
@@ -94,14 +100,13 @@ class QueryParser {
 		return result;
 	}
 	
-	private AbstractQuery expression() throws IOException {
+	private AbstractQuery expression() throws IOException, InvalidArgumentException {
 		AbstractQuery latest = primExp();
 		if (latest == null) {
 			return null;
 		}
 		AndQuery accum = null;
 		AbstractQuery result = latest;
-		//st.nextToken();
 		while (st.ttype== StreamTokenizer.TT_WORD && st.sval.equals("and")) {
 			st.nextToken(); //clears and
 			AbstractQuery right = primExp();
@@ -130,10 +135,10 @@ class QueryParser {
 	}
 	
 
-	public AbstractQuery primExp() throws IOException  {
+	public AbstractQuery primExp() throws IOException, InvalidArgumentException  {
 			switch (st.ttype) { 
 			case StreamTokenizer.TT_NUMBER: 
-				return null; // shouldn't happen.
+				throw new InvalidArgumentException("Got a number - impossible");
 			case StreamTokenizer.TT_WORD: 
 					if (st.sval.equals("not")) {
 						NotQuery nq = new NotQuery();
@@ -141,6 +146,9 @@ class QueryParser {
 						AbstractQuery aq = primExp();
 						nq.setChild(aq);
 						return nq;
+					} else if (st.sval.equals("or") || st.sval.equals("and") || st.sval.equals("not")){ // check for a keyword in the wrong place
+						st.nextToken(); // flush this keyword
+						return null;
 					} else {
 					TermQuery tq = new TermQuery();
 					tq.setTerm(st.sval);
@@ -156,15 +164,12 @@ class QueryParser {
 			case '(':	
 				st.nextToken();
 				AbstractQuery q =  query();
-				if (st.ttype == ')') { // missing paren - warn
-					st.nextToken(); // flush
-				}
+					st.nextToken(); // flush the ')
 				return q;
 			case ')':
 				st.nextToken();
 					return null;
 			default:
-					System.out.println((char)st.ttype);
 					st.nextToken();
 				return null;
 			} // end case
