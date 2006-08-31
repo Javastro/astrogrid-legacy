@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.3 2006/08/02 13:27:57 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.4 2006/08/31 21:13:13 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,15 +25,22 @@ import java.util.prefs.Preferences;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
@@ -48,7 +55,7 @@ import com.l2fprod.common.swing.JLinkButton;
  *@todo move to dialogues module.
  * @author   Mark Taylor (Starlink)
  * @since    25 Nov 2004
- * @modified Noel Winstanley - copied across.
+ * @modified Noel Winstanley added a combo-box for authority. not editable at the moment - but codes around that possibility.
  */
 public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 	/**
@@ -57,19 +64,26 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 	private static final Log logger = LogFactory
 			.getLog(SwingLoginDialogue.class);
 
-    private final JTextField commField_;
+    private final JComboBox commField_;
     private final JTextField userField_;
     private final JPasswordField passField_;
     private final JOptionPane opane_;
+    private final String defaultCommunity;
     /**
      * Constructs a new dialog.
      * @throws MalformedURLException 
+     * @throws ServiceException 
      */
-    public SwingLoginDialogue(final BrowserControl browser, String registerLink) throws MalformedURLException {
+    public SwingLoginDialogue(final BrowserControl browser, Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
+    	this.defaultCommunity = defaultCommunity;
+    	// this query blocks - but I think that's acceptable.
+    	Resource[] knownCommunities = reg.xquerySearch(
+    			"for $r in //vor:Resource[not (@status='deleted' or @status='inactive') and vr:identifier &= '*PolicyManager'] order by $r/vr:identifier return $r");
         /* Create query components. */
-        commField_ = new JTextField();
+        commField_ = new JComboBox(knownCommunities);
         userField_ = new JTextField();
         passField_ = new JPasswordField();
+       
 
         /* Arrange query components. */
         Stack stack = new Stack();
@@ -103,7 +117,22 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
         opane_.setMessage( new Component[] { stack, strut ,registerButton} );
         prefs = Preferences.userNodeForPackage(SwingLoginDialogue.class);
         userField_.setText(prefs.get("username",""));
-        commField_.setText(prefs.get("community",""));
+        primSetCommunity();
+        commField_.setEditable(false); // don't think there's any point - if it's not in the registry, it's not usable.
+        commField_.setRenderer(new BasicComboBoxRenderer() {
+   
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
+		
+				if (value instanceof Resource) {
+					Resource r = (Resource) value;
+					setText(mkCommunityString(r)); //@future when registry moves to v1.0, add in more data display here.
+				} else {
+					setText(value.toString());
+				}
+				return this;
+			}
+        });
     }
 
     protected void save() {
@@ -120,7 +149,30 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
      */
     public void setCommunity( String comm ) {
         prefs.put("community",comm);
-        commField_.setText( comm );
+        primSetCommunity();
+    }
+    
+    private void primSetCommunity() {
+    	String community = prefs.get("community",defaultCommunity);
+    	// find mactching string in llist.
+    	for (int i =0; i < commField_.getItemCount(); i++) {
+    		Object r =  commField_.getItemAt(i);
+    		if (matches(community,r)) {
+    			commField_.setSelectedIndex(i);
+    			return;
+    		}
+    	}
+    	// value isn't on the list - need to insert it by hand.
+    	commField_.insertItemAt(community,0);
+    	commField_.setSelectedIndex(0);
+    }
+    
+    private boolean matches(String communityName, Object r) {
+    	if (r instanceof Resource) {
+    		return mkCommunityString((Resource) r).equals(communityName);
+    	} else {
+    	return communityName.equals(r.toString());
+    	}
     }
 
     /**
@@ -129,9 +181,18 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
      * @return  community identifier
      */
     public String getCommunity() {
-        return commField_.getText();
+    	Object o = commField_.getSelectedItem();
+    	if (o instanceof Resource) {
+    		return mkCommunityString((Resource)o);
+    	} else {
+    		return o.toString();
+    	}
     }
 
+    private String mkCommunityString(Resource r) {
+    	return r.getId().getAuthority();
+    }
+    
     /**
      * Sets the content of the user text entry field.
      *
@@ -240,6 +301,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.4  2006/08/31 21:13:13  nw
+added drop-down list of communitiies.
+
 Revision 1.3  2006/08/02 13:27:57  nw
 added 'register' link.
 
