@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.2 2006/08/15 10:30:58 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.3 2006/08/31 21:07:58 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,9 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,8 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
+import org.astrogrid.io.Piper;
 
 /** tests xmlrpc transport
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
@@ -138,15 +143,7 @@ public class XmlRpcTransportIntegrationTest extends TestCase {
         assertTrue(Arrays.equals(bytes,(byte[])o));
     }
     
-    public void testTransportProxy() throws Exception {
-        Object o = client.execute("test.transporttest.transportProxy",v);
-    	assertNotNull(o);
-    	assertTrue(o instanceof Map);
-    	Map m = (Map)o;
-    	System.out.println(m);
-    	assertEquals("boo",m.get("a"));
-    	assertEquals(Boolean.FALSE, m.get("c"));
-    }    
+
 
     public void testCallUnknownMethod() throws  IOException {
     	try {    		
@@ -169,6 +166,23 @@ public class XmlRpcTransportIntegrationTest extends TestCase {
     }
     
 
+    // verify that resource objects can be successfully serialized over xmlrpc.
+    // as this is an integration test, bot a system test, do this by getting ar to parse
+    // in a passed-in xml document, and return the resource objects it contains
+    public void testResourceProxyObject() throws Exception {
+    	InputStream is = ResourceStreamParserUnitTest.class.getResourceAsStream("multiple.xml");
+    	assertNotNull(is);
+    	StringWriter sw = new StringWriter();
+    	Piper.pipe(new InputStreamReader(is),sw);
+    	v.add(sw.toString());
+    	List results = (List)client.execute("ivoa.externalRegistry.buildResources",v);
+    	assertNotNull(results);
+    	assertEquals(3,results.size());
+    	for (int i = 0; i < results.size(); i++) {
+    		assertTrue(results.get(i) instanceof Map);
+    		//@future - more testing of structure here??
+    	}
+    }
     
     
     /* not really possible - as makes a best effort to convert
@@ -193,6 +207,9 @@ public class XmlRpcTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.3  2006/08/31 21:07:58  nw
+testing of transport of rtesource beans.
+
 Revision 1.2  2006/08/15 10:30:58  nw
 tests related to new registry objects.
 

@@ -1,4 +1,4 @@
-/*$Id: RmiTransportIntegrationTest.java,v 1.2 2006/08/15 10:31:09 nw Exp $
+/*$Id: RmiTransportIntegrationTest.java,v 1.3 2006/08/31 21:07:58 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -20,10 +25,18 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.ivoa.ExternalRegistry;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.test.TransportTest;
 import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
+import org.astrogrid.io.Piper;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
 
 /** tests rmi transport - whether certain classes are serializable etc.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
@@ -87,6 +100,23 @@ public class RmiTransportIntegrationTest extends TestCase {
     }
     
 
+    // verify that resource objects can be successfully serialized over rmi 
+    // little odd- as they're dynamically generated proxies.
+    // as this is an integration test, bot a system test, do this by getting ar to parse
+    // in a passed-in xml document, and return the resource objects it contains
+    public void testResourceProxyObject() throws Exception {
+    	InputStream is = ResourceStreamParserUnitTest.class.getResourceAsStream("multiple.xml");
+    	assertNotNull(is);
+    	Document d = DomHelper.newDocument(is);
+     	ExternalRegistry er = (ExternalRegistry)this.reg.getService(ExternalRegistry.class);
+    	Resource[] res = er.buildResources(d);
+    	assertNotNull(res);
+    	assertEquals(3,res.length);
+    	assertTrue(res[0] instanceof CeaService);
+    	assertTrue(res[1] instanceof CeaApplication);
+    }
+    
+
 
     public static Test suite() {
         return new ACRTestSetup(new TestSuite(RmiTransportIntegrationTest.class));
@@ -96,6 +126,9 @@ public class RmiTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: RmiTransportIntegrationTest.java,v $
+Revision 1.3  2006/08/31 21:07:58  nw
+testing of transport of rtesource beans.
+
 Revision 1.2  2006/08/15 10:31:09  nw
 tests related to new registry objects.
 
