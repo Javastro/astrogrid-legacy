@@ -672,7 +672,9 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
     	            }
     	                	           
     	            // record what components pertain to this application.
-    	            componentMap.put(plas,components);            
+    	            componentMap.put(plas,components);     
+    	            dynamicButtons.revalidate(); // fixes bz 1777
+    	            dynamicButtons.repaint();
     	        }
     	    }).start(); 	
     }
@@ -690,6 +692,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
                 for (int i = 0; i < components.length; i++) {
                     dynamicButtons.remove(components[i]);
                 }
+                dynamicButtons.revalidate(); // fixes bz 1777
                 dynamicButtons.repaint();
             }
          });
