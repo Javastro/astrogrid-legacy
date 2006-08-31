@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 /** unit test for messages.
  * @author Noel Winstanley
  * @since Jun 13, 20064:16:49 PM
- * @todo implement - needs a decent mock of RecordManager writing.
+ * @implement - needs a decent mock of RecordManager writing.
  */
 public class MessagesUnitTest extends TestCase {
 

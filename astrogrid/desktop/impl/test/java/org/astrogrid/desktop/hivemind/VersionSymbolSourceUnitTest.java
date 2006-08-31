@@ -31,7 +31,7 @@ public class VersionSymbolSourceUnitTest extends TestCase {
 	}
 	
 	
-	/** these tests may fail within eclipse */
+	/** these tests within fail within eclipse - only work in maven. */
 	public void testValueForSymbolAstrogridDesktopVersion() {
 		assertNotNull(ss.valueForSymbol("astrogrid.desktop.version"));
 	}

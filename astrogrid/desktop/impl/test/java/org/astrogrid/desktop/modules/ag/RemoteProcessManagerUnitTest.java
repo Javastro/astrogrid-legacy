@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ag;
 
 import junit.framework.TestCase;
 
-/** @todo implement
+/** @implement
  * @author Noel Winstanley
  * @since Jun 13, 20067:01:00 PM
  */

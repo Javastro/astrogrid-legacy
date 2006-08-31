@@ -32,6 +32,8 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(org.astrogrid.desktop.modules.ag.AllUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.plastic.AllUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.ui.sendto.AllUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.util.AllUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.dialogs.registry.AllUnitTests.suite());
 		return suite;
 	}
 

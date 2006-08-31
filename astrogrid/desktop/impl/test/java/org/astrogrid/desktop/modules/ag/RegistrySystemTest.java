@@ -1,4 +1,4 @@
-/*$Id: RegistrySystemTest.java,v 1.4 2006/06/15 09:18:24 nw Exp $
+/*$Id: RegistrySystemTest.java,v 1.5 2006/08/31 21:06:36 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -147,7 +147,6 @@ public class RegistrySystemTest extends TestCase {
         ResourceInformation[] result = registry.keywordSearchRI("filestore",false);
         assertNotNull(result);
         assertTrue(result.length > 0);
-        //@todo add more checking here.
     }
     
     public void testXQuery() throws Exception {
@@ -164,6 +163,9 @@ public class RegistrySystemTest extends TestCase {
 
 /* 
 $Log: RegistrySystemTest.java,v $
+Revision 1.5  2006/08/31 21:06:36  nw
+doc fixes
+
 Revision 1.4  2006/06/15 09:18:24  nw
 improved junit tests
 

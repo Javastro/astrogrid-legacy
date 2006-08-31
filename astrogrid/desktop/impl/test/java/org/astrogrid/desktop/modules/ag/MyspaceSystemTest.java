@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.5 2006/06/15 09:18:24 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.6 2006/08/31 21:06:36 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,6 @@ import junit.framework.TestSuite;
 /** Exercise the myspace interface.
  * tests are a bit order dependent - can't be helped really.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Aug-2005
- * @todo fix failing tests.
  *
  */
 public class MyspaceSystemTest extends TestCase {
@@ -97,7 +96,6 @@ public class MyspaceSystemTest extends TestCase {
         assertTrue(myspace.exists(testFile));        
     }
 
-    //@todo exceptions don't get caught.
     public void testCreateChildFolder() throws Exception{
         URI newFolder = myspace.createChildFolder(testDir,"newFolder");        
         assertTrue(myspace.exists(newFolder));
@@ -114,7 +112,6 @@ public class MyspaceSystemTest extends TestCase {
             // expected
         }      
     }
-   //@todo exceptions don't get caught.
     public void testCreateChildFile()throws Exception {
         URI newFile= myspace.createChildFile(testDir,"newFile");
         assertTrue(myspace.exists(newFile));        
@@ -137,7 +134,6 @@ public class MyspaceSystemTest extends TestCase {
         assertEquals(home.resolve(testDir),myspace.getParent(testFile)); // parent of a file
         assertEquals(home,myspace.getParent(myspace.getParent(testDir)));
     }
-    //@todo exceptions don't get caught.
     public void testList() throws Exception{
         String[] names = myspace.list(testDir);
         assertTrue(Arrays.asList(names).contains("testfile.txt"));
@@ -148,7 +144,6 @@ public class MyspaceSystemTest extends TestCase {
             // expected.
         }
     }
-    //@todo exceptions don't get caught.
     public void testListIvorns() throws Exception{
         URI home = myspace.getHome();
         URI[] ivorns = myspace.listIvorns(testDir);
@@ -258,7 +253,7 @@ public class MyspaceSystemTest extends TestCase {
         assertNotNull(url);
         
         FileStoreInputStream is = new FileStoreInputStream(url);
-        is.open(); // why the hell is this here?? @todo file bug on this.
+        is.open();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         Piper.pipe(is,os);
         is.close();
@@ -353,6 +348,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.6  2006/08/31 21:06:36  nw
+doc fixes
+
 Revision 1.5  2006/06/15 09:18:24  nw
 improved junit tests
 

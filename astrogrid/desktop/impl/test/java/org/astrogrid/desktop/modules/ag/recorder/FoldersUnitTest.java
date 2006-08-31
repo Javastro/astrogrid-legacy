@@ -11,7 +11,7 @@ import org.easymock.MockControl;
 import junit.framework.TestCase;
 
 /** Unit test for Folders.
- * @todo implement - quite a bit of work here.
+ * @implement - quite a bit of work here.
  * @author Noel Winstanley
  * @since Jun 13, 20064:00:09 PM
  */
