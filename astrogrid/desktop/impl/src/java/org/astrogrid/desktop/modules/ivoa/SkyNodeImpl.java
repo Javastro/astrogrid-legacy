@@ -1,4 +1,4 @@
-/*$Id: SkyNodeImpl.java,v 1.4 2006/08/15 10:13:50 nw Exp $
+/*$Id: SkyNodeImpl.java,v 1.5 2006/08/31 21:34:46 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -155,7 +155,7 @@ public class SkyNodeImpl implements SkyNode {
                 throw new ServiceException("Unexpected Response: " + response.getSOAPPart().getEnvelope());
             }  
             return null;
-/* @todo implement this.
+/* @implement this.
             return new AvailabilityBean(
                     xp.evaluate("skynode:Servername|ws:Servername",availability)
                     ,xp.evaluate("skynode:location|ws:location",availability)
@@ -639,7 +639,7 @@ private URL resolveService(URI id) throws InvalidArgumentException {
                 
 }
 
-//@todo impleemnt
+//@implement
     public float estimateQueryCost(long arg0, Document arg1) throws InvalidArgumentException, NotFoundException, ServiceException {
         return 0;
     }
@@ -651,6 +651,9 @@ private URL resolveService(URI id) throws InvalidArgumentException {
 
 /* 
 $Log: SkyNodeImpl.java,v $
+Revision 1.5  2006/08/31 21:34:46  nw
+minor tweaks and doc fixes.
+
 Revision 1.4  2006/08/15 10:13:50  nw
 migrated from old to new registry models.
 

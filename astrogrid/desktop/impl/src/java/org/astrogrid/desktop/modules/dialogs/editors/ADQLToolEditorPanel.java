@@ -703,7 +703,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    	    
 //	    private Hashtable popupMenus = new Hashtable() ;
 	    
-        //NWW - fix for mac. for portability, need to check on mousePressed 
+        //fix for mac. for portability, need to check on mousePressed 
         // and mouseReleased whether it's the 'popupTrigger' event.
         // onlny way to do it - as a mac CTRL-Cick gives a different event type to a Button-3 click.
         // complicated, eh?	    

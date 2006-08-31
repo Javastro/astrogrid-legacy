@@ -1,4 +1,4 @@
-/*$Id: Vizualization.java,v 1.4 2006/08/15 09:58:49 nw Exp $
+/*$Id: Vizualization.java,v 1.5 2006/08/31 21:31:37 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,7 @@ public abstract class Vizualization extends GraphEventAdapter {
             nodeRenderer.setRoundedCorner(8,8);
             nodeRenderer.setTextAttributeName(Retriever.LABEL_ATTRIBUTE);
             nodeRenderer.setImageAttributeName(Retriever.SERVICE_LOGO_ATTRIBUTE);
-            nodeRenderer.setMaxImageDimensions(20,20);//@todo doesn;'t seem to make any difference.
+            nodeRenderer.setMaxImageDimensions(20,20);//@fixme doesn;'t seem to make any difference.
             nodeRenderer.setAbbrevType(StringAbbreviator.TRUNCATE);
             nodeRenderer.setImageFactory(vizs.getImageFactory());
         }
@@ -70,6 +70,9 @@ public abstract class Vizualization extends GraphEventAdapter {
 
 /* 
 $Log: Vizualization.java,v $
+Revision 1.5  2006/08/31 21:31:37  nw
+minor tweaks and doc fixes.
+
 Revision 1.4  2006/08/15 09:58:49  nw
 tried to reduce size of service icons. doesn't seem to work.
 

@@ -46,7 +46,7 @@ public class CollectionConvertor implements Converter {
             if (List.class.isAssignableFrom(arg0)) {
                 resultType = ArrayList.class;
             } else if (Set.class.isAssignableFrom(arg0)) {
-            	//NWW - surely HashSet??
+            	//nww - surely HashSet??
                 //resultType = HashMap.class;
             	resultType = HashSet.class;
             } else if (Collection.class.isAssignableFrom(arg0)) { // fallback position.
@@ -79,6 +79,9 @@ public class CollectionConvertor implements Converter {
 
 /* 
 $Log$
+Revision 1.5  2006/08/31 21:31:37  nw
+minor tweaks and doc fixes.
+
 Revision 1.4  2006/06/15 10:07:18  nw
 improvements coming from unit testingadded new convertors.
 

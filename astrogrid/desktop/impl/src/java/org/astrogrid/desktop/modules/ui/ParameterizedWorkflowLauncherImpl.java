@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.10 2006/08/15 10:04:54 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.11 2006/08/31 21:31:37 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
-import org.astrogrid.desktop.modules.system.CacheFactory;
+import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.exolab.castor.xml.Marshaller;
@@ -99,7 +99,6 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         Writer writer = null;
         try {
             Tool t = apps.createTemplateTool("default",wft.getDesc());
-            //@todo merge in kevin's work that uses a simpler tool editor here.
             t = editor.editToolWithDescription(t,wft.getDesc(),null);       
         if (t == null) {
             return;
@@ -182,6 +181,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.11  2006/08/31 21:31:37  nw
+minor tweaks and doc fixes.
+
 Revision 1.10  2006/08/15 10:04:54  nw
 migrated from old to new registry models.
 

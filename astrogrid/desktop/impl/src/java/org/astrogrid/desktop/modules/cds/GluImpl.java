@@ -1,4 +1,4 @@
-/*$Id: GluImpl.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: GluImpl.java,v 1.4 2006/08/31 21:34:46 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.desktop.modules.cds.jglu.JgluServiceLocator;
 
 /** Implementation of the GLU service
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
- *@todo work out why this never works - mabe replace with dynamic implementation?
+ *@fixme work out why this never works - mabe replace with dynamic implementation?
  */
 public class GluImpl implements Glu {
 
@@ -57,6 +57,9 @@ public class GluImpl implements Glu {
 
 /* 
 $Log: GluImpl.java,v $
+Revision 1.4  2006/08/31 21:34:46  nw
+minor tweaks and doc fixes.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.24 2006/08/15 16:16:49 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.25 2006/08/31 21:34:46 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -286,7 +286,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                     	}
                     }
                     protected void doFinished(Object o) {
-                    	//FIXME - find the resource object.
+                    	//@FIXME - find the resource object.
                         getToolModel().populate((Tool)o,newApp);
                     }
                 }).start();
@@ -515,6 +515,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.25  2006/08/31 21:34:46  nw
+minor tweaks and doc fixes.
+
 Revision 1.24  2006/08/15 16:16:49  pjn3
 Minor change to prevent execute button being enabled when parent is workflow builder
 

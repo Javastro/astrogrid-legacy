@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.8 2006/08/15 10:04:11 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.9 2006/08/31 21:31:37 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,8 +22,8 @@ import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel.ResourceTableModel;
+import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.CacheFactory;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 /** Implementation of the registry browser component.
@@ -78,6 +78,9 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.9  2006/08/31 21:31:37  nw
+minor tweaks and doc fixes.
+
 Revision 1.8  2006/08/15 10:04:11  nw
 migrated from old to new registry models.added methods to do a specific search / display a particular record
 

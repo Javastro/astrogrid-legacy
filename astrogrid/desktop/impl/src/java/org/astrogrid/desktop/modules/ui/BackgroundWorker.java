@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.5 2006/04/18 23:25:43 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.6 2006/08/31 21:31:37 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,6 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
       *but integrates with the ui component - takes care of starting and  stopping busy indicator, progress message.
       *also has concept of priority, and is executed by pooled executor, instead of by creating a new thread.
       *
-      *@todo - make task menu scroll..
       * @todo integrate with glass pane / hourglass cursor in cases where it should be a blocking operation (but still must be in a background thread so that other
       * UI windows are responsive, and the UI is repainted).     
       * @author Noel Winstanley nw@jb.man.ac.uk 02-Apr-2005
@@ -277,6 +276,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.6  2006/08/31 21:31:37  nw
+minor tweaks and doc fixes.
+
 Revision 1.5  2006/04/18 23:25:43  nw
 merged asr development.
 

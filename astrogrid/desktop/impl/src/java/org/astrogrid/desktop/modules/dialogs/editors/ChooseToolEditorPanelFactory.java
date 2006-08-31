@@ -7,8 +7,8 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
+import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.CacheFactory;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**

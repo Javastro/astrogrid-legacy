@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.8 2006/08/02 13:12:49 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.9 2006/08/31 21:31:37 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -181,6 +180,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.9  2006/08/31 21:31:37  nw
+minor tweaks and doc fixes.
+
 Revision 1.8  2006/08/02 13:12:49  nw
 added more efficient transformation code for vector and hashtable.
 

@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.6 2006/08/15 10:13:50 nw Exp $
+/*$Id: SsapImpl.java,v 1.7 2006/08/31 21:34:46 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ public class SsapImpl extends SiapImpl implements Ssap {
     public String getRegistryAdqlQuery() {
         return "Select * from Registry where " +
         " @xsi:type like '%SimpleSpectrumAccess'  " ;
-        //@fixme        " and (not (@status = 'inactive' or @status='deleted') )";
+        //@issue       " and (not (@status = 'inactive' or @status='deleted') )";
     }
     public String getRegistryQuery() {
     	return getRegistryAdqlQuery();
@@ -52,6 +52,9 @@ public class SsapImpl extends SiapImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.7  2006/08/31 21:34:46  nw
+minor tweaks and doc fixes.
+
 Revision 1.6  2006/08/15 10:13:50  nw
 migrated from old to new registry models.
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.1 2006/08/15 10:19:53 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.2 2006/08/31 21:34:46 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,8 +35,8 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
+import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.CacheFactory;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -178,6 +178,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.2  2006/08/31 21:34:46  nw
+minor tweaks and doc fixes.
+
 Revision 1.1  2006/08/15 10:19:53  nw
 implemented new registry google dialog.
 

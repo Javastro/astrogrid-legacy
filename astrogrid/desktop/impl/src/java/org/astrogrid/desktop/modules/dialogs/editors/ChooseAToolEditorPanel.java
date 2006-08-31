@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.10 2006/08/15 10:22:06 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.11 2006/08/31 21:34:46 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,8 +32,8 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
+import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.CacheFactory;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -86,7 +86,11 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 								}
 								ifaceName =(String) JOptionPane.showInputDialog(ChooseAToolEditorPanel.this,"Select an interface","Which Interface?"
 										, JOptionPane.QUESTION_MESSAGE,null,names,names[0]);
+								if (ifaceName == null) { // user hit cancel.
+									return;
+								}
 							}
+							
 							Tool t = apps.createTemplateTool(ifaceName,app);
 							toolModel.populate(t,app); // fires notification, etc - lets anything else grab this.
 						} catch (ACRException ex) {
@@ -117,9 +121,11 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 				" or @xsi:type &= '*CeaHttpApplicationType' " + 
 				( ! ceaOnly ? " or @xsi:type &= '*ConeSearch' " + 
 						" or @xsi:type &= '*SimpleImageAccess' "  + 
-						" or @xsi:type &= '*SimpleSpectrumAccess' "
-						//@future add in cds once we've got an efficient registry client.    +   " or (@xsi:type like '%TabularSkyService' and vr:identifier like 'ivo://CDS/%'" +
-						//       "   and vs:table/vs:column/vs:ucd = 'POS_EQ_RA_MAIN') 
+						" or @xsi:type &= '*SimpleSpectrumAccess' " 
+						// @todo add this in - but need a faster registry service, or some other way of registering CDS
+						// also, ned to have a ceaApplication handler that knows to treat these as a tabular sky service
+						//" or (@xsi:type &= '*TabularSkyService' and vr:identifier &= 'ivo://CDS/*' and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN')"
+
 						: ""))  ;    	
 	}
 
@@ -145,6 +151,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.11  2006/08/31 21:34:46  nw
+minor tweaks and doc fixes.
+
 Revision 1.10  2006/08/15 10:22:06  nw
 migrated from old to new registry models.
 

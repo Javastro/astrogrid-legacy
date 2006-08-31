@@ -174,7 +174,7 @@ public class ScriptDialog extends BaseBeanEditorDialog {
         	try{
         		Binding binding = new Binding();
         		GroovyShell shell = new GroovyShell(binding);
-        		shell.evaluate(getScriptField().getText()); //@todo is it safe to evaluate all scripts. what about 'rm -rf *' ??
+        		shell.evaluate(getScriptField().getText()); //@issue is it safe to evaluate all scripts. what about 'rm -rf *' ??
         		JOptionPane.showMessageDialog(null, 
         				                      "Your script appears to be valid",
     										  "Script appears valid", 

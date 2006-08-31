@@ -1,4 +1,4 @@
-/*$Id: UITabContribution.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: UITabContribution.java,v 1.3 2006/08/31 21:31:37 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import com.l2fprod.common.swing.JButtonBar;
 public class UITabContribution extends JButtonBar implements UIStructureContribution {
 
     public UITabContribution() {
-        super(JButtonBar.HORIZONTAL);
+        super();
         setBorder(BorderFactory.createEmptyBorder());
     }
    
@@ -98,6 +98,9 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 
 /* 
 $Log: UITabContribution.java,v $
+Revision 1.3  2006/08/31 21:31:37  nw
+minor tweaks and doc fixes.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

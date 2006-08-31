@@ -98,7 +98,7 @@ public final class ResourceFormatter {
 				fmtResourceName(sb,creator.getName());
 				sb.append("<br>");
 			}
-			//FIXME find a way to scale the logo
+			//@FIXME find a way to scale the logo
 			if (creator.getLogo() != null) {
 				sb.append("<img align='right'  border='1' alt='").append(creator.getLogo()).append("' src='").append(creator.getLogo()).append("'>").append("<br>");
 			}
@@ -155,7 +155,7 @@ public final class ResourceFormatter {
 				title = StringUtils.substringAfterLast(c.getClass().getName(),".");
 			}
 			sb.append("<h3>Capability ").append(title).append("</h3>");
-			//@ todo validation level
+			//@todo validation level
 			if (c.getDescription() != null) {
 				sb.append("<p>").append(c.getDescription()).append("</p>");
 			}

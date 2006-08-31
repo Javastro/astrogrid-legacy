@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.5 2006/08/15 10:13:50 nw Exp $
+/*$Id: DALImpl.java,v 1.6 2006/08/31 21:34:46 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,7 +76,6 @@ public abstract class DALImpl {
             }
         } else if (arg0.getScheme().equals("ivo")) {
                 try {
-                    //endpoint = reg.resolveIdentifier(arg0); NWW - gets incorrect endpoint sometimes.
                     Resource r=  reg.getResource(arg0);
                     // hope for now we've only got one service capability.
                     if (! (r instanceof Service)) {
@@ -96,7 +95,7 @@ public abstract class DALImpl {
     }
     
     /** Adds an option - safely handling case of nulls, options that already occur, urls ending with ? or &
-     * @todo do we need to handle case of trailing '/' too?? or no filepath at all - just server name? may be this willnever happen 
+     *  do we need to handle case of trailing '/' too?? or no filepath at all - just server name? may be this willnever happen 
      * @see org.astrogrid.acr.nvo.Cone#addOption(java.net.URL, java.lang.String, java.lang.String)
      */
     public final URL addOption(URL arg0, String arg1, String arg2) throws InvalidArgumentException{
@@ -190,6 +189,9 @@ public abstract class DALImpl {
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.6  2006/08/31 21:34:46  nw
+minor tweaks and doc fixes.
+
 Revision 1.5  2006/08/15 10:13:50  nw
 migrated from old to new registry models.
 

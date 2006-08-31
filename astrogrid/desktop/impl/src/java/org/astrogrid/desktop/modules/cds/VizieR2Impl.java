@@ -1,4 +1,4 @@
-/*$Id: VizieR2Impl.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: VizieR2Impl.java,v 1.3 2006/08/31 21:34:46 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ package org.astrogrid.desktop.modules.cds;
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Feb-2006
  * 
  * as an experiement, implemented using javax.xml.soap interfaces.
- *@todo implement
+ *@implement
  */
 public class VizieR2Impl {
 
@@ -27,6 +27,9 @@ public class VizieR2Impl {
 
 /* 
 $Log: VizieR2Impl.java,v $
+Revision 1.3  2006/08/31 21:34:46  nw
+minor tweaks and doc fixes.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 

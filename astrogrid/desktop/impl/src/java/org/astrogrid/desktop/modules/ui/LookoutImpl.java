@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.17 2006/08/15 10:05:28 nw Exp $
+/*$Id: LookoutImpl.java,v 1.18 2006/08/31 21:31:37 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -231,8 +231,10 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         		RemoteProcessStrategy rps = (RemoteProcessStrategy)i.next();
         		rps.triggerUpdate();
         	}
-            //@todo add a 'completed' task that sets the status message.
-            LookoutImpl.this.setStatusMessage("Refreshing..");
+        	LookoutImpl.this.setStatusMessage("Refreshing..");
+            //@todo add a 'completed' task that indicates when refresh has completed.
+        	// part of a general problem of trackiung and reporting progress of background tasks - especially if some bits faiil,
+        	// but isn't vital enough to pop up a dialog.
         }
     }    
     
@@ -518,6 +520,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.18  2006/08/31 21:31:37  nw
+minor tweaks and doc fixes.
+
 Revision 1.17  2006/08/15 10:05:28  nw
 fixed 'delete task' button.
 
