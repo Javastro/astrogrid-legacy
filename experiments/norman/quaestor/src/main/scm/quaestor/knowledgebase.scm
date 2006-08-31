@@ -295,7 +295,7 @@
                                                          #f)))
                             (levelp (and levelres
                                          (not (null? levelres))
-                                         (rdf:property-on-resource
+                                         (rdf:get-property-on-resource
                                           (car levelres)
                                           "http://ns.nxg.me.uk/quaestor#level")))
                             (level (and levelp

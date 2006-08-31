@@ -155,19 +155,20 @@
     (expect select-properties-property  ;predicate is Property
             '("Norman")
             (map node->string
-                 (rdf:properties-on-resource res name)))
+                 (rdf:get-properties-on-resource res name)))
     (expect select-properties-string    ;predicate is string
             '("Norman")
             (map node->string
-                 (rdf:properties-on-resource res
-                                             "http://purl.org/dc/elements/1.1/name")))
+                 (rdf:get-properties-on-resource
+                  res
+                  "http://purl.org/dc/elements/1.1/name")))
     (expect select-properties-none      ;no matches
             '()
-            (rdf:properties-on-resource res "http://example.org/wibble"))
+            (rdf:get-properties-on-resource res "http://example.org/wibble"))
 
     (expect select-property             ;object is RDFNode
             "Norman"
-            (node->string (rdf:property-on-resource res name)))
+            (node->string (rdf:get-property-on-resource res name)))
     (expect select-property-none        ;object is string
             #f
-            (rdf:property-on-resource res "http://example.org/wibble"))))
+            (rdf:get-property-on-resource res "http://example.org/wibble"))))

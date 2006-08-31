@@ -30,8 +30,8 @@
   rdf:language->mime-type
   rdf:mime-type-list
   rdf:get-reasoner
-  rdf:property-on-resource
-  rdf:properties-on-resource
+  rdf:get-property-on-resource
+  rdf:get-properties-on-resource
   rdf:select-statements)
 
 ;; heavily used classes
@@ -268,25 +268,25 @@
         (else
          #f)))
 
-;; RDF:PROPERTY-ON-RESOURCE resource property-or-string -> rdfnode-or-false
+;; RDF:GET-PROPERTY-ON-RESOURCE resource property-or-string -> rdfnode-or-false
 ;;
 ;; Return a single object (RDFNode), or #f if there is no such property
-;; Equivalent to (car (RDF:PROPERTIES-ON-RESOURCE resource property)),
+;; Equivalent to (car (RDF:GET-PROPERTIES-ON-RESOURCE resource property)),
 ;; except that it returns #f if the list is null
-(define (rdf:property-on-resource resource property)
-    (let ((l (rdf:properties-on-resource resource property)))
+(define (rdf:get-property-on-resource resource property)
+    (let ((l (rdf:get-properties-on-resource resource property)))
       (if (null? l)
           #f
           (car l))))
 
-;; RDF:PROPERTIES-ON-RESOURCE resource property-or-string -> list-of-objects
+;; RDF:GET-PROPERTIES-ON-RESOURCE resource property-or-string -> list-of-objects
 ;;
 ;; Return list of objects corresponding to the given property, on the given
 ;; resource.  The property may be a Java Property or a (scheme) string.
-(define/contract (rdf:properties-on-resource (resource jena-resource?)
-                                             (property (or (string? property)
-                                                           (jena-property? property)))
-                                             -> list?)
+(define/contract (rdf:get-properties-on-resource (resource jena-resource?)
+                                                 (property (or (string? property)
+                                                               (jena-property? property)))
+                                                 -> list?)
   (define-generic-java-methods
     get-model list-properties create-property get-object)
   (let ((model (get-model resource)))
