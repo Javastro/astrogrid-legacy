@@ -13,12 +13,27 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2006.3.rc2" date="2006-08-31">
+	<action dev="nw" type="fix" issue="1777">
+		Astroscope now updates display when plastic apps register
+	</action>
+	<action dev="nw" type="add" issue="1788">
+	Added community list combo box to login dialogue
+	</action>
+	<action dev="nw" type="add" issue="1585">
+	Added votable manipulator (STIL) to AR interface
+	</action>
+	<action dev="nw" type="add">
+		Reduced executable size, by stripping unused classes.
+	</action>
+	<action dev="nw" type="fix" issue="1780">
+		Astroscope handles non-standard siap responses
+	</action>
 <action dev="jl" type="fix" issue="1768">
 		Sorting of tables before metadata display.
 		Correction of bug in metadata display preventing display when archive separately chosen.
 		Correction of displaying of brackets in Query Builder
 </action>
-<release version="2006.3.rc2" date="unreleased">
 	<action dev="kmb, pjn, nw" type="fix" issue="1505">
 	  Fixed parameterized workflow dialogue, and got workflows running again.
 	</action>
