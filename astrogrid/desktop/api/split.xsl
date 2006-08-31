@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- 
 Splits xmlized javadoc into separate files for each module, summarizing the service classes in each module.
-
+Used to provide in-program api documentation within the workbench implementation.
 -->
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -21,7 +21,7 @@ Splits xmlized javadoc into separate files for each module, summarizing the serv
 		and comment/attribute[@name='@service']
 		]"/>
 		
-<!--  		and not ( comment/attribute[@name='@deprecated']) -->
+<!-- keep deprecated services.  		and not ( comment/attribute[@name='@deprecated']) -->
 
 
 <!-- generate package descriptions -->
@@ -53,13 +53,21 @@ Splits xmlized javadoc into separate files for each module, summarizing the serv
  		<xsl:with-param name="marker" select="'.'" />
  	</xsl:call-template>
 	</xsl:variable>
-  <component interface-class="{@fulltype}"  name="{$name}" description="{comment/description}">
+	<xsl:variable name="classDescription">
+		<xsl:call-template name="fmtDescription">
+			<xsl:with-param name="input" select="." />
+		</xsl:call-template>
+	</xsl:variable>
+  <component interface-class="{@fulltype}"  name="{$name}" description="{$classDescription}">
 	<!-- todo put in useful @attributes - e.g. singleton? -->
 	<xsl:for-each select="methods/method[@visibility='public' 
 			and not (contains(@name, 'Listener')) ]">
-			<!--  comment/attribute[@name='@deprecated'] 
-				or  -->
-		<method name="{@name}" description="{comment/description}">
+	<xsl:variable name="methodDescription">
+		<xsl:call-template name="fmtDescription">
+			<xsl:with-param name="input" select="." />
+		</xsl:call-template>
+	</xsl:variable>
+		<method name="{@name}" description="{$methodDescription}">
 			<xsl:variable name="uitype">
 				<xsl:call-template name="convert-type">
 					<xsl:with-param name="p" select="." />		
@@ -135,6 +143,19 @@ Splits xmlized javadoc into separate files for each module, summarizing the serv
   </xsl:otherwise>
  </xsl:choose>
 
+</xsl:template>
+
+<xsl:template name="fmtDescription">
+	<xsl:param name="input" />
+	<xsl:choose>
+	<xsl:when test="comment/attribute[@name='@deprecated']">
+		<xsl:text>Deprecated: </xsl:text>
+		<xsl:value-of select="comment/attribute[@name='@deprecated']" />
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:value-of select="comment/description" />
+	</xsl:otherwise>
+	</xsl:choose>
 </xsl:template>
 
 

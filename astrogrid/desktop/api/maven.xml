@@ -2,26 +2,54 @@
 <!-- extension maven script -->
 <project   xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:artifact="artifact">
 
-	<goal name="astrogrid-install-artifact" prereqs="javadoc:install,jar:install,dist-install,javahelp-install"/>
+	<goal name="astrogrid-install-artifact" prereqs="jar:install,dist-install,javahelp-install"
+	description="Installs interface jar, distribution zip and javahelp jar in the local maven repository"
+	/>
 
-	<goal name="astrogrid-deploy-artifact" prereqs="javadoc:deploy,jar:deploy,dist:deploy-bin" />
+	<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:deploy-bin"
+	description="Deploys interface jar and distribution zip to central astrogrid maven repository" />
 
-	<goal name="astrogrid-build-artifact" prereqs="javadoc,jar:jar,dist:build-bin,javahelp-jar">
-	</goal>
+	<goal name="astrogrid-build-artifact" prereqs="jar:jar,dist:build-bin,javahelp-jar"
+	description="Build the interface jar, distribution zip,  and javahelp jar, and leave all in the target directory"
+	/>
+
 	
-	<goal name="astrogrid-clean" prereqs="clean,javahelp-clean" />
+	<goal name="astrogrid-clean" prereqs="clean" 
+	description="Clean the api project"/>
+
+	<postGoal name="clean:clean">
+		<attainGoal name="javahelp-clean" />
+	</postGoal>
 
 	<!-- add  dependent libs into distro -->
 	<postGoal name="dist:prepare-bin-filesystem">
+		<mkdir dir="${maven.dist.bin.assembly.dir}/rmi"/>
+		<move file="${maven.dist.bin.assembly.dir}/${maven.final.name}.jar"
+			todir="${maven.dist.bin.assembly.dir}/rmi" />
 		<j:forEach var="lib" items="${pom.artifacts}">
 			<j:set var="dep" value="${lib.dependency}"/>			
-			<j:if test="${dep.getProperty('dist.bundle')=='true'}">
+			<j:if test="${dep.getProperty('rmi.bundle')=='true'}">
 				<j:choose>
-					<copy todir="${maven.dist.bin.assembly.dir}" 
+					<copy todir="${maven.dist.bin.assembly.dir}/rmi" 
 					      file="${lib.path}"/>			
 				</j:choose>
 			</j:if>
-                </j:forEach>		
+         </j:forEach>	
+		<mkdir dir="${maven.dist.bin.assembly.dir}/xmlrpc"/>
+		<j:forEach var="lib" items="${pom.artifacts}">
+			<j:set var="dep" value="${lib.dependency}"/>			
+			<j:if test="${dep.getProperty('xmlrpc.bundle')=='true'}">
+				<j:choose>
+					<copy todir="${maven.dist.bin.assembly.dir}/xmlrpc" 
+					      file="${lib.path}"/>			
+				</j:choose>
+			</j:if>
+         </j:forEach>	         
+         <copy todir="${maven.dist.bin.assembly.dir}">
+         	<fileset dir="${basedir}">
+         		<include name="examples/**" />
+         	</fileset>
+        </copy>	
 	</postGoal>	
 	
 	    <goal name="dist-install" prereqs="dist:build-bin">

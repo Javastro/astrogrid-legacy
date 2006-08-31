@@ -4,11 +4,16 @@
     <extend>../../maven-base/project.xml</extend>
         <artifactId>acr-interface</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astronomy Client Runtime Interfaces</name>
+        <name>Astro Runtime Interfaces</name>
         <description>
-	 See xdocs.
+	Subproject for the public API to AR.
+	Run % maven astrogrid-install-artifact
+	 to create the pre-requisites required for the ../impl builds
+	(also need to do same in ../userdocs). Alternatively, run 
+	% maven install-materials
+	to do all this from the root project.
 		  </description>
-        <shortDescription>Astronomy Client Runtime Interfaces</shortDescription>
+        <shortDescription>Astro Runtime Interfaces</shortDescription>
     	<package>org</package> <!-- have to override that in maven-base to include org.votech-->
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
@@ -36,7 +41,7 @@
 	<groupId>rmilite</groupId>
 	<version>1.0</version>
 	<properties>
-		<dist.bundle>true</dist.bundle>
+		<rmi.bundle>true</rmi.bundle>
 	</properties>
 </dependency>
 
@@ -46,7 +51,8 @@
 	<version>1.0.3</version>	
 	<url>http://jakarta.apache.org/commons/</url>	
 	<properties>
-		<dist.bundle>true</dist.bundle>
+		<rmi.bundle>true</rmi.bundle>
+		<xmlrpc.bundle>true</xmlrpc.bundle>
 	</properties>	
     </dependency>
 
@@ -57,7 +63,7 @@
       <type>jar</type>
       <url>http://xml.apache.org/</url>
       <properties>
-	      <dist.bundle>true</dist.bundle>
+	      <rmi.bundle>true</rmi.bundle>
 	</properties>      
     </dependency>
 
@@ -68,11 +74,39 @@
       <type>jar</type>
       <url>http://xml.apache.org/</url>
       <properties>
-	      <dist.bundle>true</dist.bundle>
+	      <rmi.bundle>true</rmi.bundle>
 	</properties>      
 	</dependency>
 
+<!--  not needed for build - just for packaging -->
+<dependency>
+	<groupId>xmlrpc</groupId>
+	<artifactId>xmlrpc</artifactId>
+	<version>1.2-b1</version>
+	<type>jar</type>
+	<properties>
+		<xmlrpc.bundle>true</xmlrpc.bundle>			
+	</properties>
+</dependency>
+
+	<dependency>
+		<groupId>commons-httpclient</groupId>
+		<artifactId>commons-httpclient</artifactId>
+		<version>2.0.2</version>
+		<properties>
+			<xmlrpc.bundle>true</xmlrpc.bundle>
+		</properties>		
+	</dependency>
  
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+		<version>1.3</version>
+		<properties>
+			<xmlrpc.bundle>true</xmlrpc.bundle>
+		</properties>		
+	</dependency>
+	
  	<!-- only used within build -->
 	<dependency>
 		<groupId>jeldoclet</groupId>
