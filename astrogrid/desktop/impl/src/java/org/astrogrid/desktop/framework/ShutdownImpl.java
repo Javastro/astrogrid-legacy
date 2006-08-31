@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.4 2006/06/15 09:40:18 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.5 2006/08/31 21:10:38 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,13 +25,15 @@ import org.apache.hivemind.ShutdownCoordinator;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
 
+import EDU.oswego.cs.dl.util.concurrent.SynchronizedBoolean;
+
 /** implementation class for {@link Shutdown}
  * 
  * hides details of hivemind - and means that rest of code doesn't need to 
  * be tied to that particular container system.
  * @todo remove gui aspect - or provide non-gui alternative.
  *  */
-public class ShutdownImpl implements Shutdown{
+public class ShutdownImpl  extends Thread implements Shutdown{
     /**
      * Logger for this class
      */
@@ -40,10 +42,14 @@ public class ShutdownImpl implements Shutdown{
     public ShutdownImpl(ShutdownCoordinator coord, boolean callSystemExit) {
         this.coord = coord;
         this.callSystemExit = callSystemExit;
+        Runtime.getRuntime().addShutdownHook(this);
     }
     private final boolean callSystemExit;
     private final ShutdownCoordinator coord;
     private boolean confirmIfObjections = true;
+    
+  
+    
     
     /** if true (default), user is prompted for confirmation if there's any objections
      * to shutdown 
@@ -98,10 +104,26 @@ public class ShutdownImpl implements Shutdown{
         return returnString;
     }
 
+    
+    // flag set to prevent duplicate execution of 'reallyHalt()'
+    private final SynchronizedBoolean alreadyHalting = new SynchronizedBoolean(false);
     /**
      * @see org.astrogrid.acr.builtin.Shutdown#reallyHalt()
      */
     public void reallyHalt() {
+    	run();
+        if (callSystemExit) {
+        	System.exit(0);
+        }
+
+    }
+    
+    
+    // entry point for the runtime shutdown hook.
+    public void run() {
+    	if (alreadyHalting.set(true)) { // atomic action - sets, and returns previous value. 		
+    		return;
+    	}
         logger.debug("reallyHalt() - start");
 
         // tell everyone 
@@ -121,12 +143,7 @@ public class ShutdownImpl implements Shutdown{
         // do the deed
         coord.shutdown();
         
-
-        logger.debug("reallyHalt() - end");
-        if (callSystemExit) {
-        	System.exit(0);
-        }
-    }
+    }   
 
     protected Set listeners = new HashSet();
     /**
@@ -164,6 +181,9 @@ public class ShutdownImpl implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.5  2006/08/31 21:10:38  nw
+added shutdown hook
+
 Revision 1.4  2006/06/15 09:40:18  nw
 improvements coming from unit testing
 
