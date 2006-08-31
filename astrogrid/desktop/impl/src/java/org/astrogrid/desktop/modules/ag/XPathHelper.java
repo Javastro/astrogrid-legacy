@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.5 2006/04/18 23:25:44 nw Exp $
+/*$Id: XPathHelper.java,v 1.6 2006/08/31 21:28:59 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,6 +46,7 @@ public class XPathHelper {
     public final static String CS_NS = "http://www.ivoa.net/xml/ConeSearch/v0.3"; 
     /** namespace for siap v0.7 */
     public final static String SIA_NS = "http://www.ivoa.net/xml/SIA/v0.7";
+
 
     // list of all namespace names andurls.
     private static String[][] namespaces  = new String[][] {
@@ -103,6 +104,9 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.6  2006/08/31 21:28:59  nw
+doc fix.
+
 Revision 1.5  2006/04/18 23:25:44  nw
 merged asr development.
 

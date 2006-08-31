@@ -1,4 +1,4 @@
-/*$Id: VizierConeInformationBuilder.java,v 1.3 2006/08/02 13:29:19 nw Exp $
+/*$Id: VizierConeInformationBuilder.java,v 1.4 2006/08/31 21:29:14 nw Exp $
  * Created on 13-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.acr.nvo.ConeInformation;
 import org.w3c.dom.Element;
 /**
  *  * @deprecated part of the obsolete registry infrastructure
+ *  @fixme move this info into the new parsing structure.
  * @author Noel Winstanley
  * @since Jul 31, 200611:48:06 PM
  */
@@ -43,7 +44,7 @@ public class VizierConeInformationBuilder extends ConeInformationBuilder {
     public ResourceInformation build(CachedXPathAPI xpath, Element element) throws ServiceException {
         try {
             // default values.
-            float maxSR = -1; //@todo find out these opoerating parameters.
+            float maxSR = -1; 
             int maxRecords = -1;
             boolean verbosity = true;
 
@@ -84,6 +85,9 @@ public class VizierConeInformationBuilder extends ConeInformationBuilder {
 
 /* 
 $Log: VizierConeInformationBuilder.java,v $
+Revision 1.4  2006/08/31 21:29:14  nw
+doc fix.
+
 Revision 1.3  2006/08/02 13:29:19  nw
 marked all as obsolete.
 

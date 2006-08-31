@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.11 2006/06/27 19:11:09 nw Exp $
+/*$Id: RegistryImpl.java,v 1.12 2006/08/31 21:28:59 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,6 @@ import org.w3c.dom.NodeList;
 /** implementation of the registry component
  * 
  
- * @todo reimplement usiong more efficient streaming soap toolkit
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
  *
  */
@@ -258,7 +257,6 @@ public class RegistryImpl implements Registry {
         }
     }
     /**
-     * @todo get errors reported correctly - at moment, causes a null pointer.
      * 
      * works around registyr returning results wrapped in a VOResources. 
      * @see org.astrogrid.acr.astrogrid.Registry#xquery(java.lang.String)
@@ -328,6 +326,9 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.12  2006/08/31 21:28:59  nw
+doc fix.
+
 Revision 1.11  2006/06/27 19:11:09  nw
 adjusted todo tags.
 

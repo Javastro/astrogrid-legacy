@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.15 2006/08/15 10:15:59 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.16 2006/08/31 21:28:59 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -120,7 +120,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
 	     return "Select * from Registry where " +
 	     " (@xsi:type like '%CeaApplicationType' or " +
 	     " @xsi:type like '%CeaHttpApplicationType')" ; //+
-	     //@fixme" and ( not( @status = 'inactive' or @status = 'deleted') )";
+	     //@issue" and ( not( @status = 'inactive' or @status = 'deleted') )";
 	}
 	
 	public String getRegistryXQuery() {
@@ -685,6 +685,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.16  2006/08/31 21:28:59  nw
+doc fix.
+
 Revision 1.15  2006/08/15 10:15:59  nw
 migrated from old to new registry models.
 

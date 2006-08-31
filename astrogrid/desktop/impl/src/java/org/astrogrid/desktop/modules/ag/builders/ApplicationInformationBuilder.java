@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformationBuilder.java,v 1.9 2006/08/02 13:29:19 nw Exp $
+/*$Id: ApplicationInformationBuilder.java,v 1.10 2006/08/31 21:29:14 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -118,7 +118,7 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
         int max;
         int min;
         try {
-            max = Integer.parseInt(xpath.eval(element,"@maxoccurs",nsNode).str()); //@todo use xpath to parse number here?
+            max = Integer.parseInt(xpath.eval(element,"@maxoccurs",nsNode).str());
         } catch (NumberFormatException e) {
             max = 1; // default
         }
@@ -140,6 +140,9 @@ public class ApplicationInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: ApplicationInformationBuilder.java,v $
+Revision 1.10  2006/08/31 21:29:14  nw
+doc fix.
+
 Revision 1.9  2006/08/02 13:29:19  nw
 marked all as obsolete.
 

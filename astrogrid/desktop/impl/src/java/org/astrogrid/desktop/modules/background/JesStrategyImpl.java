@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.9 2006/08/15 10:15:34 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.10 2006/08/31 21:29:28 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -151,10 +151,11 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 		    				for (Iterator i = l.iterator(); i.hasNext(); ) {
 		    					e.add((Exception)i.next());
 		    				}
-		    				/*@fixme popping up a modal error dialog everytime a service is unavailable is too intrusive.
+		    				/*popping up a modal error dialog everytime a service is unavailable is too intrusive.
 		    				especially as it happens as a regular scheduled task. will just log for now, and work out what to do later.		    				
 		    				parent.showError("Failed to check status of some workflows",e);
 		    				*/
+		    				//@issue work out how to notify problems with background tasks..
 		    				logger.warn("Failed to check status of some workflows",e);
 		    			}
 		    		}			    
@@ -314,8 +315,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     // make the workflow belong to the current user, fiddle the stirng adql, etc.
     private void adjustWorkflow(Workflow workflow) throws ServiceException, InvalidArgumentException{
         workflow.getCredentials().setAccount(getAccount());
-        // fiddle any string-adql..
-        //@todo improve this query, to cut down on amout of work..       
+        // fiddle any string-adql..     
         Iterator i = workflow.findXPathIterator("//tool[input/parameter/indirect='false']" ); // find all tools with at least one inline parameter.
         while(i.hasNext()) {
             Tool t = (Tool)i.next();
@@ -386,6 +386,9 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.10  2006/08/31 21:29:28  nw
+doc fix.
+
 Revision 1.9  2006/08/15 10:15:34  nw
 migrated from old to new registry models.
 

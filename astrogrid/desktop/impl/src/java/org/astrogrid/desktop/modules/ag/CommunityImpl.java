@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.9 2006/07/20 12:29:54 nw Exp $
+/*$Id: CommunityImpl.java,v 1.10 2006/08/31 21:28:59 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -104,7 +104,7 @@ public class CommunityImpl implements CommunityInternal {
                 break;
             }
             try {
-            //NWW  - move this to debug, once the novelty wares off :)
+            //@todo move this to debug, once the novelty wares off :)
             	logger.info("About to authenticate at the community...");
                 authenticate();
                 logger.info("Authenticated");
@@ -223,6 +223,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.10  2006/08/31 21:28:59  nw
+doc fix.
+
 Revision 1.9  2006/07/20 12:29:54  nw
 fixed to snitch only when login is successful.
 

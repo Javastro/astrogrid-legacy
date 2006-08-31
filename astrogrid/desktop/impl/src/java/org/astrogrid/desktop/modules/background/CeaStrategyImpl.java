@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.11 2006/08/15 10:15:34 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.12 2006/08/31 21:29:28 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -169,7 +169,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     				for (Iterator i = l.iterator(); i.hasNext(); ) {
     					e.add((Exception)i.next());
     				}
-    				/*@fixme popping up a modal error dialog everytime a service is unavailable is too intrusive.
+    				/*@issue popping up a modal error dialog everytime a service is unavailable is too intrusive.
     				especially as it happens as a regular scheduled task. will just log for now, and work out what to do later.
     				parent.showError("Failed to check status of some applications",e);
     				*/
@@ -522,6 +522,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.12  2006/08/31 21:29:28  nw
+doc fix.
+
 Revision 1.11  2006/08/15 10:15:34  nw
 migrated from old to new registry models.
 
