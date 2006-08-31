@@ -39,6 +39,11 @@ public class AxisClientCredentialHandler extends BasicHandler {
         return;
       }
       
+      // When Axis finally serializes the message in the connection to the
+      // service it likes to play around with the XML; this invalidates the
+      // signature. Tell it not to meddle.
+      msgContext.setProperty("disablePrettyXML", Boolean.TRUE);
+      
       // Retrieve the user credentials set up for this handler.
       SecurityGuard guard = (SecurityGuard)msgContext.getProperty("org.astrogrid.security.guard");
       if (guard == null) {
