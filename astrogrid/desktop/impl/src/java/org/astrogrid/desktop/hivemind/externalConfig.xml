@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE module  [
+	<!ENTITY workflows SYSTEM "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml">
+	]>
+	<module id="externalConfig" version="1.0.0">
+	Helper module used to drag in external configuration files.
+	These are placed in a separtate module, at the end of the build, so that if anything is
+	inacessible, it doesn't affect the assembly of the rest of the workbench.
+	
+	'course, one failure in this module will halt the rest of this module being loaded - not perfect,
+	but will do for now.
+	
+	<!-- contributions to existing configurations -->
+	
+	<!--  drag in a file from the wiki -->
+	<contribution configuration-id="ui.workflowTemplates">
+		&workflows;
+	</contribution>	
+	
+	</module>

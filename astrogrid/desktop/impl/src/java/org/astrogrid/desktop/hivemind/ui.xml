@@ -12,34 +12,29 @@
 	<dependency module-id="plastic" />				
 		
 	<!-- new configurations -->
+		
 	<configuration-point id="workflowTemplates">
 		Lists available parameterized workflows
+		Main contribution to this config point is in externalConfig module.
 		<schema>
-			<element name="workflow-template">
-				Gives the url of a workflow template.
-				<rules>
-					<push-content />
-					<invoke-parent method="addElement" />
-				</rules>
+			<element name="index">
+				just a container. ignored.
+				<element name="workflow-template">
+					Gives the url of a workflow template.
+					<rules>
+						<push-content />
+						<invoke-parent method="addElement" />
+					</rules>
+				</element>
 			</element>
 		</schema>
-	</configuration-point>.
-	
-		<configuration-point id="sendToItems" schema-id="system.objects">
+	</configuration-point>
+	.
+
+	<configuration-point id="sendToItems" schema-id="system.objects">
 		List of SendToActions and SendToActionFactories used to populate the send-to menu.
 	</configuration-point>
-	
-	<!-- contributions to existing configurations -->
-	<contribution configuration-id="workflowTemplates">
-		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/timemovimakernew.wf</workflow-template>
-		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/redshiftmakerng.xml</workflow-template>
-		<workflow-template>http://www.merlin.ac.uk/astrogrid/colourcutter.xml</workflow-template>
-		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/ctipmodeA.xml</workflow-template>
-		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/sdss-dr4.xml</workflow-template>	
-		<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/conesearchlist.wf</workflow-template>	
-	</contribution>
-	
-	
+
 	<contribution configuration-id="sendToItems">
 		<!-- too likely to fail (large data, or poor job of displaying) so will comment out
 		<object>instance:org.astrogrid.desktop.modules.ui.sendto.ShowSTA</object>

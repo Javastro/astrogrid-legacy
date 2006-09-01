@@ -45,6 +45,7 @@ public class Workbench1 {
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
         l.addModuleByName("util");    	
+        l.addModuleByName("externalConfig"); 
 	}
 
 }

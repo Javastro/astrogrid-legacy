@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.11 2006/08/31 21:31:37 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.12 2006/09/01 15:09:03 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,14 +55,8 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(ParameterizedWorkflowLauncherImpl.class);
-
-  
+    private static final Log logger = LogFactory.getLog(ParameterizedWorkflowLauncherImpl.class);    
     
-    
-    // not used - now list is passed in by hivemind.
-   // public static final String DEFAULT_INDEX_URL = "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml";
-/** construct a new launcher, specifying the index url to use */
     public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,List templateURLs, CacheFactory cacheFac) throws IOException, SAXException{ 
         URL[] list = new URL[templateURLs.size()];
         Iterator i = templateURLs.iterator();
@@ -117,10 +111,6 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         Document doc = XMLUtils.newDocument();
         Marshaller.marshal(wf,doc);
         URI id = jobs.submitJob(doc);
-        /* don't bother displaying this popup.
-        ResultDialog rd = new ResultDialog(null,"Workflow Submitted \nJob ID is \n" + id);
-        rd.show();
-        */
         monitor.show(); // brings monitor to the front, if not already there.
 
         } catch (Exception e) {
@@ -166,7 +156,13 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     /** prompt user in some way to choose a template 
      * retruns null to indicate a cancelled operaiton.*/
     protected  ParameterizedWorkflowTemplate chooseTemplate() {
-        return (ParameterizedWorkflowTemplate) JOptionPane.showInputDialog(null,"Choose a template workflow", "Template Chooser",JOptionPane.QUESTION_MESSAGE,null,templates,templates[0]);
+        return (ParameterizedWorkflowTemplate) JOptionPane.showInputDialog(null
+        		,"Choose a template workflow"
+        		, "Template Chooser"
+        		,JOptionPane.QUESTION_MESSAGE
+        		,null
+        		,templates
+        		,templates.length >  0 ? templates[0] : null);
     }
     
 
@@ -181,6 +177,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.12  2006/09/01 15:09:03  nw
+made paramterized workflow configure from the wiki again.
+
 Revision 1.11  2006/08/31 21:31:37  nw
 minor tweaks and doc fixes.
 
