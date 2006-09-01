@@ -37,32 +37,61 @@ public class QuaestorReplClient {
      */
     public String sendToServerREPL(String sexp) {
         StringBuffer value = new StringBuffer();
+        HttpURLConnection urlConnection = null;
         try {
-            HttpURLConnection urlConnection
-                    = (HttpURLConnection)serverURL.openConnection();
-            urlConnection.setRequestMethod("PUT");
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);
+            try {
+                urlConnection = (HttpURLConnection)serverURL.openConnection();
+                urlConnection.setRequestMethod("PUT");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
 
-            OutputStreamWriter wr
-                    = new OutputStreamWriter(urlConnection.getOutputStream());
-            wr.write(sexp);
-            wr.flush();
+                OutputStreamWriter wr
+                        = new OutputStreamWriter(urlConnection.getOutputStream());
+                wr.write(sexp);
+                wr.flush();
 
-            String line;
-            BufferedReader rd
-                    = new BufferedReader
-                    (new InputStreamReader(urlConnection.getInputStream()));
-            while ((line = rd.readLine()) != null)
-                value.append(line); // .append('\n');
-            wr.close();
-            rd.close();
+                String line;
+                BufferedReader rd
+                        = new BufferedReader
+                        (new InputStreamReader(urlConnection.getInputStream()));
+                while ((line = rd.readLine()) != null)
+                    value.append(line); // .append('\n');
+                wr.close();
+                rd.close();
 
-        } catch (UnknownServiceException e) {
-            System.err.println
-                    ("Unknown service exception talking to server REPL: " + e);
+            } catch (UnknownServiceException e) {
+                System.err.println
+                        ("Unknown service exception talking to server REPL: "
+                         + e);
+            } catch (IOException e) {
+                if (urlConnection != null
+                    && urlConnection.getResponseCode() >= 400) {
+                    // This isn't an IOException, but a stupid Sun
+                    // implementation, which artificially throws IOExceptions
+                    // on response codes >= 400.
+                    int code = urlConnection.getResponseCode();
+                    switch (code) {
+                      case HttpURLConnection.HTTP_FORBIDDEN:
+                        System.err.println
+                                ("Code execution forbidden by configuration");
+                        break;
+                      case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                        System.err.println("Internal error");
+                        break;
+                      default:
+                        System.err.println("Unexpected response code " + code
+                                           + " (" + e + ")");
+                        break;
+                    }
+                } else {
+                    System.err.println("IOException talking to server REPL: "
+                                       + e);
+                }
+            }
         } catch (IOException e) {
-            System.err.println("IOException talking to server REPL: " + e);
+            // This is an IOException thrown by the getResponseCode
+            // That really shouldn't happen.
+            System.err.println("Weirdo IOException: " + e);
         }
         return value.toString();
     }

@@ -6,6 +6,9 @@
 
 package org.eurovotech.quaestor;
 
+import org.eurovotech.quaestor.helpers.QuaestorConnection;
+import org.eurovotech.quaestor.helpers.HttpResult;
+
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.OutputStreamWriter;
@@ -25,35 +28,34 @@ import junit.framework.TestCase;
 public class QuaestorTest
         extends TestCase {
 
-    private static URL baseURL = null; // null indicates uninitialised
+    private static URL quaestorURL = null; // null indicates uninitialised
+    private static URL contextURL;     // Same as quaestorURL, but usable
+                                       // as a base URL for creating
+                                       // new ones
     private static URL xmlrpcEndpoint;
-    private static String testKB;
-
-    private static final int METHOD_GET    = 111;
-    private static final int METHOD_POST   = 222;
-    private static final int METHOD_PUT    = 333;
-    private static final int METHOD_DELETE = 444;
+    private static final String testKB = "testing";
 
     public QuaestorTest(String name)
             throws Exception {
         super(name);
         // the testGetTopPage test effectively checks that the
-        // Quaestor servlet is indeed runing in Tomcat.
+        // Quaestor servlet is indeed running in Tomcat.
 
-        if (baseURL == null) {
+        if (quaestorURL == null) {
             // first time
-            baseURL = new URL(System.getProperty
+            quaestorURL = new URL(System.getProperty
                               ("quaestor.url",
-                               "http://localhost:8080/quaestor/."));
-            System.err.println("Testing baseURL=" + baseURL);
-            xmlrpcEndpoint = new URL(baseURL, "xmlrpc");
-            testKB = "testing";
+                               "http://localhost:8080/quaestor"));
+            contextURL = new URL(quaestorURL, quaestorURL.getPath() + "/");
+            xmlrpcEndpoint = new URL(contextURL, "xmlrpc");
+            System.err.println("Testing quaestorURL=" + quaestorURL);
+            System.err.println("...RPC endpoint=" + xmlrpcEndpoint);
         }
     }
 
     public void testGetTopPage()
             throws Exception {
-        HttpResult r = httpGet(new URL(baseURL, "."));
+        HttpResult r = QuaestorConnection.httpGet(quaestorURL);
         if (r.getStatus() == HttpURLConnection.HTTP_OK) {
             assertContentType(r, "text/html");
         } else {
@@ -68,99 +70,89 @@ public class QuaestorTest
 
     public void testGetKnowledgebaseList()
             throws Exception {
-        HttpResult r = httpGet(new URL(baseURL, "kb"));
+        HttpResult r = QuaestorConnection.httpGet(new URL(contextURL, "kb"));
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/html");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
     }
 
     public void testCreateKnowledgebase()
             throws Exception {
-        URL kbURL = makeKbUrl();
-
         // Attempt to delete the knowledgebase, whether or not it's there.
         // Don't care about the return value.
-        HttpResult r = httpDelete(kbURL);
+        HttpResult r = QuaestorConnection.httpDelete(makeKbUrl());
 
         // create the new knowledgebase
-        r = httpPut(kbURL, "My test knowledgebase", "text/plain");
+        r = QuaestorConnection.httpPut(makeKbUrl(),
+                                       "My test knowledgebase",
+                                       "text/plain");
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
-        assertNull(r.getContent());
+        assertNull(r.getContentAsString());
 
         // Does ?metadata work?
-        kbURL = makeKbUrl("?metadata");
-        r = httpGet(kbURL);
+        r = QuaestorConnection.httpGet(makeKbUrl("?metadata"));
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/rdf+n3");
-    }
 
-    // try that one again -- should fail, since we can't create 
-    // the knowledgebase twice
-    public void testCreateKnowledgebaseAgain()
-            throws Exception {
-        HttpResult r = httpPut(makeKbUrl(),
+        // try creating the knowledgebase again -- should fail, since
+        // we can't create the knowledgebase twice
+        r = QuaestorConnection.httpPut(makeKbUrl(),
                                "My test knowledgebase",
                                "text/plain");
-        assertEquals(4, r.getStatus()/100);
+        assertStatus(r, HttpURLConnection.HTTP_FORBIDDEN);
     }
 
     /* ******************** Other test methods ******************** */
 
     public void testAddOntology()
             throws Exception {
-        HttpResult r = httpTransaction
-                (METHOD_PUT,
-                 makeKbUrl("ontology"),
+        HttpResult r = QuaestorConnection.httpPut
+                (makeKbUrl("ontology"),
                  "<?xml version='1.0'?><rdf:RDF xmlns='urn:example#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:owl='http://www.w3.org/2002/07/owl#' xml:base='urn:example'><owl:Ontology rdf:about=''/><owl:Class rdf:ID='c1'/></rdf:RDF>",
-                 new String[] { "Content-Type", "application/rdf+xml" });
+                 "application/rdf+xml");
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
-        assertNull(r.getContent());
+        assertNull(r.getContentAsString());
     }
 
     public void testGetOntology ()
             throws Exception {
-        HttpResult r = httpGet(makeKbUrl("ontology"),
-                               new String[] {"Accept", "*/*"});
+        HttpResult r = QuaestorConnection.httpGet(makeKbUrl("ontology"), "*/*");
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/rdf+n3");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
         // the actual content is a bit of a fuss to check
 
-        r = httpGet(makeKbUrl("ontology"),
-                    new String[] {"Accept", "text/rdf+n3"});
+        r = QuaestorConnection.httpGet(makeKbUrl("ontology"), "text/rdf+n3");
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/rdf+n3");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
         // same content type if we request deprecated application/n3
-        r = httpGet(makeKbUrl("ontology"),
+        r = QuaestorConnection.httpGet(makeKbUrl("ontology"),
                     new String[] {"Accept", "application/n3"});
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/rdf+n3");
-        assertNotNull(r.getContent());
-
+        assertNotNull(r.getContentAsString());
     }
     
     public void testAddInstances ()
             throws Exception {
-        HttpResult r = httpTransaction
-                (METHOD_PUT,
-                 makeKbUrl("instances"),
+        HttpResult r = QuaestorConnection.httpPut
+                (makeKbUrl("instances"),
                  "<urn:example#i2> a <urn:example#c2>.",
-                 new String[] { "Content-Type", "text/rdf+n3" });
+                 "text/rdf+n3");
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
-        assertNull(r.getContent());
+        assertNull(r.getContentAsString());
 
         // Test the deprecated, but admissable, application/n3 MIME type.
         // Note that we must leave the 'instances' KB holding this triple,
         // for the following test to work.
-        r = httpTransaction
-                (METHOD_PUT,
-                 makeKbUrl("instances"),
+        r = QuaestorConnection.httpPut
+                (makeKbUrl("instances"),
                  "<urn:example#i1> a <urn:example#c1>.",
-                 new String[] { "Content-Type", "application/n3" });
+                 "application/n3");
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
-        assertNull(r.getContent());
+        assertNull(r.getContentAsString());
     }
 
     public void testSparqlQueriesSelect() 
@@ -170,18 +162,18 @@ public class QuaestorTest
         HttpResult r;
 
         // Make a successful query. and check XML response
-        r = httpPost(makeKbUrl(), query, "application/sparql-query");
+        r = QuaestorConnection.httpPost(makeKbUrl(), query, "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/xml");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
         // don't check actual content string
 
         // try making a query against a submodel -- should fail
-        r = httpPost(makeKbUrl("ontology"),
+        r = QuaestorConnection.httpPost(makeKbUrl("ontology"),
                      query,
                      "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
-        assertNotNull(r.getContent()); // error message
+        assertNotNull(r.getContentAsString()); // error message
 
         // Note we don't check whether the query fails if it's given with
         // the wrong content-type.  Perhaps we should.
@@ -189,38 +181,39 @@ public class QuaestorTest
         // check n-triple response
         // XXX this isn't actually correct yet, in that this still
         // returns a tabular-style query rather than n-triples.
-        r = httpTransaction(METHOD_POST, makeKbUrl(), query,
-                            new String[] {
-                                "Accept", "text/plain",
-                                "Content-Type", "application/sparql-query",
-                            });
+        r = QuaestorConnection.httpPost(makeKbUrl(),
+                                        query,
+                                        new String[] {
+                                            "Accept", "text/plain",
+                                            "Content-Type", "application/sparql-query",
+                                        });
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/plain");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
         // don't check actual content
 
         String encodedQuery = java.net.URLEncoder.encode(query, "UTF-8");
-        r = httpGet(makeKbUrl("?sparql="+encodedQuery));
+        r = QuaestorConnection.httpGet(makeKbUrl("?sparql="+encodedQuery));
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/xml");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
         // the same, requesting text/plain
-        r = httpGet(makeKbUrl("?sparql="+encodedQuery),
+        r = QuaestorConnection.httpGet(makeKbUrl("?sparql="+encodedQuery),
                     new String[] {"Accept", "text/plain"});
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/plain");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
         // ...and requesting CSV
         // Note that we actually test the content, here, so are coupled to
         // testAddInstances.
-        r = httpGet(makeKbUrl("?sparql="+encodedQuery),
+        r = QuaestorConnection.httpGet(makeKbUrl("?sparql="+encodedQuery),
                     new String[] {"Accept", "text/csv"});
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/csv");
         assertEquals("header=present", r.getContentTypeParameters());
-        assertEquals("i\r\nurn:example#i1\r\n", r.getContent());
+        assertEquals("i\r\nurn:example#i1\r\n", r.getContentAsString());
     }
 
     public void testSparqlQueriesAsk()
@@ -229,31 +222,32 @@ public class QuaestorTest
         HttpResult r;
         URL url = makeKbUrl();
 
-        r = httpPost(url, query, "application/sparql-query");
+        r = QuaestorConnection.httpPost(url, query, "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/xml");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
         // don't check actual content
 
         // Request plain text -- should return yes/no
-        r = httpTransaction(METHOD_POST, url, query,
-                            new String[] {
-                                "Content-Type", "application/sparql-query",
-                                "Accept", "text/plain",
-                            });
+        r = QuaestorConnection.httpPost(url,
+                                        query,
+                                        new String[] {
+                                            "Content-Type", "application/sparql-query",
+                                            "Accept", "text/plain",
+                                        });
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/plain");
         // if I test the content for equality with "yes\r\n" it fails -- why?
-        assertEquals("yes", r.getContent().substring(0,3));
+        assertEquals("yes", r.getContentAsString().substring(0,3));
 
         // Request CSV -- should fail
-        r = httpTransaction(METHOD_POST, url, query,
-                            new String[] {
-                                "Content-Type", "application/sparql-query",
-                                "Accept", "text/csv",
-                            });
+        r = QuaestorConnection.httpPost(url, query,
+                                        new String[] {
+                                            "Content-Type", "application/sparql-query",
+                                            "Accept", "text/csv",
+                                        });
         assertEquals(4, r.getStatus()/100);
-        assertNotNull(r.getContent()); // error message
+        assertNotNull(r.getContentAsString()); // error message
     }
 
     public void testSparqlQueriesMalformed()
@@ -266,25 +260,25 @@ public class QuaestorTest
         URL url = makeKbUrl();
 
         // good query with (otherwise plausible) post query part
-        r = httpPost(makeKbUrl("?sparql"),
+        r = QuaestorConnection.httpPost(makeKbUrl("?sparql"),
                      goodQuery,
                      "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
-        r = httpPost(url, badQuery, "application/sparql-query");
+        r = QuaestorConnection.httpPost(url, badQuery, "application/sparql-query");
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
         // GET with unrecognised query string
-        r = httpGet(makeKbUrl("?wibble"));
+        r = QuaestorConnection.httpGet(makeKbUrl("?wibble"));
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
         // GET with correct query string, but no argument
-        r = httpGet(makeKbUrl("?sparql="));
+        r = QuaestorConnection.httpGet(makeKbUrl("?sparql="));
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
     }
 
     /* ******************** XML-RPC tests ******************** */
@@ -301,10 +295,12 @@ public class QuaestorTest
                      "encoding", "UTF-8",
                  });
         ParsedRpcResponse rpc;
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        String kbbaseurl = new URL(quaestorURL,
+                                   quaestorURL.getPath()+"/kb/"+testKB).toString();
+        rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
-        assertEquals(makeKbUrl().toString(),
+        assertEquals(kbbaseurl,
                      rpc.getResponseString());
 
         // Exactly the same, but with different properties
@@ -316,10 +312,10 @@ public class QuaestorTest
                                   "standalone", "no",
                                   "encoding", "ISO-8859-1",
                               });
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
-        assertEquals(makeKbUrl().toString(),
+        assertEquals(kbbaseurl,
                      rpc.getResponseString());
     }
 
@@ -330,19 +326,19 @@ public class QuaestorTest
         String call = makeXmlRpcCall("query-model",
                                      new Object[] {testKB, query});
         ParsedRpcResponse rpc
-                = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+                = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && !rpc.isFault());
         assertEquals(String.class, rpc.getResponseClass());
         assertNotNull(rpc.getResponseString());
 
         URL pickup = new URL(rpc.getResponseString());
-        HttpResult r = httpGet(pickup);
+        HttpResult r = QuaestorConnection.httpGet(pickup);
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "application/xml");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
         // getting it a second time should fail
-        r = httpGet(pickup);
+        r = QuaestorConnection.httpGet(pickup);
         assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
 
         // test requesting different MIME type
@@ -352,10 +348,10 @@ public class QuaestorTest
         assertEquals(String.class, rpc.getResponseClass());
         assertNotNull(rpc.getResponseString());
         pickup = new URL(rpc.getResponseString());
-        r = httpGet(pickup);
+        r = QuaestorConnection.httpGet(pickup);
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/plain");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
         // test requesting bad MIME type
         rpc = performXmlRpcCall("query-model",
@@ -370,10 +366,10 @@ public class QuaestorTest
         assertEquals(String.class, rpc.getResponseClass());
         assertNotNull(rpc.getResponseString());
         pickup = new URL(rpc.getResponseString());
-        r = httpGet(pickup);
+        r = QuaestorConnection.httpGet(pickup);
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/csv");
-        assertNotNull(r.getContent());
+        assertNotNull(r.getContentAsString());
 
         // ...but bad for ASK
         rpc = performXmlRpcCall("query-model",
@@ -395,14 +391,14 @@ public class QuaestorTest
         // a 200 response with the correct fault-code, even though the `spec'
         // is hopelessly vague about this.
         call = "<junk";
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(0, rpc.getFaultCode());
         // don't bother testing fault message
 
         // malformed input (2): well-formed but non-conforming XML
         call = "<junk><but>well-formed</but></junk>";
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(0, rpc.getFaultCode());
 
@@ -414,12 +410,12 @@ public class QuaestorTest
         // OK method, but wrong content-type and wrong number of args
         call = makeXmlRpcCall("get-model",
                               new Object[] {"one", "two", "three"});
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/plain"));
+        rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/plain"));
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(0, rpc.getFaultCode());
 
         // ...wrong number of arguments (same call)
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(2, rpc.getFaultCode());
 
@@ -441,7 +437,7 @@ public class QuaestorTest
         // is not redundant with the test above).
         call = makeXmlRpcCall("query-model",
                               new Object[] {"wibble"}); // should be two args
-        rpc = getRpcResponse(httpPost(xmlrpcEndpoint, call, "text/xml"));
+        rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(2, rpc.getFaultCode());
         */
@@ -471,24 +467,21 @@ public class QuaestorTest
             throws Exception {
         assertStatus(r, HttpURLConnection.HTTP_OK);
         assertContentType(r, "text/xml");
-        return parseXmlRpcResponse(r.getContent());
+        return parseXmlRpcResponse(r.getContentAsString());
     }
     
     /* ******************** deletion of knowledgebases ******************** */
 
     public void testDeleteKnowledgebase()
             throws Exception {
-        HttpResult r = httpDelete(makeKbUrl());
+        HttpResult r = QuaestorConnection.httpDelete(makeKbUrl());
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
-        assertNull(r.getContent());
-    }
+        assertNull(r.getContentAsString());
 
-    // should fail when done a second time
-    public void testDeleteKnowledgebaseAgain()
-            throws Exception {
-        HttpResult r = httpDelete(makeKbUrl());
+        // should fail when done a second time
+        r = QuaestorConnection.httpDelete(makeKbUrl());
         assertEquals(4, r.getStatus()/100);
-        //assertEquals("", r.getContent());
+        //assertEquals("", r.getContentAsString());
     }
 
     /* ********** Helper methods ********** */
@@ -500,159 +493,11 @@ public class QuaestorTest
     private URL makeKbUrl(String submodel) 
             throws java.net.MalformedURLException {
         if (submodel == null)
-            return new URL(baseURL, "kb/"+testKB);
+            return new URL(contextURL, "kb/"+testKB);
         else if (submodel.startsWith("?"))
-            return new URL(baseURL, "kb/"+testKB+submodel);
+            return new URL(contextURL, "kb/"+testKB+submodel);
         else
-            return new URL(baseURL, "kb/"+testKB+"/"+submodel);
-    }
-
-    private HttpResult httpGet(URL url) 
-            throws Exception {
-        return httpTransaction(METHOD_GET, url, null);
-    }
-
-    private HttpResult httpGet(URL url, String[] headers)
-            throws Exception {
-        return httpTransaction(METHOD_GET, url, null, headers);
-    }
-
-    private HttpResult httpPost(URL url, String content, String contentType)
-            throws Exception {
-        return httpTransaction(METHOD_POST, url, content,
-                               new String[] {"Content-Type", contentType});
-    }
-
-    private HttpResult httpPut(URL url, String content, String contentType)
-            throws Exception {
-        return httpTransaction(METHOD_PUT, url, content,
-                               new String[] {"Content-Type", contentType});
-    }
-
-    private HttpResult httpDelete(URL url)
-            throws Exception {
-        return httpTransaction(METHOD_DELETE, url, null);
-    }
-
-    /**
-     * Generic HTTP transaction handler.
-     * @param method one of METHOD_GET, METHOD_POST, etc...
-     * @param url the URL to interact with
-     * @param content the content to be sent to the server, or null if 
-     * none is to be sent
-     * @return an instance of {@link HttpResult}, with the results of
-     * the transaction; the content is returned a a trimmed String, or as
-     * null if that trimmed string would be of zero length
-     */
-    private HttpResult httpTransaction(int method, URL url, String content)
-            throws Exception {
-        return httpTransaction(method, url, content, null);
-    }
-
-    /**
-     * Generic HTTP transaction handler.
-     * @param method one of GET, POST, etc...
-     * @param url the URL to interact with
-     * @param content the content to be sent to the server, or null if 
-     * none is to be sent
-     * @param headers a list of Strings which are interpreted in
-     * pairs, as (header-name, header-value)
-     * @return an instance of {@link HttpResult}, with the results of
-     * the transaction; the content is returned a a trimmed String, or as
-     * null if that trimmed string would be of zero length
-     */
-    private HttpResult httpTransaction(int method,
-                                       URL url,
-                                       String content,
-                                       String[] headers)
-            throws Exception {
-        assert url.getProtocol().equals("http");
-        String methodString = null;
-        switch (method) {
-          case METHOD_GET:    methodString = "GET";    break;
-          case METHOD_PUT:    methodString = "PUT";    break;
-          case METHOD_POST:   methodString = "POST";   break;
-          case METHOD_DELETE: methodString = "DELETE"; break;
-          default: throw new IllegalArgumentException
-                    ("Unrecognised method " + method);
-        }
-        
-        HttpURLConnection c = (HttpURLConnection)url.openConnection();
-        try {
-            c.setRequestMethod(methodString);
-            c.setDoInput(true);
-
-            if (headers != null) {
-                if (headers.length%2 != 0)
-                    throw new IllegalArgumentException
-                            ("Odd number of headers in httpTransaction");
-                for (int i=0; i<headers.length; i+=2) {
-                    assert i+1 < headers.length;
-                    c.setRequestProperty(headers[i], headers[i+1]);
-                }
-            }
-
-            if (content == null) {
-                c.setDoOutput(false);
-            } else {
-                c.setDoOutput(true);
-
-                OutputStreamWriter w
-                        = new OutputStreamWriter(c.getOutputStream());
-                w.write(content);
-                w.flush();
-                w.close();
-            }
-
-            StringBuffer sb = new StringBuffer();
-            BufferedReader r
-                    = new BufferedReader
-                    (new InputStreamReader(c.getInputStream()));
-            char[] buffer = new char[256];
-            int nread;
-            while ((nread = r.read(buffer, 0, buffer.length)) >= 0) {
-                sb.append(buffer, 0, nread);
-            }
-            r.close();
-            
-            String res;
-            if (sb.length() == 0)
-                res = null;
-            else
-                res = sb.toString();
-            
-            return new HttpResult(c.getResponseCode(),
-                                  c.getContentType(),
-                                  res);
-        } catch (java.io.IOException e) {
-            if (c.getResponseCode() >= 400) {
-                // fake error generated by getInputStream (grrr)
-                java.io.InputStream is = c.getErrorStream();
-                String contentString;
-                if (is == null) {
-                    contentString = null;
-                } else {
-                    StringBuffer sb = new StringBuffer();
-                    BufferedReader r
-                            = new BufferedReader(new InputStreamReader(is));
-                    char[] buffer = new char[256];
-                    int nread;
-                    while ((nread = r.read(buffer, 0, buffer.length)) >= 0)
-                        sb.append(buffer, 0, nread);
-                    r.close();
-                    if (sb.length() == 0)
-                        contentString = null;
-                    else
-                        contentString = sb.toString();
-                }
-                return new HttpResult(c.getResponseCode(),
-                                      c.getContentType(),
-                                      contentString);
-            } else {
-                // it actually is an error
-                throw e;
-            }
-        }
+            return new URL(contextURL, "kb/"+testKB+"/"+submodel);
     }
 
     /**
@@ -786,7 +631,7 @@ public class QuaestorTest
      */
     public ParsedRpcResponse performXmlRpcCall(String method, Object[] args) 
             throws Exception {
-        return getRpcResponse(httpPost(xmlrpcEndpoint,
+        return getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint,
                                        makeXmlRpcCall(method, args),
                                        "text/xml"));
     }
@@ -997,52 +842,4 @@ public class QuaestorTest
         }
     }
 
-    public static class HttpResult {
-        private int status;
-        private String responseContentType;
-        private String responseContentTypeParameters;
-        private String responseContent;
-
-        private static java.util.regex.Pattern parameters;
-        static {
-            parameters = java.util.regex.Pattern.compile("([^;]*)(; *(.*))?");
-        }
-        
-        public HttpResult(int status, String contentType, String content) {
-            this.status = status;
-
-            if (contentType == null) {
-                this.responseContentType = null;
-                this.responseContentTypeParameters = null;
-            } else {
-                java.util.regex.Matcher m = parameters.matcher(contentType);
-                if (m.matches()) {
-                    this.responseContentType = m.group(1);
-                    this.responseContentTypeParameters = 
-                            (m.group(3) == null ? "" : m.group(3));
-                } else {
-                    assert false;
-                }
-            }
-            this.responseContent = content;
-        }
-        public int getStatus() {
-            return status;
-        }
-        public String getContentType() {
-            return (responseContentType == null ? "" : responseContentType);
-        }
-        public String getContentTypeParameters() {
-            return responseContentTypeParameters;
-        }
-        public String getContent() {
-            return responseContent;
-        }
-        public String toString() {
-            return "Status=" + status
-                    + ", content-type=" + responseContentType
-                    + "(" + responseContentTypeParameters
-                    + "), content=" + responseContent;
-        }
-    }
 }
