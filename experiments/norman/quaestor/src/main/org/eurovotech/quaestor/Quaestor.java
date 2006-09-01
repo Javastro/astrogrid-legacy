@@ -39,6 +39,8 @@ public class Quaestor extends HttpServlet {
             requestHandlerMap = new java.util.HashMap();
             requestHandlerMap.put("GET" + kbContext,
                                   "http-get");
+            requestHandlerMap.put("HEAD" + kbContext,
+                                  "http-head");
             requestHandlerMap.put("GET" + pickupContext,
                                   "pickup-dispatcher");
             requestHandlerMap.put("PUT" + kbContext,
@@ -182,5 +184,15 @@ public class Quaestor extends HttpServlet {
                        HttpServletResponse response)
             throws IOException, ServletException {
         callQuaestorHandler("POST", request, response);
+    }
+
+    /**
+     * Handle a POST method by handing it over to the quaestor put
+     * procedure.
+     */
+    public void doHead(HttpServletRequest request,
+                       HttpServletResponse response)
+            throws IOException, ServletException {
+        callQuaestorHandler("HEAD", request, response);
     }
 }

@@ -42,7 +42,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.36 $ $Date: 2006/08/25 01:59:10 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.37 $ $Date: 2006/09/01 15:22:42 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -364,6 +364,33 @@
                            get-model-query
                            get-model
                            get-fallback))
+
+(define/contract (http-head (request  request?)
+                            (response response?)
+                            -> string-or-true?)
+  (with/fc
+      (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
+    (lambda ()
+      (let ((path-list (request->path-list request)))
+        (set-http-response response '|SC_OK|) ;default response
+        (case (length path-list)
+          ((0)
+           #t)
+          ((1)                          ;URL referring to a knowledgebase
+           (if (kb:get (car path-list))
+               #t
+               (set-http-response response '|SC_NOT_FOUND|)))
+          ((2)                          ;URL referring to a submodel
+           (let ((status (let ((kb (kb:get (car path-list))))
+                           (cond ((not kb)
+                                  '|SC_NOT_FOUND|)
+                                 ((kb 'get-model (cadr path-list))
+                                  '|SC_OK|)
+                                 (else
+                                  '|SC_NOT_FOUND|)))))
+             (set-http-response response status)))
+          (else
+           (set-http-response response '|SC_NOT_FOUND|)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
