@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.25 2006/09/01 15:52:09 norman Exp $
+     $Id: build.xml,v 1.26 2006/09/01 16:25:07 norman Exp $
 -->
 
 
@@ -116,6 +116,7 @@
   <property name="app.version"   value="0.4.1-beta"/>
   <property name="build.home"    value="${basedir}/build"/>
   <property name="build.war"     value="${build.home}/war"/>
+  <property name="build.client"  value="${build.home}/client"/>
   <property name="build.classes" value="${build.war}/WEB-INF/classes"/>
   <property name="build.lib"     value="${build.war}/WEB-INF/lib"/>
   <property name="build.tests"   value="${build.home}/tests"/>
@@ -467,6 +468,18 @@
          basedir="${build.war}"/> <!-- XXX: this scoops up .../scc/, too -->
 
     <!-- Copy additional files to ${dist.home} as necessary -->
+
+    <!-- Client-side useful things -->
+    <mkdir dir="${build.client}"/>
+    <copy todir="${build.client}">
+      <fileset dir="${dist.home}/docs"/>
+    </copy>
+    <jar jarfile="${build.client}/${app.name}-client-${app.version}.jar"
+         basedir="${build.war}/WEB-INF/classes"
+         includes="org/eurovotech/quaestor/**"/>
+    <zip destfile="${dist.home}/${app.name}-client-${app.version}.zip">
+      <fileset dir="${build.client}"/>
+    </zip>
 
   </target>
 
