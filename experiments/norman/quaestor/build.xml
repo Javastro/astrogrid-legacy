@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.23 2006/08/25 09:39:45 norman Exp $
+     $Id: build.xml,v 1.24 2006/09/01 15:21:31 norman Exp $
 -->
 
 
@@ -122,7 +122,7 @@
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
   <property name="manager.url"   value="http://localhost:8080/manager"/>
-  <property name="quaestor.url"  value="http://localhost:8080/quaestor/."/>
+  <property name="quaestor.url"  value="http://localhost:8080/quaestor"/>
   <property name="src.home"      value="${basedir}/src/main"/>
   <property name="scm.src.home"  value="${basedir}/src/main/scm"/>
   <property name="src.etc"       value="${basedir}/src/etc"/>
@@ -567,21 +567,12 @@
 
   -->
 
-  <target name="prepare" depends='prepare-static'>
+  <target name="prepare" depends="prepare-static">
 
     <!-- Create build directories as needed -->
     <mkdir dir="${build.war}"/>
     <mkdir dir="${build.lib}"/>
     <mkdir dir="${build.classes}"/>
-
-    <!-- Copy static content of this web application -->
-    <copy todir="${build.war}">
-      <fileset dir="${web.home}"
-               excludes="generate/**"/>
-      <filterset>
-        <filter token="VERSION" value="${app.version}"/>
-      </filterset>
-    </copy>
 
     <!-- Copy in external dependencies -->
     <mkdir  dir="${build.lib}"/>
@@ -606,6 +597,16 @@
     <untar src='web/demo.tar.gz'
            dest='web'
            compression='gzip'/>
+
+    <!-- Copy static content of this web application -->
+    <copy todir="${build.war}">
+      <fileset dir="${web.home}"
+               excludes="generate/**"/>
+      <filterset>
+        <filter token="VERSION" value="${app.version}"/>
+      </filterset>
+    </copy>
+
   </target>
 
   <!-- ========= Test targets ========= -->
@@ -663,7 +664,7 @@
    ! This includes a protocol test, for which Tomcat must be running.
    ! The URL of the service can be overridden by setting the quaestor.url
    ! property when invoking ant:
-   !   % ant -Dquaestor.url=http://ptolemy.astro.gla.ac.uk:8080/quaestor/. \
+   !   % ant -Dquaestor.url=http://ptolemy.astro.gla.ac.uk:8080/quaestor \
    !         -Dtestcase=org.eurovotech.quaestor.QuaestorTest \
    !         run-single-test
    !-->
