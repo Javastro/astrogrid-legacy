@@ -315,9 +315,18 @@ System module.
 			data and information from the SIMBAD, NED, VizieR, or other archives for all known objects in the field. </tooltip>
 			]]></tooltip>
 			<parameter>http://aladin.u-strasbg.fr/</parameter>
-		</action>		
-		<action parentName="links" name="topcat" text="TopCat" iconName="tc3.gif"
+		</action>	
+		<action parentName="links" name="splat" text="SPLAT" iconName="splat.gif"
 			after="aladin"
+			object="service:browser" methodName="openURL">
+			<tooltip><![CDATA[
+			<html><b>SPLAT</b> is a spectral analysis tool
+			]]></tooltip>
+				<!--  todo: this is a temporary jnlp link. replace with release page, once it's up. -->
+				<parameter>http://andromeda.star.bris.ac.uk/starjavalib/splat.jnlp</parameter>
+		</action>	
+		<action parentName="links" name="topcat" text="TopCat" iconName="tc3.gif"
+			after="splat"
 			object="service:browser" methodName="openURL" >
 			<tooltip><![CDATA[
 			<html><b>TOPCAT</b> is an interactive graphical viewer and editor for tabular data.<br>
