@@ -1,4 +1,4 @@
-/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.4 2006/08/15 10:15:34 nw Exp $
+/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.5 2006/09/02 00:48:15 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,12 @@
 package org.astrogrid.desktop.modules.background;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.ConeService;
@@ -60,12 +63,17 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
             throws ApplicationDescriptionNotFoundException {
        // bah - got to back-track a little here. irritating..
         Resource info = null;
-        try {
-            URI uri = new URI(( arg1.startsWith("ivo://") ? "" : "ivo://" ) + arg1);
-            info = reg.getResource(uri);
-        } catch (Exception e) { // badly-propagated exceptions, but all pretty unlikely - as we've checked it exists first.
-            throw new ApplicationDescriptionNotFoundException(e.getMessage());
-        }
+			try {
+				URI uri = new URI(( arg1.startsWith("ivo://") ? "" : "ivo://" ) + arg1);
+				info = reg.getResource(uri);
+			} catch (URISyntaxException x) {
+	            throw new ApplicationDescriptionNotFoundException("URISyntaxException");
+			} catch (NotFoundException x) {
+				throw new ApplicationDescriptionNotFoundException(arg1);
+			} catch (ServiceException x) {
+				throw new ApplicationDescriptionNotFoundException(x.getMessage());
+			}
+
         if (info instanceof ConeService ) {
         	return super.getDescription(ConeService.class.getName());
         } else if (info instanceof SiapService) {
@@ -79,6 +87,9 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: BestMatchApplicationDescriptionLibrary.java,v $
+Revision 1.5  2006/09/02 00:48:15  nw
+cleaned up exeception handling that was hiding a bug.
+
 Revision 1.4  2006/08/15 10:15:34  nw
 migrated from old to new registry models.
 
