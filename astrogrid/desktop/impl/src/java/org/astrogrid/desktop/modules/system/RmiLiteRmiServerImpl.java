@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.8 2006/06/27 10:41:51 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.9 2006/09/02 00:49:42 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,24 +14,28 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.ladypleaser.rmilite.Server;
+import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ComponentDescriptor;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 
 /** Implementation of the RmiServer using rmi lite.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2005
- 
+ * @todo configure the java.rmi.server.codebase property to point to the internal webserver - so that clients can grab missing classes if needed.
+ * @todo find way to reliably shut down the rmi server / registry - sometimes it seems to hang around.
+ * @todo restrict connections to specified ports.
+   @modified inlined the source from RmiLite's server - so we can adapt it (hard to extend).
  */
 public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  ShutdownListener {
 
@@ -42,7 +46,7 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
     private static final Log logger = LogFactory.getLog(RmiLiteRmiServerImpl.class);
     private final ACRInternal acr;
     private final Map listenerInterfaces;
-    private Server server;
+    private Registry registry;
 
 
     /** Construct a new RmiLiteRmiServerImpl
@@ -55,17 +59,16 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
         this.listenerInterfaces = listenerInterfaces;
     }
 
- 
 
     public void init() throws Exception {
         super.init();// selects correct port, etc.
-        server = new Server(getPort());       
+		registry = LocateRegistry.createRegistry(getPort());        
         logger.debug("Started RMI Server");       
         for (Iterator i = acr.moduleIterator(); i.hasNext(); ) {
             registerServicesInModule((Module)i.next());
         }
     }
-
+ 
     private void registerServicesInModule(Module module) {
         // special case - don't bother if there's no components..
         if (! module.getDescriptor().componentIterator().hasNext()) {
@@ -84,7 +87,7 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
             }
             try {
                 Object impl = module.getComponent(componentName);                
-                server.publish(iface,impl,(Class[])listeners.toArray(new Class[listeners.size()]));
+                publish(iface,impl,(Class[])listeners.toArray(new Class[listeners.size()]));
          
             } catch (Exception e1) {
                 logger.error("Failed to publish " + componentName,e1);
@@ -92,6 +95,11 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
         }
     }
 
+    // copied from rmiLite impl of Server
+    private void publish(Class iface, Object impl, Class[] exportedInterfaces) throws RemoteException {
+    	RemoteInvocationHandlerImpl handler = new RemoteInvocationHandlerImpl(impl, new HashSet(Arrays.asList(exportedInterfaces)));
+    	registry.rebind(iface.getName(), handler);
+    }
 
 
     public void halting() {
@@ -127,6 +135,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.9  2006/09/02 00:49:42  nw
+inlined rmilite server, as precursor to customization.
+
 Revision 1.8  2006/06/27 10:41:51  nw
 findbugs tweaks
 
