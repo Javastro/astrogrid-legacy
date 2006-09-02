@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.2 2006/08/31 21:33:38 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.3 2006/09/02 00:48:34 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -178,7 +178,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
 					bulk.put(el);
 					for (int i = 0; i < arr.length; i++) {
 						if (resources.get(arr[i].getId()) == null) {
-							resources.put(new Element(arr[i].getId(),  arr));
+							resources.put(new Element(arr[i].getId(),  arr[i]));
 						}
 					}
 				}
@@ -680,6 +680,9 @@ public void clear() {
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.3  2006/09/02 00:48:34  nw
+fixed caching bug
+
 Revision 1.2  2006/08/31 21:33:38  nw
 finsihed query parser
 
