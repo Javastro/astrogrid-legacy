@@ -50,18 +50,16 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
 		// querying reg.
 		
 		// cache for individual resource documents.
-		// seems to get really really large. so will keep this a memory cache for now.
-		// most interesting things happen in bulk queries anyhow - and these seem to store quite efficiently.
 		
 		// will always hold the 200 most recently used resources.s
 		CacheConfiguration resources = new CacheConfiguration() {{
 			setName(RESOURCES_CACHE);
 			setMaxElementsInMemory(200); // 3-4 queries? will get flooded by astroscope in one go.
-			setOverflowToDisk(false);
-			setDiskPersistent(false);
-			setTimeToLiveSeconds(10 * 60); // 10 minutes	
-			setTimeToIdleSeconds(2 * 60); // 2 minutes
-			//setDiskExpiryThreadIntervalSeconds(2 * 60); // 2 minutes
+			setOverflowToDisk(true);
+			setDiskPersistent(true);
+			setTimeToLiveSeconds(7 * 24 * 60 * 60); // 7 days
+			setTimeToIdleSeconds(3 * 24 * 60 * 60); // 3 days		
+			setDiskExpiryThreadIntervalSeconds(60 * 60); //1 hour
 		}};
 		conf.addCache(resources);
 		
@@ -96,9 +94,9 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
 			setMaxElementsInMemory(1);
 			setOverflowToDisk(true);
 			setDiskPersistent(true);
-			setTimeToLiveSeconds(3 * 24 * 60 * 60); // 3 days
-			setTimeToIdleSeconds(1 * 24 * 60 * 60); // 1 days		
-			setDiskExpiryThreadIntervalSeconds(10 * 60); // 10 minutes		
+			setTimeToLiveSeconds(7 * 24 * 60 * 60); // 7 days
+			setTimeToIdleSeconds(3 * 24 * 60 * 60); // 3 days		
+			setDiskExpiryThreadIntervalSeconds(60 * 60); //1 hour
 		}};
 		conf.addCache(pw);
 		
