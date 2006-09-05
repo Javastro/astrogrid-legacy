@@ -75,9 +75,6 @@ public class AxisClientCredentialHandler extends BasicHandler {
       SOAPPart sp =
           (org.apache.axis.SOAPPart)(msgContext.getCurrentMessage().getSOAPPart());
       sp.setCurrentMessage(os.toByteArray(), SOAPPart.FORM_BYTES);
-      System.out.println();
-      System.out.println("Message in client:");
-      System.out.println(sp.getAsString());
     }
     catch (Throwable t) {
       t.printStackTrace();
