@@ -72,7 +72,7 @@ astrogrid.build.jdk=${java.version}
 	 	<j:forEach var="j" items="${d.listFiles()}">
 	 		<j:if test="${j.getAbsolutePath().endsWith('.jar')}">
 		 		<zipfileset src="${j.getAbsolutePath()}" 
-		 		excludes="META-INF/*.SF META-INF/*.RSA META-INF/*.DSA META-INF/INDEX.LIST doc/** **/*.wsdd **/*.wsdl **/*.xsd **/*.txt log4j.properties simplelog.properties" />
+		 		excludes="META-INF/*.SF META-INF/*.RSA META-INF/*.DSA META-INF/INDEX.LIST doc/** **/*.wsdl **/*.xsd **/*.txt log4j.properties simplelog.properties" />
 	 		</j:if>
 	 	</j:forEach>
 		<manifest>
