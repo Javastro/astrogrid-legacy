@@ -326,13 +326,17 @@
         (pw (java-new <java.io.print-writer>
                       (java-new <java.io.output-stream-writer>
                                 stream
-                                (->jstring "UTF-8")))))
+                                (->jstring "UTF-8"))))
+        (empty-string (->jstring "")))
     (formatter result-vars pw)
     (let loop ()
       (if (->boolean (has-next result))
           (let ((qs (next-solution result)))
             (formatter (map (lambda (var)
-                              (to-string (get qs var)))
+                              (let ((res (get qs var)))
+                                (if (java-null? res)
+                                    empty-string
+                                    (to-string res))))
                             result-vars)
                        pw)
             (loop))))
