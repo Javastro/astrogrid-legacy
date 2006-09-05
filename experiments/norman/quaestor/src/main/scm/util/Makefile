@@ -9,6 +9,8 @@ all:	decode-der-implementation.scm \
 	xmlrpc-implementation.scm \
 	lambda-contract.scm
 
+# Don't do any of the possible ;@CONFIG comment stripping, here --
+# handle that in the module file.
 decode-der-implementation.scm: $(SCM_UTILS)/decode-der.scm
 	cp $< $@
 xmlrpc-implementation.scm: $(SCM_UTILS)/xmlrpc.scm
