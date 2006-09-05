@@ -410,11 +410,21 @@
         (<registry> |com.hp.hpl.jena.reasoner.ReasonerRegistry|))
       (define-generic-java-methods
         (get-owl-reasoner |getOWLReasoner|)
+        (get-owl-mini-reasoner |getOWLMiniReasoner|)
+        (get-owl-micro-reasoner |getOWLMicroReasoner|)
         ;;(get-rdfs-reasoner |getRDFSReasoner|)
         get-transitive-reasoner)
       (let ((reasoner-list (list (cons "defaultOWL"
                                        (lambda ()
                                          (get-owl-reasoner
+                                          (java-null <registry>))))
+                                 (cons "miniOWL"
+                                       (lambda ()
+                                         (get-owl-mini-reasoner
+                                          (java-null <registry>))))
+                                 (cons "microOWL"
+                                       (lambda ()
+                                         (get-owl-micro-reasoner
                                           (java-null <registry>))))
                                  (cons "defaultRDFS"
                                        (lambda ()
