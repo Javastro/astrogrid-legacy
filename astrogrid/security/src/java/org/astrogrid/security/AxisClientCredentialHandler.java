@@ -63,14 +63,21 @@ public class AxisClientCredentialHandler extends BasicHandler {
       WsseSignature signature = new WsseSignature(envelope, null);
       signature.sign(guard);
       
-      // Copy the signed message into the Axis engine
+      // Copy the signed message into the Axis engine. The canonicalizer
+      // doesn't add the XML prologue-line. That would be OK, but Axis then 
+      // muddles the length of the message in HTTP transmissions. Therefore,
+      // add the XML prologue explicitly here.
       Canonicalizer canonicalizer 
           = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
       ByteArrayOutputStream os = new ByteArrayOutputStream();
+      os.write("<?xml version='1.0'?>".getBytes());
       os.write(canonicalizer.canonicalizeSubtree(envelope));
       SOAPPart sp =
           (org.apache.axis.SOAPPart)(msgContext.getCurrentMessage().getSOAPPart());
       sp.setCurrentMessage(os.toByteArray(), SOAPPart.FORM_BYTES);
+      System.out.println();
+      System.out.println("Message in client:");
+      System.out.println(sp.getAsString());
     }
     catch (Throwable t) {
       t.printStackTrace();
