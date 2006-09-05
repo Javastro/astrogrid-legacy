@@ -36,7 +36,20 @@
                             command
                             (map car command-handlers))))))))
 
+;; Wrap call to exec-epf, to implement (show-command) support
+(define-syntax call-curl
+    (syntax-rules ()
+      ((call-curl form ...)
+       (if (show-command)
+           (let ((l `(form ...)))
+             (apply format
+                    `(#t "~a~%" ,(apply string-append
+                                        (map (lambda (s)
+                                               (format #f "~a " s))
+                                             (car l))))))
+           (exec-epf  form ...)))))
 
+;; Handle the 'get' command
 (define (get-handler kb-name . submodel-name)
   (define (verbose-option) (if (chatter)
                                '("--verbose" ;include chatter in request
@@ -50,7 +63,7 @@
                         (else
                          (error "Bad call to get: too many arguments")))))
     (chatter "GET ~a" full-url)
-    (exec-epf
+    (call-curl
      (curl ,@(verbose-option)
            ,@(make-header "Accept"
                           (or (acceptable-mime-types)
@@ -71,23 +84,16 @@
           (if (not mime-type)
               (formatted-error "Can't determine type of file ~a" metadata-file))
           (chatter "PUT file ~a to URL ~a" metadata-file full-url)
-          (exec-epf (curl ,@(verbose-option)
+          (call-curl (curl ,@(verbose-option)
                           ,@(make-header "Content-Type" mime-type)
                           --upload-file ,metadata-file
                           ,full-url)))
         (begin (chatter "PUT text '~a' to URL ~a" metadata full-url)
-               (exec-epf (curl ,@(verbose-option)
+               (call-curl (curl ,@(verbose-option)
                                ,@(make-header "Content-Type" "text/plain")
                                --upload-file -
                                ,full-url)
                          (<< ,metadata))))))
-
-;; Generate a curl header option, representing the given HEADER and VALUE.
-;; Return either a list of two elements, or an empty list, if value is #f.
-(define (make-header header value)
-  (if value
-      `("--header" ,(format #f "~a: ~a" header value))
-      '()))
 
 (define (add-submodel-handler model-name submodel-name submodel-file)
   (define (verbose-option) (if (chatter) '("--verbose") '()))
@@ -96,7 +102,7 @@
                           (if (model-is-tbox?) "?tbox" "?abox"))))
     (check-file-exists submodel-file)
     (chatter "PUT file ~a to URL ~a" submodel-file full-url)
-    (exec-epf
+    (call-curl
      (curl ,@(verbose-option)
            --upload-file ,submodel-file
            ,@(make-header "Content-Type"
@@ -139,14 +145,14 @@
   (let ((full-url (format #f "~a/code" (base-url))))
     (if (char=? (string-ref code 0) #\()
         (begin (chatter "PUT expr '~a' to URL ~a" code full-url)
-               (exec-epf
+               (call-curl
                 (curl ,@(verbose-option)
                       --upload-file -
                       ,full-url)
                 (<< ,code)))
         (begin (check-file-exists code)
                (chatter "PUT code in ~a to URL ~a" code full-url)
-               (exec-epf
+               (call-curl
                 (curl ,@(verbose-option)
                       --upload-file ,code
                       ,full-url))))))
@@ -158,7 +164,7 @@
   (let ((full-url (format #f "~a/kb/~a" (base-url) kb-name)))
     (check-file-exists query-file)
     (chatter "POST query in ~a to URL ~a" query-file full-url)
-    (exec-epf
+    (call-curl
      (curl ,@(verbose-option)
            ,@(make-header "Accept" 
                           (or (acceptable-mime-types)
@@ -178,7 +184,7 @@
                           kb-name
                           (url-encode (read-file-into-string query-file)))))
     (chatter "GET query in ~a to URL ~a" query-file full-url)
-    (exec-epf
+    (call-curl
      (curl ,@(verbose-option)
            ,@(make-header "Accept" 
                           (or (acceptable-mime-types)
@@ -195,7 +201,7 @@
   (let ((full-url (format #f template
                           (url-encode (read-file-into-string query-file)))))
     (chatter "GET query in ~a to URL ~a" query-file full-url)
-    (exec-epf
+    (call-curl
      (curl ,@(verbose-option)
            ,@(make-header "Accept" 
                           (or (acceptable-mime-types)
@@ -212,7 +218,7 @@
            (methodName ,method)
            (params
             ,@(map make-xmlrpc-param args)))))
-    (exec-epf
+    (call-curl
      (curl ,@(verbose-option)
            ,@(make-header "Content-Type" "text/xml")
            --data ,(sexp->xml xmlrpc-request)
@@ -294,6 +300,7 @@
   (let ((ext (file-name-extension filename))
         (ext-map '((".n3"  . "text/rdf+n3")
                    (".rdf" . "application/rdf+xml")
+                   (".rdfs" . "application/rdf+xml")
                    (".owl" . "application/rdf+xml")
                    (".txt" . "text/plain"))))
     (cond ((assoc ext ext-map)
@@ -301,13 +308,20 @@
           (else
            #f))))
 
+;; Generate a curl header option, representing the given HEADER and VALUE.
+;; Return either a list of two elements, or an empty list, if value is #f.
+(define (make-header header value)
+  (if value
+      `("--header" ,(format #f "~a:~a" header value))
+      '()))
+
 ;; Call error with implicit formatting
 (define (formatted-error . fmt-and-args)
   (error (apply format (cons #f fmt-and-args))))
 
 (define (have-found-file? fn)
-  (and (not (string=? fn "-"))
-       (file-readable? fn)))
+  (or (string=? fn "-")
+      (file-readable? fn)))
 ;; Given a file name FN, check that it is either "-", or that the file exists.
 ;; If the file does not exist, then exit with an error.
 (define (check-file-exists fn)
@@ -494,6 +508,8 @@
 ;; Comma-separated list of Accept mime-types.
 (define acceptable-mime-types (create-option #f))
 
+(define show-command (create-option #f))
+
 ;; CHATTER controls verbosity.  Can be
 ;;   (chatter) : report verbosity #t/#f
 ;;   (chatter #t/#f) : set verbosity
@@ -578,7 +594,12 @@
                   #f (model-is-tbox? #f))
   (declare-option "accept"
                   "set comma-separated list of MIME types in arg"
-                  acceptable-mime-types))
+                  acceptable-mime-types)
+
+  (declare-option "show"
+                  "show curl command, rather than executing it"
+                  #f (show-command #t))
+  )
 
 (define (unrecognised-option operand . seeds)
   (Usage)
