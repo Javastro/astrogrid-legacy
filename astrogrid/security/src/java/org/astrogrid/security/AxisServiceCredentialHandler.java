@@ -66,7 +66,10 @@ public class AxisServiceCredentialHandler extends BasicHandler {
    */
   public void invoke(MessageContext msgContext) throws AxisFault {
     try {
-      SOAPEnvelope envelope = msgContext.getCurrentMessage().getSOAPEnvelope();
+      System.out.println();
+      System.out.println("Message in service:");
+      System.out.println(msgContext.getRequestMessage().getSOAPPartAsString());
+      SOAPEnvelope envelope = msgContext.getRequestMessage().getSOAPEnvelope();
       SOAPHeaderElement header = envelope.getHeaderByName(WSSE_1_0_NAMESPACE,
                                                           "Security",
                                                           true);
@@ -88,6 +91,7 @@ public class AxisServiceCredentialHandler extends BasicHandler {
     }
     catch (Exception e) {
       log.info("The digital-signature-checking handler failed" + e);
+      e.printStackTrace();
       throw new AxisFault("The digital-signature-checking handler failed", e);
     }
   }
@@ -105,16 +109,15 @@ public class AxisServiceCredentialHandler extends BasicHandler {
     String trustAnchorDirectory 
         = System.getProperty("X509_CERT_DIR");
     if (trustAnchorDirectory == null) {
-      log.error("No directory was specified from which to load trusted certificates. " +
-                "Signatures cannot be checked.");
+      log.info("No directory was specified from which to load trusted certificates. " +
+                "/etc/grid-security/certificates is the default.");
+      trustAnchorDirectory = "/etc/grid-security/certificates";
     }
-    else {
-      try {
-        this.trustAnchors = TrustedCertificates.load(trustAnchorDirectory);
-      }
-      catch (Exception e) {
-        log.error(e);
-      }
+    try {
+      this.trustAnchors = TrustedCertificates.load(trustAnchorDirectory);
+    }
+    catch (Exception e) {
+      log.error(e);
     }   
   }
 }
