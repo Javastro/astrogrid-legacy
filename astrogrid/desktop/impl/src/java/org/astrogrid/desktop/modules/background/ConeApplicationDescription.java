@@ -1,4 +1,4 @@
-/*$Id: ConeApplicationDescription.java,v 1.5 2006/08/15 10:15:34 nw Exp $
+/*$Id: ConeApplicationDescription.java,v 1.6 2006/09/05 12:46:41 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -120,6 +120,8 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
                             Map.Entry e = (Map.Entry)i.next();
                             query = cone.addOption(query,e.getKey().toString(),e.getValue().toString());
                         }
+                        // fix requested by nick - BZ 1805
+                        query = cone.addOption(query,"VERB","3"); // most verbose
                         //do call - behaviouor here depends on how the result is to be saved..
                         ParameterValue out = findOutputParameter("result");
                         if (out.getIndirect()) {
@@ -166,6 +168,9 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: ConeApplicationDescription.java,v $
+Revision 1.6  2006/09/05 12:46:41  nw
+VERB=3
+
 Revision 1.5  2006/08/15 10:15:34  nw
 migrated from old to new registry models.
 
