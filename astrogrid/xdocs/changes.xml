@@ -6,6 +6,13 @@
     <body>
 			
     	<release version="(Pending Integration)">
+          <action dev="gtr" type="fix" issue="1800">
+            Branch security-gtr-1800: fixes to astrogrid/security in respect of
+            digital signatures. This cures two bugs: one where digital signature
+            fails with a "signature is cryptographically invalid" error; one
+            where services fail to load trusted certificates from a default
+            location.
+          </action>
 
 			<action dev="jl" type="add" issue="1496">
 				Branch common-jl-1496
