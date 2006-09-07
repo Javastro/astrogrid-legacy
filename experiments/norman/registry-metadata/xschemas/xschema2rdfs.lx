@@ -1,6 +1,5 @@
-;; Convert an instance of VOResource-0.10 to RDF statements (as
-;; striped RDF/XML) using the
-;; http://ns.eurovotech.org/VOResource-1.0.owl#" ontology.
+;; Convert an XSchema to an RDFS schema, by a transformation of the
+;; .xsd file.
 ;;
 ;; The stylesheet generally makes the correct guesses about property
 ;; types and ranges, but in some cases it needs hints.  To give these,
@@ -14,6 +13,16 @@
 ;;         simply the same as the element/attribute name -- this is
 ;;         for the case where there are multiple element/attributes
 ;;         with the same name but different meanings.
+;;
+;;     <x2s:superclass>[name]</x2s:superclass>
+;;         Appears within an appinfo annotation for an XSD <extension> element.
+;;         Indicates that the superclass for the RDFS class (which
+;;         we're currently generating) should be the named class and
+;;         namespace, rather than the one corresponding to the class
+;;         in the extension element.  For example, the
+;;         TabularDB-v0.3.xsd schema extends the VODataService-v0.5
+;;         XSchema, but we want to have its generated classes refer to
+;;         the VODataService-v1.0 RDF Schema instead.
 ;;
 ;;     <x2s:multipleDomains/>
 ;;         If present on an element/attribute, then the element/attribute
@@ -176,12 +185,17 @@
     )
 
   (template "xs:extension|xs:restriction" mode: complex-content
-      (rdfs:subClassOf
-       (attribute rdf:resource
-                  (call-template name: expand-namespace
-                                 (with-param name: type
-                                             select: @base)))
-       (apply-templates select: xs:annotation)))
+            (rdfs:subClassOf
+             (attribute
+              rdf:resource
+              (call-template name: expand-namespace
+                             (with-param name: type
+                                         (choose
+                                          (when ".//x2s:superclass"
+                                            (apply-templates select: ".//x2s:superclass"))
+                                          (otherwise
+                                           (value-of @base))))
+                             (apply-templates select: xs:annotation)))))
 
   (template "xs:extension" mode: simple-content
       (rdfs:comment "Extension of " (value-of @base)))
