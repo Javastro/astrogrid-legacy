@@ -21,6 +21,8 @@
 	<!--  sign this jar .-->	
 		<wb:sign />
 	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
+		<!-- package as an installer -->
+			<attainGoal name="installer" />		
 	<!--  package as a webstart app -->
 		<attainGoal name="webstart" />
 	</j:if>

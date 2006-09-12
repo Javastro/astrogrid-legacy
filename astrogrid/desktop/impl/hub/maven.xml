@@ -27,6 +27,8 @@
 	<wb:sign />
 <!--  package as a webstart app -->
 	<attainGoal name="webstart" />
+<!-- package as an installer -->
+	<attainGoal name="installer" />
 <!--  package as an osx app -->
 	<j:set var="tmpVar" value="${os.name}" />
    <j:if test="${tmpVar == 'Mac OS X'}">

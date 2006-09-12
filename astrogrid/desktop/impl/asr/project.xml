@@ -532,6 +532,16 @@
 		</properties>
 		<url>http://informagen.com/JarBundler/</url>
 	</dependency>	        	
-    	      		        
+<!--  make a platform-independent installer -->
+	<dependency>
+		<groupId>izpack</groupId>
+		<artifactId>standalone-compiler</artifactId>
+		<version>3.8.2</version>
+		<properties>
+			<uberjar.bundle>false</uberjar.bundle>
+		</properties>
+		<url>http://www.izforge.com/izpack/</url>
+		</dependency>    	      		        
+    	      		   
     </dependencies>
 </project>

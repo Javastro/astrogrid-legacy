@@ -25,7 +25,7 @@ astrogrid.build.jdk=${java.version}
 	
 	
 
-<!-- javaapp  - only used for convenience now, not for final packaging 
+<!-- javaapp  - unused in packaging. might still work usefully for development
 
   packaging controlled by properties 'uberjar.bundle' and 'bundle.later'
 -->		
@@ -81,8 +81,6 @@ astrogrid.build.jdk=${java.version}
 	</jar>  
   </goal>	
 
-
-
 <!-- package as an osx app - build only works on osx -->
 	<goal name="osx"  
 	description="builds an osx-specific app. depends on dist:build-bin, and requires osx to run">
@@ -116,8 +114,6 @@ astrogrid.build.jdk=${java.version}
     </exec>    
 </goal>
 
-
-
 <!--  try running stripped - testing / development only -->
 <goal name="run" 
 	description="run the application from within the dist/bin directory - useful for testing stripping. Depends on dist:build-bin"
@@ -147,8 +143,70 @@ astrogrid.build.jdk=${java.version}
 	</java>
 </goal>
 
+	<goal name="installer"
+		description="Build an os-independent installer using IzPack">
+		<echo>
+			Building installer : ${maven.final.name}-installer.jar
+		</echo>
+		<!--  write out installer config file -->
+		<j:file name="${maven.build.dir}/izpack.xml" omitXmlDeclaration="false" trim="true" xmlns="dummy">
+				<installation version="1.0">
+					<info>
+						<appname>${pom.name}</appname>						
+						<appversion>
+							${astrogrid.desktop.version}
+						</appversion>
+						<appsubpath>astrogrid/${pom.name}</appsubpath>
+						<authors>
+							<author name="AstroGrid Consortium"
+								email="helpdesk@astrogrid.org" />
+						</authors>
+						<url>http://www.astrogrid.org/desktop</url>
+						<javaversion>1.4</javaversion>
+					</info>
+					<guiprefs height="600" resizable="yes" width="800" />
+					<locale>
+						<langpack iso3="eng" />
+					</locale>
+					<resources>
+						<res id="Installer.image" src="${basedir}/src/webapp/logo.gif" />
+						<res id="LicencePanel.licence"
+							src="${maven.license.licenseFile}" />
+					</resources>
+					<panels>
+						<panel classname="HelloPanel" />
+					  	<panel classname="LicencePanel" />
+						<panel classname="TargetPanel" />
+						<panel classname="PacksPanel" />
+						<panel classname="InstallPanel" />
+						<panel classname="ShortcutPanel" />
+						<panel classname="SimpleFinishPanel" />
+					</panels>
+					<packs>
+						<pack name="${pom.name}" required="yes"
+							preselected="yes">
+							<description>
+								${pom.description}
+							</description>
+							<file src="${maven.build.dir}/${maven.final.name}-app.jar" targetdir="$INSTALL_PATH" />						
+							<singlefile src="" target="$INSTALL_PATH/${pom.name}.sh"  os="unix"/>
+							<singlefile src="" target="$INSTALL_PATH/${pom.name}.sh"  os="mac"/>
+							<singlefile src="" target="$INSTALL_PATH/${pom.name}.bat"  os="windows"/>														
+						</pack>
+					</packs>
+				</installation>		
+		</j:file>
+		<!--  run installer compiler -->
+		<java classname="com.izforge.izpack.compiler.Compiler" 
+			classpathref="maven.dependency.classpath" fork="true">
+			<arg file="${maven.build.dir}/izpack.xml" />
+			<arg value="-o"/><arg value="${maven.build.dir}/${maven.final.name}-installer.jar" />
+		  	<arg value="-b"/><arg file="${basedir}" />
+			<arg value="-k"/><arg value="standard" />
+		</java>
+	</goal>
 
-<goal name="webstart" 
+	<goal name="webstart" 
 	description="build zip containing jnlp and appllication. depends on dist:build-bin">
   <echo>Building Webstart Zip: ${maven.final.name}-jnlp.zip</echo>
 	<mkdir dir="${maven.build.dir}/jnlp" />
@@ -166,7 +224,7 @@ astrogrid.build.jdk=${java.version}
 		<vendor>AstroGrid Consortium</vendor>
 		<homepage href="http://www.astrogrid.org/desktop" />
 		<icon href="logo.gif" />
-		<icon href="plastic-splash.png" kind="splash" />
+		<icon href="splash.png" kind="splash" />
 		<description>${pom.description}</description>
 		<description kind="short">${pom.shortDescription}</description>
 		<description kind="tooltip">${pom.description}</description>
@@ -397,5 +455,7 @@ astrogrid.build.jdk=${java.version}
 		classname="com.loomcom.ant.tasks.jarbundler.JarBundler"
          classpathref="maven.dependency.classpath" />
 
-	
+	<!--  izPack installer compiler -->
+<taskdef name="izpack"  classname="com.izforge.izpack.ant.IzPackTask"
+         classpathref="maven.dependency.classpath" />
 </project>
