@@ -316,11 +316,25 @@ System module.
 			]]></tooltip>
 			<parameter>http://aladin.u-strasbg.fr/</parameter>
 		</action>	
-		<action parentName="links" name="splat" text="SPLAT" iconName="splat.gif"
-			after="aladin"
+		<action parentName="links" name="gaia" text="GAIA" iconName="gaialogo.gif" after="aladin"
 			object="service:browser" methodName="openURL">
 			<tooltip><![CDATA[
-			<html><b>SPLAT</b> is a spectral analysis tool
+			<html><b>GAIA</b> is an image display and analysis tool. It provides the usual <br>
+			facilities of image display tools, plus more astronomically useful ones such as <br>
+			aperture & optimal photometry, contouring, source detection, surface photometry, <br>
+			arbitrary region analysis, celestial coordinate readout, calibration and modification,<br>
+			 grid overlays, blink comparison, defect patching and the ability to<br>
+			  query on-line (WWW) catalogues.
+						]]></tooltip>
+			<parameter>http://star-www.dur.ac.uk/~pdraper/gaia/plastic/</parameter>
+		</action>			
+		<action parentName="links" name="splat" text="SPLAT" iconName="splat.gif"
+			after="gaia"
+			object="service:browser" methodName="openURL">
+			<tooltip><![CDATA[
+			<html><b>SPLAT</b>is a graphical tool for displaying, comparing, modifying and<br>
+			 analysing astronomical spectra stored in NDF, FITS and TEXT files <br>
+			 as well as the new NDX format. 
 			]]></tooltip>
 				<!--  todo: this is a temporary jnlp link. replace with release page, once it's up. -->
 				<parameter>http://andromeda.star.bris.ac.uk/starjavalib/splat.jnlp</parameter>
