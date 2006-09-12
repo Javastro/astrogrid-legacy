@@ -10,6 +10,7 @@ import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.xml.sax.SAXException;
@@ -25,7 +26,7 @@ public class TablesImplUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.tables = new TablesImpl();
-		this.input = this.getClass().getResource("siap.votable");
+		this.input = this.getClass().getResource("siap.vot");
 	}
 
 	protected void tearDown() throws Exception {
@@ -40,9 +41,11 @@ public class TablesImplUnitTest extends TestCase {
 	 * @throws IOException 
 	 */
 	public void testConvert() throws IOException {
+		assertNotNull(input);
 		tables.convert(input.toString(),"votable","-","ascii");
 		
 	}
+	
 	
 	// more advanced. check we can stream through, from votable to votable.
 	// then compare results.
