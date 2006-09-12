@@ -481,6 +481,12 @@ void characterValueExpression() : {}
 	characterFactor()	
 }
 
+void collateClause() : {}
+{
+	// refactored
+	<COLLATE> qualifiedName()	
+}
+
 void columnName() : {}
 {
 	identifier()
@@ -505,12 +511,13 @@ void commonPrimary() : {}
 	|
 	setFunctionSpecification()
 	|
+	LOOKAHEAD(3)
 	scalarSubquery()
 	|
-	caseExpression()
-	|
-	( <LPAREN> valueExpression() <RPAREN> )	|
-	castSpecification()
+// JBL: case ommitted in initial version...
+//	caseExpression()//	|
+	( <LPAREN> valueExpression() <RPAREN> )
+// JBL: cast ommitted in initial version//	|//	castSpecification()
 }
 
 void comparisonOperator() : {}
@@ -623,12 +630,22 @@ void generalValueSpecification() : {}
 
 void groupByClause() : {}
 {
-	<GROUPBY>
+	<GROUPBY> groupingColumnReferenceList()
+}
+
+void groupingColumnReferenceList() : {}
+{
+	groupingColumnReference() ( <COMMA> groupingColumnReference() )* 
+}
+
+void groupingColumnReference() : {}
+{
+	columnReference() [ collateClause() ]	
 }
 
 void havingClause() : {}
-{
-	<HAVING>
+{	
+	<HAVING> searchCondition()
 }
 
 void identifier() : {}
@@ -878,7 +895,7 @@ void rowValueConstructorList() : {}
 
 void scalarSubquery() : {}
 {
-	"4-TBD scalarSubquery"
+	subQuery()
 }
 
 void searchCondition() : {}
@@ -953,7 +970,7 @@ void quantifier() : {}
 
 void queryExpression() : {}
 {
-	LOOKAHEAD(2)
+	LOOKAHEAD(3)
 	nonJoinQueryExpression()
 	|
 	joinedTable()
@@ -999,13 +1016,13 @@ void nonJoinQueryExpression() : {}
 
 //	Refactored to...
 //	But I'm uncertain the refactoring is the same as the original!
-	LOOKAHEAD(3)
+	
+//	LOOKAHEAD(3)//	queryTerm() ( <UNION> [ <ALL> ] [ correspondingSpec() ] queryTerm() )*//	|//	LOOKAHEAD(3)//	queryTerm() ( <EXCEPT> [ <ALL> ] [ correspondingSpec() ] queryTerm() )*//	|//	nonJoinQueryTerm()
+
+	LOOKAHEAD(4)
+	queryTerm() ( (<UNION> | <EXCEPT> ) [ <ALL> ] [ correspondingSpec() ] queryTerm() )*
+	|
 	nonJoinQueryTerm()
-	|
-	LOOKAHEAD(3)
-	queryTerm() ( <UNION> [ <ALL> ] [ correspondingSpec() ] queryTerm() )*
-	|
-	queryTerm() ( <EXCEPT> [ <ALL> ] [ correspondingSpec() ] queryTerm() )*
 }
 
 void nonJoinQueryTerm() : {}
@@ -1045,22 +1062,25 @@ void tableName() : {}
 
 void tableReference() : {} 
 {
-	// refactored - joinedTable() moved to first choice point
+	// refactored... 
+	// 1. derivedTable() moved to first choice point
+	// 2. joinedTable() moved to second choice point
     LOOKAHEAD(4)
+    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]
+    |	
+	LOOKAHEAD(4)
     joinedTable()
     |
-    LOOKAHEAD(4)
-	tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]
-    | 
-    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]
+	tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]    
 }
 
 // Adaptation of tableReference()
 void tableReferenceBarJoinedTable() : {}
 {
+	LOOKAHEAD(4)
+	derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]	
+	|
 	tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]
-    | 
-    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]	
 }
 
 void tableSubQuery() : {}
