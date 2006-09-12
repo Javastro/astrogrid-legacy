@@ -60,6 +60,7 @@ public class LoginScriptEnvironment implements ScriptEnvironment {
      }
      catch (CommunityResolverException e) {
        logger.info("No MyProxy service found; logging in using the AG web-service...");
+       logger.debug("Stack Trace",e);
        security.checkPassword(userIvorn.toString(),
                               password);
        subject = new Subject(); // empty of credentials
