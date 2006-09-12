@@ -13,6 +13,22 @@
 
 	</configuration-point>
 	
+	<configuration-point id="trustAnchors">
+		List of urls to download and install in the user's trusted.cert.dir
+		<schema>
+			<element name="index">
+				just a container - ignored
+				<element name="item">
+					Gives the url of a certificate
+					<rules>
+						<push-content />
+						<invoke-parent method="addElement" />
+					</rules>
+				</element>
+			</element>
+		</schema>
+	</configuration-point>
+	
 	<!-- contributions to existing configuraitons -->
 	
 	<!-- how to handle new types.. -->
@@ -92,6 +108,10 @@
 	<contribution configuration-id="hivemind.EagerLoad">
 		<load service-id="messaging" />
 	</contribution>
+	
+	<contribution configuration-id="hivemind.Startup">
+		<startup object="service:installCertificates" />
+	</contribution>	
 	
 	<!-- FIXME - needs testing 
 	<contribution configuration-id="hivemind.EagerLoad"  if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
@@ -411,6 +431,16 @@
 		</invoke-factory>		
 	</service-point>
 	
+	<service-point id="installCertificates" interface="java.lang.Runnable">
+		Download and install any missing certificates.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.InstallCertificates">
+				<service>system.ui</service>
+				<string>${trusted.cert.dir}</string>
+				<configuration>trustAnchors</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
 	<!-- new transformers -->
 	<service-point id="toStringTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
 		<create-instance class="org.astrogrid.desktop.modules.ag.transformers.ToStringTransformer" />

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE module  [
 	<!ENTITY workflows SYSTEM "http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml">
+	<!ENTITY anchors SYSTEM "http://wiki.astrogrid.org/pub/Astrogrid/TrustAnchorList/trust-anchor-list.xml">
 	]>
 	<module id="externalConfig" version="1.0.0">
 	Helper module used to drag in external configuration files.
@@ -16,5 +17,11 @@
 	<contribution configuration-id="ui.workflowTemplates">
 		&workflows;
 	</contribution>	
+	
+	<contribution configuration-id="astrogrid.trustAnchors">
+		&anchors;
+	</contribution>
+	
+	
 	
 	</module>
