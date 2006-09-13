@@ -69,6 +69,7 @@ public class TableMetadataPanel extends JPanel {
     private static final boolean TRACE_ENABLED = false ;
     
     private final static String 
+    	POSITION	= "Col",
     	NAME 		= "Name",
     	UCD  		= "UCD",
     	UNITS 		= "Units",
@@ -151,21 +152,23 @@ public class TableMetadataPanel extends JPanel {
     
     private Component initColumnView() {
         AstroTableModel astroTableModel = new AstroTableModel();
-        displayTable = new JTable() ;
+        TableSorter  sorter = new TableSorter( astroTableModel );
+        displayTable = new JTable( sorter ) ;
         displayTable.setAutoCreateColumnsFromModel( false ) ;
-        displayTable.setModel( astroTableModel ) ;
+        sorter.addMouseListenerToHeaderInTable( displayTable );
+        // displayTable.setModel( astroTableModel ) ;
         
-        for( int i=0 ; i<astroTableModel.getColumnCount(); i++ ) {
-            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() ;
-            renderer.setHorizontalAlignment( astroTableModel.displayColumnData[i].alignment ) ;
-            TableColumn 
-            	column = new TableColumn( i
-            	                        , astroTableModel.displayColumnData[i].width
-            	                        , renderer
-            	                        , null );
-            displayTable.addColumn( column ) ;
-        }
-        
+//        for( int i=0 ; i<astroTableModel.getColumnCount(); i++ ) {
+//            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() ;
+//            renderer.setHorizontalAlignment( astroTableModel.displayColumnData[i].alignment ) ;
+//            TableColumn 
+//            	column = new TableColumn( i
+//            	                        , astroTableModel.displayColumnData[i].width
+//            	                        , renderer
+//            	                        , null );
+//            displayTable.addColumn( column ) ;
+//        }
+//        
         JTableHeader header = displayTable.getTableHeader() ;
         header.setUpdateTableInRealTime( false ) ;
         
@@ -180,6 +183,7 @@ public class TableMetadataPanel extends JPanel {
         public String title ;
         public int width ;
         public int alignment ;
+        public Class clazz ;
        
         public DisplayColumnData( String title, int width, int alignment ) {
             this.title = title ;
@@ -191,12 +195,24 @@ public class TableMetadataPanel extends JPanel {
     class AstroTableModel extends AbstractTableModel {
         
         final public DisplayColumnData displayColumnData[] = {
+        	    new DisplayColumnData( TableMetadataPanel.POSITION, 50, JLabel.LEFT ) ,
                 new DisplayColumnData( TableMetadataPanel.NAME, 200, JLabel.LEFT ) ,
                 new DisplayColumnData( TableMetadataPanel.UCD, 75, JLabel.LEFT ) ,
                 new DisplayColumnData( TableMetadataPanel.UNITS, 75, JLabel.LEFT ) ,
                 new DisplayColumnData( TableMetadataPanel.TYPE, 75, JLabel.LEFT ) ,
                 new DisplayColumnData( TableMetadataPanel.DESCRIPTION, 200, JLabel.LEFT ) ,
         } ;
+
+        public Class getColumnClass(int col) {
+        	Class clss = null ;
+        	try {
+        		clss = getValueAt(0,col).getClass();
+        	}
+        	catch( Exception ex ) {
+        		clss = Object.class ;
+        	}
+        	return clss ;
+        }
         
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return false ;
@@ -219,11 +235,12 @@ public class TableMetadataPanel extends JPanel {
                 return "" ;
             ColumnBean astroColumn = astroTable.getColumns()[ rowIndex ] ;
             switch( columnIndex ) {
-            	case 0: return astroColumn.getName() ;
-            	case 1: return astroColumn.getUCD() ;
-            	case 2: return astroColumn.getUnit() ;
-            	case 3: return astroColumn.getDatatype() ;
-            	case 4: return astroColumn.getDescription() ;
+            	case 0: return new Integer( rowIndex ) ;
+            	case 1: return astroColumn.getName() ;
+            	case 2: return astroColumn.getUCD() ;
+            	case 3: return astroColumn.getUnit() ;
+            	case 4: return astroColumn.getDatatype() ;
+            	case 5: return astroColumn.getDescription() ;
             }
             return "";
         }
@@ -271,7 +288,7 @@ public class TableMetadataPanel extends JPanel {
                      
         } // end of ContextPopup.mouseReleased( MouseEvent event )
         
-        //fix for mac. for portability, need to check on mousePressed 
+        //NWW - fix for mac. for portability, need to check on mousePressed 
         // and mouseReleased whether it's the 'popupTrigger' event.
         // onlny way to do it - as a mac CTRL-Cick gives a different event type to a Button-3 click.
         // complicated, eh?
@@ -362,11 +379,13 @@ public class TableMetadataPanel extends JPanel {
 	        // Since the JTable is holding information about relational table columns
 	        // in a display table with each row displaying metadata about a column!!!
 	        int[] selectedColumnBeans = displayTable.getSelectedRows() ;
-	        AstroTableModel model = (AstroTableModel)displayTable.getModel() ;
+//	        AstroTableModel model = (AstroTableModel)displayTable.getModel() ;
+	        TableSorter sorter = (TableSorter)displayTable.getModel() ;
+	        AstroTableModel model = (AstroTableModel)sorter.getModel() ;
 	        ColumnBean[] columnBeans = new ColumnBean[ selectedColumnBeans.length ] ;
 	        
 	        for( int i=0 ; i<selectedColumnBeans.length; i++ ) {
-	            columnBeans[i] = model.getColumnBeanGivenRowIndex( selectedColumnBeans[i] ) ;            
+	            columnBeans[i] = model.getColumnBeanGivenRowIndex( sorter.indexes[selectedColumnBeans[i]] ) ;            
 	        }
 	        CommandFactory factory = adqlTree.getCommandFactory() ;
 	        command = factory.newMultipleColumnInsertCommand( entry 
