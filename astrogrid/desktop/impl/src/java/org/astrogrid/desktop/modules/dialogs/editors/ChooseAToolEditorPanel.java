@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.11 2006/08/31 21:34:46 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.12 2006/09/14 09:55:47 jdt Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Tool Editor Panel that prompts the user to search for and select a tool.
  * <p>
- * just a wapper of some event listeners around the registry chooser panel - nice!
+ * just a wrapper of some event listeners around the registry chooser panel - nice!
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
  *
  */
@@ -151,6 +151,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.12  2006/09/14 09:55:47  jdt
+typo
+
 Revision 1.11  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 
