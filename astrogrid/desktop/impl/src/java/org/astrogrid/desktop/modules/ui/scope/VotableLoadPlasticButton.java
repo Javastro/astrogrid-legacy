@@ -1,4 +1,4 @@
-/*$Id: VotableLoadPlasticButton.java,v 1.5 2006/08/15 09:59:58 nw Exp $
+/*$Id: VotableLoadPlasticButton.java,v 1.6 2006/09/14 13:52:59 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,10 +67,11 @@ public class VotableLoadPlasticButton extends PlasticButton {
                         URL url = new URL(service.getAttribute(Retriever.SERVICE_URL_ATTRIBUTE));
                         List args = new ArrayList();  
                         args.add(url.toString()); // plastic spec expects parameter types that are strings - but still parse into a url first, to check it's valid.
+                        args.add(url.toString()); // identifier.
                         tupperware.singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,args,targetId);
-                        //@todo next send plastic messages to highlight selected rows.
                     }// end if new catalog
-                    
+                    //next send plastic messages to highlight selected rows.
+                    // hard, as we're not maintining row ids at the moment - might be easier with prefuse beta.
                 }// end for each child node
                 return null;
             }
@@ -82,6 +83,9 @@ public class VotableLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: VotableLoadPlasticButton.java,v $
+Revision 1.6  2006/09/14 13:52:59  nw
+implemented plastic spectrum messaging.
+
 Revision 1.5  2006/08/15 09:59:58  nw
 migrated from old to new registry models.
 

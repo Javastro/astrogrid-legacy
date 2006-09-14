@@ -68,8 +68,10 @@ public class BroadcastPlasticVotableSTA extends AbstractSTA {
 	protected boolean checkApplicability(PreferredTransferable atom) {
 		return (atom.isDataFlavorSupported(VoDataFlavour.VOTABLE)
 			|| atom.isDataFlavorSupported(VoDataFlavour.VOTABLE_STRING))
-			&&  ! tupp.getRegisteredApplicationsModel().isEmpty(); // only checking for something connected - not whether it accepts votable or not.
-	
+			&&  ( 
+					tupp.somethingAccepts(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)
+					|| tupp.somethingAccepts(CommonMessageConstants.VOTABLE_LOAD)
+					);
 	}
 	/**
 	 * @param l

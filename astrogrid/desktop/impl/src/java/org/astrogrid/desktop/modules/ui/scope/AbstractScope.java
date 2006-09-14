@@ -703,7 +703,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	 * @param plas
 	 * @return
 	 */
-	private Component[] buildPlasticButtons(final PlasticApplicationDescription plas) {
+	protected Component[] buildPlasticButtons(final PlasticApplicationDescription plas) {
 		List results = new ArrayList();
 		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
 			results.add(new VotableLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),

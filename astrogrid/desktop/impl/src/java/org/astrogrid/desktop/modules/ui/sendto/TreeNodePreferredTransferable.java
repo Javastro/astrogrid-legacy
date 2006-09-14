@@ -105,7 +105,7 @@ public class TreeNodePreferredTransferable implements PreferredTransferable {
 				String type = node.getAttribute(SiapRetrieval.IMAGE_TYPE_ATTRIBUTE);
 				return chooseByMimeType(type);
 			}  else if (serviceType.equals("SSAP")) {
-				String type = node.getAttribute(SsapRetrieval.SPECTRA_TYPE_ATTRIBUTE);
+				String type = node.getAttribute(SsapRetrieval.SPECTRA_FORMAT_ATTRIBUTE);
 				return chooseByMimeType(type);
 			} else if (serviceType.equals("STAP")) {
 				String type = node.getAttribute(StapRetrieval.IMAGE_TYPE_ATTRIBUTE);

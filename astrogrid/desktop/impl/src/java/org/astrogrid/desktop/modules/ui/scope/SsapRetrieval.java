@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.4 2006/08/15 09:59:58 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.5 2006/09/14 13:52:59 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,12 +54,14 @@ public class SsapRetrieval extends Retriever {
         return th;                 
     }
     //constants used with tablehandler.
-    public static final String SPECTRA_URL_ATTRIBUTE = "spectraURL";
-    public static final String SPECTRA_TYPE_ATTRIBUTE = "type";
-    public static final String SPECTRA_TITLE_ATTRIBUTE = "title";
-    public static final String SPECTRA_AXES_ATTRIBUTE = "axes";
-    public static final String SPECTRA_DIMEQ_ATTRIBUTE = "dimeq";
-    public static final String SPECTRA_SCALEQ_ATTRIBUTE = "scaleq";
+    // the keys are UCDs - this makes it simpler to pass all metadata onto another app via plastic.
+    public static final String SPECTRA_URL_ATTRIBUTE = "DATA_LINK";
+    public static final String SPECTRA_TITLE_ATTRIBUTE = "VOX:Image_Title";
+    public static final String SPECTRA_AXES_ATTRIBUTE = "VOX:Spectrum_axes";
+    public static final String SPECTRA_DIMEQ_ATTRIBUTE = "VOX:Spectrum_dimeq";
+    public static final String SPECTRA_SCALEQ_ATTRIBUTE ="VOX:Spectrum_scaleq";
+    public static final String SPECTRA_FORMAT_ATTRIBUTE = "VOX:Spectrum_Format";
+    public static final String SPECTRA_UNITS_ATTRIBUTE = "VOX:Spectrum_units";
     
     public class SsapTableHandler extends BasicTableHandler {
 
@@ -73,6 +75,7 @@ public class SsapRetrieval extends Retriever {
         int spectrumAxesCol = -1;
         int spectrumDimeqCol = -1;
         int spectrumScaleqCol = -1;
+        int spectrumUnitsCol = -1;
         
         protected void startTableExtensionPoint(int col, ColumnInfo columnInfo) {
             super.startTableExtensionPoint(col, columnInfo);
@@ -80,18 +83,20 @@ public class SsapRetrieval extends Retriever {
             if (ucd == null) {
                 return;
             }
-            if (ucd.equalsIgnoreCase("DATA_LINK")) {
+            if (ucd.equalsIgnoreCase(SPECTRA_URL_ATTRIBUTE)) {
                 urlCol = col;
-            } else if (ucd.equalsIgnoreCase("VOX:Image_Title")) {
+            } else if (ucd.equalsIgnoreCase(SPECTRA_TITLE_ATTRIBUTE)) {
                 titleCol = col;
-            } else if (ucd.equalsIgnoreCase("VOX:Spectrum_Format")) {
+            } else if (ucd.equalsIgnoreCase(SPECTRA_FORMAT_ATTRIBUTE)) {
                 formatCol = col;
-            } else if (ucd.equalsIgnoreCase("VOX:Spectrum_axes")) {
+            } else if (ucd.equalsIgnoreCase(SPECTRA_AXES_ATTRIBUTE)) {
                 spectrumAxesCol = col;
-            } else if (ucd.equalsIgnoreCase("VOX:Spectrum_dimeq")) {
+            } else if (ucd.equalsIgnoreCase(SPECTRA_DIMEQ_ATTRIBUTE)) {
                 spectrumDimeqCol = col;
-            } else if (ucd.equalsIgnoreCase("VOX:Spectrum_scaleq")) {
+            } else if (ucd.equalsIgnoreCase(SPECTRA_SCALEQ_ATTRIBUTE)) {
                 spectrumScaleqCol = col;
+            } else if (ucd.equalsIgnoreCase(SPECTRA_UNITS_ATTRIBUTE)){
+            	spectrumUnitsCol = col;
             }
             
         }
@@ -113,7 +118,7 @@ public class SsapRetrieval extends Retriever {
             } else {
                 type="unknown";
             }
-            valNode.setAttribute(SPECTRA_TYPE_ATTRIBUTE ,type);
+            valNode.setAttribute(SPECTRA_FORMAT_ATTRIBUTE ,type);
                 
             valNode.setAttribute(LABEL_ATTRIBUTE,title + ", " + StringUtils.substringAfterLast(type,"/"));
             
@@ -138,6 +143,10 @@ public class SsapRetrieval extends Retriever {
                 }
                 valNode.setAttribute(SPECTRA_SCALEQ_ATTRIBUTE,sb.toString());                
             }
+            
+            if (spectrumUnitsCol > -1) {
+            	valNode.setAttribute(SPECTRA_UNITS_ATTRIBUTE,row[spectrumUnitsCol].toString());
+            }
         }
         
         /*
@@ -154,6 +163,7 @@ public class SsapRetrieval extends Retriever {
                 && spectrumDimeqCol >= 0
                 && spectrumScaleqCol >= 0                
             ; 
+                //@todo should I require unites too?
         }        
         
         public void endTable() throws SAXException {
@@ -171,6 +181,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.5  2006/09/14 13:52:59  nw
+implemented plastic spectrum messaging.
+
 Revision 1.4  2006/08/15 09:59:58  nw
 migrated from old to new registry models.
 

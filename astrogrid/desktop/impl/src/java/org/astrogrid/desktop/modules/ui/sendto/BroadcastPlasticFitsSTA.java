@@ -31,6 +31,7 @@ public class BroadcastPlasticFitsSTA extends AbstractSTA {
 	            		URL url = (URL)getAtom().getTransferData(VoDataFlavour.URL);
 	            		List l = new ArrayList();
 	            		l.add(url.toString()); //JDT - Plastic args need to be xml-rpc types
+	            		l.add(url.toString()); // id.
 	            		sendLoadMethod(l);
 	            	} else { // retrieve data, then send the message.
 	            		// no message exists - ho hum.
@@ -52,7 +53,6 @@ public class BroadcastPlasticFitsSTA extends AbstractSTA {
 	protected boolean checkApplicability(PreferredTransferable atom) {
 		return (atom.isDataFlavorSupported(VoDataFlavour.FITS_IMAGE)
 			|| atom.isDataFlavorSupported(VoDataFlavour.FITS_TABLE))
-			&&  ! tupp.getRegisteredApplicationsModel().isEmpty(); // only checking for something connected - not whether it accepts votable or not.
-			
+			&&  tupp.somethingAccepts(CommonMessageConstants.FITS_LOAD_FROM_URL);
 	}
 }

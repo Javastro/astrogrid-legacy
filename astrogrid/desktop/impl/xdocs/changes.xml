@@ -13,11 +13,14 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2006.3.rc2" date="unreleased">
+<action dev="nw" type="add">
+	Astroscope, Myspace, Lookout now send Spectra Plastic Messages.
+</action>
 <action dev="jl" type="add" issue="1790">
 		Within Query Builder, it is now possible to sort columns within metadata display.
 		Clicking on column header sorts alphabetically, either ascending or descending. 
 </action>
-<release version="2006.3.rc2" date="unreleased">
 	<action dev="nw" type="remove">
 	Reverted PW-launcher to load list of workflows from wiki page.
 	</action>

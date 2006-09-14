@@ -23,6 +23,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.ReportingListModel.ReportingListDataListener;
+import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenuImpl.ActionJMenuItem;
 import org.votech.plastic.CommonMessageConstants;
 
@@ -142,6 +143,9 @@ public class PlasticSendToActionFactory implements SendToActionFactory, Reportin
 			}
 			if (desc.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
 				this.add(new SendPlasticFitsSTA(desc.getId(),tupp));
+			}
+			if (desc.understandsMessage(SpectrumLoadPlasticButton.SPECTRA_LOAD_FROM_URL)){
+				this.add(new SendPlasticSpectrumSTA(desc.getId(),tupp));
 			}
 			//@future add code to disable menu when all items on the menu are disabled.
 		}

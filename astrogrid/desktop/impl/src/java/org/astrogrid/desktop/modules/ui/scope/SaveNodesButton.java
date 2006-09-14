@@ -1,4 +1,4 @@
-/*$Id: SaveNodesButton.java,v 1.3 2006/06/27 19:16:05 nw Exp $
+/*$Id: SaveNodesButton.java,v 1.4 2006/09/14 13:52:59 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -207,7 +207,7 @@ public class SaveNodesButton extends NodeConsumerButton {
                     + "_" + point.getAttribute(Retriever.LABEL_ATTRIBUTE)
                     + "_" + tn.getAttribute(Retriever.LABEL_ATTRIBUTE)
                     + "_" + System.currentTimeMillis()
-                    + "." + StringUtils.substringAfterLast( tn.getAttribute(SsapRetrieval.SPECTRA_TYPE_ATTRIBUTE),"/");
+                    + "." + StringUtils.substringAfterLast( tn.getAttribute(SsapRetrieval.SPECTRA_FORMAT_ATTRIBUTE),"/");
                 doSaveResource(saveLocationRoot,url,name);
             }  
 
@@ -273,6 +273,9 @@ public class SaveNodesButton extends NodeConsumerButton {
 
 /* 
  $Log: SaveNodesButton.java,v $
+ Revision 1.4  2006/09/14 13:52:59  nw
+ implemented plastic spectrum messaging.
+
  Revision 1.3  2006/06/27 19:16:05  nw
  adjusted todo tags.
 

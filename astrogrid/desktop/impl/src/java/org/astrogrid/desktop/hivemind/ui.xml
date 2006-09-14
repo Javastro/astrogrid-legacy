@@ -45,6 +45,7 @@
 		<object>service:plasticSTF</object>
 		<object>service:votableBroadcastSTA</object>
 		<object>service:fitsBroadcastSTA</object>
+		<object>service:spectrumBroadcastSTA</object>
 	</contribution>
 	
 	<contribution configuration-id="framework.descriptors">
@@ -480,6 +481,16 @@
 		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.sendto.BroadcastPlasticFitsSTA">
+				<service>system.tupperware</service>
+			</construct>
+		</invoke-factory>
+	</service-point>	
+	
+	
+			<service-point id="spectrumBroadcastSTA" visibility="private"
+		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ui.sendto.BroadcastPlasticSpectrumSTA">
 				<service>system.tupperware</service>
 			</construct>
 		</invoke-factory>

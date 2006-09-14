@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.51 2006/08/15 10:10:20 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.52 2006/09/14 13:52:59 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Dimension2D;
@@ -41,6 +42,7 @@ import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
@@ -57,6 +59,7 @@ import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
 import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
+import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
@@ -104,16 +107,27 @@ public class AstroScopeLauncherImpl extends AbstractScope
         // before we can populate member variables - so need to pass in 'ses' later.
         posText.setSesame(ses);   
         this.ses = ses;
-     // @future remove this once proper plasticized vospec comes out.
-        dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
+  // replaced by plasticized version.
+ //       dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
         dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
         setIconImage(IconHelper.loadIcon("astroscope.png").getImage());
       
     }
-
-
-	protected JMenuItem createHistoryMenuItem(String historyItem) {
+    // overridden to add a spectrum button - don't think this is general enough to add to the baseclass, so it's available in helipscope too.
+   protected Component[] buildPlasticButtons(PlasticApplicationDescription plas) {
+	   if (! plas.understandsMessage(SpectrumLoadPlasticButton.SPECTRA_LOAD_FROM_URL)) {
+		   return super.buildPlasticButtons(plas);
+	   } else {
+		   Component[] parent =  super.buildPlasticButtons(plas);
+		   Component[] result = new Component[parent.length + 1];
+		   System.arraycopy(parent,0,result,0,parent.length);
+		   result[parent.length] = new SpectrumLoadPlasticButton(plas,vizModel.getSelectionFocusSet(), this, tupperware);
+		   return result;
+	   }
+}
+   
+   protected JMenuItem createHistoryMenuItem(String historyItem) {
 		 String[] hist = historyItem.split("_");
 		 if (hist.length != 2) {
 			 return null;
@@ -391,6 +405,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.52  2006/09/14 13:52:59  nw
+implemented plastic spectrum messaging.
+
 Revision 1.51  2006/08/15 10:10:20  nw
 migrated from old to new registry models.
 

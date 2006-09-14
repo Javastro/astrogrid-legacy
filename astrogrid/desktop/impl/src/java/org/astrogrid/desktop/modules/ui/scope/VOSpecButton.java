@@ -1,4 +1,4 @@
-/*$Id: VOSpecButton.java,v 1.4 2006/06/27 10:19:06 nw Exp $
+/*$Id: VOSpecButton.java,v 1.5 2006/09/14 13:52:59 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import esavo.vospec.spectrum.Spectrum;
 import esavo.vospec.spectrum.SpectrumSet;
 import esavo.vospec.spectrum.Unit;
 import esavo.vospec.standalone.VoSpec;
-/**
+/** @todo unused. remove soon.
  * node consumer that displays selected spectra in vospec.
  some services aren't returning the right types - need to check type cast to double[][ in SsapRetrieval.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
@@ -104,7 +104,7 @@ public class VOSpecButton extends NodeConsumerButton {
                     s.setTitle(tn.getAttribute(SsapRetrieval.SPECTRA_TITLE_ATTRIBUTE).trim());
                     s.setRa(tn.getAttribute(SsapRetrieval.RA_ATTRIBUTE).trim());
                     s.setDec(tn.getAttribute(SsapRetrieval.DEC_ATTRIBUTE).trim());
-                    s.setFormat(tn.getAttribute(SsapRetrieval.SPECTRA_TYPE_ATTRIBUTE).trim());
+                    s.setFormat(tn.getAttribute(SsapRetrieval.SPECTRA_FORMAT_ATTRIBUTE).trim());
                     
                     spectrumSet.addSpectrum(ix++,s);
                 }
@@ -120,6 +120,9 @@ public class VOSpecButton extends NodeConsumerButton {
 
 /* 
 $Log: VOSpecButton.java,v $
+Revision 1.5  2006/09/14 13:52:59  nw
+implemented plastic spectrum messaging.
+
 Revision 1.4  2006/06/27 10:19:06  nw
 doc change
 

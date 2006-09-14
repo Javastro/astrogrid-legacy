@@ -1,4 +1,4 @@
-/*$Id: ImageLoadPlasticButton.java,v 1.7 2006/08/15 10:01:12 nw Exp $
+/*$Id: ImageLoadPlasticButton.java,v 1.8 2006/09/14 13:52:59 nw Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,8 +65,7 @@ public class ImageLoadPlasticButton extends PlasticButton {
                         tupperware.singleTargetPlasticMessage(
                                 CommonMessageConstants.FITS_LOAD_FROM_URL
                                 ,args,targetId);
-                        //@todo next send plastic messages to select correct position in image.                    
-                }// end for each child node.
+                   }// end for each child node.
                 return null;
             }
         }).start();
@@ -78,6 +77,9 @@ public class ImageLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: ImageLoadPlasticButton.java,v $
+Revision 1.8  2006/09/14 13:52:59  nw
+implemented plastic spectrum messaging.
+
 Revision 1.7  2006/08/15 10:01:12  nw
 migrated from old to new registry models.
 
