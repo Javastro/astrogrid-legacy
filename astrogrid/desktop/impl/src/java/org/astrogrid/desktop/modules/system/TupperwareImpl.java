@@ -132,7 +132,16 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 		 hub.requestAsynch(myPlasticId,message,args);
 	}
 
-
+	public boolean somethingAccepts(URI message) {
+		for (int i = 0; i < model.size(); i++) {
+			PlasticApplicationDescription desc = (PlasticApplicationDescription)model.get(i);
+			if (desc.understandsMessage(message)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler {
 
 	private boolean enabled = false;
@@ -186,7 +195,7 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		    List appMsgList = hub.getUnderstoodMessages(this.id);
 		    return new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
 		}
-
+		
 		protected void doFinished(Object result) {
 			if (result != null && ! model.contains(result)) {  // would be odd if it did already contain it.
 				model.addElement(result); // this should fire notifications, etc.

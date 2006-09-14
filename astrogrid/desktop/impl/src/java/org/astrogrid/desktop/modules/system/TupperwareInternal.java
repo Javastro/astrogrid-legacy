@@ -38,4 +38,12 @@ public interface TupperwareInternal {
 	public Map broadcastPlasticMessage(URI message, List args) ;
 	
 	public void  broadcastPlasticMessageAsynch(URI message, List args) ;
+	
+	/** returns true if something is registered which will accept the 
+	 * parameter kind of message
+	 * @param message
+	 * @return if there or one or more receivers.
+	 */
+	public boolean somethingAccepts(URI message);
+	
 }
