@@ -134,14 +134,13 @@
 	 </properties>
     </dependency>
     
- <!-- vospec as plugin - temporary bundled untill we can replace with a plastic version -->
-	<dependency>
-		<groupId>esavo</groupId>
+ <!-- vospec as plugin -on the way out now we're plasticy. -->
+ 	<dependency>
+ 		<groupId>esavo</groupId>
 		<artifactId>vospec</artifactId>
 		<version>1.1</version>
 		  <properties>
-		 <dist.bundle>true</dist.bundle>
-		 <strip>false</strip>	<!--  treat it as a black box -->
+		 <dist.bundle>false</dist.bundle>
 	 </properties>
 	</dependency>   
 
