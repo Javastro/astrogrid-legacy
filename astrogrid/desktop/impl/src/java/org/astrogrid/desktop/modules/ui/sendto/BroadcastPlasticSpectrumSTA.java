@@ -12,6 +12,7 @@ import java.util.List;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.SsapRetrieval;
 import org.votech.plastic.CommonMessageConstants;
 
 /**
@@ -46,7 +47,7 @@ public class BroadcastPlasticSpectrumSTA extends AbstractSTA {
 	            		List l = new ArrayList();
 	            		l.add(url.toString()); 
 	            		l.add(url.toString());
-	            		l.add(new HashMap()); // no other metadata available.
+	            		l.add(getAtom().getMetaData());
 	            		sendLoadMethod(l);
 	            	} else { // retrieve data, then send the message.
 	            		// no message exists - ho hum.
@@ -64,12 +65,20 @@ public class BroadcastPlasticSpectrumSTA extends AbstractSTA {
 				SpectrumLoadPlasticButton.SPECTRA_LOAD_FROM_URL,l);
 	}	
 	protected boolean checkApplicability(PreferredTransferable atom) {
-		return (atom.isDataFlavorSupported(VoDataFlavour.FITS_IMAGE)
+		// special case.
+		if		(atom instanceof TreeNodePreferredTransferable) {
+			String format = (String)atom.getMetaData().get(SsapRetrieval.SPECTRA_FORMAT_ATTRIBUTE);
+			return format != null && format.startsWith("spectrum");
+		} else {
+			// general case - don't really know what this is.
+		return 
+		(atom.isDataFlavorSupported(VoDataFlavour.FITS_IMAGE)
 			|| atom.isDataFlavorSupported(VoDataFlavour.FITS_TABLE)
 			|| atom.isDataFlavorSupported(VoDataFlavour.VOTABLE)
 			|| atom.isDataFlavorSupported(VoDataFlavour.VOTABLE_STRING)
 		)
 			&&  tupp.somethingAccepts(SpectrumLoadPlasticButton.SPECTRA_LOAD_FROM_URL);
+	}
 	}
 
 }

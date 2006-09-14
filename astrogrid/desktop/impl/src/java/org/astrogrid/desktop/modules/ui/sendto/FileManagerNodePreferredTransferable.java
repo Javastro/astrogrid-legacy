@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser.CurrentNodeManager;
+import org.astrogrid.filemanager.client.FileManagerNode;
 
 
 /** file manager node as a transferable.
@@ -181,6 +182,18 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 
 	public boolean isDataFlavorSupported(DataFlavor arg0) {
 		return ArrayUtils.contains(getTransferDataFlavors(),arg0);
+	}
+
+	public Map getMetaData() {
+		FileManagerNode node =  nodeManager.getCurrent();
+		Map m = new HashMap();
+		m.put("name",node.getName());
+		m.put("createdate",node.getMetadata().getCreateDate());
+		m.put("modifydate",node.getMetadata().getModifyDate());
+		m.put("size",node.getMetadata().getSize());
+		m.put("location",node.getMetadata().getContentLocation());
+		m.putAll(node.getMetadata().getAttributes());
+		return m;
 	}
 
 }

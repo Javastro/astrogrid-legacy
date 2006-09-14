@@ -9,6 +9,8 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ACRException;
@@ -194,5 +196,12 @@ public class ParameterValueTransferable  implements PreferredTransferable {
 		return false;
 		*/
 		return ArrayUtils.contains(myFlavours,arg0);
+	}
+	public Map getMetaData() {
+		Map m = new HashMap();
+		m.put("name",val.getName());
+		m.put("encoding",val.getEncoding());
+		m.put("indirect",Boolean.toString(val.getIndirect()));
+		return m;
 	}
 }

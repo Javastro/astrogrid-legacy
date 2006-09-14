@@ -7,6 +7,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
@@ -165,4 +166,8 @@ public class TreeNodePreferredTransferable implements PreferredTransferable {
 	
 	private TreeNode node;
 	private TreeNode serviceNode;
+
+	public Map getMetaData() {
+		return node.getAttributes();
+	}
 }
