@@ -18,6 +18,7 @@ import org.astrogrid.acr.builtin.ShutdownListener;
 
 /** implementation ofo the data cache - uses the ehCache libraries,
  * @author Noel Winstanley
+ * @modified made the caching more conservative.
  * @since Aug 8, 20061:17:09 AM
  */
 public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
@@ -33,7 +34,7 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
 		// necessarty to create a defaults section.
 		CacheConfiguration defaults = new CacheConfiguration();
 		defaults.setName("cache_defaults");
-		defaults.setMaxElementsInMemory(10000);
+		defaults.setMaxElementsInMemory(100);
 		defaults.setEternal(false);
 		defaults.setTimeToIdleSeconds(120);
 		defaults.setTimeToLiveSeconds(120);
@@ -51,10 +52,9 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
 		
 		// cache for individual resource documents.
 		
-		// will always hold the 200 most recently used resources.s
 		CacheConfiguration resources = new CacheConfiguration() {{
 			setName(RESOURCES_CACHE);
-			setMaxElementsInMemory(200); // 3-4 queries? will get flooded by astroscope in one go.
+			setMaxElementsInMemory(50);
 			setOverflowToDisk(true);
 			setDiskPersistent(true);
 			setTimeToLiveSeconds(7 * 24 * 60 * 60); // 7 days
@@ -66,7 +66,7 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
 		// cache for registry documents - resource docs, and xquery docs
 		CacheConfiguration documents = new CacheConfiguration() {{
 			setName(DOCUMENTS_CACHE); 
-			setMaxElementsInMemory(1); // only keep a few in memory.
+			setMaxElementsInMemory(3); // enough for up one, down on in registry google.
 			setOverflowToDisk(true);
 			setDiskPersistent(true);
 			setTimeToLiveSeconds(7 * 24 * 60 * 60); // 7 days
