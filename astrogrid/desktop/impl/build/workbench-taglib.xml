@@ -148,6 +148,33 @@ astrogrid.build.jdk=${java.version}
 		<echo>
 			Building installer : ${maven.final.name}-installer.jar
 		</echo>
+		<!--  write oout icon config files
+		in folowing 3 files, ${ } refers to a maven variable (compile time),
+		while $FRED refers to a izpack variable (installtime)
+		 -->
+			<j:file name="${maven.build.dir}/windows_shortcuts.xml"		omitXmlDeclaration="false" xmlns="dummy">
+				<shortcuts>
+					<skipIfNotSupported />
+					<programGroup defaultName="Astrogrid\${pom.name}"	 location="applications" />
+					<shortcut name="${pom.name}" 
+						target="$INSTALL_PATH/launch.bat"
+						description="Launch ${pom.name} ${astrogrid.desktop.version}" 
+						iconFile="$INSTALL_PATH/logo.ico" 
+						initialState="noShow"
+						programGroup="yes" desktop="yes" />
+				</shortcuts>
+			</j:file>
+			<j:file name="${maven.build.dir}/unix_shortcuts.xml"	omitXmlDeclaration="false" xmlns="dummy">
+				<shortcuts>
+					<skipIfNotSupported />
+					<programGroup defaultName="Astrogrid/${pom.name}"	 location="applications" />
+					<shortcut name="${pom.name}" 
+						target="$INSTALL_PATH/launch.sh"
+						description="Launch ${pom.name} ${astrogrid.desktop.version}" 
+						iconFile="$INSTALL_PATH/logo.png" 
+						programGroup="yes" desktop="yes" type="Application" encoding="UTF-8" />
+				</shortcuts>
+			</j:file>			
 		<!--  write out installer config file -->
 		<j:file name="${maven.build.dir}/izpack.xml" omitXmlDeclaration="false" trim="true" xmlns="dummy">
 				<installation version="1.0">
@@ -162,8 +189,12 @@ astrogrid.build.jdk=${java.version}
 								email="helpdesk@astrogrid.org" />
 						</authors>
 						<url>http://www.astrogrid.org/desktop</url>
+						<webdir>http://www.astrogrid.org/desktop/download</webdir>
 						<javaversion>1.4</javaversion>
 					</info>
+					<variables>
+						<variable name="jarname" value="${maven.final.name}-app.jar" />
+					</variables>
 					<guiprefs height="600" resizable="yes" width="800" />
 					<locale>
 						<langpack iso3="eng" />
@@ -172,6 +203,10 @@ astrogrid.build.jdk=${java.version}
 						<res id="Installer.image" src="${basedir}/src/webapp/logo.gif" />
 						<res id="LicencePanel.licence"
 							src="${maven.license.licenseFile}" />
+						<res src="${maven.build.dir}/windows_shortcuts.xml"
+     							id="shortcutSpec.xml"/><!--  for windows -->
+						<res src="${maven.build.dir}/unix_shortcuts.xml"
+     								id="Unix_shortcutSpec.xml"/>							
 					</resources>
 					<panels>
 						<panel classname="HelloPanel" />
@@ -183,26 +218,33 @@ astrogrid.build.jdk=${java.version}
 						<panel classname="SimpleFinishPanel" />
 					</panels>
 					<packs>
-						<pack name="${pom.name}" required="yes"
-							preselected="yes">
+						<pack name="${pom.name}" required="yes" preselected="yes">
 							<description>
-								${pom.description}
-							</description>
-							<file src="${maven.build.dir}/${maven.final.name}-app.jar" targetdir="$INSTALL_PATH" />						
-							<singlefile src="" target="$INSTALL_PATH/${pom.name}.sh"  os="unix"/>
-							<singlefile src="" target="$INSTALL_PATH/${pom.name}.sh"  os="mac"/>
-							<singlefile src="" target="$INSTALL_PATH/${pom.name}.bat"  os="windows"/>														
+								Program Files
+							</description>						
+							<file src="${maven.build.dir}/${maven.final.name}-app.jar" targetdir="$INSTALL_PATH" />
+							<file src="${buildlib}/launch.sh" targetdir="$INSTALL_PATH" /> 
+							<file src="${buildlib}/launch.bat" targetdir="$INSTALL_PATH" os="windows"/>
+							<fileset dir="${basedir}/src/webapp" targetdir="$INSTALL_PATH">
+								<include name="*.png" />
+								<include name="*.ico" />
+							</fileset>
+							<parsable targetfile="$INSTALL_PATH/launch.sh" type="shell"/>	
+							<parsable targetfile="$INSTALL_PATH/launch.bat" os="windows"/>			
+							<executable targetfile="$INSTALL_PATH/launch.sh" stage="never"/>							
 						</pack>
+						<!--  later - add in native jdic libraries. -->
 					</packs>
+					<native type="izpack" name="ShellLink.dll"/>
 				</installation>		
 		</j:file>
 		<!--  run installer compiler -->
 		<java classname="com.izforge.izpack.compiler.Compiler" 
-			classpathref="maven.dependency.classpath" fork="true">
+			classpathref="maven.dependency.classpath" fork="true" dir="${buildlib}"> <!--  run in a particular directory, so it can find the native libs. sheesh. -->
 			<arg file="${maven.build.dir}/izpack.xml" />
 			<arg value="-o"/><arg value="${maven.build.dir}/${maven.final.name}-installer.jar" />
 		  	<arg value="-b"/><arg file="${basedir}" />
-			<arg value="-k"/><arg value="standard" />
+			<arg value="-k"/><arg value="standard" /> <!--  or web  -->
 		</java>
 	</goal>
 
