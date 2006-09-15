@@ -24,13 +24,13 @@ print "Endpoint to connect to is", endpoint
 #connect to the acr 
 acr = xmlrpclib.Server(endpoint)
 
-print "Generating registry index"
+print "Generating registry index - this will take a while - please wait"
 
 
 #submit a xquery to the registry
 #creates a result that can be input into freemind mindmap viewer.
 
-s = acr.astrogrid.registry.xquerySearch("""
+s = acr.ivoa.registry.xquerySearchXML("""
 (: write representation of a single registry entry :)		
 declare function local:mkRecordNode($record,$xsi){
 (: display logo :)

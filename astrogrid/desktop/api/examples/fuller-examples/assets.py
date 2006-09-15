@@ -27,7 +27,7 @@ print "Querying registry to list assets.."
 
 #do submit an xquery to the registry
 # actually a xhtml page, with embedded queries.
-s = acr.astrogrid.registry.xquerySearch("""
+s = acr.ivoa.registry.xquerySearchXML("""
 <html>
 <head>	
 </head>
