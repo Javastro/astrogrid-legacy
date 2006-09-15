@@ -1,4 +1,4 @@
-/*$Id: VizualizationManager.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: VizualizationManager.java,v 1.4 2006/09/15 14:37:20 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import edu.berkeley.guir.prefuse.render.ImageFactory;
 public class VizualizationManager {
     public VizualizationManager(VizModel model) {            
         this.model = model;
-        imageFactory = new ImageFactory(50,50); // small thumbnails.        
+        imageFactory = new ImageFactory(24,24); // small thumbnails.        
     
     }
     private final ImageFactory imageFactory;    
@@ -97,6 +97,9 @@ public class VizualizationManager {
 
 /* 
 $Log: VizualizationManager.java,v $
+Revision 1.4  2006/09/15 14:37:20  nw
+reduced size of thumbnails.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 
