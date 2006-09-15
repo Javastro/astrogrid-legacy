@@ -19,5 +19,6 @@ public interface CacheFactory {
 	public final static String PW_CACHE = "pw";
 	public final static String DOCUMENTS_CACHE = "documents";
 	public final static String BULK_CACHE = "bulk";	
+	public final static String APPLICATION_RESOURCES_CACHE="applicationResources";
 
 }

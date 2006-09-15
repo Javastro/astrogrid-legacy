@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.16 2006/08/31 21:28:59 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.17 2006/09/15 14:37:50 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,10 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -55,6 +59,7 @@ import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
+import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.KnowledgeAddingResourceArrayBuilder;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -65,7 +70,6 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -82,13 +86,15 @@ public class ApplicationsImpl implements ApplicationsInternal {
     /** 
      * 
      */
-    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, RegistryInternal nuReg,Registry reg, Adql074 adql) throws  ACRException{
+    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, RegistryInternal nuReg,Registry reg, Adql074 adql, CacheFactory cacheFac) throws  ACRException{
         this.manager = manager;
         this.vos = vos;
         this.reg = reg;
         this.adql = adql;
         this.nuReg = nuReg;
+        this.applicationResourceCache = cacheFac.getManager().getCache(CacheFactory.APPLICATION_RESOURCES_CACHE);
     }
+    protected final Ehcache applicationResourceCache;
     protected final RegistryInternal nuReg;
     protected final RemoteProcessManager manager;
     private final MyspaceInternal vos;
@@ -152,8 +158,12 @@ public class ApplicationsImpl implements ApplicationsInternal {
     }
     
 	public CeaApplication getCeaApplication(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
+		net.sf.ehcache.Element el = applicationResourceCache.get(arg0);
+		if (el != null) {
+			return (CeaApplication)el.getValue();
+		} else {
 		KnowledgeAddingResourceArrayBuilder proc = new KnowledgeAddingResourceArrayBuilder();
-		//@todo cache this in a separate store??
+
 		nuReg.getResourceStream(arg0,proc );
 		Resource[] arr = proc.getResult();
 		if (arr == null || arr.length < 1) {
@@ -161,10 +171,12 @@ public class ApplicationsImpl implements ApplicationsInternal {
 		}
 		Resource r = arr[0];
 		if (r instanceof CeaApplication) { // anything else that can be made to look like a cea app - cone, siap, etc, will be packaged as one too.
+			applicationResourceCache.put(new Element(arg0,r));
 			return (CeaApplication)r;
 		} else {
 			throw new InvalidArgumentException("Not a recognized kind of application: " + arg0);
 		}			
+		}
 			
 	}
 
@@ -685,6 +697,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.17  2006/09/15 14:37:50  nw
+added caching to applications - prevents workflow builder freezups.
+
 Revision 1.16  2006/08/31 21:28:59  nw
 doc fix.
 

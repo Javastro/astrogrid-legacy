@@ -74,6 +74,20 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
 			setDiskExpiryThreadIntervalSeconds(60 * 60); //1 hour
 		}};
 		conf.addCache(documents);
+	
+		// small cache of resources that have been treated as applications.
+		// not entirely happy about thios one - will do for now.
+		// makes workflow builder much more responsive.
+		CacheConfiguration apps = new CacheConfiguration() {{
+			setName(APPLICATION_RESOURCES_CACHE);
+			setMaxElementsInMemory(20);
+			setOverflowToDisk(true);
+			setDiskPersistent(true);
+			setTimeToLiveSeconds(7 * 24 * 60 * 60); // 7 days
+			setTimeToIdleSeconds(3 * 24 * 60 * 60); // 3 days		
+			setDiskExpiryThreadIntervalSeconds(60 * 60); //1 hour
+		}};
+		conf.addCache(apps);
 		
 		// cache for bulk searches, etc. of registry objects
 		// not so sure about this one really..
@@ -99,6 +113,7 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
 			setDiskExpiryThreadIntervalSeconds(60 * 60); //1 hour
 		}};
 		conf.addCache(pw);
+	
 		
 		manager = new CacheManager(conf);
 	}

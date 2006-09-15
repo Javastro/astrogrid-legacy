@@ -269,7 +269,7 @@
 				<service>system.browser</service>
 				<service>ivoa.registry</service>
 				<string>${astrogrid.community.register}</string>
-				<string>$[astrogrid.community.defaultCommunity}</string>
+				<string>${astrogrid.community.defaultCommunity}</string>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -301,6 +301,7 @@
 				<service>ivoa.registry</service>
 				<service>registry</service>
 				<service>ivoa.adql074</service>
+				<service>ivoa.cache</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
