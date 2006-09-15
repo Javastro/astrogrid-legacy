@@ -46,6 +46,7 @@
 				<include name="**/target/*-jnlp.zip" /><!--  webstart -->
 				<include name="**/target/distributions/*.zip" /> <!--  distribuitions -->
 				<include name="**/target/**/announcement*.txt" /> <!--  release announcement -->
+				<include name="**/target/**/*-installer.jar" />
 				<!--  specials -->
 				<include name="**/target/ar-script-examples*.jar" />
 				<!-- api/docs, api/generated-xdocs/xmlrpc doc- already in the api distrubution zip-->
