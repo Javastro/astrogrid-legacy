@@ -1,0 +1,1165 @@
+/**
+ * JavaCC file
+ */
+ 
+options {
+  JDK_VERSION = "1.4";
+  STATIC=false;
+  MULTI=true;
+  VISITOR=true;
+  NODE_USES_PARSER=true;
+  NODE_DEFAULT_VOID=true;
+}
+
+PARSER_BEGIN(AdqlStoX)
+package org.astrogrid.adql ;
+
+import org.astrogrid.adql.v1_0.beans.* ;
+
+public class AdqlStoX {
+
+	public SelectDocument exec() {
+		SelectDocument selectDoc = null ;
+		try {			
+			ASTSelect query = topQuery();
+			AdqlStoXVisitor visitor = new AdqlStoXVisitorImpl() ;
+			selectDoc = SelectDocument.Factory.newInstance() ;
+			query.jjtAccept( visitor, selectDoc ) ;		
+		}
+		catch( ParseException pex ) {
+			pex.printStackTrace() ;
+			//System.out.println( pex.getMessage() ) ;
+		}
+		catch( Error err ) {
+			err.printStackTrace() ;
+			//System.out.println( err.getMessage() ) ;
+		}
+		return selectDoc ;
+	
+	}
+
+}
+PARSER_END(AdqlStoX)
+
+SKIP :
+{
+ 	" "
+|	"\r"
+|	"\t"
+|	"\n"
+}
+
+
+TOKEN : 
+{
+	< LBRACE : "{" >
+|	< RBRACE : "}" >
+	
+|	< NOT_EQUALS_OPERATOR : "<>" | "!=" >
+|	< LESS_THAN_OR_EQUALS_OPERATOR : "<=" >
+|	< GREATER_THAN_OR_EQUALS_OPERATOR : ">=" >
+|	< EQUALS_OPERATOR : "=" >
+|	< LESS_THAN_OPERATOR : "<" >
+|	< GREATER_THEN_OPERATOR : ">" >
+
+|	< ADD: "add" >
+|	< ALL: "all" >
+|	< AND: "and" >
+|	< ANY: "any" >
+|	< AS: "as" >
+|	< ASC: "asc" >
+|	< AT : "at" >
+|	< AUTHORIZATION: "authorization" >
+|	< BASE64: "base64" >
+|	< BEGIN: "begin" >
+|	< BETWEEN: "between" >
+|	< BINARY: "binary" >
+|	< BREAK: "break" >
+|	< BY: "by" >
+|	< CASE: "case" >
+|	< CAST: "cast" >
+|	< CHECKPOINT: "checkpoint" >
+|	< CLOSE: "close" >
+|	< CLUSTERED: "clustered" >
+
+|   < COALESCE: "coalesce" >
+|	< COLLATE: "collate" >
+|	< COLUMN: "column" >
+|	< COMMIT: "commit" >
+|	< COMPUTE: "compute" >
+|	< CONCAT: "concat" >
+|	< CONSTRAINT: "constraint" >
+|	< CONTAINS: "contains" >
+|	< CONTAINSTABLE: "containstable" >
+|	< CONTINUE: "continue" >
+
+|	< CORRESPONDING : "corresponding" >
+
+	//| < CONVERT: "convert" >
+|	< CREATE: "create" >
+//|	< CROSS: "cross" >
+|	< CROSS_JOIN : "cross join">
+|	< CUBE: "cube" >
+|	< CURRENT: "current" >
+|	< CURRENT_DATE: "current_date" >
+|	< CURRENT_TIME: "current_time" >
+|	< CURRENT_TIMESTAMP: "current_timestamp" >
+|	< CURRENT_USER: "current_user" >
+|	< CURSOR: "cursor" >
+|	< DATABASE: "database" >
+|	< DBCC: "dbcc" >
+|	< DEALLOCATE: "deallocate" >
+|	< DECLARE: "declare" >
+|	< SQL_DEFAULT: "default" >
+|	< DELETE: "delete" >
+|	< DENY: "deny" >
+|	< DESC: "desc" >
+|	< DISK: "disk" >
+|	< DISTINCT: "distinct" >
+|	< DISTRIBUTED: "distributed" >
+|	< DOT: "." >
+|	< DOUBLE: "double" >
+|	< DROP: "drop" >
+|	< DUMP: "dump" >
+|	< ELEMENTS: "elements" >
+|	< ELSE: "else" >
+|	< END: "end" >
+|	< ERRLVL: "errlvl" >
+|	< ESCAPE: "escape" >
+|	< EXCEPT: "except" >
+|	< EXEC: "exec" >
+|	< EXECUTE: "execute" >
+|	< EXISTS: "exists" >
+|	< EXIT: "exit" >
+|	< EXPAND: "expand" >
+|	< EXPLICIT: "explicit" >
+|	< FAST: "fast" >
+|	< FASTFIRSTROW: "fastfirstrow" >
+|	< FETCH: "fetch" >
+|	< FILE: "file" >
+|	< FILLFACTOR: "fillfactor" >
+|	< FOR: "for" >
+|	< FORCE: "force" >
+|	< FOREIGN: "foreign" >
+|	< FREETEXT: "freetext" >
+|	< FREETEXTTABLE: "freetexttable" >
+|	< FROM: "from" >
+|	< FULL: "full" >
+|	< FUNCTION: "function" >
+|	< GOTO: "goto" >
+|	< GRANT: "grant" >
+|	< GROUPBY: "group by" >
+|	< HASH: "hash" >
+|	< HAVING: "having" >
+|	< HOLDLOCK: "holdlock" >
+|	< IDENTITY: "identity" >
+|	< IDENTITY_INSERT: "identity_insert" >
+|	< IDENTITYCOL: "identitycol" >
+|	< IF: "if" >
+|	< IN: "in" >
+|	< INDEX: "index" >
+|	< INNER: "inner" >
+|	< INSERT: "insert" >
+|	< INTERSECT: "intersect" >
+|	< INTO: "into" >
+|	< IS: "is" >
+|	< JOIN: "join" >
+|	< KEEP: "keep" >
+|	< KEEPFIXED: "keepfixed" >
+|	< KEY: "key" >
+|	< KILL: "kill" >
+|	< LEFT: "left" >
+|	< LIKE: "like" >
+|	< LINENO: "lineno" >
+|	< LOCAL: "local" >
+|	< LOAD: "load" >
+|	< LOOP: "loop" >
+|	< MATCH : "match" >
+|	< MAXDOP: "maxdop" >	
+|	< MERGE: "merge" >
+|	< NATIONAL: "national" >
+|	< NATURAL: "natural" >
+|	< NOCHECK: "nocheck" >
+|	< NOLOCK: "nolock" >
+|	< NONCLUSTERED: "nonclustered" >
+|	< NOT: "not" >
+|	< NULL: "null" >
+
+	//| < NULLIF: "nullif" >
+|	< OF: "of" >
+|	< OFF: "off" >
+|	< OFFSETS: "offsets" >
+|	< ON: "on" >
+|	< OPEN: "open" >
+|	< OPENDATASOURCE: "opendatasource" >
+|	< OPENQUERY: "openquery" >
+|	< OPENROWSET: "openrowset" >
+|	< OPENXML: "openxml" >
+|	< OPTION: "option" >
+|	< OR: "or" >
+|	< ORDER: "order" >
+|	< OUTER: "outer" >
+|	< OVER: "over" >
+|	< OVERLAPS : "overlaps" >
+|	< PAGLOCK: "paglock" >
+|	< PARTIAL : "partial" >
+|	< PERCENT: "percent" >
+|	< PLAN: "plan" >
+|	< PRECISION: "precision" >
+|	< PRIMARY: "primary" >
+|	< PRINT: "print" >
+|	< PROC: "proc" >
+|	< PROCEDURE: "procedure" >
+|	< PUBLIC: "public" >
+|	< RAISERROR: "raiserror" >
+|	< RAW: "raw" >
+|	< READ: "read" >
+|	< READCOMMITED: "readcommited" >
+|	< READPAST: "readpast" >
+|	< READTEXT: "readtext" >
+|	< READUNCOMMITED: "readuncommited" >
+|	< RECONFIGURE: "reconfigure" >
+|	< REFERENCES: "references" >
+|	< REGION: "region" >
+|	< REMOTE: "remote" >
+|	< REPEATABLEREAD: "repeatableread" >
+|	< REPLICATION: "replication" >
+|	< RESTORE: "restore" >
+|	< RESTRICT: "restrict" >
+|	< RETURN: "return" >
+|	< REVOKE: "revoke" >
+|	< RIGHT: "right" >
+|	< ROBUST: "robust" >
+|	< ROLLBACK: "rollback" >
+|	< ROLLUP: "rollup" >
+|	< ROWCOUNT: "rowcount" >
+|	< ROWGUIDCOL: "rowguidcol" >
+|	< ROWLOCK: "rowlock" >
+|	< RULE: "rule" >
+|	< SAVE: "save" >
+|	< SCHEMA: "schema" >
+|	< SELECT: "select" >
+|	< SERIALIZABLE: "serializable" >
+|	< SESSION_USER: "session_user" >
+|	< SET: "set" >
+|	< SETUSER: "setuser" >
+|	< SHUTDOWN: "shutdown" >
+|	< SOME: "some" >
+|	< STATISTICS: "statistics" >
+|	< SYSTEM_USER: "system_user" >
+|	< TABLE: "table" >
+|	< TABLOCK: "tablock" >
+|	< TABLOCKX: "tablockx" >
+|	< TEXTSIZE: "textsize" >
+|	< THEN: "then" >
+|	< TIME_ZONE: "TIME ZONE" >
+|	< TIES: "ties" >
+|	< TO: "to" >
+|	< TOP: "top" >
+|	< TRAN: "tran" >
+|	< TRANSACTION: "transaction" >
+|	< TRIGGER: "trigger" >
+|	< TRUTH_VALUE : "true" | "false" | "unknown" >
+|	< TSEQUAL: "tsequal" >
+|	< UNION: "union" >
+|	< UNIQUE: "unique" >
+|	< UPDATE: "update" >
+|	< UPDATETEXT: "updatetext" >
+|	< UPDLOCK: "updlock" >
+|	< USE: "use" >
+|	< USER: "user" >
+|	< USING : "using" >
+|	< VALUES: "values" >
+|	< VARYING: "varying" >
+|	< VIEW: "view" >
+|	< VIEWS: "views" >
+|	< WAITFOR: "waitfor" >
+|	< WHEN: "when" >
+|	< WHERE: "where" >
+|	< WHILE: "while" >
+|	< WITH: "with" >
+|	< WRITETEXT: "writetext" >
+|	< XLOCK: "xlock" >
+|	< XMATCH: "xmatch" >
+|	< XML: "xml" >
+|	< XMLDATA: "xmldata" >
+
+	//math
+|	< CEILING: "ceiling" >
+|	< DEGREES: "degrees" >
+|	< EXP: "exp" >
+|	< FLOOR: "floor" >
+|	< LOG: "log" >
+|	< PI: "pi" >
+|	< POWER: "power" >
+|	< RADIANS: "radians" >
+|	< SQRT: "sqrt" >
+|	< SQUARE: "square" >
+|	< LOG10: "log10" >
+|	< RAND: "rand" >
+|	< ROUND: "round" >
+|	< TRUNCATE: "truncate" >
+	
+	//trig
+|	< SIN: "sin" >
+|	< COS: "cos" >
+|	< TAN: "tan" >
+|	< COT: "cot" >
+|	< ASIN: "asin" >
+|	< ACOS: "acos" >
+|	< ATAN: "atan" >
+|	< ATAN2: "atan2" >
+	
+	//aggregate
+|	< MAX: "max" >
+|	< MIN: "min" >
+|	< SUM: "sum" >
+|	< AVG: "avg" >
+|	< COUNT: "count" >
+
+
+|	< COLON : ":" >
+|	< COMMA : "," >
+|	< SEMICOLON : ";" >
+|	< LPAREN : "(" >
+|	< RPAREN : ")" >
+|	< LSQUARE : "[" >
+|	< RSQUARE : "]" >
+
+|	< DIVIDE : "/" >
+|	< PLUS : "+" >
+|	< MINUS : "-" >
+|	< STAR : "*" >
+|	< MOD : "%" >
+|	< AMPERSAND : "&" >
+|	< TILDE : "~" >
+|	< BITWISEOR : "|" >
+|	< BITWISEXOR : "^" >
+|	< BANG : "!" >
+|	< QUESTIONMARK : "?" >
+
+|	< DOLLAR : "$" >
+|	< SECOND: "second" >
+
+|  	< REGULAR_IDENTIFIER : ( <LETTER> )+ ( <DIGIT> | <LETTER> | <SPECIAL_CHARS> )* >
+|	< DELIMITED_IDENTIFIER : "\"" (~["\n","\r","\""])* "\"" >
+| 	< #LETTER: ["a"-"z", "A"-"Z"] >
+|   < #SPECIAL_CHARS: <DOLLAR> | "_">
+
+|	< SIGN : <PLUS> | <MINUS> >
+|	< UNSIGNED_INTEGER : ( <DIGIT> )+ > 
+|  	< DIGIT: ["0" - "9"] > 
+|	< SIGNED_INTEGER : (<PLUS> |<MINUS>) <UNSIGNED_INTEGER> >
+|	< EXPONENT : ["e", "E"] <SIGNED_INTEGER> >
+
+|	< NON_SECOND_DATETIME_FIELD: <YEAR> | <MONTH> | <DAY> | <HOUR> | <MINUTE> >
+|	< #YEAR: "year" >
+|	< #MONTH: "month" >
+|	< #DAY: "day" >
+|	< #HOUR: "hour" >
+|	< #MINUTE: "minute" >
+
+|	< OTHER : ~[] >
+}
+ 
+
+ASTSelect topQuery() : 
+{ 	ASTSelect retValue ; 	}
+{
+	retValue = querySpecification() <SEMICOLON> 
+	{  return retValue ; }
+}
+
+//=================================
+
+void actualIdentifier() : {}
+{
+	<REGULAR_IDENTIFIER> | <DELIMITED_IDENTIFIER>
+}
+
+void approximateNumericLiteral() : {}
+{
+	mantissa() <EXPONENT>
+}
+
+void betweenPredicate() : {}
+{
+	rowValueConstructor() [ <NOT> ] <BETWEEN> rowValueConstructor() <AND> rowValueConstructor()	
+}
+
+void booleanPrimary() : {} 
+{
+	LOOKAHEAD(3)
+	predicate()
+    | 
+    <LPAREN> searchCondition() <RPAREN>
+}
+
+void booleanTerm() : {}
+{
+	// refactored
+	[ <NOT> ] booleanTest() ( <AND> [ <NOT> ] booleanTest() )*
+}
+
+void booleanTest() : {}
+{
+	booleanPrimary() [ <IS> [ <NOT> ] <TRUTH_VALUE> ]
+}
+
+void likePredicate() : {}
+{
+	match() [ <NOT> ] <LIKE> pattern() [ <ESCAPE> escapeCharacter() ]	
+}
+
+void mantissa() : {}
+{
+	exactNumericLiteral()
+}
+
+void caseExpression() : {}
+{
+	"5-TBD caseExpression"	
+}
+
+void castSpecification() : {}
+{
+	"6-TBD castSpecification"
+}
+
+void characterFactor() : {}
+{
+	// Foreshortened
+	characterPrimary()
+}
+
+void characterPrimary() : {}
+{
+	// Foreshortened
+	commonPrimary()
+}
+
+void characterValueExpression() : {}
+{
+	// Foreshortened
+	characterFactor()	
+}
+
+void collateClause() : {}
+{
+	// refactored
+	<COLLATE> qualifiedName()	
+}
+
+void columnName() : {}
+{
+	identifier()
+}
+
+void columnNameList()  : {}
+{
+	 columnName() ( <COMMA> columnName() )*	
+}
+
+void columnReference() : {}
+{
+	[ LOOKAHEAD(2) qualifier() <DOT> ] columnName() 	
+}
+
+void commonPrimary() : {}
+{
+	// Foreshortened
+	unsignedValueSpecification()
+	|
+	columnReference()
+	|
+	setFunctionSpecification()
+	|
+	LOOKAHEAD(3)
+	scalarSubquery()
+	|
+// JBL: case ommitted in initial version...
+//	caseExpression()//	|
+	( <LPAREN> valueExpression() <RPAREN> )
+// JBL: cast ommitted in initial version//	|//	castSpecification()
+}
+
+void comparisonOperator() : {}
+{
+	<EQUALS_OPERATOR> |<NOT_EQUALS_OPERATOR> |<LESS_THAN_OPERATOR> | <GREATER_THEN_OPERATOR> | <LESS_THAN_OR_EQUALS_OPERATOR> | <GREATER_THAN_OR_EQUALS_OPERATOR>	
+}
+
+void comparisonPredicate() : {}
+{
+	rowValueConstructor() comparisonOperator() rowValueConstructor()
+}
+
+void correlationName() : {}
+{
+	identifier()
+}
+
+void dateTimeFactor() : {}
+{
+	dateTimePrimary() [  LOOKAHEAD(2) timeZone() ]
+}
+
+void dateTimePrimary() : {}
+{
+	commonPrimary()
+    | 
+    dateTimeValueFunction()
+}
+
+void dateTimeTerm() : {}
+{
+    dateTimeFactor()
+}
+
+void dateTimeValueExpression() : {}
+{
+	// refactored
+	LOOKAHEAD(3)
+    ( dateTimeTerm() ( LOOKAHEAD(2) (<PLUS> | <MINUS>) dateTimeValueExpression() )* )
+    |
+    ( intervalValueExpression() <PLUS> dateTimeTerm() )
+}
+
+void dateTimeValueFunction() : {}
+{
+	<CURRENT_DATE>
+	|
+	<CURRENT_TIME> [ <LPAREN> timePrecision() <RPAREN> ]
+	|
+	<CURRENT_TIMESTAMP> [ <LPAREN> timeStampPrecision() <RPAREN> ]
+}
+
+void derivedColumnList() : {}
+{
+   columnNameList()	
+}
+
+void derivedTable() : {}
+{
+   tableSubQuery()
+}
+
+void endField() : {}
+{
+	<NON_SECOND_DATETIME_FIELD> | <SECOND> [ <LPAREN> intervalFractionalSecondsPrecision() <RPAREN> ]
+}
+
+void escapeCharacter() : {}
+{
+	characterValueExpression()	
+}
+
+void exactNumericLiteral() : {}
+{ 
+	( <UNSIGNED_INTEGER> [ "." [ <UNSIGNED_INTEGER> ] ] ) 
+	| 
+	( <DOT> <UNSIGNED_INTEGER> )
+}
+
+void existsPredicate() : {}
+{
+	<EXISTS> tableSubQuery()	
+}
+
+void explicitTable() : {}
+{
+	<TABLE> tableName()
+}
+
+void factor() : {}
+{
+	[ <PLUS> | <MINUS> ] numericPrimary()	
+}
+
+void fromClause() #From : {}
+{
+	<FROM> tableReference() ( <COMMA> tableReference() )*
+}
+
+void generalSetFunction() : {}
+{
+	( <AVG> | <MAX> | <MIN> | <SUM> | <COUNT> ) <LPAREN> [ setQuantifier() ] valueExpression() <RPAREN>	
+}
+
+void generalValueSpecification() : {}
+{
+	// Foreshortened
+	variableSpecification()	
+}
+
+void groupByClause() #GroupBy : {}
+{
+	<GROUPBY> groupingColumnReferenceList()
+}
+
+void groupingColumnReferenceList() : {}
+{
+	groupingColumnReference() ( <COMMA> groupingColumnReference() )* 
+}
+
+void groupingColumnReference() : {}
+{
+	columnReference() [ collateClause() ]	
+}
+
+void havingClause() #Having : {}
+{	
+	<HAVING> searchCondition()
+}
+
+void identifier() : {}
+{
+//	Foreshortened
+	actualIdentifier()
+} 
+
+void inPredicate() : {}
+{
+	// refactored
+	LOOKAHEAD(3)
+	rowValueConstructor() [ <NOT> ] <IN> tableSubQuery() | ( <LPAREN> inValueList() <RPAREN> )  
+}
+
+void intervalFactor() : {}
+{
+    [ <PLUS> | <MINUS> ] intervalPrimary()
+}
+
+void intervalFractionalSecondsPrecision() : {}
+{
+	<UNSIGNED_INTEGER>	
+}
+
+void intervalLeadingFieldPrecision() : {}
+{
+	<UNSIGNED_INTEGER>	
+}
+
+void intervalPrimary() : {}
+{
+      commonPrimary() [ LOOKAHEAD(2) intervalQualifier() ]
+}
+
+void intervalQualifier() : {}
+{
+	LOOKAHEAD(3)
+    startField() <TO> endField()
+    | 
+    singleDateTimeField()
+}
+
+void intervalTerm() : {}
+{
+	// refactored
+	LOOKAHEAD(3)
+	intervalFactor() 
+    |
+	LOOKAHEAD(3)    
+    factor() (<STAR> | <DIVIDE>) intervalTerm()
+    | 
+    term() <STAR> intervalFactor()
+}
+
+void intervalValueExpression() : {}
+{
+	// refactored
+	LOOKAHEAD(3)
+	intervalTerm() ( LOOKAHEAD(2) (<PLUS> | <MINUS>) intervalTerm() )*
+    | 
+    <LPAREN> dateTimeValueExpression() <MINUS> dateTimeTerm() <RPAREN> intervalQualifier()
+}
+
+void inValueList() : {}
+{
+    valueExpression() ( <COMMA> valueExpression() )*		
+}
+
+void joinSpecification() : {}
+{
+	// refactored
+	<ON> searchCondition()
+    |
+    <USING> <LPAREN> columnNameList() <RPAREN>
+}
+
+void joinedTable() : {}
+{
+	LOOKAHEAD(3)
+	crossJoin()
+	|
+	LOOKAHEAD(3)
+	qualifiedJoin()
+	|
+	<LPAREN> joinedTable() <RPAREN>
+}
+
+void joinType() : {}
+{
+	// refactored
+	<INNER>
+    | 
+    ( <LEFT> | <RIGHT> | <FULL> ) [ <OUTER> ] 
+    | 
+    <UNION>
+}
+
+
+void match() : {}
+{
+	characterValueExpression()	
+}
+
+void matchPredicate() : {}
+{
+	rowValueConstructor() <MATCH> [ <UNIQUE> ] [ <PARTIAL> | <FULL> ] tableSubQuery() 
+}
+
+void mathFunctions() : {}
+{
+	( <CEILING> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <DEGREES> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <EXP> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <FLOOR> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <LOG> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <PI> <LPAREN><RPAREN> )
+	|
+	( <POWER> <LPAREN> numericValueExpression() <COMMA> <UNSIGNED_INTEGER> <RPAREN> )
+	|
+	( <RADIANS> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <SQRT> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <LOG10> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <RAND> <LPAREN> [ numericValueExpression() ] <RPAREN> )
+	|
+	( <ROUND> <LPAREN> numericValueExpression() <RPAREN> )
+	|
+	( <TRUNCATE> <LPAREN> numericValueExpression() <RPAREN> )
+}
+
+void nullPredicate() : {}
+{
+	rowValueConstructor() <IS> [ <NOT> ] <NULL>	
+}
+
+void numericPrimary() : {}
+{
+	numericValueFunction()	
+	|	commonPrimary()
+}
+
+void numericValueExpression() : {}
+{
+	// refactored
+	term() ( LOOKAHEAD(2) ( <PLUS> | <MINUS> ) numericValueExpression() )*
+}
+
+void numericValueFunction() : {}
+{
+	// JBL ADQL adaptation
+	trigFunctions()
+	|
+	mathFunctions()	
+}
+
+void orderBy() #OrderBy : {} 
+{
+	<ASC> | <DESC>	
+}
+
+void overlapsPredicate() : {}
+{
+	rowValueConstructor() <OVERLAPS> rowValueConstructor()	
+}
+
+void pattern() : {}
+{
+	characterValueExpression()	
+}
+
+void predicate() : {}
+{
+	LOOKAHEAD(3)
+	comparisonPredicate()
+    | 
+    LOOKAHEAD(3)
+    betweenPredicate()
+    | 
+    LOOKAHEAD(3)
+    inPredicate()
+    | 
+    LOOKAHEAD(3)    likePredicate()    | 
+    LOOKAHEAD(3)    nullPredicate()    | 
+    LOOKAHEAD(3)
+	quantifiedComparisonPredicate()    |     existsPredicate()    |     uniquePredicate()    | 
+    LOOKAHEAD(3)    matchPredicate()    |     overlapsPredicate()
+}
+
+void qualifiedJoin() : {} 
+{
+	tableReferenceBarJoinedTable() [ <NATURAL> ] joinType() <JOIN> tableReference() [ joinSpecification() ]
+}
+
+void qualifiedName() : {}
+{
+	identifier()	
+}
+
+void qualifier() : {}
+{
+	// Foreshortened
+	tableName()
+}
+
+ASTSelect querySpecification() #Select : {}
+{
+	<SELECT> [ setQuantifier() ] [ setLimit() ] selectList() tableExpression()
+	{ return jjtThis ; }
+}
+
+void rowSubquery() : {}
+{
+	subQuery()	
+}
+
+void rowValueConstructor() : {}
+{
+	LOOKAHEAD(3)
+	rowValueConstructorElement()
+    | 
+    LOOKAHEAD(2)
+    <LPAREN> rowValueConstructorList() <RPAREN>
+    | 
+    rowSubquery()
+}
+
+void rowValueConstructorElement() : {}
+{
+	valueExpression()
+    | 
+    <NULL>
+    | 
+    <SQL_DEFAULT>
+}
+
+void rowValueConstructorList() : {}
+{
+	rowValueConstructorElement() ( <COMMA> rowValueConstructorElement() ) *
+}
+
+void scalarSubquery() : {}
+{
+	subQuery()
+}
+
+void searchCondition() : {}
+{
+	// refactored
+	booleanTerm() ( <OR> booleanTerm() )*
+}
+
+void selectList() # SelectionList : {}
+{
+	<STAR> | ( selectSublist() ( <COMMA> selectSublist() )* )
+}
+
+void selectSublist() : {}
+{   
+	LOOKAHEAD(3)
+	( qualifier() <DOT> <STAR> ) 
+	|
+	( valueExpression() [ [<AS>] columnName() ] )		
+}
+
+void setFunctionSpecification() : {}
+{
+	LOOKAHEAD(3)
+	( <COUNT> <LPAREN> <STAR> <RPAREN> ) 
+	|
+	generalSetFunction()
+}
+
+void setLimit() #Restrict : {}
+{
+	<TOP> <LPAREN> <UNSIGNED_INTEGER> <RPAREN>
+}
+
+void setQuantifier() #Allow : {}
+{
+	<ALL> | <DISTINCT>
+}
+
+void singleDateTimeField() : {}
+{
+	<NON_SECOND_DATETIME_FIELD> [ <LPAREN> intervalLeadingFieldPrecision() <RPAREN> ]
+    | 
+    <SECOND> [ <LPAREN> intervalLeadingFieldPrecision() [ <COMMA> intervalFractionalSecondsPrecision() ] <RPAREN> ]
+}
+
+void startField() : {}
+{
+    <NON_SECOND_DATETIME_FIELD> [ <LPAREN> intervalLeadingFieldPrecision() <RPAREN> ]
+}
+
+void stringValueExpression() : {}
+{
+	// Foreshortened
+	characterValueExpression()
+}
+
+void subQuery() : {}
+{
+	<LPAREN> queryExpression() <RPAREN>
+}
+
+void quantifiedComparisonPredicate() : {}
+{
+	rowValueConstructor() comparisonOperator() quantifier() tableSubQuery()	
+}
+
+void quantifier() : {}
+{
+	<ALL> | ( <SOME> | <ANY> )	
+}
+
+void queryExpression() : {}
+{
+	LOOKAHEAD(3)
+	nonJoinQueryExpression()
+	|
+	joinedTable()
+}
+
+void queryPrimary() : {}
+{
+    LOOKAHEAD(3)
+ 	nonJoinQueryPrimary()
+    | 
+    joinedTable()
+}
+
+
+void queryTerm() : {}
+{
+	LOOKAHEAD(2)
+	nonJoinQueryTerm()
+	|
+	joinedTable()	
+}
+
+void correspondingSpec() : {}
+{
+	<CORRESPONDING> [ <BY> <LPAREN> correspondingColumnList() <RPAREN> ] 
+}
+    
+void correspondingColumnList() : {}
+{
+	columnNameList()	
+}
+
+void crossJoin() : {}
+{
+	tableReferenceBarJoinedTable() <CROSS_JOIN> tableReference()	
+}
+
+
+void nonJoinQueryExpression() : {}
+{
+// Originally ...
+//	nonJoinQueryTerm()//	|//	queryExpression() <UNION> [ <ALL> ] [ correspondingSpec() ] queryTerm()//	|//	queryExpression() <EXCEPT> [ <ALL> ] [ correspondingSpec() ] queryTerm()
+
+//	Refactored to...
+//	But I'm uncertain the refactoring is the same as the original!
+	
+//	LOOKAHEAD(3)//	queryTerm() ( <UNION> [ <ALL> ] [ correspondingSpec() ] queryTerm() )*//	|//	LOOKAHEAD(3)//	queryTerm() ( <EXCEPT> [ <ALL> ] [ correspondingSpec() ] queryTerm() )*//	|//	nonJoinQueryTerm()
+
+	LOOKAHEAD(4)
+	queryTerm() ( (<UNION> | <EXCEPT> ) [ <ALL> ] [ correspondingSpec() ] queryTerm() )*
+	|
+	nonJoinQueryTerm()
+}
+
+void nonJoinQueryTerm() : {}
+{
+	LOOKAHEAD(3)
+	nonJoinQueryPrimary()
+	|
+	queryPrimary() <INTERSECT> [ <ALL> ] [ correspondingSpec() ] queryPrimary()	
+}
+
+void nonJoinQueryPrimary() : {}
+{
+	simpleTable()
+	|
+	<LPAREN> nonJoinQueryExpression() <RPAREN>
+}
+
+void simpleTable() : {}
+{
+	querySpecification()
+	|
+	tableValueConstructor()
+	|
+	explicitTable()	
+}
+
+void tableExpression() : {} 
+{
+	fromClause() [ whereClause() ] [ groupByClause() ] [ havingClause() ] [ orderBy() ]	
+}
+
+void tableName() : {}
+{
+	// Forshortened
+	qualifiedName()
+}
+
+void tableReference() : {} 
+{
+	// refactored... 
+	// 1. derivedTable() moved to first choice point
+	// 2. joinedTable() moved to second choice point
+    LOOKAHEAD(4)
+    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]
+    |	
+	LOOKAHEAD(4)
+    joinedTable()
+    |
+	tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]    
+}
+
+// Adaptation of tableReference()
+void tableReferenceBarJoinedTable() : {}
+{
+	LOOKAHEAD(4)
+	derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]	
+	|
+	tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]
+}
+
+void tableSubQuery() : {}
+{
+	subQuery()	
+}
+
+void tableValueConstructor() : {}
+{
+	<VALUES> tableValueConstructorList()
+}
+
+void tableValueConstructorList() : {}
+{
+	rowValueConstructor() ( <COMMA> rowValueConstructor() )*	
+}
+
+void term() : {}
+{
+	// refactored
+	factor() ( LOOKAHEAD(2) (<STAR> | <DIVIDE> ) term() )*
+}
+
+void timeFractionalSecondsPrecision() : {}
+{
+	<UNSIGNED_INTEGER> 	
+}
+
+void timePrecision() : {}
+{
+	timeFractionalSecondsPrecision()	
+}
+
+void timeStampPrecision() : {}
+{
+	timeFractionalSecondsPrecision()	
+}
+
+void timeZone() : {}
+{
+	// refactored
+    <AT> ( <LOCAL> | (<TIME_ZONE> intervalValueExpression() ) ) 
+}
+
+void trigFunctions() : {}
+{
+	
+	<ACOS> <LPAREN> numericValueExpression() <RPAREN>
+	|
+	<ASIN> <LPAREN> numericValueExpression() <RPAREN>
+	|
+	<ATAN> <LPAREN> numericValueExpression() <RPAREN>
+	|
+	<ATAN2> <LPAREN> numericValueExpression() <COMMA> numericValueExpression() <RPAREN>
+	|
+	<COS> <LPAREN> numericValueExpression() <RPAREN>
+	|
+	<COT> <LPAREN> numericValueExpression() <RPAREN>
+	|
+	<SIN> <LPAREN> numericValueExpression() <RPAREN>
+	|
+	<TAN> <LPAREN> numericValueExpression() <RPAREN>
+
+}
+
+void uniquePredicate() : {}
+{
+	<UNIQUE> tableSubQuery()	
+}
+
+void unsignedLiteral() : {}
+{
+	// foreshortened
+    unsignedNumericLiteral()
+//    | //    generalLiteral()
+}
+
+void unsignedNumericLiteral() : {}
+{
+	LOOKAHEAD(3)
+	exactNumericLiteral()
+    | 
+    approximateNumericLiteral()
+}
+
+
+void unsignedValueSpecification() : {}
+{
+	unsignedLiteral()
+	|
+	generalValueSpecification()
+}
+
+void valueExpression() : {} 
+{
+	LOOKAHEAD(3) 
+	numericValueExpression() 
+	|
+	LOOKAHEAD(3) 	
+	stringValueExpression() 
+	|
+	LOOKAHEAD(3) 
+	dateTimeValueExpression() 
+	|
+	intervalValueExpression()
+	
+}
+
+void variableSpecification() : {}
+{
+	// JBL ADQL adaptation to accommodate scripting variables.
+	<DOLLAR> <LBRACE> <REGULAR_IDENTIFIER> <RBRACE>
+}
+
+void whereClause() #Where : {}
+{
+	<WHERE>	searchCondition()
+}
