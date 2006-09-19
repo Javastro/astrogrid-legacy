@@ -785,33 +785,65 @@ void matchPredicate() : {}
 	rowValueConstructor() <MATCH> [ <UNIQUE> ] [ <PARTIAL> | <FULL> ] tableSubQuery() 
 }
 
-void mathFunctions() : {}
+MathFunctionType mathFunctions() : 
 {
-	( <CEILING> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <DEGREES> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <EXP> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <FLOOR> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <LOG> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <PI> <LPAREN><RPAREN> )
-	|
-	( <POWER> <LPAREN> numericValueExpression() <COMMA> <UNSIGNED_INTEGER> <RPAREN> )
-	|
-	( <RADIANS> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <SQRT> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <LOG10> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <RAND> <LPAREN> [ numericValueExpression() ] <RPAREN> )
-	|
-	( <ROUND> <LPAREN> numericValueExpression() <RPAREN> )
-	|
-	( <TRUNCATE> <LPAREN> numericValueExpression() <RPAREN> )
+	MathFunctionType mfType = null ; 
+	ScalarExpressionType arg1 = null ;
+	Token t = null ;
+	Token t2 = null ;
+}
+{
+	(
+		( t=<CEILING> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<DEGREES> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<EXP> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<FLOOR> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<LOG> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<PI> <LPAREN><RPAREN> )
+		|
+		( t=<POWER> <LPAREN> arg1=numericValueExpression() <COMMA> t2=<UNSIGNED_INTEGER> <RPAREN> )
+		|
+		( t=<RADIANS> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<SQRT> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<LOG10> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<RAND> <LPAREN> [ arg1=numericValueExpression() ] <RPAREN> )
+		|
+		( t=<ROUND> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+		|
+		( t=<TRUNCATE> <LPAREN> arg1=numericValueExpression() <RPAREN> )
+	)
+	{
+	   if( t != null ) {
+	   	  mfType = MathFunctionType.Factory.newInstance() ;
+	   	  mfType.setName( MathFunctionNameType.Enum.forString( t.image.toUpperCase() ) ) ;
+	   	  if( arg1 != null ) {
+	   	  	 SelectionItemType[] argArray ;
+	   	  	 if( t.kind != AdqlStoXConstants.POWER ) {
+	   	        argArray = new SelectionItemType[1] ;
+	   	        argArray[0] = arg1 ;
+	   	  	 }
+	   	  	 else {
+	   	  	 	argArray = new SelectionItemType[2] ;
+	   	  	 	argArray[0] = arg1 ;
+	   	  	 	AtomType atomType = AtomType.Factory.newInstance() ;
+	   	  	 	IntegerType intType = IntegerType.Factory.newInstance() ;
+	   	  	 	intType.setValue( new Long( t2.image ).longValue() ) ;
+	   	  	 	atomType.setLiteral( intType ) ;
+	   	  	 	argArray[1] = atomType ;
+	   	  	 }
+	   	     mfType.setArgArray( argArray ) ;
+	   	  }
+	   }
+	   return mfType ;
+	}
 }
 
 void nullPredicate() : {}
@@ -825,8 +857,8 @@ ScalarExpressionType numericPrimary() :
 }
 {
 	( 
-	  numericValueFunction()	
-	  |	  commonPrimary()
+	  seType=numericValueFunction()	
+	  |	  seType=commonPrimary()
 	)
 	{ return seType ; } 
 	
@@ -916,9 +948,9 @@ ScalarExpressionType numericValueFunction() :
 {
 	(
 		// JBL ADQL adaptation
-		trigFunctions()
+		seType=trigFunctions()
 		|
-		mathFunctions()	
+		seType=mathFunctions()	
 	)
 	{ return seType ; }
 }
@@ -1374,25 +1406,49 @@ void timeZone() : {}
     <AT> ( <LOCAL> | (<TIME_ZONE> intervalValueExpression() ) ) 
 }
 
-void trigFunctions() : {}
+TrigonometricFunctionType trigFunctions() : 
 {
-	
-	<ACOS> <LPAREN> numericValueExpression() <RPAREN>
-	|
-	<ASIN> <LPAREN> numericValueExpression() <RPAREN>
-	|
-	<ATAN> <LPAREN> numericValueExpression() <RPAREN>
-	|
-	<ATAN2> <LPAREN> numericValueExpression() <COMMA> numericValueExpression() <RPAREN>
-	|
-	<COS> <LPAREN> numericValueExpression() <RPAREN>
-	|
-	<COT> <LPAREN> numericValueExpression() <RPAREN>
-	|
-	<SIN> <LPAREN> numericValueExpression() <RPAREN>
-	|
-	<TAN> <LPAREN> numericValueExpression() <RPAREN>
-
+	TrigonometricFunctionType tfType = null ; 
+	ScalarExpressionType arg1 = null ;
+	ScalarExpressionType arg2 = null ;
+	Token t = null ;
+}
+{
+	(
+		t=<ACOS> <LPAREN> arg1=numericValueExpression() <RPAREN>
+		|
+		t=<ASIN> <LPAREN> arg1=numericValueExpression() <RPAREN>
+		|
+		t=<ATAN> <LPAREN> arg1=numericValueExpression() <RPAREN>
+		|
+		t=<ATAN2> <LPAREN> arg1=numericValueExpression() <COMMA> arg2=numericValueExpression() <RPAREN>
+		|
+		t=<COS> <LPAREN> arg1=numericValueExpression() <RPAREN>
+		|
+		t=<COT> <LPAREN> arg1=numericValueExpression() <RPAREN>
+		|
+		t=<SIN> <LPAREN> arg1=numericValueExpression() <RPAREN>
+		|
+		t=<TAN> <LPAREN> arg1=numericValueExpression() <RPAREN>
+	)
+	{
+		if( t != null ) {
+			ScalarExpressionType[] argArray = null ;
+			tfType = TrigonometricFunctionType.Factory.newInstance() ;
+			tfType.setName( TrigonometricFunctionNameType.Enum.forString( t.image.toUpperCase() ) ) ;
+			if( arg2 != null ) {
+				argArray = new ScalarExpressionType[2] ;
+				argArray[0] = arg1 ;
+				argArray[1] = arg2 ;
+			}
+			else {
+				argArray = new ScalarExpressionType[1] ;
+				argArray[0] = arg1 ;
+			}
+			tfType.setArgArray( argArray ) ;
+		}
+		return tfType ;
+	}
 }
 
 void uniquePredicate() : {}
