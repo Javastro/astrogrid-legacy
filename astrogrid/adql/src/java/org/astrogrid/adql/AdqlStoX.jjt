@@ -14,9 +14,12 @@ options {
 PARSER_BEGIN(AdqlStoX)
 package org.astrogrid.adql ;
 
+import java.util.* ;
 import org.astrogrid.adql.v1_0.beans.* ;
 
 public class AdqlStoX {
+	
+	private final static ScalarExpressionType DUMMY_ARG = ScalarExpressionType.Factory.newInstance() ;
 
 	public SelectDocument exec() {
 		SelectDocument selectDoc = null ;
@@ -372,9 +375,13 @@ ASTSelect topQuery() :
 
 //=================================
 
-void actualIdentifier() : {}
+String actualIdentifier() : 
 {
-	<REGULAR_IDENTIFIER> | <DELIMITED_IDENTIFIER>
+	Token t ;
+}
+{
+	( t=<REGULAR_IDENTIFIER> | t=<DELIMITED_IDENTIFIER> )
+	{ return t.image ;}
 }
 
 void approximateNumericLiteral() : {}
@@ -450,9 +457,13 @@ void collateClause() : {}
 	<COLLATE> qualifiedName()	
 }
 
-void columnName() : {}
+String columnName() : 
 {
-	identifier()
+	String name = null ;
+}
+{
+	name=identifier()
+	{ return name ; }
 }
 
 void columnNameList()  : {}
@@ -460,27 +471,48 @@ void columnNameList()  : {}
 	 columnName() ( <COMMA> columnName() )*	
 }
 
-void columnReference() : {}
+ColumnReferenceType columnReference() : 
 {
-	[ LOOKAHEAD(2) qualifier() <DOT> ] columnName() 	
+	ColumnReferenceType crType = null ;
+	String q = null ;
+	String n = null ;
+}
+{
+	( [ LOOKAHEAD(2) q=qualifier() <DOT> ] n=columnName() )
+	{ 
+		if( n != null ) {
+			crType = ColumnReferenceType.Factory.newInstance() ;
+			crType.setName( n ) ;
+			if( q != null ) {
+				crType.setTable( q ) ;	
+			}
+		}		
+		return crType ; 	
+	}
 }
 
-void commonPrimary() : {}
+ScalarExpressionType commonPrimary() : 
 {
-	// Foreshortened
-	unsignedValueSpecification()
-	|
-	columnReference()
-	|
-	setFunctionSpecification()
-	|
-	LOOKAHEAD(3)
-	scalarSubquery()
-	|
-// JBL: case ommitted in initial version...
-//	caseExpression()//	|
-	( <LPAREN> valueExpression() <RPAREN> )
-// JBL: cast ommitted in initial version//	|//	castSpecification()
+	ScalarExpressionType seType = null ;
+}
+{
+	(
+		// Foreshortened 
+		unsignedValueSpecification()
+		|
+		seType=columnReference()
+		|
+		setFunctionSpecification()
+		|
+		LOOKAHEAD(3)
+		scalarSubquery()
+		|
+	// JBL: case ommitted in initial version...
+	//	caseExpression()	//	|
+		( <LPAREN> valueExpression() <RPAREN> )
+	// JBL: cast ommitted in initial version	//	|	//	castSpecification()
+	)
+	{ return seType ; }
 }
 
 void comparisonOperator() : {}
@@ -555,7 +587,8 @@ void escapeCharacter() : {}
 
 void exactNumericLiteral() : {}
 { 
-	( <UNSIGNED_INTEGER> [ "." [ <UNSIGNED_INTEGER> ] ] ) 
+	LOOKAHEAD(3) 
+	( <UNSIGNED_INTEGER> [ <DOT> [ <UNSIGNED_INTEGER> ] ] ) 
 	| 
 	( <DOT> <UNSIGNED_INTEGER> )
 }
@@ -570,9 +603,41 @@ void explicitTable() : {}
 	<TABLE> tableName()
 }
 
-void factor() : {}
+ScalarExpressionType factor() : 
 {
-	[ <PLUS> | <MINUS> ] numericPrimary()	
+	ScalarExpressionType retType = null ;
+	ScalarExpressionType seType = null ;
+	UnaryExprType ueType = null ;
+}
+{
+	// ( [ <PLUS> | <MINUS> ] numericPrimary() )
+	( ueType=factor_Unary() seType=numericPrimary() )
+	{ 
+	   if( ueType != null ) {
+	   	  ueType.setArg( seType ) ;
+	   	  retType = ueType ;
+	   }
+	   else {
+	   	  retType = seType ;
+	   }
+	   return retType ;
+	}
+}
+
+UnaryExprType factor_Unary() : 
+{
+	UnaryExprType ueType = null ;
+	Token t = null ;
+}
+{
+	( [ t=<PLUS> | t=<MINUS> ] )
+	{ 
+	   if( t != null ) {
+	   		ueType = UnaryExprType.Factory.newInstance() ;
+	   		ueType.setOper( UnaryOperatorType.Enum.forString( t.image ) ) ;	   	
+	   }
+	   return ueType ;
+	}
 }
 
 void fromClause() #From : {}
@@ -611,10 +676,12 @@ void havingClause() #Having : {}
 	<HAVING> searchCondition()
 }
 
-void identifier() : {}
+String identifier() : 
+{ String retValue ;}
 {
-//	Foreshortened
-	actualIdentifier()
+	// Foreshortened
+	retValue=actualIdentifier()
+	{ return retValue ; }
 } 
 
 void inPredicate() : {}
@@ -752,24 +819,108 @@ void nullPredicate() : {}
 	rowValueConstructor() <IS> [ <NOT> ] <NULL>	
 }
 
-void numericPrimary() : {}
+ScalarExpressionType numericPrimary() : 
 {
-	numericValueFunction()	
-	|	commonPrimary()
+	ScalarExpressionType seType = null ;
+}
+{
+	( 
+	  numericValueFunction()	
+	  |	  commonPrimary()
+	)
+	{ return seType ; } 
+	
 }
 
-void numericValueExpression() : {}
+ScalarExpressionType numericValueExpression() : 
+{
+	ScalarExpressionType seType = null ;
+	ScalarExpressionType[] exprPairs = null ;
+}
 {
 	// refactored
-	term() ( LOOKAHEAD(2) ( <PLUS> | <MINUS> ) numericValueExpression() )*
+	// term() ( LOOKAHEAD(2) ( <PLUS> | <MINUS> ) numericValueExpression() )*
+	seType=term() exprPairs=numericValueExpression_List()
+	{ 
+		if( exprPairs == null ) {
+		   return seType ; 
+		}
+		else {
+		   ScalarExpressionType[] args = new ScalarExpressionType[2] ;
+		   args[0] = seType ;
+		   args[1] = exprPairs[1] ;
+		   BinaryExprType beType = (BinaryExprType)exprPairs[0] ;
+		   beType.setArgArray( args ) ;
+		   return beType ;
+		}	
+	}
 }
 
-void numericValueFunction() : {}
+ScalarExpressionType[] numericValueExpression_List() : 
 {
-	// JBL ADQL adaptation
-	trigFunctions()
-	|
-	mathFunctions()	
+	ArrayList list = null ;
+	ScalarExpressionType[] exprPairs1 = null ;
+	ScalarExpressionType[] exprPairs2 = null ;
+	ScalarExpressionType[] retExprPairs = null ;
+	Token t = null ;	
+}
+{
+	( LOOKAHEAD(3) exprPairs1=numericValueExpression_Singleton() 
+	  { if( list == null )
+	  	   list = new ArrayList() ;
+	  	list.add( exprPairs1 ) ;
+	  } 
+	)*
+	{ 
+		if( list != null ) {
+			ListIterator iterator = list.listIterator() ;
+			retExprPairs = exprPairs1 = (ScalarExpressionType[])iterator.next() ;
+			ScalarExpressionType[] args = new ScalarExpressionType[2] ;
+			BinaryExprType beType = null ;
+			while( iterator.hasNext() ) {
+				exprPairs2 = (ScalarExpressionType[])iterator.next() ;
+				args[0] = exprPairs1[1] ;
+				args[1] = exprPairs2[1] ;
+				beType = (BinaryExprType)exprPairs2[0] ;
+				beType.setArgArray( args ) ;
+				exprPairs1 = exprPairs2 ;
+			}
+		}		
+		return retExprPairs ;
+	}
+}
+
+ScalarExpressionType[] numericValueExpression_Singleton() :
+{
+	ScalarExpressionType[] retPairs = null ;
+	BinaryExprType beType = null ;
+	ScalarExpressionType seType = null ;
+	Token t = null ; 
+}
+{
+	( t=<PLUS> | t=<MINUS> ) seType=numericValueExpression()	
+	{
+		if( t != null ) {
+			retPairs = new ScalarExpressionType[2] ;					beType = BinaryExprType.Factory.newInstance() ;			beType.setOper( BinaryOperatorType.Enum.forString( t.image ) ) ;
+			retPairs[0] = beType ;
+			retPairs[1] = seType ;
+		}
+		return retPairs ;
+	}
+}
+
+ScalarExpressionType numericValueFunction() : 
+{
+	ScalarExpressionType seType = null ;
+}
+{
+	(
+		// JBL ADQL adaptation
+		trigFunctions()
+		|
+		mathFunctions()	
+	)
+	{ return seType ; }
 }
 
 void orderBy() #OrderBy : {} 
@@ -807,18 +958,26 @@ void predicate() : {}
 
 void qualifiedJoin() : {} 
 {
-	tableReferenceBarJoinedTable() [ <NATURAL> ] joinType() <JOIN> tableReference() [ joinSpecification() ]
+	tableReferenceBarJoinedTable() [ <NATURAL> ] joinType() <JOIN> tableReference() [ LOOKAHEAD(3) joinSpecification() ]
 }
 
-void qualifiedName() : {}
+String qualifiedName() : 
 {
-	identifier()	
+	String retValue ;
+} 
+{
+	retValue = identifier()
+	{ return retValue ; }	
 }
 
-void qualifier() : {}
+String qualifier() : 
+{	
+	String retValue ;
+}
 {
 	// Foreshortened
-	tableName()
+	retValue=tableName()
+	{ return retValue ; }
 }
 
 ASTSelect querySpecification() #Select : {}
@@ -870,15 +1029,44 @@ void searchCondition() : {}
 
 void selectList() # SelectionList : {}
 {
-	<STAR> | ( selectSublist() ( <COMMA> selectSublist() )* )
+	allSelectionItem( jjtThis.itemList ) | ( selectSublist( jjtThis.itemList ) ( <COMMA> selectSublist( jjtThis.itemList ) )* )
 }
 
-void selectSublist() : {}
+void allSelectionItem( ArrayList itemList ) : {}
+{
+	<STAR>
+	{ itemList.add( AllSelectionItemType.Factory.newInstance() ) ; }
+}
+
+void selectSublist( ArrayList itemList ) # SelectionItem : 
+{ 
+	SelectionItemType siType = null ;
+}
 {   
 	LOOKAHEAD(3)
-	( qualifier() <DOT> <STAR> ) 
+	selectSublist_Qualifier() 
 	|
-	( valueExpression() [ [<AS>] columnName() ] )		
+	siType=selectSublist_ValueExpression()
+	{ itemList.add( siType ) ; }		
+}
+
+String selectSublist_Qualifier() : 
+{
+	String retValue ;
+}
+{
+	// NOTE. someTable.* is not currently within the adql/x schema!
+	retValue=qualifier() <DOT> <STAR> 
+	{ return retValue + ".*" ;}
+}
+
+SelectionItemType selectSublist_ValueExpression() : 
+{
+	SelectionItemType siType = null ;
+}
+{
+	( siType=valueExpression() [ [<AS>] columnName() ] )	
+	{ return siType ; }	
 }
 
 void setFunctionSpecification() : {}
@@ -889,14 +1077,29 @@ void setFunctionSpecification() : {}
 	generalSetFunction()
 }
 
-void setLimit() #Restrict : {}
+void setLimit() #Restrict : 
+{ 
+	Token t ;
+}
 {
-	<TOP> <LPAREN> <UNSIGNED_INTEGER> <RPAREN>
+	<TOP> <LPAREN> t=<UNSIGNED_INTEGER> <RPAREN>
+	{ jjtThis.setValue( ( new Integer( t.image )).intValue()) ;}
 }
 
-void setQuantifier() #Allow : {}
+void setQuantifier() #Allow : 
 {
-	<ALL> | <DISTINCT>
+	Token t ;
+}
+{
+	t=<ALL> | t=<DISTINCT>
+	{ 	
+		if( t.kind == AdqlStoXConstants.ALL ) {
+			jjtThis.setValue( AllOrDistinctType.ALL ) ;
+		}
+		else {
+			jjtThis.setValue( AllOrDistinctType.DISTINCT ) ;
+		}
+	}
 }
 
 void singleDateTimeField() : {}
@@ -1018,10 +1221,14 @@ void tableExpression() : {}
 	fromClause() [ whereClause() ] [ groupByClause() ] [ havingClause() ] [ orderBy() ]	
 }
 
-void tableName() : {}
+String tableName() : 
+{
+	String retValue = null ;
+}
 {
 	// Forshortened
-	qualifiedName()
+	retValue=qualifiedName()
+	{ return retValue ; }
 }
 
 void tableReference() : {} 
@@ -1062,11 +1269,89 @@ void tableValueConstructorList() : {}
 	rowValueConstructor() ( <COMMA> rowValueConstructor() )*	
 }
 
-void term() : {}
+//ScalarExpressionType term() : //{//	ScalarExpressionType seType = null ;//}//{//	// refactored//	// factor() ( LOOKAHEAD(2) (<STAR> | <DIVIDE> ) term() )*//	factor() term_List() //	{ return seType ; }//}
+
+ScalarExpressionType term() : 
+{
+	ScalarExpressionType seType = null ;
+	ScalarExpressionType[] exprPairs = null ;
+}
 {
 	// refactored
-	factor() ( LOOKAHEAD(2) (<STAR> | <DIVIDE> ) term() )*
+	// factor() ( LOOKAHEAD(2) (<STAR> | <DIVIDE> ) term() )*
+	seType=factor() exprPairs=term_List()
+	{ 
+		if( exprPairs == null ) {
+		   return seType ; 
+		}
+		else {
+		   ScalarExpressionType[] args = new ScalarExpressionType[2] ;
+		   args[0] = seType ;
+		   args[1] = exprPairs[1] ;
+		   BinaryExprType beType = (BinaryExprType)exprPairs[0] ;
+		   beType.setArgArray( args ) ;
+		   return beType ;
+		}	
+	}
 }
+
+ScalarExpressionType[] term_List() : 
+{
+	ArrayList list = null ;
+	ScalarExpressionType[] exprPairs1 = null ;
+	ScalarExpressionType[] exprPairs2 = null ;
+	ScalarExpressionType[] retExprPairs = null ;
+	Token t = null ;	
+}
+{
+	( LOOKAHEAD(3) exprPairs1=term_Singleton() 
+	  { if( list == null )
+	  	   list = new ArrayList() ;
+	  	list.add( exprPairs1 ) ;
+	  } 
+	)*
+	{ 
+		if( list != null ) {
+			ListIterator iterator = list.listIterator() ;
+			retExprPairs = exprPairs1 = (ScalarExpressionType[])iterator.next() ;
+			ScalarExpressionType[] args = new ScalarExpressionType[2] ;
+			BinaryExprType beType = null ;
+			while( iterator.hasNext() ) {
+				exprPairs2 = (ScalarExpressionType[])iterator.next() ;
+				args[0] = exprPairs1[1] ;
+				args[1] = exprPairs2[1] ;
+				beType = (BinaryExprType)exprPairs2[0] ;
+				beType.setArgArray( args ) ;
+				exprPairs1 = exprPairs2 ;
+			}
+		}		
+		return retExprPairs ;
+	}
+}
+
+ScalarExpressionType[] term_Singleton() :
+{
+	ScalarExpressionType[] retPairs = null ;
+	BinaryExprType beType = null ;
+	ScalarExpressionType seType = null ;
+	Token t = null ; 
+}
+{
+	( t=<STAR> | t=<DIVIDE> ) seType=term()	
+	{
+		if( t != null ) {
+			retPairs = new ScalarExpressionType[2] ;		
+			beType = BinaryExprType.Factory.newInstance() ;
+			beType.setOper( BinaryOperatorType.Enum.forString( t.image ) ) ;
+			retPairs[0] = beType ;
+			retPairs[1] = seType ;
+		}
+		return retPairs ;
+	}
+}
+
+
+
 
 void timeFractionalSecondsPrecision() : {}
 {
@@ -1138,10 +1423,14 @@ void unsignedValueSpecification() : {}
 	generalValueSpecification()
 }
 
-void valueExpression() : {} 
+ScalarExpressionType valueExpression() : 
 {
+	ScalarExpressionType retValue = null ;
+} 
+{
+	(
 	LOOKAHEAD(3) 
-	numericValueExpression() 
+	retValue=numericValueExpression() 
 	|
 	LOOKAHEAD(3) 	
 	stringValueExpression() 
@@ -1150,6 +1439,8 @@ void valueExpression() : {}
 	dateTimeValueExpression() 
 	|
 	intervalValueExpression()
+	)
+	{ return retValue ; }
 	
 }
 
