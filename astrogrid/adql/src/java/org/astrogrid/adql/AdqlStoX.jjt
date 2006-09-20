@@ -826,33 +826,74 @@ void inValueList() : {}
     valueExpression() ( <COMMA> valueExpression() )*		
 }
 
-void joinSpecification() : {}
+ComparisonPredType joinSpecification() : 
 {
-	// refactored
-	<ON> searchCondition()
-    |
-    <USING> <LPAREN> columnNameList() <RPAREN>
+	ComparisonPredType cpType = null ;
+}
+{
+	(
+		// refactored
+		<ON> searchCondition()
+// foreshortened. columnNameList not supported in adql
+//	    |//	    <USING> <LPAREN> columnNameList() <RPAREN>
+    )
+    { return cpType ; }
 }
 
-void joinedTable() : {}
+JoinTableType joinedTable() : 
 {
-	LOOKAHEAD(3)
-	crossJoin()
-	|
-	LOOKAHEAD(3)
-	qualifiedJoin()
-	|
-	<LPAREN> joinedTable() <RPAREN>
+	JoinTableType jtType = null ;
+	Token t = null ;
+}
+{
+	(
+		LOOKAHEAD(3)
+		jtType=crossJoin()
+		|
+		LOOKAHEAD(3)
+		jtType=qualifiedJoin()
+		|
+		( t=<LPAREN> jtType=joinedTable() <RPAREN> )
+	)
+	{ return jtType ; }
 }
 
-void joinType() : {}
+JointTableQualifierType joinType() : 
 {
-	// refactored
-	<INNER>
-    | 
-    ( <LEFT> | <RIGHT> | <FULL> ) [ <OUTER> ] 
-    | 
-    <UNION>
+	JointTableQualifierType jType = null ;
+	Token t1 = null ;
+	Token t2 = null ;
+}
+{
+	(
+		// refactored
+		t1=<INNER>
+	    | 
+	    ( t1=<LEFT> | t1=<RIGHT> | t1=<FULL> ) [ t2=<OUTER> ] 
+// JL. Adql does not appear to support UNION
+//	    | //	    t1=<UNION>
+    )
+    {
+    	if( t1 != null ) {
+    		jType = JointTableQualifierType.Factory.newInstance() ;
+    		 switch ( t1.kind ) {
+    			case AdqlStoXConstants.INNER :
+      				jType.set( JointTableQualifierType.INNER );
+      				break;
+      			case AdqlStoXConstants.LEFT :
+      				jType.set( JointTableQualifierType.LEFT_OUTER );
+      				break;
+      			case AdqlStoXConstants.RIGHT :
+      				jType.set( JointTableQualifierType.RIGHT_OUTER );
+      				break;
+      			case AdqlStoXConstants.FULL :
+      				jType.set( JointTableQualifierType.FULL_OUTER );
+      				break;
+//      			case AdqlStoXConstants.UNION ://      				jType.set( JointTableQualifierType.??? );//      				break;
+    		}   		
+    	}
+    	return jType ;
+    }
 }
 
 
@@ -1069,9 +1110,39 @@ void predicate() : {}
     LOOKAHEAD(3)    matchPredicate()    |     overlapsPredicate()
 }
 
-void qualifiedJoin() : {} 
+JoinTableType qualifiedJoin() : 
 {
-	tableReferenceBarJoinedTable() [ <NATURAL> ] joinType() <JOIN> tableReference() [ LOOKAHEAD(3) joinSpecification() ]
+	JoinTableType jtType = null ;
+	FromTableType fType1 = null ;
+	FromTableType fType2 = null ;
+	JointTableQualifierType jtqType = null ;
+	ComparisonPredType cpType = null ;
+}
+{
+	(
+		fType1=tableReferenceBarJoinedTable() 
+		[ <NATURAL> ] 
+		jtqType=joinType() 
+		<JOIN> 
+		fType2=tableReference() 
+		[ LOOKAHEAD(3) cpType=joinSpecification() ]
+	)
+	{
+	   if( fType2 != null ) {
+	      jtType = JoinTableType.Factory.newInstance() ;
+	      FromTableType[] fttArray = new FromTableType[2] ;
+	      fttArray[0] = fType1 ;
+	      fttArray[1] = fType2 ;
+	      ArrayOfFromTableType tableArray = ArrayOfFromTableType.Factory.newInstance() ;
+	      tableArray.setFromTableTypeArray( fttArray ) ;
+	      jtType.setTables( tableArray ) ;
+	      jtType.xsetQualifier( jtqType ) ;
+	      if( cpType != null ) {
+	      		jtType.setCondition( cpType ) ;
+	      }
+	   }
+	   return jtType ;	
+	}
 }
 
 String qualifiedName() : 
@@ -1306,9 +1377,27 @@ void correspondingColumnList() : {}
 	columnNameList()	
 }
 
-void crossJoin() : {}
+JoinTableType crossJoin() : 
 {
-	tableReferenceBarJoinedTable() <CROSS_JOIN> tableReference()	
+	JoinTableType jtType = null ;
+	FromTableType fType1 = null ;
+	FromTableType fType2 = null ;
+}
+{
+	( fType1=tableReferenceBarJoinedTable() <CROSS_JOIN> fType2=tableReference() )
+	{
+	   if( fType2 != null ) {
+	      jtType = JoinTableType.Factory.newInstance() ;
+	      jtType.setQualifier( JointTableQualifierType.CROSS ) ;
+	      FromTableType[] fttArray = new FromTableType[2] ;
+	      fttArray[0] = fType1 ;
+	      fttArray[1] = fType2 ;
+	      ArrayOfFromTableType tableArray = ArrayOfFromTableType.Factory.newInstance() ;
+	      tableArray.setFromTableTypeArray( fttArray ) ;
+	      jtType.setTables( tableArray ) ;
+	   }
+	   return jtType ;	
+	}
 }
 
 
@@ -1385,7 +1474,7 @@ FromTableType tableReference() :
 		// derivedTable not supported in adql
 //		LOOKAHEAD(4)//	    derivedTable() [ <AS> ] correlationName()//	    |	
 		LOOKAHEAD(4)
-	    joinedTable()
+	    ftType=joinedTable()
 	    |
 		( tName=tableName() [ [ <AS> ] cName=correlationName() ] )
 		{
@@ -1402,12 +1491,24 @@ FromTableType tableReference() :
 }
 
 // Adaptation of tableReference()
-void tableReferenceBarJoinedTable() : {}
+FromTableType tableReferenceBarJoinedTable() : 
 {
-	LOOKAHEAD(4)
-	derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]	
-	|
-	tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]
+	FromTableType ftType = null ;
+	String tName = null ;
+	String cName = null ;
+}
+{
+	( tName=tableName() [ [ <AS> ] cName=correlationName() ] )
+	{
+		if( tName != null ) {	
+			TableType tableType = TableType.Factory.newInstance() ;
+			tableType.setName( tName ) ;
+			if( cName != null )
+				tableType.setAlias( cName ) ;
+			ftType = tableType ;
+		}
+	}
+	{ return ftType ; }
 }
 
 void tableSubQuery() : {}
