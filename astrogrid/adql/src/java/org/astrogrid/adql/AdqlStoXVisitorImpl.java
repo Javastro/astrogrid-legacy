@@ -35,6 +35,8 @@ public class AdqlStoXVisitorImpl implements AdqlStoXVisitor {
 		SelectType selectType = (SelectType)data ;
 		FromType fromType = selectType.addNewFrom() ;
 		node.childrenAccept( this, fromType ) ;
+		FromTableType[] tableRefArray = new FromTableType[ node.tableRefList.size() ] ;
+		fromType.setTableArray( (FromTableType[])node.tableRefList.toArray(tableRefArray) ) ;
 		return fromType ;
 	}
 
@@ -84,6 +86,9 @@ public class AdqlStoXVisitorImpl implements AdqlStoXVisitor {
 	public Object visit(ASTSelectionList node, Object data) {
 		SelectType selectType = (SelectType)data ;
 		SelectionListType selectionList = selectType.addNewSelectionList() ;
+		node.childrenAccept( this, selectionList ) ;
+		SelectionItemType[] itemArray = new SelectionItemType[ node.itemList.size() ] ;	
+		selectionList.setItemArray( (SelectionItemType[])node.itemList.toArray(itemArray) ) ;
 		return selectionList ;
 	}
 
@@ -93,7 +98,7 @@ public class AdqlStoXVisitorImpl implements AdqlStoXVisitor {
 	public Object visit(ASTRestrict node, Object data) {
 		SelectType selectType = (SelectType)data ;
 		SelectionLimitType selectionLimit = selectType.addNewRestrict() ;
-	
+		selectionLimit.setTop( node.getValue() ) ;
 		return selectionLimit ;
 	}
 
@@ -103,6 +108,7 @@ public class AdqlStoXVisitorImpl implements AdqlStoXVisitor {
 	public Object visit(ASTAllow node, Object data) {
 		SelectType selectType = (SelectType)data ;
 		SelectionOptionType selectionOption = selectType.addNewAllow() ;
+		selectionOption.setOption( node.getValue() ) ;
 		return selectionOption ;
 	}
 

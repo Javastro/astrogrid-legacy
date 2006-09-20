@@ -262,7 +262,7 @@ TOKEN :
 |	< TRAN: "tran" >
 |	< TRANSACTION: "transaction" >
 |	< TRIGGER: "trigger" >
-|	< TRUTH_VALUE : "true" | "false" | "unknown" >
+|	< TRUTH_VALUE : "true" | "falsed" | "unknown" >
 |	< TSEQUAL: "tsequal" >
 |	< UNION: "union" >
 |	< UNIQUE: "unique" >
@@ -384,6 +384,8 @@ String actualIdentifier() :
 	{ return t.image ;}
 }
 
+
+// JL. The adql/x schema does not have such a beast!
 void approximateNumericLiteral() : {}
 {
 	mantissa() <EXPONENT>
@@ -433,22 +435,34 @@ void castSpecification() : {}
 	"6-TBD castSpecification"
 }
 
-void characterFactor() : {}
+ScalarExpressionType characterFactor() : 
+{
+	ScalarExpressionType seType = null ;
+}
 {
 	// Foreshortened
-	characterPrimary()
+	seType=characterPrimary()
+	{ return seType ; }
 }
 
-void characterPrimary() : {}
+ScalarExpressionType characterPrimary() : 
+{
+	ScalarExpressionType seType = null ;
+}
 {
 	// Foreshortened
-	commonPrimary()
+	seType=commonPrimary()
+	{ return seType ; }
 }
 
-void characterValueExpression() : {}
+ScalarExpressionType characterValueExpression() : 
+{
+	ScalarExpressionType seType = null ;
+}
 {
 	// Foreshortened
-	characterFactor()	
+	seType=characterFactor()
+	{ return seType ; }	
 }
 
 void collateClause() : {}
@@ -494,22 +508,30 @@ ColumnReferenceType columnReference() :
 ScalarExpressionType commonPrimary() : 
 {
 	ScalarExpressionType seType = null ;
+	Token t = null ;
 }
 {
 	(
 		// Foreshortened 
-		unsignedValueSpecification()
+		seType=unsignedValueSpecification()
 		|
 		seType=columnReference()
 		|
-		setFunctionSpecification()
+		seType=setFunctionSpecification()
 		|
-		LOOKAHEAD(3)
-		scalarSubquery()
-		|
+	// JBL: no structure available for holding subqueries at this level in adql
+	//		LOOKAHEAD(3)	//		scalarSubquery()
+	//	|
 	// JBL: case ommitted in initial version...
 	//	caseExpression()	//	|
-		( <LPAREN> valueExpression() <RPAREN> )
+		( <LPAREN> seType=valueExpression() <RPAREN> ) 
+		{
+			if( seType != null ) {
+				ClosedExprType ceType = ClosedExprType.Factory.newInstance() ;
+				ceType.setArg( seType ) ;	
+				seType = ceType ;			
+			}
+		}
 	// JBL: cast ommitted in initial version	//	|	//	castSpecification()
 	)
 	{ return seType ; }
@@ -525,9 +547,13 @@ void comparisonPredicate() : {}
 	rowValueConstructor() comparisonOperator() rowValueConstructor()
 }
 
-void correlationName() : {}
+String correlationName() : 
 {
-	identifier()
+	String name = null ;
+}
+{
+	name=identifier()
+	{ return name ; }
 }
 
 void dateTimeFactor() : {}
@@ -585,12 +611,40 @@ void escapeCharacter() : {}
 	characterValueExpression()	
 }
 
-void exactNumericLiteral() : {}
+AtomType exactNumericLiteral() : 
+{
+	AtomType atomType = null ;
+	Token t1 = null ;
+	Token t2 = null ;
+}
 { 
-	LOOKAHEAD(3) 
-	( <UNSIGNED_INTEGER> [ <DOT> [ <UNSIGNED_INTEGER> ] ] ) 
-	| 
-	( <DOT> <UNSIGNED_INTEGER> )
+	(
+		LOOKAHEAD(3) 
+		( t1=<UNSIGNED_INTEGER> [ <DOT> [ t2=<UNSIGNED_INTEGER> ] ] ) 
+		| 
+		( <DOT> t2=<UNSIGNED_INTEGER> )
+	)
+	{ 
+		if( t1 != null || t2 != null ) {
+			atomType = AtomType.Factory.newInstance() ;	
+		}
+		if( t1 != null && t2 == null ) {
+			IntegerType intType = IntegerType.Factory.newInstance() ;
+			intType.setValue( new Long( t1.image ).longValue() ) ;
+			atomType.setLiteral( intType ) ;
+		}
+		else if( t1 != null && t2 != null ) {
+			RealType realType = RealType.Factory.newInstance() ;
+			realType.setValue( new Double( t1.image + '.' + t2.image ).doubleValue() ) ;
+			atomType.setLiteral( realType ) ;
+		}		
+		else if( t2 != null ) {
+			RealType realType = RealType.Factory.newInstance() ;
+			realType.setValue( new Double( '.' + t2.image ).doubleValue() ) ;
+			atomType.setLiteral( realType ) ;
+		}
+		return atomType ;
+	}
 }
 
 void existsPredicate() : {}
@@ -640,20 +694,47 @@ UnaryExprType factor_Unary() :
 	}
 }
 
-void fromClause() #From : {}
+void fromClause() #From : 
 {
-	<FROM> tableReference() ( <COMMA> tableReference() )*
+	FromTableType ftType = null ;
+}
+{
+	( 
+		<FROM> ftType=tableReference() { jjtThis.tableRefList.add( ftType ) ; } 
+		( <COMMA> ftType=tableReference() { jjtThis.tableRefList.add( ftType ) ; } )* 
+	)
+	
 }
 
-void generalSetFunction() : {}
+AggregateFunctionType generalSetFunction() : 
 {
-	( <AVG> | <MAX> | <MIN> | <SUM> | <COUNT> ) <LPAREN> [ setQuantifier() ] valueExpression() <RPAREN>	
+	AggregateFunctionType afType = null ;
+	ScalarExpressionType seType = null ;
+	Token t = null ;
+}
+{
+	// JL. setQuantifier removed for the moment. Need to talk to Kona about this.
+	// ( t=<AVG> | t=<MAX> | t=<MIN> | t=<SUM> | t=<COUNT> ) <LPAREN> [ setQuantifier() ] seType=valueExpression() <RPAREN>	
+	( t=<AVG> | t=<MAX> | t=<MIN> | t=<SUM> | t=<COUNT> ) <LPAREN> seType=valueExpression() <RPAREN>
+	{ 
+		if( t != null ) {
+			afType = AggregateFunctionType.Factory.newInstance() ;
+			afType.setName( AggregateFunctionNameType.Enum.forString( t.image.toUpperCase() ) ) ;
+			SelectionItemType[] argArray = new SelectionItemType[1] ;
+			argArray[0] = seType ;
+			afType.setArgArray( argArray ) ;
+		}
+		return afType ; }	
 }
 
-void generalValueSpecification() : {}
+ScalarExpressionType generalValueSpecification() : 
+{
+	ScalarExpressionType seType = null ;
+}
 {
 	// Foreshortened
-	variableSpecification()	
+	seType=variableSpecification()
+	{ return seType ; }	
 }
 
 void groupByClause() #GroupBy : {}
@@ -1070,7 +1151,7 @@ void allSelectionItem( ArrayList itemList ) : {}
 	{ itemList.add( AllSelectionItemType.Factory.newInstance() ) ; }
 }
 
-void selectSublist( ArrayList itemList ) # SelectionItem : 
+void selectSublist( ArrayList itemList ) : 
 { 
 	SelectionItemType siType = null ;
 }
@@ -1101,12 +1182,31 @@ SelectionItemType selectSublist_ValueExpression() :
 	{ return siType ; }	
 }
 
-void setFunctionSpecification() : {}
+AggregateFunctionType setFunctionSpecification() : 
 {
-	LOOKAHEAD(3)
-	( <COUNT> <LPAREN> <STAR> <RPAREN> ) 
-	|
-	generalSetFunction()
+	AggregateFunctionType afType = null ;
+	Token t = null ;
+}
+{
+	(
+		LOOKAHEAD(3)
+		( t=<COUNT> <LPAREN> <STAR> <RPAREN> ) 
+		|
+		afType=generalSetFunction()
+	)
+	{ 
+		if( t != null ) {
+			afType = AggregateFunctionType.Factory.newInstance() ;
+			afType.setName( AggregateFunctionNameType.COUNT ) ;
+			SelectionItemType[] argArray = new SelectionItemType[1] ;
+			AtomType atomType = AtomType.Factory.newInstance() ;
+			StringType star = StringType.Factory.newInstance() ;
+			star.setValue( "*" ) ;
+			atomType.setLiteral( star ) ;
+			argArray[0] = atomType ;
+			afType.setArgArray( argArray ) ;
+		}
+		return afType ; }
 }
 
 void setLimit() #Restrict : 
@@ -1146,10 +1246,14 @@ void startField() : {}
     <NON_SECOND_DATETIME_FIELD> [ <LPAREN> intervalLeadingFieldPrecision() <RPAREN> ]
 }
 
-void stringValueExpression() : {}
+ScalarExpressionType stringValueExpression() :
+{
+	ScalarExpressionType seType = null ;
+}
 {
 	// Foreshortened
-	characterValueExpression()
+	seType=characterValueExpression()
+	{ return seType ; }
 }
 
 void subQuery() : {}
@@ -1263,18 +1367,38 @@ String tableName() :
 	{ return retValue ; }
 }
 
-void tableReference() : {} 
+FromTableType tableReference() : 
 {
-	// refactored... 
-	// 1. derivedTable() moved to first choice point
-	// 2. joinedTable() moved to second choice point
-    LOOKAHEAD(4)
-    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]
-    |	
-	LOOKAHEAD(4)
-    joinedTable()
-    |
-	tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]    
+	FromTableType ftType = null ;
+	String tName = null ;
+	String cName = null ;
+} 
+{
+	(
+		// refactored... 
+		// 1. derivedTable() moved to first choice point
+		// 2. joinedTable() moved to second choice point
+//	    LOOKAHEAD(4)//	    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]//	    |	//		LOOKAHEAD(4)//	    joinedTable()//	    |//		tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]    
+
+		// Foreshortened. 
+		// derivedColumnList not supported in adql
+		// derivedTable not supported in adql
+//		LOOKAHEAD(4)//	    derivedTable() [ <AS> ] correlationName()//	    |	
+		LOOKAHEAD(4)
+	    joinedTable()
+	    |
+		( tName=tableName() [ [ <AS> ] cName=correlationName() ] )
+		{
+			if( tName != null ) {	
+				TableType tableType = TableType.Factory.newInstance() ;
+				tableType.setName( tName ) ;
+				if( cName != null )
+					tableType.setAlias( cName ) ;
+				ftType = tableType ;
+			}
+		} 
+	)
+	{ return ftType ; } 
 }
 
 // Adaptation of tableReference()
@@ -1456,27 +1580,45 @@ void uniquePredicate() : {}
 	<UNIQUE> tableSubQuery()	
 }
 
-void unsignedLiteral() : {}
+AtomType unsignedLiteral() : 
 {
-	// foreshortened
-    unsignedNumericLiteral()
-//    | //    generalLiteral()
+	AtomType atomType = null ;
+}
+{
+	(
+		// foreshortened
+	    atomType=unsignedNumericLiteral()
+		// | 		// generalLiteral()
+	)
+	{ return atomType ; }
 }
 
-void unsignedNumericLiteral() : {}
+AtomType unsignedNumericLiteral() : 
 {
-	LOOKAHEAD(3)
-	exactNumericLiteral()
-    | 
-    approximateNumericLiteral()
+	AtomType atomType = null ;
+}
+{
+	(
+// JL. Note the adql/x schema does not possess an approximateNumericLiteral
+//		LOOKAHEAD(3)//		exactNumericLiteral()//	    | //	    approximateNumericLiteral()
+
+		atomType=exactNumericLiteral()
+    )
+    { return atomType ; }
 }
 
 
-void unsignedValueSpecification() : {}
+ScalarExpressionType unsignedValueSpecification() : 
 {
-	unsignedLiteral()
-	|
-	generalValueSpecification()
+	ScalarExpressionType seType = null ;
+}
+{
+	(
+		seType=unsignedLiteral()
+		|
+		generalValueSpecification()
+	)
+	{ return seType ;  }
 }
 
 ScalarExpressionType valueExpression() : 
@@ -1489,21 +1631,24 @@ ScalarExpressionType valueExpression() :
 	retValue=numericValueExpression() 
 	|
 	LOOKAHEAD(3) 	
-	stringValueExpression() 
-	|
-	LOOKAHEAD(3) 
-	dateTimeValueExpression() 
-	|
-	intervalValueExpression()
+	retValue=stringValueExpression() 
+	// JL. foreshortened. At present there seems no accommodation for
+	// datetime and interval expressions in adql
+//	|//	LOOKAHEAD(3) //	dateTimeValueExpression() //	|//	intervalValueExpression()
 	)
 	{ return retValue ; }
 	
 }
 
-void variableSpecification() : {}
+ScalarExpressionType variableSpecification() : 
+{
+	ScalarExpressionType seType = null ;
+}
 {
 	// JBL ADQL adaptation to accommodate scripting variables.
+	// Details still to be worked out.
 	<DOLLAR> <LBRACE> <REGULAR_IDENTIFIER> <RBRACE>
+	{ return seType ; }
 }
 
 void whereClause() #Where : {}
