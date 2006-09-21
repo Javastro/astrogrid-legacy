@@ -396,23 +396,139 @@ void betweenPredicate() : {}
 	rowValueConstructor() [ <NOT> ] <BETWEEN> rowValueConstructor() <AND> rowValueConstructor()	
 }
 
-void booleanPrimary() : {} 
+SearchType booleanPrimary() : 
 {
-	LOOKAHEAD(3)
-	predicate()
-    | 
-    <LPAREN> searchCondition() <RPAREN>
+	SearchType st = null ;
+	Token t = null ;
+} 
+{
+	(
+		LOOKAHEAD(3)
+		st=predicate()
+	    | 
+	    <LPAREN> st=searchCondition() t=<RPAREN>
+    )
+    {
+    	if( t != null ) {
+    		ClosedSearchType cs = ClosedSearchType.Factory.newInstance() ;
+    		cs.setCondition( st ) ;
+    		return cs ;	
+    	}
+    	return st ;
+    }
 }
 
-void booleanTerm() : {}
+SearchType booleanTerm() : 
+{
+	SearchType st=null ;
+	SearchType[] stPair = null ;
+}
 {
 	// refactored
-	[ <NOT> ] booleanTest() ( <AND> [ <NOT> ] booleanTest() )*
+	// [ <NOT> ] booleanTest() ( <AND> [ <NOT> ] booleanTest() )*
+	st=booleanTest_WithNot() stPair=booleanTest_List()
+	{
+		if( stPair == null ) {
+		   return st ; 
+		}
+		else {
+		   SearchType[] conditionArray = new SearchType[2] ;
+		   conditionArray[0] = st ;
+		   conditionArray[1] = stPair[1] ;
+		   IntersectionSearchType andType = (IntersectionSearchType)stPair[0] ;
+		   andType.setConditionArray( conditionArray ) ;
+		   return andType ;
+		}	
+	}
 }
 
-void booleanTest() : {}
+SearchType booleanTest_WithNot() :
 {
-	booleanPrimary() [ <IS> [ <NOT> ] <TRUTH_VALUE> ]
+	SearchType sc = null ;
+	Token t = null ;
+}
+{
+	[ t=<NOT> ] sc=booleanTest()
+	{
+		if( t != null ) {
+			InverseSearchType is = InverseSearchType.Factory.newInstance() ;
+			is.setCondition( sc ) ;
+			return is ;		
+		}
+		return sc ;
+	}
+}
+
+SearchType[] booleanTest_List() :
+{
+	ArrayList list = null ;
+	SearchType[] stPair1 = null ;
+	SearchType[] stPair2 = null ;
+	SearchType[] retPair = null ;
+}
+{
+	( 
+		stPair1=booleanTest_Singleton() 
+		{ if( list == null )
+	  	     list = new ArrayList() ;
+	  	  list.add( stPair1 ) ;
+	  	} 	
+	)*
+	{
+		if( list != null ) {
+			ListIterator iterator = list.listIterator() ;
+			retPair = stPair1 = (SearchType[])iterator.next() ;
+			SearchType[] conditions = new SearchType[2] ;
+			IntersectionSearchType andType = null ;
+			while( iterator.hasNext() ) {
+				stPair2 = (SearchType[])iterator.next() ;
+				conditions[0] = stPair1[1] ;
+				conditions[1] = stPair2[1] ;
+				andType = (IntersectionSearchType)stPair2[0] ;
+				andType.setConditionArray( conditions ) ;
+				stPair1 = stPair2 ;
+			}
+		}		
+		return retPair ;
+	}
+}
+
+SearchType[] booleanTest_Singleton() :
+{
+	SearchType[] retPair = null ;
+	IntersectionSearchType andType = null ;
+	SearchType st = null ;
+}
+{
+	<AND> st=booleanTest_WithNot()
+	{
+		if( st != null ) {
+			retPair = new SearchType[2] ;		
+			andType = IntersectionSearchType.Factory.newInstance() ;
+			retPair[0] = andType ;
+			retPair[1] = st ;
+		}
+		return retPair ;
+	}
+}
+
+SearchType booleanTest() : 
+{
+	SearchType st = null ;
+}
+{
+	st=booleanPrimary() [ <IS> [ <NOT> ] <TRUTH_VALUE> ]
+	{ return st ; }
+}
+
+SearchType booleanTest_AG() : 
+{
+	SearchType st = null ;
+}
+{
+	// foreshortened. adql does not support <TRUTH_VALUE> et al !!!
+	st=booleanPrimary() 
+	{ return st ; }
 }
 
 void likePredicate() : {}
@@ -537,15 +653,80 @@ ScalarExpressionType commonPrimary() :
 	{ return seType ; }
 }
 
-void comparisonOperator() : {}
+ComparisonType comparisonOperator() : 
 {
-	<EQUALS_OPERATOR> |<NOT_EQUALS_OPERATOR> |<LESS_THAN_OPERATOR> | <GREATER_THEN_OPERATOR> | <LESS_THAN_OR_EQUALS_OPERATOR> | <GREATER_THAN_OR_EQUALS_OPERATOR>	
+	ComparisonType c = null ;
+	Token t = null ;
+}
+{
+	(
+		t=<EQUALS_OPERATOR> 
+		|
+		t=<NOT_EQUALS_OPERATOR> 
+		|
+		t=<LESS_THAN_OPERATOR> 
+		| 
+		t=<GREATER_THEN_OPERATOR> 
+		| 
+		t=<LESS_THAN_OR_EQUALS_OPERATOR> 
+		| 
+		t=<GREATER_THAN_OR_EQUALS_OPERATOR>	
+	)
+	{
+		if( t != null )	{
+			c = ComparisonType.Factory.newInstance() ;
+			c.set( ComparisonType.Enum.forString( t.image.toUpperCase() ) ) ;	
+		}
+		return c ;
+	}
 }
 
-void comparisonPredicate() : {}
+ComparisonPredType comparisonPredicate() : 
 {
-	rowValueConstructor() comparisonOperator() rowValueConstructor()
+	ComparisonPredType cpType = null ;
+	ScalarExpressionType seType1 = null ;
+	ScalarExpressionType seType2 = null ;
+	ScalarExpressionType[] args = null ;
+	ComparisonType compType = null ;
 }
+{
+	( seType1=rowValueConstructor() compType=comparisonOperator() seType2=rowValueConstructor() )
+	{ 
+		if( seType2 != null ) {
+			cpType = ComparisonPredType.Factory.newInstance() ;
+			args = new ScalarExpressionType[2] ;
+			args[0] = seType1 ;
+			args[1] = seType2 ;
+			cpType.setArgArray( args ) ;
+			cpType.xsetComparison( compType ) ;	
+			
+		}
+		return cpType ; }
+}
+
+ComparisonPredType comparisonPredicate_AG() : 
+{
+	ComparisonPredType cpType = null ;
+	ScalarExpressionType seType1 = null ;
+	ScalarExpressionType seType2 = null ;
+	ScalarExpressionType[] args = null ;
+	ComparisonType compType = null ;
+}
+{
+	( seType1=valueExpression() compType=comparisonOperator() seType2=valueExpression() )
+	{ 
+		if( seType2 != null ) {
+			cpType = ComparisonPredType.Factory.newInstance() ;
+			args = new ScalarExpressionType[2] ;
+			args[0] = seType1 ;
+			args[1] = seType2 ;
+			cpType.setArgArray( args ) ;
+			cpType.xsetComparison( compType ) ;	
+			
+		}
+		return cpType ; }
+}
+
 
 String correlationName() : 
 {
@@ -826,16 +1007,21 @@ void inValueList() : {}
     valueExpression() ( <COMMA> valueExpression() )*		
 }
 
-ComparisonPredType joinSpecification() : 
+void joinSpecification() : {}
+{
+	(
+		// refactored
+		<ON> searchCondition()	    |	    <USING> <LPAREN> columnNameList() <RPAREN>
+    )
+}
+
+ComparisonPredType joinSpecification_AG() : 
 {
 	ComparisonPredType cpType = null ;
 }
 {
 	(
-		// refactored
-		<ON> searchCondition()
-// foreshortened. columnNameList not supported in adql
-//	    |//	    <USING> <LPAREN> columnNameList() <RPAREN>
+		<ON> cpType=comparisonPredicate_AG()
     )
     { return cpType ; }
 }
@@ -1092,22 +1278,28 @@ void pattern() : {}
 	characterValueExpression()	
 }
 
-void predicate() : {}
+SearchType predicate() : 
 {
-	LOOKAHEAD(3)
-	comparisonPredicate()
-    | 
-    LOOKAHEAD(3)
-    betweenPredicate()
-    | 
-    LOOKAHEAD(3)
-    inPredicate()
-    | 
-    LOOKAHEAD(3)    likePredicate()    | 
-    LOOKAHEAD(3)    nullPredicate()    | 
-    LOOKAHEAD(3)
-	quantifiedComparisonPredicate()    |     existsPredicate()    |     uniquePredicate()    | 
-    LOOKAHEAD(3)    matchPredicate()    |     overlapsPredicate()
+	SearchType searchType = null ;
+}
+{
+	(
+		LOOKAHEAD(3)
+		searchType=comparisonPredicate()
+	    | 
+	    LOOKAHEAD(3)
+	    betweenPredicate()
+	    | 
+	    LOOKAHEAD(3)
+	    inPredicate()
+	    | 
+	    LOOKAHEAD(3)	    likePredicate()	    | 
+	    LOOKAHEAD(3)	    nullPredicate()	    | 
+	    LOOKAHEAD(3)
+		quantifiedComparisonPredicate()	    | 	    existsPredicate()	    | 	    uniquePredicate()	    | 
+	    LOOKAHEAD(3)	    matchPredicate()	    | 	    overlapsPredicate()
+    )
+    { return searchType ; }
 }
 
 JoinTableType qualifiedJoin() : 
@@ -1125,7 +1317,7 @@ JoinTableType qualifiedJoin() :
 		jtqType=joinType() 
 		<JOIN> 
 		fType2=tableReference() 
-		[ LOOKAHEAD(3) cpType=joinSpecification() ]
+		[ LOOKAHEAD(3) cpType=joinSpecification_AG() ]
 	)
 	{
 	   if( fType2 != null ) {
@@ -1175,24 +1367,34 @@ void rowSubquery() : {}
 	subQuery()	
 }
 
-void rowValueConstructor() : {}
+ScalarExpressionType rowValueConstructor() : 
 {
-	LOOKAHEAD(3)
-	rowValueConstructorElement()
-    | 
-    LOOKAHEAD(2)
-    <LPAREN> rowValueConstructorList() <RPAREN>
-    | 
-    rowSubquery()
+	ScalarExpressionType seType = null ;
+}
+{
+	(
+		LOOKAHEAD(3)
+		rowValueConstructorElement()
+	    | 
+	    LOOKAHEAD(2)
+	    <LPAREN> rowValueConstructorList() <RPAREN>
+	    | 
+	    rowSubquery()
+	 )
+	 { return seType ; }
 }
 
-void rowValueConstructorElement() : {}
+ScalarExpressionType rowValueConstructorElement() : 
 {
-	valueExpression()
-    | 
-    <NULL>
-    | 
-    <SQL_DEFAULT>
+	ScalarExpressionType seType = null ;
+} 
+{
+	// foreshortened...
+	seType=valueExpression()
+// adql has nothing to support the embedding of keywords...
+//    | //    <NULL>//    | //    <SQL_DEFAULT>
+
+	{ return seType ; }
 }
 
 void rowValueConstructorList() : {}
@@ -1205,10 +1407,81 @@ void scalarSubquery() : {}
 	subQuery()
 }
 
-void searchCondition() : {}
+SearchType searchCondition() : 
+{
+	SearchType st=null ;
+	SearchType[] stPairs = null ;
+
+}
 {
 	// refactored
-	booleanTerm() ( <OR> booleanTerm() )*
+	// ( booleanTerm() ( <OR> booleanTerm() )* )
+	( st=booleanTerm() stPairs=booleanTerm_List() )
+	{
+		if( stPairs == null ) {
+		   return st ; 
+		}
+		else {
+		   SearchType[] conditionArray = new SearchType[2] ;
+		   conditionArray[0] = st ;
+		   conditionArray[1] = stPairs[1] ;
+		   UnionSearchType usType = (UnionSearchType)stPairs[0] ;
+		   usType.setConditionArray( conditionArray ) ;
+		   return usType ;
+		}	
+	}
+}
+
+SearchType[] booleanTerm_List() : 
+{
+	ArrayList list = null ;
+	SearchType[] stPairs1 = null ;
+	SearchType[] stPairs2 = null ;
+	SearchType[] retPairs = null ;	
+}
+{
+	( stPairs1=booleanTerm_Singleton() 
+	  { if( list == null )
+	  	   list = new ArrayList() ;
+	  	list.add( stPairs1 ) ;
+	  } 
+	)*
+	{ 
+		if( list != null ) {
+			ListIterator iterator = list.listIterator() ;
+			retPairs = stPairs1 = (SearchType[])iterator.next() ;
+			SearchType[] conditions = new SearchType[2] ;
+			UnionSearchType usType = null ;
+			while( iterator.hasNext() ) {
+				stPairs2 = (SearchType[])iterator.next() ;
+				conditions[0] = stPairs1[1] ;
+				conditions[1] = stPairs2[1] ;
+				usType = (UnionSearchType)stPairs2[0] ;
+				usType.setConditionArray( conditions ) ;
+				stPairs1 = stPairs2 ;
+			}
+		}		
+		return retPairs ;
+	}
+}
+
+SearchType[] booleanTerm_Singleton() :
+{
+	SearchType[] retPairs = null ;
+	UnionSearchType us = null ;
+	SearchType st = null ;
+}
+{
+	( <OR> st=booleanTerm() )
+	{
+		if( st != null ) {
+			retPairs = new SearchType[2] ;		
+			us = UnionSearchType.Factory.newInstance() ;
+			retPairs[0] = us ;
+			retPairs[1] = st ;
+		}
+		return retPairs ;
+	}
 }
 
 void selectList() # SelectionList : {}
@@ -1752,7 +2025,14 @@ ScalarExpressionType variableSpecification() :
 	{ return seType ; }
 }
 
-void whereClause() #Where : {}
+SearchType whereClause() #Where : 
 {
-	<WHERE>	searchCondition()
+	SearchType s = null ;
 }
+{
+	<WHERE>	s=searchCondition()
+	{ return s ; }
+}
+
+
+
