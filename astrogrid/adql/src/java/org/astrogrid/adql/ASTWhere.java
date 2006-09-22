@@ -6,6 +6,9 @@ import org.apache.xmlbeans.*;
 import org.astrogrid.adql.v1_0.beans.*;
 
 public class ASTWhere extends SimpleNode {
+	
+	SearchType searchType ;
+	
   public ASTWhere(int id) {
     super(id);
   }

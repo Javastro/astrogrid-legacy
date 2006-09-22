@@ -3,6 +3,9 @@
 package org.astrogrid.adql;
 
 public class ASTSelect extends SimpleNode {
+	
+	
+	
   public ASTSelect(int id) {
     super(id);
   }

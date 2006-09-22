@@ -10,7 +10,6 @@ public interface AdqlStoXVisitor
   public Object visit(ASTHaving node, Object data);
   public Object visit(ASTOrderBy node, Object data);
   public Object visit(ASTSelect node, Object data);
-  public Object visit(ASTSelectionList node, Object data);
   public Object visit(ASTRestrict node, Object data);
   public Object visit(ASTAllow node, Object data);
   public Object visit(ASTWhere node, Object data);

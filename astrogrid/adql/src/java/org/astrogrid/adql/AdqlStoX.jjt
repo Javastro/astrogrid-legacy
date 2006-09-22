@@ -24,10 +24,7 @@ public class AdqlStoX {
 	public SelectDocument exec() {
 		SelectDocument selectDoc = null ;
 		try {			
-			ASTSelect query = topQuery();
-			AdqlStoXVisitor visitor = new AdqlStoXVisitorImpl() ;
-			selectDoc = SelectDocument.Factory.newInstance() ;
-			query.jjtAccept( visitor, selectDoc ) ;		
+			selectDoc = selectDocument();
 		}
 		catch( ParseException pex ) {
 			pex.printStackTrace() ;
@@ -37,8 +34,7 @@ public class AdqlStoX {
 			err.printStackTrace() ;
 			//System.out.println( err.getMessage() ) ;
 		}
-		return selectDoc ;
-	
+		return selectDoc ;	
 	}
 
 }
@@ -366,11 +362,19 @@ TOKEN :
 }
  
 
-ASTSelect topQuery() : 
-{ 	ASTSelect retValue ; 	}
+SelectDocument selectDocument() : 
+{ 	
+	SelectDocument selectDoc = null ; 	
+	SelectType st = null ;	
+}
 {
-	retValue = querySpecification() <SEMICOLON> 
-	{  return retValue ; }
+	st=querySpecification() [ <SEMICOLON> ] 
+	{  
+		if( st != null ) {
+			selectDoc =  SelectDocument.Factory.newInstance() ;
+			selectDoc.setSelect( st ) ;
+		}
+		return selectDoc ; }
 }
 
 //=================================
@@ -394,6 +398,40 @@ void approximateNumericLiteral() : {}
 void betweenPredicate() : {}
 {
 	rowValueConstructor() [ <NOT> ] <BETWEEN> rowValueConstructor() <AND> rowValueConstructor()	
+}
+
+SearchType betweenPredicate_AG() : 
+{
+	
+	ScalarExpressionType se1 = null ;
+	ScalarExpressionType se2 = null ;
+	ScalarExpressionType se3 = null ;
+	Token t = null ;
+}
+{
+//  Should be...
+//	rowValueConstructor() [ <NOT> ] <BETWEEN> rowValueConstructor() <AND> rowValueConstructor()	
+
+	( se1=valueExpression() [ t=<NOT> ] <BETWEEN> se2=valueExpression() <AND> se3=valueExpression()	)
+	{
+		if( se3!=null ) {
+			ScalarExpressionType[] args = new ScalarExpressionType[3] ;
+			args[0] = se1 ;
+			args[1] = se2 ;
+			args[2] = se3 ;
+			if( t==null ) {
+				BetweenPredType bp = BetweenPredType.Factory.newInstance() ;
+				bp.setArgArray( args ) ;
+				return bp ;			
+			}
+			else {
+				NotBetweenPredType nbp = NotBetweenPredType.Factory.newInstance() ;
+				nbp.setArgArray( args ) ;
+				return nbp ;		
+			}
+		}
+		return null ;
+	}
 }
 
 SearchType booleanPrimary() : 
@@ -828,9 +866,18 @@ AtomType exactNumericLiteral() :
 	}
 }
 
-void existsPredicate() : {}
+SearchType existsPredicate() : 
 {
-	<EXISTS> tableSubQuery()	
+	SearchType st = null ;
+}
+{
+	<EXISTS> st=tableSubQuery()
+	{ 
+		if( st != null ) {
+		}
+		
+		return st ;	
+	}	
 }
 
 void explicitTable() : {}
@@ -1284,19 +1331,16 @@ SearchType predicate() :
 }
 {
 	(
-		LOOKAHEAD(3)
-		searchType=comparisonPredicate()
+
+ 		LOOKAHEAD(4)
+		searchType=comparisonPredicate_AG()
 	    | 
 	    LOOKAHEAD(3)
-	    betweenPredicate()
-	    | 
-	    LOOKAHEAD(3)
-	    inPredicate()
-	    | 
-	    LOOKAHEAD(3)	    likePredicate()	    | 
-	    LOOKAHEAD(3)	    nullPredicate()	    | 
-	    LOOKAHEAD(3)
-		quantifiedComparisonPredicate()	    | 	    existsPredicate()	    | 	    uniquePredicate()	    | 
+	    searchType=betweenPredicate_AG()	    | 
+// adql does not support the null predicate!
+//	    LOOKAHEAD(3)//	    nullPredicate()//	    | 
+// adql does not support quantified comparisons
+//	    LOOKAHEAD(3)//		quantifiedComparisonPredicate()//	    | 	    existsPredicate()	    | 	    uniquePredicate()	    | 
 	    LOOKAHEAD(3)	    matchPredicate()	    | 	    overlapsPredicate()
     )
     { return searchType ; }
@@ -1484,9 +1528,24 @@ SearchType[] booleanTerm_Singleton() :
 	}
 }
 
-void selectList() # SelectionList : {}
+SelectionListType selectList() : 
 {
-	allSelectionItem( jjtThis.itemList ) | ( selectSublist( jjtThis.itemList ) ( <COMMA> selectSublist( jjtThis.itemList ) )* )
+	ArrayList itemList = new ArrayList() ;
+	SelectionListType slType = SelectionListType.Factory.newInstance() ;
+}
+{
+	(
+		allSelectionItem( itemList ) 
+		| 
+		( selectSublist( itemList ) ( <COMMA> selectSublist( itemList ) )* )
+	)
+	{
+		if( itemList.size() > 0 ) {
+			SelectionItemType[] itemArray = new SelectionItemType[ itemList.size() ] ;	
+			slType.setItemArray( (SelectionItemType[])itemList.toArray(itemArray) ) ;
+		}
+		return slType ;	
+	}
 }
 
 void allSelectionItem( ArrayList itemList ) : {}
@@ -1600,9 +1659,22 @@ ScalarExpressionType stringValueExpression() :
 	{ return seType ; }
 }
 
-void subQuery() : {}
+SearchType subQuery() : 
+{
+	SearchType st = null ;
+}
 {
 	<LPAREN> queryExpression() <RPAREN>
+	{ return st ; }		
+}
+
+SearchType subQuery_AG() : 
+{
+	SearchType st = null ;
+}
+{
+	<LPAREN> queryExpression() <RPAREN>
+	{ return st ; }		
 }
 
 void quantifiedComparisonPredicate() : {}
@@ -1784,9 +1856,13 @@ FromTableType tableReferenceBarJoinedTable() :
 	{ return ftType ; }
 }
 
-void tableSubQuery() : {}
+SearchType tableSubQuery() : 
 {
-	subQuery()	
+	SearchType st = null ;
+}
+{
+	st=subQuery()	
+	{ return st ; }
 }
 
 void tableValueConstructor() : {}
@@ -2031,7 +2107,10 @@ SearchType whereClause() #Where :
 }
 {
 	<WHERE>	s=searchCondition()
-	{ return s ; }
+	{ if( s != null ) 
+		jjtThis.searchType = s ; 
+	  return s ;
+	}
 }
 
 

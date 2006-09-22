@@ -10,10 +10,9 @@ public interface AdqlStoXTreeConstants
   public int JJTHAVING = 3;
   public int JJTORDERBY = 4;
   public int JJTSELECT = 5;
-  public int JJTSELECTIONLIST = 6;
-  public int JJTRESTRICT = 7;
-  public int JJTALLOW = 8;
-  public int JJTWHERE = 9;
+  public int JJTRESTRICT = 6;
+  public int JJTALLOW = 7;
+  public int JJTWHERE = 8;
 
 
   public String[] jjtNodeName = {
@@ -23,7 +22,6 @@ public interface AdqlStoXTreeConstants
     "Having",
     "OrderBy",
     "Select",
-    "SelectionList",
     "Restrict",
     "Allow",
     "Where",

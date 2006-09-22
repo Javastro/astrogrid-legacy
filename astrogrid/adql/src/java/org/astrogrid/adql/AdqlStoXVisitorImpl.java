@@ -119,6 +119,7 @@ public class AdqlStoXVisitorImpl implements AdqlStoXVisitor {
 		SelectType selectType = (SelectType)data ;
 		WhereType whereType = selectType.addNewWhere() ;
 		node.childrenAccept( this, whereType ) ;
+		whereType.setCondition( node.searchType ) ;
 		return whereType ;
 	}
 
