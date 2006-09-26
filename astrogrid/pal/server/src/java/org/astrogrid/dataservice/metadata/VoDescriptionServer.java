@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.15 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: VoDescriptionServer.java,v 1.16 2006/09/26 06:54:10 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,6 +19,7 @@ import org.astrogrid.dataservice.service.cea.CeaResources;
 import org.astrogrid.dataservice.service.cone.ConeResources;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.DelegateProperties;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
@@ -335,7 +336,7 @@ public class VoDescriptionServer {
    public static String[] pushToRegistry() throws IOException, RegistryException {
       RegistryAdminService service = RegistryDelegateFactory.createAdmin();
       service.update(getVoDescription());
-      return new String[] { ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY) };
+      return new String[] { ConfigFactory.getCommonConfig().getString(DelegateProperties.ADMIN_URL_PROPERTY) };
    }
 
    /**

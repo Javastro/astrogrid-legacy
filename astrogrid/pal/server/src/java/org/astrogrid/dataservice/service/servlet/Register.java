@@ -1,5 +1,5 @@
 /*
- * $Id: Register.java,v 1.3 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: Register.java,v 1.4 2006/09/26 06:54:10 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -16,6 +16,7 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.registry.client.DelegateProperties;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 
@@ -35,7 +36,7 @@ public class Register extends DefaultServlet {
       try {
          String regParam = request.getParameter("RegistryUrl");
          if ((regParam == null) || (regParam.trim().length()==0)) {
-            regParam =  ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY);
+            regParam =  ConfigFactory.getCommonConfig().getString(DelegateProperties.ADMIN_URL_PROPERTY);
          }
          /*
          // KEA TOFIX COMPLETE THIS REGISTRY CHECK IN BRANCH FOLLOWING 
