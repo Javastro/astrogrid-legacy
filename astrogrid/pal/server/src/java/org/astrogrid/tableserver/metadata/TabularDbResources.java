@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.11 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: TabularDbResources.java,v 1.12 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,8 @@ import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.ucd.UcdVersions;
+import org.astrogrid.ucd.UcdException;
 
 /**
  * Generates VoResource elements for tabular sky services.
@@ -27,8 +29,9 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
     *  */
    public String getVoResource() throws IOException {
 
-      TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
+      String ucdVersion = UcdVersions.getUcdVersion();
 
+      TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement(
              "tdb:TabularDB",
@@ -102,9 +105,10 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
                   "<unit>"+columns[c].getUnits()+"</unit>\n"
                );
             }
-            if ((columns[c].getUcd("1") != null) && (columns[c].getUcd("1").trim().length()>0)) {
+            String columnUcd = columns[c].getUcd(ucdVersion);
+            if ((columnUcd != null) && (columnUcd.trim().length()>0)) {
                tabularDb.append(
-                  "<ucd>"+columns[c].getUcd("1")+"</ucd>\n"
+                  "<ucd>"+columnUcd.trim()+"</ucd>\n"
                );
             }
             tabularDb.append(

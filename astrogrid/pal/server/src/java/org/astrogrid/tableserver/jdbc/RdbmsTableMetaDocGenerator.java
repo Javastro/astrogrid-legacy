@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.8 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,7 +22,11 @@ import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.io.xml.XmlAsciiWriter;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.webapp.DefaultServlet;
-import org.astrogrid.xml.XmlTypes;
+//import org.astrogrid.dataservice.metadata.XmlTypes;
+import org.astrogrid.dataservice.metadata.StdDataTypes;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.cfg.ConfigFactory;
+
 
 /**
  * Generates the table metadoc that describes a tabular dataset from the metadata
@@ -33,12 +37,19 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    
    protected static Log log = LogFactory.getLog(RdbmsTableMetaDocGenerator.class);
    
+   /*
    //should match the xml schema types
-   public static String INT = XmlTypes.INT;
-   public static String FLOAT = XmlTypes.FLOAT;
-   public static String BOOLEAN = XmlTypes.BOOLEAN;
-   public static String STRING = XmlTypes.STRING;
-   public static String DATE = XmlTypes.DATE;
+   //public static String INT = XmlTypes.INT;
+   //public static String FLOAT = XmlTypes.FLOAT;
+   //public static String BOOLEAN = XmlTypes.BOOLEAN;
+   //public static String STRING = XmlTypes.STRING;
+   //public static String DATE = XmlTypes.DATE;
+   public static String INT = StdDataTypes.INT;
+   public static String FLOAT = StdDataTypes.FLOAT;
+   public static String BOOLEAN = StdDataTypes.BOOLEAN;
+   public static String STRING = StdDataTypes.STRING;
+   public static String DATE = StdDataTypes.DATE;
+   */
    
    /** Convenience routine for finding the value of a column in a result set row,
     * but ignoring
@@ -63,10 +74,11 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
     * Returns the votable datatype for the given column.
     * @todo check these - these are made up/guessed
     */
-   public static String getType(int sqlType) {
+   public static String getType(int sqlType, int typeSize) {
       
       switch (sqlType) {
-         case Types.ARRAY    : log.error("Don't know how to cope with Arrays, storing as string", new RuntimeException()); return STRING;
+         case Types.ARRAY    : log.error("Don't know how to cope with Arrays, storing as string", new RuntimeException()); return StdDataTypes.STRING;
+        /*
          case Types.BIGINT:   return INT;
          case Types.BOOLEAN:  return BOOLEAN;
          case Types.BIT:      return BOOLEAN;
@@ -82,9 +94,32 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
          case Types.TINYINT:  return INT;
          case Types.TIMESTAMP:return DATE;
          case Types.VARCHAR:  return STRING;
+         */
+         /* KEA NOTE: Erring on the side of excess precision here */
+         case Types.BIGINT:   return StdDataTypes.LONG;
+         case Types.BOOLEAN:  return StdDataTypes.BOOLEAN;
+         case Types.BIT:      return StdDataTypes.SHORT;
+         case Types.CHAR:     
+            if (typeSize == 1) {
+              return StdDataTypes.CHAR;
+            }
+            else {
+              return StdDataTypes.STRING;
+            }
+         case Types.DATE:     return StdDataTypes.DATE;
+         case Types.DECIMAL:   return StdDataTypes.DOUBLE;
+         case Types.DOUBLE:   return StdDataTypes.DOUBLE;
+         case Types.FLOAT:    return StdDataTypes.FLOAT;
+         case Types.INTEGER:  return StdDataTypes.INT;
+//         case Types.NUMERIC:  return StdDataTypes.STRING;  ?tel nums?
+         case Types.REAL:     return StdDataTypes.DOUBLE;
+         case Types.SMALLINT: return StdDataTypes.INT;
+         case Types.TINYINT:  return StdDataTypes.SHORT;
+         case Types.TIMESTAMP:return StdDataTypes.DATE;
+         case Types.VARCHAR:  return StdDataTypes.STRING;
          default: {
             log.error("Don't know what SQL type "+sqlType+" should be, storing as string", new RuntimeException()); //add runtime exception so we get a stack trace
-            return STRING;
+            return StdDataTypes.STRING;
          }
       }
    }
@@ -100,11 +135,19 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    /**
     * Writes the metadata to the given stream.  Writes just one catalog for now */
    public void writeTableMetaDoc(Writer out) throws IOException {
+
+      // Initialise SampleStars plugin if required (may not be initialised
+      // if admin has not run the self-tests)
+      String plugin = ConfigFactory.getCommonConfig().getString(
+            "datacenter.querier.plugin");
+      if (plugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+         // This has no effect if the plugin is already initialised
+         SampleStarsPlugin.initialise();  // Just in case
+      }
 //
 // ZRQ
 // Moved this to an XML tag.      
 //    out.write("<DatasetDescription xmlns='urn:astrogrid:schema:TableMetaDoc:v1'>\n");
-
       Connection connection = null;
       try {
          connection = JdbcPlugin.getJdbcConnection();
@@ -143,7 +186,20 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
                ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
                
                while (columns.next()) {
+                  // This is the actual data type of the column
                   int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
+
+                  // The size of the column: max width for char and date types,
+                  // precision for other types
+                  // NB We only use typesize value for char columns at 
+                  // the moment (to decide if they're really strings)
+                  int typeSize;
+                  try {
+                     typeSize = Integer.parseInt(getColumnValue(columns, "COLUMN_SIZE"));
+                  }
+                  catch (java.lang.NumberFormatException e) {
+                    typeSize = 1;   // A sane default if unspecified?
+                  }
                   String colName = getColumnValue(columns, "COLUMN_NAME");
                   XmlPrinter colTag = tableTag.newTag(
                      "Column",
@@ -151,7 +207,7 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
                                     "indexed='false'" }
                   );
                   colTag.writeTag("Name", colName);
-                  colTag.writeTag("Datatype", getType(sqlType));  //duplicate of attribute above, which includes width where nec,
+                  colTag.writeTag("Datatype", getType(sqlType, typeSize));  //duplicate of attribute above, which includes width where nec,
                   colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
 //                  colTag.writeTag("Link", new String[] { "text=''" }, " ");
                   colTag.writeTag("Units", " "); //for humans

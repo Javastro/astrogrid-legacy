@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema targetNamespace="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:tns="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:reg="http://www.ivoa.net/xml/STC/STCregion/v1.10" elementFormDefault="qualified">
 	<xs:import namespace="http://www.ivoa.net/xml/STC/STCregion/v1.10" 
-		schemaLocation="../../../stc/STCregion/v1.10/STCregion.xsd"/>
+		schemaLocation="../../../stc/STCRegion/v1.10/STCregion.xsd"/>
 	<xs:complexType name="selectionItemType" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The base type for any of items to be selected in a query</xs:documentation>

@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocRenderer.java,v 1.6 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: TableMetaDocRenderer.java,v 1.7 2006/09/26 15:34:42 clq2 Exp $
  */
 package org.astrogrid.tableserver.metadata;
 
@@ -14,7 +14,9 @@ import org.astrogrid.ucd.Ucd1Dictionary;
 import org.astrogrid.ucd.Ucd1PlusDictionary;
 import org.astrogrid.units.UnitDictionary;
 import org.w3c.dom.Element;
-
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 
 /**
  * Renders an RdbmsMetadata resource document in HTML suitable for including
@@ -26,9 +28,24 @@ public class TableMetaDocRenderer {
    
    public String renderMetaDoc()  {
       StringBuffer html = new StringBuffer();
-      
       html.append("<h2>Table Meta-document for "+DataServer.getDatacenterName()+"</h2>");
       
+      // Initialise SampleStars plugin if required (may not be initialised
+      // if admin has not run the self-tests)
+       try {
+         String plugin = ConfigFactory.getCommonConfig().getString(
+              "datacenter.querier.plugin");
+         if (plugin.equals(
+                "org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+            // This has no effect if the plugin is already initialised
+            SampleStarsPlugin.initialise();  // Just in case
+         }
+      }
+      catch (DatabaseAccessException dae) {
+         html.append(ServletHelper.exceptionAsHtml("Accessing database to generate Rdbms Table Metadoc ", dae, null));
+         return html.toString();
+      }
+
       Element metadoc = null;
       try {
          TableMetaDocInterpreter interpreter = new TableMetaDocInterpreter();

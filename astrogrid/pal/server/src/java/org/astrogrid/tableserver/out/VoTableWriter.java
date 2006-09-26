@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.7 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: VoTableWriter.java,v 1.8 2006/09/26 15:34:43 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,8 @@ import org.astrogrid.dataservice.metadata.VoTypes;
 import org.astrogrid.io.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
+import org.astrogrid.ucd.UcdVersions;
+import org.astrogrid.ucd.UcdException;
 
 /**
  * For writing out tables in votable.  As far as I'm aware dates are not handled
@@ -33,7 +35,7 @@ public class VoTableWriter implements TableWriter {
    
    
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(VoTableWriter.class);
-   
+
    protected PrintWriter printOut = null;
    
    protected ColumnInfo[] cols = null;
@@ -85,16 +87,18 @@ public class VoTableWriter implements TableWriter {
    /** Start body - writes out header and preps col array */
    public void startTable(ColumnInfo[] colinfo) throws IOException {
       
+      String ucdVersion = UcdVersions.getUcdVersion();
+
       this.cols = colinfo;
       
       printOut.println("<TABLE>");
-         
+
       for (int i = 0; i < cols.length; i++) {
          if (cols[i] != null) { // null columns if it's not been found in the metadoc
          
             printOut.print("<FIELD name='"+cols[i].getName()+"' ");
             if (cols[i].getId() != null) printOut.print("ID='"+cols[i].getId()+"' ");
-            if (cols[i].getUcd("1") != null) printOut.print(" ucd='"+cols[i].getUcd("1")+"' ");
+            if (cols[i].getUcd(ucdVersion) != null) printOut.print(" ucd='"+cols[i].getUcd(ucdVersion)+"' ");
             
             //Create the votable type attributes from the metadoc type. 
             //Convert using java class as the medium
@@ -201,6 +205,16 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.8  2006/09/26 15:34:43  clq2
+ SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
+
+ Revision 1.7.10.2  2006/09/19 12:19:47  kea
+ Fixing TabularDB registrations to use system-default UCD version;
+ moved ucd version management stuff to org.astrogrid.ucd package.
+
+ Revision 1.7.10.1  2006/09/14 14:53:03  kea
+ Updating.
+
  Revision 1.7  2006/06/15 16:50:10  clq2
  PAL_KEA_1612
 

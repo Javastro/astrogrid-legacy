@@ -85,6 +85,27 @@ for advice if you find that you cannot migrate an existing skycatserver to
 the new DSA/catalog service.
 </p>
 
+<h2>New properties</h2>
+<p>
+This is an ongoing list of new properties added to the DSA/catalog
+configuration, which will not be present in your properties file if you
+are upgrading from an older version.
+</p>
+<p>
+Further information about the new properties file can be found in the
+<tt>default.properties</tt> file that accompanies each new release;  see
+the <a href="./docs/configure_step4.jsp">configuration documentation</a> 
+for more details.
+</p>
+
+<ul>
+<li><strong>Release 2006.3.03pl</strong>
+   <ul><li><tt>datacenter.ucd.version</tt><br/>Which UCD standard
+   to use when emitting UCD tags in output VOTable (defaults to UCD 1+;
+   UCD 1 also supported but deprecated)</li></ul>
+</li>
+</ul>
+
 <h2>Known bugs</h2>
 
 <p>

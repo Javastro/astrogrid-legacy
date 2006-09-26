@@ -6,15 +6,14 @@
              xmlns:xs="http://www.w3.org/2001/XMLSchema" 
              xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
              xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
-             xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
-             xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v0.1" 
+             xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v0.1"              xmlns:ri2="http://www.ivoa.net/xml/RegistryInterface/v0.1" 
              xmlns:tns="http://www.ivoa.net/wsdl/RegistryUpdate/v0.1"
              targetNamespace="http://www.ivoa.net/wsdl/RegistryUpdate/v0.1">   <types>      <xs:schema xmlns="http://www.w3.org/2001/XMLSchema" 
          xmlns:tns="http://www.ivoa.net/wsdl/RegistrySearch/v0.1" 
          targetNamespace="http://www.ivoa.net/wsdl/RegistrySearch/v0.1">
          <xs:import namespace="http://www.ivoa.net/xml/RegistryInterface/v0.1"
-                    schemaLocation="../../../registry/RegistryInterface/v0.1/RegistryInterface.xsd"/>
-	      <xs:element name="Update">	        <xs:complexType>	          <xs:sequence>	            <xs:element minOccurs="0" maxOccurs="1" ref="ri:VOResources" />	          </xs:sequence>	        </xs:complexType>	      </xs:element>	
+                    schemaLocation="../../../registry/RegistryInterface/v0.1/RegistryInterface.xsd"/>                             <xs:import namespace="http://www.ivoa.net/xml/RegistryInterface/v1.0"                    schemaLocation="../../../registry/RegistryInterface/v1.0/RegistryInterface.xsd"/>                    
+	      <xs:element name="Update">	        <xs:complexType>	          <xs:sequence>	             <xs:choice>	            	<xs:element ref="ri:VOResources" />  	            	<xs:element ref="ri2:VOResources" />	              </xs:choice>	          </xs:sequence>	        </xs:complexType>	      </xs:element>	
 	      <xs:element name="UpdateResponse">	      	      </xs:element>      
       </xs:schema>         </types>
    <message name="empty"/>

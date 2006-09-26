@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TODO these are types that are used only in the web service definitions - so does not belong in the registry schema...-->
+<xsd:schema targetNamespace="http://www.ivoa.net/xml/CEA/types/v1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:ceat="http://www.ivoa.net/xml/CEA/types/v1.0" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0 $Revision: 1.2 $" xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.0">
+	<xsd:import namespace="http://www.ivoa.net/xml/CEA/base/v1.0" schemaLocation="CEABase.xsd"></xsd:import>
+
+	<xsd:element name="message" type="ceat:message-type"/>
+	<xsd:complexType name="message-type">
+		<xsd:annotation>
+			<xsd:documentation>A log entry recorded during execution</xsd:documentation>
+		</xsd:annotation>
+		 <xsd:all>
+			<xsd:element name="content" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="source" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="timestamp" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="level" type="ceat:log-level" minOccurs="0"/>
+			<xsd:element name="phase" type="ceat:execution-phase" minOccurs="0"/>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:element name="job-identifier" type="ceat:job-identifier-type"/>
+	<xsd:simpleType name="job-identifier-type">
+		<xsd:annotation>
+			<xsd:documentation>Element for pass-through activity token</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<!-- supporting types -->
+	<xsd:simpleType name="execution-phase">
+   <!-- need to think a little here about the implication of allowing a "re-entrant" application that is capable of running mini-jobs...probably this is indicated with a different state varible entirely -->
+		<xsd:annotation>
+			<xsd:documentation>Enumeration of possible phases of job  execution</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="PENDING">
+				<xsd:annotation>
+					<xsd:documentation> An application has been 
+								accepted for execution but is waiting in a 
+								queue </xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="INITIALIZING">
+				<xsd:annotation>
+					<xsd:documentation> The first phase - this is where 
+								a job is being set up and the parameters being 
+								checked </xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="RUNNING">
+				<xsd:annotation>
+					<xsd:documentation> An application is running 
+								</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="COMPLETED">
+				<xsd:annotation>
+					<xsd:documentation> An application has completed successfully </xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ERROR">
+				<xsd:annotation>
+					<xsd:documentation>
+								Some form of error has occured
+							</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="UNKNOWN">
+				<xsd:annotation>
+					<xsd:documentation>The application is in an unknown state</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="HELD">
+				<xsd:annotation>
+					<xsd:documentation>The application is HELD pending execution and will not automatically be executed (cf pending)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SUSPENDED">
+				<xsd:annotation>
+					<xsd:documentation>The application has been suspended by the system during execution</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="log-level">
+		<xsd:annotation>
+			<xsd:documentation>Enumeration of possible message log levels</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="info"/>
+			<xsd:enumeration value="warn"/>
+			<xsd:enumeration value="error"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="result-list-type">
+		<xsd:sequence>
+			<xsd:element name="result" type="ceab:parameterValue" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="input-list-type">
+		<xsd:sequence>
+			<xsd:element name="input" type="ceab:parameterValue" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="execution-summary-type">
+		<xsd:all>
+			<xsd:element name="application-name" type="xsd:string"/>
+			<xsd:element name="execution-id" type="xsd:string"/>
+			<xsd:element name="input-list" type="ceat:input-list-type"/>
+			<xsd:element name="result-list" type="ceat:result-list-type" minOccurs="0"/>
+			<xsd:element name="status" type="ceat:execution-phase"/>
+			<!-- have startTime and end Time here ?? -->
+		</xsd:all>
+	</xsd:complexType>
+</xsd:schema>

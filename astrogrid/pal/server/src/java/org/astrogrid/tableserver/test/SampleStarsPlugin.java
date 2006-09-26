@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.8 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,17 +44,18 @@ public class SampleStarsPlugin extends JdbcPlugin
       
    }
 
-   /** Sets up the configuration etc for accessing this database */
+   /** Sets up the configuration etc for accessing this database.
+    * NOTE:   */
    public static void initConfig() {
       
       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SampleStarsPlugin.class.getName());
 
       ConfigFactory.getCommonConfig().setProperty(JdbcPlugin.SQL_TRANSLATOR, AdqlSqlMaker.class.getName());
 
-      
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_RA_COL_KEY, "RA");
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_DEC_COL_KEY,"DEC");
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_TABLE_KEY,  "SampleStars");
+
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_COL_UNITS_KEY, "deg");
       ConfigFactory.getCommonConfig().setProperty(
           "db.trigfuncs.in.radians","true");

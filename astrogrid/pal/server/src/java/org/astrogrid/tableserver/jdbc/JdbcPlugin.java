@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.6 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: JdbcPlugin.java,v 1.7 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -79,8 +79,15 @@ public class JdbcPlugin extends DefaultPlugin {
          //connect to database
          log.debug("Connecting to the database");
          jdbcConnection = getJdbcConnection();
-         Statement statement = jdbcConnection.createStatement();
+         //Statement statement = jdbcConnection.createStatement();
+         Statement statement = jdbcConnection.createStatement(
+             java.sql.ResultSet.TYPE_FORWARD_ONLY,
+             java.sql.ResultSet.CONCUR_READ_ONLY);
 
+         // make sure autocommit is off
+         // Postgres seems to need this to stop it downloading the 
+         // whole ResultSet in one go.
+         jdbcConnection.setAutoCommit(false);
 
          //limit to number of rows returned
          // KEA says: This is the WRONG way to set the query limit - it 
@@ -104,7 +111,31 @@ public class JdbcPlugin extends DefaultPlugin {
          statement.setQueryTimeout(ConfigFactory.getCommonConfig().getInt(TIMEOUT, 30*60)); //default to half an hour
 
          querier.getStatus().addDetail("Submitted to JDBC at "+new Date());
-         
+
+         try {
+           // We were having problems with the JDBC driver trying to fetch all
+           // the data at once (rather than chunking it) and running out of
+           // memory as a result.
+           // Got this suggestion here: 
+           // http://jira.jboss.com/jira/browse/JBAS-1336
+           // The negative value is required to provoke sensible chunking data 
+           // retrieval by MySQL, and works with SQLServer  (values >0 here
+           // still cause MySQL to try to grab the whole lot, apparently)
+            statement.setFetchSize(Integer.MIN_VALUE);
+         }
+         catch (SQLException e) {
+           // Some JDBC drivers (e.g. PostgreSQL >= 8.0) object to the
+           // negative value in setFetchSize() above, so let's try again 
+           // with a small positive value as a fallback
+            try {
+               statement.setFetchSize(1000);
+            }
+            catch (SQLException e2) {
+           // This method isn't implemented at all in some JDBC drivers, e.g.
+           // PostgreSQL <8.0.   
+               log.info("Couldn't set JDBC fetch size: " + e2.getMessage()); 
+            }
+         }  
          //execute query
          log.info("Performing Query: " + sql);
          statement.execute(sql);

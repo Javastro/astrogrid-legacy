@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.8 2005/02/16 15:48:53 jdt Exp $ -->
+<!-- $Id: project.xml.DONTUSE,v 1.2 2006/09/26 15:34:42 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../maven-base/xsd/maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-slinger-master</id>

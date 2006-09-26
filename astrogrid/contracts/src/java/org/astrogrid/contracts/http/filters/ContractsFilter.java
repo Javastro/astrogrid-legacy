@@ -71,12 +71,24 @@ public final class ContractsFilter implements Filter {
       String schemaFile = filterConfig.getInitParameter("wsdlFile");
       
       //lets make sure we  have a reference to a wsdl and we are dealing with a wsdl or xsd file
-      if(schemaFile == null || (!((HttpServletRequest) request).getServletPath().endsWith("wsdl") && 
-         !((HttpServletRequest) request).getServletPath().endsWith("xsd") && 
-         !((HttpServletRequest) request).getQueryString().endsWith("wsdl"))) {
+      if(schemaFile == null || ((HttpServletRequest) request).getServletPath() == null) {
           chain.doFilter(request, response);
           return;
       }
+      
+      if( ((HttpServletRequest) request).getQueryString() == null &&
+          !((HttpServletRequest) request).getServletPath().endsWith("wsdl") && 
+    	  !((HttpServletRequest) request).getServletPath().endsWith("xsd")) {
+          chain.doFilter(request, response);
+          return;
+      }
+      
+      if( ((HttpServletRequest) request).getQueryString() != null &&
+  		  !((HttpServletRequest) request).getQueryString().endsWith("wsdl") ) {
+              chain.doFilter(request, response);
+              return;
+          }
+  		  
       
       //okay if we are dealing with a wsdl or xsd (not from axis "?wsdl") then
       //lets strip it out things down to the /schema area.
@@ -93,6 +105,8 @@ public final class ContractsFilter implements Filter {
                   request.getScheme() + "://" + request.getServerName() + ":" +
                   request.getServerPort() + ((HttpServletRequest) request).getContextPath();
       }
+      
+      
 
       //get the current directory of the schema. Used to handle import locations that are in the same 
       //directory.
@@ -103,7 +117,8 @@ public final class ContractsFilter implements Filter {
       }else {
           currentURLSchemaBase = contextURL + ((HttpServletRequest) request).getServletPath().substring(0,((HttpServletRequest) request).getServletPath().lastIndexOf("/")); 
       }
-
+      
+      String addressInfo = contextURL + ((HttpServletRequest) request).getServletPath()  + ((HttpServletRequest) request).getPathInfo();
       try {
           //set the xml
           response.setContentType("text/xml");
@@ -112,7 +127,7 @@ public final class ContractsFilter implements Filter {
           
           //start a contracthandler sax events to send out to the client.
           XMLReader myReader = XMLReaderFactory.createXMLReader();
-          myReader.setContentHandler(new ContractHandler(out, contextURL, currentURLSchemaBase));
+          myReader.setContentHandler(new ContractHandler(out, contextURL, currentURLSchemaBase, addressInfo));
           InputStream is  = this.getClass().getClassLoader().getResourceAsStream(schemaFile);
           if(is == null) {
               //could not find this resource (it's not in the contracts.jar)
@@ -142,16 +157,18 @@ public final class ContractsFilter implements Filter {
         private PrintWriter out = null;
         private String urlString = null;
         private String currentURLSchemaBase = null;
+        private String addressURL = null;
         /**
          * ContractHandler to send xml schemas and wsdls to the client.
          * @param out
          * @param urlString
          * @param currentURLSchemaBase
          */
-        public ContractHandler(PrintWriter out, String urlString, String currentURLSchemaBase) {
+        public ContractHandler(PrintWriter out, String urlString, String currentURLSchemaBase, String addressURL) {
             this.out = out;
             this.urlString = urlString;
             this.currentURLSchemaBase = currentURLSchemaBase;
+            this.addressURL = addressURL;
         }
         
         private String definedNS = "";
@@ -165,7 +182,7 @@ public final class ContractsFilter implements Filter {
                   char []loc = attributes.getValue(i).toCharArray();
                   for(int j = 0;j < loc.length;j++) {
                       if(loc[j] != '.' && loc[j] != '/') {
-                        actualLocation = String.valueOf(loc,j,loc.length);
+                        actualLocation = String.valueOf(loc,j,(loc.length - j));
                         if(j <= 3) {
                             //ahha the user did not do a ../
                             //means the xsd/wsdl reference is in the same directory. or below.
@@ -178,13 +195,14 @@ public final class ContractsFilter implements Filter {
                   if(actualLocation.startsWith("schema") || actualLocation.startsWith("/schema")) {
                       elem += attributes.getQName(i) + "=\"" + urlString + actualLocation + "\" ";
                   }else {
-                      elem += attributes.getQName(i) + "=\"" + urlString + "/schema" + actualLocation + "\" ";
+                      elem += attributes.getQName(i) + "=\"" + urlString + "/schema/" + actualLocation + "\" ";
                   }//else
               }else if( ("address".equals(localName)) && 
                       ("location".equals(attributes.getQName(i)))   ) {
-                  elem += attributes.getQName(i) + "=\"" + urlString + actualLocation + "\" ";
+                  elem += attributes.getQName(i) + "=\"" + addressURL+ "\" ";
               } else {
-                  elem += attributes.getQName(i) + "=\"" + attributes.getValue(i) + "\" ";
+            	
+                  elem += attributes.getQName(i) + "=\"" + attributes.getValue(i).replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("&","&amp;") + "\" ";
               }
           }
 
@@ -200,6 +218,16 @@ public final class ContractsFilter implements Filter {
         
         public void endElement(String uri, String localName, String qName) throws SAXException {
             out.println("</" + qName + ">");
+        }
+        
+        public void characters(char[] ch,
+                int start,
+                int length)
+         throws SAXException {
+        	//System.out.print(ch);
+        	
+        	//System.out.println("-->done with characters and start = " + start + " with length = " + length);
+        	out.print(String.valueOf(ch,start,length).replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("&","&amp;") );
         }
         
         public void startPrefixMapping(String prefix, String uri) {

@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.15 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: VoResourceSupport.java,v 1.16 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,7 +68,8 @@ public class VoResourceSupport {
          "<curation>\n"+
            "<publisher>"+publisher+"</publisher>\n"+
            "<creator>\n"+
-           "<name>"+contactName+" (should really be dataset creator's name!)</name>\n" +
+           // NB THIS NEXT SHOULD REALLY BE DATASET CREATOR'S NAME?
+           "<name>"+contactName+"</name>\n" +
            "<logo>" +refUrl + "/logo.gif</logo>\n" +
            "</creator>\n"+
            "<contact>\n"+

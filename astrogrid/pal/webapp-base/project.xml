@@ -54,131 +54,6 @@
        </properties>
     </dependency>
 
-
-    <!-- library for resolving IDs, accessing storepoints, etc -->
-    <dependency>
-      <id>astrogrid-slinger</id>
-      <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.slinger.version}</version>
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    
-    <!-- XMLDB api dependencies. -->
-    <dependency>
-        <groupId>org.astrogrid</groupId>
-        <artifactId>astrogrid-xmldb-client</artifactId>
-        <version>${astrogrid.xmldb.version}</version>
-        <type>jar</type>
-        <url>http://www.astrogrid.org/</url>
-    </dependency>
-   
-        	<dependency>
-            	<groupId>xmldb-api</groupId>
-    	        <artifactId>xmldb</artifactId>
-    	        <type>jar</type>
-        		<version>20040708</version>
-            	<url>http://www.astrogrid.org/</url>
-    	    </dependency> 
-
-        <dependency>
-            <groupId>xmlrpc</groupId>
-            <artifactId>xmlrpc</artifactId>
-	        <version>1.2-patched</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-        </dependency>
-    
-
-<!-- for some reason the slinger uberjar doesn't seem to be being loaded properly in tomcat
-       <dependency>
-            <artifactId>astrogrid-slinger-api</artifactId>
-            <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.slinger.version}</version>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-       </dependency>
-       <dependency>
-            <artifactId>astrogrid-filemanager-client</artifactId>
-            <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.filemanager.version}</version>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-       </dependency>
-       <dependency>
-            <artifactId>astrogrid-filemanager-contract</artifactId>
-            <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.filemanager.version}</version>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-       </dependency>
-       <dependency>
-            <artifactId>astrogrid-filestore-client</artifactId>
-            <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.filestore.version}</version>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-       </dependency>
-       <dependency>
-            <artifactId>astrogrid-filestore-common</artifactId>
-            <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.filestore.version}</version>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-       </dependency>
-       <dependency>
-         <id>JavaMail</id>
-         <version>UNKNOWN</version>
-         <jar>JavaMail.jar</jar>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-       </dependency>
-       <dependency>
-          <artifactId>astrogrid-registry-client-lite</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.registry.version}</version>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-       </dependency>
-       <dependency>
-         <artifactId>astrogrid-registry-common</artifactId>
-         <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.registry.version}</version>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-       </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-common</artifactId>
-            <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-client</artifactId>
-             <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-resolver</artifactId>
-           <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
-      <properties>         <war.bundle>true</war.bundle>      </properties>
-        </dependency>
- end of slinger includes -->
-
-
-
-    <!-- Starlink's table transformer -->
-    <dependency>
-      <artifactId>stil</artifactId>
-      <groupId>starlink</groupId>
-      <version>2.0-3</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-
     <dependency>
       <id>astrogrid-xml</id>
       <groupId>org.astrogrid</groupId>
@@ -188,6 +63,8 @@
       </properties>
     </dependency>
 
+    <!--
+      REMOVED BY KEA 06/09/06
       <dependency>
          <artifactId>astrogrid-pal-geom</artifactId>
          <groupId>org.astrogrid</groupId>
@@ -196,15 +73,7 @@
             <war.bundle>true</war.bundle>
          </properties>
       </dependency>
-
-      <dependency>
-         <artifactId>astrogrid-pal-server</artifactId>
-         <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.pal.latest}</version>
-         <properties>
-            <war.bundle>true</war.bundle>
-         </properties>
-      </dependency>
+      -->
 
       <dependency>
          <artifactId>astrogrid-pal-units</artifactId>
@@ -242,22 +111,64 @@
          </properties>
       </dependency>
 
+      <dependency>
+         <artifactId>astrogrid-pal-server</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.pal.latest}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
 
-    <!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
-    <dependency>
-      <id>activation</id>
-      <version>1.0.2</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-
-    <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
-    <dependency>
-      <id>servletapi</id>
-      <version>2.3</version>
-    </dependency>
+      <!-- slinger stuff -->
+       <dependency>
+          <artifactId>astrogrid-registry-client-lite</artifactId>
+          <groupId>org.astrogrid</groupId>
+          <version>${astrogrid.registry.version}</version>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+       </dependency>
+       <dependency>
+         <artifactId>astrogrid-registry-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.registry.version}</version>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+       </dependency>
+       <dependency>
+            <artifactId>astrogrid-filemanager-contract</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filemanager.version}</version>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+       </dependency>
+       <dependency>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filemanager.version}</version>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+       </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+           <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+             <version>${astrogrid.community.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+        </dependency>
 
     <!-- cea -->
     <dependency>
@@ -277,14 +188,6 @@
       </properties>
     </dependency>
     <dependency>
-      <artifactId>astrogrid-jes-delegate</artifactId>  <!-- needed for JESException, for registering with the Job Monitor -->
-      <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.jes.version}</version>
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
       <id>picocontainer</id>
       <version>1.1</version>
       <properties>
@@ -298,18 +201,89 @@
          <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-
-    <!-- registry for pushing metadata -->
-<!-- included in slinger
     <dependency>
-      <artifactId>astrogrid-registry-client-lite</artifactId>
-      <groupId>org.astrogrid</groupId>
-      <version>${astrogrid.registry.version}</version>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.0</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
--->
+
+    <dependency>
+      <id>astrogrid-pal-slinger</id>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.pal.latest}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
+    <!-- for logging -->
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.8</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+
+    <!-- XMLDB api dependencies. -->
+    <!--
+      TEMPORARILY? DISABLED BY KEA 06/09/06
+    <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-xmldb-client</artifactId>
+        <version>${astrogrid.xmldb.version}</version>
+        <type>jar</type>
+        <url>http://www.astrogrid.org/</url>
+    </dependency>
+   
+        	<dependency>
+            	<groupId>xmldb-api</groupId>
+    	        <artifactId>xmldb</artifactId>
+    	        <type>jar</type>
+        		<version>20040708</version>
+            	<url>http://www.astrogrid.org/</url>
+    	    </dependency> 
+
+        <dependency>
+            <groupId>xmlrpc</groupId>
+            <artifactId>xmlrpc</artifactId>
+	        <version>1.2-patched</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        -->
+    
+
+<!-- for some reason the slinger uberjar doesn't seem to be being loaded properly in tomcat
+       <dependency>
+            <artifactId>astrogrid-slinger-api</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.slinger.version}</version>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+       </dependency>
+       <dependency>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filestore.version}</version>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+       </dependency>
+       <dependency>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filestore.version}</version>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+       </dependency>
+       <dependency>
+         <id>JavaMail</id>
+         <version>UNKNOWN</version>
+         <jar>JavaMail.jar</jar>
+      <properties>         <war.bundle>true</war.bundle>      </properties>
+       </dependency>
+ end of slinger includes -->
 
   	<!-- axis, and the jars it relies upon -->
   	<dependency>
@@ -321,6 +295,8 @@
   			<war.bundle>true</war.bundle>
   		</properties>
   	</dependency>
+   <!--
+   REMOVED BY KEA 06/09/06
   	<dependency>
   		<groupId>axis</groupId>
   		<type>jar</type>
@@ -330,6 +306,7 @@
   			<war.bundle>true</war.bundle>
   		</properties>
   	</dependency>
+   -->
   	<dependency>
   		<groupId>axis</groupId>
   		<type>jar</type>
@@ -367,14 +344,108 @@
   		</properties>
   	</dependency>
 
-    <!-- for logging -->
+   <dependency>
+      <id>hsqldb</id>
+      <version>1.8.0</version>
+  </dependency>
+
+    <!-- Starlink's table transformer -->
     <dependency>
-      <id>log4j</id>
-      <version>1.2.8</version>
+      <artifactId>stil</artifactId>
+      <groupId>starlink</groupId>
+      <version>2.0-3</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
+    <!-- castor, and what it needs -->
+    <dependency>
+      <id>castor</id>
+      <version>0.9.5</version>
+      <jar>castor-0.9.5-xml.jar</jar>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
+    <dependency>
+      <id>servletapi</id>
+      <version>2.3</version>
+    </dependency>
+
+    <dependency>
+      <id>xercesImpl</id>
+      <version>2.6.2</version>
+    </dependency>
+
+    <!--
+      REMOVED BY KEA 06/09/06
+    <dependency>
+      <id>regexp</id>
+      <version>1.3</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    -->
+
+    <!--
+      REMOVED BY KEA 06/09/06
+    <dependency>
+      <groupId>oro</groupId>
+      <artifactId>oro</artifactId>
+      <version>2.0.7</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    -->
+
+   <!--  The JXpath library - required for Registry delegate -->
+    <dependency>
+      <artifactId>commons-jxpath</artifactId>
+      <groupId>commons-jxpath</groupId>
+      <version>1.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.6.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+
+    <!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
+    <dependency>
+      <id>activation</id>
+      <version>1.0.2</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+
+      <!-- needed for JESException, for registering with the Job Monitor -->
+      <!--
+      REMOVED BY KEA 06/09/06
+    <dependency>
+      <artifactId>astrogrid-jes-delegate</artifactId>  
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.jes.version}</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    -->
+
 
     <!--
     <dependency>
@@ -399,39 +470,10 @@
      <dependency>
          <id>xercesImpl</id>
          <version>2.6.2</version>
-     </dependency>
-
-
-
-    <!-- castor, and what it needs -->
-    <dependency>
-      <id>castor</id>
-      <version>0.9.5</version>
-      <jar>castor-0.9.5-xml.jar</jar>
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-
-
-    <dependency>
-      <id>regexp</id>
-      <version>1.3</version>
-      <properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-
-    <dependency>
-      <groupId>oro</groupId>
-      <artifactId>oro</artifactId>
-      <version>2.0.7</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
-    </dependency>
+     </dependency>
 
     <!-- for XML Catalog with Xerces -->
     <!--
@@ -443,34 +485,6 @@
       </properties>
     </dependency>
     -->
-
-   <!--  The JXpath library - required for Registry delegate -->
-    <dependency>
-      <artifactId>commons-jxpath</artifactId>
-      <groupId>commons-jxpath</groupId>
-      <version>1.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>3.0</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>1.6.1</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
 
     <!-- testing -->
     <dependency>

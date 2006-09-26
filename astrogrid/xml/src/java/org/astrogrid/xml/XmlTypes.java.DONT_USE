@@ -1,5 +1,5 @@
 /*
- * $Id: XmlTypes.java,v 1.1 2005/03/22 13:03:34 mch Exp $
+ * $Id: XmlTypes.java.DONT_USE,v 1.2 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,7 +62,13 @@ public class XmlTypes  {
 }
 
 /*
- $Log: XmlTypes.java,v $
+ $Log: XmlTypes.java.DONT_USE,v $
+ Revision 1.2  2006/09/26 15:34:42  clq2
+ SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
+
+ Revision 1.1.2.1  2006/09/26 15:11:17  kea
+ Renaming.
+
  Revision 1.1  2005/03/22 13:03:34  mch
  Separated xml from slinger (circular dependency with config)
 

@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.5 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: GetMetadata.java,v 1.6 2006/09/26 15:34:42 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -10,6 +10,9 @@ import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.xml.DomHelper;
 import org.astrogrid.webapp.DefaultServlet;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.cfg.ConfigFactory;
+
 
 /**
  * A servlet for returning the generated metadata
@@ -18,9 +21,16 @@ import org.astrogrid.webapp.DefaultServlet;
  */
 public class GetMetadata extends DefaultServlet {
    
-   
    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+      // Initialise SampleStars plugin if required (may not be initialised
+      // if admin has not run the self-tests)
+      String plugin = ConfigFactory.getCommonConfig().getString(
+           "datacenter.querier.plugin");
+      if (plugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+         // This has no effect if the plugin is already initialised
+         SampleStarsPlugin.initialise();  // Just in case
+      }
       try {
          response.setContentType("text/xml");
 

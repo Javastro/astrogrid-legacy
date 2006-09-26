@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.12 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.13 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,12 +16,15 @@ import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
 import org.astrogrid.xml.DomHelper;
-import org.astrogrid.xml.XmlTypes;
+//import org.astrogrid.dataservice.metadata.XmlTypes;
+import org.astrogrid.dataservice.metadata.StdDataTypes;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.contracts.SchemaMap;
-
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 
 /**
  * Provides a set of convenience routines for accessing the TableMetaDoc that
@@ -49,6 +52,22 @@ public class TableMetaDocInterpreter
    
    /** Construct to interpret the table metadoc given in the config file */
    public TableMetaDocInterpreter() throws IOException {
+
+     try {
+       // Initialise SampleStars plugin if required (may not be initialised
+       // if admin has not run the self-tests)
+        String plugin = ConfigFactory.getCommonConfig().getString(
+            "datacenter.querier.plugin");
+         if (plugin.equals(
+               "org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+            // This has no effect if the plugin is already initialised
+            SampleStarsPlugin.initialise();  // Just in case
+         }
+      }
+      catch (DatabaseAccessException dbe) {
+         throw new IOException(dbe.getMessage());
+      }
+
       docUrl = ConfigFactory.getCommonConfig().getUrl(TABLE_METADOC_URL_KEY, null);
       if (docUrl != null) {
          loadUrl(docUrl);
@@ -317,7 +336,8 @@ public class TableMetaDocInterpreter
       
       info.setPublicType(datatype);
       if (info.getPublicType() != null) {
-         info.setJavaType(XmlTypes.getJavaType(info.getPublicType()));
+         //info.setJavaType(XmlTypes.getJavaType(info.getPublicType()));
+         info.setJavaType(StdDataTypes.getJavaType(info.getPublicType()));
       }
       return info;
    }

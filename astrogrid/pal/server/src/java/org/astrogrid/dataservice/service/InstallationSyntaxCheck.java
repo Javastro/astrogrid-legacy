@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.4 2006/08/21 15:39:30 clq2 Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.5 2006/09/26 15:34:42 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,7 +68,8 @@ public class InstallationSyntaxCheck {
       "selectBetweenOps.xml",
       "selectBoolOps.xml",
       "selectAllNoAlias.xml",
-      "selectSomeNoAlias.xml"
+      "selectSomeNoAlias.xml",
+      "selectColourCutter.xml"
    };
 
    private Principal testPrincipal = new LoginAccount("SelfTest", "localhost");

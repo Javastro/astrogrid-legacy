@@ -1,5 +1,5 @@
 /*
- * $Id: StdDataTypes.java,v 1.2 2005/05/27 16:21:06 clq2 Exp $
+ * $Id: StdDataTypes.java,v 1.3 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,13 +9,10 @@ package org.astrogrid.dataservice.metadata;
 
 /**
  * Defines standard data types, and useful translation methods.
- * These are based on the xsi types used throughout the world, rather than the
- * VOTable types, though there are similarities.  This is also a reduced set
- * to core 'types' as opposed to data 'sizes' - ie there is no differentiating
- * between double and single precision floats, as this is a factor of size. And
- * it doesn't make much sense either in XML anyway...
+ * These are a RDBMS-oriented subset of possible VOTable types.
  *
  * @author M Hill
+ * @author K Andrews
  */
 
 import java.util.Date;
@@ -23,9 +20,13 @@ import org.astrogrid.tableserver.out.VoTableWriter;
 
 public class StdDataTypes  {
    
-   public final static String FLOAT     = "float";
+   public final static String SHORT     = "short";
    public final static String INT       = "int";
+   public final static String LONG      = "long";
+   public final static String FLOAT     = "float";
+   public final static String DOUBLE    = "double";
    public final static String BOOLEAN   = "boolean";
+   public final static String CHAR      = "char";
    public final static String STRING    = "string";
    public final static String DATE      = "dateTime";   //date as seconds since/before 1970
    
@@ -33,18 +34,24 @@ public class StdDataTypes  {
       BOOLEAN, STRING, FLOAT, INT, DATE
    };
    
-   /**Returns the VO Type for the given java class type */
+   /**Returns the VO Type for the given java class type.
+    * NOTES: 
+        - VOTable has an unsignedByte but no byte 
+    */
    public static String getStdType(Class javatype) {
       if (javatype == null) {
          throw new IllegalArgumentException("Null type given to work out VoType");
       }
-      else if (javatype == String.class)  {  return STRING;    }
-      else if (javatype == Integer.class) {  return INT;     }
-      else if (javatype == Long.class)    {  return INT;    }
-      else if (javatype == Float.class)   {  return FLOAT;   }
-      else if (javatype == Double.class) {   return FLOAT;  }
-      else if (javatype == Boolean.class) {  return BOOLEAN;    }
-      else if (javatype == Date.class)    {  return DATE;    }
+      else if (javatype == Byte.class)      {  return SHORT;   }
+      else if (javatype == Short.class)     {  return SHORT;   }
+      else if (javatype == Integer.class)   {  return INT;     }
+      else if (javatype == Long.class)      {  return LONG;    }
+      else if (javatype == Float.class)     {  return FLOAT;   }
+      else if (javatype == Double.class)    {  return DOUBLE;  }
+      else if (javatype == Boolean.class)   {  return BOOLEAN; }
+      else if (javatype == Character.class) {  return CHAR;    }
+      else if (javatype == String.class)    {  return STRING;  }
+      else if (javatype == Date.class)      {  return DATE;    }
       else {
          throw new IllegalArgumentException("Don't know what VOType the java class "+javatype+" maps to");
       }
@@ -55,23 +62,33 @@ public class StdDataTypes  {
       if (stdtype == null) {
          throw new IllegalArgumentException("Null type given to work out JavaType");
       }
+      else if (stdtype.equals(SHORT)) { return Short.class;  }
+      else if (stdtype.equals(INT)) { return Integer.class;  }
+      else if (stdtype.equals(LONG)) { return Long.class;  }
+      else if (stdtype.equals(FLOAT)) { return Float.class;  }
+      else if (stdtype.equals(DOUBLE)) { return Double.class;  }
+      else if (stdtype.equals(BOOLEAN)) { return Boolean.class;  }
+      else if (stdtype.equals(CHAR)) { return Character.class;  }
       else if (stdtype.equals(STRING)) { return String.class;  }
-      else if (stdtype.equals(INT)) { return Long.class; }
-      else if (stdtype.equals(FLOAT)) { return Double.class; }
-      else if (stdtype.equals(BOOLEAN)) { return Boolean.class; }
-      else if (stdtype.equals(DATE)) { return Date.class; }
+      else if (stdtype.equals(DATE)) { return Date.class;  }
       //for backwards-compatibility
       else if (stdtype.equals("date")) { return Date.class; }
       else {
-         //for backwards-compatibility - older resources (based on VOTable types)
-         return getJavaType(stdtype);
+        throw new IllegalArgumentException("Unrecognised data type " + 
+            stdtype + " given to work out JavaType");
       }
    }
-   
 }
 
 /*
  $Log: StdDataTypes.java,v $
+ Revision 1.3  2006/09/26 15:34:42  clq2
+ SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
+
+ Revision 1.2.84.1  2006/08/25 16:24:41  kea
+ Pre-weekend checkin.  Work in progress on extending data type interpretation.
+ Fix for missing xerces jar in war bundle.
+
  Revision 1.2  2005/05/27 16:21:06  clq2
  mchv_1
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoTypes.java,v 1.5 2006/02/09 09:54:09 clq2 Exp $
+ * $Id: VoTypes.java,v 1.6 2006/09/26 15:34:42 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,24 +18,23 @@ import java.util.Date;
 
 public class VoTypes  {
    
-   //the long to the short of it...
-   public final static String LONG      = "long";
-   public final static String BOOLEAN   = "boolean";
-   public final static String BIT       = "bit";
-   public final static String UBYTE     = "unsignedByte";
-   public final static String CHAR      = "char";
-   public final static String UNICHAR   = "unicodeChar";
-   public final static String DOUBLE    = "double";
-   public final static String FLOAT     = "float";
-   public final static String DOUBLECOMPLEX = "doubleComplex";
-   public final static String FLOATCOMPLEX  = "floatComplex";
-   public final static String SHORT     = "short";
-   // Changed for bug #1479 - always use "long" to allow for big integers
-//   public final static String INT       = "int";
-   public final static String INT       = "long";
+   //These are the VOTable data types from the 1.1 schema;  
+   //they are all defined here, but not all are presently in use by DSA.
+   public final static String BOOLEAN        = "boolean";   
+   public final static String BIT            = "bit";             //Not used
+   public final static String UBYTE          = "unsignedByte";    //Not used
+   public final static String SHORT          = "short";
+   public final static String INT            = "int";
+   public final static String LONG           = "long";
+   public final static String CHAR           = "char";
+   public final static String UNICHAR        = "unicodeChar";     //Not used
+   public final static String DOUBLE         = "double";
+   public final static String FLOAT          = "float";
+   public final static String FLOATCOMPLEX   = "floatComplex";    //Not used
+   public final static String DOUBLECOMPLEX  = "doubleComplex";   //Not used
    
    public final static String[] TYPES = new String[] {
-      LONG, BOOLEAN, BIT, UBYTE, CHAR, UNICHAR, DOUBLE, FLOAT, DOUBLECOMPLEX, FLOATCOMPLEX, INT, SHORT
+      BOOLEAN, BIT, UBYTE, SHORT, INT, LONG, CHAR, UNICHAR, DOUBLE, FLOAT, FLOATCOMPLEX, DOUBLECOMPLEX
    };
    
 
@@ -48,18 +47,41 @@ public class VoTypes  {
       if (javatype == null) {
          throw new IllegalArgumentException("Null type given to work out VoType");
       }
-      else if (javatype == String.class)  {  return "<dataType arraysize='*'>" + CHAR    + "</dataType>"; }
-      else if (javatype == Integer.class) {  return "<dataType>"               + INT     + "</dataType>"; }
-      else if (javatype == Long.class)    {  return "<dataType>"               + LONG     + "</dataType>"; }
-      else if (javatype == Float.class)   {  return "<dataType>"               + FLOAT   + "</dataType>"; }
-      else if (javatype == Double.class)  {  return "<dataType>"               + DOUBLE   + "</dataType>"; }
-      else if (javatype == Boolean.class) {  return "<dataType>"               + BOOLEAN + "</dataType>"; }
-      else if (javatype == Date.class)    {  return "<dataType arraysize='*'>" + CHAR    + "</dataType>"; }
+      else if (javatype == Byte.class)  {  
+        return "<dataType>" + SHORT     + "</dataType>"; 
+      }
+      else if (javatype == Short.class)  {  
+        return "<dataType>" + SHORT     + "</dataType>"; 
+      }
+      else if (javatype == Integer.class) {  
+        return "<dataType>" + INT + "</dataType>"; 
+      }
+      else if (javatype == Long.class)    {  
+        return "<dataType>" + LONG     + "</dataType>"; 
+      }
+      else if (javatype == Float.class)   {  
+        return "<dataType>" + FLOAT   + "</dataType>"; 
+      }
+      else if (javatype == Double.class)  {  
+        return "<dataType>" + DOUBLE   + "</dataType>"; 
+      }
+      else if (javatype == Boolean.class) {  
+        return "<dataType>" + BOOLEAN + "</dataType>"; 
+      }
+      else if (javatype == Character.class) {  
+        // Be pedantic about array size to emphasise it really is just 1 char
+        return "<dataType arraysize='1'>" + CHAR + "</dataType>"; 
+      }
+      else if (javatype == String.class)  {  
+        return "<dataType arraysize='*'>" + CHAR    + "</dataType>"; 
+      }
+      else if (javatype == Date.class)    {  
+        return "<dataType arraysize='*'>" + CHAR + "</dataType>"; 
+      }
       else {
          throw new IllegalArgumentException("Don't know what VOType the java class "+javatype+" maps to");
       }
    }
-
 
    
    /**Returns the 'VO Type' for the given java class.  NOTE that this is not
@@ -69,13 +91,37 @@ public class VoTypes  {
       if (javatype == null) {
          throw new IllegalArgumentException("Null type given to work out VoType");
       }
-      else if (javatype == String.class)  {  return "datatype='"+CHAR+"' arraysize='*'";    }
-      else if (javatype == Integer.class) {  return "datatype='"+INT+"'";     }
-      else if (javatype == Long.class)    {  return "datatype='"+LONG+"'";    }
-      else if (javatype == Float.class)   {  return "datatype='"+FLOAT+"'";   }
-      else if (javatype == Double.class) {   return "datatype='"+FLOAT+"'";  }
-      else if (javatype == Boolean.class) {  return "datatype='"+BOOLEAN+"'";    }
-      else if (javatype == Date.class)    {  return "datatype='"+CHAR+"' arraysize='*'";    }
+      else if (javatype == Byte.class)  {  
+        return "datatype='"+SHORT+"'";    
+      }
+      else if (javatype == Short.class)  {  
+        return "datatype='"+SHORT+"'";    
+      }
+      else if (javatype == Integer.class) {  
+        return "datatype='"+INT+"'";     
+      }
+      else if (javatype == Long.class)    {  
+        return "datatype='"+LONG+"'";    
+      }
+      else if (javatype == Float.class)   {  
+        return "datatype='"+FLOAT+"'";   
+      }
+      else if (javatype == Double.class)  {   
+        return "datatype='"+DOUBLE+"'";  
+      }
+      else if (javatype == Boolean.class) {  
+        return "datatype='"+BOOLEAN+"'";    
+      }
+      else if (javatype == Character.class) {  
+        // Be pedantic about array size to emphasise it really is just 1 char
+        return "datatype='"+CHAR+"' arraysize='1'";    
+      }
+      else if (javatype == String.class)  {  
+        return "datatype='"+CHAR+"' arraysize='*'";    
+      }
+      else if (javatype == Date.class)    {  
+        return "datatype='"+CHAR+"' arraysize='*'";    
+      }
       else {
          throw new IllegalArgumentException("Don't know what VOType the java class "+javatype+" maps to");
       }
@@ -88,19 +134,46 @@ public class VoTypes  {
       if (javatype == null) {
          throw new IllegalArgumentException("Null type given to work out VoType");
       }
-      else if (javatype == String.class)  {  return "datatype='"+CHAR+"' arraysize='*'";    }
-      else if (javatype == Integer.class) {  return "datatype='"+INT+"'";     }
-      else if (javatype == Long.class)    {  return "datatype='"+LONG+"'";    }
-      else if (javatype == Float.class)   {  return "datatype='"+FLOAT+"'";   }
-      else if (javatype == Double.class) {   return "datatype='"+FLOAT+"'";  }
-      else if (javatype == Boolean.class) {  return "datatype='"+BOOLEAN+"'";    }
-      else if (javatype == Date.class)    {  return "datatype='"+CHAR+"' arraysize='*'";    }
+      else if (javatype == Byte.class) {  
+        return "datatype='"+SHORT+"'";     
+      }
+      else if (javatype == Short.class) {  
+        return "datatype='"+SHORT+"'";     
+      }
+      else if (javatype == Integer.class) {  
+        return "datatype='"+INT+"'";     
+      }
+      else if (javatype == Long.class)    {  
+        return "datatype='"+LONG+"'";    
+      }
+      else if (javatype == Float.class)   {  
+        return "datatype='"+FLOAT+"'";   
+      }
+      else if (javatype == Double.class) {   
+        return "datatype='"+FLOAT+"'";  
+      }
+      else if (javatype == Boolean.class) {  
+        return "datatype='"+BOOLEAN+"'";    
+      }
+      else if (javatype == Character.class) {  
+        // Be pedantic about array size to emphasise it really is just 1 char
+        return "datatype='"+CHAR+"' arraysize='1'";    
+      }
+      else if (javatype == String.class)  {  
+        return "datatype='"+CHAR+"' arraysize='*'";    
+      }
+      else if (javatype == Date.class)    {  
+        return "datatype='"+CHAR+"' arraysize='*'";    
+      }
       else {
          throw new IllegalArgumentException("Don't know what VOType the java class "+javatype+" maps to");
       }
    }
 
-   /**Returns the java class for the given data type */
+   /* THIS IS NOT CURRENTLY IN USE IN DSA.
+    * MAPPING FROM VOTable to SQL is less simple than the other direction. *
+   /* *Returns the java class for the given data type */
+   /*
    public static Class getJavaType(String votype) {
       if (votype == null) {
          throw new IllegalArgumentException("Null type given to work out JavaType");
@@ -121,11 +194,19 @@ public class VoTypes  {
          throw new IllegalArgumentException("Don't know what java type the VOType '"+votype+"' maps to");
       }
    }
+      */
    
 }
 
 /*
  $Log: VoTypes.java,v $
+ Revision 1.6  2006/09/26 15:34:42  clq2
+ SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
+
+ Revision 1.5.24.1  2006/08/25 16:24:41  kea
+ Pre-weekend checkin.  Work in progress on extending data type interpretation.
+ Fix for missing xerces jar in war bundle.
+
  Revision 1.5  2006/02/09 09:54:09  clq2
  KEA_1521_pal
 

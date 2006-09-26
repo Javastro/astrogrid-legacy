@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.7 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: SubmitCone.java,v 1.8 2006/09/26 15:34:42 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -18,6 +18,10 @@ import org.astrogrid.query.Query;
 import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.dataservice.queriers.DatabaseAccessException;
+
 
 /**
  * A servlet for processing Cone Queries.
@@ -33,6 +37,15 @@ public class SubmitCone extends DefaultServlet {
  
    public void doGet(HttpServletRequest request,
                      HttpServletResponse response) throws ServletException, IOException {
+
+      // Initialise SampleStars plugin if required (may not be initialised
+      // if admin has not run the self-tests)
+      String plugin = ConfigFactory.getCommonConfig().getString(
+           "datacenter.querier.plugin");
+      if (plugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+         // This has no effect if the plugin is already initialised
+         SampleStarsPlugin.initialise();  // Just in case
+      }
 
       // Extract the query parameters
       double radius = ServletHelper.getRadius(request);

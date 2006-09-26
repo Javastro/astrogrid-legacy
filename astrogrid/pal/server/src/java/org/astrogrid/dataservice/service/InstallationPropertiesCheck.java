@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.3 2006/06/23 10:18:29 kea Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.4 2006/09/26 15:34:42 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -72,6 +72,7 @@ public class InstallationPropertiesCheck extends TestCase {
       // datacenter.publisher
       // datacenter.contact.name
       // datacenter.contact.email
+      // datacenter.ucd.version
       //
 
       String plugin;

@@ -32,7 +32,12 @@ for that sql, for a collection of sample queries.
 <h1>SQL syntax test page for <%=DataServer.getDatacenterName() %></h1>
 
 <p> These tests check whether your Datacenter installation is producing
-SQL suited to your RDBMS backend.
+SQL suited to your RDBMS backend.  
+</p>
+
+<p>The actual queries being produced are mostly nonsensical;  these tests 
+are purely to check that the translation process produces syntactially 
+valid SQL.
 </p>
 
 <p><strong>Note: Please scroll down the page to 

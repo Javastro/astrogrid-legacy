@@ -45,7 +45,7 @@ RDBMS that provides a
     <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following systems:
    <ul>
       <li><a href="http://www.mysql.com/">MySQL</a> - Open Source SQL database (version 4.1.16)</li>
-      <li><a href="http://www.postgresql.org/">PostgreSQL</a> - Open Source SQL database (version 7.2.3)</li>
+      <li><a href="http://www.postgresql.org/">PostgreSQL</a> - Open Source SQL database (version 7.2.3, version 8.1.4)</li>
       <li><a href="http://www.microsoft.com/sql/">SQL Server</a> - Microsoft SQL Server (version 8.00) </li>
       <li><a href="http://hsqldb.sourceforge.net/">HSQLDB</a> - pure-Java
          RDBMS (version 1.8.0). For testing purposes or serving small 
@@ -133,6 +133,16 @@ either be specified as a direct connection (simpler) or as a server connection
    <li><a href="http://tomcat.apache.org/tomcat-5.0-doc/jndi-resources-howto.html">The Apache Jakarta Tomcat 5 Servlet/JSP Container JNDI Resources HOW-TO</a></li>
    </ul>
    
+
+<h3>Known issues</h3>
+
+  <ul><li><strong>PostgreSQL JDBC drivers</strong> with versions less than 8.0 
+  may fail on queries returning large resultsets (because the webapp runs out 
+  of memory).  If using these drivers, we recommend setting tomcat to run with
+  plenty of memory, and limiting the maximum number of rows a query can return
+  (the <tt>datacenter.max.return</tt> property, see <a href="./configure_step4.jsp">the next configuration step</a> for information about setting properties).
+  </li>
+  </ul>
 
 <h3>References</h3>
 <ul>

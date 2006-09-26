@@ -293,7 +293,9 @@
       <xs:sequence>
         <xs:element ref="MIN" minOccurs="0"/>
         <xs:element ref="MAX" minOccurs="0"/>
+        <!--
         <xs:element ref="OPTION" minOccurs="0" maxOccurs="unbounded"/>
+        -->
       </xs:sequence>
       <xs:attribute name="ID" type="xs:ID"/>
       <xs:attribute name="type" default="legal">
@@ -321,6 +323,7 @@
       <xs:attribute name="inclusive" type="yesno" default="yes"/>
     </xs:complexType>
   </xs:element>
+  <!--
   <xs:element name="OPTION">
     <xs:complexType>
       <xs:sequence>
@@ -330,7 +333,7 @@
       <xs:attribute name="value" type="xs:string" use="required"/>
     </xs:complexType>
   </xs:element>
-
+  -->
 <!-- The LINK is a URL (href) or some other kind of reference (gref) -->
   <xs:element name="LINK">
     <xs:complexType mixed="true">
