@@ -5,12 +5,5 @@ package org.astrogrid.adql;
 public interface AdqlStoXVisitor
 {
   public Object visit(SimpleNode node, Object data);
-  public Object visit(ASTFrom node, Object data);
-  public Object visit(ASTGroupBy node, Object data);
-  public Object visit(ASTHaving node, Object data);
-  public Object visit(ASTOrderBy node, Object data);
-  public Object visit(ASTSelect node, Object data);
-  public Object visit(ASTRestrict node, Object data);
-  public Object visit(ASTAllow node, Object data);
   public Object visit(ASTWhere node, Object data);
 }

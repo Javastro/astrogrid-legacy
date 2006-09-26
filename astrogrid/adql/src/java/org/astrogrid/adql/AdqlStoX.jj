@@ -5,7 +5,7 @@
  
 options {
   JDK_VERSION = "1.4";
-  STATIC=false;                                                                                     
+  STATIC=false;                                                                                      
 }
 
 PARSER_BEGIN(AdqlStoX)
@@ -19,8 +19,6 @@ public class AdqlStoX/*@bgen(jjtree)*/implements AdqlStoXTreeConstants/*@egen*/ 
 
 /*@egen*/
 	
-	private final static ScalarExpressionType DUMMY_ARG = ScalarExpressionType.Factory.newInstance() ;
-
 	public SelectDocument exec() {
 		SelectDocument selectDoc = null ;
 		try {			
@@ -197,6 +195,7 @@ TOKEN :
 |	< OPTION: "option" >
 |	< OR: "or" >
 |	< ORDER: "order" >
+|	< ORDERBY : "order by" >
 |	< OUTER: "outer" >
 |	< OVER: "over" >
 |	< OVERLAPS : "overlaps" >
@@ -210,6 +209,7 @@ TOKEN :
 |	< PROC: "proc" >
 |	< PROCEDURE: "procedure" >
 |	< PUBLIC: "public" >
+//|	< QUOTE : "'" >
 |	< RAISERROR: "raiserror" >
 |	< RAW: "raw" >
 |	< READ: "read" >
@@ -358,6 +358,10 @@ TOKEN :
 |	< #HOUR: "hour" >
 |	< #MINUTE: "minute" >
 
+|	< ASCII_STRING_LITERAL : "\'" (~["\'"])* "\'" >
+
+//| 	< ASCIIStringLiteral : "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >//|	< UnicodeStringLiteral : "n" "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
+
 |	< OTHER : ~[] >
 }
  
@@ -368,7 +372,7 @@ SelectDocument selectDocument() :
 	SelectType st = null ;	
 }
 {
-	st=querySpecification() [ <SEMICOLON> ] 
+	st=query_specification_A() [ <SEMICOLON> ] 
 	{  
 		if( st != null ) {
 			selectDoc =  SelectDocument.Factory.newInstance() ;
@@ -569,9 +573,20 @@ SearchType booleanTest_AG() :
 	{ return st ; }
 }
 
-void likePredicate() : {}
+SearchType likePredicate() : 
 {
-	match() [ <NOT> ] <LIKE> pattern() [ <ESCAPE> escapeCharacter() ]	
+	SearchType st = null ;
+	Token t = null ;
+	AtomType p = null ;
+}
+{
+// adql does not support escape characters...
+//	( match() [ <NOT> ] <LIKE> pattern() [ <ESCAPE> escapeCharacter() ]	)
+	( match() [ <NOT> ] <LIKE> pattern() )
+
+	{
+		return st ;	
+	}
 }
 
 void mantissa() : {}
@@ -594,6 +609,8 @@ ScalarExpressionType characterFactor() :
 	ScalarExpressionType seType = null ;
 }
 {
+	// <character_primary> [ <collate_clause> ]
+	
 	// Foreshortened
 	seType=characterPrimary()
 	{ return seType ; }
@@ -604,9 +621,63 @@ ScalarExpressionType characterPrimary() :
 	ScalarExpressionType seType = null ;
 }
 {
+	//   <value_expression_primary>
+    // | <string_value_function>
+
 	// Foreshortened
 	seType=commonPrimary()
 	{ return seType ; }
+}
+
+
+AtomType characterStringLiteral_AG() : 
+{
+	AtomType atomType = null ;
+}
+{
+//  [ <introducer><character_set_specification> ]//  <quote> [ <character_representation>... ] <quote>//  [ { <separator>... <quote> [ <character_representation>... ] <quote> }... ]	
+
+//	( t=<UnicodeStringLiteral> | t=<ASCIIStringLiteral> )
+	atomType=ASCIIStringLiteral_AG()
+	{ 
+		return atomType ; 		
+	} 
+}
+
+AtomType ASCIIStringLiteral_AG() : 
+{
+	AtomType at = null ;
+	ArrayList list = null ;
+	Token t1 = null ;
+}
+{
+	( 
+		t1=<ASCII_STRING_LITERAL> 
+			{
+				if( t1 != null ) {
+					if( list == null )
+						list = new ArrayList() ;
+					list.add( t1.image.substring( 1, t1.image.length()-1 ) ) ;
+					t1 = null ;
+				}
+			}
+
+	)+
+	{
+		if( list.size() > 0 ) {
+			StringBuffer buffer = new StringBuffer();
+			ListIterator it = list.listIterator() ;
+			while( it.hasNext() ) {
+				buffer.append( (String)it.next() ) ;	
+			}
+			at = AtomType.Factory.newInstance() ;
+			StringType st = StringType.Factory.newInstance() ;
+			st.setValue( buffer.toString() ) ;
+			at.setLiteral( st ) ;			
+		}
+		return at ;
+	} 
+	
 }
 
 ScalarExpressionType characterValueExpression() : 
@@ -614,6 +685,9 @@ ScalarExpressionType characterValueExpression() :
 	ScalarExpressionType seType = null ;
 }
 {
+	//   <concatenation>
+    // | <character_factor>
+    
 	// Foreshortened
 	seType=characterFactor()
 	{ return seType ; }	
@@ -728,6 +802,7 @@ ComparisonPredType comparisonPredicate() :
 	ComparisonType compType = null ;
 }
 {
+	//  <row_value_constructor> <comp_op> <row_value_constructor>
 	( seType1=rowValueConstructor() compType=comparisonOperator() seType2=rowValueConstructor() )
 	{ 
 		if( seType2 != null ) {
@@ -922,42 +997,36 @@ UnaryExprType factor_Unary() :
 	}
 }
 
-void fromClause()       : 
-{/*@bgen(jjtree) From */
-        ASTFrom jjtn000 = new ASTFrom(this, JJTFROM);
-        boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);
-/*@egen*/
+FromType fromClause() : 
+{
+	FromType fromType = null ;
 	FromTableType ftType = null ;
+	ArrayList list = new ArrayList() ;
 }
-{/*@bgen(jjtree) From */
-        try {
-/*@egen*/
+{
 	( 
-		<FROM> ftType=tableReference() { jjtn000.tableRefList.add( ftType ) ; } 
-		( <COMMA> ftType=tableReference() { jjtn000.tableRefList.add( ftType ) ; } )* 
-	)/*@bgen(jjtree)*/
-        } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            throw (RuntimeException)jjte000;
-          }
-          if (jjte000 instanceof ParseException) {
-            throw (ParseException)jjte000;
-          }
-          throw (Error)jjte000;
-        } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-        }
-/*@egen*/
-	
+		<FROM> ftType=tableReference() { list.add( ftType ) ; } 
+		( <COMMA> ftType=tableReference() { list.add( ftType ) ; } )* 
+	)
+	{
+		if( list.size() > 0 ) {
+		   fromType = FromType.Factory.newInstance() ;
+		   FromTableType[] tableRefArray = new FromTableType[ list.size() ] ;
+		   fromType.setTableArray( (FromTableType[])list.toArray(tableRefArray) ) ;				
+		}
+		return fromType ;
+	}
+}
+
+AtomType generalLiteral() :
+{
+	AtomType atomType = null ;	
+}
+{
+//	 <character_string_literal>//   | <national_character_string_literal>//   | <bit_string_literal>//   | <hex_string_literal>//   | <datetime_literal>//   | <interval_literal>
+
+	atomType=characterStringLiteral_AG()
+	{ return atomType ; }	
 }
 
 AggregateFunctionType generalSetFunction() : 
@@ -991,80 +1060,72 @@ ScalarExpressionType generalValueSpecification() :
 	{ return seType ; }	
 }
 
-void groupByClause()          : {/*@bgen(jjtree) GroupBy */
-  ASTGroupBy jjtn000 = new ASTGroupBy(this, JJTGROUPBY);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
-{/*@bgen(jjtree) GroupBy */
-        try {
-/*@egen*/
-	<GROUPBY> groupingColumnReferenceList()/*@bgen(jjtree)*/
-        } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            throw (RuntimeException)jjte000;
-          }
-          if (jjte000 instanceof ParseException) {
-            throw (ParseException)jjte000;
-          }
-          throw (Error)jjte000;
-        } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-        }
-/*@egen*/
-}
-
-void groupingColumnReferenceList() : {}
+GroupByType groupByClause() : 
 {
-	groupingColumnReference() ( <COMMA> groupingColumnReference() )* 
+	GroupByType gbType = null ;
+	ArrayList crList = null ;
 }
-
-void groupingColumnReference() : {}
 {
-	columnReference() [ collateClause() ]	
+	<GROUPBY> crList=groupingColumnReferenceList()
+	{
+		if(	crList != null ) {
+			gbType = GroupByType.Factory.newInstance() ;
+			ColumnReferenceType[] colRefArray = new ColumnReferenceType[ crList.size() ] ;
+			gbType.setColumnArray( (ColumnReferenceType[])crList.toArray(colRefArray) ) ;	
+		}
+		return gbType ;
+	}
 }
 
-void havingClause()         : {/*@bgen(jjtree) Having */
-  ASTHaving jjtn000 = new ASTHaving(this, JJTHAVING);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
-{/*@bgen(jjtree) Having */
-        try {
-/*@egen*/	
-	<HAVING> searchCondition()/*@bgen(jjtree)*/
-        } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            throw (RuntimeException)jjte000;
-          }
-          if (jjte000 instanceof ParseException) {
-            throw (ParseException)jjte000;
-          }
-          throw (Error)jjte000;
-        } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-        }
-/*@egen*/
+ArrayList groupingColumnReferenceList() : 
+{
+	ArrayList list = null ;
+	ColumnReferenceType cr = null ;
+}
+{
+	(
+		cr=groupingColumnReference_AG() 
+		{ 
+			if( list == null )
+				list = new ArrayList() ;
+			list.add( cr ) ; 
+		}
+		( <COMMA> cr=groupingColumnReference_AG() { list.add( cr ) ; } )* 
+	)
+	{ return list ; }
+}
+
+ColumnReferenceType groupingColumnReference_AG() : 
+{
+	ColumnReferenceType cr = null ;
+}
+{
+//  Should be...
+//	columnReference() [ collateClause() ]	
+	cr=columnReference()	
+	{ return cr ; }
+}
+
+HavingType havingClause() :
+{
+	HavingType hType = null ;
+	SearchType sType = null ;
+	Token t = null ;
+}
+{	
+	( t=<HAVING> sType=searchCondition() )
+	{
+		if( t != null ) {
+			hType = HavingType.Factory.newInstance() ;	
+			if( sType != null )
+				hType.setCondition( sType ) ;
+		}
+		return hType ;
+	}
 }
 
 String identifier() : 
-{ String retValue ;}
+{ String retValue ; }
 {
 	// Foreshortened
 	retValue=actualIdentifier()
@@ -1388,21 +1449,75 @@ ScalarExpressionType numericValueFunction() :
 	{ return seType ; }
 }
 
-void orderBy()          : {/*@bgen(jjtree) OrderBy */
-  ASTOrderBy jjtn000 = new ASTOrderBy(this, JJTORDERBY);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/} 
-{/*@bgen(jjtree) OrderBy */
-        try {
-/*@egen*/
-	<ASC> | <DESC>/*@bgen(jjtree)*/
-        } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-        }
-/*@egen*/	
+OrderExpressionType orderBy_AG() : 
+{
+	OrderExpressionType oeType = null ;
+	OrderType orderType = null ;
+	OrderType[] orderArray = null ;
+	ArrayList orderList = null ;
+} 
+{
+	// This seems inadequate. Ie: the use of ScalarExpression in the Xml Schema, and hence valueExpression()
+	//<ORDERBY> valueExpression() ( <ASC> | <DESC> ) ( <COMMA> valueExpression() ( <ASC> | <DESC> ) )*
+	( <ORDERBY> orderType=orderBy_Singleton() orderList=orderBy_List() )
+	{
+		if( orderType != null ) {
+			oeType = OrderExpressionType.Factory.newInstance() ;
+			if( orderList != null ) {
+				orderList.add( 0, orderType ) ;	
+				orderArray = new OrderType[ orderList.size() ] ;
+				orderArray = (OrderType[])orderList.toArray( orderArray ) ;
+			}
+			else {
+				orderArray = new OrderType[1] ;
+				orderArray[0] = orderType ;			
+			}	
+			oeType.setItemArray( orderArray ) ;
+		}
+		return oeType ;
+	}
+}
+
+OrderType orderBy_Singleton() : 
+{
+	OrderType orderType = null ;
+	ScalarExpressionType se = null ;
+	Token t = null ;
+	OrderOptionType optionType = null ;
+}
+{
+	( se=valueExpression() ( t=<ASC> | t=<DESC> ) )
+	{
+		if( se!=null && t!= null ) {
+			optionType = OrderOptionType.Factory.newInstance() ;
+			optionType.setDirection( OrderDirectionType.Enum.forString( t.image.toUpperCase() ) ) ;	
+			orderType = OrderType.Factory.newInstance() ;
+			orderType.setExpression( se ) ;
+			orderType.setOrder( optionType ) ;
+		}
+		return orderType ;
+	}
+}
+
+ArrayList orderBy_List() : 
+{
+	ArrayList list = null ;
+	OrderType orderType = null ;
+}
+{
+	( 
+		<COMMA> 
+		orderType=orderBy_Singleton() 
+		{
+			if( orderType != null ) {
+				if( list == null ) {
+					list = new ArrayList() ;
+				}
+				list.add( orderType ) ;	
+			}	
+		}
+	)*
+	{ return list ; }
 }
 
 void overlapsPredicate() : {}
@@ -1426,12 +1541,17 @@ SearchType predicate() :
 		searchType=comparisonPredicate_AG()
 	    | 
 	    LOOKAHEAD(3)
-	    searchType=betweenPredicate_AG()	    | 
+	    searchType=betweenPredicate_AG()
+//	    |//	    inPredicate()//	    |//	    searchType=likePredicate()//	    | 
 // adql does not support the null predicate!
 //	    LOOKAHEAD(3)//	    nullPredicate()//	    | 
 // adql does not support quantified comparisons
-//	    LOOKAHEAD(3)//		quantifiedComparisonPredicate()//	    | 	    existsPredicate()	    | 	    uniquePredicate()	    | 
-	    LOOKAHEAD(3)	    matchPredicate()	    | 	    overlapsPredicate()
+//	    LOOKAHEAD(3)//		quantifiedComparisonPredicate()//	    |
+// adql does not support EXISTS //	    existsPredicate()//	    | 
+// adql does not support UNIQUE//	    uniquePredicate()//	    | 
+// adql does not support match
+//	    LOOKAHEAD(3)//	    matchPredicate()//	    | 
+// adql does not support overlap//	    overlapsPredicate()
     )
     { return searchType ; }
 }
@@ -1490,41 +1610,60 @@ String qualifier() :
 	{ return retValue ; }
 }
 
-ASTSelect querySpecification()         : {/*@bgen(jjtree) Select */
-  ASTSelect jjtn000 = new ASTSelect(this, JJTSELECT);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-/*@egen*/}
-{/*@bgen(jjtree) Select */
-        try {
-/*@egen*/
-	<SELECT> [ setQuantifier() ] [ setLimit() ] selectList() tableExpression()/*@bgen(jjtree)*/
-        {
-          jjtree.closeNodeScope(jjtn000, true);
-          jjtc000 = false;
-        }
-/*@egen*/
-	{ return jjtn000 ; }/*@bgen(jjtree)*/
-        } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            throw (RuntimeException)jjte000;
-          }
-          if (jjte000 instanceof ParseException) {
-            throw (ParseException)jjte000;
-          }
-          throw (Error)jjte000;
-        } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-        }
-/*@egen*/
+SelectType query_specification_A() : 
+{
+	SelectType st = null ;
+	ArrayList tableList = null ;
+	SelectionListType listType = null ;
+	SelectionLimitType limitType = null ;
+	SelectionOptionType optionType = null ;
+	Token t = null ;
+}
+{ 
+	(
+	//S:
+	// SELECT [ <set_quantifier> ] <select_list> <table_expression>
+	//
+		t=<SELECT> 
+		[ optionType=set_quantifier_S() ] 
+		[ limitType=setLimit() ] 
+		listType=selectList() 
+		tableList=tableExpression()
+	)
+	{ 
+		if( t != null ) {
+			st = SelectType.Factory.newInstance() ;
+			if( optionType != null ) {
+				st.setAllow( optionType ) ;	
+			}
+			if( limitType != null ) {
+				st.setRestrict( limitType ) ;	
+			}
+			if( listType != null ) {
+				st.setSelectionList( listType ) ;	
+			}
+			ListIterator iterator = tableList.listIterator() ;
+			while( iterator.hasNext() ) {
+				Object obj = iterator.next() ;
+				if( obj instanceof FromType ) {
+					st.setFrom( (FromType)obj ) ;	
+				}
+				else if( obj instanceof WhereType ) {
+					st.setWhere( (WhereType)obj ) ;
+				}
+				else if( obj instanceof GroupByType ) {
+					st.setGroupBy( (GroupByType)obj ) ;
+				}
+				else if( obj instanceof HavingType ) {
+					st.setHaving( (HavingType)obj ) ;	
+				}
+				else if( obj instanceof OrderExpressionType ) {
+					st.setOrderBy( (OrderExpressionType)obj ) ;
+				}			
+			}			
+		}
+		return st  ; 
+	}
 }
 
 void rowSubquery() : {}
@@ -1537,6 +1676,9 @@ ScalarExpressionType rowValueConstructor() :
 	ScalarExpressionType seType = null ;
 }
 {
+	// <row_value_constructor_element> 
+	// | <left_paren> <row_value_constructor_list> <right_paren>
+    // | <row_subquery>
 	(
 		LOOKAHEAD(3)
 		rowValueConstructorElement()
@@ -1554,6 +1696,7 @@ ScalarExpressionType rowValueConstructorElement() :
 	ScalarExpressionType seType = null ;
 } 
 {
+	// <value_expression> | <null_specification> | <default_specification>
 	// foreshortened...
 	seType=valueExpression()
 // adql has nothing to support the embedding of keywords...
@@ -1697,13 +1840,23 @@ String selectSublist_Qualifier() :
 	{ return retValue + ".*" ;}
 }
 
+
 SelectionItemType selectSublist_ValueExpression() : 
 {
-	SelectionItemType siType = null ;
+	ScalarExpressionType seType = null ;
+	String aliasName = null ;
 }
 {
-	( siType=valueExpression() [ [<AS>] columnName() ] )	
-	{ return siType ; }	
+	( seType=valueExpression() [ [<AS>] aliasName=columnName() ] )	
+	{ 
+		if( aliasName != null ) {
+			AliasSelectionItemType asiType = AliasSelectionItemType.Factory.newInstance() ;
+			asiType.setAs( aliasName ) ;
+			asiType.setExpression( seType ) ;
+			return asiType ;	
+		}
+		return seType ; 
+	}	
 }
 
 AggregateFunctionType setFunctionSpecification() : 
@@ -1733,63 +1886,45 @@ AggregateFunctionType setFunctionSpecification() :
 		return afType ; }
 }
 
-void setLimit()           : 
-{/*@bgen(jjtree) Restrict */
-        ASTRestrict jjtn000 = new ASTRestrict(this, JJTRESTRICT);
-        boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);
-/*@egen*/ 
-	Token t ;
+SelectionLimitType setLimit() : 
+{ 
+	SelectionLimitType sl = null ;
+	Token t1 = null ;
+	Token t2 = null ;
 }
-{/*@bgen(jjtree) Restrict */
-        try {
-/*@egen*/
-	<TOP> <LPAREN> t=<UNSIGNED_INTEGER> <RPAREN>/*@bgen(jjtree)*/
-        {
-          jjtree.closeNodeScope(jjtn000, true);
-          jjtc000 = false;
-        }
-/*@egen*/
-	{ jjtn000.setValue( ( new Integer( t.image )).intValue()) ;}/*@bgen(jjtree)*/
-        } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-        }
-/*@egen*/
+{
+	<TOP> <LPAREN> t1=<UNSIGNED_INTEGER> t2=<RPAREN>
+	{ 
+		if( t2 != null ) {
+			sl = SelectionLimitType.Factory.newInstance() ;
+			sl.setTop( ( new Integer( t1.image )).intValue() ) ;
+		}
+	return sl ;	
+	}
 }
 
-void setQuantifier()        : 
-{/*@bgen(jjtree) Allow */
-        ASTAllow jjtn000 = new ASTAllow(this, JJTALLOW);
-        boolean jjtc000 = true;
-        jjtree.openNodeScope(jjtn000);
-/*@egen*/
+SelectionOptionType set_quantifier_S() : 
+{
+	SelectionOptionType selectionOption = null ;
 	Token t ;
 }
-{/*@bgen(jjtree) Allow */
-        try {
-/*@egen*/
-	t=<ALL> | t=<DISTINCT>/*@bgen(jjtree)*/
-        {
-          jjtree.closeNodeScope(jjtn000, true);
-          jjtc000 = false;
-        }
-/*@egen*/
+{
+	//S:
+	// DISTINCT | ALL
+	//
+	t=<ALL> | t=<DISTINCT>
 	{ 	
-		if( t.kind == AdqlStoXConstants.ALL ) {
-			jjtn000.setValue( AllOrDistinctType.ALL ) ;
+		if( t != null ) {
+			selectionOption = SelectionOptionType.Factory.newInstance() ;
+			if( t.kind == AdqlStoXConstants.ALL ) {
+				selectionOption.setOption( AllOrDistinctType.ALL ) ;
+			}
+			else {
+				selectionOption.setOption( AllOrDistinctType.DISTINCT ) ;
+			}
 		}
-		else {
-			jjtn000.setValue( AllOrDistinctType.DISTINCT ) ;
-		}
-	}/*@bgen(jjtree)*/
-        } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-        }
-/*@egen*/
+		return selectionOption ;
+	}
 }
 
 void singleDateTimeField() : {}
@@ -1809,6 +1944,9 @@ ScalarExpressionType stringValueExpression() :
 	ScalarExpressionType seType = null ;
 }
 {
+	// <character_value_expression>
+    // | <bit_value_expression>
+    
 	// Foreshortened
 	seType=characterValueExpression()
 	{ return seType ; }
@@ -1934,16 +2072,27 @@ void nonJoinQueryPrimary() : {}
 
 void simpleTable() : {}
 {
-	querySpecification()
+	query_specification_A()
 	|
 	tableValueConstructor()
 	|
 	explicitTable()	
 }
 
-void tableExpression() : {} 
+ArrayList tableExpression() : 
 {
-	fromClause() [ whereClause() ] [ groupByClause() ] [ havingClause() ] [ orderBy() ]	
+	ArrayList list = new ArrayList() ;
+	Object obj = null ;
+} 
+{
+	(
+		obj=fromClause() { if( obj!=null ) list.add(obj) ; } 
+		[ obj=whereClause() { if( obj!=null ) list.add(obj) ; } ] 
+		[ obj=groupByClause() { if( obj!=null ) list.add(obj) ; } ] 
+		[ obj=havingClause() { if( obj!=null ) list.add(obj) ; } ] 
+		[ obj=orderBy_AG() { if( obj!=null ) list.add(obj) ; } ]	
+	)
+	{ return list ;	}
 }
 
 String tableName() : 
@@ -2061,8 +2210,7 @@ ScalarExpressionType[] term_List() :
 	ArrayList list = null ;
 	ScalarExpressionType[] exprPairs1 = null ;
 	ScalarExpressionType[] exprPairs2 = null ;
-	ScalarExpressionType[] retExprPairs = null ;
-	Token t = null ;	
+	ScalarExpressionType[] retExprPairs = null ;	
 }
 {
 	( LOOKAHEAD(3) exprPairs1=term_Singleton() 
@@ -2193,7 +2341,7 @@ AtomType unsignedLiteral() :
 	(
 		// foreshortened
 	    atomType=unsignedNumericLiteral()
-		// | 		// generalLiteral()
+		| 		atomType=generalLiteral()
 	)
 	{ return atomType ; }
 }
@@ -2231,6 +2379,10 @@ ScalarExpressionType valueExpression() :
 	ScalarExpressionType retValue = null ;
 } 
 {
+	// <numeric_value_expression>
+    // | <string_value_expression>
+    // | <datetime_value_expression>
+    // | <interval_value_expression>
 	(
 	LOOKAHEAD(3) 
 	retValue=numericValueExpression() 
@@ -2256,26 +2408,33 @@ ScalarExpressionType variableSpecification() :
 	{ return seType ; }
 }
 
-SearchType whereClause()        : 
+WhereType whereClause()        : 
 {/*@bgen(jjtree) Where */
         ASTWhere jjtn000 = new ASTWhere(this, JJTWHERE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
 /*@egen*/
+	WhereType whereType = null ;
 	SearchType s = null ;
+	Token t = null ;
 }
 {/*@bgen(jjtree) Where */
         try {
 /*@egen*/
-	<WHERE>	s=searchCondition()/*@bgen(jjtree)*/
+	t=<WHERE>	s=searchCondition()/*@bgen(jjtree)*/
         {
           jjtree.closeNodeScope(jjtn000, true);
           jjtc000 = false;
         }
 /*@egen*/
-	{ if( s != null ) 
+	{ 
+		if( t != null )
+			whereType = WhereType.Factory.newInstance() ;
+		if( s != null ) {
+			whereType.setCondition( s ) ;
+		}
 		jjtn000.searchType = s ; 
-	  return s ;
+	  	return whereType ;
 	}/*@bgen(jjtree)*/
         } catch (Throwable jjte000) {
           if (jjtc000) {

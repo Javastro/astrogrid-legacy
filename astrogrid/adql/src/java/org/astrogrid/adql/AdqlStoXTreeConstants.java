@@ -5,25 +5,11 @@ package org.astrogrid.adql;
 public interface AdqlStoXTreeConstants
 {
   public int JJTVOID = 0;
-  public int JJTFROM = 1;
-  public int JJTGROUPBY = 2;
-  public int JJTHAVING = 3;
-  public int JJTORDERBY = 4;
-  public int JJTSELECT = 5;
-  public int JJTRESTRICT = 6;
-  public int JJTALLOW = 7;
-  public int JJTWHERE = 8;
+  public int JJTWHERE = 1;
 
 
   public String[] jjtNodeName = {
     "void",
-    "From",
-    "GroupBy",
-    "Having",
-    "OrderBy",
-    "Select",
-    "Restrict",
-    "Allow",
     "Where",
   };
 }
