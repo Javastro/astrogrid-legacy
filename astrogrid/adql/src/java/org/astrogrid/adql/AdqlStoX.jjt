@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.10 2006/09/26 13:44:11 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.11 2006/09/27 20:51:55 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file
  *
@@ -25,6 +25,8 @@
  *     within the given construct. This is usually pretty obvious from the quoted statements
  *     (eg: quoted statement some_statement_A() means an ADQL variation, see next point), 
  *     but beware that it is possible for variations to be deeply embedded.
+ *     NB: A statement that is just a synonym for another statement will take
+ *         the quoted statement's decoration. This is the one exception.
  * (3) Methods which are varied for some reason within ADQL, or are simply
  *     specific to ADQL, are suffixed _A.
  *     Thus comparison_predicate_A() represents an ADQL deviation.
@@ -60,12 +62,12 @@ public class AdqlStoX {
 			selectDoc = select_document_A();
 		}
 		catch( ParseException pex ) {
-			pex.printStackTrace() ;
-			//System.out.println( pex.getMessage() ) ;
+			//pex.printStackTrace() ;
+			System.out.println( pex.getMessage() ) ;
 		}
 		catch( Error err ) {
 			err.printStackTrace() ;
-			//System.out.println( err.getMessage() ) ;
+			System.out.println( err.getMessage() ) ;
 		}
 		return selectDoc ;	
 	}
@@ -438,7 +440,7 @@ void approximate_numeric_literal_S() : {}
 	// <approximate_numeric_literal> ::= <mantissa> E <exponent>
 	// <mantissa> ::= <exact_numeric_literal>
 	// <exponent> ::= <signed_integer>
-	mantissa() <EXPONENT>
+	mantissa_S() <EXPONENT>
 }
 
 SearchType between_predicate_A() : 
@@ -608,71 +610,78 @@ SearchType[] booleanFactorSingleton() :
 SearchType boolean_test_A() : {	SearchType st = null ;}{	//S:	// <boolean_test> ::=    //  <boolean_primary> [ IS [ NOT ] <truth_value> ]	
 	// NB: There is no accommodation of truth value in ADQL	st=boolean_primary_S() 	{ return st ; }}
 
-SearchType likePredicate() : 
+SearchType likePredicate_A() : 
 {
 	SearchType st = null ;
 	Token t = null ;
 	AtomType p = null ;
 }
 {
-// adql does not support escape characters...
-//	( match() [ <NOT> ] <LIKE> pattern() [ <ESCAPE> escapeCharacter() ]	)
-	( match() [ <NOT> ] <LIKE> pattern() )
+	//S:
+	// <like_predicate> ::=	//   <match_value> [ NOT ] LIKE <pattern> [ ESCAPE <escape_character> ]
+      
+	( match_value_S() [ <NOT> ] <LIKE> pattern() )
 
 	{
 		return st ;	
 	}
 }
 
-void mantissa() : {}
+void mantissa_S() : {}
 {
-	exactNumericLiteral()
+	//S:
+	// <mantissa> ::= <exact_numeric_literal>
+	
+	exact_numeric_literal_S()
 }
 
-void caseExpression() : {}
+void caseExpression_S() : {}
 {
 	"5-TBD caseExpression"	
 }
 
-void castSpecification() : {}
+void castSpecification_S() : {}
 {
 	"6-TBD castSpecification"
 }
 
-ScalarExpressionType characterFactor() : 
+ScalarExpressionType character_factor_A() : 
 {
 	ScalarExpressionType seType = null ;
 }
 {
-	// <character_primary> [ <collate_clause> ]
-	
-	// Foreshortened
-	seType=characterPrimary()
+	//S:
+	// <character_factor> ::= <character_primary> [ <collate_clause> ]
+
+	seType=character_primary_A()
 	{ return seType ; }
 }
 
-ScalarExpressionType characterPrimary() : 
+ScalarExpressionType character_primary_A() : 
 {
 	ScalarExpressionType seType = null ;
 }
 {
-	//   <value_expression_primary>
-    // | <string_value_function>
+	//S:
+	//  <character_primary> ::=
+    //    <value_expression_primary> | <string_value_function>
 
-	// Foreshortened
-	seType=commonPrimary()
+	seType=value_expression_primary_A()
 	{ return seType ; }
 }
 
 
-AtomType characterStringLiteral_AG() : 
+AtomType character_string_literal_A() : 
 {
 	AtomType atomType = null ;
 }
 {
-//  [ <introducer><character_set_specification> ]//  <quote> [ <character_representation>... ] <quote>//  [ { <separator>... <quote> [ <character_representation>... ] <quote> }... ]	
+	//S:
+	// <character_string_literal> ::=
+    //    [ <introducer><character_set_specification> ]
+    //    <quote> [ <character_representation>... ] <quote>
+    //    [ { <separator>... <quote> [ <character_representation>... ] <quote> }... ]
 
-//	( t=<UnicodeStringLiteral> | t=<ASCIIStringLiteral> )
 	atomType=ASCIIStringLiteral_AG()
 	{ 
 		return atomType ; 		
@@ -715,47 +724,60 @@ AtomType ASCIIStringLiteral_AG() :
 	
 }
 
-ScalarExpressionType characterValueExpression() : 
+ScalarExpressionType character_value_expression_A() : 
 {
 	ScalarExpressionType seType = null ;
 }
 {
-	//   <concatenation>
-    // | <character_factor>
-    
-	// Foreshortened
-	seType=characterFactor()
+	//S:
+	// <character_value_expression> ::=
+    //     <concatenation>
+    //   | <character_factor>
+
+	seType=character_factor_A()
 	{ return seType ; }	
 }
 
-void collateClause() : {}
+void collate_clause_S() : {}
 {
-	// refactored
+	//S:
+	// <collate_clause> ::= COLLATE <collation_name>
+    // <collation_name> ::= <qualified_name>
+	
+	// refactored to
 	<COLLATE> qualifiedName()	
 }
 
-String columnName() : 
+String column_name_S() : 
 {
 	String name = null ;
 }
 {
-	name=identifier()
+	//S:
+	// <column_name> ::= <identifier>
+
+	name=identifier_A()
 	{ return name ; }
 }
 
-void columnNameList()  : {}
+void column_name_list_S()  : {}
 {
-	 columnName() ( <COMMA> columnName() )*	
+	//S:
+	// <column_name_list> ::= <column_name> [ { <comma> <column_name> }... ]
+	 column_name_S() ( <COMMA> column_name_S() )*	
 }
 
-ColumnReferenceType columnReference() : 
+ColumnReferenceType column_reference_S() : 
 {
 	ColumnReferenceType crType = null ;
 	String q = null ;
 	String n = null ;
 }
 {
-	( [ LOOKAHEAD(2) q=qualifier() <DOT> ] n=columnName() )
+	//S:
+	// <column_reference> ::= [ <qualifier> <period> ] <column_name>
+
+	( [ LOOKAHEAD(2) q=qualifier() <DOT> ] n=column_name_S() )
 	{ 
 		if( n != null ) {
 			crType = ColumnReferenceType.Factory.newInstance() ;
@@ -768,17 +790,23 @@ ColumnReferenceType columnReference() :
 	}
 }
 
-ScalarExpressionType commonPrimary() : 
+/*
+ * NB: Referred in some sources as <common_primary>
+ */
+ScalarExpressionType value_expression_primary_A() : 
 {
 	ScalarExpressionType seType = null ;
 	Token t = null ;
 }
 {
+	//S:
+	//	<value_expression_primary> ::=	//      <unsigned_value_specification>	//    | <column_reference>	//    | <set_function_specification>	//    | <scalar_subquery>	//    | <case_expression>	//    | <left_paren> <value_expression> <right_paren>	//    | <cast_specification>
+
 	(
 		// Foreshortened 
 		seType=unsignedValueSpecification()
 		|
-		seType=columnReference()
+		seType=column_reference_S()
 		|
 		seType=setFunctionSpecification()
 		|
@@ -800,12 +828,20 @@ ScalarExpressionType commonPrimary() :
 	{ return seType ; }
 }
 
-ComparisonType comparisonOperator() : 
+ComparisonType comp_op_S() : 
 {
 	ComparisonType c = null ;
 	Token t = null ;
 }
 {
+	//S:
+	// <comp_op> ::=
+    //    <equals_operator>
+    //  | <not_equals_operator>
+    //  | <less_than_operator>
+    //  | <greater_than_operator>
+    //  | <less_than_or_equals_operator>
+    //  | <greater_than_or_equals_operator>
 	(
 		t=<EQUALS_OPERATOR> 
 		|
@@ -839,7 +875,7 @@ ComparisonPredType comparison_predicate_A() :
 {
 	//S:
 	//  <row_value_constructor> <comp_op> <row_value_constructor
-	( seType1=value_expression_A() compType=comparisonOperator() seType2=value_expression_A() )
+	( seType1=value_expression_A() compType=comp_op_S() seType2=value_expression_A() )
 	{ 
 		if( seType2 != null ) {
 			cpType = ComparisonPredType.Factory.newInstance() ;
@@ -854,43 +890,69 @@ ComparisonPredType comparison_predicate_A() :
 }
 
 
-String correlationName() : 
+String correlation_name_S() : 
 {
 	String name = null ;
 }
 {
-	name=identifier()
+	//S:
+	// <correlation_name> ::= <identifier>
+	name=identifier_A()
 	{ return name ; }
 }
 
-void dateTimeFactor() : {}
+void datetime_factor_S() : {}
 {
-	dateTimePrimary() [  LOOKAHEAD(2) timeZone() ]
+	//S:
+	//  <datetime_factor> ::=
+    //     <datetime_primary> [ <time_zone> ]
+    
+	datetime_primary_S() [  LOOKAHEAD(2) timeZone() ]
 }
 
-void dateTimePrimary() : {}
+void datetime_primary_S() : {}
 {
-	commonPrimary()
+	//S:
+	// <datetime_primary> ::=
+    //    <value_expression_primary>
+    //  | <datetime_value_function>
+
+	value_expression_primary_A()
     | 
-    dateTimeValueFunction()
+    datetime_value_function_S()
 }
 
-void dateTimeTerm() : {}
+void datetime_term_S() : {}
 {
-    dateTimeFactor()
+	//S:
+	// <datetime_term> ::= <datetime_factor>
+    datetime_factor_S()
 }
 
-void dateTimeValueExpression() : {}
+void datetime_value_expression_S() : {}
 {
-	// refactored
+	//S:
+	// <datetime_value_expression> ::=
+    //    <datetime_term>
+    //  | <interval_value_expression> <plus_sign> <datetime_term>
+    //  | <datetime_value_expression> <plus_sign> <interval_term>
+    //  | <datetime_value_expression> <minus_sign> <interval_term>
+
+	// refactored to
 	LOOKAHEAD(3)
-    ( dateTimeTerm() ( LOOKAHEAD(2) (<PLUS> | <MINUS>) dateTimeValueExpression() )* )
+    ( datetime_term_S() ( LOOKAHEAD(2) (<PLUS> | <MINUS>) datetime_value_expression_S() )* )
     |
-    ( intervalValueExpression() <PLUS> dateTimeTerm() )
+    ( interval_value_expression_S() <PLUS> datetime_term_S() )
 }
 
-void dateTimeValueFunction() : {}
+void datetime_value_function_S() : {}
 {
+	//S:
+	// <datetime_value_function> ::=
+    //    <current_date_value_function>
+    //  | <current_time_value_function>
+    //  | <current_timestamp_value_function>
+
 	<CURRENT_DATE>
 	|
 	<CURRENT_TIME> [ <LPAREN> timePrecision() <RPAREN> ]
@@ -898,33 +960,48 @@ void dateTimeValueFunction() : {}
 	<CURRENT_TIMESTAMP> [ <LPAREN> timeStampPrecision() <RPAREN> ]
 }
 
-void derivedColumnList() : {}
+void derived_column_list_S() : {}
 {
-   columnNameList()	
+	//S:
+	// <derived_column_list> ::= <column_name_list>
+   column_name_list_S()	
 }
 
-void derivedTable() : {}
+void derived_table_S() : {}
 {
-   tableSubQuery()
+	//S:
+	// <derived_table> ::= <table_subquery>
+   	tableSubQuery()
 }
 
-void endField() : {}
+void end_field_S() : {}
 {
-	<NON_SECOND_DATETIME_FIELD> | <SECOND> [ <LPAREN> intervalFractionalSecondsPrecision() <RPAREN> ]
+	//S:
+	// <end_field> ::=
+    //    <non-second_datetime_field>
+    //  | SECOND [ <left_paren> <interval_fractional_seconds_precision> <right_paren> ]
+	<NON_SECOND_DATETIME_FIELD> | <SECOND> [ <LPAREN> interval_fractional_seconds_precision_S() <RPAREN> ]
 }
 
-void escapeCharacter() : {}
+void escape_character_A() : {}
 {
-	characterValueExpression()	
+	//S:
+	// <escape_character> ::= <character_value_expression>
+	character_value_expression_A()	
 }
 
-AtomType exactNumericLiteral() : 
+AtomType exact_numeric_literal_S() : 
 {
 	AtomType atomType = null ;
 	Token t1 = null ;
 	Token t2 = null ;
 }
 { 
+	//S:
+	//  <exact_numeric_literal> ::=
+    //     <unsigned_integer> [ <period> [ <unsigned_integer> ] ]
+    //   | <period> <unsigned_integer>
+
 	(
 		LOOKAHEAD(3) 
 		( t1=<UNSIGNED_INTEGER> [ <DOT> [ t2=<UNSIGNED_INTEGER> ] ] ) 
@@ -954,11 +1031,13 @@ AtomType exactNumericLiteral() :
 	}
 }
 
-SearchType existsPredicate() : 
+SearchType exists_predicate_S() : 
 {
 	SearchType st = null ;
 }
 {
+	//S: 
+	// <exists_predicate> ::= EXISTS <table_subquery>
 	<EXISTS> st=tableSubQuery()
 	{ 
 		if( st != null ) {
@@ -968,20 +1047,24 @@ SearchType existsPredicate() :
 	}	
 }
 
-void explicitTable() : {}
+void explicit_table_S() : {}
 {
+	//S:
+	// <explicit_table> ::= TABLE <table_name>
 	<TABLE> tableName()
 }
 
-ScalarExpressionType factor() : 
+ScalarExpressionType factor_S() : 
 {
 	ScalarExpressionType retType = null ;
 	ScalarExpressionType seType = null ;
 	UnaryExprType ueType = null ;
 }
 {
-	// ( [ <PLUS> | <MINUS> ] numericPrimary() )
-	( ueType=factor_Unary() seType=numericPrimary() )
+	//S:
+	// <factor> ::= [ <sign> ] <numeric_primary>
+
+	( ueType=factoryUnary() seType=numericPrimary() )
 	{ 
 	   if( ueType != null ) {
 	   	  ueType.setArg( seType ) ;
@@ -994,7 +1077,7 @@ ScalarExpressionType factor() :
 	}
 }
 
-UnaryExprType factor_Unary() : 
+UnaryExprType factoryUnary() : 
 {
 	UnaryExprType ueType = null ;
 	Token t = null ;
@@ -1035,24 +1118,35 @@ FromType from_clause_S() :
 	}
 }
 
-AtomType generalLiteral() :
+AtomType general_literal_A() :
 {
 	AtomType atomType = null ;	
 }
 {
-//	 <character_string_literal>//   | <national_character_string_literal>//   | <bit_string_literal>//   | <hex_string_literal>//   | <datetime_literal>//   | <interval_literal>
+	//S:
+	//  <general_literal> ::=
+    //    <character_string_literal>
+    //  | <national_character_string_literal>
+    //  | <bit_string_literal>
+    //  | <hex_string_literal>
+    //  | <datetime_literal>
+    //  | <interval_literal>
 
-	atomType=characterStringLiteral_AG()
+	atomType=character_string_literal_A()
 	{ return atomType ; }	
 }
 
-AggregateFunctionType generalSetFunction() : 
+AggregateFunctionType general_set_function_A() : 
 {
 	AggregateFunctionType afType = null ;
 	ScalarExpressionType seType = null ;
 	Token t = null ;
 }
 {
+	//S:
+	// <general_set_function> ::=
+    //   <set_function_type> <left_paren> [ <set_quantifier> ] <value_expression> <right_paren>
+
 	// JL. setQuantifier removed for the moment. Need to talk to Kona about this.
 	// ( t=<AVG> | t=<MAX> | t=<MIN> | t=<SUM> | t=<COUNT> ) <LPAREN> [ setQuantifier() ] seType=value_expression_A() <RPAREN>	
 	( t=<AVG> | t=<MAX> | t=<MIN> | t=<SUM> | t=<COUNT> ) <LPAREN> seType=value_expression_A() <RPAREN>
@@ -1067,11 +1161,22 @@ AggregateFunctionType generalSetFunction() :
 		return afType ; }	
 }
 
-ScalarExpressionType generalValueSpecification() : 
+ScalarExpressionType general_value_specification_A() : 
 {
 	ScalarExpressionType seType = null ;
 }
 {
+	//S:
+	//<general_value_specification> ::=
+    //   <parameter_specification>
+    // | <dynamic_parameter_specification>
+    // | <variable_specification>
+    // | USER
+    // | CURRENT_USER
+    // | SESSION_USER
+    // | SYSTEM_USER
+    // | VALUE
+	
 	// Foreshortened
 	seType=variableSpecification()
 	{ return seType ; }	
@@ -1085,7 +1190,7 @@ GroupByType group_by_clause_S() :
 {
 	//S:
 	// GROUP BY <grouping_column_reference_list>
-	<GROUPBY> crList=groupingColumnReferenceList()
+	<GROUPBY> crList=grouping_column_reference_list_S()
 	{
 		if(	crList != null ) {
 			gbType = GroupByType.Factory.newInstance() ;
@@ -1096,32 +1201,38 @@ GroupByType group_by_clause_S() :
 	}
 }
 
-ArrayList groupingColumnReferenceList() : 
+ArrayList grouping_column_reference_list_S() : 
 {
 	ArrayList list = null ;
 	ColumnReferenceType cr = null ;
 }
 {
+	//S:
+	// <grouping_column_reference_list> ::=
+    //   <grouping_column_reference> [ { <comma> <grouping_column_reference> }... ]
+
 	(
-		cr=groupingColumnReference_AG() 
+		cr=grouping_column_reference_A() 
 		{ 
 			if( list == null )
 				list = new ArrayList() ;
 			list.add( cr ) ; 
 		}
-		( <COMMA> cr=groupingColumnReference_AG() { list.add( cr ) ; } )* 
+		( <COMMA> cr=grouping_column_reference_A() { list.add( cr ) ; } )* 
 	)
 	{ return list ; }
 }
 
-ColumnReferenceType groupingColumnReference_AG() : 
+ColumnReferenceType grouping_column_reference_A() : 
 {
 	ColumnReferenceType cr = null ;
 }
 {
-//  Should be...
-//	columnReference() [ collateClause() ]	
-	cr=columnReference()	
+	//S:
+	// <grouping_column_reference> ::=
+    //      <column_reference> [ <collate_clause> ]
+
+	cr=column_reference_S()	
 	{ return cr ; }
 }
 
@@ -1145,119 +1256,193 @@ HavingType having_clause_S() :
 	}
 }
 
-String identifier() : 
+String identifier_A() : 
 { String retValue ; }
 {
-	// Foreshortened
+	//S:
+	// <identifier> ::=
+    //   [ <introducer><character_set_specification> ] <actual_identifier>
+
 	retValue=actual_identifier_S()
 	{ return retValue ; }
 } 
 
-void inPredicate() : {}
+void in_predicate_S() : {}
 {
-	// refactored
+	//S:
+	// <in_predicate> ::=
+    //   <row_value_constructor> [ NOT ] IN <in_predicate_value>
+    //
+    // <in_predicate_value> ::= <table_subquery>  | <left_paren> <in_value_list> <right_paren>
+
+	// refactored to
 	LOOKAHEAD(3)
-	rowValueConstructor() [ <NOT> ] <IN> tableSubQuery() | ( <LPAREN> inValueList() <RPAREN> )  
+	rowValueConstructor() [ <NOT> ] <IN> tableSubQuery() | ( <LPAREN> in_value_list_S() <RPAREN> )  
 }
 
-void intervalFactor() : {}
+void interval_factor_S() : {}
 {
-    [ <PLUS> | <MINUS> ] intervalPrimary()
+	//S:
+	// <interval_factor> ::=
+    //   [ <sign> ] <interval_primary>
+
+    [ <PLUS> | <MINUS> ] interval_primary_S()
 }
 
-void intervalFractionalSecondsPrecision() : {}
+void interval_fractional_seconds_precision_S() : {}
 {
+	//S:
+	// <interval_fractional_seconds_precision> ::= <unsigned_integer>
 	<UNSIGNED_INTEGER>	
 }
 
-void intervalLeadingFieldPrecision() : {}
+void interval_leading_field_precision_S() : {}
 {
+	//S:
+	// <interval_leading_field_precision> ::= <unsigned_integer>
 	<UNSIGNED_INTEGER>	
 }
 
-void intervalPrimary() : {}
+void interval_primary_S() : {}
 {
-      commonPrimary() [ LOOKAHEAD(2) intervalQualifier() ]
+	//S:
+	// <interval_primary> ::=
+    //    <value_expression_primary> [ <interval_qualifier> ]
+
+      value_expression_primary_A() [ LOOKAHEAD(2) interval_qualifier_S() ]
 }
 
-void intervalQualifier() : {}
+void interval_qualifier_S() : {}
 {
+	//S:
+	// <interval_qualifier> ::=
+    //    <start_field> TO <end_field> | <single_datetime_field>
+
 	LOOKAHEAD(3)
-    startField() <TO> endField()
+    startField() <TO> end_field_S()
     | 
     singleDateTimeField()
 }
 
-void intervalTerm() : {}
+void interval_term_S() : {}
 {
-	// refactored
+	//S:
+	// <interval_term> ::=
+    //    <interval_factor>
+    //  | <interval_term_2> <asterisk> <factor>
+    //  | <interval_term_2> <solidus> <factor>
+    //  | <term> <asterisk> <interval_factor>
+
+	// refactored...
 	LOOKAHEAD(3)
-	intervalFactor() 
+	interval_factor_S() 
     |
 	LOOKAHEAD(3)    
-    factor() (<STAR> | <DIVIDE>) intervalTerm()
+    factor_S() (<STAR> | <DIVIDE>) interval_term_S()
     | 
-    term() <STAR> intervalFactor()
+    term() <STAR> interval_factor_S()
 }
 
-void intervalValueExpression() : {}
+void interval_value_expression_S() : {}
 {
+	//S:
+	// <interval_value_expression> ::=
+    //    <interval_term>
+    //  | <interval_value_expression_1> <plus_sign> <interval_term_1>
+    //  | <interval_value_expression_1> <minus_sign> <interval_term_1>
+    //  | <left_paren> <datetime_value_expression> <minus_sign>
+    //      <datetime_term> <right_paren> <interval_qualifier>
+
 	// refactored
 	LOOKAHEAD(3)
-	intervalTerm() ( LOOKAHEAD(2) (<PLUS> | <MINUS>) intervalTerm() )*
+	interval_term_S() ( LOOKAHEAD(2) (<PLUS> | <MINUS>) interval_term_S() )*
     | 
-    <LPAREN> dateTimeValueExpression() <MINUS> dateTimeTerm() <RPAREN> intervalQualifier()
+    <LPAREN> datetime_value_expression_S() <MINUS> datetime_term_S() <RPAREN> interval_qualifier_S()
 }
 
-void inValueList() : {}
+void in_value_list_S() : {}
 {
+	//S:
+	// <in_value_list> ::=
+    //   <value_expression> { <comma> <value_expression> }...
+    
     value_expression_A() ( <COMMA> value_expression_A() )*		
 }
 
-void joinSpecification() : {}
+void join_specification_S() : {}
 {
+	//S:
+	// <join_specification> ::=
+    //    <join_condition>
+    //  | <named_columns_join>	
+    //
+    // <join_condition> ::= ON <search_condition>
+    //
+    // <named_columns_join> ::= USING <left_paren> <join_column_list> <right_paren>
+    //
+    // <join_column_list> ::= <column_name_list>
 	(
-		// refactored
-		<ON> searchCondition()	    |	    <USING> <LPAREN> columnNameList() <RPAREN>
+		// refactored to...
+		<ON> searchCondition()	    |	    <USING> <LPAREN> column_name_list_S() <RPAREN>
     )
 }
 
-ComparisonPredType joinSpecification_AG() : 
+ComparisonPredType join_specification_A() : 
 {
 	ComparisonPredType cpType = null ;
 }
 {
+	//S:
+	// <join_specification> ::=
+    //    <join_condition>
+    //  | <named_columns_join>	
+    //
+    // <join_condition> ::= ON <search_condition>
+    //
+    // <named_columns_join> ::= USING <left_paren> <join_column_list> <right_paren>
+    //
+    // <join_column_list> ::= <column_name_list>
 	(
 		<ON> cpType=comparison_predicate_A()
     )
     { return cpType ; }
 }
 
-JoinTableType joinedTable() : 
+JoinTableType joined_table_S() : 
 {
 	JoinTableType jtType = null ;
 	Token t = null ;
 }
 {
+	//S:
+	// <joined_table> ::=
+    //    <cross_join>
+    //  | <qualified_join>
+    //  | <left_paren> <joined_table> <right_paren>
 	(
 		LOOKAHEAD(3)
-		jtType=crossJoin()
+		jtType=cross_join_S()
 		|
 		LOOKAHEAD(3)
 		jtType=qualifiedJoin()
 		|
-		( t=<LPAREN> jtType=joinedTable() <RPAREN> )
+		( t=<LPAREN> jtType=joined_table_S() <RPAREN> )
 	)
 	{ return jtType ; }
 }
 
-JointTableQualifierType joinType() : 
+JointTableQualifierType join_type_A() :  
 {
 	JointTableQualifierType jType = null ;
 	Token t1 = null ;
 	Token t2 = null ;
 }
 {
+	//S:
+	// <join_type> ::=
+    //    INNER
+    //  | <outer_join_type> [ OUTER ]
+    //  | UNION
 	(
 		// refactored
 		t1=<INNER>
@@ -1290,13 +1475,20 @@ JointTableQualifierType joinType() :
 }
 
 
-void match() : {}
+void match_value_S() : {}
 {
-	characterValueExpression()	
+	//S:
+	// <match_value> ::= <character_value_expression>
+
+	character_value_expression_A()	
 }
 
-void matchPredicate() : {}
+void match_predicate_S() : {}
 {
+	//S:
+	// <match_predicate> ::=
+    //   <row_value_constructor> MATCH [ UNIQUE ] [ PARTIAL | FULL ] <table_subquery>
+
 	rowValueConstructor() <MATCH> [ <UNIQUE> ] [ <PARTIAL> | <FULL> ] tableSubQuery() 
 }
 
@@ -1373,7 +1565,7 @@ ScalarExpressionType numericPrimary() :
 {
 	( 
 	  seType=numericValueFunction()	
-	  |	  seType=commonPrimary()
+	  |	  seType=value_expression_primary_A()
 	)
 	{ return seType ; } 
 	
@@ -1554,7 +1746,7 @@ void overlapsPredicate() : {}
 
 void pattern() : {}
 {
-	characterValueExpression()	
+	character_value_expression_A()	
 }
 
 SearchType predicate_A() : 
@@ -1596,10 +1788,10 @@ JoinTableType qualifiedJoin() :
 	(
 		fType1=tableReferenceBarJoinedTable() 
 		[ <NATURAL> ] 
-		jtqType=joinType() 
+		jtqType=join_type_A() 
 		<JOIN> 
 		fType2=tableReference() 
-		[ LOOKAHEAD(3) cpType=joinSpecification_AG() ]
+		[ LOOKAHEAD(3) cpType=join_specification_A() ]
 	)
 	{
 	   if( fType2 != null ) {
@@ -1624,7 +1816,7 @@ String qualifiedName() :
 	String retValue ;
 } 
 {
-	retValue = identifier()
+	retValue = identifier_A()
 	{ return retValue ; }	
 }
 
@@ -1872,7 +2064,7 @@ SelectionItemType derived_column_S() :
 	// <derived_column> ::= <value_expression> [ <as_clause> ]
 	// <as_clause> ::= [ AS ] <column_name>
 	
-	( seType=value_expression_A() [ [<AS>] aliasName=columnName() ] )	
+	( seType=value_expression_A() [ [<AS>] aliasName=column_name_S() ] )	
 	{ 
 		if( aliasName != null ) {
 			AliasSelectionItemType asiType = AliasSelectionItemType.Factory.newInstance() ;
@@ -1894,7 +2086,7 @@ AggregateFunctionType setFunctionSpecification() :
 		LOOKAHEAD(3)
 		( t=<COUNT> <LPAREN> <STAR> <RPAREN> ) 
 		|
-		afType=generalSetFunction()
+		afType=general_set_function_A()
 	)
 	{ 
 		if( t != null ) {
@@ -1956,26 +2148,27 @@ SelectionOptionType set_quantifier_S() :
 
 void singleDateTimeField() : {}
 {
-	<NON_SECOND_DATETIME_FIELD> [ <LPAREN> intervalLeadingFieldPrecision() <RPAREN> ]
+	<NON_SECOND_DATETIME_FIELD> [ <LPAREN> interval_leading_field_precision_S() <RPAREN> ]
     | 
-    <SECOND> [ <LPAREN> intervalLeadingFieldPrecision() [ <COMMA> intervalFractionalSecondsPrecision() ] <RPAREN> ]
+    <SECOND> [ <LPAREN> interval_leading_field_precision_S() [ <COMMA> interval_fractional_seconds_precision_S() ] <RPAREN> ]
 }
 
 void startField() : {}
 {
-    <NON_SECOND_DATETIME_FIELD> [ <LPAREN> intervalLeadingFieldPrecision() <RPAREN> ]
+    <NON_SECOND_DATETIME_FIELD> [ <LPAREN> interval_leading_field_precision_S() <RPAREN> ]
 }
 
-ScalarExpressionType stringValueExpression() :
+ScalarExpressionType string_value_expression_A() :
 {
 	ScalarExpressionType seType = null ;
 }
 {
-	// <character_value_expression>
-    // | <bit_value_expression>
-    
-	// Foreshortened
-	seType=characterValueExpression()
+	//S:
+	// <string_value_expression> ::=
+    //    <character_value_expression>
+    //  | <bit_value_expression>
+
+	seType=character_value_expression_A()
 	{ return seType ; }
 }
 
@@ -1999,7 +2192,7 @@ SearchType subQuery_AG() :
 
 void quantifiedComparisonPredicate() : {}
 {
-	rowValueConstructor() comparisonOperator() quantifier() tableSubQuery()	
+	rowValueConstructor() comp_op_S() quantifier() tableSubQuery()	
 }
 
 void quantifier() : {}
@@ -2012,7 +2205,7 @@ void queryExpression() : {}
 	LOOKAHEAD(3)
 	nonJoinQueryExpression()
 	|
-	joinedTable()
+	joined_table_S()
 }
 
 void queryPrimary() : {}
@@ -2020,7 +2213,7 @@ void queryPrimary() : {}
     LOOKAHEAD(3)
  	nonJoinQueryPrimary()
     | 
-    joinedTable()
+    joined_table_S()
 }
 
 
@@ -2029,26 +2222,37 @@ void queryTerm() : {}
 	LOOKAHEAD(2)
 	nonJoinQueryTerm()
 	|
-	joinedTable()	
+	joined_table_S()	
 }
 
-void correspondingSpec() : {}
+void corresponding_spec_S() : {}
 {
-	<CORRESPONDING> [ <BY> <LPAREN> correspondingColumnList() <RPAREN> ] 
+	//S:
+	// <corresponding_spec> ::=
+    //    CORRESPONDING [ BY <left_paren> <corresponding_column_list> <right_paren> ]
+	<CORRESPONDING> [ <BY> <LPAREN> corrsponding_column_list_S() <RPAREN> ] 
 }
     
-void correspondingColumnList() : {}
+void corrsponding_column_list_S() : {}
 {
-	columnNameList()	
+	//S:
+	// <corresponding_column_list> ::= <column_name_list>
+	column_name_list_S()	
 }
-
-JoinTableType crossJoin() : 
+/*
+ * I think at a shallow level this refactoring is the same as the standard.
+ * But one level down it definitely is not.
+ */
+JoinTableType cross_join_S() : 
 {
 	JoinTableType jtType = null ;
 	FromTableType fType1 = null ;
 	FromTableType fType2 = null ;
 }
 {
+	//S:
+	// <cross_join> ::=
+    //    <table_reference> CROSS JOIN <table_reference>
 	( fType1=tableReferenceBarJoinedTable() <CROSS_JOIN> fType2=tableReference() )
 	{
 	   if( fType2 != null ) {
@@ -2077,7 +2281,7 @@ void nonJoinQueryExpression() : {}
 //	LOOKAHEAD(3)//	queryTerm() ( <UNION> [ <ALL> ] [ correspondingSpec() ] queryTerm() )*//	|//	LOOKAHEAD(3)//	queryTerm() ( <EXCEPT> [ <ALL> ] [ correspondingSpec() ] queryTerm() )*//	|//	nonJoinQueryTerm()
 
 	LOOKAHEAD(4)
-	queryTerm() ( (<UNION> | <EXCEPT> ) [ <ALL> ] [ correspondingSpec() ] queryTerm() )*
+	queryTerm() ( (<UNION> | <EXCEPT> ) [ <ALL> ] [ corresponding_spec_S() ] queryTerm() )*
 	|
 	nonJoinQueryTerm()
 }
@@ -2087,7 +2291,7 @@ void nonJoinQueryTerm() : {}
 	LOOKAHEAD(3)
 	nonJoinQueryPrimary()
 	|
-	queryPrimary() <INTERSECT> [ <ALL> ] [ correspondingSpec() ] queryPrimary()	
+	queryPrimary() <INTERSECT> [ <ALL> ] [ corresponding_spec_S() ] queryPrimary()	
 }
 
 void nonJoinQueryPrimary() : {}
@@ -2103,7 +2307,7 @@ void simpleTable() : {}
 	|
 	tableValueConstructor()
 	|
-	explicitTable()	
+	explicit_table_S()	
 }
 
 ArrayList table_expression_A() : 
@@ -2148,16 +2352,16 @@ FromTableType tableReference() :
 		// refactored... 
 		// 1. derivedTable() moved to first choice point
 		// 2. joinedTable() moved to second choice point
-//	    LOOKAHEAD(4)//	    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ]//	    |	//		LOOKAHEAD(4)//	    joinedTable()//	    |//		tableName() [ [ <AS> ] correlationName() [ <LPAREN> derivedColumnList() <RPAREN> ] ]    
+//	    LOOKAHEAD(4)//	    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derived_column_list_S() <RPAREN> ]//	    |	//		LOOKAHEAD(4)//	    joinedTable()//	    |//		tableName() [ [ <AS> ] correlationName() [ <LPAREN> derived_column_list_S() <RPAREN> ] ]    
 
 		// Foreshortened. 
 		// derivedColumnList not supported in adql
 		// derivedTable not supported in adql
 //		LOOKAHEAD(4)//	    derivedTable() [ <AS> ] correlationName()//	    |	
 		LOOKAHEAD(4)
-	    ftType=joinedTable()
+	    ftType=joined_table_S()
 	    |
-		( tName=tableName() [ [ <AS> ] cName=correlationName() ] )
+		( tName=tableName() [ [ <AS> ] cName=correlation_name_S() ] )
 		{
 			if( tName != null ) {	
 				TableType tableType = TableType.Factory.newInstance() ;
@@ -2179,7 +2383,7 @@ FromTableType tableReferenceBarJoinedTable() :
 	String cName = null ;
 }
 {
-	( tName=tableName() [ [ <AS> ] cName=correlationName() ] )
+	( tName=tableName() [ [ <AS> ] cName=correlation_name_S() ] )
 	{
 		if( tName != null ) {	
 			TableType tableType = TableType.Factory.newInstance() ;
@@ -2221,7 +2425,7 @@ ScalarExpressionType term() :
 {
 	// refactored
 	// factor() ( LOOKAHEAD(2) (<STAR> | <DIVIDE> ) term() )*
-	seType=factor() exprPairs=term_List()
+	seType=factor_S() exprPairs=term_List()
 	{ 
 		if( exprPairs == null ) {
 		   return seType ; 
@@ -2312,7 +2516,7 @@ void timeStampPrecision() : {}
 void timeZone() : {}
 {
 	// refactored
-    <AT> ( <LOCAL> | (<TIME_ZONE> intervalValueExpression() ) ) 
+    <AT> ( <LOCAL> | (<TIME_ZONE> interval_value_expression_S() ) ) 
 }
 
 TrigonometricFunctionType trigFunctions() : 
@@ -2373,7 +2577,7 @@ AtomType unsignedLiteral() :
 	(
 		// foreshortened
 	    atomType=unsignedNumericLiteral()
-		| 		atomType=generalLiteral()
+		| 		atomType=general_literal_A()
 	)
 	{ return atomType ; }
 }
@@ -2387,7 +2591,7 @@ AtomType unsignedNumericLiteral() :
 // JL. Note the adql/x schema does not possess an approximateNumericLiteral
 //		LOOKAHEAD(3)//		exactNumericLiteral()//	    | //	    approximate_numeric_literal_S()
 
-		atomType=exactNumericLiteral()
+		atomType=exact_numeric_literal_S()
     )
     { return atomType ; }
 }
@@ -2401,7 +2605,7 @@ ScalarExpressionType unsignedValueSpecification() :
 	(
 		seType=unsignedLiteral()
 		|
-		generalValueSpecification()
+		general_value_specification_A()
 	)
 	{ return seType ;  }
 }
@@ -2411,6 +2615,7 @@ ScalarExpressionType value_expression_A() :
 	ScalarExpressionType retValue = null ;
 } 
 {
+	//S:
 	// <numeric_value_expression>
     // | <string_value_expression>
     // | <datetime_value_expression>
@@ -2420,7 +2625,7 @@ ScalarExpressionType value_expression_A() :
 	retValue=numericValueExpression() 
 	|
 	LOOKAHEAD(3) 	
-	retValue=stringValueExpression() 
+	retValue=string_value_expression_A() 
 	// JL. foreshortened. At present there seems no accommodation for
 	// datetime and interval expressions in adql
 //	|//	LOOKAHEAD(3) //	dateTimeValueExpression() //	|//	intervalValueExpression()
@@ -2462,6 +2667,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.11  2006/09/27 20:51:55  jl99
+Reorg on method naming convention: 3.
+
 Revision 1.10  2006/09/26 13:44:11  jl99
 Reorg on method naming convention: 1.
 
