@@ -1,4 +1,4 @@
-/*$Id: SchemaMap.java,v 1.4 2006/09/26 15:34:24 clq2 Exp $
+/*$Id: SchemaMap.java,v 1.5 2006/09/27 09:53:41 KevinBenson Exp $
  * Created on 01-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -96,7 +96,7 @@ public class SchemaMap {
 
         //vo-resource-types
         ALL.put("http://www.ivoa.net/xml/CEAService/v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd"));
-        ALL.put("http://www.ivoa.net/xml/CEAService/v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.3/CEAService.xsd"));
+        //ALL.put("http://www.ivoa.net/xml/CEAService/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.3/CEAService.xsd"));
         
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd"));
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd"));
@@ -129,6 +129,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.5  2006/09/27 09:53:41  KevinBenson
+commented out a line that was not needed at this moment referenced a schema fiel that did not exist.
+
 Revision 1.4  2006/09/26 15:34:24  clq2
 SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
 
