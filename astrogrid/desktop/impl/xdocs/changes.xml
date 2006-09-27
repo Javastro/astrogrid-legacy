@@ -13,6 +13,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release>
+    <action dev="jdt" type="fix" issue="1836">
+        Workbench now honours user registry endpoint settings.
+    </action>
+</release>
 <release version="2006.3.rc3" date="2006-09-15">
 <action dev="nw" type="fix" issue="1814">
 Added caching of application info to improve responsiveness of workflow editor and

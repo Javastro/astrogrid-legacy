@@ -77,8 +77,7 @@
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ivoa.StreamingRegistryImpl" >
 				<service>externalRegistry</service>
-				<string>${org.astrogrid.registry.query.endpoint}</string>
-				<string>${org.astrogrid.registry.query.altendpoint}</string>
+                <service>system.configuration</service><!-- JDT1836 -->
 				<service>ivoa.cache</service>				
 			</construct>
 		</invoke-factory>

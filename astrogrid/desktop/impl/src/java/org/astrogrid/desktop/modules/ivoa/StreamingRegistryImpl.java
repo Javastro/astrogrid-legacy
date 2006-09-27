@@ -26,6 +26,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.system.Configuration;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
 
@@ -63,9 +64,11 @@ public class StreamingRegistryImpl implements RegistryInternal {
 	
 			
 		
-	public StreamingRegistryImpl(final ExternalRegistryInternal reg, final String endpoint, final String fallbackEndpoint, final  CacheFactory cacheFac) throws URISyntaxException {
+	public StreamingRegistryImpl(final ExternalRegistryInternal reg, final Configuration config, final  CacheFactory cacheFac) throws URISyntaxException {
 		super();
 		this.reg = reg;
+        String endpoint = config.getKey("org.astrogrid.registry.query.endpoint"); //JDT1836
+        String fallbackEndpoint = config.getKey("org.astrogrid.registry.query.altendpoint");
 		this.endpoint = new URI(endpoint);
 		this.fallbackEndpoint = new URI(fallbackEndpoint);
 		this.outputFactory = XMLOutputFactory.newInstance();	
