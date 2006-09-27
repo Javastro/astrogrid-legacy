@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.4 2006/09/26 15:34:42 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.5 2006/09/27 13:08:55 kea Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.util.Vector;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 
 
 /** Unit test for checking an installation - checks that all properties
@@ -33,6 +34,21 @@ public class InstallationPropertiesCheck extends TestCase {
       boolean allOK = true;
       String test;
       Vector accum = new Vector();
+
+      String plugin;
+      try {
+        plugin = ConfigFactory.getCommonConfig().getString(
+              "datacenter.querier.plugin");
+      }
+      catch (PropertyNotFoundException e) {
+        // Ignore this one so we can report it to the user later
+        plugin = null;
+      }
+
+      // Catch any properties set by the sample plugin
+      if ("org.astrogrid.tableserver.test.SampleStarsPlugin".equals(plugin)) {
+         SampleStarsPlugin.initConfig();
+      }
 
       // Check all properties are set
       allOK = allOK && checkSet("datacenter.url", accum);
@@ -75,23 +91,14 @@ public class InstallationPropertiesCheck extends TestCase {
       // datacenter.ucd.version
       //
 
-      String plugin;
-      try {
-        plugin = ConfigFactory.getCommonConfig().getString(
-              "datacenter.querier.plugin");
-      }
-      catch (PropertyNotFoundException e) {
-        // Ignore this one so we can report it to the user later
-        plugin = null;
-      }
-      if ((plugin != null) && 
-          plugin.equals("org.astrogrid.tableserver.jdbc.JdbcPlugin")) {
-        // These ones are used by the jdbc plugin
+      // These ones are used by the jdbc plugin
+      if ("org.astrogrid.tableserver.jdbc.JdbcPlugin".equals(plugin)) {
         allOK = allOK && checkSet("datacenter.plugin.jdbc.user", accum);
         allOK = allOK && checkSet("datacenter.plugin.jdbc.password", accum);
         allOK = allOK && checkSet("datacenter.plugin.jdbc.drivers", accum);
         allOK = allOK && checkSet("datacenter.plugin.jdbc.url", accum);
       }
+
       String accumString = "";
       for (int i = 0; i < accum.size(); i++) {
         accumString = accumString + (String)accum.elementAt(i);

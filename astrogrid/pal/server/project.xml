@@ -211,15 +211,12 @@
   			<war.bundle>true</war.bundle>
   		</properties>
   	</dependency>
-   <!--
-      REMOVED BY KEA 06/09/06
   	<dependency>
   		<groupId>axis</groupId>
   		<type>jar</type>
   		<artifactId>wsdl4j</artifactId>
   		<version>1.5.1</version>
   	</dependency>
-   -->
   	<dependency>
   		<groupId>axis</groupId>
   		<type>jar</type>

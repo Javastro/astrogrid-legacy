@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.4 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: DataServer.java,v 1.5 2006/09/27 13:08:55 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -76,7 +76,7 @@ public class DataServer
       log.info("Startup");
 
       //botch, need a better way of plugging into initialisation stuff
-      if (ConfigFactory.getCommonConfig().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY).equals("org.astrogrid.datacenter.queriers.test.SampleStarsPlugin")) {
+      if (ConfigFactory.getCommonConfig().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY).equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
          SampleStarsPlugin.initConfig();
       }
    }

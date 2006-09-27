@@ -295,8 +295,6 @@
   			<war.bundle>true</war.bundle>
   		</properties>
   	</dependency>
-   <!--
-   REMOVED BY KEA 06/09/06
   	<dependency>
   		<groupId>axis</groupId>
   		<type>jar</type>
@@ -306,7 +304,6 @@
   			<war.bundle>true</war.bundle>
   		</properties>
   	</dependency>
-   -->
   	<dependency>
   		<groupId>axis</groupId>
   		<type>jar</type>
