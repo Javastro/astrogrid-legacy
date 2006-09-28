@@ -123,14 +123,14 @@
          </xs:element>
 
       </xs:sequence>
-      <xs:attribute name="created" type="xs:dateTime">
+      <xs:attribute name="created" type="xs:date">
          <xs:annotation>
             <xs:documentation>
               The date this resource metadata description was created.
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="updated" type="xs:dateTime">
+      <xs:attribute name="updated" type="xs:date">
          <xs:annotation>
             <xs:documentation>
               The date this resource metadata description was last updated.
