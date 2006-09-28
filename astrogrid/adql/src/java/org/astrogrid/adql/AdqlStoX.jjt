@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.13 2006/09/28 08:50:02 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.14 2006/09/28 15:08:55 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file
  *
@@ -47,6 +47,7 @@ options {
   VISITOR=false;
   NODE_USES_PARSER=true;
   NODE_DEFAULT_VOID=true;
+  IGNORE_CASE=true;
 }
 
 PARSER_BEGIN(AdqlStoX)
@@ -322,6 +323,7 @@ TOKEN :
 |	< XMLDATA: "xmldata" >
 
 	//math
+|   < ABS: "abs" >
 |	< CEILING: "ceiling" >
 |	< DEGREES: "degrees" >
 |	< EXP: "exp" >
@@ -1502,6 +1504,8 @@ MathFunctionType mathFunctions() :
 }
 {
 	(
+		( t=<ABS> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		|
 		( t=<CEILING> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
 		|
 		( t=<DEGREES> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
@@ -2827,6 +2831,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.14  2006/09/28 15:08:55  jl99
+Errors corrected.
+
 Revision 1.13  2006/09/28 08:50:02  jl99
 Reorg on method naming convention: complete.
 
