@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xmlns="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Restrict Top="100"/>
+  <SelectionList>
+    <Item Oper="+" xsi:type="v1:binaryExprType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+      <Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
+      <Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+    </Item>
+    <Item Oper="-" xsi:type="v1:binaryExprType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+      <Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
+      <Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+    </Item>
+    <Item Oper="*" xsi:type="v1:binaryExprType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+      <Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
+      <Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+    </Item>
+    <Item Oper="/" xsi:type="v1:binaryExprType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+      <Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
+      <Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+    </Item>
+  </SelectionList>
+  <From>
+    <Table Name="catalogue" Alias="a" xsi:type="v1:tableType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0"/>
+  </From>
+</Select>
