@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.12 2006/09/28 08:43:29 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.13 2006/09/28 08:50:02 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file
  *
@@ -683,13 +683,13 @@ AtomType character_string_literal_A() :
     //    <quote> [ <character_representation>... ] <quote>
     //    [ { <separator>... <quote> [ <character_representation>... ] <quote> }... ]
 
-	atomType=ASCIIStringLiteral_AG()
+	atomType=ASCIIStringLiteral()
 	{ 
 		return atomType ; 		
 	} 
 }
 
-AtomType ASCIIStringLiteral_AG() : 
+AtomType ASCIIStringLiteral() : 
 {
 	AtomType at = null ;
 	ArrayList list = null ;
@@ -805,7 +805,7 @@ ScalarExpressionType value_expression_primary_A() :
 
 	(
 		// Foreshortened 
-		seType=unsignedValueSpecification()
+		seType=unsigned_value_specification_S()
 		|
 		seType=column_reference_S()
 		|
@@ -1179,7 +1179,7 @@ ScalarExpressionType general_value_specification_A() :
     // | VALUE
 	
 	// Foreshortened
-	seType=variableSpecification()
+	seType=variable_specification_A()
 	{ return seType ; }	
 }
 
@@ -2749,11 +2749,15 @@ AtomType unsigned_numeric_literal_A() :
 }
 
 
-ScalarExpressionType unsignedValueSpecification() : 
+ScalarExpressionType unsigned_value_specification_S() : 
 {
 	ScalarExpressionType seType = null ;
 }
 {
+	//S:
+	// <unsigned_value_specification> ::=
+    //     <unsigned_literal>
+    //   | <general_value_specification>
 	(
 		seType=unsigned_literal_S()
 		|
@@ -2786,11 +2790,15 @@ ScalarExpressionType value_expression_A() :
 	
 }
 
-ScalarExpressionType variableSpecification() : 
+ScalarExpressionType variable_specification_A() : 
 {
 	ScalarExpressionType seType = null ;
 }
 {
+	//S:
+	// <variable_specification> ::=
+    //    <embedded_variable_name> [ <indicator_variable> ]
+    
 	// JBL ADQL adaptation to accommodate scripting variables.
 	// Details still to be worked out.
 	<DOLLAR> <LBRACE> <REGULAR_IDENTIFIER> <RBRACE>
@@ -2819,6 +2827,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.13  2006/09/28 08:50:02  jl99
+Reorg on method naming convention: complete.
+
 Revision 1.12  2006/09/28 08:43:29  jl99
 Reorg on method naming convention: 4.
 
