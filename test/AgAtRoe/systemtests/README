@@ -1,0 +1,4 @@
+A set of System Tests for AG@ROE built on the AstroRuntime.
+
+TODO:
+Currently the workbench jar needs adding to the classpath by hand.  This project should be mavenized.
