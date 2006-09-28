@@ -17,6 +17,9 @@
     <action dev="jdt" type="fix" issue="1836">
         Workbench now honours user registry endpoint settings.
     </action>
+    <action dev="jdt" type="fix" issue="1726">
+        AstroRuntime no longer fails if connected to by applications a second time.
+    </action>    
 </release>
 <release version="2006.3.rc3" date="2006-09-15">
 <action dev="nw" type="fix" issue="1814">

@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.5 2006/08/31 21:10:38 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.6 2006/09/28 15:12:28 jdt Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -156,7 +156,13 @@ public class ShutdownImpl  extends Thread implements Shutdown{
     	}
         logger.debug("addShutdownListener(ShutdownListener) - start");
         logger.debug(arg0);
-        listeners.add(arg0);
+        // JDT1726 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1726
+        // This is a sledgehammer solution to a problem I don't fully understand.
+        try {
+            listeners.add(arg0);
+        } catch (Exception e) {
+            logger.error("Error registering shutdown listener.  In the absence of any better ideas, ignoring.",e);
+        }
 
         logger.debug("addShutdownListener(ShutdownListener) - end");
     }
@@ -181,6 +187,9 @@ public class ShutdownImpl  extends Thread implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.6  2006/09/28 15:12:28  jdt
+Fix for bug http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1726
+
 Revision 1.5  2006/08/31 21:10:38  nw
 added shutdown hook
 
