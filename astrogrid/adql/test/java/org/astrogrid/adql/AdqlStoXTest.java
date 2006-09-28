@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.1 2006/09/26 19:53:03 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.2 2006/09/28 13:35:15 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -8,22 +8,24 @@
 **/
 package org.astrogrid.adql;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.custommonkey.xmlunit.XMLTestCase;
 import java.util.ArrayList ;
-import java.util.ListIterator ;
 import java.io.File ;
 import java.net.URL ;
 import java.net.URI ;
 import java.io.FileFilter ;
 import java.io.FileReader ;
 import java.io.FileNotFoundException ;
+import java.lang.reflect.*;
+import java.util.Hashtable;
+import java.util.Enumeration;
+
+
+import org.astrogrid.xml.DomHelper;
 
 import org.astrogrid.adql.v1_0.beans.*;
+import org.apache.xmlbeans.*;
 
 /**
  * AdqlStoXTest
@@ -35,61 +37,107 @@ import org.astrogrid.adql.v1_0.beans.*;
 public class AdqlStoXTest extends XMLTestCase {
 	
 	final static String README = "README" ;
-	final static String[] versions = { "074", "1_0" } ;
+	final static String BAD_INIT_MESSAGE = "AdqlStoXTest. Initialization failed: " ;
+	final static String BAD_SETUP_MESSAGE = "AdqlStoXTest. Method setUp() failed: " ;
 
-	static File[][] sFileArray = null ;
-	static int sOffset = -1 ;
-	static AdqlStoX sCompiler = null ;
+	private static AdqlStoX sCompiler = null ;
+	private static boolean sInitialized = false ; 
+	private static boolean sBadInitializedStatus = false ;
+	private static File sDirectoryOfREADME = null ;
 	
-	static File sCurrentSFile ;
-	static File sCurrentXFile ;
-	
+	private File currentSFile ; 
+	private File currentXFile ;
 
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		if( sFileArray == null ) {
-			URL readme = this.getClass().getResource( README ) ;
-			File directory = new File( new URI( readme.toString() ) ).getParentFile() ;		
-			for( int i=0 ; i<versions.length ; i++ ) {
-				sFileArray[i] = new File( directory.getAbsolutePath() + File.separator + versions[i] ).listFiles( new AdqlsFilter() ) ;
-			}
+		if( sBadInitializedStatus == true ) {
+			String message = BAD_INIT_MESSAGE + "see message from earlier initialization failure" ;
+			throw new InitializationException( message ) ;
 		}
+		if( sInitialized == false ) {
+			init() ;
+		}
+		locateFilesForTest() ;
 	}
 	
-	public void testEverything() throws Exception {
-		
+	public void testOf_v10_selectBinaries() throws Exception { execTest() ; }
+	public void testOf_v10_BADemptyFrom() throws Exception { execTest() ; }
+	public void testOf_v10_BADselectOrderByDirOnly() throws Exception { execTest() ; }
+	public void testOf_v10_BADselectEmptyAlias() throws Exception { execTest() ; }
+	public void testOf_v10_BADemptyWhere() throws Exception { execTest() ; }
+	public void testOf_v10_selectAggregateFuncs() throws Exception { execTest() ; }
+
+	
+	private void execTest() throws Exception {
 		SelectDocument sd = null ;
-		
-		for( int i=0; i<sFileArray.length; i++ ) {
-			System.out.println( "found file: " + sFileArray[i].getName() ) ;
-			sd = getCompiler( sFileArray[i] ).exec() ;
+		printHelpfulStuff( currentSFile.getName() ) ;
+		sd = getCompiler( currentSFile ).exec() ;		
+		if( sd != null ) {
+			System.out.println( "Compilation suceeded..." ) ;
+			System.out.println( "\n== From: ===>" ) ;
+			printInputFile( currentSFile ) ;
+			System.out.println( "\n==== To: ===>" ) ;
+			printCompilation( sd ) ;			
+			assertTrue( currentSFile.getName() + ": Compilation succeeded when not expected.", currentXFile != null ) ;	
+			compareCompilations( sd, currentXFile ) ;
 		}
-		
-		if( sd != null )
-			System.out.println( sd.toString() ) ;
-		else 
-			System.out.println( "compilation failed" ) ;
-		
+		else {
+			assertTrue( currentSFile.getName() + ": Compilation failed when not expected.", currentXFile == null ) ;
+		}
 	}
 	
-//	private void suiteTest(String name, String version, boolean expectIdentical)   throws Exception
-//	   {
-//	      AdqlTestHelper helper = new AdqlTestHelper();
-//	      printHelpfulStuff(name);
-//
-//	      String adql = helper.getSuiteAdqlString(name, version); 
-//	      String compareAdql;
-//	      if (expectIdentical) {
-//	         compareAdql = helper.getSuiteAdqlString(name, "v1_0");
-//	      }
-//	      else {
-//	         compareAdql = helper.getSuiteAdqlStringExpected(name, "v1_0");
-//	      }
-//	      roundParse(adql, compareAdql);
-//	   }
+	private void locateFilesForTest() throws InitializationException {
+		currentSFile = null ;
+		currentXFile = null ;
+		String testMethodName = this.getName() ;
+		String[] parts = testMethodName.split("_") ;
+		String path = sDirectoryOfREADME.getAbsolutePath() 
+		            + File.separator 
+		            + parts[1]
+		            + File.separator
+		            + parts[2] 
+		            + ".adqls" ;
+		File file = new File( path ) ;
+		if( file.exists() ) {
+			currentSFile = file ;
+		}
+		else {
+			throw new InitializationException( BAD_INIT_MESSAGE 
+					                         + "Method "
+					                         + testMethodName
+					                         + ": corresponding .adqls file not found" ) ;
+		}
+		path = sDirectoryOfREADME.getAbsolutePath() 
+             + File.separator 
+             + parts[1]
+             + File.separator
+             + parts[2] 
+             + ".adqlx" ;
+		file = new File( path ) ;
+		if( file.exists() ) {
+			currentXFile = file ;
+		}
+	}
+	
+	private void compareCompilations( SelectDocument selDoc, File xmlFile ) throws Exception {
+
+		Document compiledDom = null ;
+		Document fileDom = null ;
+		
+		compiledDom = DomHelper.newDocument( selDoc.toString() ) ;
+		fileDom = DomHelper.newDocument( SelectDocument.Factory.parse( xmlFile ).toString() ) ;
+
+		// Normalize just to be sure 
+		compiledDom.normalize();
+		fileDom.normalize();
+
+		// Using xmlunit to compare documents
+		setIgnoreWhitespace(true);
+		assertXMLEqual("Adql/s does not compile to what is expected!",compiledDom, fileDom);
+	}
 	
 	private AdqlStoX getCompiler( File file ) throws FileNotFoundException {
 		if( sCompiler == null ) {
@@ -99,6 +147,116 @@ public class AdqlStoXTest extends XMLTestCase {
 			sCompiler.ReInit( new FileReader( file ) ) ;
 		}
 		return sCompiler ;
+	}
+	
+	private void init() throws InitializationException {
+		// Assume the worst...
+		sBadInitializedStatus = true ;
+		
+		try {
+			//
+			// Work out the number of tests...	
+			// And also attempt to extract the directories involved...
+			Method[] methodArray = this.getClass().getMethods() ;
+			int testMethodCount = 0 ;
+			Hashtable directories = new Hashtable() ;
+			for( int i=0; i<methodArray.length; i++ ) {
+				String methodName = methodArray[i].getName() ;
+				if( methodName.startsWith( "testOf_" ) ) {
+					testMethodCount++ ;
+					String[] paths = methodName.split( "_" ) ;
+					directories.put( paths[1], paths[1] ) ;
+				}
+			}
+			
+			ArrayList fileList = new ArrayList() ;
+			File[] fileArray = null ;
+			URL readme = null ;
+			
+			//
+			// Locate the directory that holds the README file...			
+			readme = this.getClass().getResource( README ) ;
+			sDirectoryOfREADME = new File( new URI( readme.toString() ) ).getParentFile() ;
+			
+			//
+			// Count all of the files with an .adql file extension...
+			Enumeration en = directories.elements() ;
+			while( en.hasMoreElements() ) {
+				String directory = (String)en.nextElement() ;
+				fileArray = new File( sDirectoryOfREADME.getAbsolutePath() 
+						            + File.separator 
+						            + directory ).listFiles( new AdqlsFilter() ) ;
+				for( int j=0; j<fileArray.length; j++ ) {
+					fileList.add( fileArray[j] ) ;
+				}
+			}
+			
+			//
+			// If the number of methods doesn't match the number of files,
+			// Then issue a warning message...
+			if( testMethodCount != fileList.size() ) {
+				System.out.println( "\nAdqlStoXTest. WARNING. Number of test methods does not match available test files." ) ;
+				System.out.println( "   Methods count: " + testMethodCount ) ;
+				System.out.println( "   File count: " + fileList.size() ) ;
+				System.out.println( 
+						"   You may encounter failures within a test or complete absence of some tests.\n"
+					+   "   Please inspect AdqlStoXTest for test methods and your test files.\n"					
+				) ;
+			}			
+			sBadInitializedStatus = false ;
+			sInitialized = true ;
+		}
+		catch( Exception ex ) {
+			throw new InitializationException( BAD_INIT_MESSAGE + ex.getLocalizedMessage() ) ;
+		}
+	
+	}
+	
+	protected void printHelpfulStuff(String filename) {
+		System.out.println("------------------------------------------------");
+		System.out.println("Compiling " + filename);
+		System.out.println("------------------------------------------------");
+	}
+	
+	private void printCompilation( SelectDocument sd ) {
+		XmlOptions opts = new XmlOptions();
+		opts.setSavePrettyPrint();
+		opts.setSavePrettyPrintIndent(4);
+		System.out.println(sd.xmlText(opts));
+	}
+	
+	private void printInputFile( File file ) {
+		
+		try {
+			FileReader reader = new FileReader( file ) ;
+			int ch = reader.read() ;
+			while( ch != -1 ) {
+				System.out.print( (char)ch ) ;
+				ch = reader.read() ;
+			}			
+		}
+		catch( Exception iox ) {
+			;
+		}	
+	}
+	
+	public class InitializationException extends Exception {
+
+		/**
+		 * @param message
+		 * @param cause
+		 */
+		public InitializationException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		/**
+		 * @param message
+		 */
+		public InitializationException(String message) {
+			super(message);
+		}
+		
 	}
 	
 	private class AdqlsFilter implements FileFilter {
@@ -115,8 +273,11 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.1  2006/09/26 19:53:03  jl99
- * Initial unit test framework for AdqlStoX
- * 
+ * Revision 1.2  2006/09/28 13:35:15  jl99
+ * Unit test harness established.
+ *
+/* Revision 1.1  2006/09/26 19:53:03  jl99
+/* Initial unit test framework for AdqlStoX
+/* 
  * 
 */
