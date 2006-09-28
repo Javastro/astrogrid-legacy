@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.2 2006/09/28 13:35:15 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.3 2006/09/28 15:08:08 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -63,23 +63,29 @@ public class AdqlStoXTest extends XMLTestCase {
 		locateFilesForTest() ;
 	}
 	
-	public void testOf_v10_selectBinaries() throws Exception { execTest() ; }
+
 	public void testOf_v10_BADemptyFrom() throws Exception { execTest() ; }
-	public void testOf_v10_BADselectOrderByDirOnly() throws Exception { execTest() ; }
-	public void testOf_v10_BADselectEmptyAlias() throws Exception { execTest() ; }
 	public void testOf_v10_BADemptyWhere() throws Exception { execTest() ; }
+	public void testOf_v10_BADselectEmptyAlias() throws Exception { execTest() ; }
+	public void testOf_v10_BADselectOrderByDirOnly() throws Exception { execTest() ; }
 	public void testOf_v10_selectAggregateFuncs() throws Exception { execTest() ; }
+	public void testOf_v10_selectAliasExpr() throws Exception { execTest() ; } 
+	public void testOf_v10_selectAllAllow() throws Exception { execTest() ; } 
+	public void testOf_v10_selectAllLimit() throws Exception { execTest() ; } 
+	public void testOf_v10_selectBetweenOps() throws Exception { execTest() ; } 
+	public void testOf_v10_selectBinaries() throws Exception { execTest() ; }
+	public void testOf_v10_selectBoolOps() throws Exception { execTest() ; }
 
 	
 	private void execTest() throws Exception {
 		SelectDocument sd = null ;
 		printHelpfulStuff( currentSFile.getName() ) ;
+		System.out.println( "== From: ===>" ) ;
+		printFile( currentSFile ) ;
 		sd = getCompiler( currentSFile ).exec() ;		
 		if( sd != null ) {
-			System.out.println( "Compilation suceeded..." ) ;
-			System.out.println( "\n== From: ===>" ) ;
-			printInputFile( currentSFile ) ;
-			System.out.println( "\n==== To: ===>" ) ;
+			System.out.println( "\nCompilation suceeded..." ) ;			
+			System.out.println( "==== To: ===>" ) ;
 			printCompilation( sd ) ;			
 			assertTrue( currentSFile.getName() + ": Compilation succeeded when not expected.", currentXFile != null ) ;	
 			compareCompilations( sd, currentXFile ) ;
@@ -225,19 +231,23 @@ public class AdqlStoXTest extends XMLTestCase {
 		System.out.println(sd.xmlText(opts));
 	}
 	
-	private void printInputFile( File file ) {
-		
+	private void printFile( File file ) {
+		FileReader reader = null ;
 		try {
-			FileReader reader = new FileReader( file ) ;
+			reader = new FileReader( file ) ;
 			int ch = reader.read() ;
 			while( ch != -1 ) {
 				System.out.print( (char)ch ) ;
 				ch = reader.read() ;
-			}			
+			}
+		    System.out.print( "\n" ) ;
 		}
 		catch( Exception iox ) {
 			;
-		}	
+		}
+		finally {
+			try{ reader.close() ; } catch( Exception ex ) { ; }
+		}
 	}
 	
 	public class InitializationException extends Exception {
@@ -273,9 +283,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.2  2006/09/28 13:35:15  jl99
- * Unit test harness established.
+ * Revision 1.3  2006/09/28 15:08:08  jl99
+ * New unit tests added.
  *
+/* Revision 1.2  2006/09/28 13:35:15  jl99
+/* Unit test harness established.
+/*
 /* Revision 1.1  2006/09/26 19:53:03  jl99
 /* Initial unit test framework for AdqlStoX
 /* 
