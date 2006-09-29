@@ -363,7 +363,11 @@ astrogrid.build.jdk=${java.version}
 		}		
 	-keep class org.apache.log4j.Category {
 		public *;
-	}		
+	}
+        <!--  Dynamically checked by the Finder class see bug JDT1845  -->
+        -keep public class org.astrogrid.desktop.BuildInprocessACR {
+            public *;
+        }		
     	<!--  things required from ag commons -->
     	-keep public class org.astrogrid.common.namegen.InMemoryNameGen {
 	    	public *;
