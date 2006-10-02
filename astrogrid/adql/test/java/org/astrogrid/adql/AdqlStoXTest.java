@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.3 2006/09/28 15:08:08 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.4 2006/10/02 09:05:31 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -111,7 +111,7 @@ public class AdqlStoXTest extends XMLTestCase {
 			currentSFile = file ;
 		}
 		else {
-			throw new InitializationException( BAD_INIT_MESSAGE 
+			throw new InitializationException( BAD_SETUP_MESSAGE 
 					                         + "Method "
 					                         + testMethodName
 					                         + ": corresponding .adqls file not found" ) ;
@@ -185,7 +185,7 @@ public class AdqlStoXTest extends XMLTestCase {
 			sDirectoryOfREADME = new File( new URI( readme.toString() ) ).getParentFile() ;
 			
 			//
-			// Count all of the files with an .adql file extension...
+			// Count all of the files with an .adqls file extension...
 			Enumeration en = directories.elements() ;
 			while( en.hasMoreElements() ) {
 				String directory = (String)en.nextElement() ;
@@ -283,9 +283,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.3  2006/09/28 15:08:08  jl99
- * New unit tests added.
+ * Revision 1.4  2006/10/02 09:05:31  jl99
+ * First attempt at mavenizing project
  *
+/* Revision 1.3  2006/09/28 15:08:08  jl99
+/* New unit tests added.
+/*
 /* Revision 1.2  2006/09/28 13:35:15  jl99
 /* Unit test harness established.
 /*

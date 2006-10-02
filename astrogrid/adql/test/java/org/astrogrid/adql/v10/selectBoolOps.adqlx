@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
-    <Restrict xsi:type="selectionLimitType" Top="100"/>
-    <SelectionList xsi:type="selectionListType">
-        <Item xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
-        <Item xsi:type="columnReferenceType" Table="a" Name="POS_EQ_DEC"/>
-    </SelectionList>
-    <From xsi:type="fromType">
-        <Table xsi:type="tableType" Alias="a" Name="catalogue"/>
-    </From>
-    <Where>
-        <Condition xsi:type="intersectionSearchType">
-            <Condition xsi:type="unionSearchType">
-                <Condition xsi:type="inverseSearchType">
-                    <Condition xsi:type="comparisonPredType" Comparison="=">
-                        <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
-                        <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_DEC"/>
-                    </Condition>
-                </Condition>
-                <Condition xsi:type="comparisonPredType" Comparison="=">
-                    <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
-                    <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_DEC"/>
-                </Condition>
-            </Condition>
-            <Condition xsi:type="comparisonPredType" Comparison=">">
-                <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_RA"/>
-                <Arg xsi:type="columnReferenceType" Table="a" Name="POS_EQ_DEC"/>
-            </Condition>
-        </Condition>
-    </Where>
-</Select>
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+    <v1:Restrict Top="100"/>
+    <v1:SelectionList>
+        <v1:Item Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Item Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </v1:SelectionList>
+    <v1:From>
+        <v1:Table Name="catalogue" Alias="a" xsi:type="v1:tableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </v1:From>
+    <v1:Where>
+        <v1:Condition xsi:type="v1:intersectionSearchType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <v1:Condition xsi:type="v1:closedSearchType">
+                <v1:Condition xsi:type="v1:unionSearchType">
+                    <v1:Condition xsi:type="v1:closedSearchType">
+                        <v1:Condition xsi:type="v1:inverseSearchType">
+                            <v1:Condition Comparison="=" xsi:type="v1:comparisonPredType">
+                                <v1:Arg Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType"/>
+                                <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
+                            </v1:Condition>
+                        </v1:Condition>
+                    </v1:Condition>
+                    <v1:Condition xsi:type="v1:closedSearchType">
+                        <v1:Condition Comparison="=" xsi:type="v1:comparisonPredType">
+                            <v1:Arg Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType"/>
+                            <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
+                        </v1:Condition>
+                    </v1:Condition>
+                </v1:Condition>
+            </v1:Condition>
+            <v1:Condition xsi:type="v1:closedSearchType">
+                <v1:Condition Comparison=">" xsi:type="v1:comparisonPredType">
+                    <v1:Arg Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
+                </v1:Condition>
+            </v1:Condition>
+        </v1:Condition>
+    </v1:Where>
+</v1:Select>

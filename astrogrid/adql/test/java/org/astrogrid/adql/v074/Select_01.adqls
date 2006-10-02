@@ -1,0 +1,1 @@
+select col1, sin(col2+col3), max(col5) from tab1 where col7 = 1234 ;
