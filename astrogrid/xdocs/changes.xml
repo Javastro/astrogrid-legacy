@@ -45,7 +45,13 @@
     		  merge conflicts.
     		  It needs to go with the
     		  contracts branch Contracts_KMB_XForms (which needs Guy's approval). - Kev will let me know when this is ready - CLQ
+    		  This branch had been abandened and replaced with branch Reg_KMB_Xfire and still in process of being merged/tested - CLQ 05/Oct/06
     		</action>
+       
+
+        </release>
+		
+		<release version="HEAD">
     		<action dev="kmb" type="add">
     		  <em>Branch Contracts_KMB_XForms n astrogrid/contracts:</em>  Only merge in src/java and src/schema stuff.  Originally
     		  this branch was for Xforms stuff, but that has not gone through, but still added a lot of new schemas 1.0.
@@ -54,11 +60,7 @@
                   v1.0; astrogrid-software-site added to branch and schemata index updated; maven-base added to branch and version
                   of contracts raised to 2006.3.02. Note that astrogrid-software-site needs to be built after contracts. The branch is now
                   ready to merge - GTR
-    		</action>        
-
-        </release>
-		
-		<release version="HEAD">
+    		</action> 		
     		<action dev="gtr" type="fix" issue="1789, 1793">
           	Branch community-gtr-1722-2. The password-change code does better
           	checks on the old password. The registration type is pinned to use
