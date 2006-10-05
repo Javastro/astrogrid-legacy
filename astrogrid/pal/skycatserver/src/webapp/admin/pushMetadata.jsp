@@ -3,7 +3,6 @@
        org.astrogrid.io.*,
        org.astrogrid.cfg.ConfigFactory,
        org.astrogrid.registry.client.RegistryDelegateFactory,
-       org.astrogrid.registry.client.DelegateProperties,
        org.astrogrid.dataservice.metadata.*,
        org.astrogrid.dataservice.service.*"
    isThreadSafe="false"
@@ -36,7 +35,7 @@
                      "",
                      e,
                      "Failed to send metadata (Config target "+
-                        ConfigFactory.getCommonConfig().getString(DelegateProperties.ADMIN_URL_PROPERTY)+")\n"
+                        ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY)+")\n"
                   ));
    }
 %>
