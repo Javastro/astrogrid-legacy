@@ -1,4 +1,4 @@
-/*$Id: Cone.java,v 1.3 2006/08/15 09:48:55 nw Exp $
+/*$Id: Cone.java,v 1.4 2006/10/10 14:06:59 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import java.net.URL;
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
  * @service nvo.cone
  * @since 1.3
+ * @deprecated use the ivoa.cone interface instead.
  * 
  */
 public interface Cone {
@@ -88,6 +89,9 @@ public interface Cone {
 
 /* 
 $Log: Cone.java,v $
+Revision 1.4  2006/10/10 14:06:59  nw
+deprecated this interface.
+
 Revision 1.3  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 
