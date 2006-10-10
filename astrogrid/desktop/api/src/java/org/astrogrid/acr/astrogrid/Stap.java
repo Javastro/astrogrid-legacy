@@ -1,4 +1,4 @@
-/*$Id: Stap.java,v 1.4 2006/08/15 09:48:55 nw Exp $
+/*$Id: Stap.java,v 1.5 2006/10/10 14:07:56 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.Dal;
 
 import org.w3c.dom.Document;
 
@@ -24,11 +25,11 @@ import java.util.Calendar;
 
 /**Query for Images from Simple Time Access Protocol (STAP) services
  * @see http://software.astrogrid.org/schema/vo-resource-types/Stap/v0.1/Stap.xsd
- * @service ivoa.stap
+ * @service astrogrid.stap
  * @since 1.4
  * @author Kevin Benson
  */
-public interface Stap {
+public interface Stap extends Dal  {
     
     /** construct query on START, END 
      * @param service URL of the service endpoint, or ivorn of the service description
@@ -103,59 +104,14 @@ public interface Stap {
     * @throws NotFoundException if the service does not exist (i.e. cannot be resolved in registry)*/ 
    URL constructQuerySF(URI service, Calendar start, Calendar end, double ra, double dec, double ra_size, double dec_size, String format) throws InvalidArgumentException, NotFoundException;   
    
-      
-   /** add an option to a previously constructed query
-    * 
-    * @param query the query url
-    * @param optionName name of the option to add
-    * @param optionValue value for the new option
-    * @return <tt>query</tt> with the option appended.
-    * @throws InvalidArgumentException if the parameter cannot be added.
-    * @see #constructQuery
-    */
-   URL addOption(URL query, String optionName, String optionValue) throws InvalidArgumentException;
-      
-    
-   /** execute a STAP query.
-    * 
-    * This is a convenience method  - just performs a 'GET' on the query url- many programming languages support this functionality themselves
-    * @param siapQuery query url to execute
-    * @return a votable of results
-    * @throws ServiceException if an error occurs while communicating with the SIAP service
-    * 
-    */
-   Document getResults(URL siapQuery) throws ServiceException;
-   
-   /**execute a STAP query and save the results.
-    * @param siapQuery query url to execute
-    * @param saveLocation location to save result document - may be file:/, ivo:// (myspace), ftp://
-    * @throws SecurityException if the user is not permitted to write to the save location
-    * @throws ServiceException if an error occurs while communicating with the siap service
-    * @throws InvalidArgumentException if the save location cannot be written to
-    */
-   void saveResults(URL siapQuery, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
-   
-   /** helper method - returns an ADQL/s query that should be passed to a registry to list all 
-    * available siap services. 
-    * <br/>
-    * can be used as a starting point for filters, etc.
-    * @return an adql query string
-    */
-   String getRegistryAdqlQuery();
-   
-   /** helper method - returns an xquery that should be passed to a registry to list all 
-    * available siap services. 
-    * <br/>
-    * can be used as a starting point for filters, etc.
-    * @return an xquery string
-    */
-   String getRegistryXQuery();
-   
 }
 
 
 /* 
 $Log: Stap.java,v $
+Revision 1.5  2006/10/10 14:07:56  nw
+upgraded the dal interfaces.
+
 Revision 1.4  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 
