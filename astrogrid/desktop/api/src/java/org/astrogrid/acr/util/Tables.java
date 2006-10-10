@@ -4,6 +4,12 @@
 package org.astrogrid.acr.util;
 
 import java.io.IOException;
+import java.net.URI;
+
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
 
 /** Utility functions for working with tables.
  * Exposes some of the functionality of STIL
@@ -16,16 +22,11 @@ public interface Tables {
 
     /** 
      * Converts a table between supported formats. 
-     * <code>inFormat</code> can be null only for autodetected types: 
-     * these are FITS and VOTable. 
-     * <code>outFormat</code> can be null only if the format can be guessed 
-     * from <code>outLocation</code>. 
-     * @param  inLocation  input location: may be a URL (including a JDBC URL), 
-     *                     or filename  may be 
+     * @param  inLocation  input location: may be a http://, file://, ivo:// , ftp://
      *                     compressed using unix compress, gzip or bzip2 
      * @param  inFormat    input handler name: generally one of  
      *                     fits, votable, ascii, csv, ipac, wdc or null 
-     * @param  outLocation output location: filename or JDBC URL 
+     * @param  outLocation output location: file://, ivo://, ftp://
      * @param  outFormat   output format: generally one of 
      *                     fits, fits-plus, 
      *                     votable, votable-tabledata, votable-binary-inline, 
@@ -34,7 +35,32 @@ public interface Tables {
      *                     text, ascii, csv, html, html-element, latex, 
      *                     latex-document or null 
      */ 
-    public void convert( String inLocation, String inFormat, 
-                                String outLocation, String outFormat ) 
-            throws IOException;
+	public void convertFile(URI inLocation, String inFormat
+			, URI outLocation, String outFormat) throws InvalidArgumentException, ServiceException, NotFoundException, SecurityException ;
+
+    /** 
+     * Converts an in-memory table between supported formats. 
+     * Will only give good results for text-based table formats.
+     * @param  inLocation  input location: may be a http://, file://, ivo:// , ftp://
+     *                     compressed using unix compress, gzip or bzip2 
+     * @param  inFormat    input handler name: generally one of  
+     *                     fits, votable, ascii, csv, ipac, wdc or null 
+     * @param  outLocation output location: file://, ivo://, ftp://
+     * @param  outFormat   output format: generally one of 
+     *                     fits, fits-plus, 
+     *                     votable, votable-tabledata, votable-binary-inline, 
+     *                     votable-binary-href, votable-fits-inline,  
+     *                     votable-fits-href, 
+     *                     text, ascii, csv, html, html-element, latex, 
+     *                     latex-document or null 
+     */     
+    public String convert(String input, String inFormat, String outFormat) throws InvalidArgumentException, ServiceException;
+    
+    /** list the names of the table formats this module can write out as */
+	public String[] listOutputFormats();
+	
+	/** list the names of the table formats this module can read in from */
+	public String[] listInputFormats()	;
+    
+
 }
