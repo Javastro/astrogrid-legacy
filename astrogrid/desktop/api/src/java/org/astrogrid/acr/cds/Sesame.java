@@ -7,21 +7,35 @@
 
 package org.astrogrid.acr.cds;
 
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 
 import org.w3c.dom.Document;
 /**
  * Resolve object  names to position by querying  Simbad and/or NED and/or VizieR.
+ * 
+ * {@link #resolve} resolves an object name to a datastructure containing position, error, aliases, etc.
+ * <br />
+ * {@link #sesame} and {@link #sesameChooseService(String, String, boolean, String)}
+ * provide low-level access to the raw webservice.
  * @see http://cdsweb.u-strasbg.fr/cdsws/name_resolver.gml
  * @author CDS
  *@service cds.sesame
- *@todo produce an informationBean variant of these methods?
  *@see http://vizier.u-strasbg.fr/xml/sesame_1.dtd
  *@see http://vizier.u-strasbg.fr/xml/sesame_1.xsd
  */
 public interface Sesame {
 
-    /** resolve a name to position.
+	/** Resolve an object name to a position using Sesame
+	 * @since 2006.3.rc4
+	 * @param name the object name to resolve 
+	 * @return a datastructure of positional information about the object.
+	 * @throws ServiceException if the sesame service could not be contacted
+	 * @throws NotFoundException if the named object is not known to sesame.
+	 */
+	public SesamePositionBean resolve(String name) throws ServiceException, NotFoundException;
+	
+    /** resolve a name to position 
   * @param name the name to resolve
      * @param resultType
      * <pre>
@@ -30,7 +44,7 @@ public interface Sesame {
                 x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd, DTD at http://vizier.u-strasbg.fr/xml/sesame_1.dtd) 
                 p (for plain (text/plain)) and i (for all identifiers) options can be added to H or x
                 </pre>
-     * @return
+     * @return format depending on the resultTtype parameter
      * @throws ServiceException
      */
     public java.lang.String sesame(java.lang.String name, java.lang.String resultType)throws ServiceException;
@@ -54,7 +68,7 @@ public interface Sesame {
         (examples : S to query in Simbad, NS to query in Ned if not found in Simbad,
         NS to query in Ned and Simbad, A to query in Ned, Simbad and VizieR, ...)
 
-     * @return format depending on the resultTtpe parameter
+     * @return format depending on the resultTtype parameter
 
      * @throws ServiceException
      */
