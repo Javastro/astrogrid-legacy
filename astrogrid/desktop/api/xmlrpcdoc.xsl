@@ -218,7 +218,8 @@ This section describes the different kinds of map structure used by the AR.
 	</xsl:if>
 	</p>
 	<dl>	
-	<xsl:for-each select="methods/method[@visibility='public' 
+	<xsl:variable name="inheritanceTypes" select="implements/interface/@fulltype" />
+	<xsl:variable name="inheritanceStack" select=". | /jel/jelclass[@fulltype =$inheritanceTypes]" />	<xsl:for-each select="$inheritanceStack/methods/method[@visibility='public' 
 			and not ( comment/attribute[@name='@deprecated'] 
 				or contains(@name, 'Listener')) ]">
 	 <dt><br /><tt><xsl:value-of select="$service-name"

@@ -60,8 +60,9 @@ Used to provide in-program api documentation within the workbench implementation
 	</xsl:variable>
   <component interface-class="{@fulltype}"  name="{$name}" description="{$classDescription}">
 	<!-- todo put in useful @attributes - e.g. singleton? -->
-	<xsl:for-each select="methods/method[@visibility='public' 
-			and not (contains(@name, 'Listener')) ]">
+	<xsl:variable name="inheritanceTypes" select="implements/interface/@fulltype" />
+	<xsl:variable name="inheritanceStack" select=". | /jel/jelclass[@fulltype =$inheritanceTypes]" />
+	<xsl:for-each select="$inheritanceStack/methods/method[@visibility='public' and not (contains(@name, 'Listener')) ]	">
 	<xsl:variable name="methodDescription">
 		<xsl:call-template name="fmtDescription">
 			<xsl:with-param name="input" select="." />
