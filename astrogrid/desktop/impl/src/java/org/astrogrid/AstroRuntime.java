@@ -1,4 +1,4 @@
-/*$Id: AstroRuntime.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: AstroRuntime.java,v 1.3 2006/10/11 10:34:34 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ public class AstroRuntime {
     
     public static void main(String[] args) {
 
-        SplashWindow.splash(AstroRuntime.class.getResource("acr-splash.png"));
+        SplashWindow.splash(AstroRuntime.class.getResource("acr-splash.gif"));
         SplashWindow.invokeMain("org.astrogrid.AstroRuntime1", args);
         SplashWindow.disposeSplash();
     }
@@ -36,6 +36,9 @@ public class AstroRuntime {
 
 /* 
 $Log: AstroRuntime.java,v $
+Revision 1.3  2006/10/11 10:34:34  nw
+revamped all the splash screens.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

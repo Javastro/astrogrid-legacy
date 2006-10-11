@@ -1,4 +1,4 @@
-/*$Id: Workbench.java,v 1.3 2006/06/15 09:38:16 nw Exp $
+/*$Id: Workbench.java,v 1.4 2006/10/11 10:34:34 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ public class Workbench {
     
     public static void main(String[] args) {
 
-        SplashWindow.splash(Workbench.class.getResource("workbench.gif"));
+        SplashWindow.splash(Workbench.class.getResource("workbench-splash.gif"));
         SplashWindow.invokeMain("org.astrogrid.Workbench1", args);
         SplashWindow.disposeSplash();
     }
@@ -36,6 +36,9 @@ public class Workbench {
 
 /* 
 $Log: Workbench.java,v $
+Revision 1.4  2006/10/11 10:34:34  nw
+revamped all the splash screens.
+
 Revision 1.3  2006/06/15 09:38:16  nw
 made exeuciton classes more versatile
 
