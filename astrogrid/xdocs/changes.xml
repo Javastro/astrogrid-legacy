@@ -52,6 +52,9 @@
         </release>
 		
 		<release version="HEAD">
+    		<action dev="clq" type="fix">
+    		  <em>Branch clq_helpdocs_1570 helpdocs. This branch had been merged in Aug 2006
+    		</action> 		
     		<action dev="kmb" type="add">
     		  <em>Branch Contracts_KMB_XForms n astrogrid/contracts:</em>  Only merge in src/java and src/schema stuff.  Originally
     		  this branch was for Xforms stuff, but that has not gone through, but still added a lot of new schemas 1.0.
