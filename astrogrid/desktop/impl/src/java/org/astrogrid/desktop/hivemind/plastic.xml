@@ -23,6 +23,13 @@
 			<tooltip>Home Page for PLASTIC</tooltip>
 			<parameter>http://plastic.sourceforge.net/</parameter>
 		</action>		
+		<!--  other loosley related projects, althrough we've got no code from them yet.. -->
+		<action parentName="projects" name="esacProject" text="ESA-VO" iconName="esavo33.gif"
+			object="service:system.browser" methodName="openURL"
+			>
+			<tooltip>Home Page for ESA-VO</tooltip>
+			<parameter>http://esavo.esa.int/</parameter>
+		</action>
 	</contribution>
 	
 	<contribution configuration-id="system.uiStructure" if="property hub.mode">
