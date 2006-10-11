@@ -36,7 +36,7 @@ Builtin Components
 		Table Manipulation Utilities (STIL)
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.util.TablesImpl" >
-				<!--  todo - should I pass in config params - e.g. tmp spool to disk, etc..s -->
+				<service>astrogrid.myspace</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
