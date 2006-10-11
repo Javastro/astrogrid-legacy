@@ -1,18 +1,23 @@
 package org.astrogrid.desktop.modules.util;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.io.Piper;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.easymock.MockControl;
 import org.xml.sax.SAXException;
 
 import junit.framework.TestCase;
@@ -25,10 +30,14 @@ public class TablesImplUnitTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		this.tables = new TablesImpl();
+		myspaceControl = MockControl.createControl(MyspaceInternal.class);
+		mockMs = (MyspaceInternal)myspaceControl.getMock();
+		this.tables = new TablesImpl(mockMs);
 		this.input = this.getClass().getResource("siap.vot");
 	}
 
+	private MockControl myspaceControl;
+	private MyspaceInternal mockMs;
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
@@ -36,15 +45,32 @@ public class TablesImplUnitTest extends TestCase {
 	TablesImpl tables;
 	URL input;
 
-	/** simplest - just echo to screen.
-	 * Test method for {@link org.astrogrid.desktop.modules.util.TablesImpl#convert(java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
-	 * @throws IOException 
-	 */
-	public void testConvert() throws IOException {
-		assertNotNull(input);
-		tables.convert(input.toString(),"votable","-","ascii");
+	public void testListInputFormats() {
+		String[] names = tables.listInputFormats();
+		assertNotNull(names);
+		assertTrue(names.length > 0);
+	}
+	
+	public void testListOutputFormats() {
+		String[] names = tables.listInputFormats();
+		assertNotNull(names);
+		assertTrue(names.length > 0);
+	}
+	public void testConvert() throws Exception {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		Piper.pipe(input.openStream(),bos);
+		String result = tables.convert(bos.toString(),"votable","ascii");
 		
 	}
+	// requires live implementation of myspace, for now.
+	//@todo revive this test when I've installed protocol handlers throughout.
+//	public void testConvertFile() throws Exception {
+//		assertNotNull(input);
+//		File tmp = File.createTempFile(this.getClass().getName(),"txt");
+//		tmp.deleteOnExit();
+//		tables.convertFile(input.toURI(),"votable",tmp.toURI(),"ascii");
+//		
+//	}
 	
 	
 	// more advanced. check we can stream through, from votable to votable.
