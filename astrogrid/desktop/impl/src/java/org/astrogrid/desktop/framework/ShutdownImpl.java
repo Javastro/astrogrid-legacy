@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.6 2006/09/28 15:12:28 jdt Exp $
+/*$Id: ShutdownImpl.java,v 1.7 2006/10/11 10:34:58 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -158,8 +158,9 @@ public class ShutdownImpl  extends Thread implements Shutdown{
         logger.debug(arg0);
         // JDT1726 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1726
         // This is a sledgehammer solution to a problem I don't fully understand.
-        try {
-            listeners.add(arg0);
+        //FIXME fix this in a more elegant way.
+		try {
+        listeners.add(arg0);
         } catch (Exception e) {
             logger.error("Error registering shutdown listener.  In the absence of any better ideas, ignoring.",e);
         }
@@ -187,6 +188,9 @@ public class ShutdownImpl  extends Thread implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.7  2006/10/11 10:34:58  nw
+added fixme comment
+
 Revision 1.6  2006/09/28 15:12:28  jdt
 Fix for bug http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1726
 
