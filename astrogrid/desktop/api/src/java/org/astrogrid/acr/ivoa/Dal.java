@@ -5,6 +5,7 @@ package org.astrogrid.acr.ivoa;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 import org.astrogrid.acr.InvalidArgumentException;
@@ -82,20 +83,22 @@ public interface Dal {
 	 * @throws SecurityException if the user is not permitted to write to the save location
 	 * @throws ServiceException if either the query service or data service are unavailable
 	 * @throws InvalidArgumentException if the save location cannot be written to.
+	 * @return number of datasets saved.
 	 */
-	void saveDatasets(URL query, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
+	int saveDatasets(URL query, URI saveLocation) throws SecurityException, ServiceException, InvalidArgumentException;
 	
 	/** save a subset of the datasets point to by this DAL query response
 	 * 
 	 * @param query the DAL query
 	 * @param saveLocation location of a directory in which to save the datasets. may be a file:/, ivo:// or ftp:// reference
-	 * @param rows indexes of the rows in the query response for which to save the dataset. 
+	 * @param rows list of Integers - indexes of the rows in the query response for which to save the dataset. 
 	 * @throws SecurityException if the user is not permitted to write to the save location
 	 * @throws ServiceException if either the query service or data service are unavailable
 	 * @throws InvalidArgumentException if the save location cannot be written to, or the <tt>rows</tt>
 	 * refers to invalid row indexes.
+	 * @return number of datasets saved.
 	 */
-	void saveDatasetsSubset(URL query, URI saveLocation, int[] rows) throws SecurityException, ServiceException, InvalidArgumentException;
+	int saveDatasetsSubset(URL query, URI saveLocation, List rows) throws SecurityException, ServiceException, InvalidArgumentException;
 	
 	   /** helper method - returns an ADQL/s query that should be passed to a registry to list all 
 	    * available DAL services of this type. 
