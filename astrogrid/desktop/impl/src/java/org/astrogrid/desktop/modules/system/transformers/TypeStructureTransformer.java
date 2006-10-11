@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.9 2006/08/31 21:31:37 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.10 2006/10/11 10:39:41 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ public class TypeStructureTransformer implements Transformer {
      */
     public Object transform(Object arg0) {
         if (arg0 == null) {
-            return null;
+            return "null"; //@todo check this is correct. nulls can;t be transported by xmlrpc.
         }
         // pass thtough these supported primitive types.
         if (arg0 instanceof String 
@@ -114,7 +114,12 @@ public class TypeStructureTransformer implements Transformer {
             Hashtable h = new Hashtable(m.size());
             for (Iterator i = m.entrySet().iterator(); i.hasNext(); ) {
                 Map.Entry e = (Map.Entry)i.next();
-                h.put(trans.transform(e.getKey()),trans.transform(e.getValue()));
+                h.put(trans.transform(e.getKey()),
+                		e.getValue() == null ? "null" : trans.transform(e.getValue()));
+                //this null check is an interim fix - but probably need to be handling nulls better throughout.
+                // this check is to fix a barf caused by passing a null to recursive call of trans.transform() - 
+                // which then uses the strategy to find which transformer to use.
+                // seems that the strategy can't handle null - which is a pain.
             }
             return h;
         }
@@ -180,6 +185,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.10  2006/10/11 10:39:41  nw
+made a start on handling nulls.
+
 Revision 1.9  2006/08/31 21:31:37  nw
 minor tweaks and doc fixes.
 
