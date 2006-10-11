@@ -12,8 +12,8 @@ print "Creating template from SDSS-DR3 application: "
 print "  ivo://uk.ac.le.star/SDSS-DR3/images/CEA-application"
 
 
-ra=[249.0]*10
-dec=[42.]*10
+ra=[249.0]
+dec=[42.]
 
 for i in range(len(ra)):
         struct = s.astrogrid.applications.createTemplateStruct("ivo://uk.ac.le.star/SDSS-DR3/images/CEA-application","default")
@@ -49,23 +49,24 @@ for i in range(len(ra)):
         # will throw an exception on error.
         s.astrogrid.applications.validate(doc)
 
-        execId = s.astrogrid.applications.submit(doc)
+        execId = s.astrogrid.applications.submitTo(doc,'ivo://uk.ac.le.star/SIAP-CEC-2')
         print execId
 
         # example of linking back into the gui - add the new application to the job monitor.
         #add execId to the job monitor, and display the monitor.
-        s.userInterface.jobMonitor.addApplication("scripted application",execId)
-        s.userInterface.jobMonitor.displayApplicationTab()      
-        s.userInterface.jobMonitor.show()
+        #s.userInterface.jobMonitor.addApplication("scripted application",execId)
+        #s.userInterface.jobMonitor.displayApplicationTab()      
+        #s.userInterface.jobMonitor.show()
         # give it a refresh to find the status.
-        s.userInterface.jobMonitor.refresh()
+        #s.userInterface.jobMonitor.refresh()
 
         # meanwhile, lets monitor the progress of the job programmatically 
         # a busy-wait loop until it finishes.
         execInfo = s.astrogrid.applications.getExecutionInformation(execId)              
-        while execInfo['status'] == "RUNNING" :
-                time.sleep(30)
-                execInfo = s.astrogrid.applications.getExecutionInformation(execId)
+        while execInfo['status'] not in ['ERROR','COMPLETED'] :
+				print '.'
+				time.sleep(30)
+				execInfo = s.astrogrid.applications.getExecutionInformation(execId)
 
         if execInfo['status'] == "ERROR":
                 print "Application ended in error"
