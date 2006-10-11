@@ -1,0 +1,84 @@
+Python/Astrogrid
+A Python toolkit for accessing VO services exposed by the Astrogrid Client 
+Runtime (ACR).
+Author: F. Pierfederici <fpierfed@eso.org>
+Licensed under the Academic Free License version 2.0 (see LICENSE.txt). 
+
+
+VERSION: 1.0a1 (alpha) Jan. 2006
+
+
+
+Requirements
+ * Python 2.3 or later:
+     http://www.python.org/
+ * A locally running ACR:
+     http://software.astrogrid.org/userdocs/workbench.html
+
+
+Installation
+The Python Astrogrid module uses the standard Python setup.py script to handle
+building and installation. 
+Just uncompress the tarball anywhere on your computer and run the setup.py 
+script:
+	% tar zxf astrogrid-1.0a1.tar.gz
+	% cd astrogrid-1.0a1
+	% python setup.py install
+
+
+Usage
+The Python Astrogrid module exposes two packages: ACR and MySpace. Of the two
+the former is simply used to connect to a locally running ACR instance and is 
+of no immediate practical use (it is however used internally). The second 
+package (astrogrid.MySpace) provides an easy to use and pretty intuitive 
+Python interface to a MySpace "file system".
+
+Example:
+	>>> from astrogrid import MySpace
+	>>> MySpace._login(<user>, <pass>, 'uk.ac.le.star')
+	True
+	>>> MySpace.exists('#workspace/test.fits')
+	True
+	>>> MySpace.stat('#workspace/test.fits')
+	NodeInformation
+	  modifyDate: 20051129T11:45:44
+	  name: test.fits
+	  createDate: 20051129T11:45:10
+	  contentLocation: ivo://uk.ac.le.star/filestore-001
+	  file: True
+	  attributes(NodeAttributes):
+	    org.astrogrid.filestore.content.size: 532800
+	    org.astrogrid.filestore.resource.ivorn: ivo://uk.ac.le.star/ [...]
+	    org.astrogrid.filestore.created.date: 2005-11-29T10:45:22.217+0000
+	    org.astrogrid.filestore.modified.date: 2005-11-29T10:45:25.204+0000
+	    org.astrogrid.filestore.resource.url: http://galahad.star.le.ac [...]
+	  folder: False
+	  id: #workspace/test.fits
+	  size: 532800
+	>>> MySpace.listdir('#workspace')
+	['test.fits', 'test.xml', [...]
+	>>> MySpace.mkdir('#workspace/testdir')
+	'OK'
+	>>> MySpace._logout()
+	True
+
+
+
+Limitations
+Reflecting the current ACR API, some things which would be otherwise possible
+and/or desirable are not supported:
+1. There is no way to change working directory (similarly to the 'cd' command 
+   in UNIX).
+2. Because of 1. MySpace.cwd() is not implemented.
+3. There is no way to specify a given FileStore when creating files.
+
+
+As stated in the LICENSE.txt file (Academic Free License version 2.0), the 
+Python Astrogrid module is distributed as is and it is not officially 
+supported. However users are encouraged to send feedback and bug reports to 
+<fpierfed@eso.org>.
+
+
+
+
+
