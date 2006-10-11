@@ -13,9 +13,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.ACRTestSetup;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
@@ -40,18 +42,38 @@ public class SesameSystemTest extends TestCase {
 		ACR reg = getACR();
 		assertNotNull(reg);	
 		sesame = (Sesame)reg.getService(Sesame.class);
-		dtdURL = SesameDynamicImpl.class.getResource("sesame_1.dtd");
-		assertNotNull(dtdURL);
 	
 	}
 	
 	protected Sesame sesame;
-	protected URL dtdURL;
 
 	protected ACR getACR() throws Exception{
         return (ACR)ACRTestSetup.acrFactory.getACR();		
 	}
 
+	public void testResolve() throws Exception {
+		SesamePositionBean pos = sesame.resolve("crab");
+		assertNotNull(pos);
+		assertEquals("crab",pos.getTarget());
+		assertNotNull(pos.getService());
+		assertNotNull(pos.getPosStr());
+		assertTrue( pos.getRa() != 0.0);
+		assertTrue(pos.getDec() != 0.0);
+		String[] aliases = pos.getAliases();
+		assertNotNull(aliases);
+		assertTrue(aliases.length > 0);
+		System.out.println(pos);
+	}
+	
+	public void testResolveUnknown() throws ServiceException {
+		try {
+			SesamePositionBean pos = sesame.resolve("fred");
+			fail("expected not to be found");
+		} catch (NotFoundException e) {
+			// ok.
+		}
+	}
+	
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.cds.SesameDynamicImpl.sesame(String, String)'
 	 */
@@ -66,15 +88,7 @@ public class SesameSystemTest extends TestCase {
 		XMLAssert.assertXpathExists("/Sesame/Resolver/jdedeg",result);		
 
 	}
-	// expect this to fail.
-	public void testSesameResponseIsSchemaCorrect() throws ServiceException, ParserConfigurationException, SAXException, IOException, TransformerException {
-		String result = sesame.sesame("m32","x");
-		assertNotNull(result);
-		// doesn't validate against published DTD - as has xsi:schemalocation, etc in.
-		AstrogridAssert.assertDTDValid(result,"Sesame",dtdURL);
-		
 
-	}
 	public void testSesameAllIdentifiers() throws ServiceException, ParserConfigurationException, SAXException, IOException {
 		String result = sesame.sesame("m32","xi");
 		assertNotNull(result);
