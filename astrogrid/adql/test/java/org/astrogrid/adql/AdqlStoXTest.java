@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.4 2006/10/02 09:05:31 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.5 2006/10/11 20:36:25 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -82,17 +82,17 @@ public class AdqlStoXTest extends XMLTestCase {
 		printHelpfulStuff( currentSFile.getName() ) ;
 		System.out.println( "== From: ===>" ) ;
 		printFile( currentSFile ) ;
-		sd = getCompiler( currentSFile ).exec() ;		
-		if( sd != null ) {
+		try {
+			sd = getCompiler( currentSFile ).exec() ;		
 			System.out.println( "\nCompilation suceeded..." ) ;			
 			System.out.println( "==== To: ===>" ) ;
 			printCompilation( sd ) ;			
 			assertTrue( currentSFile.getName() + ": Compilation succeeded when not expected.", currentXFile != null ) ;	
-			compareCompilations( sd, currentXFile ) ;
+			compareCompilations( sd, currentXFile ) ;		
 		}
-		else {
+		catch( Exception ex ) {
 			assertTrue( currentSFile.getName() + ": Compilation failed when not expected.", currentXFile == null ) ;
-		}
+		}	
 	}
 	
 	private void locateFilesForTest() throws InitializationException {
@@ -283,9 +283,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.4  2006/10/02 09:05:31  jl99
- * First attempt at mavenizing project
+ * Revision 1.5  2006/10/11 20:36:25  jl99
+ * (1) Change of signature to exec method. Now throws a ParserException.
  *
+/* Revision 1.4  2006/10/02 09:05:31  jl99
+/* First attempt at mavenizing project
+/*
 /* Revision 1.3  2006/09/28 15:08:08  jl99
 /* New unit tests added.
 /*

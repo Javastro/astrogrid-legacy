@@ -1,6 +1,6 @@
-/*$Id: AdqlStoX.jjt,v 1.15 2006/10/02 09:03:35 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.16 2006/10/11 20:36:25 jl99 Exp $*/
 /**
- * AdqlStoX JavaCC file
+ * AdqlStoX JavaCC file          
  *
  * This version, with file extension of .jjt, produces a syntax tree.
  * At present the syntax tree is not used, but will be.
@@ -57,21 +57,9 @@ import java.util.* ;
 import org.astrogrid.adql.v1_0.beans.* ;
 
 public class AdqlStoX {
-	
-	public SelectDocument exec() {
-		SelectDocument selectDoc = null ;
-		try {			
-			selectDoc = select_document_A();
-		}
-		catch( ParseException pex ) {
-			//pex.printStackTrace() ;
-			System.out.println( pex.getMessage() ) ;
-		}
-		catch( Error err ) {
-			err.printStackTrace() ;
-			System.out.println( err.getMessage() ) ;
-		}
-		return selectDoc ;	
+
+	public SelectDocument exec() throws ParseException {
+		return select_document_A() ;
 	}
 
 }
@@ -400,7 +388,8 @@ TOKEN :
 
 |	< ASCII_STRING_LITERAL : "\'" (~["\'"])* "\'" >
 
-//| 	< ASCIIStringLiteral : "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >//|	< UnicodeStringLiteral : "n" "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
+//| 	< ASCIIStringLiteral : "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
+//|	< UnicodeStringLiteral : "n" "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
 
 |	< OTHER : ~[] >
 }
@@ -510,10 +499,11 @@ SearchType boolean_primary_S() :
     }
 }
 
+
 SearchType boolean_term_S() : 
 {
-	SearchType st=null ;
-	SearchType[] stPair = null ;
+	SearchType st1=null ;
+	SearchType st2 = null ;
 }
 {
 	//S:
@@ -524,16 +514,16 @@ SearchType boolean_term_S() :
 	// Refactored to
 	// boolean_factor_S() ( <AND> boolean_factor_S() )*
 	// which I believe is equivalent to the above
-	st=boolean_factor_S() stPair=booleanFactorList()
+	st1=boolean_factor_S() st2=booleanFactorList()
 	{
-		if( stPair == null ) {
-		   return st ; 
+		if( st2 == null ) {
+		   return st1 ; 
 		}
 		else {
 		   SearchType[] conditionArray = new SearchType[2] ;
-		   conditionArray[0] = st ;
-		   conditionArray[1] = stPair[1] ;
-		   IntersectionSearchType andType = (IntersectionSearchType)stPair[0] ;
+		   conditionArray[0] = st1 ;
+		   conditionArray[1] = st2 ;
+		   IntersectionSearchType andType = IntersectionSearchType.Factory.newInstance() ;
 		   andType.setConditionArray( conditionArray ) ;
 		   return andType ;
 		}	
@@ -557,61 +547,69 @@ SearchType boolean_factor_S() :
 	}
 }
 
-SearchType[] booleanFactorList() :
+SearchType booleanFactorList() :
 {
-	ArrayList list = null ;
-	SearchType[] stPair1 = null ;
-	SearchType[] stPair2 = null ;
-	SearchType[] retPair = null ;
+	Stack stack = null ;
+	SearchType st = null ;
 }
 {
 	( 
-		stPair1=booleanFactorSingleton() 
-		{ if( list == null )
-	  	     list = new ArrayList() ;
-	  	  list.add( stPair1 ) ;
+		st=booleanFactorSingleton() 
+		{ if( stack == null )
+	  	     stack = new Stack() ;
+	  	  stack.push( st ) ;
 	  	} 	
 	)*
 	{
-		if( list != null ) {
-			ListIterator iterator = list.listIterator() ;
-			retPair = stPair1 = (SearchType[])iterator.next() ;
+		if( stack != null ) {
+			IntersectionSearchType heldAnd = null ;
 			SearchType[] conditions = new SearchType[2] ;
-			IntersectionSearchType andType = null ;
-			while( iterator.hasNext() ) {
-				stPair2 = (SearchType[])iterator.next() ;
-				conditions[0] = stPair1[1] ;
-				conditions[1] = stPair2[1] ;
-				andType = (IntersectionSearchType)stPair2[0] ;
-				andType.setConditionArray( conditions ) ;
-				stPair1 = stPair2 ;
+			while( stack.empty() == false ) {
+				st = (SearchType)stack.pop() ;
+				if( heldAnd != null ) {
+					conditions[0] = st ;
+					conditions[1] = heldAnd ;
+					IntersectionSearchType andType = IntersectionSearchType.Factory.newInstance() ;
+					andType.setConditionArray( conditions ) ;
+					heldAnd = andType ;
+				}
+				else if( stack.empty() == false  ) {
+					conditions[0] = (SearchType)stack.pop() ;
+					conditions[1] = st ;
+					IntersectionSearchType andType = IntersectionSearchType.Factory.newInstance() ;
+					andType.setConditionArray( conditions ) ;
+					heldAnd = andType ;
+				}
 			}
+			if( heldAnd != null )
+				st = heldAnd ; 
 		}		
-		return retPair ;
+		return st ;
 	}
 }
 
-SearchType[] booleanFactorSingleton() :
+SearchType booleanFactorSingleton() :
 {
-	SearchType[] retPair = null ;
-	IntersectionSearchType andType = null ;
 	SearchType st = null ;
 }
 {
 	<AND> st=boolean_factor_S()
-	{
-		if( st != null ) {
-			retPair = new SearchType[2] ;		
-			andType = IntersectionSearchType.Factory.newInstance() ;
-			retPair[0] = andType ;
-			retPair[1] = st ;
-		}
-		return retPair ;
-	}
+	{ return st ; }
 }
 
-SearchType boolean_test_A() : {	SearchType st = null ;}{	//S:	// <boolean_test> ::=    //  <boolean_primary> [ IS [ NOT ] <truth_value> ]	
-	// NB: There is no accommodation of truth value in ADQL	st=boolean_primary_S() 	{ return st ; }}
+SearchType boolean_test_A() : 
+{
+	SearchType st = null ;
+}
+{
+	//S:
+	// <boolean_test> ::=
+    //  <boolean_primary> [ IS [ NOT ] <truth_value> ]
+	
+	// NB: There is no accommodation of truth value in ADQL
+	st=boolean_primary_S() 
+	{ return st ; }
+}
 
 SearchType likePredicate_A() : 
 {
@@ -621,7 +619,8 @@ SearchType likePredicate_A() :
 }
 {
 	//S:
-	// <like_predicate> ::=	//   <match_value> [ NOT ] LIKE <pattern> [ ESCAPE <escape_character> ]
+	// <like_predicate> ::=
+	//   <match_value> [ NOT ] LIKE <pattern> [ ESCAPE <escape_character> ]
       
 	( match_value_S() [ <NOT> ] <LIKE> pattern_A() )
 
@@ -803,7 +802,14 @@ ScalarExpressionType value_expression_primary_A() :
 }
 {
 	//S:
-	//	<value_expression_primary> ::=	//      <unsigned_value_specification>	//    | <column_reference>	//    | <set_function_specification>	//    | <scalar_subquery>	//    | <case_expression>	//    | <left_paren> <value_expression> <right_paren>	//    | <cast_specification>
+	//	<value_expression_primary> ::=
+	//      <unsigned_value_specification>
+	//    | <column_reference>
+	//    | <set_function_specification>
+	//    | <scalar_subquery>
+	//    | <case_expression>
+	//    | <left_paren> <value_expression> <right_paren>
+	//    | <cast_specification>
 
 	(
 		// Foreshortened 
@@ -814,10 +820,12 @@ ScalarExpressionType value_expression_primary_A() :
 		seType=set_function_specification_S()
 		|
 	// JBL: no structure available for holding subqueries at this level in adql
-	//		LOOKAHEAD(3)	//		scalarSubquery()
+	//		LOOKAHEAD(3)
+	//		scalarSubquery()
 	//	|
 	// JBL: case ommitted in initial version...
-	//	caseExpression()	//	|
+	//	caseExpression()
+	//	|
 		( <LPAREN> seType=value_expression_A() <RPAREN> ) 
 		{
 			if( seType != null ) {
@@ -826,7 +834,9 @@ ScalarExpressionType value_expression_primary_A() :
 				seType = ceType ;			
 			}
 		}
-	// JBL: cast ommitted in initial version	//	|	//	castSpecification()
+	// JBL: cast ommitted in initial version
+	//	|
+	//	castSpecification()
 	)
 	{ return seType ; }
 }
@@ -1386,7 +1396,9 @@ void join_specification_S() : {}
     // <join_column_list> ::= <column_name_list>
 	(
 		// refactored to...
-		<ON> search_condition_S()	    |	    <USING> <LPAREN> column_name_list_S() <RPAREN>
+		<ON> search_condition_S()
+	    |
+	    <USING> <LPAREN> column_name_list_S() <RPAREN>
     )
 }
 
@@ -1452,7 +1464,8 @@ JointTableQualifierType join_type_A() :
 	    | 
 	    ( t1=<LEFT> | t1=<RIGHT> | t1=<FULL> ) [ t2=<OUTER> ] 
 // JL. Adql does not appear to support UNION
-//	    | //	    t1=<UNION>
+//	    | 
+//	    t1=<UNION>
     )
     {
     	if( t1 != null ) {
@@ -1470,7 +1483,9 @@ JointTableQualifierType join_type_A() :
       			case AdqlStoXConstants.FULL :
       				jType.set( JointTableQualifierType.FULL_OUTER );
       				break;
-//      			case AdqlStoXConstants.UNION ://      				jType.set( JointTableQualifierType.??? );//      				break;
+//      			case AdqlStoXConstants.UNION :
+//      				jType.set( JointTableQualifierType.??? );
+//      				break;
     		}   		
     	}
     	return jType ;
@@ -1580,7 +1595,8 @@ ScalarExpressionType numeric_primary_S() :
     // Refactored to...
 	( 
 	  seType=numeric_value_function_A()	
-	  |	  seType=value_expression_primary_A()
+	  |
+	  seType=value_expression_primary_A()
 	)
 	{ return seType ; } 
 	
@@ -1660,7 +1676,9 @@ ScalarExpressionType[] numericValueExpressionSingleton() :
 	( t=<PLUS> | t=<MINUS> ) seType=numeric_value_expression_S()	
 	{
 		if( t != null ) {
-			retPairs = new ScalarExpressionType[2] ;					beType = BinaryExprType.Factory.newInstance() ;			beType.setOper( BinaryOperatorType.Enum.forString( t.image ) ) ;
+			retPairs = new ScalarExpressionType[2] ;		
+			beType = BinaryExprType.Factory.newInstance() ;
+			beType.setOper( BinaryOperatorType.Enum.forString( t.image ) ) ;
 			retPairs[0] = beType ;
 			retPairs[1] = seType ;
 		}
@@ -1697,9 +1715,21 @@ OrderExpressionType order_by_clause_A() :
 } 
 {
 	//S:
-	//	ORDER BY <sort_specification_list>	//
+	//	ORDER BY <sort_specification_list>
+	//
 	// !! with the following expansions
-	//	// <sort_specification_list> ::=	//    <sort_specification> [ { <comma> <sort_specification> }... ]	//	// <sort_specification> ::=	//    <sort_key> [ <collate_clause> ] [ <ordering_specification> ]	//	// <sort_key> ::=	//      <column_name>	//    | <unsigned_integer>	//	// <ordering_specification> ::= ASC | DESC
+	//
+	// <sort_specification_list> ::=
+	//    <sort_specification> [ { <comma> <sort_specification> }... ]
+	//
+	// <sort_specification> ::=
+	//    <sort_key> [ <collate_clause> ] [ <ordering_specification> ]
+	//
+	// <sort_key> ::=
+	//      <column_name>
+	//    | <unsigned_integer>
+	//
+	// <ordering_specification> ::= ASC | DESC
 	
 	// As opposed to the above, the following is implemented...
 	// This seems inadequate. Ie: the use of ScalarExpression in the Xml Schema, and hence value_expression()
@@ -1785,29 +1815,60 @@ void pattern_A() : {}
 	character_value_expression_A()	
 }
 
+/*
+ * (1) Adds Region to SQL/92
+ *
+ */
 SearchType predicate_A() : 
 {
 	SearchType searchType = null ;
 }
 {
 	//S:
-	//    <comparison_predicate>	//    | <between_predicate>	//    | <in_predicate>	//    | <like_predicate>	//    | <null_predicate>	//    | <quantified_comparison_predicate>	//    | <exists_predicate>	//    | <unique_predicate>	//    | <match_predicate>	//    | <overlaps_predicate>
+	//    <comparison_predicate>
+	//    | <between_predicate>
+	//    | <in_predicate>
+	//    | <like_predicate>
+	//    | <null_predicate>
+	//    | <quantified_comparison_predicate>
+	//    | <exists_predicate>
+	//    | <unique_predicate>
+	//    | <match_predicate>
+	//    | <overlaps_predicate>
 	(
  		LOOKAHEAD(4)
 		searchType=comparison_predicate_A()
 	    | 
 	    LOOKAHEAD(3)
 	    searchType=between_predicate_A()
-//	    |//	    inPredicate()//	    |//	    searchType=likePredicate()//	    | 
+//	    |
+//	    inPredicate()
+//	    |
+//	    searchType=likePredicate()
+//	    | 
 // adql does not support the null predicate!
-//	    LOOKAHEAD(3)//	    nullPredicate()//	    | 
+//	    LOOKAHEAD(3)
+//	    nullPredicate()
+//	    | 
 // adql does not support quantified comparisons
-//	    LOOKAHEAD(3)//		quantifiedComparisonPredicate()//	    |
-// adql does not support EXISTS //	    existsPredicate()//	    | 
-// adql does not support UNIQUE//	    uniquePredicate()//	    | 
+//	    LOOKAHEAD(3)
+//		quantifiedComparisonPredicate()
+//	    |
+// adql does not support EXISTS 
+//	    existsPredicate()
+//	    | 
+// adql does not support UNIQUE
+//	    uniquePredicate()
+//	    | 
 // adql does not support match
-//	    LOOKAHEAD(3)//	    matchPredicate()//	    | 
-// adql does not support overlap//	    overlapsPredicate()
+//	    LOOKAHEAD(3)
+//	    matchPredicate()
+//	    | 
+// adql does not support overlap
+//	    overlapsPredicate()
+//    	|
+//    	searchType=region_A()    
+        
     )
     { return searchType ; }
 }
@@ -1936,6 +1997,19 @@ SelectType query_specification_A() :
 	}
 }
 
+RegionSearchType region_A() :
+{
+	RegionSearchType st = null ;
+	Token t = null ;
+}
+{
+	//A:
+	// <left_paren> <right_paren>
+	<LPAREN> <ASCII_STRING_LITERAL> t=<RPAREN>
+	{ return st ; }
+	
+}
+
 void row_subquery_S() : {}
 {
 	//S:
@@ -1979,7 +2053,10 @@ ScalarExpressionType row_value_constructor_element_S() :
 
 	seType=value_expression_A()
 // adql has nothing to support the embedding of keywords...
-//    | //    <NULL>//    | //    <SQL_DEFAULT>
+//    | 
+//    <NULL>
+//    | 
+//    <SQL_DEFAULT>
 
 	{ return seType ; }
 }
@@ -2002,8 +2079,8 @@ void scalar_subquery_S() : {}
 
 SearchType search_condition_S() : 
 {
-	SearchType st=null ;
-	SearchType[] stPairs = null ;
+	SearchType st1 = null ;
+	SearchType st2 = null ;
 
 }
 {
@@ -2013,72 +2090,69 @@ SearchType search_condition_S() :
     //  | <search_condition> OR <boolean_term>
 
 	// refactored
-	( st=boolean_term_S() stPairs=booleanTermList() )
+	( st1=boolean_term_S() st2=booleanTermList() )
 	{
-		if( stPairs == null ) {
-		   return st ; 
+		if( st2 == null ) {
+		   return st1 ; 
 		}
 		else {
 		   SearchType[] conditionArray = new SearchType[2] ;
-		   conditionArray[0] = st ;
-		   conditionArray[1] = stPairs[1] ;
-		   UnionSearchType usType = (UnionSearchType)stPairs[0] ;
+		   conditionArray[0] = st1 ;
+		   conditionArray[1] = st2 ;
+		   UnionSearchType usType = UnionSearchType.Factory.newInstance() ;
 		   usType.setConditionArray( conditionArray ) ;
 		   return usType ;
 		}	
 	}
 }
 
-SearchType[] booleanTermList() : 
+SearchType booleanTermList() : 
 {
-	ArrayList list = null ;
-	SearchType[] stPairs1 = null ;
-	SearchType[] stPairs2 = null ;
-	SearchType[] retPairs = null ;	
+	Stack stack = null ;
+	SearchType st = null ;
 }
 {
-	( stPairs1=booleanTermSingleton() 
-	  { if( list == null )
-	  	   list = new ArrayList() ;
-	  	list.add( stPairs1 ) ;
+	( st=booleanTermSingleton() 
+	  { if( stack == null )
+	  	   stack = new Stack() ;
+	  	stack.push( st ) ;
 	  } 
 	)*
 	{ 
-		if( list != null ) {
-			ListIterator iterator = list.listIterator() ;
-			retPairs = stPairs1 = (SearchType[])iterator.next() ;
+		if( stack != null ) {
+			UnionSearchType heldOr = null ;
 			SearchType[] conditions = new SearchType[2] ;
-			UnionSearchType usType = null ;
-			while( iterator.hasNext() ) {
-				stPairs2 = (SearchType[])iterator.next() ;
-				conditions[0] = stPairs1[1] ;
-				conditions[1] = stPairs2[1] ;
-				usType = (UnionSearchType)stPairs2[0] ;
-				usType.setConditionArray( conditions ) ;
-				stPairs1 = stPairs2 ;
+			while( stack.empty() == false ) {
+				st = (SearchType)stack.pop() ;
+				if( heldOr != null ) {
+					conditions[0] = st ;
+					conditions[1] = heldOr ;
+					UnionSearchType orType = UnionSearchType.Factory.newInstance() ;
+					orType.setConditionArray( conditions ) ;
+					heldOr = orType ;
+				}
+				else if( stack.empty() == false  ) {
+					conditions[0] = (SearchType)stack.pop() ;
+					conditions[1] = st ;
+					UnionSearchType orType = UnionSearchType.Factory.newInstance() ;
+					orType.setConditionArray( conditions ) ;
+					heldOr = orType ;
+				}
 			}
+			if( heldOr != null )
+				st = heldOr ; 
 		}		
-		return retPairs ;
+		return st ;
 	}
 }
 
-SearchType[] booleanTermSingleton() :
+SearchType booleanTermSingleton() :
 {
-	SearchType[] retPairs = null ;
-	UnionSearchType us = null ;
 	SearchType st = null ;
 }
 {
 	( <OR> st=boolean_term_S() )
-	{
-		if( st != null ) {
-			retPairs = new SearchType[2] ;		
-			us = UnionSearchType.Factory.newInstance() ;
-			retPairs[0] = us ;
-			retPairs[1] = st ;
-		}
-		return retPairs ;
-	}
+	{ return st ; }
 }
 
 SelectionListType select_list_S() : 
@@ -2480,12 +2554,20 @@ FromTableType table_reference_A() :
 		// refactored... 
 		// 1. derivedTable() moved to first choice point
 		// 2. joinedTable() moved to second choice point
-//	    LOOKAHEAD(4)//	    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derived_column_list_S() <RPAREN> ]//	    |	//		LOOKAHEAD(4)//	    joinedTable()//	    |//		tableName() [ [ <AS> ] correlationName() [ <LPAREN> derived_column_list_S() <RPAREN> ] ]    
+//	    LOOKAHEAD(4)
+//	    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derived_column_list_S() <RPAREN> ]
+//	    |	
+//		LOOKAHEAD(4)
+//	    joinedTable()
+//	    |
+//		tableName() [ [ <AS> ] correlationName() [ <LPAREN> derived_column_list_S() <RPAREN> ] ]    
 
 		// Foreshortened. 
 		// derivedColumnList not supported in adql
 		// derivedTable not supported in adql
-//		LOOKAHEAD(4)//	    derivedTable() [ <AS> ] correlationName()//	    |	
+//		LOOKAHEAD(4)
+//	    derivedTable() [ <AS> ] correlationName()
+//	    |	
 		LOOKAHEAD(4)
 	    ftType=joined_table_S()
 	    |
@@ -2731,7 +2813,8 @@ AtomType unsigned_literal_S() :
     //  | <general_literal>
 	(
 	    atomType=unsigned_numeric_literal_A()
-		| 		atomType=general_literal_A()
+		| 
+		atomType=general_literal_A()
 	)
 	{ return atomType ; }
 }
@@ -2788,7 +2871,11 @@ ScalarExpressionType value_expression_A() :
 	retValue=string_value_expression_A() 
 	// JL. foreshortened. At present there seems no accommodation for
 	// datetime and interval expressions in adql
-//	|//	LOOKAHEAD(3) //	dateTimeValueExpression() //	|//	intervalValueExpression()
+//	|
+//	LOOKAHEAD(3) 
+//	dateTimeValueExpression() 
+//	|
+//	intervalValueExpression()
 	)
 	{ return retValue ; }
 	
@@ -2825,12 +2912,14 @@ WhereType where_clause_S() #Where :
 		if( s != null ) {
 			whereType.setCondition( s ) ;
 		}
-		jjtThis.searchType = s ; 
 	  	return whereType ;
 	}
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.16  2006/10/11 20:36:25  jl99
+(1) Change of signature to exec method. Now throws a ParserException.
+
 Revision 1.15  2006/10/02 09:03:35  jl99
 First attempt at mavenizing project
 
