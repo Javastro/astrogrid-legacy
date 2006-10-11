@@ -1,0 +1,11 @@
+This folder contains the examples that come with Doug Tody's DALClient, transcribed
+to use the equivalent AR functions.
+
+They're handy utilities (if you find compiling java convenient), and also illustrate that
+AR can do all that DALClient can - almost line-for-line equvalent.
+
+Refer to the main example package for richer examples - integrating DAL with Registry,
+name resolvers, Myspace, and PLASTIC.
+
+
+TODO - add an ant file in this folder
