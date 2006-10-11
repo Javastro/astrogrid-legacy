@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.8 2006/08/31 21:11:10 nw Exp $
+/*$Id: Launcher.java,v 1.9 2006/10/11 10:35:25 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -99,10 +99,16 @@ public final class Launcher implements Runnable {
         
     public Launcher() {
         // try fixing class loading bugs under jnlp
+    	// original, no-security method - fixes classloading bugs under jnlp
         System.setSecurityManager(null); 
         Thread.currentThread().setContextClassLoader(Launcher.class.getClassLoader()); 
         Thread.currentThread().setName("Main Thread");
         cl = new DefaultClassResolver(Thread.currentThread().getContextClassLoader());
+        /* experimental - not finisheid yet
+    	if (System.getSecurityManager() == null) {
+    		System.setSecurityManager(new SecurityManager());
+    	}
+    	*/
         // add the preliminary resources.
         addModuleByName("hivemind");
         addModuleByName("hivemind-lib");
@@ -181,6 +187,9 @@ public final class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.9  2006/10/11 10:35:25  nw
+started thinking about security managers
+
 Revision 1.8  2006/08/31 21:11:10  nw
 improved look and feel usage.
 
