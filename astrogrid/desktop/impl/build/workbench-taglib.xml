@@ -24,27 +24,6 @@ astrogrid.build.jdk=${java.version}
 	</postGoal>
 	
 	
-
-<!-- javaapp  - unused in packaging. might still work usefully for development
-
-  packaging controlled by properties 'uberjar.bundle' and 'bundle.later'
--->		
-	<postGoal name="javaapp:jar">
-	<!-- do the final tweaks to the javaapp process 
-	splice in any 'stripped' jars, plus any other that need to be added in later -->
-	<!-- splice in any problematic jars -->	
-   <j:forEach var="lib" items="${pom.artifacts}">
-      <j:set var="dep" value="${lib.dependency}"/>     
-      <j:if test="${dep.getProperty('bundle.later')=='true'}">
-      	<echo>Splicing in ${lib.name}</echo>
-		<jar update="true" destfile="${maven.javaapp.final.name}"
-			filesetmanifest="skip" duplicate="fail">
-			<zipfileset src="${lib.path}" />
-		</jar>
-	  </j:if>
-    </j:forEach>
-	</postGoal>
-	
 <!--  
 	real packaging routine. - hangs off back of 'dist' goal-
 -->
@@ -94,7 +73,7 @@ astrogrid.build.jdk=${java.version}
          version="${astrogrid.desktop.version}"
          bundleid="${maven.javaapp.mainclass}"
          jvmversion="1.4+"
-         icon="${osx.icon}"         
+         icon="${basedir}/src/webapp/logo.icns"         
          aboutmenuname="${pom.name}"
          smalltabs="true"
     	mainclass="${maven.javaapp.mainclass}"
@@ -267,16 +246,16 @@ astrogrid.build.jdk=${java.version}
 		<homepage href="http://www.astrogrid.org/desktop" />
 		<icon href="logo.gif" />
 		<icon href="splash.png" kind="splash" />
-		<description>${pom.description}</description>
+		<description>${pom.shortDescription}</description>
 		<description kind="short">${pom.shortDescription}</description>
-		<description kind="tooltip">${pom.description}</description>
+		<description kind="tooltip">${pom.shortDescription}</description>
 		<offline-allowed />
 	</information>
 	<security>
 		<all-permissions />
 	</security>
 	<resources>
-		<j2se version="14+" max-heap-side="512m" initial-heap-size="32m" />
+		<j2se version="1.4+" max-heap-size="512m" initial-heap-size="32m" />
 		<jar href="${maven.final.name}-app.jar" />
 		<extension href="/jnlp/desktop-integration/desktop-integration.jnlp" name="Java Desktop Integration Components" />
 	</resources>
@@ -363,7 +342,7 @@ astrogrid.build.jdk=${java.version}
 		}		
 	-keep class org.apache.log4j.Category {
 		public *;
-	}
+	}		
         <!--  Dynamically checked by the Finder class see bug JDT1845  -->
         -keep public class org.astrogrid.desktop.BuildInprocessACR {
             public *;
@@ -473,6 +452,13 @@ astrogrid.build.jdk=${java.version}
 		public *;
 	}
 	-keep class * implements org.apache.axis.components.net.SocketFactory {
+		public *;
+	}
+	<!--  stilts -->
+	-keep class * implements uk.ac.starlink.table.StarTableWriter {
+		public *;
+	}
+	-keep class * implements uk.ac.starlink.table.TableBuilder {
 		public *;
 	}
     </proguard>	
