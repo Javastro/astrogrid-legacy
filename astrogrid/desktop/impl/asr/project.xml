@@ -4,11 +4,11 @@
     <extend>${basedir}/../../../aggregate/cdk/script/project.xml</extend>
         <artifactId>asr</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astro Runtime (Server version)</name>
+        <name>Astro Runtime (Headless version)</name>
         <description>
 	 Astro Runtime - server version
 	</description>
-        <shortDescription>Astro Server Runtime</shortDescription>
+        <shortDescription>Astro Runtime - An API for the Virtual Observatory</shortDescription>
  
         <build>
                 <sourceDirectory>${basedir}/../src/java</sourceDirectory>
@@ -501,17 +501,7 @@
   
 
 <!-- used within development only -->
- 
-                <!-- plugins -->
-    	         <dependency>
-		            <groupId>maven-plugins</groupId>
-		            <artifactId>maven-javaapp-plugin</artifactId>
-		            <version>1.3.1 	</version>
-		            <type>plugin</type>		
-		            <properties>
-		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>
-		        </dependency> 
+
 	<!--  jar shrinking -->
     	    <dependency>
 	<groupId>proguard</groupId>

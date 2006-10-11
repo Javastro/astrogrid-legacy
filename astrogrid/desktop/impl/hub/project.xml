@@ -6,10 +6,9 @@
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>PLASTIC Hub</name>
         <description>
-	  AstroGrid's implementation of a PLASTIC Hub.
+		PLASTIC Hub - binds applications together
 	</description>
-        <shortDescription>AstroGrid's PLASTIC Hub</shortDescription>
- 
+        <shortDescription>	PLASTIC Hub - binds applications together</shortDescription>
         <build>
                 <sourceDirectory>${basedir}/../src/java</sourceDirectory>
                 <!-- modifications to compile the hub portion -->
@@ -43,9 +42,9 @@
                                         <include>**/hivemind/*.xml</include>
                                         <include>default-log4j.properties</include>                                        
                                         <include>org/astrogrid/desktop/icons/*.png</include>
-                                        <include>org/astrogrid/desktop/modules/system/transformers/xmlverbatim.xsl</include>
-                                        <include>org/astrogrid/plastic-splash.png</include>
           								<include>org/astrogrid/desktop/icons/*.gif</include>
+                                        <include>org/astrogrid/desktop/modules/system/transformers/xmlverbatim.xsl</include>
+                                        <include>org/astrogrid/plastic-splash.gif</include>
                                 </includes>
                         </resource>
                 </resources>

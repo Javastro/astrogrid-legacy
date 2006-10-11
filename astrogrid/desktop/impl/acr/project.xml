@@ -4,12 +4,12 @@
     <extend>${basedir}/../asr/project.xml</extend>
         <artifactId>acr</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astro Runtime (UI Client version)</name>
+        <name>Astro Runtime</name>
         <description>
-	 Astro Runtime - UI Client version
-	 
+	 Astro Runtime
 	</description>
-        <shortDescription>Astro Client Runtime</shortDescription>
+      <shortDescription>Astro Runtime - An API for the Virtual Observatory</shortDescription>
+ 
  
         <build>
                 <sourceDirectory>${basedir}/../src/java</sourceDirectory>
@@ -34,7 +34,7 @@
                                         <include>astrogrid.properties</include>
                                         <include>default-log4j.properties</include>
                                         <include>org/astrogrid/desktop/modules/system/transformers/*.xsl</include>
-                                        <include>org/astrogrid/acr-splash.png</include>
+                                        <include>org/astrogrid/acr-splash.gif</include>
           								<include>org/astrogrid/desktop/icons/*.gif</include> 
           								<include>org/astrogrid/desktop/icons/*.png</include> 
           						</includes>

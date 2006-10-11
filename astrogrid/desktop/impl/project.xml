@@ -12,6 +12,7 @@
 	  Testing - run the goals unit-tests, integration-tests or system-tests, etc to exercise the workbench
 	  using different levels of testing
 	</description>
+	<shortDescription>Workbench - Explore the Virtual Observatory</shortDescription>
   <packageGroups>
     <packageGroup>
       <title>ACR Framework</title>
