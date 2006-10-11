@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
         <artifactId>astrogrid-adqlstox</artifactId>
+        <package>org.astrogrid.adql</package>
         <currentVersion>${astrogrid.adqlstox.version}</currentVersion>
         <name>Astrogrid Adql/s Compiler</name>
         <description><![CDATA[
@@ -58,6 +59,13 @@
                 <artifactId>commons-discovery</artifactId>
                 <version>0.2</version>
         </dependency>
+        
+     	<dependency>
+                <groupId>javacc</groupId>
+                <type>jar</type>
+                <artifactId>javacc</artifactId>
+                <version>4.0</version>
+        </dependency>        
 
 
 	<!-- xmlbeans for adql -->
@@ -104,31 +112,21 @@
         <id>xmlunit</id>
         <version>1.0</version>
       </dependency>
+
+      <dependency>
+         <groupId>maven-plugins</groupId>
+         <artifactId>maven-javacc-plugin</artifactId>
+         <type>plugin</type>
+         <version>1.1-patch</version>
+      </dependency>
+
     </dependencies>
   
      <build>
-           <sourceDirectory>src/java</sourceDirectory>
-           <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-           <unitTest>
-               <includes>
-                   <include>**/*Test.java</include>
-               </includes>
-               <filtering>false</filtering>
-               <resources>
-                  <resource>
-                     <directory>${basedir}/test/java</directory>
-                     <includes>
-                        <include>**/README</include>
-                        <include>**/*.properties</include>
-                        <include>**/*.xml</include>
-                        <include>**/*.adqls</include>
-                        <include>**/*.adqlx</include>
-                     </includes>
-                     <filtering>false</filtering>
-                  </resource>
-              </resources>
-          </unitTest>
-          <resources>
+     	<defaultGoal>jar:jar</defaultGoal>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>${basedir}/test/java</unitTestSourceDirectory>
+           <resources>
               <resource>
                   <directory>${basedir}/src/java</directory>
                   <includes>
@@ -138,6 +136,24 @@
                   <filtering>false</filtering>
               </resource>
           </resources>
+        <unitTest>
+            <resources>
+                <resource>
+                  <directory>${basedir}/test/java</directory>
+                  <includes>
+                     <include>**/README</include>
+                     <include>**/*.properties</include>
+                     <include>**/*.xml</include>
+                     <include>**/*.adqls</include>
+                     <include>**/*.adqlx</include>
+                  </includes>
+               </resource>
+            </resources>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+        	<filtering>false</filtering>      
+        </unitTest>
      </build>
     
 </project>
