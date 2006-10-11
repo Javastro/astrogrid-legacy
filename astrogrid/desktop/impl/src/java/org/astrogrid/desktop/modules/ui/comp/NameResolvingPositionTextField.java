@@ -7,6 +7,7 @@ import java.awt.geom.Point2D;
 import java.text.ParseException;
 
 import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
@@ -99,7 +100,7 @@ public class NameResolvingPositionTextField extends PositionTextField {
     	objectName = inputPos;
     	(new BackgroundWorker(parent,"Resolving " + inputPos + " using Sesame",5000) {
 			protected Object construct() throws Exception {
-				return ses.sesame(inputPos.trim(),"x");   
+				return ses.resolve(inputPos.trim());   
 			}
 			protected void doAlways() {
 				objectName=null;
@@ -108,14 +109,9 @@ public class NameResolvingPositionTextField extends PositionTextField {
 				setText(inputPos); // put things back as they were.
 			}
 			protected void doFinished(Object result) {				
-	            String temp = (String) result;
-	            try {
-	                double ra = Double.parseDouble( temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>")));
-	                double dec = Double.parseDouble( temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>")));
-	                setPosition(new Point2D.Double(ra,dec));
-	            } catch (Throwable t) {
-	            	doError(t);
-	            }
+				SesamePositionBean pos = (SesamePositionBean)result;
+				setPosition(new Point2D.Double(pos.getRa(),pos.getDec()));
+	          
 			}
     	}).start();
 
