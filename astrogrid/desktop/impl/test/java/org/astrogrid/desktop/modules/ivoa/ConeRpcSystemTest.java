@@ -164,30 +164,28 @@ public class ConeRpcSystemTest extends ConeRmiSystemTest implements Cone{
 
 
 
-		public void saveDatasets(URL arg0, URI arg1) throws SecurityException, ServiceException, InvalidArgumentException {
+		public int saveDatasets(URL arg0, URI arg1) throws SecurityException, ServiceException, InvalidArgumentException {
 			v.clear();
 			v.add(arg0.toString());
 			v.add(arg1.toString());
 			try {
-				client.execute("ivoa.cone.saveDatasets",v);
+				return ((Integer)client.execute("ivoa.cone.saveDatasets",v)).intValue();
 			} catch (Exception e) {
 				fail(e.getMessage());
+				return 0; //never here.
 			}
 		}
 
-		public void saveDatasetsSubset(URL arg0, URI arg1, int[] arg2) throws SecurityException, ServiceException, InvalidArgumentException {
+		public int saveDatasetsSubset(URL arg0, URI arg1, List arg2) throws SecurityException, ServiceException, InvalidArgumentException {
 			v.clear();
 			v.add(arg0.toString());
 			v.add(arg1.toString());
-			List l = new ArrayList();
-			for (int i = 0; i < arg2.length; i++) {
-				l.add(new Integer(arg2[i]));
-			}
-			v.add(l);
+			v.add(new Vector(arg2));
 			try {
-				client.execute("ivoa.cone.saveDatasetsSubset",v);
+				return ((Integer)client.execute("ivoa.cone.saveDatasetsSubset",v)).intValue();
 			} catch (Exception e) {
 				fail(e.getMessage());
+				return 0; // never here.
 			}
 		}
 

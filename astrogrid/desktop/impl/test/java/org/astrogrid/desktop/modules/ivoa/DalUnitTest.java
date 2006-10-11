@@ -7,7 +7,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -341,9 +343,13 @@ public class DalUnitTest extends TestCase {
 		
 		// find size of the dataset.
 		int resultSize = dal.execute(localSiapURL).length;
-		int[] subset = new int[]{0,resultSize -1, resultSize / 2, 1};
+		List subset = new ArrayList();
+		subset.add(new Integer(0));
+		subset.add(new Integer(resultSize -1));
+		subset.add(new Integer(resultSize / 2));
+		subset.add(new Integer( 1));
 		// call this method as many times as the dataset size.
-		myspaceControl.setVoidCallable(subset.length);
+		myspaceControl.setVoidCallable(subset.size());
 		myspaceControl.replay();
 		registryControl.replay();
 		dal.saveDatasetsSubset(localSiapURL,location,subset);

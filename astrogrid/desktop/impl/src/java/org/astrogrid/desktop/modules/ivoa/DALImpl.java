@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.7 2006/10/11 10:39:01 nw Exp $
+/*$Id: DALImpl.java,v 1.8 2006/10/11 19:41:55 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -205,13 +208,15 @@ public abstract class DALImpl implements Dal{
         } else {
             OutputStream os = null;
             try {
-                os = ms.getOutputStream(arg1);
+                os = getOutputStream(arg1);
                 InputStream is = arg0.openStream();
                 Piper.pipe(is,os);
+            } catch (FileNotFoundException e) {
+            	throw new InvalidArgumentException(e);
+            } catch (MalformedURLException e) {
+            	throw new InvalidArgumentException(e);            	
             } catch (IOException e) {
                 throw new ServiceException(e);
-            } catch (NotFoundException e) {
-                throw new InvalidArgumentException(e);
             } finally {
                 if (os != null) {
                     try {
@@ -224,7 +229,7 @@ public abstract class DALImpl implements Dal{
         }
     }
 
-	public final void saveDatasets(URL query, URI root) throws SecurityException, ServiceException, InvalidArgumentException {
+	public final int saveDatasets(URL query, URI root) throws SecurityException, ServiceException, InvalidArgumentException {
 		try {
 			XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
         TableContentHandler votHandler = new TableContentHandler(false);
@@ -234,7 +239,7 @@ public abstract class DALImpl implements Dal{
         votHandler.setTableHandler(saver);
         parser.setContentHandler(votHandler);
         parser.parse(	query.toString());
-        doSaveDatasets(saver);
+        return doSaveDatasets(saver);
 
 		} catch (SAXException x) {
 			throw new ServiceException(x.getMessage());
@@ -251,8 +256,10 @@ public abstract class DALImpl implements Dal{
 	 * @throws ServiceException
 	 * @throws SecurityException
 	 */
-	private void doSaveDatasets(DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
+	private int doSaveDatasets(DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
+		int saved = 0;
 		for (Iterator i = saver.getResult().entrySet().iterator(); i.hasNext(); ) {
+			saved++;
         	Map.Entry entry = (Map.Entry)i.next();
         	URL u = (URL)entry.getKey();
         	URI location = (URI)entry.getValue();
@@ -267,14 +274,17 @@ public abstract class DALImpl implements Dal{
         	} else {
         	     OutputStream os = null;
                  try {
-                     os = ms.getOutputStream(location);
+                	 os = getOutputStream(location);
                      InputStream is = u.openStream();
                      Piper.pipe(is,os);
-                 } catch (IOException e) {
+                 
+                 } catch (FileNotFoundException x) {
+                	 throw new InvalidArgumentException(x);
+                 } catch (MalformedURLException x) {
+                	 throw new InvalidArgumentException(x);
+                 }  catch (IOException e) {
                      throw new ServiceException(e);
-                 } catch (NotFoundException e) {
-                     throw new InvalidArgumentException(e);
-                 } finally {
+				} finally {
                      if (os != null) {
                          try {
                              os.close();
@@ -285,9 +295,28 @@ public abstract class DALImpl implements Dal{
                  }        		
         	}
         }
+		return saved;
 	}
 
-	public final void saveDatasetsSubset(URL query, URI root, int[] rows) throws SecurityException, ServiceException, InvalidArgumentException {
+	/** returns a stream for any non-myspace URI.
+	 * @param location
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws MalformedURLException
+	 * @todo move this elsewhere
+	 */
+	public static OutputStream getOutputStream(URI location) throws FileNotFoundException, IOException, MalformedURLException {
+		OutputStream os;
+		if (location.getScheme().equals("file")) { //FIXME - this code needs to be factored out and reused
+			 os = new FileOutputStream(new File(location));
+		 } else {
+			 os = location.toURL().openConnection().getOutputStream();
+		 }
+		return os;
+	}
+
+	public final int saveDatasetsSubset(URL query, URI root, List rows) throws SecurityException, ServiceException, InvalidArgumentException {
 		try {
 			XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
         TableContentHandler votHandler = new TableContentHandler(false);
@@ -298,7 +327,7 @@ public abstract class DALImpl implements Dal{
         votHandler.setTableHandler(saver);
         parser.setContentHandler(votHandler);
         parser.parse(	query.toString());
-        doSaveDatasets(saver);
+        return doSaveDatasets(saver);
 
 		} catch (SAXException x) {
 			throw new ServiceException(x.getMessage());
@@ -347,7 +376,7 @@ public abstract class DALImpl implements Dal{
 	}
 	
 	protected static class DatasetSaver implements TableHandler {
-		public void setSubset(int rows[]) {
+		public void setSubset(List rows) {
 			subset = true;
 			this.rows = rows;
 		}
@@ -359,7 +388,7 @@ public abstract class DALImpl implements Dal{
 			}
 		}
 		private  boolean subset;
-		private int[] rows;
+		private List rows;
 		private URI root;
 		private int currentRow;
 		private Map result = new LinkedHashMap();
@@ -386,7 +415,7 @@ public abstract class DALImpl implements Dal{
 		}
 
 		public void rowData(Object[] cells) throws SAXException {
-			if (!subset || ArrayUtils.contains(rows,currentRow)) {
+			if (!subset || rows.contains(new Integer(currentRow))) {
 					String format = null;
 					if (formatIx > -1) {
 						format = "." + StringUtils.substringAfterLast(cells[formatIx].toString(),"/");
@@ -408,6 +437,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.8  2006/10/11 19:41:55  nw
+refined interfaces on DAL andTables after some testing of usability.
+
 Revision 1.7  2006/10/11 10:39:01  nw
 enhanced dal support.
 
