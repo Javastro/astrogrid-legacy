@@ -395,7 +395,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		return fileMenu;
 	}
 
-	
+	/** @todo implement the history menu using xml serialization of the SesamePositionBeans */
 	protected JMenu getHistoryMenu() {
 		if (historyMenu == null) {
 			historyMenu = new JMenu();
