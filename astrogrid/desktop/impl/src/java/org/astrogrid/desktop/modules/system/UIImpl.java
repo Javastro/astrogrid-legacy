@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.16 2006/08/31 21:32:09 nw Exp $
+/*$Id: UIImpl.java,v 1.17 2006/10/11 10:39:15 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -162,7 +162,8 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
         main.add(getTabbedPane(), java.awt.BorderLayout.CENTER);    
         this.setContentPane(main);
         getHelpServer().enableHelpKey(this.getRootPane(),"top"); 
-        setIconImage(IconHelper.loadIcon("AGlogo16x16.png").getImage());            
+       // setIconImage(IconHelper.loadIcon("AGlogo16x16.png").getImage());     //@todo alter this to ivoa icon.       
+        setIconImage(IconHelper.loadIcon("server.png").getImage());          
         //this.setSize(425, ); // same proportions as A4, etc., and 600 high.   
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
@@ -465,6 +466,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.17  2006/10/11 10:39:15  nw
+changed icons.
+
 Revision 1.16  2006/08/31 21:32:09  nw
 fixed osx button clipping bug.
 

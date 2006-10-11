@@ -1,4 +1,4 @@
-/*$Id: JDICSystemTray.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: JDICSystemTray.java,v 1.4 2006/10/11 10:39:15 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,8 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
             logger.error("Could not create system tray component");
         }
         st = st1;
-            idleIcon = IconHelper.loadIcon("AGlogo16x16.png");
+       //     idleIcon = IconHelper.loadIcon("AGlogo16x16.png"); //@
+        	idleIcon = IconHelper.loadIcon("server.png");
             activeIcon = IconHelper.loadIcon("flashpoint.gif");
             start();
 
@@ -167,6 +168,9 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
 
 /* 
 $Log: JDICSystemTray.java,v $
+Revision 1.4  2006/10/11 10:39:15  nw
+changed icons.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 
