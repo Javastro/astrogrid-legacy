@@ -1,4 +1,4 @@
-<document>
+	<document>
 	<!-- see http://maven.apache.org/reference/plugins/changes/index.html 
 	     
 	     action - type="add|fix|remove|update"
@@ -13,13 +13,26 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release>
+<release  version="2006.3.rc4" date="unreleased">
     <action dev="jdt" type="fix" issue="1836">
         Workbench now honours user registry endpoint settings.
     </action>
     <action dev="jdt" type="fix" issue="1726">
         AstroRuntime no longer fails if connected to by applications a second time.
     </action>    
+    <action dev="nw" type="add">
+    	Added parsing methods to Sesame AR interface (cds.sesame)
+    </action>
+    <action dev="nw" type="update">
+    	Altered inheritance hierarchy for DAL AR interfaces. Added methods to return a parsed
+    	version of the DAL query response, and to save selected datasets.
+    </action>
+    <action dev="nw" type="update">
+    	Enhanced the AR interface to STIL (util.tables)
+    </action>
+    <action dev="nw" type="update">
+    	Updated splashscreens and icons
+    </action>
 </release>
 <release version="2006.3.rc3" date="2006-09-15">
 <action dev="nw" type="fix" issue="1814">
