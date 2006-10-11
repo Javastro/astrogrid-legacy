@@ -19,6 +19,7 @@ public class AllUnitTests {
 		suite.addTestSuite(DalUnitTest.class);
 		suite.addTestSuite(SiapUnitTest.class);
 		suite.addTestSuite(SsapUnitTest.class);
+		suite.addTestSuite(ConeUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}

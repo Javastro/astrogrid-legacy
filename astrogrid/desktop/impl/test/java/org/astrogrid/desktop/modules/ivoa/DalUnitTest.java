@@ -7,9 +7,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
@@ -17,7 +21,15 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
+import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
+import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
+import org.astrogrid.test.AstrogridAssert;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.easymock.AbstractMatcher;
+import org.easymock.ArgumentsMatcher;
 import org.easymock.MockControl;
+import org.w3c.dom.Document;
 
 /**
  * @author Noel Winstanley
@@ -36,6 +48,8 @@ public class DalUnitTest extends TestCase {
 		mockReg = (Registry)registryControl.getMock();
 		dal = new TestDAL(mockReg,mockMs);
 		u = new URL("http://www.slashdot.org/foo/");	
+		localSiapURL = TablesImplUnitTest.class.getResource("siap.vot");
+		nonCompliantSiapService = new URL("http://www.slashdot.org");		
 	}
 	private MockControl myspaceControl;
 	private MockControl registryControl;
@@ -43,6 +57,8 @@ public class DalUnitTest extends TestCase {
 	private Registry mockReg;
 	private DALImpl dal;
 	private URL u;
+	private URL localSiapURL;
+	private URL nonCompliantSiapService;
 
 	public void testResolveEndpointURL() throws InvalidArgumentException, NotFoundException, URISyntaxException {
 		myspaceControl.replay();
@@ -50,25 +66,23 @@ public class DalUnitTest extends TestCase {
 		URL resolved = dal.resolveEndpoint(new URI(u.toString()));
 		assertEquals(resolved,u);
 	}
-	
-	/* @todo reimplement
+	/* @todo implement - if we can find a way to mock resources
 	public void testResolveEndpointIVO() throws NotFoundException, ServiceException, URISyntaxException, InvalidArgumentException {
 		myspaceControl.replay();
 		URI uri = new URI("ivo://wibble");
-		mockReg.getResourceInformation(uri);
-		ResourceInformation info = new ResourceInformation(uri,null,null,u,null);
+		mockReg.getResource(uri);
+		Resource info = new ResourceInformation(uri,null,null,u,null);
 		registryControl.setReturnValue(info);
 		registryControl.replay();
 		URL resolved = dal.resolveEndpoint(uri);
 		assertEquals(resolved,u);
-		
-		
 	}
+	*/
 	
 	public void testResolveEndpointIVOUnknown() throws NotFoundException, ServiceException, URISyntaxException, InvalidArgumentException {
 		myspaceControl.replay();
 		URI uri = new URI("ivo://wibble");
-		mockReg.getResourceInformation(uri);
+		mockReg.getResource(uri);
 		registryControl.setThrowable(new NotFoundException());
 		registryControl.replay();
 		try {
@@ -78,7 +92,7 @@ public class DalUnitTest extends TestCase {
 			// ok
 		}
 	}
-	*/
+	
 	public void testResolveEndpointUnknownScheme() throws NotFoundException, URISyntaxException {
 		myspaceControl.replay();
 		registryControl.replay();
@@ -216,30 +230,127 @@ public class DalUnitTest extends TestCase {
 		assertEquals("foo=bar&page=foo+32",u1.getQuery());		
 	}
 	
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.DALImpl.getResults(URL)'
-	 */
-	//public void testGetResults() {
-	//	fail("implement me");
-//	}
+	public void testExecute() throws Exception {
+		assertNotNull(localSiapURL);
+		myspaceControl.replay();
+		registryControl.replay();
+		Map[] r = dal.execute(localSiapURL);
+		assertNotNull(r);
+		assertTrue(r.length > 0);
+		for (int i = 0; i < r.length; i++) {
+			assertNotNull(r[i]);
+			assertEquals(r[0].keySet(),r[i].keySet());
+			if (i > 0) {
+				assertFalse(r[0].values().equals(r[i].values()));
+			}
+			for (Iterator j = r[i].values().iterator(); j.hasNext() ; ) {
+				assertNotNull(j.next());
+			}
+		}
+	}
+	
+	public void testExecuteFaultyService()  {
+		try {
+			dal.execute(nonCompliantSiapService);
+			fail("expected to fail");
+		} catch (ServiceException e) {
+			// ok
+		}
+		
+	}
+	
+	public void testExecuteVotable() throws ServiceException {
+		assertNotNull(localSiapURL);
+		myspaceControl.replay();
+		registryControl.replay();
+		Document d = dal.executeVotable(localSiapURL);
+		assertNotNull(d);
+	}
+	
+	public void testExecuteVotableFaultyService() {
+		try {
+			dal.executeVotable(nonCompliantSiapService);
+			fail("expected to fail");
+		} catch (ServiceException e) {
+			// ok
+		}		
+	}
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.DALImpl.saveResults(URL, URI)'
 	 */
-	public void testSaveResultsIvo() throws URISyntaxException, NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
+	public void testExecuteAndSaveIvo() throws URISyntaxException, NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException {
 		URI location = new URI("ivo://org.astrogrid/test#storage/foo/result.vot");
-		mockMs.copyURLToContent(u,location);
+		mockMs.copyURLToContent(localSiapURL,location);
 		myspaceControl.replay();
 		registryControl.replay();
-		dal.saveResults(u,location);
+		dal.executeAndSave(localSiapURL,location);
 		myspaceControl.verify();
 		registryControl.verify();
 	}
 	
-	//* can't mock the rest of this
-//	public void testSaveResultsOther() {
-//	}
+	/** not easy to test - and any point??
+	public void testExecuteAndSaveFiile() throws Exception {
+		
+	}*/
+	
+	public void testSaveDatasetsIvo() throws Exception {
+		final URI location = new URI("ivo://org.astrogrid/test#storage/foo");
+		mockMs.copyURLToContent(localSiapURL,location); // expected values are ignored in this case - just need to tbe the correct type.
+		// args to the this method must match as follows..
+		myspaceControl.setMatcher(new AbstractMatcher() {
+			protected boolean argumentMatches(Object expected, Object actual) {
+				if (actual instanceof URI) {
+					return actual.toString().startsWith(location.toString() + "/");
+				} else if (actual instanceof URL) {
+					return true;
+				} else {
+					return false;
+				}
+			}			
+		});
+		
+		// find size of the dataset.
+		int resultSize = dal.execute(localSiapURL).length;
+		
+		// call this method as many times as the dataset size.
+		myspaceControl.setVoidCallable(resultSize);
+		myspaceControl.replay();
+		registryControl.replay();
+		dal.saveDatasets(localSiapURL,location);
+		myspaceControl.verify();
+		registryControl.verify();
+
+	}
+	
+	public void testSaveSubsetDatasetsIvo() throws Exception {
+		final URI location = new URI("ivo://org.astrogrid/test#storage/foo");
+		mockMs.copyURLToContent(localSiapURL,location); // expected values are ignored in this case - just need to tbe the correct type.
+		// args to the this method must match as follows..
+		myspaceControl.setMatcher(new AbstractMatcher() {
+			protected boolean argumentMatches(Object expected, Object actual) {
+				if (actual instanceof URI) {
+					return actual.toString().startsWith(location.toString() + "/");
+				} else if (actual instanceof URL) {
+					return true;
+				} else {
+					return false;
+				}
+			}			
+		});
+		
+		// find size of the dataset.
+		int resultSize = dal.execute(localSiapURL).length;
+		int[] subset = new int[]{0,resultSize -1, resultSize / 2, 1};
+		// call this method as many times as the dataset size.
+		myspaceControl.setVoidCallable(subset.length);
+		myspaceControl.replay();
+		registryControl.replay();
+		dal.saveDatasetsSubset(localSiapURL,location,subset);
+		myspaceControl.verify();
+		registryControl.verify();
+
+	}
 	
 	/** concrete implementatio - jst so we can test bits */
 public static class TestDAL extends DALImpl {
@@ -251,6 +362,20 @@ public static class TestDAL extends DALImpl {
 	public TestDAL(Registry reg, MyspaceInternal ms) {
 		super(reg, ms);
 	}
+
+	public String getRegistryAdqlQuery() {
+		throw new NotImplementedException("not implemntet");
+	}
+
+	public String getRegistryQuery() {
+		throw new NotImplementedException("not implemntet");
+	}
+
+	public String getRegistryXQuery() {
+		throw new NotImplementedException("not implemntet");
+	}
+
+	
 }
 
 }

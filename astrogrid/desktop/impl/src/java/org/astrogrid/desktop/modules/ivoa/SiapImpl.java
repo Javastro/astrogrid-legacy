@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.7 2006/08/31 21:34:46 nw Exp $
+/*$Id: SiapImpl.java,v 1.8 2006/10/11 10:39:01 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,10 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.ivoa.DALImpl.StructureBuilder;
+import org.xml.sax.SAXException;
+
+import uk.ac.starlink.table.StarTable;
 
 /** Implementaiton of a component that does siap queries.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
@@ -96,12 +100,33 @@ public class SiapImpl extends DALImpl implements Siap {
 		return "//vor:Resource[@xsi:type &= '*SimpleImageAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
 
 	}
+	
+	// override the table parser to use siap datamodel.
+	protected StructureBuilder newStructureBuilder() {
+		return new SiaStructureBuilder();
+	}
+	
+	protected static class SiaStructureBuilder extends StructureBuilder {
+		public void startTable(StarTable t) throws SAXException {
+			super.startTable(t);
+			// now iterate over the keys, mapping them from ucds if recognized.
+			for (int i = 0; i < keys.length; i++) {
+				String term = Sia10Map.mapUCD(keys[i]);
+				if (term != null) {
+					keys[i] = term;
+				}
+			}
+		}
+	}
 
 }
 
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.8  2006/10/11 10:39:01  nw
+enhanced dal support.
+
 Revision 1.7  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 

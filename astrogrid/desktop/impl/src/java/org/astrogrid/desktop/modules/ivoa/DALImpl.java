@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.6 2006/08/31 21:34:46 nw Exp $
+/*$Id: DALImpl.java,v 1.7 2006/10/11 10:39:01 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,11 +15,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
 
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,19 +39,27 @@ import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.Dal;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.votable.TableContentHandler;
+import uk.ac.starlink.votable.TableHandler;
 
 
 /** Abstract class for implemntations of HTTP-GET based DAL standards
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
  *@todo move to new registry
  */
-public abstract class DALImpl {
+public abstract class DALImpl implements Dal{
     /**
      * Commons Logger for this class
      */
@@ -55,7 +74,7 @@ public abstract class DALImpl {
         this.ms = ms;
 
     }
-    protected final Registry reg;
+  	protected final Registry reg;
     protected final MyspaceInternal ms;
 
 
@@ -66,7 +85,7 @@ public abstract class DALImpl {
      * @throws InvalidArgumentException if arg0 is an unknown scheme of URI.
      * @throws NotFoundException if service cannot be resolved
      */
-    public final URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
+    protected final URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
  
         if (arg0.getScheme().equals("http")) {
             try {
@@ -134,25 +153,47 @@ public abstract class DALImpl {
         } 
     }
     
+    public final Map[] execute(URL arg0) throws ServiceException {
+		try {
+			XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+        TableContentHandler votHandler = new TableContentHandler(false);
+        votHandler.setReadHrefTables(true);
+        StructureBuilder sb = newStructureBuilder();
+        votHandler.setTableHandler(sb);
+        parser.setContentHandler(votHandler);
+        parser.parse(	arg0.toString());
+        return sb.getResult();
+		} catch (Exception x) {
+			throw new ServiceException(x.getMessage());
+		}
+	}
 
-    /**
-     * @see org.astrogrid.acr.nvo.Cone#getResults(java.net.URL)
-     */
-    public final Document getResults(URL arg0) throws ServiceException {
+
+    
+    public final Document executeVotable(URL arg0) throws ServiceException {
         try {
             return XMLUtils.newDocument(arg0.toString());
         } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
+    /**
+     * @see org.astrogrid.acr.nvo.Cone#getResults(java.net.URL)
+     */
+    public final Document getResults(URL arg0) throws ServiceException {
+    	return executeVotable(arg0);
+    }
 
+    public final void saveResults(URL arg0, URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
+    	executeAndSave(arg0,arg1);
+    }
     /**
      * @throws InvalidArgumentException
      * @throws ServiceException
      * @throws SecurityException
      * @see org.astrogrid.acr.nvo.Cone#saveResults(java.net.URL, java.net.URI)
      */
-    public final void saveResults(URL arg0, URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
+    public final void executeAndSave(URL arg0, URI arg1) throws InvalidArgumentException, ServiceException, SecurityException {
         if (arg1.getScheme().equals("ivo")) { // save to myspace - can optimize this
             try {
                 ms.copyURLToContent(arg0,arg1);
@@ -183,12 +224,193 @@ public abstract class DALImpl {
         }
     }
 
+	public final void saveDatasets(URL query, URI root) throws SecurityException, ServiceException, InvalidArgumentException {
+		try {
+			XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+        TableContentHandler votHandler = new TableContentHandler(false);
+        votHandler.setReadHrefTables(true);
+        DatasetSaver saver = newDatasetSaver();
+        saver.setRoot(root);
+        votHandler.setTableHandler(saver);
+        parser.setContentHandler(votHandler);
+        parser.parse(	query.toString());
+        doSaveDatasets(saver);
 
+		} catch (SAXException x) {
+			throw new ServiceException(x.getMessage());
+		} catch (ParserConfigurationException x) {
+			throw new ServiceException(x.getMessage());
+		} catch (IOException x) {
+			throw new ServiceException(x.getMessage());
+		}		
+	}
+
+	/**
+	 * @param saver
+	 * @throws InvalidArgumentException
+	 * @throws ServiceException
+	 * @throws SecurityException
+	 */
+	private void doSaveDatasets(DatasetSaver saver) throws InvalidArgumentException, ServiceException, SecurityException {
+		for (Iterator i = saver.getResult().entrySet().iterator(); i.hasNext(); ) {
+        	Map.Entry entry = (Map.Entry)i.next();
+        	URL u = (URL)entry.getKey();
+        	URI location = (URI)entry.getValue();
+        	if (location.getScheme().equals("ivo")) {
+                try {
+                    ms.copyURLToContent(u,location);
+                } catch (NotFoundException e) {
+                    throw new InvalidArgumentException(e);
+                } catch (NotApplicableException e) {
+                    throw new InvalidArgumentException(e);
+                }        		
+        	} else {
+        	     OutputStream os = null;
+                 try {
+                     os = ms.getOutputStream(location);
+                     InputStream is = u.openStream();
+                     Piper.pipe(is,os);
+                 } catch (IOException e) {
+                     throw new ServiceException(e);
+                 } catch (NotFoundException e) {
+                     throw new InvalidArgumentException(e);
+                 } finally {
+                     if (os != null) {
+                         try {
+                             os.close();
+                         } catch (Exception e) {
+                             logger.warn("Exception closing output stream",e);
+                         }
+                     }
+                 }        		
+        	}
+        }
+	}
+
+	public final void saveDatasetsSubset(URL query, URI root, int[] rows) throws SecurityException, ServiceException, InvalidArgumentException {
+		try {
+			XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+        TableContentHandler votHandler = new TableContentHandler(false);
+        votHandler.setReadHrefTables(true);
+        DatasetSaver saver = newDatasetSaver();
+        saver.setRoot(root);
+        saver.setSubset(rows);
+        votHandler.setTableHandler(saver);
+        parser.setContentHandler(votHandler);
+        parser.parse(	query.toString());
+        doSaveDatasets(saver);
+
+		} catch (SAXException x) {
+			throw new ServiceException(x.getMessage());
+		} catch (ParserConfigurationException x) {
+			throw new ServiceException(x.getMessage());
+		} catch (IOException x) {
+			throw new ServiceException(x.getMessage());
+		}		        
+
+	}
+	// factory method - allows subclasses to substitute their own implementaiton.
+	protected StructureBuilder newStructureBuilder() {
+		return new StructureBuilder();
+	}
+	protected static class StructureBuilder implements TableHandler {
+		List result = new ArrayList();
+		public Map[] getResult() {
+			return (Map[])result.toArray(new Map[result.size()]);
+		}
+		protected String[] keys;
+		int colCount;
+		public void startTable(StarTable t) throws SAXException {
+			colCount = t.getColumnCount();
+			keys = new String[colCount];
+			for (int col = 0; col < colCount; col++) {
+				ColumnInfo nfo = t.getColumnInfo(col);
+				keys[col] = nfo.getUCD() != null ? nfo.getUCD() : nfo.getName();
+			}
+		}
+		public void endTable() throws SAXException {
+		}
+
+		public void rowData(Object[] cells) throws SAXException {
+			LinkedHashMap map = new LinkedHashMap();
+			for (int col = 0; col < colCount; col++) {
+				map.put(keys[col],cells[col]);
+			}
+			result.add(map);
+		}
+
+	}
+	
+	// factory method - allows subclasses of dalImpl to use their own impl
+	protected DatasetSaver newDatasetSaver() {
+		return new DatasetSaver();
+	}
+	
+	protected static class DatasetSaver implements TableHandler {
+		public void setSubset(int rows[]) {
+			subset = true;
+			this.rows = rows;
+		}
+		public void setRoot(URI root)  {
+			if (! root.toString().endsWith("/")) {
+				this.root = URI.create(root.toString() + "/");
+			} else {
+				this.root = root;
+			}
+		}
+		private  boolean subset;
+		private int[] rows;
+		private URI root;
+		private int currentRow;
+		private Map result = new LinkedHashMap();
+		
+		private int urlIx = -1;
+		private int formatIx = -1;
+		
+		public Map getResult() {
+			return result;
+		}
+		int colCount;
+		public void startTable(StarTable t) throws SAXException {
+			colCount = t.getColumnCount();
+			for (int col = 0; col < colCount; col++) {
+				ColumnInfo nfo = t.getColumnInfo(col);
+				if ("VOX:Image_AccessReference".equalsIgnoreCase(nfo.getUCD())) {
+					urlIx = col;
+				} else if ("VOX:Image_Format".equalsIgnoreCase(nfo.getUCD())) {
+					formatIx = col;
+				}
+			}
+		}
+		public void endTable() throws SAXException {
+		}
+
+		public void rowData(Object[] cells) throws SAXException {
+			if (!subset || ArrayUtils.contains(rows,currentRow)) {
+					String format = null;
+					if (formatIx > -1) {
+						format = "." + StringUtils.substringAfterLast(cells[formatIx].toString(),"/");
+					}
+					try {
+					result.put(new URL(cells[urlIx].toString()),
+							URI.create(root.toString() + "data-" + currentRow + format )
+							);
+					} catch (MalformedURLException e) {
+						logger.warn("Failed to construct url",e); // @todo find a way to report this to client..
+					}
+			}
+			currentRow++;
+		}
+	}
+	
 }
 
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.7  2006/10/11 10:39:01  nw
+enhanced dal support.
+
 Revision 1.6  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 

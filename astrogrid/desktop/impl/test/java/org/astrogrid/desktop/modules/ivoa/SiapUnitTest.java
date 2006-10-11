@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -14,6 +16,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
 import org.easymock.MockControl;
 
 /** Unit test for siap interface.
@@ -82,6 +85,28 @@ public class SiapUnitTest extends TestCase {
 		assertEquals("POS=1.0%2C2.0&SIZE=3.0%2C4.0&FORMAT=FITS",u1.getQuery());
 	}
 
+	/** test that siap execute() returns values in the siap datamodel */
+	public void testExecute() throws Exception {
+		URL localSiapURL = TablesImplUnitTest.class.getResource("siap.vot");
+		assertNotNull(localSiapURL);
+		Map[] r = siap.execute(localSiapURL);
+		assertNotNull(r);
+		assertTrue(r.length > 0);
+		for (int i = 0; i < r.length; i++) {
+			assertNotNull(r[i]);
+			assertEquals(r[0].keySet(),r[i].keySet());
+			if (i > 0) {
+				assertFalse(r[0].values().equals(r[i].values()));
+			}
+			for (Iterator j = r[i].values().iterator(); j.hasNext() ; ) {
+				assertNotNull(j.next());
+			}
+		}
+		// now check that at least some of the UCDs have been mapped to datamodel names.
+		assertFalse(r[0].containsKey("VOX:Image_AccessReference"));
+		assertTrue(r[0].containsKey("AccessReference"));
+	}
+	
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SiapImpl.getRegistryQuery()'
 	 */

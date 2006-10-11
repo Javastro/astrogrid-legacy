@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.5 2006/08/15 10:16:24 nw Exp $
+/*$Id: StapImpl.java,v 1.6 2006/10/11 10:39:01 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.Stap;
@@ -130,11 +131,18 @@ public class StapImpl extends DALImpl implements Stap {
 
 	}
 
+	public String getRegistryQuery() {
+		throw new NotImplementedException("not avalable in stap");
+	}
+
 }
 
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.6  2006/10/11 10:39:01  nw
+enhanced dal support.
+
 Revision 1.5  2006/08/15 10:16:24  nw
 migrated from old to new registry models.
 

@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import org.astrogrid.desktop.ACRTestSetup;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -15,17 +17,22 @@ public class AllSystemTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
 				"System Tests for ivoa module.");
-		//$JUnit-BEGIN$
+		suite.addTestSuite(SiapSystemTest.class);
+		suite.addTestSuite(SiapRmiSystemTest.class);
+		suite.addTestSuite(SiapRpcSystemTest.class);
+		suite.addTestSuite(SsapSystemTest.class);
+		suite.addTestSuite(ConeSystemTest.class);
+		suite.addTestSuite(ConeRmiSystemTest.class);
+		suite.addTestSuite(ConeRpcSystemTest.class);
+
+		suite.addTestSuite(SkyNodeSystemTest.class);
+
 		suite.addTestSuite(Adql074SystemTest.class);
 		suite.addTestSuite(ExternalRegistryBasicsSystemTest.class);
 		suite.addTestSuite(ExternalRegistryKeywordSystemTest.class);
 		suite.addTestSuite(ExternalRegistryADQLSystemTest.class);
 		suite.addTestSuite(ExternalRegistryXQuerySystemTest.class);		
-		suite.addTestSuite(SiapSystemTest.class);
-		suite.addTestSuite(SkyNodeSystemTest.class);
-		suite.addTestSuite(SsapSystemTest.class);
-		//$JUnit-END$
-		return suite;
+		return new ACRTestSetup(suite,true);
 	}
 
 }
