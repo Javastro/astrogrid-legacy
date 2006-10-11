@@ -7,7 +7,9 @@ import sys
 import os
 prefix = file(os.path.expanduser("~/.astrogrid-desktop")).next().rstrip()
 s = x.Server(prefix + "xmlrpc")
+
 if len(sys.argv) > 1 and (sys.argv[1] == "--xquery" or sys.argv[1] == "-x"):
-	print s.astrogrid.registry.xquery(sys.argv[2])
+	print s.ivoa.registry.xquerySearchXML(sys.argv[2])
 else:
-	print s.astrogrid.registry.searchForRecords(sys.argv[1])
+	regEndpoint = s.ivoa.registry.getSystemRegistryEndpoint()
+	print s.ivoa.externalRegistry.adqlxSearchXML(sys.argv[1],regEndpoint)
