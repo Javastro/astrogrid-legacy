@@ -1,4 +1,4 @@
-/*$Id: AllSystemTests.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: AllSystemTests.java,v 1.2 2006/10/11 10:40:28 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,9 +30,9 @@ public class AllSystemTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("AstroGrid Module System Tests");
-        suite.addTestSuite(RegistrySystemTest.class);
-        suite.addTestSuite(RegistryRmiSystemTest.class);
-        suite.addTestSuite(RegistryRpcSystemTest.class);
+       // suite.addTestSuite(RegistrySystemTest.class);
+       // suite.addTestSuite(RegistryRmiSystemTest.class);
+       // suite.addTestSuite(RegistryRpcSystemTest.class);
         suite.addTestSuite(MyspaceSystemTest.class);
         suite.addTestSuite(MyspaceRmiSystemTest.class);
         suite.addTestSuite(MyspaceRpcSystemTest.class);       
@@ -50,6 +50,9 @@ public class AllSystemTests {
 
 /* 
 $Log: AllSystemTests.java,v $
+Revision 1.2  2006/10/11 10:40:28  nw
+removed - won't test deprecated classes.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 
