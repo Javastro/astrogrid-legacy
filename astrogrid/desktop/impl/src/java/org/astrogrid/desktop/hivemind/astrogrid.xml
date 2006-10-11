@@ -146,7 +146,7 @@
 	</contribution>
 	
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled)">
-		<action text="AR Help" name="acrHelp"  parentName="help" iconName="java_lib_obj.gif"
+		<action text="Astro Runtime API Help" name="acrHelp"  parentName="help" iconName="java_lib_obj.gif"
 			object="service:system.help" methodName="showHelpForTarget" after="contents">
 					<tooltip>Concepts,  lists available functions, gives examples of their use</tooltip>
 			<parameter>overview</parameter>
@@ -184,13 +184,12 @@
 	</contribution>
 	
 	<contribution configuration-id="system.uiStructure" if="(property acr.mode) or (property asr.mode)">
-	<action parentName="help" name="about" text="About AstroGrid Astro Runtime."
-			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
+	<action parentName="help" name="about" text="About Astro Runtime.."
+			object="instance:java.lang.String" methodName="concat" iconName="info_obj.gif"
 			after="*" > 
 			<parameter><![CDATA[
 			<html>
-			<h1>Astrogrid Astro Runtime v${astrogrid.desktop.version}</h1>			
-			<b>http://www.astrogrid.org/desktop</b><br>
+			<h1>Astro Runtime v${astrogrid.desktop.version}</h1>			
 
 	<hr>
 			<h2>Build Information</h2>
@@ -198,6 +197,8 @@
 			At: ${astrogrid.build.location}<br>
 			With ${astrogrid.build.jdk}<br>
 			By: ${astrogrid.build.by}		
+	<hr>
+			http://www.astrogrid.org/desktop/astro-runtime
 			</html>
 			]]></parameter>
 		</action>		
@@ -206,7 +207,7 @@
 	<!-- service points and implementations -->
 	
 	<service-point id="registry" interface="Registry">
-		VO Registry
+		Registry
 		<interceptor service-id="system.deprecation" />
 		<interceptor service-id="system.throbber" />
 		<invoke-factory>			
