@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowser.java,v 1.6 2006/08/31 20:22:59 nw Exp $
+/*$Id: RegistryBrowser.java,v 1.7 2006/10/12 02:22:33 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.ui;
 import java.net.URI;
 
 
-/** Control the registry browser UI
+/** Control the registry browser UI.
  * 
  * <img src="doc-files/registry.png"/>
  * @service userInterface.registryBrowser
@@ -36,6 +36,9 @@ public interface RegistryBrowser {
 
 /* 
  $Log: RegistryBrowser.java,v $
+ Revision 1.7  2006/10/12 02:22:33  nw
+ fixed up documentaiton
+
  Revision 1.6  2006/08/31 20:22:59  nw
  doc fix.
 

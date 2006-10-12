@@ -1,7 +1,7 @@
 <html>
 <body>
 <h1>Astronomy Client Runtime API</h1>
-
+<h1>Needs to be updated for Latest Release</h1>
 <h1>2 Minute Introduction</h1>
 The Astronomy Client Runtime (ACR) makes calling Virtual Observatory services simple. It
 <ul>
@@ -12,7 +12,7 @@ The Astronomy Client Runtime (ACR) makes calling Virtual Observatory services si
 	<li>simplifies client programming - minimising the amount of libraries needed, and hiding the complexity of  the VO architecture behind a simple facade</li>
 </ul>
 
-The ACR is hosted within the <a href="http://software.astrogrid.org/userdocs/workbench.html">AstroGrid Workbench</a> -- an application that provides a graphical user interface.
+The ACR is hosted within the <a href="http://www.astrogrid.org/desktop">AstroGrid Workbench</a> -- an application that provides a graphical user interface.
  However, this document is only concerned with how to 
 use functions in the ACR programmatically. The ACR API:
 <ul>
@@ -38,7 +38,7 @@ how to use the api.
 <h2>Architecture</h2>
 The system architecture of the ACR looks something like this
 <p />
-<img src="org/astrogrid/acr/doc-files/acr-schematic.png" />
+<img src="org/astrogrid/acr/doc-files/acr-schematic.gif" />
 <p/>
 On the left there's 4 different kinds of client for the ACR (there's some overlap between application and scripting). <p/>
 Different kinds of client will call the ACR functions using one of 5 possible access methods (light blue boxes). The feature set provided by each access method is identical wherever
@@ -72,7 +72,7 @@ The access method you choose to call the ACR depends on a few factors:
 		xmlrpc client yourself)</li>
 </ul>
 <h3>RMI</h3>
-You need the following jars on the classpath (all bundled in the ACR distribution - <a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/acr-interface.tar.gz">Download</a>)
+You need the following jars on the classpath (all bundled in the ACR distribution - <a href="http://www.astrogrid.org/desktop/download">Download</a>)
 <ul>
 	<li> <tt>acr-interface-*.jar</tt> - the interfaces documented in this javadoc</li>
 	<li> <tt>rmi-lite-1.0.jar</tt>- (<a href="http://rmi-lite.sourceforge.net/">http://rmi-lite.sourceforge.net/</a>) - simplifies Java RMI by generating stub classes via reflection</li>
@@ -90,7 +90,7 @@ Use the following code to access the ACR:
  </pre>
  {@link org.astrogrid.acr.Finder} takes care of connecting to the ACR server. If it can't find a running service, it'll attempt to create one - either in-process or externally. 
  Although the finder will make best efforts to create an ACR if needed, at the moment it's best to pre-start the ACR Workbench. It can be launched using the following Java Webstart URL<br>
-	<a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp"><b>http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp</b></a>
+	<a href="http://software.astrogrid.org/jnlp/workbench.jnlp"><b>http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp</b></a>
  <p/>
 <tt>Finder</tt> returns an instance of  {@link org.astrogrid.acr.builtin.ACR} . This allows you to retreive components (services) from the ACR, which you can then call methods on. The components of the acr
 are arranged into modules, which correspond to <i>packages</i> in this javadoc. For example, to write some data to myspace, first retreive the {@link org.astrogrid.acr.astrogrid.Myspace} component, 
@@ -141,7 +141,7 @@ The details of how to create and configure the xmlrpc client vary between langua
 	<li>Documentation for individual functions may contain further notes about how to call the function via xmlrpc. The most significant change is that it's mostly strings that are passed as inputs and outputs - 
 		the javadoc should note when this is not the case</li>			
 	<li>make sure the acr is running before you attempt to run your program - there's not way for the program to start an ACR if it needs it. Launch the ACR using the following Webstart URL:<br/>
-<a href="http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp"><b>http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp</b></a>
+<a href="http://software.astrogrid.org/jnlp/workbench/workbench.jnlp"><b>http://software.astrogrid.org/jnlp/astrogrid-desktop/astrogrid-desktop.jnlp</b></a>
 				</li>
 	<li>use the standard xmlrpc methods <tt>system.listMethods</tt>, <tt>system.methodHelp</tt>, and <tt>system.methodSignature</tt> to get information
 		on methods at runtime - although this information is not as detailed as this Javadoc.</li>

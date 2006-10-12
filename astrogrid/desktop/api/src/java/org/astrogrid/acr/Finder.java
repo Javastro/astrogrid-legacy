@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.10 2006/08/31 20:20:42 nw Exp $
+/*$Id: Finder.java,v 1.11 2006/10/12 02:22:33 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,9 @@ import javax.swing.JOptionPane;
  *@see org.astrogrid.acr.builtin.ACR
  */
 public class Finder {
-    /** Refactored as an static public class - previously was an anonymous class, and RmiLite seemed to be inable to call it
+    /**Internal Class. 
+     * 
+     * Refactored as an static public class - previously was an anonymous class, and RmiLite seemed to be unable to call it
      *  - producing a nice stack trace on shutdown. Same code, but as a named public static class works fine.
 	 * @author Noel Winstanley
 	 * @since Jun 12, 200611:03:25 AM
@@ -388,6 +390,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.11  2006/10/12 02:22:33  nw
+fixed up documentaiton
+
 Revision 1.10  2006/08/31 20:20:42  nw
 minor tweak
 

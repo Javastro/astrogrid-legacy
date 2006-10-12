@@ -1,4 +1,4 @@
-/*$Id: MyspaceBrowser.java,v 1.3 2006/02/02 14:19:48 nw Exp $
+/*$Id: MyspaceBrowser.java,v 1.4 2006/10/12 02:22:33 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.acr.ui;
 
 
-/**Control the  Myspace Browser gui
+/**Control the  Myspace Browser UI.
  * 
  * <img src="doc-files/filemanager.png"/>
  * @service userInterface.myspaceBrowser
@@ -29,6 +29,9 @@ public interface MyspaceBrowser {
 
 /* 
 $Log: MyspaceBrowser.java,v $
+Revision 1.4  2006/10/12 02:22:33  nw
+fixed up documentaiton
+
 Revision 1.3  2006/02/02 14:19:48  nw
 fixed up documentation.
 

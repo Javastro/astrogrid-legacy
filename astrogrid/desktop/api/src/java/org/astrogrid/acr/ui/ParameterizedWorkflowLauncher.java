@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncher.java,v 1.3 2006/02/02 14:19:48 nw Exp $
+/*$Id: ParameterizedWorkflowLauncher.java,v 1.4 2006/10/12 02:22:33 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
  **/
 package org.astrogrid.acr.ui;
 
-/**Control the parameterized workflows launcher 
+/**Control the parameterized workflows launcher .
  *
  * <img src="doc-files/pw-choice.png" />
  * @service userInterface.parameterizedWorkflows 
@@ -25,6 +25,9 @@ public interface ParameterizedWorkflowLauncher {
 
 /* 
  $Log: ParameterizedWorkflowLauncher.java,v $
+ Revision 1.4  2006/10/12 02:22:33  nw
+ fixed up documentaiton
+
  Revision 1.3  2006/02/02 14:19:48  nw
  fixed up documentation.
 
