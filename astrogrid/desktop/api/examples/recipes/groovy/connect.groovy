@@ -3,7 +3,7 @@
 Noel Winstanley, Astrogrid, 2005
 
 
-minimal example of connecting to acr and calling a service
+minimal example of connecting to AR and calling a service
 
 requires acr client jars in groovy classpath
 connects to acr using rmi access 

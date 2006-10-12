@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# sample of building and running an application
+# sample of building and submitting an invocation document for a CEA remote application
 import xmlrpclib as x
 import sys
 import os
@@ -52,15 +52,8 @@ for i in range(len(ra)):
         execId = s.astrogrid.applications.submitTo(doc,'ivo://uk.ac.le.star/SIAP-CEC-2')
         print execId
 
-        # example of linking back into the gui - add the new application to the job monitor.
-        #add execId to the job monitor, and display the monitor.
-        #s.userInterface.jobMonitor.addApplication("scripted application",execId)
-        #s.userInterface.jobMonitor.displayApplicationTab()      
-        #s.userInterface.jobMonitor.show()
-        # give it a refresh to find the status.
-        #s.userInterface.jobMonitor.refresh()
 
-        # meanwhile, lets monitor the progress of the job programmatically 
+        #  monitor the progress of the job programmatically 
         # a busy-wait loop until it finishes.
         execInfo = s.astrogrid.applications.getExecutionInformation(execId)              
         while execInfo['status'] not in ['ERROR','COMPLETED'] :
@@ -74,27 +67,4 @@ for i in range(len(ra)):
                 #print results from myspace.
                 print s.astrogrid.myspace.read(newFile)
 
-## now we'll call the application again, this time returning results inline.
-#struct['output']['IMAGES']['indirect'] = False
-#struct['output']['IMAGES']['value'] = ""
-
-# and we'll search a different area
-#inputs['POS']['value'] = "100.0,0.0"
-
-#run it again.
-#doc = s.astrogrid.applications.convertStructToDocument(struct)
-#execId = #s.astrogrid.applications.submitTo(doc,'ivo://uk.ac.cam.ast/INT-WFS/images/CEC')
-# wait for the results
-#execInfo = s.astrogrid.applications.getExecutionInformation(execId)             
-#while execInfo['status'] == "RUNNING" :#
-#       time.sleep(30)
-#       execInfo = s.astrogrid.applications.getExecutionInformation(execId)
-        
-#if execInfo['status'] == "ERROR":
-#       print "Application ended in error"
-#else:
-        #print inline results
-#       print s.astrogrid.applications.getResults(execId)['IMAGES']     
-
-# :)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Noel Winstanley, Astrogrid, 2005
-# minimal example of connecting to acr and calling a service.
+# minimal example of connecting to AR and calling a service.
 import xmlrpclib 
 import sys
 import os
@@ -13,7 +13,7 @@ print "Endpoint to connect to is", endpoint
 #connect to the acr 
 acr = xmlrpclib.Server(endpoint)
 
-#get a reference to the registry service from the acr.
+#get a reference to the registry service from the AR
 registry = acr.astrogrid.registry
 
 #call a method

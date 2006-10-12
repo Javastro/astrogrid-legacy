@@ -27,3 +27,5 @@ source = "http://apm14.ast.cam.ac.uk/queryDQC?ra=" + ra + "&dec=" + dec
  
 table = null #parsed up version to source.
 nameCol = 
+
+#TODO

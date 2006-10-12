@@ -5,7 +5,7 @@ import org.astrogrid.acr.system.*
 /*
 Noel Winstanley, Astrogrid, 2005
 
-demonstration of attaching a listener to the arc
+demonstration of attaching a listener to the AR
 
 requires acr client jars in groovy classpath
 connects to acr using rmi access - listeners are not available in the xmlrpc access method

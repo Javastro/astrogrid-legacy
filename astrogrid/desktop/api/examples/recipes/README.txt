@@ -1,7 +1,10 @@
-Basic Examples.
+Connection Recipes for languages other than Java.
 
-Each subdirectory contains examples of using the ACR for a particular programming language.
+(for Java, see java/examples/Connect.java)
 
-The python examples are the most extensive.
+Each subdirectory contains examples of using the ACR for a particular programming 
+language.
 
-other subdirectories contain minimal examples of connecting to the ACR only
+Some of these have been contributed and are not actively tested - please let me
+know if you encounter problems. Also, I'd appreciate recipes for other languages - 
+Fortran, IDL, R, etc.

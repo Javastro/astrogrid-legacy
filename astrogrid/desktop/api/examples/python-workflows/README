@@ -1,0 +1,6 @@
+This directory contains some larger example scripts.
+
+run-sdss.py - an example of invoking, monitoring, and gettings results from an 
+asyncronous CEA service.
+
+redshiftmaker.py - a transcription of the redshiftmaker parameterized workflow.

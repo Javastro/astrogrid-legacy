@@ -1,5 +1,5 @@
 /*
- * modification of xmlrpc_add_client to attempt to talk to ACR
+ * modification of xmlrpc_add_client to attempt to talk to AR
  * richard holbrey, university of leeds,UK
  */
 

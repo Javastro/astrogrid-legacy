@@ -1,7 +1,7 @@
 #!/bin/sh
 # Noel  Winstanley, AstroGrid, 2006
-#example of calling acr functions directly from a shell script
-# uses the raw html interface.
+#example of calling AR functions directly from a shell script
+# uses the REST-like interface.
 # (although in many cases, it may be more convenient to call one of the python helper utilities from a script)
 
 # read config file to get endpoint
