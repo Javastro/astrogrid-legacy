@@ -34,6 +34,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
  */
 public class SiapExampleToMyspace {
 	public static void main(String[] args) throws Exception {
+		try {
 			// connect to ACR
 			Finder f = new Finder();
 			ACR acr = f.find();
@@ -87,6 +88,8 @@ public class SiapExampleToMyspace {
 			siap.saveDatasetsSubset(query,resultsDir,indexes);
 			
 			System.out.println("Done: Images saved to " + resultsDir);
+	} finally {
 			System.exit(0);
+	}
 	}
 }

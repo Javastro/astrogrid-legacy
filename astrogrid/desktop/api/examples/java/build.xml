@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<project default="all" name="acr-interface-examples" basedir=".">
+  <property name="libdir" value="../../rmi">
+  </property>
+  <property name="classesdir" value="classes">
+  </property>
+  
+  <property name="final.name" value="acr-interface-2006.3.rc4">
+  </property>
+  <path id="build.classpath">
+    <fileset dir="${libdir}">
+      <include name="**/*.jar">
+      </include>
+    </fileset>
+  </path>
+    	
+ <target name="all" depends="compile, run-dalclient-examples, run-examples"/>
+      	
+  <target name="compile" description="Compile the code">
+    <mkdir dir="${classesdir}">
+    </mkdir>
+    <javac destdir="${classesdir}" deprecation="true" debug="true" optimize="false" excludes="**/package.html">
+      <src>
+        <pathelement location=".">
+        </pathelement>
+      </src>
+      <classpath refid="build.classpath">
+      </classpath>
+    </javac>
+  </target>
+  	
+  <target name="run-examples" description="run all examples">
+  		<java classname="examples.Simplest" classpathref="build.classpath" fork="true" />
+
+  		<java classname="examples.SiapExample" classpathref="build.classpath" fork="true" />
+
+  		<echo>Requires a votable viewer - e.g. Topcat - be connect to the hub</echo>	
+  		<java classname="examples.ConeExampleToPlastic" classpathref="build.classpath" fork="true" />
+
+  		<echo>Requires login</echo>
+  		<java classname="examples.SiapExampleToMyspace" classpathref="build.classpath" fork="true" />
+  </target>
+
+  <target name="run-dalclient-examples" description="run examples transcribed from dalclient">
+  	  		<java classname="examples.dalclient.Cone1" classpathref="build.classpath" fork="true" />
+  	  		<java classname="examples.dalclient.Cone2" classpathref="build.classpath" fork="true" />
+  	  		<java classname="examples.dalclient.Cone3" classpathref="build.classpath" fork="true" />
+  	  		<java classname="examples.dalclient.Siap1" classpathref="build.classpath" fork="true" />
+  	  		<java classname="examples.dalclient.Siap2" classpathref="build.classpath" fork="true" />
+  	  		<java classname="examples.dalclient.Siap3" classpathref="build.classpath" fork="true" />
+  	  		<java classname="examples.dalclient.Siap4" classpathref="build.classpath" fork="true" />
+  </target>
+  			
+  </project>

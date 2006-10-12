@@ -4,6 +4,7 @@
 package examples;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,33 +15,37 @@ import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
+import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.votech.plastic.CommonMessageConstants;
+import org.votech.plastic.PlasticHubListener;
 
 /**
- * This example walks through all the steps of querying a Simple Image Access service.
+ * This example walks through all the steps of querying a Cone service and displaying the
+ * results in a plastic application (requires something like Topcat to be connected to the hub)
  * 1) locating the service
  * 2) selecting the position to query on
- * 3) inspecting the query return
- * 4) saving the resulting images.
+ * 3) instructing Topcat to display query result.
  * 
  * @author Noel Winstanley
  * @since Oct 11, 200612:05:38 PM
  */
-public class SiapExample {
+public class ConeExampleToPlastic {
 	public static void main(String[] args) throws Exception {
 			// connect to ACR
 			Finder f = new Finder();
 			ACR acr = f.find();
 			
 			// get the components we're going to use.
-			Siap siap = (Siap)acr.getService(Siap.class);
+			Cone cone = (Cone)acr.getService(Cone.class);
+			PlasticHubListener hub = (PlasticHubListener)acr.getService(PlasticHubListener.class);
 			Registry reg = (Registry)acr.getService(Registry.class);
 			Sesame ses = (Sesame)acr.getService(Sesame.class);
 
 			// list all Sia services known to the registry
-			String xq = siap.getRegistryXQuery();
+			String xq = cone.getRegistryXQuery();
 			Resource[] res = reg.xquerySearch(xq);
 			
 			// select the first one.
@@ -52,38 +57,18 @@ public class SiapExample {
 			System.out.println("'crab' resolves to " + pos);
 			
 			// constryct a query to the service.
-			URL query = siap.constructQuery(r.getId(),pos.getRa(),pos.getDec(),1.0);
-			// execute the query
-			Map[] rows = siap.execute(query);
-			if (rows.length == 0) {
-				System.out.println("No results returned");
-				System.exit(0);
-			}	
-				
-			// list the column headings of the query response.
-			System.out.println("Columns Names: " + rows[0].keySet());
+			URL query = cone.constructQuery(r.getId(),pos.getRa(),pos.getDec(),1.0);
 			
-			//scan for rows pointing to gif images (this service also returns fits and html images)
-			List indexes = new ArrayList();
-			for (int i = 0; i < rows.length; i++) {
-				if (rows[i].get("Format").equals("image/gif")) {
-					indexes.add(new Integer(i));
-				}
-			}
-
-			System.out.println("Selected Indexes " + indexes);
-			
-			
-			// create a directory to store these images.
-			File resultsDir = new File("SiapExampleResults");
-			resultsDir.mkdir();
-			
-			// download the selected images.
-			siap.saveDatasetsSubset(query,resultsDir.toURI(),indexes);
-			
-			System.out.println("Done: Images saved to " + resultsDir);
-			
+			// register with the plastic Hub
+			URI myId = hub.registerNoCallBack("ConeExampleToPlastic");
+			// compose and send the message
+			List messageArgs = new ArrayList();
+			messageArgs.add(query);
+			messageArgs.add(query);
+			hub.requestAsynch(myId,CommonMessageConstants.VOTABLE_LOAD_FROM_URL,messageArgs);
+			// deregister
+			hub.unregister(myId);
+		
 			System.exit(0);
-
 	}
 }

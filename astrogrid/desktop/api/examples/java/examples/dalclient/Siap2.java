@@ -82,7 +82,7 @@ public static void main(String[] args) throws Exception{
 
 		// Execute the query and fetch results.
 		System.out.println("# Query: " + query);
-		String csv = tables.convertFromFile(query.toURI(),"votable","csv");
+		String csv = tables.convertFromFile(new URI(query.toString()),"votable","csv");
 		System.out.println(csv);
   }
 }

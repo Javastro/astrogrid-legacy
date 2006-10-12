@@ -6,6 +6,3 @@ AR can do all that DALClient can - almost line-for-line equvalent.
 
 Refer to the main example package for richer examples - integrating DAL with Registry,
 name resolvers, Myspace, and PLASTIC.
-
-
-TODO - add an ant file in this folder
