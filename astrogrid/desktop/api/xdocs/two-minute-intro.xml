@@ -76,12 +76,12 @@
 			</p>
 			<p>
 
-				The AR is available as a stand-alone executable, and
+				The Astro Runtime is available as a stand-alone executable, and
 				also as part of the AstroGrid Workbench (which is a
-				suite of GUI tools built upon the AR API - we believe in
+				suite of GUI tools built upon AR - we believe in
 				eating our own dogfood). These can be downloaded from
-				<a href="http://www.astrogrid.org/desktop/download">
-					www.astrogrid.org/desktop/download
+				<a href="http://www.astrogrid.org/desktop">
+					www.astrogrid.org/desktop
 				</a>
 			</p>
 			</subsection>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AstroGrid">
+<project name="Astro Runtime">
 
   <title>Astro Runtime</title>
 
   <body>
     <links>
-       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
-       <item name="Workbench" href="http://www.astrogrid.org/desktop" />
        <item name="Astro Runtime" href="http://www.astrogrid.org/desktop/astro-runtime" />
+       <item name="Workbench" href="http://www.astrogrid.org/desktop" />
        <item name="IVOA" href="http://www.ivoa.net" />
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
     </links>
 
     <menu name="Navigation">
@@ -16,14 +16,13 @@
 	    <item name="2 Minute Introduction" href="/two-minute-intro.html" />
 	    <item name="AR and PLASTIC" href="/plastic.html"/>
 	    <item name="10 Minute Tutorial" href="/ten-minute-tutorial.html" />
-	    <item name="API: XMLRPC" href="xmlrpc.html" />
-	    <item name="API: RMI" href="/apidocs/index.html" />
+	    <item name="API: Javadoc" href="/apidocs/index.html" />
+	    <item name="API: XML-RPC" href="xmlrpc.html" />
     </menu>
     
     <menu name="Links">
-    	<item name="Download AR / Workbench" href="http://www.astrogrid.org/desktop/download" />
-    	<item name="AR Homepage" href="http://www.astrogrid.org/desktop/astro-runtime" />
-    </menu>
+    	<item name="Download Astro Runtime" href="http://www.astrogrid.org/desktop/astro-runtime" />
+     </menu>
 
     
     

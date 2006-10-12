@@ -25,7 +25,7 @@
 				</blockquote>
 			</p>
 		</section>
-		<section name="PLASTIC's relationship with Astro Runtime"><p>
+		<section name="PLASTIC's relationship to  Astro Runtime"><p>
 		PLASTIC and Astro Runtime have different purposes. In short
 			<dl>
 			<dt><b>Astro Runtime</b></dt>
@@ -46,8 +46,11 @@
 		 	
 		 	Furthermore, the reference implementation of the PLASTIC hub is 
 		 	embedded within the Astro Runtime. This means that any client connected
-		 	to <i>this</i> hub is also connected to the Astro Runtime - and may call AR API functions
+		 	to <i>this</i> hub is also connected to the Astro Runtime - and may call AR
+		 	 API functions <i>and</i> send PLASTIC messages
 		 	without any additional setup.</p>
+		 	<p>Documentation for for PLASTIC Messaging is included in the API docs.
+		 	Furthermore, there are examples of sending messages in some of the examples</p> 
 		 
 		</section>
 	</body>
