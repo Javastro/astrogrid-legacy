@@ -6,14 +6,13 @@
   </property>
   <property name="classesdir" value="classes">
   </property>
-  
-  <property name="final.name" value="acr-interface-2006.3.rc4">
-  </property>
+
   <path id="build.classpath">
     <fileset dir="${libdir}">
       <include name="**/*.jar">
       </include>
     </fileset>
+    <pathelement location="${classesdir}" />
   </path>
     	
  <target name="all" depends="compile, run-dalclient-examples, run-examples"/>
