@@ -41,10 +41,7 @@
 <section name="Astro Runtime XML-RPC Interface"><p>
 This document lists the functions available on the Astro Runtime via XMLRPC. It presents the 
 methods in an abridged, language-independent form. This document is generated from the 
-<a href="apidocs/index.html">AR javadoc</a> - refer there for full details, and 
-especially for 
-<a href="apidocs/overview-summary.html#overview_description">Getting Started</a> information.
-</p>
+<a href="apidocs/index.html">AR javadoc</a> - refer there for full details.</p>
 
 <subsection name="Service List">
 <p>

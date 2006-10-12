@@ -48,6 +48,8 @@
          <copy todir="${maven.dist.bin.assembly.dir}">
          	<fileset dir="${basedir}">
          		<include name="examples/**" />
+         		<include name="contrib/**" />
+         		<include name="README" />
          	</fileset>
         </copy>	
 	</postGoal>	
