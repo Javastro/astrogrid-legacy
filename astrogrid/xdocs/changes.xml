@@ -6,6 +6,11 @@
     <body>
 			
     	<release version="(Pending Integration)">
+    	  <action "dev="gtr" type="add">
+    	    <em>Branch common-gtr-1933.</em> I have added code to AstrogridAssert
+            such that it reports line and column numbers when it finds invalidities
+            while validating an XML file against a W3C XML schema.
+    	  </action>
          <action dev="kea" type="add">
            <em>Branch PAL_KEA_1794 in astrogrid/pal AND ALSO astrogrid/xml,
              and branch SLI_KEA_1794 in astrogrid/slinger.</em>
