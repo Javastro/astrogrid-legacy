@@ -112,7 +112,31 @@
         <id>xmlunit</id>
         <version>1.0</version>
       </dependency>
-
+      
+        <!--+
+            | Commons logging API.
+            +-->
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <!--+
+            | Log4j toolkit.
+            +-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+  
       <dependency>
          <groupId>maven-plugins</groupId>
          <artifactId>maven-javacc-plugin</artifactId>
