@@ -1,4 +1,4 @@
-select top(100) POS_EQ_RA + POS_EQ_DEC, 
+select top 100  POS_EQ_RA + POS_EQ_DEC, 
                 POS_EQ_RA - POS_EQ_DEC, 
                 POS_EQ_RA * POS_EQ_DEC, 
                 POS_EQ_RA / POS_EQ_DEC

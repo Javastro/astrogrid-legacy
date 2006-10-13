@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.5 2006/10/11 20:36:25 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.6 2006/10/13 13:24:37 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -63,7 +63,6 @@ public class AdqlStoXTest extends XMLTestCase {
 		locateFilesForTest() ;
 	}
 	
-
 	public void testOf_v10_BADemptyFrom() throws Exception { execTest() ; }
 	public void testOf_v10_BADemptyWhere() throws Exception { execTest() ; }
 	public void testOf_v10_BADselectEmptyAlias() throws Exception { execTest() ; }
@@ -75,8 +74,33 @@ public class AdqlStoXTest extends XMLTestCase {
 	public void testOf_v10_selectBetweenOps() throws Exception { execTest() ; } 
 	public void testOf_v10_selectBinaries() throws Exception { execTest() ; }
 	public void testOf_v10_selectBoolOps() throws Exception { execTest() ; }
+    public void testOf_v10_selectComparisonOps() throws Exception { execTest() ; }
+    public void testOf_v10_selectDistinct() throws Exception { execTest() ; }
+    public void testOf_v10_selectExpr1() throws Exception { execTest() ; }
+    public void testOf_v10_selectExpr2() throws Exception { execTest() ; }
+    public void testOf_v10_selectExprMixed1() throws Exception { execTest() ; }
+    public void testOf_v10_selectExprMultiAlias() throws Exception { execTest() ; }
+    public void testOf_v10_selectExprSum() throws Exception { execTest() ; }
+    public void testOf_v10_selectExprUnary() throws Exception { execTest() ; }
+    public void testOf_v10_selectFromNoAlias() throws Exception { execTest() ; }
+    public void testOf_v10_selectGroupBy() throws Exception { execTest() ; }
+    public void testOf_v10_selectLogPowMathsFuncs() throws Exception { execTest() ; }
+    public void testOf_v10_selectMultiTabMultiAlias1() throws Exception { execTest() ; }
+    public void testOf_v10_selectOneTableTwoCols() throws Exception { execTest() ; }
+    public void testOf_v10_selectOrderByCol() throws Exception { execTest() ; }
+    public void testOf_v10_selectOrderByComplex() throws Exception { execTest() ; }
+    public void testOf_v10_selectSome() throws Exception { execTest() ; }
+    public void testOf_v10_selectTrigFuncsDeg() throws Exception { execTest() ; }
+    public void testOf_v10_selectTrigFuncsRad() throws Exception { execTest() ; }
+    public void testOf_v10_selectTwoTablesFourCols() throws Exception { execTest() ; }
+    public void testOf_v10_selectTwoTablesFourColsNoAlias() throws Exception { execTest() ; }
+    public void testOf_v10_selectUnaries() throws Exception { execTest() ; }
+    public void testOf_v10_selectValueTweakMathsFuncs() throws Exception { execTest() ; }
+    public void testOf_v10_whereWithBinaryOpsAndUnaryOps() throws Exception { execTest() ; }
+    public void testOf_v10_whereWithNegativeUnaryLiteral() throws Exception { execTest() ; }
+    public void testOf_v10_whereWithPositiveUnaryLiteral() throws Exception { execTest() ; }
+    public void testOf_v10_whereWithUnsignedNumericLiteral() throws Exception { execTest() ; }
 
-	
 	private void execTest() throws Exception {
 		SelectDocument sd = null ;
 		printHelpfulStuff( currentSFile.getName() ) ;
@@ -91,6 +115,10 @@ public class AdqlStoXTest extends XMLTestCase {
 			compareCompilations( sd, currentXFile ) ;		
 		}
 		catch( Exception ex ) {
+            if( currentXFile != null ) {
+                System.out.println( currentSFile.getName() + ": Compilation failed when not expected..." ) ;
+                System.out.println( ex.getLocalizedMessage() ) ;
+            }     
 			assertTrue( currentSFile.getName() + ": Compilation failed when not expected.", currentXFile == null ) ;
 		}	
 	}
@@ -283,9 +311,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.5  2006/10/11 20:36:25  jl99
- * (1) Change of signature to exec method. Now throws a ParserException.
+ * Revision 1.6  2006/10/13 13:24:37  jl99
+ * More unit tests added.
  *
+/* Revision 1.5  2006/10/11 20:36:25  jl99
+/* (1) Change of signature to exec method. Now throws a ParserException.
+/*
 /* Revision 1.4  2006/10/02 09:05:31  jl99
 /* First attempt at mavenizing project
 /*

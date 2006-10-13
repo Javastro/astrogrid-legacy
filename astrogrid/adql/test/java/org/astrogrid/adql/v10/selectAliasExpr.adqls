@@ -1,4 +1,4 @@
-SELECT TOP(100) 
+SELECT TOP 100  
 ( 
   ( 
     SIN(a.INSERT_RA) + COS(a.INSERT_DEC) 

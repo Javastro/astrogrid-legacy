@@ -1,0 +1,1 @@
+select a.POS_EQ_RA / a.POS_EQ_DEC from catalogue as a ;
