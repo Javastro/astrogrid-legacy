@@ -80,6 +80,17 @@ project and are not suitable for use in instance documents.</p>
 				<li><a href="../schema/stc/STCcoords/v1.20/STCcoords.xsd">http://www.ivoa.net/xml/STC/STCcoords/v1.20</a></li>
 				<li><a href="../schema/stc/STCRegion/v1.20/STCregion.xsd">http://www.ivoa.net/xml/STC/STCregion/v1.20</a></li>
 			</ul>
+                        
+                  <h2>DSA/Catalogue service</h2>
+                  <ul>
+                    <li><a href="../schema/dsa/DSAMetadoc/v0.2/TableMetaDoc.xsd">urn:astrogrid:schema:dsa:TableMetaDoc:v0.2</a></li>
+                    <li><a href="../schema/dsa/DSAMetadoc/v1.0/TableMetaDoc.xsd">urn:astrogrid:schema:TableMetaDoc:v1</a></li>
+                  </ul>
+                  
+                  <h2>Registry service</h2>
+                  <ul>
+                    <li><a href="../schema/registry/RegistryInterface/v0.1/RegistryInterface.xsd">http://www.ivoa.net/xml/RegistryInterface/v0.1</a></li>
+                  </ul>
 			
 		</section>
          
