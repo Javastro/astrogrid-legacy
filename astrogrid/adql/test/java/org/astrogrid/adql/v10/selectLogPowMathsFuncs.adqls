@@ -3,4 +3,4 @@ Select Top 100 EXP( ABS(a.POS_RA_MAIN) + 1.0  ) ,
                SQRT( a.POS_RA_MAIN * a.POS_RA_MAIN  ) , 
                SQUARE( a.POS_RA_MAIN ) , 
                LOG10( ABS(a.POS_RA_MAIN) + 1.0  )  
-From catalogue as a 
+From catalogue as a ;

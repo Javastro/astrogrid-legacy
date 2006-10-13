@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.6 2006/10/13 13:24:37 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.7 2006/10/13 21:00:24 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -65,8 +65,10 @@ public class AdqlStoXTest extends XMLTestCase {
 	
 	public void testOf_v10_BADemptyFrom() throws Exception { execTest() ; }
 	public void testOf_v10_BADemptyWhere() throws Exception { execTest() ; }
+    public void testOf_v10_BADinnerJoinWithJoinCondition() throws Exception { execTest() ; }
 	public void testOf_v10_BADselectEmptyAlias() throws Exception { execTest() ; }
 	public void testOf_v10_BADselectOrderByDirOnly() throws Exception { execTest() ; }
+    public void testOf_v10_innerJoinWithJoinCondition() throws Exception { execTest() ; }
 	public void testOf_v10_selectAggregateFuncs() throws Exception { execTest() ; }
 	public void testOf_v10_selectAliasExpr() throws Exception { execTest() ; } 
 	public void testOf_v10_selectAllAllow() throws Exception { execTest() ; } 
@@ -311,9 +313,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.6  2006/10/13 13:24:37  jl99
+ * Revision 1.7  2006/10/13 21:00:24  jl99
  * More unit tests added.
  *
+/* Revision 1.6  2006/10/13 13:24:37  jl99
+/* More unit tests added.
+/*
 /* Revision 1.5  2006/10/11 20:36:25  jl99
 /* (1) Change of signature to exec method. Now throws a ParserException.
 /*

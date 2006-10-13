@@ -1,0 +1,1 @@
+select * from foo inner join bar on foo.y >= bar.x inner join flub on foo.y <= flub.z ;
