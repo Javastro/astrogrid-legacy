@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.30 2005/11/04 17:31:05 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.31 2006/10/13 17:15:16 gtr Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <extend>../maven-base/project.xml</extend>
   <artifactId>astrogrid-common</artifactId>
@@ -23,6 +23,7 @@
             <include>**/*.properties</include>
             <include>**/*.sql</include>
             <include>**/*.ddl</include>
+            <include>**/*.xsd</include>
           </includes>
         </resource>
       </resources>
