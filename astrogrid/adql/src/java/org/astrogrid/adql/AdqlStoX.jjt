@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.19 2006/10/14 13:09:19 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.20 2006/10/14 16:14:52 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -684,18 +684,36 @@ SearchType boolean_test_A() :
 
 SearchType likePredicate_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "likePredicate_A" ) ;
 	SearchType st = null ;
 	Token t = null ;
 	AtomType p = null ;
+	ScalarExpressionType se = null ;
 }
 {
 	//S:
 	// <like_predicate> ::=
 	//   <match_value> [ NOT ] LIKE <pattern> [ ESCAPE <escape_character> ]
       
-	( match_value_S() [ <NOT> ] <LIKE> pattern_A() )
-
+	( se=match_value_S() [ t=<NOT> ] <LIKE> p=pattern_A() )
 	{
+		if( p != null ) {
+			
+			if( t == null ) {
+				LikePredType lpt = LikePredType.Factory.newInstance() ;
+				lpt.setArg( se ) ;
+				lpt.setPattern( p ) ;
+				st = lpt ;
+			}
+			else {
+				NotLikePredType nlpt = NotLikePredType.Factory.newInstance() ;
+				nlpt.setArg( se ) ;
+				nlpt.setPattern( p ) ;
+				st = nlpt ;
+			}
+			
+		}
+		if( TRACE_ENABLED ) exitTrace ( "likePredicate_A" ) ;
 		return st ;	
 	}
 }
@@ -791,6 +809,7 @@ AtomType ASCIIStringLiteral() :
 
 ScalarExpressionType character_value_expression_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "character_value_expression_A" ) ;
 	ScalarExpressionType seType = null ;
 }
 {
@@ -800,7 +819,10 @@ ScalarExpressionType character_value_expression_A() :
     //   | <character_factor>
 
 	seType=character_factor_A()
-	{ return seType ; }	
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "character_value_expression_A" ) ;
+		return seType ; 
+	}	
 }
 
 void collate_clause_S() : {}
@@ -1676,12 +1698,20 @@ JointTableQualifierType join_type_A() :
 }
 
 
-void match_value_S() : {}
+ScalarExpressionType match_value_S() : 
+{
+    if( TRACE_ENABLED ) enterTrace ( "match_value_S" ) ;
+    ScalarExpressionType seType = null ;
+}
 {
 	//S:
 	// <match_value> ::= <character_value_expression>
 
-	character_value_expression_A()	
+	seType=character_value_expression_A()
+	{
+	   if( TRACE_ENABLED ) exitTrace ( "match_value_S" ) ;	
+	   return seType ;
+	}	
 }
 
 void match_predicate_S() : {}
@@ -2005,12 +2035,20 @@ void overlaps_predicate_S() : {}
 	row_value_constructor_S() <OVERLAPS> row_value_constructor_S()	
 }
 
-void pattern_A() : {}
+AtomType pattern_A() : 
+{
+	if( TRACE_ENABLED ) enterTrace ( "pattern_A" ) ;
+	AtomType at = null ;
+}
 {
 	//S:
 	//   <pattern> ::= <character_value_expression>
 
-	character_value_expression_A()	
+	at=character_string_literal_A()
+	{
+		if( TRACE_ENABLED ) exitTrace ( "pattern_A" ) ;
+		return at ;
+	}	
 }
 
 /*
@@ -2041,9 +2079,10 @@ SearchType predicate_A() :
 	    LOOKAHEAD(3)
 	    searchType=between_predicate_A()
 	    |
+	    LOOKAHEAD(3)
 	    searchType=in_predicate_A()
-//	    |
-//	    searchType=likePredicate()
+	    |
+	    searchType=likePredicate_A()
 //	    | 
 // adql does not support the null predicate!
 //	    LOOKAHEAD(3)
@@ -3177,6 +3216,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.20  2006/10/14 16:14:52  jl99
+like_predicate complete (according to adql/x v1.01a).
+
 Revision 1.19  2006/10/14 13:09:19  jl99
 in_predicate complete (according to adql/x v1.01a).
 
