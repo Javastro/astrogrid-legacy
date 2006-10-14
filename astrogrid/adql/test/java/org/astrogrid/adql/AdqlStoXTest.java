@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.7 2006/10/13 21:00:24 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.8 2006/10/14 13:10:27 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -69,6 +69,10 @@ public class AdqlStoXTest extends XMLTestCase {
 	public void testOf_v10_BADselectEmptyAlias() throws Exception { execTest() ; }
 	public void testOf_v10_BADselectOrderByDirOnly() throws Exception { execTest() ; }
     public void testOf_v10_innerJoinWithJoinCondition() throws Exception { execTest() ; }
+    public void testOf_v10_inPredicateWithConstantStringList() throws Exception { execTest() ; }
+    public void testOf_v10_inPredicateWithSubQuery() throws Exception { execTest() ; }
+    public void testOf_v10_notInPredicateWithConstantStringList() throws Exception { execTest() ; }
+    public void testOf_v10_notInPredicateWithSubQuery() throws Exception { execTest() ; }
 	public void testOf_v10_selectAggregateFuncs() throws Exception { execTest() ; }
 	public void testOf_v10_selectAliasExpr() throws Exception { execTest() ; } 
 	public void testOf_v10_selectAllAllow() throws Exception { execTest() ; } 
@@ -313,9 +317,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.7  2006/10/13 21:00:24  jl99
- * More unit tests added.
+ * Revision 1.8  2006/10/14 13:10:27  jl99
+ * in_predicate unit tests added
  *
+/* Revision 1.7  2006/10/13 21:00:24  jl99
+/* More unit tests added.
+/*
 /* Revision 1.6  2006/10/13 13:24:37  jl99
 /* More unit tests added.
 /*

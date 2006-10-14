@@ -1,0 +1,1 @@
+select * from personnel where city_name not in ( 'New York', 'Chicago', 'Atlanta', 'Austin' ) ;

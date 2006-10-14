@@ -1,0 +1,1 @@
+select * from personnel where city_name not in ( select city_name from cities where state = 'NY' ) ;

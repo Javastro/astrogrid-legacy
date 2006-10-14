@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Select xmlns="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SelectionList>
+    <Item xsi:type="v1:allSelectionItemType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0"/>
+  </SelectionList>
+  <From>
+    <Table Name="personnel" xsi:type="v1:tableType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0"/>
+  </From>
+  <Where>
+    <Condition xsi:type="v1:inclusiveSearchType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+      <Expression Name="city_name" xsi:type="v1:columnReferenceType"/>
+      <Set xsi:type="v1:ConstantListSet">
+        <Item Value="New York" xsi:type="v1:stringType"/>
+        <Item Value="Chicago" xsi:type="v1:stringType"/>
+        <Item Value="Atlanta" xsi:type="v1:stringType"/>
+        <Item Value="Austin" xsi:type="v1:stringType"/>
+      </Set>
+    </Condition>
+  </Where>
+</Select>
