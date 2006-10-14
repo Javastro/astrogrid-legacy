@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.18 2006/10/13 21:01:59 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.19 2006/10/14 13:09:19 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -65,6 +65,9 @@ public class AdqlStoX {
 	private static final boolean TRACE_ENABLED = true ;
 	private static final boolean DEBUG_ENABLED = true ;
 	private static StringBuffer logIndent = new StringBuffer() ;
+	
+	private static final int CHANGE_SIGN = -1 ;
+	private static final int DONT_CHANGE_SIGN = 1 ;
 
 	public SelectDocument exec() throws ParseException {
 		try {
@@ -473,9 +476,21 @@ String actual_identifier_S() :
 // JL. The adql/x schema does not have such a beast!
 //void approximate_numeric_literal_S() : {}//{//	//S://	// <approximate_numeric_literal> ::= <mantissa> E <exponent>//	// <mantissa> ::= <exact_numeric_literal>//	// <exponent> ::= <signed_integer>//	mantissa_S() // exponent_S()//}////void exponent_S() : {}//{//	// ["e" | "E"] signed_integer_S() //	signed_integer_S() //}
 
-void signed_integer_S() : {}
+AtomType signed_integer_S() : 
 {
-	(<PLUS> |<MINUS>) <UNSIGNED_INTEGER> 
+    AtomType at = null ;
+    Token t1 = null ;
+    Token t2 = null ;
+}
+{
+	(t1=<PLUS> |t1=<MINUS>) t2=<UNSIGNED_INTEGER> 
+	{
+	   if( t2 != null ) {
+	   	   
+	   	
+	   }
+	   return at ;	
+	}
 }
 
 SearchType between_predicate_A() : 
@@ -516,6 +531,7 @@ SearchType between_predicate_A() :
 
 SearchType boolean_primary_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "boolean_primary_S" ) ;
 	SearchType st = null ;
 	Token t = null ;
 } 
@@ -529,15 +545,16 @@ SearchType boolean_primary_S() :
 	(
 		LOOKAHEAD(6)
 		st=predicate_A()
-	    | 
-	    <LPAREN> st=search_condition_S() t=<RPAREN>
+	    |
+	    ( <LPAREN> st=search_condition_S() t=<RPAREN> )
     )
     {
     	if( t != null ) {
     		ClosedSearchType cs = ClosedSearchType.Factory.newInstance() ;
     		cs.setCondition( st ) ;
-    		return cs ;	
+    		st = cs ;	
     	}
+    	if( TRACE_ENABLED ) exitTrace ( "boolean_primary_S" ) ;
     	return st ;
     }
 }
@@ -545,8 +562,10 @@ SearchType boolean_primary_S() :
 
 SearchType boolean_term_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "boolean_term_S" ) ;
 	SearchType st1 = null ;
 	SearchType st2 = null ;
+	SearchType retval = null ;
 }
 {
 	//S:
@@ -560,7 +579,7 @@ SearchType boolean_term_S() :
 	st1=boolean_factor_S() st2=booleanFactorList()
 	{
 		if( st2 == null ) {
-		   return st1 ; 
+		   retval = st1 ; 
 		}
 		else {
 		   SearchType[] conditionArray = new SearchType[2] ;
@@ -568,13 +587,16 @@ SearchType boolean_term_S() :
 		   conditionArray[1] = st2 ;
 		   IntersectionSearchType andType = IntersectionSearchType.Factory.newInstance() ;
 		   andType.setConditionArray( conditionArray ) ;
-		   return andType ;
+		   retval = andType ;
 		}	
+		if( TRACE_ENABLED ) exitTrace ( "boolean_term_S" ) ;
+		return retval ;
 	}
 }
 
 SearchType boolean_factor_S() :
 {
+	if( TRACE_ENABLED ) enterTrace ( "boolean_factor_S" ) ;
 	SearchType sc = null ;
 	Token t = null ;
 }
@@ -584,8 +606,9 @@ SearchType boolean_factor_S() :
 		if( t != null ) {
 			InverseSearchType is = InverseSearchType.Factory.newInstance() ;
 			is.setCondition( sc ) ;
-			return is ;		
+			sc = is ;		
 		}
+		if( TRACE_ENABLED ) exitTrace ( "boolean_factor_S" ) ;
 		return sc ;
 	}
 }
@@ -597,6 +620,7 @@ SearchType booleanFactorList() :
 }
 {
 	( 
+	    LOOKAHEAD(3)
 		st=booleanFactorSingleton() 
 		{ if( stack == null )
 	  	     stack = new Stack() ;
@@ -642,6 +666,7 @@ SearchType booleanFactorSingleton() :
 
 SearchType boolean_test_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "boolean_test_A" ) ;
 	SearchType st = null ;
 }
 {
@@ -651,7 +676,10 @@ SearchType boolean_test_A() :
 	
 	// NB: There is no accommodation of truth value in ADQL
 	st=boolean_primary_S() 
-	{ return st ; }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "boolean_test_A" ) ;
+		return st ; 
+	}
 }
 
 SearchType likePredicate_A() : 
@@ -1046,7 +1074,7 @@ void escape_character_A() : {}
 	character_value_expression_A()	
 }
 
-AtomType exact_numeric_literal_S() :
+AtomType exact_numeric_literal_S( int possibleSignChange ) :
 {
 	AtomType atomType = null ;
 	Token t = null ;
@@ -1071,12 +1099,12 @@ AtomType exact_numeric_literal_S() :
 			atomType = AtomType.Factory.newInstance() ;	
 		    if( t.image.indexOf( '.' ) == -1 ) {
 		    	IntegerType intType = IntegerType.Factory.newInstance() ;
-			    intType.setValue( new Long( t.image ).longValue() ) ;
+			    intType.setValue( new Long( t.image ).longValue() * possibleSignChange ) ;
 			    atomType.setLiteral( intType ) ;
 		    }
 		    else {
 		    	RealType realType = RealType.Factory.newInstance() ;
-			    realType.setValue( new Double( t.image ).doubleValue() ) ;
+			    realType.setValue( new Double( t.image ).doubleValue() * possibleSignChange ) ;
 			    atomType.setLiteral( realType ) ;
 		    }
 		}
@@ -1147,6 +1175,7 @@ UnaryExprType factorUnary() :
 
 FromType from_clause_S() : 
 {
+    if( TRACE_ENABLED ) enterTrace ( "from_clause_S" ) ;
 	FromType fromType = null ;
 	FromTableType ftType = null ;
 	ArrayList list = new ArrayList() ;
@@ -1166,6 +1195,7 @@ FromType from_clause_S() :
 		   FromTableType[] tableRefArray = new FromTableType[ list.size() ] ;
 		   fromType.setTableArray( (FromTableType[])list.toArray(tableRefArray) ) ;				
 		}
+	    if( TRACE_ENABLED ) exitTrace ( "from_clause_S" ) ;
 		return fromType ;
 	}
 }
@@ -1236,6 +1266,7 @@ ScalarExpressionType general_value_specification_A() :
 
 GroupByType group_by_clause_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "group_by_clause_S" ) ;
 	GroupByType gbType = null ;
 	ArrayList crList = null ;
 }
@@ -1249,6 +1280,7 @@ GroupByType group_by_clause_S() :
 			ColumnReferenceType[] colRefArray = new ColumnReferenceType[ crList.size() ] ;
 			gbType.setColumnArray( (ColumnReferenceType[])crList.toArray(colRefArray) ) ;	
 		}
+		if( TRACE_ENABLED ) exitTrace ( "group_by_clause_S" ) ;
 		return gbType ;
 	}
 }
@@ -1264,7 +1296,7 @@ ArrayList grouping_column_reference_list_S() :
     //   <grouping_column_reference> [ { <comma> <grouping_column_reference> }... ]
 
 	(
-		cr=grouping_column_reference_A() 
+		cr=grouping_column_reference_A()  
 		{ 
 			if( list == null )
 				list = new ArrayList() ;
@@ -1290,6 +1322,7 @@ ColumnReferenceType grouping_column_reference_A() :
 
 HavingType having_clause_S() :
 {
+	if( TRACE_ENABLED ) enterTrace ( "having_clause_S" ) ;
 	HavingType hType = null ;
 	SearchType sType = null ;
 	Token t = null ;
@@ -1304,7 +1337,9 @@ HavingType having_clause_S() :
 			if( sType != null )
 				hType.setCondition( sType ) ;
 		}
+		if( TRACE_ENABLED ) exitTrace ( "having_clause_S" ) ;
 		return hType ;
+		
 	}
 }
 
@@ -1321,9 +1356,12 @@ String identifier_A() :
 
 SearchType in_predicate_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "in_predicate_A" ) ;
 	Token t1 = null ;
 	Token t2 = null ;
 	ScalarExpressionType seType = null ;
+	InclusionSetType isType = null ;
+	SearchType retVal = null ;
 }
 {
 	//S:
@@ -1332,19 +1370,43 @@ SearchType in_predicate_A() :
     
 	// refactored to
 	( 
-	  seType=value_expression_A() [ t1=<NOT> ] <IN> in_predicate_value_S()
+	  seType=value_expression_A() [ t1=<NOT> ] <IN> isType=in_predicate_value_S()
 	)
-	{
-	   return null ;	
+    {
+       if( isType != null ) {
+       	  if( t1 == null ) {
+       	     InclusiveSearchType iSearch = InclusiveSearchType.Factory.newInstance()  ;
+       	     iSearch.setExpression( seType ) ;
+       	     iSearch.setSet( isType ) ;
+       	     retVal = iSearch ;
+       	  }
+       	  else {
+       	  	 ExclusiveSearchType xSearch = ExclusiveSearchType.Factory.newInstance()  ;
+       	     xSearch.setExpression( seType ) ;
+       	     xSearch.setSet( isType ) ; 
+       	     retVal = xSearch ;     	  	
+       	  }
+       }
+       if( TRACE_ENABLED ) exitTrace ( "in_predicate_A" ) ;
+	   return retVal ;	
 	}
 }
 
-void in_predicate_value_S() : {}
+InclusionSetType in_predicate_value_S() : 
+{
+	if( TRACE_ENABLED ) enterTrace ( "in_predicate_value_S" ) ;
+	InclusionSetType isType = null ;
+	Token t = null ;
+}
 {
 	//S:
     // <in_predicate_value> ::= <table_subquery>  | <left_paren> <in_value_list> <right_paren>
-	LOOKAHEAD(3)
-	table_subquery_S() | <LPAREN> in_value_list_S() <RPAREN>  	
+	
+	( LOOKAHEAD(2) isType=table_subquery_A() | ( <LPAREN> isType=in_value_list_A() t=<RPAREN> ) )
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "in_predicate_value_S" ) ;
+		return isType ; 
+	} 	
 }
 
 void interval_factor_S() : {}
@@ -1427,28 +1489,29 @@ void interval_value_expression_S() : {}
     <LPAREN> datetime_value_expression_S() <MINUS> datetime_term_S() <RPAREN> interval_qualifier_S()
 }
 
-void in_value_list_S() : 
+ConstantListSet in_value_list_A() : 
 {
-	ScalarExpressionType se1 = null ;
-	ScalarExpressionType se2 = null ;
+	LiteralType lit1 = null ;
+	LiteralType lit2 = null ;
 	ArrayList list = null ;
+	ConstantListSet constantListSet = null ;
 }
 {
 	//S:
 	// <in_value_list> ::=
     //   <value_expression> { <comma> <value_expression> }...
     
-    se1=value_expression_A() 
+    lit1=in_value_list_constant_A() 
     {
-       if( se1 != null ) {
+       if( lit1 != null ) {
        	  list = new ArrayList() ;
-       	  list.add( se1 ) ;
+       	  list.add( lit1 ) ;
        }
     }
-    ( <COMMA> se2=value_expression_A()
+    ( <COMMA> lit2=in_value_list_constant_A()
       {
-      	  if( se2 != null ) {
-      	  	 list.add( se2 ) ;
+      	  if( lit2 != null ) {
+      	  	 list.add( lit2 ) ;
       	  }
       	  else {
       	  	 list = null ;
@@ -1457,10 +1520,45 @@ void in_value_list_S() :
     )*	
     {
     	if( list != null ) {
-    		
-    		
+    		constantListSet = ConstantListSet.Factory.newInstance() ;
+    		LiteralType[] literalArray = new LiteralType[ list.size() ] ;
+    		constantListSet.setItemArray( (LiteralType[])list.toArray(literalArray) ) ;
     	}
+    	return constantListSet ;
     }	
+}
+
+LiteralType in_value_list_constant_A() : 
+{
+	AtomType at = null ;
+	LiteralType lt = null ;
+	Token t1 = null ;
+	int possibleSignChange = 1 ;
+}
+{
+	//A:
+	// <in_value_list_constant_A> ::=
+	//      [ <plus> | <minus> ] <exact_numeric_literal_S>
+	//      |
+	//      <character_string_literal_A> 
+	(
+	   (
+	       ([ <PLUS> | t1=<MINUS> ] )
+	       {
+		       if( t1 != null )
+		          possibleSignChange = -1 ;
+	       }
+	       at=exact_numeric_literal_S( possibleSignChange ) 
+	   )
+	   |
+	   at=character_string_literal_A()
+	)
+	{ 
+		if( at != null ) {
+			lt = at.getLiteral() ;
+		}
+		return lt ; 
+	}
 }
 
 void join_specification_S() : {}
@@ -1921,6 +2019,7 @@ void pattern_A() : {}
  */
 SearchType predicate_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "predicate_A" ) ;
 	SearchType searchType = null ;
 }
 {
@@ -1941,8 +2040,8 @@ SearchType predicate_A() :
 	    | 
 	    LOOKAHEAD(3)
 	    searchType=between_predicate_A()
-//	    |
-//	    inPredicate()
+	    |
+	    searchType=in_predicate_A()
 //	    |
 //	    searchType=likePredicate()
 //	    | 
@@ -1970,7 +2069,10 @@ SearchType predicate_A() :
 //    	searchType=region_A()    
         
     )
-    { return searchType ; }
+    { 
+    	if( TRACE_ENABLED ) exitTrace ( "predicate_A" ) ;
+    	return searchType ; 
+    }
 }
 
 JoinTableType qualified_join_S() : 
@@ -2045,6 +2147,7 @@ String qualifier_A() :
 
 SelectType query_specification_A() : 
 {
+    if( TRACE_ENABLED ) enterTrace ( "query_specification_A" ) ;
 	SelectType st = null ;
 	ArrayList tableList = null ;
 	SelectionListType listType = null ;
@@ -2095,6 +2198,7 @@ SelectType query_specification_A() :
 				}			
 			}			
 		}
+		if( TRACE_ENABLED ) exitTrace ( "query_specification_A" ) ;
 		return st  ; 
 	}
 }
@@ -2181,8 +2285,10 @@ void scalar_subquery_S() : {}
 
 SearchType search_condition_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "search_condition_S" ) ;
 	SearchType st1 = null ;
 	SearchType st2 = null ;
+	SearchType retval = null ;
 
 }
 {
@@ -2195,7 +2301,7 @@ SearchType search_condition_S() :
 	( st1=boolean_term_S() st2=booleanTermList() )
 	{
 		if( st2 == null ) {
-		   return st1 ; 
+		   retval = st1 ; 
 		}
 		else {
 		   SearchType[] conditionArray = new SearchType[2] ;
@@ -2203,18 +2309,23 @@ SearchType search_condition_S() :
 		   conditionArray[1] = st2 ;
 		   UnionSearchType usType = UnionSearchType.Factory.newInstance() ;
 		   usType.setConditionArray( conditionArray ) ;
-		   return usType ;
-		}	
+		   retval = usType ;
+		}
+		if( TRACE_ENABLED ) exitTrace ( "search_condition_S" ) ;	
+		return retval ;
 	}
 }
 
 SearchType booleanTermList() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "booleanTermList" ) ;
 	Stack stack = null ;
 	SearchType st = null ;
 }
 {
-	( st=booleanTermSingleton() 
+	( 
+	  LOOKAHEAD(3)
+	  st=booleanTermSingleton() 
 	  { if( stack == null )
 	  	   stack = new Stack() ;
 	  	stack.push( st ) ;
@@ -2243,18 +2354,23 @@ SearchType booleanTermList() :
 			}
 			if( heldOr != null )
 				st = heldOr ; 
-		}		
+		}	
+		if( TRACE_ENABLED ) exitTrace ( "booleanTermList" ) ;	
 		return st ;
 	}
 }
 
 SearchType booleanTermSingleton() :
 {
+	if( TRACE_ENABLED ) enterTrace ( "booleanTermSingleton" ) ;
 	SearchType st = null ;
 }
 {
 	( <OR> st=boolean_term_S() )
-	{ return st ; }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "booleanTermSingleton" ) ;
+		return st ; 
+	}
 }
 
 SelectionListType select_list_S() : 
@@ -2605,6 +2721,7 @@ void simple_table_S() : {}
 
 ArrayList table_expression_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "table_expression_A" ) ;
 	ArrayList list = new ArrayList() ;
 	Object obj = null ;
 } 
@@ -2615,13 +2732,19 @@ ArrayList table_expression_A() :
     // [ <group_by_clause> ]
     // [ <having_clause> ]
 	(
-		obj=from_clause_S() { if( obj!=null ) list.add(obj) ; } 
-		[ obj=where_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
-		[ obj=group_by_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
-		[ obj=having_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
-		[ obj=order_by_clause_A() { if( obj!=null ) list.add(obj) ; } ]	
+		obj=from_clause_S() { if( obj!=null ) list.add(obj) ; } 		
+		[ LOOKAHEAD(3) obj=where_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
+		
+		[ LOOKAHEAD(3) obj=group_by_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
+		
+		[ LOOKAHEAD(3) obj=having_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
+		
+		[ LOOKAHEAD(3) obj=order_by_clause_A() { if( obj!=null ) list.add(obj) ; } ]	
 	)
-	{ return list ;	}
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "table_expression_A" ) ;
+		return list ;	
+	}
 }
 
 String table_name_A() : 
@@ -2724,6 +2847,27 @@ SearchType table_subquery_S() :
 	// <table_subquery> ::= <subquery>
 	st=subquery_S()	
 	{ return st ; }
+}
+
+SubQuerySet table_subquery_A() : 
+{
+	if( TRACE_ENABLED ) enterTrace ( "table_subquery_A" ) ;
+	SubQuerySet sqs = null ;
+	SelectType st = null ;
+	
+}
+{
+	//S:
+	// <table_subquery> ::= <subquery>
+	<LPAREN> st=query_specification_A() <RPAREN>	
+	{ 
+		if( st != null ) {
+			sqs = SubQuerySet.Factory.newInstance() ;
+			sqs.setSelection( st ) ;
+		}
+		if( TRACE_ENABLED ) exitTrace ( "table_subquery_A" ) ;
+		return sqs ; 
+	}
 }
 
 void table_value_constructor_S() : {}
@@ -2939,7 +3083,7 @@ AtomType unsigned_numeric_literal_A() :
     //    | <approximate_numeric_literal>
 	(
 // JL. Note the adql/x schema does not possess an approximateNumericLiteral
-		atomType=exact_numeric_literal_S()
+		atomType=exact_numeric_literal_S( DONT_CHANGE_SIGN )
     )
     { return atomType ; }
 }
@@ -3011,6 +3155,7 @@ ScalarExpressionType variable_specification_A() :
 
 WhereType where_clause_S() #Where : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "where_clause_S" ) ;
 	WhereType whereType = null ;
 	SearchType s = null ;
 	Token t = null ;
@@ -3018,6 +3163,7 @@ WhereType where_clause_S() #Where :
 {
 	//S:
 	// WHERE <search_condition>
+
 	t=<WHERE> s=search_condition_S()
 	{ 
 		if( t != null )
@@ -3025,11 +3171,15 @@ WhereType where_clause_S() #Where :
 		if( s != null ) {
 			whereType.setCondition( s ) ;
 		}
+		if( TRACE_ENABLED ) exitTrace ( "where_clause_S" ) ;
 	  	return whereType ;
 	}
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.19  2006/10/14 13:09:19  jl99
+in_predicate complete (according to adql/x v1.01a).
+
 Revision 1.18  2006/10/13 21:01:59  jl99
 in_predicate begun.
 
