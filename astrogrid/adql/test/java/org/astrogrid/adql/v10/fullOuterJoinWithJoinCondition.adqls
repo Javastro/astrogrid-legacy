@@ -1,0 +1,1 @@
+select id, name, order_amount from orders full outer join suppliers on suppliers.id = orders.id ;
