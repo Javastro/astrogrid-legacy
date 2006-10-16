@@ -41,7 +41,8 @@ project and are not suitable for use in instance documents.</p>
 			  <li><a href="../schema/vo-resource-types/AllResourceTypes/v0.2/AllResourceTypes.xsd">urn:astrogrid:schema:vo-resource-types:AllResourceTypes:v0.2</a></li>
 			  <li><a href="../schema/vo-resource-types/AstroGridResource/v0.1/AstroGridResource.xsd">http://www.astrogrid.org/xml/AstrogridResource/v0.1</a></li>
 			  <li><a href="../schema/vo-resource-types/CEAService/v0.1/CEAService.xsd">http://www.ivoa.net/xml/CEAService/v0.1</a></li>
-			  <li><a href="../schema/vo-resource-types/CEAService/v0.2/CEAService.xsd">http://www.ivoa.net/xml/CEAService/v0.2</a></li>	
+			  <li><a href="../schema/vo-resource-types/CEAService/v0.2/CEAService.xsd">http://www.ivoa.net/xml/CEAService/v0.2</a></li>
+	                  <li><a href="../schema/vo-resource-types/CEAService/v0.3/CEAService.xsd">http://www.ivoa.net/xml/CEAService/v0.3</a></li>
 			  <li><a href="../schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd">http://www.ivoa.net/xml/ConeSearch/v0.3</a></li>
 			  <li><a href="../schema/vo-resource-types/OpenSkyNode/v0.1/OpenSkyNode.xsd">http://www.ivoa.net/xml/OpenSkyNode/v0.1</a></li>
 			  <li><a href="../schema/vo-resource-types/SIA/v0.7/SIA.xsd">http://www.ivoa.net/xml/SIA/v0.7</a></li>
