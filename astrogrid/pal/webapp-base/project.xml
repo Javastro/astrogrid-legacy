@@ -218,6 +218,24 @@
          <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
+    <!-- For writing results to VOSpace -->
+    <dependency>
+        <artifactId>astrogrid-filestore-client</artifactId>
+        <groupId>org.astrogrid</groupId>
+        <version>${astrogrid.filestore.version}</version>
+        <properties>         
+          <war.bundle>true</war.bundle>      
+        </properties>
+    </dependency>
+    <dependency>
+        <artifactId>astrogrid-filestore-common</artifactId>
+        <groupId>org.astrogrid</groupId>
+        <version>${astrogrid.filestore.version}</version>
+        <properties>         
+          <war.bundle>true</war.bundle>      
+        </properties>
+    </dependency>
     
     <!-- for logging -->
     <dependency>
