@@ -6,7 +6,13 @@
     <body>
 			
     	<release version="(Pending Integration)">
-    	  <action "dev="gtr" type="add">
+          
+    	<action dev="gtr" type="fix">
+          <em>Branch contracts-gtr-1922.</em> This branch replaces/reindexes
+          missing schemata. Please see BZ1922 for detailed instructions about
+          merging and publishing these fixes.
+    	</action>
+    	  <action dev="gtr" type="add">
     	    <em>Branch common-gtr-1933.</em> I have added code to AstrogridAssert
             such that it reports line and column numbers when it finds invalidities
             while validating an XML file against a W3C XML schema.
