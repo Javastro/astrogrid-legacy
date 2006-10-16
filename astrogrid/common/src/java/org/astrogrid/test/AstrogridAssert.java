@@ -1,4 +1,4 @@
-/*$Id: AstrogridAssert.java,v 1.8 2004/11/19 09:36:27 clq2 Exp $
+/*$Id: AstrogridAssert.java,v 1.9 2006/10/16 14:38:37 clq2 Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -331,40 +331,60 @@ public class AstrogridAssert extends XMLAssert{
     }    
     /** handler passed to schema-validation parses - logs all errors, throws assertion failed if errors seen by end */
     static class AstrogridAssertDefaultHandler extends DefaultHandler {
-        private StringBuffer buff = new StringBuffer();
-       public String getMessages() {
-           return buff.toString();
-       }
-        /**
-         * Commons Logger for this class
-         */
-            boolean sawError = false;
-            public void endDocument() throws SAXException {
-            if (sawError) {
-                throw new AssertionFailedError("document failed to schema validate" + getMessages());
-            }
+      private StringBuffer buff = new StringBuffer();
+      
+      public String getMessages() {
+        return buff.toString();
+      }
+            
+      boolean sawError = false;
+      
+      public void endDocument() throws SAXException {
+        if (sawError) {
+          throw new AssertionFailedError("The document is invalid with respect to its schema" 
+                                         + this.getMessages());
         }
-        public void error(SAXParseException e) throws SAXException {
-            sawError = true;
-            System.err.println("Error:" + e.getMessage());
-            buff.append("\n").append(e.getMessage());
-        }
-        public void fatalError(SAXParseException e) throws SAXException {
-            sawError = true;
-            System.err.println("Fatal: " + e.getMessage());
-            buff.append("\n").append(e.getMessage());            
-        }
-        public void warning(SAXParseException e) throws SAXException {
-           System.err.println("Warn: " + e.getMessage());
-           buff.append("\n").append(e.getMessage());           
-        }
-}
+      }
+
+      public void error(SAXParseException e) throws SAXException {
+        sawError = true;
+        System.err.println("Error:" + this.getMessage(e));
+        this.buff.append("\n").append(this.getMessage(e));
+      }
+      
+      public void fatalError(SAXParseException e) throws SAXException {
+        sawError = true;
+        System.err.println("Fatal: " + this.getMessage(e));
+        this.buff.append("\n").append(this.getMessage(e));            
+      }
+      
+      public void warning(SAXParseException e) throws SAXException {
+        System.err.println("Warn: " + this.getMessage(e));
+        this.buff.append("\n").append(this.getMessage(e));           
+      }
+      
+      private String getMessage(SAXParseException e) {
+        return e.getMessage() +
+               " Found at line " +
+               e.getLineNumber() +
+               ", column " +
+               e.getColumnNumber() +
+               " in " +
+               e.getSystemId();
+      }
+    }
     
 }
 
 
 /* 
 $Log: AstrogridAssert.java,v $
+Revision 1.9  2006/10/16 14:38:37  clq2
+common-gtr-1933
+
+Revision 1.8.116.1  2006/10/13 17:48:29  gtr
+Error reports in schema validation now report the line and column numbers where the problems are found.
+
 Revision 1.8  2004/11/19 09:36:27  clq2
 common_nww_712
 
