@@ -179,7 +179,7 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
     /** load a workflow */
 	protected final class LoadAction extends AbstractAction {
 	    public LoadAction() {
-	        super("Open", IconHelper.loadIcon("file_obj.gif"));
+	        super("Open", IconHelper.loadIcon("fileopen.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Load a workflow or transcript from storage");
 	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
 	        this.setEnabled(true);            
