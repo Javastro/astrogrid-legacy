@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.20 2006/10/14 16:14:52 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.21 2006/10/16 11:37:46 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -57,6 +57,8 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 import java.util.* ;
 import org.astrogrid.adql.v1_0.beans.* ;
+import org.astrogrid.stc.region.v1_10.beans.* ;
+import org.astrogrid.stc.coords.v1_10.beans.* ;
 
 public class AdqlStoX {
 	
@@ -322,7 +324,6 @@ TOKEN :
 |	< TRIGGER: "trigger" >
 |	< TRUTH_VALUE : "true" | "falsed" | "unknown" >
 |	< TSEQUAL: "tsequal" >
-|	< UNION: "union" >
 |	< UNIQUE: "unique" >
 |	< UPDATE: "update" >
 |	< UPDATETEXT: "updatetext" >
@@ -345,6 +346,24 @@ TOKEN :
 |	< XML: "xml" >
 |	< XMLDATA: "xmldata" >
 
+	//region
+|	< CIRCLE : "circle" >
+|   < ELLIPSE : "ellipse" >	
+|   < POLYGON : "polygon" >
+|   < SECTOR : "sector" >
+|   < CONVEX : "convex" >
+|   < CONVEX_HULL : "convex hull" >
+|   < UNION : "union" >
+|   < INTERSECTION : "intersection" >
+|   < FILL_FACTOR : "fill factor" >
+|   < UNIT : "unit" >
+|   < COORD_SYSTEM : "coordsystem" | "cs" >   
+|   < CENTER : "center" >
+|   < RADIUS : "radius" >
+|   < UNIT_TYPE : "deg" | "deg deg m" | "rad" | "h" | "arcmin"
+                | "arcsec" | "m" | "km" | "mm" | "au" | "pc"
+                | "kpc" | "Mpc" | "lyr"  >
+	
 	//math
 |   < ABS: "abs" >
 |	< CEILING: "ceiling" >
@@ -615,6 +634,7 @@ SearchType boolean_factor_S() :
 
 SearchType booleanFactorList() :
 {
+	if( TRACE_ENABLED ) enterTrace ( "booleanFactorList" ) ;
 	Stack stack = null ;
 	SearchType st = null ;
 }
@@ -651,17 +671,22 @@ SearchType booleanFactorList() :
 			if( heldAnd != null )
 				st = heldAnd ; 
 		}		
+		if( TRACE_ENABLED ) exitTrace ( "booleanFactorList" ) ;
 		return st ;
 	}
 }
 
 SearchType booleanFactorSingleton() :
 {
+	if( TRACE_ENABLED ) enterTrace ( "booleanFactorSingleton" ) ;
 	SearchType st = null ;
 }
 {
 	<AND> st=boolean_factor_S()
-	{ return st ; }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "booleanFactorSingleton" ) ;
+		return st ; 
+	}
 }
 
 SearchType boolean_test_A() : 
@@ -773,6 +798,7 @@ AtomType character_string_literal_A() :
 
 AtomType ASCIIStringLiteral() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "ASCIIStringLiteral" ) ;
 	AtomType at = null ;
 	ArrayList list = null ;
 	Token t1 = null ;
@@ -802,6 +828,7 @@ AtomType ASCIIStringLiteral() :
 			st.setValue( buffer.toString() ) ;
 			at.setLiteral( st ) ;			
 		}
+		if( TRACE_ENABLED ) exitTrace ( "ASCIIStringLiteral" ) ;
 		return at ;
 	} 
 	
@@ -856,6 +883,7 @@ void column_name_list_S()  : {}
 
 ColumnReferenceType column_reference_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "column_reference_S" ) ;
 	ColumnReferenceType crType = null ;
 	String q = null ;
 	String n = null ;
@@ -872,7 +900,8 @@ ColumnReferenceType column_reference_S() :
 			if( q != null ) {
 				crType.setTable( q ) ;	
 			}
-		}		
+		}
+		if( TRACE_ENABLED ) exitTrace ( "column_reference_S" ) ;		
 		return crType ; 	
 	}
 }
@@ -882,6 +911,7 @@ ColumnReferenceType column_reference_S() :
  */
 ScalarExpressionType value_expression_primary_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "value_expression_primary_A" ) ;
 	ScalarExpressionType seType = null ;
 	Token t = null ;
 }
@@ -923,11 +953,15 @@ ScalarExpressionType value_expression_primary_A() :
 	//	|
 	//	castSpecification()
 	)
-	{ return seType ; }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "value_expression_primary_A" ) ;
+		return seType ; 
+	}
 }
 
 ComparisonType comp_op_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "comp_op_S()" ) ;
 	ComparisonType c = null ;
 	Token t = null ;
 }
@@ -958,6 +992,7 @@ ComparisonType comp_op_S() :
 			c = ComparisonType.Factory.newInstance() ;
 			c.set( ComparisonType.Enum.forString( t.image.toUpperCase() ) ) ;	
 		}
+		if( TRACE_ENABLED ) exitTrace ( "comp_op_S()" ) ;
 		return c ;
 	}
 }
@@ -2073,6 +2108,8 @@ SearchType predicate_A() :
 	//    | <match_predicate>
 	//    | <overlaps_predicate>
 	(
+		searchType = region_predicate_A()    
+		|
  		LOOKAHEAD(4)
 		searchType=comparison_predicate_A()
 	    | 
@@ -2104,8 +2141,7 @@ SearchType predicate_A() :
 //	    | 
 // adql does not support overlap
 //	    overlapsPredicate()
-//    	|
-//    	searchType=region_A()    
+//    	
         
     )
     { 
@@ -2242,24 +2278,187 @@ SelectType query_specification_A() :
 	}
 }
 
-RegionSearchType region_A() :
+RegionSearchType region_predicate_A() :
 {
+	if( TRACE_ENABLED ) enterTrace ( "region_predicate_A" ) ;
 	RegionSearchType st = null ;
+	RegionType rt = null ;
 	Token t = null ;
 }
 {
 	//A:
-	// <left_paren> <right_paren>
-	<LPAREN> <ASCII_STRING_LITERAL> t=<RPAREN>
-	{ return st ; }
+	// <region> <left_paren> <region_specification_A> <right_paren>
+	<REGION> <LPAREN> rt=region_specification_A() t=<RPAREN>
+	{ 
+		if( t != null ) {
+		   st = RegionSearchType.Factory.newInstance() ;	
+		   st.setRegion( rt ) ;
+		}
+		if( TRACE_ENABLED ) exitTrace ( "region_predicate_A" ) ;
+		return st ; 
+	}
 	
 }
 
-void row_subquery_S() : {}
+RegionType region_specification_A() : 
+{
+    RegionType rt = null ;
+}
+{
+	(
+		rt=circle_region_A() 
+		|
+		ellipse_region_A()
+		|
+		polygon_region_A()
+		|
+		sector_region_A()
+	)
+	{ return rt ; }
+}
+
+CircleType circle_region_A() : 
+{
+	Double radius = null ;
+	List coords = null ;
+	CircleType circleType = null ;
+	Object[] shapeParams = null ;
+}
+{
+	<CIRCLE> shapeParams=shape_A()
+	<CENTER> <EQUALS_OPERATOR> coords=coords_2_A() 
+	<RADIUS> <EQUALS_OPERATOR> radius=double_numeric_literal_A()	
+	{
+		if( radius != null ) {
+			circleType = CircleType.Factory.newInstance() ;
+			circleType.setCenter( coords ) ;
+			circleType.setRadius( radius.doubleValue() ) ;
+			circleType.setCoordSystemId( (String)shapeParams[0] ) ;
+			circleType.setUnit( (PosUnitType.Enum)shapeParams[1]) ;
+		}
+		return circleType ;
+	}
+}
+
+void ellipse_region_A() : 
+{
+}
+{
+	<ELLIPSE> shape_A()	
+}
+
+void polygon_region_A() : 
+{
+}
+{
+	<POLYGON> shape_A()	
+}
+
+void sector_region_A() : 
+{
+}
+{
+	<SECTOR> shape_A()	
+}
+
+void convex_region_A() : 
+{
+}
+{
+	<CONVEX> shape_A()	
+}
+void convex_hull_region_A() : 
+{
+}
+{
+	<CONVEX_HULL> shape_A() 	
+}//|   < CONVEX_HULL : "convex hull" >//|   < UNION : "union" >//|   < INTERSECTION : "intersection" >
+
+Object[] shape_A() : 
+{
+	String cs = null ;
+	PosUnitType.Enum unitType = null ;
+	Object shapeParams[] = null ;
+	Token t1 = null ;
+	Token t2 = null ;
+}
+{
+	(
+	   <COORD_SYSTEM> <EQUALS_OPERATOR> t1=<REGULAR_IDENTIFIER> 
+       ( <UNIT> <EQUALS_OPERATOR> t2=<UNIT_TYPE> )?
+    )
+	{	if( t1 !=  null ) {
+		   shapeParams = new Object[2] ;
+		   cs = t1.image ;
+		   if( t2 == null ) {
+			   unitType = PosUnitType.Enum.forString("") ;
+		   }
+		   else {
+			   unitType = PosUnitType.Enum.forString( t2.image ) ;
+		   }
+		   shapeParams[0] = cs ;
+		   shapeParams[1] = unitType ;
+	    }	
+		return shapeParams ;		
+	}
+}
+
+//PosUnitType.Enum shape_unit_A() : //{//	Token t1 = null ;//	Token t2 = null ;//	Token t3 = null ;//	PosUnitType.Enum posUnitType = null ;//}//{//	( t1=<UNIT> t2=<EQUALS_OPERATOR> t3=<UNIT_TYPE> )//	{//	//		if( t3 == null ) {//			posUnitType = PosUnitType.Enum.forString("") ;//		}//		else {//			posUnitType = PosUnitType.Enum.forString( t3.image ) ;//		}//		return posUnitType ;		//	}//}
+
+void region() : {}
+{
+	<FILL_FACTOR>
+}
+
+void row_subquery_S() : {} 
 {
 	//S:
 	// <row_subquery> ::= <subquery>
 	subquery_S()	
+}
+
+Double double_numeric_literal_A() : 
+{
+	Double d = null ;
+}
+{
+	d=doubleNumericLiteral() 
+	{ return d ; }
+}
+
+Double doubleNumericLiteral() :
+{
+	Token s = null ;
+	Token t = null ;
+	Double dnl = null ;
+}
+{
+	( [ <PLUS> | s=<MINUS> ]  t=<EXACT_NUMERIC_LITERAL> | t=<UNSIGNED_INTEGER> )
+	{
+		if( t != null ) {
+           dnl = new Double( (s!=null ? '-' : '+' ) + t.image ) ;		
+		}
+		return dnl ;
+	}
+}
+
+List coords_2_A() :
+{
+	Double coord1 = null ;
+	Double coord2 = null ;
+	Token t = null ;
+	ArrayList list = null ;
+}
+{
+    ( <LPAREN> coord1=double_numeric_literal_A() <COMMA> coord2=double_numeric_literal_A() t=<RPAREN> )
+    {
+    	if( t != null ) {
+    		list = new ArrayList( 2 ) ;
+    		list.add( coord1 ) ;
+    		list.add( coord2 ) ;
+    	}
+    	return list ;
+    }
 }
 
 ScalarExpressionType row_value_constructor_S() : 
@@ -3216,6 +3415,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.21  2006/10/16 11:37:46  jl99
+First Attempt at Region.
+
 Revision 1.20  2006/10/14 16:14:52  jl99
 like_predicate complete (according to adql/x v1.01a).
 
