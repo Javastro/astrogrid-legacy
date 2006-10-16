@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.8 2006/06/27 10:30:33 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.9 2006/10/16 14:31:25 pjn3 Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -151,6 +151,8 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
     /** marker interface for an action that applies to myspace files */
     protected interface FileAction {
     }
+    protected interface SendToAction {
+    }
 
     /** marker interface for an action that applies to myspace folders */
     protected interface FolderAction {
@@ -213,7 +215,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
         public void enableFileActions() {
             for (int i = 0; i < acts.length; i++) {
-                acts[i].setEnabled(acts[i] instanceof FileAction);
+                acts[i].setEnabled(acts[i] instanceof FileAction || acts[i] instanceof SendToAction);
             }
         }
 
@@ -638,6 +640,10 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.9  2006/10/16 14:31:25  pjn3
+ * Bugs # 1892 and 1896
+ * Menu alterred to include File/Edit and close
+ *
  * Revision 1.8  2006/06/27 10:30:33  nw
  * findbugs tweaks & send-to actions.
  *

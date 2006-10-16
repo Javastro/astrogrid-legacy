@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.12 2006/06/27 10:37:44 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.13 2006/10/16 14:32:44 pjn3 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -34,6 +35,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 
@@ -299,6 +301,18 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         }
     }
 
+    /** close action */
+    protected final class CloseAction extends AbstractAction {
+        public CloseAction() {
+            super("Close",IconHelper.loadIcon("exit_small.png"));
+            this.putValue(SHORT_DESCRIPTION,"Close the Workflow Builder");
+            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+        }
+        public void actionPerformed(ActionEvent e) {
+        	hide();
+        	dispose();
+        }
+    }
     
     protected final class CreateContentAction extends AbstractAction implements FileAction, FolderAction {
 
@@ -446,7 +460,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 
         public void actionPerformed(ActionEvent e) {
-        	sendTo.show(getPreferredTransferable(),VospaceBrowserImpl.this,(Component)e.getSource(),1,1);
+        	try{
+        		sendTo.show(getPreferredTransferable(),VospaceBrowserImpl.this,(Component)e.getSource(),1,1);
+        	} catch(Exception ex) {
+        		sendTo.show(getPreferredTransferable(),VospaceBrowserImpl.this,VospaceBrowserImpl.this,1,1);
+        	}
         }
     }
 
@@ -538,7 +556,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
     private Actions actions = null;
 
-    private JMenu fileMenu;
+    private JMenu fileMenu, editMenu;
 
     private InformationPane informationPane;
 
@@ -577,16 +595,18 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
     protected Actions getActions() {
         if (actions == null) {
-            actions = new Actions(new Action[] { new CreateFileAction(), new CreateFolderAction(),
-                    new SendToAction(), /*new GetContentAction(), new PutContentAction(), */
+            actions = new Actions(new Action[] { 
+            		   new CreateFileAction(), 
+            		   new CreateFolderAction(),
+                       new SendToAction(), /*new GetContentAction(), new PutContentAction(), */
                        new CreateContentAction()
                      , new RenameAction()
                      , new CopyAction()
                      , new CutAction()
                      , new PasteAction() 
-                    , new RelocateAction()
-                    , new RefreshAction()                    
-                    , new DeleteAction() });
+                     , new RelocateAction()
+                     , new RefreshAction()                    
+                     , new DeleteAction()  });
         }
         return actions;
     }
@@ -602,14 +622,45 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         if (fileMenu == null) {
             fileMenu = new JMenu();
             fileMenu.setText("File");
+            fileMenu.setMnemonic(KeyEvent.VK_F);
             Action[] acts = getActions().list();
-            for (int i = 0; i < acts.length; i++) {
-            	if (! (acts[i] instanceof SendToAction)) { // skip this one            			
-            		fileMenu.add(acts[i]);
-            	}
-            }
+            fileMenu.add(acts[0]); //CreateFileAction()
+            fileMenu.add(acts[1]); //CreateFolderAction()
+            fileMenu.add(new JSeparator());
+            fileMenu.add(acts[2]); //SendToAction()
+            fileMenu.add(acts[3]); //CreateContentAction()
+            fileMenu.add(acts[8]); //RelocateAction()
+            fileMenu.add(acts[4]); //RenameAction()
+            fileMenu.add(acts[9]); //RefreshAction()
+            fileMenu.add(acts[10]);//DeleteAction()
+            fileMenu.add(new JSeparator());
+            fileMenu.add(new CloseAction());
+          //  Action[] acts = getActions().list();
+          //  for (int i = 0; i < acts.length; i++) {
+          //  	if (! (acts[i] instanceof SendToAction)) { // skip this one            			
+          //  		fileMenu.add(acts[i]);
+          //  	}
+          //  }
         }
         return fileMenu;
+    }
+    
+    private JMenu getEditMenu() {
+        if (editMenu == null) {
+            editMenu = new JMenu();
+            editMenu.setText("Edit");
+            editMenu.setMnemonic(KeyEvent.VK_E);
+            Action[] acts = getActions().list();
+            editMenu.add(acts[5]); //CopyAction()
+            editMenu.add(acts[6]); //CutAction()
+            editMenu.add(acts[7]); //PasteAction()
+          //  for (int i = 0; i < acts.length; i++) {
+          //  	if (! (acts[i] instanceof SendToAction)) { // skip this one            			
+          //  		editMenu.add(acts[i]);
+          //  	}
+          //  }
+        }
+        return editMenu;
     }
 
     /**
@@ -621,6 +672,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         if (jJMenuBar == null) {
             jJMenuBar = new JMenuBar();
             jJMenuBar.add(getFileMenu());
+            jJMenuBar.add(getEditMenu());
             /** crap - doesn't work. @todo need to find way to splice send-to menu into menu bar
             Action[] acts = getActions().list();
             for (int i = 0; i < acts.length; i++) {
@@ -693,6 +745,10 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.13  2006/10/16 14:32:44  pjn3
+ * Bugs # 1892 and 1896
+ * Menu alterred to include File/Edit and close
+ *
  * Revision 1.12  2006/06/27 10:37:44  nw
  * removed unused cruft.added send-to menu
  *
