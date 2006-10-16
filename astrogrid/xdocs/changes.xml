@@ -7,20 +7,8 @@
 			
     	<release version="(Pending Integration)">
           
-    	<action dev="gtr" type="fix">
-          <em>Branch contracts-gtr-1922.</em> This branch replaces/reindexes
-          missing schemata. Please see BZ1922 for detailed instructions about
-          merging and publishing these fixes.
-    	</action>
-    	  <action dev="gtr" type="add">
-    	    <em>Branch common-gtr-1933.</em> I have added code to AstrogridAssert
-            such that it reports line and column numbers when it finds invalidities
-            while validating an XML file against a W3C XML schema.
-    	  </action>
-         <action dev="kea" type="add">
-           <em>Branch PAL_KEA_1869 in astrogrid/pal, fixes after contracts 
-             issues.</em>
-       		</action>		
+
+	
 		
           <action dev="gtr" type="fix" issue="1800">
             Branch security-gtr-1800: fixes to astrogrid/security in respect of
@@ -41,6 +29,15 @@
         </release>
 
         <release version="(Undertest)">
+    	  <action dev="gtr" type="add">
+    	    <em>Branch common-gtr-1933.</em> I have added code to AstrogridAssert
+            such that it reports line and column numbers when it finds invalidities
+            while validating an XML file against a W3C XML schema.
+    	  </action>
+         <action dev="kea" type="add">
+           <em>Branch PAL_KEA_1869 in astrogrid/pal, fixes after contracts 
+             issues.</em>
+       		</action>	        
      		<action dev="kmb" type="add">
     		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
     		  has a lot of changes mainly targeting 1.0 VOResources and multiple contract ability.  I believe I have it though
@@ -50,8 +47,21 @@
     		  contracts branch Contracts_KMB_XForms (which needs Guy's approval). - Kev will let me know when this is ready - CLQ
     		  This branch had been abandened and replaced with branch Reg_KMB_Xfire and still in process of being merged/tested - CLQ 05/Oct/06
     		</action>
-       
+    	<action dev="gtr" type="fix">
+          <em>Branch contracts-gtr-1922.</em> This branch replaces/reindexes
+          missing schemata. Please see BZ1922 for detailed instructions about
+          merging and publishing these fixes.
+    	</action>       
 
+    	<action dev="dave" type="fix">
+          <em>Branch dave-dev-200610091558.</em> The only changes should be to filestore/common and filestore/stress. The changes add a new config 
+          property to enable chunked data transfer when sending data to myspace.(# Enable chunked data.)(#org.astrogrid.filestore.chunked.send=enabled)
+          If the config property isn't set, then everything should behave as before. If the component (DSA or CEA) is running in JDK-1.4, then the 
+          property is ignored, and it continues to behave as before. The change only takes effect if the component (DSA or CEA) is running in 
+          JDK-1.5 _and_ the property is 'enabled'.If both conditions are met, then it will use the chunked data option to send data to the FileStore.
+          This means that we can update all our existing DSA services without any side effects.
+
+    	</action> 
         </release>
 		
 		<release version="HEAD">
