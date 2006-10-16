@@ -21,20 +21,7 @@
            <em>Branch PAL_KEA_1869 in astrogrid/pal, fixes after contracts 
              issues.</em>
        		</action>		
-
-         <action dev="kea" type="add">
-           <em>Branch PAL_KEA_1794 in astrogrid/pal AND ALSO astrogrid/xml,
-             and branch SLI_KEA_1794 in astrogrid/slinger.</em>
-        		Fixes and enhancements
-        		for bugzilla tickets referenced in placeholder ticket 1794. 
-
-            Note that the branch SLI_KEA_1794 DISABLES ALL JAR BUILDING IN
-            THE SLINGER PROJECT;  the relevant slinger functionality has 
-            been merged back into astrogrid/pal, which now builds a new jar 
-            called astrogrid-pal-slinger which replaces all previous slinger 
-            jars.  THE astrogrid/slinger PROJECT SHOULD NO LONGER BE REQUIRED
-            OR USED.
-       		</action>		
+		
           <action dev="gtr" type="fix" issue="1800">
             Branch security-gtr-1800: fixes to astrogrid/security in respect of
             digital signatures. This cures two bugs: one where digital signature
@@ -68,6 +55,19 @@
         </release>
 		
 		<release version="HEAD">
+         <action dev="kea" type="add">
+           <em>Branch PAL_KEA_1794 in astrogrid/pal AND ALSO astrogrid/xml,
+             and branch SLI_KEA_1794 in astrogrid/slinger.</em>
+        		Fixes and enhancements
+        		for bugzilla tickets referenced in placeholder ticket 1794. 
+
+            Note that the branch SLI_KEA_1794 DISABLES ALL JAR BUILDING IN
+            THE SLINGER PROJECT;  the relevant slinger functionality has 
+            been merged back into astrogrid/pal, which now builds a new jar 
+            called astrogrid-pal-slinger which replaces all previous slinger 
+            jars.  THE astrogrid/slinger PROJECT SHOULD NO LONGER BE REQUIRED
+            OR USED.
+       		</action>		
     		<action dev="clq" type="fix">
     		  <em>Branch clq_helpdocs_1570 helpdocs. This branch had been merged in Aug 2006
     		</action> 		
