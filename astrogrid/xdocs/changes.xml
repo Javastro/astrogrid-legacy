@@ -12,6 +12,11 @@
             while validating an XML file against a W3C XML schema.
     	  </action>
          <action dev="kea" type="add">
+           <em>Branch PAL_KEA_1869 in astrogrid/pal, fixes after contracts 
+             issues.</em>
+       		</action>		
+
+         <action dev="kea" type="add">
            <em>Branch PAL_KEA_1794 in astrogrid/pal AND ALSO astrogrid/xml,
              and branch SLI_KEA_1794 in astrogrid/slinger.</em>
         		Fixes and enhancements
