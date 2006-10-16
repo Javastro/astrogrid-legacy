@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.25 2006/08/31 21:34:46 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.26 2006/10/16 15:04:50 pjn3 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -246,7 +246,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected final class OpenAction extends AbstractAction {
 
         public OpenAction() {
-            super("Open",IconHelper.loadIcon("file_obj.gif"));
+            super("Open",IconHelper.loadIcon("fileopen.gif"));
             this.putValue(SHORT_DESCRIPTION,"Load task document from storage");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
         }        
@@ -515,6 +515,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.26  2006/10/16 15:04:50  pjn3
+new file open image #1889
+
 Revision 1.25  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 

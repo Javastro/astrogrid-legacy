@@ -79,7 +79,7 @@ public class ScriptDialog extends BaseBeanEditorDialog {
     /** load a script */
 	protected final class OpenAction extends AbstractAction {
 	    public OpenAction() {
-	        super("Open", IconHelper.loadIcon("file_obj.gif"));
+	        super("Open", IconHelper.loadIcon("fileopen.gif"));
 	        this.putValue(SHORT_DESCRIPTION,"Load a script from storage");
 	        this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
 	        this.setEnabled(true);            

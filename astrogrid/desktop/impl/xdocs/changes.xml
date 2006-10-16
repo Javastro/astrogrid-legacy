@@ -14,6 +14,9 @@
 	</head>
 <body>
 <release  version="2006.3.rc4" date="unreleased">
+    <action dev="pjn" type="fix" issue="1889">
+        Usability feedback, change to file open gif
+    </action>
     <action dev="pjn" type="fix" issue="1892/1896">
         Changes to MySpaceBrowser menus
     </action>
