@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/stress/src/junit/org/astrogrid/filestore/stress/DataOverloadTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/09/06 12:45:22 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2006/10/17 12:11:57 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: DataOverloadTestCase.java,v $
+ *   Revision 1.3  2006/10/17 12:11:57  clq2
+ *   dave_deve_200610091558
+ *
+ *   Revision 1.2.34.1  2006/10/11 09:40:15  dave
+ *   Added a property to enable the chunked data transfer
+ *
  *   Revision 1.2  2005/09/06 12:45:22  clq2
  *   dave-dev-200507251101
  *
@@ -35,6 +41,9 @@ import java.io.BufferedOutputStream;
 
 import junit.framework.TestCase ;
 
+import org.astrogrid.config.Config ;
+import org.astrogrid.config.SimpleConfig ;
+
 import org.astrogrid.filestore.common.FileStore ;
 import org.astrogrid.filestore.common.FileStoreOutputStream ;
 import org.astrogrid.filestore.common.file.FileProperties ;
@@ -57,7 +66,6 @@ public class DataOverloadTestCase
 	/**
 	 * Setup our test.
 	 *
-	 */
 	public void setUp()
 		throws Exception
 		{
@@ -66,6 +74,26 @@ public class DataOverloadTestCase
 		this.target = new FileStoreSoapDelegate(
 			"http://localhost:8080/astrogrid-filestore-one-SNAPSHOT/services/FileStore"
 			) ;
+		}
+	 */
+
+    /**
+     * Setup our test.
+     *
+     */
+    public void setUp()
+        throws Exception
+        {
+		//
+		// Initialise our config.
+		Config config = SimpleConfig.getSingleton();
+        //
+        // Create our test target.
+		this.target = new FileStoreSoapDelegate(
+		    config.getString(
+		        "org.astrogrid.filestore.test.endpoint"
+		        )
+		    );
 		}
 
     /**

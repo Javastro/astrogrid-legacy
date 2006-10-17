@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreOutputStream.java,v $</cvs:source>
- * <cvs:author>$Author: nw $</cvs:author>
- * <cvs:date>$Date: 2005/10/14 12:31:02 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2006/10/17 12:11:57 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreOutputStream.java,v $
+ *   Revision 1.7  2006/10/17 12:11:57  clq2
+ *   dave_deve_200610091558
+ *
+ *   Revision 1.6.30.1  2006/10/11 09:40:15  dave
+ *   Added a property to enable the chunked data transfer
+ *
  *   Revision 1.6  2005/10/14 12:31:02  nw
  *   removed setChunkedStreamigMode() - not supported by present server.
  *
@@ -58,6 +64,9 @@ import org.apache.commons.logging.LogFactory ;
 
 import org.astrogrid.filestore.common.transfer.mock.Handler ;
 
+import org.astrogrid.config.Config ;
+import org.astrogrid.config.SimpleConfig ;
+
 /**
  * A wrapper for PUT transfer streams.
  *
@@ -73,10 +82,27 @@ public class FileStoreOutputStream
     private static Log log = LogFactory.getLog(FileStoreOutputStream.class);
 
     /**
+     * The property key to enabled sending chunked data in JDK-1.5.
+     *
+     */
+    public static final String CHUNKED_ENABLED_PROPERTY_KEY = "org.astrogrid.filestore.chunked.send" ;
+
+    /**
+     * The property value to enabled sending chunked data in JDK-1.5.
+     *
+     */
+    public static final String CHUNKED_ENABLED_PROPERTY_VALUE = "enabled" ;
+
+    /**
      * Our default buffer size.
      *
      */
     public static final int BUFFER_SIZE = 1024 ;
+
+    /**
+     * The local AstroGrid configuration.
+     */     
+    protected static Config config = SimpleConfig.getSingleton() ;
 
     /**
      * Create a FileStoreOutputStream from a string URL.
@@ -164,29 +190,51 @@ public class FileStoreOutputStream
             //
             // JDK 1.4 patch (uses reflection to invoke the JDK 1.5 method).
             // This allows us to compile on JDK 1.4 but use the JDK 1.5 method if available.
-            //NWW - 14-10-2005 commented out for now - not all servers support chunked streaming. Seems like our
-            // filestore server doesn't. - means uploads fail on 1.5.
-            /* temporarily removed, until supported by the server
-            try {
-                log.debug("Checking HttpURLConnection for JDK 1.5 method.");
-                Class clazz   = this.http.getClass() ;
-                Method method = clazz.getMethod(
-                    "setChunkedStreamingMode",
-                    new Class[] { int.class }
-                    );
-                method.invoke(
-                    this.http,
-                    new Object[] { new Integer(BUFFER_SIZE) }
-                    );
-                log.debug("Using HttpURLConnection.setChunkedStreamingMode for JDK 1.5.");
-                }
-            catch (Exception ouch)
+            // We still need a reliable way to detect if the target service supports chunked data.
+
+            //
+            // Check our local config.
+            if (null != config)
                 {
                 //
-                // ... Ok, we tried ...
-                log.debug("HttpURLConnection does not supposrt setChunkedStreamingMode");
-                }
-                */
+                // If sending chunked data is enabled.
+                if (
+                    CHUNKED_ENABLED_PROPERTY_VALUE.equals(
+                        config.getString(
+                            CHUNKED_ENABLED_PROPERTY_KEY,
+                            null
+                            )
+                        )
+                    ) {
+                    log.debug("Sending chunked data is enabled in local config.");
+                    //
+                    // Try enabling the chunked extension.
+                    try {
+                        log.debug("Checking HttpURLConnection for JDK 1.5 method.");
+                        Class clazz   = this.http.getClass() ;
+                        Method method = clazz.getMethod(
+                            "setChunkedStreamingMode",
+                            new Class[] { int.class }
+                            );
+                        method.invoke(
+                            this.http,
+                            new Object[] { new Integer(BUFFER_SIZE) }
+                            );
+                        log.debug("Using HttpURLConnection.setChunkedStreamingMode for JDK 1.5.");
+                        }
+                    catch (Exception ouch)
+                        {
+                        //
+                        // ... Ok, we tried ...
+                        log.debug("HttpURLConnection does not supposrt setChunkedStreamingMode");
+                        }
+                    }
+                //
+                // If sending chunked data is not enabled.
+                else {
+                    log.debug("Sending chunked data is NOT enabled in local config.");
+                    }
+                }                    
             //
             // Open the connection.
             this.http.connect();

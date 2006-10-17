@@ -1,0 +1,6 @@
+.*
+target
+cvs.log
+maven.log
+velocity.log
+junit*.properties
