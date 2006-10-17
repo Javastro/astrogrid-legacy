@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.17 2006/10/05 13:58:47 kea Exp $
+ * $Id: VoDescriptionServer.java,v 1.18 2006/10/17 10:11:41 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -58,7 +58,7 @@ public class VoDescriptionServer {
                    ">";
  */
    public final static String VODESCRIPTION_ELEMENT =
-         "<vor:VOResources xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" xsi:schemaLocation=\"http://www.ivoa.net/xml/RegistryInterface/v0.1 http://www.ivoa.net/xml/RegistryInterface/v0.1\">\n";
+         "<vor:VOResources xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" xsi:schemaLocation=\"http://www.ivoa.net/xml/RegistryInterface/v0.1 http://software.astrogrid.org/schema/registry/RegistryInterface/v0.1/RegistryInterface.xsd\">\n";
 
    public final static String VODESCRIPTION_ELEMENT_END = "</vor:VOResources>";
 
@@ -100,7 +100,6 @@ public class VoDescriptionServer {
       catch (Throwable th) {
          throw new MetadataException("Resource VODescription does not validate against its schema: "+th.getMessage(), th);
       }
-
 
       // Perform some manual checks (KEA: remove these?)
       NodeList children = root.getChildNodes();

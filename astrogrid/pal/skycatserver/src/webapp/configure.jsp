@@ -25,7 +25,7 @@
 There are a number of steps involved in configuring your DSA/catalog installation; please work through them in sequence.
 </p>
 <ul>
-<li><h3><a href="docs/configure_step1.jsp">Step 1 : Check your tomcat user configuration</h3></li>
+<li><h3><a href="docs/configure_step1.jsp">Step 1 : Check your java and tomcat configuration</h3></li>
 <li><h3><a href="docs/configure_step2.jsp">Step 2 : Test your default configuration</h3></li>
 <li><h3><a href="docs/configure_step3.jsp">Step 3 : Prepare your RDBMS connection</h3></li>
 <li><h3><a href="docs/configure_step4.jsp">Step 4 : Customise your configuration</h3></li>

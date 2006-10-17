@@ -1,5 +1,5 @@
 /*
- * $Id: Register.java,v 1.5 2006/10/05 13:58:47 kea Exp $
+ * $Id: Register.java,v 1.6 2006/10/17 10:11:41 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;

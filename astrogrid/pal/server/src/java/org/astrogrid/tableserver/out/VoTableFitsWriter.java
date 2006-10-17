@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableFitsWriter.java,v 1.4 2005/11/21 12:54:18 clq2 Exp $
+ * $Id: VoTableFitsWriter.java,v 1.5 2006/10/17 10:11:41 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,7 +36,7 @@ public class VoTableFitsWriter extends VoTableWriter {
              printOut.println("<VOTABLE "
                 +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
                 +"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
-                +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://www.ivoa.net/xml/VOTable/VOTable-1.1.xsd'  "
+                +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.1/VOTable.xsd'  "
                 +"version='1.1'"                                                                +">");
    }
    
@@ -69,6 +69,12 @@ public class VoTableFitsWriter extends VoTableWriter {
 
 /*
  $Log: VoTableFitsWriter.java,v $
+ Revision 1.5  2006/10/17 10:11:41  clq2
+ PAL_KEA_1869
+
+ Revision 1.4.48.1  2006/10/12 16:40:15  kea
+ Tweaks while fixing registration issues (see bugzilla ticket 1920)
+
  Revision 1.4  2005/11/21 12:54:18  clq2
  DSA_KEA_1451
 

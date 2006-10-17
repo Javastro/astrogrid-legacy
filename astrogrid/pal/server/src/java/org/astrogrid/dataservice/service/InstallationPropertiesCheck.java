@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.5 2006/09/27 13:08:55 kea Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.6 2006/10/17 10:11:41 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -94,9 +94,11 @@ public class InstallationPropertiesCheck extends TestCase {
       // These ones are used by the jdbc plugin
       if ("org.astrogrid.tableserver.jdbc.JdbcPlugin".equals(plugin)) {
         allOK = allOK && checkSet("datacenter.plugin.jdbc.user", accum);
-        allOK = allOK && checkSet("datacenter.plugin.jdbc.password", accum);
         allOK = allOK && checkSet("datacenter.plugin.jdbc.drivers", accum);
         allOK = allOK && checkSet("datacenter.plugin.jdbc.url", accum);
+        // This one is allowed to be empty - it's possible that the RDBMS
+        // has no password
+        //allOK = allOK && checkSet("datacenter.plugin.jdbc.password", accum);
       }
 
       String accumString = "";

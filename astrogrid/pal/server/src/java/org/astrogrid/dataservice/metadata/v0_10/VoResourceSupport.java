@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.16 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: VoResourceSupport.java,v 1.17 2006/10/17 10:11:41 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -53,8 +53,8 @@ public class VoResourceSupport {
      "xmlns=\"http://www.ivoa.net/xml/VOResource/v0.10\" ";
 
    public static final String VORESOURCE_ELEMENT_SCHEMALOCATIONS = 
-      "http://www.ivoa.net/xml/VOResource/v0.10 http://www.ivoa.net/xml/VOResource/v0.10" + " " + 
-      "http://www.ivoa.net/xml/RegistryInterface/v0.1 http://www.ivoa.net/xml/RegistryInterface/v0.1"; 
+      "http://www.ivoa.net/xml/VOResource/v0.10 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v0.10/VOResource.xsd" + " " + 
+      "http://www.ivoa.net/xml/RegistryInterface/v0.1 http://software.astrogrid.org/schema/registry/RegistryInterface/v0.1/RegistryInterface.xsd"; 
 
    /** Constructs a miniumum set of core elements for a VOresource from the given
     * strings 
@@ -231,7 +231,16 @@ public class VoResourceSupport {
  */
       //
       // Copied from registry code (probably won't work outside the UK).
+      /*
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      return sdf.format(
+          new Date()
+          );
+     */
+
+      // Adjusted by KEA just to report date (not time) - see
+      // www.astrogrid.org/bugzilla ticket 1920.
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
       return sdf.format(
           new Date()
           );

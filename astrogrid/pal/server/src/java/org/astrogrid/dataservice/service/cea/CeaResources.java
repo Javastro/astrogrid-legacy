@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.12 2006/06/15 16:50:08 clq2 Exp $
+ * $Id: CeaResources.java,v 1.13 2006/10/17 10:11:41 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -41,7 +41,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
              "xmlns:vs='http://www.ivoa.net/xml/VODataService/v0.5' " +
              "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' ",
              // Schema locations
-             "http://www.ivoa.net/xml/VODataService/v0.5 http://www.ivoa.net/xml/VODataService/v0.5" + " " +
+             "http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd" + " " +
              "http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd"
              ) +
          makeCore("ceaService")+
@@ -134,7 +134,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
          "</cea:ApplicationDefinition>\n"+
          "</"+VORESOURCE_ELEMENT+">\n";
          
-      System.out.println(ceaService+ceaApplication);
+      //System.out.println(ceaService+ceaApplication);
          return ceaService+ceaApplication;
    }
 

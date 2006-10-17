@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.10 2006/06/30 06:33:42 clq2 Exp $
+/*$Id: ConeResources.java,v 1.11 2006/10/17 10:11:41 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,7 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
       
         //"<Subject>Stars</Subject>"+ //etc
         //"<ContentLevel>Research</ContentLevel>"+ //etc
-         "<vr:interface qtype=\"GET\" xmlns:vs=\"http://www.ivoa.net/xml/VODataService/v0.5\" xsi:schemaLocation=\"http://www.ivoa.net/xml/VODataService/v0.5 http://www.ivoa.net/xml/VODataService/v0.5\" xsi:type=\"vs:ParamHTTP\">\n"+
+         "<vr:interface qtype=\"GET\" xmlns:vs=\"http://www.ivoa.net/xml/VODataService/v0.5\" xsi:schemaLocation=\"http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd\" xsi:type=\"vs:ParamHTTP\">\n"+
          "  <vr:accessURL use=\"base\">"+ServletHelper.getUrlStem()+"SubmitCone?</vr:accessURL>\n"+
          "  <vs:resultType/>\n"+
          "</vr:interface>\n"+
@@ -61,6 +61,12 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.11  2006/10/17 10:11:41  clq2
+ PAL_KEA_1869
+
+ Revision 1.10.8.1  2006/10/12 16:40:15  kea
+ Tweaks while fixing registration issues (see bugzilla ticket 1920)
+
  Revision 1.10  2006/06/30 06:33:42  clq2
  dave's fix for cone search
 

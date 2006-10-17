@@ -38,7 +38,11 @@
     <dependency>
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-contracts</artifactId>
+         <!--
          <version>${astrogrid.contracts.version}</version>
+         -->
+         <!-- HARDWIRED UNTIL LATEST CONTRACTS JAR FIXED -->
+         <version>2006.3.02con</version>
          <type>jar</type>
     </dependency>
 
@@ -281,6 +285,8 @@
       <version>2.7.1</version>
     </dependency>
     -->
+
+    <!-- Should be removable once compiling in java 1.5. -->
     <dependency>
       <id>xercesImpl</id>
       <version>2.6.2</version>

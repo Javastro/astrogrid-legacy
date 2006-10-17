@@ -47,7 +47,11 @@
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-contracts</artifactId>
+       <!--
        <version>${astrogrid.contracts.version}</version>
+       -->
+       <!-- HARDWIRED UNTIL LATEST CONTRACTS JAR FIXED -->
+       <version>2006.3.02con</version>
        <type>jar</type>
        <properties>
           <war.bundle>true</war.bundle>
@@ -218,24 +222,6 @@
          <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-
-    <!-- For writing results to VOSpace -->
-    <dependency>
-        <artifactId>astrogrid-filestore-client</artifactId>
-        <groupId>org.astrogrid</groupId>
-        <version>${astrogrid.filestore.version}</version>
-        <properties>         
-          <war.bundle>true</war.bundle>      
-        </properties>
-    </dependency>
-    <dependency>
-        <artifactId>astrogrid-filestore-common</artifactId>
-        <groupId>org.astrogrid</groupId>
-        <version>${astrogrid.filestore.version}</version>
-        <properties>         
-          <war.bundle>true</war.bundle>      
-        </properties>
-    </dependency>
     
     <!-- for logging -->
     <dependency>
@@ -245,6 +231,24 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
+     <!-- For writing results to VOSpace -->
+     <dependency>
+         <artifactId>astrogrid-filestore-client</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filestore.version}</version>
+         <properties>
+           <war.bundle>true</war.bundle>
+         </properties>
+     </dependency>
+     <dependency>
+         <artifactId>astrogrid-filestore-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>${astrogrid.filestore.version}</version>
+         <properties>
+           <war.bundle>true</war.bundle>
+          </properties>
+     </dependency>
 
 
     <!-- XMLDB api dependencies. -->
@@ -390,9 +394,17 @@
       <version>2.3</version>
     </dependency>
 
+    <!-- xerces xml functionality (for compiling against - no need for 
+    deployment war as servlet container or java 1.5 should have it.  
+    Should be removable once compiling in java 1.5. 
+    FOOTNOTE: The AstrogridAssert in common currently requires the xerces 
+    parser - so bundle this for now.-->
     <dependency>
       <id>xercesImpl</id>
       <version>2.6.2</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <!--
@@ -460,35 +472,6 @@
       </properties>
     </dependency>
     -->
-
-
-    <!--
-    <dependency>
-  		<groupId>xerces</groupId>
-  		<type>jar</type>
-  		<artifactId>xercesImpl</artifactId>
-      <version>2.7.1</version>
-		<properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-	<dependency>
-  		<groupId>xerces</groupId>
-  		<type>jar</type>
-  		<artifactId>xml-apis</artifactId>
-      <version>2.7.1</version>
-		<properties>
-         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    -->
-     <dependency>
-         <id>xercesImpl</id>
-         <version>2.6.2</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-     </dependency>
 
     <!-- for XML Catalog with Xerces -->
     <!--

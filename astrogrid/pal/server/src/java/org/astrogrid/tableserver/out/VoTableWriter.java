@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.8 2006/09/26 15:34:43 clq2 Exp $
+ * $Id: VoTableWriter.java,v 1.9 2006/10/17 10:11:41 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,7 +55,7 @@ public class VoTableWriter implements TableWriter {
       printOut.println("<VOTABLE " 
          +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
          +"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
-         +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://www.ivoa.net/xml/VOTable/VOTable-1.1.xsd'  "
+         +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.1/VOTable.xsd'  "
          +"version='1.1'"
          +">");
          
@@ -205,6 +205,12 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.9  2006/10/17 10:11:41  clq2
+ PAL_KEA_1869
+
+ Revision 1.8.2.1  2006/10/12 16:40:15  kea
+ Tweaks while fixing registration issues (see bugzilla ticket 1920)
+
  Revision 1.8  2006/09/26 15:34:43  clq2
  SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
 
