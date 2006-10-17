@@ -65,6 +65,7 @@ public class NameResolvingPositionTextField extends PositionTextField {
     	private final AbstractFormatter orig;
 		public Object stringToValue(String arg0) throws ParseException {
 			// try the coordinate parser first
+			objectName=null;
 			try {
 				return orig.stringToValue(arg0);
 			} catch (ParseException e) {
@@ -103,7 +104,7 @@ public class NameResolvingPositionTextField extends PositionTextField {
 				return ses.resolve(inputPos.trim());   
 			}
 			protected void doAlways() {
-				objectName=null;
+				//objectName=null;
 			}
 			protected void doError(Throwable ex) {
 				setText(inputPos); // put things back as they were.

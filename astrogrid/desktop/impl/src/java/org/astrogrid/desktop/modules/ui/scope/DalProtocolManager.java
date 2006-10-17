@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.3 2006/08/15 10:01:12 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.4 2006/10/17 07:21:30 KevinBenson Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ public class DalProtocolManager implements QueryResultSummarizer {
     }
     private final List l;
     private final DefaultTableModel table = new DefaultTableModel(
-            new Object[]{"Service","Results","Message"}
+            new Object[]{"Service","Results","Message" /*,"URL"*/}
             ,0) {
     	public boolean isCellEditable(int i,int j) {
     		return false;
@@ -63,9 +63,17 @@ public class DalProtocolManager implements QueryResultSummarizer {
      * @see org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer#addQueryResult(org.astrogrid.acr.astrogrid.ResourceInformation, java.lang.String, int, java.lang.String)
      */
     public void addQueryResult(Service ri,int result, String message) {
-
        table.addRow(new Object[]{ri, new Integer(result),message == null ? "" : message});
     }
+    
+    
+    /**
+     * @see org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer#addQueryResult(org.astrogrid.acr.astrogrid.ResourceInformation, java.lang.String, int, java.lang.String)
+    public void addQueryResult(Service ri,int result, String message, String url) {
+
+       table.addRow(new Object[]{ri, new Integer(result),message == null ? "" : message,url});
+    }
+    */
 
     public int size() {
         return l.size();
@@ -80,6 +88,9 @@ public class DalProtocolManager implements QueryResultSummarizer {
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.4  2006/10/17 07:21:30  KevinBenson
+small changes to history part of astroscope to have an object Name.  One small thing on Retriever to try and put successful status messages.
+
 Revision 1.3  2006/08/15 10:01:12  nw
 migrated from old to new registry models.
 

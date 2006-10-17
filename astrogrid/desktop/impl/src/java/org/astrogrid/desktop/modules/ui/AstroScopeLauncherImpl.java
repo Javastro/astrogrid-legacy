@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.52 2006/09/14 13:52:59 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.53 2006/10/17 07:21:30 KevinBenson Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -129,10 +129,14 @@ public class AstroScopeLauncherImpl extends AbstractScope
    
    protected JMenuItem createHistoryMenuItem(String historyItem) {
 		 String[] hist = historyItem.split("_");
-		 if (hist.length != 2) {
+		 if (hist.length == 3) {
+			 return new HistoryMenuItem(hist[1],hist[2],hist[0]);			 
+		 }else if(hist.length == 2) {
+			 return new HistoryMenuItem(hist[0],hist[1]);
+		 }else {
 			 return null;
 		 }
-		return new HistoryMenuItem(hist[0],hist[1]);
+		
 	}
 	
 	/** implementation of an item in the history menu.
@@ -144,9 +148,14 @@ public class AstroScopeLauncherImpl extends AbstractScope
 	private class HistoryMenuItem extends JMenuItem
 		implements ActionListener, DecSexListener{
 		public HistoryMenuItem(String pos,String size) {
+			this(pos,size,null);
+		}
+		
+		public HistoryMenuItem(String pos,String size, String objName) {
 			super();
 			this.pos = pos;
 			this.size = size;
+			this.objName = objName;
 			if (dsToggle.isDegrees()) {
 				this.degreesSelected(null);
 			} else {
@@ -155,32 +164,67 @@ public class AstroScopeLauncherImpl extends AbstractScope
 			this.addActionListener(this);
 			dsToggle.addListener(this);
 		}
+		
 		private final String pos;
 		private final String size;
+		private final String objName;
 		
 		public void actionPerformed(ActionEvent e) {
 			try {
-				posText.setPosition(pos);
-				regionText.setDimension(size);
-				} catch (ParseException ex) {
+				if(!dsToggle.isDegrees()) {
+					//positions were done in degrees, but 
+					//current radio buttons are in sexa, meaning input text
+					//boxes are expecting sexagesimal or numberformatexc are thrown.
+					
+					String sexPos = pos;
+					try {
+						sexPos=  PositionUtils.decimalToSexagesimal(pos);
+					} catch (NumberFormatException nfe) {
+					}
+					
+					String sexSize = size;
+					try {
+						if (size.indexOf(",") != -1) {
+							sexSize = PositionUtils.decimalToSexagesimal(size);
+						} else {
+							sexSize = PositionUtils.decimalRaToSexagesimal(Double.parseDouble(size));
+						}
+					} catch(NumberFormatException nfe) {
+					}
+					posText.setPosition(sexPos);
+					regionText.setDimension(sexSize);					
+				}else {
+					//most commonly used when toggle was in degrees originally
+					//and position was given in degrees.
+					posText.setPosition(pos);
+					regionText.setDimension(size);
+				}
+			} catch (ParseException ex) {
 					showError("Failed to parse history",ex);
-				}			
+			} catch(java.lang.NumberFormatException nfe) {
+					showError("Failed to parse history",nfe);
+			}
 		}
 
 		public void degreesSelected(EventObject ignored) {
 			try {
-			String[] posArr = pos.split(",");
-			String[] sizeArr = size.split(",");
-			StringBuffer sb = new StringBuffer("position: ") 
-					.append(nf.format(Double.parseDouble(posArr[0])))
-					.append(',')
-					.append(nf.format(Double.parseDouble(posArr[1])))
-					.append(" radius: ") 
-					.append(nf.format(Double.parseDouble(sizeArr[0])))
-					.append(',')
-					.append(nf.format(Double.parseDouble(sizeArr[1])))
-					;
-			setText(sb.toString());
+				String[] posArr = pos.split(",");
+				String[] sizeArr = size.split(",");
+				String objString = "";
+				if(objName != null && objName.trim().length() > 0)  {
+					objString = " Object: " + objName;
+				}
+			
+				StringBuffer sb = new StringBuffer("position: ") 
+				.append(nf.format(Double.parseDouble(posArr[0])))
+				.append(',')
+				.append(nf.format(Double.parseDouble(posArr[1])))
+				.append(" radius: ") 
+				.append(nf.format(Double.parseDouble(sizeArr[0])))
+				.append(',')
+				.append(nf.format(Double.parseDouble(sizeArr[1])))
+				.append(objString);
+				setText(sb.toString());
 			} catch (NumberFormatException e) {
 				// don't care too much.
 			}
@@ -189,23 +233,27 @@ public class AstroScopeLauncherImpl extends AbstractScope
 		public void sexaSelected(EventObject ignored) {
 			// try to convert for display - if can't convert, leave as it.
 			String sexPos = pos;
-			try {
-				sexPos=  PositionUtils.decimalToSexagesimal(pos);
-			} catch (NumberFormatException e) {
-			}
-			
-			String sexSize = size;
-			try {
-				if (size.indexOf(",") != -1) {
-					sexSize = PositionUtils.decimalToSexagesimal(size);
-				} else {
-					sexSize = PositionUtils.decimalRaToSexagesimal(Double.parseDouble(size));
+			String sexSize = size;	
+				try {
+					sexPos=  PositionUtils.decimalToSexagesimal(pos);
+				} catch (NumberFormatException e) {
 				}
-			} catch(NumberFormatException e) {
+
+				try {
+					if (size.indexOf(",") != -1) {
+						sexSize = PositionUtils.decimalToSexagesimal(size);
+					} else {
+						sexSize = PositionUtils.decimalRaToSexagesimal(Double.parseDouble(size));
+					}
+				} catch(NumberFormatException e) {
+				}
+			String objString = "";
+			if(objName != null && objName.trim().length() > 0)  {
+				objString = " Object: " + objName;
 			}
 			
 			setText("position: " + sexPos
-					+ " radius: " + sexSize);
+					+ " radius: " + sexSize + objString);
 
 		}
 					
@@ -218,7 +266,11 @@ public class AstroScopeLauncherImpl extends AbstractScope
 		if (Double.isNaN(pos.getX())) {
 			return null;
 		}
-		return pos.getX()+ "," + pos.getY() +  "_" + dim.getWidth() + "," + dim.getHeight();
+		
+		String objName = "";
+		if(posText.getObjectName() != null) 
+			objName = posText.getObjectName();
+		return objName + "_" + pos.getX()+ "," + pos.getY() +  "_" + dim.getWidth() + "," + dim.getHeight();
 	}    
     
 	/** safe to share this between astroscope instances - as is only ever used on single event dispatch thread */
@@ -405,6 +457,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.53  2006/10/17 07:21:30  KevinBenson
+small changes to history part of astroscope to have an object Name.  One small thing on Retriever to try and put successful status messages.
+
 Revision 1.52  2006/09/14 13:52:59  nw
 implemented plastic spectrum messaging.
 
