@@ -1,0 +1,9 @@
+This project is a hack for the maven (version 1) javacc plugin. 
+It corrects some inconsistencies in the jelly script and the documentation.
+See the PATCH_README.txt file that is included in the jar.
+
+To use this patched jar in a project, add a plugin dependency to your project.xml file.
+
+NOTE. This is a simple patch of the jar file and its contents. 
+      No java source has been downloaded to enable the project to be a true maven project on its own.
+      There is a buildjar.sh file that will construct the jar file from its hacked contents. 
