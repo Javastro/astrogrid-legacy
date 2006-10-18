@@ -1,4 +1,4 @@
-/*$Id: SchemaMap.java,v 1.5 2006/09/27 09:53:41 KevinBenson Exp $
+/*$Id: SchemaMap.java,v 1.6 2006/10/18 09:12:52 clq2 Exp $
  * Created on 01-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ public class SchemaMap {
     static {
         // populate the map.
         ALL = new HashMap();
-
+        
         //ADQL schemas
         ALL.put("http://www.ivoa.net/xml/ADQL/v1.0",SchemaMap.class.getResource("/schema/adql/ADQL/v1.0/ADQL.xsd"));
         ALL.put("http://www.ivoa.net/xml/ADQL/v0.9",SchemaMap.class.getResource("/schema/adql/ADQL/v0.9/ADQL.xsd"));
@@ -64,7 +64,6 @@ public class SchemaMap {
         
         //registry schemas
         
-        ALL.put("http://www.ivoa.net/wsdl/RegistrySearch/v1.0",SchemaMap.class.getResource("/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd"));        	
         ALL.put("http://www.ivoa.net/xml/RegistryInterface/v0.1",SchemaMap.class.getResource("/schema/registry/RegistryInterface/v0.1/RegistryInterface.xsd"));
         ALL.put("http://www.astrogrid.org/schema/VOResourcesUpdate/v1.0",SchemaMap.class.getResource("/schema/registry/RegistryUpdate/v1.0/VOResourcesUpdate.xsd"));        
         
@@ -96,7 +95,7 @@ public class SchemaMap {
 
         //vo-resource-types
         ALL.put("http://www.ivoa.net/xml/CEAService/v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd"));
-        //ALL.put("http://www.ivoa.net/xml/CEAService/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.3/CEAService.xsd"));
+        ALL.put("http://www.ivoa.net/xml/CEAService/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.3/CEAService.xsd"));
         
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd"));
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd"));
@@ -121,6 +120,7 @@ public class SchemaMap {
         
         //This is an aid to instantiating resource documents with oXygen et al.; it provides a global element for each resource type.
         ALL.put("urn:astrogrid:schema:vo-resource-types:AllResourceTypes:v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/AllResourceTypes/v0.2/AllResourceTypes.xsd"));        
+
     }
     
 
@@ -129,6 +129,15 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.6  2006/10/18 09:12:52  clq2
+merged contracts-gtr-1922
+
+Revision 1.5.10.2  2006/10/16 12:48:27  gtr
+I removed duplicate entries for TableMetaDoc.
+
+Revision 1.5.10.1  2006/10/16 11:43:10  gtr
+I added TableMetaDoc v0.2 and v1.0, CEAService v0.3. I removed RegistryInterface v1.0.
+
 Revision 1.5  2006/09/27 09:53:41  KevinBenson
 commented out a line that was not needed at this moment referenced a schema fiel that did not exist.
 

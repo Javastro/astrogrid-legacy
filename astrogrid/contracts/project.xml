@@ -38,6 +38,8 @@
         </includes>
       </resource>
     </resources>
+    
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
   </build>
     
   <dependencies>

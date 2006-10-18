@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.ivoa.net/xml/CEA/v0.3" 
+xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" 
+xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" 
+xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.1" 
+xmlns:cea="http://www.ivoa.net/xml/CEA/v0.3" 
+xmlns:ceab="http://www.ivoa.net/xml/CEA/base/v1.0" 
+xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+xmlns:va="http://www.ivoa.net/schema/Application/v1.0"
+elementFormDefault="unqualified" attributeFormDefault="unqualified" version="0.3"
+>
+	<xs:annotation>
+		<xs:documentation>this has been revised to be more v1.0 like - i.e. element definitions have been taken away and the types have the "type" suffix removed</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:appinfo>
+			<vm:SchemaName>VOCEA</vm:SchemaName>
+			<vm:schemaPrefix>xs</vm:schemaPrefix>
+			<vm:targetPrefix>cea</vm:targetPrefix>
+		</xs:appinfo>
+		<xs:documentation>
+        An extension to the core resource metadata (VOResource) for 
+      	describing applications and server within the Common Execution Architecture
+      </xs:documentation>
+	</xs:annotation>
+	  <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0"
+              schemaLocation="../../../vo-resource-types/VOResource/v1.0/VOResource.xsd"/>
+              
+	 <xs:import namespace="http://www.ivoa.net/xml/VODataService/v1.0"
+              schemaLocation="../../../vo-resource-types/VODataService/v1.0/VODataService.xsd"/>
+              
+	<xs:import namespace="http://www.ivoa.net/xml/CEA/base/v1.0" 
+	          schemaLocation="../../../cea/CEABase/v1.0/CEABase.xsd"/>
+	<xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.1" 
+	          schemaLocation="../../../vo-formats/VOTable/v1.1/VOTable.xsd"/>
+	          
+	<!-- This schema would benefit from some constraints being added to do better validation on the cross references within it -->
+	<xs:import namespace="http://www.ivoa.net/schema/Application/v1.0" 
+	         schemaLocation="../../../vo-resource-types/VOApplication/v1.0/VOApplication.xsd"></xs:import>
+
+	<xs:complexType name="CeaApplication">
+		<xs:annotation>
+			<xs:documentation>The definition of a CEA-compliant application</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="va:Application">
+				<xs:sequence>
+            <!-- *issue* this really needs not to be a redefinition of application.... -->
+					<xs:element name="ApplicationDefinition" type="ceab:ApplicationBase">
+						</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+		<!-- This would benefit from some sort of indication as to what type of application - datacentre/cmdline/webapp etc.... -->
+	</xs:complexType>
+	<!--A specialization of an Application for http-based apps such as SIAP-->
+	<!--Would like to be able to impose certain constraints such as forcing the ApplicationDefinition/ApplicationType to 
+		be mandatory and take certain values.  @TODO see pah about this -->
+	<xs:complexType name="CeaHttpApplication">
+		<xs:annotation>
+			<xs:documentation>The definition of a CEA Http application</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="cea:CeaApplication">
+				<xs:sequence>
+					<xs:element name="CeaHttpAdapterSetup" type="ceab:WebHttpApplicationSetup"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CeaInterface">
+	   <xs:annotation>
+	      <xs:documentation>
+	         An interface conforming to the CEA
+	         specification, capable of running one or more
+	         CeaApplications
+	      </xs:documentation>
+	   </xs:annotation>
+	   <xs:complexContent>
+	      <xs:extension base="vr:Interface">
+	         <xs:sequence>
+	            <xs:element name="managedApplications" type="cea:ManagedApplications" maxOccurs="1" minOccurs="1"></xs:element>
+	         </xs:sequence>
+	      </xs:extension>
+	   </xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ManagedApplications">
+	   <xs:sequence>
+	      <xs:element maxOccurs="unbounded" name="ApplicationReference"
+	         type="vr:IdentifierURI">
+	         <xs:annotation></xs:annotation>
+	      </xs:element>
+	   </xs:sequence>
+	</xs:complexType>
+        
+        <xs:complexType name="CeaServiceType">
+		<xs:annotation>
+			<xs:documentation>A service that can offer an instance of a CeaApplication</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="vr:Service">
+				<xs:sequence>
+					<xs:element name="ManagedApplications">
+						<xs:annotation>
+							<xs:documentation>Ths list of applications that a Common Execution Controller Manages</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ApplicationReference" type="vr:IdentifierURI" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
