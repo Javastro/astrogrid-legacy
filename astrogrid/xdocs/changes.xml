@@ -5,11 +5,7 @@
     </properties>
     <body>
 			
-    	<release version="(Pending Integration)">
-          
-
-	
-		
+    	<release version="(Pending Integration)">	
           <action dev="gtr" type="fix" issue="1800">
             Branch security-gtr-1800: fixes to astrogrid/security in respect of
             digital signatures. This cures two bugs: one where digital signature
@@ -23,34 +19,33 @@
 				1496 was regarding the autogeneration of xmlbeans using maven build. the jar is currently hand generate, 
 				ignore this branch until Jeff's update - CLQ
 			</action>	
-
-	  	
-	
         </release>
-
+        
         <release version="(Undertest)">
     	  <action dev="gtr" type="add">
     	    <em>Branch common-gtr-1933.</em> I have added code to AstrogridAssert
             such that it reports line and column numbers when it finds invalidities
             while validating an XML file against a W3C XML schema.
+            See bug 1945 before finishing this branch -CLQ 
     	  </action>
 	        
      	<action dev="kmb" type="add">
     		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
     		  has a lot of changes mainly targeting 1.0 VOResources and multiple contract ability.  I believe I have it though
     		  that everything can be copied/replaced into HEAD hence this branch can overwrite anything in HEAD even if there are
-    		  merge conflicts.
+    		  merge conflicts. Reg_KMB_Paging had been abandened replaced with Reg_KMB_Xfire
     		  It needs to go with the
     		  contracts branch Contracts_KMB_XForms (which needs Guy's approval). - Kev will let me know when this is ready - CLQ
     		  This branch had been abandened and replaced with branch Reg_KMB_Xfire and still in process of being merged/tested - CLQ 05/Oct/06
+    		  
+    		  Reg_KMB_Xfire is the only reg branch needs to be merged. Reg_KMB_Paging had been abandened.
     	</action>
     	<action dev="gtr" type="fix">
           <em>Branch contracts-gtr-1922.</em> This branch replaces/reindexes
           missing schemata. Please see BZ1922 for detailed instructions about
           merging and publishing these fixes.
+          see bug 1946 before finishing this branch -CLQ
     	</action>       
-
-
         </release>
 		
 		<release version="HEAD">
