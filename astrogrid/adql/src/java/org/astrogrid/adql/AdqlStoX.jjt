@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.22 2006/10/16 15:35:49 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.23 2006/10/18 22:35:53 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -110,6 +110,271 @@ SKIP :
 |	"\n"
 }
 
+TOKEN : // <SQL_special_character> 
+{
+  < DOUBLE_QUOTE: "\"\"" >
+| < PERCENT: "%" >
+| < AMPERSAND: "&" >
+| < QUOTE: "'" >
+| < LEFT_PAREN: "(" >
+| < RIGHT_PAREN: ")" >
+| < ASTERISK: "*" >
+| < PLUS_SIGN: "+" >
+| < COMMA: "," >
+| < MINUS_SIGN: "-" >
+| < PERIOD: "." >
+| < SOLIDUS: "/" >
+| < COLON: ":" >
+| < SEMICOLON: ";" >
+| < LESS_THAN_OPERATOR : "<" >
+| < EQUALS_OPERATOR : "=" >
+| < GREATER_THEN_OPERATOR : ">" >
+| < QUESTION_MARK: "?" >
+| < UNDERSCORE: "_" >
+| < VERTICAL_BAR: "|" >
+}
+
+TOKEN : // <SQL_embedded_language_character>
+{
+  < LEFT_BRACKET: "[" >
+| < RIGHT_BRACKET: "]" >	
+}
+
+TOKEN : // <reserved_word>
+{
+  < ABSOLUTE : "absolute" >
+| < ACTION : "action" >
+| < ADD : "add" >
+| < ALL : "all" >
+| < ALLOCATE : "allocate" >
+| < ALTER : "alter" >
+| < AND : "and" >
+| < ANY : "any" >
+| < ARE : "are" >
+| < AS : "as" >
+| < ASC : "asc" >
+| < ASSERTION : "assertion" >
+| < AT : "at" >
+| < AUTHORIZATION : "authorization" >
+| < AVG : "avg" >
+| < BEGIN : "begin" >
+| < BETWEEN : "between" >
+| < BIT : "bit" >
+| < BIT_LENGTH : "bit_length" >
+| < BOTH : "both" >
+| < BY : "by" >
+| < CASCADE : "cascade" >
+| < CASCADED : "cascaded" >
+| < CASE : "case" >
+| < CAST : "cast" >
+| < CATALOG : "catalog" >
+| < CHAR : "char" >
+| < CHARACTER : "character" >
+| < CHAR_LENGTH : "char_length" >
+| < CHARACTER_LENGTH : "character_length" >
+| < CHECK : "check" >
+| < CLOSE : "close" >
+| < COALESCE : "coalesce" >
+| < COLLATE : "collate" >
+| < COLLATION : "collation" >
+| < COLUMN : "column" >
+| < COMMIT : "commit" >
+| < CONNECT : "connect" >
+| < CONNECTION : "connection" >
+| < CONSTRAINT : "constraint" >
+| < CONSTRAINTS : "constraints" >
+| < CONTINUE : "continue" >
+| < CONVERT : "convert" >
+| < CORRESPONDING : "corresponding" >
+| < COUNT : "count" >
+| < CREATE : "create" >
+| < CROSS : "cross" >
+| < CURRENT : "current" >
+| < CURRENT_DATE : "current_date" >
+| < CURRENT_TIME : "current_time" >
+| < CURRENT_TIMESTAMP : "current_timestamp" >
+| < CURRENT_USER : "current_user" >
+| < CURSOR : "cursor" >
+| < DATE : "date" >
+| < DAY : "day" >
+| < DEALLOCATE : "deallocate" >
+| < DEC : "dec" >
+| < DECIMAL : "decimal" >
+| < DECLARE : "declare" >
+| < SQL_DEFAULT : "default" >
+| < DEFERRABLE : "deferrable" >
+| < DEFERRED : "deferred" >
+| < DELETE : "delete" >
+| < DESC : "desc" >
+| < DESCRIBE : "describe" >
+| < DESCRIPTOR : "descriptor" >
+| < DIAGNOSTICS : "diagnostics" >
+| < DISCONNECT : "disconnect" >
+| < DISTINCT : "distinct" >
+| < DOMAIN : "domain" >
+| < DOUBLE : "double" >
+| < DROP : "drop" >
+| < ELSE : "else" >
+| < END : "end" >
+| < ENDEXEC : "end-exec" >
+| < ESCAPE : "escape" >
+| < EXCEPT : "except" >
+| < EXCEPTION : "exception" >
+| < EXEC : "exec" >
+| < EXECUTE : "execute" >
+| < EXISTS : "exists" >
+| < EXTERNAL : "external" >
+| < EXTRACT : "extract" >
+| < FALSE : "false" >
+| < FETCH : "fetch" >
+| < FIRST : "first" >
+| < FLOAT : "float" >
+| < FOR : "for" >
+| < FOREIGN : "foreign" >
+| < FOUND : "found" >
+| < FROM : "from" >
+| < FULL : "full" >
+| < GET : "get" >
+| < GLOBAL : "global" >
+| < GO : "go" >
+| < GOTO : "goto" >
+| < GRANT : "grant" >
+| < GROUP : "group" >
+| < HAVING : "having" >
+| < HOUR : "hour" >
+| < IDENTITY : "identity" >
+| < IMMEDIATE : "immediate" >
+| < IN : "in" >
+| < INDICATOR : "indicator" >
+| < INITIALLY : "initially" >
+| < INNER : "inner" >
+| < INPUT : "input" >
+| < INSENSITIVE : "insensitive" >
+| < INSERT : "insert" >
+| < INT : "int" >
+| < INTEGER : "integer" >
+| < INTERSECT : "instersect" >
+| < INTERVAL : "interval" >
+| < INTO : "into" >
+| < IS : "is" >
+| < ISOLATION : "isolation" >
+| < JOIN : "join" >
+| < KEY : "key" >
+| < LANGUAGE : "language" >
+| < LAST : "last" >
+| < LEADING : "leading" >
+| < LEFT : "left" >
+| < LEVEL : "level" >
+| < LIKE : "like" >
+| < LOCAL : "local" >
+| < LOWER : "lower" >
+| < MATCH : "match" >
+| < MAX : "max" >
+| < MIN : "min" >
+| < MINUTE : "minute" >
+| < MODULE : "module" >
+| < MONTH : "month" >
+| < NAMES : "names" >
+| < NATIONAL : "national" >
+| < NATURAL : "natural" >
+| < NCHAR : "nchar" >
+| < NEXT : "next" >
+| < NO : "no" >
+| < NOT : "not" >
+| < NULL : "null" >
+| < NULLIF : "nullif" >
+| < NUMERIC : "numeric" >
+| < OCTET_LENGTH : "octet_length" >
+| < OF : "of" >
+| < ON : "on" >
+| < ONLY : "only" >
+| < OPEN : "open" >
+| < OPTION : "option" >
+| < OR : "or" >
+| < ORDER : "order" >
+| < OUTER : "outer" >
+| < OUTPUT : "output" >
+| < OVERLAPS : "overlaps" >
+| < PAD : "pad" >
+| < PARTIAL : "partial" >
+| < POSITION : "position" >
+| < PRECISION : "precision" >
+| < PREPARE : "prepare" >
+| < PRESERVE : "preserve" >
+| < PRIMARY : "primary" >
+| < PRIOR : "prior" >
+| < PRIVILEGES : "privileges" >
+| < PROCEDURE : "procedure" >
+| < PUBLIC : "public" >
+| < READ : "read" >
+| < REAL : "real" >
+| < REFERENCES : "references" >
+| < RELATIVE : "relative" >
+| < RESTRICT : "restrict" >
+| < REVOKE : "revoke" >
+| < RIGHT : "right" >
+| < ROLLBACK : "rollback" >
+| < ROWS : "rows" >
+| < SCHEMA : "schema" >
+| < SCROLL : "scroll" >
+| < SECOND : "second" >
+| < SECTION : "section" >
+| < SELECT : "select" >
+| < SESSION : "session" >
+| < SESSION_USER : "session_user" >
+| < SET : "set" >
+| < SIZE : "size" >
+| < SMALLINT : "smallint" >
+| < SOME : "some" >
+| < SPACE : "space" >
+| < SQL : "sql" >
+| < SQLCODE : "sqlcode" >
+| < SQLERROR : "sqlerror" >
+| < SQLSTATE : "sqlstate" >
+| < SUBSTRING : "substring" >
+| < SUM : "sum" >
+| < SYSTEM_USER : "system_user" >
+| < TABLE : "table" >
+| < TEMPORARY : "temporary" >
+| < THEN : "then" >
+| < TIME : "time" >
+| < TIMESTAMP : "timestamp" >
+| < TIMEZONE_HOUR : "timezone_hour" >
+| < TIMEZONE_MINUTE : "timezone_minute" >
+| < TO : "to" >
+| < TRAILING : "trailing" >
+| < TRANSACTION : "transaction" >
+| < TRANSLATE : "translate" >
+| < TRANSLATION : "translation" >
+| < TRIM : "trim" >
+| < TRUE : "true" >
+| < UNION : "union" >
+| < UNIQUE : "unique" >
+| < UNKNOWN : "unknown" >
+| < UPDATE : "update" >
+| < UPPER : "upper" >
+| < USAGE : "usage" >
+| < USER : "user" >
+| < USING : "using" >
+| < VALUE : "value" >
+| < VALUES : "values" >
+| < VARCHAR : "varchar" >
+| < VARYING : "varying" >
+| < VIEW : "view" >
+| < WHEN : "when" >
+| < WHENEVER : "whenever" >
+| < WHERE : "where" >
+| < WITH : "with" >
+| < WORK : "work" >
+| < WRITE : "write" >
+| < YEAR : "year" >
+| < ZONE : "zone" >
+}
+
+// <non-reserved_word> 
+//
+// Cannot be certain what to make of these yet
+//{ //  < ADA : "ada" >//| < C: "c" >//| < CATALOG_NAME: "catalog_name" >//| < CHARACTER_SET_CATALOG: "character_set_catalog" >//| < CHARACTER_SET_NAME: "character_set_name" >//| < CHARACTER_SET_SCHEMA: "character_set_schema" >//| < CLASS_ORIGIN: "class_origin" >//| < COBOL: "cobol" >//| < COLLATION_CATALOG: "collation_catalog" >//| < COLLATION_NAME: "collation_name" >//| < COLLATION_SCHEMA: "collation_schema" >//| < COLUMN_NAME: "column_name" >//| < COMMAND_FUNCTION: "command_function" >//| < COMMITTED: "committed" >//| < CONDITION_NUMBER: "condition_number" >//| < CONNECTION_NAME: "connection_name" >//| < CONSTRAINT_CATALOG: "constraint_catalog" >//| < CONSTRAINT_NAME: "constraint_name" >//| < CONSTRAINT_SCHEMA: "constraint_schema" >//| < CURSOR_NAME: "cursor_name" >//| < DATA: "data" >//| < DATETIME_INTERVAL_CODE: "datetime_interval_code" >//| < DATETIME_INTERVAL_PRECISION: "datetime_interval_precision" >//| < DYNAMIC_FUNCTION: "dynamic_function" >//| < FORTRAN: "fortran" >//| < LENGTH: "length" >//| < MESSAGE_LENGTH: "message_length" >//| < MESSAGE_OCTET_LENGTH: "message_octet_length" >//| < MESSAGE_TEXT: "message_text" >//| < SQL_MORE: "more" >//| < MUMPS: "mumps" >//| < NAME: "name" >//| < NULLABLE: "nullable" >//| < NUMBER: "number" >//| < PASCAL: "pascal" >//| < PLI: "pli" >//| < REPEATABLE: "repeatable" >//| < RETURNED_LENGTH: "returned_length" >//| < RETURNED_OCTET_LENGTH: "returned_octet_length" >//| < RETURNED_SQLSTATE: "returned_sqlstate" >//| < ROW_COUNT: "row_count" >//| < SCALE: "scale" >//| < SCHEMA_NAME: "schema_name" >//| < SERIALIZABLE: "serializable" >//| < SERVER_NAME: "server_name" >//| < SUBCLASS_ORIGIN: "subclass_origin" >//| < TABLE_NAME: "table_name" >//| < TYPE: "type" >//| < UNCOMMITTED: "uncommitted" >//| < UNNAMED: "unnamed" >//}
 
 TOKEN : 
 {
@@ -119,227 +384,109 @@ TOKEN :
 |	< NOT_EQUALS_OPERATOR : "<>" | "!=" >
 |	< LESS_THAN_OR_EQUALS_OPERATOR : "<=" >
 |	< GREATER_THAN_OR_EQUALS_OPERATOR : ">=" >
-|	< EQUALS_OPERATOR : "=" >
-|	< LESS_THAN_OPERATOR : "<" >
-|	< GREATER_THEN_OPERATOR : ">" >
 
-|	< ADD: "add" >
-|	< ALL: "all" >
-|	< AND: "and" >
-|	< ANY: "any" >
-|	< AS: "as" >
-|	< ASC: "asc" >
-|	< AT : "at" >
-|	< AUTHORIZATION: "authorization" >
 |	< BASE64: "base64" >
-|	< BEGIN: "begin" >
-|	< BETWEEN: "between" >
+
 |	< BINARY: "binary" >
 |	< BREAK: "break" >
-|	< BY: "by" >
-|	< CASE: "case" >
-|	< CAST: "cast" >
-|	< CHECKPOINT: "checkpoint" >
-|	< CLOSE: "close" >
-|	< CLUSTERED: "clustered" >
 
-|   < COALESCE: "coalesce" >
-|	< COLLATE: "collate" >
-|	< COLUMN: "column" >
-|	< COMMIT: "commit" >
+|	< CHECKPOINT: "checkpoint" >
+
+|	< CLUSTERED: "clustered" >
 |	< COMPUTE: "compute" >
 |	< CONCAT: "concat" >
-|	< CONSTRAINT: "constraint" >
 |	< CONTAINS: "contains" >
 |	< CONTAINSTABLE: "containstable" >
-|	< CONTINUE: "continue" >
-
-|	< CORRESPONDING : "corresponding" >
-
-	//| < CONVERT: "convert" >
-|	< CREATE: "create" >
-//|	< CROSS: "cross" >
 |	< CROSS_JOIN : "cross join">
 |	< CUBE: "cube" >
-|	< CURRENT: "current" >
-|	< CURRENT_DATE: "current_date" >
-|	< CURRENT_TIME: "current_time" >
-|	< CURRENT_TIMESTAMP: "current_timestamp" >
-|	< CURRENT_USER: "current_user" >
-|	< CURSOR: "cursor" >
 |	< DATABASE: "database" >
 |	< DBCC: "dbcc" >
-|	< DEALLOCATE: "deallocate" >
-|	< DECLARE: "declare" >
-|	< SQL_DEFAULT: "default" >
-|	< DELETE: "delete" >
 |	< DENY: "deny" >
-|	< DESC: "desc" >
 |	< DISK: "disk" >
-|	< DISTINCT: "distinct" >
 |	< DISTRIBUTED: "distributed" >
-|	< PERIOD: "." >
-|	< DOUBLE: "double" >
-|	< DROP: "drop" >
 |	< DUMP: "dump" >
 |	< ELEMENTS: "elements" >
-|	< ELSE: "else" >
-|	< END: "end" >
 |	< ERRLVL: "errlvl" >
-|	< ESCAPE: "escape" >
-|	< EXCEPT: "except" >
-|	< EXEC: "exec" >
-|	< EXECUTE: "execute" >
-|	< EXISTS: "exists" >
 |	< EXIT: "exit" >
 |	< EXPAND: "expand" >
 |	< EXPLICIT: "explicit" >
 |	< FAST: "fast" >
 |	< FASTFIRSTROW: "fastfirstrow" >
-|	< FETCH: "fetch" >
 |	< FILE: "file" >
 |	< FILLFACTOR: "fillfactor" >
-|	< FOR: "for" >
 |	< FORCE: "force" >
-|	< FOREIGN: "foreign" >
 |	< FREETEXT: "freetext" >
 |	< FREETEXTTABLE: "freetexttable" >
-|	< FROM: "from" >
-|	< FULL: "full" >
 |	< FUNCTION: "function" >
-|	< GOTO: "goto" >
-|	< GRANT: "grant" >
 |	< GROUPBY: "group by" >
 |	< HASH: "hash" >
-|	< HAVING: "having" >
 |	< HOLDLOCK: "holdlock" >
-|	< IDENTITY: "identity" >
 |	< IDENTITY_INSERT: "identity_insert" >
 |	< IDENTITYCOL: "identitycol" >
 |	< IF: "if" >
-|	< IN: "in" >
 |	< INDEX: "index" >
-|	< INNER: "inner" >
-|	< INSERT: "insert" >
-|	< INTERSECT: "intersect" >
-|	< INTO: "into" >
-|	< IS: "is" >
-|	< JOIN: "join" >
 |	< KEEP: "keep" >
 |	< KEEPFIXED: "keepfixed" >
-|	< KEY: "key" >
 |	< KILL: "kill" >
-|	< LEFT: "left" >
-|	< LIKE: "like" >
 |	< LINENO: "lineno" >
-|	< LOCAL: "local" >
 |	< LOAD: "load" >
 |	< LOOP: "loop" >
-|	< MATCH : "match" >
 |	< MAXDOP: "maxdop" >	
 |	< MERGE: "merge" >
-|	< NATIONAL: "national" >
-|	< NATURAL: "natural" >
 |	< NOCHECK: "nocheck" >
 |	< NOLOCK: "nolock" >
 |	< NONCLUSTERED: "nonclustered" >
-|	< NOT: "not" >
-|	< NULL: "null" >
-
-	//| < NULLIF: "nullif" >
-|	< OF: "of" >
 |	< OFF: "off" >
 |	< OFFSETS: "offsets" >
-|	< ON: "on" >
-|	< OPEN: "open" >
 |	< OPENDATASOURCE: "opendatasource" >
 |	< OPENQUERY: "openquery" >
 |	< OPENROWSET: "openrowset" >
 |	< OPENXML: "openxml" >
-|	< OPTION: "option" >
-|	< OR: "or" >
-|	< ORDER: "order" >
 |	< ORDERBY : "order by" >
-|	< OUTER: "outer" >
 |	< OVER: "over" >
-|	< OVERLAPS : "overlaps" >
 |	< PAGLOCK: "paglock" >
-|	< PARTIAL : "partial" >
-|	< PERCENT: "percent" >
 |	< PLAN: "plan" >
-|	< PRECISION: "precision" >
-|	< PRIMARY: "primary" >
 |	< PRINT: "print" >
 |	< PROC: "proc" >
-|	< PROCEDURE: "procedure" >
-|	< PUBLIC: "public" >
-//|	< QUOTE : "'" >
 |	< RAISERROR: "raiserror" >
 |	< RAW: "raw" >
-|	< READ: "read" >
 |	< READCOMMITED: "readcommited" >
 |	< READPAST: "readpast" >
 |	< READTEXT: "readtext" >
 |	< READUNCOMMITED: "readuncommited" >
 |	< RECONFIGURE: "reconfigure" >
-|	< REFERENCES: "references" >
 |	< REGION: "region" >
 |	< REMOTE: "remote" >
 |	< REPEATABLEREAD: "repeatableread" >
 |	< REPLICATION: "replication" >
 |	< RESTORE: "restore" >
-|	< RESTRICT: "restrict" >
 |	< RETURN: "return" >
-|	< REVOKE: "revoke" >
-|	< RIGHT: "right" >
 |	< ROBUST: "robust" >
-|	< ROLLBACK: "rollback" >
 |	< ROLLUP: "rollup" >
 |	< ROWCOUNT: "rowcount" >
 |	< ROWGUIDCOL: "rowguidcol" >
 |	< ROWLOCK: "rowlock" >
 |	< RULE: "rule" >
 |	< SAVE: "save" >
-|	< SCHEMA: "schema" >
-|	< SELECT: "select" >
-|	< SERIALIZABLE: "serializable" >
-|	< SESSION_USER: "session_user" >
-|	< SET: "set" >
 |	< SETUSER: "setuser" >
 |	< SHUTDOWN: "shutdown" >
-|	< SOME: "some" >
 |	< STATISTICS: "statistics" >
-|	< SYSTEM_USER: "system_user" >
-|	< TABLE: "table" >
 |	< TABLOCK: "tablock" >
 |	< TABLOCKX: "tablockx" >
 |	< TEXTSIZE: "textsize" >
-|	< THEN: "then" >
 |	< TIME_ZONE: "TIME ZONE" >
 |	< TIES: "ties" >
-|	< TO: "to" >
 |	< TOP: "top" >
 |	< TRAN: "tran" >
-|	< TRANSACTION: "transaction" >
 |	< TRIGGER: "trigger" >
 |	< TRUTH_VALUE : "true" | "falsed" | "unknown" >
 |	< TSEQUAL: "tsequal" >
-|	< UNIQUE: "unique" >
-|	< UPDATE: "update" >
 |	< UPDATETEXT: "updatetext" >
 |	< UPDLOCK: "updlock" >
 |	< USE: "use" >
-|	< USER: "user" >
-|	< USING : "using" >
-|	< VALUES: "values" >
-|	< VARYING: "varying" >
-|	< VIEW: "view" >
 |	< VIEWS: "views" >
 |	< WAITFOR: "waitfor" >
-|	< WHEN: "when" >
-|	< WHERE: "where" >
 |	< WHILE: "while" >
-|	< WITH: "with" >
 |	< WRITETEXT: "writetext" >
 |	< XLOCK: "xlock" >
 |	< XMATCH: "xmatch" >
@@ -353,7 +500,6 @@ TOKEN :
 |   < SECTOR : "sector" >
 |   < CONVEX : "convex" >
 |   < CONVEX_HULL : "convex hull" >
-|   < UNION : "union" >
 |   < INTERSECTION : "intersection" >
 |   < FILL_FACTOR : "fill factor" >
 |   < UNIT : "unit" >
@@ -404,38 +550,11 @@ TOKEN :
 |	< ACOS: "acos" >
 |	< ATAN: "atan" >
 |	< ATAN2: "atan2" >
-	
-	//aggregate
-|	< MAX: "max" >
-|	< MIN: "min" >
-|	< SUM: "sum" >
-|	< AVG: "avg" >
-|	< COUNT: "count" >
 
-
-|	< COLON : ":" >
-|	< COMMA : "," >
-|	< SEMICOLON : ";" >
-|	< LPAREN : "(" >
-|	< RPAREN : ")" >
-|	< LSQUARE : "[" >
-|	< RSQUARE : "]" >
-
-|	< DIVIDE : "/" >
-|	< PLUS : "+" >
-|	< MINUS : "-" >
-|	< STAR : "*" >
-|	< MOD : "%" >
-|	< AMPERSAND : "&" >
 |	< TILDE : "~" >
-|	< BITWISEOR : "|" >
-|	< BITWISEXOR : "^" >
 |	< BANG : "!" >
-|	< QUESTIONMARK : "?" >
 
 |	< DOLLAR : "$" >
-|	< SECOND : "second" >
-|   < UNDERSCORE : "_" >
 
 |  	< REGULAR_IDENTIFIER : ( <LETTER> )+ ( <DIGIT> | <LETTER> | <SPECIAL_CHARS> )* >
 |	< DELIMITED_IDENTIFIER : "\"" (~["\n","\r","\""])* "\"" >
@@ -453,14 +572,7 @@ TOKEN :
 |   < #EXPONENT : <SIGNED_INTEGER> >        
 |	< #SIGNED_INTEGER : <SIGN> <UNSIGNED_INTEGER> >
 |   < #E : ["E", "e"] >
-|   < #SIGN : <PLUS> | <MINUS> >
-
-|	< NON_SECOND_DATETIME_FIELD: <YEAR> | <MONTH> | <DAY> | <HOUR> | <MINUTE> >
-|	< #YEAR: "year" >
-|	< #MONTH: "month" >
-|	< #DAY: "day" >
-|	< #HOUR: "hour" >
-|	< #MINUTE: "minute" >
+|   < #SIGN : <PLUS_SIGN> | <MINUS_SIGN> >
 
 |	< ASCII_STRING_LITERAL : "\'" (~["\'"])* "\'" >
 
@@ -516,7 +628,7 @@ AtomType signed_integer_S() :
     Token t2 = null ;
 }
 {
-	(t1=<PLUS> |t1=<MINUS>) t2=<UNSIGNED_INTEGER> 
+	(t1=<PLUS_SIGN> |t1=<MINUS_SIGN>) t2=<UNSIGNED_INTEGER> 
 	{
 	   if( t2 != null ) {
 	   	   
@@ -579,7 +691,7 @@ SearchType boolean_primary_S() :
 		LOOKAHEAD(6)
 		st=predicate_A()
 	    |
-	    ( <LPAREN> st=search_condition_S() t=<RPAREN> )
+	    ( <LEFT_PAREN> st=search_condition_S() t=<RIGHT_PAREN> )
     )
     {
     	if( t != null ) {
@@ -955,7 +1067,7 @@ ScalarExpressionType value_expression_primary_A() :
 	// JBL: case ommitted in initial version...
 	//	caseExpression()
 	//	|
-		( <LPAREN> seType=value_expression_A() <RPAREN> ) 
+		( <LEFT_PAREN> seType=value_expression_A() <RIGHT_PAREN> ) 
 		{
 			if( seType != null ) {
 				ClosedExprType ceType = ClosedExprType.Factory.newInstance() ;
@@ -1095,9 +1207,9 @@ void datetime_value_expression_S() : {}
 
 	// refactored to
 	LOOKAHEAD(3)
-    ( datetime_term_S() ( LOOKAHEAD(2) (<PLUS> | <MINUS>) datetime_value_expression_S() )* )
+    ( datetime_term_S() ( LOOKAHEAD(2) (<PLUS_SIGN> | <MINUS_SIGN>) datetime_value_expression_S() )* )
     |
-    ( interval_value_expression_S() <PLUS> datetime_term_S() )
+    ( interval_value_expression_S() <PLUS_SIGN> datetime_term_S() )
 }
 
 void datetime_value_function_S() : {}
@@ -1110,9 +1222,9 @@ void datetime_value_function_S() : {}
 
 	<CURRENT_DATE>
 	|
-	<CURRENT_TIME> [ <LPAREN> time_precision_S() <RPAREN> ]
+	<CURRENT_TIME> [ <LEFT_PAREN> time_precision_S() <RIGHT_PAREN> ]
 	|
-	<CURRENT_TIMESTAMP> [ <LPAREN> timestamp_precision_S() <RPAREN> ]
+	<CURRENT_TIMESTAMP> [ <LEFT_PAREN> timestamp_precision_S() <RIGHT_PAREN> ]
 }
 
 void derived_column_list_S() : {}
@@ -1135,7 +1247,7 @@ void end_field_S() : {}
 	// <end_field> ::=
     //    <non-second_datetime_field>
     //  | SECOND [ <left_paren> <interval_fractional_seconds_precision> <right_paren> ]
-	<NON_SECOND_DATETIME_FIELD> | <SECOND> [ <LPAREN> interval_fractional_seconds_precision_S() <RPAREN> ]
+	nonsecond_datetime_field_S() | <SECOND> [ <LEFT_PAREN> interval_fractional_seconds_precision_S() <RIGHT_PAREN> ]
 }
 
 void escape_character_A() : {}
@@ -1234,7 +1346,7 @@ UnaryExprType factorUnary() :
 	Token t = null ;
 }
 {
-	( [ t=<PLUS> | t=<MINUS> ] )
+	( [ t=<PLUS_SIGN> | t=<MINUS_SIGN> ] )
 	{ 
 	   if( t != null ) {
 	   		ueType = UnaryExprType.Factory.newInstance() ;
@@ -1301,8 +1413,8 @@ AggregateFunctionType general_set_function_A() :
     //   <set_function_type> <left_paren> [ <set_quantifier> ] <value_expression> <right_paren>
 
 	// JL. setQuantifier removed for the moment. Need to talk to Kona about this.
-	// ( t=<AVG> | t=<MAX> | t=<MIN> | t=<SUM> | t=<COUNT> ) <LPAREN> [ setQuantifier() ] seType=value_expression_A() <RPAREN>	
-	( t=<AVG> | t=<MAX> | t=<MIN> | t=<SUM> | t=<COUNT> ) <LPAREN> seType=value_expression_A() <RPAREN>
+	// ( t=<AVG> | t=<MAX> | t=<MIN> | t=<SUM> | t=<COUNT> ) <LEFT_PAREN> [ setQuantifier() ] seType=value_expression_A() <RIGHT_PAREN>	
+	( t=<AVG> | t=<MAX> | t=<MIN> | t=<SUM> | t=<COUNT> ) <LEFT_PAREN> seType=value_expression_A() <RIGHT_PAREN>
 	{ 
 		if( t != null ) {
 			afType = AggregateFunctionType.Factory.newInstance() ;
@@ -1473,7 +1585,7 @@ InclusionSetType in_predicate_value_S() :
 	//S:
     // <in_predicate_value> ::= <table_subquery>  | <left_paren> <in_value_list> <right_paren>
 	
-	( LOOKAHEAD(2) isType=table_subquery_A() | ( <LPAREN> isType=in_value_list_A() t=<RPAREN> ) )
+	( LOOKAHEAD(2) isType=table_subquery_A() | ( <LEFT_PAREN> isType=in_value_list_A() t=<RIGHT_PAREN> ) )
 	{ 
 		if( TRACE_ENABLED ) exitTrace ( "in_predicate_value_S" ) ;
 		return isType ; 
@@ -1486,7 +1598,7 @@ void interval_factor_S() : {}
 	// <interval_factor> ::=
     //   [ <sign> ] <interval_primary>
 
-    [ <PLUS> | <MINUS> ] interval_primary_S()
+    [ <PLUS_SIGN> | <MINUS_SIGN> ] interval_primary_S()
 }
 
 void interval_fractional_seconds_precision_S() : {}
@@ -1538,9 +1650,9 @@ void interval_term_S() : {}
 	interval_factor_S() 
     |
 	LOOKAHEAD(3)    
-    factor_S() (<STAR> | <DIVIDE>) interval_term_S()
+    factor_S() (<ASTERISK> | <SOLIDUS>) interval_term_S()
     | 
-    term_S() <STAR> interval_factor_S()
+    term_S() <ASTERISK> interval_factor_S()
 }
 
 void interval_value_expression_S() : {}
@@ -1555,9 +1667,9 @@ void interval_value_expression_S() : {}
 
 	// refactored
 	LOOKAHEAD(3)
-	interval_term_S() ( LOOKAHEAD(2) (<PLUS> | <MINUS>) interval_term_S() )*
+	interval_term_S() ( LOOKAHEAD(2) (<PLUS_SIGN> | <MINUS_SIGN>) interval_term_S() )*
     | 
-    <LPAREN> datetime_value_expression_S() <MINUS> datetime_term_S() <RPAREN> interval_qualifier_S()
+    <LEFT_PAREN> datetime_value_expression_S() <MINUS_SIGN> datetime_term_S() <RIGHT_PAREN> interval_qualifier_S()
 }
 
 ConstantListSet in_value_list_A() : 
@@ -1614,7 +1726,7 @@ LiteralType in_value_list_constant_A() :
 	//      <character_string_literal_A> 
 	(
 	   (
-	       ([ <PLUS> | t1=<MINUS> ] )
+	       ([ <PLUS_SIGN> | t1=<MINUS_SIGN> ] )
 	       {
 		       if( t1 != null )
 		          possibleSignChange = -1 ;
@@ -1648,7 +1760,7 @@ void join_specification_S() : {}
 		// refactored to...
 		<ON> search_condition_S()
 	    |
-	    <USING> <LPAREN> column_name_list_S() <RPAREN>
+	    <USING> <LEFT_PAREN> column_name_list_S() <RIGHT_PAREN>
     )
 }
 
@@ -1692,7 +1804,7 @@ JoinTableType joined_table_S() :
 		LOOKAHEAD(3)
 		jtType=qualified_join_S()
 		|
-		( t=<LPAREN> jtType=joined_table_S() <RPAREN> )
+		( t=<LEFT_PAREN> jtType=joined_table_S() <RIGHT_PAREN> )
 	)
 	{ 
 		if( TRACE_ENABLED ) exitTrace ( "joined_table_S()" ) ;
@@ -1781,35 +1893,35 @@ MathFunctionType mathFunctions() :
 }
 {
 	(
-		( t=<ABS> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<ABS> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<CEILING> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<CEILING> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<DEGREES> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<DEGREES> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<EXP> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<EXP> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<FLOOR> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<FLOOR> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<LOG> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<LOG> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<PI> <LPAREN><RPAREN> )
+		( t=<PI> <LEFT_PAREN><RIGHT_PAREN> )
 		|
-		( t=<POWER> <LPAREN> arg1=numeric_value_expression_S() <COMMA> t2=<UNSIGNED_INTEGER> <RPAREN> )
+		( t=<POWER> <LEFT_PAREN> arg1=numeric_value_expression_S() <COMMA> t2=<UNSIGNED_INTEGER> <RIGHT_PAREN> )
 		|
-		( t=<RADIANS> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<RADIANS> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<SQUARE> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<SQUARE> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<SQRT> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<SQRT> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<LOG10> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<LOG10> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<RAND> <LPAREN> [ arg1=numeric_value_expression_S() ] <RPAREN> )
+		( t=<RAND> <LEFT_PAREN> [ arg1=numeric_value_expression_S() ] <RIGHT_PAREN> )
 		|
-		( t=<ROUND> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<ROUND> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 		|
-		( t=<TRUNCATE> <LPAREN> arg1=numeric_value_expression_S() <RPAREN> )
+		( t=<TRUNCATE> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN> )
 	)
 	{
 	   if( t != null ) {
@@ -1943,7 +2055,7 @@ ScalarExpressionType[] numericValueExpressionSingleton() :
 	Token t = null ; 
 }
 {
-	( t=<PLUS> | t=<MINUS> ) seType=numeric_value_expression_S()	
+	( t=<PLUS_SIGN> | t=<MINUS_SIGN> ) seType=numeric_value_expression_S()	
 	{
 		if( t != null ) {
 			retPairs = new ScalarExpressionType[2] ;		
@@ -2302,7 +2414,7 @@ RegionSearchType region_predicate_A() :
 {
 	//A:
 	// <region> <left_paren> <region_specification_A> <right_paren>
-	<REGION> <LPAREN> rt=region_specification_A() t=<RPAREN>
+	<REGION> <LEFT_PAREN> rt=region_specification_A() t=<RIGHT_PAREN>
 	{ 
 		if( t != null ) {
 		   st = RegionSearchType.Factory.newInstance() ;	
@@ -2457,7 +2569,7 @@ Double double_numeric_literal_A() :
 	Double dnl = null ;
 }
 {
-	( [ <PLUS> | s=<MINUS> ]  t=<EXACT_NUMERIC_LITERAL> | t=<UNSIGNED_INTEGER> )
+	( [ <PLUS_SIGN> | s=<MINUS_SIGN> ]  t=<EXACT_NUMERIC_LITERAL> | t=<UNSIGNED_INTEGER> )
 	{
 		if( t != null ) {
            dnl = new Double( (s!=null ? '-' : '+' ) + t.image ) ;		
@@ -2476,7 +2588,7 @@ List coords_2_A() :
 	ArrayList list = null ;
 }
 {
-    ( <LPAREN> coord1=double_numeric_literal_A() <COMMA> coord2=double_numeric_literal_A() t=<RPAREN> )
+    ( <LEFT_PAREN> coord1=double_numeric_literal_A() <COMMA> coord2=double_numeric_literal_A() t=<RIGHT_PAREN> )
     {
     	if( t != null ) {
     		list = new ArrayList( 2 ) ;
@@ -2500,7 +2612,7 @@ Object[] circle_radius_A() :
 	(
 	    rad=double_numeric_literal_A() 
 	    | 
-	    ( <LPAREN> rad=double_numeric_literal_A() <COMMA> putString=pos_unit_type_A() <RPAREN> )
+	    ( <LEFT_PAREN> rad=double_numeric_literal_A() <COMMA> putString=pos_unit_type_A() <RIGHT_PAREN> )
 	)
 	{
 	   if( rad !=  null ) {
@@ -2529,10 +2641,10 @@ Object[] ellipse_radius_A() :
 	Object[] ellipseParams = null ;
 }
 {
-	( <LPAREN> 
+	( <LEFT_PAREN> 
 	    minorRad=double_numeric_literal_A() <COMMA> majorRad=double_numeric_literal_A() 
 	    ( <COMMA> putString=pos_unit_type_A() )?
-	  <RPAREN> 
+	  <RIGHT_PAREN> 
 	)
 	{
 	   if( majorRad !=  null ) {
@@ -2599,7 +2711,7 @@ Object[] ellipse_angle_A() :
 	(
 	    angle=double_numeric_literal_A() 
 	    | 
-	    ( <LPAREN> angle=double_numeric_literal_A() <COMMA> patString=pos_angle_type_A() <RPAREN> )
+	    ( <LEFT_PAREN> angle=double_numeric_literal_A() <COMMA> patString=pos_angle_type_A() <RIGHT_PAREN> )
 	)
 	{
 	   if( angle !=  null ) {
@@ -2634,7 +2746,7 @@ ScalarExpressionType row_value_constructor_S() :
 		row_value_constructor_element_S()
 	    | 
 	    LOOKAHEAD(2)
-	    <LPAREN> row_value_constructor_list_S() <RPAREN>
+	    <LEFT_PAREN> row_value_constructor_list_S() <RIGHT_PAREN>
 	    | 
 	    row_subquery_S()
 	 )
@@ -2793,7 +2905,7 @@ SelectionListType select_list_S() :
 
 void allSelectionItem( ArrayList itemList ) : {}
 {
-	<STAR>
+	<ASTERISK>
 	{ itemList.add( AllSelectionItemType.Factory.newInstance() ) ; }
 }
 
@@ -2845,7 +2957,7 @@ AggregateFunctionType set_function_specification_S() :
 
 	(
 		LOOKAHEAD(3)
-		( t=<COUNT> <LPAREN> <STAR> <RPAREN> ) 
+		( t=<COUNT> <LEFT_PAREN> <ASTERISK> <RIGHT_PAREN> ) 
 		|
 		afType=general_set_function_A()
 	)
@@ -2913,9 +3025,9 @@ void single_datetime_field_S() : {}
     //     <non-second_datetime_field> [ <left_paren> <interval_leading_field_precision> <right_paren> ]
     //   | SECOND [ <left_paren> <interval_leading_field_precision> [ <comma> <interval_fractional_seconds_precision> ] <right_paren> ]
 
-	<NON_SECOND_DATETIME_FIELD> [ <LPAREN> interval_leading_field_precision_S() <RPAREN> ]
+	nonsecond_datetime_field_S() [ <LEFT_PAREN> interval_leading_field_precision_S() <RIGHT_PAREN> ]
     | 
-    <SECOND> [ <LPAREN> interval_leading_field_precision_S() [ <COMMA> interval_fractional_seconds_precision_S() ] <RPAREN> ]
+    <SECOND> [ <LEFT_PAREN> interval_leading_field_precision_S() [ <COMMA> interval_fractional_seconds_precision_S() ] <RIGHT_PAREN> ]
 }
 
 void start_field_S() : {}
@@ -2924,7 +3036,7 @@ void start_field_S() : {}
 	//  <start_field> ::=
     //    <non-second_datetime_field> [ <left_paren> <interval_leading_field_precision> <right_paren> ]
 
-    <NON_SECOND_DATETIME_FIELD> [ <LPAREN> interval_leading_field_precision_S() <RPAREN> ]
+    nonsecond_datetime_field_S() [ <LEFT_PAREN> interval_leading_field_precision_S() <RIGHT_PAREN> ]
 }
 
 ScalarExpressionType string_value_expression_A() :
@@ -2948,7 +3060,7 @@ SearchType subquery_S() :
 {
 	//S:
 	//  <subquery> ::= <left_paren> <query_expression> <right_paren>
-	<LPAREN> query_expression_S() <RPAREN>
+	<LEFT_PAREN> query_expression_S() <RIGHT_PAREN>
 	{ return st ; }		
 }
 
@@ -3017,7 +3129,7 @@ void corresponding_spec_S() : {}
 	//S:
 	// <corresponding_spec> ::=
     //    CORRESPONDING [ BY <left_paren> <corresponding_column_list> <right_paren> ]
-	<CORRESPONDING> [ <BY> <LPAREN> corrsponding_column_list_S() <RPAREN> ] 
+	<CORRESPONDING> [ <BY> <LEFT_PAREN> corrsponding_column_list_S() <RIGHT_PAREN> ] 
 }
     
 void corrsponding_column_list_S() : {}
@@ -3096,7 +3208,14 @@ void nonjoin_query_primary_S() : {}
     
 	simple_table_S()
 	|
-	<LPAREN> nonjoin_query_expression_S() <RPAREN>
+	<LEFT_PAREN> nonjoin_query_expression_S() <RIGHT_PAREN>
+}
+
+void nonsecond_datetime_field_S() : {}
+{
+	//S:
+	// <non-second_datetime_field> ::= YEAR | MONTH | DAY | HOUR | MINUTE
+	<YEAR> | <MONTH> | <DAY> | <HOUR> | <MINUTE>
 }
 
 void simple_table_S() : {}
@@ -3175,12 +3294,12 @@ FromTableType table_reference_A() :
 		// 1. derivedTable() moved to first choice point
 		// 2. joinedTable() moved to second choice point
 //	    LOOKAHEAD(4)
-//	    derivedTable() [ <AS> ] correlationName() [ <LPAREN> derived_column_list_S() <RPAREN> ]
+//	    derivedTable() [ <AS> ] correlationName() [ <LEFT_PAREN> derived_column_list_S() <RIGHT_PAREN> ]
 //	    |	
 //		LOOKAHEAD(4)
 //	    joinedTable()
 //	    |
-//		tableName() [ [ <AS> ] correlationName() [ <LPAREN> derived_column_list_S() <RPAREN> ] ]    
+//		tableName() [ [ <AS> ] correlationName() [ <LEFT_PAREN> derived_column_list_S() <RIGHT_PAREN> ] ]    
 
 		// Foreshortened. 
 		// derivedColumnList not supported in adql
@@ -3254,7 +3373,7 @@ SubQuerySet table_subquery_A() :
 {
 	//S:
 	// <table_subquery> ::= <subquery>
-	<LPAREN> st=query_specification_A() <RPAREN>	
+	<LEFT_PAREN> st=query_specification_A() <RIGHT_PAREN>	
 	{ 
 		if( st != null ) {
 			sqs = SubQuerySet.Factory.newInstance() ;
@@ -3296,7 +3415,7 @@ ScalarExpressionType term_S() :
     //   | <term> <solidus> <factor>
 
 	// refactored
-	// factor() ( LOOKAHEAD(2) (<STAR> | <DIVIDE> ) term() )*
+	// factor() ( LOOKAHEAD(2) (<ASTERISK> | <SOLIDUS> ) term() )*
 	seType=factor_S() exprPairs=termList()
 	{ 
 		if( exprPairs == null ) {
@@ -3354,7 +3473,7 @@ ScalarExpressionType[] termSingleton() :
 	Token t = null ; 
 }
 {
-	( t=<STAR> | t=<DIVIDE> ) seType=term_S()	
+	( t=<ASTERISK> | t=<SOLIDUS> ) seType=term_S()	
 	{
 		if( t != null ) {
 			retPairs = new ScalarExpressionType[2] ;		
@@ -3407,21 +3526,21 @@ TrigonometricFunctionType trigFunctions() :
 }
 {
 	(
-		t=<ACOS> <LPAREN> arg1=numeric_value_expression_S() <RPAREN>
+		t=<ACOS> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 		|
-		t=<ASIN> <LPAREN> arg1=numeric_value_expression_S() <RPAREN>
+		t=<ASIN> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 		|
-		t=<ATAN> <LPAREN> arg1=numeric_value_expression_S() <RPAREN>
+		t=<ATAN> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 		|
-		t=<ATAN2> <LPAREN> arg1=numeric_value_expression_S() <COMMA> arg2=numeric_value_expression_S() <RPAREN>
+		t=<ATAN2> <LEFT_PAREN> arg1=numeric_value_expression_S() <COMMA> arg2=numeric_value_expression_S() <RIGHT_PAREN>
 		|
-		t=<COS> <LPAREN> arg1=numeric_value_expression_S() <RPAREN>
+		t=<COS> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 		|
-		t=<COT> <LPAREN> arg1=numeric_value_expression_S() <RPAREN>
+		t=<COT> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 		|
-		t=<SIN> <LPAREN> arg1=numeric_value_expression_S() <RPAREN>
+		t=<SIN> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 		|
-		t=<TAN> <LPAREN> arg1=numeric_value_expression_S() <RPAREN>
+		t=<TAN> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 	)
 	{
 		if( t != null ) {
@@ -3572,6 +3691,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.23  2006/10/18 22:35:53  jl99
+Some systematization of token definitions.
+
 Revision 1.22  2006/10/16 15:35:49  jl99
 Region: Circle and Ellipse at STCregion v1.10.
 This is not the latest spec for region. But is appropriate as a prototype.
