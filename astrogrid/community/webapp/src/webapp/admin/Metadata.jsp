@@ -4,7 +4,7 @@
                  org.astrogrid.community.server.security.manager.SecurityManagerImpl,
                  org.astrogrid.community.server.policy.manager.PolicyManagerImpl,                 
                  org.astrogrid.community.server.policy.manager.AccountManagerImpl"
-    session="false" %>
+    session="true" %>
 
     <html>
 <head>
@@ -15,6 +15,7 @@
 </head>
 
 <body>
+<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 

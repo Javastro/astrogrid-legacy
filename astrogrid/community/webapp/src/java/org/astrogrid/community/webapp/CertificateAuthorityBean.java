@@ -59,6 +59,18 @@ public class CertificateAuthorityBean {
   }
   
   /**
+   * The state of the certificate authority: true implies enabled.
+   */
+  protected boolean caEnabled = false;
+  
+  /**
+   * Reveals the state of the CA.
+   */
+  public String getCaState() {
+    return (this.caEnabled)? "enabled" : "disabled";
+  }
+  
+  /**
    * The file holding the CA's private key.
    */
   protected File caKeyFile;
@@ -94,18 +106,64 @@ public class CertificateAuthorityBean {
    * Sets the passphrase for the CA's private key.
    */
   public void setCaPassword(String password) throws Exception {
-    try {
-      this.ca = new CertificateAuthority(password,
-                                         this.caKeyFile,
-                                         this.caCertificateFile,
-                                         this.caSerialFile,
-                                         this.myProxyDirectory);
-      this.rootDn = this.ca.getRootDn();
-      this.enablementResult = "The certificate authority is enabled.";
+    if (this.caKeyFile == null) {
+      this.enablementResult = "The certificate authority could not be enabled" +
+                              "the private-key file is not configured.";
+      this.caEnabled = false;
     }
-    catch (Exception e) {
-      this.enablementResult = "Enabling the certificate authority failed: " + 
-                              e.getMessage();
+    else if (!this.caKeyFile.exists()) {
+      this.enablementResult = "The certificate authority could not be enabled: " +
+                              "the private-key file is missing.";
+    }
+    else if (this.caCertificateFile == null) {
+      this.enablementResult = "The certificate authority could not be enabled: " +
+                              "the certificate file is not configured.";
+      this.caEnabled = false;
+    }
+    else if (!this.caCertificateFile.exists()) {
+      this.enablementResult = "The certificate authority could not be enabled: " +
+                              "the certificate file is missing.";
+    }
+    else if (this.caSerialFile == null) {
+      this.enablementResult = "The certificate authority could not be enabled: " +
+                              "the serial-number file is not configured.";
+      this.caEnabled = false;
+    }
+    else if (!this.caSerialFile.exists()) {
+      this.enablementResult = "The certificate authority could not be enabled: " +
+                              "the serial-number file is missing.";
+    }
+    else if (this.myProxyDirectory == null) {
+      this.enablementResult = "The certificate authority could not be enabled: " +
+                              "the directory for MyProxy files is not configured.";
+      this.caEnabled = false;
+    }
+    else if (!this.myProxyDirectory.exists()) {
+      this.enablementResult = "The certificate authority could not be enabled: " +
+                              "the directory for MyProxy files is missing.";
+    }
+    else if (password == null) {
+      this.enablementResult = "The certificate authority could not be enabled: " +
+                              "no password was given for the private key.";
+      this.caEnabled = false;
+    }
+    else {
+      try {
+        this.rootDn = "(unknown)";
+        this.ca = new CertificateAuthority(password,
+                                           this.caKeyFile,
+                                           this.caCertificateFile,
+                                           this.caSerialFile,
+                                           this.myProxyDirectory);
+        this.rootDn = this.ca.getRootDn();
+        this.enablementResult = "The certificate authority is enabled.";
+        this.caEnabled = true;
+      }
+      catch (Exception e) {
+        this.enablementResult = "Enabling the certificate authority failed: " + 
+                                e.getMessage();
+        this.caEnabled = false;
+      }
     }
   }
   
@@ -192,7 +250,7 @@ public class CertificateAuthorityBean {
                      this.userLoginName +
                      ") ";
     
-    if (this.ca == null) {
+    if (!this.caEnabled) {
       return context + "failed: the CA has not been enabled with the CA passphrase.";
     }
     

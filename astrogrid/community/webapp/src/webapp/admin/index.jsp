@@ -1,4 +1,4 @@
-<%@ page session="false" %>
+<%@ page session="true" %>
 
 <html>
 <head>
@@ -9,6 +9,7 @@
 </head>
 
 <body>
+<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 

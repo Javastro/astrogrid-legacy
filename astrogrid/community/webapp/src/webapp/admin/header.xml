@@ -1,7 +1,9 @@
+<!-- A status bar for the top of administration pages.
+     In page that includes this must also include beans.xml and the latter
+     must be included first. -->
 <div id='breadcrumbs'>
-  <jsp:useBean class="org.astrogrid.community.webapp.CommunityDbBean"
-    id="db" scope="page"/>
   <p><a href="http://www.astrogrid.org/"><img src="../style/AGlogo.png"/></a>
   AstroGrid Community: administration.
-  Database "health": <jsp:getProperty name="db" property="briefStatus"/>.</p>
+  Database "health" is <jsp:getProperty name="db" property="briefStatus"/>.
+  Certificate authority is <jsp:getProperty name="ca" property="caState"/>.</p>
 </div>

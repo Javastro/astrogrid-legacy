@@ -1,9 +1,6 @@
 <%@page session="true"%>
 
-<!-- Create the CA bean if this session doesn't already have one. 
-     The password comes from a parameter of the call to this page. -->
-<jsp:useBean class="org.astrogrid.community.webapp.CertificateAuthorityBean" 
-    id="ca" scope="session"/>
+<%@include file="beans.xml" %>
 <jsp:setProperty name="ca" property="caPassword"/>
 
 <html>
@@ -22,6 +19,8 @@
 <h1>Results of enabling the certificate authority</h1>
 <p>
 <jsp:getProperty name="ca" property="enablementResult"/>
+</p>
+<p>
 This certificate authority issues distinguished names based on
 <jsp:getProperty name="ca" property="rootDn"/>.
 </p>

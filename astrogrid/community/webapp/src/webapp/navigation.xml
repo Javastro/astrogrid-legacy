@@ -16,7 +16,8 @@
       <li><a href='configure.jsp'>Configuration instructions</a></li>
       <li><a href="admin/ResetDB.jsp">Initialize the database</a></li>
       <li><a href="admin/selfRegisterForm.jsp">Register the community</a></li>
-      <li><a href="admin/AccountAdmin.jsp">View or change user accounts</a></li>       
+      <li><a href="admin/AccountAdmin.jsp">View or change user accounts</a></li>
+      <li><a href="admin/CaEnablementForm.jsp">Enable the certificate authority</a></li>
       <li><a href='admin/index.jsp'>Other operations</a></li>
     </ul>  
   </div>

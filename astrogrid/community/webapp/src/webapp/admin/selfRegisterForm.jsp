@@ -1,6 +1,6 @@
 <%@ page import="org.astrogrid.config.SimpleConfig"
    isThreadSafe="false"
-   session="false"
+   session="true"
 %>
 
 <html>
@@ -12,6 +12,7 @@
         </title>
     </head>
 <body>
+<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 

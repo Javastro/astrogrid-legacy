@@ -1,5 +1,6 @@
-.project
-.classpath
-target
-build.properties
+.DS_Store
 maven.log
+.classpath
+build.properties
+.project
+target

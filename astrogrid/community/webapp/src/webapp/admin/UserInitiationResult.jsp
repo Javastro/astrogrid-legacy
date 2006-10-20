@@ -1,5 +1,7 @@
 <%@page session="true"%>
 
+<%@include file="beans.xml"%>
+
 <jsp:useBean class="org.astrogrid.community.webapp.UserAccountBean"
     id="account" scope="page"/>
 <%
@@ -7,8 +9,7 @@ String userLoginName = request.getParameter("userLoginName");
 account.setUserLoginName(userLoginName);
 %>
 
-<jsp:useBean class="org.astrogrid.community.webapp.CertificateAuthorityBean" 
-    id="ca" scope="session"/>
+
 
 <!-- Set the parameters of this user into the CA. 
      The values come from the parameters of the call to this page. -->

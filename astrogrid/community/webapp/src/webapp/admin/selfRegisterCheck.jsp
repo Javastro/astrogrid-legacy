@@ -5,7 +5,7 @@
     org.astrogrid.registry.client.RegistryDelegateFactory,
     org.astrogrid.registry.client.admin.RegistryAdminService"
     isThreadSafe="false"
-    session="false"
+    session="true"
 %>
 <html>
     <head>
@@ -15,6 +15,7 @@
         </style>
     </head>
     <body>
+        <%@ include file="beans.xml" %>
         <%@ include file="header.xml" %>
         <%@ include file="navigation.xml" %>
         <div id='bodyColumn'>

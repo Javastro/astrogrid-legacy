@@ -1,95 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--+
-    |
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: kea $</cvs:author>
-    | <cvs:date>$Date: 2006/06/16 16:08:42 $</cvs:date>
-    | <cvs:version>$Revision: 1.29 $</cvs:version>
-    | <cvs:log>
-    |   $Log: project.xml,v $
-    |   Revision 1.29  2006/06/16 16:08:42  kea
-    |   Changing dependency on astrogrid-pal-query to astrogrid-pal-oldquery.
-    |
-    |   Revision 1.28  2005/08/04 09:40:11  clq2
-    |   kevin's second batch
-    |
-    |   Revision 1.27.10.1  2005/07/26 09:40:52  KevinBenson
-    |   added dependency to the jes project for caching in the registry now needs commons-collection
-    |
-    |   Revision 1.27  2005/05/25 16:29:43  clq2
-    |   with doc temp
-    |
-    |   Revision 1.26.26.1  2005/05/23 09:30:05  KevinBenson
-    |   new documentation template for the community to be consistent for all of astrogrid.
-    |
-    |   Revision 1.26  2005/03/18 22:59:23  clq2
-    |   dave-dev-200503150513
-    |
-    |   Revision 1.25.20.2  2005/03/18 11:36:22  dave
-    |   Added commons-collections to the web app ..
-    |
-    |   Revision 1.25.20.1  2005/03/17 04:47:35  dave
-    |   Updated AccountManager to use FileManager for registering home space.
-    |
-    |   Revision 1.25  2005/01/07 14:14:25  jdt
-    |   merged from Reg_KMB_787
-    |
-    |   Revision 1.24.2.3  2005/01/05 11:24:50  KevinBenson
-    |   smal change in the description
-    |
-    |   Revision 1.24.2.2  2005/01/05 10:47:46  KevinBenson
-    |   added xdoc descriptions for the community
-    |
-    |   Revision 1.24.2.1  2004/12/12 21:22:50  KevinBenson
-    |   new dependencies for registry to validate the xml if necessary
-    |
-    |   Revision 1.24  2004/11/23 18:40:50  jdt
-    |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
-    |   http://software.astrogrid.org/developerdocs/developmentprocess.html
-    |
-    |   Revision 1.23.8.1  2004/11/12 00:45:53  jdt
-    |   Switched to use fixed version numbers, defined in a properties file
-    |
-    |   Revision 1.23  2004/11/04 18:00:02  jdt
-    |   Restored following fixes to auto-integration
-    |   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
-    |
-    |   Revision 1.21  2004/11/02 21:47:39  jdt
-    |   Merge of Comm_KMB_583
-    |
-    |   Revision 1.20.18.1  2004/10/26 20:57:41  KevinBenson
-    |   got rid of a duplicate jar it comes already in the axis libs so no need to bundle it
-    |
-    |   Revision 1.20  2004/09/17 06:57:10  dave
-    |   Added commons logging to FileStore.
-    |   Updated logging properties in Community.
-    |   Fixed bug in AGINAB deployment.
-    |   Removed MySpace tests with hard coded grendel address.
-    |
-    |   Revision 1.19.50.1  2004/09/17 02:53:08  dave
-    |   Added DTD fix and validation to webapp web.xml ....
-    |
-    |   Revision 1.19  2004/07/27 13:41:17  dave
-    |   Merged development branch, dave-dev-200407261230, into HEAD
-    |
-    |   Revision 1.18.2.1  2004/07/27 13:27:07  dave
-    |   Added registry entry and resolver to integtation tests
-    |
-    |   Revision 1.18  2004/07/25 08:57:33  KevinBenson
-    |   small change to use the registry-client-lite
-    |
-    |   Revision 1.17  2004/07/14 13:50:07  dave
-    |   Merged development branch, dave-dev-200406301228, into HEAD
-    |
-    |   Revision 1.16.4.1  2004/07/05 14:18:56  dave
-    |   Tried to remove the JConfig libraries
-    |
-    | </cvs:log>
-    |
-    +-->
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+<project>
 
     <!--+
         | Extend the common project descriptor.
@@ -105,7 +16,7 @@
         | The full name of the project.
         | This is used when generating JavaDoc titles.
         +-->
-    <name>Community webapp</name>
+    <name>Community Web Application</name>
 
     <!--+
         | A short description of the project.
