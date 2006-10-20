@@ -506,7 +506,9 @@ public class CertificateAuthority {
         "-inkey",     // ...and the CA private key...
         ckp,          // ...from this file.
         "-passin",    // Read the passphrase for the CA key...
-        "stdin"       // ...from standard input.
+        "stdin",      // ...from standard input.
+        "-passout",   // Make the password for the key-store
+        "pass:foo"    // ...the string "foo".     
     };
     this.runCommandWithStdinPassword(signCommand, this.caKeyPassphrase); 
     
