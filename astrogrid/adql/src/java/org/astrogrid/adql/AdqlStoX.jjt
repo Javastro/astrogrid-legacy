@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.23 2006/10/18 22:35:53 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.24 2006/10/20 08:53:25 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -110,6 +110,33 @@ SKIP :
 |	"\n"
 }
 
+/**
+ *
+ * bnf-start
+ *  <SQL_special_character> ::=
+ *     <double_quote>
+ *   | <percent>
+ *   | <ampersand>
+ *   | <quote>
+ *   | <left_paren>
+ *   | <right_paren>
+ *   | <asterisk>
+ *   | <plus_sign>
+ *   | <comma>
+ *   | <minus_sign>
+ *   | <period>
+ *   | <solidus>
+ *   | <colon>
+ *   | <semicolon>
+ *   | <less_than_operator>
+ *   | <equals_operator>
+ *   | <greater_than_operator>
+ *   | <question_mark>
+ *   | <underscore>
+ *   | <vertical_bar>
+ * bnf-end
+ *
+ */
 TOKEN : // <SQL_special_character> 
 {
   < DOUBLE_QUOTE: "\"\"" >
@@ -134,6 +161,16 @@ TOKEN : // <SQL_special_character>
 | < VERTICAL_BAR: "|" >
 }
 
+/**
+ * bnf-start
+ *  <SQL_embedded_language_character> ::=
+ *      <left_bracket>
+ *    | <right_bracket>
+ * bnf-end
+ * bnf_single <left_bracket> ::= [
+ * bnf-single <right_bracket> ::= ]
+ *
+ */
 TOKEN : // <SQL_embedded_language_character>
 {
   < LEFT_BRACKET: "[" >
@@ -376,122 +413,22 @@ TOKEN : // <reserved_word>
 // Cannot be certain what to make of these yet
 //{ //  < ADA : "ada" >//| < C: "c" >//| < CATALOG_NAME: "catalog_name" >//| < CHARACTER_SET_CATALOG: "character_set_catalog" >//| < CHARACTER_SET_NAME: "character_set_name" >//| < CHARACTER_SET_SCHEMA: "character_set_schema" >//| < CLASS_ORIGIN: "class_origin" >//| < COBOL: "cobol" >//| < COLLATION_CATALOG: "collation_catalog" >//| < COLLATION_NAME: "collation_name" >//| < COLLATION_SCHEMA: "collation_schema" >//| < COLUMN_NAME: "column_name" >//| < COMMAND_FUNCTION: "command_function" >//| < COMMITTED: "committed" >//| < CONDITION_NUMBER: "condition_number" >//| < CONNECTION_NAME: "connection_name" >//| < CONSTRAINT_CATALOG: "constraint_catalog" >//| < CONSTRAINT_NAME: "constraint_name" >//| < CONSTRAINT_SCHEMA: "constraint_schema" >//| < CURSOR_NAME: "cursor_name" >//| < DATA: "data" >//| < DATETIME_INTERVAL_CODE: "datetime_interval_code" >//| < DATETIME_INTERVAL_PRECISION: "datetime_interval_precision" >//| < DYNAMIC_FUNCTION: "dynamic_function" >//| < FORTRAN: "fortran" >//| < LENGTH: "length" >//| < MESSAGE_LENGTH: "message_length" >//| < MESSAGE_OCTET_LENGTH: "message_octet_length" >//| < MESSAGE_TEXT: "message_text" >//| < SQL_MORE: "more" >//| < MUMPS: "mumps" >//| < NAME: "name" >//| < NULLABLE: "nullable" >//| < NUMBER: "number" >//| < PASCAL: "pascal" >//| < PLI: "pli" >//| < REPEATABLE: "repeatable" >//| < RETURNED_LENGTH: "returned_length" >//| < RETURNED_OCTET_LENGTH: "returned_octet_length" >//| < RETURNED_SQLSTATE: "returned_sqlstate" >//| < ROW_COUNT: "row_count" >//| < SCALE: "scale" >//| < SCHEMA_NAME: "schema_name" >//| < SERIALIZABLE: "serializable" >//| < SERVER_NAME: "server_name" >//| < SUBCLASS_ORIGIN: "subclass_origin" >//| < TABLE_NAME: "table_name" >//| < TYPE: "type" >//| < UNCOMMITTED: "uncommitted" >//| < UNNAMED: "unnamed" >//}
 
-TOKEN : 
+TOKEN : // <adql_tokens>
 {
 	< LBRACE : "{" >
 |	< RBRACE : "}" >
-	
 |	< NOT_EQUALS_OPERATOR : "<>" | "!=" >
 |	< LESS_THAN_OR_EQUALS_OPERATOR : "<=" >
 |	< GREATER_THAN_OR_EQUALS_OPERATOR : ">=" >
-
-|	< BASE64: "base64" >
-
-|	< BINARY: "binary" >
-|	< BREAK: "break" >
-
-|	< CHECKPOINT: "checkpoint" >
-
-|	< CLUSTERED: "clustered" >
-|	< COMPUTE: "compute" >
-|	< CONCAT: "concat" >
-|	< CONTAINS: "contains" >
-|	< CONTAINSTABLE: "containstable" >
 |	< CROSS_JOIN : "cross join">
-|	< CUBE: "cube" >
-|	< DATABASE: "database" >
-|	< DBCC: "dbcc" >
-|	< DENY: "deny" >
-|	< DISK: "disk" >
-|	< DISTRIBUTED: "distributed" >
-|	< DUMP: "dump" >
-|	< ELEMENTS: "elements" >
-|	< ERRLVL: "errlvl" >
-|	< EXIT: "exit" >
-|	< EXPAND: "expand" >
-|	< EXPLICIT: "explicit" >
-|	< FAST: "fast" >
-|	< FASTFIRSTROW: "fastfirstrow" >
-|	< FILE: "file" >
-|	< FILLFACTOR: "fillfactor" >
-|	< FORCE: "force" >
-|	< FREETEXT: "freetext" >
-|	< FREETEXTTABLE: "freetexttable" >
 |	< FUNCTION: "function" >
 |	< GROUPBY: "group by" >
-|	< HASH: "hash" >
-|	< HOLDLOCK: "holdlock" >
-|	< IDENTITY_INSERT: "identity_insert" >
-|	< IDENTITYCOL: "identitycol" >
-|	< IF: "if" >
-|	< INDEX: "index" >
-|	< KEEP: "keep" >
-|	< KEEPFIXED: "keepfixed" >
-|	< KILL: "kill" >
-|	< LINENO: "lineno" >
-|	< LOAD: "load" >
-|	< LOOP: "loop" >
-|	< MAXDOP: "maxdop" >	
-|	< MERGE: "merge" >
-|	< NOCHECK: "nocheck" >
-|	< NOLOCK: "nolock" >
-|	< NONCLUSTERED: "nonclustered" >
-|	< OFF: "off" >
-|	< OFFSETS: "offsets" >
-|	< OPENDATASOURCE: "opendatasource" >
-|	< OPENQUERY: "openquery" >
-|	< OPENROWSET: "openrowset" >
-|	< OPENXML: "openxml" >
 |	< ORDERBY : "order by" >
-|	< OVER: "over" >
-|	< PAGLOCK: "paglock" >
-|	< PLAN: "plan" >
-|	< PRINT: "print" >
-|	< PROC: "proc" >
-|	< RAISERROR: "raiserror" >
-|	< RAW: "raw" >
-|	< READCOMMITED: "readcommited" >
-|	< READPAST: "readpast" >
-|	< READTEXT: "readtext" >
-|	< READUNCOMMITED: "readuncommited" >
-|	< RECONFIGURE: "reconfigure" >
 |	< REGION: "region" >
-|	< REMOTE: "remote" >
-|	< REPEATABLEREAD: "repeatableread" >
-|	< REPLICATION: "replication" >
-|	< RESTORE: "restore" >
-|	< RETURN: "return" >
-|	< ROBUST: "robust" >
-|	< ROLLUP: "rollup" >
-|	< ROWCOUNT: "rowcount" >
-|	< ROWGUIDCOL: "rowguidcol" >
-|	< ROWLOCK: "rowlock" >
-|	< RULE: "rule" >
-|	< SAVE: "save" >
-|	< SETUSER: "setuser" >
-|	< SHUTDOWN: "shutdown" >
-|	< STATISTICS: "statistics" >
-|	< TABLOCK: "tablock" >
-|	< TABLOCKX: "tablockx" >
-|	< TEXTSIZE: "textsize" >
 |	< TIME_ZONE: "TIME ZONE" >
-|	< TIES: "ties" >
 |	< TOP: "top" >
-|	< TRAN: "tran" >
-|	< TRIGGER: "trigger" >
 |	< TRUTH_VALUE : "true" | "falsed" | "unknown" >
-|	< TSEQUAL: "tsequal" >
-|	< UPDATETEXT: "updatetext" >
-|	< UPDLOCK: "updlock" >
-|	< USE: "use" >
-|	< VIEWS: "views" >
-|	< WAITFOR: "waitfor" >
-|	< WHILE: "while" >
-|	< WRITETEXT: "writetext" >
-|	< XLOCK: "xlock" >
 |	< XMATCH: "xmatch" >
-|	< XML: "xml" >
-|	< XMLDATA: "xmldata" >
 
 	//region
 |	< CIRCLE : "circle" >
@@ -551,9 +488,6 @@ TOKEN :
 |	< ATAN: "atan" >
 |	< ATAN2: "atan2" >
 
-|	< TILDE : "~" >
-|	< BANG : "!" >
-
 |	< DOLLAR : "$" >
 
 |  	< REGULAR_IDENTIFIER : ( <LETTER> )+ ( <DIGIT> | <LETTER> | <SPECIAL_CHARS> )* >
@@ -602,6 +536,11 @@ SelectDocument select_document_A() :
 
 //=================================
 
+/**
+ *
+ * bnf-single <actual_identifier> ::= <regular_identifier> | <delimited_identifier>
+ *
+ */
 String actual_identifier_S() : 
 {
 	String rid = null ;
@@ -638,6 +577,15 @@ AtomType signed_integer_S() :
 	}
 }
 
+/**
+ *
+ * bnf-start
+ * <between_predicate> ::=
+ *     <value_expression> [ NOT ] BETWEEN
+ *     <value_expression> AND <value_expression>
+ * bnf-end
+ *
+ */
 SearchType between_predicate_A() : 
 {
 	
@@ -674,6 +622,16 @@ SearchType between_predicate_A() :
 	}
 }
 
+/**
+ * boolean_primary_S
+ *
+ * bnf-start
+ *  <boolean_primary> ::= 
+ *       <predicate> 
+ *     | <left_paren> <search_condition> <right_paren>
+ * bnf-end
+ *
+ */
 SearchType boolean_primary_S() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "boolean_primary_S" ) ;
@@ -685,8 +643,6 @@ SearchType boolean_primary_S() :
 	// <boolean_primary> ::=
     //    <predicate>
     //  | <left_paren> <search_condition> <right_paren>
-
-	
 	(
 		LOOKAHEAD(6)
 		st=predicate_A()
@@ -704,7 +660,16 @@ SearchType boolean_primary_S() :
     }
 }
 
-
+/**
+ * boolean_term_S
+ *
+ * bnf-start
+ *  <boolean_term> ::=
+ *      <boolean_factor>
+ *    | <boolean_term> AND <boolean_factor>
+ * bnf-end
+ *
+ */
 SearchType boolean_term_S() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "boolean_term_S" ) ;
@@ -739,6 +704,11 @@ SearchType boolean_term_S() :
 	}
 }
 
+/**
+ *
+ * bnf-single <boolean_factor> ::= [ NOT ] <boolean_test>
+ *
+ */
 SearchType boolean_factor_S() :
 {
 	if( TRACE_ENABLED ) enterTrace ( "boolean_factor_S" ) ;
@@ -815,6 +785,16 @@ SearchType booleanFactorSingleton() :
 	}
 }
 
+
+/**
+ * boolean_test_A
+ *
+ * bnf-start
+ *  <boolean_test> ::= <boolean_primary>
+ *  !! There is no accommodation for <truth_value> in ADQL
+ * bnf-end
+ *
+ */
 SearchType boolean_test_A() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "boolean_test_A" ) ;
@@ -879,6 +859,15 @@ void castSpecification_S() : {}
 	"6-TBD castSpecification"
 }
 
+/**
+ * character_factor_A
+ *
+ * bnf-start
+ *  <character_factor> ::= <character_primary>
+ *  !! There is no accommodation for <collate_clause> in ADQL
+ * bnf-end
+ *
+ */
 ScalarExpressionType character_factor_A() : 
 {
 	ScalarExpressionType seType = null ;
@@ -891,6 +880,15 @@ ScalarExpressionType character_factor_A() :
 	{ return seType ; }
 }
 
+/**
+ * character_primary_A
+ *
+ * bnf-start
+ *  <character_primary> ::= <value_expression_primary>
+ *  !! There is no accommodation for <string_value_function> in ADQL
+ * bnf-end
+ *
+ */
 ScalarExpressionType character_primary_A() : 
 {
 	ScalarExpressionType seType = null ;
@@ -904,7 +902,17 @@ ScalarExpressionType character_primary_A() :
 	{ return seType ; }
 }
 
-
+/**
+ * character_string_literal_A
+ *
+ * bnf-start
+ *  <character_string_literal> ::=
+ *     <quote> [ <character_representation>... ] <quote>
+ *     [ { <quote> [ <character_representation>... ] <quote> }... ]
+ *  !! There is no accommodation for <character_set_specification> in ADQL
+ * bnf-end
+ *
+ */
 AtomType character_string_literal_A() : 
 {
 	AtomType atomType = null ;
@@ -960,6 +968,15 @@ AtomType ASCIIStringLiteral() :
 	
 }
 
+/**
+ * character_value_expression_A
+ *
+ * bnf-start
+ *  <character_value_expression> ::= <character_factor>
+ *  !! There is no accommodation for <concatenation> in ADQL
+ * bnf-end
+ *
+ */
 ScalarExpressionType character_value_expression_A() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "character_value_expression_A" ) ;
@@ -988,6 +1005,12 @@ void collate_clause_S() : {}
 	<COLLATE> qualified_name_A()	
 }
 
+/**
+ * column_name_S
+ *
+ * bnf-single <column_name> ::= <identifier>
+ *
+ */
 String column_name_S() : 
 {
 	String name = null ;
@@ -1000,6 +1023,12 @@ String column_name_S() :
 	{ return name ; }
 }
 
+/**
+ * column_name_list_S
+ *
+ * bnf-single <column_name_list> ::= <column_name> [ { <comma> <column_name> }... ]
+ *
+ */
 void column_name_list_S()  : {}
 {
 	//S:
@@ -1007,6 +1036,12 @@ void column_name_list_S()  : {}
 	 column_name_S() ( <COMMA> column_name_S() )*	
 }
 
+/**
+ * column_reference_S
+ *
+ * bnf-single <column_reference> ::= [ <qualifier> <period> ] <column_name>
+ *
+ */
 ColumnReferenceType column_reference_S() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "column_reference_S" ) ;
@@ -1032,8 +1067,21 @@ ColumnReferenceType column_reference_S() :
 	}
 }
 
-/*
+/**
+ * value_expression_primary_A
+ *
  * NB: Referred in some sources as <common_primary>
+ *
+ * bnf-start
+ *  <value_expression_primary> ::=
+ *      <unsigned_value_specification>
+ *    | <column_reference>
+ *    | <set_function_specification>
+ *    | <left_paren> <value_expression> <right_paren>
+ *  !! There is no accommodation for <scalar_subquery>,
+ *     <case_expression> or <cast_specification> in ADQL
+ * bnf-end
+ *
  */
 ScalarExpressionType value_expression_primary_A() : 
 {
@@ -1085,6 +1133,20 @@ ScalarExpressionType value_expression_primary_A() :
 	}
 }
 
+/**
+ * comp_op_S
+ *
+ * bnf-start
+ *  <comp_op> ::=
+ *      <equals_operator>
+ *    | <not_equals_operator>
+ *    | <less_than_operator>
+ *    | <greater_than_operator>
+ *    | <less_than_or_equals_operator>
+ *    | <greater_than_or_equals_operator>
+ * bnf-end
+ *
+ */
 ComparisonType comp_op_S() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "comp_op_S()" ) ;
@@ -1123,6 +1185,15 @@ ComparisonType comp_op_S() :
 	}
 }
 
+/**
+ * comparison_predicate_A
+ *
+ * bnf-start
+ *  <value_expression> <comp_op> <value_expression>
+ *  !! There is no accommodation for <row_value_constructor> in ADQL
+ * bnf-end
+ *
+ */
 ComparisonPredType comparison_predicate_A() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "comparison_predicate_A()" ) ;
@@ -1134,7 +1205,7 @@ ComparisonPredType comparison_predicate_A() :
 }
 {
 	//S:
-	//  <row_value_constructor> <comp_op> <row_value_constructor
+	//  <row_value_constructor> <comp_op> <row_value_constructor>
 	( seType1=value_expression_A() compType=comp_op_S() seType2=value_expression_A() )
 	{ 
 		try {
@@ -1156,7 +1227,12 @@ ComparisonPredType comparison_predicate_A() :
 	}
 }
 
-
+/**
+ * correlation_name_S
+ *
+ * bnf-single <correlation_name> ::= <identifier>
+ *
+ */
 String correlation_name_S() : 
 {
 	String name = null ;
@@ -1227,6 +1303,12 @@ void datetime_value_function_S() : {}
 	<CURRENT_TIMESTAMP> [ <LEFT_PAREN> timestamp_precision_S() <RIGHT_PAREN> ]
 }
 
+/**
+ * derived_column_list_S
+ *
+ * bnf-single <derived_column_list> ::= <column_name_list>
+ *
+ */
 void derived_column_list_S() : {}
 {
 	//S:
@@ -1257,6 +1339,16 @@ void escape_character_A() : {}
 	character_value_expression_A()	
 }
 
+/**
+ * exact_numeric_literal_S
+ *
+ * bnf-start
+ *  <exact_numeric_literal> ::=
+ *      <unsigned_integer> [ <period> [ <unsigned_integer> ] ]
+ *    | <period> <unsigned_integer>
+ * bnf-end
+ *
+ */
 AtomType exact_numeric_literal_S( int possibleSignChange ) :
 {
 	AtomType atomType = null ;
@@ -1318,6 +1410,12 @@ void explicit_table_S() : {}
 	<TABLE> table_name_A()
 }
 
+/**
+ * factor_S
+ *
+ * bnf-single <factor> ::= [ <sign> ] <numeric_primary> 
+ *
+ */
 ScalarExpressionType factor_S() : 
 {
 	ScalarExpressionType retType = null ;
@@ -1356,6 +1454,15 @@ UnaryExprType factorUnary() :
 	}
 }
 
+/**
+ * from_clause_S
+ *
+ * bnf-start
+ *  <from_clause> ::= FROM <table_reference>
+ *     [ { <comma> <table_reference> }... ]
+ * bnf-end
+ *
+ */
 FromType from_clause_S() : 
 {
     if( TRACE_ENABLED ) enterTrace ( "from_clause_S" ) ;
@@ -1383,6 +1490,17 @@ FromType from_clause_S() :
 	}
 }
 
+/**
+ * general_literal_A
+ *
+ * bnf-start
+ *  <general_literal> ::= <character_string_literal>
+ *  !! There is no accommodation for <national_character_string_literal>,
+ *     <bit_string_literal>, <hex_string_literal>, <datetime_literal>
+ *     and <interval_literal> in ADQL
+ * bnf-end
+ *
+ */
 AtomType general_literal_A() :
 {
 	AtomType atomType = null ;	
@@ -1401,6 +1519,14 @@ AtomType general_literal_A() :
 	{ return atomType ; }	
 }
 
+/**
+ * general_set_function_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 AggregateFunctionType general_set_function_A() : 
 {
 	AggregateFunctionType afType = null ;
@@ -1426,6 +1552,14 @@ AggregateFunctionType general_set_function_A() :
 		return afType ; }	
 }
 
+/**
+ * general_value_specification_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 ScalarExpressionType general_value_specification_A() : 
 {
 	ScalarExpressionType seType = null ;
@@ -1447,6 +1581,14 @@ ScalarExpressionType general_value_specification_A() :
 	{ return seType ; }	
 }
 
+/**
+ * group_by_clause_S
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 GroupByType group_by_clause_S() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "group_by_clause_S" ) ;
@@ -1468,6 +1610,14 @@ GroupByType group_by_clause_S() :
 	}
 }
 
+/**
+ * grouping_column_reference_list_S
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 ArrayList grouping_column_reference_list_S() : 
 {
 	ArrayList list = null ;
@@ -1490,6 +1640,14 @@ ArrayList grouping_column_reference_list_S() :
 	{ return list ; }
 }
 
+/**
+ * grouping_column_reference_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 ColumnReferenceType grouping_column_reference_A() : 
 {
 	ColumnReferenceType cr = null ;
@@ -1503,6 +1661,14 @@ ColumnReferenceType grouping_column_reference_A() :
 	{ return cr ; }
 }
 
+/**
+ * having_clause_S
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 HavingType having_clause_S() :
 {
 	if( TRACE_ENABLED ) enterTrace ( "having_clause_S" ) ;
@@ -1526,6 +1692,14 @@ HavingType having_clause_S() :
 	}
 }
 
+/**
+ * identifier_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 String identifier_A() : 
 { String retValue ; }
 {
@@ -1537,6 +1711,14 @@ String identifier_A() :
 	{ return retValue ; }
 } 
 
+/**
+ * in_predicate_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 SearchType in_predicate_A() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "in_predicate_A" ) ;
@@ -1575,6 +1757,14 @@ SearchType in_predicate_A() :
 	}
 }
 
+/**
+ * in_predicate_value_S
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 InclusionSetType in_predicate_value_S() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "in_predicate_value_S" ) ;
@@ -1672,6 +1862,14 @@ void interval_value_expression_S() : {}
     <LEFT_PAREN> datetime_value_expression_S() <MINUS_SIGN> datetime_term_S() <RIGHT_PAREN> interval_qualifier_S()
 }
 
+/**
+ * in_value_list_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 ConstantListSet in_value_list_A() : 
 {
 	LiteralType lit1 = null ;
@@ -1711,6 +1909,14 @@ ConstantListSet in_value_list_A() :
     }	
 }
 
+/**
+ * in_value_list_constant_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 LiteralType in_value_list_constant_A() : 
 {
 	AtomType at = null ;
@@ -1764,6 +1970,14 @@ void join_specification_S() : {}
     )
 }
 
+/**
+ * join_specification_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 ComparisonPredType join_specification_A() : 
 {
 	ComparisonPredType cpType = null ;
@@ -1785,6 +1999,14 @@ ComparisonPredType join_specification_A() :
     { return cpType ; }
 }
 
+/**
+ * joined_table_S
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 JoinTableType joined_table_S() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "joined_table_S()" ) ;
@@ -1812,6 +2034,14 @@ JoinTableType joined_table_S() :
 	}
 }
 
+/**
+ * join_type_A
+ *
+ * bnf-start
+ *  
+ * bnf-end
+ *
+ */
 JointTableQualifierType join_type_A() :  
 {
 	JointTableQualifierType jType = null ;
@@ -2338,7 +2568,7 @@ String qualifier_A() :
 {
 	//S:
 	// <qualifier> ::=
-    //    <table_name>
+    //    <table_name> 
     //  | <correlation_name>
 
 	// Foreshortened
@@ -2887,6 +3117,7 @@ SelectionListType select_list_S() :
 }
 {
 	//S:
+	// <select_list> ::=
 	//   <asterisk>
     // | <select_sublist> [ { <comma> <select_sublist> }... ]
 	(
@@ -2915,8 +3146,7 @@ void select_sublist_A( ArrayList itemList ) :
 }
 {   
 	//S:
-	//   <derived_column>
-    // | <qualifier> <period> <asterisk>
+	// <select_sublist> ::= <derived_column> | <qualifier> <period> <asterisk>
     
 	siType=derived_column_S()
 	{ itemList.add( siType ) ; }			
@@ -3001,7 +3231,7 @@ SelectionOptionType set_quantifier_S() :
 }
 {
 	//S:
-	// DISTINCT | ALL
+	// <set_quantifier> ::= DISTINCT | ALL
 	//
 	( t=<DISTINCT> | t=<ALL> )
 	{ 	
@@ -3241,6 +3471,7 @@ ArrayList table_expression_A() :
 } 
 {
 	//S:
+	// <table_expression> ::=
 	// <from_clause>
     // [ <where_clause> ]
     // [ <group_by_clause> ]
@@ -3568,7 +3799,12 @@ void unique_predicate_S() : {}
 	// <unique_predicate> ::= UNIQUE <table_subquery>
 	<UNIQUE> table_subquery_S()	
 }
-
+/**
+ * unsigned_literal_S
+ *
+ * bnf: <unsigned_literal> ::= <unsigned_numeric_literal> | <general_literal>
+ *
+ */
 AtomType unsigned_literal_S() : 
 {
 	AtomType atomType = null ;
@@ -3627,10 +3863,11 @@ ScalarExpressionType value_expression_A() :
 } 
 {
 	//S:
-	// <numeric_value_expression>
-    // | <string_value_expression>
-    // | <datetime_value_expression>
-    // | <interval_value_expression>
+	// <value_expression> ::=
+	//    <numeric_value_expression>
+    //  | <string_value_expression>
+    //  | <datetime_value_expression>
+    //  | <interval_value_expression>
 	(
 	LOOKAHEAD(3) 
 	retValue=numeric_value_expression_S() 
@@ -3691,6 +3928,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.24  2006/10/20 08:53:25  jl99
+BNF Documentation
+
 Revision 1.23  2006/10/18 22:35:53  jl99
 Some systematization of token definitions.
 
