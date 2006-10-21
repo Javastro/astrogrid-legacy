@@ -11,7 +11,7 @@
                  org.astrogrid.community.client.policy.manager.PolicyManagerDelegate,
                  org.astrogrid.community.common.ivorn.CommunityIvornParser,             
                  org.astrogrid.community.server.policy.manager.AccountManagerImpl"
-    session="false" %>
+    session="true" %>
 
 <%
 
@@ -81,6 +81,7 @@ org.astrogrid.registry.client.query.ResourceData[] communityServices = pmr.resol
 </head>
 
 <body>
+<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 

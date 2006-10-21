@@ -1,7 +1,7 @@
 <%@ page import="org.astrogrid.community.common.policy.data.ResourceData,
                  org.astrogrid.community.server.policy.manager.PolicyManagerImpl,
                  org.astrogrid.community.server.policy.manager.ResourceManagerImpl"
-    session="false" %>
+    session="true" %>
 
 <%
 
@@ -48,6 +48,7 @@ if(resources != null)
 </head>
 
 <body>
+<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 

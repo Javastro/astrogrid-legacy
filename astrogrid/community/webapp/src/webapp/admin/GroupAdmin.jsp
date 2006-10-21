@@ -3,7 +3,7 @@
                  org.astrogrid.community.server.policy.manager.PolicyManagerImpl,				 
                  org.astrogrid.store.Ivorn,				 
                  org.astrogrid.community.server.policy.manager.GroupManagerImpl"
-    session="false" %>
+    session="true" %>
 
 <%
 
@@ -68,6 +68,7 @@ if(groups != null)
 </head>
 
 <body>
+<%@ include file="beans.xml" %>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
 
