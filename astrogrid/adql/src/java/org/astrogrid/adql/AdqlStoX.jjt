@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.25 2006/10/20 13:02:10 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.26 2006/10/22 20:47:10 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -138,7 +138,7 @@ SKIP :
  *  !! There is no effort within the ADQL standard itself to accommodate white space.
  *     Hence the absence of <space> in the above. This is better left to the use
  *     of regular expressions within an implementation. Specific accommodation of 
- *     white space within the standard would lead to clutter.  
+ *     white space within the standard would lead to inappropriate clutter.  
  * bnf-end
  *
  * bnfsingle <double_quote> ::= "
@@ -527,15 +527,8 @@ TOKEN : // <reserved_word>
  *
  * bnf-single <left_brace> ::= {
  * bnf-single <right_brace> ::= }
- * bnf-single <not_equals_operator1> ::= <>
- * bnf_single <not_equals_operator2> ::= !=
- * bnf-single <not_equals_operator> ::= <not_equals_operator1> | <not_equals_operator2>
- * bnf-single <less_than_or_equals_operator> ::= <=
- * bnf-single <greater_than_or_equals_operator> ::= >=
- * bnf-single TOP = top
- * bnf-single
- * bnf-single
- * bnf-single
+ * bnf-single TOP ::= top
+ * bnf-single DOLLAR ::= $
  * bnf-single ABS ::= abs 
  * bnf-single CEILING ::= ceiling
  * bnf-single DEGREES ::= degrees
@@ -551,24 +544,26 @@ TOKEN : // <reserved_word>
  * bnf-single RAND ::= rand
  * bnf-single ROUND ::= round
  * bnf-single TRUNCATE ::= truncate 
+ * bnf-single SIN ::= sin
+ * bnf-single COS ::= cos
+ * bnf-single TAN ::= tan
+ * bnf-single COT ::= cot
+ * bnf-single ASIN ::= asin
+ * bnf-single ACOS ::= acos
+ * bnf-single ATAN ::= atan
+ * bnf-single ATAN2 ::= atan2
  */
 TOKEN : // <adql_tokens>
 {
 	< LBRACE : "{" >
 |	< RBRACE : "}" >
-|	< NOT_EQUALS_OPERATOR : "<>" | "!=" >
-|	< LESS_THAN_OR_EQUALS_OPERATOR : "<=" >
-|	< GREATER_THAN_OR_EQUALS_OPERATOR : ">=" >
-|	< CROSS_JOIN : "cross join">
-|	< GROUPBY: "group by" >
-|	< ORDERBY : "order by" >
-|	< REGION: "region" >
-|	< TIME_ZONE: "TIME ZONE" >
+
 |	< TOP: "top" >
-|	< TRUTH_VALUE : "true" | "falsed" | "unknown" >
+
 |	< XMATCH: "xmatch" >
 
 	//region
+|	< REGION: "region" >
 |	< CIRCLE : "circle" >
 |   < ELLIPSE : "ellipse" >	
 |   < POLYGON : "polygon" >
@@ -628,6 +623,61 @@ TOKEN : // <adql_tokens>
 
 |	< DOLLAR : "$" >
 
+|	< ASCII_STRING_LITERAL : "\'" (~["\'"])* "\'" >
+
+//| 	< ASCIIStringLiteral : "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
+//|	< UnicodeStringLiteral : "n" "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
+
+}
+
+/**
+ * TOKEN miscellaneous SQL92 
+ *
+ * bnf-single <not_equals_operator1> ::= <>
+ * bnf_single <not_equals_operator2> ::= !=
+ * bnf-single <not_equals_operator> ::= <not_equals_operator1> | <not_equals_operator2>
+ * bnf-single <less_than_or_equals_operator> ::= <=
+ * bnf-single <greater_than_or_equals_operator> ::= >=
+ * bnf-single <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+ * bnf-start
+ *  <simple_Latin_letter> ::=
+ *      <simple_Latin_upper_case_letter>
+ *    | <simple_Latin_lower_case_letter>
+ * bnf-end
+ * bnf-start
+ *  <simple_Latin_upper_case_letter> ::=
+ *      A | B | C | D | E | F | G | H | I | J | K | L | M | N | O
+ *    | P | Q | R | S | T | U | V | W | X | Y | Z
+ * bnf-end
+ * bnf-start
+ *  <simple_Latin_lower_case_letter> ::=
+ *      a | b | c | d | e | f | g | h | i | j | k | l | m | n | o
+ *    | p | q | r | s | t | u | v | w | x | y | z
+ * bnf-end
+ * bnf-start
+ *  <regular_identifier> ::=
+ *      <simple_Latin_letter>... 
+ *      [ { <digit> | <simple_Latin_letter> | <dollar> | <underscore> }... ]
+ * bnf-end
+ * bnf-start
+ *  <delimited_identifier> ::=
+ *  !! Begins and ends with a double quote as delimiters
+ *     but contains no double quotes or white space
+ * bnf-end
+ * bnf-single <unsigned_integer> ::= <digit>...
+ * bnf-single <sign> ::= <plus_sign> | <minus_sign>
+ *
+ */
+TOKEN : // miscellaneous SQL92 
+{
+	< NOT_EQUALS_OPERATOR : "<>" | "!=" >
+|	< LESS_THAN_OR_EQUALS_OPERATOR : "<=" >
+|	< GREATER_THAN_OR_EQUALS_OPERATOR : ">=" >
+|	< CROSS_JOIN : "cross join">
+|	< GROUPBY: "group by" >
+|	< ORDERBY : "order by" >
+|	< TIME_ZONE: "TIME ZONE" >
+|	< TRUTH_VALUE : "true" | "false" | "unknown" >
 |  	< REGULAR_IDENTIFIER : ( <LETTER> )+ ( <DIGIT> | <LETTER> | <SPECIAL_CHARS> )* >
 |	< DELIMITED_IDENTIFIER : "\"" (~["\n","\r","\""])* "\"" >
 | 	< #LETTER: ["a"-"z", "A"-"Z"] >
@@ -646,14 +696,17 @@ TOKEN : // <adql_tokens>
 |   < #E : ["E", "e"] >
 |   < #SIGN : <PLUS_SIGN> | <MINUS_SIGN> >
 
-|	< ASCII_STRING_LITERAL : "\'" (~["\'"])* "\'" >
-
-//| 	< ASCIIStringLiteral : "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
-//|	< UnicodeStringLiteral : "n" "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
-
-|	< OTHER : ~[] >
 }
- 
+
+/**
+ * TOKEN The remainder men.
+ *
+ *
+ */
+TOKEN : // The remainder
+{
+ 	< OTHER : ~[] >
+}
 
 SelectDocument select_document_A() : 
 { 	
@@ -4457,6 +4510,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.26  2006/10/22 20:47:10  jl99
+More BNF Documentation
+
 Revision 1.25  2006/10/20 13:02:10  jl99
 More BNF Documentation
 
