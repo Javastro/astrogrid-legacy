@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.12 2006/09/01 15:09:03 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.13 2006/10/23 14:14:47 pjn3 Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -101,7 +101,40 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
             acc.setCommunity(community.getUserInformation().getCommunity());
             acc.setName(community.getUserInformation().getName());
         Workflow wf = wft.instantiate(acc,t);
-        if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,"Do you want to save a copy of the workflow you just built? (Optional)","Save a copy",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE)) {
+        String options[] = {"Yes (and submit)", "No (and submit)", "Yes (don't submit)", };
+        int value = JOptionPane.showOptionDialog(
+            null,
+            "Do you want to save a copy of the workflow you just built? (Optional)",
+            "Save a copy",
+            JOptionPane.YES_NO_OPTION, // Need something  
+              JOptionPane.QUESTION_MESSAGE,
+            null, // Use default icon for message type
+            options,
+            options[0]);
+        if (value == 0) {
+            URI u = chooser.chooseResource("Save a copy of this workflow",true);
+            if (u != null ) {
+                writer = new OutputStreamWriter(vos.getOutputStream(u));
+                wf.marshal(writer);
+            }
+            Document doc = XMLUtils.newDocument();
+            Marshaller.marshal(wf,doc);
+            URI id = jobs.submitJob(doc);
+            monitor.show(); // brings monitor to the front, if not already there.
+        } else if (value == 1) {
+            Document doc = XMLUtils.newDocument();
+            Marshaller.marshal(wf,doc);
+            URI id = jobs.submitJob(doc);
+            monitor.show(); // brings monitor to the front, if not already there.
+        } else if (value == 2) {
+            URI u = chooser.chooseResource("Save a copy of this workflow",true);
+            if (u != null ) {
+                writer = new OutputStreamWriter(vos.getOutputStream(u));
+                wf.marshal(writer);
+            }
+        }
+        /**         
+         if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(null,"Do you want to save a copy of the workflow you just built? (Optional)","Save a copy",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE)) {
             URI u = chooser.chooseResource("Save a copy of this workflow",true);
             if (u != null ) {
                 writer = new OutputStreamWriter(vos.getOutputStream(u));
@@ -112,6 +145,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         Marshaller.marshal(wf,doc);
         URI id = jobs.submitJob(doc);
         monitor.show(); // brings monitor to the front, if not already there.
+        */
 
         } catch (Exception e) {
             logger.warn("Failed",e);
@@ -177,6 +211,10 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.13  2006/10/23 14:14:47  pjn3
+Bug# 1882
+Option to save workflow without submitting added
+
 Revision 1.12  2006/09/01 15:09:03  nw
 made paramterized workflow configure from the wiki again.
 
