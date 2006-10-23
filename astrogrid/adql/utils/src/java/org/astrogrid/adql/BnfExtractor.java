@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.3 2006/10/23 21:13:46 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.4 2006/10/23 22:11:53 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -63,7 +63,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
         "as supported by Astrogrid at October 22nd 2006\n" +
-        "See <a href=\"http://sqlzoo.net/sql92.html\">SQL92</a> for a similar page describing SQL92 in full.\n" ;
+        "See <a href=\"http://sqlzoo.net/sql92.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
     
     private static final String HTML_FOOTINGS =
         "</pre>" +
@@ -229,6 +229,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     
     private void validateInputFile() {
         HashMap map = new HashMap() ;
+        HashSet errors = new HashSet() ;
         ListIterator it = list.listIterator() ;
         while( it.hasNext() ) {
             BnfStatement bnf = (BnfStatement)it.next() ;
@@ -237,12 +238,25 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         it = list.listIterator() ;
         while( it.hasNext() ) {
             BnfStatement bnf = (BnfStatement)it.next() ;
-            checkStatement( bnf, map ) ;
+            checkStatement( bnf, map, errors ) ;
+        }
+        if( errors.size() > 0 ) {
+            String[] errArray = new String[ errors.size() ] ;
+            errArray = (String[])errors.toArray( errArray ) ;
+            Arrays.sort( errArray ) ;
+            for( int i=0; i<errArray.length; i++ ) {
+                log.error( errArray[i] ) ;
+            }
         }
     }
     
-    private void checkStatement( BnfStatement bnf, HashMap map ) {
-        
+    private void checkStatement( BnfStatement bnf, HashMap map, HashSet errors ) {
+        String[] rKeys = bnf.getKeysOfReferencedElements() ;
+        for( int i=0; i<rKeys.length; i++ ) {
+            if( !map.containsKey( rKeys[i] ) ) {
+                errors.add( "BNF Statement missing from input: <" + rKeys[i] + ">" ) ;
+            }
+        }
     }
     
     private void produceOutput() {
@@ -433,6 +447,26 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             return toString() ;
         }
         
+        public String[] getKeysOfReferencedElements() {
+            ArrayList elements = new ArrayList() ;
+            ArrayList psList = getMatchedPairsAndSingletons() ;
+            ListIterator it = psList.listIterator() ;
+            //
+            // Read past my own key...
+            it.next() ;
+            while( it.hasNext() ) {
+                Object o = it.next() ;
+                if( o instanceof Pair ) {
+                    Pair p = (Pair)o ;
+                    String elementName = statementsAsString.substring( p.x+1, p.y ) ;
+                    elements.add( elementName ) ;
+                } 
+            }
+            String[] elementArray = new String[ elements.size() ] ;
+            elementArray = (String[])elements.toArray( elementArray ) ;
+            return elementArray ;
+        }
+        
         public String toHtml() {
             String s = statementsAsString ;
             StringBuffer buffer = new StringBuffer() ;
@@ -614,6 +648,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.4  2006/10/23 22:11:53  jl99
+Validates the input file for missing elements.
+
 Revision 1.3  2006/10/23 21:13:46  jl99
 Working correctly to file and standard out.
 Produces text and html versions.
