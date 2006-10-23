@@ -49,6 +49,10 @@
         </release>
 		
 		<release version="HEAD">
+		<action dev="gtr" type="fix">
+                  <em>Branch community-gtr-1954.</em> The community service is fixed internally in respect of handling the CA passphrase.
+                  There are no changes to the web-service contracts or to the delegates, or to the resolver library.
+		</action>
          <action dev="kea" type="add">
            <em>Branch PAL_KEA_1869 in astrogrid/pal, fixes after contracts 
              issues.</em>
