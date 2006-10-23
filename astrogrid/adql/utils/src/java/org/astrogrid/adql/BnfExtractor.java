@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.1 2006/10/22 22:03:55 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.2 2006/10/23 09:43:55 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -27,6 +27,20 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     private static final boolean DEBUG_ENABLED = true ;
     private static StringBuffer logIndent = new StringBuffer() ;
     
+    private static final String USAGE =
+        "Usage: BnfExtractor {Options} input=file-path output=file-path \n" +       
+        "Options:\n" +
+        "   -t  text output\n" +
+        "   -h  html output\n" +
+        "Notes: (1) The output file-path parameter is optional. If omitted, output\n" +
+        "           is directed to standard out.\n" +
+        "       (2) If no options are specified, text output is assumed." ;
+    
+    private static final String BNF_SINGLE = " * bnf-single" ;
+    private static final String BNF_START = " * bnf-start" ;
+    private static final String BNF_END = " * bnf-end" ;
+    private static final String BNF_TRIGGER = "bnf-" ;
+    
     File inputFile ;
     File outputFile ;
     String format ;
@@ -37,6 +51,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     private StringBuffer statementBuffer = new StringBuffer( 256 ) ;
     private boolean inputEOF = false ;
     private ArrayList list = new ArrayList( 256 ) ;
+    private BnfStatement[] statementArray ;
     private BnfStatementFactory statementFactory = new BnfStatementFactory() ;
 
     /**
@@ -108,13 +123,12 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         while( isInputEOF() == false ) { 
             processOneStatement() ;
         }
-//        if( DEBUG_ENABLED ) {
-//            ListIterator it = list.listIterator() ;
-//            while( it.hasNext() ) {
-//                BnfStatement s = (BnfStatement)it.next() ;
-//                System.out.println( s.toString() ) ;
-//            }
-//        }
+        BnfStatement[] sArray = getSortedStatementArray() ;       
+        if( DEBUG_ENABLED ) {
+            for( int i=0; i<sArray.length; i++ ) {
+                System.out.println( sArray[i].toString() ) ;
+            }
+        }
         if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.consumeInputFile()" ) ;
     }
     
@@ -122,13 +136,13 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.processOneStatement()" ) ;
         String line = readAheadToStatement() ;
         try {
-            if( line.startsWith( " * bnf-single" ) ) {
-                list.add( statementFactory.newInstance( line.substring(13) ) ) ;
+            if( isBnfSingle( line ) ) {
+                list.add( statementFactory.newInstance( line.substring( BNF_SINGLE.length() ) ) ) ;
             }
-            else if( line.startsWith( " * bnf-start" ) ) {
+            else if( isBnfStart( line ) ) {
                 ArrayList lineArray= new ArrayList() ;               
                 line = readLine() ;
-                while( !isInputEOF() && !line.startsWith( " * bnf-end" ) ) {
+                while( !isInputEOF() && !isBnfEnd( line ) ) {
                     lineArray.add( line.substring(2) ) ;
                     line = readLine() ;
                 }
@@ -148,7 +162,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     private String readAheadToStatement() {
         if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.readAheadToStatement()" ) ;
         String line = readLine() ;
-        while( !isInputEOF() && !( line.startsWith( " * bnf-" ) ) ) {
+        while( !isInputEOF() && ( line.indexOf( BNF_TRIGGER ) == -1 ) ) {
             line = readLine() ;
         }
         if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.readAheadToStatement()" ) ;
@@ -205,6 +219,36 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         return this.inputEOF ;
     }
     
+    private boolean isBnfSingle( String line ) {
+        if( line.indexOf( BNF_SINGLE ) != -1 )
+            return true ;
+        return false ;
+    }
+    
+    private boolean isBnfStart( String line ) {
+        if( line.indexOf( BNF_START ) != -1 )
+            return true ;
+        return false ;
+    }
+    
+    private boolean isBnfEnd( String line ) {
+        if( line.indexOf( BNF_END ) != -1 )
+            return true ;
+        return false ;
+    }
+    
+    private BnfStatement[] getSortedStatementArray() {
+        BnfStatement[] arrayStatement = new BnfStatement[ list.size() ] ;
+        arrayStatement = (BnfStatement[])list.toArray( arrayStatement ) ;
+        Arrays.sort( arrayStatement 
+                   , new Comparator() {
+                       public int compare( Object o1, Object o2 ) {
+                           return ((BnfStatement)o1).compare((BnfStatement)o2) ;
+                       }       
+                   } ) ;
+        return arrayStatement ;
+    }
+    
     class BnfStatement {
          
         String[] statements ;
@@ -227,6 +271,10 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
                     return true ;
             }        
             return false ;
+        }
+        
+        public int compare( BnfStatement s ) {
+            return this.key.compareTo( s.key ) ;          
         }
         
         public String toString() {
@@ -255,7 +303,10 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             int indexOfDefinitionOp = firstLine.indexOf( "::=", indexTo ) ;
             
             if( indexFrom == -1 || indexTo == -1 || indexOfDefinitionOp == -1 ) {
-                throw new InvalidBnfStatementException() ;
+                String message = 
+                    "InvalidBnfStatementException:\n" +
+                    "   " + firstLine ;
+                throw new InvalidBnfStatementException( message ) ;
             }
             
             return firstLine.substring( indexFrom+1, indexTo ) ;
@@ -264,13 +315,11 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     }
     
     class InvalidBnfStatementException extends Exception {
-        
+        public InvalidBnfStatementException(String message) {
+            super(message);
+        }       
     }
-    
-    private class EOF extends Exception {
-        
-    }
-    
+  
     private static void enterTrace( String entry ) {
         log.debug( logIndent.toString() + "enter: " + entry ) ;
         indentPlus() ;
@@ -294,6 +343,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.2  2006/10/23 09:43:55  jl99
+Working correctly to standard out.
+
 Revision 1.1  2006/10/22 22:03:55  jl99
 First commit of utility to extract bnf statements from annotated .jjt files.
 
