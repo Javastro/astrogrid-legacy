@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.2 2006/10/23 09:43:55 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.3 2006/10/23 21:13:46 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 import java.io.* ;
 import java.util.*;
+import java.text.MessageFormat;
 /**
  * BnfExtractor
  *
@@ -36,22 +37,65 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "           is directed to standard out.\n" +
         "       (2) If no options are specified, text output is assumed." ;
     
+    private static final String TEXT_HEADINGS =
+        "+===============================================================+\n" +
+        "|                ADQL BNF definition file.                      |\n" +
+        "+===============================================================+\n\n" +
+        "This file contains a BNF definition of ADQL, the Astronomical\n" +
+        "Data Query Language. The elements are arranged in alphabetical\n" +
+        "order. ADQL is based upon a subset of SQL92 with extensions for\n" +
+        "astronomical usage.\n" +
+        "\n" +
+        "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
+        "as supported by Astrogrid at October 22nd 2006\n\n" ;
+    
+    private static final String HTML_HEADINGS =
+        "<html>" +
+        "<head>" +
+        "<title>BNF for ADQL v1.01a</title>" +
+        "</head>" +
+        "<body>" +
+        "<pre>" +
+        "This file contains a BNF definition of ADQL, the Astronomical\n" +
+        "Data Query Language. The elements are arranged in alphabetical\n" +
+        "order. ADQL is based upon a subset of SQL92 with extensions for\n" +
+        "astronomical usage.\n" +
+        "\n" +
+        "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
+        "as supported by Astrogrid at October 22nd 2006\n" +
+        "See <a href=\"http://sqlzoo.net/sql92.html\">SQL92</a> for a similar page describing SQL92 in full.\n" ;
+    
+    private static final String HTML_FOOTINGS =
+        "</pre>" +
+        "</body>" +
+        "</html>" ;
+    
+    private static final String HTML_KEY_TEMPLATE = 
+        "<a name=\"{0}\">&lt;{0}&gt;</a>" ;
+    
+    private static final String HTML_DETAIL_TEMPLATE = 
+        "&lt;<a href=\"#{0}\">{0}</a>&gt;" ;
+
     private static final String BNF_SINGLE = " * bnf-single" ;
     private static final String BNF_START = " * bnf-start" ;
     private static final String BNF_END = " * bnf-end" ;
     private static final String BNF_TRIGGER = "bnf-" ;
     
-    File inputFile ;
-    File outputFile ;
-    String format ;
+    private static String option = null ;
+    private static String inFilePath = null ;
+    private static String outFilePath = null ;
     
+    private String iOption = null ;
+    private File inputFile ;
+    private File outputFile ;   
     private FileReader reader = null ;
-    private FileWriter writer = null ;
+    private MessageFormat keyFormat = new MessageFormat( HTML_KEY_TEMPLATE )  ;
+    private MessageFormat detailFormat = new MessageFormat( HTML_DETAIL_TEMPLATE )  ;
+    private OutputStream outputStream = null ;
+    
     private StringBuffer lineBuffer = new StringBuffer( 100 ) ;
-    private StringBuffer statementBuffer = new StringBuffer( 256 ) ;
     private boolean inputEOF = false ;
     private ArrayList list = new ArrayList( 256 ) ;
-    private BnfStatement[] statementArray ;
     private BnfStatementFactory statementFactory = new BnfStatementFactory() ;
 
     /**
@@ -60,28 +104,36 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     public static void main( String[] args ) {
         if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.main" ) ;
         
-        String option ;
-        String inFilePath ;
-        String outFilePath ;
-               
-        // options:
-        //      -t for text
-        //      -h for html
-        //      -o followed by output file spec
-        //
-        // then path to annotated input .jjt file
-        if( args == null || args.length < 2 || args.length > 3) {
-            System.out.println( "incorrect parameters" ) ;
-            System.exit(0) ;
+        if( retrieveArgs( args ) == false ) {
+            System.out.println() ;
+            System.out.print( USAGE ) ;
+            return ;
         }
         
-        option = args[0] ;
-        outFilePath = args[1] ;
-        inFilePath = args[2] ;
-        
         File inputFile = new File( inFilePath ) ;
-        File outputFile = new File( outFilePath ) ;
+        File outputFile = null ;
         
+        if( inputFile.exists() == false ) {
+            System.out.println( "Input file does not exist:\n" +
+                                "    " + inFilePath
+                              ) ;
+            return ;
+        }
+          
+        if( outFilePath != null ) {
+            outputFile = new File( outFilePath ) ;
+            if( outputFile.exists() == true ) {
+                System.out.println( "Output file already exists:\n" +
+                                    "    " + outFilePath
+                                  ) ;
+                return ;
+            }
+        }
+        
+        if( BnfExtractor.option == null ) {
+            BnfExtractor.option = "t" ;
+        }
+               
         BnfExtractor extractor = new BnfExtractor( inputFile, outputFile, option ) ;
         
         extractor.exec() ;
@@ -89,18 +141,61 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.main" ) ;
     }
     
+    private static boolean retrieveArgs( String[] args ) {
+        boolean retVal = false ;
+        if( args != null && args.length > 0 ) {
+            // Usage: BnfExtractor {Options} input=file-path output=file-path 
+            for( int i=0; i<args.length; i++ ) {
+                if( args[i].startsWith( "-t" ) ) {
+                   BnfExtractor.option = "t" ;
+                }
+                else if( args[i].startsWith( "-h" ) ) {
+                    BnfExtractor.option = "h" ; 
+                }
+                else if( args[i].startsWith( "input=" ) ) { 
+                    BnfExtractor.inFilePath = args[i].substring(6) ;
+                }
+                else if( args[i].startsWith( "output=" ) ) { 
+                    BnfExtractor.outFilePath = args[i].substring(7) ;
+                }
+                else {
+                    break ;
+                }
+            }
+            if( BnfExtractor.inFilePath != null )
+               retVal = true ;
+        }       
+        return retVal ;
+    }
+    
     public BnfExtractor( File inputFile, File outputFile, String format ) {
         if( TRACE_ENABLED ) enterTrace ( "BnfExtractor(File, File, String)" ) ;
         this.inputFile = inputFile ;
         this.outputFile = outputFile ;
-        this.format = format ;
+        if( this.outputFile != null ) {
+            try {
+                this.outputStream = new FileOutputStream( outputFile ) ;
+            }
+            catch( FileNotFoundException fnfex ) {
+                fnfex.printStackTrace() ;
+            }
+        }
+        else {
+            this.outputStream = System.out ;
+        }   
+        this.iOption = format ;
         if( TRACE_ENABLED ) exitTrace ( "BnfExtractor(File, File, String)" ) ;
+    }
+    
+    public BnfExtractor( File inputFile, String format ) {
+        this( inputFile, null, format ) ;
     }
    
     public void exec() {
         if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.exec()" ) ;
         openFiles() ;
         consumeInputFile() ; 
+        produceOutput() ;
         if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.exec()" ) ;
     }
     
@@ -108,7 +203,6 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.openFiles()" ) ;
         try {
             reader = new FileReader( inputFile ) ;
-            writer = new FileWriter( outputFile ) ;
         }
         catch( Exception iox ) {
             System.out.println( iox.getLocalizedMessage() ) ;
@@ -123,13 +217,47 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         while( isInputEOF() == false ) { 
             processOneStatement() ;
         }
-        BnfStatement[] sArray = getSortedStatementArray() ;       
-        if( DEBUG_ENABLED ) {
-            for( int i=0; i<sArray.length; i++ ) {
-                System.out.println( sArray[i].toString() ) ;
+        validateInputFile() ;
+//        BnfStatement[] sArray = getSortedStatementArray() ;       
+//        if( DEBUG_ENABLED ) {
+//            for( int i=0; i<sArray.length; i++ ) {
+//                System.out.println( sArray[i].toString() ) ;
+//            }
+//        }
+        if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.consumeInputFile()" ) ;
+    }
+    
+    private void validateInputFile() {
+        HashMap map = new HashMap() ;
+        ListIterator it = list.listIterator() ;
+        while( it.hasNext() ) {
+            BnfStatement bnf = (BnfStatement)it.next() ;
+            map.put( bnf.key, bnf ) ;
+        }
+        it = list.listIterator() ;
+        while( it.hasNext() ) {
+            BnfStatement bnf = (BnfStatement)it.next() ;
+            checkStatement( bnf, map ) ;
+        }
+    }
+    
+    private void checkStatement( BnfStatement bnf, HashMap map ) {
+        
+    }
+    
+    private void produceOutput() {
+        try {
+            if( iOption.equals( "t" ) ) {
+                produceText() ;
+            }
+            else {
+                produceHtml() ;
             }
         }
-        if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.consumeInputFile()" ) ;
+        catch( IOException iox ) {
+            iox.printStackTrace() ;
+        }
+       
     }
     
     private void processOneStatement() {
@@ -199,15 +327,28 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         return lineBuffer.toString() ;
     }
     
+    private void produceText() throws IOException {
+       outputStream.write( TEXT_HEADINGS.getBytes() ) ;
+       BnfStatement[] sArray = getSortedStatementArray() ;  
+       for( int i=0; i<sArray.length; i++ ) {
+           outputStream.write( sArray[i].toText().getBytes() ) ;
+           outputStream.write( '\n' ) ;
+       }
+    }
+    
+    private void produceHtml() throws IOException {
+        outputStream.write( HTML_HEADINGS.getBytes() ) ;
+        BnfStatement[] sArray = getSortedStatementArray() ;  
+        for( int i=0; i<sArray.length; i++ ) {
+            outputStream.write( sArray[i].toHtml().getBytes() ) ;
+            outputStream.write( '\n' ) ;
+        }
+        outputStream.write( HTML_FOOTINGS.getBytes() ) ;
+     }
+    
     private void emptyLineBuffer() {
         if( lineBuffer.length() > 0 ) {
             lineBuffer.delete( 0, lineBuffer.length() ) ;
-        }
-    }
-    
-    private void emptyStatementBuffer() {
-        if( statementBuffer.length() > 0 ) {
-            statementBuffer.delete( 0, statementBuffer.length()-1 ) ;
         }
     }
     
@@ -251,12 +392,19 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     
     class BnfStatement {
          
-        String[] statements ;
+        String statementsAsString ;
         String key ;
         
         BnfStatement( String[] statements, String key ) {
-            this.statements = statements ;
+            if( DEBUG_ENABLED ) {
+                log.debug( "BnfStatement.key: " + key ) ;
+            }
             this.key = key ;
+            StringBuffer buffer = new StringBuffer() ;
+            for( int i=0; i<statements.length; i++ ) {
+                buffer.append( statements[i] ) ;
+            }
+            this.statementsAsString = buffer.toString() ;
         }
         
         private BnfStatement() {}
@@ -278,11 +426,124 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         }
         
         public String toString() {
+            return statementsAsString ;
+        }
+        
+        public String toText() {
+            return toString() ;
+        }
+        
+        public String toHtml() {
+            String s = statementsAsString ;
             StringBuffer buffer = new StringBuffer() ;
-            for( int i=0; i<statements.length; i++ ) {
-                buffer.append( statements[i] ) ;
+            ArrayList psList = getMatchedPairsAndSingletons() ;
+            ListIterator it = psList.listIterator() ;
+            //
+            // There has to be a first one and it has to be a Pair...
+            // It is the element or key!
+            Pair p = (Pair)it.next() ;
+            //
+            // First, buffer up the space before the element name...
+            buffer.append( s.substring( 0, p.x ) ) ;
+            //
+            // Format the element/key...      
+            String elementName = s.substring( p.x+1, p.y ) ;
+            String  htmlizedElement = 
+              keyFormat.format( new String[]{elementName}, new StringBuffer(), null ).toString() ;
+            buffer.append( htmlizedElement ) ;
+            //
+            // OK, now for the details...
+            // But first save the current position.
+            int current = p.y + 1 ;
+            while( it.hasNext() ) {
+                Object o = it.next() ;
+                if( o instanceof Pair ) {
+                    p = (Pair)o ;
+                    // Buffer up the intermediate characters...
+                    buffer.append( s.substring( current, p.x ) ) ;
+                    // Then format one detail element...
+                    elementName = s.substring( p.x+1, p.y ) ;
+                    htmlizedElement = 
+                        detailFormat.format( new String[]{elementName}, new StringBuffer(), null ).toString() ;
+                    buffer.append( htmlizedElement ) ;            
+                    current = p.y + 1 ; // remember to hold position
+                }
+                else { // It must be a singleton...
+                    int i = ((Integer)o).intValue() ;
+                    // Buffer up the intermediate characters...
+                    buffer.append( s.substring( current, i ) ) ;
+                    if( s.charAt(i) == '>' ) {
+                        buffer.append( "&gt;" ) ;
+                    }
+                    else {
+                        buffer.append( "&lt;" ) ;
+                    }
+                    current++ ; // remember to hold position
+                }
             }
+            //
+            // Pick up the remainder...
+            // which may include comments with < and > embedded in them...
+            if( current != s.length() ) {
+                String remainder = s.substring( current ) ;
+                remainder = remainder.replaceAll( "<", "&lt;" ) ;
+                remainder = remainder.replaceAll( ">", "&gt;" ) ;
+                buffer.append( remainder ) ;
+            }  
             return buffer.toString() ;
+        }
+        
+        private ArrayList getMatchedPairsAndSingletons() {
+            ArrayList psList = new ArrayList() ;
+            ArrayList indices = getIndicesOfLtGt() ;
+            Integer[] x = new Integer[ indices.size() ] ;
+            String s = statementsAsString ;
+            x = (Integer[])indices.toArray( x ) ;
+            Integer candidateLt = null ;
+            Integer candidateGt = null ;
+            for( int i=0; i<x.length; i++ ) {
+                if( s.charAt(x[i].intValue() ) == '<' ) {
+                    if( candidateLt == null ) {
+                        candidateLt = x[i] ;
+                    }
+                    else {
+                        psList.add( candidateLt ) ;
+                        candidateLt = x[i] ;
+                    }
+                }
+                else {
+                    if( candidateGt == null ) {
+                        candidateGt = x[i] ;
+                    }
+                    else {
+                        psList.add( x[i] ) ;
+                    }
+                }
+                if( candidateLt != null && candidateGt != null ) {
+                    if( candidateLt.intValue()+1 == candidateGt.intValue() ) {
+                        psList.add( candidateLt ) ;
+                        psList.add( candidateGt ) ;
+                    }
+                    else {
+                        psList.add( new Pair( candidateLt, candidateGt ) ) ;
+                    }
+                    candidateLt = candidateGt = null ;
+                }
+            }
+            return psList ;
+        }
+        
+        private ArrayList getIndicesOfLtGt() {
+            ArrayList listLtGt = new ArrayList() ;
+            for( int i=0; i<statementsAsString.length(); i++ ) {
+                char c = statementsAsString.charAt(i) ;
+                if( c == '!' && statementsAsString.charAt(i+1) == '!' ) {
+                    break ;
+                }
+                if( c == '<' || c == '>' )
+                    listLtGt.add( new Integer(i) ) ;
+            }
+            return listLtGt ;
         }
         
     }
@@ -319,6 +580,16 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             super(message);
         }       
     }
+    
+    class Pair {
+        public int x ;
+        public int y ;
+        
+        Pair( Integer X, Integer Y ) {
+            x = X.intValue() ;
+            y = Y.intValue() ;
+        }
+    }
   
     private static void enterTrace( String entry ) {
         log.debug( logIndent.toString() + "enter: " + entry ) ;
@@ -343,6 +614,10 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.3  2006/10/23 21:13:46  jl99
+Working correctly to file and standard out.
+Produces text and html versions.
+
 Revision 1.2  2006/10/23 09:43:55  jl99
 Working correctly to standard out.
 
