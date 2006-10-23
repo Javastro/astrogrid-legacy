@@ -14,6 +14,10 @@
 	</head>
 <body>
 <release  version="2006.3.rc4" date="unreleased">
+    <action dev="pjn" type="fix" issue="1882">
+        When running science workflows there is now an option to save the workflow without 
+        submitting to JES
+    </action>
     <action dev="pjn" type="fix" issue="1889">
         Usability feedback, change to file open gif
     </action>
