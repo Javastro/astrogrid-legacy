@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.26 2006/10/22 20:47:10 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.27 2006/10/23 22:39:10 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -141,26 +141,26 @@ SKIP :
  *     white space within the standard would lead to inappropriate clutter.  
  * bnf-end
  *
- * bnfsingle <double_quote> ::= "
- * bnfsingle <percent> ::= %
- * bnfsingle <ampersand> ::= &
- * bnfsingle <quote> ::= '
- * bnfsingle <left_paren> ::= (
- * bnfsingle <right_paren> ::= )
- * bnfsingle <asterisk> ::= *
- * bnfsingle <plus_sign> ::= +
- * bnfsingle <comma> ::= ,
- * bnfsingle <minus_sign> ::= -
- * bnfsingle <period> ::= .
- * bnfsingle <solidus> ::= /
- * bnfsingle <colon> ::= :
- * bnfsingle <semicolon> ::= ;
- * bnfsingle <less_than_operator> ::= <
- * bnfsingle <equals_operator> ::= =
- * bnfsingle <greater_than_operator> ::= >
- * bnfsingle <question_mark> ::= ?
- * bnfsingle <underscore> ::= _
- * bnfsingle <vertical_bar> ::= |
+ * bnf-single <double_quote> ::= "
+ * bnf-single <percent> ::= %
+ * bnf-single <ampersand> ::= &
+ * bnf-single <quote> ::= '
+ * bnf-single <left_paren> ::= (
+ * bnf-single <right_paren> ::= )
+ * bnf-single <asterisk> ::= *
+ * bnf-single <plus_sign> ::= +
+ * bnf-single <comma> ::= ,
+ * bnf-single <minus_sign> ::= -
+ * bnf-single <period> ::= .
+ * bnf-single <solidus> ::= /
+ * bnf-single <colon> ::= :
+ * bnf-single <semicolon> ::= ;
+ * bnf-single <less_than_operator> ::= <
+ * bnf-single <equals_operator> ::= =
+ * bnf-single <greater_than_operator> ::= >
+ * bnf-single <question_mark> ::= ?
+ * bnf-single <underscore> ::= _
+ * bnf-single <vertical_bar> ::= |
  */
 TOKEN : // <SQL_special_character> 
 {
@@ -194,7 +194,7 @@ TOKEN : // <SQL_special_character>
  *      <left_bracket>
  *    | <right_bracket>
  * bnf-end
- * bnf_single <left_bracket> ::= [
+ * bnf-single <left_bracket> ::= [
  * bnf-single <right_bracket> ::= ]
  *
  */
@@ -524,41 +524,41 @@ TOKEN : // <reserved_word>
 //{ //  < ADA : "ada" >//| < C: "c" >//| < CATALOG_NAME: "catalog_name" >//| < CHARACTER_SET_CATALOG: "character_set_catalog" >//| < CHARACTER_SET_NAME: "character_set_name" >//| < CHARACTER_SET_SCHEMA: "character_set_schema" >//| < CLASS_ORIGIN: "class_origin" >//| < COBOL: "cobol" >//| < COLLATION_CATALOG: "collation_catalog" >//| < COLLATION_NAME: "collation_name" >//| < COLLATION_SCHEMA: "collation_schema" >//| < COLUMN_NAME: "column_name" >//| < COMMAND_FUNCTION: "command_function" >//| < COMMITTED: "committed" >//| < CONDITION_NUMBER: "condition_number" >//| < CONNECTION_NAME: "connection_name" >//| < CONSTRAINT_CATALOG: "constraint_catalog" >//| < CONSTRAINT_NAME: "constraint_name" >//| < CONSTRAINT_SCHEMA: "constraint_schema" >//| < CURSOR_NAME: "cursor_name" >//| < DATA: "data" >//| < DATETIME_INTERVAL_CODE: "datetime_interval_code" >//| < DATETIME_INTERVAL_PRECISION: "datetime_interval_precision" >//| < DYNAMIC_FUNCTION: "dynamic_function" >//| < FORTRAN: "fortran" >//| < LENGTH: "length" >//| < MESSAGE_LENGTH: "message_length" >//| < MESSAGE_OCTET_LENGTH: "message_octet_length" >//| < MESSAGE_TEXT: "message_text" >//| < SQL_MORE: "more" >//| < MUMPS: "mumps" >//| < NAME: "name" >//| < NULLABLE: "nullable" >//| < NUMBER: "number" >//| < PASCAL: "pascal" >//| < PLI: "pli" >//| < REPEATABLE: "repeatable" >//| < RETURNED_LENGTH: "returned_length" >//| < RETURNED_OCTET_LENGTH: "returned_octet_length" >//| < RETURNED_SQLSTATE: "returned_sqlstate" >//| < ROW_COUNT: "row_count" >//| < SCALE: "scale" >//| < SCHEMA_NAME: "schema_name" >//| < SERIALIZABLE: "serializable" >//| < SERVER_NAME: "server_name" >//| < SUBCLASS_ORIGIN: "subclass_origin" >//| < TABLE_NAME: "table_name" >//| < TYPE: "type" >//| < UNCOMMITTED: "uncommitted" >//| < UNNAMED: "unnamed" >//}
 
 /**
- *
- * bnf-single <left_brace> ::= {
- * bnf-single <right_brace> ::= }
- * bnf-single TOP ::= top
- * bnf-single DOLLAR ::= $
- * bnf-single ABS ::= abs 
- * bnf-single CEILING ::= ceiling
- * bnf-single DEGREES ::= degrees
- * bnf-single EXP ::= exp
- * bnf-single FLOOR ::= floor
- * bnf-single LOG ::= log
- * bnf-single PI ::= pi
- * bnf-single POWER ::= power
- * bnf-single RADIANS ::= radians
- * bnf-single SQRT ::= sqrt
- * bnf-single SQUARE ::= square
- * bnf-single LOG10 ::= log10
- * bnf-single RAND ::= rand
- * bnf-single ROUND ::= round
- * bnf-single TRUNCATE ::= truncate 
- * bnf-single SIN ::= sin
- * bnf-single COS ::= cos
- * bnf-single TAN ::= tan
- * bnf-single COT ::= cot
- * bnf-single ASIN ::= asin
- * bnf-single ACOS ::= acos
- * bnf-single ATAN ::= atan
- * bnf-single ATAN2 ::= atan2
+ * TOKEN <ADQL-reserved-word>
+ * 
+ * bnf-start
+ *  <ADQL-reserved-word> ::=
+ *        TOP
+ *      | ABS 
+ *      | CEILING 
+ *      | DEGREES 
+ *      | EXP 
+ *      | FLOOR 
+ *      | LOG 
+ *      | PI 
+ *      | POWER 
+ *      | RADIANS 
+ *      | SQRT 
+ *      | SQUARE 
+ *      | LOG10 
+ *      | RAND 
+ *      | ROUND 
+ *      | TRUNCATE 
+ *      | SIN 
+ *      | COS 
+ *      | TAN 
+ *      | COT 
+ *      | ASIN 
+ *      | ACOS 
+ *      | ATAN 
+ *      | ATAN2
+ * bnf-end
+ 
  */
-TOKEN : // <adql_tokens>
+TOKEN : // <ADQL-reserved-word>
 {
-	< LBRACE : "{" >
-|	< RBRACE : "}" >
 
-|	< TOP: "top" >
+	< TOP: "top" >
 
 |	< XMATCH: "xmatch" >
 
@@ -621,8 +621,6 @@ TOKEN : // <adql_tokens>
 |	< ATAN: "atan" >
 |	< ATAN2: "atan2" >
 
-|	< DOLLAR : "$" >
-
 |	< ASCII_STRING_LITERAL : "\'" (~["\'"])* "\'" >
 
 //| 	< ASCIIStringLiteral : "\'" (~["\'"])* "\'" ( "\'" (~["\'"])* "\'" )* >
@@ -631,10 +629,30 @@ TOKEN : // <adql_tokens>
 }
 
 /**
+ * TOKEN <ADQL-special-character>
+ *
+ * bnf-start
+ *  <ADQL-special-character> ::=
+ *      <left_brace>
+ *    | <right_brace>
+ *    | <dollar>
+ * bnf-end
+ * bnf-single <left_brace> ::= {
+ * bnf-single <right_brace> ::= }
+ * bnf-single <dollar> ::= $
+ */
+TOKEN : // <ADQL-special-character>
+{ 
+	< LBRACE : "{" >
+|	< RBRACE : "}" >
+|	< DOLLAR : "$" >		
+}
+
+/**
  * TOKEN miscellaneous SQL92 
  *
  * bnf-single <not_equals_operator1> ::= <>
- * bnf_single <not_equals_operator2> ::= !=
+ * bnf-single <not_equals_operator2> ::= !=
  * bnf-single <not_equals_operator> ::= <not_equals_operator1> | <not_equals_operator2>
  * bnf-single <less_than_or_equals_operator> ::= <=
  * bnf-single <greater_than_or_equals_operator> ::= >=
@@ -1116,6 +1134,11 @@ ScalarExpressionType character_primary_A() :
  *  !! There is no accommodation for <character_set_specification> in ADQL
  * bnf-end
  *
+ * bnf-start
+ *  <character_representation> ::=
+ *  !! At present this is one ASCII character (but not a single quote).
+ * bnf-end
+ *
  */
 AtomType character_string_literal_A() : 
 {
@@ -1393,7 +1416,8 @@ ComparisonType comp_op_S() :
  * comparison_predicate_A
  *
  * bnf-start
- *  <value_expression> <comp_op> <value_expression>
+ *  <comparison_predicate> ::=
+ *      <value_expression> <comp_op> <value_expression>
  *  !! There is no accommodation for <row_value_constructor> in ADQL
  * bnf-end
  *
@@ -1733,7 +1757,7 @@ AtomType general_literal_A() :
     !! There is no accommodation for <set_quantifier> in ADQL
  * bnf-end
  *
- * bnfsingle <set_function_type> ::= AVG | MAX | MIN | SUM | COUNT
+ * bnf-single <set_function_type> ::= AVG | MAX | MIN | SUM | COUNT
  *
  */
 AggregateFunctionType general_set_function_A() : 
@@ -1795,7 +1819,9 @@ ScalarExpressionType general_value_specification_A() :
 /**
  * group_by_clause_S
  *
- * bnf-single GROUP BY <grouping_column_reference_list>
+ * bnf-start
+ *  <group_by_clause> ::= GROUP BY <grouping_column_reference_list>
+ * bnf-end
  *
  */
 GroupByType group_by_clause_S() : 
@@ -1875,7 +1901,7 @@ ColumnReferenceType grouping_column_reference_A() :
 /**
  * having_clause_S
  *
- * bnf-single HAVING <search_condition>	
+ * bnf-single <having_clause> ::= HAVING <search_condition>	
  *
  */
 HavingType having_clause_S() :
@@ -1926,7 +1952,7 @@ String identifier_A() :
  *
  * bnf-start
  *  <in_predicate> ::=
- *      <row_value_constructor> [ NOT ] IN <in_predicate_value>
+ *      <value_expression> [ NOT ] IN <in_predicate_value>
  * bnf-end
  *
  */
@@ -2128,8 +2154,8 @@ ConstantListSet in_value_list_A() :
  *
  * bnf-start
  *  <in_value_list_constant> ::=
- *	       [ <plus> | <minus> ] <exact_numeric_literal_S>
- *	    |  <character_string_literal_A> 
+ *	       [ <plus_sign> | <minus_sign> ] <exact_numeric_literal>
+ *	    |  <character_string_literal> 
  * bnf-end
  *
  */
@@ -2355,8 +2381,8 @@ void match_predicate_S() : {}
  * bnf-start
  *  <math_function> ::=
  *      ABS <left_paren> <numeric_value_expression> <right_paren> 
- *	  | CEILING> <left_paren> <numeric_value_expression> <right_paren> 
- *	  | DEGREES> <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | CEILING <left_paren> <numeric_value_expression> <right_paren> 
+ *	  | DEGREES <left_paren> <numeric_value_expression> <right_paren> 
  *	  | EXP <left_paren> <numeric_value_expression> <right_paren> 
  *	  | FLOOR <left_paren> <numeric_value_expression> <right_paren> 
  *	  | LOG <left_paren> <numeric_value_expression> <right_paren> 
@@ -2627,7 +2653,7 @@ ScalarExpressionType numeric_value_function_A() :
  * bnf-end
  *
  * bnf-start
- *  <sort_key> ::= <valueExpression>
+ *  <sort_key> ::= <value_expression>
  *  !! This is different from SQL92 which uses
  *     <column_name> | <unsigned_integer>
  * bnf-end 
@@ -2661,7 +2687,7 @@ OrderExpressionType order_by_clause_A() :
 	
 	// As opposed to the above, the following is implemented...
 	// This seems inadequate. Ie: the use of ScalarExpression in the Xml Schema, and hence value_expression()
-	//<ORDERBY> valueExpression() ( <ASC> | <DESC> ) ( <COMMA> valueExpression() ( <ASC> | <DESC> ) )*
+	//<ORDERBY> value_expression() ( <ASC> | <DESC> ) ( <COMMA> value_expression() ( <ASC> | <DESC> ) )*
 	( <ORDERBY> orderType=orderBySingleton() orderList=orderByList() )
 	{
 		if( orderType != null ) {
@@ -2947,7 +2973,8 @@ String qualifier_A() :
  * 
  *
  * bnf-start
- *  SELECT [ <set_quantifier> ] <select_list> <table_expression>
+ *  <query_specification> ::=
+ *      SELECT [ <set_quantifier> ] <select_list> <table_expression>
  * bnf-end
  *
  */
@@ -3633,7 +3660,7 @@ AggregateFunctionType set_function_specification_S() :
  *
  * bnf-start
  *  <set_limit> ::= TOP <unsigned_integer>
- *  SQL92 has no equivalent construct
+ *  !! SQL92 has no equivalent construct
  * bnf-end
  *
  */
@@ -3732,10 +3759,6 @@ ScalarExpressionType string_value_expression_A() :
 
 /**
  * subquery_S
- *
- * bnf-start
- *  <subquery> ::= <left_paren> <query_expression> <right_paren>
- * bnf-end
  *
  */
 SearchType subquery_S() : 
@@ -4273,7 +4296,7 @@ void time_zone_S() : {}
  *  <trig_function> ::=
  *      ACOS <left_paren> <numeric_value_expression> <right_paren>
  *    | ASIN <left_paren> <numeric_value_expression> <right_paren>
- *    |	ATAN <left_paren> <numeric_value_expression> <right_paren>
+ *    | ATAN <left_paren> <numeric_value_expression> <right_paren>
  *    | ATAN2 <left_paren> <numeric_value_expression> <comma> <numeric_value_expression> <right_paren>
  *    | COS <left_paren> <numeric_value_expression> <right_paren>
  *    | COT <left_paren> <numeric_value_expression> <right_paren>
@@ -4296,7 +4319,7 @@ TrigonometricFunctionType trig_function_A() :
 		|
 		t=<ASIN> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 		|
-		t=<ATAN> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
+        t=<ATAN> <LEFT_PAREN> arg1=numeric_value_expression_S() <RIGHT_PAREN>
 		|
 		t=<ATAN2> <LEFT_PAREN> arg1=numeric_value_expression_S() <COMMA> arg2=numeric_value_expression_S() <RIGHT_PAREN>
 		|
@@ -4338,7 +4361,7 @@ void unique_predicate_S() : {}
 /**
  * unsigned_literal_S
  *
- * bnfsingle <unsigned_literal> ::= <unsigned_numeric_literal> | <general_literal>
+ * bnf-single <unsigned_literal> ::= <unsigned_numeric_literal> | <general_literal>
  *
  */
 AtomType unsigned_literal_S() : 
@@ -4510,6 +4533,9 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.27  2006/10/23 22:39:10  jl99
+Corrections to embedded BNF documentation
+
 Revision 1.26  2006/10/22 20:47:10  jl99
 More BNF Documentation
 
