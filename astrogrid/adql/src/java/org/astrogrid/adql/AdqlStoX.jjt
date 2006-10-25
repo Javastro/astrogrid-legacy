@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.27 2006/10/23 22:39:10 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.28 2006/10/25 13:22:15 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -7,8 +7,9 @@
  *
  * AdqlStoX takes text in the form of Adql/s and compiles it to xml Adql/x format.
  * Adql/s is based upon SQL/92 with astronomical extensions.
+ *
  * There is a naming convention for methods, which is aimed at making the structure
- * as clear as possible.
+ * as clear as possible...
  *
  * (1) All methods which are quoted bnf statements follow the bnf format, 
  *     with any embedded dashes (-) removed from the name.
@@ -36,6 +37,28 @@
  *     the standard Java OO naming convention and are not decorated, 
  *     eg: numericValueExpressionList().
  *
+ * There is built-in documentation to help in supporting BNF syntax diagrams. This built-in
+ * documentation consists of special comments throughout the code. It is separate from the
+ * above four conventions and must be maintained by the developer to correspond to the working
+ * of the compiler. Thus the resulting BNF documentation represents what the compiler does. 
+ * This seems a little back-to-front but is reasonably thorough in its results. There are two 
+ * sorts of comments: singletons and multiples, depending on whether the BNF definition is on 
+ * one or more lines. Two examples are given below:
+ *
+ *     bnf-single <boolean_factor> ::= [ NOT ] <boolean_test>
+ *     bnf-start
+ *        <between_predicate> ::=
+ *          <value_expression> [ NOT ] BETWEEN
+ *          <value_expression> AND <value_expression>
+ *     bnf-end
+ *
+ * (Real ones have to be positioned at the beginning of a line with each line prefixed by
+ * the string " * " exactly. )
+ * 
+ * A utility programme BnfExtractor extracts these from the source and places them in 
+ * suitable files (or to standard out). BnfExtractor produces output in two formats:
+ * plain text and html. 
+ *
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Sep 2006
  */
@@ -56,9 +79,11 @@ package org.astrogrid.adql ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 import java.util.* ;
+import org.apache.xmlbeans.XmlOptions ;
 import org.astrogrid.adql.v1_0.beans.* ;
 import org.astrogrid.stc.region.v1_10.beans.* ;
 import org.astrogrid.stc.coords.v1_10.beans.* ;
+import org.w3c.dom.Node ;
 
 public class AdqlStoX {
 	
@@ -82,6 +107,27 @@ public class AdqlStoX {
 		}
 	}
 	
+	public SelectDocument compileToXmlBeans() throws ParseException {
+		return exec() ;
+	}
+	
+	public String compileToXmlText( boolean prettyPrint ) throws ParseException {
+		XmlOptions opts = new XmlOptions();
+		if( prettyPrint ) {
+		   opts.setSavePrettyPrint();
+		   opts.setSavePrettyPrintIndent(4);
+		}
+		return exec().xmlText(opts) ;
+	}
+	
+	public String compileToXmlText() throws ParseException {
+		return compileToXmlText( true ) ;
+	}
+	
+	public Node compileToXmlDom() throws ParseException {
+		return exec().getDomNode() ;
+	}
+		
 	private void enterTrace( String entry ) {
 		log.debug( logIndent.toString() + "enter: " + entry ) ;
 		indentPlus() ;
@@ -2974,7 +3020,7 @@ String qualifier_A() :
  *
  * bnf-start
  *  <query_specification> ::=
- *      SELECT [ <set_quantifier> ] <select_list> <table_expression>
+ *      SELECT [ <set_quantifier> ] [ <set_limit> ] <select_list> <table_expression>
  * bnf-end
  *
  */
@@ -4533,6 +4579,10 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.28  2006/10/25 13:22:15  jl99
+Extra convenience methods to trigger compilations with differing output
+(XmlBeans, XmlText, Xml Dom Node etc)
+
 Revision 1.27  2006/10/23 22:39:10  jl99
 Corrections to embedded BNF documentation
 
