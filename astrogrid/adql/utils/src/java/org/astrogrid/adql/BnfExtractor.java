@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.4 2006/10/23 22:11:53 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.5 2006/10/25 11:47:16 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -47,7 +47,8 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "astronomical usage.\n" +
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
-        "as supported by Astrogrid at October 22nd 2006\n\n" ;
+        "as supported by Astrogrid at October 22nd 2006\n" +
+        "The select statement is found under <query_specification>\n\n" ;
     
     private static final String HTML_HEADINGS =
         "<html>" +
@@ -63,6 +64,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
         "as supported by Astrogrid at October 22nd 2006\n" +
+        "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
         "See <a href=\"http://sqlzoo.net/sql92.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
     
     private static final String HTML_FOOTINGS =
@@ -468,6 +470,11 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         }
         
         public String toHtml() {
+            if( DEBUG_ENABLED ) {
+                if( this.key.equals( "not_equals_operator1" ) ) {
+                    log.debug( "toHtmnl() about to analyse <not_equals_operator1>" ) ;
+                }
+            }           
             String s = statementsAsString ;
             StringBuffer buffer = new StringBuffer() ;
             ArrayList psList = getMatchedPairsAndSingletons() ;
@@ -505,7 +512,10 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
                 else { // It must be a singleton...
                     int i = ((Integer)o).intValue() ;
                     // Buffer up the intermediate characters...
-                    buffer.append( s.substring( current, i ) ) ;
+                    if( current < i ) {
+                        buffer.append( s.substring( current, i ) ) ;
+                        current = i ;
+                    }                   
                     if( s.charAt(i) == '>' ) {
                         buffer.append( "&gt;" ) ;
                     }
@@ -520,6 +530,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             // which may include comments with < and > embedded in them...
             if( current != s.length() ) {
                 String remainder = s.substring( current ) ;
+                if( DEBUG_ENABLED ) {
+                    log.debug( "Remainder: " + remainder ) ;
+                }
                 remainder = remainder.replaceAll( "<", "&lt;" ) ;
                 remainder = remainder.replaceAll( ">", "&gt;" ) ;
                 buffer.append( remainder ) ;
@@ -545,7 +558,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
                         candidateLt = x[i] ;
                     }
                 }
-                else {
+                else if( s.charAt(x[i].intValue() ) == '>' ){
                     if( candidateGt == null ) {
                         candidateGt = x[i] ;
                     }
@@ -648,6 +661,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.5  2006/10/25 11:47:16  jl99
+Corrections to processing not-equals-operator in html format (ie: <>)
+
 Revision 1.4  2006/10/23 22:11:53  jl99
 Validates the input file for missing elements.
 
