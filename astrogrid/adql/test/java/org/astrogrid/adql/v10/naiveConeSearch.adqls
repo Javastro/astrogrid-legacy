@@ -1,0 +1,4 @@
+SELECT * FROM RASS_PHOTONS
+WHERE 2 * ASIN( SQRT( SIN( (DEC_C-"DEC")/2 ) 
+   * SIN((DEC_C-"DEC")/2) + COS(DEC_C) * COS("DEC") 
+   * SIN((RA_C - RA)/2) * SIN((RA_C - RA)/2 ) ) ) <= SR_C ;

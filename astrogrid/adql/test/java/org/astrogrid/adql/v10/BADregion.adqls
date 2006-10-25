@@ -1,0 +1,3 @@
+SELECT a.objid, a.ra, a.dec
+FROM Photoprimary a
+WHERE Region('CIRCLE J2000 181.3 -0.76 6.5') ;
