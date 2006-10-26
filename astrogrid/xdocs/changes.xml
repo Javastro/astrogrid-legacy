@@ -28,6 +28,11 @@
             while validating an XML file against a W3C XML schema.
             See bug 1945 before finishing this branch -CLQ 
     	  </action>
+	       
+    	  <action dev="kmb" type="fix">
+    	    <em>Branch Reg_KMB_ErrorMessageFix2.</em> Fixed server messages due to a problem: when
+    	    a auth id is not managed by the registry, it was not giving any messages suggesting where went wrong.
+    	  </action>    	  
 	        
      	<action dev="kmb" type="add">
     		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
