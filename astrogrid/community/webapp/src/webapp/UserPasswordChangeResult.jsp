@@ -1,6 +1,6 @@
 <%@page session="true"%>
 
-<jsp:useBean class="org.astrogrid.community.webapp.CertificateAuthorityBean" 
+<jsp:useBean class="org.astrogrid.community.webapp.MyProxyBean" 
     id="myproxy" scope="page"/>
 
 <!-- Set the parameters of this user into the CA. 
