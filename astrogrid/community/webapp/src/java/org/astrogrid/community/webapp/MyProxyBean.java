@@ -87,7 +87,7 @@ public class MyProxyBean {
    * Get the message describing the results of initiation.
    * Getting this property triggers the initiation.
    */
-  public String getPasswordChangeResult() throws Exception {
+  public String getPasswordChangeResult() {
     if (this.userLoginName == null 
     ||  this.userOldPassword == null
     ||  this.userNewPassword == null) {
@@ -100,6 +100,25 @@ public class MyProxyBean {
       this.changePasswordInMyProxy(this.userLoginName,
                                    this.userOldPassword, 
                                    this.userNewPassword);
+      return context + "succeeded.";
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      return context + "failed. The MyProxy service reports: " + e.getMessage();
+    }
+  }
+  
+  /**
+   * Deletes a user's credentials.
+   */
+  public String getDeleteCredentialsResult() {
+    if (this.userLoginName == null) {
+      return "Removal of credentials failed. Set property userLoginName " +
+             "before reading property deleteCredentialsResult.";
+    }
+    String context = "Removal of credentials for " + this.userLoginName + " ";
+    try {
+      this.deleteCredentialsInMyProxy(this.userLoginName);
       return context + "succeeded.";
     }
     catch (Exception e) {
@@ -131,6 +150,22 @@ public class MyProxyBean {
   }
   
   /**
+   * Deletes the user's credentials.
+   */
+  protected void deleteCredentialsInMyProxy(String loginName) throws Exception {
+    String mp = this.myProxyDirectory.getAbsolutePath();
+    String[] command = {
+        "myproxy-admin-query", // Invoke MyProxy tools
+        "-s",                        // Use the MyProxy storage...
+        mp,                          // ...here
+        "-l",                        // Alter the credential for...
+        loginName,                   // ...this user
+        "-r"                         // Delete the credential
+    };
+    this.runCommandWithoutPassword(command);
+  }
+  
+  /**
    * Runs a command in a sub-process and writes the password to
    * that process' standard input.
    *
@@ -154,6 +189,44 @@ public class MyProxyBean {
     os.write(password.getBytes());
     os.flush();
     os.close();
+    
+    // Wait for the OpenSSL command to finish.
+    p.waitFor();
+    
+    // Check for failure.
+    if (p.exitValue() != 0) {
+      InputStream is = p.getErrorStream();
+      BufferedReader br = new BufferedReader(new InputStreamReader(is));
+      StringBuffer whinge = new StringBuffer();
+      whinge.append(command[0]);
+      whinge.append(" failed:");
+      while(true) {
+        String line = br.readLine();
+        if (line == null) {
+          break;
+        }
+        whinge.append("\n");
+        whinge.append(line);
+      }
+      throw new Exception(whinge.toString());
+    }
+  }
+  
+  /**
+   * Runs a command in a sub-process.
+   *
+   * The command is given as an array of words. This approach is required 
+   * because some of the arguments may contain white space; forming the
+   * command as a single string doesn't work. Adding quotes around the
+   * arguments with white space doesn't work either, as there is no shell
+   * to process the quotes; Java tokenization can't cope.
+   * 
+   * @param command - The command with argument list; zeroth element is command name.
+   * @throws Exception - If the command goes wrong.
+   */
+  protected void runCommandWithoutPassword(String[] command) throws Exception {
+    // Start the command in a sub-process.
+    Process p = Runtime.getRuntime().exec(command);
     
     // Wait for the OpenSSL command to finish.
     p.waitFor();
