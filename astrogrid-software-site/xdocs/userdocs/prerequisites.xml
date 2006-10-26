@@ -7,7 +7,7 @@
     <body>
                 <section name="Required technologies">
                         <p>
-                                <li>Java 1.4.1 or later (but NOT Java 1.5.x)
+                                <li>Java 1.5.x for DSA (NOT java 1.4.X); Java 1.4.1 or later for all other components (NOT java 1.5.x).
                                         <p>AstroGrid webservices, and the infrastructure required to run them, are implemented in Java.</p>
 
                                         <p>Download it here:<a href="http://java.sun.com/j2se/">Sun j2se page</a></p>
