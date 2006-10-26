@@ -4,8 +4,12 @@
                  org.astrogrid.config.SimpleConfig,
                  org.astrogrid.community.server.security.manager.SecurityManagerImpl,
                  org.astrogrid.community.server.policy.manager.PolicyManagerImpl,                 
-                 org.astrogrid.community.server.policy.manager.AccountManagerImpl"
+                 org.astrogrid.community.server.policy.manager.AccountManagerImpl,
+                 org.astrogrid.community.webapp.MyProxyBean"
     session="true" %>
+    
+    
+
 
 <%
 
@@ -29,9 +33,14 @@ boolean passwordSet = false;
 String passwordTemp = null;
 if(removeAccount != null && removeAccount.trim().length() > 0) {
    ident = request.getParameter("userLoginName");
-   ident = ident.trim();      
+   ident = ident.trim();
+   CommunityIvornParser parser = new CommunityIvornParser(ident);
+   String loginName = parser.getAccountName();
    ami.delAccount(ident);
-   info = "Account was deleted for id = " + ident; 
+   MyProxyBean myProxy = new MyProxyBean();
+   myProxy.setUserLoginName(loginName);
+   info = "Account was deleted for id = " + ident +". " +
+          myProxy.getDeleteCredentialsResult();
 }else if(addAccount != null && addAccount.trim().length() > 0) {
    ident = request.getParameter("userLoginName");
    passwordTemp = request.getParameter("userPassword");
