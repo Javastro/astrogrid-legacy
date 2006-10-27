@@ -9,66 +9,63 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.* ;
-import org.apache.xmlbeans.*;
+
 /**
  * Interactive
  * 
- * Conducts a console based conversation.
- * 
- * Enter a query in string form.
+ * Conducts a console based conversation. A query is entered in string form.
  * The query will be compiled into adql/x or an error returned.
  * 
- * To end the session. Type in a ";" and press Enter.
- * The query will be errored. Then type in another ";" to exit.
+ *  USAGE: Type an ADQL query and press the ENTER key.
+ *         Ensure the query ends with a semicolon.
+ *         Type "bye" to exit.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Sep 18, 2006
  */
 public class Interactive {
-	
+    
+    public static final String BYE_TRIGGER = "Encountered \"bye\"" ;
+    public static final String WELCOME = 
+        "Welcome to the command line tester for the AdqlStoX compiler...\n" +
+        " USAGE: Type an ADQL query and press the ENTER key.\n" +
+        "        Ensure the query ends with a semicolon.\n" +
+        "        Type \"bye\" to exit." ;
+    
 	 public static void main(String args[]) {
 		 AdqlStoX compiler = new AdqlStoX(System.in);
-		 SelectDocument queryDoc = null ;
+         String queryXml = null ;
+            
+         System.out.println( WELCOME );
+         while( true ) {
+             System.out.println("\nEnter an SQL-like expression :");	
 
-			System.out.println("Reading from standard input...");
-			while( true ) {
-				System.out.println("Enter an SQL-like expression :");	
-				
-				try {
-					queryDoc = compiler.exec();  
-					System.out.println( queryDoc.toString() ) ;				
-				}
-				catch( ParseException pex ) {
-					System.out.println( pex.getMessage() ) ;
-					if( exitRequested( compiler ) ) {					
-						System.out.println( "Goodbye!" ) ;
-						System.exit(0) ;
-					}
-				}
-				catch( Exception ex ) {
-					ex.printStackTrace() ;
-					if( exitRequested( compiler ) ) {					
-						System.out.println( "Goodbye!" ) ;
-						System.exit(0) ;
-					}	
-				}
-			}
-					
+             try {
+                 queryXml = compiler.compileToXmlText() ; 
+                 System.out.println( "\nCompilation produced:" ) ;
+                 System.out.println( queryXml ) ;				
+             }
+             catch( ParseException pex ) {
+                 if( exitRequested( pex.getMessage() ) ) {
+                     System.out.println( "Goodbye!" ) ;
+                     System.exit(0) ;
+                 }  
+                 System.out.println( "\nCompilation failed:" ) ;
+                 System.out.println( pex.getMessage() ) ;
+                 compiler.ReInit( System.in ) ;
+             }
+             catch( Exception ex ) {
+                 System.out.println( "\nPossible error within compiler:" ) ;
+                 ex.printStackTrace() ;
+                 compiler.ReInit( System.in ) ;
+             }
+         }				
 	 }
 	 
-	 private static boolean exitRequested( AdqlStoX compiler ) {
-		 char ch;
-		 try {
-			 ch = (char)System.in.read() ;
-			 if( ch != ';' ) {
-				 compiler.ReInit( System.in ) ;
-				 return false ;
-			 }
-		 }
-		 catch( Exception ex ) {
-			 ;
-		 }
-		 return true ;		 
-	 }
-
+     private static boolean exitRequested( String message ) {
+         String firstLine = message.substring( 0, message.indexOf('\n') ) ;
+         if( firstLine.indexOf( BYE_TRIGGER ) != -1 )
+             return true ;
+         return false ;       
+     }
 }

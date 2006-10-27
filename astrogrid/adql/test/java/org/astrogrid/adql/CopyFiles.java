@@ -40,25 +40,60 @@ import org.apache.xmlbeans.*;
 
 /**
  * AdqlStoXTest
- *
+ * 
+ * Usage: CopyFiles directory=file-path
+ *     
+ *   CopyFiles is a unit-test file generator.
+ *   The programme takes queries in adql/xml format with a .xml extension
+ *   contained in the given directory. It duplicates each file, changing
+ *   the extension to .adqlx. Then it creates a second equivalent file in adql/s
+ *   format with an extension of .adqls. The files are written to the given 
+ *   directory.
+ *   WARNING: Existing files with the same name will be overwritten.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Sep 26, 2006
  */
 public class CopyFiles {
     
+     private static final String USAGE =
+        "Usage: CopyFiles directory=file-path\n\n" +
+        "CopyFiles is a unit-test file generator.\n" +
+        "The programme takes queries in adql/xml format with a .xml extension\n" +
+        "contained in the given directory. It duplicates each file, changing\n" +
+        "the extension to .adqlx. Then it creates a second equivalent file in adql/s\n" +
+        "format with an extension of .adqls. The files are written to the given\n" +
+        "directory.\n" +     
+        "WARNING: Existing files with the same name will be overwritten.\n" ;
+    
      private static Transformer textTransformer ;
     
      public static void main(String args[]) {
+         
+         if( args.length != 1 ) {
+             System.out.println() ;
+             System.out.print( USAGE ) ;
+             return ;
+         }
+         
+         String directoryPath = args[0].split( "=" )[1] ;        
+         File directory = new File( directoryPath ) ;
+         
+         if( directory.exists() == false ) {
+             System.out.println( "Target directory does not exist:\n" +
+                                 "    " + args[0]
+                               ) ;
+             return ;
+         }
         
          File[] fileArray = null ;
          try {
 
-             fileArray = new File( "/home/jl99/workspace/adql-jl-1813/adql/test/java/org/astrogrid/adql/v10" ).listFiles( new FileFilter() {
+             fileArray = directory.listFiles( new FileFilter() {
 
                                  public boolean accept( File file ) {
                                      if( file.getName().endsWith( "xml" ) ) {
-                                         return true ;
+                                         return true ; 
                                      }
                                      return false ;
                                  } 
@@ -76,6 +111,8 @@ public class CopyFiles {
              ex.printStackTrace() ;
          }
          
+         System.out.println( "CopyFiles completed." ) ;
+         
      }
      
      private static void copyFile( File inFile, String extension ) {
@@ -89,7 +126,7 @@ public class CopyFiles {
             String newFileName = name[0] + '.' + extension ;  
             System.out.println( "newFileName: " + newFileName ) ;
             outFile = new File( parent, newFileName) ; 
-            System.out.println( outFile.getAbsolutePath() ) ;
+            // System.out.println( outFile.getAbsolutePath() ) ;
             writer = new FileWriter( outFile ) ;
             int ch = reader.read() ;
             while( ch != -1 ) {
@@ -109,7 +146,6 @@ public class CopyFiles {
     private static void ProduceAdqlFile( File inFile ) {
         StreamSource source ;
         StreamResult result = new StreamResult( new StringWriter() ) ;
-        String value = "" ;
         FileWriter writer = null ;
         FileReader reader = null ;
         try {
@@ -123,12 +159,6 @@ public class CopyFiles {
             writer = new FileWriter( outFile ) ;
             result = new StreamResult( writer ) ;
             getTransformer().transform( source, result ) ;
-//            value = ((StringWriter)result.getWriter()).toString() ; 
-//            System.out.println (value ) ;
-//            
-//            writer = new FileWriter( outFile ) ;
-//            writer.write( value ) ;
-            
         }
         catch( Exception ex ) {
             ex.printStackTrace() ;
