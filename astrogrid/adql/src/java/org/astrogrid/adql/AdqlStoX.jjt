@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.28 2006/10/25 13:22:15 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.29 2006/10/27 14:29:56 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -91,16 +91,24 @@ public class AdqlStoX {
 	
 	private static final boolean TRACE_ENABLED = true ;
 	private static final boolean DEBUG_ENABLED = true ;
-	private static StringBuffer logIndent = new StringBuffer() ;
+	private static StringBuffer logIndent ;
+	static {
+		if( DEBUG_ENABLED | TRACE_ENABLED ) {
+			logIndent = new StringBuffer() ;
+		}
+	}	
 	
 	private static final int CHANGE_SIGN = -1 ;
 	private static final int DONT_CHANGE_SIGN = 1 ;
+	
+	private String lastMessage ;
 
 	public SelectDocument exec() throws ParseException {
 		try {
 			return select_document_A() ;
 		}
 		catch ( ParseException pex ) {
+			lastMessage = pex.getLocalizedMessage() ;
 			if( logIndent.length() > 0 )
 		    	logIndent.delete( 0, logIndent.length()-1 ) ;
 		    throw pex ;	
@@ -114,8 +122,9 @@ public class AdqlStoX {
 	public String compileToXmlText( boolean prettyPrint ) throws ParseException {
 		XmlOptions opts = new XmlOptions();
 		if( prettyPrint ) {
-		   opts.setSavePrettyPrint();
-		   opts.setSavePrettyPrintIndent(4);
+		   opts.setSaveAggressiveNamespaces() ;
+		   opts.setSavePrettyPrint() ;
+		   opts.setSavePrettyPrintIndent(4) ;
 		}
 		return exec().xmlText(opts) ;
 	}
@@ -127,7 +136,15 @@ public class AdqlStoX {
 	public Node compileToXmlDom() throws ParseException {
 		return exec().getDomNode() ;
 	}
-		
+	
+	public String getLongLastMessage() {
+		return lastMessage ;	
+	}
+	
+	public String getShortLastMessage() {
+		return lastMessage.substring( 0, lastMessage.indexOf( '\n' ) ) ;	
+	}
+	
 	private void enterTrace( String entry ) {
 		log.debug( logIndent.toString() + "enter: " + entry ) ;
 		indentPlus() ;
@@ -161,7 +178,8 @@ SKIP :
  *
  * bnf-start
  *  <SQL_special_character> ::=
- *     <double_quote>
+ *     <space>
+ *   | <double_quote>
  *   | <percent>
  *   | <ampersand>
  *   | <quote>
@@ -181,12 +199,11 @@ SKIP :
  *   | <question_mark>
  *   | <underscore>
  *   | <vertical_bar>
- *  !! There is no effort within the ADQL standard itself to accommodate white space.
- *     Hence the absence of <space> in the above. This is better left to the use
- *     of regular expressions within an implementation. Specific accommodation of 
- *     white space within the standard would lead to inappropriate clutter.  
  * bnf-end
- *
+ * bnf-start
+ *  <space> ::=
+ *  !! Imagine there is a space character here
+ * bnf-end
  * bnf-single <double_quote> ::= "
  * bnf-single <percent> ::= %
  * bnf-single <ampersand> ::= &
@@ -845,10 +862,11 @@ AtomType signed_integer_S() :
  */
 SearchType between_predicate_A() : 
 {
-	
+	if( TRACE_ENABLED ) enterTrace ( "between_predicate_A()" ) ;
 	ScalarExpressionType se1 = null ;
 	ScalarExpressionType se2 = null ;
 	ScalarExpressionType se3 = null ;
+	SearchType st = null ;
 	Token t = null ;
 }
 {
@@ -867,15 +885,16 @@ SearchType between_predicate_A() :
 			if( t==null ) {
 				BetweenPredType bp = BetweenPredType.Factory.newInstance() ;
 				bp.setArgArray( args ) ;
-				return bp ;			
+				st = bp ;			
 			}
 			else {
 				NotBetweenPredType nbp = NotBetweenPredType.Factory.newInstance() ;
 				nbp.setArgArray( args ) ;
-				return nbp ;		
+				st = nbp ;		
 			}
 		}
-		return null ;
+		if( TRACE_ENABLED ) exitTrace ( "between_predicate_A()" ) ;
+		return st ;
 	}
 }
 
@@ -891,7 +910,7 @@ SearchType between_predicate_A() :
  */
 SearchType boolean_primary_S() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "boolean_primary_S" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "boolean_primary_S()" ) ;
 	SearchType st = null ;
 	Token t = null ;
 } 
@@ -912,7 +931,7 @@ SearchType boolean_primary_S() :
     		cs.setCondition( st ) ;
     		st = cs ;	
     	}
-    	if( TRACE_ENABLED ) exitTrace ( "boolean_primary_S" ) ;
+    	if( TRACE_ENABLED ) exitTrace ( "boolean_primary_S()" ) ;
     	return st ;
     }
 }
@@ -929,7 +948,7 @@ SearchType boolean_primary_S() :
  */
 SearchType boolean_term_S() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "boolean_term_S" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "boolean_term_S()" ) ;
 	SearchType st1 = null ;
 	SearchType st2 = null ;
 	SearchType retval = null ;
@@ -956,7 +975,7 @@ SearchType boolean_term_S() :
 		   andType.setConditionArray( conditionArray ) ;
 		   retval = andType ;
 		}	
-		if( TRACE_ENABLED ) exitTrace ( "boolean_term_S" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "boolean_term_S()" ) ;
 		return retval ;
 	}
 }
@@ -969,7 +988,7 @@ SearchType boolean_term_S() :
  */
 SearchType boolean_factor_S() :
 {
-	if( TRACE_ENABLED ) enterTrace ( "boolean_factor_S" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "boolean_factor_S()" ) ;
 	SearchType sc = null ;
 	Token t = null ;
 }
@@ -981,14 +1000,14 @@ SearchType boolean_factor_S() :
 			is.setCondition( sc ) ;
 			sc = is ;		
 		}
-		if( TRACE_ENABLED ) exitTrace ( "boolean_factor_S" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "boolean_factor_S()" ) ;
 		return sc ;
 	}
 }
 
 SearchType booleanFactorList() :
 {
-	if( TRACE_ENABLED ) enterTrace ( "booleanFactorList" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "booleanFactorList()" ) ;
 	Stack stack = null ;
 	SearchType st = null ;
 }
@@ -1025,20 +1044,20 @@ SearchType booleanFactorList() :
 			if( heldAnd != null )
 				st = heldAnd ; 
 		}		
-		if( TRACE_ENABLED ) exitTrace ( "booleanFactorList" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "booleanFactorList()" ) ;
 		return st ;
 	}
 }
 
 SearchType booleanFactorSingleton() :
 {
-	if( TRACE_ENABLED ) enterTrace ( "booleanFactorSingleton" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "booleanFactorSingleton()" ) ;
 	SearchType st = null ;
 }
 {
 	<AND> st=boolean_factor_S()
 	{ 
-		if( TRACE_ENABLED ) exitTrace ( "booleanFactorSingleton" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "booleanFactorSingleton()" ) ;
 		return st ; 
 	}
 }
@@ -1055,7 +1074,7 @@ SearchType booleanFactorSingleton() :
  */
 SearchType boolean_test_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "boolean_test_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "boolean_test_A()" ) ;
 	SearchType st = null ;
 }
 {
@@ -1066,7 +1085,7 @@ SearchType boolean_test_A() :
 	// NB: There is no accommodation of truth value in ADQL
 	st=boolean_primary_S() 
 	{ 
-		if( TRACE_ENABLED ) exitTrace ( "boolean_test_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "boolean_test_A()" ) ;
 		return st ; 
 	}
 }
@@ -1083,7 +1102,7 @@ SearchType boolean_test_A() :
  */
 SearchType likePredicate_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "likePredicate_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "likePredicate_A()" ) ;
 	SearchType st = null ;
 	Token t = null ;
 	AtomType p = null ;
@@ -1112,7 +1131,7 @@ SearchType likePredicate_A() :
 			}
 			
 		}
-		if( TRACE_ENABLED ) exitTrace ( "likePredicate_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "likePredicate_A()" ) ;
 		return st ;	
 	}
 }
@@ -1205,7 +1224,7 @@ AtomType character_string_literal_A() :
 
 AtomType ASCIIStringLiteral() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "ASCIIStringLiteral" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "ASCIIStringLiteral()" ) ;
 	AtomType at = null ;
 	ArrayList list = null ;
 	Token t1 = null ;
@@ -1235,7 +1254,7 @@ AtomType ASCIIStringLiteral() :
 			st.setValue( buffer.toString() ) ;
 			at.setLiteral( st ) ;			
 		}
-		if( TRACE_ENABLED ) exitTrace ( "ASCIIStringLiteral" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "ASCIIStringLiteral()" ) ;
 		return at ;
 	} 
 	
@@ -1252,7 +1271,7 @@ AtomType ASCIIStringLiteral() :
  */
 ScalarExpressionType character_value_expression_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "character_value_expression_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "character_value_expression_A()" ) ;
 	ScalarExpressionType seType = null ;
 }
 {
@@ -1263,7 +1282,7 @@ ScalarExpressionType character_value_expression_A() :
 
 	seType=character_factor_A()
 	{ 
-		if( TRACE_ENABLED ) exitTrace ( "character_value_expression_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "character_value_expression_A()" ) ;
 		return seType ; 
 	}	
 }
@@ -1286,6 +1305,7 @@ void collate_clause_S() : {}
  */
 String column_name_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "column_name_S()" ) ;
 	String name = null ;
 }
 {
@@ -1293,7 +1313,10 @@ String column_name_S() :
 	// <column_name> ::= <identifier>
 
 	name=identifier_A()
-	{ return name ; }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "column_name_S()" ) ;
+		return name ; 
+	}
 }
 
 /**
@@ -1312,12 +1335,13 @@ void column_name_list_S()  : {}
 /**
  * column_reference_S
  *
- * bnf-single <column_reference> ::= [ <qualifier> <period> ] <column_name>
+ * bnf-single <column_reference> ::= <qualifier> <period> <column_name>
+ * !! SQL92 does not enforce qualified column references
  *
  */
 ColumnReferenceType column_reference_S() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "column_reference_S" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "column_reference_S()" ) ;
 	ColumnReferenceType crType = null ;
 	String q = null ;
 	String n = null ;
@@ -1326,7 +1350,7 @@ ColumnReferenceType column_reference_S() :
 	//S:
 	// <column_reference> ::= [ <qualifier> <period> ] <column_name>
 
-	( [ LOOKAHEAD(2) q=qualifier_A() <PERIOD> ] n=column_name_S() )
+	( q=qualifier_A() <PERIOD> n=column_name_S() )
 	{ 
 		if( n != null ) {
 			crType = ColumnReferenceType.Factory.newInstance() ;
@@ -1335,7 +1359,7 @@ ColumnReferenceType column_reference_S() :
 				crType.setTable( q ) ;	
 			}
 		}
-		if( TRACE_ENABLED ) exitTrace ( "column_reference_S" ) ;		
+		if( TRACE_ENABLED ) exitTrace ( "column_reference_S()" ) ;		
 		return crType ; 	
 	}
 }
@@ -1358,7 +1382,7 @@ ColumnReferenceType column_reference_S() :
  */
 ScalarExpressionType value_expression_primary_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "value_expression_primary_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "value_expression_primary_A()" ) ;
 	ScalarExpressionType seType = null ;
 	Token t = null ;
 }
@@ -1401,7 +1425,7 @@ ScalarExpressionType value_expression_primary_A() :
 	//	castSpecification()
 	)
 	{ 
-		if( TRACE_ENABLED ) exitTrace ( "value_expression_primary_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "value_expression_primary_A()" ) ;
 		return seType ; 
 	}
 }
@@ -1509,13 +1533,17 @@ ComparisonPredType comparison_predicate_A() :
  */
 String correlation_name_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "correlation_name_S()" ) ;
 	String name = null ;
 }
 {
 	//S:
 	// <correlation_name> ::= <identifier>
 	name=identifier_A()
-	{ return name ; }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "correlation_name_S()" ) ;
+		return name ; 
+	}
 }
 
 void datetime_factor_S() : {}
@@ -1692,6 +1720,7 @@ void explicit_table_S() : {}
  */
 ScalarExpressionType factor_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "factor_S()" ) ;
 	ScalarExpressionType retType = null ;
 	ScalarExpressionType seType = null ;
 	UnaryExprType ueType = null ;
@@ -1708,6 +1737,7 @@ ScalarExpressionType factor_S() :
 	   else {
 	   	  retType = seType ;
 	   }
+	   if( TRACE_ENABLED ) exitTrace ( "factor_S()" ) ;
 	   return retType ;
 	}
 }
@@ -1739,7 +1769,7 @@ UnaryExprType factorUnary() :
  */
 FromType from_clause_S() : 
 {
-    if( TRACE_ENABLED ) enterTrace ( "from_clause_S" ) ;
+    if( TRACE_ENABLED ) enterTrace ( "from_clause_S()" ) ;
 	FromType fromType = null ;
 	FromTableType ftType = null ;
 	ArrayList list = new ArrayList() ;
@@ -1759,7 +1789,7 @@ FromType from_clause_S() :
 		   FromTableType[] tableRefArray = new FromTableType[ list.size() ] ;
 		   fromType.setTableArray( (FromTableType[])list.toArray(tableRefArray) ) ;				
 		}
-	    if( TRACE_ENABLED ) exitTrace ( "from_clause_S" ) ;
+	    if( TRACE_ENABLED ) exitTrace ( "from_clause_S()" ) ;
 		return fromType ;
 	}
 }
@@ -1872,7 +1902,7 @@ ScalarExpressionType general_value_specification_A() :
  */
 GroupByType group_by_clause_S() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "group_by_clause_S" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "group_by_clause_S()" ) ;
 	GroupByType gbType = null ;
 	ArrayList crList = null ;
 }
@@ -1886,7 +1916,7 @@ GroupByType group_by_clause_S() :
 			ColumnReferenceType[] colRefArray = new ColumnReferenceType[ crList.size() ] ;
 			gbType.setColumnArray( (ColumnReferenceType[])crList.toArray(colRefArray) ) ;	
 		}
-		if( TRACE_ENABLED ) exitTrace ( "group_by_clause_S" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "group_by_clause_S()" ) ;
 		return gbType ;
 	}
 }
@@ -1952,7 +1982,7 @@ ColumnReferenceType grouping_column_reference_A() :
  */
 HavingType having_clause_S() :
 {
-	if( TRACE_ENABLED ) enterTrace ( "having_clause_S" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "having_clause_S()" ) ;
 	HavingType hType = null ;
 	SearchType sType = null ;
 	Token t = null ;
@@ -1967,7 +1997,7 @@ HavingType having_clause_S() :
 			if( sType != null )
 				hType.setCondition( sType ) ;
 		}
-		if( TRACE_ENABLED ) exitTrace ( "having_clause_S" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "having_clause_S()" ) ;
 		return hType ;
 		
 	}
@@ -2004,7 +2034,7 @@ String identifier_A() :
  */
 SearchType in_predicate_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "in_predicate_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "in_predicate_A()" ) ;
 	Token t1 = null ;
 	Token t2 = null ;
 	ScalarExpressionType seType = null ;
@@ -2035,7 +2065,7 @@ SearchType in_predicate_A() :
        	     retVal = xSearch ;     	  	
        	  }
        }
-       if( TRACE_ENABLED ) exitTrace ( "in_predicate_A" ) ;
+       if( TRACE_ENABLED ) exitTrace ( "in_predicate_A()" ) ;
 	   return retVal ;	
 	}
 }
@@ -2051,7 +2081,7 @@ SearchType in_predicate_A() :
  */
 InclusionSetType in_predicate_value_S() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "in_predicate_value_S" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "in_predicate_value_S()" ) ;
 	InclusionSetType isType = null ;
 	Token t = null ;
 }
@@ -2061,7 +2091,7 @@ InclusionSetType in_predicate_value_S() :
 	
 	( LOOKAHEAD(2) isType=table_subquery_A() | ( <LEFT_PAREN> isType=in_value_list_A() t=<RIGHT_PAREN> ) )
 	{ 
-		if( TRACE_ENABLED ) exitTrace ( "in_predicate_value_S" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "in_predicate_value_S()" ) ;
 		return isType ; 
 	} 	
 }
@@ -2317,10 +2347,10 @@ JoinTableType joined_table_S() :
     //  | <qualified_join>
     //  | <left_paren> <joined_table> <right_paren>
 	(
-		LOOKAHEAD(3)
+		LOOKAHEAD(4)
 		jtType=cross_join_S()
 		|
-		LOOKAHEAD(3)
+		LOOKAHEAD(4)
 		jtType=qualified_join_S()
 		|
 		( t=<LEFT_PAREN> jtType=joined_table_S() <RIGHT_PAREN> )
@@ -2398,7 +2428,7 @@ JointTableQualifierType join_type_A() :
  */
 ScalarExpressionType match_value_S() : 
 {
-    if( TRACE_ENABLED ) enterTrace ( "match_value_S" ) ;
+    if( TRACE_ENABLED ) enterTrace ( "match_value_S()" ) ;
     ScalarExpressionType seType = null ;
 }
 {
@@ -2407,7 +2437,7 @@ ScalarExpressionType match_value_S() :
 
 	seType=character_value_expression_A()
 	{
-	   if( TRACE_ENABLED ) exitTrace ( "match_value_S" ) ;	
+	   if( TRACE_ENABLED ) exitTrace ( "match_value_S()" ) ;	
 	   return seType ;
 	}	
 }
@@ -2447,6 +2477,7 @@ void match_predicate_S() : {}
  */
 MathFunctionType math_function_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "math_function_A()" ) ;
 	MathFunctionType mfType = null ; 
 	ScalarExpressionType arg1 = null ;
 	Token t = null ;
@@ -2506,6 +2537,7 @@ MathFunctionType math_function_A() :
 	   	     mfType.setArgArray( argArray ) ;
 	   	  }
 	   }
+	   if( TRACE_ENABLED ) exitTrace ( "math_function_A()" ) ;
 	   return mfType ;
 	}
 }
@@ -2531,6 +2563,7 @@ void null_predicate_S() : {}
  */
 ScalarExpressionType numeric_primary_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "numeric_primary_S()" ) ;
 	ScalarExpressionType seType = null ;
 }
 {
@@ -2545,7 +2578,10 @@ ScalarExpressionType numeric_primary_S() :
 	  |
 	  seType=value_expression_primary_A()
 	)
-	{ return seType ; } 
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "numeric_primary_S()" ) ;
+		return seType ; 
+	} 
 	
 }
 
@@ -2597,6 +2633,7 @@ ScalarExpressionType numeric_value_expression_S() :
 
 ScalarExpressionType[] numericValueExpressionList() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "numericValueExpressionList()" ) ;
 	ArrayList list = null ;
 	ScalarExpressionType[] exprPairs1 = null ;
 	ScalarExpressionType[] exprPairs2 = null ;
@@ -2624,13 +2661,15 @@ ScalarExpressionType[] numericValueExpressionList() :
 				beType.setArgArray( args ) ;
 				exprPairs1 = exprPairs2 ;
 			}
-		}		
+		}
+		if( TRACE_ENABLED ) exitTrace ( "numericValueExpressionList()" ) ;		
 		return retExprPairs ;
 	}
 }
 
 ScalarExpressionType[] numericValueExpressionSingleton() :
 {
+	if( TRACE_ENABLED ) enterTrace ( "numericValueExpressionSingleton()" ) ;	
 	ScalarExpressionType[] retPairs = null ;
 	BinaryExprType beType = null ;
 	ScalarExpressionType seType = null ;
@@ -2646,6 +2685,7 @@ ScalarExpressionType[] numericValueExpressionSingleton() :
 			retPairs[0] = beType ;
 			retPairs[1] = seType ;
 		}
+		if( TRACE_ENABLED ) exitTrace ( "numericValueExpressionSingleton()" ) ;	
 		return retPairs ;
 	}
 }
@@ -2662,6 +2702,7 @@ ScalarExpressionType[] numericValueExpressionSingleton() :
  */
 ScalarExpressionType numeric_value_function_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "numeric_value_function_A()" ) ;
 	ScalarExpressionType seType = null ;
 }
 {
@@ -2677,7 +2718,10 @@ ScalarExpressionType numeric_value_function_A() :
 		|
 		seType=math_function_A()	
 	)
-	{ return seType ; }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "numeric_value_function_A()" ) ;
+		return seType ; 
+	}
 }
 
 /**
@@ -2825,7 +2869,7 @@ void overlaps_predicate_S() : {}
  */
 AtomType pattern_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "pattern_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "pattern_A()" ) ;
 	AtomType at = null ;
 }
 {
@@ -2834,7 +2878,7 @@ AtomType pattern_A() :
 
 	at=character_string_literal_A()
 	{
-		if( TRACE_ENABLED ) exitTrace ( "pattern_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "pattern_A()" ) ;
 		return at ;
 	}	
 }
@@ -2858,7 +2902,7 @@ AtomType pattern_A() :
  */
 SearchType predicate_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "predicate_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "predicate_A()" ) ;
 	SearchType searchType = null ;
 }
 {
@@ -2874,15 +2918,15 @@ SearchType predicate_A() :
 	//    | <match_predicate>
 	//    | <overlaps_predicate>
 	(
-		searchType = region_predicate_A()    
-		|
- 		LOOKAHEAD(4)
+//		searchType = region_predicate_A()    
+//		|
+ 		LOOKAHEAD(5)
 		searchType=comparison_predicate_A()
 	    | 
-	    LOOKAHEAD(3)
+	    LOOKAHEAD(5)
 	    searchType=between_predicate_A()
 	    |
-	    LOOKAHEAD(3)
+	    LOOKAHEAD(5)
 	    searchType=in_predicate_A()
 	    |
 	    searchType=likePredicate_A()
@@ -2911,7 +2955,7 @@ SearchType predicate_A() :
         
     )
     { 
-    	if( TRACE_ENABLED ) exitTrace ( "predicate_A" ) ;
+    	if( TRACE_ENABLED ) exitTrace ( "predicate_A()" ) ;
     	return searchType ; 
     }
 }
@@ -3026,7 +3070,7 @@ String qualifier_A() :
  */
 SelectType query_specification_A() : 
 {
-    if( TRACE_ENABLED ) enterTrace ( "query_specification_A" ) ;
+    if( TRACE_ENABLED ) enterTrace ( "query_specification_A()" ) ;
 	SelectType st = null ;
 	ArrayList tableList = null ;
 	SelectionListType listType = null ;
@@ -3077,14 +3121,14 @@ SelectType query_specification_A() :
 				}			
 			}			
 		}
-		if( TRACE_ENABLED ) exitTrace ( "query_specification_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "query_specification_A()" ) ;
 		return st  ; 
 	}
 }
 
 RegionSearchType region_predicate_A() :
 {
-	if( TRACE_ENABLED ) enterTrace ( "region_predicate_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "region_predicate_A()" ) ;
 	RegionSearchType st = null ;
 	RegionType rt = null ;
 	Token t = null ;
@@ -3098,7 +3142,7 @@ RegionSearchType region_predicate_A() :
 		   st = RegionSearchType.Factory.newInstance() ;	
 		   st.setRegion( rt ) ;
 		}
-		if( TRACE_ENABLED ) exitTrace ( "region_predicate_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "region_predicate_A()" ) ;
 		return st ; 
 	}
 	
@@ -3106,7 +3150,7 @@ RegionSearchType region_predicate_A() :
 
 RegionType region_specification_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "region_specification_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "region_specification_A()" ) ;
     RegionType rt = null ;
 }
 {
@@ -3120,14 +3164,14 @@ RegionType region_specification_A() :
 		sector_region_A()
 	)
 	{ 
-		if( TRACE_ENABLED ) exitTrace ( "region_specification_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "region_specification_A()" ) ;
 		return rt ; 
 	}
 }
 
 CircleType circle_region_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "circle_region_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "circle_region_A()" ) ;
 	String coordSystem = null ;
 	Object[] radiusParams = null ;
 	List coords = null ;
@@ -3147,14 +3191,14 @@ CircleType circle_region_A() :
 			circleType.setCoordSystemId( coordSystem ) ;
 			circleType.setUnit( (PosUnitType.Enum)radiusParams[1] ) ;
 		}
-		if( TRACE_ENABLED ) exitTrace ( "circle_region_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "circle_region_A()" ) ;
 		return circleType ;
 	}
 }
 
 EllipseType ellipse_region_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "ellipse_region_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "ellipse_region_A()" ) ;
 	Double minorRadius = null ;
 	Double majorRadius = null ;
 	List coords = null ;
@@ -3181,7 +3225,7 @@ EllipseType ellipse_region_A() :
 			ellipseType.setPosAngle( ((Double)angleParams[0]).doubleValue() ) ;
 			ellipseType.setPosAngleUnit( (AngleUnitType.Enum)angleParams[1] ) ;
 		}
-		if( TRACE_ENABLED ) exitTrace ( "ellipse_region_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "ellipse_region_A()" ) ;
 		return ellipseType ;
 	}
 }
@@ -3215,7 +3259,7 @@ void convex_region_A() :
 
 String coord_system_A() : 
 {
-	if( TRACE_ENABLED ) enterTrace ( "coord_system_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "coord_system_A()" ) ;
 	String cs = null ;
 	Token t1 = null ;
 }
@@ -3227,7 +3271,7 @@ String coord_system_A() :
 		if( t1 !=  null ) {
 		   cs = t1.image ;
 	    }	
-	    if( TRACE_ENABLED ) exitTrace ( "coord_system_A" ) ;
+	    if( TRACE_ENABLED ) exitTrace ( "coord_system_A()" ) ;
 		return cs ;		
 	}
 }
@@ -3241,7 +3285,7 @@ void row_subquery_S() : {}
 
 Double double_numeric_literal_A() :
 {
-	if( TRACE_ENABLED ) enterTrace ( "double_numeric_literal_A" ) ;
+	if( TRACE_ENABLED ) enterTrace ( "double_numeric_literal_A()" ) ;
 	Token s = null ;
 	Token t = null ;
 	Double dnl = null ;
@@ -3252,7 +3296,7 @@ Double double_numeric_literal_A() :
 		if( t != null ) {
            dnl = new Double( (s!=null ? '-' : '+' ) + t.image ) ;		
 		}
-		if( TRACE_ENABLED ) exitTrace ( "double_numeric_literal_A" ) ;
+		if( TRACE_ENABLED ) exitTrace ( "double_numeric_literal_A()" ) ;
 		return dnl ;
 	}
 }
@@ -3580,6 +3624,7 @@ SearchType booleanTermSingleton() :
  */
 SelectionListType select_list_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "select_list_S()" ) ;
 	ArrayList itemList = new ArrayList() ;
 	SelectionListType slType = SelectionListType.Factory.newInstance() ;
 }
@@ -3598,6 +3643,7 @@ SelectionListType select_list_S() :
 			SelectionItemType[] itemArray = new SelectionItemType[ itemList.size() ] ;	
 			slType.setItemArray( (SelectionItemType[])itemList.toArray(itemArray) ) ;
 		}
+		if( TRACE_ENABLED ) exitTrace ( "select_list_S()" ) ;
 		return slType ;	
 	}
 }
@@ -3620,6 +3666,7 @@ void allSelectionItem( ArrayList itemList ) : {}
  */
 void select_sublist_A( ArrayList itemList ) : 
 { 
+	if( TRACE_ENABLED ) enterTrace ( "select_sublist_A()" ) ;
 	SelectionItemType siType = null ;
 }
 {   
@@ -3627,7 +3674,10 @@ void select_sublist_A( ArrayList itemList ) :
 	// <select_sublist> ::= <derived_column> | <qualifier> <period> <asterisk>
     
 	siType=derived_column_S()
-	{ itemList.add( siType ) ; }			
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "select_sublist_A()" ) ;
+		itemList.add( siType ) ; 
+	}			
 }
 
 /**
@@ -3639,6 +3689,7 @@ void select_sublist_A( ArrayList itemList ) :
  */
 SelectionItemType derived_column_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "derived_column_S()" ) ;
 	ScalarExpressionType seType = null ;
 	String aliasName = null ;
 }
@@ -3655,6 +3706,7 @@ SelectionItemType derived_column_S() :
 			asiType.setExpression( seType ) ;
 			return asiType ;	
 		}
+		if( TRACE_ENABLED ) exitTrace ( "derived_column_S()" ) ;
 		return seType ; 
 	}	
 }
@@ -3905,6 +3957,7 @@ void corrsponding_column_list_S() : {}
  */
 JoinTableType cross_join_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "cross_join_S()" ) ;
 	JoinTableType jtType = null ;
 	FromTableType fType1 = null ;
 	FromTableType fType2 = null ;
@@ -3925,6 +3978,7 @@ JoinTableType cross_join_S() :
 	      tableArray.setFromTableTypeArray( fttArray ) ;
 	      jtType.setTables( tableArray ) ;
 	   }
+	   if( TRACE_ENABLED ) exitTrace ( "cross_join_S()" ) ;
 	   return jtType ;	
 	}
 }
@@ -4049,6 +4103,7 @@ ArrayList table_expression_A() :
  */
 String table_name_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "table_name_A()" ) ;
 	String retValue = null ;
 }
 {
@@ -4058,7 +4113,10 @@ String table_name_A() :
 
 	// Forshortened
 	retValue=qualified_name_A()
-	{ return retValue ; }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "table_name_A()" ) ;
+		return retValue ; 
+	}
 }
 
 /**
@@ -4066,7 +4124,7 @@ String table_name_A() :
  *
  * bnf-start
  *  <table_reference> ::=
- *      <table_name> [ [ AS ] <correlation_name> [ <left_paren> <derived_column_list> <right_paren> ] ]
+ *      <table_name> [ AS ] <correlation_name> 
  *    | <joined_table> 
  *  !! SQL92 also supports <derived_table> and <derived_column_list>
  * bnf-end
@@ -4107,7 +4165,7 @@ FromTableType table_reference_A() :
 		LOOKAHEAD(4)
 	    ftType=joined_table_S()
 	    |
-		( tName=table_name_A() [ [ <AS> ] cName=correlation_name_S() ] )
+		( tName=table_name_A() [ <AS> ] cName=correlation_name_S() )
 		{
 			if( tName != null ) {	
 				TableType tableType = TableType.Factory.newInstance() ;
@@ -4222,6 +4280,7 @@ void table_value_constructor_list_S() : {}
  */
 ScalarExpressionType term_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "term_S()" ) ;
 	ScalarExpressionType seType = null ;
 	ScalarExpressionType[] exprPairs = null ;
 }
@@ -4236,17 +4295,16 @@ ScalarExpressionType term_S() :
 	// factor() ( LOOKAHEAD(2) (<ASTERISK> | <SOLIDUS> ) term() )*
 	seType=factor_S() exprPairs=termList()
 	{ 
-		if( exprPairs == null ) {
-		   return seType ; 
-		}
-		else {
+		if( exprPairs != null )  {
 		   ScalarExpressionType[] args = new ScalarExpressionType[2] ;
 		   args[0] = seType ;
 		   args[1] = exprPairs[1] ;
 		   BinaryExprType beType = (BinaryExprType)exprPairs[0] ;
 		   beType.setArgArray( args ) ;
-		   return beType ;
+		   seType = beType ;
 		}	
+		if( TRACE_ENABLED ) exitTrace ( "term_S()" ) ;
+		return seType ;
 	}
 }
 
@@ -4354,6 +4412,7 @@ void time_zone_S() : {}
  */
 TrigonometricFunctionType trig_function_A() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "trig_function_A()" ) ;
 	TrigonometricFunctionType tfType = null ; 
 	ScalarExpressionType arg1 = null ;
 	ScalarExpressionType arg2 = null ;
@@ -4393,6 +4452,7 @@ TrigonometricFunctionType trig_function_A() :
 			}
 			tfType.setArgArray( argArray ) ;
 		}
+		if( TRACE_ENABLED ) exitTrace ( "trig_function_A()" ) ;
 		return tfType ;
 	}
 }
@@ -4465,6 +4525,7 @@ AtomType unsigned_numeric_literal_A() :
  */
 ScalarExpressionType unsigned_value_specification_S() : 
 {
+	if( TRACE_ENABLED ) enterTrace ( "unsigned_value_specification_S()" ) ;
 	ScalarExpressionType seType = null ;
 }
 {
@@ -4477,7 +4538,10 @@ ScalarExpressionType unsigned_value_specification_S() :
 		|
 		general_value_specification_A()
 	)
-	{ return seType ;  }
+	{ 
+		if( TRACE_ENABLED ) exitTrace ( "unsigned_value_specification_S()" ) ;
+		return seType ;  
+	}
 }
 
 /**
@@ -4579,6 +4643,10 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.29  2006/10/27 14:29:56  jl99
+Made alliases for tables compulsary. Not sure this is such a good idea,
+but it obeys the adql/x 1.01 standard.
+
 Revision 1.28  2006/10/25 13:22:15  jl99
 Extra convenience methods to trigger compilations with differing output
 (XmlBeans, XmlText, Xml Dom Node etc)
