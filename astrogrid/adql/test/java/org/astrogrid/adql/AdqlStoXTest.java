@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.10 2006/10/25 18:38:11 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.11 2006/10/27 14:32:20 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -66,6 +66,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_BADdelimitedIdentifier() throws Exception { execTest() ; }
 	public void testOf_v10_BADemptyFrom() throws Exception { execTest() ; }
 	public void testOf_v10_BADemptyWhere() throws Exception { execTest() ; }
+    public void testOf_v10_BADextremelyComplexQuery() throws Exception { execTest() ; }
     public void testOf_v10_BADinnerJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_BADregularIdentifier() throws Exception { execTest() ; }
     public void testOf_v10_BADreservedWordAsTableName() throws Exception { execTest() ; }
@@ -73,6 +74,7 @@ public class AdqlStoXTest extends XMLTestCase {
 	public void testOf_v10_BADselectOrderByDirOnly() throws Exception { execTest() ; }
     public void testOf_v10_BADtop() throws Exception { execTest() ; }
     public void testOf_v10_ceilingFunction() throws Exception { execTest() ; }
+    public void testOf_v10_complexSelect01() throws Exception { execTest() ; }
     public void testOf_v10_delimitedIdentifier() throws Exception { execTest() ; }
     public void testOf_v10_fullOuterJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_groupByOneColumn() throws Exception { execTest() ; }
@@ -103,7 +105,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_selectExprMultiAlias() throws Exception { execTest() ; }
     public void testOf_v10_selectExprSum() throws Exception { execTest() ; }
     public void testOf_v10_selectExprUnary() throws Exception { execTest() ; }
-    public void testOf_v10_selectFromNoAlias() throws Exception { execTest() ; }
+//    public void testOf_v10_selectFromNoAlias() throws Exception { execTest() ; }
     public void testOf_v10_selectGroupBy() throws Exception { execTest() ; }
     public void testOf_v10_selectLogPowMathsFuncs() throws Exception { execTest() ; }
     public void testOf_v10_selectMultiTabMultiAlias1() throws Exception { execTest() ; }
@@ -114,7 +116,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_selectTrigFuncsDeg() throws Exception { execTest() ; }
     public void testOf_v10_selectTrigFuncsRad() throws Exception { execTest() ; }
     public void testOf_v10_selectTwoTablesFourCols() throws Exception { execTest() ; }
-    public void testOf_v10_selectTwoTablesFourColsNoAlias() throws Exception { execTest() ; }
+//    public void testOf_v10_selectTwoTablesFourColsNoAlias() throws Exception { execTest() ; }
     public void testOf_v10_selectUnaries() throws Exception { execTest() ; }
     public void testOf_v10_selectValueTweakMathsFuncs() throws Exception { execTest() ; }
     public void testOf_v10_squaringTheCircle() throws Exception { execTest() ; }
@@ -333,10 +335,14 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.10  2006/10/25 18:38:11  jl99
- * Unit tests added for reserved words used within complex queries,
- * some requiring the use of delimited ids.
+ * Revision 1.11  2006/10/27 14:32:20  jl99
+ * Made alliases for tables compulsary.
+ * Changed unit tests accordingly.
  *
+/* Revision 1.10  2006/10/25 18:38:11  jl99
+/* Unit tests added for reserved words used within complex queries,
+/* some requiring the use of delimited ids.
+/*
 /* Revision 1.9  2006/10/14 16:15:56  jl99
 /* like_predicate unit tests added
 /*

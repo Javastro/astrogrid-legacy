@@ -1,1 +1,1 @@
-select * from foo inner join bar on foo.y >= bar.x ;
+select * from foo as f inner join bar as b on f.y >= b.x ;

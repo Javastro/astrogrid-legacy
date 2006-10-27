@@ -4,7 +4,7 @@
         <v1:Item xsi:type="v1:allSelectionItemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     </v1:SelectionList>
     <v1:From>
-        <v1:Table Name="RASS_PHOTONS" xsi:type="v1:tableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Table Name="RASS_PHOTONS" Alias="r" xsi:type="v1:tableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     </v1:From>
     <v1:Where>
         <v1:Condition Comparison="&lt;=" xsi:type="v1:comparisonPredType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -20,8 +20,10 @@
                                     <v1:Arg Oper="/" xsi:type="v1:binaryExprType">
                                         <v1:Arg xsi:type="v1:closedExprType">
                                             <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
-                                                <v1:Arg Name="DEC_C" xsi:type="v1:columnReferenceType"/>
-                                                <v1:Arg Name="&quot;DEC&quot;" xsi:type="v1:columnReferenceType"/>
+                                                <v1:Arg xsi:type="v1:atomType">
+                                                    <v1:Literal Value="20" xsi:type="v1:integerType"/>
+                                                </v1:Arg>
+                                                <v1:Arg Name="&quot;DEC&quot;" Table="r" xsi:type="v1:columnReferenceType"/>
                                             </v1:Arg>
                                         </v1:Arg>
                                         <v1:Arg xsi:type="v1:atomType">
@@ -33,8 +35,10 @@
                                     <v1:Arg Oper="/" xsi:type="v1:binaryExprType">
                                         <v1:Arg xsi:type="v1:closedExprType">
                                             <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
-                                                <v1:Arg Name="DEC_C" xsi:type="v1:columnReferenceType"/>
-                                                <v1:Arg Name="&quot;DEC&quot;" xsi:type="v1:columnReferenceType"/>
+                                                <v1:Arg xsi:type="v1:atomType">
+                                                    <v1:Literal Value="20" xsi:type="v1:integerType"/>
+                                                </v1:Arg>
+                                                <v1:Arg Name="&quot;DEC&quot;" Table="r" xsi:type="v1:columnReferenceType"/>
                                             </v1:Arg>
                                         </v1:Arg>
                                         <v1:Arg xsi:type="v1:atomType">
@@ -45,19 +49,23 @@
                             </v1:Arg>
                             <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
                                 <v1:Arg Name="COS" xsi:type="v1:trigonometricFunctionType">
-                                    <v1:Arg Name="DEC_C" xsi:type="v1:columnReferenceType"/>
+                                    <v1:Arg xsi:type="v1:atomType">
+                                        <v1:Literal Value="20" xsi:type="v1:integerType"/>
+                                    </v1:Arg>
                                 </v1:Arg>
                                 <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
                                     <v1:Arg Name="COS" xsi:type="v1:trigonometricFunctionType">
-                                        <v1:Arg Name="&quot;DEC&quot;" xsi:type="v1:columnReferenceType"/>
+                                        <v1:Arg Name="&quot;DEC&quot;" Table="r" xsi:type="v1:columnReferenceType"/>
                                     </v1:Arg>
                                     <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
                                         <v1:Arg Name="SIN" xsi:type="v1:trigonometricFunctionType">
                                             <v1:Arg Oper="/" xsi:type="v1:binaryExprType">
                                                 <v1:Arg xsi:type="v1:closedExprType">
                                                     <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
-                                                        <v1:Arg Name="RA_C" xsi:type="v1:columnReferenceType"/>
-                                                        <v1:Arg Name="RA" xsi:type="v1:columnReferenceType"/>
+                                                        <v1:Arg xsi:type="v1:atomType">
+                                                            <v1:Literal Value="20" xsi:type="v1:integerType"/>
+                                                        </v1:Arg>
+                                                        <v1:Arg Name="RA" Table="r" xsi:type="v1:columnReferenceType"/>
                                                     </v1:Arg>
                                                 </v1:Arg>
                                                 <v1:Arg xsi:type="v1:atomType">
@@ -69,8 +77,10 @@
                                             <v1:Arg Oper="/" xsi:type="v1:binaryExprType">
                                                 <v1:Arg xsi:type="v1:closedExprType">
                                                     <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
-                                                        <v1:Arg Name="RA_C" xsi:type="v1:columnReferenceType"/>
-                                                        <v1:Arg Name="RA" xsi:type="v1:columnReferenceType"/>
+                                                        <v1:Arg xsi:type="v1:atomType">
+                                                            <v1:Literal Value="20" xsi:type="v1:integerType"/>
+                                                        </v1:Arg>
+                                                        <v1:Arg Name="RA" Table="r" xsi:type="v1:columnReferenceType"/>
                                                     </v1:Arg>
                                                 </v1:Arg>
                                                 <v1:Arg xsi:type="v1:atomType">
@@ -85,7 +95,9 @@
                     </v1:Arg>
                 </v1:Arg>
             </v1:Arg>
-            <v1:Arg Name="SR_C" xsi:type="v1:columnReferenceType"/>
+            <v1:Arg xsi:type="v1:atomType">
+                <v1:Literal Value="10" xsi:type="v1:integerType"/>
+            </v1:Arg>
         </v1:Condition>
     </v1:Where>
 </v1:Select>

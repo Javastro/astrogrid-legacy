@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Select xmlns="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Restrict Top="100"/>
-  <SelectionList>
-    <Item Oper="+" xsi:type="v1:binaryExprType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
-      <Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
-      <Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
-    </Item>
-    <Item Oper="-" xsi:type="v1:binaryExprType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
-      <Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
-      <Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
-    </Item>
-    <Item Oper="*" xsi:type="v1:binaryExprType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
-      <Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
-      <Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
-    </Item>
-    <Item Oper="/" xsi:type="v1:binaryExprType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
-      <Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
-      <Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
-    </Item>
-  </SelectionList>
-  <From>
-    <Table Name="catalogue" Alias="a" xsi:type="v1:tableType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0"/>
-  </From>
-</Select>
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+    <v1:Restrict Top="100"/>
+    <v1:SelectionList>
+        <v1:Item Oper="+" xsi:type="v1:binaryExprType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <v1:Arg Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType"/>
+            <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
+        </v1:Item>
+        <v1:Item Oper="-" xsi:type="v1:binaryExprType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <v1:Arg Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType"/>
+            <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
+        </v1:Item>
+        <v1:Item Oper="*" xsi:type="v1:binaryExprType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <v1:Arg Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType"/>
+            <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
+        </v1:Item>
+        <v1:Item Oper="/" xsi:type="v1:binaryExprType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <v1:Arg Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType"/>
+            <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
+        </v1:Item>
+    </v1:SelectionList>
+    <v1:From>
+        <v1:Table Name="catalogue" Alias="a" xsi:type="v1:tableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </v1:From>
+</v1:Select>

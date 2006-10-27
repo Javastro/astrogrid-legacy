@@ -7,12 +7,12 @@
         <v1:Table xsi:type="v1:joinTableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <v1:Qualifier>INNER</v1:Qualifier>
             <v1:Tables>
-                <v1:fromTableType Name="foo" xsi:type="v1:tableType"/>
-                <v1:fromTableType Name="bar" xsi:type="v1:tableType"/>
+                <v1:fromTableType Name="foo" Alias="f" xsi:type="v1:tableType"/>
+                <v1:fromTableType Name="bar" Alias="b" xsi:type="v1:tableType"/>
             </v1:Tables>
             <v1:Condition Comparison=">=">
-                <v1:Arg Name="y" Table="foo" xsi:type="v1:columnReferenceType"/>
-                <v1:Arg Name="x" Table="bar" xsi:type="v1:columnReferenceType"/>
+                <v1:Arg Name="y" Table="f" xsi:type="v1:columnReferenceType"/>
+                <v1:Arg Name="x" Table="b" xsi:type="v1:columnReferenceType"/>
             </v1:Condition>
         </v1:Table>
     </v1:From>

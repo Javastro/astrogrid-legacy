@@ -1,1 +1,1 @@
-Select top 100  * from catalogue ;
+Select top 100  * from catalogue as c;

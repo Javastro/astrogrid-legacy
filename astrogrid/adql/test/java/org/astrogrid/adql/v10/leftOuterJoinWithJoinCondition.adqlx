@@ -7,8 +7,8 @@
         <v1:Table xsi:type="v1:joinTableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <v1:Qualifier>LEFT_OUTER</v1:Qualifier>
             <v1:Tables>
-                <v1:fromTableType Name="t1" xsi:type="v1:tableType"/>
-                <v1:fromTableType Name="t2" xsi:type="v1:tableType"/>
+                <v1:fromTableType Name="tab1" Alias="t1" xsi:type="v1:tableType"/>
+                <v1:fromTableType Name="tab2" Alias="t2" xsi:type="v1:tableType"/>
             </v1:Tables>
             <v1:Condition Comparison="=">
                 <v1:Arg Name="a" Table="t1" xsi:type="v1:columnReferenceType"/>

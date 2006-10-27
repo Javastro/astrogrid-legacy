@@ -4,13 +4,13 @@
         <v1:Item xsi:type="v1:allSelectionItemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     </v1:SelectionList>
     <v1:From>
-        <v1:Table Name="CAT" xsi:type="v1:tableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Table Name="CAT" Alias="c" xsi:type="v1:tableType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     </v1:From>
     <v1:Where>
         <v1:Condition xsi:type="v1:intersectionSearchType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <v1:Condition xsi:type="v1:closedSearchType">
                 <v1:Condition xsi:type="v1:betweenPredType">
-                    <v1:Arg Name="&quot;DEC&quot;" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg Name="&quot;DEC&quot;" Table="c" xsi:type="v1:columnReferenceType"/>
                     <v1:Arg xsi:type="v1:closedExprType">
                         <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
                             <v1:Arg Oper="-" xsi:type="v1:unaryExprType">
@@ -45,7 +45,7 @@
                                 <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
                                     <v1:Arg Name="SIN" xsi:type="v1:trigonometricFunctionType">
                                         <v1:Arg Name="RADIANS" xsi:type="v1:mathFunctionType">
-                                            <v1:Arg Name="&quot;DEC&quot;" xsi:type="v1:columnReferenceType"/>
+                                            <v1:Arg Name="&quot;DEC&quot;" Table="c" xsi:type="v1:columnReferenceType"/>
                                         </v1:Arg>
                                     </v1:Arg>
                                     <v1:Arg Name="SIN" xsi:type="v1:trigonometricFunctionType">
@@ -61,7 +61,7 @@
                                 <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
                                     <v1:Arg Name="COS" xsi:type="v1:trigonometricFunctionType">
                                         <v1:Arg Name="RADIANS" xsi:type="v1:mathFunctionType">
-                                            <v1:Arg Name="&quot;DEC&quot;" xsi:type="v1:columnReferenceType"/>
+                                            <v1:Arg Name="&quot;DEC&quot;" Table="c" xsi:type="v1:columnReferenceType"/>
                                         </v1:Arg>
                                     </v1:Arg>
                                     <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
@@ -77,7 +77,7 @@
                                         <v1:Arg Name="COS" xsi:type="v1:trigonometricFunctionType">
                                             <v1:Arg Name="RADIANS" xsi:type="v1:mathFunctionType">
                                                 <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
-                                                    <v1:Arg Name="RA" xsi:type="v1:columnReferenceType"/>
+                                                    <v1:Arg Name="RA" Table="c" xsi:type="v1:columnReferenceType"/>
                                                     <v1:Arg xsi:type="v1:atomType">
                                                         <v1:Literal Value="123.45" xsi:type="v1:realType"/>
                                                     </v1:Arg>

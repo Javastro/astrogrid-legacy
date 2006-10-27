@@ -10,10 +10,10 @@
         <v1:Condition Comparison="=" xsi:type="v1:comparisonPredType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <v1:Arg Oper="+" xsi:type="v1:binaryExprType">
                 <v1:Arg Oper="-" xsi:type="v1:unaryExprType">
-                    <v1:Arg Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg Name="POS_EQ_RA" Table="a" xsi:type="v1:columnReferenceType"/>
                 </v1:Arg>
                 <v1:Arg Oper="-" xsi:type="v1:unaryExprType">
-                    <v1:Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
                 </v1:Arg>
             </v1:Arg>
             <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
@@ -23,7 +23,7 @@
                     </v1:Arg>
                 </v1:Arg>
                 <v1:Arg Oper="-" xsi:type="v1:unaryExprType">
-                    <v1:Arg Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg Name="POS_EQ_DEC" Table="a" xsi:type="v1:columnReferenceType"/>
                 </v1:Arg>
             </v1:Arg>
         </v1:Condition>
