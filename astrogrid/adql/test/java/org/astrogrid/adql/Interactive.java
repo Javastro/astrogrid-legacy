@@ -63,7 +63,11 @@ public class Interactive {
 	 }
 	 
      private static boolean exitRequested( String message ) {
-         String firstLine = message.substring( 0, message.indexOf('\n') ) ;
+         String firstLine = message ;
+         int i = message.indexOf('\n') ;
+         if( i != -1 ) {
+             firstLine = message.substring( 0, i ) ;          
+         }
          if( firstLine.indexOf( BYE_TRIGGER ) != -1 )
              return true ;
          return false ;       
