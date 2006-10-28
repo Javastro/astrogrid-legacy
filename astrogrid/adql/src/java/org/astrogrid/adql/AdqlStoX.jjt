@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.29 2006/10/27 14:29:56 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.30 2006/10/28 22:08:05 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -84,6 +84,14 @@ import org.astrogrid.adql.v1_0.beans.* ;
 import org.astrogrid.stc.region.v1_10.beans.* ;
 import org.astrogrid.stc.coords.v1_10.beans.* ;
 import org.w3c.dom.Node ;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.SimpleValue;
+import org.apache.xmlbeans.XmlAnySimpleType;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlCursor;
 
 public class AdqlStoX {
 	
@@ -100,7 +108,18 @@ public class AdqlStoX {
 	
 	private static final int CHANGE_SIGN = -1 ;
 	private static final int DONT_CHANGE_SIGN = 1 ;
-	
+	public static final String TABLE_TYPE = "tableType" ;
+	public static final String COLUMN_REFERENCE_TYPE = "columnReferenceType" ;
+	public static final String ALIAS_SELECTION_ITEM_TYPE = "aliasSelectionItemType" ;	
+	public static final String DUPLICATE_TABLE_ALIAS =
+	     "Query contains at least one duplicated table alias: " ;
+	public static final String TABLE_ALIAS_CLASH =
+	     "Query contains alias with same name as a table: " ;
+	public static final String NONEXISTENT_ALIAS =
+	     "Query contains a column reference with unknown table or table alias: " ;
+	public static final String DUPLICATE_EXPRESSION_ALIAS =
+	     "Query contains at least one duplicated expression alias: " ;
+	private SelectDocument selectDoc ;
 	private String lastMessage ;
 
 	public SelectDocument exec() throws ParseException {
@@ -142,7 +161,104 @@ public class AdqlStoX {
 	}
 	
 	public String getShortLastMessage() {
-		return lastMessage.substring( 0, lastMessage.indexOf( '\n' ) ) ;	
+		int i = lastMessage.indexOf( '\n' ) ;
+		if( i == -1 )
+		  return lastMessage ;
+		return lastMessage.substring( 0, i ) ;	
+	}
+	
+    /**
+     * Crude check of table aliases and column references
+     */
+	private void checkTableAliases() throws ParseException {
+		HashSet tRefs = getTableReferences() ;
+        XmlObject element ;
+        XmlCursor cursor = selectDoc.newCursor() ;
+        cursor.toFirstChild() ; // There has to be a first child!
+        do {
+           if( cursor.isStart() ) {
+              element = cursor.getObject() ;
+              if( element.schemaType().getName().getLocalPart().equals( COLUMN_REFERENCE_TYPE ) ) {
+              	  ColumnReferenceType col = (ColumnReferenceType)element ;
+                  if( !tRefs.contains( col.getTable() ) ) {
+                  	 String message = NONEXISTENT_ALIAS + col.getTable() + '.' + col.getName() ;
+                  	 throw new ParseException( message ) ;
+                  }
+              }                       
+           }                 
+        } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
+        cursor.dispose() ;
+	}
+	
+	private HashSet getTableReferences() throws ParseException {
+		HashSet tables = new HashSet() ;
+		HashSet aliases = new HashSet() ;
+        TableType tType = null ;
+        String alias = null ;
+        //
+        // Loop through the whole of the query looking for basic table refs....
+        XmlCursor cursor = selectDoc.newCursor() ;
+        while( !cursor.toNextToken().isNone() ) {
+            if( cursor.isStart()  
+                && 
+                ( cursor.getObject().schemaType().getName().getLocalPart().equals( TABLE_TYPE ) )
+            ) {
+            	tType = (TableType)cursor.getObject() ;
+            	tables.add( tType.getName() ) ;               
+                alias = tType.getAlias() ;
+                if( alias != null ) {
+                    if( !aliases.add( alias ) ) {
+                	    String message = DUPLICATE_TABLE_ALIAS 
+                	                   + tType.getAlias() ;
+                	    throw new ParseException( message ) ;
+                    }
+                }
+            }
+        } // end while
+        cursor.dispose();
+        //
+        // Check for aliases with the same name as a table...
+        Iterator it = aliases.iterator() ;
+        while( it.hasNext() ) {
+        	String aName = (String)it.next() ;
+        	if( tables.contains( aName ) ) {
+        		String message = TABLE_ALIAS_CLASH + aName  ;
+                throw new ParseException( message ) ;
+        	}
+        }
+        tables.addAll( aliases ) ;
+        return tables ;
+	}
+	
+    /**
+     * Crude check of expression aliases.
+     * In the absence of metadata for columns, the best that can be accomplished
+     * is to check for duplicates. 
+     */
+	private void checkExpressionAliases() throws ParseException {
+		HashSet aliases = new HashSet() ;
+        AliasSelectionItemType aType = null ;
+        String alias = null ;
+        //
+        // Loop through the whole of the query looking for AliasSelectionItemTypes....
+        XmlCursor cursor = selectDoc.newCursor() ;
+        while( !cursor.toNextToken().isNone() ) {
+            if( cursor.isStart()  
+                && 
+                ( cursor.getObject().schemaType().getName().getLocalPart().equals( ALIAS_SELECTION_ITEM_TYPE ) )
+            ) {
+            	aType = (AliasSelectionItemType)cursor.getObject() ;
+            	alias = aType.getAs() ;
+                if( alias != null ) {
+                    if( !aliases.add( alias ) ) {
+                	    String message = DUPLICATE_EXPRESSION_ALIAS 
+                	                   + alias ;
+                	    throw new ParseException( message ) ;
+                    }
+                }
+            }
+        } // end while
+        cursor.dispose();	
 	}
 	
 	private void enterTrace( String entry ) {
@@ -162,6 +278,42 @@ public class AdqlStoX {
 	private static void indentMinus() {
 		logIndent.deleteCharAt( logIndent.length()-1 ) ;
 	}
+
+	public class ColumnReferenceHolder {
+	    
+	    private SelectionItemType crType ;
+		
+		private ColumnReferenceHolder() {}
+		
+		public ColumnReferenceHolder( ColumnReferenceType columnReferenceType ) {
+			crType = columnReferenceType;
+		}
+		
+		public ColumnReferenceHolder( AliasSelectionItemType aliasSelectionItemType ) {
+			crType = aliasSelectionItemType ;
+		}
+		
+		public boolean isColumnReference() {
+			return ( crType instanceof ColumnReferenceType ) ;
+		}
+		
+		public boolean isAliasedExpression() {
+			return ( crType instanceof AliasSelectionItemType ) ;
+		}
+		
+		public ColumnReferenceType getColumnReference() {
+			if( isColumnReference() )
+				return (ColumnReferenceType)crType ;
+			return null ;
+		}
+		
+		public AliasSelectionItemType getAliasedExpression() {
+			if( isAliasedExpression() )
+				return (AliasSelectionItemType)crType ;
+			return null ;
+		}
+	}	
+	
 }
 PARSER_END(AdqlStoX)
 
@@ -791,7 +943,6 @@ TOKEN : // The remainder
 
 SelectDocument select_document_A() : 
 { 	
-	SelectDocument selectDoc = null ; 	
 	SelectType st = null ;	
 }
 {
@@ -799,8 +950,10 @@ SelectDocument select_document_A() :
 	st=query_specification_A() <SEMICOLON>
 	{  
 		if( st != null ) {
-			selectDoc =  SelectDocument.Factory.newInstance() ;
+			selectDoc = SelectDocument.Factory.newInstance() ;
 			selectDoc.setSelect( st ) ;
+			checkTableAliases() ;
+			checkExpressionAliases() ;
 		}
 		return selectDoc ; 
 	}
@@ -1335,8 +1488,13 @@ void column_name_list_S()  : {}
 /**
  * column_reference_S
  *
- * bnf-single <column_reference> ::= <qualifier> <period> <column_name>
- * !! SQL92 does not enforce qualified column references
+ * bnf-start
+ *  <column_reference> ::= 
+ *      <qualifier> <period> <column_name>         
+ *  !! ADQL enforces qualified column names.
+ *     See footnote (2) on enforcing qualified column names
+ *     and the effect on aliased expressions. 
+ * bnf-end
  *
  */
 ColumnReferenceType column_reference_S() : 
@@ -1345,24 +1503,32 @@ ColumnReferenceType column_reference_S() :
 	ColumnReferenceType crType = null ;
 	String q = null ;
 	String n = null ;
+//	AliasSelectionItemType asiType = null ;
+//	SelectionItemType retVal = null ;
 }
 {
 	//S:
 	// <column_reference> ::= [ <qualifier> <period> ] <column_name>
 
-	( q=qualifier_A() <PERIOD> n=column_name_S() )
-	{ 
-		if( n != null ) {
-			crType = ColumnReferenceType.Factory.newInstance() ;
+	  q=qualifier_A() <PERIOD> n=column_name_S() 
+	  { 
+		 if( n != null ) {
+		 	crType = ColumnReferenceType.Factory.newInstance() ;
 			crType.setName( n ) ;
 			if( q != null ) {
 				crType.setTable( q ) ;	
 			}
-		}
+//		    retVal = crType ; 	
+		 } 
+	  }	
+//	)//	|//	( //	  asiType=aliased_expression_reference_A() //	  { //		 if( asiType != null ) {//		    retVal = asiType ;//		 } //	  }		//	)
+	{
 		if( TRACE_ENABLED ) exitTrace ( "column_reference_S()" ) ;		
-		return crType ; 	
+		return crType ; 			
 	}
 }
+
+///**// * aliased_expression_reference_A// *// *-bnf-start// *- <aliased_expression_reference> ::= <identifier>// *- !! ADQL specific. // *- NB. This is simply a reference to an aliased expression.// *-bnf-end// *// *///AliasSelectionItemType aliased_expression_reference_A() ://{//	if( TRACE_ENABLED ) enterTrace ( "aliased_expression_reference_A()" ) ;//	AliasSelectionItemType asiType = null ;//	String name = null ;//}//{//	////	// Note especially that this is simply a reference to an//	// aliased expression defined elsewhere. At this point we//	// only have the name of the alias, not the content, so we//	// can only construct an empty AliasSelectionItemType.//	// Filling in these must wait until the whole query has//	// been assembled and is thought to be syntactically correct!!!//	name=identifier_A()//	{//		if( name != null ) {//		    asiType = AliasSelectionItemType.Factory.newInstance() ;//			asiType.setAs( name ) ;//		}//	    if( TRACE_ENABLED ) exitTrace ( "aliased_expression_reference_A()" ) ;		//	    return asiType ;	//	}//}
 
 /**
  * value_expression_primary_A
@@ -1787,7 +1953,7 @@ FromType from_clause_S() :
 		if( list.size() > 0 ) {
 		   fromType = FromType.Factory.newInstance() ;
 		   FromTableType[] tableRefArray = new FromTableType[ list.size() ] ;
-		   fromType.setTableArray( (FromTableType[])list.toArray(tableRefArray) ) ;				
+		   fromType.setTableArray( (FromTableType[])list.toArray(tableRefArray) ) ;		
 		}
 	    if( TRACE_ENABLED ) exitTrace ( "from_clause_S()" ) ;
 		return fromType ;
@@ -1914,7 +2080,7 @@ GroupByType group_by_clause_S() :
 		if(	crList != null ) {
 			gbType = GroupByType.Factory.newInstance() ;
 			ColumnReferenceType[] colRefArray = new ColumnReferenceType[ crList.size() ] ;
-			gbType.setColumnArray( (ColumnReferenceType[])crList.toArray(colRefArray) ) ;	
+			gbType.setColumnArray( (ColumnReferenceType[])crList.toArray(colRefArray) ) ;
 		}
 		if( TRACE_ENABLED ) exitTrace ( "group_by_clause_S()" ) ;
 		return gbType ;
@@ -1992,10 +2158,9 @@ HavingType having_clause_S() :
 	//  HAVING <search_condition>	
 	( t=<HAVING> sType=search_condition_S() )
 	{
-		if( t != null ) {
+		if( sType != null ) {
 			hType = HavingType.Factory.newInstance() ;	
-			if( sType != null )
-				hType.setCondition( sType ) ;
+			hType.setCondition( sType ) ;
 		}
 		if( TRACE_ENABLED ) exitTrace ( "having_clause_S()" ) ;
 		return hType ;
@@ -3067,15 +3232,29 @@ String qualifier_A() :
  *      SELECT [ <set_quantifier> ] [ <set_limit> ] <select_list> <table_expression>
  * bnf-end
  *
+ * bnf-start
+ *  <table_expression> ::=
+ *      <from_clause>
+ *      [ <where_clause> ]
+ *      [ <group_by_clause> ]
+ *      [ <having_clause> ]
+ *      [ <order_by_clause> ]
+ * !! ADQL adds <order_by_clause>
+ * bnf-end 
+ *
  */
 SelectType query_specification_A() : 
 {
     if( TRACE_ENABLED ) enterTrace ( "query_specification_A()" ) ;
 	SelectType st = null ;
-	ArrayList tableList = null ;
 	SelectionListType listType = null ;
 	SelectionLimitType limitType = null ;
 	SelectionOptionType optionType = null ;
+	FromType fromType = null ;
+	WhereType whereType = null ;
+	GroupByType gbType = null ;
+	HavingType havingType = null ;
+	OrderExpressionType oeType = null ;
 	Token t = null ;
 }
 { 
@@ -3083,44 +3262,89 @@ SelectType query_specification_A() :
 	//S:
 	// SELECT [ <set_quantifier> ] <select_list> <table_expression>
 	//
-		t=<SELECT> 
-		[ optionType=set_quantifier_S() ] 
-		[ limitType=set_limit_A() ] 
+	// <table_expression> ::=
+	//    <from_clause>
+    //    [ <where_clause> ]
+    //    [ <group_by_clause> ]
+    //    [ <having_clause> ]
+	
+	//A:
+	// Refactored to include <set-limit> and to bring up <table_expression> 
+	// into this method. <table_expression> also now includes <order_by_clause>
+		(
+		   t=<SELECT>
+		   { 
+		   	  if( t!= null ) {
+		   	     st = SelectType.Factory.newInstance() ;
+		   	  }
+		   }
+		)
+		[ 
+		   optionType=set_quantifier_S() 
+		   {
+		   	  if( optionType!= null ) {
+		   	     st.setAllow( optionType ) ;	
+		   	  }
+		   }
+		]
+		[ 
+		   limitType=set_limit_A() 
+		   {
+		   	  if( limitType != null ) {
+				 st.setRestrict( limitType ) ;	
+			  }	   	
+		   }
+		] 
 		listType=select_list_S() 
-		tableList=table_expression_A()
-	)
-	{ 
-		if( t != null ) {
-			st = SelectType.Factory.newInstance() ;
-			if( optionType != null ) {
-				st.setAllow( optionType ) ;	
-			}
-			if( limitType != null ) {
-				st.setRestrict( limitType ) ;	
-			}
+		{
 			if( listType != null ) {
 				st.setSelectionList( listType ) ;	
-			}
-			ListIterator iterator = tableList.listIterator() ;
-			while( iterator.hasNext() ) {
-				Object obj = iterator.next() ;
-				if( obj instanceof FromType ) {
-					st.setFrom( (FromType)obj ) ;	
-				}
-				else if( obj instanceof WhereType ) {
-					st.setWhere( (WhereType)obj ) ;
-				}
-				else if( obj instanceof GroupByType ) {
-					st.setGroupBy( (GroupByType)obj ) ;
-				}
-				else if( obj instanceof HavingType ) {
-					st.setHaving( (HavingType)obj ) ;	
-				}
-				else if( obj instanceof OrderExpressionType ) {
-					st.setOrderBy( (OrderExpressionType)obj ) ;
-				}			
-			}			
+			}						
 		}
+		fromType=from_clause_S() 
+		{
+			if( fromType != null ) {
+				st.setFrom( fromType ) ;	
+			}		
+		}	
+		[ 
+		    LOOKAHEAD(3) 
+		    whereType=where_clause_S()
+		    {
+		    	if( whereType != null ) {
+		    		st.setWhere( whereType ) ;
+		    	}
+		    }
+		] 		
+		[ 
+		    LOOKAHEAD(3) 
+		    gbType=group_by_clause_S() 
+		    {
+		    	if( gbType != null ) {
+		    		st.setGroupBy( gbType ) ;
+		    	}
+		    }
+		] 		
+		[ 
+		    LOOKAHEAD(3) 
+		    havingType=having_clause_S() 
+		    {
+		    	if( havingType != null ) {
+		    		st.setHaving( havingType ) ;
+		    	}
+		    }
+		] 		
+		[ 
+		    LOOKAHEAD(3) 
+		    oeType=order_by_clause_A() 
+		    {
+		    	if( oeType != null ) {
+		    		st.setOrderBy( oeType ) ;
+		    	}
+		    }
+		]	
+	)
+	{ 
 		if( TRACE_ENABLED ) exitTrace ( "query_specification_A()" ) ;
 		return st  ; 
 	}
@@ -3683,14 +3907,20 @@ void select_sublist_A( ArrayList itemList ) :
 /**
  * derived_column_S
  *
- * bnf-single <derived_column> ::= <value_expression> [ <as_clause> ]
- * bnf-single  <as_clause> ::= [ AS ] <column_name>
- *
+ * bnf-start
+ *  <derived_column> ::= <value_expression> [ <as_clause> ]
+ *  !! See footnote (1) about the <as_clause> within ADQL/x
+ * bnf-end
+ * bnf-start
+ *  <as_clause> ::= [ AS ] <column_name>
+ *  !! See footnote (1) about the <as_clause> within ADQL/x
+ * bnf-end
  */
 SelectionItemType derived_column_S() : 
 {
 	if( TRACE_ENABLED ) enterTrace ( "derived_column_S()" ) ;
 	ScalarExpressionType seType = null ;
+	SelectionItemType retVal = null ;
 	String aliasName = null ;
 }
 {
@@ -3704,10 +3934,13 @@ SelectionItemType derived_column_S() :
 			AliasSelectionItemType asiType = AliasSelectionItemType.Factory.newInstance() ;
 			asiType.setAs( aliasName ) ;
 			asiType.setExpression( seType ) ;
-			return asiType ;	
+			retVal = asiType ;	
+		}
+		else {
+		    retVal = seType ;	
 		}
 		if( TRACE_ENABLED ) exitTrace ( "derived_column_S()" ) ;
-		return seType ; 
+		return retVal ; 
 	}	
 }
 
@@ -4048,48 +4281,8 @@ void simple_table_S() : {}
 	explicit_table_S()	
 }
 
-/**
- * table_expression_A
- *
- * bnf-start
- *  <table_expression> ::=
- *      <from_clause>
- *      [ <where_clause> ]
- *      [ <group_by_clause> ]
- *      [ <having_clause> ]
- *      [ <order_by_clause> ]
- * !! ADQL adds <order_by_clause>
- * bnf-end
- *
- */
-ArrayList table_expression_A() : 
-{
-	if( TRACE_ENABLED ) enterTrace ( "table_expression_A" ) ;
-	ArrayList list = new ArrayList() ;
-	Object obj = null ;
-} 
-{
-	//S:
-	// <table_expression> ::=
-	// <from_clause>
-    // [ <where_clause> ]
-    // [ <group_by_clause> ]
-    // [ <having_clause> ]
-	(
-		obj=from_clause_S() { if( obj!=null ) list.add(obj) ; } 		
-		[ LOOKAHEAD(3) obj=where_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
-		
-		[ LOOKAHEAD(3) obj=group_by_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
-		
-		[ LOOKAHEAD(3) obj=having_clause_S() { if( obj!=null ) list.add(obj) ; } ] 
-		
-		[ LOOKAHEAD(3) obj=order_by_clause_A() { if( obj!=null ) list.add(obj) ; } ]	
-	)
-	{ 
-		if( TRACE_ENABLED ) exitTrace ( "table_expression_A" ) ;
-		return list ;	
-	}
-}
+///**// * table_expression_A// *// *-bnf-start// *- <table_expression> ::=// *-     <from_clause>// *-     [ <where_clause> ]// *-     [ <group_by_clause> ]// *-     [ <having_clause> ]// *-     [ <order_by_clause> ]// *-!! ADQL adds <order_by_clause>// *-bnf-end// *// */
+//void table_expression_A( SelectType st ) : //{//	if( TRACE_ENABLED ) enterTrace ( "table_expression_A" ) ;//} //{//	//S://	// <table_expression> ::=//	// <from_clause>//    // [ <where_clause> ]//    // [ <group_by_clause> ]//    // [ <having_clause> ]//	(//		from_clause_S( st ) 		//		[ LOOKAHEAD(3) where_clause_S( st ) ] //		//		[ LOOKAHEAD(3) group_by_clause_S( st ) ] //		//		[ LOOKAHEAD(3) having_clause_S( st ) ] //		//		[ LOOKAHEAD(3) order_by_clause_A( st ) ]	//	)//	{ //		if( TRACE_ENABLED ) exitTrace ( "table_expression_A" ) ;//	}//}
 
 /**
  * table_name_A
@@ -4124,7 +4317,7 @@ String table_name_A() :
  *
  * bnf-start
  *  <table_reference> ::=
- *      <table_name> [ AS ] <correlation_name> 
+ *      <table_name> [ [ AS ] <correlation_name> ]
  *    | <joined_table> 
  *  !! SQL92 also supports <derived_table> and <derived_column_list>
  * bnf-end
@@ -4165,7 +4358,7 @@ FromTableType table_reference_A() :
 		LOOKAHEAD(4)
 	    ftType=joined_table_S()
 	    |
-		( tName=table_name_A() [ <AS> ] cName=correlation_name_S() )
+		( tName=table_name_A() [ [ <AS> ] cName=correlation_name_S() ] )
 		{
 			if( tName != null ) {	
 				TableType tableType = TableType.Factory.newInstance() ;
@@ -4632,9 +4825,9 @@ WhereType where_clause_S() #Where :
 
 	t=<WHERE> s=search_condition_S()
 	{ 
-		if( t != null )
-			whereType = WhereType.Factory.newInstance() ;
+			
 		if( s != null ) {
+			whereType = WhereType.Factory.newInstance() ;
 			whereType.setCondition( s ) ;
 		}
 		if( TRACE_ENABLED ) exitTrace ( "where_clause_S" ) ;
@@ -4643,6 +4836,10 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.30  2006/10/28 22:08:05  jl99
+Rejig to enable more speedy adaptation to aliased expressions
+when these become feasible. At present ADQL/x is broken in this area.
+
 Revision 1.29  2006/10/27 14:29:56  jl99
 Made alliases for tables compulsary. Not sure this is such a good idea,
 but it obeys the adql/x 1.01 standard.
