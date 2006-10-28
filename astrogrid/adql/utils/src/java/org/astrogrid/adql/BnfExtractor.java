@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.5 2006/10/25 11:47:16 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.6 2006/10/28 22:10:19 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -15,7 +15,18 @@ import java.util.*;
 import java.text.MessageFormat;
 /**
  * BnfExtractor
+ * 
+ * Extracts bnf statements from an annotated javacc file.
  *
+ * Usage: BnfExtractor {Options} input=file-path output=file-path        
+ * Options:
+ *    -t  text output
+ *    -h  html output
+ * Notes: (1) The output file-path parameter is optional. If omitted, output
+ *            is directed to standard out.
+ *        (2) If no options are specified, text output is assumed.
+ *        (3) Ouput files must not already exist. If you wish to overwrite,
+ *            omit the output file parameter and pipe standard out.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Oct 22, 2006
@@ -24,9 +35,14 @@ public class BnfExtractor {
     
 private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     
-    private static final boolean TRACE_ENABLED = true ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static StringBuffer logIndent = new StringBuffer() ;
+    private static final boolean TRACE_ENABLED = false ;
+    private static final boolean DEBUG_ENABLED = false ;
+    private static StringBuffer logIndent ;
+    static {
+        if( TRACE_ENABLED | DEBUG_ENABLED ) {
+            logIndent = new StringBuffer() ;
+        }
+    }
     
     private static final String USAGE =
         "Usage: BnfExtractor {Options} input=file-path output=file-path \n" +       
@@ -35,7 +51,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "   -h  html output\n" +
         "Notes: (1) The output file-path parameter is optional. If omitted, output\n" +
         "           is directed to standard out.\n" +
-        "       (2) If no options are specified, text output is assumed." ;
+        "       (2) If no options are specified, text output is assumed." +
+        "       (3) Ouput files must not already exist. If you wish to overwrite," +
+        "           omit the output file parameter and pipe standard out." ;
     
     private static final String TEXT_HEADINGS =
         "+===============================================================+\n" +
@@ -47,8 +65,29 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "astronomical usage.\n" +
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
-        "as supported by Astrogrid at October 22nd 2006\n" +
-        "The select statement is found under <query_specification>\n\n" ;
+        "as supported by Astrogrid at October 22nd 2006\n\n" +
+        "The select statement is found under <query_specification>\n" +
+        "Footnotes are to be found at the bottom.\n\n" ;
+     
+    private static final String TEXT_FOOTINGS =
+        "footnote (1):\n" +
+        "              Aliased expressions using the <as_clause> are of limited use unless the alias\n" +
+        "              is usable elsewhere within the query. Currently this is unworkable without further\n" +
+        "              development of the present specification: see footnote (2). \n" +
+        "              Further, within the ADQL/x v1.0 schema the type for this construct is aliasSelectionItemType\n" +
+        "              which has a base of selectionItemType. Most arguments within the schema have type \n" +
+        "              scalarExpressionType, which means aliasSelectionItemType cannot be substituted for \n" +
+        "              an argument. Thus the following query is simply not possible to describe using \n" +
+        "              the current schema:\n" +
+        "              select sin( a.colx ) as X, max( X ) from cat as a where X <= 0.9205 ;\n" +
+        "              (It is also impossible to format this in ADQL/s using this present BNF specification.)\n" +
+        "              The change to the ADQLschema to support this could be quite small.\n" +
+        "\n" +
+        "footnote (2):\n" +
+        "              Enforcing qualified column references for <column_reference> entails reworking some\n" +
+        "              important SQL92 BNF constructs in order to accommodate any aliasing of expressions.\n" +
+        "              I have not thought this currently worth doing in the absence of a usable construct within\n" +
+        "              the ADQL/x schema to effectively support the use of aliased expressions.\n" ;
     
     private static final String HTML_HEADINGS =
         "<html>" +
@@ -65,11 +104,32 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
         "as supported by Astrogrid at October 22nd 2006\n" +
         "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
+        "<a href=\"#footnote (1)\">See Footnotes.</a>\n\n" +
         "See <a href=\"http://sqlzoo.net/sql92.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
+
     
     private static final String HTML_FOOTINGS =
+        "\n" +
+        "<a name=\"footnote (1)\">footnote (1)</a>:\n" +
+        "              Aliased expressions using the &lt;as_clause&gt; are of limited use unless the alias \n" +
+        "              is usable elsewhere within the query. Currently this is unworkable without further\n" +
+        "              development of the present specification: see footnote (2). \n" +
+        "              Further, within the ADQL/x v1.0 schema the type for this construct is aliasSelectionItemType\n" +
+        "              which has a base of selectionItemType. Most arguments within the schema have type \n" +
+        "              scalarExpressionType, which means aliasSelectionItemType cannot be substituted for \n" +
+        "              an argument. Thus the following query is simply not possible to describe using \n" +
+        "              the current schema:\n" +
+        "              select sin( a.colx ) as X, max( X ) from cat as a where X &lt;= 0.9205 ;\n" +
+        "              (It is also impossible to format this in ADQL/s using this present BNF specification.)\n" +
+        "              The change to the ADQLschema to support this could be quite small.\n" +
+        "\n" +
+        "<a name=\"footnote (2)\">footnote (2)</a>:\n" +
+        "              Enforcing qualified column references for &lt;column_reference&gt; entails reworking some\n" +
+        "              important SQL92 BNF constructs in order to accommodate any aliasing of expressions.\n" +
+        "              I have not thought this currently worth doing in the absence of a usable construct within\n" +
+        "              the ADQL/x schema to effectively support the use of aliased expressions.\n" +
         "</pre>" +
-        "</body>" +
+        "</body>" +  
         "</html>" ;
     
     private static final String HTML_KEY_TEMPLATE = 
@@ -139,7 +199,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         BnfExtractor extractor = new BnfExtractor( inputFile, outputFile, option ) ;
         
         extractor.exec() ;
-        
+        System.out.println( "BNF extraction complete." ) ;
         if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.main" ) ;
     }
     
@@ -154,10 +214,14 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
                 else if( args[i].startsWith( "-h" ) ) {
                     BnfExtractor.option = "h" ; 
                 }
-                else if( args[i].startsWith( "input=" ) ) { 
+                else if( args[i].startsWith( "input=" )  
+                         |
+                         args[i].startsWith( "i=" ) ) { 
                     BnfExtractor.inFilePath = args[i].substring(6) ;
                 }
-                else if( args[i].startsWith( "output=" ) ) { 
+                else if( args[i].startsWith( "output=" ) 
+                         |
+                         args[i].startsWith( "o=" ) ) { 
                     BnfExtractor.outFilePath = args[i].substring(7) ;
                 }
                 else {
@@ -350,6 +414,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
            outputStream.write( sArray[i].toText().getBytes() ) ;
            outputStream.write( '\n' ) ;
        }
+       outputStream.write( TEXT_FOOTINGS.getBytes() ) ;
     }
     
     private void produceHtml() throws IOException {
@@ -469,12 +534,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             return elementArray ;
         }
         
-        public String toHtml() {
-            if( DEBUG_ENABLED ) {
-                if( this.key.equals( "not_equals_operator1" ) ) {
-                    log.debug( "toHtmnl() about to analyse <not_equals_operator1>" ) ;
-                }
-            }           
+        public String toHtml() {  
             String s = statementsAsString ;
             StringBuffer buffer = new StringBuffer() ;
             ArrayList psList = getMatchedPairsAndSingletons() ;
@@ -661,6 +721,10 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.6  2006/10/28 22:10:19  jl99
+Adjustments in the area of aliased expressions.
+At present ADQL/x is broken in this area.
+
 Revision 1.5  2006/10/25 11:47:16  jl99
 Corrections to processing not-equals-operator in html format (ie: <>)
 
