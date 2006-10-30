@@ -271,7 +271,7 @@ public abstract class Retriever extends BackgroundWorker {
 
 
     protected void doError(Throwable ex) {
-        parent.setStatusMessage(information.getTitle() + " : Service Failed  : " + ex.getMessage());
+        parent.setStatusMessage(information.getTitle() + " - failed; " + ex.getMessage());
         model.getProtocols().addQueryResult(information,QueryResultSummarizer.ERROR,fmt(ex));
     }
     
@@ -301,7 +301,7 @@ public abstract class Retriever extends BackgroundWorker {
             edge.setAttribute(WEIGHT_ATTRIBUTE,"2");              
             model.getTree().addChild(edge);   
         }                                       
-        parent.setStatusMessage(information.getTitle() + " -  Finished;  Number of results: " + th.getResultCount());
+        parent.setStatusMessage(information.getTitle() + " - " + th.getResultCount() + " results");
     }
 
 
