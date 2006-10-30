@@ -33,6 +33,9 @@ public class Workbench1 {
 	 * @param l
 	 */
 	public static void configureLauncherAsWorkbench(Launcher l) {
+		// we're packaging log4j in this release, so configure clogging to use it.
+    	System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.Log4JLogger");
+  		
 		System.setProperty("workbench.mode","true");
 		System.setProperty("app.mode","workbench");
     	l.addModuleByName("background");
@@ -40,6 +43,7 @@ public class Workbench1 {
     	l.addModuleByName("dialogs");
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
+    	l.addModuleByName("voevent");    	
     	l.addModuleByName("nvo");
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");

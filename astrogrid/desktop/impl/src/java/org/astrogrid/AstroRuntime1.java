@@ -35,16 +35,20 @@ public class AstroRuntime1 {
 		System.setProperty("system.configuration.preferenceClass",AstroRuntime.class.getName());
     	System.setProperty("acr.mode","true");
 		System.setProperty("app.mode","acr");    	
-    	// leave logging as-is - can always be overridden by user.
+		// we're packaging log4j in this release, so configure clogging to use it.
+    	System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.Log4JLogger");
+  
     	l.addModuleByName("background");
     	l.addModuleByName("dialogs");
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
+    	l.addModuleByName("voevent");
     	l.addModuleByName("nvo");
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
-        l.addModuleByName("util");        	
+        l.addModuleByName("util"); 
+        l.addModuleByName("externalConfig");         
 	}
 
 }

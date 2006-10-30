@@ -39,12 +39,15 @@ public class HeadlessAstroRuntime {
     	l.addModuleByName("background");
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
+    	l.addModuleByName("voevent");    	
     	l.addModuleByName("nvo");
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
-        l.addModuleByName("util");        	
-    	CmdLineParser.processCommandLine(cl,l);
+        l.addModuleByName("util");     
+        l.addModuleByName("externalConfig");        
+
+        CmdLineParser.processCommandLine(cl,l);
     	
     	l.run();
 		}

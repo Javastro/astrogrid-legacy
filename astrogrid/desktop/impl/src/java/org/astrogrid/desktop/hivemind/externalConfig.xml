@@ -12,15 +12,15 @@
 	but will do for now.
 	
 	<!-- contributions to existing configurations -->
+	<contribution configuration-id="astrogrid.trustAnchors">
+		&anchors;
+	</contribution>
 	
 	<!--  drag in a file from the wiki -->
 	<contribution configuration-id="ui.workflowTemplates">
 		&workflows;
 	</contribution>	
 	
-	<contribution configuration-id="astrogrid.trustAnchors">
-		&anchors;
-	</contribution>
 	
 	
 	
