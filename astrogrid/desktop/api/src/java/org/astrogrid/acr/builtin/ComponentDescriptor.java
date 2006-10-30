@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.2 2006/10/30 12:12:36 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-/** Descriptor for a component of the AR
+/** Descriptor for a component (service) of the AR
  * @author Noel Winstanley nw@jb.man.ac.uk 
  * @since 2.2
  *
@@ -86,6 +86,9 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.2  2006/10/30 12:12:36  nw
+documentation improvements.
+
 Revision 1.1  2006/06/02 00:17:10  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 

@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.11 2006/10/12 02:22:33 nw Exp $
+/*$Id: Finder.java,v 1.12 2006/10/30 12:12:36 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,23 +36,24 @@ import java.rmi.RemoteException;
 
 import javax.swing.JOptionPane;
 
-/** Find or create an ACR server, and return an interface to that service.
+/** Find or create an AR daemon, and return an interface to it.
  * 
-      * first attempts to connect to a running instance using RMI, on a port defined in the file <tt>~/.acr-rmi-port</tt> (which is written by a running ACR instance<br />
-     * failing that, tries to create an external instance (will only work if running under java web start), and then connect to that using RMI<br />
-     * failing that, trys to create an instance internally (will only work if implementation classes are on classpath),<br />     
-     * the interface returned will either be a  rmi stub or direct instance, depending on how the ACR was found.
-     * <br />
-     * No matter how the acr is found, the ACR returned is a singleton - it is stored in this class for simple access the next time
+ * <p/>
+      * First attempts to connect to a running instance using RMI, on a port defined in the file <tt>~/.acr-rmi-port</tt> (which is written by a running AR instance)<p />
+     * failing that, tries to create an external instance (will only work if running under java web start), and then connect to that using RMI<p />
+     * failing that, trie to create an instance internally (will only work if implementation classes are on classpath),<p />     
+     * the interface returned will either be a  RMI stub or direct instance, depending on how the AR was found.
+     * <p />
+     * No matter how the AR is found, the ACR interface returned is a singleton - it is stored in this class for simple access the next time
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
  * @example
  * <pre>
  * import org.astrogrid.acr.builtin.ACR;
  * import org.astrogrid.acr.Finder;
  * Finder f = new Finder();
- * ACR acr = f.find(); 
+ * ACR acr = f.find(); // find the AR 
  * </pre>
- *@see org.astrogrid.acr.builtin.ACR
+ *@see org.astrogrid.acr.builtin.ACR How to retrieve services from the ACR interface
  */
 public class Finder {
     /**Internal Class. 
@@ -78,7 +79,7 @@ public class Finder {
 	}
 
 	/** Webstart URL for the ACR */
-    public static final String ACR_JNLP_URL = "http://software.astrogrid.org/jnlp/beta/workbench/workbench.jnlp";
+    public static final String ACR_JNLP_URL = "http://software.astrogrid.org/jnlp/astro-runtime/astro-runtime.jnlp";
     /**
      * Commons Logger for this class
      */
@@ -91,13 +92,12 @@ public class Finder {
         super();
     }
     
-    /** Find or create a running ACR server.
-     *      
-     * first attempts to connect to a running instance, on a port defined in the file <tt>~/.acr-rmi-port</tt> (which is written by a running ACR instance<br />
-     * failing that, tries to create an external instance (will only work if running under java web start) and then connect to that using RMI<br/>
-     * failing that, trys to create an instance internally (will only work if implementation classes are on classpath),<br/>     
-     * @return an interface to the running ACR - depending on how connected will either be a direct instance or a remote stub - although this makes no difference to the consumer.
-     * The instance returned is a singleton - i.e. all subsequent calls to {@link #find} will return the same object.
+    /** Find or create an AR daemon.
+     * @return an interface to the running CR - depending on how connected will either 
+     * be a direct instance or a remote stub - although this makes no difference to the 
+     * consumer.
+     * The instance returned is a singleton - i.e. all subsequent calls to {@link #find} 
+     * will return the same object.
      * @throws ACRException if all options fail
      * 
      * */
@@ -110,7 +110,7 @@ public class Finder {
     }
 
     /**
-     * Find or create a running ACR server.
+     * Find or create an AR daemon.
      * @see #find()
      * @param tryToStartIfNotRunning if false, will not attempt to start an ACR, but merely return NULL if there isn't one running
      * @param warnUserBeforeStarting if true, will warn the user before attempting start an ACR, giving him the chance to start one manually
@@ -390,6 +390,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.12  2006/10/30 12:12:36  nw
+documentation improvements.
+
 Revision 1.11  2006/10/12 02:22:33  nw
 fixed up documentaiton
 

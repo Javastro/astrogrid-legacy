@@ -1,4 +1,4 @@
-/*$Id: ACR.java,v 1.3 2006/02/02 14:19:48 nw Exp $
+/*$Id: ACR.java,v 1.4 2006/10/30 12:12:36 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,17 +17,18 @@ import org.astrogrid.acr.NotFoundException;
 
 import java.util.Iterator;
 
-/** Interface into a running ACR - used to retreive instances of service interfaces.
+/** Interface into a running AR daemon, from which services provided by the AR API can be accessed..
  * 
- * Note that this isn't a service interface itself.
+ * Note that this isn't a component interface itself.
  *
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
- * @see org.astrogrid.acr.Finder#find() How to create an ACR
+ * @see org.astrogrid.acr.Finder How to create an instance of ACR
  *
  */
 public interface ACR { 
    
-    /** Retreive an instance of a service interface
+    /** Retreive an instance of an AR API service.
+     * 
      * @param interfaceClass the interface class for a service
      * @return an implementation of the service interface
      * @throws InvalidArgumentException if the parameter class is not an interface
@@ -45,12 +46,12 @@ public interface ACR {
      * */
     public Object getService(Class interfaceClass) throws ACRException, InvalidArgumentException, NotFoundException;
     
-    /** Retreive an instance of a service interface.
+    /** Retreive an instance of an AR API serivce.
      * 
      * 
      * This method is a less-well-typed equvalent to {@link #getService(Class)} - preferably use that method. However, this method is handy when it isn't easy to get hold of 
      * class objects - e.g. from in-java scripting languages. 
-     * @param componentName the name of the service - see <b>Service</b> tags in javadoc. These are the same component names as used in the XMLRPC interface - all follow the form
+     * @param componentName the name of the service - (as defined by<tt>Service</tt> tags in javadoc). These are the same component names as used in the XMLRPC interface - all follow the form
      * <tt><i>moduleName</i>.<i>componentName</i></tt>
      * @return an implementation of the service interface.
      * @throws InvalidArgumentException if the componentName does not follow the form <tt><i>moduleName</i>.<i>componentName</i></tt>
@@ -71,6 +72,9 @@ public interface ACR {
 
 /* 
  $Log: ACR.java,v $
+ Revision 1.4  2006/10/30 12:12:36  nw
+ documentation improvements.
+
  Revision 1.3  2006/02/02 14:19:48  nw
  fixed up documentation.
 

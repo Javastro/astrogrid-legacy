@@ -1,4 +1,4 @@
-/*$Id: Shutdown.java,v 1.4 2006/02/02 14:19:48 nw Exp $
+/*$Id: Shutdown.java,v 1.5 2006/10/30 12:12:36 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,14 @@
 **/
 package org.astrogrid.acr.builtin;
 
-/** shutdown the ACR.
+/** Component that shutsdown the AR.
  * @service builtin.shutdown
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
  
  */
 public interface Shutdown {
     
-    /** bring the whole ACR system to a graceful halt. 
+    /** bring the whole AR system to a graceful halt. 
      * 
      * notifies all listeners, and if there's any objections displays a prompt for the user to acknowledge
      * then calls {@link #reallyHalt}
@@ -49,6 +49,9 @@ public interface Shutdown {
 
 /* 
 $Log: Shutdown.java,v $
+Revision 1.5  2006/10/30 12:12:36  nw
+documentation improvements.
+
 Revision 1.4  2006/02/02 14:19:48  nw
 fixed up documentation.
 
