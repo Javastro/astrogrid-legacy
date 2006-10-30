@@ -16,17 +16,46 @@
 	to do all this from the root project.
 		  </description>
         <shortDescription>Astro Runtime Interfaces</shortDescription>
+<packageGroups>
+    <packageGroup>
+    	<title>Connecting to the astro runtime</title>
+    	<packages>org.astrogrid.acr:org.astrogrid.acr.builtin</packages>
+    </packageGroup>
+    <packageGroup>
+    	<title>Access to IVOA standard services</title>
+    	<packages>org.astrogrid.acr.ivoa*</packages>
+    </packageGroup>    
+    <packageGroup>
+    	<title>Access to other virtual observatory services</title>
+    	<packages>org.astrogrid.acr.astrogrid:org.astrogrid.acr.cds:org.astrogrid.acr.nvo</packages>
+    </packageGroup>
+    <packageGroup>
+    	<title>Desktop and user interface components</title>
+    	<packages>org.votech.plastic:org.astrogrid.acr.dialogs:org.astrogrid.acr.ui</packages>
+    </packageGroup>
+    <packageGroup>
+    	<title>Utiltiy components</title>
+    	<packages>org.astrogrid.acr.util</packages>
+    </packageGroup>    
+    <packageGroup>
+    	<title>Framework components</title>
+    	<packages>org.astrogrid.acr.system:org.astrogrid.acr.test</packages>
+    </packageGroup>            
+   </packageGroups>        
         <mailingLists>
-        	<!--  todo - fill in -->
           <mailingList>
-        	<name>astro-runtime-users</name>
-        	<subscribe></subscribe>
-        	<archive></archive>
+        	<name>Astro Runtime Users</name>
+        	<subscribe>http://lists.astrogrid.org/mailman/listinfo/astro-runtime-users</subscribe>
+        	<unsubscribe>http://lists.astrogrid.org/mailman/listinfo/astro-runtime-users</unsubscribe>
+        	<post>astro-runtime-users@astrogrid.org</post>
+        	<archive>http://lists.astrogrid.org/mailman/private/astro-runtime-users/</archive>
         </mailingList>
         <mailingList>
-        	<name>astro-runtime-devs</name>
-        	<subscribe></subscribe>
-        	<archive></archive>
+        	<name>Astro Runtime Developers</name>
+        	<subscribe>http://lists.astrogrid.org/mailman/listinfo/astro-runtime-devs</subscribe>
+        	<unsubscribe>http://lists.astrogrid.org/mailman/listinfo/astro-runtime-devs</unsubscribe>
+        	<post>astro-runtime-devs@astrogrid.org</post>
+        	<archive>http://lists.astrogrid.org/mailman/private/astro-runtime-devs/</archive>
         </mailingList>
         </mailingLists>
         <developers>
@@ -108,8 +137,27 @@
     <role>Workbench Developer </role>
    </roles>
   </developer>
-   
+
+	<developer>
+		<name>Alasdair Allan</name>
+		<email>aa@astro.ex.ac.uk</email>
+		<organization>Exeter</organization>
+		<organizationUrl>http://www.astro.ex.ac.uk/</organizationUrl>
+		<roles>
+			<role>VOEvent Developer</role>
+		</roles>
+	</developer>
         </developers>
+   <contributors>
+   	<contributor>
+   		<name>Mark Taylor</name>
+   		<email>m.b.taylor@bristol.ac.uk</email>
+   		<organization>Bristol</organization>
+   		<organizationUrl>http://www.star.bris.ac.uk/</organizationUrl>
+   	</contributor>
+   </contributors>
+       
+        
     	<package>org</package> <!-- have to override that in maven-base to include org.votech-->
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
