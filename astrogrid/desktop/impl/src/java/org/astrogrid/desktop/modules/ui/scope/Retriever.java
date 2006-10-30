@@ -300,8 +300,8 @@ public abstract class Retriever extends BackgroundWorker {
             DefaultEdge edge = new DefaultEdge(primaryNode,serviceNode);
             edge.setAttribute(WEIGHT_ATTRIBUTE,"2");              
             model.getTree().addChild(edge);   
-        }
-        parent.setStatusMessage(information.getTitle() + " : Successfully Finished Number of Results  : " + th.getResultCount());
+        }                                       
+        parent.setStatusMessage(information.getTitle() + " -  Finished;  Number of results: " + th.getResultCount());
     }
 
 
