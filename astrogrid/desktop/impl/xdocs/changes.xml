@@ -13,7 +13,16 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release  version="2006.3.rc4" date="unreleased">
+<release version="2006.3.rc4301006" date="2006-10-30">
+	<action dev="nw" type="add">
+	Added template voevent module
+	</action>
+	<action dev="kmb" type="fix">
+	  Save object names in astroscope history
+	</action>
+	<action dev="kmb" type="fix">
+	Indicate completed searches in astroscope.
+	</action>
     <action dev="pjn" type="fix" issue="1882">
         When running science workflows there is now an option to save the workflow without 
         submitting to JES
@@ -24,6 +33,8 @@
     <action dev="pjn" type="fix" issue="1892/1896">
         Changes to MySpaceBrowser menus
     </action>
+</release>
+<release  version="2006.3.rc4" date="unreleased">
     <action dev="jdt" type="fix" issue="1836">
         Workbench now honours user registry endpoint settings.
     </action>
