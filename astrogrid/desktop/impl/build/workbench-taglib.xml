@@ -334,6 +334,7 @@ astrogrid.build.jdk=${java.version}
 	-keep class org.apache.commons.logging.impl.SimpleLog {
 		public *;
 	}
+	<!--  log4j code -->
 	-keep class org.apache.log4j.ConsoleAppender {
 		public *;
 		}
