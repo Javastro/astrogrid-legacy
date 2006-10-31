@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.10 2006/08/31 21:28:59 nw Exp $
+/*$Id: CommunityImpl.java,v 1.11 2006/10/31 12:55:40 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ public class CommunityImpl implements CommunityInternal {
         this.loginDialogue = loginDialogue;
         this.snitch = snitch;
         ui.setStatusMessage("Not Logged In");
-        
+        logger.info("Trusted certificates directory set to: '" + trustedCertificates + "'");
         LoginFactory.declareTrustedCertificates(trustedCertificates);
     }
     protected final UIInternal ui;
@@ -223,6 +223,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.11  2006/10/31 12:55:40  nw
+added logging message
+
 Revision 1.10  2006/08/31 21:28:59  nw
 doc fix.
 
