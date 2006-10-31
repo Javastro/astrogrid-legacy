@@ -23,7 +23,7 @@
     </packageGroup>
     <packageGroup>
     	<title>Access to IVOA standard services</title>
-    	<packages>org.astrogrid.acr.ivoa*</packages>
+    	<packages>org.astrogrid.acr.ivoa*:uk.ac.estar.voevent</packages>
     </packageGroup>    
     <packageGroup>
     	<title>Access to other virtual observatory services</title>
@@ -158,7 +158,7 @@
    </contributors>
        
         
-    	<package>org</package> <!-- have to override that in maven-base to include org.votech-->
+    	<package></package> <!-- have to override that in maven-base to include org.votech-->
         <build>
                 <sourceDirectory>src/java</sourceDirectory>
                 <resources>
