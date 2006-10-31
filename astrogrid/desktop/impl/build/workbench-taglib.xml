@@ -367,15 +367,41 @@ astrogrid.build.jdk=${java.version}
 	-keep class org.globus.myproxy.MyProxy {
 		public *;
 		}	
-	<!--  don't know where the reference to the missing dep is in all this 
-	- so keep all this code for now, and use it as root for the globus jars. -->	
-	-keep class org.astrogrid.community.**.* {
+	-keep class org.globus.gsi.gssapi.GlobusGSSManagerImpl {
 		public *;
-	}
-	-keep class org.astrogrid.security.**.* {
+		}			
+	-keep class org.globus.gsi.gssapi.net.impl.GSIGssSocketFactory {
 		public *;
 		}
-	-keep class org.apache.ws.security.**.* {
+	<!--  later - should whittle this down further later -->
+	-keep public class cryptix.** {
+		public *;
+		}
+	
+	-keep public class org.apache.xml.security.** {
+		public *;
+		}
+	<!--  not enough - meh. 
+	-keep class org.apache.xml.security.Init {
+		public *;
+		}  
+	-keep class * implements org.apache.xml.security.keys.keyresolver.KeyResolverSpi {
+		public *;
+		}
+	-keep class * implements org.apache.xml.security.utils.resolver.ResourceResolverSpi {
+		public *;
+		}
+	-keep class  org.apache.xml.security.algorithms.SignatureAlgorithm {
+		public *;
+		}
+	-keep class org.apache.xml.security.algorithms.implementations.SignatureBaseRSA {
+		public *;
+		}-->
+		
+	-keep public class org.bouncycastle.** {
+		public *;
+		}	
+	-keep public class org.apache.ws.security.** {
 		public *;
 		}
 	<!--  jdbm -->
@@ -387,7 +413,7 @@ astrogrid.build.jdk=${java.version}
 		public *;
 		}
 		<!--  adql beans - keep as is. -->		
-	-keep class org.astrogrid.adql.**.* {
+	-keep class org.astrogrid.adql.** {
 		*;
 		}
 	<!--  xmlbeans -->
@@ -416,14 +442,14 @@ astrogrid.build.jdk=${java.version}
 		public *;
 		}
 	<!--  castor beans - keep these classes -->
-	-keep class org.astrogrid.workflow.beans.**.* {
+	-keep class org.astrogrid.workflow.beans.** {
 		*;
 		}
-	-keep class org.astrogrid.applications.beans.**.* {
+	-keep class org.astrogrid.applications.beans.** {
 		*;
 		}		
 	<!--  castor - preserve all for the moment, else seems to fail - but include in strip path, so dependencies are processed. -->
-	-keep class org.exolab.castor.**.* {
+	-keep class org.exolab.castor.**{
 		*;
 		}
 	<!--  for jxpath (used within castor) -->

@@ -291,7 +291,7 @@
  	<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>
+ 			<strip>true</strip>
  	</properties>
  </dependency>
  
@@ -302,7 +302,7 @@
  	<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>
+ 			<strip>true</strip>
  	</properties>
  </dependency>
 
@@ -316,10 +316,10 @@
 			<bundle.later>true</bundle.later>
 		    <uberjar.bundle>false</uberjar.bundle>		  	
  		<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>
+ 			<strip>true</strip>
  	</properties> 	
  </dependency>
-
+<!--  problem here. -->
  <dependency>
    <groupId>globus</groupId>
    <artifactId>cog-cryptix</artifactId>
@@ -327,7 +327,7 @@
    <type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>
+ 			<strip>true</strip>
  	</properties>   
  </dependency>
        
@@ -338,7 +338,7 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>
+ 			<strip>true</strip>
  	</properties>        		
         	</dependency>
         	
@@ -349,7 +349,7 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>	
+ 			<strip>true</strip>
  	</properties>        		
         	</dependency>
      	<!-- dependencies for signatures -->
@@ -360,7 +360,7 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>
+ 			<strip>true</strip>
  	</properties>        		
         	</dependency>
         	
@@ -372,7 +372,7 @@
         		<type>jar</type>
  	<properties> 	
  		<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>		
+ 			<strip>true</strip>	
  	</properties>        		
         	</dependency>
 
