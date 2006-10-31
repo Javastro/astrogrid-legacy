@@ -13,7 +13,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2006.3.rc4301006" date="2006-10-30">
+<release version="2006.3.rc4.301006" date="2006-10-30">
 	<action dev="nw" type="add">
 	Added template voevent module
 	</action>
