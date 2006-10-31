@@ -9,16 +9,12 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.OutputStream;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -246,9 +242,6 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	private final RegistryBrowser browser;
 
 	private BiStateButton submitButton;
-	private MyspaceInternal myspace;
-	private ResourceChooserInternal chooser;
-	
 	
 	/** Construct a new Scope.
 	 * Configure by passing in the usual components, _plus_ a list of the protocols to query.
@@ -275,8 +268,6 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 			this.protocols.add(p[i]);
 		}
 		this.browser = browser;
-		this.chooser = chooser;
-		this.myspace = myspace;
 		// create the shared model
 		vizModel = new VizModel(protocols);
 		// create the vizualizations
@@ -404,7 +395,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		return fileMenu;
 	}
 
-	
+	/** @todo implement the history menu using xml serialization of the SesamePositionBeans */
 	protected JMenu getHistoryMenu() {
 		if (historyMenu == null) {
 			historyMenu = new JMenu();
@@ -453,14 +444,6 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	/** panel containing summary of search results */
 	private JPanel makeServicesPanel() {
 		JPanel servicesPanel = new JPanel();
-		/*
-		JPanel northPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-		JButton saveTableButton = new JButton("Save Results");
-		northPanel.add(saveTableButton);
-		northPanel.add(Box.createHorizontalGlue());
-		servicesPanel.setLayout(new BorderLayout());
-		servicesPanel.add(northPanel,BorderLayout.NORTH);
-		*/
 		final TableSorter sorter = new TableSorter(protocols.getQueryResultTable());
 		final JTable table = new JTable(sorter);
 		table.addMouseListener(new MouseAdapter() {
@@ -506,7 +489,6 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		final TableColumn countColumn = tcm.getColumn(1);
 		countColumn.setPreferredWidth(60);
 		countColumn.setMaxWidth(60);
-		//servicesPanel.add(new JScrollPane(table),BorderLayout.CENTER);
 		servicesPanel.add(new JScrollPane(table));
 		// decorate the default renderer for integers to display something
 		// special for -1
@@ -547,40 +529,6 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 				return c;
 			}
 		});
-		
-		/*
-		saveTableButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				URI u = chooser.chooseResource("Save Results",true);
-		         if (u != null ) {
-		        	 try {
-			        	 OutputStream tableOut = myspace.getOutputStream(u);
-			             tableOut.write("<html><head><title>Results</title></head><body><table><tr>".getBytes());
-			             for(int j = 0; j < table.getColumnCount(); j++) {
-			            	 tableOut.write(("<th>" + table.getColumnName(j) + "</th>").getBytes());
-	          			 }//for
-	          			 tableOut.write("</tr>".getBytes());
-						 for(int i = 0; i < table.getRowCount(); i++) {
-							tableOut.write("<tr>".getBytes());
-	         				for(int j = 0; j < table.getColumnCount(); j++)
-	          				{
-	         					if(j == 0) {
-	         						tableOut.write(("<td>" + ((Resource)table.getValueAt(i,j)).getTitle() + "-" + ((Resource)table.getValueAt(i,j)).getId() +  "</td>").getBytes());	         						
-	         					}else {
-	         						tableOut.write(("<td>" + table.getValueAt(i,j) + "</td>").getBytes());
-	         					}
-	          				}//for
-	          				tableOut.write("</tr>".getBytes());
-						 }//for
-						tableOut.write("</table></body></html>".getBytes());
-		        	 }catch(Exception exc) {
-		                 logger.warn("Failed to save",exc);
-		                 UIComponentImpl.showError(null,"Failed to save",exc);
-		        	 }
-		         }//if
-			}
-		});
-		*/		
 		return servicesPanel;
 	}
 
