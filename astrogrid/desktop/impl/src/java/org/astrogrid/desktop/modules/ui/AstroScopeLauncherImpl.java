@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.53 2006/10/17 07:21:30 KevinBenson Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.54 2006/10/31 12:56:09 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,7 +61,6 @@ import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.SsapProtocol;
-import org.astrogrid.desktop.modules.ui.scope.VOSpecButton;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
@@ -457,6 +456,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.54  2006/10/31 12:56:09  nw
+removed vospec button
+
 Revision 1.53  2006/10/17 07:21:30  KevinBenson
 small changes to history part of astroscope to have an object Name.  One small thing on Retriever to try and put successful status messages.
 

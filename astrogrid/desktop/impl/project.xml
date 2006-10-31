@@ -134,16 +134,7 @@
 		 		    <strip>true</strip>    
 	 </properties>
     </dependency>
-    
- <!-- vospec as plugin -on the way out now we're plasticy. -->
- 	<dependency>
- 		<groupId>esavo</groupId>
-		<artifactId>vospec</artifactId>
-		<version>1.1</version>
-		  <properties>
-		 <dist.bundle>false</dist.bundle>
-	 </properties>
-	</dependency>   
+
 
 <!-- used within development only -->
     <!-- Mark Taylor's plaskit, for testing only -->
