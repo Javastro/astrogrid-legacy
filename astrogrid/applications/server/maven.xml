@@ -31,22 +31,6 @@
                 </fileset>
         </copy>
 </goal>
-<!-- full junit report -->
-	<!-- This breaks Maven 1.0.2 - GTR 2005-010-11
-  <postGoal name="maven-junit-report-plugin:report">
-    <attainGoal name="full-junit-report" />
-  </postGoal>
-<goal name="full-junit-report">
-  <mkdir dir="${basedir}/target/docs/junit-full" />
-  ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-  <junitreport todir="${basedir}/target">
-    <fileset dir="${basedir}/target/test-reports">
-      <include name="TEST-*.xml" />
-    </fileset>
-    <report format="frames" styledir="${basedir}/../src/xslt" todir="${basedir}/target/docs/junit-full" />
-  </junitreport>
-  </goal>
-	-->
 	
   <!-- packaging of the war file
 
@@ -56,9 +40,8 @@
    * generate war 'site' and include this
    -->
   <preGoal name="war:war">
-    <attainGoal name="package-war" />
+    <attainGoal name="webapp-docs" />
   </preGoal>
-	
 	
   <goal name="package-war" description="Top-level goal for war packaging">
    	
@@ -84,31 +67,12 @@
     <attainGoal name="webapp-docs" />
   </goal>
 
-   <goal name="configure-webapp">
-   <!-- setting which transformer to use -->
-   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <!-- tailor the deployment descriptor to our system -->
-        <xslt in="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd"
-         out="${working.dir}/wsdd/CommonExecutionConnector-cea-deploy.wsdd"
-         extension=".wsdd"
-         style="${basedir}/build/cec-config.xsl"
-        />
-        <!-- delete the server config file if already there. -->
-        <delete file="${basedir}/src/webapp/WEB-INF/server-config.xml" quiet="true" />
-        <!-- run the admin client over processed wsdd -->
-        <java classname="org.apache.axis.utils.Admin" dir="${basedir}/src/webapp/WEB-INF"
-                classpathref="maven.dependency.classpath" fork="yes" failonerror="true">
-                <arg value="server" />
-                <arg value="${working.dir}/wsdd/CommonExecutionConnector-cea-deploy.wsdd" />
-        </java>
-   </goal>
-
    <goal name="webapp-docs">
-   	 <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}"/>
+     <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}"/>
      <echo>Generating web-app's internal documentation into ${maven.docs.dest}</echo>
-   	 <mkdir dir="${maven.docs.dest}"/>
+     <mkdir dir="${maven.docs.dest}"/>
    	
-   	 <!-- Create the directory in which the document sources are accumulated. -->
+     <!-- Create the directory in which the document sources are accumulated. -->
      <property name="tmp.docs" location="${working.dir}/webapp-docs" />
      <mkdir dir="${tmp.docs}" />
    	
@@ -126,14 +90,14 @@
          <include name="schema/**" />
        </fileset>
        <fileset dir="${basedir}/xdocs" >
-				 <exclude name="**/navigation.xml"/>
-			 </fileset>			 
+         <exclude name="**/navigation.xml"/>
+       </fileset>			 
      </copy>
    	
-   	 <!-- Copy the xdocs that are provided specifically for the web application. -->
-   	 <copy todir="${tmp.docs}" >
-   		 <fileset dir="${basedir}/war-xdocs" />
-   	 </copy>
+     <!-- Copy the xdocs that are provided specifically for the web application. -->
+     <copy todir="${tmp.docs}" >
+       <fileset dir="${basedir}/war-xdocs" />
+     </copy>
    	
      <!-- set up properties -->
      <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}" />
@@ -142,9 +106,9 @@
      <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
      <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
      <j:set var="maven.xdoc.includeProjectDocumentation" value="no" />
-     <attainGoal name="xdoc:generate-from-pom" />
-     <attainGoal name="javadoc:generate" />
-     <attainGoal name="maven-jxr-plugin:report" />
+     <!--<attainGoal name="xdoc:generate-from-pom" />-->
+     <!--<attainGoal name="javadoc:generate" />-->
+     <!--<attainGoal name="maven-jxr-plugin:report" />-->
      <attainGoal name="xdoc" />
    </goal>
 
