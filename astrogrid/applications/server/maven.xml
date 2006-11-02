@@ -32,41 +32,12 @@
         </copy>
 </goal>
 	
-  <!-- packaging of the war file
-
-  need to
-   * grab resources from dependent jars (e.g. schema, wsdd, wsdl, etc)
-   * configure axis service - i.e. create server-config.wsdd
-   * generate war 'site' and include this
-   -->
+  <!-- When building the WAR, add the documentation from the main site; 
+       but do it selectively. -->
   <preGoal name="war:war">
     <attainGoal name="webapp-docs" />
   </preGoal>
-	
-  <goal name="package-war" description="Top-level goal for war packaging">
-   	
-   	<!-- Extract parts from the jar dependencies that are needed for the build. -->
-   	<echo>Grabbing resources from jars...</echo>
-   	<mkdir dir="${working.dir}" />
-   	<deploy:copy-deps todir="${working.dir}" />
-   	<unjar dest="${working.dir}" overwrite="true">
-   		<fileset dir="${working.dir}">
-   			<include name="astrogrid-workflow-objects-*.jar" />
-   		</fileset>
-   		<patternset>
-   			<include name="wsdd/**" />
-   			<include name="schema/**" />
-   			<include name="wsdl/**" />
-   		</patternset>
-   	</unjar>
-  	
-  	<!-- Do the packaging. These operations are written as separate goals
-  		   so that they can be overridden in sub-projects. -->
-    <attainGoal name="configure-webapp" />
-    <property name="webapp.docs" value="${maven.war.webapp.dir}" />
-    <attainGoal name="webapp-docs" />
-  </goal>
-
+  
    <goal name="webapp-docs">
      <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}"/>
      <echo>Generating web-app's internal documentation into ${maven.docs.dest}</echo>
@@ -85,10 +56,6 @@
    	      the property isn't set and Maven generates the documents into the
    	      default directory for the site documentation, not into the web app. -->
      <copy todir="${tmp.docs}" overwrite="false">
-       <fileset dir="${working.dir}">
-         <include name="wsdl/**" />
-         <include name="schema/**" />
-       </fileset>
        <fileset dir="${basedir}/xdocs" >
          <exclude name="**/navigation.xml"/>
        </fileset>			 
@@ -106,9 +73,6 @@
      <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
      <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
      <j:set var="maven.xdoc.includeProjectDocumentation" value="no" />
-     <!--<attainGoal name="xdoc:generate-from-pom" />-->
-     <!--<attainGoal name="javadoc:generate" />-->
-     <!--<attainGoal name="maven-jxr-plugin:report" />-->
      <attainGoal name="xdoc" />
    </goal>
 
