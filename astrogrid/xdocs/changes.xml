@@ -5,6 +5,12 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+          <action dev="gtr" type="fix" issue="1981">
+            Branch jes-gtr-1981. This breaks JES' dependence on the schema and
+            WSDD files in workflow-objects. The build is simpler, the coupling
+            is reduced and it allows the schemata to be dropped from workflow-objects
+            in favour of the current ones in contracts.
+          </action>
           <action dev="gtr" type="fix" issue="1966">
             Branch community-gtr-1966: fix the password-change and account-deletion
             features in the community component.
