@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="utf-8"?><!--*- nxml -*-->
+<!-- Based on template at
+     http://www.ivoa.net/Documents/templates/ivoa-tmpl.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" lang='en'>
+
+<head>
+<title>Access control using RDF</title>
+<link rev="made"
+      href="http://nxg.me.uk/norman/#norman"
+      title="Norman Gray"/>
+<meta name="author" content="Norman Gray"/>
+<meta name="keywords"
+      content="IVOA, International, Virtual, Observatory, Alliance" />
+<link href="http://www.ivoa.net/misc/ivoa_note.css"
+      rel="stylesheet"
+      type="text/css" />
+<style type='text/css'>
+/* make the ToC a little more compact, and without bullets */
+div.toc ul {list-style: none; padding-left: 1em }
+</style>
+</head>
+
+<body>
+<div class='head'>
+<table>
+<tr><td><a href="http://www.ivoa.net/"
+           ><img alt="IVOA logo"
+           src="http://ivoa.net/icons/ivoa_logo_small.jpg"
+           border="0"/></a></td></tr>
+</table>
+
+<h1>Access control using RDF<br/>$Revision: 1.1 $</h1>
+<h2>IVOA Draft Note, $Date: 2006/11/02 17:22:38 $</h2>
+<dl>
+<dt>This version</dt>
+<dd>XXX to appear</dd>
+
+<dt>Latest version</dt>
+<dd>XXX to appear</dd>
+
+<dt>Author</dt>
+<dd><a href="http://nxg.me.uk" >Norman Gray</a>,
+<a href='http://eurovotech.org/' >Euro-VOTech project</a>
+and
+<a href='http://www.star.le.ac.uk/' >University of Leicester</a></dd>
+</dl>
+<hr/>
+</div>
+
+<div class='section-nonum' id='abstract'>
+<p>Abstract</p>
+
+<p>There exists a small number of approaches to the authorisation
+problem of deciding, once a user has been authenticated, what that
+user is permitted to do. This problem is very naturally viewed as an
+(ontological) subsumption problem: `is this user provably a member of
+the class of entities allowed access to this resource?'. This approach
+provides a flexible solution, in which delegation and federation are
+natural, and which fits into a broad range or architectures.</p>
+</div>
+
+<div class='section-nonum' id='status'>
+<p>Status of this document</p>
+
+<p>This is an IVOA Note.</p>
+
+<p>This document is an IVOA Note expressing suggestions from and opinions of
+the authors.  The first release of this document was YYYY
+Month DD.</p>
+
+<p>It is intended to share best practices, possible approaches, or
+other perspectives on interoperability with the Virtual Observatory.
+It should not be referenced or otherwise interpreted as a standard
+specification.</p>
+
+<p>A list of current IVOA Recommendations and other technical
+documents can be found at
+<a href="http://www.ivoa.net/Documents/"
+   ><code>http://www.ivoa.net/Documents/</code></a>.</p>
+
+<h3>Acknowledgments</h3>
+
+<p>None, yet</p>
+
+</div>
+
+<h2><a id="contents" name="contents">Table of Contents</a></h2>
+<div class="head">
+<?toc?>
+</div>
+
+<hr/>
+
+<div class='section' id='introduction'>
+<p>Introduction</p>
+
+<p>The problems of authentication and authorisation are both
+conceptually and technically distinct.  The former,
+<em>authentication</em>, is concerned with the problem of establishing
+with an appropriate degree of confidence that a user or other entity
+is indeed who they claim to be (so it contains within it the separate
+problem of identity).  There are multiple technical solutions to
+this problem, of which the most visible are password-based
+authentication and authentication based on X.509 certificates, and
+these have widely varying characteristics in terms of complexity,
+security and usability.  Though there are many subtleties to the
+authentication problem, we will assume below that this problem is
+essentially solved: part of the point of what follows is that the
+approach being described is sufficiently orthogonal that it does not
+particularly matter if this assumption is false.</p>
+
+<p>Quite separate from this is the problem of <em>authorisation</em>.
+Once a resource owner has established to its satisfaction that a user
+(or other entity) is who they say they are, how does that resource
+owner firstly articulate, and secondly enforce, what types of access
+the user has to the resource?  There are multiple relevant
+technologies here, including privilege management infrastructures such
+as PERMIS <span class='cite'>proj:permis</span>, Shibboleth <span
+class='cite'>proj:shibboleth</span>, Protune <span
+class='cite'>bonatti05</span>, and the X.812 architecture (see <span
+class='xref'>pmi</span> and <span class='xref'>x812</span> for
+discussion of technologies, and <span class='cite'>bonatti06</span>
+for discussion of other approaches).  However there is no clearly
+dominant approach which can be deployed straightforwardly.  In
+addition, approaches such as Shibboleth require extra client-side
+infrastructure which it might be costly or inconvenient to deploy.</p>
+
+<p>This note describes an alternative approach with the following
+properties:</p>
+<ul>
+<li>it does not depend on new client infrastructure;</li>
+<li>instead, it naturally depends on existing secure sources of
+assertions, and so will support federation and delegation fairly naturally;</li>
+<li>it is capable of articulating logically complicated authorisation
+constraints, in a way which is arguably easier for those humans
+specifying the constraints to use.</li>
+</ul>
+
+<p>The approach depends on the observation that the problem of
+determining access can be very naturally expressed in ontological
+terms, as a straightforward subsumption problem: `is this user
+provably a member of the class of entities allowed access to this
+resource?'.  Thus the technique builds on the active standardisation
+efforts surrounding RDF, Ontologies and the Semantic Web (see the
+introduction in section <span class='xref'>rdfintro</span>), as well as
+building on the decentralised approach which it is natural to use with
+those tools.</p>
+
+<p>In section ... we ...</p>
+
+</div>
+
+<div class='appendices'>
+<div class='section' id='usecases'>
+<p>Access-control Use cases</p>
+
+<p>The following list is based on a list on the VOTech wiki, at <a
+href='http://wiki.eurovotech.org/bin/view/VOTech/AccessControlUseCases'
+><code
+>http://wiki.eurovotech.org/bin/view/VOTech/AccessControlUseCases</code></a>.
+This list was based on suggestions from multiple people, and
+elaborated by discussions on the <code>semantics@ivoa.net</code>
+mailing list.  Thanks are due to Alasdair Allan, Markus Dolensky, Ray
+Plante, and Guy Rixon.</p>
+
+<p>Several of the cases below describe quite complicated
+scenarios. However, in some cases, the complication is in what happens
+to the decision, rather than the complication of the decision itself
+(in <a href='#x812' >X.812</a> terms, in the AEF rather than the
+ADF). For example the <a href='#quota-on-run-time' >[quota on
+run-time]</a> case involves a rather simple decision (possibly just
+`what group is this user in?'), though it might be quite complicated
+for the job scheduler, which is playing the role of the AEF in this
+case, to enforce or implement this decision. Similarly, the <a
+href='#database-restricted-results' >[database restricted results]</a>
+case might require a front-end to do quite a lot of work, even though
+the decision might be rather simple.</p>
+
+<p>Some of the cases have been gathered from useful threads on the
+grid@ivoa list. See in particular the threads which include messages
+from <a href='http://www.ivoa.net/forum/grid/0503/0281.htm' >Ray
+Plante</a> including a requirements white paper, and <a
+href='http://www.ivoa.net/forum/grid/0407/0178.htm' >Guy Rixon</a>
+describing essentially the delegation issue (as I read it). Ray's
+valuable requirements paper is most directly focused on authentication
+requirements, concerning the ease with which credentials might be
+created and used, as a usability issue, but in its discussion of
+groups implies some of the authorisation cases below.  Some of the
+cases (<a href='#virtual-file-permissions' >[virtual-file
+permissions]</a>, <a href='#shared-writeable-file' >[Shared, writeable
+(virtual) file)]</a> and <a href='#quota-on-vospace-storage' >[quota
+on VOSpace storage]</a>) have been flagged as particularly relevant to
+data providers (thanks to Markus Dolensky for this point).</p>
+
+<div class='section'>
+<p>Binary cases</p>
+
+These are cases which require a simple allow/disallow decision. They
+are roughly grouped.
+
+<div class='section' id='database-restricted-queries'>
+<p>[database restricted queries]</p>
+
+<p>Different users can make different queries of a database: some
+users can make no query, others are unrestricted, and others can make
+restricted queries, such as querying all rows containing a specific
+flag. For example, a database might make its full contents available
+to members of a specific collaboration plus researchers based in the
+UK, and make available a flagged subset of the table rows to
+researchers based in African countries. When a user requests access to
+the resource, the resource owner needs to work out which category the
+user falls into.</p>
+</div>
+
+<div class='section' id='database-restricted-results'>
+<p>[database restricted results]</p>
+
+<p>A user makes a query of a database, but is only allowed to see
+certain results, either a restricted set of columns, or mangled or
+anonymised columns (eg, researcher A, doing a clinical trial, can see
+patient names, but researcher B, doing statistics, can see only
+anonymised patient data; one can imagine a similar scenario involving
+members and non-members of a collaboration). The difference from the
+previous case, is that two users can make the same query, but the
+results that come back depend on the user.</p>
+</div>
+
+<div class='section' id='chain-of-groups'>
+<p>[chain of groups]</p>
+
+<p>Person A belongs to group J; group J belongs to group K; group K
+belongs to group L; owner of resource X allows group L to read info
+and group K to read and write. Person A and all groups are registered
+in <em>different communities</em>. Must ensure that person A can write to
+resource X. As a concrete example, a resource might be available to
+members of collaboration A; the collaboration could decide that its
+members include all members of institution B; if an individual is in
+B's staff directory, then they're in collaboration A, so they have
+access.</p>
+
+<p><em>This case, and the two following it, are examples of the very
+general problem of delegating some parts of the decision-making when
+making authorisation decisions. There are issues here to do with the
+inheritance of authority to sub-authorities, and making sure that
+delegated roles have lower privilege than non-delegated ones: is this
+an implementation detail, or part of a use-case? To ask this question
+(talking of `sub-authorities') to some extent presumes that authority
+is delegated in a hierarchical fashion; if one instead thinks of
+simply distributing the access logic, or allowing some parts of the
+logic to be evaluated remotely, then questions of `privilege
+inheritance' become much less pressing.</em></p>
+</div>
+
+<div class='section' id='delegate-locally'>
+<p>[delegate locally]</p>
+
+<p>A resource owner delegates some access-control authority to a local
+user (local, here, is in the sense that the local user is to some
+extent under the authority of the resource owner, who can go and LART
+them if they misbehave). For example, a group's sysadmin might want to
+give a specific researcher the power to grant DB access to someone who
+is visiting the group temporarily.</p>
+</div>
+
+<div class='section' id='delegate-remotely'>
+<p>[delegate remotely]</p>
+
+<p>A resource owner delegates some access-control power to a remote
+entity. For example, Institution A's library might give user X access
+to their e-journals, as a result of a warrant from Institution B
+concerning that user. This covers both of the following cases.</p>
+<ul>
+<li>Active authorisation, where Institution B can somehow directly
+affect A's authorisation logic, perhaps by allowing B to assert A's
+PERMIS-type roles; and</li>
+<li>passive authorisation, where Institution B just warrants securely
+that X would be allowed in to their library, and lets A do with that
+information what they like.</li>
+</ul>
+</div>
+
+<div class='section' id='agent-access'>
+<p>[agent access]</p>
+
+<p>Users, or their agents, won't necessarily always have the same
+privileges.</p>
+
+<p>A user creates a job which is to be run unattended, for example as
+a cron job, as part of a local batch system, or as part of a
+full-blown software agent. The agent-job should be given access to
+resources which is the same as, or derived from, the access which the
+user themself would have. A user might have agent-jobs running at the
+same time as `interactive' jobs. This is probably more an
+authentication issue than an authorisation one, but it might be that
+the best way of satisfying this case is to support a user having
+sub-identities which inherit access rights from the user, such as an
+identity which has the user's read-rights, but which is unable to
+delete resources, or an identity which has a lower quota.</p>
+</div>
+
+<div class='section' id='variable-privilege'>
+<p>[variable privilege]</p>
+
+<p>A user might have different privileges at different times, because
+of actions taken by the user, or actions taken by the resource owner
+(this is distinct from simple time-based access control, where a user
+is permitted access only at certain times of day). That is,
+authorisation is not a simple function of identity, but might depend
+on other features of a certificate. <em>For example, the <a
+href='http://www.us-vo.org/nesssi/' >NESSSI</a> system
+allows `graduated security', where a user will present distinguishable
+certificates based on a (weakly verified) email address, on group
+membership, or on (strongly verified) individual identity, and be
+granted appropriately varying access in terms of CPU limits or
+interface restrictions. NESSSI also talks of `visas', which are
+modifications to the certificate made by the resource owner.</em></p>
+</div>
+
+<div class='section' id='expiring-access'>
+<p>[expiring access]</p>
+
+<p>A group expires or otherwises loses privilege, with the result that
+users in that group no longer have access as a result of that group
+membership; or a certificate might expire or be revoked.  <em>This is
+a rather trivial case, but notes for completeness that access will
+typically have a lifetime, ranging from years to days, that deleted
+groups and certificates should not somehow accumulate and clog the
+system, and in consequence that there are limits on how long access
+decisions should be cached for. The NESSSI HotGrid certificates are
+expected to have validity periods of a few days.</em></p>
+</div>
+
+<div class='section' id='virtual-file-permissions'>
+<p>[virtual-file permissions]</p>
+
+<p>Owner of a file in VOSpace can vary the CRUD permissions on a node
+in VOSpace, assigning different permissions to particular users and
+groups. This is like standard practice in local file systems, but see
+following cases for subtleties.</p>
+
+<p>The VO and Grid are concerned with controlling access to virtual
+files, distinct from the physical files they map to.</p>
+</div>
+
+<div class='section' id='shared-writeable-file'>
+<p>[shared, writeable (virtual) file)]</p>
+
+<p>A data node in VOSpace is owned by one party and shared for writing
+with another party. Party of the second part can overwrite the file
+with the following restrictions.</p>
+<ul>
+<li>may not change the file permissions; therefore, is unable to widen
+the sharing without the owner's cooperation;</li>
+<li>may not delete and recreate the node representing the file;
+therefore, may not trash it and create a replica under new
+ownership.</li>
+</ul>
+</div>
+
+<div class='section' id='monotonic-access'>
+<p>[monotonic access]</p>
+
+<p>If a user is a member of two groups which have different levels of
+access to a resource, they should receive the more permissive level of
+access.  <em>For example, if an individual is part of a `researcher' and a
+`student' group, and supposing that the former has access to resources
+the latter does not, they should be given access to the resource. This
+is probably what most users and administrators would expect, but it is
+also part of a more fundamental principle, that one should not lose
+privilege based on the disclosure of information; or, put another way,
+that you should not grant privilege based on the absence of
+information.</em></p>
+</div>
+
+<div class='section' id='telescope-access'>
+<p>[telescope access]</p>
+
+<p>Remember that not all resources are software, and `access' might
+involve controlling hardware such as robotic telescopes.  This maps to
+both binary and non-binary (quota-style) access controls.  <em>For example,
+a user has a "network wide" user name, this maps to having free access
+to some telescopes and limited access to other telescopes. May also
+have different kinds of access, e.g. able to queue observations, able
+to do TOO overrides on some (but not all) telescopes. Also maps to
+finite time allocation on the resources (different for different
+systems).</em></p>
+</div>
+
+</div>
+
+<div class='section' id='non-binary-cases'>
+<p>Non-binary cases</p>
+
+<p>The following are cases which require more than a simple binary
+result. They can probably be recast as binary decisions if necessary
+-- for example, one could ask `this file is eight days old: do I
+delete it?' -- but it's an open question whether this can or should be
+done in general. At any rate, any authorisation system would have to
+be able to address decisions of the following form, one way or
+another.</p>
+
+<div class='section' id='quota-on-vospace-storage'>
+<p>[Quota on VOSpace storage]</p>
+
+<p>A party's use of VOSpace is limited in both size and time. In the
+general case, these two limits may be linked, e.g. 100GB for a week,
+1Tb for a day, 100MB forever.</p>v
+</div>
+
+<div class='section' id='quota-on-cached-results'>
+<p>[Quota on cached results]</p>
+
+<p>A DAL service caches results on behalf of a user. The size of the
+cached results is limited and the limit varies from party to party. If
+the service uses VOSpace for access to the cache, then this is the
+same as quota on VOSpace storage.</p>
+</div>
+
+<div class='section' id='quota-on-run-time'>
+<p>[Quota on run-time]</p>
+
+<p>An ADQL service gets a spectrum of queries ranging from sub-second
+run-times through multi-hour operations to queries that never
+complete. Queries are aborted after some limit in run-time. The limit
+varies from party to party. Note that JHU already operate a quota
+system like this; they found early on that they needed it.</p>
+</div>
+</div>
+</div>
+
+<div class='section' id='technologies'>
+<p>Technologies</p>
+
+<div class='section' id='rdfintro'>
+<p>RDF, OWL, and Ontologies</p>
+
+<p>RDF is an abstract data model, standardised by the World Wide Web
+Consortium <span class='cite'>std:rdf</span>, but drawing on a long
+history of Knowledge Representation work within Computing Science.
+There is a large collection of tutorial and overview resources at <a
+href='http://www.w3.org/RDF/'
+><code>http://www.w3.org/RDF/</code></a>.  The account below is
+intended to fix terminology and act as a pointer to fuller
+descriptions; it is too brief to act as an independent tutorial.</p>
+
+<p>RDF represents a broad range of assertions as sets of
+<em>triples</em>, consisting of <em>resources</em> named by URIs,
+which have <em>properties</em> whose <em>values</em> are resources or
+literals.  RDF, RDF Schema (RDFS) and OWL describe these resources and
+properties using a vocabulary which includes terms such as
+<code>rdf:type</code> (indicating that a particular resource is of a
+particular type, named by a URI), or <code>rdfs:subClassOf</code>
+(indicating that one named class is a sub-class, or specialisation of,
+another) and <code>owl:SymmetricProperty</code> (indicating that the
+property thus qualified is a symmetric one).</p>
+
+<p>RDFS adds to RDF a deliberately small set of primitive extra
+concepts, such as the notion of subclass and subproperty.  OWL <span
+class='cite'>std:owl</span> adds to this a richer set of logical
+primitives, such as set union and intersection, and symmetric or
+transitive properties.  The expressiveness of the RDFS and OWL
+languages (plus a few intermediate languages) is constrained by the
+requirement that the complete set of possible deductions can be
+derived by processors of a certain type, in non-exponential time.  For
+example, a processor that understands RDFS will be able to deduce,
+from the pair of statements that <code>A rdfs:subClassOf B</code> and
+<code>B rdfs:subClassOf C</code>, that <code>A rdfs:subClassOf
+C</code>.  This particular type of relationship is known, in this
+trade, as <em>subsubmption</em>, and is key to the access-control
+approach described in this Note.</p>
+
+<p>A collection of relations of this sort is known as an
+<em>ontology</em>.  It consists of the definition of a number of
+concepts, or classes, such as <code>Person</code>, <code>Father</code>
+or <code>Sister</code>, together with the relationships between
+classes (for example <code>Sister rdfs:subClassOf Person</code>) and
+the definition of properties (such as <code>hasSibling rdf:type
+owl:SymmetricProperty; rdfs:range Person</code>).  When combined with
+assertions about individuals, such as <code>urn:example#Norman
+hasSibling urn:example#X</code>, the ontology allows a reasoner to
+derive facts about the resources which were not explicitly asserted.
+Given the information in this example, an OWL-aware reasoner could
+deduce the triples <code>urn:example#X rdf:type Person</code> (because
+<code>hasSibling</code> has a range of <code>Person</code>) and
+<code>urn:example#X hasSibling urn:example#Norman</code> (because
+<code>hasSibling</code> is symmetric).</p>
+
+<p>A word of caution: the term `class' here might be better thought of
+as `concept'.  The terms `class' and `subclass' also appear in the
+context of XML Schemas, and more generally in object-oriented
+programming.  There is an analogy between the use of the terms in
+those contexts and in this one, but <em>it is a loose analogy</em>:
+the use of types in the XSchema and O-O contexts is broadly to
+constrain behaviour and help identify errors, whereas the
+corresponding assertions in the context of RDF allow a reasoner to
+deduce a larger volume of implicit information.  In particular, RDF
+schemas do not function as constraints, and mistakes made when
+defining concepts in an ontology, or when asserting information about
+resources, do not manifest themselves as `schema violations', but
+instead more indirectly, when a reasoner finds it is able to deduce
+contradictory information, for example being able to prove that some
+resource <code>urn:example#X</code> is simultaneously a
+<code>Person</code> and not a <code>Person</code>.</p>
+
+</div>
+
+<div class='section' id='pmi'>
+<p>Privilege management infrastructures (PMI)</p>
+
+<p>PERMIS is an X.509 PMI. It's heavily based on LDAP servers, and
+turns out to be rather hard to use.  The Shibboleth infrastructure
+involves where-are-you-from servers which exchange SAML
+assertions. WS-Policy, SAML, and the OASIS Extensible Access Control
+ML (XACML) are ways of expressing policies and assertions, as distinct
+from being systems which implement and reason about them.  All of the
+systems mentioned here are, it seems, rather static, having problems
+with even moderately dynamic information.  Related to that, though
+distinct, neither PERMIS nor Shibboleth does delegation very naturally
+(for example, `we'll let you use this resource if institution X would
+let you borrow from their library').</p>
+</div>
+
+<div class='section' id='x812'>
+<p>X.812 / ISO-10181-3</p>
+
+<p>ITU-T Recommendation X.812 (identical to ISO/IEC-10181-3) defines a
+vocabulary for Access Control.  This includes the usefully
+distinguished set of concepts below.  Note that none of these are
+concerned directly either with authentication (the assertion that a
+user is who they claim to be) or with the secure transmission of
+assertions (such as that a given user is indeed a member of staff at a
+particular institution).  Establishing and transmitting these
+assertions are problems orthogonal to authorisation, and their
+connection with the authorisation problem is that both are examples of
+ACI.</p>
+
+<dl>
+<dt>AEF</dt>
+<dd><em>Access-control Enforcement Function</em>. This is the software which
+permits or denies access to a resource [the
+<code>/usr/bin/login</code> program is (as I understand it) such a
+function, as you have to go through this program to get access to a
+Unix box; it does or does not give you a shell]. That is, the AEF
+enforces the decision which the ADF makes.</dd>
+
+<dt>ADF</dt>
+<dd><em>Access-control Decision Function</em>.  This is the function
+which provides the yes/no decision.  The AEF consults the ADF to decide
+whether to grant or deny access.  [In the <code>/usr/bin/login</code>
+case, this would I think be the crypt(3) function]</dd>
+
+<dt>ACI</dt>
+<dd><em>Access Control Information</em>.  This is information such as
+the identify of the individual requesting access (the
+<em>initiator</em>), their group or role memberships, or information
+about the properties of the <em>target</em>, such as its
+confidentiality.  [In the <code>/usr/bin/login</code> case, this is, I
+think, the username/password pair]</dd>
+
+<dt>ADI</dt>
+<dd><em>Access-control Decision Information</em>.  This is the subset
+of the ACI which is actually used as input by the ADF. Thus the
+offered password plus salt is what is given to crypt(3) and compared
+with the saved password hash, so I think these are part of the ADI,
+but the username isn't.  The time of day, or the number of previous
+login attempts, if they were relevant to the decision, would also be
+ADI, though these aren't supplied by the individual.  I think that
+time-of-day and so on would be ACI whether or not they were used by
+the ADF (and thus were ADI).</dd>
+</dl>
+
+<p>The above use-cases are all concerned with different types of ACI,
+including the ACI which represents the access policies, therefore they
+are effectively constraints on the ADF which we must employ. Because
+the Access Control methodology must work with a variety of different
+technologies, such as web pages, JDBC calls, or RPC -- that is, with a
+variety of different AEFs -- the ADF should probably be technology
+neutral.</p>
+</div>
+
+</div>
+
+<div class='section-nonum' id='bibliography'>
+<p>Bibliography</p>
+<?bibliography?>
+</div>
+
+
+</div>
+
+</body>
+</html>
