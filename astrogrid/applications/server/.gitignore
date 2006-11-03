@@ -1,6 +1,7 @@
-target
-.project
+.DS_Store
 .classpath
-tests.log
 velocity.log
+target
+tests.log
 VOTABLE
+.project
