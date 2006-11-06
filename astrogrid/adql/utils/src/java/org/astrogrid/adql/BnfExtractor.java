@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.6 2006/10/28 22:10:19 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.7 2006/11/06 23:08:38 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -65,29 +65,12 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "astronomical usage.\n" +
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
-        "as supported by Astrogrid at October 22nd 2006\n\n" +
+        "as supported by Astrogrid at October 22nd 2006. This is an evolving document.\n\n" +
         "The select statement is found under <query_specification>\n" +
         "Footnotes are to be found at the bottom.\n\n" ;
      
     private static final String TEXT_FOOTINGS =
-        "footnote (1):\n" +
-        "              Aliased expressions using the <as_clause> are of limited use unless the alias\n" +
-        "              is usable elsewhere within the query. Currently this is unworkable without further\n" +
-        "              development of the present specification: see footnote (2). \n" +
-        "              Further, within the ADQL/x v1.0 schema the type for this construct is aliasSelectionItemType\n" +
-        "              which has a base of selectionItemType. Most arguments within the schema have type \n" +
-        "              scalarExpressionType, which means aliasSelectionItemType cannot be substituted for \n" +
-        "              an argument. Thus the following query is simply not possible to describe using \n" +
-        "              the current schema:\n" +
-        "              select sin( a.colx ) as X, max( X ) from cat as a where X <= 0.9205 ;\n" +
-        "              (It is also impossible to format this in ADQL/s using this present BNF specification.)\n" +
-        "              The change to the ADQLschema to support this could be quite small.\n" +
-        "\n" +
-        "footnote (2):\n" +
-        "              Enforcing qualified column references for <column_reference> entails reworking some\n" +
-        "              important SQL92 BNF constructs in order to accommodate any aliasing of expressions.\n" +
-        "              I have not thought this currently worth doing in the absence of a usable construct within\n" +
-        "              the ADQL/x schema to effectively support the use of aliased expressions.\n" ;
+        "" ;
     
     private static final String HTML_HEADINGS =
         "<html>" +
@@ -102,32 +85,12 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "astronomical usage.\n" +
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
-        "as supported by Astrogrid at October 22nd 2006\n" +
+        "as supported by Astrogrid at October 22nd 2006. This is an evolving document.\n\n" +
         "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
-        "<a href=\"#footnote (1)\">See Footnotes.</a>\n\n" +
         "See <a href=\"http://sqlzoo.net/sql92.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
-
-    
+  
     private static final String HTML_FOOTINGS =
         "\n" +
-        "<a name=\"footnote (1)\">footnote (1)</a>:\n" +
-        "              Aliased expressions using the &lt;as_clause&gt; are of limited use unless the alias \n" +
-        "              is usable elsewhere within the query. Currently this is unworkable without further\n" +
-        "              development of the present specification: see footnote (2). \n" +
-        "              Further, within the ADQL/x v1.0 schema the type for this construct is aliasSelectionItemType\n" +
-        "              which has a base of selectionItemType. Most arguments within the schema have type \n" +
-        "              scalarExpressionType, which means aliasSelectionItemType cannot be substituted for \n" +
-        "              an argument. Thus the following query is simply not possible to describe using \n" +
-        "              the current schema:\n" +
-        "              select sin( a.colx ) as X, max( X ) from cat as a where X &lt;= 0.9205 ;\n" +
-        "              (It is also impossible to format this in ADQL/s using this present BNF specification.)\n" +
-        "              The change to the ADQLschema to support this could be quite small.\n" +
-        "\n" +
-        "<a name=\"footnote (2)\">footnote (2)</a>:\n" +
-        "              Enforcing qualified column references for &lt;column_reference&gt; entails reworking some\n" +
-        "              important SQL92 BNF constructs in order to accommodate any aliasing of expressions.\n" +
-        "              I have not thought this currently worth doing in the absence of a usable construct within\n" +
-        "              the ADQL/x schema to effectively support the use of aliased expressions.\n" +
         "</pre>" +
         "</body>" +  
         "</html>" ;
@@ -721,6 +684,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.7  2006/11/06 23:08:38  jl99
+Removed footnote references.
+
 Revision 1.6  2006/10/28 22:10:19  jl99
 Adjustments in the area of aliased expressions.
 At present ADQL/x is broken in this area.
