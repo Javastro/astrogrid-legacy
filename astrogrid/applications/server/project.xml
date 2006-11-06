@@ -479,6 +479,12 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>download-page-maven-1-plugin</artifactId>
+            <version>1.0</version>
+            <type>plugin</type>
+        </dependency>
 	</dependencies>
 	
 	<build>
@@ -514,4 +520,7 @@
 			</resource>
 		</resources>
 	</build>
+    <reports>
+      <report>download</report>
+    </reports>
 </project>
