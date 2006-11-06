@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+    <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+      <title>Maven-1 plug-in for download pages: overview</title>
+  </properties>
+  <body>
+    <section name="Overview">
+      <p>This plug-in generates a Maven report that is a download page for the
+      AstroGrid component in whose build the report is generated.</p>
+      <p>The page
+      contains a link to the artifact identified by the POM. The link always
+      points to AstroGrid's Maven-1 repository at http://www.astrogrid.org/maven/,
+      but the group identifier, artifact type, artifact identifier and version
+      can all be varied to suit the project. The artifact type must be set
+      explictly using a property of this plug-in, but the other variables are set 
+      automatically from the POM. The report is put in the file <it>DOWNLOAD.xml</it>
+      in the directory identified by <it>${maven.gen.docs}</it>.</p>
+
+      <p>Using the plug-in avoids the need either to hard-code the version of
+      the artifact in the source of the download page, or to add code to 
+      <it>maven.xml</it> to write the version.</p>
+      
+      <subsection name="properties">
+        <table>
+          <thead>
+            <tr>
+              <th>Property name</th>
+              <th>Description</th>
+              <th>Optional?</th>
+              <th>Default value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>download.artifact.type</td>
+              <td>Sets the type of artifact (jar, war, etc.) to which the download link points.
+                  The value must be in lower case. Do not prepend a dot: e.g. write war not .war.</td>
+              <td>Yes, but the correct value is not inferred from the POM.</td>
+              <td>war</td>
+            </tr>
+          </tbody>
+        </table>
+      </subsection>
+    </section>
+  </body>
+</document>

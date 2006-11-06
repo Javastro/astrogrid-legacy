@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<project 
+  xmlns:j="jelly:core"
+  xmlns:util="jelly:util"
+  xmlns:ant="jelly:ant"
+  xmlns:maven="jelly:maven"
+  xmlns:x="jelly:xml"
+  xmlns:artifact="artifact"
+  xmlns:doc="doc">
+ 
+  <goal 
+    name="download" 
+    prereqs="download:report" 
+    description="Default goal: runs download:report"/>
+
+  <goal name="download:register">
+  <doc:registerReport 
+    pluginName="download"
+    name="Download"
+    link="download-report"
+    description="Download report." />
+  </goal>
+
+  <goal name="download:report">
+    
+    <!-- Use an ant filter to replace the version-number token with its value. 
+         Use the ant copy task to activate the filter. -->
+    <copy file="${plugin.resources}/DOWNLOAD.xml" 
+          tofile="${maven.gen.docs}/DOWNLOAD.xml" 
+          filtering="true"
+          failonerror="false"
+          verbose="true">
+      <filterset>
+        <filter token="version"    value="${pom.currentVersion}"/>
+        <filter token="groupId"    value="${pom.groupId}"/>
+        <filter token="artifactId" value="${pom.artifactId}"/>
+        <filter token="type"       value="${download.artifact.type}"/>
+      </filterset>
+    </copy>
+    
+  </goal>
+  
+  <goal name="download:deregister">
+  <doc:deregisterReport name="Download"/>
+</goal>
+
+</project>

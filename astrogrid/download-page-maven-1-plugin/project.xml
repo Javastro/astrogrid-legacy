@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<project>
+  <pomVersion>3</pomVersion>
+  <artifactId>download-page-maven-1-plugin</artifactId>
+  <groupId>org.astrogrid</groupId>
+  <currentVersion>1.0</currentVersion>
+  <name>Maven plug-in to generate download pages</name>
+  <package>org.astrogrid.download-page-plugin</package>
+  <logo>/aglogo2.gif</logo>
+  <inceptionYear>2006</inceptionYear>
+  
+  <shortDescription>A Maven-1 plug-in to generate a software-download page</shortDescription>
+  
+  <developers>
+    <developer>
+      <name>Guy Rixon</name>
+      <email>gtr@ast.cam.ac.uk</email>
+    </developer>
+  </developers>
+  
+  <licenses>
+    <license>
+      <name>Academic Free Licence version 2.1</name>
+      <url>http://software.astrogrid.org/license.html</url>
+    </license>
+  </licenses>
+  
+  <build> 
+    <resources> 
+       <resource> 
+         <directory>${basedir}</directory> 
+         <includes> 
+           <include>plugin.jelly</include> 
+           <include>plugin.properties</include> 
+           <include>project.properties</include> 
+           <include>project.xml</include> 
+         </includes> 
+       </resource> 
+       <resource> 
+         <directory>${basedir}/src/plugin-resources</directory> 
+         <targetPath>plugin-resources</targetPath>
+         <include>DOWNLOAD.xml</include>
+       </resource> 
+     </resources> 
+   </build>   
+  
+</project>
