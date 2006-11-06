@@ -1,4 +1,4 @@
-/*$Id: JavaClassProviderTest.java,v 1.11 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: JavaClassProviderTest.java,v 1.12 2006/11/06 16:39:54 gtr Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,7 +64,7 @@ public class JavaClassProviderTest extends TestCase {
     public void testLibrary() throws Exception {
         String[] names = lib.getApplicationNames();
         assertNotNull(names);
-        assertEquals(4,names.length);        
+        assertEquals(5,names.length);        
     }
     
     public void testHelloWorld() throws Exception {
@@ -171,6 +171,9 @@ public class JavaClassProviderTest extends TestCase {
 
 /* 
 $Log: JavaClassProviderTest.java,v $
+Revision 1.12  2006/11/06 16:39:54  gtr
+There are 5 applications now, not 4.
+
 Revision 1.11  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 
