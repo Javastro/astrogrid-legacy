@@ -13,6 +13,17 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2006.4.rc1" date="2006-11-06">
+	<action dev="gtr" type="add">
+		Enabled UKIDSS access
+	</action>
+	<action dev="nw" type="update">
+		Updated helper application links
+	</action>
+	<action dev="nw" type="update">
+		Updated to astrogrid.security.version = 2006.3.02st  
+	</action>
+</release>
 <release version="2006.3.rc4.301006" date="2006-10-30">
 	<action dev="nw" type="add">
 	Added template voevent module
