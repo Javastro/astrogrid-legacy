@@ -87,16 +87,6 @@
               <war.bundle>true</war.bundle>
             </properties>
        </dependency>
-<!--
-       <dependency>
-          <artifactId>astrogrid-slinger-api</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.slinger.version}</version>
-            <properties>
-              <war.bundle>true</war.bundle>
-            </properties>
-       </dependency>
-	-->
 	   <dependency>
           <artifactId>astrogrid-utils</artifactId>
           <groupId>org.astrogrid</groupId>
