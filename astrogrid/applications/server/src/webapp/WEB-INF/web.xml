@@ -149,5 +149,12 @@
 		<env-entry-value>http://localhost:8080/astrogrid-registry/services/RegistryUpdate</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
+        
+        <env-entry>
+          <description>Whether HTTP "chunking" is used when sending data to AstroGrid MySpace. "Chunking" reduces the memory load on this service.</description>
+          <env-entry-name>org.astrogrid.filestore.chunked.send</env-entry-name>
+          <env-entry-value>true</env-entry-value>
+          <env-entry-type>java.lang.Boolean</env-entry-type>
+        </env-entry>
 	
 </web-app>
