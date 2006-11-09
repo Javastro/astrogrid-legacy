@@ -1,4 +1,4 @@
-/*$Id: MyspaceInternal.java,v 1.5 2006/04/18 23:25:44 nw Exp $
+/*$Id: MyspaceInternal.java,v 1.6 2006/11/09 12:08:33 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,13 +13,17 @@ package org.astrogrid.desktop.modules.ag;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.registry.RegistryException;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Aug-2005
@@ -66,12 +70,18 @@ public interface MyspaceInternal extends Myspace {
     public OutputStream getOutputStream(URI ui, long size) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException;
    
 
+    /** temporary hack - not encouraged to use this */
+     FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException ;
+            
     
 }
 
 
 /* 
 $Log: MyspaceInternal.java,v $
+Revision 1.6  2006/11/09 12:08:33  nw
+final set of changes for 2006.4.rc1
+
 Revision 1.5  2006/04/18 23:25:44  nw
 merged asr development.
 

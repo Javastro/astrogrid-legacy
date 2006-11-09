@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserDialog.java,v 1.13 2006/08/31 21:34:46 nw Exp $
+/*$Id: VospaceResourceChooserDialog.java,v 1.1 2006/11/09 12:08:33 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.modules.dialogs;
+package org.astrogrid.desktop.modules.dialogs.file;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.AbstractResourceChooserDialog;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
@@ -50,12 +51,12 @@ import org.astrogrid.filemanager.client.FileManagerNode;
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2005
 
  */
-class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
+public class VospaceResourceChooserDialog extends AbstractResourceChooserDialog implements PropertyChangeListener{
     
     class VospaceChooser extends AbstractVospaceBrowser {
 
         public VospaceChooser() throws HeadlessException {
-            super(conf, ResourceChooserDialog.this.help, ResourceChooserDialog.this.ui, vos,sendToMenu); 
+            super(conf, VospaceResourceChooserDialog.this.help, VospaceResourceChooserDialog.this.ui, vos,sendToMenu); 
             // need to disambiguate help and ui, as vospace chooser's parent class has fields of this name too - and it won't compile otherwise
             comm.addUserLoginListener(this);
         }
@@ -96,7 +97,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(ResourceChooserDialog.class);
+    private static final Log logger = LogFactory.getLog(VospaceResourceChooserDialog.class);
 
     
     protected URI uri;
@@ -104,7 +105,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 
 	private javax.swing.JOptionPane  optionPane = null;
-	private JFileChooser localPanel = null;
+	JFileChooser localPanel = null;
 	private JTabbedPane jTabbedPane = null;
     
 	private JPanel myspacePanel = null;	
@@ -120,7 +121,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
     private final Community comm;
     
     
-    public ResourceChooserDialog(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
+    public VospaceResourceChooserDialog(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
         super();
         this.vos = vos;
         this.sendToMenu = sendTo;
@@ -153,7 +154,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
      *   When tabs are disabled, Windows can sometimes leave a disabled
      *   tab selected.  
      */
-    private void bumpTabs() {
+    void bumpTabs() {
         JTabbedPane tabbedPane = getJTabbedPane();
         int numberOfTabs = tabbedPane.getTabCount();
         int current = tabbedPane.getSelectedIndex();
@@ -243,7 +244,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 	 * 	
 	 * @return javax.swing.JTabbedPane	
 	 */    
-	private JTabbedPane getJTabbedPane() {
+	JTabbedPane getJTabbedPane() {
 		if (jTabbedPane == null) {
 			jTabbedPane = new JTabbedPane();
 			jTabbedPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
@@ -282,7 +283,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 	 * 	
 	 * @return javax.swing.JTextField	
 	 */    
-	private JTextField getResourceUriField() {
+	JTextField getResourceUriField() {
 		if (resourceUriField == null) {
 			resourceUriField = new JTextField();
             resourceUriField.setEditable(false); // don't make this editable.
@@ -377,7 +378,7 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
             if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
                 if (getUri() == null) {
-                    JOptionPane.showMessageDialog(ResourceChooserDialog.this,"You must choose a resource, or hit Cancel","Choose a resource",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(VospaceResourceChooserDialog.this,"You must choose a resource, or hit Cancel","Choose a resource",JOptionPane.ERROR_MESSAGE);
                 } else {
                     resetAndHide();
                 }
@@ -399,7 +400,10 @@ class ResourceChooserDialog extends JDialog implements PropertyChangeListener{
 
 
 /* 
-$Log: ResourceChooserDialog.java,v $
+$Log: VospaceResourceChooserDialog.java,v $
+Revision 1.1  2006/11/09 12:08:33  nw
+final set of changes for 2006.4.rc1
+
 Revision 1.13  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 

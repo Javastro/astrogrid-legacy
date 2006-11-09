@@ -39,7 +39,7 @@ public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
 			logger.error("UnsupportedOperatingSystemException",x);
 		}
 	}
-	private final UIInternal ui;
+	protected final UIInternal ui;
 	private BrowserLauncher launcher;
 	private final AbstractLogger browserLogger;
 
@@ -51,7 +51,7 @@ public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
 		try {
 			launcher.openURLinBrowser(url.toString());
 		} catch (Exception x) {
-			logger.error("Failed to contorl browser - falling back",x);
+			logger.error("Failed to control browser - falling back",x);
 			super.openURL(url);
 		}
 	}

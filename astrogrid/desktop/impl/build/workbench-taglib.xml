@@ -401,9 +401,18 @@ astrogrid.build.jdk=${java.version}
 	-keep public class org.bouncycastle.** {
 		public *;
 		}	
-	-keep public class org.apache.ws.security.** {
+	-keep public class org.apache.ws.security.**.* {
 		public *;
 		}
+
+<!--  dunno why.. but these are necessary to make castor work. v odd. -->		
+	-keep class org.astrogrid.community.**.* {
+		public *;
+	}
+	-keep class org.astrogrid.security.**.* {
+		public *;
+		}
+	
 	<!--  jdbm -->
 	-keep class jdbm.recman.Provider {
 		public *;
@@ -413,7 +422,7 @@ astrogrid.build.jdk=${java.version}
 		public *;
 		}
 		<!--  adql beans - keep as is. -->		
-	-keep class org.astrogrid.adql.** {
+	-keep class org.astrogrid.adql.**.* {
 		*;
 		}
 	<!--  xmlbeans -->
@@ -442,14 +451,14 @@ astrogrid.build.jdk=${java.version}
 		public *;
 		}
 	<!--  castor beans - keep these classes -->
-	-keep class org.astrogrid.workflow.beans.** {
+	-keep class org.astrogrid.workflow.beans.**.* {
 		*;
 		}
-	-keep class org.astrogrid.applications.beans.** {
+	-keep class org.astrogrid.applications.beans.**.* {
 		*;
 		}		
 	<!--  castor - preserve all for the moment, else seems to fail - but include in strip path, so dependencies are processed. -->
-	-keep class org.exolab.castor.**{
+	-keep class org.exolab.castor.**.* {
 		*;
 		}
 	<!--  for jxpath (used within castor) -->

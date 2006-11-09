@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.13 2006/10/23 14:14:47 pjn3 Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.14 2006/11/09 12:08:33 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -168,19 +168,20 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
         List wfts= new ArrayList(arr.length); // using a list, rather than array, incase we end up with less than we expected..
         for (int i = 0; i < arr.length; i++) {
             final URL url = arr[i];
+            /* suspect htis was causing a problem - dunno how.
             Element e = cache.get(url);
             if (e != null) {
             	wfts.add(e.getValue());
             } else {
-            
+            */
 			try {
                 Serializable s = new ParameterizedWorkflowTemplate(fac,url.openStream());
-                cache.put(new Element(url,s));
+               // cache.put(new Element(url,s));
                 wfts.add(s);
             } catch (Exception ex) {
                 logger.warn(url + " couldn't be parsed",ex);
             }
-            }
+            //}
         }
         return (ParameterizedWorkflowTemplate[])wfts.toArray(new ParameterizedWorkflowTemplate[wfts.size()]);
     }
@@ -211,6 +212,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.14  2006/11/09 12:08:33  nw
+final set of changes for 2006.4.rc1
+
 Revision 1.13  2006/10/23 14:14:47  pjn3
 Bug# 1882
 Option to save workflow without submitting added

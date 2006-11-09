@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: WebstartBrowserControl.java,v 1.3 2006/11/09 12:08:33 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,10 +23,12 @@ import org.astrogrid.desktop.alternatives.FallbackBrowserControl;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 
 /** Implementation of browsercontrol using the webstart additional APIs.
+ * if it fails to get a service, will fallback to BrowserLauncherBrowserControl.
+ * Likewise, will fallback if it fails to open the url.
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
  *
  */
-public class WebstartBrowserControl extends FallbackBrowserControl implements BrowserControl {
+public class WebstartBrowserControl extends BrowserLauncherBrowserControl implements BrowserControl {
     /**
      * Commons Logger for this class
      */
@@ -36,8 +38,8 @@ public class WebstartBrowserControl extends FallbackBrowserControl implements Br
     /** Construct a new WebstartBrowserControl
      * 
      */
-    public WebstartBrowserControl(WebServer root)  {
-        super(root);
+    public WebstartBrowserControl(WebServer root, UIInternal ui)  {
+        super(root,ui);
         try {
         Class managerClass = Class.forName("javax.jnlp.ServiceManager");
         if (managerClass != null) {
@@ -60,13 +62,14 @@ public class WebstartBrowserControl extends FallbackBrowserControl implements Br
      */
     public void openURL(URL url) throws ACRException  {
         if (basicService == null) {
-            logger.error("Can't open URL - no basic jnlp service");
+            logger.warn("no basic jnlp service");
             super.openURL(url);
         } else {
             try {
                 MethodUtils.invokeMethod(basicService,"showDocument",url);
             } catch (Exception e) {
-                throw new ACRException(e);
+            	logger.warn("Failed to use webstart to control browser - falling back",e);
+            	super.openURL(url);
             } 
         }
     }
@@ -78,6 +81,9 @@ public class WebstartBrowserControl extends FallbackBrowserControl implements Br
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.3  2006/11/09 12:08:33  nw
+final set of changes for 2006.4.rc1
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 

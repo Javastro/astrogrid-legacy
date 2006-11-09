@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.14 2006/08/31 21:28:59 nw Exp $
+/*$Id: VospaceImpl.java,v 1.15 2006/11/09 12:08:33 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     protected URI home;
     protected FileManagerClient client;
     
-    protected synchronized FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
+    public synchronized FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
         if (client == null) {
             FileManagerClientFactory fac = new FileManagerClientFactory(prefs); 
             client = fac.login(new Ivorn(community.getUserInformation().getId().toString()),community.getUserInformation().getPassword());
@@ -913,6 +913,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.15  2006/11/09 12:08:33  nw
+final set of changes for 2006.4.rc1
+
 Revision 1.14  2006/08/31 21:28:59  nw
 doc fix.
 

@@ -326,7 +326,7 @@ System module.
 			 grid overlays, blink comparison, defect patching and the ability to<br>
 			  query on-line (WWW) catalogues.
 						]]></tooltip>
-			<parameter>http://star-www.dur.ac.uk/~pdraper/gaia/plastic/</parameter>
+			<parameter>http://star-www.dur.ac.uk/~pdraper/gaia/gaia.html</parameter>
 		</action>			
 		<action parentName="links" name="splat" text="SPLAT" iconName="splat.gif"
 			after="gaia"
@@ -336,8 +336,7 @@ System module.
 			 analysing astronomical spectra stored in NDF, FITS and TEXT files <br>
 			 as well as the new NDX format. 
 			]]></tooltip>
-				<!--  todo: this is a temporary jnlp link. replace with release page, once it's up. -->
-				<parameter>http://andromeda.star.bris.ac.uk/starjavalib/splat.jnlp</parameter>
+				<parameter>http://star-www.dur.ac.uk/~pdraper/splat/splat.html</parameter>
 		</action>	
 		<action parentName="links" name="topcat" text="TopCat" iconName="tc3.gif"
 			after="splat"
@@ -348,7 +347,7 @@ System module.
 			 restricted to astronomical applications. It understands a number of different astronomically<br>
 			 important formats (including FITS and VOTable) and more formats can be added.
 			]]></tooltip>
-			<parameter>http://www.starlink.ac.uk/topcat/</parameter>
+			<parameter>http://www.star.bris.ac.uk/~mbt/topcat/</parameter>
 		</action>
 		<action parentName="links" name="visivo" text="VisIVO" iconName="visivo.png"
 			after="topcat"
@@ -564,7 +563,7 @@ System module.
 		</invoke-factory>		
 	</implementation>
 
-	<implementation service-id="browser" if="(class edu.stanford.ejalbert.BrowserLauncher) and (not (property system.browser.disabled))">
+	<implementation service-id="browser" if="(not (class javax.jnlp.ServiceManager)) and  (class edu.stanford.ejalbert.BrowserLauncher) and (not (property system.browser.disabled))">
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.BrowserLauncherBrowserControl">
 			

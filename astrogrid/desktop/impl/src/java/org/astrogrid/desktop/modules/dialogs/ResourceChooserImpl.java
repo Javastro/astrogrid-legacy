@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.9 2006/06/27 10:27:12 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.10 2006/11/09 12:08:33 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,8 @@ import java.net.URI;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.dialogs.file.FileStoreChooserResourceChooserDialog;
+import org.astrogrid.desktop.modules.dialogs.file.VospaceResourceChooserDialog;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
@@ -25,14 +27,18 @@ import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
  * wrapper component around the dialog to publish the chooser methods 
  */
 public class ResourceChooserImpl implements ResourceChooserInternal {
-
-    public ResourceChooserImpl(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
-        dialog = new ResourceChooserDialog(vos,sendTo,conf,help,ui, comm) ;
+ 
+    public ResourceChooserImpl(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm, boolean useStil) {
+    	if (useStil) {
+    		dialog = new FileStoreChooserResourceChooserDialog(vos,comm);
+    	} else {
+    		dialog = new VospaceResourceChooserDialog(vos,sendTo,conf,help,ui, comm) ;
+    	}
         getDialog().pack();
     }
-    private final ResourceChooserDialog dialog;
+    private final AbstractResourceChooserDialog dialog;
     public synchronized URI chooseResource(String title,boolean enableMySpace) {
-         ResourceChooserDialog d = getDialog();
+         AbstractResourceChooserDialog d = getDialog();
         d.setTitle(title);
         d.setEnableMySpacePanel(enableMySpace);
        // dialog.setUri(null);
@@ -71,7 +77,7 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 	/**
 	 * @return the dialog
 	 */
-	protected ResourceChooserDialog getDialog() {
+	protected AbstractResourceChooserDialog getDialog() {
 		return dialog;
 	}
 
@@ -80,6 +86,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.10  2006/11/09 12:08:33  nw
+final set of changes for 2006.4.rc1
+
 Revision 1.9  2006/06/27 10:27:12  nw
 send-to menu
 

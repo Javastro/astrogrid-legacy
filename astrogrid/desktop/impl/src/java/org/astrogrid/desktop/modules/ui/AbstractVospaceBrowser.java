@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.9 2006/10/16 14:31:25 pjn3 Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.10 2006/11/09 12:08:33 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -587,7 +587,8 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
         (new BackgroundOperation("Reading Vospace Root") {
     
             protected Object construct() throws Exception {
-                return vos.node(vos.getHome());
+                //return vos.node(vos.getHome());
+            	return vos.getClient().home();
             }
     
             protected void doFinished(Object result) {
@@ -640,6 +641,9 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.10  2006/11/09 12:08:33  nw
+ * final set of changes for 2006.4.rc1
+ *
  * Revision 1.9  2006/10/16 14:31:25  pjn3
  * Bugs # 1892 and 1896
  * Menu alterred to include File/Edit and close

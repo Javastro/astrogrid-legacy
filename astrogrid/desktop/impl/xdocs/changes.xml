@@ -13,147 +13,122 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2006.4.rc2" date="unreleased">
+	<action dev="nw" type="fix" issue="1958">
+	Improved reliability of opening web pages from workbench
+	</action>
+</release>
 <release version="2006.4.rc1" date="2006-11-06">
+
+<!-- 
+
+other changes
+	- filechooser editor
+	- documentaiton.
+ -->
+
+	<!--  new additions -->
 	<action dev="gtr" type="add">
-		Enabled UKIDSS access
+		Workbench: Enabled UKIDSS access. UKIDSS ADQL and Cone services can now by queried from Task Launcher. 
 	</action>
-	<action dev="nw" type="update">
-		Updated helper application links
+    
+	<action dev="nw" type="add" issue="1814">
+	Workbench - Registry Search:  Task Launcher, Workfllow Editor and Astroscope components use fast streaming
+	registry client.  Formatting of registry entries 
+	is improved. Responsiveness improved by caching registry records. Deleted applications and services aren't displayed anymore.
 	</action>
-	<action dev="nw" type="update">
-		Updated to astrogrid.security.version = 2006.3.02st  
-	</action>
-</release>
-<release version="2006.3.rc4.301006" date="2006-10-30">
-	<action dev="nw" type="add">
-	Added template voevent module
-	</action>
-	<action dev="kmb" type="fix">
-	  Save object names in astroscope history
-	</action>
-	<action dev="kmb" type="fix">
-	Indicate completed searches in astroscope.
-	</action>
-    <action dev="pjn" type="fix" issue="1882">
-        When running science workflows there is now an option to save the workflow without 
-        submitting to JES
-    </action>
-    <action dev="pjn" type="fix" issue="1889">
-        Usability feedback, change to file open gif
-    </action>
-    <action dev="pjn" type="fix" issue="1892/1896">
-        Changes to MySpaceBrowser menus
-    </action>
-</release>
-<release  version="2006.3.rc4" date="unreleased">
-    <action dev="jdt" type="fix" issue="1836">
-        Workbench now honours user registry endpoint settings.
-    </action>
-    <action dev="jdt" type="fix" issue="1726">
-        AstroRuntime no longer fails if connected to by applications a second time.
-    </action>    
-    <action dev="nw" type="add">
-    	Added parsing methods to Sesame AR interface (cds.sesame)
-    </action>
-    <action dev="nw" type="update">
-    	Altered inheritance hierarchy for DAL AR interfaces. Added methods to return a parsed
-    	version of the DAL query response, and to save selected datasets.
-    </action>
-    <action dev="nw" type="update">
-    	Enhanced the AR interface to STIL (util.tables)
-    </action>
-    <action dev="nw" type="update">
-    	Updated splashscreens and icons
-    </action>
-</release>
-<release version="2006.3.rc3" date="2006-09-15">
-<action dev="nw" type="fix" issue="1814">
-Added caching of application info to improve responsiveness of workflow editor and
-application launcher.
-</action>
-<action dev="nw" type="add">
-	Astroscope, Myspace, Lookout now send Spectra Plastic Messages.
-</action>
-<action dev="jl" type="add" issue="1790">
-		Within Query Builder, it is now possible to sort columns within metadata display.
+
+	<action dev="jl" type="add" issue="1790">
+		Workbench - Query Builder: sort columns within metadata display.
 		Clicking on column header sorts alphabetically, either ascending or descending. 
 </action>
-	<action dev="nw" type="remove">
-	Reverted PW-launcher to load list of workflows from wiki page.
-	</action>
-	<action dev="nw" type="fix" issue="1777">
-		Astroscope now updates display when plastic apps register
-	</action>
+
 	<action dev="nw" type="add" issue="1788">
-	Added community list combo box to login dialogue
+	Workbench: Added list of available communities to login dialogue
 	</action>
-	<action dev="nw" type="add" issue="1585">
-	Added votable manipulator (STIL) to AR interface
-	</action>
+	    <action dev="pjn" type="add" issue="1882">
+        Workbench - Science workflows: added ability to save the workflow without executing it.
+    </action>
+
 	<action dev="nw" type="add">
-		Reduced executable size, by stripping unused classes.
+		Packaging: stripping unused code to reduce executable size.
+	</action>	
+	<action dev="nw" type="add">
+	Plastic: Astroscope, Myspace, Lookout now send Spectra Plastic Messages.
 	</action>
-	<action dev="nw" type="fix" issue="1780">
-		Astroscope handles non-standard siap responses
+
+    <action dev="nw" type="add">
+    	AstroRuntime: DAL (Cone, SIAP, SSAP) interface - Added methods to return a parsed
+    	version of the query response, and to save selected datasets.
+    </action>
+	<action dev="nw" type="add" issue="1413, 1574">
+		AstroRuntime: Implemented interface to standard IVOA registry; Uses a streaming parser and improved data model.
 	</action>
+    <action dev="nw" type="add">
+    	AstroRuntime: Improved Sesame name resolver interface.
+    </action>
+	<action dev="nw" type="add" issue="1585">
+	AstroRuntime: Added votable manipulator (STIL) interface
+	</action>
+	
+	
+	<!--  updates -->
+	<action dev="pjn" type="update">
+		Workbench: Reorganized front pane tabs and buttons.
+	</action>    
+	<action dev="nw" type="update">
+		Workbench: Updated helper application links
+	</action>
+    <action dev="nw" type="update">
+    	Workbench: Updated splashscreens and icons
+    </action>
+
+<!--  fixes -->
+	<action dev="kmb" type="fix" issue="1719">
+	  Astroscope - Usability:
+	   Save object names in search history;
+		Indicate completed searches; Indicate number of results from each service;
+		Added save button to heliscope;
+		Corrected 'Go To Top' button label and set added shortcut key.	
+	</action>
+	
+    <action dev="pjn" type="fix" issue="1889,1892,1896">
+        Workbench - Usability: Changed file open icon;
+        Improved MySpaceBrowser menus
+    </action>
+    
+    <action dev="jdt" type="fix" issue="1836, 1726">
+       AstroRuntime: honours user registry endpoint settings;  no longer fails if connected to by applications a second time.
+    </action>    
+
+	<action dev="nw" type="fix" issue="1780, 1777">
+		Astroscope: handles non-standard siap responses; updates display when plastic application connects.
+	</action>
+
+	<action dev="nw" type="fix" issue="1710">
+		Workbench - Lookout: can now delete from list of workflows.
+	</action>
+	
 <action dev="jl" type="fix" issue="1768">
-		Sorting of tables before metadata display.
+		Workbench - QueryBuilder: Sorting of tables before metadata display.
 		Correction of bug in metadata display preventing display when archive separately chosen.
 		Correction of displaying of brackets in Query Builder
 </action>
-	<action dev="kmb, pjn, nw" type="fix" issue="1505">
-	  Fixed parameterized workflow dialogue, and got workflows running again.
-	</action>
-	<action dev="nw" type="update">
-	Improved formatting of registry entries
-	</action>
-	<action dev="nw" type="update">
-	Reworked registry google / application launcher / astroscope components to use new
-	registry interface. Deleted applications and services aren't displayed anymore.
-	</action>
-	<action dev="nw" type="add">
-		Added a generic disk-caching component. Use it to cache registry resource objects
-		and documents for a day or so.
-	</action>
-	<action dev="nw" type="fix" issue="1574">
-		Optimized registry interface - uses a streaming parser, improved data model.
-		Marked old implementation as deprecated.
-	</action>
-	<action dev="nw" type="add" issue="1413">
-		Implemented standard IVOA registry interface.
-	</action>
-	<action dev="nw" type="fix" issue="1710">
-		can now delete from list of workfows
-	</action>
-	<action dev="pjn" type="fix" issue="1760,1754">
-		Reorganised front UI tabs 
-		Corrected list of parameterised workflows
-	</action>
-	<action dev="kmb" type="fix" issue="1719">
-		Fixed helioscope to have a save button that was mising
-	Changed 'To To Top' to 'Go To Top' and set shortcut key to 'G' for Astro and helioscope.	
-	</action>
+
 	<action dev="kmb" type="fix" issue="1366">
-		Fixed 'enter' or 'return' to work on Registry panel for workflow see bugzilla ticket 1366
+		Workbench - Usability: Fixed 'enter' or 'return' to work on Registry panel for workflow.
 	</action>
-    <action dev="jdt" type="fix" issue="1734">
-        Rephrased pop-up text on plastic registration.
+ 
+    <action dev="jdt" type="fix" issue="1762, 1734, 1757">
+        Plastic: Improved concurrency behaviour of Plastic hub, added more tests; 
+         Made hub more robust to duff clients;  Hub now only unregisters xmlrpc clients when there's an
+        IOException, not if the client faults; fixed XML-RPC return type conversion;
+         Assorted other fixes: hub now self registers properly and responds to messages such as getName;
+         Rephrased pop-up text on plastic registration;  Removed "list" plastic applications button from all variants except plastic hub-only AR.
     </action>
-    <action dev="jdt" type="fix" issue="1757">
-        Removed "list" plastic applications button from all variants except plastic hub-only AR.
-    </action>    
-    <action dev="jdt" type="fix" issue="">
-        Assorted other fixes: hub now self registers properly and responds to messages such as getName.
-    </action>
-    <action dev="jdt" type="fix" issue="1762">
-        XML-RPC return type conversion would fail in certain situations.
-        XML-RPC plastic clients couldn't use getRegisteredIds for example.
-    </action>
-    <action dev="jdt" type="fix">
-        Improved concurrency behaviour of Plastic hub, added more tests.  Made hub more robust to duff clients.  Hub now only unregisters xmlrpc clients when there's an
-        IOException, not if the client faults.
-    </action>
+	
 </release>
+<!--  last 'major' release -->
 <release version="2006.3.rc1" date="2006-06-28">
 	<action dev="nw" type="add">
 	Implemented a right-click 'Send-To' menu to send a data item to browser, local disk, or PLASTIC application.

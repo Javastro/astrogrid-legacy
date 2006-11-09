@@ -13,6 +13,11 @@
 	</configuration-point>
 	
 	<!-- contributions to existing configurations -->
+	
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="dialogs.resourceChooser.useNewDialog" value="false" />
+	</contribution>
+	
 	<contribution configuration-id="toolEditors">
 		<object>service:chooserPanel</object>
 		<object>service:adqlPanel</object>
@@ -70,7 +75,8 @@
 				<service>system.configuration</service>
 				<service>system.help</service>
 				<service>system.ui</service>
-				<service>astrogrid.community</service>				
+				<service>astrogrid.community</service>		
+				<boolean>${dialogs.resourceChooser.useNewDialog}</boolean>		
 			</construct>
 		</invoke-factory>	
 	</service-point>
