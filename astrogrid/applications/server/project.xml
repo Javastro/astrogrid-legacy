@@ -442,6 +442,15 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
+                <dependency>
+                  <groupId>xalan</groupId>
+                  <artifactId>xalan</artifactId>
+                  <version>2.7.0</version>
+                  <type>jar</type>
+                  <properties>
+                    <war.bundle>true</war.bundle>
+                  </properties>
+                </dependency>
 		<dependency>
 			<groupId>globus</groupId>
 			<artifactId>cog-jglobus</artifactId>
