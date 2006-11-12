@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.7 2006/11/06 23:08:38 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.8 2006/11/12 20:06:44 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -65,7 +65,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "astronomical usage.\n" +
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
-        "as supported by Astrogrid at October 22nd 2006. This is an evolving document.\n\n" +
+        "as supported by Astrogrid. This is an evolving document.\n\n" +
         "The select statement is found under <query_specification>\n" +
         "Footnotes are to be found at the bottom.\n\n" ;
      
@@ -85,7 +85,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "astronomical usage.\n" +
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
-        "as supported by Astrogrid at October 22nd 2006. This is an evolving document.\n\n" +
+        "as supported by Astrogrid. This is an evolving document.\n\n" +
         "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
         "See <a href=\"http://sqlzoo.net/sql92.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
   
@@ -684,6 +684,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.8  2006/11/12 20:06:44  jl99
+Slight change to heading.
+
 Revision 1.7  2006/11/06 23:08:38  jl99
 Removed footnote references.
 
