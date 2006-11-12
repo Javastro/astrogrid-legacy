@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.30 2006/10/28 22:08:05 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.31 2006/11/12 20:06:00 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -2491,11 +2491,20 @@ ComparisonPredType join_specification_A() :
 /**
  * joined_table_S
  *
+ *-bnf-start
+ *- <joined_table> ::=
+ *-     <cross_join>
+ *-   | <qualified_join>
+ *-   | <left_paren> <joined_table> <right_paren>
+ *-bnf-end
+ 
  * bnf-start
  *  <joined_table> ::=
- *      <cross_join>
- *    | <qualified_join>
+ *      <qualified_join>
  *    | <left_paren> <joined_table> <right_paren>
+ *  !! <cross_join> has been removed. The reason is the Adql/x schema has
+ *     a mandatory join condition which is inapplicable to cross joins.
+ *     Probably wise in any case. 
  * bnf-end
  *
  */
@@ -2512,9 +2521,8 @@ JoinTableType joined_table_S() :
     //  | <qualified_join>
     //  | <left_paren> <joined_table> <right_paren>
 	(
-		LOOKAHEAD(4)
-		jtType=cross_join_S()
-		|
+// 
+//		LOOKAHEAD(4)//		jtType=cross_join_S()//		|
 		LOOKAHEAD(4)
 		jtType=qualified_join_S()
 		|
@@ -4182,10 +4190,10 @@ void corrsponding_column_list_S() : {}
 /**
  * cross_join_S
  *
- * bnf-start
- *  <cross_join> ::=
- *      <table_reference> CROSS JOIN <table_reference>
- * bnf-end
+ *-bnf-start
+ *- <cross_join> ::=
+ *-     <table_reference> CROSS JOIN <table_reference>
+ *-bnf-end
  *
  */
 JoinTableType cross_join_S() : 
@@ -4836,6 +4844,10 @@ WhereType where_clause_S() #Where :
 }
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.31  2006/11/12 20:06:00  jl99
+Removed support for Cross Joins.
+Difficult to support this with the current Adlq/x schema which has a join condition as mandatory.
+
 Revision 1.30  2006/10/28 22:08:05  jl99
 Rejig to enable more speedy adaptation to aliased expressions
 when these become feasible. At present ADQL/x is broken in this area.
