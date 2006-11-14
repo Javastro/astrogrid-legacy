@@ -173,14 +173,14 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 
 		protected Object construct() throws Exception {
 		    List noArgs = new ArrayList();
-		    String ivorn = singleTargetPlasticMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id).toString();
+		    String ivorn = safeStringCast(singleTargetPlasticMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id));
 		    if (AR_IVORN.equals(ivorn)) {
 		    	return null; // it's only ourselves
 		    }
 		    String name =hub.getName(this.id) ;
-		    String description = singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id).toString();
-		    String version = singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id).toString();
-		    String iconURLString = singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id).toString();
+		    String description = safeStringCast(singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id));
+		    String version = safeStringCast(singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id));
+		    String iconURLString = safeStringCast(singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id));
 		    URL iconUrl;
             ImageIcon icon;
             try {
@@ -202,6 +202,11 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 			}          
 		}
 	}
+    
+    private String safeStringCast(Object o) {
+        if (o==null) return null;
+        return o.toString();
+    }
 
 	protected List getLocalMessages() {
         return dynamicButtonMessages;
