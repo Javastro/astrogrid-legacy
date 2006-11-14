@@ -14,18 +14,23 @@
 	</head>
 <body>
 <release version="2006.4.rc2" date="unreleased">
-	<action dev="nw" type="fix" issue="1958">
-	Improved reliability of opening web pages from workbench
+	<action dev="nw" type="fix">
+		Myspace: fles of size less than 1kb are reported as 1kb, not Okb.
 	</action>
+	<action dev="nw" type="update">
+		Updated minimum supported java version to 1.4.2
+	</action>
+	<action dev="nw" type="fix" issue="1958">
+		Improved reliability of opening web pages from workbench
+	</action>
+<!-- 
+
+pending changes
+	- filechooser editor
+ -->
 </release>
 <release version="2006.4.rc1" date="2006-11-06">
 
-<!-- 
-
-other changes
-	- filechooser editor
-	- documentaiton.
- -->
 
 	<!--  new additions -->
 	<action dev="gtr" type="add">

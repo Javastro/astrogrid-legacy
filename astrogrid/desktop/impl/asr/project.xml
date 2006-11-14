@@ -77,7 +77,7 @@
   <dependency>
 		<groupId>votech-ds6</groupId>
                         <artifactId>plastic</artifactId>
-		<version>0.4.1</version>
+		<version>0.5.1</version>
                         <url>http://plastic.sourceforge.net</url>
 		<properties>
 			<dist.bundle>true</dist.bundle>
@@ -112,7 +112,7 @@
 	<dependency>
 		<groupId>ehcache</groupId>
 		<artifactId>ehcache</artifactId>
-		<version>1.2.2</version>
+		<version>1.2.3</version>
 		<properties>
 			<dist.bundle>true</dist.bundle>
 					    <strip>true</strip>    
@@ -239,7 +239,7 @@
    <dependency>
         <groupId>l2fprod</groupId>
         <artifactId>l2fprod-common-buttonbar</artifactId>
-        <version>6.5.1</version> 
+        <version>6.11</version> 
 	<properties>
 		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
 		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
@@ -250,7 +250,7 @@
    <dependency>
         <groupId>l2fprod</groupId>
         <artifactId>l2fprod-common-tasks</artifactId>
-        <version>6.5.1</version> 
+        <version>6.11</version> 
 	<properties>
 		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
 		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
@@ -261,7 +261,7 @@
        <dependency>
         <groupId>l2fprod</groupId>
         <artifactId>l2fprod-common-shared</artifactId>
-        <version>6.5.1</version> 
+        <version>6.11</version> 
 	<properties>
 		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
 		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
@@ -380,7 +380,7 @@
 	<dependency>
 		<groupId>xfire</groupId>
 		<artifactId>xfire-core</artifactId>
-		<version>1.2-RC</version>
+		<version>1.2.2</version>
 		<properties>
 			<dist.bundle>true</dist.bundle>
 			<strip>true</strip>
@@ -430,7 +430,7 @@
 	<dependency>
 		<groupId>woodstox</groupId>
 		<artifactId>wstx-asl</artifactId>
-		<version>2.9.3</version>
+		<version>3.0.1</version>
 		<properties>
 			<dist.bundle>true</dist.bundle>
 			<strip>false</strip><!--  all spi driven - a nightmare to strip --> 

@@ -72,7 +72,7 @@ astrogrid.build.jdk=${java.version}
     	name="${pom.name}"
          version="${astrogrid.desktop.version}"
          bundleid="${maven.javaapp.mainclass}"
-         jvmversion="1.4+"
+         jvmversion="${minimum.jvm.version}+"
          icon="${basedir}/src/webapp/logo.icns"         
          aboutmenuname="${pom.name}"
          smalltabs="true"
@@ -169,7 +169,7 @@ astrogrid.build.jdk=${java.version}
 						</authors>
 						<url>http://www.astrogrid.org/desktop</url>
 						<webdir>http://www.astrogrid.org/desktop/download</webdir>
-						<javaversion>1.4</javaversion>
+						<javaversion>${minimum.jvm.version}</javaversion>
 					</info>
 					<variables>
 						<variable name="jarname" value="${maven.final.name}-app.jar" />
@@ -255,7 +255,7 @@ astrogrid.build.jdk=${java.version}
 		<all-permissions />
 	</security>
 	<resources>
-		<j2se version="1.4+" max-heap-size="512m" initial-heap-size="32m" />
+		<j2se version="${minimum.jvm.version}+" max-heap-size="512m" initial-heap-size="32m" />
 		<jar href="${maven.final.name}-app.jar" />
 		<extension href="/jnlp/desktop-integration/desktop-integration.jnlp" name="Java Desktop Integration Components" />
 	</resources>
